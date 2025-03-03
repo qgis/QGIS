@@ -139,7 +139,8 @@ A socket allowing linking component together
 %Docstring
 Constructor for QgsModelDesignerSocketGraphicItem, with the specified ``parent`` item.
 
-The ``index`` argument specifies whether the index of link point 
+The ``index`` argument specifies whether the input or output index of this socket inside the component
+And the ``edge`` arguement specifies if it's an input socket( Qt.Edge.TopEdge ) or output ( Qt.Edge.BottomEdge )
 
 The sockets will be rendered at the specified ``position``
 %End

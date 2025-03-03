@@ -172,12 +172,12 @@ Emitted when a macro command containing a group of interactions is started in th
 Emitted when a macro command containing a group of interactions in the view has ended.
 %End
 
-    void CommandBegun( const QString &text );
+    void commandBegun( const QString &text );
 %Docstring
 Emitted when an undo command is started in the view.
 %End
 
-    void CommandEnded();
+    void commandEnded();
 %Docstring
 Emitted when an undo command in the view has ended.
 %End

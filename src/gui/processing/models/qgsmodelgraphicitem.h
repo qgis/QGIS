@@ -161,7 +161,8 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     /**
      * Constructor for QgsModelDesignerSocketGraphicItem, with the specified \a parent item.
      *
-     * The \a index argument specifies whether the index of link point 
+     * The \a index argument specifies whether the input or output index of this socket inside the component
+     * And the \a edge arguement specifies if it's an input socket( Qt::Edge::TopEdge ) or output ( Qt::Edge::BottomEdge )
      *
      * The sockets will be rendered at the specified \a position
      */

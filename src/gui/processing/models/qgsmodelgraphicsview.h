@@ -207,12 +207,12 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     /**
      * Emitted when an undo command is started in the view.
      */
-    void CommandBegun( const QString &text );
+    void commandBegun( const QString &text );
 
     /**
      * Emitted when an undo command in the view has ended.
      */
-    void CommandEnded();
+    void commandEnded();
 
     /**
      * Emitted when the selected items should be deleted;

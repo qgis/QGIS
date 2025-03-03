@@ -47,17 +47,15 @@ void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
   QgsModelDesignerSocketGraphicItem *socket = nullptr;
   for ( QGraphicsItem *item : items )
   {
-    if ( ( socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) ) )
+    if ( ( socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
+         && ( mFromSocket != socket && mFromSocket->edge() != socket->edge() ) )
     {
       // snap
-      if ( mFromSocket != socket && mFromSocket->edge() != socket->edge() )
-      {
-        socket->modelHoverEnterEvent( event );
-        QPointF rubberEndPos = socket->mapToScene( socket->getPosition() );
-        mBezierRubberBand->update( rubberEndPos, Qt::KeyboardModifiers() );
+      socket->modelHoverEnterEvent( event );
+      QPointF rubberEndPos = socket->mapToScene( socket->getPosition() );
+      mBezierRubberBand->update( rubberEndPos, Qt::KeyboardModifiers() );
 
-        break;
-      }
+      break;
     }
   }
 

@@ -444,12 +444,12 @@ void QgsModelGraphicsView::endMacroCommand()
 
 void QgsModelGraphicsView::beginCommand( const QString &text )
 {
-  emit CommandBegun( text );
+  emit commandBegun( text );
 }
 
 void QgsModelGraphicsView::endCommand()
 {
-  emit CommandEnded();
+  emit commandEnded();
 }
 
 
@@ -492,7 +492,7 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
   if ( operation == ClipboardCut )
   {
     emit macroCommandStarted( tr( "Cut Items" ) );
-    emit CommandBegun( QString() );
+    emit commandBegun( QString() );
   }
 
   QList<QVariant> paramComponents;
@@ -600,7 +600,7 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
   if ( operation == ClipboardCut )
   {
     emit deleteSelectedItems();
-    emit CommandEnded();
+    emit commandEnded();
     emit macroCommandEnded();
   }
 
@@ -812,7 +812,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
         }
       }
 
-      emit CommandEnded();
+      emit commandEnded();
     }
   }
 
