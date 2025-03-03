@@ -160,11 +160,11 @@ bool QgsMssqlDataItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiC
   return false;
 }
 
-bool QgsMssqlDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext, const QMimeData *data, Qt::DropAction )
+bool QgsMssqlDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction )
 {
   if ( QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( item ) )
   {
-    return handleDrop( connItem, data, QString() );
+    return handleDrop( connItem, data, QString(), context );
   }
   else if ( QgsMssqlSchemaItem *schemaItem = qobject_cast<QgsMssqlSchemaItem *>( item ) )
   {
@@ -172,7 +172,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiC
     if ( !connItem )
       return false;
 
-    return handleDrop( connItem, data, schemaItem->name() );
+    return handleDrop( connItem, data, schemaItem->name(), context );
   }
   return false;
 }
@@ -272,7 +272,7 @@ void QgsMssqlDataItemGuiProvider::loadConnections( QgsDataItem *item )
     item->refreshConnections();
 }
 
-bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema )
+bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) || !connectionItem )
     return false;

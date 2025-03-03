@@ -48,7 +48,7 @@ class QgsHanaDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     static void renameSchema( QgsHanaSchemaItem *schemaItem, QgsDataItemGuiContext context );
     static void renameLayer( QgsHanaLayerItem *layerItem, QgsDataItemGuiContext context );
 
-    bool handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema );
+    bool handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext context );
 };
 
 #endif // QGSHANADATAITEMGUIPROVIDER_H
