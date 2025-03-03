@@ -483,6 +483,22 @@ The development version
       IgnoreMapRotation,
     };
 
+
+    enum class HorizontalAnchorPoint /BaseType=IntEnum/
+      {
+      Left,
+      Center,
+      Right,
+    };
+
+    enum class VerticalAnchorPoint /BaseType=IntEnum/
+      {
+      Top,
+      Center,
+      Bottom,
+      Baseline,
+    };
+
     enum class FeatureRendererFlag /BaseType=IntFlag/
     {
       AffectsLabeling,

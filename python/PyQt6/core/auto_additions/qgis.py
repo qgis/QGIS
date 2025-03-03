@@ -1445,6 +1445,73 @@ Qgis.SymbolRotationMode.__doc__ = """Modes for handling how symbol and text enti
 """
 # --
 Qgis.SymbolRotationMode.baseClass = Qgis
+QgsMarkerSymbolLayer.HorizontalAnchorPoint = Qgis.HorizontalAnchorPoint
+# monkey patching scoped based enum
+QgsMarkerSymbolLayer.Left = Qgis.HorizontalAnchorPoint.Left
+QgsMarkerSymbolLayer.Left.is_monkey_patched = True
+QgsMarkerSymbolLayer.Left.__doc__ = "Align to left side of symbol"
+QgsMarkerSymbolLayer.HCenter = Qgis.HorizontalAnchorPoint.Center
+QgsMarkerSymbolLayer.HorizontalAnchorPoint.HCenter = Qgis.HorizontalAnchorPoint.Center
+QgsMarkerSymbolLayer.HCenter.is_monkey_patched = True
+QgsMarkerSymbolLayer.HCenter.__doc__ = "Align to horizontal center of symbol"
+QgsMarkerSymbolLayer.Right = Qgis.HorizontalAnchorPoint.Right
+QgsMarkerSymbolLayer.Right.is_monkey_patched = True
+QgsMarkerSymbolLayer.Right.__doc__ = "Align to right side of symbol"
+Qgis.HorizontalAnchorPoint.__doc__ = """Marker symbol horizontal anchor points.
+
+.. note::
+
+   Prior to QGIS 3.44 this was available as :py:class:`QgsMarkerSymbolLayer`.HorizontalAnchorPoint
+
+.. versionadded:: 3.44
+
+* ``Left``: Align to left side of symbol
+* ``Center``: Align to horizontal center of symbol
+
+  Available as ``QgsMarkerSymbolLayer.HCenter`` in older QGIS releases.
+
+* ``Right``: Align to right side of symbol
+
+"""
+# --
+Qgis.HorizontalAnchorPoint.baseClass = Qgis
+QgsMarkerSymbolLayer.VerticalAnchorPoint = Qgis.VerticalAnchorPoint
+# monkey patching scoped based enum
+QgsMarkerSymbolLayer.Top = Qgis.VerticalAnchorPoint.Top
+QgsMarkerSymbolLayer.Top.is_monkey_patched = True
+QgsMarkerSymbolLayer.Top.__doc__ = "Align to top of symbol"
+QgsMarkerSymbolLayer.VCenter = Qgis.VerticalAnchorPoint.Center
+QgsMarkerSymbolLayer.VerticalAnchorPoint.VCenter = Qgis.VerticalAnchorPoint.Center
+QgsMarkerSymbolLayer.VCenter.is_monkey_patched = True
+QgsMarkerSymbolLayer.VCenter.__doc__ = "Align to vertical center of symbol"
+QgsMarkerSymbolLayer.Bottom = Qgis.VerticalAnchorPoint.Bottom
+QgsMarkerSymbolLayer.Bottom.is_monkey_patched = True
+QgsMarkerSymbolLayer.Bottom.__doc__ = "Align to bottom of symbol"
+QgsMarkerSymbolLayer.Baseline = Qgis.VerticalAnchorPoint.Baseline
+QgsMarkerSymbolLayer.Baseline.is_monkey_patched = True
+QgsMarkerSymbolLayer.Baseline.__doc__ = "Align to baseline of symbol, e.g. font baseline for font marker symbol layers. Treated as Bottom if no baseline is available for the symbol layer type. \n.. versionadded:: 3.44"
+Qgis.VerticalAnchorPoint.__doc__ = """Marker symbol vertical anchor points.
+
+.. note::
+
+   Prior to QGIS 3.44 this was available as :py:class:`QgsMarkerSymbolLayer`.VerticalAnchorPoint
+
+.. versionadded:: 3.44
+
+* ``Top``: Align to top of symbol
+* ``Center``: Align to vertical center of symbol
+
+  Available as ``QgsMarkerSymbolLayer.VCenter`` in older QGIS releases.
+
+* ``Bottom``: Align to bottom of symbol
+* ``Baseline``: Align to baseline of symbol, e.g. font baseline for font marker symbol layers. Treated as Bottom if no baseline is available for the symbol layer type.
+
+  .. versionadded:: 3.44
+
+
+"""
+# --
+Qgis.VerticalAnchorPoint.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.FeatureRendererFlag.AffectsLabeling.__doc__ = "If present, indicates that the renderer will participate in the map labeling problem"
 Qgis.FeatureRendererFlag.__doc__ = """Flags controlling behavior of vector feature renderers.
