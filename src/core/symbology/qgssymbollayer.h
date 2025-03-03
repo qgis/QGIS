@@ -779,7 +779,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
       Top, //!< Align to top of symbol
       VCenter, //!< Align to vertical center of symbol
       Bottom, //!< Align to bottom of symbol
-      Baseline, //!< Align to baseline of symbol, e.g. font baseline for font marker symbol layers. Treated as Bottom if no baseline is available for the symbol layer type. \since QGIS 3.42
+      Baseline, //!< Align to baseline of symbol, e.g. font baseline for font marker symbol layers. Treated as Bottom if no baseline is available for the symbol layer type. \since QGIS 3.44
     };
 
     QgsMarkerSymbolLayer &operator=( const QgsMarkerSymbolLayer &other ) = delete;
