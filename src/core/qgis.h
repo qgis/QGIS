@@ -753,6 +753,36 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( SymbolRotationMode )
 
+
+    /**
+     * Marker symbol horizontal anchor points.
+     *
+     * \note Prior to QGIS 3.44 this was available as QgsMarkerSymbolLayer::HorizontalAnchorPoint
+     * \since QGIS 3.44
+     */
+    enum class HorizontalAnchorPoint SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMarkerSymbolLayer, HorizontalAnchorPoint ) : int
+      {
+      Left, //!< Align to left side of symbol
+      Center SIP_MONKEYPATCH_COMPAT_NAME( HCenter ), //!< Align to horizontal center of symbol
+      Right, //!< Align to right side of symbol
+    };
+    Q_ENUM( HorizontalAnchorPoint )
+
+    /**
+     * Marker symbol vertical anchor points.
+     *
+     * \note Prior to QGIS 3.44 this was available as QgsMarkerSymbolLayer::VerticalAnchorPoint
+     * \since QGIS 3.44
+     */
+    enum class VerticalAnchorPoint SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMarkerSymbolLayer, VerticalAnchorPoint ) : int
+      {
+      Top, //!< Align to top of symbol
+      Center SIP_MONKEYPATCH_COMPAT_NAME( VCenter ), //!< Align to vertical center of symbol
+      Bottom, //!< Align to bottom of symbol
+      Baseline, //!< Align to baseline of symbol, e.g. font baseline for font marker symbol layers. Treated as Bottom if no baseline is available for the symbol layer type. \since QGIS 3.44
+    };
+    Q_ENUM( VerticalAnchorPoint )
+
     /**
      * \brief Flags controlling behavior of vector feature renderers.
      *

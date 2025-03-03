@@ -629,8 +629,8 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   offsetX = context.renderContext().convertToPainterUnits( offsetX, mOffsetUnit, mOffsetMapUnitScale );
   offsetY = context.renderContext().convertToPainterUnits( offsetY, mOffsetUnit, mOffsetMapUnitScale );
 
-  HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
-  VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
+  Qgis::HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
+  Qgis::VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::HorizontalAnchor ) )
   {
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::HorizontalAnchor, context.renderContext().expressionContext() );
@@ -649,7 +649,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   }
 
   //correct horizontal position according to anchor point
-  if ( horizontalAnchorPoint == HCenter && verticalAnchorPoint == VCenter )
+  if ( horizontalAnchorPoint == Qgis::HorizontalAnchorPoint::Center && verticalAnchorPoint == Qgis::VerticalAnchorPoint::Center )
   {
     return;
   }
@@ -670,23 +670,30 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
     anchorPointCorrectionY = std::min( std::max( context.renderContext().convertToPainterUnits( height, Qgis::RenderUnit::Millimeters ), 3.0 ), 100.0 ) / 2.0;
   }
 
-  if ( horizontalAnchorPoint == Left )
+  switch ( horizontalAnchorPoint )
   {
-    offsetX += anchorPointCorrectionX;
-  }
-  else if ( horizontalAnchorPoint == Right )
-  {
-    offsetX -= anchorPointCorrectionX;
+    case Qgis::HorizontalAnchorPoint::Left:
+      offsetX += anchorPointCorrectionX;
+      break;
+    case Qgis::HorizontalAnchorPoint::Right:
+      offsetX -= anchorPointCorrectionX;
+      break;
+    case Qgis::HorizontalAnchorPoint::Center:
+      break;
   }
 
-//correct vertical position according to anchor point
-  if ( verticalAnchorPoint == Top )
+  //correct vertical position according to anchor point
+  switch ( verticalAnchorPoint )
   {
-    offsetY += anchorPointCorrectionY;
-  }
-  else if ( verticalAnchorPoint == Bottom or verticalAnchorPoint == Baseline )
-  {
-    offsetY -= anchorPointCorrectionY;
+    case Qgis::VerticalAnchorPoint::Top:
+      offsetY += anchorPointCorrectionY;
+      break;
+    case Qgis::VerticalAnchorPoint::Bottom:
+    case Qgis::VerticalAnchorPoint::Baseline:
+      offsetY -= anchorPointCorrectionY;
+      break;
+    case Qgis::VerticalAnchorPoint::Center:
+      break;
   }
 }
 
@@ -697,35 +704,35 @@ QPointF QgsMarkerSymbolLayer::_rotatedOffset( QPointF offset, double angle )
   return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
 }
 
-QgsMarkerSymbolLayer::HorizontalAnchorPoint QgsMarkerSymbolLayer::decodeHorizontalAnchorPoint( const QString &str )
+Qgis::HorizontalAnchorPoint QgsMarkerSymbolLayer::decodeHorizontalAnchorPoint( const QString &str )
 {
   if ( str.compare( QLatin1String( "left" ), Qt::CaseInsensitive ) == 0 )
   {
-    return QgsMarkerSymbolLayer::Left;
+    return Qgis::HorizontalAnchorPoint::Left;
   }
   else if ( str.compare( QLatin1String( "right" ), Qt::CaseInsensitive ) == 0 )
   {
-    return QgsMarkerSymbolLayer::Right;
+    return Qgis::HorizontalAnchorPoint::Right;
   }
   else
   {
-    return QgsMarkerSymbolLayer::HCenter;
+    return Qgis::HorizontalAnchorPoint::Center;
   }
 }
 
-QgsMarkerSymbolLayer::VerticalAnchorPoint QgsMarkerSymbolLayer::decodeVerticalAnchorPoint( const QString &str )
+Qgis::VerticalAnchorPoint QgsMarkerSymbolLayer::decodeVerticalAnchorPoint( const QString &str )
 {
   if ( str.compare( QLatin1String( "top" ), Qt::CaseInsensitive ) == 0 )
   {
-    return QgsMarkerSymbolLayer::Top;
+    return Qgis::VerticalAnchorPoint::Top;
   }
   else if ( str.compare( QLatin1String( "bottom" ), Qt::CaseInsensitive ) == 0 )
   {
-    return QgsMarkerSymbolLayer::Bottom;
+    return Qgis::VerticalAnchorPoint::Bottom;
   }
   else
   {
-    return QgsMarkerSymbolLayer::VCenter;
+    return Qgis::VerticalAnchorPoint::Center;
   }
 }
 
