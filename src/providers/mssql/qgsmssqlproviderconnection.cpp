@@ -813,6 +813,11 @@ bool QgsMssqlProviderConnection::validateSqlVectorLayer( const SqlVectorLayerOpt
   return true;
 }
 
+Qgis::DatabaseProviderTableImportCapabilities QgsMssqlProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName;
+}
+
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsMssqlProviderConnection::sqlOptions( const QString &layerSource )
 {
   SqlVectorLayerOptions options;

@@ -2924,6 +2924,13 @@ The development version
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
 
 
+    enum class DatabaseProviderTableImportCapability /BaseType=IntFlag/
+    {
+      SetGeometryColumnName,
+    };
+    typedef QFlags<Qgis::DatabaseProviderTableImportCapability> DatabaseProviderTableImportCapabilities;
+
+
     enum class ProviderStyleStorageCapability /BaseType=IntFlag/
     {
       SaveToDatabase,
@@ -3393,6 +3400,8 @@ QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QF
 QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
 
 QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
+
+QFlags<Qgis::DatabaseProviderTableImportCapability> operator|(Qgis::DatabaseProviderTableImportCapability f1, QFlags<Qgis::DatabaseProviderTableImportCapability> f2);
 
 QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
 

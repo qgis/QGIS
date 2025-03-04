@@ -290,6 +290,11 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
   return vl.release();
 }
 
+Qgis::DatabaseProviderTableImportCapabilities QgsOracleProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName;
+}
+
 void QgsOracleProviderConnection::store( const QString &name ) const
 {
   QString baseKey = QStringLiteral( "/Oracle/connections/" );
@@ -348,6 +353,11 @@ QList<QgsVectorDataProvider::NativeType> QgsOracleProviderConnection::nativeType
     throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for connection %1" ).arg( uri() ) );
   }
   return types;
+}
+
+QString QgsOracleProviderConnection::defaultGeometryColumnName() const
+{
+  return QStringLiteral( "GEOM" );
 }
 
 QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sqlDictionary()

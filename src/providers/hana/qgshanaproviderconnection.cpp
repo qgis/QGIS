@@ -2043,6 +2043,11 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
   );
 }
 
+Qgis::DatabaseProviderTableImportCapabilities QgsHanaProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName;
+}
+
 QVariantList QgsHanaEmptyProviderResultIterator::nextRowPrivate()
 {
   return QVariantList();

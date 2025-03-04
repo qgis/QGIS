@@ -71,6 +71,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
     bool validateSqlVectorLayer( const SqlVectorLayerOptions &options, QString &message ) const override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
+    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
 
   private:
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr ) const;

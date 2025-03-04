@@ -420,6 +420,13 @@ Returns connection geometry column capabilities (Z, M, SinglePart, Curves).
 .. versionadded:: 3.16
 %End
 
+    virtual Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const = 0;
+%Docstring
+Represents capabilities of the database provider connection when importing table data.
+
+.. versionadded:: 3.44
+%End
+
     virtual Qgis::SqlLayerDefinitionCapabilities sqlLayerDefinitionCapabilities();
 %Docstring
 Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
@@ -796,6 +803,17 @@ Returns a list of field names which are considered illegal by the connection and
 should not be used when creating or altering fields.
 
 .. versionadded:: 3.30
+%End
+
+    virtual QString defaultGeometryColumnName() const;
+%Docstring
+Returns the default name to use for a geometry column for the connection.
+
+The returned name will match common practice for the database backend.
+
+The base class method returns "geom".
+
+.. versionadded:: 3.44
 %End
 
     virtual QStringList fieldDomainNames() const;

@@ -1126,6 +1126,10 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsSpatiaLiteProviderConnection
   );
 }
 
+Qgis::DatabaseProviderTableImportCapabilities QgsSpatiaLiteProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName;
+}
 
 void QgsSpatiaLiteProviderConnection::deleteField( const QString &fieldName, const QString &, const QString &tableName, bool ) const
 {

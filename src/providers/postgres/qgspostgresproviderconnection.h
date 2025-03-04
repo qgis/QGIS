@@ -73,6 +73,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
     QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const override;
+    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
 
     static const QStringList CONFIGURATION_PARAMETERS;
     static const QString SETTINGS_BASE_KEY;
