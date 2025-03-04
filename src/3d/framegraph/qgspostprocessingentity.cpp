@@ -152,7 +152,7 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
   QVector3D lookingAt = mMainCamera->viewCenter();
   const float d = 2 * ( mMainCamera->position() - mMainCamera->viewCenter() ).length();
 
-  const QVector3D lightDirection = QVector3D( light.direction().x(), light.direction().y(), light.direction().z() ).normalized();
+  const QVector3D lightDirection = light.direction().toVector3D().normalized();
   Qgs3DUtils::calculateViewExtent( mMainCamera, maximumShadowRenderingDistance, lookingAt.z(), minX, maxX, minY, maxY, minZ, maxZ );
 
   lookingAt = QVector3D( 0.5f * ( minX + maxX ), 0.5f * ( minY + maxY ), mMainCamera->viewCenter().z() );
