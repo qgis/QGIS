@@ -582,6 +582,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual GeometryColumnCapabilities geometryColumnCapabilities();
 
     /**
+     * Represents capabilities of the database provider connection when importing table data.
+     *
+     * \since QGIS 3.44
+     */
+    virtual Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const = 0;
+
+    /**
      * Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
      * \since QGIS 3.22
      */
@@ -923,6 +930,17 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.30
      */
     virtual QSet< QString > illegalFieldNames() const;
+
+    /**
+     * Returns the default name to use for a geometry column for the connection.
+     *
+     * The returned name will match common practice for the database backend.
+     *
+     * The base class method returns "geom".
+     *
+     * \since QGIS 3.44
+     */
+    virtual QString defaultGeometryColumnName() const;
 
     /**
      * Returns a list of field domain names present on the provider.

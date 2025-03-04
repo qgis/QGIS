@@ -876,6 +876,11 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderConnection::searchLayer
   return QgsPostgresProviderMetadataUtils::searchLayerMetadata( searchContext, uri(), searchString, geographicExtent, feedback );
 }
 
+Qgis::DatabaseProviderTableImportCapabilities QgsPostgresProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName;
+}
+
 QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVectorLayerOptions &options ) const
 {
   // Precondition

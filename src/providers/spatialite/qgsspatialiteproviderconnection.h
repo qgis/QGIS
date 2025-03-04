@@ -79,6 +79,7 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
+    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
 
   private:
     void setDefaultCapabilities();

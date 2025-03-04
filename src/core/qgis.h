@@ -5138,6 +5138,19 @@ class CORE_EXPORT Qgis
     Q_FLAG( DatabaseProviderConnectionCapabilities2 )
 
     /**
+     * Represents capabilities of a database provider connection when importing table data.
+     *
+     * \since QGIS 3.44
+     */
+    enum class DatabaseProviderTableImportCapability : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      SetGeometryColumnName = 1 << 0, //!< Can set the name of the geometry column
+    };
+    Q_ENUM( DatabaseProviderTableImportCapability )
+    Q_DECLARE_FLAGS( DatabaseProviderTableImportCapabilities, DatabaseProviderTableImportCapability )
+    Q_FLAG( DatabaseProviderTableImportCapabilities )
+
+    /**
      * The StorageCapability enum represents the style storage operations supported by the provider.
      *
      * \since QGIS 3.34
@@ -5927,6 +5940,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderTableImportCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FileOperationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GeometryValidityFlags )

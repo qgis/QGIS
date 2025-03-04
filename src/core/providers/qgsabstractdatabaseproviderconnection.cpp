@@ -1048,6 +1048,11 @@ QSet<QString> QgsAbstractDatabaseProviderConnection::illegalFieldNames() const
   return mIllegalFieldNames;
 }
 
+QString QgsAbstractDatabaseProviderConnection::defaultGeometryColumnName() const
+{
+  return QStringLiteral( "geom" );
+}
+
 QList<Qgis::FieldDomainType> QgsAbstractDatabaseProviderConnection::supportedFieldDomainTypes() const
 {
   return {};

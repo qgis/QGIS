@@ -101,6 +101,7 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     void addRelationship( const QgsWeakRelation &relationship ) const override;
     void updateRelationship( const QgsWeakRelation &relationship ) const override;
     void deleteRelationship( const QgsWeakRelation &relationship ) const override;
+    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
 
   protected:
 

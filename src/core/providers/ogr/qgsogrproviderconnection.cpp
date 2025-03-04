@@ -1334,4 +1334,9 @@ void QgsOgrProviderConnection::deleteRelationship( const QgsWeakRelation &relati
 #endif
 }
 
+Qgis::DatabaseProviderTableImportCapabilities QgsOgrProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapabilities();
+}
+
 ///@endcond

@@ -10120,6 +10120,20 @@ Qgis.DatabaseProviderConnectionCapabilities2 = lambda flags=0: Qgis.DatabaseProv
 Qgis.DatabaseProviderConnectionCapabilities2.baseClass = Qgis
 DatabaseProviderConnectionCapabilities2 = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.DatabaseProviderTableImportCapability.SetGeometryColumnName.__doc__ = "Can set the name of the geometry column"
+Qgis.DatabaseProviderTableImportCapability.__doc__ = """Represents capabilities of a database provider connection when importing table data.
+
+.. versionadded:: 3.44
+
+* ``SetGeometryColumnName``: Can set the name of the geometry column
+
+"""
+# --
+Qgis.DatabaseProviderTableImportCapability.baseClass = Qgis
+Qgis.DatabaseProviderTableImportCapabilities = lambda flags=0: Qgis.DatabaseProviderTableImportCapability(flags)
+Qgis.DatabaseProviderTableImportCapabilities.baseClass = Qgis
+DatabaseProviderTableImportCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.ProviderStyleStorageCapability.SaveToDatabase.__doc__ = ""
 Qgis.ProviderStyleStorageCapability.LoadFromDatabase.__doc__ = ""
 Qgis.ProviderStyleStorageCapability.DeleteFromDatabase.__doc__ = ""
