@@ -199,6 +199,8 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 
   writeStyleManager( layerNode, doc );
 
+  serverProperties()->writeXml( layerNode, doc );
+
   QString errorMsg;
   return writeSymbology( layerNode, doc, errorMsg, context );
 }
@@ -1009,5 +1011,3 @@ void QgsVectorTileLayer::removeSelection()
   mSelectedFeatures.clear();
   emit selectionChanged();
 }
-
-
