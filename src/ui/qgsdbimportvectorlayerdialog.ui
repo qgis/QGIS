@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>227</height>
+    <height>268</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,7 +48,28 @@
      <property name="title">
       <string>Options</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout"/>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="mEditGeometryColumnName"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mLabelGeometryColumn">
+        <property name="text">
+         <string>Geometry column</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="mLabelPrimaryKey">
+        <property name="text">
+         <string>Primary key</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="mEditPrimaryKey"/>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
