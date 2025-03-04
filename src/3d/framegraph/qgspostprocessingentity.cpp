@@ -45,13 +45,15 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include "qgsdirectionallightsettings.h"
 #include "qgsframegraph.h"
 #include "qgsshadowrenderview.h"
+#include "qgsforwardrenderview.h"
 
 QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )
 {
   QgsShadowRenderView *shadowRenderView = frameGraph->shadowRenderView();
-  mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), frameGraph->forwardRenderColorTexture() );
-  mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), frameGraph->forwardRenderDepthTexture() );
+  QgsForwardRenderView *forwardRenderView = frameGraph->forwardRenderView();
+  mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), forwardRenderView->colorTexture() );
+  mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), forwardRenderView->depthTexture() );
   mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), shadowRenderView->mapTexture() );
   mAmbientOcclusionTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), frameGraph->blurredAmbientOcclusionFactorMap() );
   mMaterial->addParameter( mColorTextureParameter );

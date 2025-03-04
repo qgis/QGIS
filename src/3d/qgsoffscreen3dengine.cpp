@@ -38,6 +38,7 @@
 #include <Qt3DRender/QViewport>
 #include "qgsabstractrenderview.h"
 #include "qgsshadowrenderview.h"
+#include "qgsforwardrenderview.h"
 
 QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 {
@@ -150,7 +151,7 @@ void QgsOffscreen3DEngine::setRootEntity( Qt3DCore::QEntity *root )
   // Parent the incoming scene root to our current root entity.
   mSceneRoot = root;
   mSceneRoot->setParent( mRoot );
-  root->addComponent( mFrameGraph->forwardRenderLayer() );
+  root->addComponent( mFrameGraph->forwardRenderView()->renderLayer() );
   root->addComponent( mFrameGraph->shadowRenderView()->entityCastingShadowsLayer() );
 }
 
