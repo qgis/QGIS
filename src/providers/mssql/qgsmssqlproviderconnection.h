@@ -53,7 +53,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
 
   public:
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
-
+    QString createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void createSchema( const QString &name ) const override;

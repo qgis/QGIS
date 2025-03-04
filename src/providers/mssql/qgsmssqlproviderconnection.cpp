@@ -178,6 +178,27 @@ void QgsMssqlProviderConnection::createVectorTable( const QString &schema, const
   }
 }
 
+QString QgsMssqlProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const
+{
+  QgsDataSourceUri destUri( uri() );
+
+  destUri.setTable( options.layerName );
+  destUri.setSchema( options.schema );
+  destUri.setGeometryColumn( options.wkbType != Qgis::WkbType::NoGeometry ? ( options.geometryColumn.isEmpty() ? QStringLiteral( "geom" ) : options.geometryColumn ) : QString() );
+  if ( !options.primaryKeyColumns.isEmpty() )
+  {
+    if ( options.primaryKeyColumns.length() > 1 )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Multiple primary keys are not supported by SQL Server, ignoring" ), QString(), Qgis::MessageLevel::Info );
+    }
+    destUri.setKeyColumn( options.primaryKeyColumns.at( 0 ) );
+  }
+
+  providerOptions.clear();
+
+  return destUri.uri( false );
+}
+
 QString QgsMssqlProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
   const auto tableInfo { table( schema, name ) };

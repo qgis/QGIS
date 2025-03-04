@@ -444,9 +444,28 @@ Creates an empty table with ``name`` in the given ``schema`` (schema is ignored 
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
-    virtual QString createVectorLayerExporterDestinationUri( const QString &schema, const QString &name, Qgis::WkbType wkbType ) const throw( QgsProviderConnectionException );
+    struct VectorLayerExporterOptions
+    {
+      QString layerName;
+
+      QString schema;
+
+      Qgis::WkbType wkbType;
+
+      QStringList primaryKeyColumns;
+
+      QString geometryColumn;
+
+    };
+
+    virtual QString createVectorLayerExporterDestinationUri( const QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions &options, QVariantMap &providerOptions /Out/ ) const throw( QgsProviderConnectionException );
 %Docstring
-Creates a URI for use with :py:class:`QgsVectorLayerExporter` corresponding to given destination table parameters for the backend.
+Creates a URI for use with :py:class:`QgsVectorLayerExporter` corresponding to given destination table ``options`` for the backend.
+
+:param options: defines the desired destination table details
+
+:return: - destination URI for use with :py:class:`QgsVectorLayerExporter`
+         - providerOptions: a map of options to pass to :py:func:`~QgsAbstractDatabaseProviderConnection.createVectorTable` or the provider's createEmptyTable method.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End

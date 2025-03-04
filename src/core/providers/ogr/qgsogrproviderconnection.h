@@ -80,6 +80,7 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
+    QString createVectorLayerExporterDestinationUri( const QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void vacuum( const QString &schema, const QString &name ) const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;

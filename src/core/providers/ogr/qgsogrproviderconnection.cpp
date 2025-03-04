@@ -334,6 +334,20 @@ void QgsOgrProviderConnection::createVectorTable( const QString &schema,
   }
 }
 
+QString QgsOgrProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const
+{
+  if ( !options.schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  // OGR provider uses "layerName" from options rather then the table name from the URI
+  providerOptions.clear();
+  providerOptions.insert( QStringLiteral( "layerName" ), options.layerName );
+
+  return uri();
+}
+
 void QgsOgrProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropVectorTable );
