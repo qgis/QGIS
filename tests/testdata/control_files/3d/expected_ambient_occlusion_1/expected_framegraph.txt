@@ -1,47 +1,49 @@
-(Qt3DRender::QRenderSurfaceSelector{12/<no_name>})
-  (Qt3DRender::QViewport{13/<no_name>})
-    (Qt3DRender::QCameraSelector{14/Forward render pass CameraSelector}) [ (Qt3DRender::QCamera:{0/<no_name>}) ]
-      (Qt3DRender::QLayerFilter{15/<no_name>}) [ (AcceptAnyMatchingLayers:[ {8/<no_name>} ]) ]
-        (Qt3DRender::QRenderStateSet{16/Forward render pass Clip Plane RenderStateSet}) [  ]
-          (Qt3DRender::QRenderTargetSelector{22/<no_name>}) [ (outputs:[ (Depth:{18[DepthFormat]/<no_name>), (Color0:{17[RGB8_UNorm]/<no_name>) ]) ]
-            (Qt3DRender::QLayerFilter{23/<no_name>}) [ (DiscardAnyMatchingLayers:[ {10/<no_name>} ]) ]
-              (Qt3DRender::QRenderStateSet{24/<no_name>}) [ (QDepthTest:Less), (QCullFace:Back) ]
-                (Qt3DRender::QFrustumCulling{27/<no_name>})
-                  (Qt3DRender::QClearBuffers{28/<no_name>})
-                    (Qt3DRender::QDebugOverlay{41/<no_name>}) [D]
-            (Qt3DRender::QLayerFilter{29/<no_name>}) [ (AcceptAnyMatchingLayers:[ {10/<no_name>} ]) ]
-              (Qt3DRender::QSortPolicy{30/<no_name>})
-                (Qt3DRender::QRenderStateSet{31/<no_name>}) [ (QDepthTest:Less), (QNoDepthMask), (QCullFace:NoCulling), (QBlendEquation:Add), (QBlendEquationArguments:[ (sourceRgb:SourceAlpha), (destinationRgb:Source1Alpha), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]) ]
-                (Qt3DRender::QRenderStateSet{37/<no_name>}) [ (QDepthTest:Less), (QColorMask:[ (red:false), (green:false), (blue:false), (alpha:false) ]), (QCullFace:NoCulling) ]
-    (Qt3DRender::QCameraSelector{42/rubberBandsPass}) [ (Qt3DRender::QCamera:{0/<no_name>}) ]
-      (Qt3DRender::QLayerFilter{43/<no_name>}) [ (AcceptAnyMatchingLayers:[ {11/mRubberBandsLayer} ]) ]
-        (Qt3DRender::QRenderStateSet{46/<no_name>}) [ (QDepthTest:Always), (QBlendEquationArguments:[ (sourceRgb:SourceAlpha), (destinationRgb:Source1Alpha), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]), (QBlendEquation:Add) ]
-          (Qt3DRender::QRenderTargetSelector{48/<no_name>}) [ (outputs:[ (Depth:{18[DepthFormat]/<no_name>), (Color0:{17[RGB8_UNorm]/<no_name>) ]) ]
-    (Qt3DRender::QNoDraw{49/shadow::NoDraw})
-      (Qt3DRender::QSubtreeEnabler{50/shadow::SubtreeEnabler}) [D]
-        (Qt3DRender::QCameraSelector{55/shadow::CameraSelector}) [ (Qt3DRender::QCamera:{51/shadow::LightCamera}) ]
-          (Qt3DRender::QLayerFilter{56/<no_name>}) [D] [ (AcceptAnyMatchingLayers:[ {54/shadow::Layer} ]) ]
-            (Qt3DRender::QRenderTargetSelector{57/<no_name>}) [ (outputs:[ (Depth:{63[DepthFormat]/QgsShadowRenderView::DepthTarget) ]) ]
-              (Qt3DRender::QClearBuffers{58/<no_name>})
-                (Qt3DRender::QRenderStateSet{59/<no_name>}) [ (QDepthTest:Less), (QCullFace:Front), (QPolygonOffset:[ (scaleFactor:1.1), (depthSteps:4) ]) ]
-    (Qt3DRender::QCameraSelector{66/Depth render view CameraSelector}) [ (Qt3DRender::QCamera:{0/<no_name>}) ]
-      (Qt3DRender::QRenderStateSet{67/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
-        (Qt3DRender::QLayerFilter{70/<no_name>}) [ (AcceptAnyMatchingLayers:[ {9/<no_name>} ]) ]
-          (Qt3DRender::QRenderTargetSelector{71/<no_name>}) [ (outputs:[ (Color0:{74[RGB8_UNorm]/<no_name>), (Depth:{76[DepthFormat]/<no_name>) ]) ]
-            (Qt3DRender::QRenderCapture{77/<no_name>})
-    (Qt3DRender::QCameraSelector{78/AmbientOcclusion render pass CameraSelector}) [ (Qt3DRender::QCamera:{0/<no_name>}) ]
-      (Qt3DRender::QRenderStateSet{79/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
-        (Qt3DRender::QLayerFilter{82/<no_name>}) [ (AcceptAnyMatchingLayers:[ {87/<no_name>} ]) ]
-          (Qt3DRender::QRenderTargetSelector{83/<no_name>}) [ (outputs:[ (Color0:{86[R32F]/<no_name>) ]) ]
-    (Qt3DRender::QCameraSelector{110/AmbientOcclusion blur pass CameraSelector}) [ (Qt3DRender::QCamera:{0/<no_name>}) ]
-      (Qt3DRender::QRenderStateSet{111/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
-        (Qt3DRender::QLayerFilter{114/<no_name>}) [ (AcceptAnyMatchingLayers:[ {119/<no_name>} ]) ]
-          (Qt3DRender::QRenderTargetSelector{115/<no_name>}) [ (outputs:[ (Color0:{118[R32F]/<no_name>) ]) ]
-    (Qt3DRender::QRenderTargetSelector{132/PostProcessingPass}) [ (outputs:[ (Color0:{135[RGB8_UNorm]/PostProcessingPass::ColorTarget), (Depth:{137[DepthFormat]/PostProcessingPass::DepthTarget) ]) ]
-      (Qt3DRender::QCameraSelector{138/Sub pass Postprocessing}) [ (Qt3DRender::QCamera:{51/shadow::LightCamera}) ]
-        (Qt3DRender::QLayerFilter{139/<no_name>}) [ (AcceptAnyMatchingLayers:[ {141/<no_name>} ]) ]
-          (Qt3DRender::QClearBuffers{140/<no_name>})
-      (Qt3DRender::QLayerFilter{175/Sub pass TexturesPreview}) [ (AcceptAnyMatchingLayers:[ {7/<no_name>} ]) ]
-        (Qt3DRender::QRenderStateSet{176/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
-      (Qt3DRender::QNoDraw{179/Sub pass RenderCapture})
-        (Qt3DRender::QRenderCapture{180/<no_name>})
+(Qt3DRender::QRenderSurfaceSelector{10/<no_name>})
+  (Qt3DRender::QViewport{11/<no_name>})
+    (Qt3DRender::QNoDraw{12/forward::NoDraw}) [D]
+      (Qt3DRender::QSubtreeEnabler{13/forward::SubtreeEnabler})
+        (Qt3DRender::QCameraSelector{16/forward::CameraSelector}) [ (Qt3DRender::QCamera:{0/<no_name>}) ]
+          (Qt3DRender::QLayerFilter{17/<no_name>}) [ (AcceptAnyMatchingLayers:[ {14/forward::Layer} ]) ]
+            (Qt3DRender::QRenderStateSet{18/forward::Clip Plane RenderStateSet}) [  ]
+              (Qt3DRender::QRenderTargetSelector{24/<no_name>}) [ (outputs:[ (Depth:{20[DepthFormat]/<no_name>), (Color0:{19[RGB8_UNorm]/<no_name>) ]) ]
+                (Qt3DRender::QLayerFilter{25/<no_name>}) [ (DiscardAnyMatchingLayers:[ {15/forward::TransparentLayer} ]) ]
+                  (Qt3DRender::QRenderStateSet{26/<no_name>}) [ (QDepthTest:Less), (QCullFace:Back) ]
+                    (Qt3DRender::QFrustumCulling{29/<no_name>})
+                      (Qt3DRender::QClearBuffers{30/<no_name>})
+                        (Qt3DRender::QDebugOverlay{43/<no_name>}) [D]
+                (Qt3DRender::QLayerFilter{31/<no_name>}) [ (AcceptAnyMatchingLayers:[ {15/forward::TransparentLayer} ]) ]
+                  (Qt3DRender::QSortPolicy{32/<no_name>})
+                    (Qt3DRender::QRenderStateSet{33/<no_name>}) [ (QDepthTest:Less), (QNoDepthMask), (QCullFace:NoCulling), (QBlendEquation:Add), (QBlendEquationArguments:[ (sourceRgb:SourceAlpha), (destinationRgb:Source1Alpha), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]) ]
+                    (Qt3DRender::QRenderStateSet{39/<no_name>}) [ (QDepthTest:Less), (QColorMask:[ (red:false), (green:false), (blue:false), (alpha:false) ]), (QCullFace:NoCulling) ]
+    (Qt3DRender::QCameraSelector{44/rubberBandsPass}) [ (Qt3DRender::QCamera:{0/<no_name>}) ]
+      (Qt3DRender::QLayerFilter{45/<no_name>}) [ (AcceptAnyMatchingLayers:[ {9/mRubberBandsLayer} ]) ]
+        (Qt3DRender::QRenderStateSet{48/<no_name>}) [ (QDepthTest:Always), (QBlendEquationArguments:[ (sourceRgb:SourceAlpha), (destinationRgb:Source1Alpha), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]), (QBlendEquation:Add) ]
+          (Qt3DRender::QRenderTargetSelector{50/<no_name>}) [ (outputs:[ (Depth:{20[DepthFormat]/<no_name>), (Color0:{19[RGB8_UNorm]/<no_name>) ]) ]
+    (Qt3DRender::QNoDraw{51/shadow::NoDraw})
+      (Qt3DRender::QSubtreeEnabler{52/shadow::SubtreeEnabler}) [D]
+        (Qt3DRender::QCameraSelector{57/shadow::CameraSelector}) [ (Qt3DRender::QCamera:{53/shadow::LightCamera}) ]
+          (Qt3DRender::QLayerFilter{58/<no_name>}) [D] [ (AcceptAnyMatchingLayers:[ {56/shadow::Layer} ]) ]
+            (Qt3DRender::QRenderTargetSelector{59/<no_name>}) [ (outputs:[ (Depth:{65[DepthFormat]/QgsShadowRenderView::DepthTarget) ]) ]
+              (Qt3DRender::QClearBuffers{60/<no_name>})
+                (Qt3DRender::QRenderStateSet{61/<no_name>}) [ (QDepthTest:Less), (QCullFace:Front), (QPolygonOffset:[ (scaleFactor:1.1), (depthSteps:4) ]) ]
+    (Qt3DRender::QCameraSelector{68/Depth render view CameraSelector}) [ (Qt3DRender::QCamera:{0/<no_name>}) ]
+      (Qt3DRender::QRenderStateSet{69/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
+        (Qt3DRender::QLayerFilter{72/<no_name>}) [ (AcceptAnyMatchingLayers:[ {8/<no_name>} ]) ]
+          (Qt3DRender::QRenderTargetSelector{73/<no_name>}) [ (outputs:[ (Color0:{76[RGB8_UNorm]/<no_name>), (Depth:{78[DepthFormat]/<no_name>) ]) ]
+            (Qt3DRender::QRenderCapture{79/<no_name>})
+    (Qt3DRender::QCameraSelector{80/AmbientOcclusion render pass CameraSelector}) [ (Qt3DRender::QCamera:{0/<no_name>}) ]
+      (Qt3DRender::QRenderStateSet{81/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
+        (Qt3DRender::QLayerFilter{84/<no_name>}) [ (AcceptAnyMatchingLayers:[ {89/<no_name>} ]) ]
+          (Qt3DRender::QRenderTargetSelector{85/<no_name>}) [ (outputs:[ (Color0:{88[R32F]/<no_name>) ]) ]
+    (Qt3DRender::QCameraSelector{112/AmbientOcclusion blur pass CameraSelector}) [ (Qt3DRender::QCamera:{0/<no_name>}) ]
+      (Qt3DRender::QRenderStateSet{113/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
+        (Qt3DRender::QLayerFilter{116/<no_name>}) [ (AcceptAnyMatchingLayers:[ {121/<no_name>} ]) ]
+          (Qt3DRender::QRenderTargetSelector{117/<no_name>}) [ (outputs:[ (Color0:{120[R32F]/<no_name>) ]) ]
+    (Qt3DRender::QRenderTargetSelector{134/PostProcessingPass}) [ (outputs:[ (Color0:{137[RGB8_UNorm]/PostProcessingPass::ColorTarget), (Depth:{139[DepthFormat]/PostProcessingPass::DepthTarget) ]) ]
+      (Qt3DRender::QCameraSelector{140/Sub pass Postprocessing}) [ (Qt3DRender::QCamera:{53/shadow::LightCamera}) ]
+        (Qt3DRender::QLayerFilter{141/<no_name>}) [ (AcceptAnyMatchingLayers:[ {143/<no_name>} ]) ]
+          (Qt3DRender::QClearBuffers{142/<no_name>})
+      (Qt3DRender::QLayerFilter{177/Sub pass TexturesPreview}) [ (AcceptAnyMatchingLayers:[ {7/<no_name>} ]) ]
+        (Qt3DRender::QRenderStateSet{178/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
+      (Qt3DRender::QNoDraw{181/Sub pass RenderCapture})
+        (Qt3DRender::QRenderCapture{182/<no_name>})
