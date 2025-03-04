@@ -44,6 +44,10 @@ class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsD
 
     void setSourceUri( const QgsMimeDataUtils::Uri &uri );
 
+    QString schema() const;
+    QString tableName() const;
+    QString tableComment() const;
+
     std::unique_ptr<QgsVectorLayerExporterTask> createExporterTask( const QVariantMap &extraProviderOptions = QVariantMap() );
 
   private slots:
