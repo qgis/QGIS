@@ -422,6 +422,34 @@ Attribution indicates the provider of a layer or collection of layers.
 .. versionadded:: 3.38
 %End
 
+    void setLegendUrl( const QString &legendUrl );
+%Docstring
+Sets the URL for the layer's legend.
+
+.. versionadded:: 3.44
+%End
+
+    QString legendUrl() const;
+%Docstring
+Returns the URL for the layer's legend.
+
+.. versionadded:: 3.44
+%End
+
+    void setLegendUrlFormat( const QString &legendUrlFormat );
+%Docstring
+Sets the format for a URL based layer legend.
+
+.. versionadded:: 3.44
+%End
+
+    QString legendUrlFormat() const;
+%Docstring
+Returns the format for a URL based layer legend.
+
+.. versionadded:: 3.44
+%End
+
     virtual const QgsMapLayer *layer() const;
 %Docstring
 Gets the parent layer
@@ -438,7 +466,6 @@ class QgsVectorLayerServerProperties: QgsMapLayerServerProperties
     static const QMetaObject staticMetaObject;
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

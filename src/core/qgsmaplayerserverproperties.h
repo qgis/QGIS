@@ -486,6 +486,34 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      */
     QString attributionUrl() const { return mAttributionUrl; }
 
+    /**
+     * Sets the URL for the layer's legend.
+     *
+     * \since QGIS 3.44
+     */
+    void setLegendUrl( const QString &legendUrl ) { mLegendUrl = legendUrl; }
+
+    /**
+     * Returns the URL for the layer's legend.
+     *
+     * \since QGIS 3.44
+     */
+    QString legendUrl() const { return mLegendUrl; }
+
+    /**
+     * Sets the format for a URL based layer legend.
+     *
+     * \since QGIS 3.44
+     */
+    void setLegendUrlFormat( const QString &legendUrlFormat ) { mLegendUrlFormat = legendUrlFormat; }
+
+    /**
+     * Returns the format for a URL based layer legend.
+     *
+     * \since QGIS 3.44
+     */
+    QString legendUrlFormat() const { return mLegendUrlFormat; }
+
     //! Gets the parent layer
     const QgsMapLayer *layer() const override { return mLayer; };
 
@@ -505,6 +533,9 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
     QString mAbstract;
     QString mKeywordList;
 
+    //! WMS legend
+    QString mLegendUrl;
+    QString mLegendUrlFormat;
 };
 
 /**
@@ -521,4 +552,3 @@ class CORE_EXPORT QgsVectorLayerServerProperties: public QgsMapLayerServerProper
 };
 
 #endif // QGSMAPLAYERSERVERPROPERTIES_H
-
