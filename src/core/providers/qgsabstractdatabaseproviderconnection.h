@@ -932,6 +932,17 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QSet< QString > illegalFieldNames() const;
 
     /**
+     * Returns the default name to use for a primary key column for the connection.
+     *
+     * The returned name will match common practice for the database backend.
+     *
+     * The base class method returns "pk".
+     *
+     * \since QGIS 3.44
+     */
+    virtual QString defaultPrimaryKeyColumnName() const;
+
+    /**
      * Returns the default name to use for a geometry column for the connection.
      *
      * The returned name will match common practice for the database backend.

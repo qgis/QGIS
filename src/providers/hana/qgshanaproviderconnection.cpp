@@ -2045,7 +2045,12 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
 
 Qgis::DatabaseProviderTableImportCapabilities QgsHanaProviderConnection::tableImportCapabilities() const
 {
-  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName;
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName;
+}
+
+QString QgsHanaProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "id" );
 }
 
 QVariantList QgsHanaEmptyProviderResultIterator::nextRowPrivate()

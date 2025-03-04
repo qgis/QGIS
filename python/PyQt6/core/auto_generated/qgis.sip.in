@@ -2911,6 +2911,7 @@ The development version
     enum class DatabaseProviderTableImportCapability /BaseType=IntFlag/
     {
       SetGeometryColumnName,
+      SetPrimaryKeyName,
     };
     typedef QFlags<Qgis::DatabaseProviderTableImportCapability> DatabaseProviderTableImportCapabilities;
 

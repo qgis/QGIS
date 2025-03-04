@@ -805,6 +805,17 @@ should not be used when creating or altering fields.
 .. versionadded:: 3.30
 %End
 
+    virtual QString defaultPrimaryKeyColumnName() const;
+%Docstring
+Returns the default name to use for a primary key column for the connection.
+
+The returned name will match common practice for the database backend.
+
+The base class method returns "pk".
+
+.. versionadded:: 3.44
+%End
+
     virtual QString defaultGeometryColumnName() const;
 %Docstring
 Returns the default name to use for a geometry column for the connection.

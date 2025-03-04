@@ -878,7 +878,12 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderConnection::searchLayer
 
 Qgis::DatabaseProviderTableImportCapabilities QgsPostgresProviderConnection::tableImportCapabilities() const
 {
-  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName;
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName;
+}
+
+QString QgsPostgresProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "id" );
 }
 
 QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVectorLayerOptions &options ) const
