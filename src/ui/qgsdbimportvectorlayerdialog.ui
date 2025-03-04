@@ -66,9 +66,6 @@
       <item row="0" column="1">
        <widget class="QLineEdit" name="mEditPrimaryKey"/>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="mEditGeometryColumnName"/>
-      </item>
       <item row="2" column="1">
        <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
         <property name="focusPolicy">
@@ -80,6 +77,23 @@
        <widget class="QLabel" name="mLabelDestinationCrs">
         <property name="text">
          <string>Output CRS</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="mEditGeometryColumnName"/>
+      </item>
+      <item row="3" column="1">
+       <widget class="QTextEdit" name="mEditComment">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="mLabelComment">
+        <property name="text">
+         <string>Comment</string>
         </property>
        </widget>
       </item>

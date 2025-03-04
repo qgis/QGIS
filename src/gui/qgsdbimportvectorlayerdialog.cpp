@@ -60,6 +60,15 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
     delete mEditGeometryColumnName;
     mEditGeometryColumnName = nullptr;
   }
+
+  const bool supportsTableComments = mConnection->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::SetTableComment );
+  if ( !supportsTableComments )
+  {
+    delete mLabelComment;
+    mLabelComment = nullptr;
+    delete mEditComment;
+    mEditComment = nullptr;
+  }
 }
 
 QgsDbImportVectorLayerDialog::~QgsDbImportVectorLayerDialog() = default;
@@ -139,6 +148,26 @@ void QgsDbImportVectorLayerDialog::setSourceUri( const QgsMimeDataUtils::Uri &ur
   {
     mCrsSelector->setCrs( mSourceLayer->crs() );
   }
+
+  if ( mEditComment )
+  {
+    mEditComment->setPlainText( mSourceLayer->metadata().abstract() );
+  }
+}
+
+QString QgsDbImportVectorLayerDialog::schema() const
+{
+  return mEditSchema ? mEditSchema->text() : QString();
+}
+
+QString QgsDbImportVectorLayerDialog::tableName() const
+{
+  return mEditTable->text();
+}
+
+QString QgsDbImportVectorLayerDialog::tableComment() const
+{
+  return mEditComment ? mEditComment->toPlainText() : QString();
 }
 
 void QgsDbImportVectorLayerDialog::doImport()
