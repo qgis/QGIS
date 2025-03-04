@@ -45,15 +45,19 @@ import glob
 import inspect
 import os
 import sys
+import logging
 
 from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
+from termcolor import colored
+
+logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
 try:
     import PyQt5
 
-    print("WARNING: PyQt5 has been found. It may result in wrong behavior.\n")
+    logging.warning("WARNING: PyQt5 has been found. It may result in wrong behavior.\n")
 except ImportError:
     pass
 
@@ -82,6 +86,7 @@ from PyQt6.QtWidgets import *  # noqa: F403
 from PyQt6.QtXml import *  # noqa: F403
 from tokenize_rt import Offset, Token, reversed_enumerate, src_to_tokens, tokens_to_src
 
+
 try:
     import qgis._3d as qgis_3d  # noqa: F403
     import qgis.analysis as qgis_analysis  # noqa: F403
@@ -97,7 +102,7 @@ except ImportError:
     qgis_gui = None
     qgis_analysis = None
     qgis_3d = None
-    print(
+    logging.info(
         "QGIS classes not available for introspection, only a partial upgrade will be performed"
     )
 
@@ -192,7 +197,7 @@ qt_enums = {}
 ambiguous_enums = defaultdict(set)
 
 
-def fix_file(filename: str, qgis3_compat: bool) -> int:
+def fix_file(filename: str, qgis3_compat: bool, preview: bool = False) -> int:
 
     with open(filename, encoding="UTF-8") as f:
         contents = f.read()
@@ -411,7 +416,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
         imported_modules.add(node.module)
         for name in node.names:
             if name.name in import_warnings:
-                print(f"{filename}: {import_warnings[name.name]}")
+                logging.warning(f"{filename}: {import_warnings[name.name]}")
             if name.name == "resources_rc":
                 sys.stderr.write(
                     f"{filename}:{_node.lineno}:{_node.col_offset} WARNING: support for compiled resources "
@@ -516,7 +521,30 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
         if module not in imported_modules:
             class_import = ", ".join(classes)
             import_statement = f"from {module} import {class_import}"
-            print(f"{filename}: Missing import, manually add \n\t{import_statement}")
+            logging.warning(
+                f"{filename}: Missing import, manually add \n\t{import_statement}"
+            )
+
+    if preview:
+        dict_names = {
+            "fix_qvariant_type": fix_qvariant_type,
+            "fix_pyqt_import": fix_pyqt_import,
+            "fix_qt_enums": fix_qt_enums,
+            "rename_qt_enums": rename_qt_enums,
+            "member_renames": member_renames,
+            "function_def_renames": function_def_renames,
+            "custom_updates": custom_updates,
+            "extra_imports": extra_imports,
+            "removed_imports": removed_imports,
+            "token_renames": token_renames,
+        }
+
+        if preview:
+            for dict_name, data_dict in dict_names.items():
+                if data_dict:
+                    logging.warning(colored(f"{dict_name}", "blue"))
+                    for key, value in data_dict.items():
+                        logging.warning(f"  {key}: {value}")
 
     if not any(
         [
@@ -700,8 +728,11 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             tokens[i + 2] = tokens[i + 2]._replace(src=f"{enum_name[0]}.{enum_name[1]}")
 
     new_contents = tokens_to_src(tokens)
-    with open(filename, "w") as f:
-        f.write(new_contents)
+
+    # Files can only be modified if preview mode is not activated.
+    if not preview:
+        with open(filename, "w") as f:
+            f.write(new_contents)
 
     return new_contents != contents
 
@@ -775,6 +806,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
         help="Apply modifications that would break behavior on QGIS 3, hence code may not work on QGIS 3",
     )
+    parser.add_argument(
+        "--preview",
+        action="store_true",
+        help="Displays the changes that would be made, but does not modify any files.",
+    )
     args = parser.parse_args(argv)
 
     # get all scope for all qt enum
@@ -783,12 +819,19 @@ def main(argv: Sequence[str] | None = None) -> int:
             get_class_enums(value)
 
     ret = 0
+
+    preview = args.preview if args.preview else False
+
+    if preview:
+        logging.info(colored("=== Preview mode | Start Logs ===", "cyan"))
+
     for filename in glob.glob(os.path.join(args.directory, "**/*.py"), recursive=True):
-        # print(f'Processing {filename}')
+        if preview:
+            logging.info(colored(f"Processing {filename}", "green"))
         if "auto_additions" in filename:
             continue
 
-        ret |= fix_file(filename, not args.qgis3_incompatible_changes)
+        ret |= fix_file(filename, not args.qgis3_incompatible_changes, preview)
     return ret
 
 
