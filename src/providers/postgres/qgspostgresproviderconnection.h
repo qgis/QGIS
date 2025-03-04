@@ -46,7 +46,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
 
   public:
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
-
+    QString createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;

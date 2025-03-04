@@ -184,6 +184,20 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema, co
   }
 }
 
+QString QgsPostgresProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const
+{
+  QgsDataSourceUri destUri( uri() );
+
+  destUri.setTable( options.layerName );
+  destUri.setSchema( options.schema );
+  destUri.setGeometryColumn( options.wkbType != Qgis::WkbType::NoGeometry ? ( options.geometryColumn.isEmpty() ? QStringLiteral( "geom" ) : options.geometryColumn ) : QString() );
+  if ( !options.primaryKeyColumns.isEmpty() )
+    destUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
+
+  providerOptions.clear();
+  return destUri.uri( false );
+}
+
 QString QgsPostgresProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
   QgsDataSourceUri dsUri( uri() );

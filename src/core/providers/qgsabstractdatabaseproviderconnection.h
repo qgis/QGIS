@@ -605,11 +605,40 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Creates a URI for use with QgsVectorLayerExporter corresponding to given destination table parameters for the backend.
+     * \brief Stores all information required to create a QgsVectorLayerExporter for the backend.
+     * \see createVectorLayerExporterDestinationUri()
+     *
+     * \since QGIS 3.44
+     */
+    struct CORE_EXPORT VectorLayerExporterOptions
+    {
+      //! Name for the new layer
+      QString layerName;
+
+      //! Optional schema for the new layer. May not be supported by all providers.
+      QString schema;
+
+      //! WKB type for destination layer geometry
+      Qgis::WkbType wkbType = Qgis::WkbType::NoGeometry;
+
+      //! List of primary key column names. Note that some providers may ignore this if not supported.
+      QStringList primaryKeyColumns;
+
+      //! Preferred name for the geometry column, if required. Note that some providers may ignore this if a specific geometry column name is required.
+      QString geometryColumn;
+
+    };
+
+    /**
+     * Creates a URI for use with QgsVectorLayerExporter corresponding to given destination table \a options for the backend.
+     *
+     * \param options defines the desired destination table details
+     * \param providerOptions will be set to a map of options to pass to createVectorTable() or the provider's createEmptyTable method.
+     * \returns destination URI for use with QgsVectorLayerExporter
      *
      * \throws QgsProviderConnectionException if any errors are encountered.
      */
-    virtual QString createVectorLayerExporterDestinationUri( const QString &schema, const QString &name, Qgis::WkbType wkbType ) const SIP_THROW( QgsProviderConnectionException );
+    virtual QString createVectorLayerExporterDestinationUri( const QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions &options, QVariantMap &providerOptions SIP_OUT ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Checks whether a table \a name exists in the given \a schema.

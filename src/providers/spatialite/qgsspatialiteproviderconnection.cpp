@@ -146,18 +146,29 @@ QgsVectorLayer *QgsSpatiaLiteProviderConnection::createSqlVectorLayer( const Qgs
   return new QgsVectorLayer { tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() };
 }
 
-QString QgsSpatiaLiteProviderConnection::createVectorLayerExporterDestinationUri( const QString &schema, const QString &name, Qgis::WkbType wkbType ) const
+QString QgsSpatiaLiteProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const
 {
-  if ( !schema.isEmpty() )
+  if ( !options.schema.isEmpty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
 
   QgsDataSourceUri destUri( uri() );
-  destUri.setTable( name );
-  destUri.setGeometryColumn( wkbType != Qgis::WkbType::NoGeometry ? QStringLiteral( "geom" ) : QString() );
+  destUri.setTable( options.layerName );
+  destUri.setGeometryColumn( options.wkbType != Qgis::WkbType::NoGeometry ? ( options.geometryColumn.isEmpty() ? QStringLiteral( "geom" ) : options.geometryColumn ) : QString() );
 
-  return destUri.uri();
+  if ( !options.primaryKeyColumns.isEmpty() )
+  {
+    if ( options.primaryKeyColumns.length() > 1 )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Multiple primary keys are not supported by Spatialite, ignoring" ), QString(), Qgis::MessageLevel::Info );
+    }
+    destUri.setKeyColumn( options.primaryKeyColumns.at( 0 ) );
+  }
+
+  providerOptions.clear();
+
+  return destUri.uri( false );
 }
 
 void QgsSpatiaLiteProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
