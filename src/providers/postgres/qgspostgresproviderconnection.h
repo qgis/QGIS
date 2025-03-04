@@ -62,6 +62,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const override;
+    void setTableComment( const QString &schema, const QString &tableName, const QString &comment ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema, const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QStringList schemas() const override;

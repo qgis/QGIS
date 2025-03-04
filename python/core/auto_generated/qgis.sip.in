@@ -2904,6 +2904,7 @@ The development version
     {
       SetFieldComment,
       SetFieldAlias,
+      SetTableComment,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
 

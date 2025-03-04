@@ -1408,6 +1408,11 @@ void QgsAbstractDatabaseProviderConnection::setFieldAlias( const QString &, cons
   checkCapability( Qgis::DatabaseProviderConnectionCapability2::SetFieldAlias );
 }
 
+void QgsAbstractDatabaseProviderConnection::setTableComment( const QString &, const QString &, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::SetTableComment );
+}
+
 void QgsAbstractDatabaseProviderConnection::setFieldComment( const QString &, const QString &, const QString &, const QString & ) const
 {
   checkCapability( Qgis::DatabaseProviderConnectionCapability2::SetFieldComment );

@@ -5132,6 +5132,7 @@ class CORE_EXPORT Qgis
     {
       SetFieldComment = 1 << 0, //!< Can set comments for fields via setFieldComment()
       SetFieldAlias = 1 << 1, //!< Can set aliases for fields via setFieldAlias()
+      SetTableComment = 1 << 2, //!< Can set comments for tables via setTableComment() \since QGIS 3.44
     };
     Q_ENUM( DatabaseProviderConnectionCapability2 )
     Q_DECLARE_FLAGS( DatabaseProviderConnectionCapabilities2, DatabaseProviderConnectionCapability2 )
