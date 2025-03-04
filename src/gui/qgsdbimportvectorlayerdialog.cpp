@@ -86,6 +86,18 @@ void QgsDbImportVectorLayerDialog::setSourceUri( const QgsMimeDataUtils::Uri &ur
   if ( !mSourceLayer || !mSourceLayer->dataProvider() )
     return;
 
+  if ( !mSourceLayer->isSpatial() )
+  {
+    delete mLabelGeometryColumn;
+    mLabelGeometryColumn = nullptr;
+    delete mEditGeometryColumnName;
+    mEditGeometryColumnName = nullptr;
+    delete mLabelDestinationCrs;
+    mLabelDestinationCrs = nullptr;
+    delete mCrsSelector;
+    mCrsSelector = nullptr;
+  }
+
   if ( mEditPrimaryKey )
   {
     // set initial geometry column name. We use the source layer's primary key column name if available,
@@ -121,6 +133,11 @@ void QgsDbImportVectorLayerDialog::setSourceUri( const QgsMimeDataUtils::Uri &ur
     }
 
     mEditGeometryColumnName->setText( geomColumn );
+  }
+
+  if ( mCrsSelector )
+  {
+    mCrsSelector->setCrs( mSourceLayer->crs() );
   }
 }
 
@@ -165,5 +182,11 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
     allProviderOptions.insert( it.key(), it.value() );
   }
 
-  return std::make_unique<QgsVectorLayerExporterTask>( mSourceLayer->clone(), destinationUri, mConnection->providerKey(), mSourceLayer->crs(), allProviderOptions, true );
+  QgsCoordinateReferenceSystem destinationCrs;
+  if ( mCrsSelector )
+  {
+    destinationCrs = mCrsSelector->crs();
+  }
+
+  return std::make_unique<QgsVectorLayerExporterTask>( mSourceLayer->clone(), destinationUri, mConnection->providerKey(), destinationCrs, allProviderOptions, true );
 }
