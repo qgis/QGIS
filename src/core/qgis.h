@@ -5175,6 +5175,7 @@ class CORE_EXPORT Qgis
     enum class DatabaseProviderTableImportCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SetGeometryColumnName = 1 << 0, //!< Can set the name of the geometry column
+      SetPrimaryKeyName = 1 << 1, //!< Can set the name of the primary key column
     };
     Q_ENUM( DatabaseProviderTableImportCapability )
     Q_DECLARE_FLAGS( DatabaseProviderTableImportCapabilities, DatabaseProviderTableImportCapability )

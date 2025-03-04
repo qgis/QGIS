@@ -815,7 +815,12 @@ bool QgsMssqlProviderConnection::validateSqlVectorLayer( const SqlVectorLayerOpt
 
 Qgis::DatabaseProviderTableImportCapabilities QgsMssqlProviderConnection::tableImportCapabilities() const
 {
-  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName;
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName;
+}
+
+QString QgsMssqlProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "qgs_fid" );
 }
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsMssqlProviderConnection::sqlOptions( const QString &layerSource )

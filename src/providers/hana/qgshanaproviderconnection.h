@@ -78,6 +78,7 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
     Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
+    QString defaultPrimaryKeyColumnName() const override;
 
   private:
     QgsHanaConnectionRef createConnection() const;

@@ -1048,6 +1048,11 @@ QSet<QString> QgsAbstractDatabaseProviderConnection::illegalFieldNames() const
   return mIllegalFieldNames;
 }
 
+QString QgsAbstractDatabaseProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "pk" );
+}
+
 QString QgsAbstractDatabaseProviderConnection::defaultGeometryColumnName() const
 {
   return QStringLiteral( "geom" );

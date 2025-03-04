@@ -66,6 +66,7 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
     Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
+    QString defaultPrimaryKeyColumnName() const override;
 
   private:
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;

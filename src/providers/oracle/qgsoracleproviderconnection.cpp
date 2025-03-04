@@ -292,7 +292,12 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
 
 Qgis::DatabaseProviderTableImportCapabilities QgsOracleProviderConnection::tableImportCapabilities() const
 {
-  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName;
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName;
+}
+
+QString QgsOracleProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "id" );
 }
 
 void QgsOracleProviderConnection::store( const QString &name ) const
