@@ -338,10 +338,17 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
   // Make our own projection matrix so that frustum culling done by the
   // entities isn't dependent on the current near/far planes, which would then
   // require multiple steps to stabilize.
-  QMatrix4x4 projMatrix;
-  projMatrix.setToIdentity();
-  // Just use some high values for the far plane so we don't have to custom-make the matrix.
-  projMatrix.perspective( camera->fieldOfView(), camera->aspectRatio(), 1, 1'000'000'000'000.0 );
+  // The matrix is constructed just like in QMatrix4x4::perspective(), but for
+  // all elements involving the near and far plane, the limit of the expression
+  // with the far plane going to infinity is taken.
+  float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
+  float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
+  QMatrix4x4 projMatrix(
+    fovCotan / camera->fieldOfView(), 0, 0, 0,
+    0, fovCotan, 0, 0,
+    0, 0, -1, -2,
+    0, 0, -1, 0
+  );
   sceneContext.viewProjectionMatrix = projMatrix * camera->viewMatrix();
 
 
