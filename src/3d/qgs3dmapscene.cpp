@@ -84,6 +84,7 @@
 #include "qgswindow3dengine.h"
 #include "qgspointcloudlayer.h"
 #include "qgsshadowrenderview.h"
+#include "qgsforwardrenderview.h"
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 
@@ -1232,8 +1233,8 @@ void Qgs3DMapScene::enableClipping( const QList<QVector4D> &clipPlaneEquations )
   mClipPlanesEquations = clipPlaneEquations.mid( 0, mMaxClipPlanes );
 
   // enable the clip planes on the framegraph
-  QgsFrameGraph *frameGraph = mEngine->frameGraph();
-  frameGraph->addClipPlanes( clipPlaneEquations.size() );
+  QgsForwardRenderView *forwardRenderView = mEngine->frameGraph()->forwardRenderView();
+  forwardRenderView->addClipPlanes( clipPlaneEquations.size() );
 
   // Enable the clip planes for the material of each entity.
   handleClippingOnAllEntities();
@@ -1244,8 +1245,8 @@ void Qgs3DMapScene::disableClipping()
   mClipPlanesEquations.clear();
 
   // disable the clip planes on the framegraph
-  QgsFrameGraph *frameGraph = mEngine->frameGraph();
-  frameGraph->removeClipPlanes();
+  QgsForwardRenderView *forwardRenderView = mEngine->frameGraph()->forwardRenderView();
+  forwardRenderView->removeClipPlanes();
 
   // Disable the clip planes for the material of each entity.
   handleClippingOnAllEntities();
