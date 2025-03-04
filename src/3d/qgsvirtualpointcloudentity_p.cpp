@@ -140,7 +140,7 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
     if ( !needsUpdate && box3D.isEmpty() )
       continue;
 
-    QgsAABB aabb = QgsAABB::fromBox3D( box3D, mBboxesEntity->vertexDataOrigin() );
+    QgsAABB aabb = QgsAABB::fromBox3D( box3D, mMapSettings->origin() );
     if ( !needsUpdate && Qgs3DUtils::isCullable( aabb, sceneContext.viewProjectionMatrix ) )
       continue;
 
@@ -190,7 +190,7 @@ QgsRange<float> QgsVirtualPointCloudEntity::getNearFarPlaneRange( const QMatrix4
   {
     for ( const QgsBox3D &box : mBboxes )
     {
-      QgsAABB aabb = QgsAABB::fromBox3D( box, mBboxesEntity->vertexDataOrigin() );
+      QgsAABB aabb = QgsAABB::fromBox3D( box, mMapSettings->origin() );
       float bboxfnear;
       float bboxffar;
       Qgs3DUtils::computeBoundingBoxNearFarPlanes( aabb, viewMatrix, bboxfnear, bboxffar );
