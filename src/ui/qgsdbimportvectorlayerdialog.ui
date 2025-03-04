@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>268</height>
+    <height>387</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,8 +49,12 @@
       <string>Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="mEditGeometryColumnName"/>
+      <item row="0" column="0">
+       <widget class="QLabel" name="mLabelPrimaryKey">
+        <property name="text">
+         <string>Primary key</string>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="mLabelGeometryColumn">
@@ -59,15 +63,25 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="mLabelPrimaryKey">
-        <property name="text">
-         <string>Primary key</string>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="mEditPrimaryKey"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="mEditGeometryColumnName"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="mEditPrimaryKey"/>
+      <item row="2" column="0">
+       <widget class="QLabel" name="mLabelDestinationCrs">
+        <property name="text">
+         <string>Output CRS</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -101,6 +115,14 @@
   <zorder>mGroupBoxOutput</zorder>
   <zorder>verticalSpacer</zorder>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
