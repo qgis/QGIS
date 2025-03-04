@@ -43,13 +43,14 @@ import argparse
 import ast
 import glob
 import inspect
+import logging
 import os
 import sys
-import logging
 
 from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
+
 from termcolor import colored
 
 logging.basicConfig(level=logging.DEBUG, format="%(message)s")
@@ -85,7 +86,6 @@ from PyQt6.QtTest import *  # noqa: F403
 from PyQt6.QtWidgets import *  # noqa: F403
 from PyQt6.QtXml import *  # noqa: F403
 from tokenize_rt import Offset, Token, reversed_enumerate, src_to_tokens, tokens_to_src
-
 
 try:
     import qgis._3d as qgis_3d  # noqa: F403
