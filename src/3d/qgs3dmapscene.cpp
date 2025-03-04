@@ -344,7 +344,7 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
   float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
   float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
   QMatrix4x4 projMatrix(
-    fovCotan / camera->fieldOfView(), 0, 0, 0,
+    fovCotan / camera->aspectRatio(), 0, 0, 0,
     0, fovCotan, 0, 0,
     0, 0, -1, -2,
     0, 0, -1, 0
