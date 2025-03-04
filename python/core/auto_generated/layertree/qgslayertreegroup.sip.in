@@ -159,13 +159,13 @@ Find group node with specified name. Searches recursively the whole sub-tree.
 Find group layer nodes. Searches recursively the whole sub-tree, if recursive is set.
 %End
 
-    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static QgsLayerTreeGroup *readXml( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Read group (tree) from XML element <layer-tree-group> and return the newly created group (or ``None`` on error).
 Does not resolve textual references to layers. Call :py:func:`~QgsLayerTreeGroup.resolveReferences` afterwards to do it.
 %End
 
-    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
+    static QgsLayerTreeGroup *readXml( const QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Read group (tree) from XML element <layer-tree-group> and return the newly created group (or ``None`` on error).
 Also resolves textual references to layers from the project (calls :py:func:`~QgsLayerTreeGroup.resolveReferences` internally).
@@ -177,7 +177,7 @@ Also resolves textual references to layers from the project (calls :py:func:`~Qg
 Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
 %End
 
-    void readChildrenFromXml( QDomElement &element, const QgsReadWriteContext &context );
+    void readChildrenFromXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Read children from XML and append them to the group.
 Does not resolve textual references to layers. Call :py:func:`~QgsLayerTreeGroup.resolveReferences` afterwards to do it.
@@ -263,6 +263,15 @@ will be returned.
 
 .. versionadded:: 3.24
 %End
+
+    QgsMapLayerServerProperties *serverProperties();
+%Docstring
+Returns QGIS Server Properties for the layer tree group
+
+.. versionadded:: 3.44
+%End
+
+
 
   protected slots:
 

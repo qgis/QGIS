@@ -12112,17 +12112,12 @@ void QgisApp::legendGroupSetWmsData()
   QgsLayerTreeGroup *currentGroup = mLayerTreeView->currentGroupNode();
   if ( !currentGroup )
     return;
-  QgsGroupWmsDataDialog *dlg = new QgsGroupWmsDataDialog( this );
-  dlg->setGroupShortName( currentGroup->customProperty( QStringLiteral( "wmsShortName" ) ).toString() );
-  dlg->setGroupTitle( currentGroup->customProperty( QStringLiteral( "wmsTitle" ) ).toString() );
-  dlg->setGroupAbstract( currentGroup->customProperty( QStringLiteral( "wmsAbstract" ) ).toString() );
-  if ( dlg->exec() )
+
+  QgsGroupWmsDataDialog dlg( *currentGroup->serverProperties(), this );
+  if ( dlg.exec() )
   {
-    currentGroup->setCustomProperty( QStringLiteral( "wmsShortName" ), dlg->groupShortName() );
-    currentGroup->setCustomProperty( QStringLiteral( "wmsTitle" ), dlg->groupTitle() );
-    currentGroup->setCustomProperty( QStringLiteral( "wmsAbstract" ), dlg->groupAbstract() );
+    dlg.serverProperties()->copyTo( currentGroup->serverProperties() );
   }
-  delete dlg;
 }
 
 void QgisApp::zoomToLayerExtent()
