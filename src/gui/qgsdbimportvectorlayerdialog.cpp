@@ -43,6 +43,23 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
     delete mEditSchema;
     mEditSchema = nullptr;
   }
+  const bool supportsPrimaryKeyName = mConnection->tableImportCapabilities().testFlag( Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName );
+  if ( !supportsPrimaryKeyName )
+  {
+    delete mLabelPrimaryKey;
+    mLabelPrimaryKey = nullptr;
+    delete mEditPrimaryKey;
+    mEditPrimaryKey = nullptr;
+  }
+
+  const bool supportsGeomColumnName = mConnection->tableImportCapabilities().testFlag( Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName );
+  if ( !supportsGeomColumnName )
+  {
+    delete mLabelGeometryColumn;
+    mLabelGeometryColumn = nullptr;
+    delete mEditGeometryColumnName;
+    mEditGeometryColumnName = nullptr;
+  }
 }
 
 QgsDbImportVectorLayerDialog::~QgsDbImportVectorLayerDialog() = default;
@@ -65,6 +82,46 @@ void QgsDbImportVectorLayerDialog::setSourceUri( const QgsMimeDataUtils::Uri &ur
     mSourceLayer.reset( vl );
   else if ( vl )
     mSourceLayer.reset( vl->clone() );
+
+  if ( !mSourceLayer || !mSourceLayer->dataProvider() )
+    return;
+
+  if ( mEditPrimaryKey )
+  {
+    // set initial geometry column name. We use the source layer's primary key column name if available,
+    // else fallback to a default value given by the connection
+    const QgsAttributeList pkAttributes = mSourceLayer->dataProvider()->pkAttributeIndexes();
+    QString primaryKey = !pkAttributes.isEmpty() ? mSourceLayer->dataProvider()->fields().at( pkAttributes.at( 0 ) ).name() : QString();
+    if ( primaryKey.isEmpty() )
+    {
+      QgsDataSourceUri dsUri( uri.uri );
+      primaryKey = dsUri.keyColumn();
+    }
+    if ( primaryKey.isEmpty() )
+    {
+      primaryKey = mConnection->defaultPrimaryKeyColumnName();
+    }
+
+    mEditPrimaryKey->setText( primaryKey );
+  }
+
+  if ( mEditGeometryColumnName )
+  {
+    // set initial geometry column name. We use the source layer's geometry name if available,
+    // else fallback to a default value given by the connection
+    QString geomColumn = mSourceLayer->dataProvider()->geometryColumnName();
+    if ( geomColumn.isEmpty() )
+    {
+      QgsDataSourceUri dsUri( uri.uri );
+      geomColumn = dsUri.geometryColumn();
+    }
+    if ( geomColumn.isEmpty() )
+    {
+      geomColumn = mConnection->defaultGeometryColumnName();
+    }
+
+    mEditGeometryColumnName->setText( geomColumn );
+  }
 }
 
 void QgsDbImportVectorLayerDialog::doImport()
@@ -74,21 +131,39 @@ void QgsDbImportVectorLayerDialog::doImport()
   accept();
 }
 
-std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::createExporterTask()
+std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::createExporterTask( const QVariantMap &extraProviderOptions )
 {
-  if ( !mSourceLayer )
+  if ( !mSourceLayer || !mSourceLayer->dataProvider() )
     return nullptr;
 
   QString destinationUri;
-  const Qgis::WkbType destinationWkbType = mSourceLayer->wkbType();
+  QVariantMap providerOptions;
+
+  QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions exporterOptions;
+  exporterOptions.layerName = mEditTable->text();
+  if ( mEditSchema )
+    exporterOptions.schema = mEditSchema->text();
+  exporterOptions.wkbType = mSourceLayer->wkbType();
+  if ( mEditPrimaryKey && !mEditPrimaryKey->text().trimmed().isEmpty() )
+    exporterOptions.primaryKeyColumns << mEditPrimaryKey->text();
+  if ( mEditGeometryColumnName )
+    exporterOptions.geometryColumn = mEditGeometryColumnName->text();
+
   try
   {
-    destinationUri = mConnection->createVectorLayerExporterDestinationUri( mEditSchema ? mEditSchema->text() : QString(), mEditTable->text(), destinationWkbType );
+    destinationUri = mConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
   }
   catch ( QgsProviderConnectionException &e )
   {
     return nullptr;
   }
 
-  return std::make_unique<QgsVectorLayerExporterTask>( mSourceLayer->clone(), destinationUri, mConnection->providerKey(), mSourceLayer->crs(), QVariantMap(), true );
+  // options given to us by createVectorLayerExporterDestinationUri above should overwrite generic ones passed to this method
+  QVariantMap allProviderOptions = extraProviderOptions;
+  for ( auto it = providerOptions.constBegin(); it != providerOptions.constEnd(); ++it )
+  {
+    allProviderOptions.insert( it.key(), it.value() );
+  }
+
+  return std::make_unique<QgsVectorLayerExporterTask>( mSourceLayer->clone(), destinationUri, mConnection->providerKey(), mSourceLayer->crs(), allProviderOptions, true );
 }
