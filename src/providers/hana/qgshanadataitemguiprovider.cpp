@@ -398,7 +398,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
     return false;
 
   const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
-  if ( sourceUris.size() == 1 )
+  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == QLatin1String( "vector" ) )
   {
     return handleDropUri( connectionItem, sourceUris.at( 0 ), toSchema, context );
   }
@@ -410,7 +410,11 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
 
   QgsDataSourceUri uri = connectionItem->connectionUri();
   QgsHanaConnectionRef conn( uri );
+
   // TODO: when dropping multiple layers, we need a dedicated "bulk import" dialog for settings which apply to ALL layers
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
 
   if ( !conn.isNull() )
   {
@@ -445,11 +449,18 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
           geomColumn = ( srcLayer->geometryType() != Qgis::GeometryType::Null ) ? ( fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" ) ) : nullptr;
         }
 
-        uri.setDataSource( toSchema, u.name, geomColumn, QString(), dsUri.keyColumn() );
-        uri.setWkbType( srcLayer->wkbType() );
+        QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions exporterOptions;
+        exporterOptions.layerName = u.name;
+        exporterOptions.schema = toSchema;
+        exporterOptions.wkbType = srcLayer->wkbType();
+        exporterOptions.geometryColumn = geomColumn;
+        exporterOptions.primaryKeyColumns << dsUri.keyColumn();
+
+        QVariantMap providerOptions;
+        const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
 
         std::unique_ptr<QgsVectorLayerExporterTask> exportTask(
-          new QgsVectorLayerExporterTask( srcLayer, uri.uri( false ), QStringLiteral( "hana" ), srcLayer->crs(), QVariantMap(), owner )
+          new QgsVectorLayerExporterTask( srcLayer, destUri, QStringLiteral( "hana" ), srcLayer->crs(), providerOptions, owner )
         );
 
         // when export is successful:
@@ -505,9 +516,21 @@ bool QgsHanaDataItemGuiProvider::handleDropUri( QgsHanaConnectionItem *connectio
   if ( !databaseConnection )
     return false;
 
-  QgsDbImportVectorLayerDialog dialog( databaseConnection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
-  dialog.setSourceUri( sourceUri );
-  dialog.setDestinationSchema( toSchema );
-  dialog.exec();
-  return true;
+  auto onSuccess = [connectionItemPointer, toSchema]() {
+    if ( connectionItemPointer )
+    {
+      if ( connectionItemPointer )
+        connectionItemPointer->refreshSchema( toSchema );
+    }
+  };
+
+  auto onFailure = [connectionItemPointer, toSchema]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+    {
+      if ( connectionItemPointer )
+        connectionItemPointer->refreshSchema( toSchema );
+    }
+  };
+
+  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "SAP HANA Import" ), tr( "Import to SAP HANA database" ), QVariantMap(), onSuccess, onFailure, this );
 }

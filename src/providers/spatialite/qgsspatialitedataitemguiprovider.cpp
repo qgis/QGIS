@@ -148,7 +148,7 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnection
     return false;
 
   const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
-  if ( sourceUris.size() == 1 )
+  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == QLatin1String( "vector" ) )
   {
     return handleDropUri( connItem, sourceUris.at( 0 ), context );
   }
@@ -177,10 +177,22 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnection
 
     if ( srcLayer->isValid() )
     {
-      const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( QString(), u.name, srcLayer->wkbType() );
+      QString geomColumn { QStringLiteral( "geom" ) };
+      if ( !srcLayer->dataProvider()->geometryColumnName().isEmpty() )
+      {
+        geomColumn = srcLayer->dataProvider()->geometryColumnName();
+      }
+
+      QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions exporterOptions;
+      exporterOptions.layerName = u.name;
+      exporterOptions.wkbType = srcLayer->wkbType();
+      exporterOptions.geometryColumn = geomColumn;
+
+      QVariantMap providerOptions;
+      const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
       QgsDebugMsgLevel( "URI " + destUri, 2 );
 
-      auto exportTask = std::make_unique<QgsVectorLayerExporterTask>( srcLayer, destUri, QStringLiteral( "spatialite" ), srcLayer->crs(), QVariantMap(), owner );
+      auto exportTask = std::make_unique<QgsVectorLayerExporterTask>( srcLayer, destUri, QStringLiteral( "spatialite" ), srcLayer->crs(), providerOptions, owner );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connItem, [=]() {
@@ -228,36 +240,15 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropUri( QgsSLConnectionItem *conne
   if ( !databaseConnection )
     return false;
 
-  QgsDbImportVectorLayerDialog dialog( databaseConnection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
-  dialog.setSourceUri( sourceUri );
-  if ( !dialog.exec() )
-    return false;
-
-  std::unique_ptr< QgsVectorLayerExporterTask > exportTask = dialog.createExporterTask();
-  if ( !exportTask )
-    return false;
-
-  // when export is successful:
-  connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [connectionItemPointer]() {
-    // this is gross - TODO - find a way to get access to messageBar from data items
-    QMessageBox::information( nullptr, tr( "Import to SpatiaLite database" ), tr( "Import was successful." ) );
+  auto onSuccess = [connectionItemPointer]() {
     if ( connectionItemPointer )
       connectionItemPointer->refresh();
-  } );
+  };
 
-  // when an error occurs:
-  connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [connectionItemPointer]( Qgis::VectorExportResult error, const QString &errorMessage ) {
-    if ( error != Qgis::VectorExportResult::UserCanceled )
-    {
-      QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-      output->setTitle( tr( "Import to SpatiaLite database" ) );
-      output->setMessage( tr( "Failed to import layer!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
-      output->showMessage();
-    }
+  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
       connectionItemPointer->refresh();
-  } );
+  };
 
-  QgsApplication::taskManager()->addTask( exportTask.release() );
-  return true;
+  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "Spatialite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
 }

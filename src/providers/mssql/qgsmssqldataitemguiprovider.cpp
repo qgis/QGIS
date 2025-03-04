@@ -281,7 +281,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
     return false;
 
   const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
-  if ( sourceUris.size() == 1 )
+  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == QLatin1String( "vector" ) )
   {
     return handleDropUri( connectionItem, sourceUris.at( 0 ), toSchema, context );
   }
@@ -290,6 +290,11 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
   const QString connectionUri = connectionItem->connectionUri();
 
   // TODO: when dropping multiple layers, we need a dedicated "bulk import" dialog for settings which apply to ALL layers
+
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
+
   QStringList importResults;
   bool hasError = false;
 
@@ -308,21 +313,22 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
 
     if ( srcLayer->isValid() )
     {
-      QString tableName;
-      if ( !toSchema.isEmpty() )
+      QString geomColumn { QStringLiteral( "geom" ) };
+      if ( !srcLayer->dataProvider()->geometryColumnName().isEmpty() )
       {
-        tableName = QStringLiteral( "\"%1\".\"%2\"" ).arg( toSchema, u.name );
-      }
-      else
-      {
-        tableName = u.name;
+        geomColumn = srcLayer->dataProvider()->geometryColumnName();
       }
 
-      QString uri = connectionUri + " table=" + tableName;
-      if ( srcLayer->geometryType() != Qgis::GeometryType::Null )
-        uri += QLatin1String( " (geom)" );
+      QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions exporterOptions;
+      exporterOptions.layerName = u.name;
+      exporterOptions.schema = toSchema;
+      exporterOptions.wkbType = srcLayer->wkbType();
+      exporterOptions.geometryColumn = geomColumn;
 
-      std::unique_ptr<QgsVectorLayerExporterTask> exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri, QStringLiteral( "mssql" ), srcLayer->crs() ) );
+      QVariantMap providerOptions;
+      const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
+
+      std::unique_ptr<QgsVectorLayerExporterTask> exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, destUri, QStringLiteral( "mssql" ), srcLayer->crs(), providerOptions ) );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [=]() {
@@ -382,10 +388,25 @@ bool QgsMssqlDataItemGuiProvider::handleDropUri( QgsMssqlConnectionItem *connect
   if ( !databaseConnection )
     return false;
 
-  QgsDbImportVectorLayerDialog dialog( databaseConnection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
-  dialog.setDestinationSchema( toSchema );
-  dialog.setSourceUri( sourceUri );
-  dialog.exec();
+  auto onSuccess = [connectionItemPointer]() {
+    if ( connectionItemPointer )
+    {
+      if ( connectionItemPointer->state() == Qgis::BrowserItemState::Populated )
+        connectionItemPointer->refresh();
+      else
+        connectionItemPointer->populate();
+    }
+  };
 
-  return true;
+  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+    {
+      if ( connectionItemPointer->state() == Qgis::BrowserItemState::Populated )
+        connectionItemPointer->refresh();
+      else
+        connectionItemPointer->populate();
+    }
+  };
+
+  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "SQL Server Import" ), tr( "Import to SQL Server database" ), QVariantMap(), onSuccess, onFailure, this );
 }

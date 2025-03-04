@@ -44,6 +44,7 @@
 #include "qgsogrproviderutils.h"
 #include "qgsfileutils.h"
 #include "qgsdbimportvectorlayerdialog.h"
+#include "qgsdataitemguiproviderutils.h"
 
 void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
@@ -431,10 +432,14 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
     return false;
 
   const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
-  if ( sourceUris.size() == 1 )
+  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == QLatin1String( "vector" ) )
   {
     return handleDropUri( item, sourceUris.at( 0 ), context );
   }
+
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( item->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
 
   QString uri;
 
@@ -515,12 +520,18 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
           if ( isVector ) // Import vectors and aspatial
           {
             QgsVectorLayer *vectorSrcLayer = qobject_cast<QgsVectorLayer *>( srcLayer );
-            QVariantMap options;
-            options.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
-            options.insert( QStringLiteral( "update" ), true );
-            options.insert( QStringLiteral( "overwrite" ), true );
-            options.insert( QStringLiteral( "layerName" ), dropUri.name );
-            QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner );
+
+            QVariantMap providerOptions;
+            QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions exporterOptions;
+            exporterOptions.layerName = dropUri.name;
+            exporterOptions.wkbType = vectorSrcLayer->wkbType();
+            const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
+
+            providerOptions.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
+            providerOptions.insert( QStringLiteral( "update" ), true );
+            providerOptions.insert( QStringLiteral( "overwrite" ), true );
+
+            QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, destUri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), providerOptions, owner );
             mainTask->addSubTask( exportTask );
             hasSubTasks = true;
             // when export is successful:
@@ -597,10 +608,26 @@ bool QgsGeoPackageItemGuiProvider::handleDropUri( QgsGeoPackageCollectionItem *c
   if ( !databaseConnection )
     return false;
 
-  QgsDbImportVectorLayerDialog dialog( databaseConnection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
-  dialog.setSourceUri( sourceUri );
-  dialog.exec();
-  return true;
+  auto onSuccess = [connectionItemPointer]() {
+    if ( connectionItemPointer )
+    {
+      connectionItemPointer->refresh();
+    }
+  };
+
+  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+    {
+      connectionItemPointer->refresh();
+    }
+  };
+
+  QVariantMap providerOptions;
+  providerOptions.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
+  providerOptions.insert( QStringLiteral( "update" ), true );
+  providerOptions.insert( QStringLiteral( "overwrite" ), true );
+
+  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "GeoPackage Import" ), tr( "Import to GeoPackage database" ), providerOptions, onSuccess, onFailure, this );
 }
 
 ///@endcond

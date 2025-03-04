@@ -580,7 +580,7 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsPGConnectionItem *connection
     return false;
 
   const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
-  if ( sourceUris.size() == 1 )
+  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == QLatin1String( "vector" ) )
   {
     return handleDropUri( connectionItem, sourceUris.at( 0 ), toSchema, context );
   }
@@ -590,6 +590,11 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsPGConnectionItem *connection
   QgsDataSourceUri uri = connectionItem->connectionUri();
 
   // TODO: when dropping multiple layers, we need a dedicated "bulk import" dialog for settings which apply to ALL layers
+
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
+
   QStringList importResults;
   bool hasError = false;
 
@@ -609,23 +614,25 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsPGConnectionItem *connection
     if ( srcLayer->isValid() )
     {
       // Try to get source col from uri
+
       QString geomColumn { QStringLiteral( "geom" ) };
-
-      if ( !srcLayer->dataProvider()->uri().geometryColumn().isEmpty() )
+      if ( !srcLayer->dataProvider()->geometryColumnName().isEmpty() )
       {
-        geomColumn = srcLayer->dataProvider()->uri().geometryColumn();
+        geomColumn = srcLayer->dataProvider()->geometryColumnName();
       }
 
-      uri.setDataSource( QString(), u.name, srcLayer->geometryType() != Qgis::GeometryType::Null ? geomColumn : QString() );
+      QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions exporterOptions;
+      exporterOptions.layerName = u.name;
+      exporterOptions.schema = toSchema;
+      exporterOptions.wkbType = srcLayer->wkbType();
+      exporterOptions.geometryColumn = geomColumn;
 
-      QgsDebugMsgLevel( "URI " + uri.uri( false ), 2 );
+      QVariantMap providerOptions;
+      const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
 
-      if ( !toSchema.isNull() )
-      {
-        uri.setSchema( toSchema );
-      }
+      QgsDebugMsgLevel( "URI " + destUri, 2 );
 
-      auto exportTask = std::make_unique<QgsVectorLayerExporterTask>( srcLayer, uri.uri( false ), QStringLiteral( "postgres" ), srcLayer->crs(), QVariantMap(), owner );
+      auto exportTask = std::make_unique<QgsVectorLayerExporterTask>( srcLayer, destUri, QStringLiteral( "postgres" ), srcLayer->crs(), providerOptions, owner );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [=]() {
@@ -675,9 +682,21 @@ bool QgsPostgresDataItemGuiProvider::handleDropUri( QgsPGConnectionItem *connect
   if ( !databaseConnection )
     return false;
 
-  QgsDbImportVectorLayerDialog dialog( databaseConnection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
-  dialog.setDestinationSchema( toSchema );
-  dialog.setSourceUri( sourceUri );
-  dialog.exec();
-  return true;
+  auto onSuccess = [connectionItemPointer, toSchema]() {
+    if ( connectionItemPointer )
+    {
+      if ( connectionItemPointer )
+        connectionItemPointer->refreshSchema( toSchema );
+    }
+  };
+
+  auto onFailure = [connectionItemPointer, toSchema]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+    {
+      if ( connectionItemPointer )
+        connectionItemPointer->refreshSchema( toSchema );
+    }
+  };
+
+  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "PostGIS Import" ), tr( "Import to PostGIS database" ), QVariantMap(), onSuccess, onFailure, this );
 }

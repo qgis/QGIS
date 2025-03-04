@@ -71,6 +71,25 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
      */
     static const QString uniqueName( const QString &name, const QStringList &connectionNames );
 
+
+    /**
+     * Handles dropping a vecot layer for \a connection items.
+     *
+     * \note Not available in Python bindings
+     */
+    static bool handleDropUriForConnection(
+      std::unique_ptr< QgsAbstractDatabaseProviderConnection > connection,
+      const QgsMimeDataUtils::Uri &sourceUri,
+      const QString &destinationSchema,
+      QgsDataItemGuiContext context,
+      const QString &shortTitle,
+      const QString &longTitle,
+      const QVariantMap &destinationProviderOptions,
+      const std::function<void()> &onSuccessfulCompletion,
+      const std::function<void( Qgis::VectorExportResult error, const QString &errorMessage )> &onError,
+      QObject *connectionContext
+    );
+
 #endif
 
   private:
