@@ -16,9 +16,17 @@
 #include "qgsdataitemguiproviderutils.h"
 #include "qgsdataitem.h"
 #include "qgsdataitemguiprovider.h"
+#include "qgsdbimportvectorlayerdialog.h"
+#include "qgsmessagebar.h"
+#include "qgsvectorlayerexporter.h"
+#include "qgsapplication.h"
+#include "qgstaskmanager.h"
+#include "qgsmessagebaritem.h"
+#include "qgsmessageoutput.h"
 
 #include <QPointer>
 #include <QMessageBox>
+#include <QPushButton>
 
 void QgsDataItemGuiProviderUtils::deleteConnectionsPrivate( const QStringList &connectionNames, const std::function<void( const QString & )> &deleteConnection, QPointer<QgsDataItem> firstParent )
 {
@@ -53,4 +61,48 @@ const QString QgsDataItemGuiProviderUtils::uniqueName( const QString &name, cons
   }
 
   return newConnectionName;
+}
+
+bool QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection, const QgsMimeDataUtils::Uri &sourceUri, const QString &destinationSchema, QgsDataItemGuiContext context, const QString &shortTitle, const QString &longTitle, const QVariantMap &destinationProviderOptions, const std::function<void()> &onSuccessfulCompletion, const std::function<void( Qgis::VectorExportResult, const QString & )> &onError, QObject *connectionContext )
+{
+  if ( !connection )
+    return false;
+
+  QgsDbImportVectorLayerDialog dialog( connection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
+  dialog.setSourceUri( sourceUri );
+  dialog.setDestinationSchema( destinationSchema );
+  if ( !dialog.exec() )
+    return false;
+
+  std::unique_ptr< QgsVectorLayerExporterTask > exportTask = dialog.createExporterTask( destinationProviderOptions );
+  if ( !exportTask )
+    return false;
+
+  // when export is successful:
+  QObject::connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connectionContext, [onSuccessfulCompletion, shortTitle, context]() {
+    context.messageBar()->pushSuccess( shortTitle, QObject::tr( "Import was successful." ) );
+    onSuccessfulCompletion();
+  } );
+
+  // when an error occurs:
+  QObject::connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, connectionContext, [onError, shortTitle, longTitle, context]( Qgis::VectorExportResult error, const QString &errorMessage ) {
+    if ( error != Qgis::VectorExportResult::UserCanceled )
+    {
+      QgsMessageBarItem *item = new QgsMessageBarItem( shortTitle, QObject::tr( "Import failed." ), Qgis::MessageLevel::Warning, 0, nullptr );
+      QPushButton *detailsButton = new QPushButton( QObject::tr( "Details…" ) );
+      QObject::connect( detailsButton, &QPushButton::clicked, detailsButton, [=] {
+        QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+        output->setTitle( longTitle );
+        output->setMessage( QObject::tr( "Failed to import layer!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+        output->showMessage();
+      } );
+      item->layout()->addWidget( detailsButton );
+      context.messageBar()->pushWidget( item, Qgis::MessageLevel::Warning );
+    }
+
+    onError( error, errorMessage );
+  } );
+
+  QgsApplication::taskManager()->addTask( exportTask.release() );
+  return true;
 }
