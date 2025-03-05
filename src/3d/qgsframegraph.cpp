@@ -46,11 +46,8 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QSortPolicy>
-#include <Qt3DRender/QPointSize>
-#include <Qt3DRender/QSeamlessCubemap>
 #include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QBlendEquationArguments>
-#include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DRender/QAbstractTexture>
 #include "qgsfgutils.h"
 #include <Qt3DRender/QNoDraw>

@@ -15,6 +15,20 @@
 
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
+#define SIP_NO_FILE
+
+#include "qgs3dmapcanvas.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3danimationsettings.h"
+#include "qgs3dtypes.h"
+#include "qgsaabb.h"
+#include "qgsray3d.h"
+#include "qgsraycastingutils.h"
+
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCullFace>
+
+#include <memory>
 
 class QgsLineString;
 class QgsPolygon;
@@ -32,22 +46,6 @@ namespace Qt3DExtras
 }
 
 class QSurface;
-
-#include "qgs3dmapsettings.h"
-#include "qgs3danimationsettings.h"
-#include "qgs3dtypes.h"
-#include "qgsaabb.h"
-#include "qgsray3d.h"
-#include "qgsraycastingutils.h"
-
-#include <QSize>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QCullFace>
-
-#include <memory>
-
-#define SIP_NO_FILE
-
 class Qgs3DRenderContext;
 
 /**
@@ -354,6 +352,17 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.42
      */
     static QQuaternion rotationFromPitchHeadingAngles( float pitchAngle, float headingAngle );
+
+    /**
+     * Transform the given screen point to \a QgsPoint in map coordinates
+     * \note This transformation is not unique as we pick point halfway between near and far plane on the ray from the camera.
+     * \param size size of canvas
+     * \param screenPoint point in screen coordinates
+     * \param cameraController camera controller attached to the scene
+     * \param mapSettings 3D map settings of the scene
+     * \since QGIS 3.44
+     */
+    static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings );
 };
 
 #endif // QGS3DUTILS_H

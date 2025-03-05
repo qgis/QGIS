@@ -17,17 +17,18 @@
 #define QGS3DMAPTOOLPOINTCLOUDCHANGEATTRIBUTE_H
 
 #include "qgs3dmaptool.h"
-#include "qgspointxy.h"
-#include "qgsgeometry.h"
-#include "qgspointcloudindex.h"
+#include "qgsvector3d.h"
 
 #include <QMatrix4x4>
-#include <QVector>
 
-class QgsRubberBand3D;
-class QgsPointCloudLayer;
+
+class QgsBox3D;
 class QgsGeos;
-
+class QgsPointCloudLayer;
+class QgsMapLayer;
+class QgsGeometry;
+class QgsPointCloudNodeId;
+typedef QHash<QgsPointCloudNodeId, QVector<int> > SelectedPoints;
 
 struct MapToPixel3D
 {
@@ -37,7 +38,7 @@ struct MapToPixel3D
 
     QPointF transform( double x, double y, double z, bool *isInView = nullptr ) const
     {
-      QVector4D cClip = VP * QVector4D( static_cast<float>( x - origin.x() ), static_cast<float>( y - origin.y() ), static_cast<float>( z - origin.z() ), 1 );
+      const QVector4D cClip = VP * QVector4D( static_cast<float>( x - origin.x() ), static_cast<float>( y - origin.y() ), static_cast<float>( z - origin.z() ), 1 );
       // normalized device coordinates (-1 to +1)
       // z == -1 is near plane, z == +1 is far plane
       const float xNdc = cClip.x() / cClip.w();
@@ -46,7 +47,7 @@ struct MapToPixel3D
       if ( isInView )
         *isInView = !( zNdc < -1 || zNdc > 1 || yNdc < -1 || yNdc > 1 || zNdc < -1 || xNdc > 1 );
 
-      // window / sceen space coordinates
+      // window / screen space coordinates
       const float xScreen = ( xNdc + 1 ) * 0.5f * static_cast<float>( canvasSize.width() );
       const float yScreen = ( -yNdc + 1 ) * 0.5f * static_cast<float>( canvasSize.height() );
 
@@ -54,10 +55,11 @@ struct MapToPixel3D
     }
 };
 
-
-typedef QHash<QgsPointCloudNodeId, QVector<int> > SelectedPoints;
-
-
+/**
+ * \ingroup App
+ * \brief Base class for map tools editing point clouds on 3D map canvas.
+ * \since QGIS 3.42
+ */
 class Qgs3DMapToolPointCloudChangeAttribute : public Qgs3DMapTool
 {
     Q_OBJECT
@@ -66,32 +68,31 @@ class Qgs3DMapToolPointCloudChangeAttribute : public Qgs3DMapTool
     Qgs3DMapToolPointCloudChangeAttribute( Qgs3DMapCanvas *canvas );
     ~Qgs3DMapToolPointCloudChangeAttribute() override;
 
-    void mousePressEvent( QMouseEvent *event ) override;
-    void mouseReleaseEvent( QMouseEvent *event ) override;
-    void mouseMoveEvent( QMouseEvent *event ) override;
-    void keyPressEvent( QKeyEvent *event ) override;
-
-    void activate() override;
-    void deactivate() override;
-
-    bool allowsCameraControls() const override { return false; }
-
+    //! Sets attribute name which will be edited
     void setAttribute( const QString &attribute );
+    //! Sets attribute value to which it will be set
     void setNewValue( double value );
 
-  private:
-    void run();
-    void restart();
-    QgsPoint screenPointToMap( const QPoint &pos ) const;
-    SelectedPoints searchPoints( QgsPointCloudLayer *layer, const QgsGeos &searchPolygon ) const;
-    QVector<int> selectedPointsInNode( const QgsGeos &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudLayer *layer ) const;
-    static QgsGeometry box3DToPolygonInScreenSpace( const QgsBox3D &box, const MapToPixel3D &mapToPixel3D );
+  protected:
+    //! Calculate selection and edit set attribute to new value
+    virtual void run();
+    //! Clear selection
+    virtual void restart();
+    /**
+     * Changes the value of \a attributeName to \a newValue for points inside \a geometry
+     * \note \a geometry is expected in screen coordinates
+     */
+    void changeAttributeValue( const QgsGeometry &geometry, const QString &attributeName, double newValue, Qgs3DMapCanvas &canvas, QgsMapLayer *mapLayer );
 
-    QVector<QgsPointXY> mScreenPoints;
-    QgsRubberBand3D *mPolygonRubberBand = nullptr;
     QString mAttributeName;
     double mNewValue = 0;
-    QPoint mClickPoint;
+
+  private:
+    SelectedPoints searchPoints( QgsPointCloudLayer *layer, const QgsGeos &searchPolygon, Qgs3DMapCanvas &canvas );
+
+    QVector<int> selectedPointsInNode( const QgsGeos &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudLayer *layer, Qgs3DMapCanvas &canvas );
+
+    QgsGeometry box3DToPolygonInScreenSpace( const QgsBox3D &box, const MapToPixel3D &mapToPixel3D );
 };
 
 #endif // QGS3DMAPTOOLPOINTCLOUDCHANGEATTRIBUTE_H
