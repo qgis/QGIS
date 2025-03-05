@@ -107,8 +107,9 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   // create an empty layer
   QString errMsg;
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
+  QString createdLayerName;
   mError = pReg->createEmptyLayer( providerKey, uri, fields, geometryType, crs, overwrite, mOldToNewAttrIdx,
-                                   errMsg, !modifiedOptions.isEmpty() ? &modifiedOptions : nullptr );
+                                   errMsg, !modifiedOptions.isEmpty() ? &modifiedOptions : nullptr, createdLayerName );
 
   if ( errorCode() != Qgis::VectorExportResult::Success )
   {

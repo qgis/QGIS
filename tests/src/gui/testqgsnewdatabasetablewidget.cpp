@@ -72,7 +72,9 @@ void TestQgsNewDatabaseTableNameWidget::initTestCase()
   QMap<int, int> m;
   mGpkgPath = mDir.filePath( QStringLiteral( "test.gpkg" ) );
   const QMap<QString, QVariant> options { { QStringLiteral( "layerName" ), QString( "test_layer" ) } };
-  QVERIFY( md->createEmptyLayer( mGpkgPath, QgsFields(), Qgis::WkbType::Point, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), true, m, errCause, &options ) == Qgis::VectorExportResult::Success );
+  QString createdLayerUri;
+  QVERIFY( md->createEmptyLayer( mGpkgPath, QgsFields(), Qgis::WkbType::Point, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), true, m, errCause, &options, createdLayerUri ) == Qgis::VectorExportResult::Success );
+  QCOMPARE( createdLayerUri, mGpkgPath + "|layername=test_layer" );
   QVERIFY( errCause.isEmpty() );
   mGpkgConn.reset( md->createConnection( mDir.filePath( QStringLiteral( "test.gpkg" ) ), {} ) );
   md->saveConnection( mGpkgConn.get(), QStringLiteral( "GPKG_1" ) );
