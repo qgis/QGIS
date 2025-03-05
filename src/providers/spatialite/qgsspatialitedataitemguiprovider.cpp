@@ -49,8 +49,12 @@ void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     menu->addAction( actionCreateDatabase );
   }
 
-  if ( qobject_cast<QgsSLConnectionItem *>( item ) )
+  if ( QgsSLConnectionItem *connItem = qobject_cast<QgsSLConnectionItem *>( item ) )
   {
+    QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
+    menu->addAction( importVectorAction );
+    QObject::connect( importVectorAction, &QAction::triggered, item, [connItem, context, this] { handleImportVector( connItem, context ); } );
+
     const QList<QgsSLConnectionItem *> slConnectionItems = QgsDataItem::filteredItems<QgsSLConnectionItem>( selection );
     QAction *actionDeleteConnection = new QAction( slConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDeleteConnection, &QAction::triggered, this, [slConnectionItems, context] {
@@ -251,4 +255,27 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropUri( QgsSLConnectionItem *conne
   };
 
   return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "Spatialite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
+}
+
+void QgsSpatiaLiteDataItemGuiProvider::handleImportVector( QgsSLConnectionItem *connectionItem, QgsDataItemGuiContext context )
+{
+  if ( !connectionItem )
+    return;
+
+  QPointer< QgsSLConnectionItem > connectionItemPointer( connectionItem );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return;
+
+  auto onSuccess = [connectionItemPointer]() {
+    if ( connectionItemPointer )
+      connectionItemPointer->refresh();
+  };
+
+  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+      connectionItemPointer->refresh();
+  };
+
+  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), QString(), context, tr( "Spatialite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
 }

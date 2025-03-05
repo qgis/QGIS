@@ -48,6 +48,7 @@ class QgsGeoPackageItemGuiProvider : public QObject, public QgsDataItemGuiProvid
   private:
     bool handleDropGeopackage( QgsGeoPackageCollectionItem *item, const QMimeData *data, QgsDataItemGuiContext context );
     bool handleDropUri( QgsGeoPackageCollectionItem *item, const QgsMimeDataUtils::Uri &sourceUri, QgsDataItemGuiContext context );
+    void handleImportVector( QgsGeoPackageCollectionItem *item, QgsDataItemGuiContext context );
 
     //! Compacts (VACUUM) a geopackage database
     void vacuumGeoPackageDbAction( const QString &path, const QString &name, QgsDataItemGuiContext context );

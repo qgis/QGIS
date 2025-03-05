@@ -40,6 +40,7 @@ class QgsSpatiaLiteDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
     static void createDatabase( QgsDataItem *item );
     bool handleDropConnectionItem( QgsSLConnectionItem *connItem, const QMimeData *data, Qt::DropAction, QgsDataItemGuiContext context );
     bool handleDropUri( QgsSLConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, QgsDataItemGuiContext context );
+    void handleImportVector( QgsSLConnectionItem *connectionItem, QgsDataItemGuiContext context );
 };
 
 #endif // QGSSPATIALITEDATAITEMGUIPROVIDER_H

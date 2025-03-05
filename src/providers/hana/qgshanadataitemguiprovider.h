@@ -51,6 +51,7 @@ class QgsHanaDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 
     bool handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext context );
     bool handleDropUri( QgsHanaConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, const QString &toSchema, QgsDataItemGuiContext context );
+    void handleImportVector( QgsHanaConnectionItem *connectionItem, const QString &toSchema, QgsDataItemGuiContext context );
 };
 
 #endif // QGSHANADATAITEMGUIPROVIDER_H

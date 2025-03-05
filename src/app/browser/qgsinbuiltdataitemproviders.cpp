@@ -1754,6 +1754,13 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         }
       } );
       menu->addAction( newTableAction );
+
+      if ( qobject_cast<QgsFileDataCollectionItem *>( item ) )
+      {
+        QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
+        menu->addAction( importVectorAction );
+        QObject::connect( importVectorAction, &QAction::triggered, item, [item, context, this] { handleImportVector( item, context ); } );
+      }
     }
 
     // SQL dialog
@@ -2044,6 +2051,40 @@ bool QgsDatabaseItemGuiProvider::handleDropUri( QgsDataItem *item, const QgsMime
   providerOptions.insert( QStringLiteral( "overwrite" ), true );
 
   return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "Database Import" ), tr( "Import to database" ), providerOptions, onSuccess, onFailure, this );
+}
+
+void QgsDatabaseItemGuiProvider::handleImportVector( QgsDataItem *item, QgsDataItemGuiContext context )
+{
+  if ( !qobject_cast<QgsFileDataCollectionItem *>( item ) )
+    return;
+
+  if ( qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
+    return; // GPKG is handled elsewhere (QgsGeoPackageItemGuiProvider)
+
+  QPointer< QgsDataItem > connectionItemPointer( item );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( item->databaseConnection() );
+  if ( !databaseConnection )
+    return;
+
+  auto onSuccess = [connectionItemPointer]() {
+    if ( connectionItemPointer )
+    {
+      connectionItemPointer->refresh();
+    }
+  };
+
+  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+    {
+      connectionItemPointer->refresh();
+    }
+  };
+
+  QVariantMap providerOptions;
+  providerOptions.insert( QStringLiteral( "update" ), true );
+  providerOptions.insert( QStringLiteral( "overwrite" ), true );
+
+  return QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), QString(), context, tr( "Database Import" ), tr( "Import to database" ), providerOptions, onSuccess, onFailure, this );
 }
 
 void QgsDatabaseItemGuiProvider::openSqlDialog( const QString &connectionUri, const QString &provider, const QString &query, QgsDataItemGuiContext context, const QString &identifierName )

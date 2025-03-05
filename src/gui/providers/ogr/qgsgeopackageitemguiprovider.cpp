@@ -93,6 +93,10 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 
   if ( QgsGeoPackageCollectionItem *collectionItem = qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
   {
+    QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
+    menu->addAction( importVectorAction );
+    QObject::connect( importVectorAction, &QAction::triggered, item, [collectionItem, context, this] { handleImportVector( collectionItem, context ); } );
+
     if ( !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
     {
       // add a refresh action, but ONLY if the collection item isn't representing a file
@@ -628,6 +632,38 @@ bool QgsGeoPackageItemGuiProvider::handleDropUri( QgsGeoPackageCollectionItem *c
   providerOptions.insert( QStringLiteral( "overwrite" ), true );
 
   return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "GeoPackage Import" ), tr( "Import to GeoPackage database" ), providerOptions, onSuccess, onFailure, this );
+}
+
+void QgsGeoPackageItemGuiProvider::handleImportVector( QgsGeoPackageCollectionItem *connectionItem, QgsDataItemGuiContext context )
+{
+  if ( !connectionItem )
+    return;
+
+  QPointer< QgsGeoPackageCollectionItem > connectionItemPointer( connectionItem );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return;
+
+  auto onSuccess = [connectionItemPointer]() {
+    if ( connectionItemPointer )
+    {
+      connectionItemPointer->refresh();
+    }
+  };
+
+  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+    {
+      connectionItemPointer->refresh();
+    }
+  };
+
+  QVariantMap providerOptions;
+  providerOptions.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
+  providerOptions.insert( QStringLiteral( "update" ), true );
+  providerOptions.insert( QStringLiteral( "overwrite" ), true );
+
+  return QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), QString(), context, tr( "GeoPackage Import" ), tr( "Import to GeoPackage database" ), providerOptions, onSuccess, onFailure, this );
 }
 
 ///@endcond

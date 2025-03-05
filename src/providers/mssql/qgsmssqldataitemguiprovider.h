@@ -46,6 +46,7 @@ class QgsMssqlDataItemGuiProvider : public QObject, public QgsDataItemGuiProvide
 
     bool handleDrop( QgsMssqlConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext context );
     bool handleDropUri( QgsMssqlConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, const QString &toSchema, QgsDataItemGuiContext context );
+    void handleImportVector( QgsMssqlConnectionItem *connectionItem, const QString &toSchema, QgsDataItemGuiContext context );
 };
 
 #endif // QGSMSSQLDATAITEMGUIPROVIDER_H
