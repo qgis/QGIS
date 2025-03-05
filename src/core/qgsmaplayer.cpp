@@ -152,8 +152,6 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setMaximumScale( maximumScale() );
   layer->setMinimumScale( minimumScale() );
   layer->setScaleBasedVisibility( hasScaleBasedVisibility() );
-  layer->setLegendUrl( legendUrl() );
-  layer->setLegendUrlFormat( legendUrlFormat() );
   layer->setDependencies( dependencies() );
   layer->mShouldValidateCrs = mShouldValidateCrs;
   layer->setCrs( crs() );
@@ -371,7 +369,34 @@ QString QgsMapLayer::attributionUrl() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mServerProperties->attributionUrl();
+}
 
+void QgsMapLayer::setLegendUrl( const QString &legendUrl )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  mServerProperties->setLegendUrl( legendUrl );
+}
+
+QString QgsMapLayer::legendUrl() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mServerProperties->legendUrl();
+}
+
+void QgsMapLayer::setLegendUrlFormat( const QString &legendUrlFormat )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  mServerProperties->setLegendUrlFormat( legendUrlFormat );
+}
+
+QString QgsMapLayer::legendUrlFormat() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mServerProperties->legendUrlFormat();
 }
 
 void QgsMapLayer::setMetadataUrl( const QString &metaUrl )
@@ -661,8 +686,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   const QDomElement legendUrlElem = layerElement.firstChildElement( QStringLiteral( "legendUrl" ) );
   if ( !legendUrlElem.isNull() )
   {
-    mLegendUrl = legendUrlElem.text();
-    mLegendUrlFormat = legendUrlElem.attribute( QStringLiteral( "format" ), QString() );
+    mServerProperties->setLegendUrl( legendUrlElem.text() );
+    mServerProperties->setLegendUrlFormat( legendUrlElem.attribute( QStringLiteral( "format" ), QString() ) );
   }
 
   serverProperties()->readXml( layerElement );
@@ -856,13 +881,13 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   }
 
   // layer legendUrl
-  const QString aLegendUrl = legendUrl();
+  const QString aLegendUrl = mServerProperties->legendUrl();
   if ( !aLegendUrl.isEmpty() )
   {
     QDomElement layerLegendUrl = document.createElement( QStringLiteral( "legendUrl" ) );
     const QDomText layerLegendUrlText = document.createTextNode( aLegendUrl );
     layerLegendUrl.appendChild( layerLegendUrlText );
-    layerLegendUrl.setAttribute( QStringLiteral( "format" ), legendUrlFormat() );
+    layerLegendUrl.setAttribute( QStringLiteral( "format" ), mServerProperties->legendUrlFormat() );
     layerElement.appendChild( layerLegendUrl );
   }
 
