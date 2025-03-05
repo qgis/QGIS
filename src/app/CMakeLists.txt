@@ -428,12 +428,11 @@ if(QWT_VERSION_STR VERSION_GREATER_EQUAL 6.2 OR WITH_QWTPOLAR)
     )
 
     set(QWTPOLAR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1)
-
     set(QWTPOLAR_LIBRARY "")
   endif()
 else()
-  set(QWTPOLAR_LIBRARY "")
   set(QWTPOLAR_INCLUDE_DIR "")
+  set(QWTPOLAR_LIBRARY "")
 endif()
 
 # Test data dir for QgsAppScreenShots
@@ -535,11 +534,22 @@ endif()
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
 # loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
 add_library(qgis_app ${LIBRARY_TYPE} ${QGIS_APP_SRCS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_app PROPERTIES
+     RUNTIME_OUTPUT_NAME qgis_app${QGISPOSTFIX}
+     LIBRARY_OUTPUT_NAME qgis_app${QGISPOSTFIX}
+  )
+  set_target_properties(${QGIS_APP_NAME} PROPERTIES
+     RUNTIME_OUTPUT_NAME ${QGIS_APP_NAME}${QGISPOSTFIX}
+     LIBRARY_OUTPUT_NAME ${QGIS_APP_NAME}${QGISPOSTFIX}
+  )
+endif()
 
 # require c++17
 target_compile_features(qgis_app PRIVATE cxx_std_17)
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
+target_compile_definitions(qgis_app PRIVATE "QGISPOSTFIX=\"${QGISPOSTFIX}\"")
 if (POSTGRES_FOUND)
   target_compile_definitions(qgis_app PRIVATE -DPOSTGRESQL_VERSION=\"${PostgreSQL_VERSION_STRING}\")
 endif()
@@ -584,7 +594,7 @@ if (WITH_3D)
   )
 endif()
 
-target_include_directories(qgis_app SYSTEM PUBLIC
+target_include_directories(qgis_app SYSTEM BEFORE PUBLIC
   ${QWTPOLAR_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
 )
@@ -693,6 +703,7 @@ endif()
 
 if (WITH_PDAL)
   target_link_libraries(qgis_app ${PDAL_LIBRARIES})
+  target_include_directories(qgis_app PRIVATE ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal)
 endif()
 
 if(MSVC)

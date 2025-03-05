@@ -252,6 +252,12 @@ set (QGIS_3D_RCCS  shaders.qrc  ../../resources/3d/textures/textures.qrc)
 
 
 add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGIS_3D_PRIVATE_HDRS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_3d PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_3d${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_3d${QGISPOSTFIX}
+  )
+endif()
 
 if (USE_PRECOMPILED_HEADERS)
   target_precompile_headers(qgis_3d PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)

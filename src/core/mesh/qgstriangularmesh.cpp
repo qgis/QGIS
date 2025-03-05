@@ -27,7 +27,7 @@
 #include "qgslogger.h"
 #include "qgsmeshspatialindex.h"
 #include "qgsmeshlayerutils.h"
-#include "meshOptimizer/meshoptimizer.h"
+#include "meshoptimizer.h"
 
 static void ENP_centroid_step( const QPolygonF &pX, double &cx, double &cy, double &signedArea, int i, int i1 )
 {
@@ -552,7 +552,12 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
                     vertices.data(),
                     verticesCount,
                     sizeof( float ) * 3,
-                    maxNumberOfIndexes );
+                    maxNumberOfIndexes
+#if MESHOPTIMIZER_VERSION > 150
+                    , 0
+                    , nullptr
+#endif
+                  );
 
 
     returnIndexes.resize( size );

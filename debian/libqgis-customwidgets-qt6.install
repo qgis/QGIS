@@ -1,0 +1,2 @@
+usr/lib/python*/*-packages/PyQt6/uic/widget-plugins/qgis_customwidgets.py
+usr/lib/*/qt6/plugins/designer/libqgis_customwidgets*.so*
