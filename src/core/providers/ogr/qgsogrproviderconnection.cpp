@@ -315,6 +315,7 @@ void QgsOgrProviderConnection::createVectorTable( const QString &schema,
   opts[ QStringLiteral( "driverName" ) ] = QString( GDALGetDriverShortName( hDriver ) );
   QMap<int, int> map;
   QString errCause;
+  QString createdLayerName;
   Qgis::VectorExportResult errCode = QgsOgrProvider::createEmptyLayer(
                                        uri(),
                                        fields,
@@ -322,9 +323,11 @@ void QgsOgrProviderConnection::createVectorTable( const QString &schema,
                                        srs,
                                        overwrite,
                                        &map,
+                                       createdLayerName,
                                        &errCause,
                                        &opts
                                      );
+  // TODO we need some way to hand createdLayerName back to caller, as it may differ from the requested name...
   if ( errCode != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
