@@ -8378,8 +8378,15 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
 
     if ( destCRS.isValid() )
     {
-      QgsDatumTransformDialog::run( vlayer->crs(), destCRS, this, mMapCanvas );
-      ct = QgsCoordinateTransform( vlayer->crs(), destCRS, QgsProject::instance() );
+      if ( !vlayer->crs().isValid() )
+      {
+        vlayer->setCrs( destCRS );
+      }
+      else if ( vlayer->crs() != destCRS )
+      {
+        QgsDatumTransformDialog::run( vlayer->crs(), destCRS, this, mMapCanvas );
+        ct = QgsCoordinateTransform( vlayer->crs(), destCRS, QgsProject::instance() );
+      }
     }
 
     QgsRectangle filterExtent = dialog->filterExtent();
