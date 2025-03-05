@@ -20,12 +20,18 @@
       <string>Output</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="mEditSchema"/>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="mLabelSchemas">
         <property name="text">
          <string>Schema</string>
         </property>
        </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QLineEdit" name="mEditTable"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
@@ -34,11 +40,12 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QLineEdit" name="mEditTable"/>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QLineEdit" name="mEditSchema"/>
+      <item row="2" column="0" colspan="3">
+       <widget class="QCheckBox" name="mChkDropTable">
+        <property name="text">
+         <string>Replace destination table (if exists)</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
