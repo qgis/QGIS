@@ -166,6 +166,7 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema, co
   }
   QMap<int, int> map;
   QString errCause;
+  QString createdLayerUri;
   Qgis::VectorExportResult res = QgsPostgresProvider::createEmptyLayer(
     newUri.uri(),
     fields,
@@ -173,6 +174,7 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema, co
     srs,
     overwrite,
     &map,
+    createdLayerUri,
     &errCause,
     options
   );
