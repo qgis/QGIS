@@ -119,6 +119,7 @@ Required build dependencies:
 * QCA
 * qtkeychain (>= 0.5)
 * libzip
+* protobuf
 
 Optional dependencies:
 
