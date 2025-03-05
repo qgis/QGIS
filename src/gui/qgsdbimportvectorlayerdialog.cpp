@@ -217,5 +217,11 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
     destinationCrs = mCrsSelector->crs();
   }
 
+  // overwrite?
+  if ( mChkDropTable->isChecked() )
+  {
+    allProviderOptions.insert( QStringLiteral( "overwrite" ), true );
+  }
+
   return std::make_unique<QgsVectorLayerExporterTask>( mSourceLayer->clone(), destinationUri, mConnection->providerKey(), destinationCrs, allProviderOptions, true );
 }
