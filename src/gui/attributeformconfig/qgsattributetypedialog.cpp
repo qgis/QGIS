@@ -143,7 +143,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     }
 
     mMergePolicyComboBox->addItem( tr( "Use Largest Feature" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::LargestGeometry ) );
-    mMergePolicyComboBox->addItem( tr( "Skip Attribute" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::SetToNull ) );
+    mMergePolicyComboBox->addItem( tr( "Set to NULL" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::SetToNull ) );
   }
   else
   {
@@ -610,7 +610,7 @@ void QgsAttributeTypeDialog::updateMergePolicyLabel()
       break;
 
     case Qgis::FieldDomainMergePolicy::SetToNull:
-      helperText = tr( "Skip attribute." );
+      helperText = tr( "Set attribute to NULL." );
       break;
   }
   mMergePolicyDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( helperText ) );

@@ -390,7 +390,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents( bool skipAll )
       case Qgis::FieldDomainMergePolicy::SetToNull:
       {
         if ( currentComboBox )
-          currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "skip" ) ) );
+          currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "null" ) ) );
 
         break;
       }
@@ -453,6 +453,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QMetaType::Type column
 
   newComboBox->addItem( tr( "Skip Attribute" ), QStringLiteral( "skip" ) );
   newComboBox->addItem( tr( "Manual Value" ), QStringLiteral( "manual" ) );
+  newComboBox->addItem( tr( "Set to NULL" ), QStringLiteral( "null" ) );
 
   connect( newComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]() {
     bool isManual = newComboBox->currentData() == QLatin1String( "manual" );
@@ -542,6 +543,10 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
     {
       mergeResult = tr( "Skipped" );
     }
+    else if ( mergeBehaviorString == QLatin1String( "null" ) )
+    {
+      mergeResult = tr( "NULL" );
+    }
     else if ( mergeBehaviorString.startsWith( 'f' ) )
     {
       //an existing feature value
@@ -560,7 +565,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
 
     // Result formatting
     QString stringVal;
-    if ( mergeBehaviorString != QLatin1String( "skip" ) && mergeBehaviorString != QLatin1String( "manual" ) )
+    if ( mergeBehaviorString != QLatin1String( "skip" ) && mergeBehaviorString != QLatin1String( "manual" ) && mergeBehaviorString != QLatin1String( "null" ) )
     {
       const QgsEditorWidgetSetup setup = mFields.at( fieldIdx ).editorWidgetSetup();
       const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
@@ -921,6 +926,14 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
       continue;
 
     QVariant value;
+
+    if ( comboBox->currentData().toString() == QLatin1String( "null" ) )
+    {
+      results[fieldIdx] = value;
+      widgetIndex++;
+      continue;
+    }
+
     QWidget *w = mTableWidget->cellWidget( mFeatureList.size() + 1, widgetIndex );
     QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( w );
     if ( eww )
