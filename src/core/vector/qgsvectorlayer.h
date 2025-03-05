@@ -1851,6 +1851,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.38
      */
     void setFieldDuplicatePolicy( int index, Qgis::FieldDuplicatePolicy policy );
+
+    /**
+     * Sets a merge \a policy for the field with the specified index.
+     *
+     * \since QGIS 3.44
+     */
+    void setFieldMergePolicy( int index, Qgis::FieldDomainMergePolicy policy );
 #else
 
     /**
@@ -1890,6 +1897,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     else
     {
       sipCpp->setFieldDuplicatePolicy( a0, a1 );
+    }
+    % End
+
+    /**
+     * Sets a merge \a policy for the field with the specified index.
+     *
+     * \throws KeyError if no field with the specified index exists
+     * \since QGIS 3.44
+     */
+    void setFieldMergePolicy( int index, Qgis::FieldDomainMergePolicy policy );
+
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->fields().count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setFieldMergePolicy( a0, a1 );
     }
     % End
 #endif
@@ -2908,6 +2935,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Map that stores the duplicate policy for attributes
     QMap< QString, Qgis::FieldDuplicatePolicy > mAttributeDuplicatePolicy;
+
+    //! Map that stores the merge policy for attributes
+    QMap< QString, Qgis::FieldDomainMergePolicy > mAttributeMergePolicy;
 
     //! An internal structure to keep track of fields that have a defaultValueOnUpdate
     QSet<int> mDefaultValueOnUpdateFields;
