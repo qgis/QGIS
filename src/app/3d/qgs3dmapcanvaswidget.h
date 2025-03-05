@@ -28,7 +28,7 @@
 #define SIP_NO_FILE
 
 
-class Qgs3DMapToolPaintBrush;
+class Qgs3DMapToolPointCloudChangeAttributePaintbrush;
 class QLabel;
 class QProgressBar;
 
@@ -76,13 +76,13 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void setMainCanvas( QgsMapCanvas *canvas );
 
-    Qgs3DMapCanvas *mapCanvas3D() const { return mCanvas; }
+    Qgs3DMapCanvas *mapCanvas3D() { return mCanvas; }
 
-    Qgs3DAnimationWidget *animationWidget() const { return mAnimationWidget; }
+    Qgs3DAnimationWidget *animationWidget() { return mAnimationWidget; }
 
-    Qgs3DMapToolMeasureLine *measurementLineTool() const { return mMapToolMeasureLine; }
+    Qgs3DMapToolMeasureLine *measurementLineTool() { return mMapToolMeasureLine; }
 
-    QgsDockableWidgetHelper *dockableWidgetHelper() const { return mDockableWidgetHelper; }
+    QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
 
     void setCanvasName( const QString &name );
     QString canvasName() const { return mCanvasName; }
@@ -102,8 +102,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void cameraControl();
     void identify();
     void measureLine();
-    void paintBrush();
-    void polygonTool();
+    void changePointCloudAttributeByPaintbrush();
+    void changePointCloudAttributeByPolygon();
     void exportScene();
     void toggleNavigationWidget( bool visibility );
     void toggleFpsCounter( bool visibility );
@@ -141,7 +141,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QTimer *mLabelNavSpeedHideTimeout = nullptr;
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
-    std::unique_ptr<Qgs3DMapToolPointCloudChangeAttribute> mMapToolChangeAttribute;
+    QObjectUniquePtr<Qgs3DMapToolPointCloudChangeAttribute> mMapToolChangeAttribute;
     std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
     QgsMapTool *mMapToolPrevious = nullptr;
     QMenu *mExportMenu = nullptr;

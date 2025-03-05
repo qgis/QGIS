@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgs3dmaptoolpolygon.h
+    qgs3dmaptoolpointcloudchangeattributepolygon.h
     ---------------------
     begin                : February 2025
     copyright            : (C) 2025 by Matej Bagar
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS3DMAPTOOLPOLYGON_H
-#define QGS3DMAPTOOLPOLYGON_H
+#ifndef QGS3DMAPTOOLPOINTCLOUDCHANGEATTRIBUTEPOLYGON_H
+#define QGS3DMAPTOOLPOINTCLOUDCHANGEATTRIBUTEPOLYGON_H
 
 #include "qgs3dmaptoolpointcloudchangeattribute.h"
 
@@ -23,18 +23,16 @@
 class QgsRubberBand3D;
 class QgsPointXY;
 
-class Qgs3DMapToolPolygon : public Qgs3DMapToolPointCloudChangeAttribute
+class Qgs3DMapToolPointCloudChangeAttributePolygon : public Qgs3DMapToolPointCloudChangeAttribute
 {
     Q_OBJECT
 
   public:
-    Qgs3DMapToolPolygon( Qgs3DMapCanvas *canvas );
-    ~Qgs3DMapToolPolygon() override;
+    Qgs3DMapToolPointCloudChangeAttributePolygon( Qgs3DMapCanvas *canvas );
+    ~Qgs3DMapToolPointCloudChangeAttributePolygon() override;
 
     void activate() override;
     void deactivate() override;
-
-    bool allowsCameraControls() const override { return false; }
 
   private slots:
     void mousePressEvent( QMouseEvent *event ) override;
@@ -53,4 +51,4 @@ class Qgs3DMapToolPolygon : public Qgs3DMapToolPointCloudChangeAttribute
 };
 
 
-#endif //QGS3DMAPTOOLPOLYGON_H
+#endif //QGS3DMAPTOOLPOINTCLOUDCHANGEATTRIBUTEPOLYGON_H

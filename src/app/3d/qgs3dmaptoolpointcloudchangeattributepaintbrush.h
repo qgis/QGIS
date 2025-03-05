@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgs3dmaptoolpaintbrush.h
+  qgs3dmaptoolpointcloudchangeattributepaintbrush.h
   --------------------------------------
   Date                 : January 2025
   Copyright            : (C) 2025 by Matej Bagar
@@ -13,28 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS3DMAPTOOLPAINTBRUSH_H
-#define QGS3DMAPTOOLPAINTBRUSH_H
+#ifndef QGS3DMAPTOOLPOINTCLOUDCHANGEATTRIBUTEPAINTBRUSH_H
+#define QGS3DMAPTOOLPOINTCLOUDCHANGEATTRIBUTEPAINTBRUSH_H
 #include "qgs3dmaptool.h"
 #include "qgspoint.h"
 #include "qgs3dmaptoolpointcloudchangeattribute.h"
 
 class QgsRubberBand3D;
-class Qgs3DMapToolPaintBrush : public Qgs3DMapToolPointCloudChangeAttribute
+class Qgs3DMapToolPointCloudChangeAttributePaintbrush : public Qgs3DMapToolPointCloudChangeAttribute
 {
     Q_OBJECT
 
   public:
-    explicit Qgs3DMapToolPaintBrush( Qgs3DMapCanvas *canvas );
-    ~Qgs3DMapToolPaintBrush() override;
+    explicit Qgs3DMapToolPointCloudChangeAttributePaintbrush( Qgs3DMapCanvas *canvas );
+    ~Qgs3DMapToolPointCloudChangeAttributePaintbrush() override;
 
     void activate() override;
 
     void deactivate() override;
 
     QCursor cursor() const override;
-
-    bool allowsCameraControls() const override { return false; }
 
     void restart() override;
 
@@ -61,4 +59,4 @@ class Qgs3DMapToolPaintBrush : public Qgs3DMapToolPointCloudChangeAttribute
 };
 
 
-#endif //QGS3DMAPTOOLPAINTBRUSH_H
+#endif //QGS3DMAPTOOLPOINTCLOUDCHANGEATTRIBUTEPAINTBRUSH_H

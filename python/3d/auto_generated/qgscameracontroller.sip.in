@@ -214,7 +214,7 @@ Sets whether the camera controller responds to mouse and keyboard events
 .. versionadded:: 3.42
 %End
 
-    bool inputHandlersEnabled() const;
+    bool hasInputHandlersEnabled() const;
 %Docstring
 Returns whether the camera controller responds to mouse and keyboard events
 

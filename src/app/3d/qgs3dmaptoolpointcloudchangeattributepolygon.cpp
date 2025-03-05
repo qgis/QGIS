@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgs3dmaptoolpolygon.cpp
+    qgs3dmaptoolpointcloudchangeattributepolygon.cpp
     ---------------------
     begin                : February 2025
     copyright            : (C) 2025 by Matej Bagar
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgs3dmaptoolpolygon.h"
-#include "moc_qgs3dmaptoolpolygon.cpp"
+#include "qgs3dmaptoolpointcloudchangeattributepolygon.h"
+#include "moc_qgs3dmaptoolpointcloudchangeattributepolygon.cpp"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
 #include "qgsframegraph.h"
@@ -22,19 +22,20 @@
 #include "qgspoint.h"
 #include "qgsrubberband3d.h"
 #include "qgswindow3dengine.h"
-#include "qgs3deditutils.h"
+#include "qgisapp.h"
 
 #include <QApplication>
 #include <QMouseEvent>
 
-Qgs3DMapToolPolygon::Qgs3DMapToolPolygon( Qgs3DMapCanvas *canvas )
+
+Qgs3DMapToolPointCloudChangeAttributePolygon::Qgs3DMapToolPointCloudChangeAttributePolygon( Qgs3DMapCanvas *canvas )
   : Qgs3DMapToolPointCloudChangeAttribute( canvas )
 {
 }
 
-Qgs3DMapToolPolygon::~Qgs3DMapToolPolygon() = default;
+Qgs3DMapToolPointCloudChangeAttributePolygon::~Qgs3DMapToolPointCloudChangeAttributePolygon() = default;
 
-void Qgs3DMapToolPolygon::mousePressEvent( QMouseEvent *event )
+void Qgs3DMapToolPointCloudChangeAttributePolygon::mousePressEvent( QMouseEvent *event )
 {
   if ( !mIsMoving )
   {
@@ -42,16 +43,16 @@ void Qgs3DMapToolPolygon::mousePressEvent( QMouseEvent *event )
   }
 }
 
-void Qgs3DMapToolPolygon::mouseMoveEvent( QMouseEvent *event )
+void Qgs3DMapToolPointCloudChangeAttributePolygon::mouseMoveEvent( QMouseEvent *event )
 {
   if ( !mIsMoving )
   {
-    const QgsPoint movedPoint = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), *mCanvas );
+    const QgsPoint movedPoint = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() );
     mPolygonRubberBand->moveLastPoint( movedPoint );
   }
 }
 
-void Qgs3DMapToolPolygon::keyPressEvent( QKeyEvent *event )
+void Qgs3DMapToolPointCloudChangeAttributePolygon::keyPressEvent( QKeyEvent *event )
 {
   if ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete )
   {
@@ -76,18 +77,18 @@ void Qgs3DMapToolPolygon::keyPressEvent( QKeyEvent *event )
   }
   else if ( event->key() == Qt::Key_Space )
   {
-    const bool newState = !mCanvas->cameraController()->inputHandlersEnabled();
+    const bool newState = !mCanvas->cameraController()->hasInputHandlersEnabled();
     mCanvas->cameraController()->setInputHandlersEnabled( newState );
     mIsMoving = newState;
   }
 }
 
-void Qgs3DMapToolPolygon::mouseReleaseEvent( QMouseEvent *event )
+void Qgs3DMapToolPointCloudChangeAttributePolygon::mouseReleaseEvent( QMouseEvent *event )
 {
   if ( ( event->pos() - mClickPoint ).manhattanLength() > QApplication::startDragDistance() || mIsMoving )
     return;
 
-  const QgsPoint newPoint = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), *mCanvas );
+  const QgsPoint newPoint = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() );
 
   if ( event->button() == Qt::LeftButton )
   {
@@ -106,7 +107,7 @@ void Qgs3DMapToolPolygon::mouseReleaseEvent( QMouseEvent *event )
   }
 }
 
-void Qgs3DMapToolPolygon::activate()
+void Qgs3DMapToolPointCloudChangeAttributePolygon::activate()
 {
   // cannot move this to the constructor as there are no mapSettings available yet when the tool is created
   if ( !mPolygonRubberBand )
@@ -116,12 +117,12 @@ void Qgs3DMapToolPolygon::activate()
   }
 }
 
-void Qgs3DMapToolPolygon::deactivate()
+void Qgs3DMapToolPointCloudChangeAttributePolygon::deactivate()
 {
   restart();
 }
 
-void Qgs3DMapToolPolygon::run()
+void Qgs3DMapToolPointCloudChangeAttributePolygon::run()
 {
   if ( mScreenPoints.size() < 3 )
     return;
@@ -129,10 +130,10 @@ void Qgs3DMapToolPolygon::run()
   QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
 
   const QgsGeometry searchPolygon = QgsGeometry( new QgsPolygon( new QgsLineString( mScreenPoints ) ) );
-  Qgs3DEditUtils::changeAttributeValue( searchPolygon, mAttributeName, mNewValue, *mCanvas );
+  changeAttributeValue( searchPolygon, mAttributeName, mNewValue, *mCanvas, QgisApp::instance()->activeLayer() );
 }
 
-void Qgs3DMapToolPolygon::restart()
+void Qgs3DMapToolPointCloudChangeAttributePolygon::restart()
 {
   mCanvas->cameraController()->setInputHandlersEnabled( true );
   mScreenPoints.clear();
