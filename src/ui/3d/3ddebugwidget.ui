@@ -61,7 +61,7 @@
         <x>0</x>
         <y>0</y>
         <width>501</width>
-        <height>742</height>
+        <height>795</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -127,6 +127,13 @@
           <widget class="QCheckBox" name="chkStopUpdates">
            <property name="text">
             <string>Stop scene updates</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="chkStopOriginShifts">
+           <property name="text">
+            <string>Stop automatic origin shifts</string>
            </property>
           </widget>
          </item>

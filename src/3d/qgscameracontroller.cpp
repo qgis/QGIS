@@ -209,6 +209,16 @@ void QgsCameraController::setLookingAtPoint( const QgsVector3D &point, float dis
   setCameraPose( camPose );
 }
 
+QgsVector3D QgsCameraController::lookingAtMapPoint() const
+{
+  return lookingAtPoint() + mOrigin;
+}
+
+void QgsCameraController::setLookingAtMapPoint( const QgsVector3D &point, float distance, float pitch, float yaw )
+{
+  setLookingAtPoint( point - mOrigin, distance, pitch, yaw );
+}
+
 void QgsCameraController::setCameraPose( const QgsCameraPose &camPose, bool force )
 {
   if ( camPose == mCameraPose && !force )
