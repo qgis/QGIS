@@ -107,9 +107,9 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   // create an empty layer
   QString errMsg;
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
-  QString createdLayerName;
+  QString uriUpdated;
   mError = pReg->createEmptyLayer( providerKey, uri, fields, geometryType, crs, overwrite, mOldToNewAttrIdx,
-                                   errMsg, !modifiedOptions.isEmpty() ? &modifiedOptions : nullptr, createdLayerName );
+                                   errMsg, !modifiedOptions.isEmpty() ? &modifiedOptions : nullptr, uriUpdated );
 
   if ( errorCode() != Qgis::VectorExportResult::Success )
   {
@@ -127,20 +127,6 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   mAttributeCount++;
 
   QgsDebugMsgLevel( QStringLiteral( "Created empty layer" ), 2 );
-
-  QString uriUpdated( uri );
-  // HACK sorry...
-  if ( providerKey == QLatin1String( "ogr" ) )
-  {
-    QString layerName;
-    if ( options.contains( QStringLiteral( "layerName" ) ) )
-      layerName = options.value( QStringLiteral( "layerName" ) ).toString();
-    if ( !layerName.isEmpty() )
-    {
-      uriUpdated += QLatin1String( "|layername=" );
-      uriUpdated += layerName;
-    }
-  }
 
   // Oracle specific HACK: we cannot guess the geometry type when there is no rows, so we need
   // to force it in the uri
