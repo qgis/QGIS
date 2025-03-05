@@ -157,6 +157,7 @@ void QgsMssqlProviderConnection::createVectorTable( const QString &schema, const
   }
   QMap<int, int> map;
   QString errCause;
+  QString createdLayerUri;
   const Qgis::VectorExportResult res = QgsMssqlProvider::createEmptyLayer(
     newUri.uri(),
     fields,
@@ -164,6 +165,7 @@ void QgsMssqlProviderConnection::createVectorTable( const QString &schema, const
     srs,
     overwrite,
     &map,
+    createdLayerUri,
     &errCause,
     options
   );

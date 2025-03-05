@@ -1637,7 +1637,7 @@ QgsCoordinateReferenceSystem QgsHanaProvider::crs() const
   return srs;
 }
 
-Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString *errorMessage, const QMap<QString, QVariant> * )
+Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString &createdLayerUri, QString *errorMessage, const QMap<QString, QVariant> * )
 {
   QgsDataSourceUri dsUri( uri );
   QgsHanaConnectionRef conn( dsUri );
@@ -1647,6 +1647,8 @@ Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer( const QString &uri, 
       *errorMessage = QObject::tr( "Connection to database failed" );
     return Qgis::VectorExportResult::ErrorConnectionFailed;
   }
+
+  createdLayerUri = uri;
 
   QString schemaName = dsUri.schema();
   QString tableName = dsUri.table();
@@ -1852,11 +1854,11 @@ QList<QgsDataItemProvider *> QgsHanaProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-Qgis::VectorExportResult QgsHanaProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsHanaProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri )
 {
   return QgsHanaProvider::createEmptyLayer(
     uri, fields, wkbType, srs, overwrite,
-    &oldToNewAttrIdxMap, &errorMessage, options
+    &oldToNewAttrIdxMap, createdLayerUri, &errorMessage, options
   );
 }
 

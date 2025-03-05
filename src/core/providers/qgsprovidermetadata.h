@@ -483,6 +483,11 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 
     /**
      * Creates new empty vector layer
+     *
+     * The \a createdLayerUri parameter will be set to the actual URI of the layer created.
+     * In some circumstances this may differ from \a uri, eg when the provider has had to
+     * automatically launder a layer name.
+     *
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
@@ -493,7 +498,8 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
         bool overwrite,
         QMap<int, int> &oldToNewAttrIdxMap,
         QString &errorMessage,
-        const QMap<QString, QVariant> *options );
+        const QMap<QString, QVariant> *options,
+        QString &createdLayerUri );
 #endif
 
     /**

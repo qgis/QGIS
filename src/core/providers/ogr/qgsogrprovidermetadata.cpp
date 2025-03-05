@@ -60,11 +60,11 @@ Qgis::VectorExportResult QgsOgrProviderMetadata::createEmptyLayer( const QString
     bool overwrite,
     QMap<int, int> &oldToNewAttrIdxMap,
     QString &errorMessage,
-    const QMap<QString, QVariant> *options )
+    const QMap<QString, QVariant> *options, QString &createdLayerUri )
 {
   return QgsOgrProvider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
-           &oldToNewAttrIdxMap, &errorMessage, options
+           &oldToNewAttrIdxMap, createdLayerUri, &errorMessage, options
          );
 }
 
