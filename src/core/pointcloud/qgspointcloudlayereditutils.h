@@ -21,7 +21,6 @@
 
 #include <optional>
 
-#include <QVector>
 #include <QByteArray>
 
 #define SIP_NO_FILE
@@ -31,7 +30,6 @@ class QgsPointCloudNodeId;
 class QgsPointCloudAttribute;
 class QgsPointCloudAttributeCollection;
 class QgsPointCloudRequest;
-
 class QgsCopcPointCloudIndex;
 
 /**
