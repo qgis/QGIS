@@ -97,6 +97,12 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   if ( QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( item ) )
   {
+    QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
+    menu->addAction( importVectorAction );
+    const QString destinationSchema = schemaItem->name();
+    QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( schemaItem->parent() );
+    QObject::connect( importVectorAction, &QAction::triggered, item, [connItem, context, destinationSchema, this] { handleImportVector( connItem, destinationSchema, context ); } );
+
     QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
     connect( actionRefresh, &QAction::triggered, this, [schemaItem] { schemaItem->refresh(); } );
     menu->addAction( actionRefresh );
@@ -699,4 +705,33 @@ bool QgsPostgresDataItemGuiProvider::handleDropUri( QgsPGConnectionItem *connect
   };
 
   return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "PostGIS Import" ), tr( "Import to PostGIS database" ), QVariantMap(), onSuccess, onFailure, this );
+}
+
+void QgsPostgresDataItemGuiProvider::handleImportVector( QgsPGConnectionItem *connectionItem, const QString &toSchema, QgsDataItemGuiContext context )
+{
+  if ( !connectionItem )
+    return;
+
+  QPointer< QgsPGConnectionItem > connectionItemPointer( connectionItem );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return;
+
+  auto onSuccess = [connectionItemPointer, toSchema]() {
+    if ( connectionItemPointer )
+    {
+      if ( connectionItemPointer )
+        connectionItemPointer->refreshSchema( toSchema );
+    }
+  };
+
+  auto onFailure = [connectionItemPointer, toSchema]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+    {
+      if ( connectionItemPointer )
+        connectionItemPointer->refreshSchema( toSchema );
+    }
+  };
+
+  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), toSchema, context, tr( "PostGIS Import" ), tr( "Import to PostGIS database" ), QVariantMap(), onSuccess, onFailure, this );
 }

@@ -100,6 +100,12 @@ void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
   }
   else if ( QgsMssqlSchemaItem *schemaItem = qobject_cast<QgsMssqlSchemaItem *>( item ) )
   {
+    QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
+    menu->addAction( importVectorAction );
+    const QString destinationSchema = schemaItem->name();
+    QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( schemaItem->parent() );
+    QObject::connect( importVectorAction, &QAction::triggered, item, [connItem, context, destinationSchema, this] { handleImportVector( connItem, destinationSchema, context ); } );
+
     QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
     connect( actionRefresh, &QAction::triggered, this, [schemaItem] {
       if ( schemaItem->parent() )
@@ -409,4 +415,37 @@ bool QgsMssqlDataItemGuiProvider::handleDropUri( QgsMssqlConnectionItem *connect
   };
 
   return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "SQL Server Import" ), tr( "Import to SQL Server database" ), QVariantMap(), onSuccess, onFailure, this );
+}
+
+void QgsMssqlDataItemGuiProvider::handleImportVector( QgsMssqlConnectionItem *connectionItem, const QString &toSchema, QgsDataItemGuiContext context )
+{
+  if ( !connectionItem )
+    return;
+
+  QPointer< QgsMssqlConnectionItem > connectionItemPointer( connectionItem );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return;
+
+  auto onSuccess = [connectionItemPointer]() {
+    if ( connectionItemPointer )
+    {
+      if ( connectionItemPointer->state() == Qgis::BrowserItemState::Populated )
+        connectionItemPointer->refresh();
+      else
+        connectionItemPointer->populate();
+    }
+  };
+
+  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+    {
+      if ( connectionItemPointer->state() == Qgis::BrowserItemState::Populated )
+        connectionItemPointer->refresh();
+      else
+        connectionItemPointer->populate();
+    }
+  };
+
+  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), toSchema, context, tr( "SQL Server Import" ), tr( "Import to SQL Server database" ), QVariantMap(), onSuccess, onFailure, this );
 }

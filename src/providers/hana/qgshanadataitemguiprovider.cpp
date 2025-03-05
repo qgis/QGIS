@@ -83,6 +83,12 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
 
   if ( QgsHanaSchemaItem *schemaItem = qobject_cast<QgsHanaSchemaItem *>( item ) )
   {
+    QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
+    menu->addAction( importVectorAction );
+    const QString destinationSchema = schemaItem->name();
+    QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( schemaItem->parent() );
+    QObject::connect( importVectorAction, &QAction::triggered, item, [connItem, context, destinationSchema, this] { handleImportVector( connItem, destinationSchema, context ); } );
+
     QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
     connect( actionRefresh, &QAction::triggered, this, [schemaItem] { schemaItem->refresh(); } );
     menu->addAction( actionRefresh );
@@ -533,4 +539,33 @@ bool QgsHanaDataItemGuiProvider::handleDropUri( QgsHanaConnectionItem *connectio
   };
 
   return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "SAP HANA Import" ), tr( "Import to SAP HANA database" ), QVariantMap(), onSuccess, onFailure, this );
+}
+
+void QgsHanaDataItemGuiProvider::handleImportVector( QgsHanaConnectionItem *connectionItem, const QString &toSchema, QgsDataItemGuiContext context )
+{
+  if ( !connectionItem )
+    return;
+
+  QPointer< QgsHanaConnectionItem > connectionItemPointer( connectionItem );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return;
+
+  auto onSuccess = [connectionItemPointer, toSchema]() {
+    if ( connectionItemPointer )
+    {
+      if ( connectionItemPointer )
+        connectionItemPointer->refreshSchema( toSchema );
+    }
+  };
+
+  auto onFailure = [connectionItemPointer, toSchema]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+    {
+      if ( connectionItemPointer )
+        connectionItemPointer->refreshSchema( toSchema );
+    }
+  };
+
+  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), toSchema, context, tr( "SAP HANA Import" ), tr( "Import to SAP HANA database" ), QVariantMap(), onSuccess, onFailure, this );
 }

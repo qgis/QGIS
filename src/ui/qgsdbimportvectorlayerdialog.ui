@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>478</width>
-    <height>542</height>
+    <height>491</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Import Vector Layer</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,0,0">
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
@@ -138,6 +138,19 @@
     </widget>
    </item>
    <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -152,6 +165,7 @@
   <zorder>mButtonBox</zorder>
   <zorder>mGroupBoxOutput</zorder>
   <zorder>groupBox</zorder>
+  <zorder>verticalSpacer</zorder>
  </widget>
  <customwidgets>
   <customwidget>
