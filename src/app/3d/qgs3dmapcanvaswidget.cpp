@@ -52,8 +52,8 @@
 
 #include "qgsmap3dexportwidget.h"
 #include "qgs3dmapexportsettings.h"
-#include "qgs3dmaptoolpaintbrush.h"
-#include "qgs3dmaptoolpolygon.h"
+#include "qgs3dmaptoolpointcloudchangeattributepaintbrush.h"
+#include "qgs3dmaptoolpointcloudchangeattributepolygon.h"
 
 #include "qgsdockablewidgethelper.h"
 #include "qgsrubberband.h"
@@ -101,8 +101,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mEditingToolBar->addAction( mEditingToolsAction );
   QToolButton *editingToolsButton = qobject_cast<QToolButton *>( mEditingToolBar->widgetForAction( mEditingToolsAction ) );
   editingToolsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
-  QAction *actionPointCloudChangeAttributeTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectPolygon.svg" ) ) ), tr( "Polygon selector" ), this, &Qgs3DMapCanvasWidget::polygonTool );
-  QAction *actionPaintBrush = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "propertyicons/rendering.svg" ) ) ), tr( "Paint Brush Selector" ), this, &Qgs3DMapCanvasWidget::paintBrush );
+  QAction *actionPointCloudChangeAttributeTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectPolygon.svg" ) ) ), tr( "Select by Polygon" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPolygon );
+  QAction *actionPaintbrush = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "propertyicons/rendering.svg" ) ) ), tr( "Select by Paintbrush" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPaintbrush );
 
   mEditingToolBar->addWidget( mPointCloudEditingToolbar );
   mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) );
@@ -163,7 +163,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   actionGroup->addAction( actionCameraControl );
   actionGroup->addAction( actionIdentify );
   actionGroup->addAction( actionMeasurementTool );
-  actionGroup->addAction( actionPaintBrush );
+  actionGroup->addAction( actionPaintbrush );
   actionGroup->addAction( actionPointCloudChangeAttributeTool );
   actionGroup->setExclusive( true );
 
@@ -471,27 +471,27 @@ void Qgs3DMapCanvasWidget::measureLine()
   mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureLine : nullptr );
 }
 
-void Qgs3DMapCanvasWidget::paintBrush()
+void Qgs3DMapCanvasWidget::changePointCloudAttributeByPaintbrush()
 {
   const QAction *action = qobject_cast<QAction *>( sender() );
   if ( !action )
     return;
 
   mCanvas->setMapTool( nullptr );
-  mMapToolChangeAttribute.reset( new Qgs3DMapToolPaintBrush( mCanvas ) );
+  mMapToolChangeAttribute.reset( new Qgs3DMapToolPointCloudChangeAttributePaintbrush( mCanvas ) );
   onPointCloudChangeAttributeSettingsChanged();
   mCanvas->setMapTool( mMapToolChangeAttribute.get() );
   mEditingToolsAction->setIcon( action->icon() );
 }
 
-void Qgs3DMapCanvasWidget::polygonTool()
+void Qgs3DMapCanvasWidget::changePointCloudAttributeByPolygon()
 {
   const QAction *action = qobject_cast<QAction *>( sender() );
   if ( !action )
     return;
 
   mCanvas->setMapTool( nullptr );
-  mMapToolChangeAttribute.reset( new Qgs3DMapToolPolygon( mCanvas ) );
+  mMapToolChangeAttribute.reset( new Qgs3DMapToolPointCloudChangeAttributePolygon( mCanvas ) );
   onPointCloudChangeAttributeSettingsChanged();
   mCanvas->setMapTool( mMapToolChangeAttribute.get() );
   mEditingToolsAction->setIcon( action->icon() );

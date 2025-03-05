@@ -228,7 +228,7 @@ class _3D_EXPORT QgsCameraController : public QObject
      * Returns whether the camera controller responds to mouse and keyboard events
      * \since QGIS 3.44
      */
-    bool inputHandlersEnabled() const { return mInputHandlersEnabled; }
+    bool hasInputHandlersEnabled() const { return mInputHandlersEnabled; }
 
   public slots:
 

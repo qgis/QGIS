@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgs3dmaptoolpaintbrush.cpp
+  qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp
   --------------------------------------
   Date                 : January 2025
   Copyright            : (C) 2025 by Matej Bagar
@@ -13,9 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgs3dmaptoolpaintbrush.h"
-#include "moc_qgs3dmaptoolpaintbrush.cpp"
-#include "qgs3deditutils.h"
+#include "qgs3dmaptoolpointcloudchangeattributepaintbrush.h"
+#include "moc_qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp"
 #include "qgsrubberband3d.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
@@ -24,27 +23,28 @@
 #include "qgsgeometry.h"
 #include "qgsguiutils.h"
 #include "qgslinestring.h"
+#include "qgisapp.h"
 
 
 class QgsPointCloudAttribute;
-Qgs3DMapToolPaintBrush::Qgs3DMapToolPaintBrush( Qgs3DMapCanvas *canvas )
+Qgs3DMapToolPointCloudChangeAttributePaintbrush::Qgs3DMapToolPointCloudChangeAttributePaintbrush( Qgs3DMapCanvas *canvas )
   : Qgs3DMapToolPointCloudChangeAttribute( canvas )
 {
 }
 
-Qgs3DMapToolPaintBrush::~Qgs3DMapToolPaintBrush() = default;
+Qgs3DMapToolPointCloudChangeAttributePaintbrush::~Qgs3DMapToolPointCloudChangeAttributePaintbrush() = default;
 
-void Qgs3DMapToolPaintBrush::run()
+void Qgs3DMapToolPointCloudChangeAttributePaintbrush::run()
 {
   QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
 
   const QgsGeometry searchSkeleton = QgsGeometry( new QgsLineString( mDragPositions ) );
-  const QgsGeometry searchPolygon = searchSkeleton.buffer( mSelectionRubberBand->width() / 2, 37 );
-  Qgs3DEditUtils::changeAttributeValue( searchPolygon, mAttributeName, mNewValue, *mCanvas );
+  const QgsGeometry searchPolygon = searchSkeleton.buffer( mSelectionRubberBand->width() / 2, 6 );
+  changeAttributeValue( searchPolygon, mAttributeName, mNewValue, *mCanvas, QgisApp::instance()->activeLayer() );
 }
 
 
-void Qgs3DMapToolPaintBrush::activate()
+void Qgs3DMapToolPointCloudChangeAttributePaintbrush::activate()
 {
   mCanvas->cameraController()->setInputHandlersEnabled( false );
   mSelectionRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point ) );
@@ -52,14 +52,14 @@ void Qgs3DMapToolPaintBrush::activate()
   mSelectionRubberBand->setWidth( 32 );
   mSelectionRubberBand->setOutlineColor( mSelectionRubberBand->color() );
   mSelectionRubberBand->setColor( QColorConstants::Transparent );
-  mSelectionRubberBand->addPoint( Qgs3DUtils::screenPointToMapCoordinates( QCursor::pos(), *mCanvas ) );
+  mSelectionRubberBand->addPoint( Qgs3DUtils::screenPointToMapCoordinates( QCursor::pos(), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() ) );
   mIsActive = true;
   mHighlighterRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Polygon ) );
   mHighlighterRubberBand->setMarkersEnabled( false );
   mHighlighterRubberBand->setEdgesEnabled( false );
 }
 
-void Qgs3DMapToolPaintBrush::deactivate()
+void Qgs3DMapToolPointCloudChangeAttributePaintbrush::deactivate()
 {
   restart();
   mSelectionRubberBand.reset();
@@ -67,33 +67,33 @@ void Qgs3DMapToolPaintBrush::deactivate()
   mCanvas->cameraController()->setInputHandlersEnabled( true );
 }
 
-QCursor Qgs3DMapToolPaintBrush::cursor() const
+QCursor Qgs3DMapToolPointCloudChangeAttributePaintbrush::cursor() const
 {
   return Qt::CrossCursor;
 }
 
-void Qgs3DMapToolPaintBrush::restart()
+void Qgs3DMapToolPointCloudChangeAttributePaintbrush::restart()
 {
   mDragPositions.clear();
   mHighlighterRubberBand->reset();
   mIsClicked = false;
 }
 
-void Qgs3DMapToolPaintBrush::generateHighlightArea()
+void Qgs3DMapToolPointCloudChangeAttributePaintbrush::generateHighlightArea()
 {
   const QgsGeometry searchSkeleton = QgsGeometry( new QgsLineString( mDragPositions ) );
-  const QgsGeometry searchGeometry = searchSkeleton.buffer( mSelectionRubberBand->width() / 2, 37 );
+  const QgsGeometry searchGeometry = searchSkeleton.buffer( mSelectionRubberBand->width() / 2, 6 );
   QgsPolygon *searchPolygon = qgsgeometry_cast<QgsPolygon *>( searchGeometry.constGet() );
   Q_ASSERT( searchPolygon );
   auto transform = [this]( const QgsPoint &point ) -> QgsPoint {
-    return Qgs3DUtils::screenPointToMapCoordinates( QPoint( point.x(), point.y() ), *mCanvas );
+    return Qgs3DUtils::screenPointToMapCoordinates( QPoint( static_cast<int>( point.x() ), static_cast<int>( point.y() ) ), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() );
   };
   searchPolygon->addZValue( 0 );
   searchPolygon->transformVertices( transform );
   mHighlighterRubberBand->setGeometry( QgsGeometry( searchPolygon->clone() ) );
 }
 
-void Qgs3DMapToolPaintBrush::mousePressEvent( QMouseEvent *event )
+void Qgs3DMapToolPointCloudChangeAttributePaintbrush::mousePressEvent( QMouseEvent *event )
 {
   if ( event->button() == Qt::LeftButton && !mIsMoving )
   {
@@ -102,7 +102,7 @@ void Qgs3DMapToolPaintBrush::mousePressEvent( QMouseEvent *event )
   }
 }
 
-void Qgs3DMapToolPaintBrush::mouseReleaseEvent( QMouseEvent *event )
+void Qgs3DMapToolPointCloudChangeAttributePaintbrush::mouseReleaseEvent( QMouseEvent *event )
 {
   if ( mIsClicked && event->button() == Qt::LeftButton && !mIsMoving )
   {
@@ -114,11 +114,11 @@ void Qgs3DMapToolPaintBrush::mouseReleaseEvent( QMouseEvent *event )
   mIsClicked = false;
 }
 
-void Qgs3DMapToolPaintBrush::mouseMoveEvent( QMouseEvent *event )
+void Qgs3DMapToolPointCloudChangeAttributePaintbrush::mouseMoveEvent( QMouseEvent *event )
 {
   if ( mIsActive )
   {
-    const QgsPoint newPos = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), *mCanvas );
+    const QgsPoint newPos = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() );
     mSelectionRubberBand->moveLastPoint( newPos );
 
     if ( mIsClicked && !mIsMoving )
@@ -129,7 +129,7 @@ void Qgs3DMapToolPaintBrush::mouseMoveEvent( QMouseEvent *event )
   }
 }
 
-void Qgs3DMapToolPaintBrush::mouseWheelEvent( QWheelEvent *event )
+void Qgs3DMapToolPointCloudChangeAttributePaintbrush::mouseWheelEvent( QWheelEvent *event )
 {
   // Moving horizontally or being in movement mode discards the event
   if ( event->angleDelta().y() == 0 || mIsMoving )
@@ -143,13 +143,12 @@ void Qgs3DMapToolPaintBrush::mouseWheelEvent( QWheelEvent *event )
   const QgsSettings settings;
   const bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
   const bool shrink = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
-  double zoomFactor = shrink ? 0.75 : 1.5;
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
-  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( event->angleDelta().y() );
+  const double zoomFactor = ( shrink ? 0.8 : 1.25 ) / 120.0 * std::fabs( event->angleDelta().y() );
   mSelectionRubberBand->setWidth( mSelectionRubberBand->width() * zoomFactor );
 }
 
-void Qgs3DMapToolPaintBrush::keyPressEvent( QKeyEvent *event )
+void Qgs3DMapToolPointCloudChangeAttributePaintbrush::keyPressEvent( QKeyEvent *event )
 {
   if ( mIsClicked && event->key() == Qt::Key_Escape )
   {
@@ -158,7 +157,7 @@ void Qgs3DMapToolPaintBrush::keyPressEvent( QKeyEvent *event )
 
   if ( !mIsClicked && event->key() == Qt::Key_Space )
   {
-    const bool newState = !mCanvas->cameraController()->inputHandlersEnabled();
+    const bool newState = !mCanvas->cameraController()->hasInputHandlersEnabled();
     mCanvas->cameraController()->setInputHandlersEnabled( newState );
     mIsMoving = newState;
   }

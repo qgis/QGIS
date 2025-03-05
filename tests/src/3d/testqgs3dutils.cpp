@@ -21,6 +21,10 @@
 #include "qgsray3d.h"
 
 #include "qgs3dexportobject.h"
+#include "qgs3dmapscene.h"
+#include "qgscameracontroller.h"
+#include "qgsoffscreen3dengine.h"
+#include "qgsrasterlayer.h"
 
 #include <QSize>
 #include <QtMath>
@@ -57,8 +61,7 @@ class TestQgs3DUtils : public QgsTest
     void testExportToObj();
     void testDefinesToShaderCode();
     void testDecomposeTransformMatrix();
-
-  private:
+    void testScreenPointToMapCoordinates();
 };
 
 //runs before all tests
@@ -493,6 +496,25 @@ void TestQgs3DUtils::testDecomposeTransformMatrix()
   QVERIFY( qgsVectorNear( s2, QVector3D( 1, 1, 1 ), 1e-6 ) );
   QVERIFY( qgsVectorNear( t2, QVector3D( 500, 600, 700 ), 1e-6 ) );
   QVERIFY( qgsQuaternionNear( r2, q2, 1e-6 ) );
+}
+
+void TestQgs3DUtils::testScreenPointToMapCoordinates()
+{
+  QgsRasterLayer *layer = new QgsRasterLayer( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
+  Qgs3DMapSettings map;
+  map.setCrs( layer->crs() );
+  map.setExtent( layer->extent() );
+  map.setLayers( QList<QgsMapLayer *>() << layer );
+  QgsOffscreen3DEngine engine;
+  const Qgs3DMapScene *scene = new Qgs3DMapScene( map, &engine );
+  const QgsPoint mapPoint = Qgs3DUtils::screenPointToMapCoordinates( QPoint( 50, 50 ), QSize( 100, 100 ), scene->cameraController(), &map );
+
+  // this placement is weird, but it fixes the clang-tidy warning
+  delete scene;
+
+  QGSCOMPARENEAR( mapPoint.x(), 321900, 0.1 );
+  QGSCOMPARENEAR( mapPoint.y(), 129900.94, 0.1 );
+  QGSCOMPARENEAR( mapPoint.z(), -5, 0.1 );
 }
 
 

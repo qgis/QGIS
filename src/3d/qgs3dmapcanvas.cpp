@@ -252,10 +252,6 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
     mScene->cameraController()->setEnabled( true );
     setCursor( Qt::OpenHandCursor );
   }
-  else if ( !mMapTool && tool )
-  {
-    mScene->cameraController()->setEnabled( tool->allowsCameraControls() );
-  }
 
   if ( mMapTool )
     mMapTool->deactivate();
