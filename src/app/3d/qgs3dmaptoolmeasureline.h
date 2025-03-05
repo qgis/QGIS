@@ -65,8 +65,6 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     void keyPressEvent( QKeyEvent *event ) override;
 
   private:
-    bool mIsAlreadyActivated = false;
-
     //! Store points
     QVector<QgsPoint> mPoints;
 

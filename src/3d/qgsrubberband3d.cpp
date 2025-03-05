@@ -392,6 +392,13 @@ void QgsRubberBand3D::moveLastPoint( const QgsPoint &pt )
   updateGeometry();
 }
 
+void QgsRubberBand3D::removePenultimatePoint()
+{
+  const int penultimateVertexIndex = mLineString.numPoints() - 2;
+  mLineString.deleteVertex( QgsVertexId( 0, 0, penultimateVertexIndex ) );
+  updateGeometry();
+}
+
 void QgsRubberBand3D::updateGeometry()
 {
   QgsLineVertexData lineData;

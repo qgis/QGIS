@@ -191,9 +191,14 @@ class _3D_EXPORT QgsRubberBand3D
      */
     void setGeometry( const QgsGeometry &geometry );
 
+    //! Removes the last point, usually the one tracked by the mouse
     void removeLastPoint();
 
+    //! Moves the last point, usually the one tracked by the mouse
     void moveLastPoint( const QgsPoint &pt );
+
+    //! Removes the one-before-last point, usually the last digitized point. Useful when undoing digitizing.
+    void removePenultimatePoint();
 
     //! Sets whether the marker on the last vertex is displayed. We typically do not want it displayed while it is still tracked by the mouse.
     void setHideLastMarker( const bool hide ) { mHideLastMarker = hide; }
