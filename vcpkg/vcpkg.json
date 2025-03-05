@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "a4bdac4fe806307844ddc5c663620ea919ffdf4c",
+        "baseline": "e494c9c25f3b0139c6274ece17f5c15374f9241f",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -45,7 +45,8 @@
       "features": [
         "freexl",
         "kea",
-        "poppler"
+        "poppler",
+        "tools"
       ]
     },
     "geos",
@@ -74,8 +75,10 @@
       ]
     },
     "qtbase",
+    "qtdeclarative",
     "qtkeychain-qt6",
     "qtlocation",
+    "qtquickcontrols2",
     "qtsvg",
     "qttools",
     "zlib"
@@ -106,7 +109,15 @@
         "py-owslib",
         "py-pip",
         "py-psycopg2",
-        "py-pyqt6",
+        {
+          "name": "py-pyqt6",
+          "features": [
+            "qt3d",
+            "qt5compat",
+            "qtcharts",
+            "qtdeclarative"
+          ]
+        },
         "py-pytz",
         "py-pyyaml",
         "py-qscintilla",
@@ -127,13 +138,6 @@
       "description": "Should OpenCL support be added",
       "dependencies": [
         "opencl"
-      ]
-    },
-    "quick": {
-      "description": "Build the QGIS quick components for mobile interfaces",
-      "dependencies": [
-        "qtdeclarative",
-        "qtquickcontrols2"
       ]
     },
     "server": {
