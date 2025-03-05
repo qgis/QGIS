@@ -28,6 +28,9 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
   setObjectName( "QgsDbImportVectorLayerDialog" );
   QgsGui::enableAutoGeometryRestore( this );
 
+  mSourceLayerComboBox->setFilters( Qgis::LayerFilter::VectorLayer );
+  connect( mSourceLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsDbImportVectorLayerDialog::sourceLayerComboChanged );
+
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsDbImportVectorLayerDialog::doImport );
 
@@ -81,31 +84,43 @@ void QgsDbImportVectorLayerDialog::setDestinationSchema( const QString &schema )
 
 void QgsDbImportVectorLayerDialog::setSourceUri( const QgsMimeDataUtils::Uri &uri )
 {
-  mEditTable->setText( uri.name );
+  mOwnedSource.reset();
+  mSourceLayer = nullptr;
 
-  mSourceLayer.reset();
   bool owner = false;
   QString error;
   QgsVectorLayer *vl = uri.vectorLayer( owner, error );
   if ( owner )
-    mSourceLayer.reset( vl );
+  {
+    mOwnedSource.reset( vl );
+    mBlockSourceLayerChanges++;
+    mSourceLayerComboBox->setAdditionalLayers( { vl } );
+    mSourceLayerComboBox->setLayer( vl );
+    mBlockSourceLayerChanges--;
+    setSourceLayer( mOwnedSource.get() );
+  }
   else if ( vl )
-    mSourceLayer.reset( vl->clone() );
+  {
+    mBlockSourceLayerChanges++;
+    mSourceLayerComboBox->setLayer( vl );
+    mBlockSourceLayerChanges--;
+    setSourceLayer( vl );
+  }
+}
 
+void QgsDbImportVectorLayerDialog::setSourceLayer( QgsVectorLayer *layer )
+{
+  mSourceLayer = layer;
   if ( !mSourceLayer || !mSourceLayer->dataProvider() )
     return;
 
-  if ( !mSourceLayer->isSpatial() )
-  {
-    delete mLabelGeometryColumn;
-    mLabelGeometryColumn = nullptr;
-    delete mEditGeometryColumnName;
-    mEditGeometryColumnName = nullptr;
-    delete mLabelDestinationCrs;
-    mLabelDestinationCrs = nullptr;
-    delete mCrsSelector;
-    mCrsSelector = nullptr;
-  }
+  mEditTable->setText( layer->name() );
+
+  const bool isSpatial = mSourceLayer->isSpatial();
+  if ( mEditGeometryColumnName )
+    mEditGeometryColumnName->setEnabled( isSpatial );
+  if ( mCrsSelector )
+    mCrsSelector->setEnabled( isSpatial );
 
   if ( mEditPrimaryKey )
   {
@@ -115,7 +130,7 @@ void QgsDbImportVectorLayerDialog::setSourceUri( const QgsMimeDataUtils::Uri &ur
     QString primaryKey = !pkAttributes.isEmpty() ? mSourceLayer->dataProvider()->fields().at( pkAttributes.at( 0 ) ).name() : QString();
     if ( primaryKey.isEmpty() )
     {
-      QgsDataSourceUri dsUri( uri.uri );
+      QgsDataSourceUri dsUri( mSourceLayer->source() );
       primaryKey = dsUri.keyColumn();
     }
     if ( primaryKey.isEmpty() )
@@ -133,7 +148,7 @@ void QgsDbImportVectorLayerDialog::setSourceUri( const QgsMimeDataUtils::Uri &ur
     QString geomColumn = mSourceLayer->dataProvider()->geometryColumnName();
     if ( geomColumn.isEmpty() )
     {
-      QgsDataSourceUri dsUri( uri.uri );
+      QgsDataSourceUri dsUri( mSourceLayer->source() );
       geomColumn = dsUri.geometryColumn();
     }
     if ( geomColumn.isEmpty() )
@@ -224,4 +239,15 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
   }
 
   return std::make_unique<QgsVectorLayerExporterTask>( mSourceLayer->clone(), destinationUri, mConnection->providerKey(), destinationCrs, allProviderOptions, true );
+}
+
+void QgsDbImportVectorLayerDialog::sourceLayerComboChanged()
+{
+  if ( mBlockSourceLayerChanges )
+    return;
+
+  if ( mSourceLayerComboBox->currentLayer() == mSourceLayer )
+    return;
+
+  setSourceLayer( qobject_cast< QgsVectorLayer * >( mSourceLayerComboBox->currentLayer() ) );
 }
