@@ -38,7 +38,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
   //undo/redo
   menu->addAction( layout->undoStack()->stack()->createUndoAction( menu ) );
   menu->addAction( layout->undoStack()->stack()->createRedoAction( menu ) );
-  menu->addSeparator();
+  menu->addSeparator()->setObjectName( QLatin1String( "UndoRedoSeparator" ) );
 
 
   const QList<QgsLayoutItem *> selectedItems = layout->selectedLayoutItems();
@@ -76,7 +76,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
     }
 
     if ( addedGroupAction )
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( QLatin1String( "AddedGroupSeparator" ) );
 
     QAction *copyAction = new QAction( tr( "Copy" ), menu );
     connect( copyAction, &QAction::triggered, this, [this]() {
@@ -88,7 +88,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
       mDesigner->view()->copySelectedItems( QgsLayoutView::ClipboardCut );
     } );
     menu->addAction( cutAction );
-    menu->addSeparator();
+    menu->addSeparator()->setObjectName( QLatin1String( "CopyCutSeparator" ) );
   }
   else if ( mDesigner->view()->hasItemsInClipboard() )
   {
@@ -98,7 +98,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
       mDesigner->view()->pasteItems( pt );
     } );
     menu->addAction( pasteAction );
-    menu->addSeparator();
+    menu->addSeparator()->setObjectName( QLatin1String( "PasteSeparator" ) );
   }
 
   // is a page under the mouse?
@@ -136,7 +136,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
       removePageAction->setEnabled( false );
     menu->addAction( removePageAction );
 
-    menu->addSeparator();
+    menu->addSeparator()->setObjectName( QLatin1String( "ManagePageSeparator" ) );
   }
 
   if ( !selectedItems.empty() )
