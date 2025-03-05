@@ -155,6 +155,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
+      QString &createdLayerUri,
       QString *errorMessage = nullptr,
       const QMap<QString, QVariant> *coordinateTransformContext = nullptr
     );
@@ -315,7 +316,8 @@ class QgsMssqlProviderMetadata final : public QgsProviderMetadata
       bool overwrite,
       QMap<int, int> &oldToNewAttrIdxMap,
       QString &errorMessage,
-      const QMap<QString, QVariant> *options
+      const QMap<QString, QVariant> *options,
+      QString &createdLayerUri
     ) override;
     QgsMssqlProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     virtual QList<QgsDataItemProvider *> dataItemProviders() const override;
