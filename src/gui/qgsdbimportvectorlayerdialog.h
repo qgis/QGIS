@@ -50,12 +50,16 @@ class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsD
 
     std::unique_ptr<QgsVectorLayerExporterTask> createExporterTask( const QVariantMap &extraProviderOptions = QVariantMap() );
 
+    void setSourceLayer( QgsVectorLayer *layer );
   private slots:
-
+    void sourceLayerComboChanged();
     void doImport();
 
   private:
-    std::unique_ptr< QgsVectorLayer > mSourceLayer;
+    std::unique_ptr< QgsVectorLayer > mOwnedSource;
+    QPointer< QgsVectorLayer > mSourceLayer;
+
+    int mBlockSourceLayerChanges = 0;
 
     std::unique_ptr< QgsAbstractDatabaseProviderConnection > mConnection;
 };
