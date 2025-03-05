@@ -53,22 +53,40 @@
 
 ///@cond PRIVATE
 
-static int _unfilteredLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
+namespace
 {
-  return legendNode->model()->layerOriginalLegendNodes( legendNode->layerNode() ).indexOf( legendNode );
-}
+  int _unfilteredLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
+  {
+    return legendNode->model()->layerOriginalLegendNodes( legendNode->layerNode() ).indexOf( legendNode );
+  }
 
-static int _originalLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
-{
-  // figure out index of the legend node as it comes out of the map layer legend.
-  // first legend nodes may be reordered, output of that is available in layerOriginalLegendNodes().
-  // next the nodes may be further filtered (by scale, map content etc).
-  // so here we go in reverse order: 1. find index before filtering, 2. find index before reorder
-  int unfilteredNodeIndex = _unfilteredLegendNodeIndex( legendNode );
-  QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( legendNode->layerNode() );
-  return ( unfilteredNodeIndex >= 0 && unfilteredNodeIndex < order.count() ? order[unfilteredNodeIndex] : -1 );
-}
+  int _originalLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
+  {
+    // figure out index of the legend node as it comes out of the map layer legend.
+    // first legend nodes may be reordered, output of that is available in layerOriginalLegendNodes().
+    // next the nodes may be further filtered (by scale, map content etc).
+    // so here we go in reverse order: 1. find index before filtering, 2. find index before reorder
+    int unfilteredNodeIndex = _unfilteredLegendNodeIndex( legendNode );
+    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( legendNode->layerNode() );
+    return ( unfilteredNodeIndex >= 0 && unfilteredNodeIndex < order.count() ? order[unfilteredNodeIndex] : -1 );
+  }
 
+  void _moveLegendNode( QgsLayerTreeLayer *nodeLayer, int legendNodeIndex, int destLegendNodeIndex )
+  {
+    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
+    const int offset = destLegendNodeIndex - legendNodeIndex;
+
+    if ( legendNodeIndex < 0 || legendNodeIndex >= order.count() )
+      return;
+    if ( legendNodeIndex + offset < 0 || legendNodeIndex + offset >= order.count() )
+      return;
+
+    int id = order.takeAt( legendNodeIndex );
+    order.insert( legendNodeIndex + offset, id );
+
+    QgsMapLayerLegendUtils::setLegendNodeOrder( nodeLayer, order );
+  }
+} //namespace
 
 QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMapCanvas *mapCanvas )
   : QgsLayoutItemBaseWidget( nullptr, legend )
@@ -725,23 +743,6 @@ void QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged( double d )
     mLegend->endCommand();
   }
 }
-
-static void _moveLegendNode( QgsLayerTreeLayer *nodeLayer, int legendNodeIndex, int destLegendNodeIndex )
-{
-  QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
-  const int offset = destLegendNodeIndex - legendNodeIndex;
-
-  if ( legendNodeIndex < 0 || legendNodeIndex >= order.count() )
-    return;
-  if ( legendNodeIndex + offset < 0 || legendNodeIndex + offset >= order.count() )
-    return;
-
-  int id = order.takeAt( legendNodeIndex );
-  order.insert( legendNodeIndex + offset, id );
-
-  QgsMapLayerLegendUtils::setLegendNodeOrder( nodeLayer, order );
-}
-
 
 void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
 {
