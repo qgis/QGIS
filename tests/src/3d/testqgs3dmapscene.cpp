@@ -40,7 +40,6 @@ class TestQgs3DMapScene : public QgsTest
     void testOriginShift();
 
   private:
-
     std::unique_ptr<QgsProject> mProject;
     QgsVectorLayer *mLayerCountries = nullptr;
 };
