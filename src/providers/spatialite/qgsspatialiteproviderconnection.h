@@ -66,6 +66,7 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     QString tableUri( const QString &schema, const QString &name ) const override;
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
+    QString createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
     QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
@@ -78,6 +79,8 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
+    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
+    QString defaultPrimaryKeyColumnName() const override;
 
   private:
     void setDefaultCapabilities();

@@ -18,22 +18,19 @@
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresprojectstorage.h"
-#include "qgspostgresprovider.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
-#include "qgsmessageoutput.h"
 #include "qgsprojectstorageregistry.h"
-#include "qgsvectorlayer.h"
 #include "qgssettings.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgsprojectitem.h"
 #include "qgsfieldsitem.h"
 #include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+
 #include <QMessageBox>
 #include <climits>
-#include <qgsabstractdatabaseproviderconnection.h>
-#include "qgspostgresutils.h"
 
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -92,6 +89,11 @@ bool QgsPGConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
+QgsDataSourceUri QgsPGConnectionItem::connectionUri() const
+{
+  return QgsPostgresConn::connUri( mName );
+}
+
 void QgsPGConnectionItem::refreshSchema( const QString &schema )
 {
   const auto constMChildren = mChildren;
@@ -102,92 +104,6 @@ void QgsPGConnectionItem::refreshSchema( const QString &schema )
       child->refresh();
     }
   }
-}
-
-bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSchema )
-{
-  if ( !QgsMimeDataUtils::isUriList( data ) )
-    return false;
-
-  // TODO: probably should show a GUI with settings etc
-  QgsDataSourceUri uri = QgsPostgresConn::connUri( mName );
-
-  QStringList importResults;
-  bool hasError = false;
-
-  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  const auto constLst = lst;
-  for ( const QgsMimeDataUtils::Uri &u : constLst )
-  {
-    // open the source layer
-    bool owner;
-    QString error;
-    QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
-    if ( !srcLayer )
-    {
-      importResults.append( tr( "%1: %2" ).arg( u.name, error ) );
-      hasError = true;
-      continue;
-    }
-
-    if ( srcLayer->isValid() )
-    {
-      // Try to get source col from uri
-      QString geomColumn { QStringLiteral( "geom" ) };
-
-      if ( !srcLayer->dataProvider()->uri().geometryColumn().isEmpty() )
-      {
-        geomColumn = srcLayer->dataProvider()->uri().geometryColumn();
-      }
-
-      uri.setDataSource( QString(), u.name, srcLayer->geometryType() != Qgis::GeometryType::Null ? geomColumn : QString() );
-
-      QgsDebugMsgLevel( "URI " + uri.uri( false ), 2 );
-
-      if ( !toSchema.isNull() )
-      {
-        uri.setSchema( toSchema );
-      }
-
-      auto exportTask = std::make_unique<QgsVectorLayerExporterTask>( srcLayer, uri.uri( false ), QStringLiteral( "postgres" ), srcLayer->crs(), QVariantMap(), owner );
-
-      // when export is successful:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [=]() {
-        // this is gross - TODO - find a way to get access to messageBar from data items
-        QMessageBox::information( nullptr, tr( "Import to PostGIS database" ), tr( "Import was successful." ) );
-        refreshSchema( toSchema );
-      } );
-
-      // when an error occurs:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [=]( Qgis::VectorExportResult error, const QString &errorMessage ) {
-        if ( error != Qgis::VectorExportResult::UserCanceled )
-        {
-          QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-          output->setTitle( tr( "Import to PostGIS database" ) );
-          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
-          output->showMessage();
-        }
-        refreshSchema( toSchema );
-      } );
-
-      QgsApplication::taskManager()->addTask( exportTask.release() );
-    }
-    else
-    {
-      importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
-      hasError = true;
-    }
-  }
-
-  if ( hasError )
-  {
-    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-    output->setTitle( tr( "Import to PostGIS database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
-    output->showMessage();
-  }
-
-  return true;
 }
 
 // ---------------------------------------------------------------------------

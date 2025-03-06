@@ -10094,18 +10094,38 @@ Qgis.PostgresRelKind.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.DatabaseProviderConnectionCapability2.SetFieldComment.__doc__ = "Can set comments for fields via setFieldComment()"
 Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias.__doc__ = "Can set aliases for fields via setFieldAlias()"
+Qgis.DatabaseProviderConnectionCapability2.SetTableComment.__doc__ = "Can set comments for tables via setTableComment() \n.. versionadded:: 3.44"
 Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum represents the extended operations supported by the connection.
 
 .. versionadded:: 3.32
 
 * ``SetFieldComment``: Can set comments for fields via setFieldComment()
 * ``SetFieldAlias``: Can set aliases for fields via setFieldAlias()
+* ``SetTableComment``: Can set comments for tables via setTableComment()
+
+  .. versionadded:: 3.44
+
 
 """
 # --
 Qgis.DatabaseProviderConnectionCapability2.baseClass = Qgis
 Qgis.DatabaseProviderConnectionCapabilities2.baseClass = Qgis
 DatabaseProviderConnectionCapabilities2 = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.DatabaseProviderTableImportCapability.SetGeometryColumnName.__doc__ = "Can set the name of the geometry column"
+Qgis.DatabaseProviderTableImportCapability.SetPrimaryKeyName.__doc__ = "Can set the name of the primary key column"
+Qgis.DatabaseProviderTableImportCapability.__doc__ = """Represents capabilities of a database provider connection when importing table data.
+
+.. versionadded:: 3.44
+
+* ``SetGeometryColumnName``: Can set the name of the geometry column
+* ``SetPrimaryKeyName``: Can set the name of the primary key column
+
+"""
+# --
+Qgis.DatabaseProviderTableImportCapability.baseClass = Qgis
+Qgis.DatabaseProviderTableImportCapabilities.baseClass = Qgis
+DatabaseProviderTableImportCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.ProviderStyleStorageCapability.SaveToDatabase.__doc__ = ""
 Qgis.ProviderStyleStorageCapability.LoadFromDatabase.__doc__ = ""

@@ -505,6 +505,40 @@ class TestPyQgsProviderConnectionGpkg(
         self.assertEqual(table_with_comment.tableName(), "table_with_comment")
         self.assertEqual(table_with_comment.comment(), "table_with_comment")
 
+    def test_createVectorLayerExporterDestinationUri(self):
+        """
+        Test createVectorLayerExporterDestinationUri
+        """
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(self.uri, {})
+
+        export_options = (
+            QgsAbstractDatabaseProviderConnection.VectorLayerExporterOptions()
+        )
+        export_options.layerName = "new_layer"
+
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertEqual(options, {"layerName": "new_layer"})
+        self.assertEqual(res, self.uri)
+
+        # ignored by provider
+        export_options.wkbType = Qgis.WkbType.Point
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertEqual(options, {"layerName": "new_layer"})
+        self.assertEqual(res, self.uri)
+
+        # ignored by provider
+        export_options.geometryColumn = "geometry"
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertEqual(options, {"layerName": "new_layer"})
+        self.assertEqual(res, self.uri)
+
+        # ignored by provider
+        export_options.primaryKeyColumns = ["pk"]
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertEqual(options, {"layerName": "new_layer"})
+        self.assertEqual(res, self.uri)
+
 
 if __name__ == "__main__":
     unittest.main()
