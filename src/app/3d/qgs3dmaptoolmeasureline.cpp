@@ -195,11 +195,8 @@ void Qgs3DMapToolMeasureLine::mouseMoveEvent( QMouseEvent *event )
   if ( mPoints.isEmpty() || mDone )
     return;
 
-  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), mCanvas->size(), mCanvas->cameraController()->camera() );
-  const float dist = ray.direction().y() == 0 ? 0 : static_cast<float>( mPoints.last().z() - ray.origin().y() ) / ray.direction().y();
-  const QVector3D hoverPoint = ray.origin() + ray.direction() * dist;
-  const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hoverPoint, mCanvas->mapSettings()->origin() );
-  mRubberBand->moveLastPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() / canvas()->mapSettings()->terrainSettings()->verticalScale() ) );
+  const QgsPoint pointMap = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() );
+  mRubberBand->moveLastPoint( pointMap );
 }
 
 void Qgs3DMapToolMeasureLine::mouseReleaseEvent( QMouseEvent *event )
