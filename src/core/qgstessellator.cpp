@@ -258,28 +258,15 @@ static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeig
 
 static QVector3D _calculateNormal( const QgsLineString *curve, double originX, double originY, bool invertNormal )
 {
-  // if it is just plain 2D curve there is no need to calculate anything
-  // because it will be a flat horizontally oriented patch
-  if ( !QgsWkbTypes::hasZ( curve->wkbType() ) || curve->isEmpty() )
-    return QVector3D( 0, 0, 1 );
-
-  // often we have 3D coordinates, but Z is the same for all vertices
-  // so in order to save calculation and avoid possible issues with order of vertices
-  // (the calculation below may decide that a polygon faces downwards)
-  bool sameZ = true;
-  QgsPoint pt1 = curve->pointN( 0 );
-  QgsPoint pt2;
-  for ( int i = 1; i < curve->numPoints(); i++ )
+  if ( !QgsWkbTypes::hasZ( curve->wkbType() ) )
   {
-    pt2 = curve->pointN( i );
-    if ( pt1.z() != pt2.z() )
-    {
-      sameZ = false;
-      break;
-    }
+    float orientation = 1.f;
+    if ( curve->orientation() == Qgis::AngularDirection::Clockwise )
+      orientation = -orientation;
+    if ( invertNormal )
+      orientation = -orientation;
+    return QVector3D( 0, 0, orientation );
   }
-  if ( sameZ )
-    return QVector3D( 0, 0, 1 );
 
   // Calculate the polygon's normal vector, based on Newell's method
   // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
@@ -287,7 +274,8 @@ static QVector3D _calculateNormal( const QgsLineString *curve, double originX, d
   // Order of vertices is important here as it determines the front/back face of the polygon
 
   double nx = 0, ny = 0, nz = 0;
-  pt1 = curve->pointN( 0 );
+  QgsPoint pt1 = curve->pointN( 0 );
+  QgsPoint pt2;
 
   // shift points by the tessellator's origin - this does not affect normal calculation and it may save us from losing some precision
   pt1.setX( pt1.x() - originX );
