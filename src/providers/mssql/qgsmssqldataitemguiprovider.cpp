@@ -293,7 +293,6 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
   }
 
   QPointer< QgsMssqlConnectionItem > connectionItemPointer( connectionItem );
-  const QString connectionUri = connectionItem->connectionUri();
 
   // TODO: when dropping multiple layers, we need a dedicated "bulk import" dialog for settings which apply to ALL layers
 
