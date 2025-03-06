@@ -322,9 +322,10 @@ void Qgs3DMapScene::onCameraChanged()
   // with large coordinates in 32-bit floats (and if we do have large coordinates,
   // because the scene is far from the camera, we don't care, because those errors
   // end up being tiny when viewed from far away).
-  if ( mSceneOriginShiftEnabled && mEngine->camera()->position().length() > 10000 )
+  const float originShiftThreshold = 10'000;
+  if ( mSceneOriginShiftEnabled && mEngine->camera()->position().length() > originShiftThreshold )
   {
-    QgsVector3D newOrigin = mMap.origin() + QgsVector3D( mEngine->camera()->position() );
+    const QgsVector3D newOrigin = mMap.origin() + QgsVector3D( mEngine->camera()->position() );
     QgsDebugMsgLevel( QStringLiteral( "Rebasing scene origin from %1 to %2" ).arg(
                         mMap.origin().toString( 1 ), newOrigin.toString( 1 ) ), 2 );
     mMap.setOrigin( newOrigin );
