@@ -30,16 +30,15 @@ class Qgs3DMapToolPointCloudChangeAttributePolygon : public Qgs3DMapToolPointClo
   public:
     /**
      * Tool types used by \a Qgs3DMapToolPolygon
-     * \since QGIS 3.44
      */
     enum ToolType
     {
       //! Polygon defined by vertices
       Polygon,
       //! Polygon defined by 2 vertices and canvas top edge
-      AboveLinePolygon,
+      AboveLine,
       //! Polygon defined by 2 vertices and canvas bottom edge
-      BelowLinePolygon,
+      BelowLine,
     };
     Qgs3DMapToolPointCloudChangeAttributePolygon( Qgs3DMapCanvas *canvas, ToolType type );
     ~Qgs3DMapToolPointCloudChangeAttributePolygon() override;
@@ -58,8 +57,8 @@ class Qgs3DMapToolPointCloudChangeAttributePolygon : public Qgs3DMapToolPointClo
     void restart() override;
 
     QVector<QgsPointXY> mScreenPoints;
-    QgsRubberBand3D *mPolygonRubberBand = nullptr;
-    QgsRubberBand3D *mLineRubberBand = nullptr;
+    std::unique_ptr<QgsRubberBand3D> mPolygonRubberBand;
+    std::unique_ptr<QgsRubberBand3D> mLineRubberBand;
     QPoint mClickPoint;
     ToolType mToolType;
 };

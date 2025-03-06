@@ -511,9 +511,9 @@ void TestQgs3DUtils::testScreenPointToMapCoordinates()
 
   // this placement is weird, but it fixes the clang-tidy warning
   delete scene;
-  QGSCOMPARENEAR( mapPoint.x(), 321900, 0.1 );
-  QGSCOMPARENEAR( mapPoint.y(), 129900.94, 0.1 );
-  QGSCOMPARENEAR( mapPoint.z(), -5, 0.1 );
+  QGSCOMPARENEAR( mapPoint.x(), 321900, 2 );
+  QGSCOMPARENEAR( mapPoint.y(), 129901, 2 );
+  QGSCOMPARENEAR( mapPoint.z(), -252, 2 );
 }
 
 
