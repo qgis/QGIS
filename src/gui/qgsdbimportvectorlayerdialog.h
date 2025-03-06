@@ -24,11 +24,15 @@
 class QgsAbstractDatabaseProviderConnection;
 class QgsVectorLayerExporterTask;
 
+#define SIP_NO_FILE
+
 /**
  * \class QgsDbImportVectorLayerDialog
  * \ingroup gui
  *
  * \brief A generic dialog for customising vector layer import options for database connections.
+ *
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.44
  */
