@@ -326,8 +326,7 @@ void Qgs3DMapScene::onCameraChanged()
   if ( mSceneOriginShiftEnabled && mEngine->camera()->position().length() > originShiftThreshold )
   {
     const QgsVector3D newOrigin = mMap.origin() + QgsVector3D( mEngine->camera()->position() );
-    QgsDebugMsgLevel( QStringLiteral( "Rebasing scene origin from %1 to %2" ).arg(
-                        mMap.origin().toString( 1 ), newOrigin.toString( 1 ) ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Rebasing scene origin from %1 to %2" ).arg( mMap.origin().toString( 1 ), newOrigin.toString( 1 ) ), 2 );
     mMap.setOrigin( newOrigin );
   }
 }
