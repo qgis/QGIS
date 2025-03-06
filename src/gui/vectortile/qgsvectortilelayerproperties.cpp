@@ -167,8 +167,8 @@ void QgsVectorTileLayerProperties::apply()
   mLayer->serverProperties()->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
 
   // LegendURL
-  mLayer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
-  mLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
+  mLayer->serverProperties()->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+  mLayer->serverProperties()->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 }
 
 void QgsVectorTileLayerProperties::syncToLayer()
@@ -248,10 +248,10 @@ void QgsVectorTileLayerProperties::syncToLayer()
   mLayerAttributionUrlLineEdit->setText( mLayer->serverProperties()->attributionUrl() );
 
   // layer legend url
-  mLayerLegendUrlLineEdit->setText( mLayer->legendUrl() );
+  mLayerLegendUrlLineEdit->setText( mLayer->serverProperties()->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex(
     mLayerLegendUrlFormatComboBox->findText(
-      mLayer->legendUrlFormat()
+      mLayer->serverProperties()->legendUrlFormat()
     )
   );
 }

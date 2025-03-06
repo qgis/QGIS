@@ -867,8 +867,8 @@ void QgsRasterLayerProperties::sync()
   }
 
   // layer legend url
-  mLayerLegendUrlLineEdit->setText( mRasterLayer->legendUrl() );
-  mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->legendUrlFormat() ) );
+  mLayerLegendUrlLineEdit->setText( mRasterLayer->serverProperties()->legendUrl() );
+  mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->serverProperties()->legendUrlFormat() ) );
 
   mEnableMapTips->setChecked( mRasterLayer->mapTipsEnabled() );
   mMapTipWidget->setText( mRasterLayer->mapTipTemplate() );
@@ -1059,13 +1059,13 @@ void QgsRasterLayerProperties::apply()
   }
   mRasterLayer->serverProperties()->setMetadataUrls( metaUrls );
 
-  if ( mRasterLayer->legendUrl() != mLayerLegendUrlLineEdit->text() )
+  if ( mRasterLayer->serverProperties()->legendUrl() != mLayerLegendUrlLineEdit->text() )
     mMetadataFilled = false;
-  mRasterLayer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+  mRasterLayer->serverProperties()->setLegendUrl( mLayerLegendUrlLineEdit->text() );
 
-  if ( mRasterLayer->legendUrlFormat() != mLayerLegendUrlFormatComboBox->currentText() )
+  if ( mRasterLayer->serverProperties()->legendUrlFormat() != mLayerLegendUrlFormatComboBox->currentText() )
     mMetadataFilled = false;
-  mRasterLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
+  mRasterLayer->serverProperties()->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   if ( !mWMSPrintLayerLineEdit->text().isEmpty() )
   {
