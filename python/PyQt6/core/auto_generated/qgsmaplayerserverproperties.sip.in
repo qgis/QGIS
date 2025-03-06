@@ -74,6 +74,10 @@ Add a metadataUrl for the layer
 Gets the parent layer
 %End
 
+
+    bool operator==( const QgsServerMetadataUrlProperties &other ) const;
+    bool operator!=( const QgsServerMetadataUrlProperties &other ) const;
+
   protected:
 
 
@@ -126,6 +130,10 @@ Manages QGIS Server properties for Wms dimensions
 %Docstring
 Constructor for WmsDimensionInfo.
 %End
+
+      bool operator==( const WmsDimensionInfo &other ) const;
+      bool operator!=( const WmsDimensionInfo &other ) const;
+
       QString name;
       QString fieldName;
       QString endFieldName;
@@ -136,6 +144,10 @@ Constructor for WmsDimensionInfo.
     };
 
     virtual ~QgsServerWmsDimensionProperties();
+
+
+    bool operator==( const QgsServerWmsDimensionProperties &other ) const;
+    bool operator!=( const QgsServerWmsDimensionProperties &other ) const;
 
     static QMap<int, QString> wmsDimensionDefaultDisplayLabels();
 %Docstring
@@ -214,6 +226,10 @@ Constructor - Creates a Map Layer QGIS Server Properties
 
 :param layer: The map layer
 %End
+
+
+    bool operator==( const QgsMapLayerServerProperties &other ) const;
+    bool operator!=( const QgsMapLayerServerProperties &other ) const;
 
     void copyTo( QgsMapLayerServerProperties *properties ) const;
 %Docstring
