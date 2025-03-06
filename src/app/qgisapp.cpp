@@ -12118,6 +12118,9 @@ void QgisApp::legendGroupSetWmsData()
   QgsGroupWmsDataDialog dlg( *currentGroup->serverProperties(), this );
   if ( dlg.exec() )
   {
+    if ( *dlg.serverProperties() != *currentGroup->serverProperties() )
+      QgsProject::instance()->setDirty( true );
+
     dlg.serverProperties()->copyTo( currentGroup->serverProperties() );
   }
 }
