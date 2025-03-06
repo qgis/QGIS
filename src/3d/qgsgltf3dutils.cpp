@@ -305,6 +305,16 @@ static QgsMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QS
   {
     tinygltf::Texture &tex = model.textures[pbr.baseColorTexture.index];
 
+    // Source can be undefined if texture is provided by an extension
+    if ( tex.source < 0 )
+    {
+      QgsMetalRoughMaterial *pbrMaterial = new QgsMetalRoughMaterial;
+      pbrMaterial->setMetalness( pbr.metallicFactor ); // [0..1] or texture
+      pbrMaterial->setRoughness( pbr.roughnessFactor );
+      pbrMaterial->setBaseColor( QColor::fromRgbF( pbr.baseColorFactor[0], pbr.baseColorFactor[1], pbr.baseColorFactor[2], pbr.baseColorFactor[3] ) );
+      return pbrMaterial;
+    }
+
     tinygltf::Image &img = model.images[tex.source];
 
     if ( !img.uri.empty() )
