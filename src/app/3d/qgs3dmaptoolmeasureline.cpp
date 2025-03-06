@@ -170,7 +170,7 @@ void Qgs3DMapToolMeasureLine::undo()
     mPoints.removeLast();
     mDialog->removeLastPoint();
 
-    mRubberBand->removeLastPoint();
+    mRubberBand->removePenultimatePoint();
   }
 }
 

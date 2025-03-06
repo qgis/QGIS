@@ -68,7 +68,7 @@ void Qgs3DMapToolPointCloudChangeAttributePolygon::keyPressEvent( QKeyEvent *eve
     else
     {
       mScreenPoints.removeLast();
-      mPolygonRubberBand->removeLastPoint();
+      mPolygonRubberBand->removePenultimatePoint();
     }
   }
   else if ( event->key() == Qt::Key_Escape )
