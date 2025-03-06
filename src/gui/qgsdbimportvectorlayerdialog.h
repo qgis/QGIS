@@ -41,23 +41,48 @@ class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsD
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsDbImportVectorLayerDialog.
+     *
+     * Ownership of \a connection is transferred to the dialog.
+     */
     QgsDbImportVectorLayerDialog( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER, QWidget *parent = nullptr );
     ~QgsDbImportVectorLayerDialog() override;
 
+    /**
+     * Sets the destination \a schema for the new table.
+     */
     void setDestinationSchema( const QString &schema );
 
+    /**
+     * Sets the source table \a uri.
+     */
     void setSourceUri( const QgsMimeDataUtils::Uri &uri );
 
+    /**
+     * Returns the destination schema.
+     */
     QString schema() const;
+
+    /**
+     * Returns the destination table name.
+     */
     QString tableName() const;
+
+    /**
+     * Returns the optional comment to use for the new table.
+     */
     QString tableComment() const;
 
+    /**
+     * Creates a new exporter task to match the settings defined in the dialog.
+     */
     std::unique_ptr<QgsVectorLayerExporterTask> createExporterTask( const QVariantMap &extraProviderOptions = QVariantMap() );
 
-    void setSourceLayer( QgsVectorLayer *layer );
   private slots:
     void sourceLayerComboChanged();
     void doImport();
+    void setSourceLayer( QgsVectorLayer *layer );
 
   private:
     std::unique_ptr< QgsVectorLayer > mOwnedSource;
