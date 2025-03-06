@@ -628,6 +628,15 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
   mLayer = nullptr;
 
   setupUi( this );
+
+  mHorizontalAnchorComboBox->addItem( tr( "Left" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Left ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Horizontal Center" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Center ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Right" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Right ) );
+
+  mVerticalAnchorComboBox->addItem( tr( "Top" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Top ) );
+  mVerticalAnchorComboBox->addItem( tr( "Vertical Center" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Center ) );
+  mVerticalAnchorComboBox->addItem( tr( "Bottom" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Bottom ) );
+
   connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleMarkerSymbolLayerWidget::mSizeUnitWidget_changed );
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleMarkerSymbolLayerWidget::mOffsetUnitWidget_changed );
   connect( mStrokeWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleMarkerSymbolLayerWidget::mStrokeWidthUnitWidget_changed );
@@ -769,8 +778,8 @@ void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   //anchor points
   mHorizontalAnchorComboBox->blockSignals( true );
   mVerticalAnchorComboBox->blockSignals( true );
-  mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
-  mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  mHorizontalAnchorComboBox->setCurrentIndex( mHorizontalAnchorComboBox->findData( QVariant::fromValue( mLayer->horizontalAnchorPoint() ) ) );
+  mVerticalAnchorComboBox->setCurrentIndex( mVerticalAnchorComboBox->findData( QVariant::fromValue( mLayer->verticalAnchorPoint() ) ) );
   mHorizontalAnchorComboBox->blockSignals( false );
   mVerticalAnchorComboBox->blockSignals( false );
 
@@ -894,20 +903,20 @@ void QgsSimpleMarkerSymbolLayerWidget::mStrokeWidthUnitWidget_changed()
   }
 }
 
-void QgsSimpleMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )
+void QgsSimpleMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setHorizontalAnchorPoint( ( QgsMarkerSymbolLayer::HorizontalAnchorPoint ) index );
+    mLayer->setHorizontalAnchorPoint( mHorizontalAnchorComboBox->currentData().value< Qgis::HorizontalAnchorPoint >() );
     emit changed();
   }
 }
 
-void QgsSimpleMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int index )
+void QgsSimpleMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setVerticalAnchorPoint( ( QgsMarkerSymbolLayer::VerticalAnchorPoint ) index );
+    mLayer->setVerticalAnchorPoint( mVerticalAnchorComboBox->currentData().value< Qgis::VerticalAnchorPoint >() );
     emit changed();
   }
 }
@@ -1087,6 +1096,15 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLay
   mLayer = nullptr;
 
   setupUi( this );
+
+  mHorizontalAnchorComboBox->addItem( tr( "Left" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Left ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Horizontal Center" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Center ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Right" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Right ) );
+
+  mVerticalAnchorComboBox->addItem( tr( "Top" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Top ) );
+  mVerticalAnchorComboBox->addItem( tr( "Vertical Center" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Center ) );
+  mVerticalAnchorComboBox->addItem( tr( "Bottom" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Bottom ) );
+
   connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsFilledMarkerSymbolLayerWidget::mSizeUnitWidget_changed );
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsFilledMarkerSymbolLayerWidget::mOffsetUnitWidget_changed );
   connect( mHorizontalAnchorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFilledMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged );
@@ -1169,8 +1187,8 @@ void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mOffsetUnitWidget->blockSignals( false );
 
   //anchor points
-  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
-  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mHorizontalAnchorComboBox->findData( QVariant::fromValue( mLayer->horizontalAnchorPoint() ) ) );
+  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mVerticalAnchorComboBox->findData( QVariant::fromValue( mLayer->verticalAnchorPoint() ) ) );
 
   registerDataDefinedButton( mNameDDBtn, QgsSymbolLayer::Property::Name );
   registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::Property::Size );
@@ -1231,20 +1249,20 @@ void QgsFilledMarkerSymbolLayerWidget::mOffsetUnitWidget_changed()
   }
 }
 
-void QgsFilledMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )
+void QgsFilledMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setHorizontalAnchorPoint( ( QgsMarkerSymbolLayer::HorizontalAnchorPoint ) index );
+    mLayer->setHorizontalAnchorPoint( mHorizontalAnchorComboBox->currentData().value<Qgis::HorizontalAnchorPoint>() );
     emit changed();
   }
 }
 
-void QgsFilledMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int index )
+void QgsFilledMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setVerticalAnchorPoint( ( QgsMarkerSymbolLayer::VerticalAnchorPoint ) index );
+    mLayer->setVerticalAnchorPoint( mVerticalAnchorComboBox->currentData().value< Qgis::VerticalAnchorPoint >() );
     emit changed();
   }
 }
@@ -2390,6 +2408,14 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
 
   setupUi( this );
 
+  mHorizontalAnchorComboBox->addItem( tr( "Left" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Left ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Horizontal Center" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Center ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Right" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Right ) );
+
+  mVerticalAnchorComboBox->addItem( tr( "Top" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Top ) );
+  mVerticalAnchorComboBox->addItem( tr( "Vertical Center" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Center ) );
+  mVerticalAnchorComboBox->addItem( tr( "Bottom" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Bottom ) );
+
   mSvgSelectorWidget->setAllowParameters( true );
   mSvgSelectorWidget->sourceLineEdit()->setPropertyOverrideToolButtonVisible( true );
   mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( QStringLiteral( "/UI/lastSVGMarkerDir" ) );
@@ -2574,8 +2600,8 @@ void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   //anchor points
   mHorizontalAnchorComboBox->blockSignals( true );
   mVerticalAnchorComboBox->blockSignals( true );
-  mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
-  mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  mHorizontalAnchorComboBox->setCurrentIndex( mHorizontalAnchorComboBox->findData( QVariant::fromValue( mLayer->horizontalAnchorPoint() ) ) );
+  mVerticalAnchorComboBox->setCurrentIndex( mVerticalAnchorComboBox->findData( QVariant::fromValue( mLayer->verticalAnchorPoint() ) ) );
   mHorizontalAnchorComboBox->blockSignals( false );
   mVerticalAnchorComboBox->blockSignals( false );
 
@@ -2771,20 +2797,20 @@ void QgsSvgMarkerSymbolLayerWidget::mOffsetUnitWidget_changed()
   }
 }
 
-void QgsSvgMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )
+void QgsSvgMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( index ) );
+    mLayer->setHorizontalAnchorPoint( mHorizontalAnchorComboBox->currentData().value< Qgis::HorizontalAnchorPoint >() );
     emit changed();
   }
 }
 
-void QgsSvgMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int index )
+void QgsSvgMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( index ) );
+    mLayer->setVerticalAnchorPoint( mVerticalAnchorComboBox->currentData().value< Qgis::VerticalAnchorPoint >() );
     emit changed();
   }
 }
@@ -3451,6 +3477,16 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *
   mLayer = nullptr;
 
   setupUi( this );
+
+  mHorizontalAnchorComboBox->addItem( tr( "Left" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Left ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Horizontal Center" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Center ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Right" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Right ) );
+
+  mVerticalAnchorComboBox->addItem( tr( "Top" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Top ) );
+  mVerticalAnchorComboBox->addItem( tr( "Vertical Center" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Center ) );
+  mVerticalAnchorComboBox->addItem( tr( "Bottom on Baseline" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Baseline ) );
+  mVerticalAnchorComboBox->addItem( tr( "Bottom" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Bottom ) );
+
   connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsFontMarkerSymbolLayerWidget::mSizeUnitWidget_changed );
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsFontMarkerSymbolLayerWidget::mOffsetUnitWidget_changed );
   connect( mStrokeWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsFontMarkerSymbolLayerWidget::mStrokeWidthUnitWidget_changed );
@@ -3558,8 +3594,8 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( cboJoinStyle )->setPenJoinStyle( mLayer->penJoinStyle() );
 
   //anchor points
-  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
-  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mHorizontalAnchorComboBox->findData( QVariant::fromValue( mLayer->horizontalAnchorPoint() ) ) );
+  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mVerticalAnchorComboBox->findData( QVariant::fromValue( mLayer->verticalAnchorPoint() ) ) );
 
   registerDataDefinedButton( mFontFamilyDDBtn, QgsSymbolLayer::Property::FontFamily );
   registerDataDefinedButton( mFontStyleDDBtn, QgsSymbolLayer::Property::FontStyle );
@@ -3756,20 +3792,20 @@ void QgsFontMarkerSymbolLayerWidget::mFontStyleComboBox_currentIndexChanged( int
   setFontStyle( mFontStyleComboBox->currentText() );
 }
 
-void QgsFontMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )
+void QgsFontMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( index ) );
+    mLayer->setHorizontalAnchorPoint( mHorizontalAnchorComboBox->currentData().value< Qgis::HorizontalAnchorPoint >() );
     emit changed();
   }
 }
 
-void QgsFontMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int index )
+void QgsFontMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( index ) );
+    mLayer->setVerticalAnchorPoint( mVerticalAnchorComboBox->currentData().value< Qgis::VerticalAnchorPoint >() );
     emit changed();
   }
 }
@@ -3863,6 +3899,14 @@ QgsRasterMarkerSymbolLayerWidget::QgsRasterMarkerSymbolLayerWidget( QgsVectorLay
 
   setupUi( this );
 
+  mHorizontalAnchorComboBox->addItem( tr( "Left" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Left ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Horizontal Center" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Center ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Right" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Right ) );
+
+  mVerticalAnchorComboBox->addItem( tr( "Top" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Top ) );
+  mVerticalAnchorComboBox->addItem( tr( "Vertical Center" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Center ) );
+  mVerticalAnchorComboBox->addItem( tr( "Bottom" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Bottom ) );
+
   mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastRasterMarkerImageDir" ) );
 
   connect( mImageSourceLineEdit, &QgsImageSourceLineEdit::sourceChanged, this, &QgsRasterMarkerSymbolLayerWidget::imageSourceChanged );
@@ -3935,8 +3979,8 @@ void QgsRasterMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mOffsetUnitWidget->blockSignals( false );
 
   //anchor points
-  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
-  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mHorizontalAnchorComboBox->findData( QVariant::fromValue( mLayer->horizontalAnchorPoint() ) ) );
+  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mVerticalAnchorComboBox->findData( QVariant::fromValue( mLayer->verticalAnchorPoint() ) ) );
 
   registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::Property::Width );
   registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::Property::Height );
@@ -4104,20 +4148,20 @@ void QgsRasterMarkerSymbolLayerWidget::mOffsetUnitWidget_changed()
   }
 }
 
-void QgsRasterMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )
+void QgsRasterMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( index ) );
+    mLayer->setHorizontalAnchorPoint( mHorizontalAnchorComboBox->currentData().value< Qgis::HorizontalAnchorPoint >() );
     emit changed();
   }
 }
 
-void QgsRasterMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int index )
+void QgsRasterMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( index ) );
+    mLayer->setVerticalAnchorPoint( mVerticalAnchorComboBox->currentData().value< Qgis::VerticalAnchorPoint >() );
     emit changed();
   }
 }
@@ -4131,6 +4175,14 @@ QgsAnimatedMarkerSymbolLayerWidget::QgsAnimatedMarkerSymbolLayerWidget( QgsVecto
   mLayer = nullptr;
 
   setupUi( this );
+
+  mHorizontalAnchorComboBox->addItem( tr( "Left" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Left ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Horizontal Center" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Center ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Right" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Right ) );
+
+  mVerticalAnchorComboBox->addItem( tr( "Top" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Top ) );
+  mVerticalAnchorComboBox->addItem( tr( "Vertical Center" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Center ) );
+  mVerticalAnchorComboBox->addItem( tr( "Bottom" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Bottom ) );
 
   mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastAnimatedMarkerImageDir" ) );
 
@@ -4223,8 +4275,8 @@ void QgsAnimatedMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mOffsetUnitWidget->blockSignals( false );
 
   //anchor points
-  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
-  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mHorizontalAnchorComboBox->findData( QVariant::fromValue( mLayer->horizontalAnchorPoint() ) ) );
+  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mVerticalAnchorComboBox->findData( QVariant::fromValue( mLayer->verticalAnchorPoint() ) ) );
 
   registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::Property::Width );
   registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::Property::Height );
@@ -4384,20 +4436,20 @@ void QgsAnimatedMarkerSymbolLayerWidget::mOffsetUnitWidget_changed()
   }
 }
 
-void QgsAnimatedMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )
+void QgsAnimatedMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( index ) );
+    mLayer->setHorizontalAnchorPoint( mHorizontalAnchorComboBox->currentData().value< Qgis::HorizontalAnchorPoint >() );
     emit changed();
   }
 }
 
-void QgsAnimatedMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int index )
+void QgsAnimatedMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( index ) );
+    mLayer->setVerticalAnchorPoint( mVerticalAnchorComboBox->currentData().value< Qgis::VerticalAnchorPoint >() );
     emit changed();
   }
 }

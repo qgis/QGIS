@@ -1451,6 +1451,7 @@ void QgsOracleProviderConnection::createVectorTable( const QString &schema, cons
   }
   QMap<int, int> map;
   QString errCause;
+  QString createdLayerUri;
   const Qgis::VectorExportResult res = QgsOracleProvider::createEmptyLayer(
     newUri.uri(),
     fields,
@@ -1458,6 +1459,7 @@ void QgsOracleProviderConnection::createVectorTable( const QString &schema, cons
     srs,
     overwrite,
     map,
+    createdLayerUri,
     errCause,
     options
   );

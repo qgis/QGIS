@@ -26,6 +26,7 @@
 #include <QDomDocument>
 #include <Qt3DRender/QCamera>
 #include <Qt3DInput>
+#include <cmath>
 
 #include "qgslogger.h"
 
@@ -539,11 +540,14 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
     }
   }
 
-  float f = mCumulatedWheelY / ( 120.0 * 24.0 );
-
   double oldDist = ( mZoomPoint - mCameraBefore->position() ).length();
-  double newDist = ( 1 - f ) * oldDist;
+  // Each step of the scroll wheel decreases distance by 20%
+  double newDist = std::pow( 0.8, mCumulatedWheelY ) * oldDist;
+  // Make sure we don't clip the thing we're zooming to.
+  newDist = std::max( newDist, 2.0 );
   double zoomFactor = newDist / oldDist;
+  // Don't change the distance too suddenly to hopefully prevent numerical instability
+  zoomFactor = std::clamp( zoomFactor, 0.01, 100.0 );
 
   zoomCameraAroundPivot( mCameraBefore->position(), zoomFactor, mZoomPoint );
 
@@ -567,7 +571,9 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 
     case Qgis::NavigationMode::TerrainBased:
     {
-      const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) != 0 ? 0.5f : 5.f );
+      // Scale our variable to roughly "number of normal steps", with Ctrl
+      // increasing granularity 10x
+      const double scaling = ( 1.0 / 120.0 ) * ( ( wheel->modifiers() & Qt::ControlModifier ) != 0 ? 0.1 : 1.0 );
 
       // Apparently angleDelta needs to be accumulated
       // see: https://doc.qt.io/qt-5/qwheelevent.html#angleDelta

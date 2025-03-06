@@ -230,6 +230,7 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> *oldToNewAttrIdxMap,
+    QString &createdLayerUri,
     QString *errorMessage,
     const QMap<QString, QVariant> *options )
 {
@@ -339,6 +340,10 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
   saveOptions.symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
   std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( uri, cleanedFields, wkbType, srs, QgsCoordinateTransformContext(), saveOptions, QgsFeatureSink::SinkFlags(), nullptr, &newLayerName ) );
   layerName = newLayerName;
+
+  QVariantMap uriParts = QgsOgrProviderMetadata().decodeUri( uri );
+  uriParts.insert( QStringLiteral( "layerName" ), newLayerName );
+  createdLayerUri = QgsOgrProviderMetadata().encodeUri( uriParts );
 
   QgsVectorFileWriter::WriterError error = writer->hasError();
   if ( error )

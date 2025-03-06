@@ -94,6 +94,7 @@ void QgsSpatiaLiteProviderConnection::createVectorTable( const QString &schema, 
   opts[QStringLiteral( "update" )] = true;
   QMap<int, int> map;
   QString errCause;
+  QString createdLayerUri;
   Qgis::VectorExportResult res = QgsSpatiaLiteProvider::createEmptyLayer(
     uri() + QStringLiteral( " table=%1 (geom)" ).arg( QgsSqliteUtils::quotedIdentifier( name ) ),
     fields,
@@ -101,6 +102,7 @@ void QgsSpatiaLiteProviderConnection::createVectorTable( const QString &schema, 
     srs,
     overwrite,
     &map,
+    createdLayerUri,
     &errCause,
     &opts
   );

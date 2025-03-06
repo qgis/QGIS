@@ -695,11 +695,11 @@ Qgis::VectorExportResult QgsProviderRegistry::createEmptyLayer( const QString &p
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite, QMap<int, int> &oldToNewAttrIdxMap,
     QString &errorMessage,
-    const QMap<QString, QVariant> *options )
+    const QMap<QString, QVariant> *options, QString &createdLayerName )
 {
   QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
   if ( meta )
-    return meta->createEmptyLayer( uri, fields, wkbType, srs, overwrite, oldToNewAttrIdxMap, errorMessage, options );
+    return meta->createEmptyLayer( uri, fields, wkbType, srs, overwrite, oldToNewAttrIdxMap, errorMessage, options, createdLayerName );
   else
   {
     errorMessage = QObject::tr( "Unable to load %1 provider" ).arg( providerKey );

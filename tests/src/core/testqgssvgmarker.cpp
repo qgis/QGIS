@@ -194,10 +194,10 @@ void TestQgsSvgMarkerSymbol::anchor()
   mSvgMarkerLayer->setSize( 5 );
   mSvgMarkerLayer->setFixedAspectRatio( 6 );
   mSvgMarkerLayer->setStrokeWidth( 0.0 );
-  mSvgMarkerLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::Bottom );
+  mSvgMarkerLayer->setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Bottom );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "svgmarker_anchor", "svgmarker_anchor", mMapSettings );
   mSvgMarkerLayer->setFixedAspectRatio( 0.0 );
-  mSvgMarkerLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VCenter );
+  mSvgMarkerLayer->setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Center );
 }
 
 void TestQgsSvgMarkerSymbol::aspectRatio()

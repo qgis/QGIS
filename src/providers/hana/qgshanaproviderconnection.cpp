@@ -187,6 +187,7 @@ void QgsHanaProviderConnection::createVectorTable( const QString &schema, const 
   }
   QMap<int, int> map;
   QString errCause;
+  QString createdLayerUri;
   Qgis::VectorExportResult res = QgsHanaProvider::createEmptyLayer(
     newUri.uri(),
     fields,
@@ -194,6 +195,7 @@ void QgsHanaProviderConnection::createVectorTable( const QString &schema, const 
     srs,
     overwrite,
     &map,
+    createdLayerUri,
     &errCause,
     options
   );
