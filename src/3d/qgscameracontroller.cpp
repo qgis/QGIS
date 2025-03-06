@@ -173,17 +173,17 @@ void QgsCameraController::frameTriggered( float dt )
 
 void QgsCameraController::resetView( float distance )
 {
-  setViewFromTop( 0, 0, distance );
+  QgsPointXY extentCenter = mScene->mapSettings()->extent().center();
+  QgsVector3D origin = mScene->mapSettings()->origin();
+  setViewFromTop( extentCenter.x() - origin.x(), extentCenter.y() - origin.y(), distance );
 }
 
 void QgsCameraController::setViewFromTop( float worldX, float worldY, float distance, float yaw )
 {
   QgsCameraPose camPose;
   QgsTerrainEntity *terrain = mScene->terrainEntity();
-  if ( terrain )
-    camPose.setCenterPoint( QgsVector3D( worldX, worldY, terrain->terrainElevationOffset() ) );
-  else
-    camPose.setCenterPoint( QgsVector3D( worldX, worldY, 0.0f ) );
+  const float terrainElevationOffset = terrain ? terrain->terrainElevationOffset() : 0.0f;
+  camPose.setCenterPoint( QgsVector3D( worldX, worldY, terrainElevationOffset - mScene->mapSettings()->origin().z() ) );
   camPose.setDistanceFromCenterPoint( distance );
   camPose.setHeadingAngle( yaw );
 
