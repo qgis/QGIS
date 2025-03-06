@@ -525,16 +525,14 @@ bool QgsHanaDataItemGuiProvider::handleDropUri( QgsHanaConnectionItem *connectio
   auto onSuccess = [connectionItemPointer, toSchema]() {
     if ( connectionItemPointer )
     {
-      if ( connectionItemPointer )
-        connectionItemPointer->refreshSchema( toSchema );
+      connectionItemPointer->refreshSchema( toSchema );
     }
   };
 
   auto onFailure = [connectionItemPointer, toSchema]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
-      if ( connectionItemPointer )
-        connectionItemPointer->refreshSchema( toSchema );
+      connectionItemPointer->refreshSchema( toSchema );
     }
   };
 
@@ -554,16 +552,14 @@ void QgsHanaDataItemGuiProvider::handleImportVector( QgsHanaConnectionItem *conn
   auto onSuccess = [connectionItemPointer, toSchema]() {
     if ( connectionItemPointer )
     {
-      if ( connectionItemPointer )
-        connectionItemPointer->refreshSchema( toSchema );
+      connectionItemPointer->refreshSchema( toSchema );
     }
   };
 
   auto onFailure = [connectionItemPointer, toSchema]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
-      if ( connectionItemPointer )
-        connectionItemPointer->refreshSchema( toSchema );
+      connectionItemPointer->refreshSchema( toSchema );
     }
   };
 
