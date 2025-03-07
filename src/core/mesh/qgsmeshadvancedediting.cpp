@@ -760,7 +760,14 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer, QgsPr
 
         try
         {
-          point = transformation.transform( vert.x(), vert.y() );
+          if ( calcX || calcY )
+          {
+            point = transformation.transform( mNewXYValues.last().x(), mNewXYValues.last().y() );
+          }
+          else
+          {
+            point = transformation.transform( vert.x(), vert.y() );
+          }
           vertexTransformed = true;
         }
         catch ( const QgsCsException & )
