@@ -22,17 +22,19 @@ __copyright__ = "(C) 2013, Victor Olaya"
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QProgressBar
 from qgis.utils import iface
+from qgis.gui import QgsMessageBarItem, QgsMessageBar
 from qgis.core import QgsProcessingFeedback, Qgis
 from processing.gui.MessageDialog import MessageDialog
 
 
 class MessageBarProgress(QgsProcessingFeedback):
 
-    def __init__(self, algname=None):
+    def __init__(self, algname=None, messagebar: QgsMessageBar = None):
         QgsProcessingFeedback.__init__(self)
 
+        self.messageBar = iface.messageBar() if messagebar is None else messagebar
         self.msg = []
-        self.progressMessageBar = iface.messageBar().createMessage(
+        self.progressMessageBar: QgsMessageBarItem = self.messageBar.createMessage(
             self.tr("Executing algorithm <i>{}</i>".format(algname if algname else ""))
         )
         self.progress = QProgressBar()
@@ -42,7 +44,7 @@ class MessageBarProgress(QgsProcessingFeedback):
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
         )
         self.progressMessageBar.layout().addWidget(self.progress)
-        self.message_bar_item = iface.messageBar().pushWidget(
+        self.message_bar_item = self.messageBar.pushWidget(
             self.progressMessageBar, Qgis.MessageLevel.Info
         )
 
@@ -66,7 +68,7 @@ class MessageBarProgress(QgsProcessingFeedback):
             )
             dlg.setMessage("<br>".join(self.msg))
             dlg.exec()
-        iface.messageBar().popWidget(self.message_bar_item)
+        self.messageBar.popWidget(self.message_bar_item)
 
     def tr(self, string, context=""):
         if context == "":
