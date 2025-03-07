@@ -41,6 +41,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
   connect( btnConnect, &QPushButton::clicked, this, &QgsOracleNewConnection::testConnection );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  btnConnect->setDisabled( true );
   connect( txtName, &QLineEdit::textChanged, this, &QgsOracleNewConnection::updateOkButtonState );
   connect( txtDatabase, &QLineEdit::textChanged, this, &QgsOracleNewConnection::updateOkButtonState );
   connect( txtHost, &QLineEdit::textChanged, this, &QgsOracleNewConnection::updateOkButtonState );
@@ -219,4 +220,5 @@ void QgsOracleNewConnection::updateOkButtonState()
   bool enabled = !txtName->text().isEmpty() && !txtDatabase->text().isEmpty()
                  && ( txtHost->text().isEmpty() == txtPort->text().isEmpty() );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+  btnConnect->setEnabled( enabled );
 }
