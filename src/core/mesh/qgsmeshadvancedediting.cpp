@@ -786,9 +786,10 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer, QgsPr
           {
             elevation = terrainElevation;
           }
-          mNewZValues.append( elevation );
-          mOldZValues.append( vert.z() );
         }
+
+        mNewZValues.append( elevation );
+        mOldZValues.append( vert.z() );
       }
     }
   }
