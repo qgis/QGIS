@@ -1408,6 +1408,24 @@ tests:
           fields:
             path: skip
 
+  - algorithm: native:mergevectorlayers
+    name: Merge vector layers with different fields lenghts and precision
+    params:
+      LAYERS:
+        params:
+        - name: custom/layer_A_base.shp
+          type: vector
+        - name: custom/layer_B_tomerge.shp
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/merged_fields.shp
+        type: vector
+        compare:
+          fields:
+            path: skip
+
   - algorithm: native:removeduplicatesbyattribute
     name: Remove dupes by attribute 1
     params:
