@@ -750,47 +750,44 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer, QgsPr
       mOldZValues.append( vert.z() );
     }
 
-    if ( mZFromTerrain )
+    if ( mZFromTerrain && terrainProvider )
     {
-      if ( terrainProvider )
+      QgsPointXY point;
+      bool vertexTransformed;
+      double elevation;
+
+      try
       {
-        QgsPointXY point;
-        bool vertexTransformed;
-        double elevation;
-
-        try
+        if ( calcX || calcY )
         {
-          if ( calcX || calcY )
-          {
-            point = transformation.transform( mNewXYValues.last().x(), mNewXYValues.last().y() );
-          }
-          else
-          {
-            point = transformation.transform( vert.x(), vert.y() );
-          }
-          vertexTransformed = true;
+          point = transformation.transform( mNewXYValues.last().x(), mNewXYValues.last().y() );
         }
-        catch ( const QgsCsException & )
+        else
         {
-          vertexTransformed = false;
+          point = transformation.transform( vert.x(), vert.y() );
         }
-
-        // default elevation is the previous Z
-        elevation = vert.z();
-
-        if ( vertexTransformed )
-        {
-          double terrainElevation = terrainProvider->heightAt( point.x(), point.y() );
-          // if elevation at terrain provider is NaN, use the original vertex Z value
-          if ( ! std::isnan( terrainElevation ) )
-          {
-            elevation = terrainElevation;
-          }
-        }
-
-        mNewZValues.append( elevation );
-        mOldZValues.append( vert.z() );
+        vertexTransformed = true;
       }
+      catch ( const QgsCsException & )
+      {
+        vertexTransformed = false;
+      }
+
+      // default elevation is the previous Z
+      elevation = vert.z();
+
+      if ( vertexTransformed )
+      {
+        double terrainElevation = terrainProvider->heightAt( point.x(), point.y() );
+        // if elevation at terrain provider is NaN, use the original vertex Z value
+        if ( ! std::isnan( terrainElevation ) )
+        {
+          elevation = terrainElevation;
+        }
+      }
+
+      mNewZValues.append( elevation );
+      mOldZValues.append( vert.z() );
     }
   }
 
