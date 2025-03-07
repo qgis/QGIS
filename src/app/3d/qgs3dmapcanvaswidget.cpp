@@ -484,6 +484,7 @@ void Qgs3DMapCanvasWidget::changePointCloudAttributeByPaintbrush()
   if ( !action )
     return;
 
+  mCanvas->requestActivate();
   mCanvas->setMapTool( nullptr );
   mMapToolChangeAttribute.reset( new Qgs3DMapToolPointCloudChangeAttributePaintbrush( mCanvas ) );
   onPointCloudChangeAttributeSettingsChanged();
