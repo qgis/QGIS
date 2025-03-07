@@ -11769,7 +11769,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     // duplicate the layer tree layer's custom properties
     for ( const QString &key : nodeSelectedLyr->customProperties() )
     {
-        nodeDupLayer->setCustomProperty(key, nodeSelectedLyr->customProperty(key));
+      nodeDupLayer->setCustomProperty( key, nodeSelectedLyr->customProperty( key ) );
     }
 
     // duplicate the layer style
