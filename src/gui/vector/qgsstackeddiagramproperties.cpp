@@ -88,7 +88,7 @@ void QgsStackedDiagramProperties::addSubDiagramRenderer()
     const QModelIndex currentIndex = mSubDiagramsView->selectionModel()->currentIndex();
     mModel->insertSubDiagram( currentIndex.row() + 1, renderer.release() );
     const QModelIndex newIndex = mModel->index( currentIndex.row() + 1, 0 );
-    mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect );
+    mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
   }
   else
   {
@@ -103,7 +103,7 @@ void QgsStackedDiagramProperties::appendSubDiagramRenderer( QgsDiagramRenderer *
   const int rows = mModel->rowCount();
   mModel->insertSubDiagram( rows, dr ); // Transfers ownership
   const QModelIndex newIndex = mModel->index( rows, 0 );
-  mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect );
+  mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
 }
 
 void QgsStackedDiagramProperties::editSubDiagramRenderer()
@@ -199,6 +199,8 @@ void QgsStackedDiagramProperties::syncToLayer()
 
     const QgsDiagramLayerSettings *dls = mLayer->diagramLayerSettings();
     mModel->updateDiagramLayerSettings( *dls );
+
+    mSubDiagramsView->selectionModel()->clear();
   }
 }
 
