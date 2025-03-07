@@ -178,8 +178,8 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
      * Calculates the transformed vertices of the mesh \a layer, returns FALSE if this leads to topological or geometrical errors.
      * The mesh layer must be in edit mode.
      *
-     * \note this method not apply new vertices to the mesh layer but only store the calculated transformation
-     *       that can be apply later with QgsMeshEditor::advancedEdit()
+     * \note This method does not apply new vertices to the mesh layer but only stores the calculated transformation
+     * that can be applied later with QgsMeshEditor.advancedEdit()
      *
      * \param layer
      * \param project QgsProject if it is necessary for the calculation ( for example with \see setZFromTerrain() ) \since QGIS 3.44

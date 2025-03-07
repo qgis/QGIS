@@ -144,8 +144,8 @@ The mesh layer must be in edit mode.
 
 .. note::
 
-   this method not apply new vertices to the mesh layer but only store the calculated transformation
-   that can be apply later with :py:func:`QgsMeshEditor.advancedEdit()`
+   This method does not apply new vertices to the mesh layer but only stores the calculated transformation
+   that can be applied later with :py:func:`QgsMeshEditor.advancedEdit()`
 
 :param layer:
 
