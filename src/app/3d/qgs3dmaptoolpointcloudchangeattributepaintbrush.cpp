@@ -62,6 +62,8 @@ void Qgs3DMapToolPointCloudChangeAttributePaintbrush::activate()
 void Qgs3DMapToolPointCloudChangeAttributePaintbrush::deactivate()
 {
   restart();
+  // this makes sure there are no leftover artifacts when switching from paintbrush tool to another
+  mSelectionRubberBand->setMarkersEnabled( false );
   mSelectionRubberBand.reset();
   mIsActive = false;
   mCanvas->cameraController()->setInputHandlersEnabled( true );

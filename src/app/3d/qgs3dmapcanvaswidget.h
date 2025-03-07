@@ -143,7 +143,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QTimer *mLabelNavSpeedHideTimeout = nullptr;
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
-    QObjectUniquePtr<Qgs3DMapToolPointCloudChangeAttribute> mMapToolChangeAttribute;
+    Qgs3DMapToolPointCloudChangeAttribute *mMapToolChangeAttribute = nullptr;
     std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
     QgsMapTool *mMapToolPrevious = nullptr;
     QMenu *mExportMenu = nullptr;
