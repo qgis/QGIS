@@ -43,17 +43,20 @@ import argparse
 import ast
 import glob
 import inspect
+import logging
 import os
+import re
 import sys
 
 from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
+from pathlib import Path
 
 try:
     import PyQt5
 
-    print("WARNING: PyQt5 has been found. It may result in wrong behavior.\n")
+    logging.warning("WARNING: PyQt5 has been found. It may result in wrong behavior.\n")
 except ImportError:
     pass
 
@@ -97,7 +100,7 @@ except ImportError:
     qgis_gui = None
     qgis_analysis = None
     qgis_3d = None
-    print(
+    logging.warning(
         "QGIS classes not available for introspection, only a partial upgrade will be performed"
     )
 
@@ -184,7 +187,7 @@ rename_function_attributes = {"exec_": "exec"}
 rename_function_definitions = {"exec_": "exec"}
 
 import_warnings = {
-    "QRegExp": "QRegExp is removed in Qt6, please use QRegularExpression for Qt5/Qt6 compatibility"
+    "QRegExp is removed in Qt6, please use QRegularExpression for Qt5/Qt6 compatibility"
 }
 
 # { (class, enum_value) : enum_name }
@@ -192,8 +195,22 @@ qt_enums = {}
 ambiguous_enums = defaultdict(set)
 
 
-def fix_file(filename: str, qgis3_compat: bool) -> int:
+def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
+    """
+    Parameters
+    ----------
+    filename : str
+        Name of file to check
+    qgis3_compat : bool
+        Apply modifications that would break behavior on QGIS 3, hence code may not work on QGIS 3
+    dry_run : bool, optional
+        Reports only errors and does not modify files, by default False
 
+    Returns
+    -------
+    int
+        Return 0 if no file is modified.
+    """
     with open(filename, encoding="UTF-8") as f:
         contents = f.read()
 
@@ -255,7 +272,8 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                         tokens[i] = tokens[i]._replace(src="")
 
                 custom_updates[Offset(_node.lineno, _node.col_offset)] = (
-                    _invalid_qvariant_to_null
+                    _invalid_qvariant_to_null,
+                    "Invalid conversion of QVariant(QVariant.Null). Use from qgis.core import NULL instead",
                 )
             elif (
                 len(_node.args) == 1
@@ -277,7 +295,8 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                         tokens[i] = tokens[i]._replace(src="")
 
                 custom_updates[Offset(_node.lineno, _node.col_offset)] = (
-                    _fix_null_qvariant
+                    _fix_null_qvariant,
+                    "Invalid conversion of QVariant() to NULL. Use from qgis.core import NULL instead",
                 )
         elif isinstance(_node.func, ast.Name) and _node.func.id == "QDateTime":
             if len(_node.args) == 8:
@@ -310,7 +329,8 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     tokens[i] = tokens[i]._replace(src="),")
 
                 custom_updates[Offset(_node.lineno, _node.col_offset)] = (
-                    _fix_qdatetime_construct
+                    _fix_qdatetime_construct,
+                    "QDateTime(yyyy, mm, dd, hh, MM, ss, ms, ts) doesn't work anymore, so port to more reliable QDateTime(QDate, QTime, ts) form",
                 )
             elif (
                 len(_node.args) == 1
@@ -336,7 +356,8 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     tokens[i - 1] = tokens[i - 1]._replace(src="), QTime(0, 0, 0)")
 
                 custom_updates[Offset(_node.lineno, _node.col_offset)] = (
-                    _fix_qdatetime_construct
+                    _fix_qdatetime_construct,
+                    "QDateTime(QDate(..)) doesn't work anymore, so port to more reliable QDateTime(QDate(...), QTime(0,0,0)) form",
                 )
 
     def visit_attribute(_node: ast.Attribute, _parent):
@@ -411,10 +432,10 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
         imported_modules.add(node.module)
         for name in node.names:
             if name.name in import_warnings:
-                print(f"{filename}: {import_warnings[name.name]}")
+                logging.warning(f"{filename}: {import_warnings[name.name]}")
             if name.name == "resources_rc":
-                sys.stderr.write(
-                    f"{filename}:{_node.lineno}:{_node.col_offset} WARNING: support for compiled resources "
+                logging.warning(
+                    f"{filename}:{_node.lineno}:{_node.col_offset} - WARNING: support for compiled resources "
                     "is removed in Qt6. Directly load icon resources by file path and load UI fields using "
                     "uic.loadUiType by file path instead.\n"
                 )
@@ -516,7 +537,51 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
         if module not in imported_modules:
             class_import = ", ".join(classes)
             import_statement = f"from {module} import {class_import}"
-            print(f"{filename}: Missing import, manually add \n\t{import_statement}")
+            logging.warning(
+                f"{filename}: Missing import, manually add {import_statement}"
+            )
+
+    if dry_run:
+        for key, value in fix_qt_enums.items():
+            logging.warning(
+                f"{filename}:{key.line}:{key.utf8_byte_offset} - Enum error, add '{value[1]}' before '{value[2]}'"
+            )
+
+        for key, value in member_renames.items():
+            logging.warning(
+                f"{filename}:{key.line}:{key.utf8_byte_offset} - This member should be renamed to '{value}'"
+            )
+
+        for key, value in function_def_renames.items():
+            logging.warning(
+                f"{filename}:{key.line}:{key.utf8_byte_offset} - This function should be renamed to '{value}'"
+            )
+
+        for key, value in token_renames.items():
+            logging.warning(
+                f"{filename}:{key.line}:{key.utf8_byte_offset} - Use '{value}' instead"
+            )
+
+        for key, value in custom_updates.items():
+            _, text = value
+            logging.warning(f"{filename}:{key.line}:{key.utf8_byte_offset} - {text}")
+
+        for elem in fix_qvariant_type:
+            logging.warning(
+                f"{filename}:{elem.line}:{elem.utf8_byte_offset} - Replace QVariant.X with QMetaType.Type.X"
+            )
+
+        for elem in fix_pyqt_import:
+            logging.warning(
+                f"{filename}:{elem.line}:{elem.utf8_byte_offset} - Fix PyQT import, you must import from qgis.PyQt"
+            )
+
+        for elem in rename_qt_enums:
+            logging.warning(
+                f"{filename}:{elem.line}:{elem.utf8_byte_offset} - This enum was renamed"
+            )
+
+        return 0
 
     if not any(
         [
@@ -636,7 +701,8 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                 tokens[i + 2] = tokens[i + 2]._replace(src=qmetatype_mapping[attr])
 
         if token.offset in custom_updates:
-            custom_updates[token.offset](i, tokens)
+            method, _ = custom_updates[token.offset]
+            method(i, tokens)
 
         if token.offset in fix_pyqt_import:
             assert tokens[i + 2].src == "PyQt5"
@@ -700,6 +766,8 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             tokens[i + 2] = tokens[i + 2]._replace(src=f"{enum_name[0]}.{enum_name[1]}")
 
     new_contents = tokens_to_src(tokens)
+
+    # Files can only be modified if dry_run mode is not activated.
     with open(filename, "w") as f:
         f.write(new_contents)
 
@@ -775,7 +843,30 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
         help="Apply modifications that would break behavior on QGIS 3, hence code may not work on QGIS 3",
     )
+    parser.add_argument(
+        "--dry_run",
+        action="store_true",
+        help="Displays the changes that would be made, but does not modify any files.",
+    )
+    parser.add_argument(
+        "--logfile",
+        action="store",
+        help="Path to logging file",
+    )
+
     args = parser.parse_args(argv)
+    log_format = "%(message)s"
+
+    if args.logfile:
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format=log_format,
+            filename=Path(args.logfile),
+            filemode="w",
+        )
+
+    else:
+        logging.basicConfig(level=logging.DEBUG, format=log_format)
 
     # get all scope for all qt enum
     for module in target_modules:
@@ -783,12 +874,17 @@ def main(argv: Sequence[str] | None = None) -> int:
             get_class_enums(value)
 
     ret = 0
+
+    dry_run = args.dry_run if args.dry_run else False
+
+    if dry_run:
+        logging.info("=== dry_run mode | Start Logs ===")
+
     for filename in glob.glob(os.path.join(args.directory, "**/*.py"), recursive=True):
-        # print(f'Processing {filename}')
         if "auto_additions" in filename:
             continue
 
-        ret |= fix_file(filename, not args.qgis3_incompatible_changes)
+        ret |= fix_file(filename, not args.qgis3_incompatible_changes, dry_run)
     return ret
 
 
