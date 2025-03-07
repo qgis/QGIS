@@ -166,15 +166,8 @@ void QgsRubberBand3D::removePoint( int index )
   updateGeometry();
 }
 
-QgsRubberBand3D::~QgsRubberBand3D()
-{
-  if ( mPolygonEntity )
-    mPolygonEntity->deleteLater();
-  if ( mLineEntity )
-    mLineEntity->deleteLater();
-  if ( mMarkerEntity )
-    mMarkerEntity->deleteLater();
-}
+QgsRubberBand3D::~QgsRubberBand3D() = default;
+
 
 float QgsRubberBand3D::width() const
 {

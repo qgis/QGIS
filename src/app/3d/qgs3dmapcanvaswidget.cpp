@@ -309,7 +309,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( mCanvas );
 
-  mMapToolChangeAttribute.reset( new Qgs3DMapToolPointCloudChangeAttribute( mCanvas ) );
+  mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttribute( mCanvas );
 
   mLabelPendingJobs = new QLabel( this );
   mProgressPendingJobs = new QProgressBar( this );
@@ -418,11 +418,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
 {
   delete mDockableWidgetHelper;
-  // we don't want canvas to reset the map tool as it is managed by unique_ptr
-  if ( mMapToolChangeAttribute.get() == mCanvas->mapTool() )
-  {
-    mCanvas->setMapTool( nullptr );
-  }
 }
 
 void Qgs3DMapCanvasWidget::saveAsImage()
@@ -485,10 +480,10 @@ void Qgs3DMapCanvasWidget::changePointCloudAttributeByPaintbrush()
     return;
 
   mCanvas->requestActivate();
-  mCanvas->setMapTool( nullptr );
-  mMapToolChangeAttribute.reset( new Qgs3DMapToolPointCloudChangeAttributePaintbrush( mCanvas ) );
+  mMapToolChangeAttribute->deleteLater();
+  mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttributePaintbrush( mCanvas );
   onPointCloudChangeAttributeSettingsChanged();
-  mCanvas->setMapTool( mMapToolChangeAttribute.get() );
+  mCanvas->setMapTool( mMapToolChangeAttribute );
   mEditingToolsAction->setIcon( action->icon() );
 }
 
@@ -498,10 +493,10 @@ void Qgs3DMapCanvasWidget::changePointCloudAttributeByPolygon()
   if ( !action )
     return;
 
-  mCanvas->setMapTool( nullptr );
-  mMapToolChangeAttribute.reset( new Qgs3DMapToolPointCloudChangeAttributePolygon( mCanvas, Qgs3DMapToolPointCloudChangeAttributePolygon::Polygon ) );
+  mMapToolChangeAttribute->deleteLater();
+  mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttributePolygon( mCanvas, Qgs3DMapToolPointCloudChangeAttributePolygon::Polygon );
   onPointCloudChangeAttributeSettingsChanged();
-  mCanvas->setMapTool( mMapToolChangeAttribute.get() );
+  mCanvas->setMapTool( mMapToolChangeAttribute );
   mEditingToolsAction->setIcon( action->icon() );
 }
 
@@ -511,10 +506,10 @@ void Qgs3DMapCanvasWidget::changePointCloudAttributeByAboveLine()
   if ( !action )
     return;
 
-  mCanvas->setMapTool( nullptr );
-  mMapToolChangeAttribute.reset( new Qgs3DMapToolPointCloudChangeAttributePolygon( mCanvas, Qgs3DMapToolPointCloudChangeAttributePolygon::AboveLine ) );
+  mMapToolChangeAttribute->deleteLater();
+  mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttributePolygon( mCanvas, Qgs3DMapToolPointCloudChangeAttributePolygon::AboveLine );
   onPointCloudChangeAttributeSettingsChanged();
-  mCanvas->setMapTool( mMapToolChangeAttribute.get() );
+  mCanvas->setMapTool( mMapToolChangeAttribute );
   mEditingToolsAction->setIcon( action->icon() );
 }
 
@@ -524,10 +519,10 @@ void Qgs3DMapCanvasWidget::changePointCloudAttributeByBelowLine()
   if ( !action )
     return;
 
-  mCanvas->setMapTool( nullptr );
-  mMapToolChangeAttribute.reset( new Qgs3DMapToolPointCloudChangeAttributePolygon( mCanvas, Qgs3DMapToolPointCloudChangeAttributePolygon::BelowLine ) );
+  mMapToolChangeAttribute->deleteLater();
+  mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttributePolygon( mCanvas, Qgs3DMapToolPointCloudChangeAttributePolygon::BelowLine );
   onPointCloudChangeAttributeSettingsChanged();
-  mCanvas->setMapTool( mMapToolChangeAttribute.get() );
+  mCanvas->setMapTool( mMapToolChangeAttribute );
   mEditingToolsAction->setIcon( action->icon() );
 }
 
