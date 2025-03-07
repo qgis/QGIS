@@ -407,7 +407,11 @@ QMimeData *QgsStackedDiagramPropertiesModel::mimeData( const QModelIndexList &in
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  for ( const QModelIndex &index : indexes )
+  // Sort indexes since their order reflects selection order
+  QModelIndexList sortedIndexes = indexes;
+  std::sort( sortedIndexes.begin(), sortedIndexes.end() );
+
+  for ( const QModelIndex &index : std::as_const( sortedIndexes ) )
   {
     // each item consists of several columns - let's add it with just first one
     if ( !index.isValid() || index.column() != 0 )
