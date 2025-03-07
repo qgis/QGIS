@@ -105,6 +105,16 @@ Returns the topmost component item at a specified ``position``.
 Returns the graphic item corresponding to the specified group box ``uuid``.
 %End
 
+    QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
+%Docstring
+Returns the graphic item corresponding to the specified  specified child algorithm
+%End
+
+    QgsModelComponentGraphicItem *parameterItem( const QString &name );
+%Docstring
+Returns the :py:class:`QgsModelComponentGraphicItem` corresponding to the specified child algorithm
+%End
+
     void selectAll();
 %Docstring
 Selects all the components in the scene.
