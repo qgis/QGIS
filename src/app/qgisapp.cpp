@@ -11767,6 +11767,12 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     // always set duplicated layers to not visible so layer can be configured before being turned on
     nodeDupLayer->setItemVisibilityChecked( false );
 
+    // duplicate the layer tree layer's custom properties
+    for ( const QString &key : nodeSelectedLyr->customProperties() )
+    {
+        nodeDupLayer->setCustomProperty(key, nodeSelectedLyr->customProperty(key));
+    }
+
     // duplicate the layer style
     QString errMsg;
     QDomDocument style;
