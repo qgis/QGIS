@@ -77,7 +77,6 @@ void TestQgs3DMapScene::testOriginShift()
   map.setCrs( mProject->crs() );
   map.setExtent( mProject->viewSettings()->fullExtent() );
   map.setLayers( QList<QgsMapLayer *>() << mLayerCountries );
-  map.setOrigin( QgsVector3D( 0, 0, 0 ) );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map.crs(), map.transformContext() );
@@ -85,10 +84,12 @@ void TestQgs3DMapScene::testOriginShift()
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( map, &engine );
-  scene->setSceneOriginShiftEnabled( false );
   engine.setRootEntity( scene );
 
   QgsVector3D webMercatorRome( 1'390'000, 5'146'000, 0 );
+
+  map.setOrigin( QgsVector3D( 0, 0, 0 ) );
+  scene->setSceneOriginShiftEnabled( false );
 
   // start with the initial view far from Rome...
   // origin should be unchanged because shifting is disabled
