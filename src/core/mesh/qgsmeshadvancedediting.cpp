@@ -775,13 +775,16 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer, QgsPr
           vertexTransformed = false;
         }
 
+        // default elevation is the previous Z
+        elevation = vert.z();
+
         if ( vertexTransformed )
         {
-          elevation = terrainProvider->heightAt( point.x(), point.y() );
+          double terrainElevation = terrainProvider->heightAt( point.x(), point.y() );
           // if elevation at terrain provider is NaN, use the original vertex Z value
-          if ( std::isnan( elevation ) )
+          if ( ! std::isnan( terrainElevation ) )
           {
-            elevation = vert.z();
+            elevation = terrainElevation;
           }
           mNewZValues.append( elevation );
           mOldZValues.append( vert.z() );
