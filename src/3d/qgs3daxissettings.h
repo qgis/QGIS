@@ -19,7 +19,7 @@
 #include <QString>
 #include <QMap>
 
-#include "qgis_3d.h"
+#include "qgs3daxisrenderview.h"
 
 class QgsReadWriteContext;
 class QDomElement;

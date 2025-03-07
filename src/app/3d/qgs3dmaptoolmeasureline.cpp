@@ -28,6 +28,7 @@
 #include "qgsframegraph.h"
 #include "qgsabstractterrainsettings.h"
 
+
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
 {
