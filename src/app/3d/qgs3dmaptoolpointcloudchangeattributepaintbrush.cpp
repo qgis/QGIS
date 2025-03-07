@@ -157,10 +157,18 @@ void Qgs3DMapToolPointCloudChangeAttributePaintbrush::keyPressEvent( QKeyEvent *
     restart();
   }
 
-  if ( !mIsClicked && event->key() == Qt::Key_Space )
+  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() )
   {
-    const bool newState = !mCanvas->cameraController()->hasInputHandlersEnabled();
-    mCanvas->cameraController()->setInputHandlersEnabled( newState );
-    mIsMoving = newState;
+    mCanvas->cameraController()->setInputHandlersEnabled( true );
+    mIsMoving = true;
+  }
+}
+
+void Qgs3DMapToolPointCloudChangeAttributePaintbrush::keyReleaseEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() )
+  {
+    mCanvas->cameraController()->setInputHandlersEnabled( false );
+    mIsMoving = false;
   }
 }

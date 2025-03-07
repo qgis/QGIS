@@ -50,6 +50,8 @@ class _3D_EXPORT Qgs3DMapTool : public QObject
     virtual void mouseMoveEvent( QMouseEvent *event );
     //! Reimplement to handle key press \a event forwarded by the parent Qgs3DMapCanvas
     virtual void keyPressEvent( QKeyEvent *event );
+    //! Reimplement to handle key release \a event forwarded by the parent Qgs3DMapCanvas
+    virtual void keyReleaseEvent( QKeyEvent *event );
     //! Reimplement to handle mouse wheel \a event forwarded by the parent Qgs3DMapCanvas
     virtual void mouseWheelEvent( QWheelEvent *event );
 
