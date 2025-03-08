@@ -146,7 +146,6 @@ FROM binary-for-oracle as binary-only
 
 RUN  apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    grass \
     iproute2 \
     postgresql-client \
     spawn-fcgi \
