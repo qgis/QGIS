@@ -89,6 +89,10 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
      */
     void updateDiagramLayerSettings( QgsDiagramLayerSettings dls );
 
+  signals:
+    //! Informs views that subdiagrams were moved in the model.
+    void subDiagramsMoved();
+
   protected:
     QList<QgsDiagramRenderer *> mRenderers;
     QgsDiagramLayerSettings mDiagramLayerSettings;
@@ -137,6 +141,13 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
 
   public slots:
     void apply();
+
+    /**
+     * Clears current item from the view.
+     *
+     * \since QGIS 3.40.6
+     */
+    void clearCurrentIndex();
 
   private slots:
 
