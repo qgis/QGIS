@@ -227,6 +227,8 @@ void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *propertie
   properties->setDataUrlFormat( mDataUrlFormat );
   properties->setAttribution( mAttribution );
   properties->setAttributionUrl( mAttributionUrl );
+  properties->setLegendUrl( mLegendUrl );
+  properties->setLegendUrlFormat( mLegendUrlFormat );
 }
 
 void QgsMapLayerServerProperties::reset() // cppcheck-suppress duplInheritedMember
@@ -300,4 +302,3 @@ void QgsMapLayerServerProperties::writeXml( QDomNode &layer_node, QDomDocument &
   // only called for SOME map layer subclasses!
   // Accordingly that logic is currently left in QgsMapLayer::writeLayerXml
 }
-
