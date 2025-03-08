@@ -69,6 +69,8 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsStackedDiagramProperties::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsStackedDiagramProperties::widgetChanged );
 
+  connect( mModel, &QgsStackedDiagramPropertiesModel::subDiagramsMoved, this, &QgsStackedDiagramProperties::clearCurrentIndex );
+
   syncToLayer();
 }
 
@@ -169,6 +171,11 @@ void QgsStackedDiagramProperties::removeSubDiagramRenderer()
   }
   // make sure that the selection is gone
   mSubDiagramsView->selectionModel()->clear();
+}
+
+void QgsStackedDiagramProperties::clearCurrentIndex()
+{
+  mSubDiagramsView->selectionModel()->clearCurrentIndex();
 }
 
 void QgsStackedDiagramProperties::syncToLayer()
@@ -490,6 +497,7 @@ bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::
     }
   }
 
+  emit subDiagramsMoved(); // Let views know they can clean some things up
   return true;
 }
 
