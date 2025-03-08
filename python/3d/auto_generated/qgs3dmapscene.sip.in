@@ -133,6 +133,33 @@ it may be useful to temporarily disable scene updates.
 .. versionadded:: 3.40
 %End
 
+    bool hasSceneOriginShiftEnabled() const;
+%Docstring
+Returns whether the 3D scene is allowed to automatically move the scene's
+origin. This is necessary in large scenes (e.g. more than 50km across)
+to avoid issues with numerical precision (due to the use of 32-bit floats
+in rendering), that may cause jitter in camera position or object location.
+When 3D scene moves the origin (because the camera is far from it), user
+should not see any change - transforms of 3D entities should be updated
+accordingly.
+
+Normally, origin shifts are enabled. But for debugging purposes,
+it may be useful to temporarily disable origin shifts.
+
+.. versionadded:: 3.44
+%End
+
+    void setSceneOriginShiftEnabled( bool enabled );
+%Docstring
+Returns whether the 3D scene is allowed to automatically move the scene's
+origin. See :py:func:`~Qgs3DMapScene.hasSceneOriginShiftEnabled` for more details.
+
+Normally, origin shifts are enabled. But for debugging purposes,
+it may be useful to temporarily disable origin shifts.
+
+.. versionadded:: 3.44
+%End
+
  static QMap<QString, Qgs3DMapScene *> openScenes() /Deprecated="Since 3.36. Use QgisAppInterface.mapCanvases3D() instead."/;
 %Docstring
 Returns a map of 3D map scenes (by name) open in the QGIS application.

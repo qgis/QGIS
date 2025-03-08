@@ -62,7 +62,6 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( QgsProject::instance()->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( visibleLayers );
 
   map->setExtent( fullExtent );

@@ -19,6 +19,7 @@
 #include "qgs3ddebugwidget.h"
 #include "qgs3dmapcanvas.h"
 #include "qgscameracontroller.h"
+#include "qgs3dmapscene.h"
 
 Qgs3DDebugWidget::Qgs3DDebugWidget( Qgs3DMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )
@@ -72,6 +73,7 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   whileBlocking( chkShowCameraRotationCenter )->setChecked( mMap->showCameraRotationCenter() );
   whileBlocking( chkShowLightSourceOrigins )->setChecked( mMap->showLightSourceOrigins() );
   whileBlocking( chkStopUpdates )->setChecked( mMap->stopUpdates() );
+  whileBlocking( chkStopOriginShifts )->setChecked( !m3DMapCanvas->scene()->hasSceneOriginShiftEnabled() );
   whileBlocking( chkDebugOverlay )->setChecked( mMap->isDebugOverlayEnabled() );
   connect( chkShowTileInfo, &QCheckBox::toggled, this, [=]( const bool enabled ) { mMap->setShowTerrainTilesInfo( enabled ); } );
   connect( chkShowBoundingBoxes, &QCheckBox::toggled, this, [=]( const bool enabled ) { mMap->setShowTerrainBoundingBoxes( enabled ); } );
@@ -79,6 +81,9 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   connect( chkShowCameraRotationCenter, &QCheckBox::toggled, this, [=]( const bool enabled ) { mMap->setShowCameraRotationCenter( enabled ); } );
   connect( chkShowLightSourceOrigins, &QCheckBox::toggled, this, [=]( const bool enabled ) { mMap->setShowLightSourceOrigins( enabled ); } );
   connect( chkStopUpdates, &QCheckBox::toggled, this, [=]( const bool enabled ) { mMap->setStopUpdates( enabled ); } );
+  connect( chkStopOriginShifts, &QCheckBox::toggled, this, [=]( const bool enabled ) {
+    m3DMapCanvas->scene()->setSceneOriginShiftEnabled( !enabled );
+  } );
   connect( chkDebugOverlay, &QCheckBox::toggled, this, [=]( const bool enabled ) { mMap->setIsDebugOverlayEnabled( enabled ); } );
 
   // set up the shadow map block
