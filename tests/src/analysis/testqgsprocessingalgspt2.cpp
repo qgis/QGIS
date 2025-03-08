@@ -113,6 +113,8 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
 
     void nativeAlgsRasterSize();
 
+    void defineProjection();
+
   private:
     QString mPointLayerPath;
     QgsVectorLayer *mPointsLayer = nullptr;
@@ -2239,6 +2241,51 @@ void TestQgsProcessingAlgsPt2::nativeAlgsRasterSize()
   QCOMPARE( densityRasterLayer->extent(), gdalRasterLayer->extent() );
   QCOMPARE( densityRasterLayer->height(), gdalRasterLayer->height() );
   QCOMPARE( densityRasterLayer->width(), gdalRasterLayer->width() );
+}
+
+void TestQgsProcessingAlgsPt2::defineProjection()
+{
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:definecurrentprojection" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
+  parameters.insert( QStringLiteral( "CRS" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+
+  bool ok = false;
+  auto context = std::make_unique<QgsProcessingContext>();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+  QVERIFY( layer->crs().isValid() );
+  QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3857" ) );
+
+  // check that .prj file is create and .qpj file is deleted
+  const QTemporaryDir tmpPath;
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QFile::copy( dataDir + "/points.shp", tmpPath.filePath( QStringLiteral( "points.shp" ) ) );
+  QFile::copy( dataDir + "/points.shx", tmpPath.filePath( QStringLiteral( "points.shx" ) ) );
+  QFile::copy( dataDir + "/points.dbf", tmpPath.filePath( QStringLiteral( "points.dbf" ) ) );
+  QFile::copy( dataDir + "/points.qpj", tmpPath.filePath( QStringLiteral( "points.qpj" ) ) );
+
+  layer.reset( new QgsVectorLayer( tmpPath.filePath( QStringLiteral( "points.shp" ) ), QStringLiteral( "input" ), QStringLiteral( "ogr" ) ) );
+  QVERIFY( layer->isValid() );
+  QVERIFY( !layer->crs().isValid() );
+
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QFile prjFile( tmpPath.filePath( QStringLiteral( "points.prj" ) ) );
+  QVERIFY( prjFile.exists() );
+  QFile qpjFile( tmpPath.filePath( QStringLiteral( "points.qpj" ) ) );
+  QVERIFY( !qpjFile.exists() );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )
