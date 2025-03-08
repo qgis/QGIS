@@ -1,0 +1,7 @@
+#qt6#usr/share/qgis/python/plugins                            usr/share/qgis-qt6/python/plugins
+#qt6#usr/share/qgis/python/console                            usr/share/qgis-qt6/python/console
+#qt6#usr/share/qgis/python/qsci_apis/QScintilla2-2.7.2.api    usr/share/qgis-qt6/python/qsci_apis/QScintilla2-2.7.2.api
+#qt6#usr/share/qgis/python/qsci_apis/PyQt5.api                usr/share/qgis-qt6/python/qsci_apis/PyQt5.api
+#qt6#usr/share/qgis/python/qsci_apis/OSGeo_GEOS-3.6.2.api     usr/share/qgis-qt6/python/qsci_apis/OSGeo_GEOS-3.6.2.api
+#qt6#usr/share/qgis/python/qsci_apis/OSGeo_GDAL-OGR-2.2.3.api usr/share/qgis-qt6/python/qsci_apis/OSGeo_GDAL-OGR-2.2.3.api
+#qt6#usr/share/qgis/python/qsci_apis/Python-3.6.api           usr/share/qgis-qt6/python/qsci_apis/Python-3.6.api

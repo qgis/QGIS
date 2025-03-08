@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+cd debian/tmp
+find usr/share/qgis-qt6/python -name "*.so" -printf "%p\n%p#\n" |
+	sed -e "/#$/ { s,_\(.*\).so#,\1/__init__.py,; s,/3d_p/,/_3d/,; }"
+
+echo usr/share/qgis-qt6/python/qsci_apis/PyQGIS.api

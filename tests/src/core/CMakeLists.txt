@@ -8,6 +8,12 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/test
 )
 
+if (WITH_INTERNAL_LAZPERF)
+  include_directories(
+    ${CMAKE_SOURCE_DIR}/external/lazperf
+  )
+endif()
+
 if(HAVE_OPENCL)
     include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()

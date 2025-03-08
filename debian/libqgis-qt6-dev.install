@@ -1,0 +1,11 @@
+usr/lib/libqgis_3d*-qt6.so
+usr/lib/libqgis_analysis*-qt6.so
+usr/lib/libqgis_app*-qt6.so
+usr/lib/libqgis_core*-qt6.so
+usr/lib/libqgis_gui*-qt6.so
+usr/lib/libqgis_native*-qt6.so
+usr/lib/libqgis_server*-qt6.so
+usr/lib/libqgisgrass*-qt6.so
+usr/lib/libqgispython*-qt6.so
+usr/include/qgis-qt6
+usr/share/qgis-qt6/FindQGIS.cmake
