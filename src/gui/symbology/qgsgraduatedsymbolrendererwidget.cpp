@@ -877,18 +877,18 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
   clearParameterWidgets();
 
   const QString methodId = cboGraduatedMode->currentData().toString();
-  std::unique_ptr< QgsClassificationMethod > method = QgsApplication::classificationMethodRegistry()->method( methodId );
-  Q_ASSERT( method );
+  mClassificationMethod = QgsApplication::classificationMethodRegistry()->method( methodId );
+  Q_ASSERT( mClassificationMethod.get() );
 
   // need more context?
   QgsProcessingContext context;
 
-  for ( const QgsProcessingParameterDefinition *def : method->parameterDefinitions() )
+  for ( const QgsProcessingParameterDefinition *def : mClassificationMethod->parameterDefinitions() )
   {
     QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, QgsProcessingGui::Standard );
     mParametersLayout->addRow( ppww->createWrappedLabel(), ppww->createWrappedWidget( context ) );
 
-    QVariant value = method->parameterValues().value( def->name(), def->defaultValueForGui() );
+    QVariant value = mClassificationMethod->parameterValues().value( def->name(), def->defaultValueForGui() );
     ppww->setParameterValue( value, context );
 
     connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
@@ -896,7 +896,7 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
     mParameterWidgetWrappers.push_back( std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper>( ppww ) );
   }
 
-  spinGraduatedClasses->setEnabled( !( method->flags() & QgsClassificationMethod::MethodProperty::IgnoresClassCount ) );
+  spinGraduatedClasses->setEnabled( !( mClassificationMethod->flags() & QgsClassificationMethod::MethodProperty::IgnoresClassCount ) );
 }
 
 void QgsGraduatedSymbolRendererWidget::toggleMethodWidgets( MethodMode mode )
@@ -1041,16 +1041,12 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
 void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl()
 {
-  if ( mBlockUpdates )
+  if ( mBlockUpdates || !mClassificationMethod )
     return;
 
   QgsTemporaryCursorOverride override( Qt::WaitCursor );
   QString attrName = mExpressionWidget->currentField();
   int nclasses = spinGraduatedClasses->value();
-
-  const QString methodId = cboGraduatedMode->currentData().toString();
-  std::unique_ptr< QgsClassificationMethod > method = QgsApplication::classificationMethodRegistry()->method( methodId );
-  Q_ASSERT( method );
 
   int attrNum = mLayer->fields().lookupField( attrName );
 
@@ -1064,29 +1060,29 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl()
   mSymmetryPointValidator->setTop( maximum );
   mSymmetryPointValidator->setMaxDecimals( spinPrecision->value() );
 
-  if ( method->id() == QgsClassificationEqualInterval::METHOD_ID || method->id() == QgsClassificationStandardDeviation::METHOD_ID )
+  if ( mClassificationMethod->id() == QgsClassificationEqualInterval::METHOD_ID || mClassificationMethod->id() == QgsClassificationStandardDeviation::METHOD_ID )
   {
     // knowing that spinSymmetryPointForOtherMethods->value() is automatically put at minimum when out of min-max
     // using "(maximum-minimum)/100)" to avoid direct comparison of doubles
     double currentValue = QgsDoubleValidator::toDouble( cboSymmetryPoint->currentText() );
     if ( currentValue < ( minimum + ( maximum - minimum ) / 100. ) || currentValue > ( maximum - ( maximum - minimum ) / 100. ) )
-      cboSymmetryPoint->setItemText( cboSymmetryPoint->currentIndex(), QLocale().toString( minimum + ( maximum - minimum ) / 2., 'f', method->labelPrecision() + 2 ) );
+      cboSymmetryPoint->setItemText( cboSymmetryPoint->currentIndex(), QLocale().toString( minimum + ( maximum - minimum ) / 2., 'f', mClassificationMethod->labelPrecision() + 2 ) );
   }
 
   if ( mGroupBoxSymmetric->isChecked() )
   {
     double symmetryPoint = QgsDoubleValidator::toDouble( cboSymmetryPoint->currentText() );
     bool astride = cbxAstride->isChecked();
-    method->setSymmetricMode( true, symmetryPoint, astride );
+    mClassificationMethod->setSymmetricMode( true, symmetryPoint, astride );
   }
 
   QVariantMap parameterValues;
   for ( const auto &ppww : std::as_const( mParameterWidgetWrappers ) )
     parameterValues.insert( ppww->parameterDefinition()->name(), ppww->parameterValue() );
-  method->setParameterValues( parameterValues );
+  mClassificationMethod->setParameterValues( parameterValues );
 
   // set method to renderer
-  mRenderer->setClassificationMethod( method.release() );
+  mRenderer->setClassificationMethod( mClassificationMethod->clone().release() );
 
   // create and set new renderer
   mRenderer->setClassAttribute( attrName );
