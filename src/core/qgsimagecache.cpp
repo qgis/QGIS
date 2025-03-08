@@ -102,7 +102,7 @@ QgsImageCache::QgsImageCache( QObject *parent )
   }
   else
   {
-    const int sysMemory = QgsApplication::systemMemorySizeMb();
+    const unsigned long sysMemory = QgsApplication::systemMemorySizeMb();
     if ( sysMemory > 0 )
     {
       if ( sysMemory >= 32000 ) // 32 gb RAM (or more) = 500mb cache size
