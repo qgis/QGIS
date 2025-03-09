@@ -256,10 +256,15 @@ static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeig
   }
 }
 
-static QVector3D _calculateNormal( const QgsLineString *curve, double originX, double originY, bool invertNormal )
+static QVector3D _calculateNormal( const QgsLineString *curve, double originX, double originY, bool invertNormal, float extrusionHeight )
 {
   if ( !QgsWkbTypes::hasZ( curve->wkbType() ) )
   {
+    // In case of extrusions, flat polygons always face up
+    if ( extrusionHeight != 0 )
+      return QVector3D( 0, 0, 1 );
+
+    // For non-extrusions, decide based on polygon winding order and invertNormal flag
     float orientation = 1.f;
     if ( curve->orientation() == Qgis::AngularDirection::Clockwise )
       orientation = -orientation;
@@ -268,14 +273,29 @@ static QVector3D _calculateNormal( const QgsLineString *curve, double originX, d
     return QVector3D( 0, 0, orientation );
   }
 
+  // often we have 3D coordinates, but Z is the same for all vertices
+  // if these flat polygons are extruded, we consider them up-facing regardless of winding order
+  bool sameZ = true;
+  QgsPoint pt1 = curve->pointN( 0 );
+  QgsPoint pt2;
+  for ( int i = 1; i < curve->numPoints(); i++ )
+  {
+    pt2 = curve->pointN( i );
+    if ( pt1.z() != pt2.z() )
+    {
+      sameZ = false;
+      break;
+    }
+  }
+  if ( sameZ && extrusionHeight != 0 )
+    return QVector3D( 0, 0, 1 );
+
   // Calculate the polygon's normal vector, based on Newell's method
   // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
   //
   // Order of vertices is important here as it determines the front/back face of the polygon
 
   double nx = 0, ny = 0, nz = 0;
-  QgsPoint pt1 = curve->pointN( 0 );
-  QgsPoint pt2;
 
   // shift points by the tessellator's origin - this does not affect normal calculation and it may save us from losing some precision
   pt1.setX( pt1.x() - originX );
@@ -475,7 +495,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   if ( !exterior )
     return;
 
-  const QVector3D pNormal = !mNoZ ? _calculateNormal( exterior, mOriginX, mOriginY, mInvertNormals ) : QVector3D();
+  const QVector3D pNormal = !mNoZ ? _calculateNormal( exterior, mOriginX, mOriginY, mInvertNormals, extrusionHeight ) : QVector3D();
   const int pCount = exterior->numPoints();
   if ( pCount == 0 )
     return;
