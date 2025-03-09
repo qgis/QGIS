@@ -147,6 +147,7 @@ class TestQgsTessellator : public QgsTest
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testBasic();
+    void testBasicClockwise();
     void testWalls();
     void testBackEdges();
     void test2DTriangle();
@@ -237,6 +238,121 @@ void TestQgsTessellator::testBasic()
 
   QCOMPARE( tNZ.zMinimum(), 3 );
   QCOMPARE( tNZ.zMaximum(), 3 );
+
+  // with invert normals enabled, normals point down and triangles are reversed to clockwise
+  const QVector3D down( 0, 0, -1 ); // surface normal pointing straight down
+  QList<TriangleCoords> tcInvertedNormals;
+  tcInvertedNormals << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
+  tcInvertedNormals << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
+
+  QList<TriangleCoords> tcInvertedNormalsZ;
+  tcInvertedNormalsZ << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
+  tcInvertedNormalsZ << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
+
+  QgsTessellator tIN( 0, 0, true, true );
+  tIN.setOutputZUp( true );
+  tIN.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tIN.data(), true, tcInvertedNormals ) );
+
+  QCOMPARE( tIN.zMinimum(), 0 );
+  QCOMPARE( tIN.zMaximum(), 0 );
+
+  QgsTessellator tINZ( 0, 0, true, true );
+  tINZ.setOutputZUp( true );
+  tINZ.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tINZ.data(), true, tcInvertedNormalsZ ) );
+
+  QCOMPARE( tINZ.zMinimum(), 3 );
+  QCOMPARE( tINZ.zMaximum(), 3 );
+}
+
+void TestQgsTessellator::testBasicClockwise()
+{
+  // Clockwise polygons are facing down, not up, even when flat
+  // The triangles also face down and are clockwise
+  QgsPolygon polygon;
+  polygon.fromWkt( "POLYGON((1 1, 1 2, 3 2, 2 1, 1 1))" );
+
+  QgsPolygon polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 1 3, 1 2 3, 3 2 3, 2 1 3, 1 1 3))" );
+
+  QList<TriangleCoords> tc;
+  tc << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ) );
+  tc << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ) );
+
+  QList<TriangleCoords> tcZ;
+  tcZ << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ) );
+  tcZ << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 2, 3 ) );
+
+  const QVector3D down( 0, 0, -1 ); // surface normal pointing straight down
+  QList<TriangleCoords> tcNormals;
+  tcNormals << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
+  tcNormals << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
+
+  QList<TriangleCoords> tcNormalsZ;
+  tcNormalsZ << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
+  tcNormalsZ << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
+
+  // without normals
+
+  QgsTessellator t( 0, 0, false );
+  t.setOutputZUp( true );
+  t.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
+
+  QCOMPARE( t.zMinimum(), 0 );
+  QCOMPARE( t.zMaximum(), 0 );
+
+  QgsTessellator tZ( 0, 0, false );
+  tZ.setOutputZUp( true );
+  tZ.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tZ.data(), false, tcZ ) );
+
+  QCOMPARE( tZ.zMinimum(), 3 );
+  QCOMPARE( tZ.zMaximum(), 3 );
+
+  // with normals
+
+  QgsTessellator tN( 0, 0, true );
+  tN.setOutputZUp( true );
+  tN.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tN.data(), true, tcNormals ) );
+
+  QCOMPARE( tN.zMinimum(), 0 );
+  QCOMPARE( tN.zMaximum(), 0 );
+
+  QgsTessellator tNZ( 0, 0, true );
+  tNZ.setOutputZUp( true );
+  tNZ.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tNZ.data(), true, tcNormalsZ ) );
+
+  QCOMPARE( tNZ.zMinimum(), 3 );
+  QCOMPARE( tNZ.zMaximum(), 3 );
+
+  // with invert normals enabled, normals point up and triangles are reversed to counter clockwise
+  const QVector3D up( 0, 0, 1 ); // surface normal pointing straight up
+  QList<TriangleCoords> tcInvertedNormals;
+  tcInvertedNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
+  tcInvertedNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up );
+
+  QList<TriangleCoords> tcInvertedNormalsZ;
+  tcInvertedNormalsZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ), up, up, up );
+  tcInvertedNormalsZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), up, up, up );
+  QgsTessellator tIN( 0, 0, true, true );
+  tIN.setOutputZUp( true );
+  tIN.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tIN.data(), true, tcInvertedNormals ) );
+
+  QCOMPARE( tIN.zMinimum(), 0 );
+  QCOMPARE( tIN.zMaximum(), 0 );
+
+  QgsTessellator tINZ( 0, 0, true, true );
+  tINZ.setOutputZUp( true );
+  tINZ.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tINZ.data(), true, tcInvertedNormalsZ ) );
+
+  QCOMPARE( tINZ.zMinimum(), 3 );
+  QCOMPARE( tINZ.zMaximum(), 3 );
 }
 
 void TestQgsTessellator::testWalls()
