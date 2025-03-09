@@ -365,7 +365,6 @@ void TestQgsTessellator::testWalls()
   const QVector3D yPos( 0, 1, 0 );
   const QVector3D xNeg( -1, 0, 0 );
   const QVector3D yNeg( 0, -1, 0 );
-  const QVector3D zNeg( 0, 0, -1 );
 
   QList<TriangleCoords> tcRect;
   tcRect << TriangleCoords( QVector3D( 0, 2, 1 ), QVector3D( 3, 0, 1 ), QVector3D( 3, 2, 1 ), zPos, zPos, zPos );
@@ -387,9 +386,6 @@ void TestQgsTessellator::testWalls()
   QCOMPARE( tRect.zMaximum(), 1 );
 
   // try to extrude a polygon with reverse (clock-wise) order of vertices and check it is still fine
-  // Z normal is inverted this time, front face is looking down. Triangles are also clockwise
-  tcRect[0] = TriangleCoords( QVector3D( 0, 0, 1 ), QVector3D( 3, 2, 1 ), QVector3D( 3, 0, 1 ), zNeg, zNeg, zNeg );
-  tcRect[1] = TriangleCoords( QVector3D( 0, 0, 1 ), QVector3D( 0, 2, 1 ), QVector3D( 3, 2, 1 ), zNeg, zNeg, zNeg );
 
   QgsPolygon rectRev;
   rectRev.fromWkt( "POLYGON((0 0, 0 2, 3 2, 3 0, 0 0))" );
