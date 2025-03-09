@@ -71,6 +71,81 @@ class QgsBox3D;
  * \ingroup core
  * \brief Base class for all map layer types.
  * This is the base class for all map layer types (vector, raster).
+ *
+ * Custom properties: Every map layer may have custom properties assigned to it.
+ * This mechanism allows third parties store additional data with the nodes.
+ * The properties are used within QGIS code, but may be also used by third party
+ * plugins. Custom properties are stored also in the project file. The storage
+ * is not efficient for large amount of data.
+ *
+ * Note that additional (and separate) custom properties may be applied to an
+ * associated QgsLayerTreeLayer (QgsLayerTreeNode) object.
+ *
+ * All custom properties used by QGIS with QgsMapLayer (with where they are set
+ * indicated); plugins may set additional ones:
+ *
+ * - "dualview/previewExpressions"
+ *       QgsDualView::saveRecentDisplayExpressions
+ * - "embeddedWidgets/count"
+ *       QgsLayerTreeEmbeddedConfigWidget::applyToLayer
+ * - "embeddedWidgets/"*"/id"
+ *       QgsLayerTreeEmbeddedConfigWidget::applyToLayer
+ * - "geopdf/"*
+ *       QgsGeospatialPdfLayerTreeModel::setData
+ * - "identify/format"
+ *       QgsIdentifyResultsDialog::formatChanged
+ *       QgsRasterLayer::init
+ * - "_include_in_elevation_profiles"
+ *       QgsElevationProfileLayerTreeModel::setData
+ * - "isOfflineEditable"
+ *       QgsOfflineEditing::convertToOfflineLayer
+ * - "lastDxfOutputAttribute"
+ *       QgsVectorLayerAndAttributeModel::saveLayersOutputAttribute
+ * - "lastMaximumNumberOfBlocks"
+ *       QgsVectorLayerAndAttributeModel::saveLayersOutputAttribute
+ * - "layerNameSuffix"
+ *       QgsOfflineEditing::convertToOfflineLayer
+ * - "_layer_was_editable"
+ *       QgsProject::addLayer
+ * - "_legend_added"
+ *       QgsAppLayerHandling::addSublayers
+ * - "legend/expressionFilterEnabled"
+ *       QgsLayerTreeUtils::setLegendFilterByExpression
+ * - "legend/expressionFilter"
+ *       QgsLayerTreeUtils::setLegendFilterByExpression
+ * - "loading"
+ *       QgsProject::readProjectFile
+ * - "metadata/"*
+ *       QgsLayerMetadata::saveToLayer
+ * - "OnConvertFormatRegeneratePrimaryKey"
+ *       QgsProcessingUtils::createFeatureSink
+ * - "_prevGroupBlendMode"
+ *       QgsGroupLayer::setChildLayers
+ * - "remoteLayerId"
+ *       QgsOfflineEditing::convertToOfflineLayer
+ * - "remoteProvider"
+ *       QgsOfflineEditing::convertToOfflineLayer
+ * - "remoteSource"
+ *       QgsOfflineEditing::convertToOfflineLayer
+ * - "skipMemoryLayersCheck"
+ *       Not currently set by QGIS; if set on a memory layer will suppress on-
+ *       close unsaved data loss warning for that layer.
+ * - "sldStyleName"
+ *       QgsWms::QgsRenderer::setLayerSld (QgsWms is the namespace)
+ * - "storedSubsetString"
+ *       QgsPointCloudLayer::setSubsetString
+ *       QgsRasterLayer::setSubsetString
+ *       QgsVectorLayer::setSubsetString
+ * - "userNotes"
+ *       QgsLayerNotesUtils::setLayerNotes
+ * - "variableNames"
+ *       QgsExpressionContextUtils::setLayerVariable
+ * - "WMSBackgroundLayer"
+ *       QgsRasterLayerProperties::apply
+ * - "WMSPrintLayer"
+ *       QgsRasterLayerProperties::apply
+ * - "WMSPublishDataSourceUrl"
+ *       QgsRasterLayerProperties::apply
  */
 class CORE_EXPORT QgsMapLayer : public QObject
 {

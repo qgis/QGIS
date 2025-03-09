@@ -59,6 +59,9 @@ class QgsMapLayer;
  * used by third party plugins. Custom properties are stored also in the project
  * file. The storage is not efficient for large amount of data.
  *
+ * Note that additional (and separate) custom properties may be applied to an
+ * associated QgsMapLayer (QgsVectorLayer, etc.) object.
+ *
  * Custom properties that have already been used within QGIS:
  *
  * - "loading" - whether the project is being currently loaded (root node only)
@@ -68,6 +71,56 @@ class QgsMapLayer;
  * - "embedded_project" - path to the external project (embedded root node only)
  * - "legend/..." - properties for legend appearance customization
  * - "expandedLegendNodes" - list of layer's legend nodes' rules in expanded state
+ *
+ * All custom properties used with QgsLayerTreeNode (with where they are set
+ * indicated); plugins may set additional ones:
+ *
+ * - "embedded-invisible-layers"
+ *       QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups
+ * - "embedded_project"
+ *       QgsLayerTreeRegistryBridge::layersAdded
+ *       QgsProject::loadEmbeddedNodes
+ *       QgsProject::createEmbeddedGroup
+ * - "embedded"
+ *       QgsLayerTreeRegistryBridge::layersAdded
+ *       QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups
+ *       QgsProject::createEmbeddedGroup
+ *       QgsProject::initializeEmbeddedSubtree
+ * - "expandedLegendNodes"
+ *       QgsMapThemeCollection::applyThemeToLayer
+ *       QgsLayerTreeView::updateExpandedStateToNode
+ *       QgsLayerTreeView : _expandAllLegendNodes (static function)
+ * - "legend/column-break-"*
+ *       QgsMapLayerLegendUtils::setLegendNodeColumnBreak
+ * - "legend/custom-ramp-settings-*"
+ *       QgsMapLayerLegendUtils::setLegendNodeColorRampSettings
+ * - "legend/custom-symbol-"*
+ *       QgsMapLayerLegendUtils::setLegendNodeCustomSymbol
+ * - "legend/label-"*
+ *       QgsMapLayerLegendUtils::setLegendNodeUserLabel
+ * - "legend/node-order"
+ *       QgsMapLayerLegendUtils::setLegendNodeOrder
+ * - "legend/patch-shape-"*
+ *       QgsMapLayerLegendUtils::setLegendNodePatchShape
+ * - "legend/symbol-size-"*
+ *       QgsMapLayerLegendUtils::setLegendNodeSymbolSize
+ * - "legend/title-style"
+ *       QgsLegendRenderer::setNodeLegendStyle
+ * - "overview"
+ *       QgisApp::addAllToOverview
+ *       QgisApp::removeAllFromOverview
+ *       QgsLayerTreeViewDefaultActions::showInOverview
+ * - "showFeatureCount"
+ *       QgsLayerTreeModel::connectToLayer
+ *       QgsLayerTreeViewDefaultActions::showFeatureCount
+ *       QgsWms::layerTree (top-level function, QgsWms is the namespace)
+ * - "wmsAbstract"
+ *       QgisApp::legendGroupSetWmsData
+ * - "wmsShortName"
+ *       QgisApp::legendGroupSetWmsData
+ * - "wmsTitle"
+ *       QgisApp::legendGroupSetWmsData
+ *
  *
  * \see QgsLayerTree
  * \see QgsLayerTreeLayer
