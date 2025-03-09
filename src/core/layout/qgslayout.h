@@ -44,6 +44,73 @@ class QgsSettingsEntryStringList;
  * preparing the layout and paint devices for correct exports, respecting various
  * user settings such as the layout context DPI.
  *
+ * Custom properties: Every layout may have custom properties assigned to it.
+ * This mechanism allows third parties store additional data with the layout.
+ * The properties are used within QGIS code, but may be also used by third party
+ * plugins. Custom properties are stored also in the project file. The storage
+ * is not efficient for large amount of data.
+ *
+ * All custom properties used by QGIS with QgsLayout (with where they are set
+ * indicated); plugins may set additional ones:
+ *
+ * - "forceVector"
+ *       QgsLayoutDesignerDialog::getPdfExportSettings
+ *       QgsLayoutDesignerDialog::getSvgExportSettings
+ * - "imageAntialias"
+ *       QgsLayoutDesignerDialog::getRasterExportSettings
+ * - "imageCropMarginBottom"
+ *       QgsLayoutDesignerDialog::getRasterExportSettings
+ * - "imageCropMarginLeft"
+ *       QgsLayoutDesignerDialog::getRasterExportSettings
+ * - "imageCropMarginRight"
+ *       QgsLayoutDesignerDialog::getRasterExportSettings
+ * - "imageCropMarginTop"
+ *       QgsLayoutDesignerDialog::getRasterExportSettings
+ * - "imageCropToContents"
+ *       QgsLayoutDesignerDialog::getRasterExportSettings
+ * - "pdfAppendGeoreference"
+ *       QgsLayoutDesignerDialog::getPdfExportSettings
+ * - "pdfCreateGeoPdf"
+ *       QgsLayoutDesignerDialog::getPdfExportSettings
+ * - "pdfDisableRasterTiles"
+ *       QgsLayoutDesignerDialog::getPdfExportSettings
+ * - "pdfExportThemes"
+ *       QgsLayoutDesignerDialog::getPdfExportSettings
+ * - "pdfGroupOrder"
+ *       QgsLayoutDesignerDialog::getPdfExportSettings
+ * - "pdfIncludeMetadata"
+ *       QgsLayoutDesignerDialog::getPdfExportSettings
+ * - "pdfLayerOrder"
+ *       QgsLayoutDesignerDialog::getPdfExportSettings
+ * - "pdfLosslessImages"
+ *       QgsLayoutDesignerDialog::getPdfExportSettings
+ * - "pdfSimplify"
+ *       QgsLayoutDesignerDialog::getPdfExportSettings
+ * - "pdfTextFormat"
+ *       QgsLayoutDesignerDialog::getPdfExportSettings
+ * - "rasterize"
+ *       QgsLayoutDesignerDialog::showRasterizationWarning
+ * - "svgCropMarginBottom"
+ *       QgsLayoutDesignerDialog::getSvgExportSettings
+ * - "svgCropMarginLeft"
+ *       QgsLayoutDesignerDialog::getSvgExportSettings
+ * - "svgCropMarginRight"
+ *       QgsLayoutDesignerDialog::getSvgExportSettings
+ * - "svgCropMarginTop"
+ *       QgsLayoutDesignerDialog::getSvgExportSettings
+ * - "svgCropToContents"
+ *       QgsLayoutDesignerDialog::getSvgExportSettings
+ * - "svgDisableRasterTiles"
+ *       QgsLayoutDesignerDialog::getSvgExportSettings
+ * - "svgGroupLayers"
+ *       QgsLayoutDesignerDialog::getSvgExportSettings
+ * - "svgIncludeMetadata"
+ *       QgsLayoutDesignerDialog::getSvgExportSettings
+ * - "svgSimplify"
+ *       QgsLayoutDesignerDialog::getSvgExportSettings
+ * - "svgTextFormat"
+ *       QgsLayoutDesignerDialog::getSvgExportSettings
+ *
  */
 class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContextGenerator, public QgsLayoutUndoObjectInterface
 {

@@ -75,6 +75,8 @@ class QgsMapLayer;
  * All custom properties used with QgsLayerTreeNode (with where they are set
  * indicated); plugins may set additional ones:
  *
+ * - "cached_name"
+ *       QgsLegendModel::data
  * - "embedded-invisible-layers"
  *       QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups
  * - "embedded_project"

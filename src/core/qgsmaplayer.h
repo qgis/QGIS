@@ -73,7 +73,7 @@ class QgsBox3D;
  * This is the base class for all map layer types (vector, raster).
  *
  * Custom properties: Every map layer may have custom properties assigned to it.
- * This mechanism allows third parties store additional data with the nodes.
+ * This mechanism allows third parties store additional data with the layers.
  * The properties are used within QGIS code, but may be also used by third party
  * plugins. Custom properties are stored also in the project file. The storage
  * is not efficient for large amount of data.
@@ -117,6 +117,8 @@ class QgsBox3D;
  *       QgsProject::readProjectFile
  * - "metadata/"*
  *       QgsLayerMetadata::saveToLayer
+ * - "_noset_layer_expression_context"
+ *       QgsLayoutItemMapOverviewStack::modifyMapLayerList
  * - "OnConvertFormatRegeneratePrimaryKey"
  *       QgsProcessingUtils::createFeatureSink
  * - "_prevGroupBlendMode"
