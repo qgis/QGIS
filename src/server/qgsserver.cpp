@@ -394,13 +394,9 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     //Request handler
     QgsRequestHandler requestHandler( request, response );
 
-    try
+    if ( !response.feedback()
+         || !response.feedback()->isCanceled() ) // to avoid to much log when request is canceled
     {
-      if ( response.feedback() && response.feedback()->isCanceled() )
-      {
-        throw QgsServerException( QStringLiteral( "Remote socket has been closed!" ) );
-      }
-
       try
       {
         // TODO: split parse input into plain parse and processing from specific services
@@ -411,45 +407,36 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
         requestHandler.setServiceException( e );
       }
-
-      // Set the request handler into the interface for plugins to manipulate it
-      sServerInterface->setRequestHandler( &requestHandler );
-
-      // Initialize configfilepath so that is is available
-      // before calling plugin methods
-      // Note that plugins may still change that value using
-      // setConfigFilePath() interface method
-      if ( !project )
-      {
-        const QString configFilePath = configPath( *sConfigFilePath, request.serverParameters().map() );
-        sServerInterface->setConfigFilePath( configFilePath );
-      }
-      else
-      {
-        sServerInterface->setConfigFilePath( project->fileName() );
-      }
-
-      if ( response.feedback() && response.feedback()->isCanceled() )
-      {
-        throw QgsServerException( QStringLiteral( "Remote socket has been closed!" ) );
-      }
-      // Call requestReady() method (if enabled)
-      // This may also throw exceptions if there are errors in python plugins code
-      try
-      {
-        responseDecorator.start();
-      }
-      catch ( QgsException &ex )
-      {
-        // Internal server error
-        response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
-        QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
-      }
     }
-    catch ( QgsServerException &ex ) // thrown by "Remote socket has been closed!"
+
+    // Set the request handler into the interface for plugins to manipulate it
+    sServerInterface->setRequestHandler( &requestHandler );
+
+    // Initialize configfilepath so that is is available
+    // before calling plugin methods
+    // Note that plugins may still change that value using
+    // setConfigFilePath() interface method
+    if ( !project )
     {
-      QString format;
-      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+      const QString configFilePath = configPath( *sConfigFilePath, request.serverParameters().map() );
+      sServerInterface->setConfigFilePath( configFilePath );
+    }
+    else
+    {
+      sServerInterface->setConfigFilePath( project->fileName() );
+    }
+
+    // Call requestReady() method (if enabled)
+    // This may also throw exceptions if there are errors in python plugins code
+    try
+    {
+      responseDecorator.start();
+    }
+    catch ( QgsException &ex )
+    {
+      // Internal server error
+      response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
+      QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     }
 
     // Plugins may have set exceptions
@@ -497,39 +484,45 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         // TODO: QGIS 4 fix the OWS services and treat them as APIs
         QgsServerApi *api = nullptr;
 
-        if ( response.feedback() && response.feedback()->isCanceled() )
+        if ( !response.feedback() || !response.feedback()->isCanceled() )
         {
-          throw QgsServerException( QStringLiteral( "Remote socket has been closed!" ) );
-        }
-
-        if ( params.service().isEmpty() && ( api = sServiceRegistry->apiForRequest( request ) ) )
-        {
-          const QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
-          api->executeRequest( context );
-        }
-        else
-        {
-          // Project is mandatory for OWS at this point
-          if ( !project )
+          if ( params.service().isEmpty() && ( api = sServiceRegistry->apiForRequest( request ) ) )
           {
-            throw QgsServerException( QStringLiteral( "Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file" ) );
-          }
-
-          if ( !params.fileName().isEmpty() )
-          {
-            const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
-            requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
-          }
-
-          // Lookup for service
-          QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
-          if ( service )
-          {
-            service->executeRequest( request, responseDecorator, project );
+            const QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
+            api->executeRequest( context );
           }
           else
           {
-            throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ), QStringLiteral( "Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint" ) );
+            // Project is mandatory for OWS at this point
+            if ( !project )
+            {
+              throw QgsServerException(
+                QStringLiteral( "Project file error. For OWS services: please provide a SERVICE "
+                                "and a MAP parameter pointing to a valid QGIS project file" )
+              );
+            }
+
+            if ( !params.fileName().isEmpty() )
+            {
+              const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
+              requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
+            }
+
+            // Lookup for service
+            QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
+            if ( service )
+            {
+              service->executeRequest( request, responseDecorator, project );
+            }
+            else
+            {
+              throw QgsOgcServiceException(
+                QStringLiteral( "Service configuration error" ),
+                QStringLiteral( "Service unknown or unsupported. Current supported services "
+                                "(case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 "
+                                "(OGC API Features) endpoint" )
+              );
+            }
           }
         }
       }
