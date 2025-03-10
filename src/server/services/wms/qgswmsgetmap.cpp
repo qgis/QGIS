@@ -54,7 +54,7 @@ namespace QgsWms
 
     if ( response.feedback() && response.feedback()->isCanceled() )
     {
-      throw QgsServerException( QStringLiteral( "Remote socket has been closed!" ) );
+      return;
     }
 
     if ( result )
