@@ -21,6 +21,7 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import datetime
 import time
+from typing import Optional
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QMessageBox, QPushButton, QDialogButtonBox
@@ -28,6 +29,7 @@ from qgis.PyQt.QtGui import QColor, QPalette
 
 from qgis.core import (
     Qgis,
+    QgsProcessingContext,
     QgsApplication,
     QgsProcessingAlgRunnerTask,
     QgsProcessingOutputHtml,
@@ -37,9 +39,9 @@ from qgis.core import (
 )
 from qgis.gui import (
     QgsGui,
+    QgisInterface,
     QgsProcessingAlgorithmDialogBase,
     QgsProcessingParametersGenerator,
-    QgsProcessingContextGenerator,
 )
 from qgis.utils import iface
 
@@ -56,13 +58,21 @@ from processing.tools import dataobjects
 
 class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
-    def __init__(self, alg, in_place=False, parent=None):
+    def __init__(
+        self,
+        alg,
+        in_place=False,
+        parent=None,
+        context: Optional[QgsProcessingContext] = None,
+        iface: Optional[QgisInterface] = iface,
+    ):
         super().__init__(parent)
 
         self.feedback_dialog = None
         self.in_place = in_place
         self.active_layer = iface.activeLayer() if self.in_place else None
 
+        self.parent_context = context
         self.context = None
         self.feedback = None
         self.history_log_id = None
@@ -106,7 +116,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.updateRunButtonVisibility()
 
     def getParametersPanel(self, alg, parent):
-        panel = ParametersPanel(parent, alg, self.in_place, self.active_layer)
+        panel = ParametersPanel(
+            parent, alg, self.in_place, self.active_layer, context=self.parent_context
+        )
         return panel
 
     def runAsBatch(self):
@@ -178,14 +190,18 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
     def processingContext(self):
         if self.context is None:
             self.feedback = self.createFeedback()
-            self.context = dataobjects.createContext(self.feedback)
+            self.context = dataobjects.createContext(
+                self.feedback, context=self.parent_context
+            )
 
         self.applyContextOverrides(self.context)
         return self.context
 
     def runAlgorithm(self):
         self.feedback = self.createFeedback()
-        self.context = dataobjects.createContext(self.feedback)
+        self.context = dataobjects.createContext(
+            self.feedback, context=self.parent_context
+        )
         self.applyContextOverrides(self.context)
         self.algorithmAboutToRun.emit(self.context)
 

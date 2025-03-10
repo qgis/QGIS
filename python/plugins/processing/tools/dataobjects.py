@@ -21,6 +21,7 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import re
+from typing import Optional
 
 from qgis.core import (
     QgsDataProvider,
@@ -31,14 +32,15 @@ from qgis.core import (
     QgsSettings,
     QgsProcessingContext,
     QgsProcessingUtils,
+    QgsProcessingFeedback,
     QgsFeatureRequest,
     QgsExpressionContext,
     QgsExpressionContextUtils,
     QgsExpressionContextScope,
 )
-from qgis.gui import QgsSublayersDialog
+from qgis.gui import QgsSublayersDialog, QgisInterface
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.utils import iface
+from qgis.utils import iface as iface_qgis
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -56,10 +58,25 @@ TYPE_TABLE = 5
 # changing this signature? make sure you update the signature in
 # python/processing/__init__.py too!
 # Docstring for this function is in python/processing/__init__.py
-def createContext(feedback=None):
-    context = QgsProcessingContext()
-    context.setProject(QgsProject.instance())
-    context.setFeedback(feedback)
+def createContext(
+    feedback: Optional[QgsProcessingFeedback] = None,
+    context: Optional[QgsProcessingContext] = None,
+    iface: Optional[QgisInterface] = None,
+):
+
+    if iface is None:
+        iface = iface_qgis
+
+    if context:
+        context2 = QgsProcessingContext()
+        context2.copyThreadSafeSettings(context)
+        context = context2
+    else:
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+
+    if feedback:
+        context.setFeedback(feedback)
 
     invalid_features_method = ProcessingConfig.getSetting(
         ProcessingConfig.FILTER_INVALID_GEOMETRIES
@@ -81,7 +98,7 @@ def createContext(feedback=None):
         )
     )
 
-    context.setExpressionContext(createExpressionContext())
+    context.setExpressionContext(createExpressionContext(iface))
 
     if iface and iface.mapCanvas() and iface.mapCanvas().mapSettings().isTemporal():
         context.setCurrentTimeRange(iface.mapCanvas().mapSettings().temporalRange())
@@ -89,7 +106,11 @@ def createContext(feedback=None):
     return context
 
 
-def createExpressionContext():
+def createExpressionContext(iface: Optional[QgisInterface] = None):
+
+    if iface is None:
+        iface = iface_qgis
+
     context = QgsExpressionContext()
     context.appendScope(QgsExpressionContextUtils.globalScope())
     context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
