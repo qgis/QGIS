@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>478</width>
-    <height>491</height>
+    <height>729</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Import Vector Layer</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,1,0">
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
@@ -138,6 +138,39 @@
     </widget>
    </item>
    <item>
+    <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
+     <property name="title">
+      <string>Filter by Extent</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Filtering</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Feature filter</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsExpressionLineEdit" name="mFilterExpressionWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -166,6 +199,8 @@
   <zorder>mGroupBoxOutput</zorder>
   <zorder>groupBox</zorder>
   <zorder>verticalSpacer</zorder>
+  <zorder>groupBox_2</zorder>
+  <zorder>mExtentGroupBox</zorder>
  </widget>
  <customwidgets>
   <customwidget>
@@ -178,6 +213,24 @@
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header location="global">qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QgsCollapsibleGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExpressionLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsexpressionlineedit.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
