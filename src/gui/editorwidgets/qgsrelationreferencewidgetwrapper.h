@@ -75,6 +75,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     void widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged );
 
   private:
+    void aboutToSave() override;
     void updateValues( const QVariant &val, const QVariantList &additionalValues = QVariantList() ) override;
 
     QString mExpression;

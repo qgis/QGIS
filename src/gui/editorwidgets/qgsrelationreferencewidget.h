@@ -265,7 +265,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      */
     void setFetchLimit( int fetchLimit ) { mFetchLimit = fetchLimit; }
 
-
   public slots:
     //! open the form of the related feature in a new dialog
     void openForm();
@@ -275,6 +274,13 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     //! unset the currently related feature
     void deleteForeignKeys();
+
+    /**
+      * Trigger save of the embedded referenced attribute form.
+      *
+      * \since QGIS 3.42
+      */
+    bool saveReferencedAttributeForm();
 
   protected:
     void showEvent( QShowEvent *e ) override;
