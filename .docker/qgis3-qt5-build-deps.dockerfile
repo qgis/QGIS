@@ -146,7 +146,6 @@ FROM binary-for-oracle as binary-only
 
 RUN  apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    grass \
     iproute2 \
     postgresql-client \
     spawn-fcgi \
@@ -181,7 +180,6 @@ RUN  apt-get update \
     clang \
     cmake \
     flex \
-    grass-dev \
     libdraco-dev \
     libexiv2-dev \
     libexpat1-dev \

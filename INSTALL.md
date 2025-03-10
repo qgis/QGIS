@@ -922,7 +922,7 @@ For example install Homebrew
 and these development/build tools
 
 ```bash
-brew install git cmake ninja pkg-config wget bash-completion curl gnu-sed coreutils ccache libtool astyle help2man autoconf automake pandoc
+brew install git cmake ninja pkg-config wget bash-completion curl gnu-sed coreutils ccache libtool astyle help2man autoconf automake pandoc draco
 ```
 
 if you have these tools installed from MacPorts or Conda, it is the same, but we will need to be able to

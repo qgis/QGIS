@@ -17,9 +17,12 @@
 #define QGSPOSTGRESDATAITEMGUIPROVIDER_H
 
 #include "qgsdataitemguiprovider.h"
+#include "qgsmimedatautils.h"
 
 class QgsPGSchemaItem;
 class QgsPGLayerItem;
+class QgsPGConnectionItem;
+
 struct QgsPostgresLayerProperty;
 
 class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
@@ -51,6 +54,9 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     static void refreshMaterializedView( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
+    bool handleDrop( QgsPGConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext context );
+    bool handleDropUri( QgsPGConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, const QString &toSchema, QgsDataItemGuiContext context );
+    void handleImportVector( QgsPGConnectionItem *connectionItem, const QString &toSchema, QgsDataItemGuiContext context );
 };
 
 #endif // QGSPOSTGRESDATAITEMGUIPROVIDER_H

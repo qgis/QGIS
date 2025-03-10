@@ -104,6 +104,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void measureLine();
     void changePointCloudAttributeByPaintbrush();
     void changePointCloudAttributeByPolygon();
+    void changePointCloudAttributeByAboveLine();
+    void changePointCloudAttributeByBelowLine();
     void exportScene();
     void toggleNavigationWidget( bool visibility );
     void toggleFpsCounter( bool visibility );

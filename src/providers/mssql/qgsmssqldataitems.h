@@ -64,10 +64,7 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
-    using QgsDataCollectionItem::handleDrop;
-    bool handleDrop( const QMimeData *data, const QString &toSchema );
-
-    QString connInfo() const { return mConnInfo; }
+    QString connectionUri() const { return mConnectionUri; }
     bool allowGeometrylessTables() const { return mAllowGeometrylessTables; }
 
   signals:
@@ -85,7 +82,7 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     void setAsPopulated();
 
   private:
-    QString mConnInfo;
+    QString mConnectionUri;
     QString mService;
     QString mHost;
     QString mDatabase;
