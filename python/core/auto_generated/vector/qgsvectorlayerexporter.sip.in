@@ -78,7 +78,7 @@ Sets whether the export should only include selected features.
 
    This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
 
-\seee :py:func:`~ExportOptions.selectedOnly`
+.. seealso:: :py:func:`selectedOnly`
 %End
 
         bool selectedOnly() const;
