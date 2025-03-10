@@ -72,6 +72,8 @@ class Qgs3DMapToolPointCloudChangeAttribute : public Qgs3DMapTool
     void setAttribute( const QString &attribute );
     //! Sets attribute value to which it will be set
     void setNewValue( double value );
+    //! Sets a filter for points to be edited. Points that do not satisfy the filter will not be modified
+    void setPointFilter( const QString &filter );
 
   protected:
     //! Calculate selection and edit set attribute to new value
@@ -85,6 +87,7 @@ class Qgs3DMapToolPointCloudChangeAttribute : public Qgs3DMapTool
     void changeAttributeValue( const QgsGeometry &geometry, const QString &attributeName, double newValue, Qgs3DMapCanvas &canvas, QgsMapLayer *mapLayer );
 
     QString mAttributeName;
+    QString mPointFilter;
     double mNewValue = 0;
 
   private:

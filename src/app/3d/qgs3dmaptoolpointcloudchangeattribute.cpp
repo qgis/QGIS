@@ -51,6 +51,11 @@ void Qgs3DMapToolPointCloudChangeAttribute::setNewValue( const double value )
   mNewValue = value;
 }
 
+void Qgs3DMapToolPointCloudChangeAttribute::setPointFilter( const QString &filter )
+{
+  mPointFilter = filter;
+}
+
 void Qgs3DMapToolPointCloudChangeAttribute::run()
 {
 }
@@ -175,8 +180,19 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
     }
   }
 
-  // we also need the filter expression so we can exclude filtered out points
-  QgsPointCloudExpression filterExpression = pcIndex.subsetString();
+  // we need the layer's filter expression so we can exclude filtered out points
+  // and we need to combine that with the tool's point filter expression
+  const QString layerFilter = pcIndex.subsetString();
+
+  QgsPointCloudExpression filterExpression;
+
+  if ( !layerFilter.isEmpty() && !mPointFilter.isEmpty() )
+    filterExpression.setExpression( QStringLiteral( "(%1) AND (%2)" ).arg( layerFilter, mPointFilter ) );
+  else if ( !mPointFilter.isEmpty() )
+    filterExpression.setExpression( mPointFilter );
+  else
+    filterExpression.setExpression( layerFilter );
+
   attributes.extend( pcIndex.attributes(), filterExpression.referencedAttributes() );
 
   QgsPointCloudRequest request;

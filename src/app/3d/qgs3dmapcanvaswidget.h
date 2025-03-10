@@ -106,6 +106,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void changePointCloudAttributeByPolygon();
     void changePointCloudAttributeByAboveLine();
     void changePointCloudAttributeByBelowLine();
+    void changePointCloudAttributePointFilter();
     void exportScene();
     void toggleNavigationWidget( bool visibility );
     void toggleFpsCounter( bool visibility );
@@ -130,6 +131,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void onGpuMemoryLimitReached();
 
     void onPointCloudChangeAttributeSettingsChanged();
+    // void onPointCloudChangeAttributePointFilterChanged();
 
   private:
     QString mCanvasName;
@@ -190,6 +192,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QgsDoubleSpinBox *mSpinChangeAttributeValue = nullptr;
     QAction *mCboChangeAttributeValueAction = nullptr;
     QAction *mSpinChangeAttributeValueAction = nullptr;
+    QString mChangeAttributePointFilter;
 
     QMenu *mToolbarMenu = nullptr;
 };
