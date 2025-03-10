@@ -93,7 +93,7 @@ Returns whether the export will only include selected features.
 
    This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
 
-\seee :py:func:`~ExportOptions.setSelectedOnly`
+.. seealso:: :py:func:`setSelectedOnly`
 %End
 
         void setTransformContext( const QgsCoordinateTransformContext &context );
