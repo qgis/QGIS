@@ -2,7 +2,7 @@
 
 set -e
 
-mkdir /usr/src/qgis/build
+mkdir -p /usr/src/qgis/build
 cd /usr/src/qgis/build || exit 1
 
 export CCACHE_TEMPDIR=/tmp
