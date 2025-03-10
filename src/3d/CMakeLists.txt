@@ -22,8 +22,6 @@ set(QGIS_3D_SRCS
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgsfeature3dhandler_p.cpp
-  qgsfgutils.cpp
-  qgsframegraph.cpp
   qgsgeotransform.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
@@ -42,11 +40,6 @@ set(QGIS_3D_SRCS
   qgswindow3dengine.cpp
   qgsskyboxentity.cpp
   qgsskyboxsettings.cpp
-  qgspostprocessingentity.cpp
-  qgsrenderpassquad.cpp
-  qgsambientocclusionrenderentity.cpp
-  qgsambientocclusionblurentity.cpp
-  qgspreviewquad.cpp
   qgsshadowsettings.cpp
   qgscolorramptexture.cpp
   qgsrubberband3d.cpp
@@ -82,6 +75,18 @@ set(QGIS_3D_SRCS
 
   processing/qgs3dalgorithms.cpp
   processing/qgsalgorithmtessellate.cpp
+
+  framegraph/qgsabstractrenderview.cpp
+  framegraph/qgs3daxisrenderview.cpp
+  framegraph/qgsambientocclusionrenderentity.cpp
+  framegraph/qgsambientocclusionblurentity.cpp
+  framegraph/qgsforwardrenderview.cpp
+  framegraph/qgspostprocessingentity.cpp
+  framegraph/qgspreviewquad.cpp
+  framegraph/qgsrenderpassquad.cpp
+  framegraph/qgsshadowrenderview.cpp
+  framegraph/qgsframegraph.cpp
+  framegraph/qgsframegraphutils.cpp
 
   symbols/qgsbillboardgeometry.cpp
   symbols/qgsline3dsymbol.cpp
@@ -144,8 +149,6 @@ set(QGIS_3D_HDRS
   qgsabstractvectorlayer3drenderer.h
   qgscameracontroller.h
   qgscamerapose.h
-  qgsfgutils.h
-  qgsframegraph.h
   qgsgeotransform.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
@@ -161,13 +164,8 @@ set(QGIS_3D_HDRS
   qgswindow3dengine.h
   qgsskyboxentity.h
   qgsskyboxsettings.h
-  qgspostprocessingentity.h
-  qgspreviewquad.h
   qgsshadowsettings.h
   qgspointcloudlayer3drenderer.h
-  qgsrenderpassquad.h
-  qgsambientocclusionrenderentity.h
-  qgsambientocclusionblurentity.h
   qgsambientocclusionsettings.h
 
   lights/qgsdirectionallightsettings.h
@@ -186,6 +184,18 @@ set(QGIS_3D_HDRS
   materials/qgsphongtexturedmaterialsettings.h
   materials/qgssimplelinematerialsettings.h
   materials/qgstexturematerial.h
+
+  framegraph/qgsabstractrenderview.h
+  framegraph/qgs3daxisrenderview.h
+  framegraph/qgsambientocclusionrenderentity.h
+  framegraph/qgsambientocclusionblurentity.h
+  framegraph/qgsforwardrenderview.h
+  framegraph/qgsframegraph.h
+  framegraph/qgsframegraphutils.h
+  framegraph/qgspostprocessingentity.h
+  framegraph/qgspreviewquad.h
+  framegraph/qgsrenderpassquad.h
+  framegraph/qgsshadowrenderview.h
 
   symbols/qgsbillboardgeometry.h
   symbols/qgsline3dsymbol.h
@@ -275,6 +285,7 @@ endif()
 target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/chunks
+  ${CMAKE_CURRENT_SOURCE_DIR}/framegraph
   ${CMAKE_CURRENT_SOURCE_DIR}/lights
   ${CMAKE_CURRENT_SOURCE_DIR}/materials
   ${CMAKE_CURRENT_SOURCE_DIR}/mesh
