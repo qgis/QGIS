@@ -1977,8 +1977,6 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
           exporterOptions.wkbType = vectorSrcLayer->wkbType();
 
           QVariantMap providerOptions;
-          const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
-
           providerOptions.insert( QStringLiteral( "update" ), true );
           providerOptions.insert( QStringLiteral( "overwrite" ), true );
 
