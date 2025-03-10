@@ -84,11 +84,6 @@ bool QgsDefineProjectionAlgorithm::prepareAlgorithm( const QVariantMap &paramete
     {
       layerPath = parts.value( QStringLiteral( "path" ) ).toString();
     }
-    else
-    {
-      const thread_local QRegularExpression layerNameRegex( QStringLiteral( "\\|.*)" ) );
-      layerPath = layer->dataProvider()->dataSourceUri().replace( layerNameRegex, "" );
-    }
 
     if ( !layerPath.isEmpty() && layerPath.endsWith( QStringLiteral( ".shp" ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
