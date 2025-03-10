@@ -19,6 +19,8 @@
 #include "qgsgui.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsmapcanvas.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
   : QDialog( parent )
@@ -30,6 +32,9 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
 
   mSourceLayerComboBox->setFilters( Qgis::LayerFilter::VectorLayer );
   connect( mSourceLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsDbImportVectorLayerDialog::sourceLayerComboChanged );
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, [this]( const QgsCoordinateReferenceSystem &crs ) {
+    mExtentGroupBox->setOutputCrs( crs );
+  } );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsDbImportVectorLayerDialog::doImport );
@@ -72,6 +77,13 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
     delete mEditComment;
     mEditComment = nullptr;
   }
+
+  mExtentGroupBox->setTitleBase( tr( "Filter by Extent" ) );
+  mExtentGroupBox->setCheckable( true );
+  mExtentGroupBox->setChecked( false );
+  mExtentGroupBox->setCollapsed( true );
+
+  mFilterExpressionWidget->registerExpressionContextGenerator( this );
 }
 
 QgsDbImportVectorLayerDialog::~QgsDbImportVectorLayerDialog() = default;
@@ -121,6 +133,18 @@ void QgsDbImportVectorLayerDialog::setSourceLayer( QgsVectorLayer *layer )
     mEditGeometryColumnName->setEnabled( isSpatial );
   if ( mCrsSelector )
     mCrsSelector->setEnabled( isSpatial );
+
+  mExtentGroupBox->setEnabled( isSpatial );
+  if ( !isSpatial )
+    mExtentGroupBox->setChecked( false );
+
+  const bool extentFilterEnabled = mExtentGroupBox->isChecked();
+  mExtentGroupBox->setOriginalExtent( mSourceLayer->extent(), mSourceLayer->crs() );
+  mExtentGroupBox->setOutputExtentFromOriginal();
+  mExtentGroupBox->setChecked( extentFilterEnabled );
+  mExtentGroupBox->setCollapsed( !extentFilterEnabled );
+
+  mFilterExpressionWidget->setLayer( mSourceLayer );
 
   if ( mEditPrimaryKey )
   {
@@ -185,6 +209,15 @@ QString QgsDbImportVectorLayerDialog::tableComment() const
   return mEditComment ? mEditComment->toPlainText() : QString();
 }
 
+void QgsDbImportVectorLayerDialog::setMapCanvas( QgsMapCanvas *canvas )
+{
+  if ( canvas )
+  {
+    mExtentGroupBox->setCurrentExtent( canvas->mapSettings().visibleExtent(), canvas->mapSettings().destinationCrs() );
+    mExtentGroupBox->setMapCanvas( canvas, false );
+  }
+}
+
 void QgsDbImportVectorLayerDialog::doImport()
 {
   // TODO -- validate
@@ -238,8 +271,25 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
     exportOptions.setDestinationCrs( mCrsSelector->crs() );
   }
   exportOptions.setTransformContext( mSourceLayer->transformContext() );
+  if ( !mFilterExpressionWidget->expression().isEmpty() )
+  {
+    exportOptions.setFilterExpression( mFilterExpressionWidget->expression() );
+    exportOptions.setExpressionContext( createExpressionContext() );
+  }
+
+  if ( mExtentGroupBox->isEnabled() && mExtentGroupBox->isChecked() )
+  {
+    exportOptions.setExtent( QgsReferencedRectangle( mExtentGroupBox->outputExtent(), mExtentGroupBox->outputCrs() ) );
+  }
 
   return std::make_unique<QgsVectorLayerExporterTask>( mSourceLayer->clone(), destinationUri, mConnection->providerKey(), exportOptions, allProviderOptions, true );
+}
+
+QgsExpressionContext QgsDbImportVectorLayerDialog::createExpressionContext() const
+{
+  QgsExpressionContext expContext;
+  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mSourceLayer ) );
+  return expContext;
 }
 
 void QgsDbImportVectorLayerDialog::sourceLayerComboChanged()
