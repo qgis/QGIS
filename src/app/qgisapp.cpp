@@ -11374,7 +11374,10 @@ void QgisApp::layerSubsetString( QgsMapLayer *mapLayer )
     {
       QgsPointCloudQueryBuilder qb { pclayer };
       qb.setSubsetString( pclayer->subsetString() );
-      qb.exec();
+      if ( qb.exec() )
+      {
+        pclayer->setSubsetString( qb.subsetString() );
+      }
     }
     return;
   }
