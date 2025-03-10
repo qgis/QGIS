@@ -75,6 +75,7 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::unique_ptr<Qg
   const QString connectionProvider = connection->providerKey();
 
   QgsDbImportVectorLayerDialog dialog( connection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
+  dialog.setMapCanvas( context.mapCanvas() );
   dialog.setSourceUri( sourceUri );
   dialog.setDestinationSchema( destinationSchema );
   if ( !dialog.exec() )
@@ -155,6 +156,7 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::uni
   const QString connectionProvider = connection->providerKey();
 
   QgsDbImportVectorLayerDialog dialog( connection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
+  dialog.setMapCanvas( context.mapCanvas() );
   dialog.setDestinationSchema( destinationSchema );
   if ( !dialog.exec() )
     return;

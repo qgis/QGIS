@@ -19,6 +19,7 @@
 #include "qgis_gui.h"
 #include "qgis.h"
 #include "qgsmimedatautils.h"
+#include "qgsexpressioncontextgenerator.h"
 #include "ui_qgsdbimportvectorlayerdialog.h"
 
 class QgsAbstractDatabaseProviderConnection;
@@ -36,7 +37,7 @@ class QgsVectorLayerExporterTask;
  *
  * \since QGIS 3.44
  */
-class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsDbImportVectorLayerDialog
+class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsDbImportVectorLayerDialog, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -75,9 +76,16 @@ class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsD
     QString tableComment() const;
 
     /**
+     * Sets a map \a canvas to associate with the dialog.
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+    /**
      * Creates a new exporter task to match the settings defined in the dialog.
      */
     std::unique_ptr<QgsVectorLayerExporterTask> createExporterTask( const QVariantMap &extraProviderOptions = QVariantMap() );
+
+    QgsExpressionContext createExpressionContext() const override;
 
   private slots:
     void sourceLayerComboChanged();

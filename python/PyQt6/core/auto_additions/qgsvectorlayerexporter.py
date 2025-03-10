@@ -11,3 +11,7 @@ try:
     QgsVectorLayerExporter.__group__ = ['vector']
 except (NameError, AttributeError):
     pass
+try:
+    QgsVectorLayerExporter.ExportOptions.__group__ = ['vector']
+except (NameError, AttributeError):
+    pass
