@@ -81,6 +81,26 @@ QgsReferencedRectangle QgsVectorLayerExporter::ExportOptions::extent() const
   return mExtent;
 }
 
+void QgsVectorLayerExporter::ExportOptions::setFilterExpression( const QString &expression )
+{
+  mFilterExpression = expression;
+}
+
+QString QgsVectorLayerExporter::ExportOptions::filterExpression() const
+{
+  return mFilterExpression;
+}
+
+void QgsVectorLayerExporter::ExportOptions::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
+}
+
+const QgsExpressionContext &QgsVectorLayerExporter::ExportOptions::expressionContext() const
+{
+  return mExpressionContext;
+}
+
 
 //
 // QgsVectorLayerExporter
@@ -423,7 +443,12 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
     }
   }
 
-  if ( exportOptions.selectedOnly() )
+  if ( !exportOptions.filterExpression().isEmpty() )
+  {
+    req.setFilterExpression( exportOptions.filterExpression() );
+    req.setExpressionContext( exportOptions.expressionContext() );
+  }
+  else if ( exportOptions.selectedOnly() )
   {
     req.setFilterFids( layer->selectedFeatureIds() );
   }
