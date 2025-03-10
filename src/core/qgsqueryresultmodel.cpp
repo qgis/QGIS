@@ -16,6 +16,9 @@
 #include "qgsqueryresultmodel.h"
 #include "moc_qgsqueryresultmodel.cpp"
 #include "qgsexpression.h"
+#include "qgsapplication.h"
+
+#include <QFont>
 
 const int QgsQueryResultModel::FETCH_MORE_ROWS_COUNT = 400;
 
@@ -122,9 +125,50 @@ QVariant QgsQueryResultModel::data( const QModelIndex &index, int role ) const
       const QList<QVariant> result = mRows.at( index.row() );
       if ( index.column() < result.count( ) )
       {
-        return result.at( index.column() );
+        const QVariant value = result.at( index.column() );
+
+        if ( QgsVariantUtils::isNull( value ) )
+        {
+          return QgsApplication::nullRepresentation();
+        }
+        else
+        {
+          return value;
+        }
       }
       break;
+    }
+
+    case Qt::FontRole:
+    {
+      const QList<QVariant> result = mRows.at( index.row() );
+      if ( index.column() < result.count( ) )
+      {
+        const QVariant value = result.at( index.column() );
+
+        if ( QgsVariantUtils::isNull( value ) )
+        {
+          QFont f;
+          f.setItalic( true );
+          return f;
+        }
+      }
+      return QVariant();
+    }
+
+    case Qt::ForegroundRole:
+    {
+      const QList<QVariant> result = mRows.at( index.row() );
+      if ( index.column() < result.count( ) )
+      {
+        const QVariant value = result.at( index.column() );
+
+        if ( QgsVariantUtils::isNull( value ) )
+        {
+          return QColor( 128, 128, 128 );
+        }
+      }
+      return QVariant();
     }
 
     case Qt::ToolTipRole:
@@ -133,10 +177,20 @@ QVariant QgsQueryResultModel::data( const QModelIndex &index, int role ) const
       if ( index.column() < result.count( ) )
       {
         const QVariant value = result.at( index.column() );
-        return QgsExpression::formatPreviewString( value, true, 255 );
+        if ( QgsVariantUtils::isNull( value ) )
+        {
+          return QVariant();
+        }
+        else
+        {
+          return QgsExpression::formatPreviewString( value, true, 255 );
+        }
       }
       break;
     }
+
+    default:
+      break;
   }
   return QVariant();
 }
