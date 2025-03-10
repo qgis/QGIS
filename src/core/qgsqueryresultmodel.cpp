@@ -17,6 +17,7 @@
 #include "moc_qgsqueryresultmodel.cpp"
 #include "qgsexpression.h"
 #include "qgsapplication.h"
+#include "qgsfileutils.h"
 
 #include <QFont>
 
@@ -130,6 +131,10 @@ QVariant QgsQueryResultModel::data( const QModelIndex &index, int role ) const
         if ( QgsVariantUtils::isNull( value ) )
         {
           return QgsApplication::nullRepresentation();
+        }
+        else if ( value.type() == QVariant::ByteArray )
+        {
+          return tr( "Binary (%1)" ).arg( QgsFileUtils::representFileSize( value.value< QByteArray >().size() ) );
         }
         else
         {
