@@ -65,14 +65,6 @@ class GUI_EXPORT QgsGeocoderLocatorFilter : public QgsAbstractGeocoderLocatorFil
      */
     QgsMapCanvas *mCanvas = nullptr;
 
-    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
-
-  protected:
-    /**
-     * Associated map canvas
-     */
-    QgsMapCanvas *mCanvas = nullptr;
-
   private:
     void handleGeocodeResult( const QgsGeocoderResult &result ) override;
 };
