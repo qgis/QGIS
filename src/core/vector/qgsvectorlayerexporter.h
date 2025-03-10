@@ -90,7 +90,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
          *
          * \note This option only applies when the QgsVectorLayerExporter::exportLayer() method is used.
          *
-         * \seee selectedOnly()
+         * \see selectedOnly()
          */
         void setSelectedOnly( bool selected ) { mSelectedOnly = selected; }
 
