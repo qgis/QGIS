@@ -210,6 +210,33 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void setSceneUpdatesEnabled( bool enabled ) { mSceneUpdatesEnabled = enabled; }
 
     /**
+     * Returns whether the 3D scene is allowed to automatically move the scene's
+     * origin. This is necessary in large scenes (e.g. more than 50km across)
+     * to avoid issues with numerical precision (due to the use of 32-bit floats
+     * in rendering), that may cause jitter in camera position or object location.
+     * When 3D scene moves the origin (because the camera is far from it), user
+     * should not see any change - transforms of 3D entities should be updated
+     * accordingly.
+     *
+     * Normally, origin shifts are enabled. But for debugging purposes,
+     * it may be useful to temporarily disable origin shifts.
+     *
+     * \since QGIS 3.44
+     */
+    bool hasSceneOriginShiftEnabled() const { return mSceneOriginShiftEnabled; }
+
+    /**
+     * Returns whether the 3D scene is allowed to automatically move the scene's
+     * origin. See hasSceneOriginShiftEnabled() for more details.
+     *
+     * Normally, origin shifts are enabled. But for debugging purposes,
+     * it may be useful to temporarily disable origin shifts.
+     *
+     * \since QGIS 3.44
+     */
+    void setSceneOriginShiftEnabled( bool enabled ) { mSceneOriginShiftEnabled = enabled; }
+
+    /**
      * Returns a map of 3D map scenes (by name) open in the QGIS application.
      *
      * \note Only available from the QGIS desktop application.
@@ -360,6 +387,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     Qgs3DAxis *m3DAxis = nullptr;
 
     bool mSceneUpdatesEnabled = true;
+    bool mSceneOriginShiftEnabled = true;
 
     QList<QVector4D> mClipPlanesEquations;
     int mMaxClipPlanes = 6;
