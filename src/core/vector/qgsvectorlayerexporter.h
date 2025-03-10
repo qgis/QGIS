@@ -79,7 +79,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      *
      * \since QGIS 3.44
      */
-    class ExportOptions
+    class CORE_EXPORT ExportOptions
     {
       public:
 
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
          *
          * \note This option only applies when the QgsVectorLayerExporter::exportLayer() method is used.
          *
-         * \seee setSelectedOnly()
+         * \see setSelectedOnly()
          */
         bool selectedOnly() const { return mSelectedOnly; }
 
