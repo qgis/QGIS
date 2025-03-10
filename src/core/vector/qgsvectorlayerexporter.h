@@ -86,6 +86,8 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
         /**
          * Sets whether the export should only include selected features.
          *
+         * \warning This setting is incompatible with setFilterExpression()
+         *
          * \note This option only applies when the QgsVectorLayerExporter::exportLayer() method is used.
          *
          * \seee selectedOnly()
@@ -94,6 +96,8 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
 
         /**
          * Returns whether the export will only include selected features.
+         *
+         * \warning This setting is incompatible with filterExpression()
          *
          * \note This option only applies when the QgsVectorLayerExporter::exportLayer() method is used.
          *
@@ -151,6 +155,48 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
          */
         QgsReferencedRectangle extent() const;
 
+        /**
+         * Set the filter \a expression for the features to export.
+         *
+         * Only features matching this expression will be exported.
+         *
+         * \warning This setting is incompatible with setSelectedOnly()
+         *
+         * \note This option only applies when the QgsVectorLayerExporter::exportLayer() method is used.
+         *
+         * \see setExpressionContext()
+         * \see filterExpression()
+         */
+        void setFilterExpression( const QString &expression );
+
+        /**
+         * Returns the filter expression for features to export.
+         *
+         * Only features matching this expression will be exported.
+         *
+         * \warning This setting is incompatible with selectedOnly()
+         *
+         * \note This option only applies when the QgsVectorLayerExporter::exportLayer() method is used.
+         *
+         * \see expressionContext()
+         * \see setFilterExpression()
+         */
+        QString filterExpression() const;
+
+        /**
+         * Sets the expression \a context to use when a filterExpression() is set.
+         *
+         * \see expressionContext()
+         */
+        void setExpressionContext( const QgsExpressionContext &context );
+
+        /**
+         * Returns the expression context used when a filterExpression() is set.
+         *
+         * \see setExpressionContext()
+         */
+        const QgsExpressionContext &expressionContext() const;
+
       private:
 
         bool mSelectedOnly = false;
@@ -160,6 +206,9 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
         QgsCoordinateTransformContext mTransformContext;
 
         QgsReferencedRectangle mExtent;
+
+        QString mFilterExpression;
+        QgsExpressionContext mExpressionContext;
 
     };
 

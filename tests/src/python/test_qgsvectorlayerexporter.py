@@ -196,6 +196,59 @@ class TestQgsVectorLayerExporter(QgisTestCase):
                 [f["fldtxt"] for f in layer.getFeatures()], ["test2", "test3"]
             )
 
+    def test_expression_filter(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dest_file_name = Path(temp_dir) / "test_expression.gpkg"
+
+            # create a layer to export
+            layer = QgsVectorLayer(
+                "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
+            )
+            self.assertTrue(layer.isValid())
+            pr = layer.dataProvider()
+            f = QgsFeature()
+            f.setAttributes(["test", 123])
+            f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
+            f2 = QgsFeature()
+            f2.setAttributes(["abc", 457])
+            f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(3, 4)))
+            f3 = QgsFeature()
+            f3.setAttributes(["def", 4573])
+            f3.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(5, 6)))
+            f4 = QgsFeature()
+            f4.setAttributes(["a feature", 4574])
+            f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(7, 8)))
+            self.assertTrue(pr.addFeature(f))
+            self.assertTrue(pr.addFeature(f2))
+            self.assertTrue(pr.addFeature(f3))
+            self.assertTrue(pr.addFeature(f4))
+            layer.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+
+            export_options = QgsVectorLayerExporter.ExportOptions()
+            export_options.setFilterExpression("left(\"fldtxt\", 1) = 'a'")
+
+            res, error = QgsVectorLayerExporter.exportLayer(
+                layer,
+                dest_file_name.as_posix(),
+                "ogr",
+                export_options,
+                providerOptions={"layerName": "expression", "update": True},
+            )
+            self.assertEqual(res, Qgis.VectorExportResult.Success)
+
+            # true to read result
+            layer = QgsVectorLayer(
+                dest_file_name.as_posix() + "|layername=expression",
+                "test",
+                "ogr",
+            )
+            self.assertTrue(layer.isValid())
+            self.assertEqual(layer.featureCount(), 2)
+
+            self.assertCountEqual(
+                [f["fldtxt"] for f in layer.getFeatures()], ["abc", "a feature"]
+            )
+
     @unittest.skipIf(
         int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 8, 0),
         "GDAL 3.8 required",

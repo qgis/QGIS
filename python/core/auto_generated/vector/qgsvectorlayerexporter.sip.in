@@ -70,6 +70,10 @@ Encapsulates options for use with QgsVectorLayerExporter.
 %Docstring
 Sets whether the export should only include selected features.
 
+.. warning::
+
+   This setting is incompatible with :py:func:`~ExportOptions.setFilterExpression`
+
 .. note::
 
    This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
@@ -80,6 +84,10 @@ Sets whether the export should only include selected features.
         bool selectedOnly() const;
 %Docstring
 Returns whether the export will only include selected features.
+
+.. warning::
+
+   This setting is incompatible with :py:func:`~ExportOptions.filterExpression`
 
 .. note::
 
@@ -140,6 +148,58 @@ Only features with a bounding box intersecting this extent will be exported.
    This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
 
 .. seealso:: :py:func:`setExtent`
+%End
+
+        void setFilterExpression( const QString &expression );
+%Docstring
+Set the filter ``expression`` for the features to export.
+
+Only features matching this expression will be exported.
+
+.. warning::
+
+   This setting is incompatible with :py:func:`~ExportOptions.setSelectedOnly`
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`setExpressionContext`
+
+.. seealso:: :py:func:`filterExpression`
+%End
+
+        QString filterExpression() const;
+%Docstring
+Returns the filter expression for features to export.
+
+Only features matching this expression will be exported.
+
+.. warning::
+
+   This setting is incompatible with :py:func:`~ExportOptions.selectedOnly`
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`expressionContext`
+
+.. seealso:: :py:func:`setFilterExpression`
+%End
+
+        void setExpressionContext( const QgsExpressionContext &context );
+%Docstring
+Sets the expression ``context`` to use when a :py:func:`~ExportOptions.filterExpression` is set.
+
+.. seealso:: :py:func:`expressionContext`
+%End
+
+        const QgsExpressionContext &expressionContext() const;
+%Docstring
+Returns the expression context used when a :py:func:`~ExportOptions.filterExpression` is set.
+
+.. seealso:: :py:func:`setExpressionContext`
 %End
 
     };
