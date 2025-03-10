@@ -245,7 +245,6 @@ Set the limit of fetched features (0 means all features)
 .. versionadded:: 3.32
 %End
 
-
   public slots:
     void openForm();
 %Docstring
@@ -260,6 +259,11 @@ activate the map tool to select a new related feature on the map
     void deleteForeignKeys();
 %Docstring
 unset the currently related feature
+%End
+
+    bool saveReferencedAttributeForm();
+%Docstring
+trigger save of the embedded referenced attribute form
 %End
 
   protected:
