@@ -141,17 +141,17 @@ static QByteArray createIndexData( const QgsTriangularMesh &mesh, const QgsRecta
 
   // count non void faces
   int nonVoidFaces = 0;
-  for ( const int nativeFaceIndex : facesInExtent )
-    if ( !mesh.triangles().at( nativeFaceIndex ).isEmpty() )
+  for ( const int triangleFaceIndex : facesInExtent )
+    if ( !mesh.triangles().at( triangleFaceIndex ).isEmpty() )
       nonVoidFaces++;
 
   QByteArray indexBytes;
   indexBytes.resize( int( nonVoidFaces * 3 * sizeof( quint32 ) ) );
   quint32 *indexPtr = reinterpret_cast<quint32 *>( indexBytes.data() );
 
-  for ( const int nativeFaceIndex : facesInExtent )
+  for ( const int triangleFaceIndex : facesInExtent )
   {
-    const QgsMeshFace &face = mesh.triangles().at( nativeFaceIndex );
+    const QgsMeshFace &face = mesh.triangles().at( triangleFaceIndex );
     if ( face.isEmpty() )
       continue;
     for ( int j = 0; j < 3; ++j )
@@ -171,9 +171,10 @@ static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, const Q
     activeFaceCount = facesInExtent.count();
   else
   {
-    for ( const int nativeFaceIndex : facesInExtent )
+    for ( const int triangleFaceIndex : facesInExtent )
     {
-      if ( mActiveFaceFlagValues.active( nativeFaceIndex ) )
+      const int nativeIndex = mesh.trianglesToNativeFaces()[triangleFaceIndex];
+      if ( mActiveFaceFlagValues.active( nativeIndex ) )
         activeFaceCount++;
     }
   }
@@ -183,12 +184,13 @@ static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, const Q
   indexBytes.resize( int( indices * sizeof( quint32 ) ) );
   quint32 *indexPtr = reinterpret_cast<quint32 *>( indexBytes.data() );
 
-  for ( const int nativeFaceIndex : facesInExtent )
+  for ( const int triangleFaceIndex : facesInExtent )
   {
-    const bool isActive = mActiveFaceFlagValues.active().isEmpty() || mActiveFaceFlagValues.active( nativeFaceIndex );
+    const int nativeIndex = mesh.trianglesToNativeFaces()[triangleFaceIndex];
+    const bool isActive = mActiveFaceFlagValues.active().isEmpty() || mActiveFaceFlagValues.active( nativeIndex );
     if ( !isActive )
       continue;
-    const QgsMeshFace &face = mesh.triangles().at( nativeFaceIndex );
+    const QgsMeshFace &face = mesh.triangles().at( triangleFaceIndex );
     for ( int j = 0; j < 3; ++j )
       *indexPtr++ = quint32( face.at( j ) );
   }
