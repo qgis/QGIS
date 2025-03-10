@@ -140,6 +140,32 @@ void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
   mPolygonEntity->addComponent( mPolygonMaterial );
 }
 
+void QgsRubberBand3D::removePoint( int index )
+{
+  if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.constGet() ) )
+  {
+    QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() );
+    const int vertexIndex = index < 0 ? lineString->numPoints() - 1 + index : index;
+    lineString->deleteVertex( QgsVertexId( 0, 0, vertexIndex ) );
+
+    if ( lineString->numPoints() < 3 )
+    {
+      mGeometry.set( new QgsLineString( *lineString ) );
+    }
+  }
+  else if ( QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( mGeometry.constGet() ) )
+  {
+    const int vertexIndex = index < 0 ? lineString->numPoints() + index : index;
+    lineString->deleteVertex( QgsVertexId( 0, 0, vertexIndex ) );
+  }
+  else
+  {
+    return;
+  }
+
+  updateGeometry();
+}
+
 QgsRubberBand3D::~QgsRubberBand3D()
 {
   if ( mPolygonEntity )
@@ -344,41 +370,23 @@ void QgsRubberBand3D::setGeometry( const QgsGeometry &geometry )
 
 void QgsRubberBand3D::removeLastPoint()
 {
-  QgsLineString *lineString = nullptr;
-  if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.constGet() ) )
-  {
-    lineString = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() );
-    const int lastVertexIndex = lineString->numPoints() - 2;
-    lineString->deleteVertex( QgsVertexId( 0, 0, lastVertexIndex ) );
-  }
-  else if ( ( lineString = qgsgeometry_cast<QgsLineString *>( mGeometry.constGet() ) ) )
-  {
-    const int lastVertexIndex = lineString->numPoints() - 1;
-    lineString->deleteVertex( QgsVertexId( 0, 0, lastVertexIndex ) );
-  }
-  else
-  {
-    return;
-  }
+  removePoint( -1 );
+}
 
-  if ( lineString->numPoints() < 3 && !qgsgeometry_cast<QgsLineString *>( mGeometry.constGet() ) )
-  {
-    mGeometry.set( new QgsLineString( *lineString ) );
-  }
-
-  updateGeometry();
+void QgsRubberBand3D::removePenultimatePoint()
+{
+  removePoint( -2 );
 }
 
 void QgsRubberBand3D::moveLastPoint( const QgsPoint &pt )
 {
-  QgsLineString *lineString = nullptr;
   if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.constGet() ) )
   {
-    lineString = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() );
+    QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() );
     const int lastVertexIndex = lineString->numPoints() - 2;
     lineString->moveVertex( QgsVertexId( 0, 0, lastVertexIndex ), pt );
   }
-  else if ( ( lineString = qgsgeometry_cast<QgsLineString *>( mGeometry.constGet() ) ) )
+  else if ( QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( mGeometry.constGet() ) )
   {
     const int lastVertexIndex = lineString->numPoints() - 1;
     lineString->moveVertex( QgsVertexId( 0, 0, lastVertexIndex ), pt );
