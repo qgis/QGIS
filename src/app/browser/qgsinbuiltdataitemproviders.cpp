@@ -2125,6 +2125,7 @@ void QgsDatabaseItemGuiProvider::openSqlDialogGeneric( const QString &connection
 {
   QgsDataItemGuiContext context;
   context.setMessageBar( QgisApp::instance()->messageBar() );
+  context.setMapCanvas( QgisApp::instance()->mapCanvas() );
 
   openSqlDialog( connectionUri, provider, query, context );
 }

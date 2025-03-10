@@ -20,6 +20,7 @@
 
 class QgsDataItemGuiContext;
 class QgsMessageBar;
+class QgsMapCanvas;
 
 /**
  * \ingroup gui
@@ -53,9 +54,16 @@ class GUI_EXPORT QgsBrowserGuiModel : public QgsBrowserModel
     //! Sets message bar that will be passed in QgsDataItemGuiContext to data items
     void setMessageBar( QgsMessageBar *bar );
 
+    /**
+     * Sets the associated map \a canvas that will be passed in QgsDataItemGuiContext to data items.
+     * \since QGIS 3.44
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
   private:
     QgsDataItemGuiContext createDataItemContext() const;
     QgsMessageBar *mMessageBar = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 #endif // QGSBROWSERGUIMODEL_H

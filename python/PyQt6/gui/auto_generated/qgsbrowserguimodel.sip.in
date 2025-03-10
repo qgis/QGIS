@@ -47,6 +47,13 @@ Constructor for QgsBrowserGuiModel, with the specified ``parent`` object.
 Sets message bar that will be passed in :py:class:`QgsDataItemGuiContext` to data items
 %End
 
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+Sets the associated map ``canvas`` that will be passed in :py:class:`QgsDataItemGuiContext` to data items.
+
+.. versionadded:: 3.44
+%End
+
 };
 
 /************************************************************************

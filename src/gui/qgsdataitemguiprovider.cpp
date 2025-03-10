@@ -34,6 +34,16 @@ void QgsDataItemGuiContext::setMessageBar( QgsMessageBar *messageBar )
   mMessageBar = messageBar;
 }
 
+void QgsDataItemGuiContext::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mCanvas = canvas;
+}
+
+QgsMapCanvas *QgsDataItemGuiContext::mapCanvas() const
+{
+  return mCanvas;
+}
+
 QgsBrowserTreeView *QgsDataItemGuiContext::view() const
 {
   return mView;

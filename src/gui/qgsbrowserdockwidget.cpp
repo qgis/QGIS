@@ -99,6 +99,16 @@ QgsMessageBar *QgsBrowserDockWidget::messageBar()
   return mWidget->messageBar();
 }
 
+void QgsBrowserDockWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mWidget->setMapCanvas( canvas );
+}
+
+QgsMapCanvas *QgsBrowserDockWidget::mapCanvas()
+{
+  return mWidget->mapCanvas();
+}
+
 void QgsBrowserDockWidget::setDisabledDataItemsKeys( const QStringList &filter )
 {
   mWidget->setDisabledDataItemsKeys( filter );
