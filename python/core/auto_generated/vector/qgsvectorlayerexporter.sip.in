@@ -116,6 +116,32 @@ Returns the destination coordinate reference system used for exported features.
 .. seealso:: :py:func:`setDestinationCrs`
 %End
 
+        void setExtent( const QgsReferencedRectangle &extent );
+%Docstring
+Sets an ``extent`` filter for the features to export.
+
+Only features with a bounding box intersecting ``extent`` will be exported.
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`extent`
+%End
+
+        QgsReferencedRectangle extent() const;
+%Docstring
+Returns the extent filter for the features to export.
+
+Only features with a bounding box intersecting this extent will be exported.
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`setExtent`
+%End
+
     };
 
     static Qgis::VectorExportResult exportLayer( QgsVectorLayer *layer,
