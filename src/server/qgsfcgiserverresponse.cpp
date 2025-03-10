@@ -125,11 +125,13 @@ void QgsSocketMonitoringThread::run()
 
   struct timeval timeout;
   timeout.tv_sec = 0;
-  timeout.tv_usec = 50000; // max 50ms of timeout for select
+  timeout.tv_usec = 10000; // max 10ms of timeout for select
 
   while ( !mShouldStop.load() )
   {
-    int rv = select( mIpcFd + 1, &setOptions, NULL, NULL, &timeout ); // see https://stackoverflow.com/a/30395738
+    // 'select' function will check if the socket is still valid after a 10ms timeout
+    // see https://stackoverflow.com/a/30395738
+    int rv = select( mIpcFd + 1, &setOptions, NULL, NULL, &timeout );
     if ( rv == -1 )
     {
       // socket closed, nothing can be read
@@ -142,7 +144,9 @@ void QgsSocketMonitoringThread::run()
     }
     else
     {
-      const ssize_t x = recv( mIpcFd, &c, 1, MSG_PEEK | MSG_DONTWAIT ); // see https://stackoverflow.com/a/12402596
+      // check if there is something in the socket without reading it and without blocking
+      // see https://stackoverflow.com/a/12402596
+      const ssize_t x = recv( mIpcFd, &c, 1, MSG_PEEK | MSG_DONTWAIT );
       if ( x != 0 )
       {
         // Ie. we are still connected but we have an 'error' as there is nothing to read
