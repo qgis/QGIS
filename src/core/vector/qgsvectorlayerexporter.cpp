@@ -71,6 +71,16 @@ QgsCoordinateReferenceSystem QgsVectorLayerExporter::ExportOptions::destinationC
   return mDestinationCrs;
 }
 
+void QgsVectorLayerExporter::ExportOptions::setExtent( const QgsReferencedRectangle &extent )
+{
+  mExtent = extent;
+}
+
+QgsReferencedRectangle QgsVectorLayerExporter::ExportOptions::extent() const
+{
+  return mExtent;
+}
+
 
 //
 // QgsVectorLayerExporter
@@ -381,16 +391,6 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
     errorMessage->clear();
   }
 
-  QgsFeature fet;
-
-  QgsFeatureRequest req;
-  if ( wkbType == Qgis::WkbType::NoGeometry )
-    req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
-  if ( exportOptions.selectedOnly() )
-    req.setFilterFids( layer->selectedFeatureIds() );
-
-  QgsFeatureIterator fit = layer->getFeatures( req );
-
   // Create our transform
   if ( exportOptions.destinationCrs().isValid() )
   {
@@ -400,6 +400,35 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   // Check for failure
   if ( !ct.isValid() )
     shallTransform = false;
+
+  QgsFeature fet;
+
+  QgsFeatureRequest req;
+  if ( wkbType == Qgis::WkbType::NoGeometry )
+    req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
+
+  if ( !exportOptions.extent().isNull() )
+  {
+    QgsCoordinateTransform extentFilterTransform( exportOptions.extent().crs(), layer->crs(), exportOptions.transformContext() );
+    extentFilterTransform.setBallparkTransformsAreAppropriate( true );
+
+    try
+    {
+      const QgsRectangle layerExtent = extentFilterTransform.transformBoundingBox( exportOptions.extent() );
+      req.setFilterRect( layerExtent );
+    }
+    catch ( QgsCsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Could not transform filter extent: %1" ).arg( e.what() ) );
+    }
+  }
+
+  if ( exportOptions.selectedOnly() )
+  {
+    req.setFilterFids( layer->selectedFeatureIds() );
+  }
+
+  QgsFeatureIterator fit = layer->getFeatures( req );
 
   long long n = 0;
   const long long approxTotal = exportOptions.selectedOnly() ? layer->selectedFeatureCount() : layer->featureCount();

@@ -26,6 +26,7 @@
 #include "qgstaskmanager.h"
 #include "qgsfeedback.h"
 #include "qgsvectorlayer.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QPointer>
 
@@ -128,6 +129,28 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
          */
         QgsCoordinateReferenceSystem destinationCrs() const;
 
+        /**
+         * Sets an \a extent filter for the features to export.
+         *
+         * Only features with a bounding box intersecting \a extent will be exported.
+         *
+         * \note This option only applies when the QgsVectorLayerExporter::exportLayer() method is used.
+         *
+         * \see extent()
+         */
+        void setExtent( const QgsReferencedRectangle &extent );
+
+        /**
+         * Returns the extent filter for the features to export.
+         *
+         * Only features with a bounding box intersecting this extent will be exported.
+         *
+         * \note This option only applies when the QgsVectorLayerExporter::exportLayer() method is used.
+         *
+         * \see setExtent()
+         */
+        QgsReferencedRectangle extent() const;
+
       private:
 
         bool mSelectedOnly = false;
@@ -135,6 +158,8 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
         QgsCoordinateReferenceSystem mDestinationCrs;
 
         QgsCoordinateTransformContext mTransformContext;
+
+        QgsReferencedRectangle mExtent;
 
     };
 
