@@ -80,7 +80,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   // Editing toolbar
   mEditingToolBar = new QToolBar( this );
   mEditingToolBar->setWindowTitle( tr( "Editing Toolbar" ) );
-  mEditingToolBar->setVisible( false );
   mEditingToolsMenu = new QMenu( this );
 
   mPointCloudEditingToolbar = new QToolBar( this );
@@ -123,8 +122,12 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mClassValidator = new ClassValidator( this );
   mCboChangeAttributeValueAction = mPointCloudEditingToolbar->addWidget( mCboChangeAttributeValue );
 
-  QAction *actionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mIconPointCloudLayer.svg" ) ), tr( "Show Editing Toolbar" ), this, [this] { mEditingToolBar->setVisible( !mEditingToolBar->isVisible() ); } );
+  QAction *actionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mIconPointCloudLayer.svg" ) ), tr( "Show Editing Toolbar" ) );
   actionEditingToolbar->setCheckable( true );
+  actionEditingToolbar->setChecked(
+    setting.value( QStringLiteral( "/3D/editingToolbar/visibility" ), false, QgsSettings::Gui ).toBool()
+  );
+  connect( actionEditingToolbar, &QAction::toggled, this, &Qgs3DMapCanvasWidget::toggleEditingToolbar );
   connect( mCboChangeAttribute, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { onPointCloudChangeAttributeSettingsChanged(); } );
   connect( mCboChangeAttributeValue, qOverload<const QString &>( &QComboBox::currentTextChanged ), this, [this]( const QString &text ) {
     double newValue = 0;
@@ -395,6 +398,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
 
   updateLayerRelatedActions( QgisApp::instance()->activeLayer() );
+  mEditingToolBar->setVisible( setting.value( QStringLiteral( "/3D/editingToolbar/visibility" ), false, QgsSettings::Gui ).toBool() );
 
   QList<QAction *> toolbarMenuActions;
   // Set action names so that they can be used in customization
@@ -609,6 +613,13 @@ void Qgs3DMapCanvasWidget::toggleNavigationWidget( const bool visibility )
   mNavigationWidget->setVisible( visibility );
   QgsSettings setting;
   setting.setValue( QStringLiteral( "/3D/navigationWidget/visibility" ), visibility, QgsSettings::Gui );
+}
+
+void Qgs3DMapCanvasWidget::toggleEditingToolbar( const bool visibility )
+{
+  mEditingToolBar->setVisible( visibility );
+  QgsSettings setting;
+  setting.setValue( QStringLiteral( "/3D/editingToolbar/visibility" ), visibility, QgsSettings::Gui );
 }
 
 void Qgs3DMapCanvasWidget::toggleFpsCounter( const bool visibility )
