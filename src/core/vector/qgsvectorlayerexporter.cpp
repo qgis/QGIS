@@ -47,6 +47,35 @@ typedef Qgis::VectorExportResult createEmptyLayer_t(
 );
 
 
+//
+// QgsVectorLayerExporter::ExportOptions
+//
+
+void QgsVectorLayerExporter::ExportOptions::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
+}
+
+QgsCoordinateTransformContext QgsVectorLayerExporter::ExportOptions::transformContext() const
+{
+  return mTransformContext;
+}
+
+void QgsVectorLayerExporter::ExportOptions::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mDestinationCrs = crs;
+}
+
+QgsCoordinateReferenceSystem QgsVectorLayerExporter::ExportOptions::destinationCrs() const
+{
+  return mDestinationCrs;
+}
+
+
+//
+// QgsVectorLayerExporter
+//
+
 QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     const QString &providerKey,
     const QgsFields &fields,
@@ -292,6 +321,15 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
     const QMap<QString, QVariant> &options,
     QgsFeedback *feedback )
 {
+  ExportOptions exportOptions;
+  exportOptions.setSelectedOnly( onlySelected );
+  exportOptions.setDestinationCrs( destCRS );
+  exportOptions.setTransformContext( layer->transformContext() );
+  return exportLayer( layer, uri, providerKey, exportOptions, errorMessage, options, feedback );
+}
+
+Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const ExportOptions &exportOptions, QString *errorMessage, const QMap<QString, QVariant> &_providerOptions, QgsFeedback *feedback )
+{
   QgsCoordinateReferenceSystem outputCRS;
   QgsCoordinateTransform ct;
   bool shallTransform = false;
@@ -299,10 +337,10 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   if ( !layer )
     return Qgis::VectorExportResult::ErrorInvalidLayer;
 
-  if ( destCRS.isValid() )
+  if ( exportOptions.destinationCrs().isValid() )
   {
     // This means we should transform
-    outputCRS = destCRS;
+    outputCRS = exportOptions.destinationCrs();
     shallTransform = true;
   }
   else
@@ -311,15 +349,9 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
     outputCRS = layer->crs();
   }
 
-
-  bool overwrite = false;
-  bool forceSinglePartGeom = false;
-  QMap<QString, QVariant> providerOptions = options;
-  if ( !options.isEmpty() )
-  {
-    overwrite = providerOptions.take( QStringLiteral( "overwrite" ) ).toBool();
-    forceSinglePartGeom = providerOptions.take( QStringLiteral( "forceSinglePartGeometryType" ) ).toBool();
-  }
+  QMap<QString, QVariant> providerOptions = _providerOptions;
+  const bool overwrite = providerOptions.take( QStringLiteral( "overwrite" ) ).toBool();
+  const bool forceSinglePartGeom = providerOptions.take( QStringLiteral( "forceSinglePartGeometryType" ) ).toBool();
 
   QgsFields fields = layer->fields();
 
@@ -354,15 +386,15 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   QgsFeatureRequest req;
   if ( wkbType == Qgis::WkbType::NoGeometry )
     req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
-  if ( onlySelected )
+  if ( exportOptions.selectedOnly() )
     req.setFilterFids( layer->selectedFeatureIds() );
 
   QgsFeatureIterator fit = layer->getFeatures( req );
 
   // Create our transform
-  if ( destCRS.isValid() )
+  if ( exportOptions.destinationCrs().isValid() )
   {
-    ct = QgsCoordinateTransform( layer->crs(), destCRS, layer->transformContext() );
+    ct = QgsCoordinateTransform( layer->crs(), exportOptions.destinationCrs(), exportOptions.transformContext() );
   }
 
   // Check for failure
@@ -370,7 +402,7 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
     shallTransform = false;
 
   long long n = 0;
-  const long long approxTotal = onlySelected ? layer->selectedFeatureCount() : layer->featureCount();
+  const long long approxTotal = exportOptions.selectedOnly() ? layer->selectedFeatureCount() : layer->featureCount();
 
   if ( errorMessage )
   {
@@ -454,7 +486,7 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast< double >( n ) / approxTotal );
+      feedback->setProgress( 100.0 * static_cast< double >( n ) / static_cast< double >( approxTotal ) );
     }
 
   }
@@ -499,7 +531,6 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   return Qgis::VectorExportResult::Success;
 }
 
-
 //
 // QgsVectorLayerExporterTask
 //
@@ -510,8 +541,24 @@ QgsVectorLayerExporterTask::QgsVectorLayerExporterTask( QgsVectorLayer *layer, c
   , mOwnsLayer( ownsLayer )
   , mDestUri( uri )
   , mDestProviderKey( providerKey )
-  , mDestCrs( destinationCrs )
   , mOptions( options )
+  , mOwnedFeedback( new QgsFeedback() )
+{
+  mExportOptions.setDestinationCrs( destinationCrs );
+  mExportOptions.setTransformContext( layer->transformContext() );
+
+  if ( mLayer )
+    setDependentLayers( QList< QgsMapLayer * >() << mLayer );
+}
+
+QgsVectorLayerExporterTask::QgsVectorLayerExporterTask( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsVectorLayerExporter::ExportOptions &exportOptions, const QMap<QString, QVariant> &providerOptions, bool ownsLayer )
+  : QgsTask( tr( "Exporting %1" ).arg( layer->name() ), QgsTask::CanCancel )
+  , mLayer( layer )
+  , mOwnsLayer( ownsLayer )
+  , mDestUri( uri )
+  , mDestProviderKey( providerKey )
+  , mExportOptions( exportOptions )
+  , mOptions( providerOptions )
   , mOwnedFeedback( new QgsFeedback() )
 {
   if ( mLayer )
@@ -540,7 +587,7 @@ bool QgsVectorLayerExporterTask::run()
 
 
   mError = QgsVectorLayerExporter::exportLayer(
-             mLayer.data(), mDestUri, mDestProviderKey, mDestCrs, false, &mErrorMessage,
+             mLayer.data(), mDestUri, mDestProviderKey, mExportOptions, &mErrorMessage,
              mOptions, mOwnedFeedback.get() );
 
   return mError == Qgis::VectorExportResult::Success;

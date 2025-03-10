@@ -226,19 +226,20 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
     allProviderOptions.insert( it.key(), it.value() );
   }
 
-  QgsCoordinateReferenceSystem destinationCrs;
-  if ( mCrsSelector )
-  {
-    destinationCrs = mCrsSelector->crs();
-  }
-
   // overwrite?
   if ( mChkDropTable->isChecked() )
   {
     allProviderOptions.insert( QStringLiteral( "overwrite" ), true );
   }
 
-  return std::make_unique<QgsVectorLayerExporterTask>( mSourceLayer->clone(), destinationUri, mConnection->providerKey(), destinationCrs, allProviderOptions, true );
+  QgsVectorLayerExporter::ExportOptions exportOptions;
+  if ( mCrsSelector )
+  {
+    exportOptions.setDestinationCrs( mCrsSelector->crs() );
+  }
+  exportOptions.setTransformContext( mSourceLayer->transformContext() );
+
+  return std::make_unique<QgsVectorLayerExporterTask>( mSourceLayer->clone(), destinationUri, mConnection->providerKey(), exportOptions, allProviderOptions, true );
 }
 
 void QgsDbImportVectorLayerDialog::sourceLayerComboChanged()

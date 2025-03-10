@@ -73,6 +73,94 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
         QgsFeedback *feedback = nullptr );
 
     /**
+     * \ingroup core
+     * \brief Encapsulates options for use with QgsVectorLayerExporter.
+     *
+     * \since QGIS 3.44
+     */
+    class ExportOptions
+    {
+      public:
+
+        /**
+         * Sets whether the export should only include selected features.
+         *
+         * \note This option only applies when the QgsVectorLayerExporter::exportLayer() method is used.
+         *
+         * \seee selectedOnly()
+         */
+        void setSelectedOnly( bool selected ) { mSelectedOnly = selected; }
+
+        /**
+         * Returns whether the export will only include selected features.
+         *
+         * \note This option only applies when the QgsVectorLayerExporter::exportLayer() method is used.
+         *
+         * \seee setSelectedOnly()
+         */
+        bool selectedOnly() const { return mSelectedOnly; }
+
+        /**
+         * Sets the coordinate transform \a context to use when transforming exported features.
+         *
+         * \see transformContext()
+         */
+        void setTransformContext( const QgsCoordinateTransformContext &context );
+
+        /**
+         * Returns the coordinate transform context used when transforming exported features.
+         *
+         * \see setTransformContext()
+         */
+        QgsCoordinateTransformContext transformContext() const;
+
+        /**
+         * Sets the destination coordinate reference system to use for exported features.
+         *
+         * \see destinationCrs()
+         */
+        void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+
+        /**
+         * Returns the destination coordinate reference system used for exported features.
+         *
+         * \see setDestinationCrs()
+         */
+        QgsCoordinateReferenceSystem destinationCrs() const;
+
+      private:
+
+        bool mSelectedOnly = false;
+
+        QgsCoordinateReferenceSystem mDestinationCrs;
+
+        QgsCoordinateTransformContext mTransformContext;
+
+    };
+
+    /**
+     * Writes the contents of vector layer to a different data provider.
+     *
+     * \param layer source layer
+     * \param uri URI for destination data source
+     * \param providerKey string key for destination data provider
+     * \param exportOptions options controlling the feature export
+     * \param errorMessage will be set to any error messages which occur during the export
+     * \param providerOptions optional provider dataset options
+     * \param feedback optional feedback object to show progress and cancellation of export
+     * \returns Qgis::VectorExportResult::NoError for a successful export, or encountered error
+     *
+     * \since QGIS 3.44
+     */
+    static Qgis::VectorExportResult exportLayer( QgsVectorLayer *layer,
+        const QString &uri,
+        const QString &providerKey,
+        const QgsVectorLayerExporter::ExportOptions &exportOptions,
+        QString *errorMessage SIP_OUT = nullptr,
+        const QMap<QString, QVariant> &providerOptions = QMap<QString, QVariant>(),
+        QgsFeedback *feedback = nullptr );
+
+    /**
      * Constructor for QgsVectorLayerExporter.
      * \param uri URI for destination data source
      * \param provider string key for destination data provider
@@ -193,6 +281,22 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
                                 bool ownsLayer = false );
 
     /**
+     * Constructor for QgsVectorLayerExporterTask. Takes a source \a layer, destination \a uri
+     * and \a providerKey, and various export related parameters via the \a exportOptions argument.
+     *
+     * \a ownsLayer has to be set to TRUE if the task should take ownership
+     * of the layer and delete it after export.
+     *
+     * \since QGIS 3.44
+    */
+    QgsVectorLayerExporterTask( QgsVectorLayer *layer,
+                                const QString &uri,
+                                const QString &providerKey,
+                                const QgsVectorLayerExporter::ExportOptions &exportOptions,
+                                const QMap<QString, QVariant> &providerOptions = QMap<QString, QVariant>(),
+                                bool ownsLayer = false );
+
+    /**
      * Creates a new QgsVectorLayerExporterTask which has ownership over a source \a layer.
      * When the export task has completed (successfully or otherwise) \a layer will be
      * deleted. The destination \a uri and \a providerKey, and various export related parameters such as destination CRS
@@ -231,7 +335,7 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
 
     QString mDestUri;
     QString mDestProviderKey;
-    QgsCoordinateReferenceSystem mDestCrs;
+    QgsVectorLayerExporter::ExportOptions mExportOptions;
     QMap<QString, QVariant> mOptions;
 
     std::unique_ptr< QgsFeedback > mOwnedFeedback;
