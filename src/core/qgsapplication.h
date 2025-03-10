@@ -475,7 +475,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      *
      * \since QGIS 3.26
      */
-    static int systemMemorySizeMb();
+    static unsigned long systemMemorySizeMb();
 
     /**
      * Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
