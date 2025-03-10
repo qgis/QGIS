@@ -1504,23 +1504,31 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Sets the URL for the layer's legend.
-    */
-    void setLegendUrl( const QString &legendUrl ) { mLegendUrl = legendUrl; }
+     *
+     * \deprecated QGIS 3.44. Use serverProperties()->setLegendUrl() instead.
+     */
+    Q_DECL_DEPRECATED void setLegendUrl( const QString &legendUrl ) SIP_DEPRECATED;
 
     /**
      * Returns the URL for the layer's legend.
+     *
+     * \deprecated QGIS 3.44. Use serverProperties()->legendUrl() instead.
      */
-    QString legendUrl() const { return mLegendUrl; }
+    Q_DECL_DEPRECATED QString legendUrl() const SIP_DEPRECATED;
 
     /**
      * Sets the format for a URL based layer legend.
+     *
+     * \deprecated QGIS 3.44. Use serverProperties()->setLegendUrlFormat() instead.
      */
-    void setLegendUrlFormat( const QString &legendUrlFormat ) { mLegendUrlFormat = legendUrlFormat; }
+    Q_DECL_DEPRECATED void setLegendUrlFormat( const QString &legendUrlFormat ) SIP_DEPRECATED;
 
     /**
      * Returns the format for a URL based layer legend.
+     *
+     * \deprecated QGIS 3.44. Use serverProperties()->legendUrlFormat() instead.
      */
-    QString legendUrlFormat() const { return mLegendUrlFormat; }
+    Q_DECL_DEPRECATED QString legendUrlFormat() const SIP_DEPRECATED;
 
     /**
      * Assign a legend controller to the map layer. The object will be responsible for providing legend items.
@@ -2277,10 +2285,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Name of the layer - used for display
     QString mLayerName;
-
-    //! WMS legend
-    QString mLegendUrl;
-    QString mLegendUrlFormat;
 
     //! \brief Error
     QgsError mError;
