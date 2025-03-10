@@ -541,6 +541,10 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
   return results;
 }
 
+Qgis::DatabaseProviderTableImportCapabilities QgsGeoPackageProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapabilities();
+}
 
 QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const QString &table, QgsFeedback * ) const
 {

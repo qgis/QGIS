@@ -118,6 +118,16 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAbstractDatabaseProviderConnection.VectorLayerExporterOptions.__attribute_docs__ = {'layerName': 'Name for the new layer', 'schema': 'Optional schema for the new layer. May not be supported by all providers.', 'wkbType': 'WKB type for destination layer geometry', 'primaryKeyColumns': 'List of primary key column names. Note that some providers may ignore this if not supported.', 'geometryColumn': 'Preferred name for the geometry column, if required. Note that some providers may ignore this if a specific geometry column name is required.'}
+    QgsAbstractDatabaseProviderConnection.VectorLayerExporterOptions.__doc__ = """Stores all information required to create a :py:class:`QgsVectorLayerExporter` for the backend.
+
+.. seealso:: :py:func:`createVectorLayerExporterDestinationUri`
+
+.. versionadded:: 3.44"""
+    QgsAbstractDatabaseProviderConnection.VectorLayerExporterOptions.__group__ = ['providers']
+except (NameError, AttributeError):
+    pass
+try:
     QgsAbstractDatabaseProviderConnection.QueryResult.__doc__ = """The QueryResult class represents the result of a query executed by :py:func:`~QgsAbstractDatabaseProviderConnection.execSql`
 
 It encapsulates an iterator over the result rows and a list of the column names.

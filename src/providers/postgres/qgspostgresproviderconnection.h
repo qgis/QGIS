@@ -46,7 +46,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
 
   public:
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
-
+    QString createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
@@ -62,6 +62,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const override;
+    void setTableComment( const QString &schema, const QString &tableName, const QString &comment ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema, const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QStringList schemas() const override;
@@ -73,6 +74,8 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
     QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const override;
+    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
+    QString defaultPrimaryKeyColumnName() const override;
 
     static const QStringList CONFIGURATION_PARAMETERS;
     static const QString SETTINGS_BASE_KEY;

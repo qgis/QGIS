@@ -53,7 +53,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
 
   public:
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
-
+    QString createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void createSchema( const QString &name ) const override;
@@ -71,6 +71,8 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
     bool validateSqlVectorLayer( const SqlVectorLayerOptions &options, QString &message ) const override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
+    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
+    QString defaultPrimaryKeyColumnName() const override;
 
   private:
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr ) const;

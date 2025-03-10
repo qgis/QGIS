@@ -332,8 +332,8 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
     convertGeometryToSinglePart = true;
   }
 
-  QgsVectorLayerExporter *writer =
-    new QgsVectorLayerExporter( uri, providerKey, fields, wkbType, outputCRS, overwrite, providerOptions );
+  auto writer = std::make_unique< QgsVectorLayerExporter >(
+                  uri, providerKey, fields, wkbType, outputCRS, overwrite, providerOptions );
 
   // check whether file creation was successful
   const Qgis::VectorExportResult err = writer->errorCode();
@@ -341,7 +341,6 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   {
     if ( errorMessage )
       *errorMessage = writer->errorMessage();
-    delete writer;
     return err;
   }
 
@@ -415,8 +414,6 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
       }
       catch ( QgsCsException &e )
       {
-        delete writer;
-
         const QString msg = QObject::tr( "Failed to transform feature with ID '%1'. Writing stopped. (Exception: %2)" )
                             .arg( fet.id() ).arg( e.what() );
         QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
@@ -436,7 +433,6 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
       const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( singlePartGeometry.constGet() );
       if ( ( c && c->partCount() > 1 ) || ! singlePartGeometry.convertToSingleType() )
       {
-        delete writer;
         const QString msg = QObject::tr( "Failed to transform a feature with ID '%1' to single part. Writing stopped." )
                             .arg( fet.id() );
         QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
@@ -481,7 +477,7 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
     }
   }
 
-  delete writer;
+  writer.reset();
 
   if ( errorMessage )
   {

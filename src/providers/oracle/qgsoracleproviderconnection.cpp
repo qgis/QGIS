@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsfeedback.h"
 #include "qgsvectorlayer.h"
+#include "qgsmessagelog.h"
 
 #include <QSqlRecord>
 #include <QSqlField>
@@ -289,6 +290,16 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
   return vl.release();
 }
 
+Qgis::DatabaseProviderTableImportCapabilities QgsOracleProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName;
+}
+
+QString QgsOracleProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "id" );
+}
+
 void QgsOracleProviderConnection::store( const QString &name ) const
 {
   QString baseKey = QStringLiteral( "/Oracle/connections/" );
@@ -347,6 +358,11 @@ QList<QgsVectorDataProvider::NativeType> QgsOracleProviderConnection::nativeType
     throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for connection %1" ).arg( uri() ) );
   }
   return types;
+}
+
+QString QgsOracleProviderConnection::defaultGeometryColumnName() const
+{
+  return QStringLiteral( "GEOM" );
 }
 
 QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sqlDictionary()
@@ -1465,6 +1481,26 @@ void QgsOracleProviderConnection::createVectorTable( const QString &schema, cons
   );
   if ( res != Qgis::VectorExportResult::Success )
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
+}
+
+QString QgsOracleProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const
+{
+  QgsDataSourceUri destUri( uri() );
+
+  destUri.setTable( options.layerName );
+  destUri.setSchema( options.schema );
+  destUri.setGeometryColumn( options.wkbType != Qgis::WkbType::NoGeometry ? ( options.geometryColumn.isEmpty() ? QStringLiteral( "GEOM" ) : options.geometryColumn ) : QString() );
+  if ( !options.primaryKeyColumns.isEmpty() )
+  {
+    if ( options.primaryKeyColumns.length() > 1 )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Multiple primary keys are not supported by Oracle, ignoring" ), QString(), Qgis::MessageLevel::Info );
+    }
+    destUri.setKeyColumn( options.primaryKeyColumns.at( 0 ) );
+  }
+
+  providerOptions.clear();
+  return destUri.uri( false );
 }
 
 QString QgsOracleProviderConnection::tableUri( const QString &schema, const QString &name ) const
