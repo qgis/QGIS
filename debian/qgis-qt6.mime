@@ -1,0 +1,16 @@
+image/tiff; qgis-qt6 '%s'; description="TIFF Image"; test=test -n "$DISPLAY"; nametemplate=%s.tif; priority=2
+image/jpeg; qgis-qt6 '%s'; description="JPEG Image"; test=test -n "$DISPLAY"; nametemplate=%s.jpg; priority=2
+image/jp2; qgis-qt6 '%s'; description="JPEG 2000 Image"; test=test -n "$DISPLAY"; nametemplate=%s.jp2; priority=2
+application/x-raster-aig; qgis-qt6 '%s'; description="AIG raster data"; test=test -n "$DISPLAY"; nametemplate=%s.aig; priority=2
+application/x-raster-ecw; qgis-qt6 '%s'; description="ECW raster data"; test=test -n "$DISPLAY"; nametemplate=%s.ecw; priority=2
+application/x-raster-mrsid; qgis-qt6 '%s'; description="MrSID raster data"; test=test -n "$DISPLAY"; nametemplate=%s.sid; priority=2
+application/x-raster-mif; qgis-qt6 '%s'; description="MapInfo file"; test=test -n "$DISPLAY"; nametemplate=%s.mif; priority=2
+application/x-esri-shape; qgis-qt6 '%s'; description="ESRI shape file"; test=test -n "$DISPLAY"; nametemplate=%s.shp; priority=2
+application/vnd.google-earth.kml+xml; qgis-qt6 '%s'; description="Google Earth KML"; test=test -n "$DISPLAY"; nametemplate=%s.kml; priority=2
+application/vnd.google-earth.kmz; qgis-qt6 '%s'; description="Google Earth KMZ"; test=test -n "$DISPLAY"; nametemplate=%s.kmz; priority=2
+application/geopackage+sqlite3; qgis-qt6 '%s'; description="OGC GeoPackage"; test=test -n "$DISPLAY"; nametemplate=%s.gpkg; priority=2
+application/x-qgis-project; qgis-qt6 '%s'; description="QGIS Project"; test=test -n "$DISPLAY"; nametemplate=%s.qgs
+application/x-qgis-project-container; qgis-qt6 '%s'; description="QGIS Project"; test=test -n "$DISPLAY"; nametemplate=%s.qgz
+application/x-qgis-layer-settings; qgis-qt6 '%s'; description="QGIS Layer Settings"; test=test -n "$DISPLAY"; nametemplate=%s.qml
+application/x-qgis-layer-definition; qgis-qt6 '%s'; description="QGIS Layer Definition"; test=test -n "$DISPLAY"; nametemplate=%s.qlr
+application/x-qgis-composer-template; qgis-qt6 '%s'; description="QGIS Composer Template"; test=test -n "$DISPLAY"; nametemplate=%s.qpt
