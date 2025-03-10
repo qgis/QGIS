@@ -59,6 +59,7 @@
 #include "qgsrubberband.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
+#include "qgspointcloudquerybuilder.h"
 
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )
@@ -107,6 +108,11 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   QAction *actionBelowLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectBelowLine.svg" ) ) ), tr( "Select Below Line" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByBelowLine );
 
   mEditingToolBar->addWidget( mPointCloudEditingToolbar );
+  QAction *actionPointFilter = mPointCloudEditingToolbar->addAction( QIcon( QgsApplication::iconPath( "mIconExpressionFilter.svg" ) ), tr( "Filter Points" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributePointFilter );
+  actionPointFilter->setCheckable( true );
+  const QString tooltip = QStringLiteral( "%1\n\n%2\n%3" ).arg( tr( "Filter Points" ), tr( "Set an expression to filter points that should be edited." ), tr( "Points that do not satisfy the expression will not be modified." ) );
+  actionPointFilter->setToolTip( tooltip );
+
   mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) );
   mCboChangeAttribute = new QComboBox();
   mPointCloudEditingToolbar->addWidget( mCboChangeAttribute );
@@ -525,6 +531,30 @@ void Qgs3DMapCanvasWidget::changePointCloudAttributeByBelowLine()
   onPointCloudChangeAttributeSettingsChanged();
   mCanvas->setMapTool( mMapToolChangeAttribute.get() );
   mEditingToolsAction->setIcon( action->icon() );
+}
+
+void Qgs3DMapCanvasWidget::changePointCloudAttributePointFilter()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  QgsPointCloudLayer *layer = qobject_cast<QgsPointCloudLayer *>( QgisApp::instance()->activeLayer() );
+  if ( !layer )
+    return;
+
+  QgsPointCloudQueryBuilder qb( layer, this );
+  qb.setSubsetString( mChangeAttributePointFilter );
+  if ( qb.exec() )
+  {
+    mChangeAttributePointFilter = qb.subsetString();
+    mMapToolChangeAttribute->setPointFilter( mChangeAttributePointFilter );
+  }
+  action->setChecked( !mChangeAttributePointFilter.isEmpty() );
+  QString tooltip = QStringLiteral( "%1\n\n%2\n%3" ).arg( tr( "Filter Points" ), tr( "Set an expression to filter points that should be edited." ), tr( "Points that do not satisfy the expression will not be modified." ) );
+  if ( !mChangeAttributePointFilter.isEmpty() )
+    tooltip.append( QStringLiteral( "\n%1\n%2" ).arg( tr( "Current filter expression: " ), mChangeAttributePointFilter ) );
+  action->setToolTip( tooltip );
 }
 
 void Qgs3DMapCanvasWidget::setCanvasName( const QString &name )
@@ -1099,6 +1129,8 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
 
   mCboChangeAttributeValueAction->setVisible( useComboBox );
   mSpinChangeAttributeValueAction->setVisible( !useComboBox );
+
+  mMapToolChangeAttribute->setPointFilter( mChangeAttributePointFilter );
 }
 
 void Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas()
