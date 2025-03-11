@@ -1525,20 +1525,23 @@ void TestQgsPolyhedralSurface::testExport()
 
 void TestQgsPolyhedralSurface::testCast()
 {
-  QVERIFY( !QgsPolyhedralSurface().cast( nullptr ) );
+  QVERIFY( !QgsPolyhedralSurface::cast( static_cast< const QgsAbstractGeometry * >( nullptr ) ) );
 
   QgsPolyhedralSurface pCast;
-  QVERIFY( QgsPolyhedralSurface().cast( &pCast ) );
+  QVERIFY( QgsPolyhedralSurface::cast( &pCast ) );
 
   QgsPolyhedralSurface pCast2;
   pCast2.fromWkt( QStringLiteral( "PolyhedralSurfaceZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))" ) );
-  QVERIFY( QgsPolyhedralSurface().cast( &pCast2 ) );
+  QVERIFY( QgsPolyhedralSurface::cast( &pCast2 ) );
+  QVERIFY( QgsSurface::cast( &pCast2 ) );
 
   pCast2.fromWkt( QStringLiteral( "PolyhedralSurfaceM((0 0 1, 0 1 2, 1 0 3, 0 0 1))" ) );
-  QVERIFY( QgsPolyhedralSurface().cast( &pCast2 ) );
+  QVERIFY( QgsPolyhedralSurface::cast( &pCast2 ) );
+  QVERIFY( QgsSurface::cast( &pCast2 ) );
 
   pCast2.fromWkt( QStringLiteral( "PolyhedralSurfaceZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))" ) );
-  QVERIFY( QgsPolyhedralSurface().cast( &pCast2 ) );
+  QVERIFY( QgsPolyhedralSurface::cast( &pCast2 ) );
+  QVERIFY( QgsSurface::cast( &pCast2 ) );
 
   QVERIFY( !pCast2.fromWkt( QStringLiteral( "PolyhedralSurfaceZ((111111))" ) ) );
 }

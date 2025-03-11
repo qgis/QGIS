@@ -64,7 +64,9 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
       const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
       if ( flatType == Qgis::WkbType::CurvePolygon
            || flatType == Qgis::WkbType::Polygon
-           || flatType == Qgis::WkbType::Triangle )
+           || flatType == Qgis::WkbType::Triangle
+           || flatType == Qgis::WkbType::PolyhedralSurface
+           || flatType == Qgis::WkbType::TIN )
         return static_cast<const QgsSurface *>( geom );
       return nullptr;
     }
@@ -85,7 +87,9 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
       const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
       if ( flatType == Qgis::WkbType::CurvePolygon
            || flatType == Qgis::WkbType::Polygon
-           || flatType == Qgis::WkbType::Triangle )
+           || flatType == Qgis::WkbType::Triangle
+           || flatType == Qgis::WkbType::PolyhedralSurface
+           || flatType == Qgis::WkbType::TIN )
         return static_cast<QgsSurface *>( geom );
       return nullptr;
     }
