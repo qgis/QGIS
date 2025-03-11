@@ -142,7 +142,7 @@ void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
 
 void QgsRubberBand3D::removePoint( int index )
 {
-  if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.constGet() ) )
+  if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.get() ) )
   {
     QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() );
     const int vertexIndex = index < 0 ? lineString->numPoints() - 1 + index : index;
@@ -153,7 +153,7 @@ void QgsRubberBand3D::removePoint( int index )
       mGeometry.set( new QgsLineString( *lineString ) );
     }
   }
-  else if ( QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( mGeometry.constGet() ) )
+  else if ( QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( mGeometry.get() ) )
   {
     const int vertexIndex = index < 0 ? lineString->numPoints() + index : index;
     lineString->deleteVertex( QgsVertexId( 0, 0, vertexIndex ) );
@@ -352,7 +352,7 @@ void QgsRubberBand3D::addPoint( const QgsPoint &pt )
       mGeometry.set( new QgsPolygon( lineString->clone() ) );
     }
   }
-  else if ( !mGeometry.get() )
+  else if ( !mGeometry.constGet() )
   {
     mGeometry.set( new QgsLineString( QVector<QgsPoint> { pt } ) );
   }
