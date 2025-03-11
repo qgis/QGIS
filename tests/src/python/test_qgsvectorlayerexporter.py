@@ -82,7 +82,7 @@ class TestQgsVectorLayerExporter(QgisTestCase):
             )
             self.assertEqual(res, Qgis.VectorExportResult.Success)
 
-            # true to read result
+            # try to read result
             layer = QgsVectorLayer(
                 dest_file_name.as_posix() + "|layername=selected_only",
                 "test",
@@ -127,7 +127,7 @@ class TestQgsVectorLayerExporter(QgisTestCase):
             )
             self.assertEqual(res, Qgis.VectorExportResult.Success)
 
-            # true to read result
+            # try to read result
             layer = QgsVectorLayer(
                 dest_file_name.as_posix() + "|layername=selected_only",
                 "test",
@@ -186,7 +186,7 @@ class TestQgsVectorLayerExporter(QgisTestCase):
             )
             self.assertEqual(res, Qgis.VectorExportResult.Success)
 
-            # true to read result
+            # try to read result
             layer = QgsVectorLayer(
                 dest_file_name.as_posix() + "|layername=extent",
                 "test",
@@ -239,7 +239,7 @@ class TestQgsVectorLayerExporter(QgisTestCase):
             )
             self.assertEqual(res, Qgis.VectorExportResult.Success)
 
-            # true to read result
+            # try to read result
             layer = QgsVectorLayer(
                 dest_file_name.as_posix() + "|layername=expression",
                 "test",
@@ -306,7 +306,7 @@ class TestQgsVectorLayerExporter(QgisTestCase):
             )
             self.assertEqual(res, Qgis.VectorExportResult.Success)
 
-            # true to read result
+            # try to read result
             layer = QgsVectorLayer(
                 dest_file_name.as_posix() + "|layername=expression",
                 "test",
@@ -377,7 +377,7 @@ class TestQgsVectorLayerExporter(QgisTestCase):
             )
             self.assertEqual(res, Qgis.VectorExportResult.Success)
 
-            # true to read result
+            # try to read result
             layer = QgsVectorLayer(
                 dest_file_name.as_posix() + "|layername=Must_be_Laundered",
                 "test",
