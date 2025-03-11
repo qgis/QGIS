@@ -452,6 +452,71 @@ QString QgsFieldMappingModel::qgsFieldToTypeName( const QgsField &field ) const
       return type.mTypeName;
     }
   }
+
+  // no exact type name matches, try to match metatype as a fallback
+  for ( const QgsVectorDataProvider::NativeType &type : mNativeTypes )
+  {
+    if ( type.mType == field.type() && type.mSubType == field.subType() )
+    {
+      return type.mTypeName;
+    }
+  }
+
+  // next chance -- try promoting numeric types
+
+  // promote int -> long long
+  if ( field.type() == QMetaType::Type::Int )
+  {
+    for ( const QgsVectorDataProvider::NativeType &type : mNativeTypes )
+    {
+      if ( type.mType == QMetaType::Type::LongLong )
+      {
+        return type.mTypeName;
+      }
+    }
+  }
+  // promote uint -> unsigned long long or long long
+  if ( field.type() == QMetaType::Type::UInt )
+  {
+    for ( const QgsVectorDataProvider::NativeType &type : mNativeTypes )
+    {
+      if ( type.mType == QMetaType::Type::ULongLong || type.mType == QMetaType::Type::LongLong )
+      {
+        return type.mTypeName;
+      }
+    }
+  }
+  // promote float or int -> double
+  if ( field.type() == QMetaType::Type::Float || field.type() == QMetaType::Type::Int )
+  {
+    for ( const QgsVectorDataProvider::NativeType &type : mNativeTypes )
+    {
+      if ( type.mType == QMetaType::Type::Double )
+      {
+        return type.mTypeName;
+      }
+    }
+  }
+  // last resort -- promote certain types to string
+  if ( field.type() == QMetaType::Type::Float
+       || field.type() == QMetaType::Type::Double
+       || field.type() == QMetaType::Type::Int
+       || field.type() == QMetaType::Type::UInt
+       || field.type() == QMetaType::Type::LongLong
+       || field.type() == QMetaType::Type::ULongLong
+       || field.type() == QMetaType::Type::QDate
+       || field.type() == QMetaType::Type::QTime
+       || field.type() == QMetaType::Type::QDateTime )
+  {
+    for ( const QgsVectorDataProvider::NativeType &type : mNativeTypes )
+    {
+      if ( type.mType == QMetaType::Type::QString )
+      {
+        return type.mTypeName;
+      }
+    }
+  }
+
   return QString();
 }
 
