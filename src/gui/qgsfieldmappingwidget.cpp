@@ -331,7 +331,6 @@ QWidget *QgsFieldMappingTypeDelegate::createEditor( QWidget *parent, const QStyl
   Q_UNUSED( option )
   QComboBox *editor = new QComboBox( parent );
 
-  const QList<QgsVectorDataProvider::NativeType> typeList = QgsFieldMappingModel::supportedDataTypes();
   int i = 0;
   for ( const QgsVectorDataProvider::NativeType &type : mNativeTypes )
   {
