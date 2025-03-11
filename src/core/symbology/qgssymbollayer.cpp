@@ -684,7 +684,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   {
     offsetY += anchorPointCorrectionY;
   }
-  else if ( verticalAnchorPoint == Bottom )
+  else if ( verticalAnchorPoint == Bottom or verticalAnchorPoint == Baseline )
   {
     offsetY -= anchorPointCorrectionY;
   }

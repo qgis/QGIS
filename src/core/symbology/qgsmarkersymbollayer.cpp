@@ -3595,7 +3595,14 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mFont.setPixelSize( std::max( 2, static_cast< int >( std::round( sizePixels ) ) ) );
   mFontMetrics.reset( new QFontMetrics( mFont ) );
   mChrWidth = mFontMetrics->horizontalAdvance( mString );
-  mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+  if ( mVerticalAnchorPoint == VerticalAnchorPoint::Baseline )
+  {
+    mChrOffset = QPointF( mChrWidth / 2.0, -sizePixels / 2.0 );
+  }
+  else
+  {
+    mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+  }
   mOrigSize = mSize; // save in case the size would be data defined
 
   // use caching only when not using a data defined character
@@ -3628,7 +3635,15 @@ QString QgsFontMarkerSymbolLayer::characterToRender( QgsSymbolRenderContext &con
     if ( stringToRender != mString )
     {
       charWidth = mFontMetrics->horizontalAdvance( stringToRender );
-      charOffset = QPointF( charWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+      if ( mVerticalAnchorPoint == VerticalAnchorPoint::Baseline )
+      {
+        const double sizePixels = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
+        charOffset = QPointF( charWidth / 2.0, -sizePixels / 2.0 );
+      }
+      else
+      {
+        charOffset = QPointF( charWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+      }
     }
   }
   return stringToRender;
