@@ -22,10 +22,16 @@
 
 QgsFieldMappingModel::QgsFieldMappingModel( const QgsFields &sourceFields, const QgsFields &destinationFields, const QMap<QString, QString> &expressions, QObject *parent )
   : QAbstractTableModel( parent )
+  , mNativeTypes( supportedDataTypes() )
   , mSourceFields( sourceFields )
   , mExpressionContextGenerator( new ExpressionContextGenerator( mSourceFields ) )
 {
   setDestinationFields( destinationFields, expressions );
+}
+
+void QgsFieldMappingModel::setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes )
+{
+  mNativeTypes = nativeTypes.isEmpty() ? supportedDataTypes() : nativeTypes;
 }
 
 QVariant QgsFieldMappingModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -181,6 +187,9 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
         }
         break;
       }
+
+      default:
+        break;
     }
   }
   return QVariant();
@@ -374,9 +383,9 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
       f.expression = expressions.value( f.field.name() );
       const QgsExpression exp { f.expression };
       // if it's source field
-      if ( exp.isField() && mSourceFields.names().contains( qgis::setToList( exp.referencedColumns() ).first() ) )
+      if ( exp.isField() && mSourceFields.names().contains( qgis::setToList( exp.referencedColumns() ).constFirst() ) )
       {
-        usedFields.push_back( qgis::setToList( exp.referencedColumns() ).first() );
+        usedFields.push_back( qgis::setToList( exp.referencedColumns() ).constFirst() );
       }
     }
     else
@@ -434,10 +443,9 @@ const QList<QgsVectorDataProvider::NativeType> QgsFieldMappingModel::supportedDa
   return sDataTypes;
 }
 
-const QString QgsFieldMappingModel::qgsFieldToTypeName( const QgsField &field )
+QString QgsFieldMappingModel::qgsFieldToTypeName( const QgsField &field ) const
 {
-  const QList<QgsVectorDataProvider::NativeType> types = supportedDataTypes();
-  for ( const auto &type : types )
+  for ( const QgsVectorDataProvider::NativeType &type : mNativeTypes )
   {
     if ( type.mType == field.type() && type.mSubType == field.subType() )
     {
@@ -447,10 +455,9 @@ const QString QgsFieldMappingModel::qgsFieldToTypeName( const QgsField &field )
   return QString();
 }
 
-void QgsFieldMappingModel::setFieldTypeFromName( QgsField &field, const QString &name )
+void QgsFieldMappingModel::setFieldTypeFromName( QgsField &field, const QString &name ) const
 {
-  const QList<QgsVectorDataProvider::NativeType> types = supportedDataTypes();
-  for ( const auto &type : types )
+  for ( const QgsVectorDataProvider::NativeType &type : mNativeTypes )
   {
     if ( type.mTypeName == name )
     {

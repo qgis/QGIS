@@ -30,7 +30,13 @@
 #include "modeltest.h"
 #endif
 
-QgsFieldMappingWidget::QgsFieldMappingWidget( QWidget *parent, const QgsFields &sourceFields, const QgsFields &destinationFields, const QMap<QString, QString> &expressions )
+QgsFieldMappingWidget::QgsFieldMappingWidget(
+  QWidget *parent,
+  const QgsFields &sourceFields,
+  const QgsFields &destinationFields,
+  const QMap<QString, QString> &expressions,
+  const QList< QgsVectorDataProvider::NativeType > &nativeTypes
+)
   : QgsPanelWidget( parent )
 {
   QVBoxLayout *verticalLayout = new QVBoxLayout();
@@ -40,6 +46,7 @@ QgsFieldMappingWidget::QgsFieldMappingWidget( QWidget *parent, const QgsFields &
   setLayout( verticalLayout );
 
   mModel = new QgsFieldMappingModel( sourceFields, destinationFields, expressions, this );
+  mModel->setNativeTypes( nativeTypes );
 
 #ifdef ENABLE_MODELTEST
   new ModelTest( mModel, this );
@@ -47,7 +54,8 @@ QgsFieldMappingWidget::QgsFieldMappingWidget( QWidget *parent, const QgsFields &
 
   mTableView->setModel( mModel );
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::SourceExpression ), new QgsFieldMappingExpressionDelegate( this ) );
-  mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationType ), new QgsFieldMappingTypeDelegate( mTableView ) );
+  mTypeDelegate = new QgsFieldMappingTypeDelegate( nativeTypes, mTableView );
+  mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationType ), mTypeDelegate );
   updateColumns();
   // Make sure columns are updated when rows are added
   connect( mModel, &QgsFieldMappingModel::rowsInserted, this, [=] { updateColumns(); } );
@@ -112,6 +120,12 @@ QgsVectorLayer *QgsFieldMappingWidget::sourceLayer()
 void QgsFieldMappingWidget::setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions )
 {
   model()->setDestinationFields( destinationFields, expressions );
+}
+
+void QgsFieldMappingWidget::setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes )
+{
+  mTypeDelegate->setNativeTypes( nativeTypes );
+  mModel->setNativeTypes( nativeTypes );
 }
 
 void QgsFieldMappingWidget::scrollTo( const QModelIndex &index ) const
@@ -306,8 +320,9 @@ QWidget *QgsFieldMappingExpressionDelegate::createEditor( QWidget *parent, const
 // QgsFieldMappingTypeDelegate
 //
 
-QgsFieldMappingTypeDelegate::QgsFieldMappingTypeDelegate( QObject *parent )
+QgsFieldMappingTypeDelegate::QgsFieldMappingTypeDelegate( const QList< QgsVectorDataProvider::NativeType > &nativeTypes, QObject *parent )
   : QStyledItemDelegate( parent )
+  , mNativeTypes( nativeTypes.isEmpty() ? QgsFieldMappingModel::supportedDataTypes() : nativeTypes )
 {
 }
 
@@ -317,10 +332,12 @@ QWidget *QgsFieldMappingTypeDelegate::createEditor( QWidget *parent, const QStyl
   QComboBox *editor = new QComboBox( parent );
 
   const QList<QgsVectorDataProvider::NativeType> typeList = QgsFieldMappingModel::supportedDataTypes();
-  for ( int i = 0; i < typeList.size(); i++ )
+  int i = 0;
+  for ( const QgsVectorDataProvider::NativeType &type : mNativeTypes )
   {
-    editor->addItem( QgsFields::iconForFieldType( typeList[i].mType, typeList[i].mSubType, typeList[i].mTypeName ), typeList[i].mTypeDesc );
-    editor->setItemData( i, typeList[i].mTypeName, Qt::UserRole );
+    editor->addItem( QgsFields::iconForFieldType( type.mType, type.mSubType, type.mTypeName ), type.mTypeDesc );
+    editor->setItemData( i, type.mTypeName, Qt::UserRole );
+    i++;
   }
 
   const QgsFieldMappingModel *model { qobject_cast<const QgsFieldMappingModel *>( index.model() ) };
@@ -357,6 +374,11 @@ void QgsFieldMappingTypeDelegate::setModelData( QWidget *editor, QAbstractItemMo
 
   const QVariant currentValue = editorWidget->currentData();
   model->setData( index, currentValue, Qt::EditRole );
+}
+
+void QgsFieldMappingTypeDelegate::setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes )
+{
+  mNativeTypes = nativeTypes.isEmpty() ? QgsFieldMappingModel::supportedDataTypes() : nativeTypes;
 }
 
 /// @endcond
