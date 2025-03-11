@@ -1413,9 +1413,9 @@ tests:
     params:
       LAYERS:
         params:
-        - name: custom/layer_A_base.shp
+        - name: layer_A_base.shp
           type: vector
-        - name: custom/layer_B_tomerge.shp
+        - name: layer_B_tomerge.shp
           type: vector
         type: multi
     results:
