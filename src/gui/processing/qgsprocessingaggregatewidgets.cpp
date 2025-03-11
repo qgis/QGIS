@@ -388,7 +388,7 @@ QgsAggregateMappingWidget::QgsAggregateMappingWidget( QWidget *parent, const Qgs
   mTableView->setModel( mModel );
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::SourceExpression ), new QgsFieldMappingExpressionDelegate( this ) );
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::Aggregate ), new QgsAggregateMappingDelegate( mTableView ) );
-  mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::DestinationType ), new QgsFieldMappingTypeDelegate( mTableView ) );
+  mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::DestinationType ), new QgsFieldMappingTypeDelegate( {}, mTableView ) );
   updateColumns();
   // Make sure columns are updated when rows are added
   connect( mModel, &QgsAggregateMappingModel::rowsInserted, this, [=] { updateColumns(); } );
