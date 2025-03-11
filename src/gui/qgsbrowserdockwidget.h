@@ -22,6 +22,7 @@
 
 class QgsMessageBar;
 class QgsBrowserWidget;
+class QgsMapCanvas;
 
 /**
  * \ingroup gui
@@ -72,6 +73,24 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
      * \since QGIS 3.6
      */
     QgsMessageBar *messageBar();
+
+    /**
+     * Sets a map \a canvas to use alongside the dock.
+     *
+     * Setting this allows items to utilize the canvas during GUI operations.
+     *
+     * \see mapCanvas()
+     * \since QGIS 3.44
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Returns the map canvas associated with the dock.
+     *
+     * \see setMapCanvas()
+     * \since QGIS 3.44
+     */
+    QgsMapCanvas *mapCanvas();
 
     /**
      * Sets the customization for data items based on item's data provider key
