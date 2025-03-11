@@ -631,18 +631,22 @@ void TestQgsMultiSurface::cast()
 
   QgsMultiSurface ms;
   QVERIFY( QgsMultiSurface::cast( &ms ) );
+  QVERIFY( QgsGeometryCollection::cast( &ms ) );
 
   ms.clear();
   ms.fromWkt( QStringLiteral( "MultiSurfaceZ()" ) );
   QVERIFY( QgsMultiSurface::cast( &ms ) );
+  QVERIFY( QgsGeometryCollection::cast( &ms ) );
 
   ms.clear();
   ms.fromWkt( QStringLiteral( "MultiSurfaceM()" ) );
   QVERIFY( QgsMultiSurface::cast( &ms ) );
+  QVERIFY( QgsGeometryCollection::cast( &ms ) );
 
   ms.clear();
   ms.fromWkt( QStringLiteral( "MultiSurfaceZM()" ) );
   QVERIFY( QgsMultiSurface::cast( &ms ) );
+  QVERIFY( QgsGeometryCollection::cast( &ms ) );
 }
 
 void TestQgsMultiSurface::toCurveType()

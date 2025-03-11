@@ -587,21 +587,29 @@ void TestQgsMultiPolygon::insertGeometry()
 
 void TestQgsMultiPolygon::cast()
 {
-  QVERIFY( !QgsMultiPolygon().cast( nullptr ) );
+  QVERIFY( !QgsMultiPolygon::cast( static_cast< const QgsAbstractGeometry * >( nullptr ) ) );
 
   QgsMultiPolygon mp;
-  QVERIFY( QgsMultiPolygon().cast( &mp ) );
+  QVERIFY( QgsMultiPolygon::cast( &mp ) );
+  QVERIFY( QgsMultiSurface::cast( &mp ) );
+  QVERIFY( QgsGeometryCollection::cast( &mp ) );
 
   mp.clear();
 
   mp.fromWkt( QStringLiteral( "MultiPolygonZ()" ) );
-  QVERIFY( QgsMultiPolygon().cast( &mp ) );
+  QVERIFY( QgsMultiPolygon::cast( &mp ) );
+  QVERIFY( QgsMultiSurface::cast( &mp ) );
+  QVERIFY( QgsGeometryCollection::cast( &mp ) );
 
   mp.fromWkt( QStringLiteral( "MultiPolygonM()" ) );
-  QVERIFY( QgsMultiPolygon().cast( &mp ) );
+  QVERIFY( QgsMultiPolygon::cast( &mp ) );
+  QVERIFY( QgsMultiSurface::cast( &mp ) );
+  QVERIFY( QgsGeometryCollection::cast( &mp ) );
 
   mp.fromWkt( QStringLiteral( "MultiPolygonZM()" ) );
-  QVERIFY( QgsMultiPolygon().cast( &mp ) );
+  QVERIFY( QgsMultiPolygon::cast( &mp ) );
+  QVERIFY( QgsMultiSurface::cast( &mp ) );
+  QVERIFY( QgsGeometryCollection::cast( &mp ) );
 }
 
 void TestQgsMultiPolygon::boundary()
