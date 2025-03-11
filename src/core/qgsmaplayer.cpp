@@ -373,7 +373,7 @@ QString QgsMapLayer::attributionUrl() const
 
 void QgsMapLayer::setLegendUrl( const QString &legendUrl )
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   mServerProperties->setLegendUrl( legendUrl );
 }
