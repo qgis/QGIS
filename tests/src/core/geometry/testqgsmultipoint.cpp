@@ -663,20 +663,24 @@ void TestQgsMultiPoint::assignment()
 
 void TestQgsMultiPoint::cast()
 {
-  QVERIFY( !QgsMultiPoint().cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
+  QVERIFY( !QgsMultiPoint::cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
 
   QgsMultiPoint mp;
-  QVERIFY( QgsMultiPoint().cast( &mp ) );
+  QVERIFY( QgsMultiPoint::cast( &mp ) );
+  QVERIFY( QgsGeometryCollection::cast( &mp ) );
 
   mp.clear();
   mp.fromWkt( QStringLiteral( "MultiPointZ(PointZ(0 1 1))" ) );
-  QVERIFY( QgsMultiPoint().cast( &mp ) );
+  QVERIFY( QgsMultiPoint::cast( &mp ) );
+  QVERIFY( QgsGeometryCollection::cast( &mp ) );
 
   mp.fromWkt( QStringLiteral( "MultiPointM(PointM(0 1 1))" ) );
-  QVERIFY( QgsMultiPoint().cast( &mp ) );
+  QVERIFY( QgsMultiPoint::cast( &mp ) );
+  QVERIFY( QgsGeometryCollection::cast( &mp ) );
 
   mp.fromWkt( QStringLiteral( "MultiPointZM(PointZM(0 1 1 2))" ) );
-  QVERIFY( QgsMultiPoint().cast( &mp ) );
+  QVERIFY( QgsMultiPoint::cast( &mp ) );
+  QVERIFY( QgsGeometryCollection::cast( &mp ) );
 }
 
 void TestQgsMultiPoint::isValid()
