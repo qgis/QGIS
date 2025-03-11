@@ -450,7 +450,9 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * Cast the \a geom to a QgsTriangle.
      * Should be used by qgsgeometry_cast<QgsTriangle *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsTriangle *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
@@ -463,7 +465,9 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * Cast the \a geom to a QgsTriangle.
      * Should be used by qgsgeometry_cast<QgsTriangle *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static QgsTriangle *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
