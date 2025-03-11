@@ -95,6 +95,12 @@ class CORE_EXPORT QgsAbstractGeometry
       sipType = sipType_QgsPolygon;
     else if ( qgsgeometry_cast<QgsCurvePolygon *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCurvePolygon;
+    else if ( qgsgeometry_cast<QgsTriangulatedSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsTriangulatedSurface;
+    else if ( qgsgeometry_cast<QgsPolyhedralSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPolyhedralSurface;
+    else if ( qgsgeometry_cast<QgsSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsSurface;
     else if ( qgsgeometry_cast<QgsMultiPoint *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiPoint;
     else if ( qgsgeometry_cast<QgsMultiLineString *>( sipCpp ) != nullptr )
