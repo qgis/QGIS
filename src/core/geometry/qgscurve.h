@@ -298,7 +298,9 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      * Cast the \a geom to a QgsCurve.
      * Should be used by qgsgeometry_cast<QgsCurve *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsCurve *cast( const QgsAbstractGeometry *geom )
     {
@@ -317,7 +319,9 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      * Cast the \a geom to a QgsCurve.
      * Should be used by qgsgeometry_cast<QgsCurve *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static QgsCurve *cast( QgsAbstractGeometry *geom )
     {

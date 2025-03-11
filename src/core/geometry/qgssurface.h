@@ -52,7 +52,9 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
      * Cast the \a geom to a QgsSurface.
      * Should be used by qgsgeometry_cast<QgsSurface *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsSurface *cast( const QgsAbstractGeometry *geom )
     {
@@ -71,7 +73,9 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
      * Cast the \a geom to a QgsSurface.
      * Should be used by qgsgeometry_cast<QgsSurface *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static QgsSurface *cast( QgsAbstractGeometry *geom )
     {

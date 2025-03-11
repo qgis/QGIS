@@ -100,7 +100,9 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
      * Cast the \a geom to a QgsMultiCurve.
      * Should be used by qgsgeometry_cast<QgsMultiCurve *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsMultiCurve *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
@@ -118,7 +120,9 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
      * Cast the \a geom to a QgsMultiCurve.
      * Should be used by qgsgeometry_cast<QgsMultiCurve *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static QgsMultiCurve *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
