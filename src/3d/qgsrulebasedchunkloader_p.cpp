@@ -196,7 +196,7 @@ QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity( Qgs3DMapSettings *map, Qgs
   mTransform = new Qt3DCore::QTransform;
   if ( applyTerrainOffset() )
   {
-    mTransform->setTranslation( QVector3D( 0.0f, static_cast<float>( map->terrainSettings()->elevationOffset() ), 0.0f ) );
+    mTransform->setTranslation( QVector3D( 0.0f, 0.0f, static_cast<float>( map->terrainSettings()->elevationOffset() ) ) );
   }
   this->addComponent( mTransform );
   connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged );
@@ -265,7 +265,7 @@ void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged()
 
   if ( newOffset != previousOffset )
   {
-    mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
+    mTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
   }
 }
 
