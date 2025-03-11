@@ -1685,7 +1685,7 @@ void TestQgsCurvePolygon::testExportOfCompoundCurveRing()
 
 void TestQgsCurvePolygon::testCast()
 {
-  QVERIFY( !QgsCurvePolygon().cast( nullptr ) );
+  QVERIFY( !QgsCurvePolygon().cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
 
   QgsCurvePolygon pCast;
   QVERIFY( QgsCurvePolygon().cast( &pCast ) );

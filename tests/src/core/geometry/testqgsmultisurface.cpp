@@ -627,7 +627,7 @@ void TestQgsMultiSurface::boundary()
 
 void TestQgsMultiSurface::cast()
 {
-  QVERIFY( !QgsMultiSurface::cast( nullptr ) );
+  QVERIFY( !QgsMultiSurface::cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
 
   QgsMultiSurface ms;
   QVERIFY( QgsMultiSurface::cast( &ms ) );

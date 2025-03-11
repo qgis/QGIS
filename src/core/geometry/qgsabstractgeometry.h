@@ -1185,9 +1185,15 @@ class CORE_EXPORT QgsAbstractGeometry
 #ifndef SIP_RUN
 
 template <class T>
+inline T qgsgeometry_cast( QgsAbstractGeometry *geom )
+{
+  return std::remove_pointer<T>::type::cast( geom );
+}
+
+template <class T>
 inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 {
-  return const_cast<T>( std::remove_pointer<T>::type::cast( geom ) );
+  return std::remove_pointer<T>::type::cast( geom );
 }
 
 #endif

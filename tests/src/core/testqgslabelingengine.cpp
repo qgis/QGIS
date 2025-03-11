@@ -2556,7 +2556,7 @@ void TestQgsLabelingEngine::testCurvedLabelLineOrientationAbove()
   QGSVERIFYIMAGECHECK( "label_curved_line_orientation_above", "label_curved_line_orientation_above", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -2621,7 +2621,7 @@ void TestQgsLabelingEngine::testCurvedLabelLineOrientationBelow()
   QGSVERIFYIMAGECHECK( "label_curved_line_orientation_below", "label_curved_line_orientation_below", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -2690,7 +2690,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbove()
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_above", "label_curved_line_allow_upside_down_above", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -2758,7 +2758,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownBelow()
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_below", "label_curved_line_allow_upside_down_below", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -2825,7 +2825,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbovePositiveOffset()
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_above_positive_offset", "label_curved_line_allow_upside_down_above_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -2893,7 +2893,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAboveNegativeOffset()
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_above_negative_offset", "label_curved_line_allow_upside_down_above_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -2960,7 +2960,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftPositiveOffset()
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_left_positive_offset", "label_curved_line_allow_upside_down_left_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -3028,7 +3028,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftNegativeOffset()
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_left_negative_offset", "label_curved_line_allow_upside_down_left_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -3095,7 +3095,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightPositiveOffset()
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_right_positive_offset", "label_curved_line_allow_upside_down_right_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -3163,7 +3163,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightNegativeOffset()
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_right_negative_offset", "label_curved_line_allow_upside_down_right_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -3229,7 +3229,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbove()
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_above", "label_curved_line_allow_upside_down_hint_above", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -3295,7 +3295,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintBelow()
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_below", "label_curved_line_allow_upside_down_hint_below", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -3362,7 +3362,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbovePositiveOffse
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_above_positive_offset", "label_curved_line_allow_upside_down_hint_above_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -3430,7 +3430,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAboveNegativeOffse
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_above_negative_offset", "label_curved_line_allow_upside_down_hint_above_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -3497,7 +3497,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftPositiveOffset
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_left_positive_offset", "label_curved_line_allow_upside_down_hint_left_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -3565,7 +3565,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftNegativeOffset
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_left_negative_offset", "label_curved_line_allow_upside_down_hint_left_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -3632,7 +3632,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightPositiveOffse
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_right_positive_offset", "label_curved_line_allow_upside_down_hint_right_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -3700,7 +3700,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightNegativeOffse
   QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_right_negative_offset", "label_curved_line_allow_upside_down_hint_right_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
-  f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
+  f.setGeometry( QgsGeometry( qgsgeometry_cast<const QgsLineString *>( f.geometry().constGet() )->reversed() ) );
   vl2->dataProvider()->truncate();
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 

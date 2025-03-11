@@ -458,6 +458,19 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
         return static_cast<const QgsTriangle *>( geom );
       return nullptr;
     }
+
+    /**
+     * Cast the \a geom to a QgsTriangle.
+     * Should be used by qgsgeometry_cast<QgsTriangle *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     */
+    inline static QgsTriangle *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::Triangle )
+        return static_cast<QgsTriangle *>( geom );
+      return nullptr;
+    }
 #endif
 
     QgsTriangle *createEmptyWithSameType() const override SIP_FACTORY;

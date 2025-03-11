@@ -532,7 +532,7 @@ void TestQgsMultiCurve::assignment()
 
 void TestQgsMultiCurve::cast()
 {
-  QVERIFY( !QgsMultiCurve().cast( nullptr ) );
+  QVERIFY( !QgsMultiCurve().cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
 
   QgsMultiCurve mc1;
   QVERIFY( QgsMultiCurve().cast( &mc1 ) );

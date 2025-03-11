@@ -66,6 +66,25 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
         return static_cast<const QgsSurface *>( geom );
       return nullptr;
     }
+
+    /**
+     * Cast the \a geom to a QgsSurface.
+     * Should be used by qgsgeometry_cast<QgsSurface *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     */
+    inline static QgsSurface *cast( QgsAbstractGeometry *geom )
+    {
+      if ( !geom )
+        return nullptr;
+
+      const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
+      if ( flatType == Qgis::WkbType::CurvePolygon
+           || flatType == Qgis::WkbType::Polygon
+           || flatType == Qgis::WkbType::Triangle )
+        return static_cast<QgsSurface *>( geom );
+      return nullptr;
+    }
 #endif
   protected:
 

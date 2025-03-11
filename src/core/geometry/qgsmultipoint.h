@@ -360,6 +360,19 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
         return static_cast<const QgsMultiPoint *>( geom );
       return nullptr;
     }
+
+    /**
+     * Cast the \a geom to a QgsLineString.
+     * Should be used by qgsgeometry_cast<QgsLineString *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     */
+    inline static QgsMultiPoint *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiPoint )
+        return static_cast<QgsMultiPoint *>( geom );
+      return nullptr;
+    }
 #endif
 
     QgsMultiPoint *createEmptyWithSameType() const override SIP_FACTORY;

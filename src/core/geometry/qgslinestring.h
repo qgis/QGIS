@@ -1084,6 +1084,19 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return static_cast<const QgsLineString *>( geom );
       return nullptr;
     }
+
+    /**
+     * Cast the \a geom to a QgsLineString.
+     * Should be used by qgsgeometry_cast<QgsLineString *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     */
+    inline static QgsLineString *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::LineString )
+        return static_cast<QgsLineString *>( geom );
+      return nullptr;
+    }
 #endif
 
     QgsLineString *createEmptyWithSameType() const override SIP_FACTORY;
@@ -1186,7 +1199,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Calculates the minimal 3D bounding box for the geometry.
      * \see calculateBoundingBox()
      * \since QGIS 3.26
-     * \deprecated QGIS 3.34 use calculateBoundingBox3D() instead
+     * \deprecated QGIS 3.34. Use calculateBoundingBox3D() instead.
      */
     Q_DECL_DEPRECATED QgsBox3D calculateBoundingBox3d() const SIP_DEPRECATED;
 
