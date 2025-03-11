@@ -12,6 +12,8 @@ from pathlib import Path
 
 import osgeo.gdal  # NOQA
 from osgeo import gdal, ogr
+from qgis.PyQt.QtCore import QMetaType
+
 from qgis.core import (
     Qgis,
     QgsVectorLayerExporter,
@@ -22,6 +24,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsReferencedRectangle,
     QgsRectangle,
+    QgsField,
 )
 from qgis.testing import start_app, QgisTestCase
 
@@ -247,6 +250,91 @@ class TestQgsVectorLayerExporter(QgisTestCase):
 
             self.assertCountEqual(
                 [f["fldtxt"] for f in layer.getFeatures()], ["abc", "a feature"]
+            )
+
+    def test_remapping_fields(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dest_file_name = Path(temp_dir) / "test_expression.gpkg"
+
+            # create a layer to export
+            layer = QgsVectorLayer(
+                "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
+            )
+            self.assertTrue(layer.isValid())
+            pr = layer.dataProvider()
+            f = QgsFeature()
+            f.setAttributes(["test", 123])
+            f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
+            f2 = QgsFeature()
+            f2.setAttributes(["abc", 457])
+            f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(3, 4)))
+            f3 = QgsFeature()
+            f3.setAttributes(["def", 4573])
+            f3.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(5, 6)))
+            f4 = QgsFeature()
+            f4.setAttributes(["a feature", 4574])
+            f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(7, 8)))
+            self.assertTrue(pr.addFeature(f))
+            self.assertTrue(pr.addFeature(f2))
+            self.assertTrue(pr.addFeature(f3))
+            self.assertTrue(pr.addFeature(f4))
+            layer.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+
+            export_options = QgsVectorLayerExporter.ExportOptions()
+            export_options.setOutputFields(
+                [
+                    QgsVectorLayerExporter.OutputField(
+                        QgsField("my_name", QMetaType.Type.QString),
+                        "\"fldtxt\" || 'xxx'",
+                    ),
+                    QgsVectorLayerExporter.OutputField(
+                        QgsField("my_description", QMetaType.Type.QString),
+                        "\"fldtxt\" || 'yyy'",
+                    ),
+                    QgsVectorLayerExporter.OutputField(
+                        QgsField("my_value", QMetaType.Type.Double), '"fldint" / 10'
+                    ),
+                ]
+            )
+
+            res, error = QgsVectorLayerExporter.exportLayer(
+                layer,
+                dest_file_name.as_posix(),
+                "ogr",
+                export_options,
+                providerOptions={"layerName": "expression", "update": True},
+            )
+            self.assertEqual(res, Qgis.VectorExportResult.Success)
+
+            # true to read result
+            layer = QgsVectorLayer(
+                dest_file_name.as_posix() + "|layername=expression",
+                "test",
+                "ogr",
+            )
+            self.assertTrue(layer.isValid())
+            self.assertEqual(layer.featureCount(), 4)
+
+            self.assertEqual(
+                [f.type() for f in layer.fields()],
+                [
+                    QMetaType.Type.LongLong,
+                    QMetaType.Type.QString,
+                    QMetaType.Type.QString,
+                    QMetaType.Type.Double,
+                ],
+            )
+
+            self.assertCountEqual(
+                [f["my_name"] for f in layer.getFeatures()],
+                ["testxxx", "abcxxx", "defxxx", "a featurexxx"],
+            )
+            self.assertCountEqual(
+                [f["my_description"] for f in layer.getFeatures()],
+                ["testyyy", "abcyyy", "defyyy", "a featureyyy"],
+            )
+            self.assertCountEqual(
+                [f["my_value"] for f in layer.getFeatures()], [12.3, 45.7, 457.3, 457.4]
             )
 
     @unittest.skipIf(

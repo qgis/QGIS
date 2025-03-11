@@ -53,6 +53,19 @@ Writes the contents of vector layer to a different datasource.
          - errorMessage: if non-null, any error messages
 %End
 
+
+    struct OutputField
+    {
+
+      OutputField( const QgsField &field, const QString &expression );
+%Docstring
+Constructor for OutputField, with the specified ``field`` definition and source ``expression``.
+%End
+
+      QgsField field;
+      QString expression;
+    };
+
     class ExportOptions
 {
 %Docstring(signature="appended")
@@ -200,6 +213,32 @@ Sets the expression ``context`` to use when a :py:func:`~ExportOptions.filterExp
 Returns the expression context used when a :py:func:`~ExportOptions.filterExpression` is set.
 
 .. seealso:: :py:func:`setExpressionContext`
+%End
+
+        QList<QgsVectorLayerExporter::OutputField> outputFields() const;
+%Docstring
+Returns the output field definitions for the destination table.
+
+If empty, all input fields will be copied directly.
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`setOutputFields`
+%End
+
+        void setOutputFields( const QList<QgsVectorLayerExporter::OutputField> &fields );
+%Docstring
+Sets the output field definitions for the destination table.
+
+If empty, all input fields will be copied directly.
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`outputFields`
 %End
 
     };

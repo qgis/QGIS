@@ -73,6 +73,30 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
         const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
         QgsFeedback *feedback = nullptr );
 
+
+    /**
+     * \ingroup core
+     * \brief Encapsulates output field definition.
+     *
+     * \since QGIS 3.44
+     */
+    struct CORE_EXPORT OutputField
+    {
+
+      /**
+       * Constructor for OutputField, with the specified \a field definition and source \a expression.
+       */
+      OutputField( const QgsField &field, const QString &expression )
+        : field( field )
+        , expression( expression )
+      {}
+
+      //! Destination field definition
+      QgsField field;
+      //! The expression for the exported field from the source fields
+      QString expression;
+    };
+
     /**
      * \ingroup core
      * \brief Encapsulates options for use with QgsVectorLayerExporter.
@@ -197,6 +221,28 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
          */
         const QgsExpressionContext &expressionContext() const;
 
+        /**
+         * Returns the output field definitions for the destination table.
+         *
+         * If empty, all input fields will be copied directly.
+         *
+         * \note This option only applies when the QgsVectorLayerExporter::exportLayer() method is used.
+         *
+         * \see setOutputFields()
+         */
+        QList<QgsVectorLayerExporter::OutputField> outputFields() const;
+
+        /**
+         * Sets the output field definitions for the destination table.
+         *
+         * If empty, all input fields will be copied directly.
+         *
+         * \note This option only applies when the QgsVectorLayerExporter::exportLayer() method is used.
+         *
+         * \see outputFields()
+         */
+        void setOutputFields( const QList<QgsVectorLayerExporter::OutputField> &fields );
+
       private:
 
         bool mSelectedOnly = false;
@@ -209,6 +255,8 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
 
         QString mFilterExpression;
         QgsExpressionContext mExpressionContext;
+
+        QList< QgsVectorLayerExporter::OutputField > mOutputFields;
 
     };
 
