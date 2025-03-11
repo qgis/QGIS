@@ -2267,19 +2267,27 @@ void TestQgsPolygon::Qtransform()
 
 void TestQgsPolygon::cast()
 {
-  QVERIFY( !QgsPolygon().cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
+  QVERIFY( !QgsPolygon::cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
 
   QgsPolygon pl;
-  QVERIFY( QgsPolygon().cast( &pl ) );
+  QVERIFY( QgsPolygon::cast( &pl ) );
+  QVERIFY( QgsCurvePolygon::cast( &pl ) );
+  QVERIFY( QgsSurface::cast( &pl ) );
 
   pl.fromWkt( QStringLiteral( "PolygonZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))" ) );
-  QVERIFY( QgsPolygon().cast( &pl ) );
+  QVERIFY( QgsPolygon::cast( &pl ) );
+  QVERIFY( QgsCurvePolygon::cast( &pl ) );
+  QVERIFY( QgsSurface::cast( &pl ) );
 
   pl.fromWkt( QStringLiteral( "PolygonM((0 0 1, 0 1 2, 1 0 3, 0 0 1))" ) );
-  QVERIFY( QgsPolygon().cast( &pl ) );
+  QVERIFY( QgsPolygon::cast( &pl ) );
+  QVERIFY( QgsCurvePolygon::cast( &pl ) );
+  QVERIFY( QgsSurface::cast( &pl ) );
 
   pl.fromWkt( QStringLiteral( "PolygonZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))" ) );
-  QVERIFY( QgsPolygon().cast( &pl ) );
+  QVERIFY( QgsPolygon::cast( &pl ) );
+  QVERIFY( QgsCurvePolygon::cast( &pl ) );
+  QVERIFY( QgsSurface::cast( &pl ) );
 }
 
 void TestQgsPolygon::toPolygon()

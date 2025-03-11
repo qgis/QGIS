@@ -532,20 +532,24 @@ void TestQgsMultiCurve::assignment()
 
 void TestQgsMultiCurve::cast()
 {
-  QVERIFY( !QgsMultiCurve().cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
+  QVERIFY( !QgsMultiCurve::cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
 
   QgsMultiCurve mc1;
-  QVERIFY( QgsMultiCurve().cast( &mc1 ) );
+  QVERIFY( QgsMultiCurve::cast( &mc1 ) );
+  QVERIFY( QgsGeometryCollection::cast( &mc1 ) );
 
   QgsMultiCurve mc2;
   mc2.fromWkt( QStringLiteral( "MultiCurveZ()" ) );
-  QVERIFY( QgsMultiCurve().cast( &mc2 ) );
+  QVERIFY( QgsMultiCurve::cast( &mc2 ) );
+  QVERIFY( QgsGeometryCollection::cast( &mc2 ) );
 
   mc2.fromWkt( QStringLiteral( "MultiCurveM()" ) );
-  QVERIFY( QgsMultiCurve().cast( &mc2 ) );
+  QVERIFY( QgsMultiCurve::cast( &mc2 ) );
+  QVERIFY( QgsGeometryCollection::cast( &mc2 ) );
 
   mc2.fromWkt( QStringLiteral( "MultiCurveZM()" ) );
-  QVERIFY( QgsMultiCurve().cast( &mc2 ) );
+  QVERIFY( QgsMultiCurve::cast( &mc2 ) );
+  QVERIFY( QgsGeometryCollection::cast( &mc2 ) );
 }
 
 void TestQgsMultiCurve::boundary()
