@@ -1816,6 +1816,8 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
   engine.setRootEntity( scene );
 
+  scene->setSceneOriginShiftEnabled( false );
+
   // look from the top
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1.5e7, 0, 0 );
 
