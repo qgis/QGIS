@@ -219,7 +219,7 @@ QgsAttributes QgsExportGeometryAttributesAlgorithm::pointAttributes( const QgsGe
 
   if ( !geom.isMultipart() )
   {
-    const QgsPoint *point = qgsgeometry_cast<const QgsPoint *>( geom.constGet() );
+    auto point = qgsgeometry_cast<const QgsPoint *>( geom.constGet() );
     attrs.append( point->x() );
     attrs.append( point->y() );
     // add point Z/M
@@ -249,7 +249,7 @@ QgsAttributes QgsExportGeometryAttributesAlgorithm::lineAttributes( const QgsGeo
   }
   else
   {
-    const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( geom.constGet() );
+    auto curve = qgsgeometry_cast<const QgsCurve *>( geom.constGet() );
     const QgsPoint p1 = curve->startPoint();
     const QgsPoint p2 = curve->endPoint();
     const double straightDistance = mDistanceConversionFactor * mDa.measureLine( QgsPointXY( p1 ), QgsPointXY( p2 ) );
