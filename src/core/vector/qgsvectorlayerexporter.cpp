@@ -101,6 +101,16 @@ const QgsExpressionContext &QgsVectorLayerExporter::ExportOptions::expressionCon
   return mExpressionContext;
 }
 
+QList<QgsVectorLayerExporter::OutputField> QgsVectorLayerExporter::ExportOptions::outputFields() const
+{
+  return mOutputFields;
+}
+
+void QgsVectorLayerExporter::ExportOptions::setOutputFields( const QList<QgsVectorLayerExporter::OutputField> &fields )
+{
+  mOutputFields = fields;
+}
+
 
 //
 // QgsVectorLayerExporter
@@ -360,6 +370,8 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
 
 Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const ExportOptions &exportOptions, QString *errorMessage, const QMap<QString, QVariant> &_providerOptions, QgsFeedback *feedback )
 {
+  QgsExpressionContext expressionContext = exportOptions.expressionContext();
+
   QgsCoordinateReferenceSystem outputCRS;
   QgsCoordinateTransform ct;
   bool shallTransform = false;
@@ -383,7 +395,35 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   const bool overwrite = providerOptions.take( QStringLiteral( "overwrite" ) ).toBool();
   const bool forceSinglePartGeom = providerOptions.take( QStringLiteral( "forceSinglePartGeometryType" ) ).toBool();
 
-  QgsFields fields = layer->fields();
+  QgsFields outputFields;
+  bool useFieldMapping = false;
+  QList<QgsExpression> expressions;
+  if ( exportOptions.outputFields().isEmpty() )
+  {
+    outputFields = layer->fields();
+  }
+  else
+  {
+    useFieldMapping = true;
+    const QList<QgsVectorLayerExporter::OutputField> exportFieldDefinitions = exportOptions.outputFields();
+    for ( const QgsVectorLayerExporter::OutputField &field : exportFieldDefinitions )
+    {
+      outputFields.append( field.field );
+      expressions.append( QgsExpression( field.expression ) );
+      expressions.last().prepare( &expressionContext );
+      if ( expressions.last().hasParserError() )
+      {
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Parser error for field \"%1\" with expression \"%2\": %3" )
+                          .arg(
+                            field.field.name(),
+                            field.expression,
+                            expressions.last().parserErrorString()
+                          );
+        return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
+      }
+    }
+  }
 
   Qgis::WkbType wkbType = layer->wkbType();
 
@@ -395,7 +435,7 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   }
 
   auto writer = std::make_unique< QgsVectorLayerExporter >(
-                  uri, providerKey, fields, wkbType, outputCRS, overwrite, providerOptions );
+                  uri, providerKey, outputFields, wkbType, outputCRS, overwrite, providerOptions );
 
   // check whether file creation was successful
   const Qgis::VectorExportResult err = writer->errorCode();
@@ -421,8 +461,6 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   if ( !ct.isValid() )
     shallTransform = false;
 
-  QgsFeature fet;
-
   QgsFeatureRequest req;
   if ( wkbType == Qgis::WkbType::NoGeometry )
     req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
@@ -446,7 +484,7 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   if ( !exportOptions.filterExpression().isEmpty() )
   {
     req.setFilterExpression( exportOptions.filterExpression() );
-    req.setExpressionContext( exportOptions.expressionContext() );
+    req.setExpressionContext( expressionContext );
   }
   else if ( exportOptions.selectedOnly() )
   {
@@ -466,7 +504,8 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   bool canceled = false;
 
   // write all features
-  while ( fit.nextFeature( fet ) )
+  QgsFeature sourceFeature;
+  while ( fit.nextFeature( sourceFeature ) )
   {
     if ( feedback && feedback->isCanceled() )
     {
@@ -487,21 +526,25 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
       break;
     }
 
+    QgsFeature outputFeature( outputFields );
+    outputFeature.setId( sourceFeature.id() );
+    outputFeature.setGeometry( sourceFeature.geometry() );
+
     if ( shallTransform )
     {
       try
       {
-        if ( fet.hasGeometry() )
+        if ( outputFeature.hasGeometry() )
         {
-          QgsGeometry g = fet.geometry();
+          QgsGeometry g = outputFeature.geometry();
           g.transform( ct );
-          fet.setGeometry( g );
+          outputFeature.setGeometry( g );
         }
       }
       catch ( QgsCsException &e )
       {
         const QString msg = QObject::tr( "Failed to transform feature with ID '%1'. Writing stopped. (Exception: %2)" )
-                            .arg( fet.id() ).arg( e.what() );
+                            .arg( sourceFeature.id() ).arg( e.what() );
         QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
         if ( errorMessage )
           *errorMessage += '\n' + msg;
@@ -511,25 +554,58 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
     }
 
     // Handles conversion to single-part
-    if ( convertGeometryToSinglePart && fet.geometry().isMultipart() )
+    if ( convertGeometryToSinglePart && outputFeature.geometry().isMultipart() )
     {
-      QgsGeometry singlePartGeometry { fet.geometry() };
+      QgsGeometry singlePartGeometry { outputFeature.geometry() };
       // We want a failure if the geometry cannot be converted to single-part without data loss!
       // check if there are more than one part
       const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( singlePartGeometry.constGet() );
       if ( ( c && c->partCount() > 1 ) || ! singlePartGeometry.convertToSingleType() )
       {
         const QString msg = QObject::tr( "Failed to transform a feature with ID '%1' to single part. Writing stopped." )
-                            .arg( fet.id() );
+                            .arg( sourceFeature.id() );
         QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
         if ( errorMessage )
           *errorMessage += '\n' + msg;
         return Qgis::VectorExportResult::ErrorFeatureWriteFailed;
       }
-      fet.setGeometry( singlePartGeometry );
+      outputFeature.setGeometry( singlePartGeometry );
     }
 
-    if ( !writer->addFeature( fet ) )
+    // handle attribute mapping
+    if ( useFieldMapping )
+    {
+      QgsAttributes attributes;
+      attributes.reserve( expressions.size() );
+      for ( auto it = expressions.begin(); it != expressions.end(); ++it )
+      {
+        if ( it->isValid() )
+        {
+          expressionContext.setFeature( sourceFeature );
+          const QVariant value = it->evaluate( &expressionContext );
+          if ( it->hasEvalError() )
+          {
+            const QString msg = QObject::tr( "Evaluation error in expression \"%1\": %2" ).arg( it->expression(), it->evalErrorString() );
+            QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
+            if ( errorMessage )
+              *errorMessage += '\n' + msg;
+            return Qgis::VectorExportResult::ErrorFeatureWriteFailed;
+          }
+          attributes.append( value );
+        }
+        else
+        {
+          attributes.append( QVariant() );
+        }
+      }
+      outputFeature.setAttributes( attributes );
+    }
+    else
+    {
+      outputFeature.setAttributes( sourceFeature.attributes() );
+    }
+
+    if ( !writer->addFeature( outputFeature ) )
     {
       if ( writer->errorCode() != Qgis::VectorExportResult::Success && errorMessage )
       {
