@@ -338,6 +338,19 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
         return static_cast<const QgsGeometryCollection *>( geom );
       return nullptr;
     }
+
+    /**
+     * Cast the \a geom to a QgsGeometryCollection.
+     * Should be used by qgsgeometry_cast<QgsGeometryCollection *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     */
+    inline static QgsGeometryCollection *cast( QgsAbstractGeometry *geom )
+    {
+      if ( geom && QgsWkbTypes::isMultiType( geom->wkbType() ) )
+        return static_cast<QgsGeometryCollection *>( geom );
+      return nullptr;
+    }
 #endif
 
 

@@ -231,6 +231,19 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
         return static_cast<const QgsCompoundCurve *>( geom );
       return nullptr;
     }
+
+    /**
+     * Cast the \a geom to a QgsCompoundCurve.
+     * Should be used by qgsgeometry_cast<QgsCompoundCurve *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     */
+    inline static QgsCompoundCurve *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::CompoundCurve )
+        return static_cast<QgsCompoundCurve *>( geom );
+      return nullptr;
+    }
 #endif
 
     QgsCompoundCurve *createEmptyWithSameType() const override SIP_FACTORY;

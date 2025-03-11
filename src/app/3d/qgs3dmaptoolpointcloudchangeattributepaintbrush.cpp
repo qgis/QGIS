@@ -83,14 +83,13 @@ void Qgs3DMapToolPointCloudChangeAttributePaintbrush::generateHighlightArea()
 {
   const QgsGeometry searchSkeleton = QgsGeometry( new QgsLineString( mDragPositions ) );
   const QgsGeometry searchGeometry = searchSkeleton.buffer( mSelectionRubberBand->width() / 2, 6 );
-  QgsPolygon *searchPolygon = qgsgeometry_cast<QgsPolygon *>( searchGeometry.constGet() );
-  Q_ASSERT( searchPolygon );
+  std::unique_ptr< QgsPolygon > searchPolygon( qgsgeometry_cast<const QgsPolygon *>( searchGeometry.constGet() )->clone() );
   auto transform = [this]( const QgsPoint &point ) -> QgsPoint {
     return Qgs3DUtils::screenPointToMapCoordinates( QPoint( static_cast<int>( point.x() ), static_cast<int>( point.y() ) ), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() );
   };
   searchPolygon->addZValue( 0 );
   searchPolygon->transformVertices( transform );
-  mHighlighterRubberBand->setGeometry( QgsGeometry( searchPolygon->clone() ) );
+  mHighlighterRubberBand->setGeometry( QgsGeometry( std::move( searchPolygon ) ) );
 }
 
 void Qgs3DMapToolPointCloudChangeAttributePaintbrush::mousePressEvent( QMouseEvent *event )

@@ -314,6 +314,25 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
     }
 
     /**
+     * Cast the \a geom to a QgsCurve.
+     * Should be used by qgsgeometry_cast<QgsCurve *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     */
+    inline static QgsCurve *cast( QgsAbstractGeometry *geom )
+    {
+      if ( !geom )
+        return nullptr;
+
+      const Qgis::WkbType type = geom->wkbType();
+      if ( QgsWkbTypes::geometryType( type ) == Qgis::GeometryType::Line && QgsWkbTypes::isSingleType( type ) )
+      {
+        return static_cast<QgsCurve *>( geom );
+      }
+      return nullptr;
+    }
+
+    /**
      * Splits the curve at the specified vertex \a index, returning two curves which represent the portion of the
      * curve up to an including the vertex at \a index, and the portion of the curve from the vertex at \a index (inclusive)
      * to the end of the curve.

@@ -1288,12 +1288,12 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForPolygon( const Q
   {
     if ( const QgsCurve *exterior = sourcePolygon->exteriorRing() )
     {
-      QgsLineString *exteriorLine = qgsgeometry_cast<QgsLineString *>( exterior );
+      const QgsLineString *exteriorLine = qgsgeometry_cast<const QgsLineString *>( exterior );
       processTriangleIntersectForLine( sourcePolygon, exteriorLine, transformedParts, crossSectionParts );
     }
     for ( int i = 0; i < sourcePolygon->numInteriorRings(); ++i )
     {
-      QgsLineString *interiorLine = qgsgeometry_cast<QgsLineString *>( sourcePolygon->interiorRing( i ) );
+      const QgsLineString *interiorLine = qgsgeometry_cast<const QgsLineString *>( sourcePolygon->interiorRing( i ) );
       processTriangleIntersectForLine( sourcePolygon, interiorLine, transformedParts, crossSectionParts );
     }
   }
@@ -1302,24 +1302,23 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForPolygon( const Q
   {
     if ( const QgsCurve *exterior = intersectionPolygon->exteriorRing() )
     {
-      QgsLineString *exteriorLine = qgsgeometry_cast<QgsLineString *>( exterior )->clone();
+      QgsLineString *exteriorLine = qgsgeometry_cast<const QgsLineString *>( exterior )->clone();
       exteriorLine->deleteVertex( QgsVertexId( 0, 0, exteriorLine->numPoints() - 1 ) ); // open linestring
       processTriangleIntersectForLine( sourcePolygon, exteriorLine, transformedParts, crossSectionParts );
       delete exteriorLine;
     }
     for ( int i = 0; i < intersectionPolygon->numInteriorRings(); ++i )
     {
-      QgsLineString *interiorLine = qgsgeometry_cast<QgsLineString *>( intersectionPolygon->interiorRing( i ) );
+      const QgsLineString *interiorLine = qgsgeometry_cast<const QgsLineString *>( intersectionPolygon->interiorRing( i ) );
       if ( mProfileBufferedCurveEngine->contains( interiorLine ) ) // interiorLine is entirely inside curve buffer
       {
         processTriangleIntersectForLine( sourcePolygon, interiorLine, transformedParts, crossSectionParts );
       }
       else
       {
-        interiorLine = qgsgeometry_cast<QgsLineString *>( intersectionPolygon->interiorRing( i ) )->clone();
-        interiorLine->deleteVertex( QgsVertexId( 0, 0, interiorLine->numPoints() - 1 ) ); // open linestring
-        processTriangleIntersectForLine( sourcePolygon, interiorLine, transformedParts, crossSectionParts );
-        delete interiorLine;
+        std::unique_ptr< QgsLineString > newInteriorLine( qgsgeometry_cast<const QgsLineString *>( intersectionPolygon->interiorRing( i ) )->clone() );
+        newInteriorLine->deleteVertex( QgsVertexId( 0, 0, interiorLine->numPoints() - 1 ) ); // open linestring
+        processTriangleIntersectForLine( sourcePolygon, newInteriorLine.get(), transformedParts, crossSectionParts );
       }
     }
   }

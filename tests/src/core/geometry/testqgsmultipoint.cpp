@@ -663,7 +663,7 @@ void TestQgsMultiPoint::assignment()
 
 void TestQgsMultiPoint::cast()
 {
-  QVERIFY( !QgsMultiPoint().cast( nullptr ) );
+  QVERIFY( !QgsMultiPoint().cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
 
   QgsMultiPoint mp;
   QVERIFY( QgsMultiPoint().cast( &mp ) );

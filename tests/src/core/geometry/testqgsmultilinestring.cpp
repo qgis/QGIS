@@ -465,7 +465,7 @@ void TestQgsMultiLineString::clear()
 
 void TestQgsMultiLineString::cast()
 {
-  QVERIFY( !QgsMultiLineString().cast( nullptr ) );
+  QVERIFY( !QgsMultiLineString().cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
 
   QgsMultiLineString mls;
   QVERIFY( QgsMultiLineString().cast( &mls ) );

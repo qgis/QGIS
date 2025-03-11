@@ -2267,7 +2267,7 @@ void TestQgsPolygon::Qtransform()
 
 void TestQgsPolygon::cast()
 {
-  QVERIFY( !QgsPolygon().cast( nullptr ) );
+  QVERIFY( !QgsPolygon().cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
 
   QgsPolygon pl;
   QVERIFY( QgsPolygon().cast( &pl ) );

@@ -129,6 +129,19 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
         return static_cast<const QgsMultiLineString *>( geom );
       return nullptr;
     }
+
+    /**
+     * Cast the \a geom to a QgsMultiLineString.
+     * Should be used by qgsgeometry_cast<QgsMultiLineString *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     */
+    inline static QgsMultiLineString *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiLineString )
+        return static_cast<QgsMultiLineString *>( geom );
+      return nullptr;
+    }
 #endif
 
     QgsMultiLineString *createEmptyWithSameType() const override SIP_FACTORY;
