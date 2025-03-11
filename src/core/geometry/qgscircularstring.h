@@ -302,7 +302,9 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      * Cast the \a geom to a QgsCircularString.
      * Should be used by qgsgeometry_cast<QgsCircularString *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsCircularString *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
@@ -315,7 +317,9 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      * Cast the \a geom to a QgsCircularString.
      * Should be used by qgsgeometry_cast<QgsCircularString *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static QgsCircularString *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {

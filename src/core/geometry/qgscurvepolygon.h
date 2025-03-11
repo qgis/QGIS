@@ -411,7 +411,9 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * Cast the \a geom to a QgsCurvePolygon.
      * Should be used by qgsgeometry_cast<QgsCurvePolygon *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsCurvePolygon *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
@@ -430,7 +432,9 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * Cast the \a geom to a QgsCurvePolygon.
      * Should be used by qgsgeometry_cast<QgsCurvePolygon *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static QgsCurvePolygon *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {

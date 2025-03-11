@@ -622,7 +622,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Cast the \a geom to a QgsPoint.
      * Should be used by qgsgeometry_cast<QgsPoint *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsPoint *cast( const QgsAbstractGeometry *geom )
     {
@@ -635,7 +637,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Cast the \a geom to a QgsPoint.
      * Should be used by qgsgeometry_cast<QgsPoint *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static QgsPoint *cast( QgsAbstractGeometry *geom )
     {
