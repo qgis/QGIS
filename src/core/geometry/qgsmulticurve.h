@@ -113,6 +113,24 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
         return static_cast<const QgsMultiCurve *>( geom );
       return nullptr;
     }
+
+    /**
+     * Cast the \a geom to a QgsMultiCurve.
+     * Should be used by qgsgeometry_cast<QgsMultiCurve *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     */
+    inline static QgsMultiCurve *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( !geom )
+        return nullptr;
+
+      const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
+      if ( flatType == Qgis::WkbType::MultiCurve
+           || flatType == Qgis::WkbType::MultiLineString )
+        return static_cast<QgsMultiCurve *>( geom );
+      return nullptr;
+    }
 #endif
 
     QgsMultiCurve *createEmptyWithSameType() const override SIP_FACTORY;

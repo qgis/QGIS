@@ -114,6 +114,25 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
         return static_cast<const QgsMultiSurface *>( geom );
       return nullptr;
     }
+
+    /**
+     * Cast the \a geom to a QgsMultiSurface.
+     * Should be used by qgsgeometry_cast<QgsMultiSurface *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     */
+    inline static QgsMultiSurface *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( !geom )
+        return nullptr;
+
+      const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
+
+      if ( flatType == Qgis::WkbType::MultiSurface
+           || flatType == Qgis::WkbType::MultiPolygon )
+        return static_cast<QgsMultiSurface *>( geom );
+      return nullptr;
+    }
 #endif
 
     QgsMultiSurface *createEmptyWithSameType() const override SIP_FACTORY;

@@ -223,7 +223,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
 
     // individula polygon - can be either polygon or hole in polygon
     QgsPolygon *polygon = new QgsPolygon();
-    polygon->setExteriorRing( qgsgeometry_cast<QgsLineString *>( *pit )->clone() );
+    polygon->setExteriorRing( qgsgeometry_cast<const QgsLineString *>( *pit )->clone() );
 
     // add first polygon, no need to check anything
     if ( polygons.empty() )

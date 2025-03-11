@@ -630,6 +630,19 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
         return static_cast<const QgsPoint *>( geom );
       return nullptr;
     }
+
+    /**
+     * Cast the \a geom to a QgsPoint.
+     * Should be used by qgsgeometry_cast<QgsPoint *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     */
+    inline static QgsPoint *cast( QgsAbstractGeometry *geom )
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::Point )
+        return static_cast<QgsPoint *>( geom );
+      return nullptr;
+    }
 #endif
 
     QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;

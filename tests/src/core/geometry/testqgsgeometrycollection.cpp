@@ -437,7 +437,7 @@ void TestQgsGeometryCollection::geometryCollection()
   QCOMPARE( *static_cast<const QgsLineString *>( rc.geometryN( 1 ) ), part2 );
 
   // cast
-  QVERIFY( !QgsGeometryCollection().cast( nullptr ) );
+  QVERIFY( !QgsGeometryCollection().cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
   QgsGeometryCollection pCast;
   QVERIFY( QgsGeometryCollection().cast( &pCast ) );
   QgsGeometryCollection pCast2;
