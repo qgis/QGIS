@@ -56,6 +56,7 @@
 #include "qgs3dmaptoolpointcloudchangeattributepolygon.h"
 
 #include "qgsdockablewidgethelper.h"
+#include "qgsmaptoolclippingplanes.h"
 #include "qgsrubberband.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
@@ -257,6 +258,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
       connect( sc, &QShortcut::activated, this, slot );
   };
   createShortcuts( QStringLiteral( "m3DSetSceneExtent" ), &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
+
+  mActionSetClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCut.svg" ) ), tr( "Set 3D Scene Clipping Planes on 2D Map View" ), this, &Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas );
+  mActionSetClippingPlanes->setCheckable( true );
 
   // Effects Menu
   mEffectsMenu = new QMenu( this );
@@ -714,6 +718,10 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
   mMapToolExtent->setAction( mActionSetSceneExtent );
   connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &Qgs3DMapCanvasWidget::setSceneExtent );
 
+  mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( canvas );
+  mMapToolClippingPlanes->setAction( mActionSetClippingPlanes );
+  connect( mMapToolClippingPlanes.get(), &QgsMapToolClippingPlanes::clippingPlanesChanged, this, &Qgs3DMapCanvasWidget::setClippingPlanes );
+
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasLayersChanged );
   connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasColorChanged );
   connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &Qgs3DMapCanvasWidget::onMainMapCanvasExtentChanged );
@@ -1166,6 +1174,42 @@ void Qgs3DMapCanvasWidget::setSceneExtent( const QgsRectangle &extent )
     mMainCanvas->setMapTool( mMapToolPrevious );
   else
     mMainCanvas->unsetMapTool( mMapToolExtent.get() );
+}
+
+void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
+{
+  if ( !qobject_cast<QgsMapToolClippingPlanes *>( mMainCanvas->mapTool() ) )
+    mMapToolPrevious = mMainCanvas->mapTool();
+
+  mMainCanvas->setMapTool( mMapToolClippingPlanes.get() );
+  QgisApp::instance()->activateWindow();
+  QgisApp::instance()->raise();
+  // mMessageBar->pushInfo( QString(), tr( "Drag a rectangle on the main 2D map view to define this 3D scene's extent" ) );
+}
+
+void Qgs3DMapCanvasWidget::setClippingPlanes( const QVector<QPair<QgsVector3D, QgsVector3D>> &planes )
+{
+  this->activateWindow();
+  this->raise();
+  mMessageBar->clearWidgets();
+
+  if ( !planes.isEmpty() )
+  {
+    QList<QVector4D> clippingPlanes;
+
+    for ( QPair<QgsVector3D, QgsVector3D> plane : planes )
+    {
+      const double distance = QgsVector3D::dotProduct( mCanvas->mapSettings()->origin() - plane.first, plane.second );
+
+      clippingPlanes.append( QVector4D( static_cast<float>( plane.second.x() ), static_cast<float>( plane.second.y() ), static_cast<float>( plane.second.z() ), distance ) );
+    }
+    mCanvas->scene()->enableClipping( clippingPlanes );
+  }
+
+  if ( mMapToolPrevious )
+    mMainCanvas->setMapTool( mMapToolPrevious );
+  else
+    mMainCanvas->unsetMapTool( mMapToolClippingPlanes.get() );
 }
 
 ClassValidator::ClassValidator( QWidget *parent )
