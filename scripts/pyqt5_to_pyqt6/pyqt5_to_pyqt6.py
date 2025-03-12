@@ -187,7 +187,7 @@ rename_function_attributes = {"exec_": "exec"}
 rename_function_definitions = {"exec_": "exec"}
 
 import_warnings = {
-    "QRegExp is removed in Qt6, please use QRegularExpression for Qt5/Qt6 compatibility"
+    "QRegExp": "QRegExp is removed in Qt6, please use QRegularExpression for Qt5/Qt6 compatibility"
 }
 
 # { (class, enum_value) : enum_name }
