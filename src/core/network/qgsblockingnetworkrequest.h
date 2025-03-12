@@ -18,6 +18,7 @@
 #include "qgis_core.h"
 #include "qgsnetworkreply.h"
 #include "qgsfeedback.h"
+#include "qgis.h"
 #include <QThread>
 #include <QObject>
 #include <functional>
