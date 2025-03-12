@@ -114,7 +114,7 @@ class LayoutItemHider
         mPrevVisibility[item] = isVisible;
         if ( isVisible )
           mItemsToIterate.append( item );
-        if ( QgsLayoutItem *layoutItem = dynamic_cast< QgsLayoutItem * >( item ) )
+        if ( auto layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
           layoutItem->setProperty( "wasVisible", isVisible );
 
         item->hide();
@@ -134,7 +134,7 @@ class LayoutItemHider
       for ( auto it = mPrevVisibility.constBegin(); it != mPrevVisibility.constEnd(); ++it )
       {
         it.key()->setVisible( it.value() );
-        if ( QgsLayoutItem *layoutItem = dynamic_cast< QgsLayoutItem * >( it.key() ) )
+        if ( auto layoutItem = dynamic_cast<QgsLayoutItem *>( it.key() ) )
           layoutItem->setProperty( "wasVisible", QVariant() );
       }
     }
@@ -1474,7 +1474,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const Svg
     QSvgGenerator generator;
     if ( includeMetadata )
     {
-      if ( const QgsMasterLayoutInterface *l = dynamic_cast< const QgsMasterLayoutInterface * >( mLayout.data() ) )
+      if ( auto l = dynamic_cast<const QgsMasterLayoutInterface *>( mLayout.data() ) )
         generator.setTitle( l->name() );
       else if ( mLayout->project() )
         generator.setTitle( mLayout->project()->title() );
@@ -1796,7 +1796,7 @@ QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned i
 {
   if ( items.count() == 1 )
   {
-    if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( items.at( 0 ) ) )
+    if ( auto layoutItem = dynamic_cast<QgsLayoutItem *>( items.at( 0 ) ) )
     {
       QString name = layoutItem->displayName();
       // cleanup default item ID format
@@ -1810,7 +1810,7 @@ QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned i
     QStringList currentLayerItemTypes;
     for ( QGraphicsItem *item : items )
     {
-      if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+      if ( auto layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
       {
         const QString itemType = QgsApplication::layoutItemRegistry()->itemMetadata( layoutItem->type() )->visibleName();
         const QString itemTypePlural = QgsApplication::layoutItemRegistry()->itemMetadata( layoutItem->type() )->visiblePluralName();
@@ -1849,7 +1849,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
   QList< QGraphicsItem * > currentLayerItems;
   for ( QGraphicsItem *item : itemsToIterate )
   {
-    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+    auto layoutItem = dynamic_cast<QgsLayoutItem *>( item );
 
     bool canPlaceInExistingLayer = false;
     QString thisItemExportGroupName;

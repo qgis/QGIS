@@ -82,7 +82,7 @@ void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
     return;
   }
 
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( !vLayer )
   {
     mCalloutStackedWidget->setCurrentWidget( pageDummy );
@@ -92,7 +92,7 @@ void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
   if ( mCalloutStackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    if ( QgsCalloutWidget *pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
+    if ( auto pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
       disconnect( pew, &QgsCalloutWidget::changed, this, &QgsLabelingGui::updatePreview );
   }
 
@@ -123,7 +123,7 @@ void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
 
 void QgsLabelingGui::showObstacleSettings()
 {
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( !vLayer )
   {
     return;
@@ -176,7 +176,7 @@ void QgsLabelingGui::showObstacleSettings()
 
 void QgsLabelingGui::showLineAnchorSettings()
 {
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( !vLayer )
   {
     return;
@@ -366,7 +366,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   setEnabled( true );
 
   mLayer = mapLayer;
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mapLayer );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
   mTextFormatsListWidget->setLayerType( vLayer ? vLayer->geometryType() : mGeomType );
   mBackgroundMarkerSymbolButton->setLayer( vLayer );
@@ -693,7 +693,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
   lyr.geometryGeneratorEnabled = mGeometryGeneratorGroupBox->isChecked();
 
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
   lyr.layerType = vLayer ? vLayer->geometryType() : mGeomType;
 
   lyr.zIndex = mZIndexSpinBox->value();
@@ -703,7 +703,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   // callout settings
   const QString calloutType = mCalloutStyleComboBox->currentData().toString();
   std::unique_ptr<QgsCallout> callout;
-  if ( QgsCalloutWidget *pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
+  if ( auto pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
   {
     callout.reset( pew->callout()->clone() );
   }
@@ -804,7 +804,7 @@ void QgsLabelingGui::setFormatFromStyle( const QString &name, QgsStyle::StyleEnt
 
 void QgsLabelingGui::setContext( const QgsSymbolWidgetContext &context )
 {
-  if ( QgsCalloutWidget *cw = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
+  if ( auto cw = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
   {
     cw->setContext( context );
   }
@@ -881,7 +881,7 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
 {
   Qgis::GeometryType geometryType = mGeomType;
 
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
 
   if ( mGeometryGeneratorGroupBox->isChecked() )
     geometryType = mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
@@ -952,7 +952,7 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
 
 void QgsLabelingGui::showGeometryGeneratorExpressionBuilder()
 {
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
   QgsExpressionBuilderDialog expressionBuilder( vLayer );
 
   expressionBuilder.setExpressionText( mGeometryGenerator->text() );
@@ -968,7 +968,7 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
 {
   bool valid = true;
 
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
 
   if ( mGeometryGeneratorGroupBox->isChecked() )
   {
@@ -1016,7 +1016,7 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
 
 void QgsLabelingGui::determineGeometryGeneratorType()
 {
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( !mPreviewFeature.isValid() && vLayer )
     vLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( mPreviewFeature );
 
@@ -1033,7 +1033,7 @@ void QgsLabelingGui::determineGeometryGeneratorType()
 void QgsLabelingGui::calloutTypeChanged()
 {
   const QString newCalloutType = mCalloutStyleComboBox->currentData().toString();
-  QgsCalloutWidget *pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() );
+  auto pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() );
   if ( pew )
   {
     if ( pew->callout() && pew->callout()->type() == newCalloutType )

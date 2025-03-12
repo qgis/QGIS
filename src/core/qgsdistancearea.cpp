@@ -158,7 +158,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
   else
   {
     //multigeom is sum of measured parts
-    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geomV2 );
+    auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geomV2 );
     if ( collection )
     {
       double sum = 0;
@@ -171,7 +171,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
 
     if ( measureType == Length )
     {
-      const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( geomV2 );
+      auto curve = qgsgeometry_cast<const QgsCurve *>( geomV2 );
       if ( !curve )
       {
         return 0.0;
@@ -184,12 +184,12 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
     }
     else
     {
-      const QgsSurface *surface = qgsgeometry_cast<const QgsSurface *>( geomV2 );
+      auto surface = qgsgeometry_cast<const QgsSurface *>( geomV2 );
       if ( !surface )
         return 0.0;
 
       double area = 0;
-      QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( surface );
+      auto curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( surface );
       if ( curvePolygon )
       {
         QgsPolygon *polygon = curvePolygon->surfaceToPolygon();
@@ -245,12 +245,12 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
 
   //create list with (single) surfaces
   QVector< const QgsSurface * > surfaces;
-  const QgsSurface *surf = qgsgeometry_cast<const QgsSurface *>( geomV2 );
+  auto surf = qgsgeometry_cast<const QgsSurface *>( geomV2 );
   if ( surf )
   {
     surfaces.append( surf );
   }
-  const QgsMultiSurface *multiSurf = qgsgeometry_cast<const QgsMultiSurface *>( geomV2 );
+  auto multiSurf = qgsgeometry_cast<const QgsMultiSurface *>( geomV2 );
   if ( multiSurf )
   {
     surfaces.reserve( ( surf ? 1 : 0 ) + multiSurf->numGeometries() );
@@ -269,7 +269,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
       continue;
     }
 
-    QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( *surfaceIt );
+    auto curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( *surfaceIt );
     if ( curvePolygon )
     {
       QgsPolygon *poly = curvePolygon->surfaceToPolygon();
@@ -545,7 +545,7 @@ QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geo
   auto res = std::make_unique< QgsMultiLineString >();
   for ( auto part = g.const_parts_begin(); part != g.const_parts_end(); ++part )
   {
-    const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( *part );
+    auto line = qgsgeometry_cast<const QgsLineString *>( *part );
     if ( !line )
       continue;
     if ( line->isEmpty() )

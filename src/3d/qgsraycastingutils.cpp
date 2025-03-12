@@ -428,9 +428,9 @@ namespace QgsRayCastingUtils
       else
         Q_ASSERT( false );
 
-      const float *v0ptr = reinterpret_cast<const float *>( vertexPtr + v0index * vertexByteStride );
-      const float *v1ptr = reinterpret_cast<const float *>( vertexPtr + v1index * vertexByteStride );
-      const float *v2ptr = reinterpret_cast<const float *>( vertexPtr + v2index * vertexByteStride );
+      auto v0ptr = reinterpret_cast<const float *>( vertexPtr + v0index * vertexByteStride );
+      auto v1ptr = reinterpret_cast<const float *>( vertexPtr + v1index * vertexByteStride );
+      auto v2ptr = reinterpret_cast<const float *>( vertexPtr + v2index * vertexByteStride );
 
       const QVector3D a( v0ptr[0], v0ptr[1], v0ptr[2] );
       const QVector3D b( v1ptr[0], v1ptr[1], v1ptr[2] );

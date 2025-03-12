@@ -147,7 +147,7 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
 
   mCaptureMode = CaptureNone;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
   {
     return;
@@ -337,7 +337,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
 #endif
 
     // If the tool and the layer support curves
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( layer() );
     if ( vlayer && capabilities().testFlag( QgsMapToolCapture::Capability::SupportsCurves ) && vlayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::CircularGeometries ) )
     {
       const QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
@@ -593,7 +593,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
 int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint )
 {
-  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
+  if ( auto vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
   {
     try
     {
@@ -626,7 +626,7 @@ int QgsMapToolCapture::nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapP
 
 int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer() );
   QgsVectorLayer *sourceLayer = match.layer();
   if ( mCadDockWidget && mCadDockWidget->cadEnabled() )
   {
@@ -1112,7 +1112,7 @@ void QgsMapToolCapture::validateGeometry()
 void QgsMapToolCapture::addError( const QgsGeometry::Error &e )
 {
   mGeomErrors << e;
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer() );
   if ( !vlayer )
     return;
 
@@ -1178,7 +1178,7 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsPointXY &point ) const
   QgsPoint newPoint( Qgis::WkbType::Point, point.x(), point.y() );
 
   // get current layer
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer() );
   if ( !vlayer )
   {
     return newPoint;
@@ -1415,7 +1415,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         //does compoundcurve contain circular strings?
         //does provider support circular strings?
-        if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
+        if ( auto vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
         {
           const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
           const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::CircularGeometries;

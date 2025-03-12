@@ -1236,12 +1236,12 @@ bool QgsExpression::isFieldEqualityExpression( const QString &expression, QStrin
   if ( !e.rootNode() )
     return false;
 
-  if ( const QgsExpressionNodeBinaryOperator *binOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( e.rootNode() ) )
+  if ( auto binOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( e.rootNode() ) )
   {
     if ( binOp->op() == QgsExpressionNodeBinaryOperator::boEQ )
     {
-      const QgsExpressionNodeColumnRef *columnRef = dynamic_cast<const QgsExpressionNodeColumnRef *>( binOp->opLeft() );
-      const QgsExpressionNodeLiteral *literal = dynamic_cast<const QgsExpressionNodeLiteral *>( binOp->opRight() );
+      auto columnRef = dynamic_cast<const QgsExpressionNodeColumnRef *>( binOp->opLeft() );
+      auto literal = dynamic_cast<const QgsExpressionNodeLiteral *>( binOp->opRight() );
       if ( columnRef && literal )
       {
         field = columnRef->name();
@@ -1286,12 +1286,12 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
       if ( !e.rootNode() )
         return false;
 
-      if ( const QgsExpressionNodeInOperator *inOp = dynamic_cast<const QgsExpressionNodeInOperator *>( e.rootNode() ) )
+      if ( auto inOp = dynamic_cast<const QgsExpressionNodeInOperator *>( e.rootNode() ) )
       {
         if ( inOp->isNotIn() )
           return false;
 
-        const QgsExpressionNodeColumnRef *columnRef = dynamic_cast<const QgsExpressionNodeColumnRef *>( inOp->node() );
+        auto columnRef = dynamic_cast<const QgsExpressionNodeColumnRef *>( inOp->node() );
         if ( !columnRef )
           return false;
 
@@ -1310,7 +1310,7 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
           const QList<QgsExpressionNode *> nodes = nodeList->list();
           for ( const QgsExpressionNode *node : nodes )
           {
-            const QgsExpressionNodeLiteral *literal = dynamic_cast<const QgsExpressionNodeLiteral *>( node );
+            auto literal = dynamic_cast<const QgsExpressionNodeLiteral *>( node );
             if ( !literal )
               return false;
 
@@ -1326,7 +1326,7 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
         std::function<QStringList( QgsExpressionNode *, QgsExpressionNode * )> collectOrs = [ &collectOrs ]( QgsExpressionNode * opLeft,  QgsExpressionNode * opRight ) -> QStringList
         {
           QStringList orParts;
-          if ( const QgsExpressionNodeBinaryOperator *leftOrOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( opLeft ) )
+          if ( auto leftOrOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( opLeft ) )
           {
             if ( leftOrOp->op( ) == QgsExpressionNodeBinaryOperator::BinaryOperator::boOr )
             {
@@ -1346,7 +1346,7 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
             return {};
           }
 
-          if ( const QgsExpressionNodeBinaryOperator *rightOrOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( opRight ) )
+          if ( auto rightOrOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( opRight ) )
           {
             if ( rightOrOp->op( ) == QgsExpressionNodeBinaryOperator::BinaryOperator::boOr )
             {
@@ -1389,7 +1389,7 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
                 return false;
               }
 
-              if ( const QgsExpressionNodeInOperator *inOpInner = dynamic_cast<const QgsExpressionNodeInOperator *>( inExp.rootNode() ) )
+              if ( auto inOpInner = dynamic_cast<const QgsExpressionNodeInOperator *>( inExp.rootNode() ) )
               {
                 if ( inOpInner->node()->nodeType() != QgsExpressionNode::NodeType::ntColumnRef || inOpInner->node()->referencedColumns().size() < 1 )
                 {

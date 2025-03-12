@@ -800,7 +800,7 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
 
 void QgsColorSwatchDelegate::colorChanged()
 {
-  if ( QgsCompoundColorWidget *colorWidget = qobject_cast<QgsCompoundColorWidget *>( sender() ) )
+  if ( auto colorWidget = qobject_cast<QgsCompoundColorWidget *>( sender() ) )
   {
     const QModelIndex index = colorWidget->property( "index" ).toModelIndex();
     const_cast<QAbstractItemModel *>( index.model() )->setData( index, colorWidget->color(), Qt::EditRole );

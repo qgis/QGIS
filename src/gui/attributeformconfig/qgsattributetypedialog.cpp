@@ -50,7 +50,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     return;
 
   QMapIterator<QString, QgsEditorWidgetFactory *> it( QgsGui::editorWidgetRegistry()->factories() );
-  QStandardItemModel *widgetTypeModel = qobject_cast<QStandardItemModel *>( mWidgetTypeComboBox->model() );
+  auto widgetTypeModel = qobject_cast<QStandardItemModel *>( mWidgetTypeComboBox->model() );
   while ( it.hasNext() )
   {
     it.next();
@@ -539,7 +539,7 @@ void QgsAttributeTypeDialog::updateDuplicatePolicyLabel()
 
 QStandardItem *QgsAttributeTypeDialog::currentItem() const
 {
-  QStandardItemModel *widgetTypeModel = qobject_cast<QStandardItemModel *>( mWidgetTypeComboBox->model() );
+  auto widgetTypeModel = qobject_cast<QStandardItemModel *>( mWidgetTypeComboBox->model() );
   return widgetTypeModel->item( mWidgetTypeComboBox->currentIndex() );
 }
 

@@ -245,7 +245,7 @@ void QgsPolygon::addInteriorRing( QgsCurve *ring )
     ring = segmented;
   }
 
-  QgsLineString *lineString = qgsgeometry_cast< QgsLineString *>( ring );
+  auto lineString = qgsgeometry_cast<QgsLineString *>( ring );
   if ( lineString && !lineString->isClosed() )
   {
     lineString->close();
@@ -278,7 +278,7 @@ void QgsPolygon::setExteriorRing( QgsCurve *ring )
     ring = line;
   }
 
-  QgsLineString *lineString = qgsgeometry_cast< QgsLineString *>( ring );
+  auto lineString = qgsgeometry_cast<QgsLineString *>( ring );
   if ( lineString && !lineString->isClosed() )
   {
     lineString->close();
@@ -334,7 +334,7 @@ double QgsPolygon::pointDistanceToBoundary( double x, double y ) const
   int numRings = mInteriorRings.size() + 1;
   for ( int ringIndex = 0; ringIndex < numRings; ++ringIndex )
   {
-    const QgsLineString *ring = static_cast< const QgsLineString * >( ringIndex == 0 ? mExteriorRing.get() : mInteriorRings.at( ringIndex - 1 ) );
+    auto ring = static_cast<const QgsLineString *>( ringIndex == 0 ? mExteriorRing.get() : mInteriorRings.at( ringIndex - 1 ) );
 
     int len = ring->numPoints() - 1; //assume closed
     for ( int i = 0, j = len - 1; i < len; j = i++ )

@@ -143,7 +143,7 @@ void TestQgsMarkerLineSymbol::pointNumInterval()
   props[QStringLiteral( "color" )] = QStringLiteral( "255,0,0" );
   props[QStringLiteral( "size" )] = QStringLiteral( "2" );
   props[QStringLiteral( "outline_style" )] = QStringLiteral( "no" );
-  QgsSimpleMarkerSymbolLayer *marker = static_cast<QgsSimpleMarkerSymbolLayer *>( QgsSimpleMarkerSymbolLayer::create( props ) );
+  auto marker = static_cast<QgsSimpleMarkerSymbolLayer *>( QgsSimpleMarkerSymbolLayer::create( props ) );
 
   marker->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( QStringLiteral( "@geometry_point_num * 2" ) ) );
 
@@ -172,7 +172,7 @@ void TestQgsMarkerLineSymbol::pointNumVertex()
   props[QStringLiteral( "color" )] = QStringLiteral( "255,0,0" );
   props[QStringLiteral( "size" )] = QStringLiteral( "2" );
   props[QStringLiteral( "outline_style" )] = QStringLiteral( "no" );
-  QgsSimpleMarkerSymbolLayer *marker = static_cast<QgsSimpleMarkerSymbolLayer *>( QgsSimpleMarkerSymbolLayer::create( props ) );
+  auto marker = static_cast<QgsSimpleMarkerSymbolLayer *>( QgsSimpleMarkerSymbolLayer::create( props ) );
 
   marker->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( QStringLiteral( "@geometry_point_num * 2" ) ) );
 

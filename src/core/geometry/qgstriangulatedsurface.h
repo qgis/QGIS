@@ -45,7 +45,7 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
   private:
     bool fuzzyHelper( const QgsAbstractGeometry &other, double epsilon, bool useDistance ) const
     {
-      const QgsTriangulatedSurface *otherTriangulatedSurface = qgsgeometry_cast< const QgsTriangulatedSurface * >( &other );
+      auto otherTriangulatedSurface = qgsgeometry_cast<const QgsTriangulatedSurface *>( &other );
       if ( !otherTriangulatedSurface )
         return false;
 

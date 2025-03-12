@@ -729,7 +729,7 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
         const QgsExpressionNode *node = expression.rootNode()->effectiveNode();
         if ( node->nodeType() == QgsExpressionNode::ntColumnRef )
         {
-          const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( node );
+          auto columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( node );
           return columnRef->name();
         }
 
@@ -738,7 +738,7 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
         // some labels with a value stored in a field but all others use some expression
         if ( node->nodeType() == QgsExpressionNode::ntFunction )
         {
-          const QgsExpressionNodeFunction *functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( node );
+          auto functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( node );
           if ( const QgsExpressionFunction *function = QgsExpression::QgsExpression::Functions()[functionNode->fnIndex()] )
           {
             if ( function->name() == QLatin1String( "coalesce" ) )
@@ -748,7 +748,7 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
                 const QgsExpressionNode *firstArgNode = firstArg->effectiveNode();
                 if ( firstArgNode->nodeType() == QgsExpressionNode::ntColumnRef )
                 {
-                  const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( firstArgNode );
+                  auto columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( firstArgNode );
                   return columnRef->name();
                 }
               }
@@ -1399,7 +1399,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes )
 bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes )
 {
   bool newAuxiliaryLayer = false;
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsMapTool::layer( details.layerID ) );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( QgsMapTool::layer( details.layerID ) );
 
   if ( !vlayer )
     return newAuxiliaryLayer;

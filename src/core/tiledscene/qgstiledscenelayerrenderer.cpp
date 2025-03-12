@@ -349,7 +349,7 @@ void QgsTiledSceneLayerRenderer::renderTile( const QgsTiledSceneTile &tile, QgsT
     try
     {
       std::unique_ptr< QgsAbstractGeometry > volumeGeometry( volume.as2DGeometry( mSceneToMapTransform ) );
-      if ( QgsCurvePolygon *polygon = qgsgeometry_cast< QgsCurvePolygon * >( volumeGeometry.get() ) )
+      if ( auto polygon = qgsgeometry_cast<QgsCurvePolygon *>( volumeGeometry.get() ) )
       {
         QPolygonF volumePolygon = polygon->exteriorRing()->asQPolygonF( );
 
@@ -729,7 +729,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
 
       if ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT )
       {
-        const unsigned short *usPtrPrimitive = reinterpret_cast< const unsigned short * >( primitivePtr );
+        auto usPtrPrimitive = reinterpret_cast<const unsigned short *>( primitivePtr );
         if ( bvPrimitive.byteStride )
           primitivePtr += bvPrimitive.byteStride;
         else
@@ -741,7 +741,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
       }
       else if ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE )
       {
-        const unsigned char *usPtrPrimitive = reinterpret_cast< const unsigned char * >( primitivePtr );
+        auto usPtrPrimitive = reinterpret_cast<const unsigned char *>( primitivePtr );
         if ( bvPrimitive.byteStride )
           primitivePtr += bvPrimitive.byteStride;
         else
@@ -753,7 +753,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
       }
       else
       {
-        const unsigned int *uintPtrPrimitive = reinterpret_cast< const unsigned int * >( primitivePtr );
+        auto uintPtrPrimitive = reinterpret_cast<const unsigned int *>( primitivePtr );
         if ( bvPrimitive.byteStride )
           primitivePtr += bvPrimitive.byteStride;
         else
@@ -906,7 +906,7 @@ void QgsTiledSceneLayerRenderer::renderLinePrimitive( const tinygltf::Model &mod
 
       if ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT )
       {
-        const unsigned short *usPtrPrimitive = reinterpret_cast< const unsigned short * >( primitivePtr );
+        auto usPtrPrimitive = reinterpret_cast<const unsigned short *>( primitivePtr );
         if ( bvPrimitive.byteStride )
           primitivePtr += bvPrimitive.byteStride;
         else
@@ -917,7 +917,7 @@ void QgsTiledSceneLayerRenderer::renderLinePrimitive( const tinygltf::Model &mod
       }
       else if ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE )
       {
-        const unsigned char *usPtrPrimitive = reinterpret_cast< const unsigned char * >( primitivePtr );
+        auto usPtrPrimitive = reinterpret_cast<const unsigned char *>( primitivePtr );
         if ( bvPrimitive.byteStride )
           primitivePtr += bvPrimitive.byteStride;
         else
@@ -928,7 +928,7 @@ void QgsTiledSceneLayerRenderer::renderLinePrimitive( const tinygltf::Model &mod
       }
       else
       {
-        const unsigned int *uintPtrPrimitive = reinterpret_cast< const unsigned int * >( primitivePtr );
+        auto uintPtrPrimitive = reinterpret_cast<const unsigned int *>( primitivePtr );
         if ( bvPrimitive.byteStride )
           primitivePtr += bvPrimitive.byteStride;
         else

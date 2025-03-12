@@ -815,7 +815,7 @@ void QgsInterpolatedLineSymbolLayer::stopRender( QgsSymbolRenderContext & )
 
 QgsInterpolatedLineSymbolLayer *QgsInterpolatedLineSymbolLayer::clone() const
 {
-  QgsInterpolatedLineSymbolLayer *l = static_cast<QgsInterpolatedLineSymbolLayer *>( create( properties() ) );
+  auto l = static_cast<QgsInterpolatedLineSymbolLayer *>( create( properties() ) );
   copyDataDefinedProperties( l );
   copyPaintEffect( l );
   return l;

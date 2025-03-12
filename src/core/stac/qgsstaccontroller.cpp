@@ -103,7 +103,7 @@ QNetworkReply *QgsStacController::fetchAsync( const QUrl &url )
 
 void QgsStacController::handleStacObjectReply()
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( QObject::sender() );
+  auto reply = qobject_cast<QNetworkReply *>( QObject::sender() );
   if ( !reply )
     return;
 
@@ -152,7 +152,7 @@ void QgsStacController::handleStacObjectReply()
 
 void QgsStacController::handleItemCollectionReply()
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( QObject::sender() );
+  auto reply = qobject_cast<QNetworkReply *>( QObject::sender() );
   if ( !reply )
     return;
 
@@ -184,7 +184,7 @@ void QgsStacController::handleItemCollectionReply()
 
 void QgsStacController::handleCollectionsReply()
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( QObject::sender() );
+  auto reply = qobject_cast<QNetworkReply *>( QObject::sender() );
   if ( !reply )
     return;
 

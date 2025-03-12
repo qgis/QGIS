@@ -273,7 +273,7 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
 
   if ( idx.column() == DbtmGeomType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( idx.sibling( idx.row(), DbtmGeomType ).data( Qt::UserRole + 2 ).toInt() );
+    auto wkbType = static_cast<Qgis::WkbType>( idx.sibling( idx.row(), DbtmGeomType ).data( Qt::UserRole + 2 ).toInt() );
 
     QString tip;
     if ( wkbType == Qgis::WkbType::Unknown )
@@ -335,7 +335,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   if ( !index.isValid() )
     return QString();
 
-  Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( itemFromIndex( index.sibling( index.row(), DbtmGeomType ) )->data( Qt::UserRole + 2 ).toInt() );
+  auto wkbType = static_cast<Qgis::WkbType>( itemFromIndex( index.sibling( index.row(), DbtmGeomType ) )->data( Qt::UserRole + 2 ).toInt() );
   if ( wkbType == Qgis::WkbType::Unknown )
     // no geometry type selected
     return QString();

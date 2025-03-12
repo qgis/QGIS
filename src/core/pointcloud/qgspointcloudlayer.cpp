@@ -824,7 +824,7 @@ bool QgsPointCloudLayer::convertRenderer3DFromRenderer2D()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   bool result = false;
-  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
+  auto r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
   if ( r )
   {
     result = r->convertFrom2DRenderer( renderer() );

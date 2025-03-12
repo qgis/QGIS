@@ -168,7 +168,7 @@ void QgsAbstractLabelingEngineRuleDistanceFromFeature::setTargetLayer( QgsVector
 void QgsAbstractLabelingEngineRuleDistanceFromFeature::copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const
 {
   QgsAbstractLabelingEngineRule::copyCommonProperties( other );
-  if ( QgsAbstractLabelingEngineRuleDistanceFromFeature *otherRule = dynamic_cast< QgsAbstractLabelingEngineRuleDistanceFromFeature * >( other ) )
+  if ( auto otherRule = dynamic_cast<QgsAbstractLabelingEngineRuleDistanceFromFeature *>( other ) )
   {
     otherRule->mLabeledLayer = mLabeledLayer;
     otherRule->mTargetLayer = mTargetLayer;

@@ -168,7 +168,7 @@ void QgsMapToolEdit::connectLayers( const QList<QgsMapLayer *> &layers )
 {
   for ( QgsMapLayer *layer : layers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer )
     {
       connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgsMapToolEdit::cleanCanvas );
@@ -192,7 +192,7 @@ QList<QgsVectorLayer *> QgsMapToolEdit::editableVectorLayers()
     const auto layers = mCanvas->project()->mapLayers().values();
     for ( QgsMapLayer *layer : layers )
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( vlayer && vlayer->isEditable() && vlayer->isSpatial() )
         editableLayers << vlayer;
     }

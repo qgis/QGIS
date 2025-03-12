@@ -263,7 +263,7 @@ bool QgsVectorLayerUndoPassthroughCommandChangeGeometry::mergeWith( const QUndoC
   if ( other->id() != id() )
     return false;
 
-  const QgsVectorLayerUndoPassthroughCommandChangeGeometry *merge = dynamic_cast<const QgsVectorLayerUndoPassthroughCommandChangeGeometry *>( other );
+  auto merge = dynamic_cast<const QgsVectorLayerUndoPassthroughCommandChangeGeometry *>( other );
   if ( !merge )
     return false;
 

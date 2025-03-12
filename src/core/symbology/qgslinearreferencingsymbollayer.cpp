@@ -99,7 +99,7 @@ class QgsLinearReferencingSymbolLayerLabelProvider final : public QgsAbstractLab
       xform.setMapRotation( 0, 0, 0 );
       const QPointF outPt = context.mapToPixel().transform( label->getX(), label->getY() ).toQPointF();
 
-      QgsTextLabelFeatureWithFormat *lf = qgis::down_cast<QgsTextLabelFeatureWithFormat *>( label->getFeaturePart()->feature() );
+      auto lf = qgis::down_cast<QgsTextLabelFeatureWithFormat *>( label->getFeaturePart()->feature() );
       QgsTextRenderer::drawDocument( outPt,
                                      lf->mFormat, lf->document(), lf->documentMetrics(), context, Qgis::TextHorizontalAlignment::Left,
                                      label->getAlpha() );
@@ -339,7 +339,7 @@ void QgsLinearReferencingSymbolLayer::stopRender( QgsSymbolRenderContext &contex
 
 void QgsLinearReferencingSymbolLayer::renderGeometryPart( QgsSymbolRenderContext &context, const QgsAbstractGeometry *geometry, double labelOffsetPainterUnitsX, double labelOffsetPainterUnitsY, double skipMultiples, double averageAngleDistancePainterUnits, bool showMarker )
 {
-  if ( const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( geometry ) )
+  if ( auto line = qgsgeometry_cast<const QgsLineString *>( geometry ) )
   {
     renderLineString( context, line, labelOffsetPainterUnitsX, labelOffsetPainterUnitsY, skipMultiples, averageAngleDistancePainterUnits, showMarker );
   }

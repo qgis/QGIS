@@ -145,8 +145,8 @@ QVariantMap QgsLayoutToPdfAlgorithm::processAlgorithm( const QVariantMap &parame
     const QList<QGraphicsItem *> items = layout->items();
     for ( QGraphicsItem *graphicsItem : items )
     {
-      QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
-      QgsLayoutItemMap *map = dynamic_cast<QgsLayoutItemMap *>( item );
+      auto item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+      auto map = dynamic_cast<QgsLayoutItemMap *>( item );
       if ( map && !map->followVisibilityPreset() && !map->keepLayerSet() )
       {
         map->setKeepLayerSet( true );

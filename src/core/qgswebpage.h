@@ -154,7 +154,7 @@ class CORE_EXPORT QWebPage : public QObject
       if ( !parent() )
         return;
 
-      QTextBrowser *tb = qobject_cast<QTextBrowser *>( parent() );
+      auto tb = qobject_cast<QTextBrowser *>( parent() );
       if ( !tb )
         return;
 

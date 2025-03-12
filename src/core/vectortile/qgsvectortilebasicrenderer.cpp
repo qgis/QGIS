@@ -174,7 +174,7 @@ void QgsVectorTileBasicRenderer::renderBackground( QgsRenderContext &context )
       QgsSymbol *sym = layerStyle.symbol();
       sym->startRender( context, QgsFields() );
 
-      QgsFillSymbol *fillSym = dynamic_cast<QgsFillSymbol *>( sym );
+      auto fillSym = dynamic_cast<QgsFillSymbol *>( sym );
       if ( fillSym )
       {
         QPolygon polygon;

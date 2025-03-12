@@ -41,7 +41,7 @@ void QgsTiledSceneLayer3DPropertiesWidget::syncToLayer( QgsTiledSceneLayer *laye
   if ( !renderer || renderer->type() != QLatin1String( "tiledscene" ) )
     return;
 
-  QgsTiledSceneLayer3DRenderer *r = static_cast<QgsTiledSceneLayer3DRenderer *>( renderer );
+  auto r = static_cast<QgsTiledSceneLayer3DRenderer *>( renderer );
 
   whileBlocking( mMaxErrorSpinBox )->setValue( r->maximumScreenError() );
   whileBlocking( mShowBoundingBoxesCheckBox )->setChecked( r->showBoundingBoxes() );
@@ -77,7 +77,7 @@ QgsTiledSceneLayer3DRendererWidget::QgsTiledSceneLayer3DRendererWidget( QgsMapLa
 
 void QgsTiledSceneLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
-  QgsTiledSceneLayer *tslayer = qobject_cast<QgsTiledSceneLayer *>( layer );
+  auto tslayer = qobject_cast<QgsTiledSceneLayer *>( layer );
   if ( !tslayer )
   {
     return;

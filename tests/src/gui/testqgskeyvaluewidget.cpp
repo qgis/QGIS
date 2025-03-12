@@ -45,7 +45,7 @@ class TestQgsKeyValueWidget : public QObject
       QVERIFY( wrapper );
       const QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
 
-      QgsKeyValueWidget *widget = qobject_cast<QgsKeyValueWidget *>( wrapper->widget() );
+      auto widget = qobject_cast<QgsKeyValueWidget *>( wrapper->widget() );
       QVERIFY( widget );
 
       QVariantMap initial;

@@ -65,7 +65,7 @@ void Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue( const QgsGeome
   preparedPolygon.prepareGeometry();
 
   Q_ASSERT( mapLayer->type() == Qgis::LayerType::PointCloud );
-  QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mapLayer );
+  auto pcLayer = qobject_cast<QgsPointCloudLayer *>( mapLayer );
   const SelectedPoints sel = searchPoints( pcLayer, preparedPolygon, canvas );
 
   int offset;
@@ -158,9 +158,9 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
 
   QString categoryAttributeName;
   QSet<int> categoryValues;
-  if ( QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
+  if ( auto renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
   {
-    if ( const QgsClassificationPointCloud3DSymbol *symbol = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( renderer->symbol() ) )
+    if ( auto symbol = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( renderer->symbol() ) )
     {
       const QgsPointCloudCategoryList categories = symbol->categoriesList();
       for ( const auto &category : categories )

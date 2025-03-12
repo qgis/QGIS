@@ -281,7 +281,7 @@ void QgsMapTip::clear( QgsMapCanvas *, int msDelay )
 
 QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->isSpatial() || !vlayer->mapTipsEnabled() )
   {
     return QString();
@@ -389,7 +389,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
 
 QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas )
 {
-  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  auto rlayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( !rlayer || !rlayer->mapTipsEnabled() )
   {
     return QString();
@@ -440,7 +440,7 @@ void QgsMapTip::onLinkClicked( const QUrl &url )
 QString QgsMapTip::vectorMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate, const QString &displayExpression )
 {
   // Only spatial layers can have map tips
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !mapCanvas || !vlayer || !vlayer->isSpatial() )
     return QString();
 
@@ -484,7 +484,7 @@ QString QgsMapTip::vectorMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *ma
 
 QString QgsMapTip::rasterMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate )
 {
-  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  auto rlayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( !mapCanvas || !rlayer || mapTemplate.isEmpty() )
   {
     return QString();

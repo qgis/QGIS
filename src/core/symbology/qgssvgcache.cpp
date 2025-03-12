@@ -60,7 +60,7 @@ QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &path, double size, double str
 
 bool QgsSvgCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
-  const QgsSvgCacheEntry *otherSvg = dynamic_cast< const QgsSvgCacheEntry * >( other );
+  auto otherSvg = dynamic_cast<const QgsSvgCacheEntry *>( other );
   // cheapest checks first!
   if ( !otherSvg
        || !qgsDoubleNear( otherSvg->fixedAspectRatio, fixedAspectRatio )

@@ -110,7 +110,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   QUrl downloadedUrl;
   QStringList errors;
 
-  Qgis::HttpMethod httpMethod = static_cast<Qgis::HttpMethod>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
+  auto httpMethod = static_cast<Qgis::HttpMethod>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
 
   if ( httpMethod == Qgis::HttpMethod::Get && !data.isEmpty() )
   {

@@ -1988,7 +1988,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
     g.ordinates.clear();
 
     int iOrdinate = 1;
-    Qgis::WkbType type = static_cast<Qgis::WkbType>( *ptr.iPtr++ );
+    auto type = static_cast<Qgis::WkbType>( *ptr.iPtr++ );
     int dim = 2;
 
     switch ( type )
@@ -2247,7 +2247,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
             const bool reverseRing = iRing == 0 ? ring->orientation() == Qgis::AngularDirection::Clockwise : ring->orientation() == Qgis::AngularDirection::CounterClockwise;
             std::unique_ptr<QgsCurve> reversedRing( reverseRing ? ring->reversed() : nullptr );
             const QgsCurve *correctedRing = reversedRing ? reversedRing.get() : ring;
-            const QgsCompoundCurve *compound = dynamic_cast<const QgsCompoundCurve *>( correctedRing );
+            auto compound = dynamic_cast<const QgsCompoundCurve *>( correctedRing );
             int nLines = 1;
             Qgis::WkbType lineType = ringType;
             if ( compound )

@@ -136,7 +136,7 @@ QgsFeatureList QgsLineSubstringAlgorithm::processFeature( const QgsFeature &feat
       curve = qgsgeometry_cast<const QgsCurve *>( geometry.constGet() );
     else
     {
-      if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry.constGet() ) )
+      if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry.constGet() ) )
       {
         if ( collection->numGeometries() > 0 )
         {

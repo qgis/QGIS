@@ -1934,7 +1934,7 @@ void TestQgsValueRelationWidgetWrapper::testMultiEditMode()
   QgsEditorWidgetWrapper *widgetWrapper = formEditorWidgets[0]->editorWidget();
   QCOMPARE( widgetWrapper->value(), QStringLiteral( "Jhon Carpenter" ) );
 
-  QgsValueRelationWidgetWrapper *valueRelationWrapper = qobject_cast<QgsValueRelationWidgetWrapper *>( widgetWrapper );
+  auto valueRelationWrapper = qobject_cast<QgsValueRelationWidgetWrapper *>( widgetWrapper );
   QVERIFY( valueRelationWrapper );
   QVERIFY( valueRelationWrapper->mComboBox );
   QCOMPARE( valueRelationWrapper->mComboBox->model()->rowCount(), 3 );

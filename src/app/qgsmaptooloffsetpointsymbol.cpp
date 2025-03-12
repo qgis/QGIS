@@ -48,7 +48,7 @@ bool QgsMapToolOffsetPointSymbol::layerIsOffsetable( QgsMapLayer *ml )
   }
 
   //a vector layer
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( ml );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( ml );
   if ( !vLayer )
   {
     return false;
@@ -212,7 +212,7 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
     if ( ddOffset.propertyType() != Qgis::PropertyType::Field )
       continue;
 
-    QgsMarkerSymbolLayer *ml = dynamic_cast<QgsMarkerSymbolLayer *>( layer );
+    auto ml = dynamic_cast<QgsMarkerSymbolLayer *>( layer );
     if ( !ml )
       continue;
 

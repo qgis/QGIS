@@ -112,7 +112,7 @@ std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const
 
     QByteArray rawBlockData = mEditedNodeData[n];
 
-    QgsCopcPointCloudIndex *copcIndex = static_cast<QgsCopcPointCloudIndex *>( mIndex.get() );
+    auto copcIndex = static_cast<QgsCopcPointCloudIndex *>( mIndex.get() );
 
     int pointCount = copcIndex->mHierarchy.value( n );
 
@@ -153,7 +153,7 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   }
 
   // reset the underlying index - we will reload it at the end
-  QgsCopcPointCloudIndex *copcIndex = static_cast<QgsCopcPointCloudIndex *>( mIndex.get() );
+  auto copcIndex = static_cast<QgsCopcPointCloudIndex *>( mIndex.get() );
   copcIndex->reset();
 
   const QString originalFilename = fileInfo.dir().filePath( fileInfo.baseName() + QStringLiteral( "-original.copc.laz" ) );

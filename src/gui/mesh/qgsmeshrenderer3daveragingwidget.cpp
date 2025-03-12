@@ -159,7 +159,7 @@ void QgsMeshRenderer3DAveragingWidget::syncToLayer()
     {
       case QgsMesh3DAveragingMethod::MultiLevelsAveragingMethod:
       {
-        const QgsMeshMultiLevelsAveragingMethod *averagingMethod = static_cast<const QgsMeshMultiLevelsAveragingMethod *>( method );
+        auto averagingMethod = static_cast<const QgsMeshMultiLevelsAveragingMethod *>( method );
         if ( averagingMethod->isSingleLevel() )
         {
           if ( averagingMethod->countedFromTop() )
@@ -196,7 +196,7 @@ void QgsMeshRenderer3DAveragingWidget::syncToLayer()
       }
       case QgsMesh3DAveragingMethod::SigmaAveragingMethod:
       {
-        const QgsMeshSigmaAveragingMethod *sigmaAveragingMethod = static_cast<const QgsMeshSigmaAveragingMethod *>( method );
+        auto sigmaAveragingMethod = static_cast<const QgsMeshSigmaAveragingMethod *>( method );
         whileBlocking( mSigmaStartFractionSpinBox )->setValue( sigmaAveragingMethod->startFraction() );
         whileBlocking( mSigmaEndFractionSpinBox )->setValue( sigmaAveragingMethod->endFraction() );
         pageIndex = 4;
@@ -204,7 +204,7 @@ void QgsMeshRenderer3DAveragingWidget::syncToLayer()
       }
       case QgsMesh3DAveragingMethod::RelativeHeightAveragingMethod:
       {
-        const QgsMeshRelativeHeightAveragingMethod *averagingMethod = static_cast<const QgsMeshRelativeHeightAveragingMethod *>( method );
+        auto averagingMethod = static_cast<const QgsMeshRelativeHeightAveragingMethod *>( method );
         if ( averagingMethod->countedFromTop() )
         {
           whileBlocking( mDepthStartSpinBox )->setValue( averagingMethod->startHeight() );
@@ -221,7 +221,7 @@ void QgsMeshRenderer3DAveragingWidget::syncToLayer()
       }
       case QgsMesh3DAveragingMethod::ElevationAveragingMethod:
       {
-        const QgsMeshElevationAveragingMethod *elevationAveragingMethod = static_cast<const QgsMeshElevationAveragingMethod *>( method );
+        auto elevationAveragingMethod = static_cast<const QgsMeshElevationAveragingMethod *>( method );
         whileBlocking( mElevationStartSpinBox )->setValue( elevationAveragingMethod->startElevation() );
         whileBlocking( mElevationEndSpinBox )->setValue( elevationAveragingMethod->endElevation() );
         pageIndex = 7;

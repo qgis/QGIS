@@ -503,7 +503,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   QMenu *menu = new QMenu( this );
 
   QgsMessageBar *bar = nullptr;
-  if ( QgsDataSourceManagerDialog *dsm = qobject_cast<QgsDataSourceManagerDialog *>( window() ) )
+  if ( auto dsm = qobject_cast<QgsDataSourceManagerDialog *>( window() ) )
     bar = dsm->messageBar();
 
   QMenu *assetsMenu = new QMenu( tr( "Add Layer" ), menu );
@@ -550,7 +550,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   QAction *downloadAction = new QAction( tr( "Download Assets…" ), menu );
   connect( downloadAction, &QAction::triggered, this, [index, bar, authCfg = mStac->authCfg()] {
     QgsStacDownloadAssetsDialog dialog;
-    QgsStacItem *item = dynamic_cast<QgsStacItem *>( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
+    auto item = dynamic_cast<QgsStacItem *>( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
     dialog.setStacItem( item );
     dialog.setMessageBar( bar );
     dialog.setAuthCfg( authCfg );

@@ -143,7 +143,7 @@ json QgsMultiPolygon::asJsonObject( int precision ) const
     if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {
       json coordinates( json::array( ) );
-      const QgsPolygon *polygon = static_cast<const QgsPolygon *>( geom );
+      auto polygon = static_cast<const QgsPolygon *>( geom );
 
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
@@ -268,7 +268,7 @@ QgsAbstractGeometry *QgsMultiPolygon::boundary() const
     {
       QgsAbstractGeometry *polygonBoundary = polygon->boundary();
 
-      if ( QgsLineString *lineStringBoundary = qgsgeometry_cast< QgsLineString * >( polygonBoundary ) )
+      if ( auto lineStringBoundary = qgsgeometry_cast<QgsLineString *>( polygonBoundary ) )
       {
         multiLine->addGeometry( lineStringBoundary );
       }

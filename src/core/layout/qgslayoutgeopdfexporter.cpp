@@ -184,7 +184,7 @@ QgsAbstractGeospatialPdfExporter::VectorComponentDetail QgsLayoutGeospatialPdfEx
   const QgsMapLayer *layer = project->mapLayer( layerId );
   detail.name = layer ? layer->name() : layerId;
   detail.mapLayerId = layerId;
-  if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+  if ( auto vl = qobject_cast<const QgsVectorLayer *>( layer ) )
   {
     detail.displayAttribute = vl->displayField();
   }

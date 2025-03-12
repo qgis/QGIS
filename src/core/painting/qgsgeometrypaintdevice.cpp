@@ -369,7 +369,7 @@ void QgsGeometryPaintEngine::addStrokedLine( const QgsLineString *line, double p
   if ( matrix )
     buffered->transform( *matrix );
 
-  if ( QgsGeometryCollection *bufferedCollection = qgsgeometry_cast< QgsGeometryCollection * >( buffered.get() ) )
+  if ( auto bufferedCollection = qgsgeometry_cast<QgsGeometryCollection *>( buffered.get() ) )
   {
     if ( mSimplifyTolerance > 0 )
     {

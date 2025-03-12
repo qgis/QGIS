@@ -326,7 +326,7 @@ void QgsProviderRegistry::init()
 
     bool libraryLoaded { false };
     QFunctionPointer func = myLib.resolve( QStringLiteral( "providerMetadataFactory" ).toLatin1().data() );
-    factory_function *function = reinterpret_cast< factory_function * >( cast_to_fptr( func ) );
+    auto function = reinterpret_cast<factory_function *>( cast_to_fptr( func ) );
     if ( function )
     {
       QgsProviderMetadata *meta = function();
@@ -346,7 +346,7 @@ void QgsProviderRegistry::init()
     else
     {
       QFunctionPointer multi_func = myLib.resolve( QStringLiteral( "multipleProviderMetadataFactory" ).toLatin1().data() );
-      multiple_factory_function *multi_function = reinterpret_cast< multiple_factory_function * >( cast_to_fptr( multi_func ) );
+      auto multi_function = reinterpret_cast<multiple_factory_function *>( cast_to_fptr( multi_func ) );
       if ( multi_function )
       {
         std::vector<QgsProviderMetadata *> *metadatas = multi_function();

@@ -138,7 +138,7 @@ QgsMapLayer *QgsMapLayerComboBox::layer( int layerIndex ) const
     return nullptr;
   }
 
-  QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
+  auto layer = static_cast<QgsMapLayer *>( index.internalPointer() );
   if ( layer )
   {
     return layer;

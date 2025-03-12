@@ -137,7 +137,7 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
 
   QgsDebugMsgLevel( QStringLiteral( "Tile download manager: internal reply finished: " ) + mRequest.url().toString(), 2 );
 
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+  auto reply = qobject_cast<QNetworkReply *>( sender() );
   QByteArray data;
 
   if ( reply->error() == QNetworkReply::NoError )

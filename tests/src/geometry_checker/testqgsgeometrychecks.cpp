@@ -489,7 +489,7 @@ void TestQgsGeometryChecks::testDuplicateCheck()
   );
 
   // Test fixes
-  QgsGeometryDuplicateCheckError *dupErr = static_cast<QgsGeometryDuplicateCheckError *>( errs1[0] );
+  auto dupErr = static_cast<QgsGeometryDuplicateCheckError *>( errs1[0] );
   QString dup1LayerId = dupErr->duplicates().firstKey();
   QgsFeatureId dup1Fid = dupErr->duplicates()[dup1LayerId][0];
   QVERIFY( fixCheckError( testContext.second, dupErr, QgsGeometryDuplicateCheck::RemoveDuplicates, QgsGeometryCheckError::StatusFixed, { { dup1LayerId, dup1Fid, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId() } } ) );
@@ -1133,7 +1133,7 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   testContext.second[errs3[0]->layerId()]->getFeature( errs3[0]->featureId(), f );
   QVERIFY( fixCheckError( testContext.second, errs3[0], QgsGeometrySelfIntersectionCheck::ToSingleObjects, QgsGeometryCheckError::StatusFixed, { { errs3[0]->layerId(), errs3[0]->featureId(), QgsGeometryCheck::ChangeRing, QgsGeometryCheck::ChangeChanged, QgsVertexId( 0, 0 ) }, { errs3[0]->layerId(), nextId, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeAdded, QgsVertexId() } } ) );
   testContext.second[errs3[0]->layerId()]->getFeature( errs3[0]->featureId(), f );
-  const QgsGeometryCollection *collectionResult = qgsgeometry_cast<const QgsGeometryCollection *>( f.geometry().constGet() );
+  auto collectionResult = qgsgeometry_cast<const QgsGeometryCollection *>( f.geometry().constGet() );
 
   QCOMPARE( qgsgeometry_cast<const QgsPolygon *>( collectionResult->geometryN( 0 ) )->exteriorRing()->asWkt( 2 ), QStringLiteral( "LineString (0.7 0.59, 1.32 0.6, 1.26 0.09, 0.51 0.05, 0.89 0.57, 0.7 0.59)" ) );
   // make sure the other part of the ring isn't present in this feature. We may have OTHER parts in this feature though, depending on the GDAL version!
@@ -1154,7 +1154,7 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   QCOMPARE( f.geometry().constGet()->vertexCount( 1, 1 ), 5 );
 
   // Test change tracking
-  QgsGeometryCheckErrorSingle *err = static_cast<QgsGeometryCheckErrorSingle *>( errs4[0] );
+  auto err = static_cast<QgsGeometryCheckErrorSingle *>( errs4[0] );
   const QgsGeometryUtils::SelfIntersection oldInter = static_cast<QgsGeometrySelfIntersectionCheckError *>( err->singleError() )->intersection();
   QVERIFY( err->handleChanges( change2changes( { err->layerId(), err->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, QgsVertexId( err->vidx().part, errs4[0]->vidx().ring, 0 ) } ) ) );
   QgsGeometryUtils::SelfIntersection newInter = static_cast<QgsGeometrySelfIntersectionCheckError *>( err->singleError() )->intersection();

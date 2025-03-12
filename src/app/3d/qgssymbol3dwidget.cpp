@@ -55,7 +55,7 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent )
 
 std::unique_ptr<QgsAbstract3DSymbol> QgsSymbol3DWidget::symbol()
 {
-  if ( Qgs3DSymbolWidget *w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
+  if ( auto w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
   {
     return std::unique_ptr<QgsAbstract3DSymbol>( w->symbol() );
   }
@@ -67,7 +67,7 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
   mLayer = vlayer;
   mStyleWidget->setLayerType( mLayer->geometryType() );
 
-  if ( Qgs3DSymbolWidget *w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
+  if ( auto w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
   {
     if ( w->symbolType() == symbol->type() )
     {
@@ -139,7 +139,7 @@ void QgsSymbol3DWidget::updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol
   if ( widgetStack->currentWidget() != widgetUnsupported )
   {
     // stop updating from the original widget
-    if ( Qgs3DSymbolWidget *w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
+    if ( auto w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
       disconnect( w, &Qgs3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
     widgetStack->removeWidget( widgetStack->currentWidget() );
   }

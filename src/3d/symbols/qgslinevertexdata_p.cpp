@@ -75,7 +75,7 @@ QByteArray QgsLineVertexData::createIndexBuffer()
 {
   QByteArray indexBufferData;
   indexBufferData.resize( indexes.size() * sizeof( int ) );
-  unsigned int *rawIndexArray = reinterpret_cast<unsigned int *>( indexBufferData.data() );
+  auto rawIndexArray = reinterpret_cast<unsigned int *>( indexBufferData.data() );
   int idx = 0;
   for ( unsigned int indexVal : std::as_const( indexes ) )
   {

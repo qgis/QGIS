@@ -478,7 +478,7 @@ void TestQgsLegendRenderer::testSpacing()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -516,7 +516,7 @@ void TestQgsLegendRenderer::testEffects()
   renderer = dynamic_cast<QgsSingleSymbolRenderer *>( mVL1->renderer() );
   QVERIFY( renderer );
   symbol = renderer->symbol();
-  QgsSimpleLineSymbolLayer *lineLayer = dynamic_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) );
+  auto lineLayer = dynamic_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) );
   QVERIFY( lineLayer );
   lineLayer->setWidth( 1.8 );
   lineLayer->setColor( Qt::cyan );
@@ -528,7 +528,7 @@ void TestQgsLegendRenderer::testEffects()
   renderer = dynamic_cast<QgsSingleSymbolRenderer *>( mVL2->renderer() );
   symbol = renderer->symbol();
   QVERIFY( renderer );
-  QgsSimpleFillSymbolLayer *fillLayer = dynamic_cast<QgsSimpleFillSymbolLayer *>( symbol->takeSymbolLayer( 0 ) );
+  auto fillLayer = dynamic_cast<QgsSimpleFillSymbolLayer *>( symbol->takeSymbolLayer( 0 ) );
   QVERIFY( fillLayer );
   fillLayer->setColor( Qt::blue );
   effect = new QgsEffectStack();
@@ -554,7 +554,7 @@ void TestQgsLegendRenderer::testEffects()
   effect->appendEffect( new QgsDrawSourceEffect() );
   symbol->symbolLayer( 0 )->setPaintEffect( effect );
 
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, symbol );
 
@@ -574,7 +574,7 @@ void TestQgsLegendRenderer::testBigMarker()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -595,7 +595,7 @@ void TestQgsLegendRenderer::testBigMarkerMaxSize()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -642,7 +642,7 @@ void TestQgsLegendRenderer::testCenterAlignText()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -667,7 +667,7 @@ void TestQgsLegendRenderer::testLeftAlignTextRightAlignSymbol()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -693,7 +693,7 @@ void TestQgsLegendRenderer::testCenterAlignTextRightAlignSymbol()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -719,7 +719,7 @@ void TestQgsLegendRenderer::testRightAlignTextRightAlignSymbol()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -745,7 +745,7 @@ void TestQgsLegendRenderer::testDataDefinedTextFormat()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -785,7 +785,7 @@ void TestQgsLegendRenderer::testGroupHeadingSpacing()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -824,7 +824,7 @@ void TestQgsLegendRenderer::testGroupIndentDefault()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
   QgsLayerTreeModel legendModel( mRoot );
@@ -843,7 +843,7 @@ void TestQgsLegendRenderer::testGroupIndentRT()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
   QgsLayerTreeModel legendModel( mRoot );
@@ -865,7 +865,7 @@ void TestQgsLegendRenderer::testGroupIndentRS()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
   QgsLayerTreeModel legendModel( mRoot );
@@ -888,7 +888,7 @@ void TestQgsLegendRenderer::testGroupIndentRSRT()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
   QgsLayerTreeModel legendModel( mRoot );
@@ -910,7 +910,7 @@ void TestQgsLegendRenderer::testRightAlignText()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -937,7 +937,7 @@ void TestQgsLegendRenderer::testMapUnits()
   sym->setColor( Qt::red );
   sym->setSize( 100 );
   sym->setSizeUnit( Qgis::RenderUnit::MapUnits );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -974,7 +974,7 @@ void TestQgsLegendRenderer::testTallSymbol()
 {
   const QString testName = QStringLiteral( "legend_tall_symbol" );
 
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategoryLabel( 1, QStringLiteral( "This is\nthree lines\nlong label" ) );
 
@@ -996,7 +996,7 @@ void TestQgsLegendRenderer::testLineSpacing()
 {
   const QString testName = QStringLiteral( "legend_line_spacing" );
 
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategoryLabel( 1, QStringLiteral( "This is\nthree lines\nlong label" ) );
 
@@ -1020,7 +1020,7 @@ void TestQgsLegendRenderer::testLongSymbolText()
 {
   const QString testName = QStringLiteral( "legend_long_symbol_text" );
 
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategoryLabel( 1, QStringLiteral( "This is\nthree lines\nlong label" ) );
 
@@ -2107,7 +2107,7 @@ void TestQgsLegendRenderer::testBigMarkerJson()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
   catRenderer->updateCategorySymbol( 0, sym );
 
@@ -2149,7 +2149,7 @@ void TestQgsLegendRenderer::testLabelLegend()
   const bool bkLabelsEnabled = mVL3->labelsEnabled();
   mVL3->setLabelsEnabled( true );
 
-  QgsDefaultVectorLayerLegend *vLayerLegend = dynamic_cast<QgsDefaultVectorLayerLegend *>( mVL3->legend() );
+  auto vLayerLegend = dynamic_cast<QgsDefaultVectorLayerLegend *>( mVL3->legend() );
   if ( !vLayerLegend )
   {
     QFAIL( "No vector layer legend" );

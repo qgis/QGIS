@@ -75,7 +75,7 @@ QString QgsAbstractGeospatialPdfExporter::geospatialPDFAvailabilityExplanation()
 void CPL_STDCALL collectErrors( CPLErr, int, const char *msg )
 {
   QgsDebugError( QStringLiteral( "GDAL PDF creation error: %1 " ).arg( msg ) );
-  if ( QStringList *errorList = static_cast< QStringList * >( CPLGetErrorHandlerUserData() ) )
+  if ( auto errorList = static_cast<QStringList *>( CPLGetErrorHandlerUserData() ) )
   {
     errorList->append( QString( msg ) );
   }

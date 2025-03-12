@@ -224,7 +224,7 @@ void QgsSnappingConfig::reset()
     const auto constMapLayers = mProject->mapLayers();
     for ( QgsMapLayer *ml : constMapLayers )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+      auto vl = qobject_cast<QgsVectorLayer *>( ml );
       if ( vl )
       {
         mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units, 0.0, 0.0 ) );
@@ -547,7 +547,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
       if ( !ml || ml->type() != Qgis::LayerType::Vector )
         continue;
 
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+      auto vl = qobject_cast<QgsVectorLayer *>( ml );
 
       const IndividualLayerSettings setting = IndividualLayerSettings( enabled, type, tolerance, units, minScale, maxScale );
       mIndividualLayerSettings.insert( vl, setting );
@@ -601,7 +601,7 @@ bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
   const auto constLayers = layers;
   for ( QgsMapLayer *ml : constLayers )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    auto vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( vl && vl->isSpatial() )
     {
       mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units, 0.0, 0.0 ) );
@@ -617,7 +617,7 @@ bool QgsSnappingConfig::removeLayers( const QList<QgsMapLayer *> &layers )
   const auto constLayers = layers;
   for ( QgsMapLayer *ml : constLayers )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    auto vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( vl )
     {
       mIndividualLayerSettings.remove( vl );
@@ -669,7 +669,7 @@ void QgsSnappingConfig::readLegacySettings()
   QStringList::const_iterator enabledIt( enabledList.constBegin() );
   for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++tolUnitIt, ++snapIt, ++enabledIt )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mProject->mapLayer( *layerIt ) );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( mProject->mapLayer( *layerIt ) );
     if ( !vlayer || !vlayer->isSpatial() )
       continue;
 

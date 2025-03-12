@@ -50,7 +50,7 @@ static bool initVectorLayerRenderer( const QString &name, QgsRendererWidgetFunc 
   QgsRendererAbstractMetadata *am = reg->rendererMetadata( name );
   if ( !am )
     return false;
-  QgsRendererMetadata *m = dynamic_cast<QgsRendererMetadata *>( am );
+  auto m = dynamic_cast<QgsRendererMetadata *>( am );
   if ( !m )
     return false;
 
@@ -142,7 +142,7 @@ void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *> &w
 {
   for ( QWidget *widget : widgets )
   {
-    if ( QgsPropertyOverrideButton *w = qobject_cast<QgsPropertyOverrideButton *>( widget ) )
+    if ( auto w = qobject_cast<QgsPropertyOverrideButton *>( widget ) )
     {
       connect( w, &QgsPropertyOverrideButton::changed, this, &QgsRendererPropertiesDialog::widgetChanged );
     }

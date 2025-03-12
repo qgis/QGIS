@@ -230,7 +230,7 @@ void QgsWelcomePage::newsItemActivated( const QModelIndex &index )
 
 void QgsWelcomePage::versionInfoReceived()
 {
-  QgsVersionInfo *versionInfo = qobject_cast<QgsVersionInfo *>( sender() );
+  auto versionInfo = qobject_cast<QgsVersionInfo *>( sender() );
   Q_ASSERT( versionInfo );
 
   if ( versionInfo->newVersionAvailable() )
@@ -440,7 +440,7 @@ bool QgsWelcomePage::eventFilter( QObject *obj, QEvent *event )
 {
   if ( obj == mNewsFeedListView->viewport() && event->type() == QEvent::MouseButtonRelease )
   {
-    QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>( event );
+    auto mouseEvent = dynamic_cast<QMouseEvent *>( event );
     if ( mouseEvent->button() == Qt::LeftButton )
     {
       const QModelIndex index = mNewsFeedListView->indexAt( mouseEvent->pos() );

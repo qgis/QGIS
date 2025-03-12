@@ -54,17 +54,17 @@ QString QgsLayerTreeViewFilterIndicatorProvider::iconName( QgsMapLayer *layer )
 
 QString QgsLayerTreeViewFilterIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
   QString filter;
   if ( vlayer )
     filter = vlayer->subsetString();
 
   // PG raster
-  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  auto rlayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
     filter = rlayer->subsetString();
 
-  QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  auto pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
   if ( pclayer && pclayer->dataProvider() && pclayer->dataProvider()->supportsSubsetString() )
     filter = pclayer->subsetString();
 
@@ -86,20 +86,20 @@ void QgsLayerTreeViewFilterIndicatorProvider::connectSignals( QgsMapLayer *layer
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       connect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
       break;
     }
     case Qgis::LayerType::Raster:
     {
       // PG raster
-      QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+      auto rlayer = qobject_cast<QgsRasterLayer *>( layer );
       connect( rlayer, &QgsRasterLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
       break;
     }
     case Qgis::LayerType::PointCloud:
     {
-      QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+      auto pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
       connect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
       break;
     }
@@ -123,20 +123,20 @@ void QgsLayerTreeViewFilterIndicatorProvider::disconnectSignals( QgsMapLayer *la
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       disconnect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
       break;
     }
     case Qgis::LayerType::Raster:
     {
       // PG raster
-      QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+      auto rlayer = qobject_cast<QgsRasterLayer *>( layer );
       disconnect( rlayer, &QgsRasterLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
       break;
     }
     case Qgis::LayerType::PointCloud:
     {
-      QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+      auto pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
       disconnect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
       break;
     }
@@ -156,17 +156,17 @@ bool QgsLayerTreeViewFilterIndicatorProvider::acceptLayer( QgsMapLayer *layer )
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       return !vlayer->subsetString().isEmpty();
     }
     case Qgis::LayerType::Raster:
     {
-      QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+      auto rlayer = qobject_cast<QgsRasterLayer *>( layer );
       return !rlayer->subsetString().isEmpty();
     }
     case Qgis::LayerType::PointCloud:
     {
-      QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+      auto pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
       return !pclayer->subsetString().isEmpty();
     }
     case Qgis::LayerType::Annotation:

@@ -96,7 +96,7 @@ static bool isGeometryColumn( const QgsExpressionNode *node )
   if ( node->nodeType() != QgsExpressionNode::ntFunction )
     return false;
 
-  const QgsExpressionNodeFunction *fn = static_cast<const QgsExpressionNodeFunction *>( node );
+  auto fn = static_cast<const QgsExpressionNodeFunction *>( node );
   QgsExpressionFunction *fd = QgsExpression::Functions()[fn->fnIndex()];
   return fd->name() == QLatin1String( "$geometry" );
 }
@@ -108,7 +108,7 @@ static QgsGeometry geometryFromConstExpr( const QgsExpressionNode *node )
 
   if ( node->nodeType() == QgsExpressionNode::ntFunction )
   {
-    const QgsExpressionNodeFunction *fnNode = static_cast<const QgsExpressionNodeFunction *>( node );
+    auto fnNode = static_cast<const QgsExpressionNodeFunction *>( node );
     QgsExpressionFunction *fnDef = QgsExpression::Functions()[fnNode->fnIndex()];
     if ( fnDef->name() == QLatin1String( "geom_from_wkt" ) )
     {
@@ -192,7 +192,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
         return Fail;
       }
 
-      const QgsPoint *point = static_cast<const QgsPoint *>( geom.constGet() );
+      auto point = static_cast<const QgsPoint *>( geom.constGet() );
       QString coordString;
       coordString += qgsDoubleToString( mInvertAxisOrientation ? point->y() : point->x() );
       coordString += ' ';
@@ -217,7 +217,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
       {
         if ( argNodes[i]->nodeType() != QgsExpressionNode::ntLiteral )
           return Fail;
-        const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( argNodes[i] );
+        auto n = static_cast<const QgsExpressionNodeLiteral *>( argNodes[i] );
         if ( n->value().userType() != QMetaType::Type::Int )
           return Fail;
         values.push_back( n->value().toInt() );
@@ -237,7 +237,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
       {
         if ( argNodes[i]->nodeType() != QgsExpressionNode::ntLiteral )
           return Fail;
-        const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( argNodes[i] );
+        auto n = static_cast<const QgsExpressionNodeLiteral *>( argNodes[i] );
         if ( n->value().userType() != QMetaType::Type::Int )
           return Fail;
         values.push_back( n->value().toInt() );
@@ -261,7 +261,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
   {
     case QgsExpressionNode::ntUnaryOperator:
     {
-      const QgsExpressionNodeUnaryOperator *n = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
+      auto n = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
       switch ( n->op() )
       {
         case QgsExpressionNodeUnaryOperator::uoNot:
@@ -294,7 +294,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
 
     case QgsExpressionNodeBinaryOperator::ntBinaryOperator:
     {
-      const QgsExpressionNodeBinaryOperator *n = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+      auto n = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
 
       QString op;
       bool isCaseI = false;
@@ -414,8 +414,8 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
       // that can be suggested by the query builder
       if ( n->opLeft()->nodeType() == QgsExpressionNode::ntColumnRef && n->opRight()->nodeType() == QgsExpressionNode::ntLiteral )
       {
-        const QgsExpressionNodeColumnRef *nLeft = static_cast<const QgsExpressionNodeColumnRef *>( n->opLeft() );
-        const QgsExpressionNodeLiteral *nRight = static_cast<const QgsExpressionNodeLiteral *>( n->opRight() );
+        auto nLeft = static_cast<const QgsExpressionNodeColumnRef *>( n->opLeft() );
+        auto nRight = static_cast<const QgsExpressionNodeLiteral *>( n->opRight() );
         if ( nRight->value().userType() == QMetaType::Type::QString )
         {
           QString columnFormat;
@@ -479,7 +479,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
     {
       if ( !mSupportsLikeBetweenIn )
         return Fail;
-      const QgsExpressionNodeBetweenOperator *n = static_cast<const QgsExpressionNodeBetweenOperator *>( node );
+      auto n = static_cast<const QgsExpressionNodeBetweenOperator *>( node );
       QString res;
 
       if ( compileNode( n->node(), res ) != Complete )
@@ -501,14 +501,14 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
 
     case QgsExpressionNode::ntLiteral:
     {
-      const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( node );
+      auto n = static_cast<const QgsExpressionNodeLiteral *>( node );
       result = literalValue( n->value() );
       return Complete;
     }
 
     case QgsExpressionNode::ntColumnRef:
     {
-      const QgsExpressionNodeColumnRef *n = static_cast<const QgsExpressionNodeColumnRef *>( node );
+      auto n = static_cast<const QgsExpressionNodeColumnRef *>( node );
 
       // QGIS expressions don't care about case sensitive field naming, so we match case insensitively here to the
       // layer's fields and then retrieve the actual case of the field name for use in the compilation
@@ -536,7 +536,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
     {
       if ( !mSupportsLikeBetweenIn )
         return Fail;
-      const QgsExpressionNodeInOperator *n = static_cast<const QgsExpressionNodeInOperator *>( node );
+      auto n = static_cast<const QgsExpressionNodeInOperator *>( node );
       QStringList list;
 
       const auto constList = n->list()->list();
@@ -558,7 +558,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
 
     case QgsExpressionNode::ntFunction:
     {
-      const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
+      auto n = static_cast<const QgsExpressionNodeFunction *>( node );
       return compileNodeFunction( n, result );
     }
 

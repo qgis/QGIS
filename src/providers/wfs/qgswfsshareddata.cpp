@@ -148,7 +148,7 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
   {
     const QgsSQLStatement sql( mURI.sql() );
 
-    const QgsSQLStatement::NodeSelect *select = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
+    auto select = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
     if ( !select )
     {
       // Makes Coverity happy, but cannot happen in practice

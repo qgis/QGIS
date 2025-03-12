@@ -167,7 +167,7 @@ void QgsDataSourceManagerDialog::reset()
   for ( int i = 0; i < pageCount; ++i )
   {
     QWidget *widget = ui->mOptionsStackedWidget->widget( i );
-    QgsAbstractDataSourceWidget *dataSourceWidget = qobject_cast<QgsAbstractDataSourceWidget *>( widget );
+    auto dataSourceWidget = qobject_cast<QgsAbstractDataSourceWidget *>( widget );
     if ( dataSourceWidget )
       dataSourceWidget->reset();
   }
@@ -180,7 +180,7 @@ void QgsDataSourceManagerDialog::configureFromUri( const QString &pageName, cons
   {
     QTimer::singleShot( 0, this, [this, pageIdx, uri] {
       setCurrentPage( pageIdx );
-      if ( QgsAbstractDataSourceWidget *dataSourceWidget = qobject_cast<QgsAbstractDataSourceWidget *>( ui->mOptionsStackedWidget->currentWidget() ) )
+      if ( auto dataSourceWidget = qobject_cast<QgsAbstractDataSourceWidget *>( ui->mOptionsStackedWidget->currentWidget() ) )
       {
         dataSourceWidget->configureFromUri( uri );
       }

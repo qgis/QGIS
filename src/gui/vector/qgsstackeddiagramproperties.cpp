@@ -182,7 +182,7 @@ void QgsStackedDiagramProperties::syncToLayer()
 
     if ( dr->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
     {
-      const QgsStackedDiagramRenderer *stackedDiagramRenderer = static_cast<const QgsStackedDiagramRenderer *>( dr );
+      auto stackedDiagramRenderer = static_cast<const QgsStackedDiagramRenderer *>( dr );
       const QList<QgsDiagramRenderer *> renderers = stackedDiagramRenderer->renderers();
       for ( const QgsDiagramRenderer *renderer : renderers )
       {
@@ -269,7 +269,7 @@ bool QgsStackedDiagramProperties::couldBeFirstSubDiagram( const QModelIndex &ind
 
 void QgsStackedDiagramProperties::subDiagramWidgetPanelAccepted( QgsPanelWidget *panel )
 {
-  QgsDiagramProperties *widget = qobject_cast<QgsDiagramProperties *>( panel );
+  auto widget = qobject_cast<QgsDiagramProperties *>( panel );
 
   std::unique_ptr<QgsDiagramRenderer> renderer = widget->createRenderer();
 
@@ -614,12 +614,12 @@ bool QgsStackedDiagramPropertiesModel::setData( const QModelIndex &index, const 
 
       if ( dr->rendererName() == QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY )
       {
-        QgsSingleCategoryDiagramRenderer *dsr = static_cast<QgsSingleCategoryDiagramRenderer *>( dr );
+        auto dsr = static_cast<QgsSingleCategoryDiagramRenderer *>( dr );
         dsr->setDiagramSettings( ds );
       }
       else
       {
-        QgsLinearlyInterpolatedDiagramRenderer *dlir = static_cast<QgsLinearlyInterpolatedDiagramRenderer *>( dr );
+        auto dlir = static_cast<QgsLinearlyInterpolatedDiagramRenderer *>( dr );
         dlir->setDiagramSettings( ds );
       }
 

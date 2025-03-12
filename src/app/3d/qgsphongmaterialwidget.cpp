@@ -109,7 +109,7 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
 
 void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
 {
-  const QgsPhongMaterialSettings *phongMaterial = dynamic_cast<const QgsPhongMaterialSettings *>( settings );
+  auto phongMaterial = dynamic_cast<const QgsPhongMaterialSettings *>( settings );
   if ( !phongMaterial )
     return;
   btnDiffuse->setColor( phongMaterial->diffuse() );

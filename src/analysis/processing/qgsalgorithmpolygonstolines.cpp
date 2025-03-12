@@ -132,7 +132,7 @@ QList<QgsCurve *> QgsPolygonsToLinesAlgorithm::extractRings( const QgsAbstractGe
 {
   QList<QgsCurve *> rings;
 
-  if ( QgsGeometryCollection *collection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
+  if ( auto collection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
   {
     QgsGeometryPartIterator parts = collection->parts();
     while ( parts.hasNext() )

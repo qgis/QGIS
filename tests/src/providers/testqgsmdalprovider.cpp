@@ -152,7 +152,7 @@ void TestQgsMdalProvider::load()
       QgsDataProvider::ProviderOptions()
     );
 
-    QgsMeshDataProvider *mp = dynamic_cast<QgsMeshDataProvider *>( provider );
+    auto mp = dynamic_cast<QgsMeshDataProvider *>( provider );
     QVERIFY( mp );
     QVERIFY( mp->isValid() );
     delete provider;
@@ -165,7 +165,7 @@ void TestQgsMdalProvider::load()
       QgsDataProvider::ProviderOptions()
     );
 
-    QgsMeshDataProvider *mp = dynamic_cast<QgsMeshDataProvider *>( provider );
+    auto mp = dynamic_cast<QgsMeshDataProvider *>( provider );
     QVERIFY( mp );
     QVERIFY( !mp->isValid() );
     delete provider;
@@ -192,7 +192,7 @@ void TestQgsMdalProvider::preserveMeshMetadata()
     QgsDataProvider::ProviderOptions()
   );
 
-  QgsMeshDataProvider *mp = dynamic_cast<QgsMeshDataProvider *>( provider );
+  auto mp = dynamic_cast<QgsMeshDataProvider *>( provider );
   QVERIFY( mp );
   QVERIFY( mp->isValid() );
 
@@ -219,14 +219,14 @@ void TestQgsMdalProvider::uniqueDatasetNames()
     QgsDataProvider::ProviderOptions()
   );
 
-  QgsMeshDataProvider *mp = dynamic_cast<QgsMeshDataProvider *>( provider );
+  auto mp = dynamic_cast<QgsMeshDataProvider *>( provider );
 
   QgsDataProvider *provider1 = QgsProviderRegistry::instance()->createProvider(
     QStringLiteral( "mdal" ),
     file,
     QgsDataProvider::ProviderOptions()
   );
-  QgsMeshDataProvider *mp1 = dynamic_cast<QgsMeshDataProvider *>( provider1 );
+  auto mp1 = dynamic_cast<QgsMeshDataProvider *>( provider1 );
 
   // these three dataset files have the same name
   const QString fileDatasetGroup1 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle_vertex_vector.dat" );
@@ -281,7 +281,7 @@ void TestQgsMdalProvider::addRemoveDatasetGroups()
     QgsDataProvider::ProviderOptions()
   );
 
-  QgsMeshDataProvider *mp = dynamic_cast<QgsMeshDataProvider *>( provider );
+  auto mp = dynamic_cast<QgsMeshDataProvider *>( provider );
   QVERIFY( mp );
   QVERIFY( mp->isValid() );
   QCOMPARE( mp->datasetGroupCount(), 1 );

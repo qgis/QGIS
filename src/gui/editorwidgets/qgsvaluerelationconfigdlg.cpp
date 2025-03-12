@@ -158,7 +158,7 @@ void QgsValueRelationConfigDlg::layerChanged()
 
 void QgsValueRelationConfigDlg::editExpression()
 {
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerName->currentLayer() );
+  auto vl = qobject_cast<QgsVectorLayer *>( mLayerName->currentLayer() );
   if ( !vl )
     return;
 

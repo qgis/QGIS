@@ -1817,7 +1817,7 @@ void TestQgsCircularString::boundary()
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   QgsAbstractGeometry *boundary = cs.boundary();
-  QgsMultiPoint *mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
+  auto mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
 
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->pointN( 0 )->x(), 0.0 );

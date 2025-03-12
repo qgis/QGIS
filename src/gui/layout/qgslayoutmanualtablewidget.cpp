@@ -138,7 +138,7 @@ QgsExpressionContext QgsLayoutManualTableWidget::createExpressionContext() const
 
 bool QgsLayoutManualTableWidget::setNewItem( QgsLayoutItem *item )
 {
-  QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( item );
+  auto frame = qobject_cast<QgsLayoutFrame *>( item );
   if ( !frame )
     return false;
 

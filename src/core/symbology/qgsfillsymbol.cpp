@@ -156,7 +156,7 @@ void QgsFillSymbol::setAngle( double angle ) const
     if ( layer->type() != Qgis::SymbolType::Fill )
       continue;
 
-    QgsFillSymbolLayer *fillLayer = static_cast<QgsFillSymbolLayer *>( layer );
+    auto fillLayer = static_cast<QgsFillSymbolLayer *>( layer );
 
     if ( fillLayer )
       fillLayer->setAngle( angle );

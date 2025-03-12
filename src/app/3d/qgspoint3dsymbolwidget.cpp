@@ -88,7 +88,7 @@ Qgs3DSymbolWidget *QgsPoint3DSymbolWidget::create( QgsVectorLayer * )
 
 void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer )
 {
-  const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( symbol );
+  auto pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( symbol );
   if ( !pointSymbol )
     return;
 

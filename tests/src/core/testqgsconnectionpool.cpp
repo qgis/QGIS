@@ -117,7 +117,7 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   for ( int i = 0, n = layer1Features.count(); i < n; ++i )
   {
     const QgsGeometry featureGeom = layer1Features[i].geometry();
-    const QgsPoint *geom = dynamic_cast<const QgsPoint *>( featureGeom.constGet() );
+    auto geom = dynamic_cast<const QgsPoint *>( featureGeom.constGet() );
     QVERIFY( geom );
     QVERIFY( qFuzzyCompare( geom->x(), i ) );
     QVERIFY( qFuzzyCompare( geom->y(), i ) );
@@ -125,7 +125,7 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   for ( int i = 0, n = layer2Features.count(); i < n; ++i )
   {
     const QgsGeometry featureGeom = layer2Features[i].geometry();
-    const QgsLineString *geom = dynamic_cast<const QgsLineString *>( featureGeom.constGet() );
+    auto geom = dynamic_cast<const QgsLineString *>( featureGeom.constGet() );
     QVERIFY( geom );
     const int nVtx = geom->vertexCount();
     QVERIFY( nVtx == nRoutePts );

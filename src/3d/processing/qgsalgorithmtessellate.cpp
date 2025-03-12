@@ -126,7 +126,7 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
 
         if ( f.geometry().isMultipart() )
         {
-          const QgsMultiSurface *ms = qgsgeometry_cast<const QgsMultiSurface *>( f.geometry().constGet() );
+          auto ms = qgsgeometry_cast<const QgsMultiSurface *>( f.geometry().constGet() );
           for ( int i = 0; i < ms->numGeometries(); ++i )
           {
             const std::unique_ptr<QgsPolygon> p( qgsgeometry_cast<QgsPolygon *>( ms->geometryN( i )->segmentize() ) );

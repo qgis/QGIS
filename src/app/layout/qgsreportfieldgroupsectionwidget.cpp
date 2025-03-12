@@ -153,7 +153,7 @@ void QgsReportSectionFieldGroupWidget::sortAscendingToggled( bool checked )
 
 void QgsReportSectionFieldGroupWidget::setLayer( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+  auto vl = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vl )
     return;
 

@@ -57,7 +57,7 @@ void QgsModelViewMouseHandles::selectionChanged()
   const QList<QGraphicsItem *> itemList = mView->items();
   for ( QGraphicsItem *graphicsItem : itemList )
   {
-    QgsModelComponentGraphicItem *item = dynamic_cast<QgsModelComponentGraphicItem *>( graphicsItem );
+    auto item = dynamic_cast<QgsModelComponentGraphicItem *>( graphicsItem );
     if ( !item )
       continue;
 
@@ -103,7 +103,7 @@ QList<QGraphicsItem *> QgsModelViewMouseHandles::selectedSceneItems( bool ) cons
 
 QRectF QgsModelViewMouseHandles::itemRect( QGraphicsItem *item ) const
 {
-  if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+  if ( auto componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
     return componentItem->itemRect();
   else
     return QRectF();
@@ -111,7 +111,7 @@ QRectF QgsModelViewMouseHandles::itemRect( QGraphicsItem *item ) const
 
 QRectF QgsModelViewMouseHandles::storedItemRect( QGraphicsItem *item ) const
 {
-  if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+  if ( auto componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
     return componentItem->itemRect( true );
   else
     return QRectF();
@@ -119,7 +119,7 @@ QRectF QgsModelViewMouseHandles::storedItemRect( QGraphicsItem *item ) const
 
 void QgsModelViewMouseHandles::moveItem( QGraphicsItem *item, double deltaX, double deltaY )
 {
-  if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+  if ( auto componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
   {
     componentItem->moveComponentBy( deltaX, deltaY );
   }
@@ -127,7 +127,7 @@ void QgsModelViewMouseHandles::moveItem( QGraphicsItem *item, double deltaX, dou
 
 void QgsModelViewMouseHandles::previewItemMove( QGraphicsItem *item, double deltaX, double deltaY )
 {
-  if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+  if ( auto componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
   {
     componentItem->previewItemMove( deltaX, deltaY );
   }
@@ -135,7 +135,7 @@ void QgsModelViewMouseHandles::previewItemMove( QGraphicsItem *item, double delt
 
 void QgsModelViewMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
 {
-  if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+  if ( auto componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
   {
     componentItem->finalizePreviewedItemRectChange( rect );
   }
@@ -143,7 +143,7 @@ void QgsModelViewMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
 
 QRectF QgsModelViewMouseHandles::previewSetItemRect( QGraphicsItem *item, QRectF rect )
 {
-  if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+  if ( auto componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
   {
     return componentItem->previewItemRectChange( rect );
   }

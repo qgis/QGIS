@@ -172,7 +172,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
       QString name = nodeLayer->name();
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
       if ( vlayer && nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
       {
         const bool estimatedCount = vlayer->dataProvider() ? QgsDataSourceUri( vlayer->dataProvider()->dataSourceUri() ).useEstimatedMetadata() : false;
@@ -293,7 +293,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           {
             layerCrs += QStringLiteral( " @ %1" ).arg( qgsDoubleToString( layer->crs().coordinateEpoch(), 3 ) );
           }
-          if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+          if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
             title += tr( " (%1 - %2)" ).arg( QgsWkbTypes::displayString( vl->wkbType() ), layerCrs ).toHtmlEscaped();
           else
             title += tr( " (%1)" ).arg( layerCrs ).toHtmlEscaped();
@@ -852,7 +852,7 @@ void QgsLayerTreeModel::nodeCustomPropertyChanged( QgsLayerTreeNode *node, const
 
 void QgsLayerTreeModel::nodeLayerLoaded()
 {
-  QgsLayerTreeLayer *nodeLayer = qobject_cast<QgsLayerTreeLayer *>( sender() );
+  auto nodeLayer = qobject_cast<QgsLayerTreeLayer *>( sender() );
   if ( !nodeLayer )
     return;
 
@@ -862,7 +862,7 @@ void QgsLayerTreeModel::nodeLayerLoaded()
 
 void QgsLayerTreeModel::nodeLayerWillBeUnloaded()
 {
-  QgsLayerTreeLayer *nodeLayer = qobject_cast<QgsLayerTreeLayer *>( sender() );
+  auto nodeLayer = qobject_cast<QgsLayerTreeLayer *>( sender() );
   if ( !nodeLayer )
     return;
 
@@ -880,7 +880,7 @@ void QgsLayerTreeModel::layerLegendChanged()
   if ( !testFlag( ShowLegend ) )
     return;
 
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  auto layer = qobject_cast<QgsMapLayer *>( sender() );
   if ( !layer )
     return;
 
@@ -896,7 +896,7 @@ void QgsLayerTreeModel::layerFlagsChanged()
   if ( !mRootNode )
     return;
 
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  auto layer = qobject_cast<QgsMapLayer *>( sender() );
   if ( !layer )
     return;
 
@@ -910,7 +910,7 @@ void QgsLayerTreeModel::layerFlagsChanged()
 
 void QgsLayerTreeModel::layerNeedsUpdate()
 {
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  auto layer = qobject_cast<QgsMapLayer *>( sender() );
   if ( !layer )
     return;
 
@@ -928,7 +928,7 @@ void QgsLayerTreeModel::layerNeedsUpdate()
 
 void QgsLayerTreeModel::legendNodeDataChanged()
 {
-  QgsLayerTreeModelLegendNode *legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( sender() );
+  auto legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( sender() );
   if ( !legendNode )
     return;
 
@@ -939,7 +939,7 @@ void QgsLayerTreeModel::legendNodeDataChanged()
 
 void QgsLayerTreeModel::legendNodeSizeChanged()
 {
-  QgsLayerTreeModelLegendNode *legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( sender() );
+  auto legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( sender() );
   if ( !legendNode )
     return;
 
@@ -1330,7 +1330,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
 
             if ( checked )
             {
-              if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
+              if ( auto vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
               {
                 auto it = mHitTestResults.constFind( vl->id() );
                 if ( it != mHitTestResults.constEnd() &&
@@ -1763,7 +1763,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
     QMap<QString, int> widthMax;
     for ( QgsLayerTreeModelLegendNode *legendNode : std::as_const( data.originalNodes ) )
     {
-      QgsSymbolLegendNode *n = qobject_cast<QgsSymbolLegendNode *>( legendNode );
+      auto n = qobject_cast<QgsSymbolLegendNode *>( legendNode );
       if ( n )
       {
         const QSize sz( n->minimumIconSize( context.get() ) );
@@ -1792,11 +1792,11 @@ void QgsLayerTreeModel::layerProfileGenerationPropertyChanged()
   if ( !mRootNode )
     return;
 
-  QgsMapLayerElevationProperties *elevationProperties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
+  auto elevationProperties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
   if ( !elevationProperties )
     return;
 
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( elevationProperties->parent() ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( elevationProperties->parent() ) )
   {
     QgsLayerTreeLayer *nodeLayer = mRootNode->findLayer( layer->id() );
     if ( !nodeLayer )

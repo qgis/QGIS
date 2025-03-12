@@ -54,7 +54,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( QgsLayoutItem *item = qobject_cast< QgsLayoutItem * >( sipCpp ) )
+    if ( auto item = qobject_cast<QgsLayoutItem *>( sipCpp ) )
     {
       // the conversions have to be static, because they're using multiple inheritance
       // (seen in PyQt4 .sip files for some QGraphicsItem classes)

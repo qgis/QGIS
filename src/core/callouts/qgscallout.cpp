@@ -1203,7 +1203,7 @@ void QgsBalloonCallout::draw( QgsRenderContext &context, const QRectF &rect, con
 
   if ( mMarkerSymbol )
   {
-    if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( line.constGet() ) )
+    if ( auto ls = qgsgeometry_cast<const QgsLineString *>( line.constGet() ) )
     {
       QgsPoint anchorPoint = ls->endPoint();
       mMarkerSymbol->renderPoint( anchorPoint.toQPointF(), nullptr, context );
@@ -1220,7 +1220,7 @@ void QgsBalloonCallout::draw( QgsRenderContext &context, const QRectF &rect, con
 
   if ( offsetFromAnchorPixels > 0 )
   {
-    if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( line.constGet() ) )
+    if ( auto ls = qgsgeometry_cast<const QgsLineString *>( line.constGet() ) )
     {
       line = QgsGeometry( ls->curveSubstring( 0, ls->length() - offsetFromAnchorPixels ) );
     }
@@ -1228,7 +1228,7 @@ void QgsBalloonCallout::draw( QgsRenderContext &context, const QRectF &rect, con
 
   QgsPointXY destination;
   QgsPointXY origin;
-  if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( line.constGet() ) )
+  if ( auto ls = qgsgeometry_cast<const QgsLineString *>( line.constGet() ) )
   {
     origin = ls->startPoint();
     destination = ls->endPoint();

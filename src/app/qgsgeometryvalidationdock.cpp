@@ -342,7 +342,7 @@ void QgsGeometryValidationDock::onLayerDestroyed( QObject *layer )
 
 void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
   if ( vlayer )
   {
     const QgsGeometry featureGeometry = current.data( QgsGeometryValidationModel::FeatureGeometryRole ).value<QgsGeometry>();

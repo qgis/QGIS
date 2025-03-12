@@ -685,7 +685,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc,
   const QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
-  QgsColorRampPointCloud3DSymbol *symbol = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( context.symbol() );
+  auto symbol = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( context.symbol() );
   if ( symbol )
   {
     int offset = 0;
@@ -808,7 +808,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc, const
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
 
-  QgsRgbPointCloud3DSymbol *symbol = qgis::down_cast<QgsRgbPointCloud3DSymbol *>( context.symbol() );
+  auto symbol = qgis::down_cast<QgsRgbPointCloud3DSymbol *>( context.symbol() );
 
   // we have to get the RGB attributes using their real data types -- they aren't always short! (sometimes unsigned short)
   int attrOffset = 0;
@@ -961,7 +961,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   bool attrIsZ = false;
   QgsPointCloudAttribute::DataType attributeType = QgsPointCloudAttribute::Float;
   int attributeOffset = 0;
-  QgsClassificationPointCloud3DSymbol *symbol = dynamic_cast<QgsClassificationPointCloud3DSymbol *>( context.symbol() );
+  auto symbol = dynamic_cast<QgsClassificationPointCloud3DSymbol *>( context.symbol() );
   if ( !symbol )
     return;
 

@@ -76,7 +76,7 @@ QgsAnnotationItem *QgsAnnotationPolygonItemWidget::createItem()
 
 void QgsAnnotationPolygonItemWidget::updateItem( QgsAnnotationItem *item )
 {
-  if ( QgsAnnotationPolygonItem *polygonItem = dynamic_cast<QgsAnnotationPolygonItem *>( item ) )
+  if ( auto polygonItem = dynamic_cast<QgsAnnotationPolygonItem *>( item ) )
   {
     polygonItem->setSymbol( mSymbol->clone() );
     mPropertiesWidget->updateItem( polygonItem );
@@ -102,7 +102,7 @@ QgsAnnotationPolygonItemWidget::~QgsAnnotationPolygonItemWidget() = default;
 
 bool QgsAnnotationPolygonItemWidget::setNewItem( QgsAnnotationItem *item )
 {
-  QgsAnnotationPolygonItem *polygonItem = dynamic_cast<QgsAnnotationPolygonItem *>( item );
+  auto polygonItem = dynamic_cast<QgsAnnotationPolygonItem *>( item );
   if ( !polygonItem )
     return false;
 
@@ -166,7 +166,7 @@ QgsAnnotationItem *QgsAnnotationLineItemWidget::createItem()
 
 void QgsAnnotationLineItemWidget::updateItem( QgsAnnotationItem *item )
 {
-  if ( QgsAnnotationLineItem *lineItem = dynamic_cast<QgsAnnotationLineItem *>( item ) )
+  if ( auto lineItem = dynamic_cast<QgsAnnotationLineItem *>( item ) )
   {
     lineItem->setSymbol( mSymbol->clone() );
     mPropertiesWidget->updateItem( lineItem );
@@ -192,7 +192,7 @@ QgsAnnotationLineItemWidget::~QgsAnnotationLineItemWidget() = default;
 
 bool QgsAnnotationLineItemWidget::setNewItem( QgsAnnotationItem *item )
 {
-  QgsAnnotationLineItem *lineItem = dynamic_cast<QgsAnnotationLineItem *>( item );
+  auto lineItem = dynamic_cast<QgsAnnotationLineItem *>( item );
   if ( !lineItem )
     return false;
 
@@ -256,7 +256,7 @@ QgsAnnotationItem *QgsAnnotationMarkerItemWidget::createItem()
 
 void QgsAnnotationMarkerItemWidget::updateItem( QgsAnnotationItem *item )
 {
-  if ( QgsAnnotationMarkerItem *markerItem = dynamic_cast<QgsAnnotationMarkerItem *>( item ) )
+  if ( auto markerItem = dynamic_cast<QgsAnnotationMarkerItem *>( item ) )
   {
     markerItem->setSymbol( mSymbol->clone() );
     mPropertiesWidget->updateItem( markerItem );
@@ -282,7 +282,7 @@ QgsAnnotationMarkerItemWidget::~QgsAnnotationMarkerItemWidget() = default;
 
 bool QgsAnnotationMarkerItemWidget::setNewItem( QgsAnnotationItem *item )
 {
-  QgsAnnotationMarkerItem *markerItem = dynamic_cast<QgsAnnotationMarkerItem *>( item );
+  auto markerItem = dynamic_cast<QgsAnnotationMarkerItem *>( item );
   if ( !markerItem )
     return false;
 
@@ -368,7 +368,7 @@ QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
 
 void QgsAnnotationPointTextItemWidget::updateItem( QgsAnnotationItem *item )
 {
-  if ( QgsAnnotationPointTextItem *pointTextItem = dynamic_cast<QgsAnnotationPointTextItem *>( item ) )
+  if ( auto pointTextItem = dynamic_cast<QgsAnnotationPointTextItem *>( item ) )
   {
     mBlockChangedSignal = true;
     pointTextItem->setFormat( mTextFormatButton->textFormat() );
@@ -402,7 +402,7 @@ QgsAnnotationPointTextItemWidget::~QgsAnnotationPointTextItemWidget() = default;
 
 bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
 {
-  QgsAnnotationPointTextItem *textItem = dynamic_cast<QgsAnnotationPointTextItem *>( item );
+  auto textItem = dynamic_cast<QgsAnnotationPointTextItem *>( item );
   if ( !textItem )
     return false;
 
@@ -500,7 +500,7 @@ QgsAnnotationItem *QgsAnnotationLineTextItemWidget::createItem()
 
 void QgsAnnotationLineTextItemWidget::updateItem( QgsAnnotationItem *item )
 {
-  if ( QgsAnnotationLineTextItem *lineTextItem = dynamic_cast<QgsAnnotationLineTextItem *>( item ) )
+  if ( auto lineTextItem = dynamic_cast<QgsAnnotationLineTextItem *>( item ) )
   {
     mBlockChangedSignal = true;
     lineTextItem->setFormat( mTextFormatButton->textFormat() );
@@ -534,7 +534,7 @@ void QgsAnnotationLineTextItemWidget::focusDefaultWidget()
 
 bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
 {
-  QgsAnnotationLineTextItem *textItem = dynamic_cast<QgsAnnotationLineTextItem *>( item );
+  auto textItem = dynamic_cast<QgsAnnotationLineTextItem *>( item );
   if ( !textItem )
     return false;
 
@@ -655,7 +655,7 @@ QgsAnnotationItem *QgsAnnotationRectangleTextItemWidget::createItem()
 
 void QgsAnnotationRectangleTextItemWidget::updateItem( QgsAnnotationItem *item )
 {
-  if ( QgsAnnotationRectangleTextItem *rectTextItem = dynamic_cast<QgsAnnotationRectangleTextItem *>( item ) )
+  if ( auto rectTextItem = dynamic_cast<QgsAnnotationRectangleTextItem *>( item ) )
   {
     mBlockChangedSignal = true;
     rectTextItem->setFormat( mTextFormatButton->textFormat() );
@@ -722,7 +722,7 @@ QgsAnnotationRectangleTextItemWidget::~QgsAnnotationRectangleTextItemWidget() = 
 
 bool QgsAnnotationRectangleTextItemWidget::setNewItem( QgsAnnotationItem *item )
 {
-  QgsAnnotationRectangleTextItem *textItem = dynamic_cast<QgsAnnotationRectangleTextItem *>( item );
+  auto textItem = dynamic_cast<QgsAnnotationRectangleTextItem *>( item );
   if ( !textItem )
     return false;
 
@@ -919,7 +919,7 @@ QgsAnnotationItem *QgsAnnotationPictureItemWidget::createItem()
 
 void QgsAnnotationPictureItemWidget::updateItem( QgsAnnotationItem *item )
 {
-  if ( QgsAnnotationPictureItem *pictureItem = dynamic_cast<QgsAnnotationPictureItem *>( item ) )
+  if ( auto pictureItem = dynamic_cast<QgsAnnotationPictureItem *>( item ) )
   {
     const bool svg = mRadioSVG->isChecked();
     const Qgis::PictureFormat newFormat = svg ? Qgis::PictureFormat::SVG : Qgis::PictureFormat::Raster;
@@ -988,7 +988,7 @@ void QgsAnnotationPictureItemWidget::focusDefaultWidget()
 
 bool QgsAnnotationPictureItemWidget::setNewItem( QgsAnnotationItem *item )
 {
-  QgsAnnotationPictureItem *pictureItem = dynamic_cast<QgsAnnotationPictureItem *>( item );
+  auto pictureItem = dynamic_cast<QgsAnnotationPictureItem *>( item );
   if ( !pictureItem )
     return false;
 

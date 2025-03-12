@@ -119,7 +119,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::L
   const QgsMapToPixel &xform = context.mapToPixel();
 #endif
 
-  QgsDiagramLabelFeature *dlf = dynamic_cast<QgsDiagramLabelFeature *>( label->getFeaturePart()->feature() );
+  auto dlf = dynamic_cast<QgsDiagramLabelFeature *>( label->getFeaturePart()->feature() );
   const QgsFeature feature = dlf->feature();
 
   // at time of drawing labels the expression context won't contain a layer scope -- so we manually add it here so that

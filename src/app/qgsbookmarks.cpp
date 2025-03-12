@@ -311,7 +311,7 @@ QString QgsDoubleSpinBoxBookmarksDelegate::displayText( const QVariant &value, c
 QWidget *QgsDoubleSpinBoxBookmarksDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QWidget *widget = QStyledItemDelegate::createEditor( parent, option, index );
-  QDoubleSpinBox *spinbox = qobject_cast<QDoubleSpinBox *>( widget );
+  auto spinbox = qobject_cast<QDoubleSpinBox *>( widget );
   if ( spinbox )
   {
     if ( index.column() == QgsBookmarkManagerModel::ColumnRotation )

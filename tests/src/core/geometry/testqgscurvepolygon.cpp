@@ -1055,7 +1055,7 @@ void TestQgsCurvePolygon::testBoundary()
 
   poly.setExteriorRing( extBoundary.clone() );
   QgsAbstractGeometry *boundary = poly.boundary();
-  QgsCircularString *lineBoundary = dynamic_cast<QgsCircularString *>( boundary );
+  auto lineBoundary = dynamic_cast<QgsCircularString *>( boundary );
   QVERIFY( lineBoundary );
   QCOMPARE( lineBoundary->numPoints(), 5 );
   QCOMPARE( lineBoundary->xAt( 0 ), 0.0 );
@@ -1079,7 +1079,7 @@ void TestQgsCurvePolygon::testBoundary()
   poly.setInteriorRings( QVector<QgsCurve *>() << boundaryRing1.clone() << boundaryRing2.clone() );
   boundary = poly.boundary();
 
-  QgsMultiCurve *multiLineBoundary = dynamic_cast<QgsMultiCurve *>( boundary );
+  auto multiLineBoundary = dynamic_cast<QgsMultiCurve *>( boundary );
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 3 );
   QCOMPARE( qgis::down_cast<QgsCircularString *>( multiLineBoundary->geometryN( 0 ) )->numPoints(), 5 );

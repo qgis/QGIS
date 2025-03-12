@@ -319,7 +319,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   {
     if ( item->type() == Qgis::BrowserItemType::Layer )
     {
-      QgsLayerItem *lyrItem = qobject_cast<QgsLayerItem *>( item );
+      auto lyrItem = qobject_cast<QgsLayerItem *>( item );
       return lyrItem->comments();
     }
     return QVariant();
@@ -328,7 +328,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   {
     if ( item->type() == Qgis::BrowserItemType::Layer )
     {
-      QgsLayerItem *lyrItem = qobject_cast<QgsLayerItem *>( item );
+      auto lyrItem = qobject_cast<QgsLayerItem *>( item );
       return QVariant::fromValue( lyrItem->layerMetadata() );
     }
     return QVariant();
@@ -649,7 +649,7 @@ void QgsBrowserModel::setupItemConnections( QgsDataItem *item )
            this, &QgsBrowserModel::itemStateChanged );
 
   // if it's a collection item, also forwards connectionsChanged
-  QgsDataCollectionItem *collectionItem = qobject_cast<QgsDataCollectionItem *>( item );
+  auto collectionItem = qobject_cast<QgsDataCollectionItem *>( item );
   if ( collectionItem )
     connect( collectionItem, &QgsDataCollectionItem::connectionsChanged, this, &QgsBrowserModel::onConnectionsChanged );
 }
@@ -671,7 +671,7 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
   {
     if ( index.isValid() )
     {
-      QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
+      auto ptr = reinterpret_cast<QgsDataItem *>( index.internalPointer() );
       QgsMimeDataUtils::UriList uris = ptr->mimeUris();
       if ( uris.isEmpty() )
       {
@@ -713,7 +713,7 @@ bool QgsBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
 QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const
 {
   void *v = idx.internalPointer();
-  QgsDataItem *d = reinterpret_cast<QgsDataItem *>( v );
+  auto d = reinterpret_cast<QgsDataItem *>( v );
   Q_ASSERT( !v || d );
   return d;
 }
@@ -765,7 +765,7 @@ void QgsBrowserModel::addFavoriteDirectory( const QString &directory, const QStr
 
 void QgsBrowserModel::removeFavorite( const QModelIndex &index )
 {
-  QgsDirectoryItem *item = qobject_cast<QgsDirectoryItem *>( dataItem( index ) );
+  auto item = qobject_cast<QgsDirectoryItem *>( dataItem( index ) );
   if ( !item )
     return;
 
@@ -811,7 +811,7 @@ void QgsBrowserModel::removeRootItem( QgsDataItem *item )
   int i = mRootItems.indexOf( item );
   beginRemoveRows( QModelIndex(), i, i );
   mRootItems.remove( i );
-  QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem * >( item );
+  auto dirItem = qobject_cast<QgsDirectoryItem *>( item );
   if ( !mDriveItems.key( dirItem ).isEmpty() )
   {
     mDriveItems.remove( mDriveItems.key( dirItem ) );

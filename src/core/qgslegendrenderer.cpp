@@ -137,7 +137,7 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
         group[ QStringLiteral( "type" ) ] = QStringLiteral( "layer" );
         if ( mSettings.jsonRenderFlags().testFlag( Qgis::LegendJsonRenderFlag::ShowRuleDetails ) )
         {
-          if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
+          if ( auto vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
           {
             if ( vLayer->renderer() )
             {
@@ -169,7 +169,7 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
           QJsonObject symbol = legendNode->exportToJson( mSettings, context );
           if ( mSettings.jsonRenderFlags().testFlag( Qgis::LegendJsonRenderFlag::ShowRuleDetails ) )
           {
-            if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
+            if ( auto vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
             {
               if ( vLayer->renderer() )
               {
@@ -729,7 +729,7 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
     LegendComponentGroup &group = componentGroups[i];
     for ( int j = 0; j < group.components.size(); j++ )
     {
-      if ( QgsLayerTreeModelLegendNode *legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( group.components.at( j ).item ) )
+      if ( auto legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( group.components.at( j ).item ) )
       {
         QString key = QStringLiteral( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( group.column );
         maxSymbolWidth[key] = std::max( group.components.at( j ).symbolSize.width(), maxSymbolWidth[key] );
@@ -741,7 +741,7 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
     LegendComponentGroup &group = componentGroups[i];
     for ( int j = 0; j < group.components.size(); j++ )
     {
-      if ( QgsLayerTreeModelLegendNode *legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( group.components.at( j ).item ) )
+      if ( auto legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( group.components.at( j ).item ) )
       {
         QString key = QStringLiteral( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( group.column );
         double space = mSettings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right ) +
@@ -807,7 +807,7 @@ double QgsLegendRenderer::spaceAboveGroup( const LegendComponentGroup &group )
 
   LegendComponent component = group.components.first();
 
-  if ( QgsLayerTreeGroup *nodeGroup = qobject_cast<QgsLayerTreeGroup *>( component.item ) )
+  if ( auto nodeGroup = qobject_cast<QgsLayerTreeGroup *>( component.item ) )
   {
     return mSettings.style( nodeLegendStyle( nodeGroup ) ).margin( QgsLegendStyle::Top );
   }
@@ -831,7 +831,7 @@ QSizeF QgsLegendRenderer::drawGroup( const LegendComponentGroup &group, QgsRende
   double currentY = top;
   for ( const LegendComponent &component : std::as_const( group.components ) )
   {
-    if ( QgsLayerTreeGroup *groupItem = qobject_cast<QgsLayerTreeGroup *>( component.item ) )
+    if ( auto groupItem = qobject_cast<QgsLayerTreeGroup *>( component.item ) )
     {
       Qgis::LegendComponent s = nodeLegendStyle( groupItem );
       if ( s != Qgis::LegendComponent::Hidden )
@@ -951,7 +951,7 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
   ctx.maxSiblingSymbolWidth = maxSiblingSymbolWidth;
 
   QgsExpressionContextScope *symbolScope = nullptr;
-  if ( const QgsSymbolLegendNode *symbolNode = dynamic_cast< const QgsSymbolLegendNode * >( symbolItem ) )
+  if ( auto symbolNode = dynamic_cast<const QgsSymbolLegendNode *>( symbolItem ) )
   {
     symbolScope = symbolNode->createSymbolScope();
     context.expressionContext().appendScope( symbolScope );

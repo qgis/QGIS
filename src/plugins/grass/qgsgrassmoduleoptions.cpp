@@ -342,7 +342,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   QList<QgsGrassModuleInput *>vectorInputs;
   for ( QgsGrassModuleParam *param : mParams )
   {
-    QgsGrassModuleInput *vectorInput = dynamic_cast<QgsGrassModuleInput *>( param );
+    auto vectorInput = dynamic_cast<QgsGrassModuleInput *>( param );
     if ( vectorInput )
     {
       vectorInputs << vectorInput;
@@ -354,7 +354,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     QgsGrassModuleInput *vectorInput = vectorInputs[0];
     for ( QgsGrassModuleParam *param : mParams )
     {
-      QgsGrassModuleField *moduleField = dynamic_cast<QgsGrassModuleField *>( param );
+      auto moduleField = dynamic_cast<QgsGrassModuleField *>( param );
       if ( moduleField )
       {
         if ( !moduleField->layerInput() )
@@ -454,7 +454,7 @@ QStringList QgsGrassModuleStandardOptions::checkOutput()
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
+    auto opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
     if ( !opt )
       continue;
 
@@ -480,10 +480,10 @@ QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
   {
     if ( layer->type() == Qgis::LayerType::Vector )
     {
-      QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer );
+      auto vector = qobject_cast<QgsVectorLayer *>( layer );
       if ( vector && vector->providerType() == QLatin1String( "grass" ) )
       {
-        QgsGrassProvider *provider = qobject_cast<QgsGrassProvider *>( vector->dataProvider() );
+        auto provider = qobject_cast<QgsGrassProvider *>( vector->dataProvider() );
         if ( provider )
         {
           providers << provider;
@@ -501,10 +501,10 @@ QList<QgsGrassRasterProvider *> QgsGrassModuleStandardOptions::grassRasterProvid
   {
     if ( layer->type() == Qgis::LayerType::Raster )
     {
-      QgsRasterLayer *raster = qobject_cast<QgsRasterLayer *>( layer );
+      auto raster = qobject_cast<QgsRasterLayer *>( layer );
       if ( raster && raster->providerType() == QLatin1String( "grassraster" ) )
       {
-        QgsGrassRasterProvider *provider = qobject_cast<QgsGrassRasterProvider *>( raster->dataProvider() );
+        auto provider = qobject_cast<QgsGrassRasterProvider *>( raster->dataProvider() );
         if ( provider )
         {
           providers << provider;
@@ -523,7 +523,7 @@ void QgsGrassModuleStandardOptions::freezeOutput( bool freeze )
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
+    auto opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
     if ( !opt || !opt->isOutput() )
     {
       continue;
@@ -596,7 +596,7 @@ QStringList QgsGrassModuleStandardOptions::output( int type )
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
+    auto opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
     if ( !opt )
       continue;
 
@@ -625,7 +625,7 @@ bool QgsGrassModuleStandardOptions::hasOutput( int type )
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
+    auto opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
     if ( !opt )
       continue;
 
@@ -677,7 +677,7 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
   {
     struct Cell_head window;
 
-    QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
+    auto item = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
     if ( !item )
       continue;
 
@@ -757,7 +757,7 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
     {
       struct Cell_head mapWindow;
 
-      QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
+      auto item = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
       if ( !item )
         continue;
 
@@ -813,7 +813,7 @@ bool QgsGrassModuleStandardOptions::requestsRegion()
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
+    auto item = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
     if ( !item )
       continue;
 
@@ -829,11 +829,11 @@ bool QgsGrassModuleStandardOptions::usesRegion()
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleInput *input = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
+    auto input = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
     if ( input && input->usesRegion() )
       return true;
 
-    QgsGrassModuleOption *option = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
+    auto option = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
     if ( option && option->usesRegion() )
       return true;
   }

@@ -32,7 +32,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( const QMap<QString, Q
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
-      const QgsLineString *line = dynamic_cast<const QgsLineString *>( QgsGeometryCheckerUtils::getGeomPart( geom, iPart ) );
+      auto line = dynamic_cast<const QgsLineString *>( QgsGeometryCheckerUtils::getGeomPart( geom, iPart ) );
       if ( !line )
       {
         // Should not happen
@@ -47,7 +47,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( const QMap<QString, Q
         for ( int jPart = 0, mParts = testGeom->partCount(); jPart < mParts; ++jPart )
         {
           const QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( testGeom, jPart );
-          if ( const QgsLineString *testLine = dynamic_cast<const QgsLineString *>( part ) )
+          if ( auto testLine = dynamic_cast<const QgsLineString *>( part ) )
           {
             const QList<QgsPoint> intersections = QgsGeometryCheckerUtils::lineIntersections( line, testLine, mContext->tolerance );
             for ( const QgsPoint &inter : intersections )

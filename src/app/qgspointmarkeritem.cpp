@@ -164,7 +164,7 @@ void QgsMapCanvasMarkerSymbolItem::updatePosition()
 
 QgsMarkerSymbol *QgsMapCanvasMarkerSymbolItem::markerSymbol()
 {
-  QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( mSymbol.get() );
+  auto marker = dynamic_cast<QgsMarkerSymbol *>( mSymbol.get() );
   Q_ASSERT( marker );
   return marker;
 }
@@ -205,7 +205,7 @@ void QgsMapCanvasLineSymbolItem::renderSymbol( QgsRenderContext &context, const 
 
 QgsLineSymbol *QgsMapCanvasLineSymbolItem::lineSymbol()
 {
-  QgsLineSymbol *symbol = dynamic_cast<QgsLineSymbol *>( mSymbol.get() );
+  auto symbol = dynamic_cast<QgsLineSymbol *>( mSymbol.get() );
   Q_ASSERT( symbol );
   return symbol;
 }

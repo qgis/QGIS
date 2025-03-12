@@ -53,7 +53,7 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
 
   if ( mItem && mItem->annotation() )
   {
-    QgsSvgAnnotation *annotation = static_cast<QgsSvgAnnotation *>( mItem->annotation() );
+    auto annotation = static_cast<QgsSvgAnnotation *>( mItem->annotation() );
     mFileLineEdit->setText( annotation->filePath() );
   }
 
@@ -99,7 +99,7 @@ void QgsSvgAnnotationDialog::applySettingsToItem()
   {
     if ( !mFileLineEdit->text().isEmpty() )
     {
-      QgsSvgAnnotation *annotation = static_cast<QgsSvgAnnotation *>( mItem->annotation() );
+      auto annotation = static_cast<QgsSvgAnnotation *>( mItem->annotation() );
       annotation->setFilePath( mFileLineEdit->text() );
       mItem->update();
     }

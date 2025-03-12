@@ -144,7 +144,7 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
       if ( !layer )
         continue;
 
-      QgsVectorLayer *overlayLayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto overlayLayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !overlayLayer )
         continue;
 

@@ -30,7 +30,7 @@
 
 void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsVectorTileLayerItem *layerItem = qobject_cast<QgsVectorTileLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsVectorTileLayerItem *>( item ) )
   {
     const QList<QgsVectorTileLayerItem *> vtConnectionItems = QgsDataItem::filteredItems<QgsVectorTileLayerItem>( selection );
 
@@ -52,7 +52,7 @@ void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     menu->addAction( actionDelete );
   }
 
-  if ( QgsVectorTileRootItem *rootItem = qobject_cast<QgsVectorTileRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsVectorTileRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Generic Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );

@@ -44,7 +44,7 @@ QWidget *QgsDateTimeEditWrapper::createWidget( QWidget *parent )
 
 void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
 {
-  QgsDateTimeEdit *qgsEditor = dynamic_cast<QgsDateTimeEdit *>( editor );
+  auto qgsEditor = dynamic_cast<QgsDateTimeEdit *>( editor );
   if ( qgsEditor )
   {
     mQgsDateTimeEdit = qgsEditor;
@@ -52,7 +52,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   // assign the Qt editor also if the QGIS editor has been previously assigned
   // this avoids testing each time which widget to use
   // the QGIS editor must be used for non-virtual methods (dateTime, setDateTime)
-  QDateTimeEdit *qtEditor = dynamic_cast<QDateTimeEdit *>( editor );
+  auto qtEditor = dynamic_cast<QDateTimeEdit *>( editor );
   if ( qtEditor )
   {
     mQDateTimeEdit = qtEditor;

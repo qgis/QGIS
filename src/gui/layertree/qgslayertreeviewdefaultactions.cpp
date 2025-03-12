@@ -308,7 +308,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas )
 
 void QgsLayerTreeViewDefaultActions::zoomToSelection( QgsMapCanvas *canvas )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mView->currentLayer() );
+  auto layer = qobject_cast<QgsVectorLayer *>( mView->currentLayer() );
 
   const QList<QgsMapLayer *> layers = mView->selectedLayers();
 
@@ -336,7 +336,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer()
 {
   Q_NOWARN_DEPRECATED_PUSH
   QAction *s = qobject_cast<QAction *>( sender() );
-  QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
+  auto canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
 
   zoomToLayer( canvas );
   Q_NOWARN_DEPRECATED_POP
@@ -352,14 +352,14 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers()
 void QgsLayerTreeViewDefaultActions::zoomToSelection()
 {
   QAction *s = qobject_cast<QAction *>( sender() );
-  QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
+  auto canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
   zoomToSelection( canvas );
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToGroup()
 {
   QAction *s = qobject_cast<QAction *>( sender() );
-  QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
+  auto canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
   zoomToGroup( canvas );
 }
 
@@ -377,7 +377,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const Q
       QgsMapLayer *layer = layers.at( i );
       QgsRectangle layerExtent = layer->extent();
 
-      QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vLayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( vLayer )
       {
         if ( vLayer->geometryType() == Qgis::GeometryType::Null )
@@ -436,7 +436,7 @@ void QgsLayerTreeViewDefaultActions::makeTopLevel()
   for ( QgsLayerTreeLayer *l : constSelectedLayerNodes )
   {
     QgsLayerTreeGroup *rootGroup = mView->layerTreeModel()->rootGroup();
-    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( l->parent() );
+    auto parentGroup = qobject_cast<QgsLayerTreeGroup *>( l->parent() );
     if ( !parentGroup || parentGroup == rootGroup )
       continue;
     QgsLayerTreeLayer *clonedLayer = l->clone();
@@ -452,7 +452,7 @@ void QgsLayerTreeViewDefaultActions::moveOutOfGroup()
   for ( QgsLayerTreeLayer *l : selectedLayerNodes )
   {
     QgsLayerTreeGroup *rootGroup = mView->layerTreeModel()->rootGroup();
-    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( l->parent() );
+    auto parentGroup = qobject_cast<QgsLayerTreeGroup *>( l->parent() );
     if ( !parentGroup || parentGroup == rootGroup )
       continue;
     QgsLayerTreeGroup *tempGroup = parentGroup;
@@ -478,7 +478,7 @@ void QgsLayerTreeViewDefaultActions::moveToTop()
   } );
   for ( QgsLayerTreeNode *n : std::as_const( selectedNodes ) )
   {
-    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
+    auto parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
     QgsLayerTreeNode *clonedNode = n->clone();
     parentGroup->insertChildNode( 0, clonedNode );
     parentGroup->removeChildNode( n );
@@ -495,7 +495,7 @@ void QgsLayerTreeViewDefaultActions::moveToBottom()
   } );
   for ( QgsLayerTreeNode *n : std::as_const( selectedNodes ) )
   {
-    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
+    auto parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
     QgsLayerTreeNode *clonedNode = n->clone();
     parentGroup->insertChildNode( -1, clonedNode );
     parentGroup->removeChildNode( n );
@@ -520,7 +520,7 @@ void QgsLayerTreeViewDefaultActions::groupSelected()
 
   for ( QgsLayerTreeNode *node : nodes )
   {
-    QgsLayerTreeGroup *group = qobject_cast<QgsLayerTreeGroup *>( node->parent() );
+    auto group = qobject_cast<QgsLayerTreeGroup *>( node->parent() );
     if ( group )
       group->removeChildNode( node );
   }

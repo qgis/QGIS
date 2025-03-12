@@ -125,7 +125,7 @@ void QgsHighlight::setFillColor( const QColor &fillColor )
 std::unique_ptr<QgsFeatureRenderer> QgsHighlight::createRenderer( QgsRenderContext &context, const QColor &color, const QColor &fillColor )
 {
   std::unique_ptr<QgsFeatureRenderer> renderer;
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto layer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( layer && layer->renderer() )
   {
     renderer.reset( layer->renderer()->clone() );
@@ -165,17 +165,17 @@ void QgsHighlight::setSymbol( QgsSymbol *symbol, const QgsRenderContext &context
       symbolLayer->setFillColor( fillColor ); // marker and fill symbology layers
 
       // Data defined widths overwrite what we set here (widths do not work with data defined)
-      QgsSimpleMarkerSymbolLayer *simpleMarker = dynamic_cast<QgsSimpleMarkerSymbolLayer *>( symbolLayer );
+      auto simpleMarker = dynamic_cast<QgsSimpleMarkerSymbolLayer *>( symbolLayer );
       if ( simpleMarker )
       {
         simpleMarker->setStrokeWidth( getSymbolWidth( context, simpleMarker->strokeWidth(), simpleMarker->strokeWidthUnit() ) );
       }
-      QgsSimpleLineSymbolLayer *simpleLine = dynamic_cast<QgsSimpleLineSymbolLayer *>( symbolLayer );
+      auto simpleLine = dynamic_cast<QgsSimpleLineSymbolLayer *>( symbolLayer );
       if ( simpleLine )
       {
         simpleLine->setWidth( getSymbolWidth( context, simpleLine->width(), simpleLine->widthUnit() ) );
       }
-      QgsSimpleFillSymbolLayer *simpleFill = dynamic_cast<QgsSimpleFillSymbolLayer *>( symbolLayer );
+      auto simpleFill = dynamic_cast<QgsSimpleFillSymbolLayer *>( symbolLayer );
       if ( simpleFill )
       {
         simpleFill->setStrokeWidth( getSymbolWidth( context, simpleFill->strokeWidth(), simpleFill->outputUnit() ) );
@@ -320,7 +320,7 @@ void QgsHighlight::paint( QPainter *p )
 {
   if ( mFeature.hasGeometry() )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
     if ( !vlayer )
       return;
 
@@ -413,7 +413,7 @@ void QgsHighlight::paint( QPainter *p )
         PointSymbol symbol = mPointSymbol;
 
         // but for point clouds, use actual sizes (+a little margin!)
-        if ( QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer ) )
+        if ( auto pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer ) )
         {
           if ( QgsPointCloudRenderer *pcRenderer = pcLayer->renderer() )
           {

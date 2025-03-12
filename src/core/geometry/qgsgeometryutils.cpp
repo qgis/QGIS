@@ -38,7 +38,7 @@ QVector<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstract
   while ( ! geometries.isEmpty() )
   {
     const QgsAbstractGeometry *g = geometries.takeFirst();
-    if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( g ) )
+    if ( auto curve = qgsgeometry_cast<const QgsCurve *>( g ) )
     {
       linestrings << static_cast< QgsLineString * >( curve->segmentize() );
     }

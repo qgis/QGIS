@@ -177,7 +177,7 @@ QDomElement QgsTriangulatedSurface::asGml3( QDomDocument &doc, int precision, co
   QDomElement elemPatches = doc.createElementNS( ns, QStringLiteral( "patches" ) );
   for ( QgsPolygon *patch : mPatches )
   {
-    QgsTriangle *triangle = qgsgeometry_cast<QgsTriangle *>( patch );
+    auto triangle = qgsgeometry_cast<QgsTriangle *>( patch );
     if ( !triangle )
       continue;
 
@@ -199,7 +199,7 @@ void QgsTriangulatedSurface::normalize()
 {
   for ( QgsPolygon *patch : mPatches )
   {
-    QgsTriangle *triangle = qgsgeometry_cast<QgsTriangle *>( patch );
+    auto triangle = qgsgeometry_cast<QgsTriangle *>( patch );
     if ( !triangle )
       continue;
 
@@ -217,7 +217,7 @@ QgsTriangulatedSurface *QgsTriangulatedSurface::snappedToGrid( double hSpacing, 
 
   for ( QgsPolygon *patch : mPatches )
   {
-    QgsTriangle *triangle = qgsgeometry_cast<QgsTriangle *>( patch );
+    auto triangle = qgsgeometry_cast<QgsTriangle *>( patch );
     if ( !triangle )
       continue;
 
@@ -250,7 +250,7 @@ void QgsTriangulatedSurface::setTriangles( const QVector<QgsTriangle *> &triangl
 
 void QgsTriangulatedSurface::addPatch( QgsPolygon *patch )
 {
-  QgsTriangle *triangle = qgsgeometry_cast<QgsTriangle *>( patch );
+  auto triangle = qgsgeometry_cast<QgsTriangle *>( patch );
   if ( !triangle )
   {
     if ( patch )
@@ -310,7 +310,7 @@ bool QgsTriangulatedSurface::deleteVertex( QgsVertexId vId )
 
 int QgsTriangulatedSurface::compareToSameClass( const QgsAbstractGeometry *other ) const
 {
-  const QgsTriangulatedSurface *otherTriangulatedSurface = qgsgeometry_cast<const QgsTriangulatedSurface *>( other );
+  auto otherTriangulatedSurface = qgsgeometry_cast<const QgsTriangulatedSurface *>( other );
   if ( !otherTriangulatedSurface )
     return -1;
 

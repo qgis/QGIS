@@ -541,7 +541,7 @@ void QgsMapToolModifyAnnotation::onCanvasRefreshed()
 
     const QList<QgsRenderedItemDetails *> items = renderedItemResults->renderedItems();
     auto it = std::find_if( items.begin(), items.end(), [this]( const QgsRenderedItemDetails *item ) {
-      if ( const QgsRenderedAnnotationItemDetails *annotationItem = dynamic_cast<const QgsRenderedAnnotationItemDetails *>( item ) )
+      if ( auto annotationItem = dynamic_cast<const QgsRenderedAnnotationItemDetails *>( item ) )
       {
         if ( annotationItem->itemId() == mSelectedItemId && annotationItem->layerId() == mSelectedItemLayerId )
           return true;
@@ -738,7 +738,7 @@ const QgsRenderedAnnotationItemDetails *QgsMapToolModifyAnnotation::findClosestI
 
 QgsAnnotationLayer *QgsMapToolModifyAnnotation::annotationLayerFromId( const QString &layerId )
 {
-  QgsAnnotationLayer *layer = qobject_cast<QgsAnnotationLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  auto layer = qobject_cast<QgsAnnotationLayer *>( QgsProject::instance()->mapLayer( layerId ) );
   if ( !layer && layerId == QgsProject::instance()->mainAnnotationLayer()->id() )
     layer = QgsProject::instance()->mainAnnotationLayer();
   return layer;

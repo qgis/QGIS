@@ -24,7 +24,7 @@ QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input, int tileOverlap
 {
   for ( QgsRasterInterface *ri = input; ri; ri = ri->input() )
   {
-    QgsRasterDataProvider *rdp = dynamic_cast<QgsRasterDataProvider *>( ri );
+    auto rdp = dynamic_cast<QgsRasterDataProvider *>( ri );
     if ( rdp )
     {
       mMaximumTileWidth = rdp->stepWidth() - 2 * mTileOverlapPixels;

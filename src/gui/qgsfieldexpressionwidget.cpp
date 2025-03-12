@@ -93,7 +93,7 @@ bool QgsFieldExpressionWidget::allowEmptyFieldName() const
 
 void QgsFieldExpressionWidget::setLeftHandButtonStyle( bool isLeft )
 {
-  QHBoxLayout *layout = dynamic_cast<QHBoxLayout *>( this->layout() );
+  auto layout = dynamic_cast<QHBoxLayout *>( this->layout() );
   if ( !layout )
     return;
 
@@ -172,7 +172,7 @@ void QgsFieldExpressionWidget::setCustomPreviewGenerator( const QString &label, 
 
 void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+  auto vl = qobject_cast<QgsVectorLayer *>( layer );
 
   if ( mFieldProxyModel->sourceFieldModel()->layer() )
     disconnect( mFieldProxyModel->sourceFieldModel()->layer(), &QgsVectorLayer::updatedFields, this, &QgsFieldExpressionWidget::reloadLayer );

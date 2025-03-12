@@ -204,7 +204,7 @@ void QgsLayerTreeGroup::removeChildrenGroupWithoutLayers()
   {
     if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
     {
-      QgsLayerTreeGroup *treeGroup = qobject_cast<QgsLayerTreeGroup *>( treeNode );
+      auto treeGroup = qobject_cast<QgsLayerTreeGroup *>( treeNode );
       if ( treeGroup->findLayerIds().isEmpty() )
         removeChildNode( treeNode );
       else
@@ -487,7 +487,7 @@ QgsGroupLayer *QgsLayerTreeGroup::groupLayer()
 
 void QgsLayerTreeGroup::setGroupLayer( QgsGroupLayer *layer )
 {
-  if ( QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( mGroupLayer.get() ) )
+  if ( auto groupLayer = qobject_cast<QgsGroupLayer *>( mGroupLayer.get() ) )
   {
     if ( !layer )
     {
@@ -513,10 +513,10 @@ QgsGroupLayer *QgsLayerTreeGroup::convertToGroupLayer( const QgsGroupLayer::Laye
 
 void QgsLayerTreeGroup::refreshParentGroupLayerMembers()
 {
-  QgsLayerTreeGroup *parentGroup = qobject_cast< QgsLayerTreeGroup * >( parent() );
+  auto parentGroup = qobject_cast<QgsLayerTreeGroup *>( parent() );
   while ( parentGroup )
   {
-    if ( QgsLayerTree *layerTree = qobject_cast< QgsLayerTree * >( parentGroup ) )
+    if ( auto layerTree = qobject_cast<QgsLayerTree *>( parentGroup ) )
       layerTree->emit layerOrderChanged();
 
     parentGroup->updateGroupLayers();
@@ -588,7 +588,7 @@ void QgsLayerTreeGroup::makeOrphan()
 
 void QgsLayerTreeGroup::updateGroupLayers()
 {
-  QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( mGroupLayer.get() );
+  auto groupLayer = qobject_cast<QgsGroupLayer *>( mGroupLayer.get() );
   if ( !groupLayer )
     return;
 
@@ -599,7 +599,7 @@ void QgsLayerTreeGroup::updateGroupLayers()
   {
     for ( auto it = group->mChildren.crbegin(); it != group->mChildren.crend(); ++it )
     {
-      if ( QgsLayerTreeLayer *layerTreeLayer = qobject_cast< QgsLayerTreeLayer * >( *it ) )
+      if ( auto layerTreeLayer = qobject_cast<QgsLayerTreeLayer *>( *it ) )
       {
         if ( layerTreeLayer->layer() && layerTreeLayer->isVisible() )
           layers << layerTreeLayer->layer();

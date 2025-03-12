@@ -554,7 +554,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
       {
         case Qgis::LayerType::Vector:
         {
-          const QgsVectorLayer *vlayer = static_cast<const QgsVectorLayer *>( childLayer );
+          auto vlayer = static_cast<const QgsVectorLayer *>( childLayer );
           if ( vlayer->geometryType() == Qgis::GeometryType::Point )
           {
             if ( vectorLineIndex < nodeIdx )
@@ -644,7 +644,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( layer );
+      auto vlayer = static_cast<QgsVectorLayer *>( layer );
       if ( vlayer->geometryType() == Qgis::GeometryType::Point )
       {
         index = 0;

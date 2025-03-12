@@ -59,7 +59,7 @@ QgsImageCacheEntry::QgsImageCacheEntry( const QString &path, QSize size, const b
 
 bool QgsImageCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
-  const QgsImageCacheEntry *otherImage = dynamic_cast< const QgsImageCacheEntry * >( other );
+  auto otherImage = dynamic_cast<const QgsImageCacheEntry *>( other );
   // cheapest checks first!
   if ( !otherImage
        || otherImage->keepAspectRatio != keepAspectRatio
@@ -553,7 +553,7 @@ void QgsImageSizeCacheEntry::dump() const
 
 bool QgsImageSizeCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
-  const QgsImageSizeCacheEntry *otherImage = dynamic_cast< const QgsImageSizeCacheEntry * >( other );
+  auto otherImage = dynamic_cast<const QgsImageSizeCacheEntry *>( other );
   if ( !otherImage
        || otherImage->path != path )
     return false;

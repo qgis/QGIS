@@ -411,7 +411,7 @@ void QgsDiagramProperties::syncToLayer()
   const QgsDiagramRenderer *renderer = mLayer->diagramRenderer();
   if ( renderer && renderer->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
   {
-    const QgsStackedDiagramRenderer *stackedRenderer = static_cast<const QgsStackedDiagramRenderer *>( renderer );
+    auto stackedRenderer = static_cast<const QgsStackedDiagramRenderer *>( renderer );
     if ( stackedRenderer->rendererCount() > 0 )
     {
       // If layer has a stacked diagram renderer, take its first sub
@@ -542,7 +542,7 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
 
     if ( dr->rendererName() == QgsLinearlyInterpolatedDiagramRenderer::DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED )
     {
-      const QgsLinearlyInterpolatedDiagramRenderer *lidr = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer *>( dr );
+      auto lidr = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer *>( dr );
       if ( lidr )
       {
         mDiagramSizeSpinBox->setEnabled( false );
@@ -640,7 +640,7 @@ void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton 
 
 void QgsDiagramProperties::updateProperty()
 {
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsDiagramLayerSettings::Property key = static_cast<QgsDiagramLayerSettings::Property>( button->propertyKey() );
   mDataDefinedProperties.setProperty( key, button->toProperty() );
   emit widgetChanged();
@@ -1220,7 +1220,7 @@ void QgsDiagramProperties::createAuxiliaryField()
   if ( !mLayer->auxiliaryLayer() )
     return;
 
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsDiagramLayerSettings::Property key = static_cast<QgsDiagramLayerSettings::Property>( button->propertyKey() );
   const QgsPropertyDefinition def = QgsDiagramLayerSettings::propertyDefinitions()[static_cast<int>( key )];
 
@@ -1244,7 +1244,7 @@ void QgsDiagramProperties::connectValueChanged( const QList<QWidget *> &widgets 
   const auto constWidgets = widgets;
   for ( QWidget *widget : constWidgets )
   {
-    if ( QgsSymbolButton *w = qobject_cast<QgsSymbolButton *>( widget ) )
+    if ( auto w = qobject_cast<QgsSymbolButton *>( widget ) )
     {
       connect( w, &QgsSymbolButton::changed, this, &QgsDiagramProperties::widgetChanged );
     }

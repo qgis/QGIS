@@ -945,7 +945,7 @@ void TestQgsLayout::legendRestoredFromTemplate()
   QgsLegendModel *model = legend->model();
   QgsLayerTreeNode *node = model->rootGroup()->children().at( 0 );
   // make sure we've got right node
-  QgsLayerTreeLayer *layerNode = dynamic_cast<QgsLayerTreeLayer *>( node );
+  auto layerNode = dynamic_cast<QgsLayerTreeLayer *>( node );
   QVERIFY( layerNode );
   QCOMPARE( layerNode->layer(), layer );
 
@@ -969,7 +969,7 @@ void TestQgsLayout::legendRestoredFromTemplate()
 
   QgsLegendModel *model2 = legend2->model();
   QgsLayerTreeNode *node2 = model2->rootGroup()->children().at( 0 );
-  QgsLayerTreeLayer *layerNode2 = dynamic_cast<QgsLayerTreeLayer *>( node2 );
+  auto layerNode2 = dynamic_cast<QgsLayerTreeLayer *>( node2 );
   QVERIFY( layerNode2 );
   QCOMPARE( layerNode2->layer(), layer );
   QCOMPARE( model2->data( model->node2index( layerNode2 ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
@@ -996,7 +996,7 @@ void TestQgsLayout::legendRestoredFromTemplate()
   //make sure customization remains intact
   QgsLegendModel *model3 = legend3->model();
   QgsLayerTreeNode *node3 = model3->rootGroup()->children().at( 0 );
-  QgsLayerTreeLayer *layerNode3 = dynamic_cast<QgsLayerTreeLayer *>( node3 );
+  auto layerNode3 = dynamic_cast<QgsLayerTreeLayer *>( node3 );
   QVERIFY( layerNode3 );
   QCOMPARE( layerNode3->layer(), layer2 );
   QCOMPARE( model3->data( model->node2index( layerNode3 ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
@@ -1021,7 +1021,7 @@ void TestQgsLayout::legendRestoredFromTemplateAutoUpdate()
   QgsLegendModel *model = legend->model();
   QgsLayerTreeNode *node = model->rootGroup()->children().at( 0 );
   // make sure we've got right node
-  QgsLayerTreeLayer *layerNode = dynamic_cast<QgsLayerTreeLayer *>( node );
+  auto layerNode = dynamic_cast<QgsLayerTreeLayer *>( node );
   QVERIFY( layerNode );
   QCOMPARE( layerNode->layer(), layer );
   QCOMPARE( model->data( model->node2index( layerNode ), Qt::DisplayRole ).toString(), QString( "points" ) );
@@ -1046,7 +1046,7 @@ void TestQgsLayout::legendRestoredFromTemplateAutoUpdate()
 
   QgsLegendModel *model2 = legend2->model();
   QgsLayerTreeNode *node2 = model2->rootGroup()->children().at( 0 );
-  QgsLayerTreeLayer *layerNode2 = dynamic_cast<QgsLayerTreeLayer *>( node2 );
+  auto layerNode2 = dynamic_cast<QgsLayerTreeLayer *>( node2 );
   QVERIFY( layerNode2 );
   QCOMPARE( layerNode2->layer(), layer2 );
   QCOMPARE( model2->data( model->node2index( layerNode2 ), Qt::DisplayRole ).toString(), QString( "points" ) );
@@ -1090,7 +1090,7 @@ void TestQgsLayout::attributeTableRestoredFromTemplate()
   // get table from new composition
   QList<QgsLayoutFrame *> frames2;
   c2.layoutItems( frames2 );
-  QgsLayoutItemAttributeTable *table2 = static_cast<QgsLayoutItemAttributeTable *>( frames2.at( 0 )->multiFrame() );
+  auto table2 = static_cast<QgsLayoutItemAttributeTable *>( frames2.at( 0 )->multiFrame() );
   QVERIFY( table2 );
 
   QCOMPARE( table2->vectorLayer(), layer3 );
@@ -1138,7 +1138,7 @@ void TestQgsLayout::mapLayersRestoredFromTemplate()
   // get map from new composition
   QList<QgsLayoutItemMap *> maps;
   c2.layoutItems( maps );
-  QgsLayoutItemMap *map2 = static_cast<QgsLayoutItemMap *>( maps.at( 0 ) );
+  auto map2 = static_cast<QgsLayoutItemMap *>( maps.at( 0 ) );
   QVERIFY( map2 );
 
   QCOMPARE( map2->layers(), QList<QgsMapLayer *>() << layer3 << layer4 << rl5 );
@@ -1185,7 +1185,7 @@ void TestQgsLayout::mapLayersStyleOverrideRestoredFromTemplate()
   // get map from new composition
   QList<QgsLayoutItemMap *> maps;
   c2.layoutItems( maps );
-  QgsLayoutItemMap *map2 = static_cast<QgsLayoutItemMap *>( maps.at( 0 ) );
+  auto map2 = static_cast<QgsLayoutItemMap *>( maps.at( 0 ) );
   QVERIFY( map2 );
   QVERIFY( map2->keepLayerStyles() );
 

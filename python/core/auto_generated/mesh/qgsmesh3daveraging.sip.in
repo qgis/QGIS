@@ -28,7 +28,7 @@ Abstract class to interpolate 3d stacked mesh data to 2d data
 #include "qgsmesh3daveraging.h"
 %End
 %ConvertToSubClassCode
-    QgsMesh3DAveragingMethod *averagingMethod = dynamic_cast<QgsMesh3DAveragingMethod *>( sipCpp );
+    auto averagingMethod = dynamic_cast<QgsMesh3DAveragingMethod *>( sipCpp );
 
     sipType = 0;
 

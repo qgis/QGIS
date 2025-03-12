@@ -48,7 +48,7 @@
 
 void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
-  if ( QgsGeoPackageVectorLayerItem *layerItem = qobject_cast<QgsGeoPackageVectorLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsGeoPackageVectorLayerItem *>( item ) )
   {
     // Check capabilities
     // (We only show the rename action when the user has a single layer selected -- it doesn't work on multi-layers at once)
@@ -70,7 +70,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     }
   }
 
-  if ( QgsGeoPackageRootItem *rootItem = qobject_cast<QgsGeoPackageRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsGeoPackageRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, rootItem, &QgsGeoPackageRootItem::newConnection );
@@ -91,7 +91,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     menu->addAction( actionCreateDatabaseAndLayer );
   }
 
-  if ( QgsGeoPackageCollectionItem *collectionItem = qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
+  if ( auto collectionItem = qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
   {
     QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
     menu->addAction( importVectorAction );
@@ -167,7 +167,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 
 bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &newName, QgsDataItemGuiContext context )
 {
-  if ( QgsGeoPackageVectorLayerItem *layerItem = qobject_cast<QgsGeoPackageVectorLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsGeoPackageVectorLayerItem *>( item ) )
   {
     // Checks that name does not exist yet
     if ( layerItem->tableNames().contains( newName ) )
@@ -281,7 +281,7 @@ void QgsGeoPackageItemGuiProvider::renameVectorLayer( const QString &uri, const 
 
 bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsDataItemGuiContext context )
 {
-  if ( QgsGeoPackageAbstractLayerItem *item = qobject_cast<QgsGeoPackageAbstractLayerItem *>( layerItem ) )
+  if ( auto item = qobject_cast<QgsGeoPackageAbstractLayerItem *>( layerItem ) )
   {
     // Check if the layer(s) are in the registry
     const QList<QgsMapLayer *> layersList( item->layersInProject() );
@@ -314,7 +314,7 @@ bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsData
     }
     else
     {
-      QgsGeoPackageConnectionItem *connectionParentItem = qobject_cast<QgsGeoPackageConnectionItem *>( item->parent() );
+      auto connectionParentItem = qobject_cast<QgsGeoPackageConnectionItem *>( item->parent() );
       if ( connectionParentItem )
       {
         if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> was successfully deleted."
@@ -423,7 +423,7 @@ bool QgsGeoPackageItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGui
 
 bool QgsGeoPackageItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction )
 {
-  if ( QgsGeoPackageCollectionItem *collectionItem = qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
+  if ( auto collectionItem = qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
   {
     return handleDropGeopackage( collectionItem, data, context );
   }
@@ -523,7 +523,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
         {
           if ( isVector ) // Import vectors and aspatial
           {
-            QgsVectorLayer *vectorSrcLayer = qobject_cast<QgsVectorLayer *>( srcLayer );
+            auto vectorSrcLayer = qobject_cast<QgsVectorLayer *>( srcLayer );
 
             QVariantMap providerOptions;
             QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions exporterOptions;

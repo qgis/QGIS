@@ -2105,7 +2105,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const 
   {
     if ( node->opRight()->nodeType() == QgsExpressionNode::ntLiteral )
     {
-      const QgsExpressionNodeLiteral *rightLit = static_cast<const QgsExpressionNodeLiteral *>( node->opRight() );
+      auto rightLit = static_cast<const QgsExpressionNodeLiteral *>( node->opRight() );
       if ( QgsVariantUtils::isNull( rightLit->value() ) )
       {
 
@@ -2316,7 +2316,7 @@ static bool isGeometryColumn( const QgsExpressionNode *node )
   if ( node->nodeType() != QgsExpressionNode::ntFunction )
     return false;
 
-  const QgsExpressionNodeFunction *fn = static_cast<const QgsExpressionNodeFunction *>( node );
+  auto fn = static_cast<const QgsExpressionNodeFunction *>( node );
   QgsExpressionFunction *fd = QgsExpression::Functions()[fn->fnIndex()];
   return fd->name() == QLatin1String( "$geometry" ) || ( fd->name() == QLatin1String( "var" ) && fn->referencedVariables().contains( QLatin1String( "geometry" ) ) );
 }
@@ -2328,7 +2328,7 @@ static QgsGeometry geometryFromConstExpr( const QgsExpressionNode *node )
 
   if ( node->nodeType() == QgsExpressionNode::ntFunction )
   {
-    const QgsExpressionNodeFunction *fnNode = static_cast<const QgsExpressionNodeFunction *>( node );
+    auto fnNode = static_cast<const QgsExpressionNodeFunction *>( node );
     QgsExpressionFunction *fnDef = QgsExpression::Functions()[fnNode->fnIndex()];
     if ( fnDef->name() == QLatin1String( "geom_from_wkt" ) )
     {
@@ -2412,7 +2412,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
       return QDomElement();
     }
 
-    const QgsExpressionNodeFunction *otherFn = static_cast<const QgsExpressionNodeFunction *>( otherNode );
+    auto otherFn = static_cast<const QgsExpressionNodeFunction *>( otherNode );
     QgsExpressionFunction *otherFnDef = QgsExpression::Functions()[otherFn->fnIndex()];
     if ( otherFnDef->name() == QLatin1String( "geom_from_wkt" ) )
     {
@@ -2620,7 +2620,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   {
     if ( node->opRight()->nodeType() == QgsSQLStatement::ntLiteral )
     {
-      const QgsSQLStatement::NodeLiteral *rightLit = static_cast<const QgsSQLStatement::NodeLiteral *>( node->opRight() );
+      auto rightLit = static_cast<const QgsSQLStatement::NodeLiteral *>( node->opRight() );
       if ( QgsVariantUtils::isNull( rightLit->value() ) )
       {
 
@@ -2882,7 +2882,7 @@ QString QgsOgcUtilsSQLStatementToFilter::getGeometryColumnSRSName( const QgsSQLS
   if ( node->nodeType() != QgsSQLStatement::ntColumnRef )
     return QString();
 
-  const QgsSQLStatement::NodeColumnRef *col = static_cast<const QgsSQLStatement::NodeColumnRef *>( node );
+  auto col = static_cast<const QgsSQLStatement::NodeColumnRef *>( node );
   if ( !col->tableName().isEmpty() )
   {
     const auto constMLayerProperties = mLayerProperties;
@@ -2920,7 +2920,7 @@ bool QgsOgcUtilsSQLStatementToFilter::processSRSName( const QgsSQLStatement::Nod
       mErrorMessage = QObject::tr( "%1: Last argument must be string or integer literal" ).arg( mainNode->name() );
       return false;
     }
-    const QgsSQLStatement::NodeLiteral *lit = static_cast<const QgsSQLStatement::NodeLiteral *>( lastArg );
+    auto lit = static_cast<const QgsSQLStatement::NodeLiteral *>( lastArg );
     if ( lit->value().userType() == QMetaType::Type::Int )
     {
       if ( mFilterVersion == QgsOgcUtils::FILTER_OGC_1_0 )
@@ -3014,7 +3014,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
         mErrorMessage = QObject::tr( "%1: Argument %2 must be numeric literal" ).arg( node->name() ).arg( i + 1 );
         return QDomElement();
       }
-      const QgsSQLStatement::NodeLiteral *lit = static_cast<const QgsSQLStatement::NodeLiteral *>( arg );
+      auto lit = static_cast<const QgsSQLStatement::NodeLiteral *>( arg );
       double val = 0.0;
       if ( lit->value().userType() == QMetaType::Type::Int )
         val = lit->value().toInt();
@@ -3164,7 +3164,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
       mErrorMessage = QObject::tr( "Function %1 3rd argument should be a numeric value or a string made of a numeric value followed by a string" ).arg( node->name() );
       return QDomElement();
     }
-    const QgsSQLStatement::NodeLiteral *lit = static_cast<const QgsSQLStatement::NodeLiteral *>( distanceNode );
+    auto lit = static_cast<const QgsSQLStatement::NodeLiteral *>( distanceNode );
     if ( QgsVariantUtils::isNull( lit->value() ) )
     {
       mErrorMessage = QObject::tr( "Function %1 3rd argument should be a numeric value or a string made of a numeric value followed by a string" ).arg( node->name() );

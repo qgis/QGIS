@@ -142,7 +142,7 @@ bool QgsMapToolSelect::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEve
   if ( !layer || layer->type() != Qgis::LayerType::Vector )
     return false;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer->isSpatial() )
     return false;
 

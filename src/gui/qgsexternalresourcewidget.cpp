@@ -424,7 +424,7 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
 
 void QgsExternalResourceWidget::onFetchFinished()
 {
-  QgsExternalStorageFetchedContent *content = qobject_cast<QgsExternalStorageFetchedContent *>( sender() );
+  auto content = qobject_cast<QgsExternalStorageFetchedContent *>( sender() );
 
   if ( content == mContent && mContent->status() == Qgis::ContentStatus::Failed )
   {

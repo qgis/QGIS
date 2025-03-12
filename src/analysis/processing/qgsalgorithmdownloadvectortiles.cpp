@@ -33,7 +33,7 @@ class SetStylePostProcessor : public QgsProcessingLayerPostProcessorInterface
 
     void postProcessLayer( QgsMapLayer *layer, QgsProcessingContext &, QgsProcessingFeedback * ) override
     {
-      if ( QgsVectorTileLayer *tileLayer = qobject_cast<QgsVectorTileLayer *>( layer ) )
+      if ( auto tileLayer = qobject_cast<QgsVectorTileLayer *>( layer ) )
       {
         QString errorMsg;
         tileLayer->importNamedStyle( mDocument, errorMsg );
@@ -95,7 +95,7 @@ bool QgsDownloadVectorTilesAlgorithm::prepareAlgorithm( const QVariantMap &param
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
 
-  QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
+  auto vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
   mProvider.reset( qgis::down_cast<const QgsVectorTileDataProvider *>( vtLayer->dataProvider() )->clone() );
   mTileMatrixSet = vtLayer->tileMatrixSet();
   mSourceMinZoom = vtLayer->sourceMinZoom();

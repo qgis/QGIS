@@ -97,7 +97,7 @@ bool QgsFlatTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) c
   if ( other->type() != type() )
     return false;
 
-  const QgsFlatTerrainProvider *otherTerrain = qgis::down_cast< const QgsFlatTerrainProvider * >( other );
+  auto otherTerrain = qgis::down_cast<const QgsFlatTerrainProvider *>( other );
 
   return qgsDoubleNear( otherTerrain->offset(), mOffset );
 }
@@ -188,7 +188,7 @@ bool QgsRasterDemTerrainProvider::equals( const QgsAbstractTerrainProvider *othe
   if ( other->type() != type() )
     return false;
 
-  const QgsRasterDemTerrainProvider *otherTerrain = qgis::down_cast< const QgsRasterDemTerrainProvider * >( other );
+  auto otherTerrain = qgis::down_cast<const QgsRasterDemTerrainProvider *>( other );
   if ( !qgsDoubleNear( otherTerrain->offset(), mOffset )
        || !qgsDoubleNear( otherTerrain->scale(), mScale )
        || mRasterLayer.get() != otherTerrain->layer() )
@@ -294,7 +294,7 @@ bool QgsMeshTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) c
   if ( other->type() != type() )
     return false;
 
-  const QgsMeshTerrainProvider *otherTerrain = qgis::down_cast< const QgsMeshTerrainProvider * >( other );
+  auto otherTerrain = qgis::down_cast<const QgsMeshTerrainProvider *>( other );
   if ( !qgsDoubleNear( otherTerrain->offset(), mOffset )
        || !qgsDoubleNear( otherTerrain->scale(), mScale )
        || mMeshLayer.get() != otherTerrain->layer() )

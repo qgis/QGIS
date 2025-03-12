@@ -200,7 +200,7 @@ void QgsVectorLayerProfileResults::visitFeaturesAtPoint( const QgsProfilePoint &
           {
             for ( auto partIt = feature.crossSectionGeometry.const_parts_begin(); partIt != feature.crossSectionGeometry.const_parts_end(); ++partIt )
             {
-              if ( const QgsPoint *candidatePoint = qgsgeometry_cast< const QgsPoint * >( *partIt ) )
+              if ( auto candidatePoint = qgsgeometry_cast<const QgsPoint *>( *partIt ) )
               {
                 const double snapDistanceDelta = std::fabs( point.distance() - candidatePoint->x() );
                 if ( snapDistanceDelta > maximumPointDistanceDelta )
@@ -221,10 +221,10 @@ void QgsVectorLayerProfileResults::visitFeaturesAtPoint( const QgsProfilePoint &
           {
             for ( auto partIt = feature.crossSectionGeometry.const_parts_begin(); partIt != feature.crossSectionGeometry.const_parts_end(); ++partIt )
             {
-              if ( const QgsCurve *line = qgsgeometry_cast< const QgsCurve * >( *partIt ) )
+              if ( auto line = qgsgeometry_cast<const QgsCurve *>( *partIt ) )
               {
                 // might be a vertical line
-                if ( const QgsLineString *lineString = qgsgeometry_cast< const QgsLineString * >( line ) )
+                if ( auto lineString = qgsgeometry_cast<const QgsLineString *>( line ) )
                 {
                   if ( lineString->numPoints() == 2 && qgsDoubleNear( lineString->pointN( 0 ).x(), lineString->pointN( 1 ).x() ) )
                   {
@@ -356,7 +356,7 @@ void QgsVectorLayerProfileResults::visitFeaturesInRange( const QgsDoubleRange &d
           {
             for ( auto partIt = feature.crossSectionGeometry.const_parts_begin(); partIt != feature.crossSectionGeometry.const_parts_end(); ++partIt )
             {
-              if ( const QgsPoint *candidatePoint = qgsgeometry_cast< const QgsPoint * >( *partIt ) )
+              if ( auto candidatePoint = qgsgeometry_cast<const QgsPoint *>( *partIt ) )
               {
                 if ( profileRange.contains( candidatePoint->x(), candidatePoint->y() ) )
                 {
@@ -441,7 +441,7 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
     {
       case Qgis::GeometryType::Point:
       {
-        if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( transformed.constGet() ) )
+        if ( auto point = qgsgeometry_cast<const QgsPoint *>( transformed.constGet() ) )
         {
           markerSymbol->renderPoint( QPointF( point->x(), point->y() ), nullptr, context.renderContext() );
         }
@@ -458,7 +458,7 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
 
       case Qgis::GeometryType::Line:
       {
-        if ( const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( transformed.constGet() ) )
+        if ( auto line = qgsgeometry_cast<const QgsLineString *>( transformed.constGet() ) )
         {
           lineSymbol->renderPolyline( line->asQPolygonF(), nullptr, context.renderContext() );
         }
@@ -475,7 +475,7 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
 
       case Qgis::GeometryType::Polygon:
       {
-        if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( transformed.constGet() ) )
+        if ( auto polygon = qgsgeometry_cast<const QgsPolygon *>( transformed.constGet() ) )
         {
           if ( const QgsCurve *exterior = polygon->exteriorRing() )
             fillSymbol->renderPolygon( exterior->asQPolygonF(), nullptr, nullptr, context.renderContext() );
@@ -655,7 +655,7 @@ QVector<QgsAbstractProfileResults::Feature> QgsVectorLayerProfileResults::asIndi
 void QgsVectorLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
 {
   QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( generator );
-  const QgsVectorLayerProfileGenerator *vlGenerator = qgis::down_cast<  const QgsVectorLayerProfileGenerator * >( generator );
+  auto vlGenerator = qgis::down_cast<const QgsVectorLayerProfileGenerator *>( generator );
 
   mId = vlGenerator->mId;
   profileType = vlGenerator->mType;
@@ -1075,7 +1075,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
           !mFeedback->isCanceled() && it != intersection->const_parts_end();
           ++it )
     {
-      if ( const QgsPoint *intersectionPoint = qgsgeometry_cast< const QgsPoint * >( *it ) )
+      if ( auto intersectionPoint = qgsgeometry_cast<const QgsPoint *>( *it ) )
       {
         // unfortunately we need to do some work to interpolate the z value for the line -- GEOS doesn't give us this
         QString error;
@@ -1288,12 +1288,12 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForPolygon( const Q
   {
     if ( const QgsCurve *exterior = sourcePolygon->exteriorRing() )
     {
-      QgsLineString *exteriorLine = qgsgeometry_cast<QgsLineString *>( exterior );
+      auto exteriorLine = qgsgeometry_cast<QgsLineString *>( exterior );
       processTriangleIntersectForLine( sourcePolygon, exteriorLine, transformedParts, crossSectionParts );
     }
     for ( int i = 0; i < sourcePolygon->numInteriorRings(); ++i )
     {
-      QgsLineString *interiorLine = qgsgeometry_cast<QgsLineString *>( sourcePolygon->interiorRing( i ) );
+      auto interiorLine = qgsgeometry_cast<QgsLineString *>( sourcePolygon->interiorRing( i ) );
       processTriangleIntersectForLine( sourcePolygon, interiorLine, transformedParts, crossSectionParts );
     }
   }
@@ -1302,14 +1302,14 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForPolygon( const Q
   {
     if ( const QgsCurve *exterior = intersectionPolygon->exteriorRing() )
     {
-      QgsLineString *exteriorLine = qgsgeometry_cast<QgsLineString *>( exterior )->clone();
+      auto exteriorLine = qgsgeometry_cast<QgsLineString *>( exterior )->clone( );
       exteriorLine->deleteVertex( QgsVertexId( 0, 0, exteriorLine->numPoints() - 1 ) ); // open linestring
       processTriangleIntersectForLine( sourcePolygon, exteriorLine, transformedParts, crossSectionParts );
       delete exteriorLine;
     }
     for ( int i = 0; i < intersectionPolygon->numInteriorRings(); ++i )
     {
-      QgsLineString *interiorLine = qgsgeometry_cast<QgsLineString *>( intersectionPolygon->interiorRing( i ) );
+      auto interiorLine = qgsgeometry_cast<QgsLineString *>( intersectionPolygon->interiorRing( i ) );
       if ( mProfileBufferedCurveEngine->contains( interiorLine ) ) // interiorLine is entirely inside curve buffer
       {
         processTriangleIntersectForLine( sourcePolygon, interiorLine, transformedParts, crossSectionParts );
@@ -1354,21 +1354,21 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
       switch ( QgsWkbTypes::geometryType( ( *it )->wkbType() ) )
       {
         case Qgis::GeometryType::Point:
-          if ( const QgsPoint *p = qgsgeometry_cast< const QgsPoint * >( *it ) )
+          if ( auto p = qgsgeometry_cast<const QgsPoint *>( *it ) )
           {
             processTriangleIntersectForPoint( triangle, p, transformedParts, crossSectionParts );
           }
           break;
 
         case Qgis::GeometryType::Line:
-          if ( const QgsLineString *intersectionLine = qgsgeometry_cast< const QgsLineString * >( *it ) )
+          if ( auto intersectionLine = qgsgeometry_cast<const QgsLineString *>( *it ) )
           {
             processTriangleIntersectForLine( triangle, intersectionLine, transformedParts, crossSectionParts );
           }
           break;
 
         case Qgis::GeometryType::Polygon:
-          if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( *it ) )
+          if ( auto poly = qgsgeometry_cast<const QgsPolygon *>( *it ) )
           {
             processTriangleIntersectForPolygon( triangle, poly, transformedParts, crossSectionParts );
           }
@@ -1383,7 +1383,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
 
   auto triangleIsCollinearInXYPlane = []( const QgsPolygon * polygon )-> bool
   {
-    const QgsLineString *ring = qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() );
+    auto ring = qgsgeometry_cast<const QgsLineString *>( polygon->exteriorRing() );
     return QgsGeometryUtilsBase::pointsAreCollinear( ring->xAt( 0 ), ring->yAt( 0 ),
         ring->xAt( 1 ), ring->yAt( 1 ),
         ring->xAt( 2 ), ring->yAt( 2 ), 0.005 );
@@ -1392,7 +1392,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
   auto processPolygon = [this, &processTriangleLineIntersect, &triangleIsCollinearInXYPlane]( const QgsCurvePolygon * polygon, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts, double offset, bool & wasCollinear )
   {
     std::unique_ptr< QgsPolygon > clampedPolygon;
-    if ( const QgsPolygon *p = qgsgeometry_cast< const QgsPolygon * >( polygon ) )
+    if ( auto p = qgsgeometry_cast<const QgsPolygon *>( polygon ) )
     {
       clampedPolygon.reset( p->clone() );
     }
@@ -1421,7 +1421,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
           // this case may occur with vertical object as geos does not handle very well 3D data.
           // Geos works in 2D from the 3D coordinates then re-add the Z values, but when 2D-from-3D objects are vertical, they are topologically incorrects!
           // This piece of code is just a fix to handle this case, a better and real 3D capable library is needed (like SFCGAL).
-          QgsLineString *ring = qgsgeometry_cast< QgsLineString * >( clampedPolygon->exteriorRing() );
+          auto ring = qgsgeometry_cast<QgsLineString *>( clampedPolygon->exteriorRing() );
           int numPoints = ring->numPoints();
           QVector< double > newX( numPoints );
           QVector< double > newY( numPoints );
@@ -1483,15 +1483,15 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
       const int numTriangles = qgsgeometry_cast< const QgsMultiPolygon * >( tessellation.constGet() )->numGeometries();
       for ( int i = 0; ! mFeedback->isCanceled() && i < numTriangles; ++i )
       {
-        const QgsPolygon *triangle = qgsgeometry_cast< const QgsPolygon * >( qgsgeometry_cast< const QgsMultiPolygon * >( tessellation.constGet() )->geometryN( i ) );
+        auto triangle = qgsgeometry_cast<const QgsPolygon *>( qgsgeometry_cast< const QgsMultiPolygon * >( tessellation.constGet() )->geometryN( i ) );
 
         if ( triangleIsCollinearInXYPlane( triangle ) )
         {
           wasCollinear = true;
-          const QgsLineString *ring = qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() );
+          auto ring = qgsgeometry_cast<const QgsLineString *>( polygon->exteriorRing() );
 
           QString lastError;
-          if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( mProfileCurve.get() ) )
+          if ( auto ls = qgsgeometry_cast<const QgsLineString *>( mProfileCurve.get() ) )
           {
             for ( int curveSegmentIndex = 0; curveSegmentIndex < mProfileCurve->numPoints() - 1; ++curveSegmentIndex )
             {
@@ -1570,7 +1570,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     {
       if ( mProfileBufferedCurveEngine->intersects( *it ) )
       {
-        if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( *it ) )
+        if ( auto curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( *it ) )
         {
           processPolygon( curvePolygon, transformedParts, crossSectionParts, offset, wasCollinear );
         }
@@ -1757,7 +1757,7 @@ bool QgsVectorLayerProfileGenerator::clampAltitudes( QgsPolygon *polygon, double
   }
 
   QgsCurve *curve = const_cast<QgsCurve *>( polygon->exteriorRing() );
-  QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( curve );
+  auto lineString = qgsgeometry_cast<QgsLineString *>( curve );
   if ( !lineString )
     return false;
 
@@ -1769,7 +1769,7 @@ bool QgsVectorLayerProfileGenerator::clampAltitudes( QgsPolygon *polygon, double
       break;
 
     QgsCurve *curve = const_cast<QgsCurve *>( polygon->interiorRing( i ) );
-    QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( curve );
+    auto lineString = qgsgeometry_cast<QgsLineString *>( curve );
     if ( !lineString )
       return false;
 

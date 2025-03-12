@@ -64,7 +64,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas(
   {
     if ( layer->type() == Qgis::LayerType::Vector )
     {
-      QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
 
       bool typeIsSelectable = false;
       for ( Qgis::GeometryType type : geometryTypes )
@@ -177,7 +177,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
       }
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+        auto vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
           continue;
         addVectorLayer( vl, it.value(), singleLayer );
@@ -683,7 +683,7 @@ void QgsIdentifyMenu::handleMenuHover()
   const auto constIdResults = idResults;
   for ( const QgsMapToolIdentify::IdentifyResult &result : constIdResults )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( result.mLayer );
+    auto vl = qobject_cast<QgsVectorLayer *>( result.mLayer );
     if ( !vl )
       continue;
 

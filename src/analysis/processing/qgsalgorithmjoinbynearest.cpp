@@ -283,7 +283,7 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
           attr.append( j );
 
           const QgsGeometry closestLine = f.geometry().shortestLine( index.geometry( id ) );
-          if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( closestLine.constGet() ) )
+          if ( auto line = qgsgeometry_cast<const QgsLineString *>( closestLine.constGet() ) )
           {
             attr.append( line->length() );
             attr.append( line->startPoint().x() );

@@ -497,7 +497,7 @@ void QgsGrassTools::itemClicked( const QModelIndex &index )
     // the index row in the underlying model so we need to jump through this
     // little hoop to get the correct item
     //
-    const QSortFilterProxyModel *proxyModel = qobject_cast<const QSortFilterProxyModel *>( index.model() );
+    auto proxyModel = qobject_cast<const QSortFilterProxyModel *>( index.model() );
     if ( !proxyModel )
     {
       return;

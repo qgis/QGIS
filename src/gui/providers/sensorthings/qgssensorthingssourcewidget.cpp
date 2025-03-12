@@ -882,7 +882,7 @@ void QgsSensorThingsExpansionsDelegate::setEditorData( QWidget *editor, const QM
 
     case QgsSensorThingsExpansionsModel::Column::Filter:
     {
-      if ( QgsSensorThingsFilterWidget *w = qobject_cast<QgsSensorThingsFilterWidget *>( editor ) )
+      if ( auto w = qobject_cast<QgsSensorThingsFilterWidget *>( editor ) )
       {
         w->setFilter( index.data( Qt::EditRole ).toString() );
       }
@@ -935,7 +935,7 @@ void QgsSensorThingsExpansionsDelegate::setModelData( QWidget *editor, QAbstract
 
     case QgsSensorThingsExpansionsModel::Column::Filter:
     {
-      if ( QgsSensorThingsFilterWidget *w = qobject_cast<QgsSensorThingsFilterWidget *>( editor ) )
+      if ( auto w = qobject_cast<QgsSensorThingsFilterWidget *>( editor ) )
       {
         model->setData( index, w->filter() );
       }
@@ -961,8 +961,8 @@ bool QgsSensorThingsRemoveExpansionDelegate::eventFilter( QObject *obj, QEvent *
 {
   if ( event->type() == QEvent::HoverEnter || event->type() == QEvent::HoverMove )
   {
-    QHoverEvent *hoverEvent = static_cast<QHoverEvent *>( event );
-    if ( QAbstractItemView *view = qobject_cast<QAbstractItemView *>( obj->parent() ) )
+    auto hoverEvent = static_cast<QHoverEvent *>( event );
+    if ( auto view = qobject_cast<QAbstractItemView *>( obj->parent() ) )
     {
       const QModelIndex indexUnderMouse = view->indexAt( hoverEvent->pos() );
       setHoveredIndex( indexUnderMouse );
@@ -981,7 +981,7 @@ void QgsSensorThingsRemoveExpansionDelegate::paint( QPainter *painter, const QSt
 {
   QStyledItemDelegate::paint( painter, option, index );
 
-  if ( const QgsSensorThingsExpansionsModel *model = qobject_cast< const QgsSensorThingsExpansionsModel * >( index.model() ) )
+  if ( auto model = qobject_cast<const QgsSensorThingsExpansionsModel *>( index.model() ) )
   {
     if ( model->canRemoveRow( index.row() ) )
     {

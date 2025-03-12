@@ -4465,7 +4465,7 @@ void QgsWmsTiledImageDownloadHandler::downloadBlocking()
 
 void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 {
-  QgsTileDownloadManagerReply *reply = qobject_cast<QgsTileDownloadManagerReply *>( sender() );
+  auto reply = qobject_cast<QgsTileDownloadManagerReply *>( sender() );
 
 #if defined( QGISDEBUG )
   bool fromCache = reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();

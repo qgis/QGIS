@@ -70,7 +70,7 @@ class QgsCPLErrorCollectorHandler
     {
       if ( errClass != CE_None )
       {
-        QStringList *errors = static_cast< QStringList * >( CPLGetErrorHandlerUserData() );
+        auto errors = static_cast<QStringList *>( CPLGetErrorHandlerUserData() );
         if ( errors )
         {
           errors->append( QString( msg ) );

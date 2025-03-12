@@ -304,7 +304,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
           int partStartVertexNum = 0;
           for ( auto partIt = geom->const_parts_begin(); partIt != geom->const_parts_end(); ++partIt )
           {
-            if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( *partIt ) )
+            if ( auto curve = qgsgeometry_cast<const QgsCurve *>( *partIt ) )
             {
               replaceIfBetter( curve->startPoint(), partStartVertexNum );
               replaceIfBetter( curve->endPoint(), partStartVertexNum + curve->numPoints() - 1 );
@@ -319,7 +319,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
           int partStartVertexNum = 0;
           for ( auto partIt = geom->const_parts_begin(); partIt != geom->const_parts_end(); ++partIt )
           {
-            if ( const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( *partIt ) )
+            if ( auto polygon = qgsgeometry_cast<const QgsCurvePolygon *>( *partIt ) )
             {
               if ( polygon->exteriorRing() )
               {
@@ -829,7 +829,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 
     void getNextEntry( const IEntry &entry, id_type &nextEntry, bool &hasNext ) override
     {
-      const INode *n = dynamic_cast<const INode *>( &entry );
+      auto n = dynamic_cast<const INode *>( &entry );
       if ( !n )
         return;
 

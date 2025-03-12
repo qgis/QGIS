@@ -381,7 +381,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
           {
             layerCrs += QStringLiteral( " @ %1" ).arg( qgsDoubleToString( layer->crs().coordinateEpoch(), 3 ) );
           }
-          if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+          if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
             title = tr( "%1 (%2 - %3)" ).arg( title, QgsWkbTypes::displayString( vl->wkbType() ), layerCrs );
           else
             title = tr( "%1 (%2)" ).arg( title, layerCrs );
@@ -595,7 +595,7 @@ bool QgsMapLayerModel::setData( const QModelIndex &index, const QVariant &value,
     {
       if ( !isEmpty && additionalIndex < 0 )
       {
-        QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
+        auto layer = static_cast<QgsMapLayer *>( index.internalPointer() );
         mLayersChecked[layer->id()] = ( Qt::CheckState )value.toInt();
         emit dataChanged( index, index, QVector< int >() << Qt::CheckStateRole );
         return true;

@@ -227,7 +227,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
 {
   emit beginUpdate();
 
-  QgsFeatureExpressionValuesGatherer *gatherer = qobject_cast<QgsFeatureExpressionValuesGatherer *>( sender() );
+  auto gatherer = qobject_cast<QgsFeatureExpressionValuesGatherer *>( sender() );
   if ( gatherer->wasCanceled() )
   {
     delete gatherer;

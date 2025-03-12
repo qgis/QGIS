@@ -223,7 +223,7 @@ void QgsMapToolsDigitizingTechniqueManager::setShapeTool( const QString &shapeTo
 
 void QgsMapToolsDigitizingTechniqueManager::mapToolSet( QgsMapTool *newTool, QgsMapTool * )
 {
-  if ( QgsMapToolCapture *captureTool = qobject_cast<QgsMapToolCapture *>( newTool ) )
+  if ( auto captureTool = qobject_cast<QgsMapToolCapture *>( newTool ) )
   {
     if ( mInitializedTools.contains( captureTool ) )
       return;

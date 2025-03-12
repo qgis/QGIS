@@ -180,7 +180,7 @@ class ExtractLabelSink : public QgsLabelSink
           break;
       }
 
-      QgsTextLabelFeature *labelFeature = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
+      auto labelFeature = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
       if ( !labelFeature )
         return;
 
@@ -501,7 +501,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   sink->finalize();
   sink.reset();
 
-  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( dest, context ) ) )
+  if ( auto vl = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( dest, context ) ) )
   {
     vl->setRenderer( new QgsNullSymbolRenderer() );
     if ( vl->renderer() )

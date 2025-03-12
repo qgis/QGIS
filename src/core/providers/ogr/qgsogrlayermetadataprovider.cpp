@@ -41,7 +41,7 @@ QgsLayerMetadataSearchResults QgsOgrLayerMetadataProvider::search( const QgsMeta
         break;
       }
 
-      if ( const QgsAbstractDatabaseProviderConnection *dbConn = static_cast<const QgsAbstractDatabaseProviderConnection *>( conn ) )
+      if ( auto dbConn = static_cast<const QgsAbstractDatabaseProviderConnection *>( conn ) )
       {
         try
         {

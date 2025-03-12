@@ -49,7 +49,7 @@ bool QgsMapToolSplitFeatures::supportsTechnique( Qgis::CaptureTechnique techniqu
 void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 
   if ( !vlayer )
   {
@@ -141,7 +141,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           const auto layers = canvas()->layers( true );
           for ( QgsMapLayer *layer : layers )
           {
-            QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+            auto vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
             if ( vectorLayer && vectorLayer->isEditable() && vectorLayer->isSpatial() && vectorLayer != vlayer && ( vectorLayer->geometryType() == Qgis::GeometryType::Line || vectorLayer->geometryType() == Qgis::GeometryType::Polygon ) )
             {
               vectorLayer->beginEditCommand( tr( "Topological points from Features split" ) );

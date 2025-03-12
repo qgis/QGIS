@@ -300,7 +300,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
   mPipe->evaluateDataDefinedProperties( rendererContext.expressionContext() );
 
-  const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< const QgsRasterLayerTemporalProperties * >( layer->temporalProperties() );
+  auto temporalProperties = qobject_cast<const QgsRasterLayerTemporalProperties *>( layer->temporalProperties() );
   const QgsRasterLayerElevationProperties *elevationProperties = qobject_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() );
 
   if ( ( temporalProperties->isActive() && renderContext()->isTemporal() )

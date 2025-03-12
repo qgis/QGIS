@@ -113,7 +113,7 @@ void QgsMapCanvasTracer::configure()
     default:
     case Qgis::SnappingMode::ActiveLayer:
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+      auto vl = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
       if ( vl && visibleLayers.contains( vl ) )
         layers << vl;
     }
@@ -123,7 +123,7 @@ void QgsMapCanvasTracer::configure()
       const auto constVisibleLayers = visibleLayers;
       for ( QgsMapLayer *layer : constVisibleLayers )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+        auto vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( vl )
           layers << vl;
       }

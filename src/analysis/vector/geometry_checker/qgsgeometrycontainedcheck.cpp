@@ -62,7 +62,7 @@ void QgsGeometryContainedCheck::collectErrors( const QMap<QString, QgsFeaturePoo
 
 void QgsGeometryContainedCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
-  QgsGeometryContainedCheckError *containerError = static_cast<QgsGeometryContainedCheckError *>( error );
+  auto containerError = static_cast<QgsGeometryContainedCheckError *>( error );
   QgsFeaturePool *featurePoolA = featurePools[error->layerId()];
   QgsFeaturePool *featurePoolB = featurePools[containerError->containingFeature().first];
 

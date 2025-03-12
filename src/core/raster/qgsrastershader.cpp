@@ -96,7 +96,7 @@ void QgsRasterShader::writeXml( QDomDocument &doc, QDomElement &parent, const Qg
   }
 
   QDomElement rasterShaderElem = doc.createElement( QStringLiteral( "rastershader" ) );
-  QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( mRasterShaderFunction.get() );
+  auto colorRampShader = dynamic_cast<QgsColorRampShader *>( mRasterShaderFunction.get() );
   if ( colorRampShader )
   {
     rasterShaderElem.appendChild( colorRampShader->writeXml( doc, context ) );

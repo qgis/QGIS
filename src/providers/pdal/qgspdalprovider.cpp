@@ -191,7 +191,7 @@ void QgsPdalProvider::onGenerateIndexFinished()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsPdalIndexingTask *task = qobject_cast<QgsPdalIndexingTask *>( QObject::sender() );
+  auto task = qobject_cast<QgsPdalIndexingTask *>( QObject::sender() );
   // this may be already canceled task that we don't care anymore...
   if ( task == mRunningIndexingTask )
   {
@@ -206,7 +206,7 @@ void QgsPdalProvider::onGenerateIndexFailed()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsPdalIndexingTask *task = qobject_cast<QgsPdalIndexingTask *>( QObject::sender() );
+  auto task = qobject_cast<QgsPdalIndexingTask *>( QObject::sender() );
   // this may be already canceled task that we don't care anymore...
   if ( task == mRunningIndexingTask )
   {
@@ -229,7 +229,7 @@ bool QgsPdalProvider::anyIndexingTaskExists()
   const QList<QgsTask *> tasks = QgsApplication::taskManager()->activeTasks();
   for ( const QgsTask *task : tasks )
   {
-    const QgsPdalIndexingTask *indexingTask = qobject_cast<const QgsPdalIndexingTask *>( task );
+    auto indexingTask = qobject_cast<const QgsPdalIndexingTask *>( task );
     if ( indexingTask )
     {
       return true;
@@ -291,7 +291,7 @@ bool QgsPdalProvider::load( const QString &uri )
     if ( driver.empty() )
       throw pdal::pdal_error( "No driver for " + uri.toStdString() );
 
-    if ( pdal::Reader *reader = dynamic_cast<pdal::Reader *>( stageFactory.createStage( driver ) ) )
+    if ( auto reader = dynamic_cast<pdal::Reader *>( stageFactory.createStage( driver ) ) )
     {
       pdal::Options options;
       options.add( pdal::Option( "filename", uri.toStdString() ) );

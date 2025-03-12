@@ -61,7 +61,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   timer.start();
   std::unique_ptr< QgsFeatureRenderer > mainRenderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
 
-  QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast< QgsVectorLayerSelectionProperties * >( layer->selectionProperties() );
+  auto selectionProperties = qobject_cast<QgsVectorLayerSelectionProperties *>( layer->selectionProperties() );
   switch ( selectionProperties->selectionRenderingMode() )
   {
     case Qgis::SelectionRenderingMode::Default:
@@ -975,7 +975,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QStrin
     {
       if ( context.labelSink() )
       {
-        if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling *>( layer->labeling() ) )
+        if ( auto rbl = dynamic_cast<const QgsRuleBasedLabeling *>( layer->labeling() ) )
         {
           mLabelProvider = new QgsRuleBasedLabelSinkProvider( *rbl, layer, context.labelSink() );
         }

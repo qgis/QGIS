@@ -91,7 +91,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sipCpp );
+    auto layer = qobject_cast<QgsMapLayer *>( sipCpp );
 
     sipType = 0;
 

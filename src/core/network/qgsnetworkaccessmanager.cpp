@@ -401,7 +401,7 @@ void QgsNetworkAccessManager::abortRequest()
   QTimer *timer = qobject_cast<QTimer *>( sender() );
   Q_ASSERT( timer );
 
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( timer->parent() );
+  auto reply = qobject_cast<QNetworkReply *>( timer->parent() );
   Q_ASSERT( reply );
 
   reply->abort();
@@ -419,7 +419,7 @@ void QgsNetworkAccessManager::onReplyFinished( QNetworkReply *reply )
 
 void QgsNetworkAccessManager::onReplyDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  if ( QNetworkReply *reply = qobject_cast< QNetworkReply *>( sender() ) )
+  if ( auto reply = qobject_cast<QNetworkReply *>( sender() ) )
   {
     emit downloadProgress( getRequestId( reply ), bytesReceived, bytesTotal );
   }
@@ -428,7 +428,7 @@ void QgsNetworkAccessManager::onReplyDownloadProgress( qint64 bytesReceived, qin
 #ifndef QT_NO_SSL
 void QgsNetworkAccessManager::onReplySslErrors( const QList<QSslError> &errors )
 {
-  QNetworkReply *reply = qobject_cast< QNetworkReply *>( sender() );
+  auto reply = qobject_cast<QNetworkReply *>( sender() );
   Q_ASSERT( reply );
   Q_ASSERT( reply->manager() == this );
 
@@ -748,7 +748,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 
   setFallbackProxyAndExcludes( proxy, excludes, noProxyURLs );
 
-  QgsNetworkDiskCache *newcache = qobject_cast<QgsNetworkDiskCache *>( cache() );
+  auto newcache = qobject_cast<QgsNetworkDiskCache *>( cache() );
   if ( !newcache )
     newcache = new QgsNetworkDiskCache( this );
 

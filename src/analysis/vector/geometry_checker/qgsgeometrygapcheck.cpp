@@ -224,7 +224,7 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
 
       case AddToAllowedGaps:
       {
-        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mAllowedGapsLayer.data() );
+        auto layer = qobject_cast<QgsVectorLayer *>( mAllowedGapsLayer.data() );
         if ( layer )
         {
           if ( !layer->isEditable() && !layer->startEditing() )
@@ -254,9 +254,9 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
 
       case CreateNewFeature:
       {
-        QgsGeometryGapCheckError *gapCheckError = static_cast<QgsGeometryGapCheckError *>( error );
+        auto gapCheckError = static_cast<QgsGeometryGapCheckError *>( error );
         QgsProject *project = QgsProject::instance();
-        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( gapCheckError->neighbors().keys().first() ) );
+        auto layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( gapCheckError->neighbors().keys().first() ) );
         if ( layer )
         {
           const QgsGeometry geometry = error->geometry();
@@ -503,13 +503,13 @@ QgsRectangle QgsGeometryGapCheckError::contextBoundingBox() const
 
 bool QgsGeometryGapCheckError::isEqual( QgsGeometryCheckError *other ) const
 {
-  QgsGeometryGapCheckError *err = dynamic_cast<QgsGeometryGapCheckError *>( other );
+  auto err = dynamic_cast<QgsGeometryGapCheckError *>( other );
   return err && err->location().distanceCompare( location(), mCheck->context()->reducedTolerance ) && err->neighbors() == neighbors();
 }
 
 bool QgsGeometryGapCheckError::closeMatch( QgsGeometryCheckError *other ) const
 {
-  QgsGeometryGapCheckError *err = dynamic_cast<QgsGeometryGapCheckError *>( other );
+  auto err = dynamic_cast<QgsGeometryGapCheckError *>( other );
   return err && err->layerId() == layerId() && err->neighbors() == neighbors();
 }
 
@@ -517,7 +517,7 @@ void QgsGeometryGapCheckError::update( const QgsGeometryCheckError *other )
 {
   QgsGeometryCheckError::update( other );
   // Static cast since this should only get called if isEqual == true
-  const QgsGeometryGapCheckError *err = static_cast<const QgsGeometryGapCheckError *>( other );
+  auto err = static_cast<const QgsGeometryGapCheckError *>( other );
   mNeighbors = err->mNeighbors;
   mGapAreaBBox = err->mGapAreaBBox;
 }

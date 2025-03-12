@@ -249,8 +249,8 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   QgsLayoutItemPage *focusedPaperItem = nullptr;
   for ( QGraphicsItem *item : std::as_const( itemList ) )
   {
-    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
-    QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( item );
+    auto layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+    auto paperItem = dynamic_cast<QgsLayoutItemPage *>( item );
     if ( paperItem )
       focusedPaperItem = paperItem;
 

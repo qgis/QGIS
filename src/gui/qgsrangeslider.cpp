@@ -190,7 +190,7 @@ bool QgsRangeSlider::event( QEvent *event )
     case QEvent::HoverEnter:
     case QEvent::HoverLeave:
     case QEvent::HoverMove:
-      if ( const QHoverEvent *he = static_cast<const QHoverEvent *>( event ) )
+      if ( auto he = static_cast<const QHoverEvent *>( event ) )
         updateHoverControl( he->pos() );
       break;
     default:

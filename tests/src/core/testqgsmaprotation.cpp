@@ -184,7 +184,7 @@ void TestQgsMapRotation::linesLayer()
   //use test font
   QVERIFY( mLinesLayer->labeling() );
   QVERIFY( mLinesLayer->labeling()->type() == QLatin1String( "simple" ) );
-  const QgsVectorLayerSimpleLabeling *labeling = static_cast<const QgsVectorLayerSimpleLabeling *>( mLinesLayer->labeling() );
+  auto labeling = static_cast<const QgsVectorLayerSimpleLabeling *>( mLinesLayer->labeling() );
   QgsPalLayerSettings palSettings = labeling->settings();
   QgsTextFormat format = palSettings.format();
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );

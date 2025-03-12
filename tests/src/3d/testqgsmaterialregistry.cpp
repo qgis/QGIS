@@ -93,7 +93,7 @@ void TestQgsMaterialRegistry::metadata()
   //test creating material settings from metadata
   const std::unique_ptr<QgsAbstractMaterialSettings> material( metadata.create() );
   QVERIFY( material );
-  DummyMaterialSettings *dummyMaterial = dynamic_cast<DummyMaterialSettings *>( material.get() );
+  auto dummyMaterial = dynamic_cast<DummyMaterialSettings *>( material.get() );
   QVERIFY( dummyMaterial );
 }
 
@@ -154,7 +154,7 @@ void TestQgsMaterialRegistry::createMaterial()
   std::unique_ptr<QgsAbstractMaterialSettings> material( registry->createMaterialSettings( QStringLiteral( "Dummy" ) ) );
 
   QVERIFY( material.get() );
-  DummyMaterialSettings *dummySymbol = dynamic_cast<DummyMaterialSettings *>( material.get() );
+  auto dummySymbol = dynamic_cast<DummyMaterialSettings *>( material.get() );
   QVERIFY( dummySymbol );
 
   //try creating a bad material

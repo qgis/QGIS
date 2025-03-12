@@ -211,7 +211,7 @@ QString QgsRelationAddPolymorphicDialog::relationId() const
 
 QString QgsRelationAddPolymorphicDialog::relationName() const
 {
-  QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( mReferencingLayerComboBox->currentLayer() );
+  auto vl = static_cast<QgsVectorLayer *>( mReferencingLayerComboBox->currentLayer() );
   return tr( "Polymorphic relations for \"%1\"" ).arg( vl ? vl->name() : QStringLiteral( "<NO LAYER>" ) );
 }
 
@@ -242,7 +242,7 @@ bool QgsRelationAddPolymorphicDialog::isDefinitionValid()
 
 void QgsRelationAddPolymorphicDialog::updateChildRelationsComboBox()
 {
-  QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( mReferencingLayerComboBox->currentLayer() );
+  auto vl = static_cast<QgsVectorLayer *>( mReferencingLayerComboBox->currentLayer() );
   if ( !vl || !vl->isValid() )
     return;
 

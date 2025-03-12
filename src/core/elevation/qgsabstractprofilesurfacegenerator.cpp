@@ -364,7 +364,7 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
 
 void QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
 {
-  const QgsAbstractProfileSurfaceGenerator *surfaceGenerator = qgis::down_cast<  const QgsAbstractProfileSurfaceGenerator * >( generator );
+  auto surfaceGenerator = qgis::down_cast<const QgsAbstractProfileSurfaceGenerator *>( generator );
 
   mLineSymbol.reset( surfaceGenerator->lineSymbol()->clone() );
   mFillSymbol.reset( surfaceGenerator->fillSymbol()->clone() );

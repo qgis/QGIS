@@ -239,7 +239,7 @@ QList<QPair<QLabel *, QWidget *>> QgsVectorLayerSaveAsDialog::createControls( co
     {
       case QgsVectorFileWriter::Int:
       {
-        QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( option );
+        auto opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( option );
         if ( opt )
         {
           QSpinBox *sb = new QSpinBox();
@@ -253,7 +253,7 @@ QList<QPair<QLabel *, QWidget *>> QgsVectorLayerSaveAsDialog::createControls( co
 
       case QgsVectorFileWriter::Set:
       {
-        QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( option );
+        auto opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( option );
         if ( opt )
         {
           QComboBox *cb = new QComboBox();
@@ -275,7 +275,7 @@ QList<QPair<QLabel *, QWidget *>> QgsVectorLayerSaveAsDialog::createControls( co
 
       case QgsVectorFileWriter::String:
       {
-        QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( option );
+        auto opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( option );
         if ( opt )
         {
           QLineEdit *le = new QLineEdit( opt->defaultValue );
@@ -651,7 +651,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
       mDatasourceOptionsGroupBox->setVisible( true );
       QList<QPair<QLabel *, QWidget *>> controls = createControls( driverMetaData.driverOptions );
 
-      QFormLayout *datasourceLayout = dynamic_cast<QFormLayout *>( mDatasourceOptionsGroupBox->layout() );
+      auto datasourceLayout = dynamic_cast<QFormLayout *>( mDatasourceOptionsGroupBox->layout() );
 
       const auto constControls = controls;
       for ( LabelControlPair control : constControls )
@@ -669,7 +669,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
       mLayerOptionsGroupBox->setVisible( true );
       QList<QPair<QLabel *, QWidget *>> controls = createControls( driverMetaData.layerOptions );
 
-      QFormLayout *layerOptionsLayout = dynamic_cast<QFormLayout *>( mLayerOptionsGroupBox->layout() );
+      auto layerOptionsLayout = dynamic_cast<QFormLayout *>( mLayerOptionsGroupBox->layout() );
 
       const auto constControls = controls;
       for ( LabelControlPair control : constControls )
@@ -946,7 +946,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
       {
         case QgsVectorFileWriter::Int:
         {
-          QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( *it );
+          auto opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( *it );
           QSpinBox *sb = mDatasourceOptionsGroupBox->findChild<QSpinBox *>( it.key() );
           if ( opt && sb && sb->value() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key() ).arg( sb->value() );
@@ -955,7 +955,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
 
         case QgsVectorFileWriter::Set:
         {
-          QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( *it );
+          auto opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( *it );
           QComboBox *cb = mDatasourceOptionsGroupBox->findChild<QComboBox *>( it.key() );
           if ( opt && cb && cb->itemData( cb->currentIndex() ) != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), cb->currentText() );
@@ -964,7 +964,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
 
         case QgsVectorFileWriter::String:
         {
-          QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( *it );
+          auto opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( *it );
           QLineEdit *le = mDatasourceOptionsGroupBox->findChild<QLineEdit *>( it.key() );
           if ( opt && le && le->text() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), le->text() );
@@ -973,7 +973,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
 
         case QgsVectorFileWriter::Hidden:
         {
-          QgsVectorFileWriter::HiddenOption *opt = dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
+          auto opt = dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
           if ( !opt->mValue.isEmpty() )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
@@ -1005,7 +1005,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
       {
         case QgsVectorFileWriter::Int:
         {
-          QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( *it );
+          auto opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( *it );
           QSpinBox *sb = mLayerOptionsGroupBox->findChild<QSpinBox *>( it.key() );
           if ( opt && sb && sb->value() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key() ).arg( sb->value() );
@@ -1014,7 +1014,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 
         case QgsVectorFileWriter::Set:
         {
-          QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( *it );
+          auto opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( *it );
           QComboBox *cb = mLayerOptionsGroupBox->findChild<QComboBox *>( it.key() );
           if ( opt && cb && cb->itemData( cb->currentIndex() ) != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), cb->currentText() );
@@ -1023,7 +1023,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 
         case QgsVectorFileWriter::String:
         {
-          QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( *it );
+          auto opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( *it );
           QLineEdit *le = mLayerOptionsGroupBox->findChild<QLineEdit *>( it.key() );
           if ( opt && le && le->text() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), le->text() );
@@ -1032,7 +1032,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 
         case QgsVectorFileWriter::Hidden:
         {
-          QgsVectorFileWriter::HiddenOption *opt = dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
+          auto opt = dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
           if ( !opt->mValue.isEmpty() )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
@@ -1198,7 +1198,7 @@ void QgsVectorLayerSaveAsDialog::mSymbologyExportComboBox_currentIndexChanged( c
 
 void QgsVectorLayerSaveAsDialog::mGeometryTypeComboBox_currentIndexChanged( int )
 {
-  Qgis::WkbType currentIndexData = static_cast<Qgis::WkbType>( mGeometryTypeComboBox->currentData().toInt() );
+  auto currentIndexData = static_cast<Qgis::WkbType>( mGeometryTypeComboBox->currentData().toInt() );
 
   if ( mGeometryTypeComboBox->currentIndex() != -1 && currentIndexData != Qgis::WkbType::NoGeometry )
   {

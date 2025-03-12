@@ -151,7 +151,7 @@ QgsRectangle QgsMeshCalculatorDialog::outputExtent() const
 
 QgsGeometry QgsMeshCalculatorDialog::maskGeometry() const
 {
-  QgsVectorLayer *mask_layer = qobject_cast<QgsVectorLayer *>( cboLayerMask->currentLayer() );
+  auto mask_layer = qobject_cast<QgsVectorLayer *>( cboLayerMask->currentLayer() );
   if ( mask_layer )
   {
     return maskGeometry( mask_layer );

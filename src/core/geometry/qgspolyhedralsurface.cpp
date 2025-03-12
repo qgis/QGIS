@@ -380,7 +380,7 @@ QgsAbstractGeometry *QgsPolyhedralSurface::boundary() const
   for ( QgsPolygon *polygon : mPatches )
   {
     std::unique_ptr<QgsAbstractGeometry> polygonBoundary( polygon->boundary() );
-    if ( QgsLineString *lineStringBoundary = qgsgeometry_cast< QgsLineString * >( polygonBoundary.get() ) )
+    if ( auto lineStringBoundary = qgsgeometry_cast<QgsLineString *>( polygonBoundary.get() ) )
     {
       multiLine->addGeometry( lineStringBoundary->clone() );
     }
@@ -969,7 +969,7 @@ QgsAbstractGeometry *QgsPolyhedralSurface::childGeometry( int index ) const
 
 int QgsPolyhedralSurface::compareToSameClass( const QgsAbstractGeometry *other ) const
 {
-  const QgsPolyhedralSurface *otherPolySurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( other );
+  auto otherPolySurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( other );
   if ( !otherPolySurface )
     return -1;
 

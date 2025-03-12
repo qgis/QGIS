@@ -42,7 +42,7 @@ QgsStacFetchMoreItem::QgsStacFetchMoreItem( QgsDataItem *parent, const QString &
 
 bool QgsStacFetchMoreItem::handleDoubleClick()
 {
-  if ( QgsStacCatalogItem *catalog = qobject_cast<QgsStacCatalogItem *>( mParent ) )
+  if ( auto catalog = qobject_cast<QgsStacCatalogItem *>( mParent ) )
   {
     catalog->fetchMoreChildren();
     return true;
@@ -165,7 +165,7 @@ QgsStacController *QgsStacItemItem::stacController()
   QgsDataItem *item = this;
   while ( item )
   {
-    if ( QgsStacConnectionItem *ci = qobject_cast<QgsStacConnectionItem *>( item ) )
+    if ( auto ci = qobject_cast<QgsStacConnectionItem *>( item ) )
       return ci->controller();
     item = item->parent();
   }
@@ -239,7 +239,7 @@ QgsStacController *QgsStacCatalogItem::stacController() const
   const QgsDataItem *item = this;
   while ( item )
   {
-    if ( const QgsStacConnectionItem *ci = qobject_cast< const QgsStacConnectionItem *>( item ) )
+    if ( auto ci = qobject_cast<const QgsStacConnectionItem *>( item ) )
       return ci->controller();
     item = item->parent();
   }
@@ -252,7 +252,7 @@ QgsStacCatalog *QgsStacCatalogItem::rootCatalog() const
   const QgsDataItem *item = this;
   while ( item )
   {
-    if ( const QgsStacConnectionItem *ci = qobject_cast< const QgsStacConnectionItem *>( item ) )
+    if ( auto ci = qobject_cast<const QgsStacConnectionItem *>( item ) )
       return ci->mStacCatalog.get();
     item = item->parent();
   }
@@ -264,7 +264,7 @@ QgsStacFetchMoreItem *QgsStacCatalogItem::fetchMoreItem() const
 {
   for ( QgsDataItem *item : mChildren )
   {
-    if ( QgsStacFetchMoreItem *moreItem = qobject_cast< QgsStacFetchMoreItem *>( item ) )
+    if ( auto moreItem = qobject_cast<QgsStacFetchMoreItem *>( item ) )
     {
       return moreItem;
     }
@@ -280,7 +280,7 @@ void QgsStacCatalogItem::childrenCreated()
 
   for ( QgsDataItem *child : std::as_const( mChildren ) )
   {
-    if ( QgsStacItemItem *item = qobject_cast<QgsStacItemItem *>( child ) )
+    if ( auto item = qobject_cast<QgsStacItemItem *>( child ) )
     {
       if ( item->state() != Qgis::BrowserItemState::NotPopulated )
         continue;
@@ -299,7 +299,7 @@ void QgsStacCatalogItem::onControllerFinished( int requestId, const QString &err
     if ( child->state() != Qgis::BrowserItemState::NotPopulated )
       continue;
 
-    if ( QgsStacItemItem *item = qobject_cast<QgsStacItemItem *>( child ) )
+    if ( auto item = qobject_cast<QgsStacItemItem *>( child ) )
     {
       if ( item->property( "requestId" ).toInt() == requestId )
       {

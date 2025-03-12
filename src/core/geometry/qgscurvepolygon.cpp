@@ -1437,7 +1437,7 @@ QgsAbstractGeometry *QgsCurvePolygon::childGeometry( int index ) const
 
 int QgsCurvePolygon::compareToSameClass( const QgsAbstractGeometry *other ) const
 {
-  const QgsCurvePolygon *otherPolygon = qgsgeometry_cast<const QgsCurvePolygon *>( other );
+  auto otherPolygon = qgsgeometry_cast<const QgsCurvePolygon *>( other );
   if ( !otherPolygon )
     return -1;
 

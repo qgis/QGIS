@@ -109,7 +109,7 @@ QgsGdalCloudConnectionItem::QgsGdalCloudConnectionItem( QgsDataItem *parent, con
 
 bool QgsGdalCloudConnectionItem::equal( const QgsDataItem *other )
 {
-  const QgsGdalCloudConnectionItem *o = qobject_cast<const QgsGdalCloudConnectionItem *>( other );
+  auto o = qobject_cast<const QgsGdalCloudConnectionItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName && mConnName == o->mConnName );
 }
 

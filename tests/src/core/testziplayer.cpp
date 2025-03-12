@@ -130,7 +130,7 @@ QgsMapLayer *TestZipLayer::getZipLayer( const QString &myPath, const QString &my
   QgsDataItem *myItem = QgsZipItem::itemFromPath( dirItem, myPath, myName );
   if ( myItem )
   {
-    QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( myItem->children().at( 0 ) );
+    auto layerItem = dynamic_cast<QgsLayerItem *>( myItem->children().at( 0 ) );
     if ( layerItem )
       myLayer = getLayer( layerItem->path(), layerItem->name(), layerItem->providerKey() );
   }
@@ -193,7 +193,7 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
     for ( QgsDataItem *item : std::as_const( myChildren ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "child name=%1" ).arg( item->name() ), 2 );
-      QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
+      auto layerItem = dynamic_cast<QgsLayerItem *>( item );
       if ( layerItem )
       {
         QgsDebugMsgLevel( QStringLiteral( "child name=%1 provider=%2 path=%3" ).arg( layerItem->name(), layerItem->providerKey(), layerItem->path() ), 2 );
@@ -265,7 +265,7 @@ int TestZipLayer::getLayerTransparency( const QString &myFileName, const QString
     // myTransparency = myLayer->getTransparency();
     if ( myLayer->type() == Qgis::LayerType::Raster )
     {
-      QgsRasterLayer *layer = dynamic_cast<QgsRasterLayer *>( myLayer );
+      auto layer = dynamic_cast<QgsRasterLayer *>( myLayer );
       if ( layer && layer->renderer() )
       {
         myTransparency = std::ceil( layer->renderer()->opacity() * 255 );
@@ -505,7 +505,7 @@ void TestZipLayer::testZipItemVRT()
   QVERIFY( zipItem );
 
   // VRT items will be a collection type
-  QgsFileDataCollectionItem *collectionItem = dynamic_cast<QgsFileDataCollectionItem *>( zipItem );
+  auto collectionItem = dynamic_cast<QgsFileDataCollectionItem *>( zipItem );
   QVERIFY( collectionItem );
 
   collectionItem->populate();
@@ -518,7 +518,7 @@ void TestZipLayer::testZipItemVRT()
     QCoreApplication::processEvents();
   }
 
-  QgsProviderSublayerItem *sublayerItem = qobject_cast<QgsProviderSublayerItem *>( collectionItem->children().at( 0 ) );
+  auto sublayerItem = qobject_cast<QgsProviderSublayerItem *>( collectionItem->children().at( 0 ) );
   QVERIFY( sublayerItem );
   QCOMPARE( sublayerItem->sublayerDetails().name(), QStringLiteral( "landsat_b1.vrt" ) );
   QCOMPARE( sublayerItem->sublayerDetails().providerKey(), QStringLiteral( "gdal" ) );

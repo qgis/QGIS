@@ -1112,7 +1112,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
   }
   if ( geometry->wkbType() == Qgis::WkbType::Point || geometry->wkbType() == Qgis::WkbType::PointZ )
   {
-    const QgsPoint *point = dynamic_cast<const QgsPoint *>( geometry );
+    auto point = dynamic_cast<const QgsPoint *>( geometry );
     if ( point )
     {
       Vect_append_point( points, point->x(), point->y(), point->z() );
@@ -1121,7 +1121,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
   }
   else if ( geometry->wkbType() == Qgis::WkbType::LineString || geometry->wkbType() == Qgis::WkbType::LineStringZ )
   {
-    const QgsLineString *lineString = dynamic_cast<const QgsLineString *>( geometry );
+    auto lineString = dynamic_cast<const QgsLineString *>( geometry );
     if ( lineString )
     {
       for ( int i = 0; i < lineString->numPoints(); i++ )
@@ -1133,7 +1133,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
   }
   else if ( geometry->wkbType() == Qgis::WkbType::Polygon || geometry->wkbType() == Qgis::WkbType::PolygonZ )
   {
-    const QgsPolygon *polygon = dynamic_cast<const QgsPolygon *>( geometry );
+    auto polygon = dynamic_cast<const QgsPolygon *>( geometry );
     if ( polygon && polygon->exteriorRing() )
     {
       QgsLineString *lineString = polygon->exteriorRing()->curveToLine();
@@ -1216,7 +1216,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     if ( wkbType == Qgis::WkbType::Polygon )
     {
       QgsGeometry addedFeatureGeom = addedFeatures[fid].geometry();
-      const QgsPolygon *polygon = dynamic_cast<const QgsPolygon *>( addedFeatureGeom.constGet() );
+      auto polygon = dynamic_cast<const QgsPolygon *>( addedFeatureGeom.constGet() );
       if ( polygon )
       {
         QgsLineString *lineString = polygon->exteriorRing()->curveToLine();
@@ -1989,7 +1989,7 @@ void QgsGrassProvider::onBeforeRollBack()
 
 void QgsGrassProvider::onEditingStopped()
 {
-  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
   closeEdit( false, vectorLayer );
 }
 

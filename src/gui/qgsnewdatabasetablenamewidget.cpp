@@ -114,7 +114,7 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
     {
       if ( const QgsDataItem *dataItem = mBrowserProxyModel.dataItem( index ) )
       {
-        if ( const QgsDataCollectionItem *collectionItem = qobject_cast<const QgsDataCollectionItem *>( dataItem ) )
+        if ( auto collectionItem = qobject_cast<const QgsDataCollectionItem *>( dataItem ) )
         {
           const QString providerKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( dataItem->providerKey() ) };
           bool validationRequired { false };

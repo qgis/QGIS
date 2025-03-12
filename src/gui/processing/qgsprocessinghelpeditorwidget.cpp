@@ -87,7 +87,7 @@ void QgsProcessingHelpEditorWidget::setAlgorithm( const QgsProcessingAlgorithm *
 
   mAlgorithm.reset( algorithm->create() );
 
-  if ( const QgsProcessingModelAlgorithm *model = dynamic_cast<const QgsProcessingModelAlgorithm *>( mAlgorithm.get() ) )
+  if ( auto model = dynamic_cast<const QgsProcessingModelAlgorithm *>( mAlgorithm.get() ) )
   {
     mHelpContent = model->helpContent();
   }
@@ -144,7 +144,7 @@ void QgsProcessingHelpEditorWidget::updateHtmlView()
 
 void QgsProcessingHelpEditorWidget::changeItem( QTreeWidgetItem *, QTreeWidgetItem * )
 {
-  if ( QgsProcessingHelpEditorTreeItem *item = dynamic_cast<QgsProcessingHelpEditorTreeItem *>( mElementTree->currentItem() ) )
+  if ( auto item = dynamic_cast<QgsProcessingHelpEditorTreeItem *>( mElementTree->currentItem() ) )
   {
     storeCurrentValue();
 

@@ -65,7 +65,7 @@ QgsRangeDomainWidget::QgsRangeDomainWidget( QWidget *parent )
 
 void QgsRangeDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
 {
-  const QgsRangeFieldDomain *rangeDomain = dynamic_cast<const QgsRangeFieldDomain *>( domain );
+  auto rangeDomain = dynamic_cast<const QgsRangeFieldDomain *>( domain );
   if ( !rangeDomain )
     return;
 
@@ -101,7 +101,7 @@ QgsGlobDomainWidget::QgsGlobDomainWidget( QWidget *parent )
 
 void QgsGlobDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
 {
-  const QgsGlobFieldDomain *globDomain = dynamic_cast<const QgsGlobFieldDomain *>( domain );
+  auto globDomain = dynamic_cast<const QgsGlobFieldDomain *>( domain );
   if ( !globDomain )
     return;
 
@@ -149,7 +149,7 @@ QgsCodedFieldDomainWidget::QgsCodedFieldDomainWidget( QWidget *parent )
 
 void QgsCodedFieldDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
 {
-  const QgsCodedFieldDomain *codedDomain = dynamic_cast<const QgsCodedFieldDomain *>( domain );
+  auto codedDomain = dynamic_cast<const QgsCodedFieldDomain *>( domain );
   if ( !codedDomain )
     return;
 

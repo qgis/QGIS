@@ -33,7 +33,7 @@ class SubLayerItem : public QTreeWidgetItem
 
     bool operator<( const QTreeWidgetItem &other ) const override
     {
-      QgsSublayersDialog *d = qobject_cast<QgsSublayersDialog *>( treeWidget()->parent() );
+      auto d = qobject_cast<QgsSublayersDialog *>( treeWidget()->parent() );
       const int col = treeWidget()->sortColumn();
 
       if ( col == 0 || ( col > 0 && d->countColumn() == col ) )

@@ -60,7 +60,7 @@ static bool _initWidgetFunction( const QString &name, QgsSymbolLayerWidgetFunc f
     QgsDebugError( "Failed to find symbol layer's entry in registry: " + name );
     return false;
   }
-  QgsSymbolLayerMetadata *metadata = dynamic_cast<QgsSymbolLayerMetadata *>( abstractMetadata );
+  auto metadata = dynamic_cast<QgsSymbolLayerMetadata *>( abstractMetadata );
   if ( !metadata )
   {
     QgsDebugError( "Failed to cast symbol layer's metadata: " + name );
@@ -166,7 +166,7 @@ void QgsLayerPropertiesWidget::setContext( const QgsSymbolWidgetContext &context
   if ( mSymbol )
     mContext.setSymbolType( mSymbol->type() );
 
-  QgsSymbolLayerWidget *w = dynamic_cast<QgsSymbolLayerWidget *>( stackedWidget->currentWidget() );
+  auto w = dynamic_cast<QgsSymbolLayerWidget *>( stackedWidget->currentWidget() );
   if ( w )
     w->setContext( mContext );
 }
@@ -212,7 +212,7 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayer *layer )
   if ( stackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    if ( QgsSymbolLayerWidget *w = qobject_cast<QgsSymbolLayerWidget *>( stackedWidget->currentWidget() ) )
+    if ( auto w = qobject_cast<QgsSymbolLayerWidget *>( stackedWidget->currentWidget() ) )
       disconnect( w, &QgsSymbolLayerWidget::changed, this, &QgsLayerPropertiesWidget::emitSignalChanged );
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }
@@ -303,7 +303,7 @@ void QgsLayerPropertiesWidget::registerDataDefinedButton( QgsPropertyOverrideBut
 
 void QgsLayerPropertiesWidget::updateProperty()
 {
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsSymbolLayer::Property key = static_cast<QgsSymbolLayer::Property>( button->propertyKey() );
   mLayer->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
@@ -330,7 +330,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
 
   // if the old symbol layer was a "geometry generator" layer then
   // we instead get the properties from the generator
-  if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( layer ) )
+  if ( auto generator = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( layer ) )
   {
     if ( generator->subSymbol() && generator->subSymbol()->symbolLayerCount() > 0 )
       properties = generator->subSymbol()->symbolLayer( 0 )->properties();
@@ -342,7 +342,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
 
   // if a symbol layer is changed to a "geometry generator" layer, then we move the old symbol layer into the
   // geometry generator's subsymbol.
-  if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( newLayer ) )
+  if ( auto generator = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( newLayer ) )
   {
     if ( mSymbol )
     {
@@ -385,7 +385,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
 
   // special logic for when NEW symbol layers are created from GUI only...
   // TODO: find a nicer generic way to handle this!
-  if ( QgsFontMarkerSymbolLayer *fontMarker = dynamic_cast<QgsFontMarkerSymbolLayer *>( newLayer ) )
+  if ( auto fontMarker = dynamic_cast<QgsFontMarkerSymbolLayer *>( newLayer ) )
   {
     const QString defaultFont = fontMarker->fontFamily();
     const QFontDatabase fontDb;

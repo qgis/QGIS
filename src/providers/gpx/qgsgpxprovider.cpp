@@ -452,8 +452,8 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
 void QgsGPXProvider::changeAttributeValues( QgsGpsObject &obj, const QgsAttributeMap &attrs )
 {
-  QgsWaypoint *wpt = dynamic_cast<QgsWaypoint *>( &obj );
-  QgsGpsExtended *ext = dynamic_cast<QgsGpsExtended *>( &obj );
+  auto wpt = dynamic_cast<QgsWaypoint *>( &obj );
+  auto ext = dynamic_cast<QgsGpsExtended *>( &obj );
 
   QgsAttributeMap::const_iterator aIter = attrs.begin();
   for ( ; aIter != attrs.end(); ++aIter )

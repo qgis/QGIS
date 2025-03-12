@@ -370,7 +370,7 @@ void QgsLayoutMapWidget::keepLayersVisibilityPresetSelected()
 
 void QgsLayoutMapWidget::onMapThemesChanged()
 {
-  if ( QStringListModel *model = qobject_cast<QStringListModel *>( mFollowVisibilityPresetCombo->model() ) )
+  if ( auto model = qobject_cast<QStringListModel *>( mFollowVisibilityPresetCombo->model() ) )
   {
     mBlockThemeComboChanges++;
     QStringList lst;
@@ -1725,7 +1725,7 @@ void QgsLayoutMapWidget::overviewMapChanged( QgsLayoutItem *item )
     return;
   }
 
-  QgsLayoutItemMap *map = dynamic_cast<QgsLayoutItemMap *>( item );
+  auto map = dynamic_cast<QgsLayoutItemMap *>( item );
   if ( !map )
     return;
 

@@ -171,7 +171,7 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer *layer )
 {
   mJoinFieldComboBox->clear();
 
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vLayer )
   {
     return;

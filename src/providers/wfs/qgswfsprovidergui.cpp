@@ -53,7 +53,7 @@ class QgsWfsSubsetStringEditorProvider : public QgsSubsetStringEditorProvider
     QgsSubsetStringEditorInterface *createDialog( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl ) override
     {
       QgsDataProvider *provider = layer->dataProvider();
-      QgsWFSProvider *wfsProvider = dynamic_cast<QgsWFSProvider *>( provider );
+      auto wfsProvider = dynamic_cast<QgsWFSProvider *>( provider );
       if ( !wfsProvider )
         return nullptr;
 

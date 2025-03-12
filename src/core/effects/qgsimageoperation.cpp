@@ -966,7 +966,7 @@ void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int
   int increment = ( mDirection == QgsImageOperation::ByRow ) ? 4 : bytesPerLine;
 
   //store temporary line
-  unsigned char *p = reinterpret_cast< unsigned char * >( startRef );
+  auto p = reinterpret_cast<unsigned char *>( startRef );
   unsigned char *tempLine = new unsigned char[ lineLength * 4 ];
   for ( int i = 0; i < lineLength * 4; ++i, p += increment )
   {

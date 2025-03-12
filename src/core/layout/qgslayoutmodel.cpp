@@ -45,7 +45,7 @@ QgsLayoutItem *QgsLayoutModel::itemFromIndex( const QModelIndex &index ) const
     return nullptr;
   }
 
-  QgsLayoutItem *item = static_cast<QgsLayoutItem *>( index.internalPointer() );
+  auto item = static_cast<QgsLayoutItem *>( index.internalPointer() );
   return item;
 }
 
@@ -450,7 +450,7 @@ void QgsLayoutModel::rebuildZList()
   const QList<QGraphicsItem *> itemList = mLayout->items( Qt::DescendingOrder );
   for ( QGraphicsItem *item : itemList )
   {
-    if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+    if ( auto layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
     {
       if ( layoutItem->type() != QgsLayoutItemRegistry::LayoutPage )
       {

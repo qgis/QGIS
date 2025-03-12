@@ -111,7 +111,7 @@ QgsFeatureList QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsPro
 
     if ( allParts && geom.isMultipart() )
     {
-      const QgsGeometryCollection *geomCollection = static_cast<const QgsGeometryCollection *>( geom.constGet() );
+      auto geomCollection = static_cast<const QgsGeometryCollection *>( geom.constGet() );
 
       const int partCount = geomCollection->partCount();
       list.reserve( partCount );

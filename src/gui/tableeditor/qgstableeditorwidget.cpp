@@ -143,7 +143,7 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
 
 
   connect( this, &QTableWidget::cellDoubleClicked, this, [=] {
-    if ( QgsTableEditorDelegate *d = qobject_cast<QgsTableEditorDelegate *>( itemDelegate() ) )
+    if ( auto d = qobject_cast<QgsTableEditorDelegate *>( itemDelegate() ) )
     {
       d->setWeakEditorMode( false );
     }
@@ -359,7 +359,7 @@ void QgsTableEditorWidget::keyPressEvent( QKeyEvent *event )
     default:
       QTableWidget::keyPressEvent( event );
   }
-  if ( QgsTableEditorDelegate *d = qobject_cast<QgsTableEditorDelegate *>( itemDelegate() ) )
+  if ( auto d = qobject_cast<QgsTableEditorDelegate *>( itemDelegate() ) )
   {
     d->setWeakEditorMode( true );
   }
@@ -617,7 +617,7 @@ Qt::Alignment QgsTableEditorWidget::selectionHorizontalAlignment()
   const QModelIndexList selection = selectedIndexes();
   for ( const QModelIndex &index : selection )
   {
-    Qt::Alignment cellAlign = static_cast<Qt::Alignment>( model()->data( index, HorizontalAlignment ).toInt() );
+    auto cellAlign = static_cast<Qt::Alignment>( model()->data( index, HorizontalAlignment ).toInt() );
     if ( first )
     {
       alignment = cellAlign;
@@ -640,7 +640,7 @@ Qt::Alignment QgsTableEditorWidget::selectionVerticalAlignment()
   const QModelIndexList selection = selectedIndexes();
   for ( const QModelIndex &index : selection )
   {
-    Qt::Alignment cellAlign = static_cast<Qt::Alignment>( model()->data( index, VerticalAlignment ).toInt() );
+    auto cellAlign = static_cast<Qt::Alignment>( model()->data( index, VerticalAlignment ).toInt() );
     if ( first )
     {
       alignment = cellAlign;
@@ -1589,7 +1589,7 @@ QWidget *QgsTableEditorDelegate::createEditor( QWidget *parent, const QStyleOpti
 void QgsTableEditorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QVariant value = index.model()->data( index, QgsTableEditorWidget::CellContent );
-  if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit *>( editor ) )
+  if ( auto lineEdit = qobject_cast<QgsTableEditorTextEdit *>( editor ) )
   {
     if ( index != mLastIndex || lineEdit->toPlainText() != value.toString() )
     {
@@ -1602,7 +1602,7 @@ void QgsTableEditorDelegate::setEditorData( QWidget *editor, const QModelIndex &
 
 void QgsTableEditorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit *>( editor ) )
+  if ( auto lineEdit = qobject_cast<QgsTableEditorTextEdit *>( editor ) )
   {
     const QString text = lineEdit->toPlainText();
     if ( text != model->data( index, QgsTableEditorWidget::CellContent ).toString() && !model->data( index, QgsTableEditorWidget::CellProperty ).value<QgsProperty>().isActive() )

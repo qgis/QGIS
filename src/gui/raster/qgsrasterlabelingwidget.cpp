@@ -48,7 +48,7 @@ void QgsRasterLabelingWidget::setDockMode( bool dockMode )
 {
   QgsPanelWidget::setDockMode( dockMode );
 
-  if ( QgsRasterLabelSettingsWidget *l = qobject_cast<QgsRasterLabelSettingsWidget *>( mWidget ) )
+  if ( auto l = qobject_cast<QgsRasterLabelSettingsWidget *>( mWidget ) )
   {
     l->setDockMode( dockMode );
   }
@@ -66,7 +66,7 @@ void QgsRasterLabelingWidget::setLayer( QgsMapLayer *mapLayer )
     setEnabled( true );
   }
 
-  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( mapLayer );
+  auto layer = qobject_cast<QgsRasterLayer *>( mapLayer );
   mLayer = layer;
 
   adaptToLayer();
@@ -82,7 +82,7 @@ void QgsRasterLabelingWidget::adaptToLayer()
   if ( mLayer->labelsEnabled() && labeling )
   {
     index = mLabelModeComboBox->findData( labeling->type() );
-    if ( QgsRasterLabelSettingsWidget *settingsWidget = qobject_cast<QgsRasterLabelSettingsWidget *>( mWidget ) )
+    if ( auto settingsWidget = qobject_cast<QgsRasterLabelSettingsWidget *>( mWidget ) )
     {
       settingsWidget->setLayer( mLayer );
       settingsWidget->setLabeling( labeling );
@@ -105,7 +105,7 @@ void QgsRasterLabelingWidget::writeSettingsToLayer()
   if ( mode == QLatin1String( "simple" ) )
   {
     auto labeling = std::make_unique<QgsRasterLayerSimpleLabeling>();
-    if ( QgsRasterLabelSettingsWidget *settingsWidget = qobject_cast<QgsRasterLabelSettingsWidget *>( mWidget ) )
+    if ( auto settingsWidget = qobject_cast<QgsRasterLabelSettingsWidget *>( mWidget ) )
     {
       settingsWidget->updateLabeling( labeling.get() );
     }

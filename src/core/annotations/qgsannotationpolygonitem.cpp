@@ -130,7 +130,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEditV2( Q
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      auto moveOperation = dynamic_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       if ( mPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
         return Qgis::AnnotationItemEditOperationResult::Success;
       break;
@@ -138,7 +138,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEditV2( Q
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     {
-      QgsAnnotationItemEditOperationDeleteNode *deleteOperation = qgis::down_cast< QgsAnnotationItemEditOperationDeleteNode * >( operation );
+      auto deleteOperation = qgis::down_cast<QgsAnnotationItemEditOperationDeleteNode *>( operation );
       if ( mPolygon->deleteVertex( deleteOperation->nodeId() ) )
         return mPolygon->isEmpty() ? Qgis::AnnotationItemEditOperationResult::ItemCleared : Qgis::AnnotationItemEditOperationResult::Success;
       break;
@@ -146,7 +146,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEditV2( Q
 
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
     {
-      QgsAnnotationItemEditOperationAddNode *addOperation = qgis::down_cast< QgsAnnotationItemEditOperationAddNode * >( operation );
+      auto addOperation = qgis::down_cast<QgsAnnotationItemEditOperationAddNode *>( operation );
 
       QgsPoint segmentPoint;
       QgsVertexId endOfSegmentVertex;
@@ -158,7 +158,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEditV2( Q
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      auto moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
       mPolygon->transform( transform );
       return Qgis::AnnotationItemEditOperationResult::Success;
@@ -174,7 +174,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transi
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      auto moveOperation = dynamic_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
       if ( modifiedPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
       {
@@ -185,7 +185,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transi
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      auto moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
       std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
       modifiedPolygon->transform( transform );
@@ -213,7 +213,7 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
 {
   const QString wkt = element.attribute( QStringLiteral( "wkt" ) );
   const QgsGeometry geometry = QgsGeometry::fromWkt( wkt );
-  if ( const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( geometry.constGet() ) )
+  if ( auto polygon = qgsgeometry_cast<const QgsCurvePolygon *>( geometry.constGet() ) )
     mPolygon.reset( polygon->clone() );
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );

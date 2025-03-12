@@ -44,7 +44,7 @@ QVariant QgsProviderSublayerDialogModel::data( const QModelIndex &index, int rol
   if ( !node )
     return QVariant();
 
-  if ( QgsProviderSublayerModelSublayerNode *sublayerNode = dynamic_cast<QgsProviderSublayerModelSublayerNode *>( node ) )
+  if ( auto sublayerNode = dynamic_cast<QgsProviderSublayerModelSublayerNode *>( node ) )
   {
     const QgsProviderSublayerDetails details = sublayerNode->sublayer();
 

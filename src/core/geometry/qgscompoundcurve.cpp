@@ -49,7 +49,7 @@ QgsCompoundCurve *QgsCompoundCurve::createEmptyWithSameType() const
 
 int QgsCompoundCurve::compareToSameClass( const QgsAbstractGeometry *other ) const
 {
-  const QgsCompoundCurve *otherCurve = qgsgeometry_cast<const QgsCompoundCurve *>( other );
+  auto otherCurve = qgsgeometry_cast<const QgsCompoundCurve *>( other );
   if ( !otherCurve )
     return -1;
 
@@ -150,12 +150,12 @@ void QgsCompoundCurve::scroll( int index )
   auto [p1, p2 ] = splitCurveAtVertex( index );
 
   mCurves.clear();
-  if ( QgsCompoundCurve *curve2 = qgsgeometry_cast< QgsCompoundCurve *>( p2.get() ) )
+  if ( auto curve2 = qgsgeometry_cast<QgsCompoundCurve *>( p2.get() ) )
   {
     // take the curves from the second part and make them our first lot of curves
     mCurves = std::move( curve2->mCurves );
   }
-  if ( QgsCompoundCurve *curve1 = qgsgeometry_cast< QgsCompoundCurve *>( p1.get() ) )
+  if ( auto curve1 = qgsgeometry_cast<QgsCompoundCurve *>( p1.get() ) )
   {
     // take the curves from the first part and append them to our curves
     mCurves.append( curve1->mCurves );
@@ -593,7 +593,7 @@ void QgsCompoundCurve::addCurve( QgsCurve *c, const bool extendPrevious )
   }
 
   QgsLineString *previousLineString = !mCurves.empty() ? qgsgeometry_cast< QgsLineString * >( mCurves.constLast() ) : nullptr;
-  const QgsLineString *newLineString = qgsgeometry_cast< const QgsLineString * >( c );
+  auto newLineString = qgsgeometry_cast<const QgsLineString *>( c );
   const bool canExtendPrevious = extendPrevious && previousLineString && newLineString;
   if ( canExtendPrevious )
   {
@@ -663,7 +663,7 @@ void QgsCompoundCurve::condenseCurves()
   {
     if ( lastCurve && lastCurve->wkbType() == curve->wkbType() )
     {
-      if ( QgsLineString *ls = qgsgeometry_cast< QgsLineString * >( lastCurve ) )
+      if ( auto ls = qgsgeometry_cast<QgsLineString *>( lastCurve ) )
       {
         ls->append( qgsgeometry_cast< QgsLineString * >( curve ) );
         delete curve;
@@ -789,7 +789,7 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
   // We are on a vertex that belongs to one curve only
   if ( curveIds.size() == 1 )
   {
-    const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( curve );
+    auto circularString = qgsgeometry_cast<const QgsCircularString *>( curve );
     // If the vertex to delete is the middle vertex of a CircularString, we transform
     // this CircularString into a LineString without the middle vertex
     if ( circularString && subVertexId.vertex % 2 == 1 )
@@ -989,7 +989,7 @@ bool QgsCompoundCurve::toggleCircularAtVertex( QgsVertexId position )
   if ( subVertexId.vertex == 0 || subVertexId.vertex == curve->numPoints() - 1 )
     return false;
 
-  if ( const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( curve ) )
+  if ( auto circularString = qgsgeometry_cast<const QgsCircularString *>( curve ) )
   {
     // If it's a circular string, we convert to LineString
 

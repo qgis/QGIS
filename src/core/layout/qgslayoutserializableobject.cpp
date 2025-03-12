@@ -35,7 +35,7 @@ class QgsLayoutSerializableObjectUndoCommand: public QgsAbstractLayoutUndoComman
       if ( command->id() == 0 )
         return false;
 
-      const QgsLayoutSerializableObjectUndoCommand *c = dynamic_cast<const QgsLayoutSerializableObjectUndoCommand *>( command );
+      auto c = dynamic_cast<const QgsLayoutSerializableObjectUndoCommand *>( command );
       if ( !c )
       {
         return false;

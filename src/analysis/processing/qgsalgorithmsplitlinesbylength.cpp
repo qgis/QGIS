@@ -128,7 +128,7 @@ QgsFeatureList QgsSplitLinesByLengthAlgorithm::processFeature( const QgsFeature 
     const QgsGeometry inputGeom = f.geometry();
     for ( auto it = inputGeom.const_parts_begin(); it != inputGeom.const_parts_end(); ++it )
     {
-      const QgsCurve *part = qgsgeometry_cast<const QgsCurve *>( *it );
+      auto part = qgsgeometry_cast<const QgsCurve *>( *it );
       if ( !part )
         continue;
 

@@ -95,7 +95,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString &typeName )
   {
     if ( layer->type() == Qgis::LayerType::Plugin )
     {
-      QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( layer );
+      auto pl = qobject_cast<QgsPluginLayer *>( layer );
       if ( pl->pluginLayerType() == typeName )
       {
         QgsProject::instance()->removeMapLayers( // skip-keyword-check

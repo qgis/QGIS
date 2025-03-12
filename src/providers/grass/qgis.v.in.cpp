@@ -150,7 +150,7 @@ int main( int argc, char **argv )
   qint32 typeQint32;
   stdinStream >> typeQint32;
   checkStream( stdinStream );
-  Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( typeQint32 );
+  auto wkbType = static_cast<Qgis::WkbType>( typeQint32 );
   Qgis::WkbType wkbFlatType = QgsWkbTypes::flatType( wkbType );
   bool isPolygon = QgsWkbTypes::singleType( wkbFlatType ) == Qgis::WkbType::Polygon;
 

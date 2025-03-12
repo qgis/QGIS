@@ -156,7 +156,7 @@ QgsGcpTransformerInterface::TransformMethod QgsLinearGeorefTransform::method() c
 int QgsLinearGeorefTransform::linearTransform( void *pTransformerArg, int bDstToSrc, int nPointCount, double *x, double *y, double *z, int *panSuccess )
 {
   Q_UNUSED( z )
-  LinearParameters *t = static_cast<LinearParameters *>( pTransformerArg );
+  auto t = static_cast<LinearParameters *>( pTransformerArg );
   if ( !t )
     return false;
 
@@ -242,7 +242,7 @@ QgsGcpTransformerInterface *QgsHelmertGeorefTransform::clone() const
 int QgsHelmertGeorefTransform::helmertTransform( void *pTransformerArg, int bDstToSrc, int nPointCount, double *x, double *y, double *z, int *panSuccess )
 {
   Q_UNUSED( z )
-  const HelmertParameters *t = static_cast<const HelmertParameters *>( pTransformerArg );
+  auto t = static_cast<const HelmertParameters *>( pTransformerArg );
   if ( !t )
     return false;
 
@@ -520,7 +520,7 @@ QgsGcpTransformerInterface::TransformMethod QgsProjectiveGeorefTransform::method
 int QgsProjectiveGeorefTransform::projectiveTransform( void *pTransformerArg, int bDstToSrc, int nPointCount, double *x, double *y, double *z, int *panSuccess )
 {
   Q_UNUSED( z )
-  ProjectiveParameters *t = static_cast<ProjectiveParameters *>( pTransformerArg );
+  auto t = static_cast<ProjectiveParameters *>( pTransformerArg );
   if ( !t )
     return false;
 

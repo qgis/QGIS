@@ -172,7 +172,7 @@ void QgsSymbolsListWidget::createAuxiliaryField()
   if ( !mLayer->auxiliaryLayer() )
     return;
 
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsSymbolLayer::Property key = static_cast<QgsSymbolLayer::Property>( button->propertyKey() );
   const QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[static_cast<int>( key )];
 
@@ -187,8 +187,8 @@ void QgsSymbolsListWidget::createAuxiliaryField()
   button->updateFieldLists();
   button->setToProperty( property );
 
-  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
-  QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
+  auto markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
+  auto lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
   switch ( key )
   {
     case QgsSymbolLayer::Property::Angle:
@@ -229,7 +229,7 @@ void QgsSymbolsListWidget::createSymbolAuxiliaryField()
   if ( !mLayer->auxiliaryLayer() )
     return;
 
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsSymbol::Property key = static_cast<QgsSymbol::Property>( button->propertyKey() );
   const QgsPropertyDefinition def = QgsSymbol::propertyDefinitions()[static_cast<int>( key )];
 
@@ -405,7 +405,7 @@ void QgsSymbolsListWidget::updateSymbolDataDefinedProperty()
   if ( !mSymbol )
     return;
 
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsSymbol::Property key = static_cast<QgsSymbol::Property>( button->propertyKey() );
   mSymbol->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
@@ -437,7 +437,7 @@ void QgsSymbolsListWidget::setSymbolColor( const QColor &color )
 
 void QgsSymbolsListWidget::setMarkerAngle( double angle )
 {
-  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
+  auto markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
   if ( markerSymbol->angle() == angle )
     return;
   markerSymbol->setAngle( angle );
@@ -446,7 +446,7 @@ void QgsSymbolsListWidget::setMarkerAngle( double angle )
 
 void QgsSymbolsListWidget::updateDataDefinedMarkerAngle()
 {
-  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
+  auto markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
   const QgsProperty dd( mRotationDDBtn->toProperty() );
 
   spinAngle->setEnabled( !mRotationDDBtn->isActive() );
@@ -466,7 +466,7 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerAngle()
 
 void QgsSymbolsListWidget::setMarkerSize( double size )
 {
-  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
+  auto markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
   if ( markerSymbol->size() == size )
     return;
   markerSymbol->setSize( size );
@@ -475,7 +475,7 @@ void QgsSymbolsListWidget::setMarkerSize( double size )
 
 void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
 {
-  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
+  auto markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
   const QgsProperty dd( mSizeDDBtn->toProperty() );
 
   spinSize->setEnabled( !mSizeDDBtn->isActive() );
@@ -496,7 +496,7 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
 
 void QgsSymbolsListWidget::setLineWidth( double width )
 {
-  QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
+  auto lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
   if ( lineSymbol->width() == width )
     return;
   lineSymbol->setWidth( width );
@@ -505,7 +505,7 @@ void QgsSymbolsListWidget::setLineWidth( double width )
 
 void QgsSymbolsListWidget::updateDataDefinedLineWidth()
 {
-  QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
+  auto lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
   const QgsProperty dd( mWidthDDBtn->toProperty() );
 
   spinWidth->setEnabled( !mWidthDDBtn->isActive() );
@@ -591,7 +591,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
   if ( mSymbol->type() == Qgis::SymbolType::Marker )
   {
-    QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
+    auto markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
     spinSize->setValue( markerSymbol->size() );
     spinAngle->setValue( markerSymbol->angle() );
 
@@ -612,7 +612,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   }
   else if ( mSymbol->type() == Qgis::SymbolType::Line )
   {
-    QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
+    auto lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
     spinWidth->setValue( lineSymbol->width() );
 
     if ( mLayer )

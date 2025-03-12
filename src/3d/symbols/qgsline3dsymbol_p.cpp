@@ -102,7 +102,7 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
 
   mChunkOrigin = chunkOrigin;
 
-  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
+  auto texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
   outNormal.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false, 3, texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
   outSelected.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false, 3, texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
@@ -157,7 +157,7 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &f, const 
   }
   else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::MultiPolygon )
   {
-    QgsMultiPolygon *mpolyBuffered = static_cast<QgsMultiPolygon *>( buffered );
+    auto mpolyBuffered = static_cast<QgsMultiPolygon *>( buffered );
     for ( int i = 0; i < mpolyBuffered->numGeometries(); ++i )
     {
       QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( mpolyBuffered->polygonN( i ) )->clone(); // need to clone individual geometry parts
@@ -210,7 +210,7 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   const QByteArray data( ( const char * ) out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
   const int nVerts = data.count() / out.tessellator->stride();
 
-  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
+  auto texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false );
   geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
@@ -317,7 +317,7 @@ void QgsThickLine3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs
     g = geom.constGet()->simplifiedTypeRef();
   }
 
-  if ( const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( g ) )
+  if ( auto ls = qgsgeometry_cast<const QgsLineString *>( g ) )
   {
     out.addLineString( *ls );
   }
@@ -363,7 +363,7 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
     mat = defaultMaterial.toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
   }
 
-  if ( QgsLineMaterial *lineMaterial = dynamic_cast<QgsLineMaterial *>( mat ) )
+  if ( auto lineMaterial = dynamic_cast<QgsLineMaterial *>( mat ) )
     lineMaterial->setLineWidth( mSymbol->width() );
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
@@ -408,7 +408,7 @@ namespace Qgs3DSymbolImpl
 
   QgsFeature3DHandler *handlerForLine3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
-    const QgsLine3DSymbol *lineSymbol = dynamic_cast<const QgsLine3DSymbol *>( symbol );
+    auto lineSymbol = dynamic_cast<const QgsLine3DSymbol *>( symbol );
     if ( !lineSymbol )
       return nullptr;
 

@@ -540,10 +540,10 @@ void QgsRuleBasedRendererWidget::pasteSymbolToSelection()
 
 void QgsRuleBasedRendererWidget::refineRuleCategoriesAccepted( QgsPanelWidget *panel )
 {
-  QgsCategorizedSymbolRendererWidget *w = qobject_cast<QgsCategorizedSymbolRendererWidget *>( panel );
+  auto w = qobject_cast<QgsCategorizedSymbolRendererWidget *>( panel );
 
   // create new rules
-  QgsCategorizedSymbolRenderer *r = static_cast<QgsCategorizedSymbolRenderer *>( w->renderer() );
+  auto r = static_cast<QgsCategorizedSymbolRenderer *>( w->renderer() );
   QModelIndexList indexList = viewRules->selectionModel()->selectedRows();
   const auto constIndexList = indexList;
   for ( const QModelIndex &index : constIndexList )
@@ -557,9 +557,9 @@ void QgsRuleBasedRendererWidget::refineRuleCategoriesAccepted( QgsPanelWidget *p
 
 void QgsRuleBasedRendererWidget::refineRuleRangesAccepted( QgsPanelWidget *panel )
 {
-  QgsGraduatedSymbolRendererWidget *w = qobject_cast<QgsGraduatedSymbolRendererWidget *>( panel );
+  auto w = qobject_cast<QgsGraduatedSymbolRendererWidget *>( panel );
   // create new rules
-  QgsGraduatedSymbolRenderer *r = static_cast<QgsGraduatedSymbolRenderer *>( w->renderer() );
+  auto r = static_cast<QgsGraduatedSymbolRenderer *>( w->renderer() );
   QModelIndexList indexList = viewRules->selectionModel()->selectedRows();
   const auto constIndexList = indexList;
   for ( const QModelIndex &index : constIndexList )
@@ -573,7 +573,7 @@ void QgsRuleBasedRendererWidget::refineRuleRangesAccepted( QgsPanelWidget *panel
 
 void QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted( QgsPanelWidget *panel )
 {
-  QgsRendererRulePropsWidget *widget = qobject_cast<QgsRendererRulePropsWidget *>( panel );
+  auto widget = qobject_cast<QgsRendererRulePropsWidget *>( panel );
   if ( !widget )
     return;
 

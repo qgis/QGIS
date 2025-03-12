@@ -38,7 +38,7 @@ namespace
     memcpy( &numElements, data, sizeof( numElements ) );
 
     const char *ptr = static_cast<const char *>( data ) + sizeof( numElements );
-    const float *elements = reinterpret_cast<const float *>( ptr );
+    auto elements = reinterpret_cast<const float *>( ptr );
 
     QString res;
     res += QStringLiteral( "[" ) + QString::number( elements[0], 'g', 7 );

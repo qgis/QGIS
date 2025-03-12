@@ -437,7 +437,7 @@ class CORE_EXPORT QgsImageOperation
           if ( mFeedback && mFeedback->isCanceled() )
             return;
 
-          unsigned char *p = reinterpret_cast< unsigned char * >( startRef );
+          auto p = reinterpret_cast<unsigned char *>( startRef );
           int rgba[4];
           int increment = ( mDirection == QgsImageOperation::ByRow ) ? 4 : bytesPerLine;
           if ( !mForwardDirection )

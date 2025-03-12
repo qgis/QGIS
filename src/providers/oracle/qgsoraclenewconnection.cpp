@@ -174,7 +174,7 @@ void QgsOracleNewConnection::accept()
   configuration.insert( QStringLiteral( "projectsInDatabase" ), cb_projectsInDatabase->isChecked() );
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "oracle" ) );
-  QgsOracleProviderConnection *providerConnection = static_cast<QgsOracleProviderConnection *>( providerMetadata->createConnection( txtName->text() ) );
+  auto providerConnection = static_cast<QgsOracleProviderConnection *>( providerMetadata->createConnection( txtName->text() ) );
   providerConnection->setUri( QgsOracleConn::connUri( txtName->text() ).uri( false ) );
   providerConnection->setConfiguration( configuration );
   providerMetadata->saveConnection( providerConnection, txtName->text() );

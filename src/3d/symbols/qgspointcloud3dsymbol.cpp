@@ -114,7 +114,7 @@ void QgsPointCloud3DSymbol::readBaseXml( const QDomElement &elem, const QgsReadW
 void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination ) const
 {
   QgsAbstract3DSymbol::copyBaseSettings( destination );
-  QgsPointCloud3DSymbol *pcDestination = static_cast<QgsPointCloud3DSymbol *>( destination );
+  auto pcDestination = static_cast<QgsPointCloud3DSymbol *>( destination );
   pcDestination->mPointSize = mPointSize;
   pcDestination->mRenderAsTriangles = mRenderAsTriangles;
   pcDestination->mHorizontalFilterThreshold = mHorizontalFilterThreshold;

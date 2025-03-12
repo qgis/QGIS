@@ -83,7 +83,7 @@ QgsLabelingEngineRuleAvoidLabelOverlapWithFeatureWidget::QgsLabelingEngineRuleAv
 
 void QgsLabelingEngineRuleAvoidLabelOverlapWithFeatureWidget::setRule( const QgsAbstractLabelingEngineRule *rule )
 {
-  const QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *castRule = dynamic_cast<const QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *>( rule );
+  auto castRule = dynamic_cast<const QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *>( rule );
   if ( !castRule )
     return;
 
@@ -138,7 +138,7 @@ QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::QgsLabelingEngineRuleM
 
 void QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::setRule( const QgsAbstractLabelingEngineRule *rule )
 {
-  const QgsLabelingEngineRuleMinimumDistanceLabelToFeature *castRule = dynamic_cast<const QgsLabelingEngineRuleMinimumDistanceLabelToFeature *>( rule );
+  auto castRule = dynamic_cast<const QgsLabelingEngineRuleMinimumDistanceLabelToFeature *>( rule );
   if ( !castRule )
     return;
 
@@ -206,7 +206,7 @@ QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::QgsLabelingEngineRuleM
 
 void QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::setRule( const QgsAbstractLabelingEngineRule *rule )
 {
-  const QgsLabelingEngineRuleMaximumDistanceLabelToFeature *castRule = dynamic_cast<const QgsLabelingEngineRuleMaximumDistanceLabelToFeature *>( rule );
+  auto castRule = dynamic_cast<const QgsLabelingEngineRuleMaximumDistanceLabelToFeature *>( rule );
   if ( !castRule )
     return;
 
@@ -274,7 +274,7 @@ QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::QgsLabelingEngineRuleMin
 
 void QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::setRule( const QgsAbstractLabelingEngineRule *rule )
 {
-  const QgsLabelingEngineRuleMinimumDistanceLabelToLabel *castRule = dynamic_cast<const QgsLabelingEngineRuleMinimumDistanceLabelToLabel *>( rule );
+  auto castRule = dynamic_cast<const QgsLabelingEngineRuleMinimumDistanceLabelToLabel *>( rule );
   if ( !castRule )
     return;
 

@@ -76,7 +76,7 @@ QgsGoochMaterialSettings *QgsGoochMaterialSettings::clone() const
 
 bool QgsGoochMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
 {
-  const QgsGoochMaterialSettings *otherGooch = dynamic_cast<const QgsGoochMaterialSettings *>( other );
+  auto otherGooch = dynamic_cast<const QgsGoochMaterialSettings *>( other );
   if ( !otherGooch )
     return false;
 
@@ -148,7 +148,7 @@ QByteArray QgsGoochMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExp
 
   QByteArray array;
   array.resize( sizeof( unsigned char ) * 12 );
-  unsigned char *fptr = reinterpret_cast<unsigned char *>( array.data() );
+  auto fptr = reinterpret_cast<unsigned char *>( array.data() );
 
   *fptr++ = static_cast<unsigned char>( diffuse.red() );
   *fptr++ = static_cast<unsigned char>( diffuse.green() );

@@ -863,7 +863,7 @@ void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
         // don't uncheck, only set to checked
         if ( state )
         {
-          QAbstractButton *btn = qobject_cast<QAbstractButton *>( sw.mWidgetPointer.data() );
+          auto btn = qobject_cast<QAbstractButton *>( sw.mWidgetPointer.data() );
           if ( btn && btn->isCheckable() )
           {
             btn->setChecked( sw.mNatural ? state : !state );
@@ -916,7 +916,7 @@ void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
 
       case SiblingLinkedWidget:
       {
-        if ( QgsColorButton *cb = qobject_cast<QgsColorButton *>( sw.mWidgetPointer.data() ) )
+        if ( auto cb = qobject_cast<QgsColorButton *>( sw.mWidgetPointer.data() ) )
         {
           if ( state && mProperty.isProjectColor() )
           {
@@ -963,7 +963,7 @@ void QgsPropertyOverrideButton::registerLinkedWidget( QWidget *widget )
   }
   mSiblingWidgets.append( SiblingWidget( QPointer<QWidget>( widget ), SiblingLinkedWidget ) );
 
-  if ( QgsColorButton *cb = qobject_cast<QgsColorButton *>( widget ) )
+  if ( auto cb = qobject_cast<QgsColorButton *>( widget ) )
   {
     connect( cb, &QgsColorButton::unlinked, this, [=] {
       setActive( false );

@@ -496,7 +496,7 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::convertFromRenderer(
   else if ( renderer->type() == QLatin1String( "pointCluster" ) )
   {
     QgsPointDisplacementRenderer *pointRenderer = new QgsPointDisplacementRenderer();
-    const QgsPointClusterRenderer *clusterRenderer = static_cast< const QgsPointClusterRenderer * >( renderer );
+    auto clusterRenderer = static_cast<const QgsPointClusterRenderer *>( renderer );
     if ( clusterRenderer->embeddedRenderer() )
       pointRenderer->setEmbeddedRenderer( clusterRenderer->embeddedRenderer()->clone() );
     pointRenderer->setTolerance( clusterRenderer->tolerance() );

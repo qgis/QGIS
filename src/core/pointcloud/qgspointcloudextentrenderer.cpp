@@ -101,7 +101,7 @@ void QgsPointCloudExtentRenderer::renderExtent( const QgsGeometry &extent, QgsPo
 
   for ( auto it = extent.const_parts_begin(); it != extent.const_parts_end(); ++it )
   {
-    if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( *it ) )
+    if ( auto polygon = qgsgeometry_cast<const QgsPolygon *>( *it ) )
     {
       QPolygonF exterior = polygon->exteriorRing()->asQPolygonF();
       transformRing( exterior );

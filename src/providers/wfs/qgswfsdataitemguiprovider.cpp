@@ -29,7 +29,7 @@
 
 void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsWfsRootItem *rootItem = qobject_cast<QgsWfsRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsWfsRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -44,7 +44,7 @@ void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     menu->addAction( actionLoadServers );
   }
 
-  if ( QgsWfsConnectionItem *connItem = qobject_cast<QgsWfsConnectionItem *>( item ) )
+  if ( auto connItem = qobject_cast<QgsWfsConnectionItem *>( item ) )
   {
     const QList<QgsWfsConnectionItem *> wfsConnectionItems = QgsDataItem::filteredItems<QgsWfsConnectionItem>( selection );
 

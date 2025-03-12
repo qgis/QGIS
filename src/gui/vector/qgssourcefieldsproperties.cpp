@@ -123,7 +123,7 @@ void QgsSourceFieldsProperties::updateFieldRenamingStatus()
 
 void QgsSourceFieldsProperties::updateExpression()
 {
-  QToolButton *btn = qobject_cast<QToolButton *>( sender() );
+  auto btn = qobject_cast<QToolButton *>( sender() );
   Q_ASSERT( btn );
 
   const int index = btn->property( "Index" ).toInt();
@@ -297,7 +297,7 @@ void QgsSourceFieldsProperties::apply()
     const int idx = mFieldsList->item( i, AttrIdCol )->data( Qt::DisplayRole ).toInt();
     Qgis::FieldConfigurationFlags flags = mLayer->fieldConfigurationFlags( idx );
 
-    QgsCheckableComboBox *cb = qobject_cast<QgsCheckableComboBox *>( mFieldsList->cellWidget( i, AttrConfigurationFlagsCol ) );
+    auto cb = qobject_cast<QgsCheckableComboBox *>( mFieldsList->cellWidget( i, AttrConfigurationFlagsCol ) );
     if ( cb )
     {
       QgsCheckableItemModel *model = cb->model();

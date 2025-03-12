@@ -92,7 +92,7 @@ QList<QgsLayoutItemMapGrid *> QgsLayoutItemMapGridStack::asList() const // cppch
   QList< QgsLayoutItemMapGrid * > list;
   for ( QgsLayoutItemMapItem *item : mItems )
   {
-    if ( QgsLayoutItemMapGrid *grid = qobject_cast<QgsLayoutItemMapGrid *>( item ) )
+    if ( auto grid = qobject_cast<QgsLayoutItemMapGrid *>( item ) )
     {
       list.append( grid );
     }
@@ -103,7 +103,7 @@ QList<QgsLayoutItemMapGrid *> QgsLayoutItemMapGridStack::asList() const // cppch
 QgsLayoutItemMapGrid &QgsLayoutItemMapGridStack::operator[]( int idx ) // cppcheck-suppress duplInheritedMember
 {
   QgsLayoutItemMapItem *item = mItems.at( idx );
-  QgsLayoutItemMapGrid *grid = qobject_cast<QgsLayoutItemMapGrid *>( item );
+  auto grid = qobject_cast<QgsLayoutItemMapGrid *>( item );
   return *grid;
 }
 
@@ -143,7 +143,7 @@ void QgsLayoutItemMapGridStack::calculateMaxGridExtension( double &top, double &
 
   for ( QgsLayoutItemMapItem *item : mItems )
   {
-    if ( QgsLayoutItemMapGrid *grid = qobject_cast<QgsLayoutItemMapGrid *>( item ) )
+    if ( auto grid = qobject_cast<QgsLayoutItemMapGrid *>( item ) )
     {
       double gridTop = 0.0;
       double gridRight = 0.0;

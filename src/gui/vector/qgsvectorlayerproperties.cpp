@@ -409,7 +409,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   );
 
   //insert existing dimension info
-  QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+  auto serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
   const QList<QgsMapLayerServerProperties::WmsDimensionInfo> &wmsDims = serverProperties->wmsDimensions();
   for ( const QgsMapLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
   {
@@ -631,7 +631,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mSimplifyDrawingSpinBox->setValue( simplifyMethod.threshold() );
   mSimplifyDrawingSpinBox->setClearValue( 1.0 );
 
-  QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast<QgsVectorLayerSelectionProperties *>( mLayer->selectionProperties() );
+  auto selectionProperties = qobject_cast<QgsVectorLayerSelectionProperties *>( mLayer->selectionProperties() );
   if ( selectionProperties->selectionColor().isValid() )
   {
     mSelectionColorButton->setColor( selectionProperties->selectionColor() );
@@ -819,7 +819,7 @@ void QgsVectorLayerProperties::apply()
 
   if ( mLayer->renderer() )
   {
-    QgsRendererPropertiesDialog *dlg = static_cast<QgsRendererPropertiesDialog *>( widgetStackRenderers->currentWidget() );
+    auto dlg = static_cast<QgsRendererPropertiesDialog *>( widgetStackRenderers->currentWidget() );
     dlg->apply();
   }
 
@@ -920,7 +920,7 @@ void QgsVectorLayerProperties::apply()
     mLayer->renderer()->setReferenceScale( mUseReferenceScaleGroupBox->isChecked() ? mReferenceScaleWidget->scale() : -1 );
   }
 
-  QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast<QgsVectorLayerSelectionProperties *>( mLayer->selectionProperties() );
+  auto selectionProperties = qobject_cast<QgsVectorLayerSelectionProperties *>( mLayer->selectionProperties() );
   if ( mSelectionColorButton->color() != mSelectionColorButton->defaultColor() )
     selectionProperties->setSelectionColor( mSelectionColorButton->color() );
   else
@@ -1512,7 +1512,7 @@ void QgsVectorLayerProperties::mButtonAddWmsDimension_clicked()
 
   // get wms dimensions name
   QStringList alreadyDefinedDimensions;
-  QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+  auto serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
   const QList<QgsMapLayerServerProperties::WmsDimensionInfo> &dims = serverProperties->wmsDimensions();
   for ( const QgsMapLayerServerProperties::WmsDimensionInfo &dim : dims )
   {
@@ -1543,7 +1543,7 @@ void QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked( QTree
   }
 
   QString wmsDimName = item->data( 0, Qt::UserRole ).toString();
-  QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+  auto serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
   const QList<QgsMapLayerServerProperties::WmsDimensionInfo> &dims = serverProperties->wmsDimensions();
   QStringList alreadyDefinedDimensions;
   int j = -1;
@@ -1573,7 +1573,7 @@ void QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked( QTree
     QgsMapLayerServerProperties::WmsDimensionInfo info = d.info();
 
     // remove old
-    QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+    auto serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
     serverProperties->removeWmsDimension( wmsDimName );
     int idx = mWmsDimensionsTreeWidget->indexOfTopLevelItem( item );
     mWmsDimensionsTreeWidget->takeTopLevelItem( idx );
@@ -1652,7 +1652,7 @@ void QgsVectorLayerProperties::mButtonRemoveWmsDimension_clicked()
     return;
   }
 
-  QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+  auto serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
   serverProperties->removeWmsDimension( currentWmsDimensionItem->data( 0, Qt::UserRole ).toString() );
   mWmsDimensionsTreeWidget->takeTopLevelItem( mWmsDimensionsTreeWidget->indexOfTopLevelItem( currentWmsDimensionItem ) );
 }

@@ -336,7 +336,7 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
     return;
   }
 
-  QgsVectorLayer *destLayer = qobject_cast<QgsVectorLayer *>( canvas()->currentLayer() );
+  auto destLayer = qobject_cast<QgsVectorLayer *>( canvas()->currentLayer() );
   if ( !destLayer )
     return;
 

@@ -483,7 +483,7 @@ double _minimum_distance_between_coordinates( const QgsPolygon &polygon )
 
 void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeight )
 {
-  const QgsLineString *exterior = qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() );
+  auto exterior = qgsgeometry_cast<const QgsLineString *>( polygon.exteriorRing() );
   if ( !exterior )
     return;
 
@@ -658,7 +658,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
         mError = QObject::tr( "geometry simplification failed - skipping" );
         return;
       }
-      const QgsPolygon *polygonSimplifiedData = qgsgeometry_cast<const QgsPolygon *>( polygonSimplified.constGet() );
+      auto polygonSimplifiedData = qgsgeometry_cast<const QgsPolygon *>( polygonSimplified.constGet() );
       if ( !polygonSimplifiedData || _minimum_distance_between_coordinates( *polygonSimplifiedData ) < 0.001 )
       {
         // Failed to fix that. It could be a really tiny geometry... or maybe they gave us
@@ -686,7 +686,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     for ( int i = 0; i < polygonNew->numInteriorRings(); ++i )
     {
       std::vector<p2t::Point *> holePolyline;
-      const QgsLineString *hole = qgsgeometry_cast< const QgsLineString *>( polygonNew->interiorRing( i ) );
+      auto hole = qgsgeometry_cast<const QgsLineString *>( polygonNew->interiorRing( i ) );
 
       _ringToPoly2tri( hole, holePolyline, mNoZ ? nullptr : &z );
 

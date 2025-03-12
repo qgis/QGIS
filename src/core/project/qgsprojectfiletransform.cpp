@@ -719,7 +719,7 @@ void QgsProjectFileTransform::fixOldSymbolLayerReferences( const QMap<QString, Q
 {
   for ( QgsMapLayer *ml : mapLayers )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    auto vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( !vl )
       continue;
 
@@ -777,7 +777,7 @@ void QgsProjectFileTransform::fixOldSymbolLayerReferences( const QMap<QString, Q
               if ( subSymbol )
                 visitSymbol( subSymbol );
 
-              if ( const QgsMaskMarkerSymbolLayer *maskLayer = dynamic_cast<const QgsMaskMarkerSymbolLayer *>( sl ) )
+              if ( auto maskLayer = dynamic_cast<const QgsMaskMarkerSymbolLayer *>( sl ) )
                 maskSymbolLayers << maskLayer;
             }
           }

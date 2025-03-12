@@ -308,7 +308,7 @@ QList<QgsMapLayer *> QgsMapSettings::layers( bool expandGroupLayers ) const
   {
     for ( QgsMapLayer *layer : layers )
     {
-      if ( QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( layer ) )
+      if ( auto groupLayer = qobject_cast<QgsGroupLayer *>( layer ) )
       {
         expandLayers( groupLayer->childLayers() );
       }

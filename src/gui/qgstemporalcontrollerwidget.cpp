@@ -433,7 +433,7 @@ void QgsTemporalControllerWidget::firstTemporalLayerLoaded( QgsMapLayer *layer )
 {
   setDatesToProjectTime( true );
 
-  if ( QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer ) )
+  if ( auto meshLayer = qobject_cast<QgsMeshLayer *>( layer ) )
   {
     mBlockFrameDurationUpdates++;
     setTimeStep( meshLayer->firstValidTimeStep() );

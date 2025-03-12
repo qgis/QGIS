@@ -121,7 +121,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
   {
     case QgsExpressionNode::ntFunction:
     {
-      const QgsExpressionNodeFunction *nodeFunc = static_cast<const QgsExpressionNodeFunction *>( node );
+      auto nodeFunc = static_cast<const QgsExpressionNodeFunction *>( node );
       QgsExpressionFunction *fd = QgsExpression::Functions()[nodeFunc->fnIndex()];
 
       if ( fd->name().isEmpty() )
@@ -150,7 +150,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
     break;
     case QgsExpressionNode::ntLiteral:
     {
-      const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( node );
+      auto n = static_cast<const QgsExpressionNodeLiteral *>( node );
       switch ( n->value().userType() )
       {
         case QMetaType::Type::Bool:
@@ -163,7 +163,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
     break;
     case QgsExpressionNode::ntUnaryOperator:
     {
-      const QgsExpressionNodeUnaryOperator *unaryOp = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
+      auto unaryOp = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
       switch ( unaryOp->op() )
       {
         case QgsExpressionNodeUnaryOperator::uoNot:

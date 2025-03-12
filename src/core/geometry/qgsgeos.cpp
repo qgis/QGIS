@@ -552,7 +552,7 @@ static bool isZVerticalLine( const QgsAbstractGeometry *geom, double tolerance =
   }
 
   bool isVertical = true;
-  if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( geom ) )
+  if ( auto line = qgsgeometry_cast<const QgsLineString *>( geom ) )
   {
     const int nrPoints = line->numPoints();
     if ( nrPoints == 1 )
@@ -855,7 +855,7 @@ bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg ) c
 
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=12 )
   // special optimised case for point intersects
-  if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom->simplifiedTypeRef() ) )
+  if ( auto point = qgsgeometry_cast<const QgsPoint *>( geom->simplifiedTypeRef() ) )
   {
     if ( mGeosPrepared )
     {
@@ -908,7 +908,7 @@ bool QgsGeos::contains( const QgsAbstractGeometry *geom, QString *errorMsg ) con
 
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=12 )
   // special optimised case for point containment
-  if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom->simplifiedTypeRef() ) )
+  if ( auto point = qgsgeometry_cast<const QgsPoint *>( geom->simplifiedTypeRef() ) )
   {
     if ( mGeosPrepared )
     {
@@ -1225,10 +1225,10 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
   //For each part
   for ( int geometryIndex = 0; geometryIndex < multiCurve->numGeometries(); ++geometryIndex )
   {
-    const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( multiCurve->geometryN( geometryIndex ) );
+    auto line = qgsgeometry_cast<const QgsLineString *>( multiCurve->geometryN( geometryIndex ) );
     if ( !line )
     {
-      const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( multiCurve->geometryN( geometryIndex ) );
+      auto curve = qgsgeometry_cast<const QgsCurve *>( multiCurve->geometryN( geometryIndex ) );
       line = curve->curveToLine();
     }
     if ( !line )
@@ -1838,7 +1838,7 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     }
 
 
-    const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( geom );
+    auto c = qgsgeometry_cast<const QgsGeometryCollection *>( geom );
 
     if ( !c )
       return nullptr;
@@ -1861,7 +1861,7 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
   {
     // PolyhedralSurface and TIN support
     // convert it to a geos MultiPolygon
-    const QgsPolyhedralSurface *polyhedralSurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( geom );
+    auto polyhedralSurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( geom );
     if ( !polyhedralSurface )
       return nullptr;
 
@@ -2458,7 +2458,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
   GEOSContextHandle_t context = QgsGeosContext::get();
 
   std::unique_ptr< QgsLineString > segmentized;
-  const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( curve );
+  auto line = qgsgeometry_cast<const QgsLineString *>( curve );
 
   if ( !line )
   {
@@ -2611,7 +2611,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
 
 geos::unique_ptr QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision, Qgis::GeosCreationFlags )
 {
-  const QgsPoint *pt = qgsgeometry_cast<const QgsPoint *>( point );
+  auto pt = qgsgeometry_cast<const QgsPoint *>( point );
   if ( !pt )
     return nullptr;
 
@@ -2675,7 +2675,7 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
 
 geos::unique_ptr QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags )
 {
-  const QgsCurve *c = qgsgeometry_cast<const QgsCurve *>( curve );
+  auto c = qgsgeometry_cast<const QgsCurve *>( curve );
   if ( !c )
     return nullptr;
 
@@ -2694,7 +2694,7 @@ geos::unique_ptr QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve
 
 geos::unique_ptr QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, double precision, Qgis::GeosCreationFlags flags )
 {
-  const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( poly );
+  auto polygon = qgsgeometry_cast<const QgsCurvePolygon *>( poly );
   if ( !polygon )
     return nullptr;
 
@@ -3343,7 +3343,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::constrainedDelaunayTriangulation( 
     }
 
     std::unique_ptr< QgsAbstractGeometry > res = fromGeos( geos.get() );
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( res.get() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( res.get() ) )
     {
       return std::unique_ptr< QgsAbstractGeometry >( collection->extractPartsByType( Qgis::WkbType::Polygon, true ) );
     }

@@ -434,7 +434,7 @@ void QgsGpsToolBar::destinationMenuAboutToShow()
     connect( layerAction, &QAction::toggled, this, [=]( bool checked ) {
       if ( checked )
       {
-        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( actionLayerId ) );
+        auto layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( actionLayerId ) );
         if ( layer != QgsProject::instance()->gpsSettings()->destinationLayer() )
         {
           QgsProject::instance()->gpsSettings()->setDestinationFollowsActiveLayer( false );

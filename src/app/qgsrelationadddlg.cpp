@@ -209,7 +209,7 @@ bool QgsCreateRelationDialog::isDefinitionValid()
 
 void QgsCreateRelationDialog::updateChildRelationsComboBox()
 {
-  QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( mReferencedLayerCombobox->currentLayer() );
+  auto vl = static_cast<QgsVectorLayer *>( mReferencedLayerCombobox->currentLayer() );
   if ( !vl || !vl->isValid() )
     return;
 

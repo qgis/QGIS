@@ -29,7 +29,7 @@
 
 void QgsTiledSceneDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsTiledSceneLayerItem *layerItem = qobject_cast<QgsTiledSceneLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsTiledSceneLayerItem *>( item ) )
   {
     const QList<QgsTiledSceneLayerItem *> sceneConnectionItems = QgsDataItem::filteredItems<QgsTiledSceneLayerItem>( selection );
     if ( sceneConnectionItems.size() == 1 )
@@ -50,7 +50,7 @@ void QgsTiledSceneDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     menu->addAction( actionDelete );
   }
 
-  if ( QgsTiledSceneRootItem *rootItem = qobject_cast<QgsTiledSceneRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsTiledSceneRootItem *>( item ) )
   {
     QAction *actionNewCesium = new QAction( tr( "New Cesium 3D Tiles Connection…" ), menu );
     connect( actionNewCesium, &QAction::triggered, this, [rootItem] { newConnection( rootItem, "cesiumtiles" ); } );

@@ -217,7 +217,7 @@ double QgsGCPCanvasItem::residualToScreenFactor() const
     QgsMapLayer *mapLayer = canvasLayers.at( 0 );
     if ( mapLayer )
     {
-      QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( mapLayer );
+      auto rasterLayer = qobject_cast<QgsRasterLayer *>( mapLayer );
       if ( rasterLayer )
       {
         mapUnitsPerRasterPixel = rasterLayer->rasterUnitsPerPixelX();

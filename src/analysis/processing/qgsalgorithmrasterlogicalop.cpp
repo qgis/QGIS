@@ -97,7 +97,7 @@ bool QgsRasterBooleanLogicAlgorithmBase::prepareAlgorithm( const QVariantMap &pa
   {
     if ( l->type() == Qgis::LayerType::Raster )
     {
-      QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( l );
+      auto layer = qobject_cast<QgsRasterLayer *>( l );
       QgsRasterAnalysisUtils::RasterLogicInput input;
       const int band = 1; // hardcoded for now - needs a way to supply this in the processing gui
       input.hasNoDataValue = layer->dataProvider()->sourceHasNoDataValue( band );

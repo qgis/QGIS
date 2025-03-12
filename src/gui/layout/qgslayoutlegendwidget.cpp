@@ -363,7 +363,7 @@ void QgsLayoutLegendWidget::titleAlignmentChanged()
 {
   if ( mLegend )
   {
-    Qt::AlignmentFlag alignment = static_cast<Qt::AlignmentFlag>( static_cast<int>( mTitleAlignCombo->currentAlignment() & Qt::AlignHorizontal_Mask ) );
+    auto alignment = static_cast<Qt::AlignmentFlag>( static_cast<int>( mTitleAlignCombo->currentAlignment() & Qt::AlignHorizontal_Mask ) );
     mLegend->beginCommand( tr( "Change Title Alignment" ) );
     mLegend->setTitleAlignment( alignment );
     mLegend->update();
@@ -408,7 +408,7 @@ void QgsLayoutLegendWidget::arrangementChanged()
 {
   if ( mLegend )
   {
-    Qt::AlignmentFlag alignment = static_cast<Qt::AlignmentFlag>( static_cast<int>( mArrangementCombo->currentAlignment() & Qt::AlignHorizontal_Mask ) );
+    auto alignment = static_cast<Qt::AlignmentFlag>( static_cast<int>( mArrangementCombo->currentAlignment() & Qt::AlignHorizontal_Mask ) );
     mLegend->beginCommand( tr( "Change Legend Arrangement" ) );
     mLegend->setSymbolAlignment( alignment );
     mLegend->update();
@@ -886,7 +886,7 @@ void QgsLayoutLegendWidget::composerMapChanged( QgsLayoutItem *item )
     return;
   }
 
-  QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( item );
+  auto map = qobject_cast<QgsLayoutItemMap *>( item );
   if ( map )
   {
     mLegend->beginCommand( tr( "Change Legend Map" ) );
@@ -1185,8 +1185,8 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   if ( !QgsLayerTree::isLayer( currentNode ) )
     return;
 
-  QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( currentNode );
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerNode->layer() );
+  auto layerNode = qobject_cast<QgsLayerTreeLayer *>( currentNode );
+  auto vl = qobject_cast<QgsVectorLayer *>( layerNode->layer() );
 
   if ( !vl )
     return;
@@ -1205,7 +1205,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
     const QList<QgsLayerTreeModelLegendNode *> legendNodes = model->layerLegendNodes( layerNode, false );
     if ( !legendNodes.isEmpty() )
     {
-      if ( QgsSymbolLegendNode *symbolNode = qobject_cast<QgsSymbolLegendNode *>( legendNodes.first() ) )
+      if ( auto symbolNode = qobject_cast<QgsSymbolLegendNode *>( legendNodes.first() ) )
       {
         legendContext.appendScope( symbolNode->createSymbolScope() );
         highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" ) << QStringLiteral( "symbol_count" );
@@ -1372,7 +1372,7 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
       return;
 
     QgsLayerTreeLayer *currentLayerNode = QgsLayerTree::toLayer( currentNode );
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( currentLayerNode->layer() );
+    auto vl = qobject_cast<QgsVectorLayer *>( currentLayerNode->layer() );
     if ( !vl )
       return;
 
@@ -1394,7 +1394,7 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
     return;
 
   QgsLayerTreeLayer *currentLayerNode = QgsLayerTree::toLayer( currentNode );
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( currentLayerNode->layer() );
+  auto vl = qobject_cast<QgsVectorLayer *>( currentLayerNode->layer() );
   if ( !vl )
     return;
 
@@ -1581,7 +1581,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   mCustomSymbolCheckBox->setChecked( false );
 
   QgsLegendPatchShape patchShape;
-  if ( QgsSymbolLegendNode *symbolLegendNode = dynamic_cast<QgsSymbolLegendNode *>( mLegendNode ) )
+  if ( auto symbolLegendNode = dynamic_cast<QgsSymbolLegendNode *>( mLegendNode ) )
   {
     patchShape = symbolLegendNode->patchShape();
 
@@ -1603,7 +1603,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   else if ( !mLegendNode && mLayer )
   {
     patchShape = mLayer->patchShape();
-    if ( QgsSymbolLegendNode *symbolLegendNode = dynamic_cast<QgsSymbolLegendNode *>( mLegend->model()->legendNodeEmbeddedInParent( mLayer ) ) )
+    if ( auto symbolLegendNode = dynamic_cast<QgsSymbolLegendNode *>( mLegend->model()->legendNodeEmbeddedInParent( mLayer ) ) )
     {
       if ( QgsSymbol *customSymbol = symbolLegendNode->customSymbol() )
       {
@@ -1663,7 +1663,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
     mPatchShapeButton->hide();
   }
 
-  if ( QgsColorRampLegendNode *colorRampNode = dynamic_cast<QgsColorRampLegendNode *>( mLegendNode ) )
+  if ( auto colorRampNode = dynamic_cast<QgsColorRampLegendNode *>( mLegendNode ) )
   {
     mLabelGroup->hide();
     mColorRampLegendWidget->setSettings( colorRampNode->settings() );
@@ -2010,7 +2010,7 @@ QVariant QgsLayoutLegendMapFilteringModel::data( const QModelIndex &i, int role 
 
   const QModelIndex sourceIndex = mapToSource( index( i.row(), QgsLayoutModel::ItemId, i.parent() ) );
 
-  QgsLayoutItemMap *mapItem = qobject_cast<QgsLayoutItemMap *>( mLayoutModel->itemFromIndex( mapToSource( i ) ) );
+  auto mapItem = qobject_cast<QgsLayoutItemMap *>( mLayoutModel->itemFromIndex( mapToSource( i ) ) );
   if ( !mapItem )
   {
     return QVariant();
@@ -2045,7 +2045,7 @@ bool QgsLayoutLegendMapFilteringModel::setData( const QModelIndex &index, const 
   if ( !index.isValid() )
     return false;
 
-  QgsLayoutItemMap *mapItem = qobject_cast<QgsLayoutItemMap *>( mLayoutModel->itemFromIndex( mapToSource( index ) ) );
+  auto mapItem = qobject_cast<QgsLayoutItemMap *>( mLayoutModel->itemFromIndex( mapToSource( index ) ) );
   if ( !mapItem || !mLegendItem )
   {
     return false;
@@ -2084,7 +2084,7 @@ Qt::ItemFlags QgsLayoutLegendMapFilteringModel::flags( const QModelIndex &index 
     return flags;
   }
 
-  QgsLayoutItemMap *mapItem = qobject_cast<QgsLayoutItemMap *>( mLayoutModel->itemFromIndex( mapToSource( index ) ) );
+  auto mapItem = qobject_cast<QgsLayoutItemMap *>( mLayoutModel->itemFromIndex( mapToSource( index ) ) );
   const bool isMainLinkedMapItem = mLegendItem ? ( mLegendItem->linkedMap() == mapItem ) : false;
 
   // the main linked map item will always be considered checked in this panel.

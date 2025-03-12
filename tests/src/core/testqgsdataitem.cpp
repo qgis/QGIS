@@ -145,7 +145,7 @@ void TestQgsDataItem::testDirItemChildren()
     for ( int i = 0; i < children.size(); i++ )
     {
       QgsDataItem *dataItem = children[i];
-      QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( dataItem );
+      auto layerItem = qobject_cast<QgsLayerItem *>( dataItem );
       if ( !layerItem )
         continue;
 

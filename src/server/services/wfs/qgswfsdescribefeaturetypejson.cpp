@@ -91,7 +91,7 @@ QJsonObject QgsWfsDescribeFeatureTypeJson::createDescribeFeatureTypeDocument( Qg
       }
     }
 #endif
-    QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vLayer = qobject_cast<QgsVectorLayer *>( layer );
     QgsVectorDataProvider *provider = vLayer->dataProvider();
     if ( !provider )
     {

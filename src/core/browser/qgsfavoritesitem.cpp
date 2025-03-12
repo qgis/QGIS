@@ -137,7 +137,7 @@ void QgsFavoritesItem::renameFavorite( const QString &path, const QString &name 
   const QVector<QgsDataItem *> ch = children();
   for ( QgsDataItem *child : ch )
   {
-    if ( QgsFavoriteItem *favorite = qobject_cast< QgsFavoriteItem * >( child ) )
+    if ( auto favorite = qobject_cast<QgsFavoriteItem *>( child ) )
     {
       if ( favorite->dirPath() == path )
       {

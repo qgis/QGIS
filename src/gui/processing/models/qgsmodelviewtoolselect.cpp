@@ -125,7 +125,7 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
       QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
       for ( QGraphicsItem *item : items )
       {
-        if ( QgsModelDesignerFlatButtonGraphicItem *button = dynamic_cast<QgsModelDesignerFlatButtonGraphicItem *>( item ) )
+        if ( auto button = dynamic_cast<QgsModelDesignerFlatButtonGraphicItem *>( item ) )
         {
           // arghhh - if the event happens outside the mouse handles bounding rect, then it's ALREADY passed on!
           if ( mMouseHandles->sceneBoundingRect().contains( event->modelPoint() ) )
@@ -157,7 +157,7 @@ void QgsModelViewToolSelect::modelMoveEvent( QgsModelViewMouseEvent *event )
     {
       if ( mHoverEnteredItems.contains( item ) )
       {
-        if ( QgsModelComponentGraphicItem *component = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+        if ( auto component = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
         {
           component->modelHoverMoveEvent( event );
         }
@@ -165,7 +165,7 @@ void QgsModelViewToolSelect::modelMoveEvent( QgsModelViewMouseEvent *event )
       else
       {
         mHoverEnteredItems.append( item );
-        if ( QgsModelComponentGraphicItem *component = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+        if ( auto component = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
         {
           component->modelHoverEnterEvent( event );
         }
@@ -183,7 +183,7 @@ void QgsModelViewToolSelect::modelMoveEvent( QgsModelViewMouseEvent *event )
       if ( !items.contains( item ) )
       {
         mHoverEnteredItems.removeAll( item );
-        if ( QgsModelComponentGraphicItem *component = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+        if ( auto component = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
         {
           component->modelHoverLeaveEvent( event );
         }
@@ -209,7 +209,7 @@ void QgsModelViewToolSelect::modelDoubleClickEvent( QgsModelViewMouseEvent *even
     QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
     for ( QGraphicsItem *item : items )
     {
-      if ( QgsModelComponentGraphicItem *component = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+      if ( auto component = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
       {
         scene()->setSelectedItem( component ); // clears existing selection
         component->modelDoubleClickEvent( event );
@@ -272,7 +272,7 @@ void QgsModelViewToolSelect::modelReleaseEvent( QgsModelViewMouseEvent *event )
     itemList = scene()->items( rect, selectionMode );
   for ( QGraphicsItem *item : std::as_const( itemList ) )
   {
-    if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+    if ( auto componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
     {
       if ( subtractingSelection )
       {

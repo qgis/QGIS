@@ -209,7 +209,7 @@ namespace QgsWms
 
         if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
         {
-          QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
+          auto treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
 
           const QString name = treeGroupChild->name();
           if ( restrictedLayers.contains( name ) ) //unpublished group
@@ -231,7 +231,7 @@ namespace QgsWms
         }
         else
         {
-          QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
+          auto treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
           QgsMapLayer *l = treeLayer->layer();
           if ( restrictedLayers.contains( l->name() ) ) //unpublished layer
           {

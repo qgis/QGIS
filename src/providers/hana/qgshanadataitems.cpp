@@ -93,7 +93,7 @@ bool QgsHanaConnectionItem::equal( const QgsDataItem *other )
   if ( type() != other->type() )
     return false;
 
-  const QgsHanaConnectionItem *o = qobject_cast<const QgsHanaConnectionItem *>( other );
+  auto o = qobject_cast<const QgsHanaConnectionItem *>( other );
   return ( mPath == o->mPath && mName == o->mName );
 }
 
@@ -160,7 +160,7 @@ QVector<QgsDataItem *> QgsHanaLayerItem::createChildren()
 
 QString QgsHanaLayerItem::createUri() const
 {
-  QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( parent() ? parent()->parent() : nullptr );
+  auto connItem = qobject_cast<QgsHanaConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
   {

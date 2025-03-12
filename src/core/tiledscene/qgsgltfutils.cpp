@@ -65,7 +65,7 @@ bool QgsGltfUtils::accessorToMapCoordinates( const tinygltf::Model &model, int a
   double *vzOut = vz.data();
   for ( int i = 0; i < static_cast<int>( accessor.count ); ++i )
   {
-    const float *fptr = reinterpret_cast<const float *>( ptr );
+    auto fptr = reinterpret_cast<const float *>( ptr );
     QVector3D vOrig( fptr[0], fptr[1], fptr[2] );
 
     if ( nodeTransform )
@@ -141,7 +141,7 @@ bool QgsGltfUtils::extractTextureCoordinates( const tinygltf::Model &model, int 
 
   for ( std::size_t i = 0; i < accessor.count; i++ )
   {
-    const float *fptr = reinterpret_cast< const float * >( ptr );
+    auto fptr = reinterpret_cast<const float *>( ptr );
 
     *xOut++ = fptr[0];
     *yOut++ = fptr[1];

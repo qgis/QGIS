@@ -93,7 +93,7 @@ void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsT
 
 void QgsVectorTileLoader::tileReplyFinished()
 {
-  QgsTileDownloadManagerReply *reply = qobject_cast<QgsTileDownloadManagerReply *>( sender() );
+  auto reply = qobject_cast<QgsTileDownloadManagerReply *>( sender() );
 
   int reqX = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QgsVectorTileDataProvider::DATA_COLUMN ) ).toInt();
   int reqY = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QgsVectorTileDataProvider::DATA_ROW ) ).toInt();

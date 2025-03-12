@@ -764,7 +764,7 @@ QgsProcessingMeshDatasetGroupsParameterDefinitionWidget::QgsProcessingMeshDatase
     }
   }
 
-  const QgsProcessingParameterMeshDatasetGroups *datasetGroupDef = static_cast<const QgsProcessingParameterMeshDatasetGroups *>( definition );
+  auto datasetGroupDef = static_cast<const QgsProcessingParameterMeshDatasetGroups *>( definition );
   if ( datasetGroupDef )
   {
     int currentIndex = mParentLayerComboBox->findData( datasetGroupDef->meshLayerParameterName() );
@@ -808,7 +808,7 @@ QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetT
 {
   if ( definition )
   {
-    const QgsProcessingParameterMeshDatasetTime *datasetTimeDef = static_cast<const QgsProcessingParameterMeshDatasetTime *>( definition );
+    auto datasetTimeDef = static_cast<const QgsProcessingParameterMeshDatasetTime *>( definition );
     mMeshLayerParameterName = datasetTimeDef->meshLayerParameterName();
   }
 
@@ -834,7 +834,7 @@ QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetT
 
   if ( definition )
   {
-    const QgsProcessingParameterMeshDatasetTime *datasetTimeDef = static_cast<const QgsProcessingParameterMeshDatasetTime *>( definition );
+    auto datasetTimeDef = static_cast<const QgsProcessingParameterMeshDatasetTime *>( definition );
     int currentIndex = mParentDatasetComboBox->findData( datasetTimeDef->datasetGroupParameterName() );
     if ( currentIndex != -1 )
       mParentDatasetComboBox->setCurrentIndex( currentIndex );

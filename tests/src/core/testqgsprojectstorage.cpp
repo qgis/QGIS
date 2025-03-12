@@ -199,7 +199,7 @@ void TestQgsProjectStorage::testMemoryStorage()
   QCOMPARE( prj2.title(), QString( "best project ever" ) );
 
   // let's check that our stuff from auxiliary database got stored written and read
-  QgsVectorLayer *prj2layer1 = qobject_cast<QgsVectorLayer *>( prj2.mapLayers().constBegin().value() );
+  auto prj2layer1 = qobject_cast<QgsVectorLayer *>( prj2.mapLayers().constBegin().value() );
   QVERIFY( prj2layer1 );
   QCOMPARE( prj2layer1->fields().count(), 7 );
   QCOMPARE( prj2layer1->fields().at( 6 ).name(), QString( "auxiliary_storage_fld_aux" ) );

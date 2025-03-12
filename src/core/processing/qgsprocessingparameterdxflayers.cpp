@@ -192,7 +192,7 @@ QList<QgsDxfExport::DxfLayer> QgsProcessingParameterDxfLayers::parameterAsLayers
 {
   QList<QgsDxfExport::DxfLayer> layers;
 
-  if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( layersVariant ) ) )
+  if ( auto layer = qobject_cast<QgsVectorLayer *>( qvariant_cast<QObject *>( layersVariant ) ) )
   {
     layers << QgsDxfExport::DxfLayer( layer );
   }

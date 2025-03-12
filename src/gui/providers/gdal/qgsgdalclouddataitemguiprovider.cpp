@@ -29,7 +29,7 @@
 
 void QgsGdalCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsGdalCloudConnectionItem *providerItem = qobject_cast<QgsGdalCloudConnectionItem *>( item ) )
+  if ( auto providerItem = qobject_cast<QgsGdalCloudConnectionItem *>( item ) )
   {
     const QList<QgsGdalCloudConnectionItem *> stConnectionItems = QgsDataItem::filteredItems<QgsGdalCloudConnectionItem>( selection );
     if ( stConnectionItems.size() == 1 )
@@ -47,7 +47,7 @@ void QgsGdalCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QM
     connect( actionDelete, &QAction::triggered, this, [stConnectionItems, item, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( stConnectionItems, []( const QString &connectionName ) { QgsGdalCloudProviderConnection( QString() ).remove( connectionName ); }, context );
 
-      if ( QgsGdalCloudProviderItem *cloudItem = qobject_cast<QgsGdalCloudProviderItem *>( item->parent() ) )
+      if ( auto cloudItem = qobject_cast<QgsGdalCloudProviderItem *>( item->parent() ) )
         cloudItem->refresh();
     } );
     menu->addAction( actionDelete );
@@ -91,11 +91,11 @@ void QgsGdalCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QM
 
 void QgsGdalCloudDataItemGuiProvider::editConnection( QgsGdalCloudConnectionItem *item )
 {
-  QgsGdalCloudProviderItem *cloudItem = qobject_cast<QgsGdalCloudProviderItem *>( item->parent() );
+  auto cloudItem = qobject_cast<QgsGdalCloudProviderItem *>( item->parent() );
   if ( !cloudItem )
     return;
 
-  QgsGdalCloudRootItem *rootItem = qobject_cast<QgsGdalCloudRootItem *>( cloudItem->parent() );
+  auto rootItem = qobject_cast<QgsGdalCloudRootItem *>( cloudItem->parent() );
   if ( !rootItem )
     return;
 
@@ -123,11 +123,11 @@ void QgsGdalCloudDataItemGuiProvider::editConnection( QgsGdalCloudConnectionItem
 
 void QgsGdalCloudDataItemGuiProvider::duplicateConnection( QgsGdalCloudConnectionItem *item )
 {
-  QgsGdalCloudProviderItem *cloudItem = qobject_cast<QgsGdalCloudProviderItem *>( item->parent() );
+  auto cloudItem = qobject_cast<QgsGdalCloudProviderItem *>( item->parent() );
   if ( !cloudItem )
     return;
 
-  QgsGdalCloudRootItem *rootItem = qobject_cast<QgsGdalCloudRootItem *>( cloudItem->parent() );
+  auto rootItem = qobject_cast<QgsGdalCloudRootItem *>( cloudItem->parent() );
   if ( !rootItem )
     return;
 
@@ -143,13 +143,13 @@ void QgsGdalCloudDataItemGuiProvider::duplicateConnection( QgsGdalCloudConnectio
 
 void QgsGdalCloudDataItemGuiProvider::newConnection( QgsDataItem *item, const QgsGdalUtils::VsiNetworkFileSystemDetails &driver )
 {
-  QgsGdalCloudRootItem *rootItem = qobject_cast<QgsGdalCloudRootItem *>( item ) ? qobject_cast<QgsGdalCloudRootItem *>( item ) : qobject_cast<QgsGdalCloudRootItem *>( item->parent() );
+  auto rootItem = qobject_cast<QgsGdalCloudRootItem *>( item ) ? qobject_cast<QgsGdalCloudRootItem *>( item ) : qobject_cast<QgsGdalCloudRootItem *>( item->parent() );
 
   QgsGdalCloudProviderItem *cloudItem = nullptr;
   const QVector<QgsDataItem *> cloudChildren = rootItem->children();
   for ( QgsDataItem *child : cloudChildren )
   {
-    if ( QgsGdalCloudProviderItem *providerRoot = qobject_cast<QgsGdalCloudProviderItem *>( child ) )
+    if ( auto providerRoot = qobject_cast<QgsGdalCloudProviderItem *>( child ) )
     {
       if ( providerRoot->vsiHandler().identifier == driver.identifier )
       {

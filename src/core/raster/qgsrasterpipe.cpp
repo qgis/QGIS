@@ -69,7 +69,7 @@ void QgsRasterPipe::moveToThread( QThread *thread )
   auto it = mRoleMap.find( Qgis::RasterPipeInterfaceRole::Provider );
   if ( it != mRoleMap.end() )
   {
-    if ( QgsRasterDataProvider *dp = dynamic_cast<QgsRasterDataProvider *>( mInterfaces.value( it.value() ) ) )
+    if ( auto dp = dynamic_cast<QgsRasterDataProvider *>( mInterfaces.value( it.value() ) ) )
     {
       dp->moveToThread( thread );
     }

@@ -82,7 +82,7 @@ QgsAbstractTerrainSettings *Qgs3DTerrainRegistry::configureTerrainFromProject( Q
   }
   else if ( properties->terrainProvider()->type() == QLatin1String( "raster" ) )
   {
-    QgsRasterDemTerrainProvider *rasterProvider = qgis::down_cast<QgsRasterDemTerrainProvider *>( properties->terrainProvider() );
+    auto rasterProvider = qgis::down_cast<QgsRasterDemTerrainProvider *>( properties->terrainProvider() );
 
     auto demTerrain = std::make_unique<QgsDemTerrainSettings>();
     demTerrain->setLayer( rasterProvider->layer() );
@@ -92,7 +92,7 @@ QgsAbstractTerrainSettings *Qgs3DTerrainRegistry::configureTerrainFromProject( Q
   }
   else if ( properties->terrainProvider()->type() == QLatin1String( "mesh" ) )
   {
-    QgsMeshTerrainProvider *meshProvider = qgis::down_cast<QgsMeshTerrainProvider *>( properties->terrainProvider() );
+    auto meshProvider = qgis::down_cast<QgsMeshTerrainProvider *>( properties->terrainProvider() );
 
     auto meshTerrain = std::make_unique<QgsMeshTerrainSettings>();
     meshTerrain->setLayer( meshProvider->layer() );

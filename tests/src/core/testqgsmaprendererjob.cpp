@@ -874,7 +874,7 @@ void TestQgsMapRendererJob::temporalRender()
   QGSVERIFYIMAGECHECK( QStringLiteral( "temporal_render_visible" ), QStringLiteral( "temporal_render_visible" ), img, QString(), 0, QSize(), 2 );
 
   // set temporal properties for layer
-  QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast<QgsRasterLayerTemporalProperties *>( rasterLayer->temporalProperties() );
+  auto temporalProperties = qobject_cast<QgsRasterLayerTemporalProperties *>( rasterLayer->temporalProperties() );
   temporalProperties->setIsActive( true );
   temporalProperties->setMode( Qgis::RasterTemporalMode::FixedTemporalRange );
   temporalProperties->setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 1, 5 ), QTime( 0, 0, 0 ) ) ) );

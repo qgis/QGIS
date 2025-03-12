@@ -1065,12 +1065,12 @@ void TestQgsIdentify::testRelations()
   QCOMPARE( dialog->lstResults->topLevelItemCount(), 1 );
   QTreeWidgetItem *topLevelItem = dialog->lstResults->topLevelItem( 0 );
   QCOMPARE( topLevelItem->childCount(), 1 );
-  QgsIdentifyResultsFeatureItem *featureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( topLevelItem->child( 0 ) );
+  auto featureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( topLevelItem->child( 0 ) );
   QVERIFY( featureItem );
   std::vector<QgsIdentifyResultsRelationItem *> relationItems;
   for ( int i = 0; i < featureItem->childCount(); ++i )
   {
-    QgsIdentifyResultsRelationItem *relationItem = dynamic_cast<QgsIdentifyResultsRelationItem *>( featureItem->child( i ) );
+    auto relationItem = dynamic_cast<QgsIdentifyResultsRelationItem *>( featureItem->child( i ) );
     if ( relationItem )
       relationItems.push_back( relationItem );
   }
@@ -1103,7 +1103,7 @@ void TestQgsIdentify::testRelations()
   QCOMPARE( relationItems[0]->childCount(), 2 );
 
   {
-    QgsIdentifyResultsFeatureItem *relatedFeatureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( relationItems[0]->child( 0 ) );
+    auto relatedFeatureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( relationItems[0]->child( 0 ) );
     QVERIFY( relatedFeatureItem );
     QVERIFY( relatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).isValid() );
     const QgsFeature relatedFeature = relatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).value<QgsFeature>();
@@ -1113,7 +1113,7 @@ void TestQgsIdentify::testRelations()
       std::vector<QgsIdentifyResultsRelationItem *> childRelationItems;
       for ( int i = 0; i < relatedFeatureItem->childCount(); ++i )
       {
-        QgsIdentifyResultsRelationItem *relationItem = dynamic_cast<QgsIdentifyResultsRelationItem *>( relatedFeatureItem->child( i ) );
+        auto relationItem = dynamic_cast<QgsIdentifyResultsRelationItem *>( relatedFeatureItem->child( i ) );
         if ( relationItem )
           childRelationItems.push_back( relationItem );
       }
@@ -1127,7 +1127,7 @@ void TestQgsIdentify::testRelations()
       QCOMPARE( childRelationItems[0]->text( 0 ), QStringLiteral( "layerC through B-C [1]" ) );
 
       {
-        QgsIdentifyResultsFeatureItem *childRelatedFeatureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( childRelationItems[0]->child( 0 ) );
+        auto childRelatedFeatureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( childRelationItems[0]->child( 0 ) );
         QVERIFY( childRelatedFeatureItem );
         QVERIFY( childRelatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).isValid() );
         const QgsFeature relatedFeature = childRelatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).value<QgsFeature>();
@@ -1137,7 +1137,7 @@ void TestQgsIdentify::testRelations()
         std::vector<QgsIdentifyResultsRelationItem *> childChildRelationItems;
         for ( int i = 0; i < childRelatedFeatureItem->childCount(); ++i )
         {
-          QgsIdentifyResultsRelationItem *relationItem = dynamic_cast<QgsIdentifyResultsRelationItem *>( childRelatedFeatureItem->child( i ) );
+          auto relationItem = dynamic_cast<QgsIdentifyResultsRelationItem *>( childRelatedFeatureItem->child( i ) );
           if ( relationItem )
             childChildRelationItems.push_back( relationItem );
         }
@@ -1147,7 +1147,7 @@ void TestQgsIdentify::testRelations()
   }
 
   {
-    QgsIdentifyResultsFeatureItem *relatedFeatureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( relationItems[0]->child( 1 ) );
+    auto relatedFeatureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( relationItems[0]->child( 1 ) );
     QVERIFY( relatedFeatureItem );
     QVERIFY( relatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).isValid() );
     const QgsFeature relatedFeature = relatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).value<QgsFeature>();
@@ -1160,7 +1160,7 @@ void TestQgsIdentify::testRelations()
   QCOMPARE( relationItems[1]->childCount(), 1 );
 
   {
-    QgsIdentifyResultsFeatureItem *relatedFeatureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( relationItems[1]->child( 0 ) );
+    auto relatedFeatureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( relationItems[1]->child( 0 ) );
     QVERIFY( relatedFeatureItem );
     QVERIFY( relatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).isValid() );
     const QgsFeature relatedFeature = relatedFeatureItem->data( 0, QgsIdentifyResultsDialog::FeatureRole ).value<QgsFeature>();

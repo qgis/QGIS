@@ -34,7 +34,7 @@ bool QgsTextWidgetWrapper::valid() const
 
 QWidget *QgsTextWidgetWrapper::createWidget( QWidget *parent )
 {
-  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
+  auto form = qobject_cast<QgsAttributeForm *>( parent );
 
   if ( form )
   {

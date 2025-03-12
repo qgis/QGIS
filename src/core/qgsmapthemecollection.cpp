@@ -361,7 +361,7 @@ QList<QgsMapLayer *> QgsMapThemeCollection::mapThemeVisibleLayers( const QString
 
 void QgsMapThemeCollection::applyMapThemeCheckedLegendNodesToLayer( const MapThemeLayerRecord &layerRec, QgsMapLayer *layer )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->renderer() )
     return;
 
@@ -506,7 +506,7 @@ void QgsMapThemeCollection::registryLayersRemoved( const QStringList &layerIDs )
 
 void QgsMapThemeCollection::layerStyleRenamed( const QString &oldName, const QString &newName )
 {
-  QgsMapLayerStyleManager *styleMgr = qobject_cast<QgsMapLayerStyleManager *>( sender() );
+  auto styleMgr = qobject_cast<QgsMapLayerStyleManager *>( sender() );
   if ( !styleMgr )
     return;
 

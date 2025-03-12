@@ -72,7 +72,7 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
   QgsAbstract3DRenderer *r = layer->renderer3D();
   if ( r && r->type() == QLatin1String( "rulebased" ) )
   {
-    QgsRuleBased3DRenderer *ruleRenderer = static_cast<QgsRuleBased3DRenderer *>( r );
+    auto ruleRenderer = static_cast<QgsRuleBased3DRenderer *>( r );
     mRootRule = ruleRenderer->rootRule()->clone();
   }
   else
@@ -133,7 +133,7 @@ void QgsRuleBased3DRendererWidget::addRule()
 
 void QgsRuleBased3DRendererWidget::ruleWidgetPanelAccepted( QgsPanelWidget *panel )
 {
-  Qgs3DRendererRulePropsWidget *widget = qobject_cast<Qgs3DRendererRulePropsWidget *>( panel );
+  auto widget = qobject_cast<Qgs3DRendererRulePropsWidget *>( panel );
   widget->apply();
 
   const QModelIndex index = viewRules->selectionModel()->currentIndex();

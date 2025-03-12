@@ -29,7 +29,7 @@ void QgsGeometryDangleCheck::collectErrors( const QMap<QString, QgsFeaturePool *
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
-      const QgsLineString *line = dynamic_cast<const QgsLineString *>( QgsGeometryCheckerUtils::getGeomPart( geom, iPart ) );
+      auto line = dynamic_cast<const QgsLineString *>( QgsGeometryCheckerUtils::getGeomPart( geom, iPart ) );
       if ( !line )
       {
         // Should not happen
@@ -61,7 +61,7 @@ void QgsGeometryDangleCheck::collectErrors( const QMap<QString, QgsFeaturePool *
             // Skip current feature part, it was already checked above
             continue;
           }
-          const QgsLineString *testLine = dynamic_cast<const QgsLineString *>( QgsGeometryCheckerUtils::getGeomPart( testGeom, jPart ) );
+          auto testLine = dynamic_cast<const QgsLineString *>( QgsGeometryCheckerUtils::getGeomPart( testGeom, jPart ) );
           if ( !testLine )
           {
             continue;

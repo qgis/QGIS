@@ -83,7 +83,7 @@ void QgsColorRampButton::showColorRampDialog()
 
   if ( currentRamp->type() == QgsGradientColorRamp::typeString() )
   {
-    QgsGradientColorRamp *gradRamp = static_cast<QgsGradientColorRamp *>( currentRamp.get() );
+    auto gradRamp = static_cast<QgsGradientColorRamp *>( currentRamp.get() );
     QgsGradientColorRampDialog dlg( *gradRamp, this );
     dlg.setWindowTitle( mColorRampDialogTitle );
     if ( dlg.exec() )
@@ -93,7 +93,7 @@ void QgsColorRampButton::showColorRampDialog()
   }
   else if ( currentRamp->type() == QgsLimitedRandomColorRamp::typeString() )
   {
-    QgsLimitedRandomColorRamp *randRamp = static_cast<QgsLimitedRandomColorRamp *>( currentRamp.get() );
+    auto randRamp = static_cast<QgsLimitedRandomColorRamp *>( currentRamp.get() );
     if ( panelMode )
     {
       QgsLimitedRandomColorRampWidget *widget = new QgsLimitedRandomColorRampWidget( *randRamp, this );
@@ -112,7 +112,7 @@ void QgsColorRampButton::showColorRampDialog()
   }
   else if ( currentRamp->type() == QgsPresetSchemeColorRamp::typeString() )
   {
-    QgsPresetSchemeColorRamp *presetRamp = static_cast<QgsPresetSchemeColorRamp *>( currentRamp.get() );
+    auto presetRamp = static_cast<QgsPresetSchemeColorRamp *>( currentRamp.get() );
     if ( panelMode )
     {
       QgsPresetColorRampWidget *widget = new QgsPresetColorRampWidget( *presetRamp, this );
@@ -131,7 +131,7 @@ void QgsColorRampButton::showColorRampDialog()
   }
   else if ( currentRamp->type() == QgsColorBrewerColorRamp::typeString() )
   {
-    QgsColorBrewerColorRamp *brewerRamp = static_cast<QgsColorBrewerColorRamp *>( currentRamp.get() );
+    auto brewerRamp = static_cast<QgsColorBrewerColorRamp *>( currentRamp.get() );
     if ( panelMode )
     {
       QgsColorBrewerColorRampWidget *widget = new QgsColorBrewerColorRampWidget( *brewerRamp, this );
@@ -150,7 +150,7 @@ void QgsColorRampButton::showColorRampDialog()
   }
   else if ( currentRamp->type() == QgsCptCityColorRamp::typeString() )
   {
-    QgsCptCityColorRamp *cptCityRamp = static_cast<QgsCptCityColorRamp *>( currentRamp.get() );
+    auto cptCityRamp = static_cast<QgsCptCityColorRamp *>( currentRamp.get() );
     QgsCptCityColorRampDialog dlg( *cptCityRamp, this );
     if ( dlg.exec() )
     {
@@ -631,21 +631,21 @@ bool QgsColorRampButton::isNull() const
 
 void QgsColorRampButton::rampWidgetUpdated()
 {
-  QgsLimitedRandomColorRampWidget *limitedRampWidget = qobject_cast<QgsLimitedRandomColorRampWidget *>( sender() );
+  auto limitedRampWidget = qobject_cast<QgsLimitedRandomColorRampWidget *>( sender() );
   if ( limitedRampWidget )
   {
     setColorRamp( limitedRampWidget->ramp().clone() );
     emit colorRampChanged();
     return;
   }
-  QgsColorBrewerColorRampWidget *colorBrewerRampWidget = qobject_cast<QgsColorBrewerColorRampWidget *>( sender() );
+  auto colorBrewerRampWidget = qobject_cast<QgsColorBrewerColorRampWidget *>( sender() );
   if ( colorBrewerRampWidget )
   {
     setColorRamp( colorBrewerRampWidget->ramp().clone() );
     emit colorRampChanged();
     return;
   }
-  QgsPresetColorRampWidget *presetRampWidget = qobject_cast<QgsPresetColorRampWidget *>( sender() );
+  auto presetRampWidget = qobject_cast<QgsPresetColorRampWidget *>( sender() );
   if ( presetRampWidget )
   {
     setColorRamp( presetRampWidget->ramp().clone() );

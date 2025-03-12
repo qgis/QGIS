@@ -115,7 +115,7 @@ void QgsVectorLayerLegendWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
 
-  QgsDefaultVectorLayerLegend *legend = qobject_cast<QgsDefaultVectorLayerLegend *>( layer->legend() );
+  auto legend = qobject_cast<QgsDefaultVectorLayerLegend *>( layer->legend() );
   if ( !legend )
     return;
 
@@ -145,7 +145,7 @@ void QgsVectorLayerLegendWidget::populateLabelLegendTreeWidget()
     {
       const QgsPalLayerSettings s = labeling->settings( pList.at( i ) );
       QString description;
-      const QgsRuleBasedLabeling *ruleBasedLabeling = dynamic_cast<const QgsRuleBasedLabeling *>( labeling );
+      auto ruleBasedLabeling = dynamic_cast<const QgsRuleBasedLabeling *>( labeling );
       if ( ruleBasedLabeling && ruleBasedLabeling->rootRule() )
       {
         const QgsRuleBasedLabeling::Rule *rule = ruleBasedLabeling->rootRule()->findRuleByKey( pList.at( i ) );
@@ -207,7 +207,7 @@ void QgsVectorLayerLegendWidget::applyToLayer()
   legend->setTextOnSymbolTextFormat( mTextOnSymbolFormatButton->textFormat() );
 
   QHash<QString, QString> content;
-  if ( QStandardItemModel *model = qobject_cast<QStandardItemModel *>( mLegendTreeView->model() ) )
+  if ( auto model = qobject_cast<QStandardItemModel *>( mLegendTreeView->model() ) )
   {
     for ( int i = 0; i < model->rowCount(); ++i )
     {

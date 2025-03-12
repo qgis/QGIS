@@ -159,7 +159,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
       {
         if ( renderer->type() == QLatin1String( "vector" ) )
         {
-          const QgsPoint3DSymbol *pointSymbol = static_cast<const QgsPoint3DSymbol *>( static_cast<QgsVectorLayer3DRenderer *>( renderer )->symbol() );
+          auto pointSymbol = static_cast<const QgsPoint3DSymbol *>( static_cast<QgsVectorLayer3DRenderer *>( renderer )->symbol() );
           if ( pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
           {
             removeLayerEntity( layer );
@@ -171,7 +171,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
           const QgsRuleBased3DRenderer::RuleList rules = static_cast<QgsRuleBased3DRenderer *>( renderer )->rootRule()->descendants();
           for ( auto rule : rules )
           {
-            const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( rule->symbol() );
+            auto pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( rule->symbol() );
             if ( pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
             {
               removeLayerEntity( layer );
@@ -572,7 +572,7 @@ void Qgs3DMapScene::updateCameraLens()
 
 void Qgs3DMapScene::onLayerRenderer3DChanged()
 {
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  auto layer = qobject_cast<QgsMapLayer *>( sender() );
   Q_ASSERT( layer );
 
   // remove old entity - if any
@@ -642,10 +642,10 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
       if ( renderer->type() == QLatin1String( "vector" ) )
       {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
         if ( vlayer->geometryType() == Qgis::GeometryType::Point )
         {
-          const QgsPoint3DSymbol *pointSymbol = static_cast<const QgsPoint3DSymbol *>( static_cast<QgsVectorLayer3DRenderer *>( renderer )->symbol() );
+          auto pointSymbol = static_cast<const QgsPoint3DSymbol *>( static_cast<QgsVectorLayer3DRenderer *>( renderer )->symbol() );
           if ( pointSymbol->shape() == Qgis::Point3DShape::Model )
           {
             mModelVectorLayers.append( layer );
@@ -657,7 +657,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         const QgsRuleBased3DRenderer::RuleList rules = static_cast<QgsRuleBased3DRenderer *>( renderer )->rootRule()->descendants();
         for ( auto rule : rules )
         {
-          const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( rule->symbol() );
+          auto pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( rule->symbol() );
           if ( pointSymbol && pointSymbol->shape() == Qgis::Point3DShape::Model )
           {
             mModelVectorLayers.append( layer );
@@ -668,7 +668,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     }
     else if ( layer->type() == Qgis::LayerType::Mesh && renderer->type() == QLatin1String( "mesh" ) )
     {
-      QgsMeshLayer3DRenderer *meshRenderer = static_cast<QgsMeshLayer3DRenderer *>( renderer );
+      auto meshRenderer = static_cast<QgsMeshLayer3DRenderer *>( renderer );
       meshRenderer->setLayer( static_cast<QgsMeshLayer *>( layer ) );
 
       // Before entity creation, set the maximum texture size
@@ -679,12 +679,12 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     }
     else if ( layer->type() == Qgis::LayerType::PointCloud && renderer->type() == QLatin1String( "pointcloud" ) )
     {
-      QgsPointCloudLayer3DRenderer *pointCloudRenderer = static_cast<QgsPointCloudLayer3DRenderer *>( renderer );
+      auto pointCloudRenderer = static_cast<QgsPointCloudLayer3DRenderer *>( renderer );
       pointCloudRenderer->setLayer( static_cast<QgsPointCloudLayer *>( layer ) );
     }
     else if ( layer->type() == Qgis::LayerType::TiledScene && renderer->type() == QLatin1String( "tiledscene" ) )
     {
-      QgsTiledSceneLayer3DRenderer *tiledSceneRenderer = static_cast<QgsTiledSceneLayer3DRenderer *>( renderer );
+      auto tiledSceneRenderer = static_cast<QgsTiledSceneLayer3DRenderer *>( renderer );
       tiledSceneRenderer->setLayer( static_cast<QgsTiledSceneLayer *>( layer ) );
     }
 
@@ -696,7 +696,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 
       finalizeNewEntity( newEntity );
 
-      if ( Qgs3DMapSceneEntity *sceneNewEntity = qobject_cast<Qgs3DMapSceneEntity *>( newEntity ) )
+      if ( auto sceneNewEntity = qobject_cast<Qgs3DMapSceneEntity *>( newEntity ) )
       {
         needsSceneUpdate = true;
         mSceneEntities.append( sceneNewEntity );
@@ -719,7 +719,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 
   if ( layer->type() == Qgis::LayerType::Vector )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
     connect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( vlayer, &QgsVectorLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
@@ -731,7 +731,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 
   if ( layer->type() == Qgis::LayerType::PointCloud )
   {
-    QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+    auto pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     connect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
@@ -741,7 +741,7 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 {
   Qt3DCore::QEntity *entity = mLayerEntities.take( layer );
 
-  if ( Qgs3DMapSceneEntity *sceneEntity = qobject_cast<Qgs3DMapSceneEntity *>( entity ) )
+  if ( auto sceneEntity = qobject_cast<Qgs3DMapSceneEntity *>( entity ) )
   {
     mSceneEntities.removeOne( sceneEntity );
   }
@@ -753,7 +753,7 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 
   if ( layer->type() == Qgis::LayerType::Vector )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     disconnect( vlayer, &QgsVectorLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     mModelVectorLayers.removeAll( layer );
@@ -766,7 +766,7 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 
   if ( layer->type() == Qgis::LayerType::PointCloud )
   {
-    QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+    auto pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     disconnect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     disconnect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     disconnect( pclayer, &QgsPointCloudLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
@@ -814,11 +814,11 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
   for ( Qt3DRender::QMaterial *material : childMaterials )
   {
     // This handles the phong material without data defined properties.
-    if ( Qt3DExtras::QDiffuseSpecularMaterial *ph = qobject_cast<Qt3DExtras::QDiffuseSpecularMaterial *>( material ) )
+    if ( auto ph = qobject_cast<Qt3DExtras::QDiffuseSpecularMaterial *>( material ) )
     {
       if ( ph->diffuse().value<QColor>().alphaF() != 1.0f )
       {
-        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( ph->parent() );
+        auto entity = qobject_cast<Qt3DCore::QEntity *>( ph->parent() );
         if ( entity && !entity->components().contains( transparentLayer ) )
         {
           entity->addComponent( transparentLayer );
@@ -836,7 +836,7 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
         {
           if ( parameter->name() == "opacity" && parameter->value() != 1.0f )
           {
-            Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( material->parent() );
+            auto entity = qobject_cast<Qt3DCore::QEntity *>( material->parent() );
             if ( entity && !entity->components().contains( transparentLayer ) )
             {
               entity->addComponent( transparentLayer );
@@ -1089,7 +1089,7 @@ QVector<const QgsChunkNode *> Qgs3DMapScene::getLayerActiveChunkNodes( QgsMapLay
   QVector<const QgsChunkNode *> chunks;
   if ( !mLayerEntities.contains( layer ) )
     return chunks;
-  if ( QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( mLayerEntities[layer] ) )
+  if ( auto c = qobject_cast<QgsChunkedEntity *>( mLayerEntities[layer] ) )
   {
     const QList<QgsChunkNode *> activeNodes = c->activeNodes();
     for ( QgsChunkNode *n : activeNodes )
@@ -1121,7 +1121,7 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
     {
       case Qgis::LayerType::PointCloud:
       {
-        QgsPointCloudLayer *pcl = qobject_cast<QgsPointCloudLayer *>( layer );
+        auto pcl = qobject_cast<QgsPointCloudLayer *>( layer );
         QgsDoubleRange zRange = pcl->elevationProperties()->calculateZRange( pcl );
         zMin = std::min( zMin, zRange.lower() );
         zMax = std::max( zMax, zRange.upper() );
@@ -1129,11 +1129,11 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
       }
       case Qgis::LayerType::Mesh:
       {
-        QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
+        auto meshLayer = qobject_cast<QgsMeshLayer *>( layer );
         QgsAbstract3DRenderer *renderer3D = meshLayer->renderer3D();
         if ( renderer3D )
         {
-          QgsMeshLayer3DRenderer *meshLayerRenderer = static_cast<QgsMeshLayer3DRenderer *>( renderer3D );
+          auto meshLayerRenderer = static_cast<QgsMeshLayer3DRenderer *>( renderer3D );
           const int verticalGroupDatasetIndex = meshLayerRenderer->symbol()->verticalDatasetGroupIndex();
           const QgsMeshDatasetGroupMetadata verticalGroupMetadata = meshLayer->datasetGroupMetadata( verticalGroupDatasetIndex );
           const double verticalScale = meshLayerRenderer->symbol()->verticalScale();
@@ -1144,7 +1144,7 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
       }
       case Qgis::LayerType::TiledScene:
       {
-        QgsTiledSceneLayer *sceneLayer = qobject_cast<QgsTiledSceneLayer *>( layer );
+        auto sceneLayer = qobject_cast<QgsTiledSceneLayer *>( layer );
         const QgsDoubleRange zRange = sceneLayer->elevationProperties()->calculateZRange( sceneLayer );
         if ( !zRange.isInfinite() && !zRange.isEmpty() )
         {
@@ -1203,7 +1203,7 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
   }
   else
   {
-    if ( QgsWindow3DEngine *engine = dynamic_cast<QgsWindow3DEngine *>( mEngine ) )
+    if ( auto engine = dynamic_cast<QgsWindow3DEngine *>( mEngine ) )
     {
       m3DAxis = new Qgs3DAxis( static_cast<Qgs3DMapCanvas *>( engine->window() ), engine->root(), this, mCameraController, &mMap );
     }
@@ -1242,7 +1242,7 @@ void Qgs3DMapScene::handleClippingOnEntity( QEntity *entity ) const
   // enable or disable clipping on the children accordingly
   for ( QObject *child : entity->children() )
   {
-    Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>( child );
+    auto childEntity = qobject_cast<Qt3DCore::QEntity *>( child );
     if ( childEntity )
     {
       handleClippingOnEntity( childEntity );

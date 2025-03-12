@@ -608,7 +608,7 @@ void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleM
 {
   if ( symbol->type() == Qgis:: SymbolType::Marker )
   {
-    QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( symbol );
+    auto s = static_cast<QgsMarkerSymbol *>( symbol );
     if ( Qgis::ScaleMethod::ScaleArea == method )
     {
       s->setDataDefinedSize( QgsProperty::fromExpression( "coalesce(sqrt(" + QString::number( s->size() ) + " * (" + field + ")),0)" ) );
@@ -621,7 +621,7 @@ void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleM
   }
   else if ( symbol->type() == Qgis::SymbolType::Line )
   {
-    QgsLineSymbol *s = static_cast<QgsLineSymbol *>( symbol );
+    auto s = static_cast<QgsLineSymbol *>( symbol );
     s->setDataDefinedWidth( QgsProperty::fromExpression( "coalesce(" + QString::number( s->width() ) + " * (" + field + "),0)" ) );
   }
 }
@@ -630,7 +630,7 @@ void QgsFeatureRenderer::convertSymbolRotation( QgsSymbol *symbol, const QString
 {
   if ( symbol->type() == Qgis::SymbolType::Marker )
   {
-    QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( symbol );
+    auto s = static_cast<QgsMarkerSymbol *>( symbol );
     const QgsProperty dd = QgsProperty::fromExpression( ( s->angle()
                            ? QString::number( s->angle() ) + " + "
                            : QString() ) + field );

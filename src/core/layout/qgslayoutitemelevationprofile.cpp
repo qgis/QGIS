@@ -678,7 +678,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         sources << QgsApplication::profileSourceRegistry()->profileSources();
         for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
         {
-          if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
+          if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer.get() ) )
             sources.append( source );
         }
 
@@ -731,7 +731,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         sources << QgsApplication::profileSourceRegistry()->profileSources();
         for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
         {
-          if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
+          if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer.get() ) )
             sources.append( source );
         }
 
@@ -778,7 +778,7 @@ void QgsLayoutItemElevationProfile::refresh()
     const QgsGeometry curveGeom( mLayout->reportContext().currentGeometry( mCrs ) );
     if ( const QgsAbstractGeometry *geom = curveGeom.constGet() )
     {
-      if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom->simplifiedTypeRef() ) )
+      if ( auto curve = qgsgeometry_cast<const QgsCurve *>( geom->simplifiedTypeRef() ) )
       {
         mCurve.reset( curve->clone() );
       }
@@ -864,7 +864,7 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
   {
     const QDomElement curveElem = curveNodeList.at( 0 ).toElement();
     const QgsGeometry curve = QgsGeometry::fromWkt( curveElem.text() );
-    if ( const QgsCurve *curveGeom = qgsgeometry_cast< const QgsCurve * >( curve.constGet() ) )
+    if ( auto curveGeom = qgsgeometry_cast<const QgsCurve *>( curve.constGet() ) )
     {
       mCurve.reset( curveGeom->clone() );
     }
@@ -967,7 +967,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   sources << QgsApplication::profileSourceRegistry()->profileSources();
   for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
+    if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer.get() ) )
       sources.append( source );
   }
 

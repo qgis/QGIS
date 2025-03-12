@@ -337,7 +337,7 @@ void TestQgsLayerTree::testRestrictedSymbolSize()
   QgsProject project;
   project.addMapLayer( vl );
 
-  QgsMarkerSymbol *symbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  auto symbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   symbol->setSize( 500.0 );
   symbol->setSizeUnit( Qgis::RenderUnit::MapUnits );
 
@@ -642,12 +642,12 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
   QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
   for ( const QgsLegendSymbolItem &symbol : symbolList )
   {
-    QgsSymbolLegendNode *symbolNode = dynamic_cast<QgsSymbolLegendNode *>( m->findLegendNode( vl->id(), symbol.ruleKey() ) );
+    auto symbolNode = dynamic_cast<QgsSymbolLegendNode *>( m->findLegendNode( vl->id(), symbol.ruleKey() ) );
     QVERIFY( symbolNode );
     QCOMPARE( symbolNode->symbol()->color(), symbol.symbol()->color() );
   }
   //try changing a symbol's color
-  QgsSymbolLegendNode *symbolNode = dynamic_cast<QgsSymbolLegendNode *>( m->findLegendNode( vl->id(), symbolList.at( 1 ).ruleKey() ) );
+  auto symbolNode = dynamic_cast<QgsSymbolLegendNode *>( m->findLegendNode( vl->id(), symbolList.at( 1 ).ruleKey() ) );
   QVERIFY( symbolNode );
   QgsSymbol *newSymbol = symbolNode->symbol()->clone();
   newSymbol->setColor( QColor( 255, 255, 0 ) );

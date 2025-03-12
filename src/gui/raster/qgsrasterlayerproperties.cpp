@@ -949,7 +949,7 @@ void QgsRasterLayerProperties::apply()
   mRasterTransparencyWidget->applyToRasterProvider( mRasterLayer->dataProvider() );
 
   //set renderer from widget
-  QgsRasterRendererWidget *rendererWidget = dynamic_cast<QgsRasterRendererWidget *>( mRendererStackedWidget->currentWidget() );
+  auto rendererWidget = dynamic_cast<QgsRasterRendererWidget *>( mRendererStackedWidget->currentWidget() );
   if ( rendererWidget )
   {
     rendererWidget->doComputations();
@@ -1279,14 +1279,14 @@ void QgsRasterLayerProperties::updateDataDefinedButton( QgsPropertyOverrideButto
   if ( button->propertyKey() < 0 )
     return;
 
-  QgsRasterPipe::Property key = static_cast<QgsRasterPipe::Property>( button->propertyKey() );
+  auto key = static_cast<QgsRasterPipe::Property>( button->propertyKey() );
   whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
 }
 
 void QgsRasterLayerProperties::updateProperty()
 {
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsRasterPipe::Property key = static_cast<QgsRasterPipe::Property>( button->propertyKey() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto key = static_cast<QgsRasterPipe::Property>( button->propertyKey() );
   mPropertyCollection.setProperty( key, button->toProperty() );
 }
 

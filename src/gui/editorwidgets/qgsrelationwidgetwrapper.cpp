@@ -39,7 +39,7 @@ QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( const QString &relationEdito
 
 QWidget *QgsRelationWidgetWrapper::createWidget( QWidget *parent )
 {
-  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
+  auto form = qobject_cast<QgsAttributeForm *>( parent );
   if ( form )
     connect( form, &QgsAttributeForm::widgetValueChanged, this, &QgsRelationWidgetWrapper::widgetValueChanged );
 
@@ -154,7 +154,7 @@ void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
 
 void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 {
-  QgsAbstractRelationEditorWidget *w = qobject_cast<QgsAbstractRelationEditorWidget *>( editor );
+  auto w = qobject_cast<QgsAbstractRelationEditorWidget *>( editor );
 
   // if the editor cannot be cast to relation editor, insert a new one
   if ( !w )

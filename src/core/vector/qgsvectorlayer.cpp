@@ -2682,11 +2682,11 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QDomElement optionsElem = cfgElem.childNodes().at( 0 ).toElement();
         QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
         // translate widget configuration strings
-        if ( widgetType == QStringLiteral( "ValueRelation" ) )
+        if ( widgetType == QLatin1String( "ValueRelation" ) )
         {
           optionsMap[ QStringLiteral( "Value" ) ] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), optionsMap[ QStringLiteral( "Value" ) ].toString() );
         }
-        if ( widgetType == QStringLiteral( "ValueMap" ) )
+        if ( widgetType == QLatin1String( "ValueMap" ) )
         {
           if ( optionsMap[ QStringLiteral( "map" ) ].canConvert<QList<QVariant>>() )
           {
@@ -6165,7 +6165,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
   {
     for ( const QgsMapLayerDependency &dep : std::as_const( mDependencies ) )
     {
-      QgsVectorLayer *lyr = static_cast<QgsVectorLayer *>( p->mapLayer( dep.layerId() ) );
+      auto lyr = static_cast<QgsVectorLayer *>( p->mapLayer( dep.layerId() ) );
       if ( !lyr )
         continue;
       disconnect( lyr, &QgsVectorLayer::featureAdded, this, &QgsVectorLayer::emitDataChanged );
@@ -6189,7 +6189,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
   {
     for ( const QgsMapLayerDependency &dep : std::as_const( mDependencies ) )
     {
-      QgsVectorLayer *lyr = static_cast<QgsVectorLayer *>( p->mapLayer( dep.layerId() ) );
+      auto lyr = static_cast<QgsVectorLayer *>( p->mapLayer( dep.layerId() ) );
       if ( !lyr )
         continue;
       connect( lyr, &QgsVectorLayer::featureAdded, this, &QgsVectorLayer::emitDataChanged );

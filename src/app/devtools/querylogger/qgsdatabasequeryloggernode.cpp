@@ -189,7 +189,7 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::toVariant() const
 
   for ( const auto &child : std::as_const( mChildren ) )
   {
-    if ( const QgsDevToolsModelValueNode *valueNode = dynamic_cast<const QgsDevToolsModelValueNode *>( child.get() ) )
+    if ( auto valueNode = dynamic_cast<const QgsDevToolsModelValueNode *>( child.get() ) )
     {
       res.insert( valueNode->key(), valueNode->value() );
     }

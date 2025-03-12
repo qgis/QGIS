@@ -110,7 +110,7 @@ void QgsDirectoryItem::reevaluateMonitoring()
   const QVector<QgsDataItem *> childItems = children();
   for ( QgsDataItem *child : childItems )
   {
-    if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem *>( child ) )
+    if ( auto dirItem = qobject_cast<QgsDirectoryItem *>( child ) )
       dirItem->reevaluateMonitoring();
   }
 
@@ -246,7 +246,7 @@ void QgsDirectoryItem::setMonitoring( Qgis::BrowserDirectoryMonitoring monitorin
   const QVector<QgsDataItem *> childItems = children();
   for ( QgsDataItem *child : childItems )
   {
-    if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem *>( child ) )
+    if ( auto dirItem = qobject_cast<QgsDirectoryItem *>( child ) )
       dirItem->reevaluateMonitoring();
   }
 
@@ -492,7 +492,7 @@ bool QgsDirectoryItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  const QgsDirectoryItem *otherDirItem = qobject_cast< const QgsDirectoryItem * >( other );
+  auto otherDirItem = qobject_cast<const QgsDirectoryItem *>( other );
   if ( !otherDirItem )
     return false;
 

@@ -199,7 +199,7 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
     if ( myLib.load() )
     {
       QFunctionPointer func = myLib.resolve( QStringLiteral( "providerGuiMetadataFactory" ).toLatin1().data() );
-      factory_function *function = reinterpret_cast<factory_function *>( cast_to_fptr( func ) );
+      auto function = reinterpret_cast<factory_function *>( cast_to_fptr( func ) );
       if ( !function )
         continue;
 

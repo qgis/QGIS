@@ -31,7 +31,7 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
   , mNewValue( value )
 {
   QgsPointCloudIndex index = mLayer->index();
-  QgsPointCloudEditingIndex *editIndex = static_cast<QgsPointCloudEditingIndex *>( index.get() );
+  auto editIndex = static_cast<QgsPointCloudEditingIndex *>( index.get() );
 
   if ( editIndex->mEditedNodeData.contains( n ) )
   {
@@ -75,8 +75,8 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::redo()
 
 void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo )
 {
-  QgsPointCloudEditingIndex *editIndex = static_cast<QgsPointCloudEditingIndex *>( mLayer->index().get() );
-  QgsCopcPointCloudIndex *copcIndex = static_cast<QgsCopcPointCloudIndex *>( editIndex->mIndex.get() );
+  auto editIndex = static_cast<QgsPointCloudEditingIndex *>( mLayer->index().get() );
+  auto copcIndex = static_cast<QgsCopcPointCloudIndex *>( editIndex->mIndex.get() );
 
   QByteArray chunkData;
   if ( editIndex->mEditedNodeData.contains( mNode ) )

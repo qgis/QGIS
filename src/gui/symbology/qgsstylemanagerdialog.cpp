@@ -1699,7 +1699,7 @@ bool QgsStyleManagerDialog::editColorRamp()
 
   if ( ramp->type() == QgsGradientColorRamp::typeString() )
   {
-    QgsGradientColorRamp *gradRamp = static_cast<QgsGradientColorRamp *>( ramp.get() );
+    auto gradRamp = static_cast<QgsGradientColorRamp *>( ramp.get() );
     QgsGradientColorRampDialog dlg( *gradRamp, this );
     dlg.setWindowTitle( name );
     if ( isReadOnly() )
@@ -1713,7 +1713,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   }
   else if ( ramp->type() == QgsLimitedRandomColorRamp::typeString() )
   {
-    QgsLimitedRandomColorRamp *randRamp = static_cast<QgsLimitedRandomColorRamp *>( ramp.get() );
+    auto randRamp = static_cast<QgsLimitedRandomColorRamp *>( ramp.get() );
     QgsLimitedRandomColorRampDialog dlg( *randRamp, this );
     dlg.setWindowTitle( name );
     if ( isReadOnly() )
@@ -1727,7 +1727,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   }
   else if ( ramp->type() == QgsColorBrewerColorRamp::typeString() )
   {
-    QgsColorBrewerColorRamp *brewerRamp = static_cast<QgsColorBrewerColorRamp *>( ramp.get() );
+    auto brewerRamp = static_cast<QgsColorBrewerColorRamp *>( ramp.get() );
     QgsColorBrewerColorRampDialog dlg( *brewerRamp, this );
     dlg.setWindowTitle( name );
     if ( isReadOnly() )
@@ -1741,7 +1741,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   }
   else if ( ramp->type() == QgsPresetSchemeColorRamp::typeString() )
   {
-    QgsPresetSchemeColorRamp *presetRamp = static_cast<QgsPresetSchemeColorRamp *>( ramp.get() );
+    auto presetRamp = static_cast<QgsPresetSchemeColorRamp *>( ramp.get() );
     QgsPresetColorRampDialog dlg( *presetRamp, this );
     dlg.setWindowTitle( name );
     if ( isReadOnly() )
@@ -1755,7 +1755,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   }
   else if ( ramp->type() == QgsCptCityColorRamp::typeString() )
   {
-    QgsCptCityColorRamp *cptCityRamp = static_cast<QgsCptCityColorRamp *>( ramp.get() );
+    auto cptCityRamp = static_cast<QgsCptCityColorRamp *>( ramp.get() );
     QgsCptCityColorRampDialog dlg( *cptCityRamp, this );
     dlg.setWindowTitle( name );
     if ( isReadOnly() )
@@ -2253,7 +2253,7 @@ void QgsStyleManagerDialog::populateGroups()
   if ( mBlockGroupUpdates )
     return;
 
-  QStandardItemModel *model = qobject_cast<QStandardItemModel *>( groupTree->model() );
+  auto model = qobject_cast<QStandardItemModel *>( groupTree->model() );
   model->clear();
 
   const bool readOnly = isReadOnly();
@@ -2419,7 +2419,7 @@ int QgsStyleManagerDialog::addTag()
   if ( isReadOnly() )
     return 0;
 
-  QStandardItemModel *model = qobject_cast<QStandardItemModel *>( groupTree->model() );
+  auto model = qobject_cast<QStandardItemModel *>( groupTree->model() );
   QModelIndex index;
   for ( int i = 0; i < groupTree->model()->rowCount(); i++ )
   {
@@ -2471,7 +2471,7 @@ int QgsStyleManagerDialog::addSmartgroup()
   if ( isReadOnly() )
     return 0;
 
-  QStandardItemModel *model = qobject_cast<QStandardItemModel *>( groupTree->model() );
+  auto model = qobject_cast<QStandardItemModel *>( groupTree->model() );
   QModelIndex index;
   for ( int i = 0; i < groupTree->model()->rowCount(); i++ )
   {
@@ -2512,7 +2512,7 @@ void QgsStyleManagerDialog::removeGroup()
   if ( isReadOnly() )
     return;
 
-  QStandardItemModel *model = qobject_cast<QStandardItemModel *>( groupTree->model() );
+  auto model = qobject_cast<QStandardItemModel *>( groupTree->model() );
   QModelIndex index = groupTree->currentIndex();
 
   // do not allow removal of system-defined groupings
@@ -2570,7 +2570,7 @@ void QgsStyleManagerDialog::tagSymbolsAction()
   if ( isReadOnly() )
     return;
 
-  QStandardItemModel *treeModel = qobject_cast<QStandardItemModel *>( groupTree->model() );
+  auto treeModel = qobject_cast<QStandardItemModel *>( groupTree->model() );
 
   if ( mGroupingMode )
   {
@@ -2687,7 +2687,7 @@ void QgsStyleManagerDialog::enableGroupInputs( bool enable )
 
 void QgsStyleManagerDialog::enableItemsForGroupingMode( bool enable )
 {
-  QStandardItemModel *treeModel = qobject_cast<QStandardItemModel *>( groupTree->model() );
+  auto treeModel = qobject_cast<QStandardItemModel *>( groupTree->model() );
   for ( int i = 0; i < treeModel->rowCount(); i++ )
   {
     treeModel->item( i )->setEnabled( enable );
@@ -2856,7 +2856,7 @@ void QgsStyleManagerDialog::editSmartgroupAction()
   if ( isReadOnly() )
     return;
 
-  QStandardItemModel *treeModel = qobject_cast<QStandardItemModel *>( groupTree->model() );
+  auto treeModel = qobject_cast<QStandardItemModel *>( groupTree->model() );
 
   // determine whether it is a valid group
   QModelIndex present = groupTree->currentIndex();

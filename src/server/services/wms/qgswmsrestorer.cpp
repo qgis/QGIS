@@ -38,7 +38,7 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vLayer = qobject_cast<QgsVectorLayer *>( layer );
 
         if ( vLayer )
         {
@@ -55,7 +55,7 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
       }
       case Qgis::LayerType::Raster:
       {
-        QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
+        auto rLayer = qobject_cast<QgsRasterLayer *>( layer );
 
         if ( rLayer && rLayer->renderer() )
         {
@@ -99,7 +99,7 @@ QgsLayerRestorer::~QgsLayerRestorer()
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vLayer = qobject_cast<QgsVectorLayer *>( layer );
 
         if ( vLayer )
         {
@@ -115,7 +115,7 @@ QgsLayerRestorer::~QgsLayerRestorer()
       }
       case Qgis::LayerType::Raster:
       {
-        QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
+        auto rLayer = qobject_cast<QgsRasterLayer *>( layer );
 
         if ( rLayer && rLayer->renderer() )
         {

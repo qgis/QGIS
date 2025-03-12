@@ -64,7 +64,7 @@ void QgsBrowserDockWidget::addFavorite()
   if ( !item )
     return;
 
-  QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item );
+  auto dirItem = qobject_cast<QgsDirectoryItem *>( item );
   if ( !dirItem )
     return;
 
@@ -131,7 +131,7 @@ bool QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
 
   if ( item && item->type() == Qgis::BrowserItemType::Project )
   {
-    QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item );
+    auto projectItem = qobject_cast<QgsProjectItem *>( item );
     if ( projectItem )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -142,7 +142,7 @@ bool QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
   }
   else if ( item && item->type() == Qgis::BrowserItemType::Layer )
   {
-    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+    auto layerItem = qobject_cast<QgsLayerItem *>( item );
     if ( layerItem )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );

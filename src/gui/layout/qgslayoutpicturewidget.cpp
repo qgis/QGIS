@@ -219,7 +219,7 @@ void QgsLayoutPictureWidget::mRotationFromComposerMapCheckBox_stateChanged( int 
   }
   else
   {
-    QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( mComposerMapComboBox->currentItem() );
+    auto map = qobject_cast<QgsLayoutItemMap *>( mComposerMapComboBox->currentItem() );
     mPicture->setLinkedMap( map );
     mPictureRotationSpinBox->setEnabled( false );
     mNorthTypeComboBox->setEnabled( true );
@@ -243,7 +243,7 @@ void QgsLayoutPictureWidget::mapChanged( QgsLayoutItem *item )
     return;
   }
 
-  QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( item );
+  auto map = qobject_cast<QgsLayoutItemMap *>( item );
   if ( !map )
   {
     return;

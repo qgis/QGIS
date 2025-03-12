@@ -124,7 +124,7 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
       const auto constCols = cols;
       for ( const QString &col : constCols )
       {
-        QStandardItemModel *cbm = qobject_cast<QStandardItemModel *>( cb->model() );
+        auto cbm = qobject_cast<QStandardItemModel *>( cb->model() );
         for ( int idx = 0; idx < cbm->rowCount(); idx++ )
         {
           QStandardItem *item = cbm->item( idx, 0 );
@@ -157,7 +157,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   {
     if ( index.column() == QgsPgTableModel::DbtmType )
     {
-      Qgis::WkbType type = static_cast<Qgis::WkbType>( cb->currentData().toInt() );
+      auto type = static_cast<Qgis::WkbType>( cb->currentData().toInt() );
 
       model->setData( index, QgsIconUtils::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != Qgis::WkbType::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select…" ) );
@@ -165,7 +165,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
     }
     else if ( index.column() == QgsPgTableModel::DbtmPkCol )
     {
-      QStandardItemModel *cbm = qobject_cast<QStandardItemModel *>( cb->model() );
+      auto cbm = qobject_cast<QStandardItemModel *>( cb->model() );
       QStringList cols;
       for ( int idx = 0; idx < cbm->rowCount(); idx++ )
       {

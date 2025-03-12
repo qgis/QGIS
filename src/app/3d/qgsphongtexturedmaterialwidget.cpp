@@ -50,7 +50,7 @@ QgsMaterialSettingsWidget *QgsPhongTexturedMaterialWidget::create()
 
 void QgsPhongTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
 {
-  const QgsPhongTexturedMaterialSettings *phongMaterial = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( settings );
+  auto phongMaterial = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( settings );
   if ( !phongMaterial )
     return;
   btnAmbient->setColor( phongMaterial->ambient() );

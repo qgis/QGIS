@@ -219,7 +219,7 @@ namespace QgsWfs
         throw QgsSecurityAccessException( QStringLiteral( "Feature access permission denied" ) );
       }
 #endif
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
       {
         throw QgsRequestNotWellFormedException( QStringLiteral( "TypeName '%1' layer error" ).arg( typeName ) );

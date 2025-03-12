@@ -238,7 +238,7 @@ void QgsImageWarper::destroyGeoToPixelTransform( void *GeoToPixelTransformArg ) 
 
 int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, int nPointCount, double *x, double *y, double *z, int *panSuccess )
 {
-  TransformChain *chain = static_cast<TransformChain *>( pTransformerArg );
+  auto chain = static_cast<TransformChain *>( pTransformerArg );
   if ( !chain )
   {
     return false;
@@ -284,7 +284,7 @@ int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, i
 int CPL_STDCALL QgsImageWarper::updateWarpProgress( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
   Q_UNUSED( pszMessage )
-  QgsFeedback *feedback = static_cast<QgsFeedback *>( pProgressArg );
+  auto feedback = static_cast<QgsFeedback *>( pProgressArg );
   feedback->setProgress( std::min( 100.0, dfComplete * 100.0 ) );
   if ( feedback->isCanceled() )
   {

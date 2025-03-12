@@ -723,7 +723,7 @@ bool QgsCompositionConverter::readPictureXml( QgsLayoutItemPicture *layoutItem, 
   if ( rotationMapId != QLatin1String( "-1" ) )
   {
     // Find uuid for map with given id
-    QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ rotationMapId ] ) );
+    auto mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ rotationMapId ] ) );
     if ( mapInstance )
     {
       layoutItem->setLinkedMap( mapInstance );
@@ -941,7 +941,7 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
     const QString frameMapId = mapOverviewElem.attribute( QStringLiteral( "frameMap" ), QStringLiteral( "-1" ) );
     if ( frameMapId != QLatin1String( "-1" ) && mapId2Uuid.contains( frameMapId ) )
     {
-      QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ frameMapId ] ) );
+      auto mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ frameMapId ] ) );
       if ( mapInstance )
       {
         mapOverview->setLinkedMap( mapInstance );
@@ -1224,7 +1224,7 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
   const QString mapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) );
   if ( mapId != QLatin1String( "-1" ) && mapId2Uuid.contains( mapId ) )
   {
-    QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ mapId ] ) );
+    auto mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ mapId ] ) );
     if ( mapInstance )
     {
       layoutItem->setLinkedMap( mapInstance );
@@ -1249,7 +1249,7 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
   const QString mapId = itemElem.attribute( QStringLiteral( "map" ), QStringLiteral( "-1" ) );
   if ( mapId != QLatin1String( "-1" ) && mapId2Uuid.contains( mapId ) )
   {
-    QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ mapId ] ) );
+    auto mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ mapId ] ) );
     if ( mapInstance )
     {
       layoutItem->setLinkedMap( mapInstance );

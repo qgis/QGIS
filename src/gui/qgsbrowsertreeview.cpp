@@ -188,7 +188,7 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
   const QVector<QgsDataItem *> rootItems = mBrowserModel->rootItems();
   for ( QgsDataItem *item : rootItems )
   {
-    if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
+    if ( auto dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
     {
       initialDirectoryItemCandidates << dirItem;
     }
@@ -197,7 +197,7 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
       const QVector<QgsDataItem *> favoriteChildren = favoritesItem->children();
       for ( QgsDataItem *favoriteChild : favoriteChildren )
       {
-        if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( favoriteChild ) )
+        if ( auto dirItem = qobject_cast<QgsDirectoryItem *>( favoriteChild ) )
         {
           initialDirectoryItemCandidates << dirItem;
         }
@@ -263,7 +263,7 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
     const QVector<QgsDataItem *> children = currentDirectoryItem->children();
     for ( QgsDataItem *child : children )
     {
-      if ( QgsDirectoryItem *childDirectoryItem = qobject_cast<QgsDirectoryItem *>( child ) )
+      if ( auto childDirectoryItem = qobject_cast<QgsDirectoryItem *>( child ) )
       {
         if ( childDirectoryItem->dirPath() == thisPath )
         {
@@ -293,7 +293,7 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
   for ( QgsDirectoryItem *i : std::as_const( pathItems ) )
   {
     QModelIndex index = mBrowserModel->findItem( i );
-    if ( QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>( model() ) )
+    if ( auto proxyModel = qobject_cast<QSortFilterProxyModel *>( model() ) )
     {
       index = proxyModel->mapFromSource( index );
     }
@@ -314,7 +314,7 @@ bool QgsBrowserTreeView::setSelectedItem( QgsDataItem *item )
   if ( !index.isValid() )
     return false;
 
-  if ( QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>( model() ) )
+  if ( auto proxyModel = qobject_cast<QSortFilterProxyModel *>( model() ) )
   {
     index = proxyModel->mapFromSource( index );
   }

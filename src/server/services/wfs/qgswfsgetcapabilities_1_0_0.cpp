@@ -390,7 +390,7 @@ namespace QgsWfs
         operationsElement.appendChild( queryElement );
         if ( wfstUpdateLayersId.contains( layer->id() ) || wfstInsertLayersId.contains( layer->id() ) || wfstDeleteLayersId.contains( layer->id() ) )
         {
-          QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+          auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
           QgsVectorDataProvider *provider = vlayer->dataProvider();
           if ( ( provider->capabilities() & Qgis::VectorProviderCapability::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
           {

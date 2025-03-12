@@ -150,7 +150,7 @@ void QgsMesh3DSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
   if ( meshLayer )
   {
     mDatasetGroupListModel->syncToLayer( meshLayer );
-    QgsMeshLayer3DRenderer *renderer = static_cast<QgsMeshLayer3DRenderer *>( meshLayer->renderer3D() );
+    auto renderer = static_cast<QgsMeshLayer3DRenderer *>( meshLayer->renderer3D() );
     if ( renderer && renderer->type() == QLatin1String( "mesh" ) )
     {
       if ( renderer->symbol() && renderer->symbol()->type() == QLatin1String( "mesh" ) )

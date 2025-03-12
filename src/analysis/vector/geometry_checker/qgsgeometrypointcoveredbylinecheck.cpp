@@ -30,7 +30,7 @@ void QgsGeometryPointCoveredByLineCheck::collectErrors( const QMap<QString, QgsF
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
-      const QgsPoint *point = dynamic_cast<const QgsPoint *>( QgsGeometryCheckerUtils::getGeomPart( geom, iPart ) );
+      auto point = dynamic_cast<const QgsPoint *>( QgsGeometryCheckerUtils::getGeomPart( geom, iPart ) );
       if ( !point )
       {
         // Should not happen
@@ -45,7 +45,7 @@ void QgsGeometryPointCoveredByLineCheck::collectErrors( const QMap<QString, QgsF
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
         for ( int jPart = 0, mParts = testGeom->partCount(); jPart < mParts; ++jPart )
         {
-          const QgsLineString *testLine = dynamic_cast<const QgsLineString *>( QgsGeometryCheckerUtils::getGeomPart( testGeom, jPart ) );
+          auto testLine = dynamic_cast<const QgsLineString *>( QgsGeometryCheckerUtils::getGeomPart( testGeom, jPart ) );
           if ( !testLine )
           {
             continue;

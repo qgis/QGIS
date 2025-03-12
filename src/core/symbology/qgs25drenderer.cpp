@@ -213,7 +213,7 @@ QgsFillSymbolLayer *Qgs25DRenderer::wallLayer() const
 
 QgsOuterGlowEffect *Qgs25DRenderer::glowEffect() const
 {
-  QgsEffectStack *stack = static_cast<QgsEffectStack *>( mSymbol->symbolLayer( 0 )->paintEffect() );
+  auto stack = static_cast<QgsEffectStack *>( mSymbol->symbolLayer( 0 )->paintEffect() );
   return static_cast<QgsOuterGlowEffect *>( stack->effect( 0 ) );
 }
 

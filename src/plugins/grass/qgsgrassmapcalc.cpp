@@ -280,7 +280,7 @@ void QgsGrassMapcalc::mousePressEvent( QMouseEvent *e )
       {
         --it;
 
-        if ( QgsGrassMapcalcConnector *con = dynamic_cast<QgsGrassMapcalcConnector *>( *it ) )
+        if ( auto con = dynamic_cast<QgsGrassMapcalcConnector *>( *it ) )
         {
           mConnector = con;
           mConnector->setSelected( true );
@@ -491,7 +491,7 @@ QStringList QgsGrassMapcalc::checkRegion()
   {
     --it;
 
-    QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it );
+    auto obj = dynamic_cast<QgsGrassMapcalcObject *>( *it );
     if ( !obj )
       continue;
 
@@ -546,7 +546,7 @@ bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, QgsCoordinateRefere
   {
     --it;
 
-    QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it );
+    auto obj = dynamic_cast<QgsGrassMapcalcObject *>( *it );
     if ( !obj )
       continue;
 
@@ -881,7 +881,7 @@ void QgsGrassMapcalc::growCanvas( int left, int right, int top, int bottom )
   {
     --it;
 
-    if ( QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it ) )
+    if ( auto obj = dynamic_cast<QgsGrassMapcalcObject *>( *it ) )
     {
       QPoint p = obj->center();
       obj->setCenter( p.x() + left, p.y() + top );
@@ -1039,7 +1039,7 @@ void QgsGrassMapcalc::save()
   {
     --it;
 
-    if ( QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it ) )
+    if ( auto obj = dynamic_cast<QgsGrassMapcalcObject *>( *it ) )
     {
       QString type;
       if ( obj->type() == QgsGrassMapcalcObject::Map )

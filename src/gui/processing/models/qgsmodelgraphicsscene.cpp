@@ -289,7 +289,7 @@ QList<QgsModelComponentGraphicItem *> QgsModelGraphicsScene::selectedComponentIt
   const QList<QGraphicsItem *> graphicsItemList = selectedItems();
   for ( QGraphicsItem *item : graphicsItemList )
   {
-    if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+    if ( auto componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
     {
       componentItemList.push_back( componentItem );
     }
@@ -305,7 +305,7 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::componentItemAt( QPointF po
 
   for ( QGraphicsItem *graphicsItem : itemList )
   {
-    if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( graphicsItem ) )
+    if ( auto componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( graphicsItem ) )
     {
       return componentItem;
     }
@@ -325,7 +325,7 @@ void QgsModelGraphicsScene::selectAll()
   const QList<QGraphicsItem *> itemList = items();
   for ( QGraphicsItem *graphicsItem : itemList )
   {
-    if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( graphicsItem ) )
+    if ( auto componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( graphicsItem ) )
     {
       componentItem->setSelected( true );
       if ( !focusedItem )
@@ -343,7 +343,7 @@ void QgsModelGraphicsScene::deselectAll()
   const QList<QGraphicsItem *> selectedItemList = selectedItems();
   for ( QGraphicsItem *item : selectedItemList )
   {
-    if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+    if ( auto componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
     {
       componentItem->setSelected( false );
     }

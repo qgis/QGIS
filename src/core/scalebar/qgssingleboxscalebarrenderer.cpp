@@ -160,7 +160,7 @@ void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
 
 bool QgsSingleBoxScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings &settings ) const
 {
-  QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( settings.fillSymbol()->symbolLayers().at( 0 ) );
+  auto fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( settings.fillSymbol()->symbolLayers().at( 0 ) );
 
   // restore the fill symbols by default
   if ( fill && fill->brushStyle() == Qt::NoBrush )

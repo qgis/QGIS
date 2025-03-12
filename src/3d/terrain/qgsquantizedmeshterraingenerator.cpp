@@ -349,7 +349,7 @@ bool QgsQuantizedMeshTerrainGenerator::setLayer( QgsTiledSceneLayer *layer )
   }
 
   mLayer = layer;
-  const QgsQuantizedMeshDataProvider *provider = qobject_cast<const QgsQuantizedMeshDataProvider *>( layer->dataProvider() );
+  auto provider = qobject_cast<const QgsQuantizedMeshDataProvider *>( layer->dataProvider() );
   if ( !provider )
   {
     QgsDebugError( "QgsQuantizedMeshTerrainGenerator provided with non-QM layer" );

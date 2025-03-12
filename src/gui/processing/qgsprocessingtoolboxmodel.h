@@ -47,7 +47,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
     if ( sipCpp->inherits( "QgsProcessingToolboxModelNode" ) )
     {
       sipType = sipType_QgsProcessingToolboxModelNode;
-      QgsProcessingToolboxModelNode *node = qobject_cast<QgsProcessingToolboxModelNode *>( sipCpp );
+      auto node = qobject_cast<QgsProcessingToolboxModelNode *>( sipCpp );
       if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Provider )
         sipType = sipType_QgsProcessingToolboxModelProviderNode;
       else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Group )

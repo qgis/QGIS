@@ -312,7 +312,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
                       std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
                       std::function<bool( double, double, double, double, double )> comparator2D ) const
     {
-      const QgsLineString *otherLine = qgsgeometry_cast< const QgsLineString * >( &other );
+      auto otherLine = qgsgeometry_cast<const QgsLineString *>( &other );
       if ( !otherLine )
         return false;
 
@@ -1186,7 +1186,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Calculates the minimal 3D bounding box for the geometry.
      * \see calculateBoundingBox()
      * \since QGIS 3.26
-     * \deprecated QGIS 3.34 use calculateBoundingBox3D() instead
+     * \deprecated QGIS 3.34. Use calculateBoundingBox3D() instead.
      */
     Q_DECL_DEPRECATED QgsBox3D calculateBoundingBox3d() const SIP_DEPRECATED;
 

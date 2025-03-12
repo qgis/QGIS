@@ -350,7 +350,7 @@ bool QgsWMSConnectionItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  const QgsWMSConnectionItem *otherConnectionItem = qobject_cast<const QgsWMSConnectionItem *>( other );
+  auto otherConnectionItem = qobject_cast<const QgsWMSConnectionItem *>( other );
   if ( !otherConnectionItem )
   {
     return false;
@@ -529,7 +529,7 @@ bool QgsWMSLayerCollectionItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  const QgsWMSLayerCollectionItem *otherCollectionItem = qobject_cast<const QgsWMSLayerCollectionItem *>( other );
+  auto otherCollectionItem = qobject_cast<const QgsWMSLayerCollectionItem *>( other );
   if ( !otherCollectionItem )
   {
     return false;
@@ -608,7 +608,7 @@ bool QgsWMSLayerItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  const QgsWMSLayerItem *otherLayer = qobject_cast<const QgsWMSLayerItem *>( other );
+  auto otherLayer = qobject_cast<const QgsWMSLayerItem *>( other );
   if ( !otherLayer )
   {
     return false;

@@ -68,7 +68,7 @@ void QgsTiledSceneWireframeRendererWidget::emitWidgetChanged()
 void QgsTiledSceneWireframeRendererWidget::setFromRenderer( const QgsTiledSceneRenderer *renderer )
 {
   mBlockChangedSignal = true;
-  if ( const QgsTiledSceneWireframeRenderer *wireframeRenderer = dynamic_cast<const QgsTiledSceneWireframeRenderer *>( renderer ) )
+  if ( auto wireframeRenderer = dynamic_cast<const QgsTiledSceneWireframeRenderer *>( renderer ) )
   {
     mFillSymbolButton->setSymbol( wireframeRenderer->fillSymbol()->clone() );
     mLineSymbolButton->setSymbol( wireframeRenderer->lineSymbol()->clone() );

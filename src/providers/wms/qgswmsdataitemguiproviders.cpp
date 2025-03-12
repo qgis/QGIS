@@ -44,7 +44,7 @@ static QWidget *_paramWidget( QgsDataItem *root )
 
 void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsWMSConnectionItem *connItem = qobject_cast<QgsWMSConnectionItem *>( item ) )
+  if ( auto connItem = qobject_cast<QgsWMSConnectionItem *>( item ) )
   {
     const QList<QgsWMSConnectionItem *> wmsConnectionItems = QgsDataItem::filteredItems<QgsWMSConnectionItem>( selection );
 
@@ -72,7 +72,7 @@ void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     menu->addAction( actionDelete );
   }
 
-  if ( QgsWMSRootItem *rootItem = qobject_cast<QgsWMSRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsWMSRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -177,7 +177,7 @@ void QgsWmsDataItemGuiProvider::loadConnections( QgsDataItem *item )
 
 void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsXyzLayerItem *layerItem = qobject_cast<QgsXyzLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsXyzLayerItem *>( item ) )
   {
     const QList<QgsXyzLayerItem *> xyzConnectionItems = QgsDataItem::filteredItems<QgsXyzLayerItem>( selection );
 
@@ -199,7 +199,7 @@ void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     menu->addAction( actionDelete );
   }
 
-  if ( QgsXyzTileRootItem *rootItem = qobject_cast<QgsXyzTileRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsXyzTileRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );

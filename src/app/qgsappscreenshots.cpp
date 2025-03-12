@@ -273,7 +273,7 @@ void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
   Q_ASSERT( idx >= 0 );
   dlg->mRendererDialog->cboRenderers->setCurrentIndex( idx );
   QCoreApplication::processEvents();
-  Qgs25DRendererWidget *w = qobject_cast<Qgs25DRendererWidget *>( dlg->mRendererDialog->mActiveWidget );
+  auto w = qobject_cast<Qgs25DRendererWidget *>( dlg->mRendererDialog->mActiveWidget );
   w->mHeightWidget->setField( QStringLiteral( "height" ) );
   Q_ASSERT( w->mHeightWidget->expression() == QLatin1String( "\"height\"" ) );
   QCoreApplication::processEvents();

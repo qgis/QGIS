@@ -1135,7 +1135,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
     QgsProperty ddSize;
     for ( const QgsRendererCategory &category : mCategories )
     {
-      const QgsMarkerSymbol *symbol = static_cast<const QgsMarkerSymbol *>( category.symbol() );
+      auto symbol = static_cast<const QgsMarkerSymbol *>( category.symbol() );
       if ( ddSize )
       {
         QgsProperty sSize( symbol->dataDefinedSize() );
@@ -1305,7 +1305,7 @@ void QgsCategorizedSymbolRenderer::updateColorRamp( QgsColorRamp *ramp )
   double num = mCategories.count() - 1;
   double count = 0;
 
-  QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp );
+  auto randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp );
   if ( randomRamp )
   {
     //ramp is a random colors ramp, so inform it of the total number of required colors
@@ -1392,7 +1392,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
   }
   else if ( renderer->type() == QLatin1String( "graduatedSymbol" ) )
   {
-    const QgsGraduatedSymbolRenderer *graduatedSymbolRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer );
+    auto graduatedSymbolRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer );
     if ( graduatedSymbolRenderer )
     {
       r.reset( new QgsCategorizedSymbolRenderer( QString(), QgsCategoryList() ) );
@@ -1407,19 +1407,19 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
   }
   else if ( renderer->type() == QLatin1String( "pointDisplacement" ) || renderer->type() == QLatin1String( "pointCluster" ) )
   {
-    const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer );
+    auto pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer );
     if ( pointDistanceRenderer )
       r.reset( convertFromRenderer( pointDistanceRenderer->embeddedRenderer() ) );
   }
   else if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {
-    const QgsInvertedPolygonRenderer *invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer *>( renderer );
+    auto invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer *>( renderer );
     if ( invertedPolygonRenderer )
       r.reset( convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() ) );
   }
   else if ( renderer->type() == QLatin1String( "embeddedSymbol" ) && layer )
   {
-    const QgsEmbeddedSymbolRenderer *embeddedRenderer = dynamic_cast<const QgsEmbeddedSymbolRenderer *>( renderer );
+    auto embeddedRenderer = dynamic_cast<const QgsEmbeddedSymbolRenderer *>( renderer );
     QgsCategoryList categories;
     QgsFeatureRequest req;
     req.setFlags( Qgis::FeatureRequestFlag::EmbeddedSymbols | Qgis::FeatureRequestFlag::NoGeometry );

@@ -210,7 +210,7 @@ json QgsMultiPoint::asJsonObject( int precision ) const
   };
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
-    const QgsPoint *point = static_cast<const QgsPoint *>( geom );
+    auto point = static_cast<const QgsPoint *>( geom );
     if ( point->is3D() )
       j[ "coordinates" ].push_back( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ), qgsRound( point->z(), precision ) } );
     else
@@ -325,7 +325,7 @@ void QgsMultiPoint::filterVertices( const std::function<bool ( const QgsPoint & 
   mGeometries.erase( std::remove_if( mGeometries.begin(), mGeometries.end(), // clazy:exclude=detaching-member
                                      [&filter]( const QgsAbstractGeometry * part )
   {
-    if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( part ) )
+    if ( auto point = qgsgeometry_cast<const QgsPoint *>( part ) )
     {
       if ( !filter( *point ) )
       {

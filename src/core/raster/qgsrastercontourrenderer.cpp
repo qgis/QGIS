@@ -126,7 +126,7 @@ struct ContourWriterData
 CPLErr _rasterContourWriter( double dfLevel, int nPoints, double *padfX, double *padfY, void *ptr )
 {
   Q_UNUSED( dfLevel )
-  ContourWriterData *crData = static_cast<ContourWriterData *>( ptr );
+  auto crData = static_cast<ContourWriterData *>( ptr );
   QPolygonF polygon( nPoints );
   QPointF *d = polygon.data();
   for ( int i = 0; i < nPoints; ++i )

@@ -76,7 +76,7 @@ void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
 
 void QgsGpsMarker::setMarkerRotation( double rotation )
 {
-  QgsMarkerSymbol *renderedMarker = qgis::down_cast<QgsMarkerSymbol *>( symbol() );
+  auto renderedMarker = qgis::down_cast<QgsMarkerSymbol *>( symbol() );
   if ( !settingRotateLocationMarker->value() )
   {
     renderedMarker->setAngle( mMarkerSymbol->angle() );

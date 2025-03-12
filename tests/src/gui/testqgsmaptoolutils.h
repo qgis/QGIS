@@ -35,7 +35,7 @@ class TestQgsMapToolAdvancedDigitizingUtils
     QSet<QgsFeatureId> existingFeatureIds()
     {
       QSet<QgsFeatureId> fids;
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mMapTool->canvas()->currentLayer() );
+      auto vl = qobject_cast<QgsVectorLayer *>( mMapTool->canvas()->currentLayer() );
 
       if ( vl )
       {
@@ -136,7 +136,7 @@ class TestQgsMapToolUtils
     QSet<QgsFeatureId> existingFeatureIds()
     {
       QSet<QgsFeatureId> fids;
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mMapTool->canvas()->currentLayer() );
+      auto vl = qobject_cast<QgsVectorLayer *>( mMapTool->canvas()->currentLayer() );
 
       if ( vl )
       {

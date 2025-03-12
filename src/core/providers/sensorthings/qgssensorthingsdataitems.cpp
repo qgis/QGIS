@@ -64,7 +64,7 @@ QgsSensorThingsConnectionItem::QgsSensorThingsConnectionItem( QgsDataItem *paren
 
 bool QgsSensorThingsConnectionItem::equal( const QgsDataItem *other )
 {
-  const QgsSensorThingsConnectionItem *o = qobject_cast<const QgsSensorThingsConnectionItem *>( other );
+  auto o = qobject_cast<const QgsSensorThingsConnectionItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
@@ -131,7 +131,7 @@ QgsSensorThingsEntityContainerItem::QgsSensorThingsEntityContainerItem( QgsDataI
 
 bool QgsSensorThingsEntityContainerItem::equal( const QgsDataItem *other )
 {
-  const QgsSensorThingsEntityContainerItem *o = qobject_cast<const QgsSensorThingsEntityContainerItem *>( other );
+  auto o = qobject_cast<const QgsSensorThingsEntityContainerItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 

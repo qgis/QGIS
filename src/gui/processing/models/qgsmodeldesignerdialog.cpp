@@ -966,7 +966,7 @@ void QgsModelDesignerDialog::runSelectedSteps()
   const QList<QgsModelComponentGraphicItem *> items = mScene->selectedComponentItems();
   for ( QgsModelComponentGraphicItem *item : items )
   {
-    if ( QgsProcessingModelChildAlgorithm *childAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( item->component() ) )
+    if ( auto childAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( item->component() ) )
     {
       children.insert( childAlgorithm->childId() );
     }

@@ -52,7 +52,7 @@ QgsAbstractSensor *QgsTcpSocketSensorWidget::createSensor()
 
 bool QgsTcpSocketSensorWidget::updateSensor( QgsAbstractSensor *sensor )
 {
-  QgsTcpSocketSensor *s = dynamic_cast<QgsTcpSocketSensor *>( sensor );
+  auto s = dynamic_cast<QgsTcpSocketSensor *>( sensor );
   if ( !s )
     return false;
 
@@ -64,7 +64,7 @@ bool QgsTcpSocketSensorWidget::updateSensor( QgsAbstractSensor *sensor )
 
 bool QgsTcpSocketSensorWidget::setSensor( QgsAbstractSensor *sensor )
 {
-  QgsTcpSocketSensor *ts = dynamic_cast<QgsTcpSocketSensor *>( sensor );
+  auto ts = dynamic_cast<QgsTcpSocketSensor *>( sensor );
   if ( ts )
   {
     mHostNameLineEdit->setText( ts->hostName() );
@@ -72,7 +72,7 @@ bool QgsTcpSocketSensorWidget::setSensor( QgsAbstractSensor *sensor )
     return true;
   }
 
-  QgsUdpSocketSensor *us = dynamic_cast<QgsUdpSocketSensor *>( sensor );
+  auto us = dynamic_cast<QgsUdpSocketSensor *>( sensor );
   if ( us )
   {
     mHostNameLineEdit->setText( us->hostName() );
@@ -104,7 +104,7 @@ QgsAbstractSensor *QgsUdpSocketSensorWidget::createSensor()
 
 bool QgsUdpSocketSensorWidget::updateSensor( QgsAbstractSensor *sensor )
 {
-  QgsUdpSocketSensor *s = dynamic_cast<QgsUdpSocketSensor *>( sensor );
+  auto s = dynamic_cast<QgsUdpSocketSensor *>( sensor );
   if ( !s )
     return false;
 
@@ -116,7 +116,7 @@ bool QgsUdpSocketSensorWidget::updateSensor( QgsAbstractSensor *sensor )
 
 bool QgsUdpSocketSensorWidget::setSensor( QgsAbstractSensor *sensor )
 {
-  QgsTcpSocketSensor *ts = dynamic_cast<QgsTcpSocketSensor *>( sensor );
+  auto ts = dynamic_cast<QgsTcpSocketSensor *>( sensor );
   if ( ts )
   {
     mHostNameLineEdit->setText( ts->hostName() );
@@ -124,7 +124,7 @@ bool QgsUdpSocketSensorWidget::setSensor( QgsAbstractSensor *sensor )
     return true;
   }
 
-  QgsUdpSocketSensor *us = dynamic_cast<QgsUdpSocketSensor *>( sensor );
+  auto us = dynamic_cast<QgsUdpSocketSensor *>( sensor );
   if ( us )
   {
     mHostNameLineEdit->setText( us->hostName() );
@@ -204,7 +204,7 @@ QgsAbstractSensor *QgsSerialPortSensorWidget::createSensor()
 
 bool QgsSerialPortSensorWidget::updateSensor( QgsAbstractSensor *sensor )
 {
-  QgsSerialPortSensor *s = dynamic_cast<QgsSerialPortSensor *>( sensor );
+  auto s = dynamic_cast<QgsSerialPortSensor *>( sensor );
   if ( !s )
     return false;
 
@@ -217,7 +217,7 @@ bool QgsSerialPortSensorWidget::updateSensor( QgsAbstractSensor *sensor )
 
 bool QgsSerialPortSensorWidget::setSensor( QgsAbstractSensor *sensor )
 {
-  QgsSerialPortSensor *s = dynamic_cast<QgsSerialPortSensor *>( sensor );
+  auto s = dynamic_cast<QgsSerialPortSensor *>( sensor );
   if ( !s )
     return false;
 

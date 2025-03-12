@@ -168,7 +168,7 @@ void QgsTextEditWrapper::initWidget( QWidget *editor )
       defVal = QgsApplication::nullRepresentation();
     }
 
-    QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit *>( mLineEdit );
+    auto fle = qobject_cast<QgsFilterLineEdit *>( mLineEdit );
     if ( field().type() == QMetaType::Type::Int || field().type() == QMetaType::Type::Double || field().type() == QMetaType::Type::LongLong || field().type() == QMetaType::Type::QDate )
     {
       mPlaceholderText = defVal.toString();

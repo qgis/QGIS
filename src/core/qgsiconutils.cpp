@@ -120,7 +120,7 @@ QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
       }
       case Qgis::LayerType::Plugin:
       {
-        if ( const QgsPluginLayer *pl = qobject_cast<const QgsPluginLayer *>( layer ) )
+        if ( auto pl = qobject_cast<const QgsPluginLayer *>( layer ) )
         {
           const QIcon icon = pl->icon();
           if ( !icon.isNull() )
@@ -131,7 +131,7 @@ QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
       }
       case Qgis::LayerType::Vector:
       {
-        const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer );
+        auto vl = qobject_cast<const QgsVectorLayer *>( layer );
         if ( !vl )
         {
           return QIcon();

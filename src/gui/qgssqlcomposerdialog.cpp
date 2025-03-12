@@ -272,7 +272,7 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
   const QgsSQLStatement sql( mQueryEdit->text() );
   if ( sql.hasParserError() )
     return;
-  const QgsSQLStatement::NodeSelect *nodeSelect = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
+  auto nodeSelect = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
   if ( !nodeSelect )
     return;
   mDistinct = nodeSelect->distinct();

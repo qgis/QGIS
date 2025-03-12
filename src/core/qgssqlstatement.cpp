@@ -408,9 +408,9 @@ bool QgsSQLStatement::NodeBinaryOperator::leftAssociative() const
 
 QString QgsSQLStatement::NodeBinaryOperator::dump() const
 {
-  QgsSQLStatement::NodeBinaryOperator *lOp = dynamic_cast<QgsSQLStatement::NodeBinaryOperator *>( mOpLeft );
-  QgsSQLStatement::NodeBinaryOperator *rOp = dynamic_cast<QgsSQLStatement::NodeBinaryOperator *>( mOpRight );
-  QgsSQLStatement::NodeUnaryOperator *ruOp = dynamic_cast<QgsSQLStatement::NodeUnaryOperator *>( mOpRight );
+  auto lOp = dynamic_cast<QgsSQLStatement::NodeBinaryOperator *>( mOpLeft );
+  auto rOp = dynamic_cast<QgsSQLStatement::NodeBinaryOperator *>( mOpRight );
+  auto ruOp = dynamic_cast<QgsSQLStatement::NodeUnaryOperator *>( mOpRight );
 
   QString rdump( mOpRight->dump() );
 

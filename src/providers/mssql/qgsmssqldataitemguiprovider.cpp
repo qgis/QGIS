@@ -38,7 +38,7 @@
 
 void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsMssqlRootItem *rootItem = qobject_cast<QgsMssqlRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsMssqlRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -103,7 +103,7 @@ void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
     menu->addAction( importVectorAction );
     const QString destinationSchema = schemaItem->name();
-    QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( schemaItem->parent() );
+    auto connItem = qobject_cast<QgsMssqlConnectionItem *>( schemaItem->parent() );
     QObject::connect( importVectorAction, &QAction::triggered, item, [connItem, context, destinationSchema, this] { handleImportVector( connItem, destinationSchema, context ); } );
 
     QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
@@ -128,9 +128,9 @@ void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
 
 bool QgsMssqlDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
-  if ( QgsMssqlLayerItem *layerItem = qobject_cast<QgsMssqlLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsMssqlLayerItem *>( item ) )
   {
-    QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( layerItem->parent() ? layerItem->parent()->parent() : nullptr );
+    auto connItem = qobject_cast<QgsMssqlConnectionItem *>( layerItem->parent() ? layerItem->parent()->parent() : nullptr );
     const QgsMssqlLayerProperty &layerInfo = layerItem->layerInfo();
     const QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
 
@@ -171,13 +171,13 @@ bool QgsMssqlDataItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiC
 
 bool QgsMssqlDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction )
 {
-  if ( QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( item ) )
+  if ( auto connItem = qobject_cast<QgsMssqlConnectionItem *>( item ) )
   {
     return handleDrop( connItem, data, QString(), context );
   }
   else if ( QgsMssqlSchemaItem *schemaItem = qobject_cast<QgsMssqlSchemaItem *>( item ) )
   {
-    QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( schemaItem->parent() );
+    auto connItem = qobject_cast<QgsMssqlConnectionItem *>( schemaItem->parent() );
     if ( !connItem )
       return false;
 

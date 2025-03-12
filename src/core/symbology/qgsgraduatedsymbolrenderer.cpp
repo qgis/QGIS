@@ -773,7 +773,7 @@ QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems() const
     QgsProperty ddSize;
     for ( const QgsRendererRange &range : mRanges )
     {
-      const QgsMarkerSymbol *symbol = static_cast<const QgsMarkerSymbol *>( range.symbol() );
+      auto symbol = static_cast<const QgsMarkerSymbol *>( range.symbol() );
       if ( ddSize )
       {
         QgsProperty sSize( symbol->dataDefinedSize() );
@@ -1301,7 +1301,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
   }
   else if ( renderer->type() == QLatin1String( "categorizedSymbol" ) )
   {
-    const QgsCategorizedSymbolRenderer *categorizedSymbolRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer );
+    auto categorizedSymbolRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer );
     if ( categorizedSymbolRenderer )
     {
       r = std::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
@@ -1319,13 +1319,13 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
   }
   else if ( renderer->type() == QLatin1String( "pointDisplacement" ) || renderer->type() == QLatin1String( "pointCluster" ) )
   {
-    const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer );
+    auto pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer );
     if ( pointDistanceRenderer )
       r.reset( convertFromRenderer( pointDistanceRenderer->embeddedRenderer() ) );
   }
   else if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {
-    const QgsInvertedPolygonRenderer *invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer *>( renderer );
+    auto invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer *>( renderer );
     if ( invertedPolygonRenderer )
       r.reset( convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() ) );
   }

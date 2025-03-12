@@ -156,7 +156,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
 
   if ( mLineEdit )
   {
-    QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit *>( editor );
+    auto fle = qobject_cast<QgsFilterLineEdit *>( editor );
     if ( fle )
     {
       fle->setNullValue( QgsApplication::nullRepresentation() );

@@ -28,7 +28,7 @@ QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QO
 {
   mPointColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 
-  if ( QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( parent ) )
+  if ( auto pcLayer = qobject_cast<QgsPointCloudLayer *>( parent ) )
   {
     connect( pcLayer, &QgsPointCloudLayer::rendererChanged, this, [this]
     {
@@ -124,7 +124,7 @@ bool QgsPointCloudLayerElevationProperties::isVisibleInZRange( const QgsDoubleRa
 
 QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLayer *layer ) const
 {
-  if ( QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( layer ) )
+  if ( auto pcLayer = qobject_cast<QgsPointCloudLayer *>( layer ) )
   {
     if ( pcLayer->dataProvider() )
     {

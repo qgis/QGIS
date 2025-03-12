@@ -50,7 +50,7 @@ QgsProcessingToolboxModelGroupNode *QgsProcessingToolboxModelNode::getChildGroup
   {
     if ( node->nodeType() == NodeType::Group )
     {
-      QgsProcessingToolboxModelGroupNode *groupNode = qobject_cast<QgsProcessingToolboxModelGroupNode *>( node );
+      auto groupNode = qobject_cast<QgsProcessingToolboxModelGroupNode *>( node );
       if ( groupNode && groupNode->id() == groupId )
         return groupNode;
     }
@@ -429,7 +429,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
     isFavoriteNode = node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Favorite;
 
   QgsProcessingProvider *provider = providerForIndex( index );
-  QgsProcessingToolboxModelGroupNode *groupNode = qobject_cast<QgsProcessingToolboxModelGroupNode *>( index2node( index ) );
+  auto groupNode = qobject_cast<QgsProcessingToolboxModelGroupNode *>( index2node( index ) );
   const QgsProcessingAlgorithm *algorithm = algorithmForIndex( index );
 
   switch ( role )
@@ -885,8 +885,8 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
 
 bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-  QgsProcessingToolboxModelNode::NodeType leftType = static_cast<QgsProcessingToolboxModelNode::NodeType>( sourceModel()->data( left, static_cast<int>( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
-  QgsProcessingToolboxModelNode::NodeType rightType = static_cast<QgsProcessingToolboxModelNode::NodeType>( sourceModel()->data( right, static_cast<int>( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
+  auto leftType = static_cast<QgsProcessingToolboxModelNode::NodeType>( sourceModel()->data( left, static_cast<int>( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
+  auto rightType = static_cast<QgsProcessingToolboxModelNode::NodeType>( sourceModel()->data( right, static_cast<int>( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
 
   if ( leftType == QgsProcessingToolboxModelNode::NodeType::Recent )
     return true;

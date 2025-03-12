@@ -88,7 +88,7 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
         if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Raster )
           return false;
 
-        QgsRasterLayer *rasterLayer = static_cast<QgsRasterLayer *>( mapLayer );
+        auto rasterLayer = static_cast<QgsRasterLayer *>( mapLayer );
 
         if ( !rasterLayer )
           return false;

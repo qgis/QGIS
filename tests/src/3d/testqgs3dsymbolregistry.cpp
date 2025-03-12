@@ -87,7 +87,7 @@ void TestQgs3DSymbolRegistry::metadata()
   //test creating symbol from metadata
   const std::unique_ptr<QgsAbstract3DSymbol> symbol( metadata.create() );
   QVERIFY( symbol );
-  Dummy3DSymbol *dummySymbol = dynamic_cast<Dummy3DSymbol *>( symbol.get() );
+  auto dummySymbol = dynamic_cast<Dummy3DSymbol *>( symbol.get() );
   QVERIFY( dummySymbol );
 }
 
@@ -148,7 +148,7 @@ void TestQgs3DSymbolRegistry::createSymbol()
   std::unique_ptr<QgsAbstract3DSymbol> symbol( registry->createSymbol( QStringLiteral( "Dummy" ) ) );
 
   QVERIFY( symbol.get() );
-  Dummy3DSymbol *dummySymbol = dynamic_cast<Dummy3DSymbol *>( symbol.get() );
+  auto dummySymbol = dynamic_cast<Dummy3DSymbol *>( symbol.get() );
   QVERIFY( dummySymbol );
 
   //try creating a bad symbol

@@ -213,7 +213,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
       {
         continue;
       }
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
       {
         QgsDebugError( QStringLiteral( "Failed to cast to vector layer" ) );
@@ -422,7 +422,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
 #if 0
     QgsDebugError( QStringLiteral( "Undoing and removing failed command from layer's undo stack" ) );
     int lastCmdIndx = vlayer->undoStack()->count();
-    const QgsUndoCommand *lastCmd = qobject_cast<const QgsUndoCommand *>( vlayer->undoStack()->command( lastCmdIndx ) );
+    auto lastCmd = qobject_cast<const QgsUndoCommand *>( vlayer->undoStack()->command( lastCmdIndx ) );
     if ( lastCmd )
     {
       vlayer->undoEditCommand( lastCmd );

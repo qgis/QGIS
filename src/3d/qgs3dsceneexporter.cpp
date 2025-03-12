@@ -201,7 +201,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
     const QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
     for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
     {
-      Qt3DCore::QEntity *parentEntity = qobject_cast<Qt3DCore::QEntity *>( renderer->parent() );
+      auto parentEntity = qobject_cast<Qt3DCore::QEntity *>( renderer->parent() );
       if ( !parentEntity )
         continue;
       Qgs3DExportObject *object = processGeometryRenderer( renderer, layer->name() + QStringLiteral( "_" ) );
@@ -216,7 +216,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
 
   else if ( rendererType == "vector" )
   {
-    QgsVectorLayer3DRenderer *vectorLayerRenderer = dynamic_cast<QgsVectorLayer3DRenderer *>( abstractRenderer );
+    auto vectorLayerRenderer = dynamic_cast<QgsVectorLayer3DRenderer *>( abstractRenderer );
     if ( vectorLayerRenderer )
     {
       const QgsAbstract3DSymbol *symbol = vectorLayerRenderer->symbol();
@@ -254,7 +254,7 @@ void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3D
       const QVector<Qt3DRender::QAbstractTextureImage *> textureImages = diffuseTexture->textureImages();
       for ( const Qt3DRender::QAbstractTextureImage *tex : textureImages )
       {
-        const QgsImageTexture *imageTexture = dynamic_cast<const QgsImageTexture *>( tex );
+        auto imageTexture = dynamic_cast<const QgsImageTexture *>( tex );
         if ( imageTexture )
         {
           const QImage image = imageTexture->getImage();
@@ -306,13 +306,13 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const QString 
 
 QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
 {
-  QgsFlatTerrainGenerator *generator = dynamic_cast<QgsFlatTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
-  FlatTerrainChunkLoader *flatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( generator->createChunkLoader( node ) );
+  auto generator = dynamic_cast<QgsFlatTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
+  auto flatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( generator->createChunkLoader( node ) );
   if ( mExportTextures )
     terrain->textureGenerator()->waitForFinished();
   // the entity we created will be deallocated once the scene exporter is deallocated
   Qt3DCore::QEntity *entity = flatTerrainLoader->createEntity( this );
-  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
+  auto tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
   return tileEntity;
 }
 
@@ -320,23 +320,23 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
 {
   // Just create a new tile (we don't need to export exact level of details as in the scene)
   // create the entity synchronously and then it will be deleted once our scene exporter instance is deallocated
-  QgsDemTerrainGenerator *generator = dynamic_cast<QgsDemTerrainGenerator *>( terrain->mapSettings()->terrainGenerator()->clone() );
+  auto generator = dynamic_cast<QgsDemTerrainGenerator *>( terrain->mapSettings()->terrainGenerator()->clone() );
   generator->setResolution( mTerrainResolution );
-  QgsDemTerrainTileLoader *loader = qobject_cast<QgsDemTerrainTileLoader *>( generator->createChunkLoader( node ) );
+  auto loader = qobject_cast<QgsDemTerrainTileLoader *>( generator->createChunkLoader( node ) );
   generator->heightMapGenerator()->waitForFinished();
   if ( mExportTextures )
     terrain->textureGenerator()->waitForFinished();
-  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+  auto tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
   delete generator;
   return tileEntity;
 }
 
 QgsTerrainTileEntity *Qgs3DSceneExporter::getMeshTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
 {
-  QgsMeshTerrainGenerator *generator = dynamic_cast<QgsMeshTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
-  QgsMeshTerrainTileLoader *loader = qobject_cast<QgsMeshTerrainTileLoader *>( generator->createChunkLoader( node ) );
+  auto generator = dynamic_cast<QgsMeshTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
+  auto loader = qobject_cast<QgsMeshTerrainTileLoader *>( generator->createChunkLoader( node ) );
   // TODO: export textures
-  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+  auto tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
   return tileEntity;
 }
 
@@ -346,7 +346,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   Qt3DCore::QTransform *transform = findTypedComponent<Qt3DCore::QTransform>( tileEntity );
 
   Qt3DQGeometry *geometry = mesh->geometry();
-  Qt3DExtras::QPlaneGeometry *tileGeometry = qobject_cast<Qt3DExtras::QPlaneGeometry *>( geometry );
+  auto tileGeometry = qobject_cast<Qt3DExtras::QPlaneGeometry *>( geometry );
   if ( !tileGeometry )
   {
     QgsDebugError( "Qt3DExtras::QPlaneGeometry* is expected but something else was given" );
@@ -422,7 +422,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   Qt3DCore::QTransform *transform = findTypedComponent<Qt3DCore::QTransform>( tileEntity );
 
   Qt3DQGeometry *geometry = mesh->geometry();
-  DemTerrainTileGeometry *tileGeometry = qobject_cast<DemTerrainTileGeometry *>( geometry );
+  auto tileGeometry = qobject_cast<DemTerrainTileGeometry *>( geometry );
   if ( !tileGeometry )
   {
     QgsDebugError( "DemTerrainTileGeometry* is expected but something else was given" );
@@ -547,7 +547,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
 QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processSceneLoaderGeometries( Qt3DRender::QSceneLoader *sceneLoader, const QString &objectNamePrefix )
 {
   QVector<Qgs3DExportObject *> objects;
-  Qt3DCore::QEntity *sceneLoaderParent = qobject_cast<Qt3DCore::QEntity *>( sceneLoader->parent() );
+  auto sceneLoaderParent = qobject_cast<Qt3DCore::QEntity *>( sceneLoader->parent() );
   Qt3DCore::QTransform *entityTransform = findTypedComponent<Qt3DCore::QTransform>( sceneLoaderParent );
   QMatrix4x4 sceneTransform;
   if ( entityTransform )
@@ -557,7 +557,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processSceneLoaderGeometries( Q
   QStringList entityNames = sceneLoader->entityNames();
   for ( const QString &entityName : entityNames )
   {
-    Qt3DRender::QGeometryRenderer *mesh = qobject_cast<Qt3DRender::QGeometryRenderer *>( sceneLoader->component( entityName, Qt3DRender::QSceneLoader::GeometryRendererComponent ) );
+    auto mesh = qobject_cast<Qt3DRender::QGeometryRenderer *>( sceneLoader->component( entityName, Qt3DRender::QSceneLoader::GeometryRendererComponent ) );
     Qgs3DExportObject *object = processGeometryRenderer( mesh, objectNamePrefix, sceneTransform );
     if ( !object )
       continue;
@@ -585,7 +585,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   // As we cannot retrieve the specific geometry part for a featureId from the QgsTessellatedPolygonGeometry, we only reject
   // the geometry if all the featureid are already present.
   QVector<std::pair<uint, uint>> triangleIndexStartingIndiceToKeep;
-  QgsTessellatedPolygonGeometry *tessGeom = dynamic_cast<QgsTessellatedPolygonGeometry *>( geometry );
+  auto tessGeom = dynamic_cast<QgsTessellatedPolygonGeometry *>( geometry );
   if ( tessGeom )
   {
     QVector<QgsFeatureId> featureIds = tessGeom->featureIds();
@@ -622,7 +622,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   QObject *parent = geomRenderer->parent();
   while ( parent )
   {
-    Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( parent );
+    auto entity = qobject_cast<Qt3DCore::QEntity *>( parent );
     Qt3DCore::QTransform *transform = findTypedComponent<Qt3DCore::QTransform>( entity );
     if ( transform )
     {

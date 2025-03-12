@@ -110,7 +110,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         emit layerProgressUpdated( i + 1, layerIds.count() );
 
         QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerIds.at( i ) ); // skip-keyword-check
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+        auto vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( vl && vl->isValid() )
         {
           convertToOfflineLayer( vl, database.get(), dbPath, onlySelected, containerType, layerNameSuffix );
@@ -1618,7 +1618,7 @@ void QgsOfflineEditing::committedGeometriesChanges( const QString &qgisLayerId, 
 
 void QgsOfflineEditing::startListenFeatureChanges()
 {
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( sender() );
 
   Q_ASSERT( vLayer );
 
@@ -1641,7 +1641,7 @@ void QgsOfflineEditing::startListenFeatureChanges()
 
 void QgsOfflineEditing::stopListenFeatureChanges()
 {
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( sender() );
 
   Q_ASSERT( vLayer );
 
@@ -1666,7 +1666,7 @@ void QgsOfflineEditing::setupLayer( QgsMapLayer *layer )
 {
   Q_ASSERT( layer );
 
-  if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer ) )
+  if ( auto vLayer = qobject_cast<QgsVectorLayer *>( layer ) )
   {
     // detect offline layer
     if ( vLayer->customProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, false ).toBool() )

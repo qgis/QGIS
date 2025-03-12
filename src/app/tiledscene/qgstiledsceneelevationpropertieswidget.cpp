@@ -45,7 +45,7 @@ void QgsTiledSceneElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   if ( !mLayer )
     return;
 
-  const QgsTiledSceneLayerElevationProperties *properties = qgis::down_cast<const QgsTiledSceneLayerElevationProperties *>( mLayer->elevationProperties() );
+  auto properties = qgis::down_cast<const QgsTiledSceneLayerElevationProperties *>( mLayer->elevationProperties() );
 
   mBlockUpdates = true;
   mOffsetZSpinBox->setValue( properties->zOffset() );
@@ -59,7 +59,7 @@ void QgsTiledSceneElevationPropertiesWidget::apply()
   if ( !mLayer )
     return;
 
-  QgsTiledSceneLayerElevationProperties *properties = qgis::down_cast<QgsTiledSceneLayerElevationProperties *>( mLayer->elevationProperties() );
+  auto properties = qgis::down_cast<QgsTiledSceneLayerElevationProperties *>( mLayer->elevationProperties() );
 
   const bool changed3DrelatedProperties = !qgsDoubleNear( mOffsetZSpinBox->value(), properties->zOffset() )
                                           || !qgsDoubleNear( mScaleZSpinBox->value(), properties->zScale() );

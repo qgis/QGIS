@@ -192,7 +192,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
         PyObject *s = sipCallMethod( NULL, a2, "D", &value, sipType_QVariant, NULL );
         int state;
         int sipIsError = 0;
-        QgsExpressionContext *t1 = reinterpret_cast<QgsExpressionContext *>( sipConvertToType( s, sipType_QgsExpressionContext, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+        auto t1 = reinterpret_cast<QgsExpressionContext *>( sipConvertToType( s, sipType_QgsExpressionContext, 0, SIP_NOT_NONE, &state, &sipIsError ) );
         if ( sipIsError == 0 )
         {
           res = QgsExpressionContext( *t1 );

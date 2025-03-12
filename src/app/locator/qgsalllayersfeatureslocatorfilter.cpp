@@ -54,7 +54,7 @@ QStringList QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, c
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( it.value() );
+    auto layer = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( !layer || !layer->dataProvider() || !layer->flags().testFlag( QgsMapLayer::Searchable ) )
       continue;
 

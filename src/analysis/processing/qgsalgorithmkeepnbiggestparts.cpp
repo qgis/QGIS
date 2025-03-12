@@ -123,7 +123,7 @@ QgsFeatureList QgsKeepNBiggestPartsAlgorithm::processFeature( const QgsFeature &
       if ( mDynamicPartsToKeep )
         nPartsToKeep = mPartsToKeepProperty.valueAsInt( context.expressionContext(), nPartsToKeep );
 
-      const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry.constGet() );
+      auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry.constGet() );
       const int numParts = collection->numGeometries();
       if ( nPartsToKeep >= numParts )
       {

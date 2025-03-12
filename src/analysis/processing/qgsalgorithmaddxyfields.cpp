@@ -178,7 +178,7 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
 
 bool QgsAddXYFieldsAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
+  if ( auto vl = qobject_cast<const QgsVectorLayer *>( layer ) )
   {
     return vl->geometryType() == Qgis::GeometryType::Point;
   }

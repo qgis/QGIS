@@ -73,7 +73,7 @@ void QgsEditorConfigWidget::updateDataDefinedButton( QgsPropertyOverrideButton *
 
 void QgsEditorConfigWidget::updateProperty()
 {
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsWidgetWrapper::Property key = static_cast<QgsWidgetWrapper::Property>( button->propertyKey() );
   mPropertyCollection.setProperty( key, button->toProperty() );
   emit changed();

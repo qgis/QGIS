@@ -114,7 +114,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   auto mapItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutMap, QObject::tr( "Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMap.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutMapWidget( qobject_cast<QgsLayoutItemMap *>( item ), mapCanvas ); }, createRubberBand );
   mapItemMetadata->setItemAddedToLayoutFunction( [=]( QgsLayoutItem *item, const QVariantMap & ) {
-    QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( item );
+    auto map = qobject_cast<QgsLayoutItemMap *>( item );
     Q_ASSERT( map );
 
     //get the color for map canvas background and set map background color accordingly
@@ -165,7 +165,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   auto labelItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutLabel, QObject::tr( "Label" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabel.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutLabelWidget( qobject_cast<QgsLayoutItemLabel *>( item ) ); }, createRubberBand );
   labelItemMetadata->setItemAddedToLayoutFunction( [=]( QgsLayoutItem *item, const QVariantMap &properties ) {
-    QgsLayoutItemLabel *label = qobject_cast<QgsLayoutItemLabel *>( item );
+    auto label = qobject_cast<QgsLayoutItemLabel *>( item );
     Q_ASSERT( label );
 
     label->setText( properties.value( QStringLiteral( "expression" ) ).toString().isEmpty() ? QObject::tr( "Lorem ipsum" ) : QStringLiteral( "[% %1 %]" ).arg( properties.value( QStringLiteral( "expression" ) ).toString() ) );
@@ -183,7 +183,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
   } );
 
   labelItemMetadata->setItemDoubleClickedFunction( [=]( QgsLayoutItem *item, Qgis::MouseHandlesAction action ) {
-    QgsLayoutItemLabel *label = qobject_cast<QgsLayoutItemLabel *>( item );
+    auto label = qobject_cast<QgsLayoutItemLabel *>( item );
 
     // size to text doesn't have any real meaning for HTML content, skip it
     if ( label->mode() == QgsLayoutItemLabel::ModeHtml )
@@ -241,7 +241,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   auto legendItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutLegend, QObject::tr( "Legend" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLegend.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutLegendWidget( qobject_cast<QgsLayoutItemLegend *>( item ), mapCanvas ); }, createRubberBand );
   legendItemMetadata->setItemAddedToLayoutFunction( [=]( QgsLayoutItem *item, const QVariantMap & ) {
-    QgsLayoutItemLegend *legend = qobject_cast<QgsLayoutItemLegend *>( item );
+    auto legend = qobject_cast<QgsLayoutItemLegend *>( item );
     Q_ASSERT( legend );
 
     // try to find a good map to link the legend with by default
@@ -291,7 +291,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   auto scalebarItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutScaleBar, QObject::tr( "Scale Bar" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionScaleBar.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutScaleBarWidget( qobject_cast<QgsLayoutItemScaleBar *>( item ) ); }, createRubberBand );
   scalebarItemMetadata->setItemAddedToLayoutFunction( [=]( QgsLayoutItem *item, const QVariantMap & ) {
-    QgsLayoutItemScaleBar *scalebar = qobject_cast<QgsLayoutItemScaleBar *>( item );
+    auto scalebar = qobject_cast<QgsLayoutItemScaleBar *>( item );
     Q_ASSERT( scalebar );
 
     // try to find a good map to link the scalebar with by default
@@ -337,7 +337,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     return picture.release();
   } );
   northArrowMetadata->setItemAddedToLayoutFunction( [=]( QgsLayoutItem *item, const QVariantMap & ) {
-    QgsLayoutItemPicture *picture = qobject_cast<QgsLayoutItemPicture *>( item );
+    auto picture = qobject_cast<QgsLayoutItemPicture *>( item );
     Q_ASSERT( picture );
 
     QList<QgsLayoutItemMap *> mapItems;
@@ -471,7 +471,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     QMap<QString, QgsMapLayer *> layerMap = layout->project()->mapLayers();
     for ( auto it = layerMap.constBegin(); it != layerMap.constEnd(); ++it )
     {
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
       {
         table->setVectorLayer( vl );
         break;

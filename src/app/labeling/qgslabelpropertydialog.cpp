@@ -106,7 +106,7 @@ void QgsLabelPropertyDialog::buttonBox_clicked( QAbstractButton *button )
 void QgsLabelPropertyDialog::init( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QString &labelText )
 {
   //get feature attributes
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->layer( layerId ) );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->layer( layerId ) );
   if ( !vlayer )
   {
     return;
@@ -320,7 +320,7 @@ int QgsLabelPropertyDialog::dataDefinedColumnIndex( QgsPalLayerSettings::Propert
         const QgsExpressionNode *node = expression.rootNode()->effectiveNode();
         if ( node->nodeType() == QgsExpressionNode::ntColumnRef )
         {
-          const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( node );
+          auto columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( node );
           fieldName = columnRef->name();
         }
         // ok, it's not. But let's be super smart and helpful for users!
@@ -328,7 +328,7 @@ int QgsLabelPropertyDialog::dataDefinedColumnIndex( QgsPalLayerSettings::Propert
         // some labels with a value stored in a field but all others use some expression
         else if ( node->nodeType() == QgsExpressionNode::ntFunction )
         {
-          const QgsExpressionNodeFunction *functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( node );
+          auto functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( node );
           if ( const QgsExpressionFunction *function = QgsExpression::QgsExpression::Functions()[functionNode->fnIndex()] )
           {
             if ( function->name() == QLatin1String( "coalesce" ) )
@@ -338,7 +338,7 @@ int QgsLabelPropertyDialog::dataDefinedColumnIndex( QgsPalLayerSettings::Propert
                 const QgsExpressionNode *firstArgNode = firstArg->effectiveNode();
                 if ( firstArgNode->nodeType() == QgsExpressionNode::ntColumnRef )
                 {
-                  const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( firstArgNode );
+                  auto columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( firstArgNode );
                   fieldName = columnRef->name();
                 }
               }

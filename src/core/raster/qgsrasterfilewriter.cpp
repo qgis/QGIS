@@ -175,7 +175,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
     return Qgis::RasterFileWriterResult::SourceProviderError;
   }
 
-  QgsRasterDataProvider *srcProvider = const_cast<QgsRasterDataProvider *>( dynamic_cast<const QgsRasterDataProvider *>( iface->sourceInput() ) );
+  auto srcProvider = const_cast<QgsRasterDataProvider *>( dynamic_cast<const QgsRasterDataProvider *>( iface->sourceInput() ) );
   if ( !srcProvider )
   {
     QgsDebugError( QStringLiteral( "Cannot get source data provider" ) );
@@ -415,7 +415,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
   const QgsRasterInterface *iface = iter->input();
-  const QgsRasterDataProvider *srcProvider = dynamic_cast<const QgsRasterDataProvider *>( iface->sourceInput() );
+  auto srcProvider = dynamic_cast<const QgsRasterDataProvider *>( iface->sourceInput() );
   const int nBands = iface->bandCount();
   QgsDebugMsgLevel( QStringLiteral( "nBands = %1" ).arg( nBands ), 4 );
 
@@ -864,7 +864,7 @@ int QgsRasterFileWriter::pyramidsProgress( double dfComplete, const char *pszMes
 {
   Q_UNUSED( pszMessage )
   GDALTermProgress( dfComplete, 0, 0 );
-  QProgressDialog *progressDialog = static_cast<QProgressDialog *>( pData );
+  auto progressDialog = static_cast<QProgressDialog *>( pData );
   if ( pData && progressDialog->wasCanceled() )
   {
     return 0;

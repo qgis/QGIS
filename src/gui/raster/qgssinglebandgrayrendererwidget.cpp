@@ -182,7 +182,7 @@ void QgsSingleBandGrayRendererWidget::bandChanged()
 
 void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
 {
-  const QgsSingleBandGrayRenderer *gr = dynamic_cast<const QgsSingleBandGrayRenderer *>( r );
+  auto gr = dynamic_cast<const QgsSingleBandGrayRenderer *>( r );
   if ( gr )
   {
     //band

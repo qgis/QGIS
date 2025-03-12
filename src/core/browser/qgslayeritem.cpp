@@ -234,7 +234,7 @@ bool QgsLayerItem::equal( const QgsDataItem *other )
     return false;
   }
   //const QgsLayerItem *o = qobject_cast<const QgsLayerItem *> ( other );
-  const QgsLayerItem *o = qobject_cast<const QgsLayerItem *>( other );
+  auto o = qobject_cast<const QgsLayerItem *>( other );
   if ( !o )
     return false;
 

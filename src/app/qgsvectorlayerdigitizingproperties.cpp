@@ -35,7 +35,7 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
   setupUi( this );
   setObjectName( QStringLiteral( "mOptsPage_Digitizing" ) );
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
 
   if ( vlayer && vlayer->isSpatial() )
   {
@@ -131,7 +131,7 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
 
 void QgsVectorLayerDigitizingPropertiesPage::apply()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( !vlayer )
   {
     return;

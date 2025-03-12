@@ -52,7 +52,7 @@ QgsLayoutConfigObject::QgsLayoutConfigObject( QWidget *parent, QgsLayoutObject *
 void QgsLayoutConfigObject::updateDataDefinedProperty()
 {
   //match data defined button to item's data defined property
-  QgsPropertyOverrideButton *ddButton = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto ddButton = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   if ( !ddButton )
   {
     return;
@@ -72,7 +72,7 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
   //set the data defined property and refresh the item
   if ( propertyAssociatesWithMultiFrame )
   {
-    if ( QgsLayoutFrame *frame = dynamic_cast<QgsLayoutFrame *>( mLayoutObject.data() ) )
+    if ( auto frame = dynamic_cast<QgsLayoutFrame *>( mLayoutObject.data() ) )
     {
       if ( QgsLayoutMultiFrame *multiFrame = frame->multiFrame() )
       {
@@ -125,7 +125,7 @@ void QgsLayoutConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton *
   //set the data defined property
   if ( propertyAssociatesWithMultiFrame )
   {
-    if ( QgsLayoutFrame *frame = dynamic_cast<QgsLayoutFrame *>( mLayoutObject.data() ) )
+    if ( auto frame = dynamic_cast<QgsLayoutFrame *>( mLayoutObject.data() ) )
     {
       if ( QgsLayoutMultiFrame *multiFrame = frame->multiFrame() )
       {
@@ -154,7 +154,7 @@ QgsLayoutAtlas *QgsLayoutConfigObject::layoutAtlas() const
     return nullptr;
   }
 
-  QgsPrintLayout *printLayout = qobject_cast<QgsPrintLayout *>( mLayoutObject->layout() );
+  auto printLayout = qobject_cast<QgsPrintLayout *>( mLayoutObject->layout() );
 
   if ( !printLayout )
   {
@@ -423,7 +423,7 @@ void QgsLayoutItemPropertiesWidget::setItem( QgsLayoutItem *item )
 
 void QgsLayoutItemPropertiesWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
 {
-  if ( QgsPrintLayout *printLayout = dynamic_cast<QgsPrintLayout *>( masterLayout ) )
+  if ( auto printLayout = dynamic_cast<QgsPrintLayout *>( masterLayout ) )
   {
     connect( printLayout, &QgsPrintLayout::nameChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
     connect( printLayout->atlas(), &QgsLayoutAtlas::coverageLayerChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
@@ -497,7 +497,7 @@ void QgsLayoutItemPropertiesWidget::variablesChanged()
   if ( !mItem )
     return;
 
-  if ( QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( mItem ) )
+  if ( auto frame = qobject_cast<QgsLayoutFrame *>( mItem ) )
   {
     if ( QgsLayoutMultiFrame *mf = frame->multiFrame() )
     {

@@ -121,13 +121,13 @@ void QgsReportOrganizerWidget::removeSection()
       mDesigner->setCurrentLayout( nullptr );
     if ( section->type() == QLatin1String( "SectionFieldGroup" ) )
     {
-      QgsReportSectionFieldGroup *fieldGroup = static_cast<QgsReportSectionFieldGroup *>( section );
+      auto fieldGroup = static_cast<QgsReportSectionFieldGroup *>( section );
       if ( fieldGroup->body() == mDesigner->currentLayout() )
         mDesigner->setCurrentLayout( nullptr );
     }
     if ( section->type() == QLatin1String( "SectionLayout" ) )
     {
-      QgsReportSectionLayout *sectionLayout = static_cast<QgsReportSectionLayout *>( section );
+      auto sectionLayout = static_cast<QgsReportSectionLayout *>( section );
       if ( sectionLayout->body() == mDesigner->currentLayout() )
         mDesigner->setCurrentLayout( nullptr );
     }
@@ -150,7 +150,7 @@ void QgsReportOrganizerWidget::selectionChanged( const QModelIndex &current, con
   mButtonRemoveSection->setEnabled( parent != mReport );
 
   delete mConfigWidget;
-  if ( QgsReportSectionLayout *section = dynamic_cast<QgsReportSectionLayout *>( parent ) )
+  if ( auto section = dynamic_cast<QgsReportSectionLayout *>( parent ) )
   {
     QgsReportLayoutSectionWidget *widget = new QgsReportLayoutSectionWidget( this, mDesigner, section );
     mSettingsFrame->layout()->addWidget( widget );

@@ -150,7 +150,7 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
 
       for ( QgsMapLayer *layer : layers )
       {
-        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
         QgsRectangle searchRect;
         QgsFeature f;
         QgsCoordinateTransform transform;

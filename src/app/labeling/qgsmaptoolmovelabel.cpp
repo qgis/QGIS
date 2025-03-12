@@ -188,7 +188,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
       clearHoveredLabel();
 
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsMapTool::layer( mCurrentCallout.layerID ) );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( QgsMapTool::layer( mCurrentCallout.layerID ) );
       if ( !vlayer || xCol < 0 || yCol < 0 )
       {
         return;
@@ -796,7 +796,7 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
 
 bool QgsMapToolMoveLabel::canModifyCallout( const QgsCalloutPosition &pos, bool isOrigin, int &xCol, int &yCol )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsMapTool::layer( pos.layerID ) );
+  auto layer = qobject_cast<QgsVectorLayer *>( QgsMapTool::layer( pos.layerID ) );
   QgsPalLayerSettings settings;
   if ( layer && layer->labelsEnabled() )
   {
@@ -839,7 +839,7 @@ bool QgsMapToolMoveLabel::canModifyCallout( const QgsCalloutPosition &pos, bool 
 
 bool QgsMapToolMoveLabel::currentCalloutDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsMapTool::layer( mCurrentCallout.layerID ) );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( QgsMapTool::layer( mCurrentCallout.layerID ) );
   const QgsFeatureId featureId = mCurrentCallout.featureId;
 
   xSuccess = false;

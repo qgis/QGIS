@@ -65,8 +65,8 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
           {
             case Qgis::LayerType::Vector:
             {
-              QgsVectorLayerElevationProperties *elevationProperties = qgis::down_cast<QgsVectorLayerElevationProperties *>( layer->elevationProperties() );
-              QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
+              auto elevationProperties = qgis::down_cast<QgsVectorLayerElevationProperties *>( layer->elevationProperties() );
+              auto vLayer = qobject_cast<QgsVectorLayer *>( layer );
 
               switch ( elevationProperties->type() )
               {
@@ -98,7 +98,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
                   if ( elevationProperties->respectLayerSymbology() )
                   {
-                    if ( QgsSingleSymbolRenderer *renderer = dynamic_cast<QgsSingleSymbolRenderer *>( qobject_cast<QgsVectorLayer *>( layer )->renderer() ) )
+                    if ( auto renderer = dynamic_cast<QgsSingleSymbolRenderer *>( qobject_cast<QgsVectorLayer *>( layer )->renderer() ) )
                     {
                       if ( renderer->symbol()->type() == symbol->type() )
                       {
@@ -144,7 +144,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
             case Qgis::LayerType::Raster:
             {
-              QgsRasterLayerElevationProperties *rlProps = qgis::down_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() );
+              auto rlProps = qgis::down_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() );
               switch ( rlProps->profileSymbology() )
               {
                 case Qgis::ProfileSurfaceSymbology::Line:
@@ -166,7 +166,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
             case Qgis::LayerType::Mesh:
             {
-              QgsMeshLayerElevationProperties *mlProps = qgis::down_cast<QgsMeshLayerElevationProperties *>( layer->elevationProperties() );
+              auto mlProps = qgis::down_cast<QgsMeshLayerElevationProperties *>( layer->elevationProperties() );
               switch ( mlProps->profileSymbology() )
               {
                 case Qgis::ProfileSurfaceSymbology::Line:
@@ -239,7 +239,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
 bool QgsElevationProfileLayerTreeModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( index2node( index ) ) )
+  if ( auto layerNode = qobject_cast<QgsLayerTreeLayer *>( index2node( index ) ) )
   {
     if ( role == Qt::CheckStateRole )
     {
@@ -384,7 +384,7 @@ bool QgsElevationProfileLayerTreeProxyModel::filterAcceptsRow( int sourceRow, co
     // (and the layer's renderer isn't a single symbol renderer)
     if ( QgsLayerTreeLayer *layerTreeLayer = QgsLayerTree::toLayer( legendNode->layerNode() ) )
     {
-      if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layerTreeLayer->layer() ) )
+      if ( auto layer = qobject_cast<QgsVectorLayer *>( layerTreeLayer->layer() ) )
       {
         if ( !qgis::down_cast<QgsVectorLayerElevationProperties *>( layer->elevationProperties() )->respectLayerSymbology() )
         {

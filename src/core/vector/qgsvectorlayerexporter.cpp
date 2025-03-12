@@ -195,7 +195,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   }
 
   const QgsDataProvider::ProviderOptions providerOptions;
-  QgsVectorDataProvider *vectorProvider = qobject_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
+  auto vectorProvider = qobject_cast<QgsVectorDataProvider *>( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & Qgis::VectorProviderCapability::AddFeatures ) == 0 )
   {
     mError = Qgis::VectorExportResult::ErrorInvalidLayer;
@@ -516,7 +516,7 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
       QgsGeometry singlePartGeometry { fet.geometry() };
       // We want a failure if the geometry cannot be converted to single-part without data loss!
       // check if there are more than one part
-      const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( singlePartGeometry.constGet() );
+      auto c = qgsgeometry_cast<const QgsGeometryCollection *>( singlePartGeometry.constGet() );
       if ( ( c && c->partCount() > 1 ) || ! singlePartGeometry.convertToSingleType() )
       {
         const QString msg = QObject::tr( "Failed to transform a feature with ID '%1' to single part. Writing stopped." )

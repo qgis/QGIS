@@ -92,7 +92,7 @@ void QgsSettingsTreeModelNodeData::addChildForTreeNode( const QgsSettingsTreeNod
   if ( node->type() == Qgis::SettingsTreeNodeType::NamedList )
   {
     nodeData->mType = Type::NamedListTreeNode;
-    const QgsSettingsTreeNamedListNode *nln = dynamic_cast<const QgsSettingsTreeNamedListNode *>( node );
+    auto nln = dynamic_cast<const QgsSettingsTreeNamedListNode *>( node );
     const QStringList items = nln->items( mNamedParentNodes );
     for ( const QString &item : items )
     {
@@ -463,7 +463,7 @@ QWidget *QgsSettingsTreeItemDelegate::createEditor( QWidget *parent, const QStyl
   if ( static_cast<QgsSettingsTreeModel::Column>( index.column() ) == QgsSettingsTreeModel::Column::Value )
   {
     QModelIndex sourceIndex = index;
-    const QgsSettingsTreeProxyModel *proxyModel = qobject_cast<const QgsSettingsTreeProxyModel *>( index.model() );
+    auto proxyModel = qobject_cast<const QgsSettingsTreeProxyModel *>( index.model() );
     if ( proxyModel )
     {
       sourceIndex = proxyModel->mapToSource( index );

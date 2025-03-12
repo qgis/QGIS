@@ -391,7 +391,7 @@ void QgsVectorLayerJoinBuffer::resolveReferences( QgsProject *project )
     if ( it->joinLayer() )
       continue;  // already resolved
 
-    if ( QgsVectorLayer *joinedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayer( it->joinLayerId() ) ) )
+    if ( auto joinedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayer( it->joinLayerId() ) ) )
     {
       it->setJoinLayer( joinedLayer );
       connectJoinedLayer( joinedLayer );
@@ -511,7 +511,7 @@ void QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields()
   // TODO - check - this whole method is probably not needed anymore,
   // since the cache handling is covered by joinedLayerModified()
 
-  QgsVectorLayer *joinedLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto joinedLayer = qobject_cast<QgsVectorLayer *>( sender() );
   Q_ASSERT( joinedLayer );
 
   // recache the joined layer
@@ -529,7 +529,7 @@ void QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields()
 
 void QgsVectorLayerJoinBuffer::joinedLayerModified()
 {
-  QgsVectorLayer *joinedLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto joinedLayer = qobject_cast<QgsVectorLayer *>( sender() );
   Q_ASSERT( joinedLayer );
 
   // recache the joined layer
@@ -544,7 +544,7 @@ void QgsVectorLayerJoinBuffer::joinedLayerModified()
 
 void QgsVectorLayerJoinBuffer::joinedLayerWillBeDeleted()
 {
-  QgsVectorLayer *joinedLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto joinedLayer = qobject_cast<QgsVectorLayer *>( sender() );
   Q_ASSERT( joinedLayer );
 
   removeJoin( joinedLayer->id() );

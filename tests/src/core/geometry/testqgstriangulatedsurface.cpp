@@ -349,7 +349,7 @@ void TestQgsTriangulatedSurface::testPatches()
   QVERIFY( !surface.patchN( 0 )->is3D() );
   QVERIFY( !surface.patchN( 0 )->isMeasure() );
   QgsPolygon *polygon = surface.patchN( 0 );
-  QgsTriangle *triangle = qgsgeometry_cast<QgsTriangle *>( polygon );
+  auto triangle = qgsgeometry_cast<QgsTriangle *>( polygon );
   QVERIFY( triangle );
 }
 
@@ -708,7 +708,7 @@ void TestQgsTriangulatedSurface::testBoundary()
 
   QgsAbstractGeometry *boundary = surface.boundary();
   QVERIFY( surface.boundary() );
-  QgsMultiLineString *multiLineBoundary = dynamic_cast<QgsMultiLineString *>( boundary );
+  auto multiLineBoundary = dynamic_cast<QgsMultiLineString *>( boundary );
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 1 );
   QgsLineString *lineBoundary = multiLineBoundary->lineStringN( 0 );

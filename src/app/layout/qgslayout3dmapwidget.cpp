@@ -141,7 +141,7 @@ void QgsLayout3DMapWidget::updateCameraPose()
 
 bool QgsLayout3DMapWidget::setNewItem( QgsLayoutItem *item )
 {
-  QgsLayoutItem3DMap *newItem = qobject_cast<QgsLayoutItem3DMap *>( item );
+  auto newItem = qobject_cast<QgsLayoutItem3DMap *>( item );
   if ( !newItem )
     return false;
 

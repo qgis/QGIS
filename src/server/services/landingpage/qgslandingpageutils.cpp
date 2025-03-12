@@ -439,7 +439,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         };
         if ( l->type() == Qgis::LayerType::Vector )
         {
-          const QgsVectorLayer *vl = static_cast<const QgsVectorLayer *>( l );
+          auto vl = static_cast<const QgsVectorLayer *>( l );
           wmsLayer["pk"] = vl->primaryKeyAttributes();
           int fieldIdx { 0 };
           json fieldsData;

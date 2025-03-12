@@ -499,7 +499,7 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
       {
         case QgsLayerTreeNode::NodeLayer:
         {
-          if ( QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( child ) )
+          if ( auto layerNode = qobject_cast<QgsLayerTreeLayer *>( child ) )
           {
             QgsMapLayer *layer = layerNode->layer();
 #if 0 // TODO
@@ -528,7 +528,7 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
 
         case QgsLayerTreeNode::NodeGroup:
         {
-          if ( QgsLayerTreeGroup *groupNode = qobject_cast<QgsLayerTreeGroup *>( child ) )
+          if ( auto groupNode = qobject_cast<QgsLayerTreeGroup *>( child ) )
           {
             QgsProjectLayerTreeGroupItem *groupItem = new QgsProjectLayerTreeGroupItem( nullptr, groupNode->name() );
             addNodes( groupItem, groupNode );
@@ -659,7 +659,7 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
     const QVector<QgsDataItem *> c = children();
     for ( QgsDataItem *i : c )
     {
-      if ( QgsBookmarkItem *bookmarkItem = qobject_cast<QgsBookmarkItem *>( i ) )
+      if ( auto bookmarkItem = qobject_cast<QgsBookmarkItem *>( i ) )
       {
         if ( bookmarkItem->bookmark().id() == id )
         {
@@ -778,7 +778,7 @@ QgsBookmarkGroupItem *QgsBookmarkManagerItem::groupItem( const QString &group )
   const QVector<QgsDataItem *> c = children();
   for ( QgsDataItem *i : c )
   {
-    if ( QgsBookmarkGroupItem *groupItem = qobject_cast<QgsBookmarkGroupItem *>( i ) )
+    if ( auto groupItem = qobject_cast<QgsBookmarkGroupItem *>( i ) )
     {
       if ( groupItem->group() == group )
       {
@@ -794,7 +794,7 @@ QgsBookmarkItem *QgsBookmarkManagerItem::childItemById( const QString &id )
   const QVector<QgsDataItem *> c = children();
   for ( QgsDataItem *i : c )
   {
-    if ( QgsBookmarkItem *bookmarkItem = qobject_cast<QgsBookmarkItem *>( i ) )
+    if ( auto bookmarkItem = qobject_cast<QgsBookmarkItem *>( i ) )
     {
       if ( bookmarkItem->bookmark().id() == id )
       {
@@ -842,7 +842,7 @@ QgsBookmarkItem *QgsBookmarkGroupItem::childItemById( const QString &id )
   const QVector<QgsDataItem *> c = children();
   for ( QgsDataItem *i : c )
   {
-    if ( QgsBookmarkItem *bookmarkItem = qobject_cast<QgsBookmarkItem *>( i ) )
+    if ( auto bookmarkItem = qobject_cast<QgsBookmarkItem *>( i ) )
     {
       if ( bookmarkItem->bookmark().id() == id )
       {
@@ -932,8 +932,8 @@ bool QgsBookmarksItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiC
 
 bool QgsBookmarksItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext, const QMimeData *data, Qt::DropAction )
 {
-  QgsBookmarkManagerItem *managerItem = qobject_cast<QgsBookmarkManagerItem *>( item );
-  QgsBookmarkGroupItem *groupItem = qobject_cast<QgsBookmarkGroupItem *>( item );
+  auto managerItem = qobject_cast<QgsBookmarkManagerItem *>( item );
+  auto groupItem = qobject_cast<QgsBookmarkGroupItem *>( item );
   if ( managerItem || groupItem )
   {
     QgsBookmarkManager *target = managerItem ? managerItem->manager() : groupItem->manager();
@@ -1047,7 +1047,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     QStringList ids;
     for ( QgsDataItem *i : selectedItems )
     {
-      if ( QgsBookmarkItem *b = qobject_cast<QgsBookmarkItem *>( i ) )
+      if ( auto b = qobject_cast<QgsBookmarkItem *>( i ) )
       {
         if ( b->manager() == bookmarkItem->manager() )
           ids << b->bookmark().id();
@@ -1080,7 +1080,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     QgsBookmarkManager *manager = groupItem->manager();
     for ( QgsDataItem *i : selectedItems )
     {
-      if ( QgsBookmarkGroupItem *g = qobject_cast<QgsBookmarkGroupItem *>( i ) )
+      if ( auto g = qobject_cast<QgsBookmarkGroupItem *>( i ) )
       {
         if ( g->manager() == manager )
           groups << g->group();
@@ -1159,7 +1159,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
 
 bool QgsBookmarksItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context )
 {
-  if ( QgsBookmarkItem *bookmarkItem = qobject_cast<QgsBookmarkItem *>( item ) )
+  if ( auto bookmarkItem = qobject_cast<QgsBookmarkItem *>( item ) )
   {
     try
     {
@@ -1184,7 +1184,7 @@ bool QgsBookmarksItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataI
 
 bool QgsBookmarksItemGuiProvider::rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context )
 {
-  if ( QgsBookmarkItem *bookmarkItem = qobject_cast<QgsBookmarkItem *>( item ) )
+  if ( auto bookmarkItem = qobject_cast<QgsBookmarkItem *>( item ) )
   {
     QgsBookmark bookmark = bookmarkItem->bookmark();
     bookmark.setName( name );

@@ -101,7 +101,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
 {
   Q_UNUSED( pszMessage )
 
-  QgsGdalProgress *prog = static_cast<QgsGdalProgress *>( pProgressArg );
+  auto prog = static_cast<QgsGdalProgress *>( pProgressArg );
 
   if ( QgsRasterBlockFeedback *feedback = prog->feedback )
   {
@@ -3013,7 +3013,7 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
 
   QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 sampleSize = %2" ).arg( bandNo ).arg( sampleSize ), 2 );
 
-  Qgis::RasterBandStatistics stats = static_cast< Qgis::RasterBandStatistics >( _stats );
+  auto stats = static_cast<Qgis::RasterBandStatistics>( _stats );
 
   // First check if cached in mStatistics
   if ( QgsRasterDataProvider::hasStatistics( bandNo, stats, boundingBox, sampleSize ) )

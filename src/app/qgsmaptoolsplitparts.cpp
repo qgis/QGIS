@@ -49,7 +49,7 @@ bool QgsMapToolSplitParts::supportsTechnique( Qgis::CaptureTechnique technique )
 void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 
   if ( !vlayer )
   {

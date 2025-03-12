@@ -413,7 +413,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
     else
     {
       //numerical statistic
-      Qgis::Statistic stat = static_cast<Qgis::Statistic>( comboBox->currentData().toInt() );
+      auto stat = static_cast<Qgis::Statistic>( comboBox->currentData().toInt() );
       mergeResult = calcStatistic( fieldIdx, stat );
     }
 

@@ -171,7 +171,7 @@ void QgsLayoutMarkerWidget::rotationFromMapCheckBoxChanged( int state )
   }
   else
   {
-    QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( mMapComboBox->currentItem() );
+    auto map = qobject_cast<QgsLayoutItemMap *>( mMapComboBox->currentItem() );
     mMarker->setLinkedMap( map );
     mNorthTypeComboBox->setEnabled( true );
     mNorthOffsetSpinBox->setEnabled( true );
@@ -193,7 +193,7 @@ void QgsLayoutMarkerWidget::mapChanged( QgsLayoutItem *item )
     return;
   }
 
-  QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( item );
+  auto map = qobject_cast<QgsLayoutItemMap *>( item );
   if ( !map )
   {
     return;

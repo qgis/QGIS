@@ -44,7 +44,7 @@ void QgsLineSymbol::setWidth( double w ) const
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *layer : constMLayers )
   {
-    QgsLineSymbolLayer *lineLayer = dynamic_cast<QgsLineSymbolLayer *>( layer );
+    auto lineLayer = dynamic_cast<QgsLineSymbolLayer *>( layer );
     if ( lineLayer )
     {
       if ( qgsDoubleNear( lineLayer->width(), origWidth ) )
@@ -62,10 +62,10 @@ void QgsLineSymbol::setWidth( double w ) const
     }
     else
     {
-      QgsGeometryGeneratorSymbolLayer *geomGeneratorLayer = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( layer );
+      auto geomGeneratorLayer = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( layer );
       if ( geomGeneratorLayer && geomGeneratorLayer->symbolType() == Qgis::SymbolType::Line )
       {
-        QgsLineSymbol *lineSymbol = qgis::down_cast<QgsLineSymbol *>( geomGeneratorLayer->subSymbol() );
+        auto lineSymbol = qgis::down_cast<QgsLineSymbol *>( geomGeneratorLayer->subSymbol() );
         if ( qgsDoubleNear( lineSymbol->width(), origWidth ) )
         {
           lineSymbol->setWidth( w );
@@ -88,7 +88,7 @@ void QgsLineSymbol::setWidthUnit( Qgis::RenderUnit unit ) const
     if ( layer->type() != Qgis::SymbolType::Line )
       continue;
 
-    QgsLineSymbolLayer *lineLayer = static_cast<QgsLineSymbolLayer *>( layer );
+    auto lineLayer = static_cast<QgsLineSymbolLayer *>( layer );
     lineLayer->setWidthUnit( unit );
   }
 }
@@ -111,10 +111,10 @@ double QgsLineSymbol::width() const
     }
     else
     {
-      QgsGeometryGeneratorSymbolLayer *geomGeneratorLayer = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( symbolLayer );
+      auto geomGeneratorLayer = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( symbolLayer );
       if ( geomGeneratorLayer && geomGeneratorLayer->symbolType() == Qgis::SymbolType::Line )
       {
-        QgsLineSymbol *lineSymbol = qgis::down_cast<QgsLineSymbol *>( geomGeneratorLayer->subSymbol() );
+        auto lineSymbol = qgis::down_cast<QgsLineSymbol *>( geomGeneratorLayer->subSymbol() );
         const double width = lineSymbol->width();
         if ( width > maxWidth )
           maxWidth = width;
@@ -132,7 +132,7 @@ double QgsLineSymbol::width( const QgsRenderContext &context ) const
   {
     if ( layer->type() != Qgis::SymbolType::Line )
       continue;
-    const QgsLineSymbolLayer *lineLayer = static_cast<const QgsLineSymbolLayer *>( layer );
+    auto lineLayer = static_cast<const QgsLineSymbolLayer *>( layer );
     const double layerWidth = lineLayer->width( context );
     maxWidth = std::max( maxWidth, layerWidth );
   }
@@ -146,7 +146,7 @@ void QgsLineSymbol::setDataDefinedWidth( const QgsProperty &property ) const
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *layer : constMLayers )
   {
-    QgsLineSymbolLayer *lineLayer = dynamic_cast<QgsLineSymbolLayer *>( layer );
+    auto lineLayer = dynamic_cast<QgsLineSymbolLayer *>( layer );
 
     if ( lineLayer )
     {
@@ -184,7 +184,7 @@ QgsProperty QgsLineSymbol::dataDefinedWidth() const
   // find the base of the "en masse" pattern
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    const QgsLineSymbolLayer *layer = dynamic_cast<const QgsLineSymbolLayer *>( *it );
+    auto layer = dynamic_cast<const QgsLineSymbolLayer *>( *it );
     if ( layer && qgsDoubleNear( layer->width(), symbolWidth ) && layer->dataDefinedProperties().isActive( QgsSymbolLayer::Property::StrokeWidth ) )
     {
       symbolDD = layer->dataDefinedProperties().property( QgsSymbolLayer::Property::StrokeWidth );
@@ -201,7 +201,7 @@ QgsProperty QgsLineSymbol::dataDefinedWidth() const
   {
     if ( layer->type() != Qgis::SymbolType::Line )
       continue;
-    const QgsLineSymbolLayer *lineLayer = static_cast<const QgsLineSymbolLayer *>( layer );
+    auto lineLayer = static_cast<const QgsLineSymbolLayer *>( layer );
 
     const QgsProperty layerWidthDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::StrokeWidth );
     const QgsProperty layerOffsetDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Offset );
@@ -249,7 +249,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
     {
       if ( symbolLayer->type() == Qgis::SymbolType::Line )
       {
-        QgsLineSymbolLayer *lineLayer = static_cast<QgsLineSymbolLayer *>( symbolLayer );
+        auto lineLayer = static_cast<QgsLineSymbolLayer *>( symbolLayer );
         renderPolylineUsingLayer( lineLayer, points, symbolContext );
       }
       else
@@ -269,7 +269,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
 
     if ( symbolLayer->type() == Qgis::SymbolType::Line )
     {
-      QgsLineSymbolLayer *lineLayer = static_cast<QgsLineSymbolLayer *>( symbolLayer );
+      auto lineLayer = static_cast<QgsLineSymbolLayer *>( symbolLayer );
       renderPolylineUsingLayer( lineLayer, points, symbolContext );
     }
     else

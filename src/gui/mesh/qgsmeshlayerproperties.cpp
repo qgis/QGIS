@@ -212,7 +212,7 @@ void QgsMeshLayerProperties::syncToLayer()
   mSimplifyMeshResolutionSpinBox->setValue( simplifySettings.meshResolution() );
 
   QgsDebugMsgLevel( QStringLiteral( "populate temporal tab" ), 4 );
-  const QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast<const QgsMeshLayerTemporalProperties *>( mMeshLayer->temporalProperties() );
+  auto temporalProperties = qobject_cast<const QgsMeshLayerTemporalProperties *>( mMeshLayer->temporalProperties() );
   whileBlocking( mTemporalDateTimeReference )->setDateTime( temporalProperties->referenceTime() );
   const QgsDateTimeRange timeRange = temporalProperties->timeExtent();
   mTemporalDateTimeStart->setDateTime( timeRange.begin() );

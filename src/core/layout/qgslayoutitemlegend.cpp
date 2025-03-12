@@ -206,7 +206,7 @@ void QgsLayoutItemLegend::finalizeRestoreFromXml()
     maps.reserve( mFilterByMapUuids.size() );
     for ( const QString &uuid : std::as_const( mFilterByMapUuids ) )
     {
-      if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( uuid, true ) ) )
+      if ( auto map = qobject_cast<QgsLayoutItemMap *>( mLayout->itemByUuid( uuid, true ) ) )
       {
         maps << map;
       }
@@ -317,7 +317,7 @@ void QgsLayoutItemLegend::ensureModelIsInitialized() const
 {
   if ( mDeferLegendModelInitialization )
   {
-    QgsLayoutItemLegend *mutableThis = const_cast< QgsLayoutItemLegend * >( this );
+    auto mutableThis = const_cast<QgsLayoutItemLegend *>( this );
     mutableThis->mDeferLegendModelInitialization = false;
     mutableThis->setCustomLayerTree( mutableThis->mCustomLayerTree.release() );
   }
@@ -1346,7 +1346,7 @@ bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) cons
         const QList<QgsLayerTreeModelLegendNode *> legendNodes = mLegendModel->layerLegendNodes( nodeLayer );
         for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
         {
-          if ( QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( legendNode ) )
+          if ( auto symbolNode = dynamic_cast<QgsSymbolLegendNode *>( legendNode ) )
           {
             if ( !symbolNode->patchShape().isNull() )
             {
@@ -1403,7 +1403,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     if ( !name.isEmpty() )
       return name;
 
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
 
     //finding the first label that is stored
     name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();

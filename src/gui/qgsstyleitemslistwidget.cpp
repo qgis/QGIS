@@ -75,7 +75,7 @@ QgsStyleModelDelegate::QgsStyleModelDelegate( QObject *parent )
 
 QSize QgsStyleModelDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  if ( const QListView *view = qobject_cast<const QListView *>( option.widget ) )
+  if ( auto view = qobject_cast<const QListView *>( option.widget ) )
   {
     if ( index.data( static_cast<int>( QgsStyleModel::CustomRole::IsTitle ) ).toBool() )
     {

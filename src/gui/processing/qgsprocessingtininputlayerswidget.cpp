@@ -84,7 +84,7 @@ void QgsProcessingTinInputLayersWidget::setProject( QgsProject *project )
 
 void QgsProcessingTinInputLayersWidget::onLayerChanged( QgsMapLayer *layer )
 {
-  QgsVectorLayer *newLayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto newLayer = qobject_cast<QgsVectorLayer *>( layer );
 
   if ( !newLayer || !newLayer->isValid() )
     return;
@@ -101,7 +101,7 @@ void QgsProcessingTinInputLayersWidget::onLayerChanged( QgsMapLayer *layer )
 
 void QgsProcessingTinInputLayersWidget::onCurrentLayerAdded()
 {
-  QgsVectorLayer *currentLayer = qobject_cast<QgsVectorLayer *>( mComboLayers->currentLayer() );
+  auto currentLayer = qobject_cast<QgsVectorLayer *>( mComboLayers->currentLayer() );
   if ( !currentLayer )
     return;
   QgsProcessingParameterTinInputLayers::InputLayer layer;

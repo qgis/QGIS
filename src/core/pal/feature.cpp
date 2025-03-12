@@ -2095,11 +2095,11 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
 
   geos::prepared_unique_ptr preparedBuffer( GEOSPrepare_r( ctxt, buffer.get() ) );
 
-  const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( gg.get() );
+  auto poly = qgsgeometry_cast<const QgsPolygon *>( gg.get() );
   if ( !poly )
     return candidatesCreated;
 
-  const QgsLineString *ring = qgsgeometry_cast< const QgsLineString *>( poly->exteriorRing() );
+  auto ring = qgsgeometry_cast<const QgsLineString *>( poly->exteriorRing() );
   if ( !ring )
     return candidatesCreated;
 

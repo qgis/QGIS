@@ -161,7 +161,7 @@ bool QgsGeorefTransform::getLinearOriginScale( QgsPointXY &origin, double &scale
   {
     return false;
   }
-  QgsLinearGeorefTransform *transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation.get() );
+  auto transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation.get() );
   return transform && transform->getOriginScale( origin, scaleX, scaleY );
 }
 
@@ -170,13 +170,13 @@ bool QgsGeorefTransform::getOriginScaleRotation( QgsPointXY &origin, double &sca
   if ( mTransformParametrisation == TransformMethod::Linear )
   {
     rotation = 0.0;
-    QgsLinearGeorefTransform *transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation.get() );
+    auto transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation.get() );
     return transform && transform->getOriginScale( origin, scaleX, scaleY );
   }
   else if ( mTransformParametrisation == TransformMethod::Helmert )
   {
     double scale;
-    QgsHelmertGeorefTransform *transform = dynamic_cast<QgsHelmertGeorefTransform *>( mGeorefTransformImplementation.get() );
+    auto transform = dynamic_cast<QgsHelmertGeorefTransform *>( mGeorefTransformImplementation.get() );
     if ( !transform || !transform->getOriginScaleRotation( origin, scale, rotation ) )
     {
       return false;

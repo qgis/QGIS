@@ -316,7 +316,7 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
     const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
     for ( const QString &wfsLayerId : wfsLayerIds )
     {
-      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( wfsLayerId ) );
+      auto layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( wfsLayerId ) );
       if ( !layer )
       {
         continue;

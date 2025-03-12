@@ -986,7 +986,7 @@ QgsGrassObjectItem::QgsGrassObjectItem( QgsDataItem *parent, const QgsGrassObjec
 
 bool QgsGrassObjectItem::equal( const QgsDataItem *other )
 {
-  const QgsGrassObjectItem *item = qobject_cast<const QgsGrassObjectItem *>( other );
+  auto item = qobject_cast<const QgsGrassObjectItem *>( other );
   return QgsLayerItem::equal( other ) && item && mGrassObject == item->mGrassObject;
 }
 
@@ -1034,7 +1034,7 @@ bool QgsGrassVectorItem::equal( const QgsDataItem *other )
 {
   if ( QgsDataCollectionItem::equal( other ) )
   {
-    const QgsGrassVectorItem *item = qobject_cast<const QgsGrassVectorItem *>( other );
+    auto item = qobject_cast<const QgsGrassVectorItem *>( other );
     if ( item && mGrassObject == item->mGrassObject && mValid == item->mValid )
     {
       if ( mChildren.size() == item->mChildren.size() )
@@ -1079,7 +1079,7 @@ QString QgsGrassVectorLayerItem::layerName() const
 
 bool QgsGrassVectorLayerItem::equal( const QgsDataItem *other )
 {
-  const QgsGrassVectorLayerItem *item = qobject_cast<const QgsGrassVectorLayerItem *>( other );
+  auto item = qobject_cast<const QgsGrassVectorLayerItem *>( other );
   return QgsGrassObjectItem::equal( other ) && item && mSingleLayer == item->mSingleLayer;
 }
 
@@ -1102,7 +1102,7 @@ QIcon QgsGrassRasterItem::icon()
 
 bool QgsGrassRasterItem::equal( const QgsDataItem *other )
 {
-  const QgsGrassRasterItem *item = qobject_cast<const QgsGrassRasterItem *>( other );
+  auto item = qobject_cast<const QgsGrassRasterItem *>( other );
   return QgsGrassObjectItem::equal( other ) && item && mExternal == item->mExternal;
 }
 

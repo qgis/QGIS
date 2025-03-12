@@ -183,7 +183,7 @@ void QgsBrowserWidget::onOptionsChanged()
 {
   std::function<void( const QModelIndex &index )> updateItem;
   updateItem = [this, &updateItem]( const QModelIndex &index ) {
-    if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( mModel->dataItem( index ) ) )
+    if ( auto dirItem = qobject_cast<QgsDirectoryItem *>( mModel->dataItem( index ) ) )
     {
       dirItem->reevaluateMonitoring();
     }
@@ -362,7 +362,7 @@ void QgsBrowserWidget::addSelectedLayers()
     QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
     if ( item && item->type() == Qgis::BrowserItemType::Project )
     {
-      QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item );
+      auto projectItem = qobject_cast<QgsProjectItem *>( item );
       if ( projectItem )
         emit openFile( projectItem->path(), QStringLiteral( "project" ) );
 
@@ -377,7 +377,7 @@ void QgsBrowserWidget::addSelectedLayers()
     QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( list[i] ) );
     if ( item && item->type() == Qgis::BrowserItemType::Layer )
     {
-      QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+      auto layerItem = qobject_cast<QgsLayerItem *>( item );
       if ( layerItem )
         addLayer( layerItem );
     }

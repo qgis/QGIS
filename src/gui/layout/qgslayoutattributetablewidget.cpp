@@ -194,7 +194,7 @@ QgsExpressionContext QgsLayoutAttributeTableWidget::createExpressionContext() co
 
 bool QgsLayoutAttributeTableWidget::setNewItem( QgsLayoutItem *item )
 {
-  QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( item );
+  auto frame = qobject_cast<QgsLayoutFrame *>( item );
   if ( !frame )
     return false;
 
@@ -794,7 +794,7 @@ void QgsLayoutAttributeTableWidget::changeLayer( QgsMapLayer *layer )
     return;
   }
 
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+  auto vl = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vl )
   {
     return;

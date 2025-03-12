@@ -515,7 +515,7 @@ void QgsVectorTileBasicLabelingWidget::updateLabelingFromWidget()
 
   QgsVectorTileBasicLabelingStyle style = mLabeling->style( index );
 
-  QgsLabelingPanelWidget *widget = qobject_cast<QgsLabelingPanelWidget *>( sender() );
+  auto widget = qobject_cast<QgsLabelingPanelWidget *>( sender() );
   style.setLabelSettings( widget->labelSettings() );
 
   mLabeling->setStyle( index, style );

@@ -77,7 +77,7 @@ void QgsLayoutViewToolAddNodeItem::layoutPressEvent( QgsLayoutViewMouseEvent *ev
     if ( !item )
       return;
 
-    if ( QgsLayoutNodesItem *nodesItem = qobject_cast<QgsLayoutNodesItem *>( item.get() ) )
+    if ( auto nodesItem = qobject_cast<QgsLayoutNodesItem *>( item.get() ) )
     {
       nodesItem->setNodes( mPolygon );
       if ( !nodesItem->isValid() )
@@ -204,7 +204,7 @@ void QgsLayoutViewToolAddNodeItem::setRubberBandNodes()
     items << mRubberBand.get();
   }
 
-  if ( QGraphicsPolygonItem *polygonItem = dynamic_cast<QGraphicsPolygonItem *>( items[0] ) )
+  if ( auto polygonItem = dynamic_cast<QGraphicsPolygonItem *>( items[0] ) )
   {
     // The group contains two polygons
     if ( items.size() == 2 && dynamic_cast<QGraphicsPolygonItem *>( items[1] ) != nullptr )

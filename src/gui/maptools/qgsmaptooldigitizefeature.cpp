@@ -59,7 +59,7 @@ bool QgsMapToolDigitizeFeature::supportsTechnique( Qgis::CaptureTechnique techni
 
 void QgsMapToolDigitizeFeature::layerGeometryCaptured( const QgsGeometry &geometry )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( !vlayer )
     vlayer = currentVectorLayer();
 
@@ -101,7 +101,7 @@ void QgsMapToolDigitizeFeature::layerGeometryCaptured( const QgsGeometry &geomet
 
 void QgsMapToolDigitizeFeature::activate()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( !vlayer )
     vlayer = currentVectorLayer();
 
@@ -135,7 +135,7 @@ void QgsMapToolDigitizeFeature::deactivate()
 
 void QgsMapToolDigitizeFeature::reactivate()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( !vlayer )
     vlayer = currentVectorLayer();
 
@@ -166,7 +166,7 @@ void QgsMapToolDigitizeFeature::setCheckGeometryType( bool checkGeometryType )
 
 void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
 
   if ( !vlayer )
     //if no given layer take the current from canvas

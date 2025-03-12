@@ -464,7 +464,7 @@ bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping alt
   }
 
   QgsCurve *curve = const_cast<QgsCurve *>( polygon->exteriorRing() );
-  QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( curve );
+  auto lineString = qgsgeometry_cast<QgsLineString *>( curve );
   if ( !lineString )
     return false;
 
@@ -473,7 +473,7 @@ bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping alt
   for ( int i = 0; i < polygon->numInteriorRings(); ++i )
   {
     QgsCurve *curve = const_cast<QgsCurve *>( polygon->interiorRing( i ) );
-    QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( curve );
+    auto lineString = qgsgeometry_cast<QgsLineString *>( curve );
     if ( !lineString )
       return false;
 
@@ -806,18 +806,18 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
   std::unique_ptr<QgsPointCloud3DSymbol> symbol3D;
   if ( renderer->type() == QLatin1String( "ramp" ) )
   {
-    const QgsPointCloudAttributeByRampRenderer *renderer2D = dynamic_cast<const QgsPointCloudAttributeByRampRenderer *>( renderer );
+    auto renderer2D = dynamic_cast<const QgsPointCloudAttributeByRampRenderer *>( renderer );
     symbol3D = std::make_unique<QgsColorRampPointCloud3DSymbol>();
-    QgsColorRampPointCloud3DSymbol *symbol = static_cast<QgsColorRampPointCloud3DSymbol *>( symbol3D.get() );
+    auto symbol = static_cast<QgsColorRampPointCloud3DSymbol *>( symbol3D.get() );
     symbol->setAttribute( renderer2D->attribute() );
     symbol->setColorRampShaderMinMax( renderer2D->minimum(), renderer2D->maximum() );
     symbol->setColorRampShader( renderer2D->colorRampShader() );
   }
   else if ( renderer->type() == QLatin1String( "rgb" ) )
   {
-    const QgsPointCloudRgbRenderer *renderer2D = dynamic_cast<const QgsPointCloudRgbRenderer *>( renderer );
+    auto renderer2D = dynamic_cast<const QgsPointCloudRgbRenderer *>( renderer );
     symbol3D = std::make_unique<QgsRgbPointCloud3DSymbol>();
-    QgsRgbPointCloud3DSymbol *symbol = static_cast<QgsRgbPointCloud3DSymbol *>( symbol3D.get() );
+    auto symbol = static_cast<QgsRgbPointCloud3DSymbol *>( symbol3D.get() );
     symbol->setRedAttribute( renderer2D->redAttribute() );
     symbol->setGreenAttribute( renderer2D->greenAttribute() );
     symbol->setBlueAttribute( renderer2D->blueAttribute() );
@@ -828,9 +828,9 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
   }
   else if ( renderer->type() == QLatin1String( "classified" ) )
   {
-    const QgsPointCloudClassifiedRenderer *renderer2D = dynamic_cast<const QgsPointCloudClassifiedRenderer *>( renderer );
+    auto renderer2D = dynamic_cast<const QgsPointCloudClassifiedRenderer *>( renderer );
     symbol3D = std::make_unique<QgsClassificationPointCloud3DSymbol>();
-    QgsClassificationPointCloud3DSymbol *symbol = static_cast<QgsClassificationPointCloud3DSymbol *>( symbol3D.get() );
+    auto symbol = static_cast<QgsClassificationPointCloud3DSymbol *>( symbol3D.get() );
     symbol->setAttribute( renderer2D->attribute() );
     symbol->setCategoriesList( renderer2D->categories() );
   }
@@ -853,7 +853,7 @@ QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> Qgs3DUtils::castRay( Q
   {
     Qt3DCore::QEntity *entity = scene->layerEntity( layer );
 
-    if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
+    if ( auto chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
     {
       const QVector<QgsRayCastingUtils::RayHit> result = chunkedEntity->rayIntersection( r, context );
       if ( !result.isEmpty() )

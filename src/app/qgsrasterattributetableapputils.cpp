@@ -32,7 +32,7 @@ void QgsRasterAttributeTableAppUtils::openRasterAttributeTable( QgsLayerTreeView
   if ( !currentLayer )
     return;
 
-  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer );
+  auto layer = qobject_cast<QgsRasterLayer *>( currentLayer );
   if ( layer && layer->attributeTableCount() > 0 )
   {
     QgsRasterAttributeTableDialog *dlg = new QgsRasterAttributeTableDialog( layer );
@@ -72,7 +72,7 @@ void QgsRasterAttributeTableAppUtils::createRasterAttributeTable( QgsLayerTreeVi
   if ( !currentLayer )
     return;
 
-  if ( QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer ); layer && layer->canCreateRasterAttributeTable() )
+  if ( auto layer = qobject_cast<QgsRasterLayer *>( currentLayer ); layer && layer->canCreateRasterAttributeTable() )
   {
     // Create the attribute table from the renderer and open it
     QgsCreateRasterAttributeTableDialog dlg { layer };

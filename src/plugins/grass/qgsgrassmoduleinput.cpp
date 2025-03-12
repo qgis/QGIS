@@ -569,7 +569,7 @@ bool QgsGrassModuleInputComboBox::eventFilter( QObject *watched, QEvent *event )
   // mSkipHide does not seem to be necessary anymore, not sure why
   if ( event->type() == QEvent::MouseButtonPress && watched == view()->viewport() )
   {
-    QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
+    auto mouseEvent = static_cast<QMouseEvent *>( event );
     QModelIndex index = view()->indexAt( mouseEvent->pos() );
     if ( !view()->visualRect( index ).contains( mouseEvent->pos() ) )
     {
@@ -750,7 +750,7 @@ bool QgsGrassModuleInputSelectedView::eventFilter( QObject *obj, QEvent *event )
   else if ( obj == viewport() && event->type() == QEvent::MouseButtonRelease )
   {
     QgsDebugMsgLevel( "MouseButtonRelease", 4 );
-    QMouseEvent *me = static_cast<QMouseEvent *>( event );
+    auto me = static_cast<QMouseEvent *>( event );
     if ( me->button() == Qt::LeftButton && me->modifiers() == Qt::NoModifier )
     {
       QModelIndex index = indexAt( me->pos() );
@@ -976,7 +976,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module, QgsGrassModule
     QgsGrassModuleParam *item = mModuleStandardOptions->item( mMapId );
     if ( item )
     {
-      QgsGrassModuleInput *mapInput = dynamic_cast<QgsGrassModuleInput *>( item );
+      auto mapInput = dynamic_cast<QgsGrassModuleInput *>( item );
 
       connect( mapInput, SIGNAL( valueChanged() ), this, SLOT( updateQgisLayers() ) );
     }

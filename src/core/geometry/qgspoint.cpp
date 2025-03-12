@@ -774,7 +774,7 @@ QgsPoint *QgsPoint::createEmptyWithSameType() const
 
 int QgsPoint::compareToSameClass( const QgsAbstractGeometry *other ) const
 {
-  const QgsPoint *otherPoint = qgsgeometry_cast< const QgsPoint * >( other );
+  auto otherPoint = qgsgeometry_cast<const QgsPoint *>( other );
   if ( !otherPoint )
     return -1;
 

@@ -216,7 +216,7 @@ bool QgsBrowserProxyModel::filterAcceptsItem( const QModelIndex &sourceIndex ) c
   if ( mFilterByLayerType )
   {
     QgsDataItem *item = mModel->dataItem( sourceIndex );
-    if ( QgsLayerItem *layerItem = qobject_cast< QgsLayerItem * >( item ) )
+    if ( auto layerItem = qobject_cast<QgsLayerItem *>( item ) )
     {
       if ( layerItem->mapLayerType() != mLayerType )
         return false;

@@ -1127,7 +1127,7 @@ const  QMap<QString, QgsAuthCertUtils::CertTrustPolicy> QgsAuthConfigurationStor
     {
       QString id( query.value( 0 ).toString() );
       int policy = query.value( 1 ).toInt();
-      QgsAuthCertUtils::CertTrustPolicy trustPolicy = static_cast< QgsAuthCertUtils::CertTrustPolicy >( policy );
+      auto trustPolicy = static_cast<QgsAuthCertUtils::CertTrustPolicy>( policy );
       trustedCerts[ id ] = trustPolicy;
     }
   }

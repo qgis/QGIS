@@ -489,7 +489,7 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
     }
     else if ( widget->inherits( "QToolButton" ) )
     {
-      QToolButton *toolbutton = qobject_cast<QToolButton *>( widget );
+      auto toolbutton = qobject_cast<QToolButton *>( widget );
       QAction *action = findAction( toolbutton );
       if ( !action )
         return false;
@@ -666,7 +666,7 @@ void QgsCustomization::createTreeItemToolbars()
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
       item->setCheckState( 0, Qt::Checked );
 
-      QWidgetAction *widgetAction = qobject_cast<QWidgetAction *>( act );
+      auto widgetAction = qobject_cast<QWidgetAction *>( act );
       QWidget *widget = widgetAction->defaultWidget();
       const QList<QAction *> childActions = widget->actions();
       addTreeItemActions( item, childActions );
@@ -853,7 +853,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu, QMenu *panelMenu )
           if ( action->metaObject()->className() == QLatin1String( "QWidgetAction" ) )
           {
             mSettings->beginGroup( action->objectName() );
-            QWidgetAction *widgetAction = qobject_cast<QWidgetAction *>( action );
+            auto widgetAction = qobject_cast<QWidgetAction *>( action );
             QWidget *widget = widgetAction->defaultWidget();
             const QList<QAction *> childActions = widget->actions();
             for ( QAction *wAction : childActions )
@@ -1088,7 +1088,7 @@ void QgsCustomization::preNotify( QObject *receiver, QEvent *event, bool *done )
       //QgsDebugMsgLevel( QStringLiteral( "click" ), 2 );
       if ( pDialog && pDialog->isVisible() )
       {
-        QMouseEvent *e = static_cast<QMouseEvent *>( event );
+        auto e = static_cast<QMouseEvent *>( event );
         *done = pDialog->switchWidget( widget, e );
       }
     }

@@ -130,7 +130,7 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
   textContent.clear();
   htmlContent.clear();
 
-  if ( QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mFeatureLayer.data() ) )
+  if ( auto vectorLayer = qobject_cast<QgsVectorLayer *>( mFeatureLayer.data() ) )
   {
     if ( vectorLayer->geometryType() == Qgis::GeometryType::Null )
     {

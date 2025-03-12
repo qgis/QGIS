@@ -49,7 +49,7 @@ QVariant QgsMeshDatasetGroupTreeModel::data( const QModelIndex &index, int role 
   if ( !index.isValid() )
     return QVariant();
 
-  QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
+  auto item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
   if ( !item )
     return QVariant();
 
@@ -114,7 +114,7 @@ QModelIndex QgsMeshDatasetGroupTreeModel::parent( const QModelIndex &index ) con
   if ( !index.isValid() )
     return QModelIndex();
 
-  QgsMeshDatasetGroupTreeItem *childItem = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
+  auto childItem = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
   QgsMeshDatasetGroupTreeItem *parentItem = childItem->parentItem();
 
   if ( parentItem == mRootItem.get() )
@@ -215,7 +215,7 @@ void QgsMeshDatasetGroupTreeModel::removeItem( const QModelIndex &index )
   if ( !index.isValid() )
     return;
 
-  QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
+  auto item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
   if ( !item || item->datasetGroupType() == QgsMeshDatasetGroup::Persistent )
     return;
 
@@ -230,7 +230,7 @@ void QgsMeshDatasetGroupTreeModel::setPersistentDatasetGroup( const QModelIndex 
   if ( !index.isValid() )
     return;
 
-  QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
+  auto item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
   if ( !item )
     return;
   item->setPersistentDatasetGroup( uri );
@@ -293,7 +293,7 @@ QVariant QgsMeshDatasetGroupProxyModel::data( const QModelIndex &index, int role
     return QVariant();
 
   const QModelIndex sourceIndex = mapToSource( index );
-  QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( sourceIndex.internalPointer() );
+  auto item = static_cast<QgsMeshDatasetGroupTreeItem *>( sourceIndex.internalPointer() );
 
   switch ( role )
   {
@@ -780,7 +780,7 @@ bool QgsMeshAvailableDatasetGroupTreeModel::setData( const QModelIndex &index, c
   if ( !index.isValid() )
     return false;
 
-  QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
+  auto item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
   if ( !item )
     return false;
 
@@ -836,7 +836,7 @@ int QgsMeshAvailableDatasetGroupTreeModel::columnCount( const QModelIndex &paren
 
 QString QgsMeshAvailableDatasetGroupTreeModel::textDisplayed( const QModelIndex &index ) const
 {
-  QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
+  auto item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
   if ( !item )
     return QString();
 
@@ -857,7 +857,7 @@ QString QgsMeshAvailableDatasetGroupTreeModel::textDisplayed( const QModelIndex 
 
 QColor QgsMeshAvailableDatasetGroupTreeModel::backGroundColor( const QModelIndex &index ) const
 {
-  QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
+  auto item = static_cast<QgsMeshDatasetGroupTreeItem *>( index.internalPointer() );
   if ( !item )
     return QColor();
 

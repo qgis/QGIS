@@ -500,7 +500,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
     case Qgis::AttributeEditorType::Action:
     {
-      const QgsAttributeEditorAction *actionEditor = static_cast<const QgsAttributeEditorAction *>( widgetDef );
+      auto actionEditor = static_cast<const QgsAttributeEditorAction *>( widgetDef );
       const QgsAction action { actionEditor->action( mLayer ) };
       if ( action.isValid() )
       {
@@ -517,7 +517,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
     case Qgis::AttributeEditorType::Relation:
     {
-      const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
+      auto relationEditor = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relationEditor->relation().id(), relationEditor->relation().name() );
       setCommonProperties( itemData );
 
@@ -537,7 +537,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     {
       DnDTreeItemData itemData( DnDTreeItemData::Container, widgetDef->name(), widgetDef->name() );
 
-      const QgsAttributeEditorContainer *container = static_cast<const QgsAttributeEditorContainer *>( widgetDef );
+      auto container = static_cast<const QgsAttributeEditorContainer *>( widgetDef );
       if ( !container )
         break;
 
@@ -562,7 +562,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
     case Qgis::AttributeEditorType::QmlElement:
     {
-      const QgsAttributeEditorQmlElement *qmlElementEditor = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
+      auto qmlElementEditor = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, widgetDef->name(), widgetDef->name() );
       QmlElementEditorConfiguration qmlEdConfig;
       qmlEdConfig.qmlCode = qmlElementEditor->qmlCode();
@@ -574,7 +574,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
     case Qgis::AttributeEditorType::HtmlElement:
     {
-      const QgsAttributeEditorHtmlElement *htmlElementEditor = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
+      auto htmlElementEditor = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::HtmlWidget, widgetDef->name(), widgetDef->name() );
       HtmlElementEditorConfiguration htmlEdConfig;
       htmlEdConfig.htmlCode = htmlElementEditor->htmlCode();
@@ -586,7 +586,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
     case Qgis::AttributeEditorType::TextElement:
     {
-      const QgsAttributeEditorTextElement *textElementEditor = static_cast<const QgsAttributeEditorTextElement *>( widgetDef );
+      auto textElementEditor = static_cast<const QgsAttributeEditorTextElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::TextWidget, widgetDef->name(), widgetDef->name() );
       TextElementEditorConfiguration textEdConfig;
       textEdConfig.text = textElementEditor->text();
@@ -598,7 +598,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
     case Qgis::AttributeEditorType::SpacerElement:
     {
-      const QgsAttributeEditorSpacerElement *spacerElementEditor = static_cast<const QgsAttributeEditorSpacerElement *>( widgetDef );
+      auto spacerElementEditor = static_cast<const QgsAttributeEditorSpacerElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::SpacerWidget, widgetDef->name(), widgetDef->name() );
       SpacerElementEditorConfiguration spacerEdConfig;
       spacerEdConfig.drawLine = spacerElementEditor->drawLine();
@@ -2216,11 +2216,11 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
           QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
           QgsReadWriteContext context;
           // translate widged configuration strings
-          if ( widgetType == QStringLiteral( "ValueRelation" ) )
+          if ( widgetType == QLatin1String( "ValueRelation" ) )
           {
             optionsMap[QStringLiteral( "Value" )] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( mLayer->id(), fieldName ), optionsMap[QStringLiteral( "Value" )].toString() );
           }
-          if ( widgetType == QStringLiteral( "ValueMap" ) )
+          if ( widgetType == QLatin1String( "ValueMap" ) )
           {
             if ( optionsMap[QStringLiteral( "map" )].canConvert<QList<QVariant>>() )
             {
@@ -2277,7 +2277,7 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
     if ( !constraintElement.isNull() )
     {
       const int intConstraints = constraintElement.attribute( QStringLiteral( "constraints" ), QStringLiteral( "0" ) ).toInt();
-      QgsFieldConstraints::Constraints constraints = static_cast< QgsFieldConstraints::Constraints >( intConstraints );
+      auto constraints = static_cast<QgsFieldConstraints::Constraints>( intConstraints );
 
       // always keep provider constraints intact
       if ( fieldConstraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) != QgsFieldConstraints::ConstraintOriginProvider )

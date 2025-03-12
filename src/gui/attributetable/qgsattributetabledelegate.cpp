@@ -36,11 +36,11 @@
 
 QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
 {
-  const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
+  auto tm = qobject_cast<const QgsAttributeTableModel *>( model );
   if ( tm )
     return tm->layer();
 
-  const QgsAttributeTableFilterModel *fm = qobject_cast<const QgsAttributeTableFilterModel *>( model );
+  auto fm = qobject_cast<const QgsAttributeTableFilterModel *>( model );
   if ( fm )
     return fm->layer();
 
@@ -49,11 +49,11 @@ QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *mode
 
 const QgsAttributeTableModel *QgsAttributeTableDelegate::masterModel( const QAbstractItemModel *model )
 {
-  const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
+  auto tm = qobject_cast<const QgsAttributeTableModel *>( model );
   if ( tm )
     return tm;
 
-  const QgsAttributeTableFilterModel *fm = qobject_cast<const QgsAttributeTableFilterModel *>( model );
+  auto fm = qobject_cast<const QgsAttributeTableFilterModel *>( model );
   if ( fm )
     return fm->masterModel();
 

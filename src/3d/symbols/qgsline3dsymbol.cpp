@@ -104,7 +104,7 @@ QList<Qgis::GeometryType> QgsLine3DSymbol::compatibleGeometryTypes() const
 
 void QgsLine3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *layer )
 {
-  const QgsVectorLayerElevationProperties *props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( const_cast<QgsVectorLayer *>( layer )->elevationProperties() );
+  auto props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( const_cast<QgsVectorLayer *>( layer )->elevationProperties() );
 
   mAltClamping = props->clamping();
   mAltBinding = props->binding();

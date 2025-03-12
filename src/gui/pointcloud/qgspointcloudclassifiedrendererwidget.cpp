@@ -585,7 +585,7 @@ void QgsPointCloudClassifiedRendererWidget::deleteAllCategories()
 void QgsPointCloudClassifiedRendererWidget::setFromRenderer( const QgsPointCloudRenderer *r )
 {
   mBlockChangedSignal = true;
-  if ( const QgsPointCloudClassifiedRenderer *classifiedRenderer = dynamic_cast<const QgsPointCloudClassifiedRenderer *>( r ) )
+  if ( auto classifiedRenderer = dynamic_cast<const QgsPointCloudClassifiedRenderer *>( r ) )
   {
     mModel->setRendererCategories( classifiedRenderer->categories() );
     mAttributeComboBox->setAttribute( classifiedRenderer->attribute() );

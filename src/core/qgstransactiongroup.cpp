@@ -155,7 +155,7 @@ void QgsTransactionGroup::onRollback()
 
   mEditingStopping = true;
 
-  QgsVectorLayer *triggeringLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto triggeringLayer = qobject_cast<QgsVectorLayer *>( sender() );
 
   QString errMsg;
   if ( mTransaction->rollback( errMsg ) )

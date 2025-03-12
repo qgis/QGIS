@@ -528,7 +528,7 @@ void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
   // also need to update the model's stored component
 
   // TODO - this is not so nice, consider moving this to model class
-  if ( QgsProcessingModelChildAlgorithm *child = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mComponent.get() ) )
+  if ( auto child = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mComponent.get() ) )
     mModel->childAlgorithm( child->childId() ).setLinksCollapsed( edge, folded );
   else if ( QgsProcessingModelParameter *param = dynamic_cast<QgsProcessingModelParameter *>( mComponent.get() ) )
     mModel->parameterComponent( param->parameterName() ).setLinksCollapsed( edge, folded );
@@ -772,7 +772,7 @@ QPicture QgsModelParameterGraphicItem::iconPicture() const
 
 void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
 {
-  if ( QgsProcessingModelParameter *param = dynamic_cast<QgsProcessingModelParameter *>( component() ) )
+  if ( auto param = dynamic_cast<QgsProcessingModelParameter *>( component() ) )
   {
     model()->parameterComponent( param->parameterName() ).setPosition( pos );
     model()->parameterComponent( param->parameterName() ).setSize( size );
@@ -781,7 +781,7 @@ void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF 
 
 bool QgsModelParameterGraphicItem::canDeleteComponent()
 {
-  if ( const QgsProcessingModelParameter *param = dynamic_cast<const QgsProcessingModelParameter *>( component() ) )
+  if ( auto param = dynamic_cast<const QgsProcessingModelParameter *>( component() ) )
   {
     if ( model()->childAlgorithmsDependOnParameter( param->parameterName() ) )
     {
@@ -801,7 +801,7 @@ bool QgsModelParameterGraphicItem::canDeleteComponent()
 
 void QgsModelParameterGraphicItem::deleteComponent()
 {
-  if ( const QgsProcessingModelParameter *param = dynamic_cast<const QgsProcessingModelParameter *>( component() ) )
+  if ( auto param = dynamic_cast<const QgsProcessingModelParameter *>( component() ) )
   {
     if ( model()->childAlgorithmsDependOnParameter( param->parameterName() ) )
     {
@@ -872,7 +872,7 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
   connect( editCommentAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::editComment );
   popupmenu->addSeparator();
 
-  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  if ( auto child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
   {
     if ( !child->isActive() )
     {
@@ -981,7 +981,7 @@ QPicture QgsModelChildAlgorithmGraphicItem::iconPicture() const
 
 int QgsModelChildAlgorithmGraphicItem::linkPointCount( Qt::Edge edge ) const
 {
-  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  if ( auto child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
   {
     if ( !child->algorithm() )
       return 0;
@@ -1013,7 +1013,7 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
   if ( index < 0 )
     return QString();
 
-  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  if ( auto child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
   {
     if ( !child->algorithm() )
       return QString();
@@ -1077,7 +1077,7 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
 
 void QgsModelChildAlgorithmGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
 {
-  if ( QgsProcessingModelChildAlgorithm *child = dynamic_cast<QgsProcessingModelChildAlgorithm *>( component() ) )
+  if ( auto child = dynamic_cast<QgsProcessingModelChildAlgorithm *>( component() ) )
   {
     model()->childAlgorithm( child->childId() ).setPosition( pos );
     model()->childAlgorithm( child->childId() ).setSize( size );
@@ -1086,7 +1086,7 @@ void QgsModelChildAlgorithmGraphicItem::updateStoredComponentPosition( const QPo
 
 bool QgsModelChildAlgorithmGraphicItem::canDeleteComponent()
 {
-  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  if ( auto child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
   {
     return model()->dependentChildAlgorithms( child->childId() ).empty();
   }
@@ -1105,7 +1105,7 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChil
 
 void QgsModelChildAlgorithmGraphicItem::deleteComponent()
 {
-  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  if ( auto child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
   {
     emit aboutToChange( tr( "Remove %1" ).arg( child->algorithm() ? child->algorithm()->displayName() : tr( "Algorithm" ) ) );
     if ( !model()->removeChildAlgorithm( child->childId() ) )
@@ -1123,7 +1123,7 @@ void QgsModelChildAlgorithmGraphicItem::deleteComponent()
 
 void QgsModelChildAlgorithmGraphicItem::deactivateAlgorithm()
 {
-  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  if ( auto child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
   {
     model()->deactivateChildAlgorithm( child->childId() );
     emit requestModelRepaint();
@@ -1132,7 +1132,7 @@ void QgsModelChildAlgorithmGraphicItem::deactivateAlgorithm()
 
 void QgsModelChildAlgorithmGraphicItem::activateAlgorithm()
 {
-  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  if ( auto child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
   {
     if ( model()->activateChildAlgorithm( child->childId() ) )
     {
@@ -1200,7 +1200,7 @@ QPicture QgsModelOutputGraphicItem::iconPicture() const
 
 void QgsModelOutputGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
 {
-  if ( QgsProcessingModelOutput *output = dynamic_cast<QgsProcessingModelOutput *>( component() ) )
+  if ( auto output = dynamic_cast<QgsProcessingModelOutput *>( component() ) )
   {
     model()->childAlgorithm( output->childId() ).modelOutput( output->name() ).setPosition( pos );
     model()->childAlgorithm( output->childId() ).modelOutput( output->name() ).setSize( size );
@@ -1218,7 +1218,7 @@ bool QgsModelOutputGraphicItem::canDeleteComponent()
 
 void QgsModelOutputGraphicItem::deleteComponent()
 {
-  if ( const QgsProcessingModelOutput *output = dynamic_cast<const QgsProcessingModelOutput *>( component() ) )
+  if ( auto output = dynamic_cast<const QgsProcessingModelOutput *>( component() ) )
   {
     emit aboutToChange( tr( "Delete Output %1" ).arg( output->description() ) );
     model()->childAlgorithm( output->childId() ).removeModelOutput( output->name() );
@@ -1305,7 +1305,7 @@ Qt::Alignment QgsModelGroupBoxGraphicItem::titleAlignment() const
 
 void QgsModelGroupBoxGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
 {
-  if ( QgsProcessingModelGroupBox *box = dynamic_cast<QgsProcessingModelGroupBox *>( component() ) )
+  if ( auto box = dynamic_cast<QgsProcessingModelGroupBox *>( component() ) )
   {
     box->setPosition( pos );
     box->setSize( size );
@@ -1324,7 +1324,7 @@ bool QgsModelGroupBoxGraphicItem::canDeleteComponent()
 
 void QgsModelGroupBoxGraphicItem::deleteComponent()
 {
-  if ( const QgsProcessingModelGroupBox *box = dynamic_cast<const QgsProcessingModelGroupBox *>( component() ) )
+  if ( auto box = dynamic_cast<const QgsProcessingModelGroupBox *>( component() ) )
   {
     emit aboutToChange( tr( "Delete Group Box" ) );
     model()->removeGroupBox( box->uuid() );
@@ -1335,7 +1335,7 @@ void QgsModelGroupBoxGraphicItem::deleteComponent()
 
 void QgsModelGroupBoxGraphicItem::editComponent()
 {
-  if ( const QgsProcessingModelGroupBox *box = dynamic_cast<const QgsProcessingModelGroupBox *>( component() ) )
+  if ( auto box = dynamic_cast<const QgsProcessingModelGroupBox *>( component() ) )
   {
     QgsModelGroupBoxDefinitionDialog dlg( *box, this->scene()->views().at( 0 ) );
 
@@ -1457,7 +1457,7 @@ void QgsModelCommentGraphicItem::editComponent()
 
 QgsProcessingModelComment *QgsModelCommentGraphicItem::modelComponent()
 {
-  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( mParentComponent.get() ) )
+  if ( auto child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( mParentComponent.get() ) )
   {
     return model()->childAlgorithm( child->childId() ).comment();
   }

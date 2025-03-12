@@ -88,7 +88,7 @@ bool QgsMapToolShapeRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e
   if ( e->button() == Qt::LeftButton )
   {
     bool is3D = false;
-    QgsVectorLayer *currentLayer = qobject_cast<QgsVectorLayer *>( mParentTool->canvas()->currentLayer() );
+    auto currentLayer = qobject_cast<QgsVectorLayer *>( mParentTool->canvas()->currentLayer() );
     if ( currentLayer )
       is3D = QgsWkbTypes::hasZ( currentLayer->wkbType() );
 
@@ -143,7 +143,7 @@ void QgsMapToolShapeRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, Q
       case 2:
       {
         bool is3D = false;
-        QgsVectorLayer *currentLayer = qobject_cast<QgsVectorLayer *>( mParentTool->canvas()->currentLayer() );
+        auto currentLayer = qobject_cast<QgsVectorLayer *>( mParentTool->canvas()->currentLayer() );
         if ( currentLayer )
           is3D = QgsWkbTypes::hasZ( currentLayer->wkbType() );
 

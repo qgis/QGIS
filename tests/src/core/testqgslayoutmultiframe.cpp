@@ -595,7 +595,7 @@ void TestQgsLayoutMultiFrame::writeReadXml()
   QCOMPARE( frames2.count(), 1 );
   QgsLayoutFrame *frame2 = frames2.at( 0 );
 
-  QgsLayoutItemHtml *html2 = static_cast<QgsLayoutItemHtml *>( frame2->multiFrame() );
+  auto html2 = static_cast<QgsLayoutItemHtml *>( frame2->multiFrame() );
   QVERIFY( html2 );
   QCOMPARE( html2->html(), QStringLiteral( "<blink>hi</blink>" ) );
   QCOMPARE( html2->frameCount(), 1 );

@@ -346,7 +346,7 @@ void QgsLayerMetadata::combine( const QgsAbstractMetadataBase *other )
 {
   QgsAbstractMetadataBase::combine( other );
 
-  if ( const QgsLayerMetadata *otherLayerMetadata = dynamic_cast< const QgsLayerMetadata * >( other ) )
+  if ( auto otherLayerMetadata = dynamic_cast<const QgsLayerMetadata *>( other ) )
   {
     if ( !otherLayerMetadata->fees().isEmpty() )
       mFees = otherLayerMetadata->fees();

@@ -30,7 +30,7 @@
 
 void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsWCSRootItem *rootItem = qobject_cast<QgsWCSRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsWCSRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -45,7 +45,7 @@ void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     menu->addAction( actionLoadServers );
   }
 
-  if ( QgsWCSConnectionItem *connItem = qobject_cast<QgsWCSConnectionItem *>( item ) )
+  if ( auto connItem = qobject_cast<QgsWCSConnectionItem *>( item ) )
   {
     const QList<QgsWCSConnectionItem *> wcsConnectionItems = QgsDataItem::filteredItems<QgsWCSConnectionItem>( selection );
 

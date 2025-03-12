@@ -210,13 +210,13 @@ QgsVectorLayerChunkedEntity::~QgsVectorLayerChunkedEntity()
 // if the AltitudeClamping is `Absolute`, do not apply the offset
 bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
 {
-  QgsVectorLayerChunkLoaderFactory *loaderFactory = static_cast<QgsVectorLayerChunkLoaderFactory *>( mChunkLoaderFactory );
+  auto loaderFactory = static_cast<QgsVectorLayerChunkLoaderFactory *>( mChunkLoaderFactory );
   if ( loaderFactory )
   {
     QString symbolType = loaderFactory->mSymbol.get()->type();
     if ( symbolType == "line" )
     {
-      QgsLine3DSymbol *lineSymbol = static_cast<QgsLine3DSymbol *>( loaderFactory->mSymbol.get() );
+      auto lineSymbol = static_cast<QgsLine3DSymbol *>( loaderFactory->mSymbol.get() );
       if ( lineSymbol && lineSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
       {
         return false;
@@ -224,7 +224,7 @@ bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
     }
     else if ( symbolType == "point" )
     {
-      QgsPoint3DSymbol *pointSymbol = static_cast<QgsPoint3DSymbol *>( loaderFactory->mSymbol.get() );
+      auto pointSymbol = static_cast<QgsPoint3DSymbol *>( loaderFactory->mSymbol.get() );
       if ( pointSymbol && pointSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
       {
         return false;
@@ -232,7 +232,7 @@ bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
     }
     else if ( symbolType == "polygon" )
     {
-      QgsPolygon3DSymbol *polygonSymbol = static_cast<QgsPolygon3DSymbol *>( loaderFactory->mSymbol.get() );
+      auto polygonSymbol = static_cast<QgsPolygon3DSymbol *>( loaderFactory->mSymbol.get() );
       if ( polygonSymbol && polygonSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
       {
         return false;
@@ -296,7 +296,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
       for ( const auto &rend : rendLst )
       {
         auto *geom = rend->geometry();
-        QgsTessellatedPolygonGeometry *polygonGeom = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
+        auto polygonGeom = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
         if ( !polygonGeom )
         {
 #ifdef QGISDEBUG

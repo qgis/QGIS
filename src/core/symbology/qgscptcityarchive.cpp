@@ -789,7 +789,7 @@ bool QgsCptCityColorRampItem::equal( const QgsCptCityDataItem *other )
     return false;
   }
   //const QgsCptCityColorRampItem *o = qobject_cast<const QgsCptCityColorRampItem *> ( other );
-  const QgsCptCityColorRampItem *o = qobject_cast<const QgsCptCityColorRampItem *>( other );
+  auto o = qobject_cast<const QgsCptCityColorRampItem *>( other );
   return o &&
          mPath == o->mPath &&
          mName == o->mName &&
@@ -854,8 +854,8 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   const auto constChildren = children();
   for ( QgsCptCityDataItem *childItem : constChildren )
   {
-    QgsCptCityCollectionItem *collectionItem = qobject_cast<QgsCptCityCollectionItem *>( childItem );
-    QgsCptCityColorRampItem *rampItem = qobject_cast<QgsCptCityColorRampItem *>( childItem );
+    auto collectionItem = qobject_cast<QgsCptCityCollectionItem *>( childItem );
+    auto rampItem = qobject_cast<QgsCptCityColorRampItem *>( childItem );
     QgsDebugMsgLevel( QStringLiteral( "child path= %1 coll= %2 ramp = %3" ).arg( childItem->path() ).arg( nullptr != collectionItem ).arg( nullptr != rampItem ), 2 );
     if ( collectionItem && recursive )
     {
@@ -1313,7 +1313,7 @@ QVector<QgsCptCityDataItem *> QgsCptCityAllRampsItem::createChildren()
   const auto constMItems = mItems;
   for ( QgsCptCityDataItem *item : constMItems )
   {
-    QgsCptCityCollectionItem *colItem = qobject_cast< QgsCptCityCollectionItem * >( item );
+    auto colItem = qobject_cast<QgsCptCityCollectionItem *>( item );
     if ( colItem )
       children += colItem->childrenRamps( true );
   }
@@ -1526,7 +1526,7 @@ QModelIndex QgsCptCityBrowserModel::findPath( const QString &path )
       // if we are using a selection collection, search for target in the mapping in this group
       if ( item->type() == QgsCptCityDataItem::Selection )
       {
-        const QgsCptCitySelectionItem *selItem = qobject_cast<const QgsCptCitySelectionItem *>( item );
+        auto selItem = qobject_cast<const QgsCptCitySelectionItem *>( item );
         if ( selItem )
         {
           const auto constSelectionsList = selItem->selectionsList();
@@ -1695,7 +1695,7 @@ void QgsCptCityBrowserModel::fetchMore( const QModelIndex &parent )
 QgsCptCityDataItem *QgsCptCityBrowserModel::dataItem( const QModelIndex &idx ) const
 {
   void *v = idx.internalPointer();
-  QgsCptCityDataItem *d = reinterpret_cast<QgsCptCityDataItem *>( v );
+  auto d = reinterpret_cast<QgsCptCityDataItem *>( v );
   Q_ASSERT( !v || d );
   return d;
 }

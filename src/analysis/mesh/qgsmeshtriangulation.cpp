@@ -171,7 +171,7 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
     std::vector<const QgsCurvePolygon *> polygons;
     if ( geom.isMultipart() )
     {
-      const QgsMultiSurface *ms = qgsgeometry_cast<const QgsMultiSurface *>( geom.constGet() );
+      auto ms = qgsgeometry_cast<const QgsMultiSurface *>( geom.constGet() );
       for ( int i = 0; i < ms->numGeometries(); ++i )
       {
         polygons.emplace_back( qgsgeometry_cast<const QgsCurvePolygon *>( ms->geometryN( i ) ) );
@@ -204,7 +204,7 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
   {
     if ( geom.isMultipart() )
     {
-      const QgsMultiCurve *mc = qgsgeometry_cast<const QgsMultiCurve *>( geom.constGet() );
+      auto mc = qgsgeometry_cast<const QgsMultiCurve *>( geom.constGet() );
       for ( int i = 0; i < mc->numGeometries(); ++i )
       {
         if ( feedback && feedback->isCanceled() )

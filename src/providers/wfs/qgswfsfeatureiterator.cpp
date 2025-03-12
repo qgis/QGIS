@@ -631,7 +631,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
           {
             Qgis::WkbType singleType = QgsWkbTypes::singleType( mShared->mWKBType );
             const QgsAbstractGeometry *g = f.geometry().constGet();
-            if ( const QgsGeometryCollection *gc = qgsgeometry_cast<const QgsGeometryCollection *>( g ) )
+            if ( auto gc = qgsgeometry_cast<const QgsGeometryCollection *>( g ) )
             {
               bool allExpectedType = true;
               for ( int i = 0; i < gc->numGeometries(); ++i )

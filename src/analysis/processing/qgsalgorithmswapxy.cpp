@@ -63,7 +63,7 @@ QgsSwapXYAlgorithm *QgsSwapXYAlgorithm::createInstance() const
 
 bool QgsSwapXYAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
+  auto layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 

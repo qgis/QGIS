@@ -103,7 +103,7 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
       expressionContext.setFeature( mFeature );
       if ( mAction.type() == Qgis::AttributeActionType::GenericPython )
       {
-        if ( QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent() ) )
+        if ( auto form = qobject_cast<QgsAttributeForm *>( parent() ) )
         {
           const QString formCode = QStringLiteral( "locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n" )
                                      .arg( ( quint64 ) form );

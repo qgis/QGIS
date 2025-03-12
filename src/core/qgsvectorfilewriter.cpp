@@ -3094,7 +3094,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           Qgis::WkbType wkbType = geom.wkbType();
           if ( wkbType >= Qgis::WkbType::PointZ && wkbType <= Qgis::WkbType::MultiPolygonZ )
           {
-            Qgis::WkbType wkbType25d = static_cast<Qgis::WkbType>( static_cast< quint32>( geom.wkbType() ) - static_cast< quint32>( Qgis::WkbType::PointZ ) + static_cast<quint32>( Qgis::WkbType::Point25D ) );
+            auto wkbType25d = static_cast<Qgis::WkbType>( static_cast< quint32>( geom.wkbType() ) - static_cast< quint32>( Qgis::WkbType::PointZ ) + static_cast<quint32>( Qgis::WkbType::Point25D ) );
             mGeom2 = createEmptyGeometry( wkbType25d );
           }
         }
@@ -4451,7 +4451,7 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
     {
       case QgsVectorFileWriter::Int:
       {
-        QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( option );
+        auto opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( option );
         if ( opt )
         {
           list.append( QStringLiteral( "%1=%2" ).arg( it.key() ).arg( opt->defaultValue ) );
@@ -4461,7 +4461,7 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
 
       case QgsVectorFileWriter::Set:
       {
-        QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( option );
+        auto opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( option );
         if ( opt && !opt->defaultValue.isEmpty() )
         {
           list.append( QStringLiteral( "%1=%2" ).arg( it.key(), opt->defaultValue ) );
@@ -4471,7 +4471,7 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
 
       case QgsVectorFileWriter::String:
       {
-        QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( option );
+        auto opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( option );
         if ( opt && !opt->defaultValue.isNull() )
         {
           list.append( QStringLiteral( "%1=%2" ).arg( it.key(), opt->defaultValue ) );
@@ -4480,7 +4480,7 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
       }
 
       case QgsVectorFileWriter::Hidden:
-        QgsVectorFileWriter::HiddenOption *opt = dynamic_cast<QgsVectorFileWriter::HiddenOption *>( option );
+        auto opt = dynamic_cast<QgsVectorFileWriter::HiddenOption *>( option );
         if ( opt && !opt->mValue.isEmpty() )
         {
           list.append( QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue ) );

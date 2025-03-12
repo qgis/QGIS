@@ -70,7 +70,7 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
 
 void QgsPointCloudLayer3DRendererWidget::apply()
 {
-  QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer );
+  auto pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer );
   bool syncWith2DRenderer = pcLayer->sync3DRendererTo2DRenderer();
 
   QgsPointCloudLayer3DRenderer *r = nullptr;
@@ -117,7 +117,7 @@ QgsPointCloudLayer3DRendererWidgetFactory::QgsPointCloudLayer3DRendererWidgetFac
 QgsMapLayerConfigWidget *QgsPointCloudLayer3DRendererWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const
 {
   Q_UNUSED( dockWidget )
-  QgsPointCloudLayer *pointCloudLayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  auto pointCloudLayer = qobject_cast<QgsPointCloudLayer *>( layer );
   if ( !pointCloudLayer )
     return nullptr;
   QgsPointCloudLayer3DRendererWidget *widget = new QgsPointCloudLayer3DRendererWidget( pointCloudLayer, canvas, parent );

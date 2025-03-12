@@ -205,7 +205,7 @@ void QgsQuickElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, 
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+      auto vl = qobject_cast<QgsVectorLayer *>( layer );
       if ( isDisconnect )
       {
         disconnect( vl, &QgsVectorLayer::featureAdded, this, &QgsQuickElevationProfileCanvas::regenerateResultsForLayer );
@@ -268,7 +268,7 @@ void QgsQuickElevationProfileCanvas::refresh()
   sources.reserve( layersToGenerate.size() );
   for ( QgsMapLayer *layer : layersToGenerate )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
       sources.append( source );
   }
 
@@ -341,13 +341,13 @@ void QgsQuickElevationProfileCanvas::onLayerProfileGenerationPropertyChanged()
   if ( !mCurrentJob || mCurrentJob->isActive() )
     return;
 
-  QgsMapLayerElevationProperties *properties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
+  auto properties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
   if ( !properties )
     return;
 
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
     {
       if ( mCurrentJob->invalidateResults( source ) )
         scheduleDeferredRegeneration();
@@ -361,13 +361,13 @@ void QgsQuickElevationProfileCanvas::onLayerProfileRendererPropertyChanged()
   if ( !mCurrentJob || mCurrentJob->isActive() )
     return;
 
-  QgsMapLayerElevationProperties *properties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
+  auto properties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
   if ( !properties )
     return;
 
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
     {
       mCurrentJob->replaceSource( source );
     }
@@ -381,9 +381,9 @@ void QgsQuickElevationProfileCanvas::regenerateResultsForLayer()
   if ( !mCurrentJob )
     return;
 
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( sender() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
     {
       if ( mCurrentJob->invalidateResults( source ) )
         scheduleDeferredRegeneration();
@@ -563,7 +563,7 @@ QSGNode *QgsQuickElevationProfileCanvas::updatePaintNode( QSGNode *oldNode, QQui
   QSGNode *newNode = nullptr;
   if ( !mImage.isNull() )
   {
-    QSGSimpleTextureNode *node = static_cast<QSGSimpleTextureNode *>( oldNode );
+    auto node = static_cast<QSGSimpleTextureNode *>( oldNode );
     if ( !node )
     {
       node = new QSGSimpleTextureNode();
@@ -594,7 +594,7 @@ QSGNode *QgsQuickElevationProfileCanvas::updatePaintNode( QSGNode *oldNode, QQui
   }
   else
   {
-    QSGSimpleRectNode *node = static_cast<QSGSimpleRectNode *>( oldNode );
+    auto node = static_cast<QSGSimpleRectNode *>( oldNode );
     if ( !node )
     {
       node = new QSGSimpleRectNode();

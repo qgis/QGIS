@@ -117,7 +117,7 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
   // Get max source resolution and extent if possible
   if ( input )
   {
-    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider *>( input->sourceInput() );
+    auto provider = dynamic_cast<QgsRasterDataProvider *>( input->sourceInput() );
     if ( provider )
     {
       // If provider-side resampling is possible, we will get a much better looking

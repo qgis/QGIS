@@ -1159,7 +1159,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
           shdwContext.setPainter( &svgp );
 
           std::unique_ptr< QgsSymbolLayer > symShdwL( QgsSvgMarkerSymbolLayer::create( shdwmap ) );
-          QgsSvgMarkerSymbolLayer *svgShdwM = static_cast<QgsSvgMarkerSymbolLayer *>( symShdwL.get() );
+          auto svgShdwM = static_cast<QgsSvgMarkerSymbolLayer *>( symShdwL.get() );
           QgsSymbolRenderContext svgShdwContext( shdwContext, Qgis::RenderUnit::Unknown, background.opacity() );
 
           svgShdwM->renderPoint( QPointF( sizeOut / 2, -sizeOut / 2 ), svgShdwContext );

@@ -235,10 +235,10 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
                                            "}"
                                            "}" );
   std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
-  QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
+  auto marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
   QVERIFY( marker );
   QCOMPARE( marker->symbolLayerCount(), 1 );
-  QgsSimpleMarkerSymbolLayer *markerLayer = dynamic_cast<QgsSimpleMarkerSymbolLayer *>( marker->symbolLayer( 0 ) );
+  auto markerLayer = dynamic_cast<QgsSimpleMarkerSymbolLayer *>( marker->symbolLayer( 0 ) );
   QVERIFY( markerLayer );
   QCOMPARE( markerLayer->fillColor(), QColor( 76, 115, 10, 200 ) );
   QCOMPARE( markerLayer->shape(), Qgis::MarkerShape::Square );
@@ -298,10 +298,10 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
                                                "}" );
 
   std::unique_ptr<QgsSymbol> fontSymbol( QgsArcGisRestUtils::convertSymbol( fontMap ) );
-  QgsMarkerSymbol *fontMarker = dynamic_cast<QgsMarkerSymbol *>( fontSymbol.get() );
+  auto fontMarker = dynamic_cast<QgsMarkerSymbol *>( fontSymbol.get() );
   QVERIFY( fontMarker );
   QCOMPARE( fontMarker->symbolLayerCount(), 1 );
-  QgsFontMarkerSymbolLayer *fontMarkerLayer = dynamic_cast<QgsFontMarkerSymbolLayer *>( fontMarker->symbolLayer( 0 ) );
+  auto fontMarkerLayer = dynamic_cast<QgsFontMarkerSymbolLayer *>( fontMarker->symbolLayer( 0 ) );
   QVERIFY( fontMarkerLayer );
   QCOMPARE( fontMarkerLayer->fontStyle(), QString( "normal" ) );
   QCOMPARE( fontMarkerLayer->fontFamily(), QString( "Arial" ) );
@@ -335,10 +335,10 @@ void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
                                            "\"yoffset\": 17"
                                            "}" );
   std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
-  QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
+  auto marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
   QVERIFY( marker );
   QCOMPARE( marker->symbolLayerCount(), 1 );
-  QgsRasterMarkerSymbolLayer *markerLayer = dynamic_cast<QgsRasterMarkerSymbolLayer *>( marker->symbolLayer( 0 ) );
+  auto markerLayer = dynamic_cast<QgsRasterMarkerSymbolLayer *>( marker->symbolLayer( 0 ) );
   QVERIFY( markerLayer );
   QCOMPARE( markerLayer->path(), QStringLiteral( "base64:abcdef" ) );
   QCOMPARE( markerLayer->size(), 20.0 );
@@ -367,10 +367,10 @@ void TestQgsArcGisRestUtils::testParseLineSymbol()
                                            "\"width\": 7"
                                            "}" );
   std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
-  QgsLineSymbol *line = dynamic_cast<QgsLineSymbol *>( symbol.get() );
+  auto line = dynamic_cast<QgsLineSymbol *>( symbol.get() );
   QVERIFY( line );
   QCOMPARE( line->symbolLayerCount(), 1 );
-  QgsSimpleLineSymbolLayer *lineLayer = dynamic_cast<QgsSimpleLineSymbolLayer *>( line->symbolLayer( 0 ) );
+  auto lineLayer = dynamic_cast<QgsSimpleLineSymbolLayer *>( line->symbolLayer( 0 ) );
   QVERIFY( lineLayer );
   QCOMPARE( lineLayer->color(), QColor( 115, 76, 10, 212 ) );
   QCOMPARE( lineLayer->width(), 7.0 );
@@ -406,10 +406,10 @@ void TestQgsArcGisRestUtils::testParseFillSymbol()
                                            "}"
                                            "}" );
   const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
-  QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
+  auto fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
   QVERIFY( fill );
   QCOMPARE( fill->symbolLayerCount(), 1 );
-  QgsSimpleFillSymbolLayer *fillLayer = dynamic_cast<QgsSimpleFillSymbolLayer *>( fill->symbolLayer( 0 ) );
+  auto fillLayer = dynamic_cast<QgsSimpleFillSymbolLayer *>( fill->symbolLayer( 0 ) );
   QVERIFY( fillLayer );
   QCOMPARE( fillLayer->fillColor(), QColor( 115, 76, 10, 200 ) );
   QCOMPARE( fillLayer->brushStyle(), Qt::HorPattern );
@@ -443,15 +443,15 @@ void TestQgsArcGisRestUtils::testParsePictureFillSymbol()
                                            "}"
                                            "}" );
   const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
-  QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
+  auto fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
   QVERIFY( fill );
   QCOMPARE( fill->symbolLayerCount(), 2 );
-  QgsRasterFillSymbolLayer *fillLayer = dynamic_cast<QgsRasterFillSymbolLayer *>( fill->symbolLayer( 0 ) );
+  auto fillLayer = dynamic_cast<QgsRasterFillSymbolLayer *>( fill->symbolLayer( 0 ) );
   QVERIFY( fillLayer );
   QCOMPARE( fillLayer->imageFilePath(), QString( "base64:abcdef" ) );
   QCOMPARE( fillLayer->width(), 20.0 );
   QCOMPARE( fillLayer->sizeUnit(), Qgis::RenderUnit::Points );
-  QgsSimpleLineSymbolLayer *lineLayer = dynamic_cast<QgsSimpleLineSymbolLayer *>( fill->symbolLayer( 1 ) );
+  auto lineLayer = dynamic_cast<QgsSimpleLineSymbolLayer *>( fill->symbolLayer( 1 ) );
   QVERIFY( lineLayer );
   QCOMPARE( lineLayer->color(), QColor( 110, 120, 130, 215 ) );
   QCOMPARE( lineLayer->width(), 5.0 );
@@ -490,7 +490,7 @@ void TestQgsArcGisRestUtils::testParseRendererSimple()
                                            "}"
                                            "}" );
   const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map ) );
-  QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
+  auto ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
   QVERIFY( ssRenderer );
   QVERIFY( ssRenderer->symbol() );
 }
@@ -562,7 +562,7 @@ void TestQgsArcGisRestUtils::testParseRendererCategorized()
                                            "]"
                                            "}" );
   const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map ) );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
   QVERIFY( catRenderer );
   QCOMPARE( catRenderer->categories().count(), 2 );
   QCOMPARE( catRenderer->categories().at( 0 ).value().toString(), QStringLiteral( "US" ) );
@@ -655,7 +655,7 @@ void TestQgsArcGisRestUtils::testParseLabeling()
                                            "}" );
   const std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling( QgsArcGisRestUtils::convertLabeling( map.value( QStringLiteral( "labelingInfo" ) ).toList() ) );
   QVERIFY( labeling );
-  QgsRuleBasedLabeling *rules = dynamic_cast<QgsRuleBasedLabeling *>( labeling.get() );
+  auto rules = dynamic_cast<QgsRuleBasedLabeling *>( labeling.get() );
   QVERIFY( rules );
   QgsRuleBasedLabeling::Rule *root = rules->rootRule();
   QVERIFY( root );

@@ -260,7 +260,7 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
 
   if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
+    auto wkbType = static_cast<Qgis::WkbType>( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
 
     QString tip;
     if ( wkbType == Qgis::WkbType::Unknown )
@@ -313,7 +313,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
     return QString();
   }
 
-  Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
+  auto wkbType = static_cast<Qgis::WkbType>( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
   if ( wkbType == Qgis::WkbType::Unknown )
   {
     QgsDebugError( QStringLiteral( "unknown geometry type" ) );

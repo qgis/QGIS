@@ -130,7 +130,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
           auto *geom = rend->geometry();
           Qt3DCore::QTransform *tr = node->entity()->findChild<Qt3DCore::QTransform *>();
           QVector3D nodeIntPoint;
-          DemTerrainTileGeometry *demGeom = static_cast<DemTerrainTileGeometry *>( geom );
+          auto demGeom = static_cast<DemTerrainTileGeometry *>( geom );
           if ( demGeom->rayIntersection( ray, tr->matrix(), nodeIntPoint ) )
           {
             const float dist = ( ray.origin() - intersectionPoint ).length();
@@ -230,7 +230,7 @@ TerrainMapUpdateJob::TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGen
   : QgsChunkQueueJob( node )
   , mTextureGenerator( textureGenerator )
 {
-  QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity() );
+  auto entity = qobject_cast<QgsTerrainTileEntity *>( node->entity() );
   connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
   mJobId = textureGenerator->render( entity->textureImage()->imageExtent(), node->tileId(), entity->textureImage()->imageDebugText() );
 }
@@ -246,7 +246,7 @@ void TerrainMapUpdateJob::onTileReady( int jobId, const QImage &image )
 {
   if ( mJobId == jobId )
   {
-    QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( mNode->entity() );
+    auto entity = qobject_cast<QgsTerrainTileEntity *>( mNode->entity() );
     entity->textureImage()->setImage( image );
     mJobId = -1;
     emit finished();

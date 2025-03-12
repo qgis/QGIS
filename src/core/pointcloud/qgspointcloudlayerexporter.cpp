@@ -92,7 +92,7 @@ void QgsPointCloudLayerExporter::setFilterGeometry( const QgsAbstractGeometry *g
 
 void QgsPointCloudLayerExporter::setFilterGeometry( QgsMapLayer *layer, bool selectedFeaturesOnly )
 {
-  QgsVectorLayer *vlayer = dynamic_cast< QgsVectorLayer * >( layer );
+  auto vlayer = dynamic_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
     return;
 
@@ -454,7 +454,7 @@ void QgsPointCloudLayerExporter::ExporterMemory::handlePoint( double x, double y
 
 void QgsPointCloudLayerExporter::ExporterMemory::handleNode()
 {
-  QgsVectorLayer *vl = qgis::down_cast<QgsVectorLayer *>( mParent->mMemoryLayer );
+  auto vl = qgis::down_cast<QgsVectorLayer *>( mParent->mMemoryLayer );
   if ( vl )
   {
     if ( ! vl->dataProvider()->addFeatures( mFeatures ) )

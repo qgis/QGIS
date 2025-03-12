@@ -261,7 +261,7 @@ bool QgsOracleConnectionItem::equal( const QgsDataItem *other )
     return false;
   }
 
-  const QgsOracleConnectionItem *o = qobject_cast<const QgsOracleConnectionItem *>( other );
+  auto o = qobject_cast<const QgsOracleConnectionItem *>( other );
   return ( mPath == o->mPath && mName == o->mName && o->parent() == parent() );
 }
 
@@ -462,7 +462,7 @@ bool QgsOracleLayerItem::deleteLayer()
 QString QgsOracleLayerItem::createUri()
 {
   Q_ASSERT( mLayerProperty.size() == 1 );
-  QgsOracleConnectionItem *connItem = qobject_cast<QgsOracleConnectionItem *>( parent() ? parent()->parent() : nullptr );
+  auto connItem = qobject_cast<QgsOracleConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
   {

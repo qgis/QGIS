@@ -113,7 +113,7 @@ QgsProviderSublayerModelGroup *QgsProviderSublayerModelGroup::findGroup( const Q
 {
   for ( const auto &node : mChildren )
   {
-    if ( QgsProviderSublayerModelGroup *group = dynamic_cast< QgsProviderSublayerModelGroup * >( node.get() ) )
+    if ( auto group = dynamic_cast<QgsProviderSublayerModelGroup *>( node.get() ) )
     {
       if ( group->name() == name )
         return group;
@@ -136,7 +136,7 @@ QgsProviderSublayerModelSublayerNode *QgsProviderSublayerModelGroup::findSublaye
 {
   for ( const auto &node : mChildren )
   {
-    if ( QgsProviderSublayerModelGroup *group = dynamic_cast< QgsProviderSublayerModelGroup * >( node.get() ) )
+    if ( auto group = dynamic_cast<QgsProviderSublayerModelGroup *>( node.get() ) )
     {
       if ( QgsProviderSublayerModelSublayerNode *node = group->findSublayer( sublayer ) )
         return node;
@@ -409,7 +409,7 @@ QList<QgsProviderSublayerDetails> QgsProviderSublayerModel::sublayerDetails() co
 
 QgsProviderSublayerDetails QgsProviderSublayerModel::indexToSublayer( const QModelIndex &index ) const
 {
-  if ( QgsProviderSublayerModelSublayerNode *n = dynamic_cast< QgsProviderSublayerModelSublayerNode *>( index2node( index ) ) )
+  if ( auto n = dynamic_cast<QgsProviderSublayerModelSublayerNode *>( index2node( index ) ) )
     return n->sublayer();
   else
     return QgsProviderSublayerDetails();
@@ -417,7 +417,7 @@ QgsProviderSublayerDetails QgsProviderSublayerModel::indexToSublayer( const QMod
 
 QgsProviderSublayerModel::NonLayerItem QgsProviderSublayerModel::indexToNonLayerItem( const QModelIndex &index ) const
 {
-  if ( QgsProviderSublayerModelNonLayerItemNode *n = dynamic_cast< QgsProviderSublayerModelNonLayerItemNode *>( index2node( index ) ) )
+  if ( auto n = dynamic_cast<QgsProviderSublayerModelNonLayerItemNode *>( index2node( index ) ) )
     return n->item();
   else
     return QgsProviderSublayerModel::NonLayerItem();
@@ -439,7 +439,7 @@ QModelIndex QgsProviderSublayerModel::index( int row, int column, const QModelIn
     return QModelIndex();
   }
 
-  QgsProviderSublayerModelGroup *n = dynamic_cast< QgsProviderSublayerModelGroup *>( index2node( parent ) );
+  auto n = dynamic_cast<QgsProviderSublayerModelGroup *>( index2node( parent ) );
   if ( !n )
     return QModelIndex(); // have no children
 

@@ -243,7 +243,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEditV2(
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      auto moveOperation = dynamic_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       if ( moveOperation->nodeId().vertex == 0 )
       {
         mPoint = moveOperation->after();
@@ -266,7 +266,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEditV2(
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      auto moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       mPoint.setX( mPoint.x() + moveOperation->translationX() );
       mPoint.setY( mPoint.y() + moveOperation->translationY() );
       return Qgis::AnnotationItemEditOperationResult::Success;
@@ -285,13 +285,13 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPointTextItem::tran
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      auto moveOperation = dynamic_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      auto moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( new QgsPoint( mPoint.x() + moveOperation->translationX(), mPoint.y() + moveOperation->translationY() ) ) );
     }
 

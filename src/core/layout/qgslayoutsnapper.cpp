@@ -332,7 +332,7 @@ double QgsLayoutSnapper::snapPointsToItems( const QList<double> &points, Qt::Ori
   QList< double > currentCoords;
   for ( QGraphicsItem *item : itemList )
   {
-    QgsLayoutItem *currentItem = dynamic_cast< QgsLayoutItem *>( item );
+    auto currentItem = dynamic_cast<QgsLayoutItem *>( item );
     if ( !currentItem || ignoreItems.contains( currentItem ) )
       continue;
     if ( currentItem->type() == QgsLayoutItemRegistry::LayoutGroup )

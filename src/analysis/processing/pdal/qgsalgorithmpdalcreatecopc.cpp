@@ -112,7 +112,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
     if ( !layer )
       continue;
 
-    QgsPointCloudLayer *pcl = qobject_cast<QgsPointCloudLayer *>( layer );
+    auto pcl = qobject_cast<QgsPointCloudLayer *>( layer );
     if ( !pcl )
       continue;
 

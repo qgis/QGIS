@@ -78,7 +78,7 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
 
     case QgsExpressionNode::ntFunction:
     {
-      const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
+      auto n = static_cast<const QgsExpressionNodeFunction *>( node );
       QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
 
       if ( fd->name() == QLatin1String( "make_datetime" ) || fd->name() == QLatin1String( "make_date" ) || fd->name() == QLatin1String( "make_time" ) )

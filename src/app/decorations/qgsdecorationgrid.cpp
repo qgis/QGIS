@@ -603,7 +603,7 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values ) const
     QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "Please select a raster layer." ) );
     return false;
   }
-  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  auto rlayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( !rlayer || rlayer->width() == 0 || rlayer->height() == 0 )
   {
     QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "Invalid raster layer" ) );

@@ -340,20 +340,20 @@ void QgsLayerStylingWidget::apply()
 
   bool styleWasChanged = false;
   bool triggerRepaint = false; // whether the change needs the layer to be repainted
-  if ( QgsMaskingWidget *widget = qobject_cast<QgsMaskingWidget *>( current ) )
+  if ( auto widget = qobject_cast<QgsMaskingWidget *>( current ) )
   {
     widget->apply();
     styleWasChanged = true;
     undoName = QStringLiteral( "Mask Change" );
   }
-  if ( QgsPanelWidgetWrapper *wrapper = qobject_cast<QgsPanelWidgetWrapper *>( current ) )
+  if ( auto wrapper = qobject_cast<QgsPanelWidgetWrapper *>( current ) )
   {
     if ( mCurrentLayer )
     {
-      if ( QgsRendererPropertiesDialog *widget = qobject_cast<QgsRendererPropertiesDialog *>( wrapper->widget() ) )
+      if ( auto widget = qobject_cast<QgsRendererPropertiesDialog *>( wrapper->widget() ) )
       {
         widget->apply();
-        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
+        auto layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
         QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( layer->renderer()->type() );
         undoName = QStringLiteral( "Style Change - %1" ).arg( m->visibleName() );
         styleWasChanged = true;
@@ -446,7 +446,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
   if ( QgsPanelWidget *current = mWidgetStack->takeMainPanel() )
   {
-    if ( QgsLabelingWidget *widget = qobject_cast<QgsLabelingWidget *>( current ) )
+    if ( auto widget = qobject_cast<QgsLabelingWidget *>( current ) )
     {
       mLabelingWidget = widget;
     }
@@ -512,7 +512,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
+        auto vlayer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
 
 #ifdef HAVE_3D
         const int tabShift = 1; // To move subsequent tabs
@@ -591,7 +591,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
       case Qgis::LayerType::Raster:
       {
-        QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( mCurrentLayer );
+        auto rlayer = qobject_cast<QgsRasterLayer *>( mCurrentLayer );
         bool hasMinMaxCollapsedState = false;
         bool minMaxCollapsed = false;
 
@@ -731,7 +731,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
       case Qgis::LayerType::Mesh:
       {
-        QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( mCurrentLayer );
+        auto meshLayer = qobject_cast<QgsMeshLayer *>( mCurrentLayer );
         switch ( row )
         {
           case 0: // Style
@@ -777,7 +777,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
       case Qgis::LayerType::VectorTile:
       {
-        QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( mCurrentLayer );
+        auto vtLayer = qobject_cast<QgsVectorTileLayer *>( mCurrentLayer );
         switch ( row )
         {
           case 0: // Style
@@ -843,7 +843,7 @@ void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const 
     mStackedWidget->setCurrentIndex( mLayerPage );
   }
 
-  if ( QgsMapLayerConfigWidget *configWidget = qobject_cast<QgsMapLayerConfigWidget *>( mWidgetStack->mainPanel() ) )
+  if ( auto configWidget = qobject_cast<QgsMapLayerConfigWidget *>( mWidgetStack->mainPanel() ) )
   {
     configWidget->setMapLayerConfigWidgetContext( mContext );
   }
@@ -876,7 +876,7 @@ void QgsLayerStylingWidget::setLayerTreeGroup( QgsLayerTreeGroup *group )
 
   mStackedWidget->setCurrentIndex( 1 );
 
-  if ( QgsMapLayerConfigWidget *configWidget = qobject_cast<QgsMapLayerConfigWidget *>( mWidgetStack->mainPanel() ) )
+  if ( auto configWidget = qobject_cast<QgsMapLayerConfigWidget *>( mWidgetStack->mainPanel() ) )
   {
     configWidget->setMapLayerConfigWidgetContext( mContext );
   }
@@ -884,7 +884,7 @@ void QgsLayerStylingWidget::setLayerTreeGroup( QgsLayerTreeGroup *group )
 
 void QgsLayerStylingWidget::focusDefaultWidget()
 {
-  if ( QgsMapLayerConfigWidget *configWidget = qobject_cast<QgsMapLayerConfigWidget *>( mWidgetStack->mainPanel() ) )
+  if ( auto configWidget = qobject_cast<QgsMapLayerConfigWidget *>( mWidgetStack->mainPanel() ) )
   {
     configWidget->focusDefaultWidget();
   }
@@ -962,7 +962,7 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand *other )
   if ( other->id() != id() ) // make sure other is also an QgsMapLayerStyleCommand
     return false;
 
-  const QgsMapLayerStyleCommand *otherCmd = static_cast<const QgsMapLayerStyleCommand *>( other );
+  auto otherCmd = static_cast<const QgsMapLayerStyleCommand *>( other );
   if ( otherCmd->mLayer != mLayer )
     return false; // should never happen though...
 

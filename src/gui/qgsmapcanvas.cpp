@@ -426,7 +426,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
         disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
         disconnect( vlayer, &QgsVectorLayer::rendererChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
         break;
@@ -434,7 +434,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
 
       case Qgis::LayerType::VectorTile:
       {
-        QgsVectorTileLayer *vtlayer = qobject_cast<QgsVectorTileLayer *>( layer );
+        auto vtlayer = qobject_cast<QgsVectorTileLayer *>( layer );
         disconnect( vtlayer, &QgsVectorTileLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
         break;
       }
@@ -463,7 +463,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
         connect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
         connect( vlayer, &QgsVectorLayer::rendererChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
         break;
@@ -471,7 +471,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
 
       case Qgis::LayerType::VectorTile:
       {
-        QgsVectorTileLayer *vtlayer = qobject_cast<QgsVectorTileLayer *>( layer );
+        auto vtlayer = qobject_cast<QgsVectorTileLayer *>( layer );
         connect( vtlayer, &QgsVectorTileLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
         break;
       }
@@ -560,7 +560,7 @@ void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
 {
   if ( mController )
     disconnect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
-  if ( QgsTemporalNavigationObject *temporalNavigationObject = qobject_cast<QgsTemporalNavigationObject *>( mController ) )
+  if ( auto temporalNavigationObject = qobject_cast<QgsTemporalNavigationObject *>( mController ) )
   {
     disconnect( temporalNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsMapCanvas::temporalControllerModeChanged );
 
@@ -572,13 +572,13 @@ void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
 
   mController = controller;
   connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
-  if ( QgsTemporalNavigationObject *temporalNavigationObject = qobject_cast<QgsTemporalNavigationObject *>( mController ) )
+  if ( auto temporalNavigationObject = qobject_cast<QgsTemporalNavigationObject *>( mController ) )
     connect( temporalNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsMapCanvas::temporalControllerModeChanged );
 }
 
 void QgsMapCanvas::temporalControllerModeChanged()
 {
-  if ( QgsTemporalNavigationObject *temporalNavigationObject = qobject_cast<QgsTemporalNavigationObject *>( mController ) )
+  if ( auto temporalNavigationObject = qobject_cast<QgsTemporalNavigationObject *>( mController ) )
   {
     switch ( temporalNavigationObject->navigationMode() )
     {
@@ -712,7 +712,7 @@ QgsExpressionContext QgsMapCanvas::createExpressionContext() const
                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
                     << QgsExpressionContextUtils::atlasScope( nullptr )
                     << QgsExpressionContextUtils::mapSettingsScope( mSettings );
-  if ( QgsExpressionContextScopeGenerator *generator = dynamic_cast<QgsExpressionContextScopeGenerator *>( mController ) )
+  if ( auto generator = dynamic_cast<QgsExpressionContextScopeGenerator *>( mController ) )
   {
     expressionContext << generator->createExpressionContextScope();
   }
@@ -757,7 +757,7 @@ QList<QgsMapLayer *> filterLayersForRender( const QList<QgsMapLayer *> &layers )
   QList<QgsMapLayer *> filteredLayers;
   for ( QgsMapLayer *layer : layers )
   {
-    if ( QgsAnnotationLayer *annotationLayer = qobject_cast<QgsAnnotationLayer *>( layer ) )
+    if ( auto annotationLayer = qobject_cast<QgsAnnotationLayer *>( layer ) )
     {
       if ( QgsMapLayer *linkedLayer = annotationLayer->linkedVisibilityLayer() )
       {
@@ -793,7 +793,7 @@ void QgsMapCanvas::refreshMap()
   mSettings.setExpressionContext( createExpressionContext() );
 
   // if using the temporal controller in animation mode, get the frame settings from that
-  if ( QgsTemporalNavigationObject *temporalNavigationObject = dynamic_cast<QgsTemporalNavigationObject *>( mController ) )
+  if ( auto temporalNavigationObject = dynamic_cast<QgsTemporalNavigationObject *>( mController ) )
   {
     switch ( temporalNavigationObject->navigationMode() )
     {
@@ -1001,7 +1001,7 @@ void QgsMapCanvas::rendererJobFinished()
 
 void QgsMapCanvas::previewJobFinished()
 {
-  QgsMapRendererQImageJob *job = qobject_cast<QgsMapRendererQImageJob *>( sender() );
+  auto job = qobject_cast<QgsMapRendererQImageJob *>( sender() );
   Q_ASSERT( job );
 
   if ( mMap )
@@ -1061,7 +1061,7 @@ void QgsMapCanvas::clearTemporalCache()
     for ( QgsMapLayer *layer : layerList )
     {
       bool alreadyInvalidatedThisLayer = false;
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
       {
         if ( vl->renderer() && QgsSymbolLayerUtils::rendererFrameRate( vl->renderer() ) > -1 )
         {
@@ -1076,7 +1076,7 @@ void QgsMapCanvas::clearTemporalCache()
 
       if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
       {
-        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+        if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
         {
           if ( vl->labelsEnabled() || vl->diagramsEnabled() || ( vl->renderer() && vl->renderer()->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) ) )
             invalidateLabels = true;
@@ -1125,7 +1125,7 @@ void QgsMapCanvas::clearElevationCache()
     {
       if ( layer->elevationProperties() && layer->elevationProperties()->hasElevation() )
       {
-        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+        if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
         {
           if ( vl->labelsEnabled() || vl->diagramsEnabled() || ( vl->renderer() && vl->renderer()->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) ) )
             invalidateLabels = true;
@@ -1786,7 +1786,7 @@ void QgsMapCanvas::zoomToSelected( QgsMapLayer *layer )
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( vlayer->selectedFeatureCount() == 0 )
         return;
 
@@ -1811,7 +1811,7 @@ void QgsMapCanvas::zoomToSelected( QgsMapLayer *layer )
 
     case Qgis::LayerType::VectorTile:
     {
-      QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
+      auto vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
       if ( vtLayer->selectedFeatureCount() == 0 )
         return;
 
@@ -1864,7 +1864,7 @@ void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
+        auto layer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
         if ( layer->selectedFeatureCount() == 0 )
           continue;
@@ -1885,7 +1885,7 @@ void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
 
       case Qgis::LayerType::VectorTile:
       {
-        QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( mapLayer );
+        auto vtLayer = qobject_cast<QgsVectorTileLayer *>( mapLayer );
         if ( vtLayer->selectedFeatureCount() == 0 )
           continue;
 
@@ -2065,7 +2065,7 @@ void QgsMapCanvas::panToSelected( QgsMapLayer *layer )
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vLayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( vLayer->selectedFeatureCount() == 0 )
         return;
 
@@ -2074,7 +2074,7 @@ void QgsMapCanvas::panToSelected( QgsMapLayer *layer )
     }
     case Qgis::LayerType::VectorTile:
     {
-      QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
+      auto vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
       if ( vtLayer->selectedFeatureCount() == 0 )
         return;
 
@@ -2125,7 +2125,7 @@ void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
+        auto layer = qobject_cast<QgsVectorLayer *>( mapLayer );
         if ( layer->selectedFeatureCount() == 0 )
           continue;
 
@@ -2143,7 +2143,7 @@ void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
 
       case Qgis::LayerType::VectorTile:
       {
-        QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( mapLayer );
+        auto vtLayer = qobject_cast<QgsVectorTileLayer *>( mapLayer );
         if ( vtLayer->selectedFeatureCount() == 0 )
           continue;
 
@@ -2639,7 +2639,7 @@ void QgsMapCanvas::updateCanvasItemPositions()
   const QList<QGraphicsItem *> items = mScene->items();
   for ( QGraphicsItem *gi : items )
   {
-    QgsMapCanvasItem *item = dynamic_cast<QgsMapCanvasItem *>( gi );
+    auto item = dynamic_cast<QgsMapCanvasItem *>( gi );
 
     if ( item )
     {
@@ -2875,7 +2875,7 @@ void QgsMapCanvas::setSelectionColor( const QColor &color )
     const auto layers = mSettings.layers();
     for ( QgsMapLayer *layer : layers )
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( vlayer && vlayer->selectedFeatureCount() )
       {
         hasSelectedFeatures = true;
@@ -3222,7 +3222,7 @@ QgsSnappingUtils *QgsMapCanvas::snappingUtils() const
   if ( !mSnappingUtils )
   {
     // associate a dummy instance, but better than null pointer
-    QgsMapCanvas *c = const_cast<QgsMapCanvas *>( this );
+    auto c = const_cast<QgsMapCanvas *>( this );
     c->mSnappingUtils = new QgsMapCanvasSnappingUtils( c, c );
   }
   return mSnappingUtils;
@@ -3355,7 +3355,7 @@ void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center, b
 void QgsMapCanvas::selectionChangedSlot()
 {
   // Find out which layer it was that sent the signal.
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  auto layer = qobject_cast<QgsMapLayer *>( sender() );
   if ( layer )
   {
     emit selectionChanged( layer );
@@ -3420,7 +3420,7 @@ bool QgsMapCanvas::event( QEvent *e )
 {
   if ( e->type() == QEvent::Gesture )
   {
-    if ( QTapAndHoldGesture *tapAndHoldGesture = qobject_cast<QTapAndHoldGesture *>( static_cast<QGestureEvent *>( e )->gesture( Qt::TapAndHoldGesture ) ) )
+    if ( auto tapAndHoldGesture = qobject_cast<QTapAndHoldGesture *>( static_cast<QGestureEvent *>( e )->gesture( Qt::TapAndHoldGesture ) ) )
     {
       QPointF pos = tapAndHoldGesture->position();
       pos = mapFromGlobal( QPoint( pos.x(), pos.y() ) );
@@ -3484,7 +3484,7 @@ QList<QgsMapCanvasAnnotationItem *> QgsMapCanvas::annotationItems() const
   const QList<QGraphicsItem *> items = mScene->items();
   for ( QGraphicsItem *gi : items )
   {
-    QgsMapCanvasAnnotationItem *aItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( gi );
+    auto aItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( gi );
     if ( aItem )
     {
       annotationItemList.push_back( aItem );
@@ -3624,7 +3624,7 @@ bool QgsMapCanvas::panOperationInProgress()
   if ( mCanvasProperties->panSelectorDown )
     return true;
 
-  if ( QgsMapToolPan *panTool = qobject_cast<QgsMapToolPan *>( mMapTool ) )
+  if ( auto panTool = qobject_cast<QgsMapToolPan *>( mMapTool ) )
   {
     if ( panTool->isDragging() )
       return true;

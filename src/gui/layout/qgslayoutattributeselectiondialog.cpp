@@ -453,13 +453,13 @@ void QgsLayoutColumnSourceDelegate::setEditorData( QWidget *editor, const QModel
   const QString field = index.model()->data( index, Qt::EditRole ).toString();
 
   //set the value for the field combobox
-  QgsFieldExpressionWidget *fieldExpression = static_cast<QgsFieldExpressionWidget *>( editor );
+  auto fieldExpression = static_cast<QgsFieldExpressionWidget *>( editor );
   fieldExpression->setField( field );
 }
 
 void QgsLayoutColumnSourceDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QgsFieldExpressionWidget *fieldExpression = static_cast<QgsFieldExpressionWidget *>( editor );
+  auto fieldExpression = static_cast<QgsFieldExpressionWidget *>( editor );
   const QString field = mForceExpressions ? fieldExpression->asExpression() : fieldExpression->currentField();
 
   model->setData( index, field, Qt::EditRole );
@@ -473,7 +473,7 @@ void QgsLayoutColumnSourceDelegate::updateEditorGeometry( QWidget *editor, const
 
 void QgsLayoutColumnSourceDelegate::commitAndCloseEditor()
 {
-  QgsFieldExpressionWidget *fieldExpression = qobject_cast<QgsFieldExpressionWidget *>( sender() );
+  auto fieldExpression = qobject_cast<QgsFieldExpressionWidget *>( sender() );
   emit commitData( fieldExpression );
 }
 
@@ -568,13 +568,13 @@ void QgsLayoutColumnWidthDelegate::setEditorData( QWidget *editor, const QModelI
 {
   const int value = index.model()->data( index, Qt::EditRole ).toInt();
 
-  QgsDoubleSpinBox *spinBox = static_cast<QgsDoubleSpinBox *>( editor );
+  auto spinBox = static_cast<QgsDoubleSpinBox *>( editor );
   spinBox->setValue( value );
 }
 
 void QgsLayoutColumnWidthDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QgsDoubleSpinBox *spinBox = static_cast<QgsDoubleSpinBox *>( editor );
+  auto spinBox = static_cast<QgsDoubleSpinBox *>( editor );
   spinBox->interpretText();
   const int value = spinBox->value();
 

@@ -224,7 +224,7 @@ void QgsPointClusterRendererWidget::centerSymbolChanged()
 
 void QgsPointClusterRendererWidget::updateRendererFromWidget()
 {
-  QgsRendererWidget *w = qobject_cast<QgsRendererWidget *>( sender() );
+  auto w = qobject_cast<QgsRendererWidget *>( sender() );
   if ( !w )
     return;
 

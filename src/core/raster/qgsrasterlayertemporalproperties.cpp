@@ -56,7 +56,7 @@ bool QgsRasterLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
 
 QgsDateTimeRange QgsRasterLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer *layer ) const
 {
-  QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( layer );
+  auto rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( !rasterLayer )
     return QgsDateTimeRange();
 
@@ -108,7 +108,7 @@ QgsDateTimeRange QgsRasterLayerTemporalProperties::calculateTemporalExtent( QgsM
 
 QList<QgsDateTimeRange> QgsRasterLayerTemporalProperties::allTemporalRanges( QgsMapLayer *layer ) const
 {
-  QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( layer );
+  auto rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
 
   switch ( mMode )
   {
@@ -454,7 +454,7 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
 
 void QgsRasterLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities )
 {
-  if ( const QgsRasterDataProviderTemporalCapabilities *rasterCaps = dynamic_cast< const QgsRasterDataProviderTemporalCapabilities *>( capabilities ) )
+  if ( auto rasterCaps = dynamic_cast<const QgsRasterDataProviderTemporalCapabilities *>( capabilities ) )
   {
     setIsActive( rasterCaps->hasTemporalCapabilities() );
     setFixedTemporalRange( rasterCaps->availableTemporalRange() );

@@ -87,7 +87,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   if ( item->type() != Qgis::BrowserItemType::Directory )
     return;
 
-  QgsDirectoryItem *directoryItem = qobject_cast<QgsDirectoryItem *>( item );
+  auto directoryItem = qobject_cast<QgsDirectoryItem *>( item );
 
   QgsSettings settings;
 
@@ -259,7 +259,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   }
   else if ( inFavDirs )
   {
-    if ( QgsFavoriteItem *favoriteItem = qobject_cast<QgsFavoriteItem *>( item ) )
+    if ( auto favoriteItem = qobject_cast<QgsFavoriteItem *>( item ) )
     {
       QAction *actionRename = new QAction( tr( "Rename Favorite…" ), menu );
       connect( actionRename, &QAction::triggered, this, [=] {
@@ -395,7 +395,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
   {
-    if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
+    if ( auto dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
     {
       QAction *action = menu->addAction( tr( "Directory Properties…" ) );
       connect( action, &QAction::triggered, dirItem, [dirItem] {
@@ -993,7 +993,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   if ( item->type() != Qgis::BrowserItemType::Layer )
     return;
 
-  QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+  auto layerItem = qobject_cast<QgsLayerItem *>( item );
   if ( layerItem && ( layerItem->mapLayerType() == Qgis::LayerType::Vector || layerItem->mapLayerType() == Qgis::LayerType::Raster ) )
   {
     QMenu *exportMenu = new QMenu( tr( "Export Layer" ), menu );
@@ -1133,7 +1133,7 @@ bool QgsLayerItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemG
   if ( !item || item->type() != Qgis::BrowserItemType::Layer )
     return false;
 
-  if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsLayerItem *>( item ) )
   {
     const QgsMimeDataUtils::UriList layerUriList = layerItem->mimeUris();
     QgisApp::instance()->handleDropUriList( layerUriList );
@@ -1155,7 +1155,7 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
   {
     if ( item && item->type() == Qgis::BrowserItemType::Project )
     {
-      if ( const QgsProjectItem *projectItem = qobject_cast<const QgsProjectItem *>( item ) )
+      if ( auto projectItem = qobject_cast<const QgsProjectItem *>( item ) )
         QgisApp::instance()->openProject( projectItem->path() );
 
       return;
@@ -1170,7 +1170,7 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
     QgsDataItem *item = items.at( i );
     if ( item && item->type() == Qgis::BrowserItemType::Layer )
     {
-      if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
+      if ( auto layerItem = qobject_cast<QgsLayerItem *>( item ) )
         layerUriList.append( layerItem->mimeUris() );
     }
   }
@@ -1183,7 +1183,7 @@ void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths, QgsDat
   for ( const QString &itemPath : itemPaths )
   {
     //get the item from browserModel by its path
-    QgsLayerItem *item = qobject_cast<QgsLayerItem *>( QgisApp::instance()->browserModel()->dataItem( QgisApp::instance()->browserModel()->findUri( itemPath ) ) );
+    auto item = qobject_cast<QgsLayerItem *>( QgisApp::instance()->browserModel()->dataItem( QgisApp::instance()->browserModel()->findUri( itemPath ) ) );
     if ( !item )
     {
       QgsMessageLog::logMessage( tr( "Item with path %1 no longer exists." ).arg( itemPath ) );
@@ -1239,7 +1239,7 @@ void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
   if ( !item || item->type() != Qgis::BrowserItemType::Project )
     return;
 
-  if ( QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item ) )
+  if ( auto projectItem = qobject_cast<QgsProjectItem *>( item ) )
   {
     QAction *openAction = new QAction( tr( "Open Project" ), menu );
     const QString projectPath = projectItem->path();
@@ -1282,7 +1282,7 @@ bool QgsProjectItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataIte
   if ( !item || item->type() != Qgis::BrowserItemType::Project )
     return false;
 
-  if ( QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item ) )
+  if ( auto projectItem = qobject_cast<QgsProjectItem *>( item ) )
   {
     QgisApp::instance()->openProject( projectItem->path() );
     return true;
@@ -1306,7 +1306,7 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
     return;
 
 
-  if ( QgsFieldsItem *fieldsItem = qobject_cast<QgsFieldsItem *>( item ) )
+  if ( auto fieldsItem = qobject_cast<QgsFieldsItem *>( item ) )
   {
     QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( fieldsItem->providerKey() ) };
     if ( md )
@@ -1353,7 +1353,7 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
 
 QWidget *QgsFieldsItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataItemGuiContext )
 {
-  if ( QgsFieldsItem *fieldsItem = qobject_cast<QgsFieldsItem *>( item ) )
+  if ( auto fieldsItem = qobject_cast<QgsFieldsItem *>( item ) )
   {
     return new QgsFieldsDetailsWidget( nullptr, fieldsItem->providerKey(), fieldsItem->connectionUri(), fieldsItem->schema(), fieldsItem->tableName() );
   }
@@ -1375,7 +1375,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   if ( !item || item->type() != Qgis::BrowserItemType::Field )
     return;
 
-  if ( QgsFieldItem *fieldItem = qobject_cast<QgsFieldItem *>( item ) )
+  if ( auto fieldItem = qobject_cast<QgsFieldItem *>( item ) )
   {
     // Retrieve the connection from the parent
     QPointer<QgsFieldsItem> fieldsItem { qobject_cast<QgsFieldsItem *>( fieldItem->parent() ) };
@@ -1600,7 +1600,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
 
 bool QgsFieldItemGuiProvider::rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context )
 {
-  if ( QgsFieldItem *fieldItem = qobject_cast<QgsFieldItem *>( item ) )
+  if ( auto fieldItem = qobject_cast<QgsFieldItem *>( item ) )
   {
     QPointer<QgsFieldsItem> fieldsItem { qobject_cast<QgsFieldsItem *>( fieldItem->parent() ) };
     if ( fieldsItem )
@@ -1636,7 +1636,7 @@ bool QgsFieldItemGuiProvider::rename( QgsDataItem *item, const QString &name, Qg
 
 QWidget *QgsFieldItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataItemGuiContext )
 {
-  if ( QgsFieldItem *fieldItem = qobject_cast<QgsFieldItem *>( item ) )
+  if ( auto fieldItem = qobject_cast<QgsFieldItem *>( item ) )
   {
     QgsFieldsItem *fieldsItem { static_cast<QgsFieldsItem *>( fieldItem->parent() ) };
     if ( fieldsItem )
@@ -1649,7 +1649,7 @@ QWidget *QgsFieldItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataI
 
 QgsDatabaseItemGuiProvider::QgsDatabaseItemGuiProvider()
 {
-  if ( QgsDatabaseQueryHistoryProvider *historyProvider = qobject_cast<QgsDatabaseQueryHistoryProvider *>( QgsGui::historyProviderRegistry()->providerById( QStringLiteral( "dbquery" ) ) ) )
+  if ( auto historyProvider = qobject_cast<QgsDatabaseQueryHistoryProvider *>( QgsGui::historyProviderRegistry()->providerById( QStringLiteral( "dbquery" ) ) ) )
   {
     connect( historyProvider, &QgsDatabaseQueryHistoryProvider::openSqlDialog, this, &QgsDatabaseItemGuiProvider::openSqlDialogGeneric );
   }
@@ -1776,7 +1776,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       QString tableName;
       if ( qobject_cast<QgsLayerItem *>( item ) )
       {
-        if ( QgsProviderSublayerItem *sublayerItem = qobject_cast<QgsProviderSublayerItem *>( item ) )
+        if ( auto sublayerItem = qobject_cast<QgsProviderSublayerItem *>( item ) )
         {
           tableName = sublayerItem->sublayerDetails().name();
         }
@@ -1872,7 +1872,7 @@ bool QgsDatabaseItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiCo
   // BROWSER IS BEING POPULATED
   // We are limited to VERY VERY cheap calculations only!!
   // DO NOT UNDER *****ANY***** CIRCUMSTANCES OPEN DATASETS HERE!!!!
-  QgsFileDataCollectionItem *fileDataCollectionItem = qobject_cast<QgsFileDataCollectionItem *>( item );
+  auto fileDataCollectionItem = qobject_cast<QgsFileDataCollectionItem *>( item );
   if ( !fileDataCollectionItem )
     return false;
 
@@ -1970,7 +1970,7 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
 
         if ( !exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ), tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( dropUri.name ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
         {
-          QgsVectorLayer *vectorSrcLayer = qobject_cast<QgsVectorLayer *>( srcLayer );
+          auto vectorSrcLayer = qobject_cast<QgsVectorLayer *>( srcLayer );
 
           QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions exporterOptions;
           exporterOptions.layerName = dropUri.name;
@@ -2149,7 +2149,7 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     QString providerKey;
     QString connectionUri;
 
-    if ( QgsFieldDomainsItem *fieldDomainsItem = qobject_cast<QgsFieldDomainsItem *>( item ) )
+    if ( auto fieldDomainsItem = qobject_cast<QgsFieldDomainsItem *>( item ) )
     {
       providerKey = fieldDomainsItem->providerKey();
       connectionUri = fieldDomainsItem->connectionUri();
@@ -2235,7 +2235,7 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
 
 QWidget *QgsFieldDomainItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataItemGuiContext )
 {
-  if ( QgsFieldDomainItem *fieldDomainItem = qobject_cast<QgsFieldDomainItem *>( item ) )
+  if ( auto fieldDomainItem = qobject_cast<QgsFieldDomainItem *>( item ) )
   {
     const QgsFieldDomain *domain = fieldDomainItem->fieldDomain();
     return new QgsFieldDomainDetailsWidget( nullptr, domain );
@@ -2456,9 +2456,9 @@ QString QgsRelationshipItemGuiProvider::name()
 
 void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
 {
-  if ( QgsRelationshipItem *relationshipItem = qobject_cast<QgsRelationshipItem *>( item ) )
+  if ( auto relationshipItem = qobject_cast<QgsRelationshipItem *>( item ) )
   {
-    if ( QgsRelationshipsItem *relationshipsItem = qobject_cast<QgsRelationshipsItem *>( relationshipItem->parent() ) )
+    if ( auto relationshipsItem = qobject_cast<QgsRelationshipsItem *>( relationshipItem->parent() ) )
     {
       const QString providerKey = relationshipsItem->providerKey();
       const QString connectionUri = relationshipsItem->connectionUri();
@@ -2539,7 +2539,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   {
     QString providerKey;
     QString connectionUri;
-    if ( QgsRelationshipsItem *relationshipsItem = qobject_cast<QgsRelationshipsItem *>( item ) )
+    if ( auto relationshipsItem = qobject_cast<QgsRelationshipsItem *>( item ) )
     {
       providerKey = relationshipsItem->providerKey();
       connectionUri = relationshipsItem->connectionUri();
@@ -2606,7 +2606,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
 QWidget *QgsRelationshipItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataItemGuiContext )
 {
-  if ( QgsRelationshipItem *relationshipItem = qobject_cast<QgsRelationshipItem *>( item ) )
+  if ( auto relationshipItem = qobject_cast<QgsRelationshipItem *>( item ) )
   {
     return new QgsRelationshipDetailsWidget( nullptr, relationshipItem->relation() );
   }

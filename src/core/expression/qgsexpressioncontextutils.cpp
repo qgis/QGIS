@@ -161,7 +161,7 @@ class GetLayoutMapLayerCredits : public QgsScopedExpressionFunction
 
         for ( const QVariant &value : mapLayers )
         {
-          if ( const QgsMapLayer *layer = qobject_cast< const QgsMapLayer * >( value.value< QObject * >() ) )
+          if ( auto layer = qobject_cast<const QgsMapLayer *>( value.value< QObject * >() ) )
           {
             if ( !layers.contains( layer ) )
               layers << layer;
@@ -396,7 +396,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLa
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_vertical_crs_wkt" ), verticalCrs.toWkt( Qgis::CrsWktVariant::Preferred ), true ) );
   }
 
-  const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer * >( layer );
+  auto vLayer = qobject_cast<const QgsVectorLayer *>( layer );
   if ( vLayer )
   {
     scope->setFields( vLayer->fields() );
@@ -592,7 +592,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::updateSymbolScope( const Q
   symbolScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_SYMBOL_COLOR, symbol ? symbol->color() : QColor(), true ) );
 
   double angle = 0.0;
-  const QgsMarkerSymbol *markerSymbol = dynamic_cast< const QgsMarkerSymbol * >( symbol );
+  auto markerSymbol = dynamic_cast<const QgsMarkerSymbol *>( symbol );
   if ( markerSymbol )
   {
     angle = markerSymbol->angle();
@@ -627,7 +627,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
   }
 
   //add known layout context variables
-  if ( const QgsMasterLayoutInterface *l = dynamic_cast< const QgsMasterLayoutInterface * >( layout ) )
+  if ( auto l = dynamic_cast<const QgsMasterLayoutInterface *>( layout ) )
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_name" ), l->name(), true ) );
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_numpages" ), layout->pageCollection()->pageCount(), true ) );

@@ -191,9 +191,9 @@ bool QgsMessageLogViewer::eventFilter( QObject *object, QEvent *event )
   {
     case QEvent::MouseButtonPress:
     {
-      if ( QPlainTextEdit *te = qobject_cast<QPlainTextEdit *>( object->parent() ) )
+      if ( auto te = qobject_cast<QPlainTextEdit *>( object->parent() ) )
       {
-        QMouseEvent *me = static_cast<QMouseEvent *>( event );
+        auto me = static_cast<QMouseEvent *>( event );
         mClickedAnchor = ( me->button() & Qt::LeftButton ) ? te->anchorAt( me->pos() ) : QString();
         if ( !mClickedAnchor.isEmpty() )
           return true;
@@ -203,9 +203,9 @@ bool QgsMessageLogViewer::eventFilter( QObject *object, QEvent *event )
 
     case QEvent::MouseButtonRelease:
     {
-      if ( QPlainTextEdit *te = qobject_cast<QPlainTextEdit *>( object->parent() ) )
+      if ( auto te = qobject_cast<QPlainTextEdit *>( object->parent() ) )
       {
-        QMouseEvent *me = static_cast<QMouseEvent *>( event );
+        auto me = static_cast<QMouseEvent *>( event );
         const QString clickedAnchor = ( me->button() & Qt::LeftButton ) ? te->anchorAt( me->pos() ) : QString();
         if ( !clickedAnchor.isEmpty() && clickedAnchor == mClickedAnchor )
         {

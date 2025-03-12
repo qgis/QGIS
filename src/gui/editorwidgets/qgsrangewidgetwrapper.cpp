@@ -107,7 +107,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
 
     mDoubleSpinBox->setDecimals( precisionval );
 
-    QgsDoubleSpinBox *qgsWidget = qobject_cast<QgsDoubleSpinBox *>( mDoubleSpinBox );
+    auto qgsWidget = qobject_cast<QgsDoubleSpinBox *>( mDoubleSpinBox );
 
 
     if ( qgsWidget )

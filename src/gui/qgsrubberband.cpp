@@ -455,7 +455,7 @@ void QgsRubberBand::paint( QPainter *p )
     shapes.append( rings );
   }
 
-  if ( QgsLineSymbol *lineSymbol = dynamic_cast<QgsLineSymbol *>( mSymbol.get() ) )
+  if ( auto lineSymbol = dynamic_cast<QgsLineSymbol *>( mSymbol.get() ) )
   {
     QgsRenderContext context( QgsRenderContext::fromQPainter( p ) );
     context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );

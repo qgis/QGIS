@@ -338,7 +338,7 @@ void QgsAuthConfigEdit::clearAll()
 
   for ( int i = 0; i < stkwAuthMethods->count(); i++ )
   {
-    QgsAuthMethodEdit *editWidget = qobject_cast<QgsAuthMethodEdit *>( stkwAuthMethods->widget( i ) );
+    auto editWidget = qobject_cast<QgsAuthMethodEdit *>( stkwAuthMethods->widget( i ) );
     if ( editWidget )
     {
       editWidget->clearConfig();

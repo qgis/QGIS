@@ -524,7 +524,7 @@ QString QgsRasterLayer::htmlMetadata() const
                 QStringLiteral( "<tr><th>" ) % tr( "Number" ) % QStringLiteral( "</th><th>" ) % tr( "Band" ) % QStringLiteral( "</th><th>" ) % tr( "NoData" ) % QStringLiteral( "</th><th>" ) %
                 tr( "Min" ) % QStringLiteral( "</th><th>" ) % tr( "Max" ) % QStringLiteral( "</th></tr>\n" );
 
-  QgsRasterDataProvider *provider = const_cast< QgsRasterDataProvider * >( mDataProvider );
+  auto provider = const_cast<QgsRasterDataProvider *>( mDataProvider );
   for ( int i = 1; i <= bandCount(); i++ )
   {
     QString rowClass;
@@ -895,7 +895,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
         setRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandPseudoColor );
         // Load color table
         const QList<QgsColorRampShader::ColorRampItem> colorTable = mDataProvider->colorTable( 1 );
-        QgsSingleBandPseudoColorRenderer *r = dynamic_cast<QgsSingleBandPseudoColorRenderer *>( renderer() );
+        auto r = dynamic_cast<QgsSingleBandPseudoColorRenderer *>( renderer() );
         if ( r )
         {
           // TODO: this should go somewhere else
@@ -1445,7 +1445,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
 
         if ( minMaxChanged && myPseudoColorRenderer->shader() )
         {
-          QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( myPseudoColorRenderer->shader()->rasterShaderFunction() );
+          auto colorRampShader = dynamic_cast<QgsColorRampShader *>( myPseudoColorRenderer->shader()->rasterShaderFunction() );
           if ( colorRampShader )
           {
             colorRampShader->classifyColorRamp( myPseudoColorRenderer->inputBand(), extent, myPseudoColorRenderer->input() );

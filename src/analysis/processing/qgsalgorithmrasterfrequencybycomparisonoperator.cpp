@@ -91,7 +91,7 @@ bool QgsRasterFrequencyByComparisonOperatorBase::prepareAlgorithm( const QVarian
 
     if ( l->type() == Qgis::LayerType::Raster )
     {
-      QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( l );
+      auto layer = qobject_cast<QgsRasterLayer *>( l );
       QgsRasterAnalysisUtils::RasterLogicInput input;
       const int band = 1; //could be made dynamic
       input.hasNoDataValue = layer->dataProvider()->sourceHasNoDataValue( band );

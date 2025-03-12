@@ -279,7 +279,7 @@ bool QgsMeshLayer::addDatasets( const QString &path, const QDateTime &defaultRef
   if ( mDatasetGroupStore->addPersistentDatasets( path ) )
   {
     mExtraDatasetUri.append( path );
-    QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< QgsMeshLayerTemporalProperties * >( mTemporalProperties );
+    auto temporalProperties = qobject_cast<QgsMeshLayerTemporalProperties *>( mTemporalProperties );
     if ( !isTemporalBefore && temporalCapabilities->hasTemporalCapabilities() )
     {
       mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities(

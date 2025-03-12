@@ -356,7 +356,7 @@ QgsPropertySizeAssistantWidget::QgsPropertySizeAssistantWidget( QWidget *parent,
   maxSizeSpinBox->setShowClearButton( false );
   nullSizeSpinBox->setShowClearButton( false );
 
-  if ( const QgsSizeScaleTransformer *sizeTransform = dynamic_cast<const QgsSizeScaleTransformer *>( initialState.transformer() ) )
+  if ( auto sizeTransform = dynamic_cast<const QgsSizeScaleTransformer *>( initialState.transformer() ) )
   {
     minSizeSpinBox->setValue( sizeTransform->minSize() );
     maxSizeSpinBox->setValue( sizeTransform->maxSize() );
@@ -460,7 +460,7 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
   mNullColorButton->setContext( QStringLiteral( "symbology" ) );
   mNullColorButton->setNoColorString( tr( "Transparent" ) );
 
-  if ( const QgsColorRampTransformer *colorTransform = dynamic_cast<const QgsColorRampTransformer *>( initialState.transformer() ) )
+  if ( auto colorTransform = dynamic_cast<const QgsColorRampTransformer *>( initialState.transformer() ) )
   {
     mNullColorButton->setColor( colorTransform->nullColor() );
     if ( colorTransform->colorRamp() )
@@ -499,7 +499,7 @@ QList<QgsSymbolLegendNode *> QgsPropertyColorAssistantWidget::generatePreviews( 
 {
   QList<QgsSymbolLegendNode *> nodes;
 
-  const QgsMarkerSymbol *legendSymbol = dynamic_cast<const QgsMarkerSymbol *>( symbol );
+  auto legendSymbol = dynamic_cast<const QgsMarkerSymbol *>( symbol );
   std::unique_ptr<QgsMarkerSymbol> tempSymbol;
 
   if ( !legendSymbol )
@@ -616,7 +616,7 @@ QgsPropertyGenericNumericAssistantWidget::QgsPropertyGenericNumericAssistantWidg
     }
   }
 
-  if ( const QgsGenericNumericTransformer *transform = dynamic_cast<const QgsGenericNumericTransformer *>( initialState.transformer() ) )
+  if ( auto transform = dynamic_cast<const QgsGenericNumericTransformer *>( initialState.transformer() ) )
   {
     minOutputSpinBox->setValue( transform->minOutputValue() );
     maxOutputSpinBox->setValue( transform->maxOutputValue() );

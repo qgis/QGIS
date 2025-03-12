@@ -2425,7 +2425,7 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
     {
       Q_ASSERT( hatchLoop.objlist[j] );
       const DRW_Entity *entity = hatchLoop.objlist[j].get();
-      if ( const DRW_LWPolyline *lwp = dynamic_cast<const DRW_LWPolyline *>( entity ) )
+      if ( auto lwp = dynamic_cast<const DRW_LWPolyline *>( entity ) )
       {
         curveFromLWPolyline( *lwp, *cc );
       }

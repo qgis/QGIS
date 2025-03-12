@@ -126,8 +126,8 @@ void QgsLayout::clear()
   const QList<QGraphicsItem *> itemList = items();
   for ( QGraphicsItem *item : itemList )
   {
-    QgsLayoutItem *cItem = dynamic_cast<QgsLayoutItem *>( item );
-    QgsLayoutItemPage *pItem = dynamic_cast<QgsLayoutItemPage *>( item );
+    auto cItem = dynamic_cast<QgsLayoutItem *>( item );
+    auto pItem = dynamic_cast<QgsLayoutItemPage *>( item );
     if ( cItem && !pItem )
     {
       removeLayoutItemPrivate( cItem );
@@ -156,7 +156,7 @@ QList<QgsLayoutItem *> QgsLayout::selectedLayoutItems( const bool includeLockedI
   const QList<QGraphicsItem *> graphicsItemList = selectedItems();
   for ( QGraphicsItem *item : graphicsItemList )
   {
-    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+    auto layoutItem = dynamic_cast<QgsLayoutItem *>( item );
     if ( layoutItem && ( includeLockedItems || !layoutItem->isLocked() ) )
     {
       layoutItemList.push_back( layoutItem );
@@ -185,7 +185,7 @@ void QgsLayout::deselectAll()
   const QList<QGraphicsItem *> selectedItemList = selectedItems();
   for ( QGraphicsItem *item : selectedItemList )
   {
-    if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+    if ( auto layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
     {
       layoutItem->setSelected( false );
     }
@@ -278,7 +278,7 @@ QgsLayoutItem *QgsLayout::itemById( const QString &id ) const
   const QList<QGraphicsItem *> itemList = items();
   for ( QGraphicsItem *item : itemList )
   {
-    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+    auto layoutItem = dynamic_cast<QgsLayoutItem *>( item );
     if ( layoutItem && layoutItem->id() == id )
     {
       return layoutItem;
@@ -321,8 +321,8 @@ QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *b
   bool foundBelowItem = false;
   for ( QGraphicsItem *graphicsItem : std::as_const( itemList ) )
   {
-    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( graphicsItem );
-    QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( layoutItem );
+    auto layoutItem = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+    auto paperItem = dynamic_cast<QgsLayoutItemPage *>( layoutItem );
     if ( layoutItem && !paperItem )
     {
       // If we are not checking for a an item below a specified item, or if we've
@@ -454,7 +454,7 @@ QStringList QgsLayout::customProperties() const
 QgsLayoutItemMap *QgsLayout::referenceMap() const
 {
   // prefer explicitly set reference map
-  if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( itemByUuid( mWorldFileMapId ) ) )
+  if ( auto map = qobject_cast<QgsLayoutItemMap *>( itemByUuid( mWorldFileMapId ) ) )
     return map;
 
   // else try to find largest map
@@ -499,7 +499,7 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
   const auto constItems = items();
   for ( const QGraphicsItem *item : constItems )
   {
-    const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
+    auto layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
     if ( !layoutItem )
       continue;
 
@@ -544,7 +544,7 @@ QRectF QgsLayout::pageItemBounds( int page, bool visibleOnly ) const
   const QList<QGraphicsItem *> itemList = items();
   for ( QGraphicsItem *item : itemList )
   {
-    const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
+    auto layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
     if ( layoutItem && layoutItem->type() != QgsLayoutItemRegistry::LayoutPage && layoutItem->page() == page )
     {
       if ( visibleOnly && !layoutItem->isVisible() )
@@ -816,7 +816,7 @@ bool QgsLayout::accept( QgsStyleEntityVisitorInterface *visitor ) const
   const QList< QGraphicsItem * > constItems = items();
   for ( const QGraphicsItem *item : constItems )
   {
-    const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
+    auto layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
     if ( !layoutItem )
       continue;
 
@@ -860,7 +860,7 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
   const QList<QGraphicsItem *> itemList = items();
   for ( const QGraphicsItem *graphicsItem : itemList )
   {
-    if ( const QgsLayoutItem *item = dynamic_cast< const QgsLayoutItem *>( graphicsItem ) )
+    if ( auto item = dynamic_cast<const QgsLayoutItem *>( graphicsItem ) )
     {
       if ( item->type() == QgsLayoutItemRegistry::LayoutPage )
         continue;
@@ -1127,7 +1127,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
     // When restoring items on project load saved with QGIS < 3.32, convert HTML-enabled labels into HTML items
     if ( !position && QgsProjectVersion( 3, 31, 0 ) > mProject->lastSaveVersion() )
     {
-      if ( QgsLayoutItemLabel *label = qobject_cast<QgsLayoutItemLabel *>( item.get() ) )
+      if ( auto label = qobject_cast<QgsLayoutItemLabel *>( item.get() ) )
       {
         if ( label->mode() == QgsLayoutItemLabel::ModeHtml )
         {
@@ -1217,7 +1217,7 @@ void QgsLayout::updateBounds()
 
 void QgsLayout::itemBackgroundTaskCountChanged( int count )
 {
-  QgsLayoutItem *item = qobject_cast<QgsLayoutItem *>( sender() );
+  auto item = qobject_cast<QgsLayoutItem *>( sender() );
   if ( !item )
     return;
 

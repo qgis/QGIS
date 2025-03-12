@@ -755,7 +755,7 @@ void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets )
   const auto constWidgets = widgets;
   for ( QWidget *widget : constWidgets )
   {
-    if ( QgsSymbolButton *w = qobject_cast<QgsSymbolButton *>( widget ) )
+    if ( auto w = qobject_cast<QgsSymbolButton *>( widget ) )
     {
       connect( w, &QgsSymbolButton::changed, this, &QgsTextFormatWidget::updatePreview );
     }
@@ -991,7 +991,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
 
 void QgsTextFormatWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key )
 {
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
 
   button->init( static_cast<int>( key ), mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), vLayer, true );
   if ( !mButtons.contains( key ) )
@@ -1983,7 +1983,7 @@ void QgsTextFormatWidget::updateAvailableShadowPositions()
 
 void QgsTextFormatWidget::updateProperty()
 {
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsPalLayerSettings::Property key = static_cast<QgsPalLayerSettings::Property>( button->propertyKey() );
   mDataDefinedProperties.setProperty( key, button->toProperty() );
   updatePreview();
@@ -1994,7 +1994,7 @@ void QgsTextFormatWidget::createAuxiliaryField()
   if ( !mLayer )
     return;
 
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( mLayer );
 
   if ( !vLayer )
     return;
@@ -2010,7 +2010,7 @@ void QgsTextFormatWidget::createAuxiliaryField()
   if ( !vLayer->auxiliaryLayer() )
     return;
 
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsPalLayerSettings::Property key = static_cast<QgsPalLayerSettings::Property>( button->propertyKey() );
   const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[static_cast<int>( key )];
 

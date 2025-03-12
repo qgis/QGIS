@@ -1068,7 +1068,7 @@ void TestQgsRasterLayer::sample()
 
 void TestQgsRasterLayer::testTemporalProperties()
 {
-  QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast<QgsRasterLayerTemporalProperties *>( mTemporalRasterLayer->temporalProperties() );
+  auto temporalProperties = qobject_cast<QgsRasterLayerTemporalProperties *>( mTemporalRasterLayer->temporalProperties() );
   QVERIFY( !mTemporalRasterLayer->temporalProperties()->isActive() );
 
   const QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 12, 31 ), QTime( 0, 0, 0 ) ) );

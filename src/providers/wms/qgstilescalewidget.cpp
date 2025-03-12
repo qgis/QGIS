@@ -49,7 +49,7 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
 {
   mSlider->setDisabled( true );
 
-  QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
+  auto rl = qobject_cast<QgsRasterLayer *>( layer );
   if ( !rl || !rl->dataProvider() )
     return;
 

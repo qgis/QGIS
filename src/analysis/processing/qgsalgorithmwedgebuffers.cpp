@@ -171,7 +171,7 @@ QgsFeatureList QgsWedgeBuffersAlgorithm::processFeature( const QgsFeature &featu
     const QgsGeometry g = f.geometry();
     if ( QgsWkbTypes::isMultiType( g.wkbType() ) )
     {
-      const QgsMultiPoint *mp = static_cast<const QgsMultiPoint *>( g.constGet() );
+      auto mp = static_cast<const QgsMultiPoint *>( g.constGet() );
       auto result = std::make_unique<QgsMultiSurface>();
       result->reserve( mp->numGeometries() );
       for ( int i = 0; i < mp->numGeometries(); ++i )
@@ -183,7 +183,7 @@ QgsFeatureList QgsWedgeBuffersAlgorithm::processFeature( const QgsFeature &featu
     }
     else
     {
-      const QgsPoint *p = static_cast<const QgsPoint *>( g.constGet() );
+      auto p = static_cast<const QgsPoint *>( g.constGet() );
       f.setGeometry( QgsGeometry::createWedgeBuffer( *p, azimuth, width, outerRadius, innerRadius ) );
     }
   }

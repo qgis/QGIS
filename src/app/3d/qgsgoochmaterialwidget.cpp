@@ -54,7 +54,7 @@ QgsMaterialSettingsWidget *QgsGoochMaterialWidget::create()
 
 void QgsGoochMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
 {
-  const QgsGoochMaterialSettings *goochMaterial = dynamic_cast<const QgsGoochMaterialSettings *>( settings );
+  auto goochMaterial = dynamic_cast<const QgsGoochMaterialSettings *>( settings );
   if ( !goochMaterial )
     return;
   btnDiffuse->setColor( goochMaterial->diffuse() );

@@ -316,7 +316,7 @@ QVector<QgsProfileIdentifyResults> QgsPointCloudLayerProfileResults::identify( c
 
 void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
 {
-  const QgsPointCloudLayerProfileGenerator *pcGenerator = qgis::down_cast< const QgsPointCloudLayerProfileGenerator *>( generator );
+  auto pcGenerator = qgis::down_cast<const QgsPointCloudLayerProfileGenerator *>( generator );
   tolerance = pcGenerator->mTolerance;
   pointSize = pcGenerator->mPointSize;
   pointSizeUnit = pcGenerator->mPointSizeUnit;

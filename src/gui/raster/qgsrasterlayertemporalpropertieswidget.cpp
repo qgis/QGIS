@@ -114,7 +114,7 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
 {
   mLayer->temporalProperties()->setIsActive( mTemporalGroupBox->isChecked() );
 
-  QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast<QgsRasterLayerTemporalProperties *>( mLayer->temporalProperties() );
+  auto temporalProperties = qobject_cast<QgsRasterLayerTemporalProperties *>( mLayer->temporalProperties() );
 
   temporalProperties->setMode( mModeComboBox->currentData().value<Qgis::RasterTemporalMode>() );
   temporalProperties->setBandNumber( mBandComboBox->currentBand() );
@@ -137,7 +137,7 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
 
 void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
 {
-  const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast<const QgsRasterLayerTemporalProperties *>( mLayer->temporalProperties() );
+  auto temporalProperties = qobject_cast<const QgsRasterLayerTemporalProperties *>( mLayer->temporalProperties() );
   mModeComboBox->setCurrentIndex( mModeComboBox->findData( QVariant::fromValue( temporalProperties->mode() ) ) );
   switch ( temporalProperties->mode() )
   {
@@ -501,7 +501,7 @@ QWidget *QgsFixedTemporalRangeDelegate::createEditor( QWidget *parent, const QSt
 
 void QgsFixedTemporalRangeDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  if ( QgsDateTimeEdit *dateTimeEdit = qobject_cast<QgsDateTimeEdit *>( editor ) )
+  if ( auto dateTimeEdit = qobject_cast<QgsDateTimeEdit *>( editor ) )
   {
     model->setData( index, dateTimeEdit->dateTime() );
   }
