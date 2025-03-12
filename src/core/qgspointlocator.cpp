@@ -590,7 +590,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   {
     // Checking for invalid linestrings
     // A linestring should/(must?) have at least two points.
-    QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( *part );
+    const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( *part );
     Q_ASSERT( !curve->hasCurvedSegments() );
     if ( curve->numPoints() < 2 )
       continue;

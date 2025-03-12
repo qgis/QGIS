@@ -43,7 +43,7 @@ QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
     if ( polygon->numInteriorRings() > 0 )
       return QgsRectangle();
 
-    if ( const QgsLineString *exterior = qgsgeometry_cast< QgsLineString * >( polygon->exteriorRing() ) )
+    if ( const QgsLineString *exterior = qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() ) )
     {
       if ( exterior->numPoints() == 5
            && qgsDoubleNear( exterior->xAt( 0 ), exterior->xAt( 4 ) )

@@ -91,6 +91,8 @@ class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsD
     void sourceLayerComboChanged();
     void doImport();
     void setSourceLayer( QgsVectorLayer *layer );
+    void loadFieldsFromLayer();
+    void addField();
 
   private:
     std::unique_ptr< QgsVectorLayer > mOwnedSource;

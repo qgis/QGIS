@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>478</width>
-    <height>729</height>
+    <width>922</width>
+    <height>891</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Import Vector Layer</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,1,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1,0,0,0,0">
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
@@ -138,6 +138,112 @@
     </widget>
    </item>
    <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Attributes</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="1" rowspan="2" colspan="2">
+       <layout class="QVBoxLayout" name="buttonLayout">
+        <item>
+         <widget class="QToolButton" name="mAddButton">
+          <property name="toolTip">
+           <string>Add new field</string>
+          </property>
+          <property name="text">
+           <string>add</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionNewAttribute.svg</normaloff>:/images/themes/default/mActionNewAttribute.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="mDeleteButton">
+          <property name="toolTip">
+           <string>Delete selected field</string>
+          </property>
+          <property name="text">
+           <string>delete</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="mUpButton">
+          <property name="toolTip">
+           <string>Move selected field up</string>
+          </property>
+          <property name="text">
+           <string>up</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="mDownButton">
+          <property name="toolTip">
+           <string>Move selected field down</string>
+          </property>
+          <property name="text">
+           <string>down</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="mResetButton">
+          <property name="toolTip">
+           <string>Reset all fields</string>
+          </property>
+          <property name="text">
+           <string>reset</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mIconClearText.svg</normaloff>:/images/themes/default/mIconClearText.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
+       <widget class="QgsFieldMappingWidget" name="mFieldsView" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
      <property name="title">
       <string>Filter by Extent</string>
@@ -201,18 +307,26 @@
   <zorder>verticalSpacer</zorder>
   <zorder>groupBox_2</zorder>
   <zorder>mExtentGroupBox</zorder>
+  <zorder>groupBox_3</zorder>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldMappingWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldmappingwidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
@@ -243,6 +357,8 @@
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mEditComment</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -1798,7 +1798,7 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
   {
     auto triangle = std::make_unique< QgsTriangle >();
     const QgsGeometry source = newGeom;
-    if ( QgsPolygon *polygon = qgsgeometry_cast< QgsPolygon * >( newGeom.constGet() ) )
+    if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( newGeom.constGet() ) )
     {
       triangle->setExteriorRing( polygon->exteriorRing()->clone() );
     }
@@ -2014,7 +2014,7 @@ QgsPointXY QgsGeometry::asPoint() const
   {
     return QgsPointXY();
   }
-  if ( QgsPoint *pt = qgsgeometry_cast<QgsPoint *>( d->geometry->simplifiedTypeRef() ) )
+  if ( const QgsPoint *pt = qgsgeometry_cast<const QgsPoint *>( d->geometry->simplifiedTypeRef() ) )
   {
     return QgsPointXY( pt->x(), pt->y() );
   }

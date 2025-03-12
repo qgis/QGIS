@@ -271,10 +271,10 @@ tests:
         pk: id
 
   - algorithm: native:voronoipolygons
-    name: Voronoi with buffer region (GEOS < 3.12)
+    name: Voronoi with buffer region (GEOS < 3.12.2)
     condition:
       geos:
-        less_than: 31200
+        less_than: 31202
     params:
       BUFFER: 10.0
       INPUT:
@@ -290,10 +290,10 @@ tests:
             normalize: True
 
   - algorithm: native:voronoipolygons
-    name: Voronoi with buffer region (GEOS 3.12+)
+    name: Voronoi with buffer region (GEOS 3.12.2+)
     condition:
       geos:
-        at_least: 31200
+        at_least: 31202
     params:
       BUFFER: 10.0
       INPUT:

@@ -1000,7 +1000,10 @@ class CORE_EXPORT Qgis
     enum class HttpMethod : int
     {
       Get = 0, //!< GET method
-      Post = 1 //!< POST method
+      Post = 1, //!< POST method
+      Head, //!< HEAD method. \since QGIS 3.44
+      Put, //!< PUT method. \since QGIS 3.44
+      Delete, //!< DELETE method. \since QGIS 3.44
     };
     Q_ENUM( HttpMethod )
 

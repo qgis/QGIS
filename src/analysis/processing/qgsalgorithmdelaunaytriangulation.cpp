@@ -119,12 +119,12 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
       const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
       for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
       {
-        allPoints.addPartV2( qgsgeometry_cast< QgsPoint * >( *pit )->clone(), Qgis::WkbType::Point );
+        allPoints.addPartV2( qgsgeometry_cast< const QgsPoint * >( *pit )->clone(), Qgis::WkbType::Point );
       }
     }
     else
     {
-      allPoints.addPartV2( qgsgeometry_cast< QgsPoint * >( geom )->clone(), Qgis::WkbType::Point );
+      allPoints.addPartV2( qgsgeometry_cast< const QgsPoint * >( geom )->clone(), Qgis::WkbType::Point );
     }
 
     return true; }, QgsSpatialIndex::FlagStoreFeatureGeometries );

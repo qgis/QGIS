@@ -21,6 +21,8 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsmapcanvas.h"
 #include "qgsexpressioncontextutils.h"
+#include <QPushButton>
+#include <QItemSelectionModel>
 
 QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
   : QDialog( parent )
@@ -42,6 +44,21 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
   Q_ASSERT( connection );
 
   mEditSchema->setReadOnly( true );
+
+  mFieldsView->setDestinationEditable( true );
+  try
+  {
+    mFieldsView->setNativeTypes( connection->nativeTypes() );
+  }
+  catch ( QgsProviderConnectionException &e )
+  {
+    QgsDebugError( QStringLiteral( "Could not retrieve connection native types: %1" ).arg( e.what() ) );
+  }
+  connect( mResetButton, &QPushButton::clicked, this, &QgsDbImportVectorLayerDialog::loadFieldsFromLayer );
+  connect( mAddButton, &QPushButton::clicked, this, &QgsDbImportVectorLayerDialog::addField );
+  connect( mDeleteButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::removeSelectedFields );
+  connect( mUpButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsUp );
+  connect( mDownButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsDown );
 
   const bool supportsSchemas = mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Schemas );
   if ( !supportsSchemas )
@@ -192,6 +209,33 @@ void QgsDbImportVectorLayerDialog::setSourceLayer( QgsVectorLayer *layer )
   {
     mEditComment->setPlainText( mSourceLayer->metadata().abstract() );
   }
+
+  mFieldsView->setSourceLayer( mSourceLayer );
+  mFieldsView->setSourceFields( mSourceLayer->fields() );
+  mFieldsView->setDestinationFields( mSourceLayer->fields() );
+}
+
+void QgsDbImportVectorLayerDialog::loadFieldsFromLayer()
+{
+  if ( mSourceLayer )
+  {
+    mFieldsView->setSourceFields( mSourceLayer->fields() );
+    mFieldsView->setDestinationFields( mSourceLayer->fields() );
+  }
+}
+
+void QgsDbImportVectorLayerDialog::addField()
+{
+  const int rowCount = mFieldsView->model()->rowCount();
+  mFieldsView->appendField( QgsField( QStringLiteral( "new_field" ) ) );
+  const QModelIndex index = mFieldsView->model()->index( rowCount, 0 );
+  mFieldsView->selectionModel()->select(
+    index,
+    QItemSelectionModel::SelectionFlags(
+      QItemSelectionModel::Clear | QItemSelectionModel::Select | QItemSelectionModel::Current | QItemSelectionModel::Rows
+    )
+  );
+  mFieldsView->scrollTo( index );
 }
 
 QString QgsDbImportVectorLayerDialog::schema() const
@@ -281,6 +325,15 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
   {
     exportOptions.setExtent( QgsReferencedRectangle( mExtentGroupBox->outputExtent(), mExtentGroupBox->outputCrs() ) );
   }
+
+  const QList<QgsFieldMappingModel::Field> fieldMapping = mFieldsView->mapping();
+  QList<QgsVectorLayerExporter::OutputField> outputFields;
+  outputFields.reserve( fieldMapping.size() );
+  for ( const QgsFieldMappingModel::Field &field : fieldMapping )
+  {
+    outputFields.append( QgsVectorLayerExporter::OutputField( field.field, field.expression ) );
+  }
+  exportOptions.setOutputFields( outputFields );
 
   return std::make_unique<QgsVectorLayerExporterTask>( mSourceLayer->clone(), destinationUri, mConnection->providerKey(), exportOptions, allProviderOptions, true );
 }

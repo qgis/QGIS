@@ -119,15 +119,32 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 #ifndef SIP_RUN
 
     /**
-     * Cast the \a geom to a QgsMultiPolygonV2.
+     * Cast the \a geom to a QgsMultiPolygon.
      * Should be used by qgsgeometry_cast<QgsMultiPolygon *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsMultiPolygon *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiPolygon )
         return static_cast<const QgsMultiPolygon *>( geom );
+      return nullptr;
+    }
+
+    /**
+     * Cast the \a geom to a QgsMultiPolygon.
+     * Should be used by qgsgeometry_cast<QgsMultiPolygon *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
+     */
+    inline static QgsMultiPolygon *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiPolygon )
+        return static_cast<QgsMultiPolygon *>( geom );
       return nullptr;
     }
 #endif

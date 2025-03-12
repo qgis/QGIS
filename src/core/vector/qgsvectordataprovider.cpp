@@ -949,7 +949,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   //convert compoundcurve to circularstring (possible if compoundcurve consists of one circular string)
   if ( QgsWkbTypes::flatType( providerGeometryType ) == Qgis::WkbType::CircularString )
   {
-    QgsCompoundCurve *compoundCurve = qgsgeometry_cast<QgsCompoundCurve *>( convertedGeometry );
+    const QgsCompoundCurve *compoundCurve = qgsgeometry_cast<const QgsCompoundCurve *>( convertedGeometry );
     if ( compoundCurve )
     {
       if ( compoundCurve->nCurves() == 1 )

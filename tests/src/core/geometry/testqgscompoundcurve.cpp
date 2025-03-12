@@ -96,6 +96,7 @@ class TestQgsCompoundCurve : public QObject
     void addToPainterPath();
     void compoundCurveCondense_data();
     void compoundCurveCondense();
+    void cast();
 };
 
 void TestQgsCompoundCurve::constructor()
@@ -3178,6 +3179,28 @@ void TestQgsCompoundCurve::compoundCurveCondense()
   qgsgeometry_cast<QgsCompoundCurve *>( g.get() )->condenseCurves();
 
   QCOMPARE( g.asWkt(), expected );
+}
+
+void TestQgsCompoundCurve::cast()
+{
+  QVERIFY( !QgsCompoundCurve::cast( static_cast< const QgsAbstractGeometry * >( nullptr ) ) );
+
+  QgsCompoundCurve cs;
+  QVERIFY( QgsCompoundCurve::cast( &cs ) );
+
+  cs.clear();
+
+  cs.fromWkt( QStringLiteral( "CompoundCurve Z ((6 0 -0.6, 6.5 0 -0.4))" ) );
+  QVERIFY( QgsCompoundCurve::cast( &cs ) );
+  QVERIFY( QgsCurve::cast( &cs ) );
+
+  cs.fromWkt( QStringLiteral( "CompoundCurve M ((6 0 -0.6, 6.5 0 -0.4))" ) );
+  QVERIFY( QgsCompoundCurve::cast( &cs ) );
+  QVERIFY( QgsCurve::cast( &cs ) );
+
+  cs.fromWkt( QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 6.5 0 -0.4 -0.8))" ) );
+  QVERIFY( QgsCompoundCurve::cast( &cs ) );
+  QVERIFY( QgsCurve::cast( &cs ) );
 }
 
 
