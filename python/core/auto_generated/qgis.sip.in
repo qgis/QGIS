@@ -1507,6 +1507,7 @@ The development version
       RedrawLayerOnly,
       FixedRangePerBand,
       RepresentsTemporalValues,
+      FixedDateTime,
     };
 
     enum class TemporalIntervalMatchMethod

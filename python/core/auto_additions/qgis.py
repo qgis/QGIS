@@ -4680,6 +4680,9 @@ QgsRasterLayerTemporalProperties.FixedRangePerBand.__doc__ = "Layer has a fixed 
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues = Qgis.RasterTemporalMode.RepresentsTemporalValues
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues.is_monkey_patched = True
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues.__doc__ = "Pixel values represent an datetime"
+QgsRasterLayerTemporalProperties.FixedDateTime = Qgis.RasterTemporalMode.FixedDateTime
+QgsRasterLayerTemporalProperties.FixedDateTime.is_monkey_patched = True
+QgsRasterLayerTemporalProperties.FixedDateTime.__doc__ = "Mode when temporal properties have fixed date time instant. \n.. versionadded:: 3.3.44"
 Qgis.RasterTemporalMode.__doc__ = """Raster layer temporal modes
 
 .. versionadded:: 3.22
@@ -4704,6 +4707,10 @@ Qgis.RasterTemporalMode.__doc__ = """Raster layer temporal modes
   .. versionadded:: 3.38
 
 * ``RepresentsTemporalValues``: Pixel values represent an datetime
+* ``FixedDateTime``: Mode when temporal properties have fixed date time instant.
+
+  .. versionadded:: 3.3.44
+
 
 """
 # --
