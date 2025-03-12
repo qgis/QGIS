@@ -18,7 +18,7 @@
 
 #include "qgsconnectionpool.h"
 #include "qgsoracleconn.h"
-
+#include "qgslogger.h"
 
 inline QString qgsConnectionPool_ConnectionToName( QgsOracleConn *c )
 {
@@ -27,11 +27,13 @@ inline QString qgsConnectionPool_ConnectionToName( QgsOracleConn *c )
 
 inline void qgsConnectionPool_ConnectionCreate( const QgsDataSourceUri &uri, QgsOracleConn *&c )
 {
+  QgsDebugMsgLevel( QStringLiteral( "Creating an Oracle connection" ), 2 );
   c = QgsOracleConn::connectDb( uri, false );
 }
 
 inline void qgsConnectionPool_ConnectionDestroy( QgsOracleConn *c )
 {
+  QgsDebugMsgLevel( QStringLiteral( "Disconnecting an Oracle connection" ), 2 );
   c->disconnect(); // will delete itself
 }
 
