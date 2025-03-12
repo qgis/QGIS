@@ -33,11 +33,6 @@ qgis:convertgeometrytype: >
 
   See the "Polygonize" or "Lines to polygons" algorithm for alternative options.
 
-qgis:definecurrentprojection: >
-  This algorithm sets an existing Shapefile's projection to the provided CRS. Contrary to the "Assign projection" algorithm, it will not output a new layer.
-
-  The .prj and .qpj files associated with the Shapefile will be overwritten - or created if missing - to match the provided CRS.
-
 qgis:distancematrix: >
   This algorithm creates a table containing a distance matrix, with distances between all the points in a points layer.
 

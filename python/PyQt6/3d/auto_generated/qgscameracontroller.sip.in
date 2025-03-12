@@ -89,6 +89,20 @@ yaw angle in degrees.
 .. versionadded:: 3.4
 %End
 
+    QgsVector3D lookingAtMapPoint() const;
+%Docstring
+Returns the point in the map coordinates towards which the camera is looking
+
+.. versionadded:: 3.44
+%End
+
+    void setLookingAtMapPoint( const QgsVector3D &point, float distance, float pitch, float yaw );
+%Docstring
+Sets camera configuration like :py:func:`~QgsCameraController.setLookingAtPoint`, but the point is given in map coordinates
+
+.. versionadded:: 3.44
+%End
+
     void setCameraPose( const QgsCameraPose &camPose, bool force = false );
 %Docstring
 Sets camera pose

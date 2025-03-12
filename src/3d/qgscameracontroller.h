@@ -126,6 +126,18 @@ class _3D_EXPORT QgsCameraController : public QObject
     void setLookingAtPoint( const QgsVector3D &point, float distance, float pitch, float yaw );
 
     /**
+     * Returns the point in the map coordinates towards which the camera is looking
+     * \since QGIS 3.44
+     */
+    QgsVector3D lookingAtMapPoint() const;
+
+    /**
+     * Sets camera configuration like setLookingAtPoint(), but the point is given in map coordinates
+     * \since QGIS 3.44
+     */
+    void setLookingAtMapPoint( const QgsVector3D &point, float distance, float pitch, float yaw );
+
+    /**
      * Sets camera pose
      * \since QGIS 3.4
      */
