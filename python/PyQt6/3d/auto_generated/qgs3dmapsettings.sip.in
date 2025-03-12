@@ -50,6 +50,8 @@ Resolves references to other objects (map layers) after the call to :py:func:`~Q
 %Docstring
 Returns the 3D scene's 2D extent in the 3D scene's CRS
 
+The extent is ignored in globe scenes (which always show the whole globe).
+
 .. seealso:: :py:func:`crs`
 
 .. versionadded:: 3.30
@@ -58,8 +60,11 @@ Returns the 3D scene's 2D extent in the 3D scene's CRS
     void setExtent( const QgsRectangle &extent );
 %Docstring
 Sets the 3D scene's 2D ``extent`` in the 3D scene's CRS, while also setting the scene's origin to the extent's center
+
 This needs to be called during initialization, as terrain will only be generated
 within this extent and layer 3D data will only be loaded within this extent too.
+
+The extent is ignored in globe scenes (which always show the whole globe).
 
 .. seealso:: :py:func:`setOrigin`
 
@@ -111,6 +116,16 @@ Sets coordinate reference system used in the 3D scene.
 Returns coordinate reference system used in the 3D scene.
 
 .. seealso:: :py:func:`setCrs`
+%End
+
+    bool isGlobe() const;
+%Docstring
+Returns ``True`` if the 3D scene represents a globe (when using Geocentric CRS
+such as EPSG:4978), returns ``False`` if the 3D scene uses a projected CRS.
+
+In case of globe scene, we always show the whole globe and :py:func:`~Qgs3DMapSettings.extent` is ignored.
+
+.. versionadded:: 3.44
 %End
 
     QgsCoordinateTransformContext transformContext() const;

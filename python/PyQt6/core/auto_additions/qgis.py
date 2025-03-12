@@ -7312,12 +7312,17 @@ Qgis.LightSourceType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.NavigationMode.TerrainBased.__doc__ = "The default navigation based on the terrain"
 Qgis.NavigationMode.Walk.__doc__ = "Uses WASD keys or arrows to navigate in walking (first person) manner"
+Qgis.NavigationMode.GlobeTerrainBased.__doc__ = "Navigation similar to TerrainBased, but for use with globe  \n.. versionadded:: 3.44"
 Qgis.NavigationMode.__doc__ = """The navigation mode used by 3D cameras.
 
 .. versionadded:: 3.30
 
 * ``TerrainBased``: The default navigation based on the terrain
 * ``Walk``: Uses WASD keys or arrows to navigate in walking (first person) manner
+* ``GlobeTerrainBased``: Navigation similar to TerrainBased, but for use with globe
+
+  .. versionadded:: 3.44
+
 
 """
 # --
