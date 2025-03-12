@@ -61,6 +61,7 @@
 #include "qgsalgorithmcoveragevalidate.h"
 #include "qgsalgorithmcreatedirectory.h"
 #include "qgsalgorithmdbscanclustering.h"
+#include "qgsalgorithmdefineprojection.h"
 #include "qgsalgorithmdelaunaytriangulation.h"
 #include "qgsalgorithmdeleteduplicategeometries.h"
 #include "qgsalgorithmdensifygeometriesbycount.h"
@@ -350,6 +351,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCoverageValidateAlgorithm() );
   addAlgorithm( new QgsCreateDirectoryAlgorithm() );
   addAlgorithm( new QgsDbscanClusteringAlgorithm() );
+  addAlgorithm( new QgsDefineProjectionAlgorithm() );
   addAlgorithm( new QgsDelaunayTriangulationAlgorithm() );
   addAlgorithm( new QgsDeleteDuplicateGeometriesAlgorithm() );
   addAlgorithm( new QgsDetectVectorChangesAlgorithm() );
