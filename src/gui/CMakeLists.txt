@@ -354,6 +354,7 @@ set(QGIS_GUI_SRCS
   maptools/qgsmaptoolshapeabstract.cpp
   maptools/qgsmaptoolshaperegistry.cpp
   maptools/qgsmaptoolzoom.cpp
+  maptools/qgsmaptoolclippingplanes.cpp
 
   mesh/qgsmeshlayerproperties.cpp
   mesh/qgsrenderermeshpropertieswidget.cpp
@@ -1344,6 +1345,7 @@ set(QGIS_GUI_HDRS
   maptools/qgsmaptoolshapeabstract.h
   maptools/qgsmaptoolshaperegistry.h
   maptools/qgsmaptoolzoom.h
+  maptools/qgsmaptoolclippingplanes.h
 
   mesh/qgsmeshlayerproperties.h
   mesh/qgsrenderermeshpropertieswidget.h
