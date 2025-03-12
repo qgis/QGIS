@@ -4000,7 +4000,8 @@ class CORE_EXPORT Qgis
     enum class NavigationMode : int
     {
       TerrainBased, //!< The default navigation based on the terrain
-      Walk //!< Uses WASD keys or arrows to navigate in walking (first person) manner
+      Walk, //!< Uses WASD keys or arrows to navigate in walking (first person) manner
+      GlobeTerrainBased  //!< Navigation similar to TerrainBased, but for use with globe  \since QGIS 3.44
     };
     Q_ENUM( NavigationMode )
 
