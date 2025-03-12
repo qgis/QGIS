@@ -2264,7 +2264,8 @@ The development version
     enum class NavigationMode
     {
       TerrainBased,
-      Walk
+      Walk,
+      GlobeTerrainBased
     };
 
     enum class VerticalAxisInversion

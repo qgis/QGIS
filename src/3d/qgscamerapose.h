@@ -69,6 +69,12 @@ class _3D_EXPORT QgsCameraPose
     //! Update Qt3D camera view matrix based on the pose
     void updateCamera( Qt3DRender::QCamera *camera ) SIP_SKIP;
 
+    /**
+     * Updates camera when using a globe scene
+     * \since QGIS 3.44
+     */
+    void updateCameraGlobe( Qt3DRender::QCamera *camera, double lat, double lon ) SIP_SKIP;
+
     //! Writes configuration to a new DOM element and returns it
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from a DOM element previously written using writeXml()
