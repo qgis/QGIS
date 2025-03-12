@@ -126,6 +126,11 @@ void Qgs3DMapToolPointCloudChangeAttributePolygon::mouseReleaseEvent( QMouseEven
         mPolygonRubberBand->addPoint( screenEdgePoint );
         mPolygonRubberBand->addPoint( newPoint );
       }
+      else if ( mScreenPoints.size() == 2 )
+      {
+        run();
+        restart();
+      }
     }
   }
   else if ( event->button() == Qt::RightButton )
