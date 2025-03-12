@@ -2539,6 +2539,7 @@ class CORE_EXPORT Qgis
       RedrawLayerOnly SIP_MONKEYPATCH_COMPAT_NAME( ModeRedrawLayerOnly ) = 2, //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range. \since QGIS 3.22
       FixedRangePerBand = 3, //!< Layer has a fixed temporal range per band \since QGIS 3.38
       RepresentsTemporalValues = 4, //!< Pixel values represent an datetime
+      FixedDateTime = 5, //!< Mode when temporal properties have fixed date time instant. \since QGIS 3.3.44
     };
     Q_ENUM( RasterTemporalMode )
 

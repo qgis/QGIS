@@ -52,6 +52,7 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
   {
     mModeComboBox->addItem( tr( "Automatic" ), QVariant::fromValue( Qgis::RasterTemporalMode::TemporalRangeFromDataProvider ) );
   }
+  mModeComboBox->addItem( tr( "Fixed Date/Time" ), QVariant::fromValue( Qgis::RasterTemporalMode::FixedDateTime ) );
   mModeComboBox->addItem( tr( "Fixed Time Range" ), QVariant::fromValue( Qgis::RasterTemporalMode::FixedTemporalRange ) );
   mModeComboBox->addItem( tr( "Fixed Time Range Per Band" ), QVariant::fromValue( Qgis::RasterTemporalMode::FixedRangePerBand ) );
   mModeComboBox->addItem( tr( "Represents Temporal Values" ), QVariant::fromValue( Qgis::RasterTemporalMode::RepresentsTemporalValues ) );
@@ -88,6 +89,7 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
 
   connect( mTemporalGroupBox, &QGroupBox::toggled, this, &QgsRasterLayerTemporalPropertiesWidget::temporalGroupBoxChecked );
 
+  mFixedDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
   mStartTemporalDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
   mEndTemporalDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
   mOffsetDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
@@ -119,8 +121,26 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
   temporalProperties->setMode( mModeComboBox->currentData().value<Qgis::RasterTemporalMode>() );
   temporalProperties->setBandNumber( mBandComboBox->currentBand() );
 
-  const QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(), mEndTemporalDateTimeEdit->dateTime() );
-  temporalProperties->setFixedTemporalRange( normalRange );
+  switch ( temporalProperties->mode() )
+  {
+    case Qgis::RasterTemporalMode::FixedDateTime:
+    {
+      const QgsDateTimeRange normalRange = QgsDateTimeRange( mFixedDateTimeEdit->dateTime(), mFixedDateTimeEdit->dateTime() );
+      temporalProperties->setFixedTemporalRange( normalRange );
+      break;
+    }
+    case Qgis::RasterTemporalMode::FixedTemporalRange:
+    {
+      const QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(), mEndTemporalDateTimeEdit->dateTime() );
+      temporalProperties->setFixedTemporalRange( normalRange );
+      break;
+    }
+    case Qgis::RasterTemporalMode::FixedRangePerBand:
+    case Qgis::RasterTemporalMode::RepresentsTemporalValues:
+    case Qgis::RasterTemporalMode::RedrawLayerOnly:
+    case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
+      break;
+  }
 
   temporalProperties->setFixedRangePerBand( mFixedRangePerBandModel->rangeData() );
 
@@ -143,6 +163,9 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
   {
     case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
       mStackedWidget->setCurrentWidget( mPageAutomatic );
+      break;
+    case Qgis::RasterTemporalMode::FixedDateTime:
+      mStackedWidget->setCurrentWidget( mPageFixedDateTime );
       break;
     case Qgis::RasterTemporalMode::FixedTemporalRange:
       mStackedWidget->setCurrentWidget( mPageFixedRange );
@@ -167,6 +190,7 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
   mBandComboBox->setLayer( mLayer );
   mBandComboBox->setBand( temporalProperties->bandNumber() );
 
+  mFixedDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().begin() );
   mStartTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().begin() );
   mEndTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().end() );
 
@@ -210,6 +234,9 @@ void QgsRasterLayerTemporalPropertiesWidget::modeChanged()
     {
       case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
         mStackedWidget->setCurrentWidget( mPageAutomatic );
+        break;
+      case Qgis::RasterTemporalMode::FixedDateTime:
+        mStackedWidget->setCurrentWidget( mPageFixedDateTime );
         break;
       case Qgis::RasterTemporalMode::FixedTemporalRange:
         mStackedWidget->setCurrentWidget( mPageFixedRange );
