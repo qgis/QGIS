@@ -337,7 +337,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSourc
 
   executeLambdaForMapLayer( value, context, e, [&featureSource]( QgsMapLayer * layer )
   {
-    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
+    if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       featureSource.reset( new QgsVectorLayerFeatureSource( vl ) );
     }

@@ -87,7 +87,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEditV2( Qg
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      auto moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       mPoint = QgsPoint( moveOperation->after() );
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
@@ -99,7 +99,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEditV2( Qg
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      auto moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       mPoint.setX( mPoint.x() + moveOperation->translationX() );
       mPoint.setY( mPoint.y() + moveOperation->translationY() );
       return Qgis::AnnotationItemEditOperationResult::Success;
@@ -118,13 +118,13 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transie
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      auto moveOperation = dynamic_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      auto moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( new QgsPoint( mPoint.x() + moveOperation->translationX(), mPoint.y() + moveOperation->translationY() ) ) );
     }
 

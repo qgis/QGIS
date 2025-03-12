@@ -264,7 +264,7 @@ bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, vo
     unsigned long deviceType = reinterpret_cast<DEV_BROADCAST_HDR *>( pWindowsMessage->lParam )->dbch_devicetype;
     if ( deviceType == DBT_DEVTYP_VOLUME )
     {
-      const DEV_BROADCAST_VOLUME *broadcastVolume = reinterpret_cast<const DEV_BROADCAST_VOLUME *>( pWindowsMessage->lParam );
+      auto broadcastVolume = reinterpret_cast<const DEV_BROADCAST_VOLUME *>( pWindowsMessage->lParam );
       if ( !broadcastVolume )
         return false;
 

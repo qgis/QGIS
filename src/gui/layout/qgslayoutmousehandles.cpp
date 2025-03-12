@@ -66,7 +66,7 @@ void QgsLayoutMouseHandles::selectionChanged()
   const QList<QGraphicsItem *> itemList = layout()->items();
   for ( QGraphicsItem *graphicsItem : itemList )
   {
-    QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+    auto item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
     if ( !item )
       continue;
 
@@ -104,7 +104,7 @@ void QgsLayoutMouseHandles::setViewportCursor( Qt::CursorShape cursor )
 QList<QGraphicsItem *> QgsLayoutMouseHandles::sceneItemsAtPoint( QPointF scenePoint )
 {
   QList<QGraphicsItem *> items;
-  if ( QgsLayoutViewToolSelect *tool = qobject_cast<QgsLayoutViewToolSelect *>( mView->tool() ) )
+  if ( auto tool = qobject_cast<QgsLayoutViewToolSelect *>( mView->tool() ) )
   {
     const double searchTolerance = tool->searchToleranceInLayoutUnits();
     const QRectF area( scenePoint.x() - searchTolerance, scenePoint.y() - searchTolerance, 2 * searchTolerance, 2 * searchTolerance );
@@ -134,7 +134,7 @@ QList<QGraphicsItem *> QgsLayoutMouseHandles::selectedSceneItems( bool includeLo
 
 bool QgsLayoutMouseHandles::itemIsLocked( QGraphicsItem *item )
 {
-  if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+  if ( auto layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
     return layoutItem->isLocked();
   else
     return false;
@@ -142,7 +142,7 @@ bool QgsLayoutMouseHandles::itemIsLocked( QGraphicsItem *item )
 
 bool QgsLayoutMouseHandles::itemIsGroupMember( QGraphicsItem *item )
 {
-  if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+  if ( auto layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
     return layoutItem->isGroupMember();
   else
     return false;
@@ -150,7 +150,7 @@ bool QgsLayoutMouseHandles::itemIsGroupMember( QGraphicsItem *item )
 
 QRectF QgsLayoutMouseHandles::itemRect( QGraphicsItem *item ) const
 {
-  if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+  if ( auto layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
     return layoutItem->rectWithFrame();
   else
     return QRectF();
@@ -253,7 +253,7 @@ void QgsLayoutMouseHandles::moveItem( QGraphicsItem *item, double deltaX, double
 
 void QgsLayoutMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
 {
-  QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+  auto layoutItem = dynamic_cast<QgsLayoutItem *>( item );
   layoutItem->attemptSetSceneRect( rect, true );
 }
 
@@ -274,13 +274,13 @@ void QgsLayoutMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *eve
   if ( items.isEmpty() )
     return;
 
-  QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( items.first() );
+  auto item = dynamic_cast<QgsLayoutItem *>( items.first() );
   if ( item == nullptr )
     return;
 
   // If item is a frame, use the multiFrame type
   int itemtype = item->type();
-  if ( QgsLayoutFrame *frame = dynamic_cast<QgsLayoutFrame *>( item ) )
+  if ( auto frame = dynamic_cast<QgsLayoutFrame *>( item ) )
     if ( QgsLayoutMultiFrame *multiFrame = frame->multiFrame() )
       itemtype = multiFrame->type();
 

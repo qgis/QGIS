@@ -47,7 +47,7 @@ bool QgsMapToolRotatePointSymbols::layerIsRotatable( QgsMapLayer *ml )
   }
 
   //a vector layer
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( ml );
+  auto vLayer = qobject_cast<QgsVectorLayer *>( ml );
   if ( !vLayer )
   {
     return false;
@@ -237,7 +237,7 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbol *markerSymb
   if ( markerSymbol )
   {
     const std::unique_ptr<QgsSymbol> clone( markerSymbol->clone() );
-    QgsMarkerSymbol *markerClone = static_cast<QgsMarkerSymbol *>( clone.get() );
+    auto markerClone = static_cast<QgsMarkerSymbol *>( clone.get() );
     markerClone->setDataDefinedAngle( QgsProperty() );
     pointImage = markerClone->bigSymbolPreviewImage( nullptr, Qgis::SymbolPreviewFlags() );
   }

@@ -118,7 +118,7 @@ void QgsRasterLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   xform.setMapRotation( 0, 0, 0 );
   const QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
 
-  QgsTextLabelFeature *lf = qgis::down_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
+  auto lf = qgis::down_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
   QgsTextRenderer::drawDocument( outPt,
                                  mFormat, lf->document(), lf->documentMetrics(), context, Qgis::TextHorizontalAlignment::Left,
                                  label->getAlpha(), Qgis::TextLayoutMode::Labeling );

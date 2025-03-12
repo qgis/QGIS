@@ -46,7 +46,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
 
   if ( mItem && mItem->annotation() )
   {
-    QgsTextAnnotation *annotation = static_cast<QgsTextAnnotation *>( mItem->annotation() );
+    auto annotation = static_cast<QgsTextAnnotation *>( mItem->annotation() );
     mTextDocument.reset( annotation->document() ? annotation->document()->clone() : nullptr );
     mTextEdit->setDocument( mTextDocument.get() );
   }
@@ -106,7 +106,7 @@ void QgsTextAnnotationDialog::applyTextToItem()
 {
   if ( mItem && mTextDocument && mItem->annotation() )
   {
-    QgsTextAnnotation *annotation = static_cast<QgsTextAnnotation *>( mItem->annotation() );
+    auto annotation = static_cast<QgsTextAnnotation *>( mItem->annotation() );
     //apply settings from embedded item widget
     if ( mEmbeddedWidget )
     {

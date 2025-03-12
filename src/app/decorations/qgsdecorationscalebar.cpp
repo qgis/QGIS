@@ -157,7 +157,7 @@ void QgsDecorationScaleBar::setupScaleBar()
 
       auto fillSymbol = std::make_unique<QgsFillSymbol>();
       fillSymbol->setColor( mColor ); // Compatibility with pre 3.2 configuration
-      if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fillSymbol->symbolLayer( 0 ) ) )
+      if ( auto fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fillSymbol->symbolLayer( 0 ) ) )
       {
         fill->setStrokeStyle( Qt::NoPen );
       }
@@ -180,7 +180,7 @@ void QgsDecorationScaleBar::setupScaleBar()
 
       auto fillSymbol = std::make_unique<QgsFillSymbol>();
       fillSymbol->setColor( mColor );
-      if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fillSymbol->symbolLayer( 0 ) ) )
+      if ( auto fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fillSymbol->symbolLayer( 0 ) ) )
       {
         fill->setStrokeStyle( Qt::NoPen );
       }
@@ -188,7 +188,7 @@ void QgsDecorationScaleBar::setupScaleBar()
 
       auto fillSymbol2 = std::make_unique<QgsFillSymbol>();
       fillSymbol2->setColor( QColor( 255, 255, 255, 0 ) );
-      if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fillSymbol2->symbolLayer( 0 ) ) )
+      if ( auto fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fillSymbol2->symbolLayer( 0 ) ) )
       {
         fill->setStrokeStyle( Qt::NoPen );
       }

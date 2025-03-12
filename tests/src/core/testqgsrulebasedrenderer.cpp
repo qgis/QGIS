@@ -64,7 +64,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       xml2domElement( QStringLiteral( "rulebasedrenderer_simple.xml" ), doc );
       QDomElement elem = doc.documentElement();
 
-      QgsRuleBasedRenderer *r = static_cast<QgsRuleBasedRenderer *>( QgsRuleBasedRenderer::create( elem, QgsReadWriteContext() ) );
+      auto r = static_cast<QgsRuleBasedRenderer *>( QgsRuleBasedRenderer::create( elem, QgsReadWriteContext() ) );
       QVERIFY( r );
       check_tree_valid( r->rootRule() );
       delete r;
@@ -145,7 +145,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       sub2Rule->appendChild( sub3Rule );
       const QgsRuleBasedRenderer r( rootRule );
 
-      QgsRuleBasedRenderer *clone = static_cast<QgsRuleBasedRenderer *>( r.clone() );
+      auto clone = static_cast<QgsRuleBasedRenderer *>( r.clone() );
       RRule *cloneRootRule = clone->rootRule();
       RRule *cloneSub1Rule = cloneRootRule->children()[0];
       RRule *cloneSub2Rule = cloneSub1Rule->children()[0];
@@ -1404,7 +1404,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
 
       Q_ASSERT( ok );
 
-      QgsRuleBasedRenderer *renderer2 = static_cast<QgsRuleBasedRenderer *>( vl->renderer() );
+      auto renderer2 = static_cast<QgsRuleBasedRenderer *>( vl->renderer() );
       ruleElse = renderer2->rootRule()->children().last();
       Q_ASSERT( ruleElse->isElse() );
     }

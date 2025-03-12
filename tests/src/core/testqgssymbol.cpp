@@ -435,7 +435,7 @@ void TestQgsSymbol::symbolProperties()
   QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, fill );
 
-  QgsFillSymbol *fillSymbol2 = static_cast<QgsFillSymbol *>( fillSymbol->clone() );
+  auto fillSymbol2 = static_cast<QgsFillSymbol *>( fillSymbol->clone() );
 
   //test that two different symbol pointers return same properties
   QCOMPARE( QgsSymbolLayerUtils::symbolProperties( fillSymbol ), QgsSymbolLayerUtils::symbolProperties( fillSymbol2 ) );

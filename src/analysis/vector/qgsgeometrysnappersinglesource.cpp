@@ -273,17 +273,17 @@ static bool snapLineString( QgsLineString *linestring, const QgsSpatialIndex &in
 static bool snapGeometry( QgsAbstractGeometry *g, const QgsSpatialIndex &index, const QVector<AnchorPoint> &pnts, double thresh )
 {
   bool changed = false;
-  if ( QgsLineString *linestring = qgsgeometry_cast<QgsLineString *>( g ) )
+  if ( auto linestring = qgsgeometry_cast<QgsLineString *>( g ) )
   {
     changed = snapLineString( linestring, index, pnts, thresh ) | changed;
   }
   else if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( g ) )
   {
-    if ( QgsLineString *exteriorRing = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() ) )
+    if ( auto exteriorRing = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() ) )
       changed = snapLineString( exteriorRing, index, pnts, thresh ) | changed;
     for ( int i = 0; i < polygon->numInteriorRings(); ++i )
     {
-      if ( QgsLineString *interiorRing = qgsgeometry_cast<QgsLineString *>( polygon->interiorRing( i ) ) )
+      if ( auto interiorRing = qgsgeometry_cast<QgsLineString *>( polygon->interiorRing( i ) ) )
         changed = snapLineString( interiorRing, index, pnts, thresh ) | changed;
     }
   }

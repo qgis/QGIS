@@ -575,7 +575,7 @@ bool QgsLayoutGuideCollection::readXml( const QDomElement &e, const QDomDocument
   for ( int i = 0; i < guideNodeList.size(); ++i )
   {
     QDomElement element = guideNodeList.at( i ).toElement();
-    Qt::Orientation orientation = static_cast< Qt::Orientation >( element.attribute( QStringLiteral( "orientation" ), QStringLiteral( "1" ) ).toInt() );
+    auto orientation = static_cast<Qt::Orientation>( element.attribute( QStringLiteral( "orientation" ), QStringLiteral( "1" ) ).toInt() );
     double pos = element.attribute( QStringLiteral( "position" ), QStringLiteral( "0" ) ).toDouble();
     Qgis::LayoutUnit unit = QgsUnitTypes::decodeLayoutUnit( element.attribute( QStringLiteral( "units" ) ) );
     int page = element.attribute( QStringLiteral( "page" ), QStringLiteral( "0" ) ).toInt();

@@ -148,7 +148,7 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
     return;
 
   const QString lid = mLayerNameCombo->itemData( idx ).toString();
-  QgsVectorLayer *l = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( lid ) );
+  auto l = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( lid ) );
   if ( !l )
     return;
   const QgsVirtualLayerDefinition def = QgsVirtualLayerDefinition::fromUrl( QUrl::fromEncoded( l->source().toUtf8() ) );
@@ -402,7 +402,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
     if ( l->type() == Qgis::LayerType::Vector )
     {
       apis->add( l->name() );
-      QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
+      auto vl = static_cast<QgsVectorLayer *>( l );
       const QgsFields fields = vl->fields();
       for ( const QgsField &f : fields )
       {
@@ -424,7 +424,7 @@ void QgsVirtualLayerSourceSelect::addEmbeddedLayer( const QString &name, const Q
   // local name
   mLayersTable->item( n, LayerColumn::Name )->setText( name );
   // source
-  QgsVirtualLayerSourceWidget *sourceWidget = qobject_cast<QgsVirtualLayerSourceWidget *>( mLayersTable->cellWidget( n, LayerColumn::Source ) );
+  auto sourceWidget = qobject_cast<QgsVirtualLayerSourceWidget *>( mLayersTable->cellWidget( n, LayerColumn::Source ) );
   sourceWidget->setSource( source, provider );
   // provider
   QComboBox *providerCombo = qobject_cast<QComboBox *>( mLayersTable->cellWidget( n, LayerColumn::Provider ) );
@@ -442,7 +442,7 @@ void QgsVirtualLayerSourceSelect::importLayer()
     const QStringList ids = dialog.layers();
     for ( const QString &id : ids )
     {
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) ) )
         addEmbeddedLayer( vl->name(), vl->providerType(), vl->dataProvider()->encoding(), vl->source() );
     }
   }
@@ -508,11 +508,11 @@ void QgsVirtualLayerSourceSelect::showHelp()
 
 void QgsVirtualLayerSourceSelect::rowSourceChanged()
 {
-  QgsVirtualLayerSourceWidget *widget = qobject_cast<QgsVirtualLayerSourceWidget *>( sender() );
+  auto widget = qobject_cast<QgsVirtualLayerSourceWidget *>( sender() );
   // we have to find the matching row for the source widget which was changed
   for ( int row = 0; row < mLayersTable->rowCount(); row++ )
   {
-    QgsVirtualLayerSourceWidget *rowSourceWidget = qobject_cast<QgsVirtualLayerSourceWidget *>( mLayersTable->cellWidget( row, LayerColumn::Source ) );
+    auto rowSourceWidget = qobject_cast<QgsVirtualLayerSourceWidget *>( mLayersTable->cellWidget( row, LayerColumn::Source ) );
     if ( rowSourceWidget == widget )
     {
       // automatically update provider to match

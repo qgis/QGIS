@@ -78,7 +78,7 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
 
   if ( layer->elevationProperties() && layer->elevationProperties()->hasElevation() )
   {
-    QgsMeshLayerElevationProperties *elevProp = qobject_cast<QgsMeshLayerElevationProperties *>( layer->elevationProperties() );
+    auto elevProp = qobject_cast<QgsMeshLayerElevationProperties *>( layer->elevationProperties() );
 
     mRenderElevationMap = true;
     mElevationScale = elevProp->zScale();

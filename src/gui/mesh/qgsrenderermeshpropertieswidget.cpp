@@ -133,7 +133,7 @@ void QgsRendererMeshPropertiesWidget::apply()
 
 void QgsRendererMeshPropertiesWidget::syncToLayer( QgsMapLayer *mapLayer )
 {
-  QgsMeshLayer *ml = qobject_cast<QgsMeshLayer *>( mapLayer );
+  auto ml = qobject_cast<QgsMeshLayer *>( mapLayer );
   if ( ml )
   {
     mLayer = ml;

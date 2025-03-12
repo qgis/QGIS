@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     if ( sipCpp->inherits( "QgsLayerTreeNode" ) )
     {
       sipType = sipType_QgsLayerTreeNode;
-      QgsLayerTreeNode *node = qobject_cast<QgsLayerTreeNode *>( sipCpp );
+      auto node = qobject_cast<QgsLayerTreeNode *>( sipCpp );
       if ( QgsLayerTree::isLayer( node ) )
         sipType = sipType_QgsLayerTreeLayer;
       else if ( qobject_cast<QgsLayerTree *>( sipCpp ) )

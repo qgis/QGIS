@@ -118,7 +118,7 @@ void CharacterWidget::setCharacter( QChar character )
   QWidget *widget = parentWidget();
   if ( widget )
   {
-    QScrollArea *scrollArea = qobject_cast<QScrollArea *>( widget->parent() );
+    auto scrollArea = qobject_cast<QScrollArea *>( widget->parent() );
     if ( scrollArea && mLastKey < 65536 )
     {
       scrollArea->ensureVisible( 0, mLastKey / mColumns * mSquareSize );

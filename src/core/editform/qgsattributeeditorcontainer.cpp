@@ -95,7 +95,7 @@ QList<QgsAttributeEditorElement *> QgsAttributeEditorContainer::findElements( Qg
 
     if ( elem->type() == Qgis::AttributeEditorType::Container )
     {
-      QgsAttributeEditorContainer *cont = dynamic_cast<QgsAttributeEditorContainer *>( elem );
+      auto cont = dynamic_cast<QgsAttributeEditorContainer *>( elem );
       if ( cont )
         results += cont->findElements( type );
     }

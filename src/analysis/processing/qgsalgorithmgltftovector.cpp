@@ -136,7 +136,7 @@ std::unique_ptr<QgsAbstractGeometry> extractTriangles(
 
       if ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT )
       {
-        const unsigned short *usPtrPrimitive = reinterpret_cast<const unsigned short *>( primitivePtr );
+        auto usPtrPrimitive = reinterpret_cast<const unsigned short *>( primitivePtr );
         if ( bvPrimitive.byteStride )
           primitivePtr += bvPrimitive.byteStride;
         else
@@ -148,7 +148,7 @@ std::unique_ptr<QgsAbstractGeometry> extractTriangles(
       }
       else if ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE )
       {
-        const unsigned char *usPtrPrimitive = reinterpret_cast<const unsigned char *>( primitivePtr );
+        auto usPtrPrimitive = reinterpret_cast<const unsigned char *>( primitivePtr );
         if ( bvPrimitive.byteStride )
           primitivePtr += bvPrimitive.byteStride;
         else
@@ -160,7 +160,7 @@ std::unique_ptr<QgsAbstractGeometry> extractTriangles(
       }
       else
       {
-        const unsigned int *uintPtrPrimitive = reinterpret_cast<const unsigned int *>( primitivePtr );
+        auto uintPtrPrimitive = reinterpret_cast<const unsigned int *>( primitivePtr );
         if ( bvPrimitive.byteStride )
           primitivePtr += bvPrimitive.byteStride;
         else
@@ -236,7 +236,7 @@ std::unique_ptr<QgsAbstractGeometry> extractLines(
 
       if ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT )
       {
-        const unsigned short *usPtrPrimitive = reinterpret_cast<const unsigned short *>( primitivePtr );
+        auto usPtrPrimitive = reinterpret_cast<const unsigned short *>( primitivePtr );
         if ( bvPrimitive.byteStride )
           primitivePtr += bvPrimitive.byteStride;
         else
@@ -247,7 +247,7 @@ std::unique_ptr<QgsAbstractGeometry> extractLines(
       }
       else if ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE )
       {
-        const unsigned char *usPtrPrimitive = reinterpret_cast<const unsigned char *>( primitivePtr );
+        auto usPtrPrimitive = reinterpret_cast<const unsigned char *>( primitivePtr );
         if ( bvPrimitive.byteStride )
           primitivePtr += bvPrimitive.byteStride;
         else
@@ -258,7 +258,7 @@ std::unique_ptr<QgsAbstractGeometry> extractLines(
       }
       else
       {
-        const unsigned int *uintPtrPrimitive = reinterpret_cast<const unsigned int *>( primitivePtr );
+        auto uintPtrPrimitive = reinterpret_cast<const unsigned int *>( primitivePtr );
         if ( bvPrimitive.byteStride )
           primitivePtr += bvPrimitive.byteStride;
         else

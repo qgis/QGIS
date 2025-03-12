@@ -688,7 +688,7 @@ void QgsElevationProfileWidget::updatePlot()
 
   if ( !mProfileCurve.isEmpty() )
   {
-    if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
+    if ( auto curve = qgsgeometry_cast<const QgsCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
     {
       mCanvas->setProfileCurve( curve->clone() );
       mCanvas->refresh();
@@ -844,7 +844,7 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
   std::unique_ptr<QgsCurve> profileCurve;
   if ( !mProfileCurve.isEmpty() )
   {
-    if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
+    if ( auto curve = qgsgeometry_cast<const QgsCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
     {
       profileCurve.reset( curve->clone() );
     }
@@ -887,7 +887,7 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
   sources << registrySources;
   for ( QgsMapLayer *layer : layersToGenerate )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
       sources.append( source );
   }
 
@@ -1053,7 +1053,7 @@ void QgsElevationProfileWidget::onProjectElevationPropertiesChanged()
   {
     if ( layer->type() == Qgis::LayerType::Vector )
     {
-      QgsVectorLayerElevationProperties *elevationProperties = qgis::down_cast<QgsVectorLayerElevationProperties *>( layer->elevationProperties() );
+      auto elevationProperties = qgis::down_cast<QgsVectorLayerElevationProperties *>( layer->elevationProperties() );
       switch ( elevationProperties->clamping() )
       {
         case Qgis::AltitudeClamping::Relative:

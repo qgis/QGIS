@@ -836,7 +836,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
     std::cout << "Description\n";
     std::cout << "----------------\n";
 
-    if ( const QgsProcessingModelAlgorithm *model = dynamic_cast<const QgsProcessingModelAlgorithm *>( alg ) )
+    if ( auto model = dynamic_cast<const QgsProcessingModelAlgorithm *>( alg ) )
     {
       // show finer help content for models
       const QVariantMap help = model->helpContent();
@@ -967,7 +967,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
 
     if ( p->type() == QgsProcessingParameterEnum::typeName() )
     {
-      const QgsProcessingParameterEnum *enumParam = static_cast<const QgsProcessingParameterEnum *>( p );
+      auto enumParam = static_cast<const QgsProcessingParameterEnum *>( p );
       QStringList options;
       QVariantMap jsonOptions;
       for ( int i = 0; i < enumParam->options().count(); ++i )

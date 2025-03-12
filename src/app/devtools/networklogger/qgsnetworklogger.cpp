@@ -249,7 +249,7 @@ QModelIndex QgsNetworkLogger::index( int row, int column, const QModelIndex &par
   if ( column < 0 || column >= columnCount( parent ) || row < 0 || row >= rowCount( parent ) )
     return QModelIndex();
 
-  QgsDevToolsModelGroup *n = dynamic_cast<QgsDevToolsModelGroup *>( index2node( parent ) );
+  auto n = dynamic_cast<QgsDevToolsModelGroup *>( index2node( parent ) );
   if ( !n )
     return QModelIndex(); // have no children
 
@@ -342,7 +342,7 @@ void QgsNetworkLoggerProxyModel::setShowCached( bool show )
 bool QgsNetworkLoggerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
   QgsDevToolsModelNode *node = mLogger->index2node( mLogger->index( source_row, 0, source_parent ) );
-  if ( QgsNetworkLoggerRequestGroup *request = dynamic_cast<QgsNetworkLoggerRequestGroup *>( node ) )
+  if ( auto request = dynamic_cast<QgsNetworkLoggerRequestGroup *>( node ) )
   {
     if ( ( request->status() == QgsNetworkLoggerRequestGroup::Status::Complete || request->status() == QgsNetworkLoggerRequestGroup::Status::Canceled )
          & !mShowSuccessful )

@@ -42,7 +42,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
   private:
     bool fuzzyHelper( const QgsAbstractGeometry &other, double epsilon, bool useDistance ) const
     {
-      const QgsCurvePolygon *otherPolygon = qgsgeometry_cast< const QgsCurvePolygon * >( &other );
+      auto otherPolygon = qgsgeometry_cast<const QgsCurvePolygon *>( &other );
       if ( !otherPolygon )
         return false;
 

@@ -87,7 +87,7 @@ void TestQgsPaintEffectRegistry::metadata()
   const QVariantMap map;
   QgsPaintEffect *effect = metadata.createPaintEffect( map );
   QVERIFY( effect );
-  DummyPaintEffect *dummyEffect = dynamic_cast<DummyPaintEffect *>( effect );
+  auto dummyEffect = dynamic_cast<DummyPaintEffect *>( effect );
   QVERIFY( dummyEffect );
   delete effect;
 }
@@ -146,7 +146,7 @@ void TestQgsPaintEffectRegistry::createEffect()
   QgsPaintEffect *effect = registry->createEffect( QStringLiteral( "Dummy" ) );
 
   QVERIFY( effect );
-  DummyPaintEffect *dummyEffect = dynamic_cast<DummyPaintEffect *>( effect );
+  auto dummyEffect = dynamic_cast<DummyPaintEffect *>( effect );
   QVERIFY( dummyEffect );
   delete effect;
 
@@ -158,7 +158,7 @@ void TestQgsPaintEffectRegistry::createEffect()
 void TestQgsPaintEffectRegistry::defaultStack()
 {
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
-  QgsEffectStack *effect = static_cast<QgsEffectStack *>( QgsPaintEffectRegistry::defaultStack() );
+  auto effect = static_cast<QgsEffectStack *>( QgsPaintEffectRegistry::defaultStack() );
   QVERIFY( registry->isDefaultStack( effect ) );
   effect->effect( 1 )->setEnabled( true );
   QVERIFY( !registry->isDefaultStack( effect ) );

@@ -127,14 +127,14 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
   {
     // register mouse click to detect dragging
     mHasClicked = true;
-    QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
+    auto mouseEvent = static_cast<QMouseEvent *>( event );
     mLastClickedPos = mouseEvent->pos();
   }
 
   // handle QEvent::MouseButtonRelease as it represents the end of click and QEvent::MouseMove.
   else if ( event->type() == QEvent::MouseButtonRelease || event->type() == QEvent::MouseMove )
   {
-    QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
+    auto mouseEvent = static_cast<QMouseEvent *>( event );
 
     // user has clicked and move ==> dragging start
     if ( event->type() == QEvent::MouseMove && ( ( mHasClicked && ( mouseEvent->pos() - mLastClickedPos ).manhattanLength() < QApplication::startDragDistance() ) || mIsDragging ) )
@@ -498,7 +498,7 @@ void Qgs3DAxis::createAxisScene()
 
 void Qgs3DAxis::createKeyboardShortCut()
 {
-  QgsWindow3DEngine *eng = dynamic_cast<QgsWindow3DEngine *>( mMapScene->engine() );
+  auto eng = dynamic_cast<QgsWindow3DEngine *>( mMapScene->engine() );
   if ( eng )
   {
     QWidget *mapCanvas = dynamic_cast<QWidget *>( eng->parent() );

@@ -170,7 +170,7 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget *parent )
 
 void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 {
-  QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+  auto layerItem = qobject_cast<QgsLayerItem *>( item );
   if ( !layerItem )
     return;
 
@@ -346,7 +346,7 @@ QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget *parent )
 
 void QgsBrowserDirectoryProperties::setItem( QgsDataItem *item )
 {
-  QgsDirectoryItem *directoryItem = qobject_cast<QgsDirectoryItem *>( item );
+  auto directoryItem = qobject_cast<QgsDirectoryItem *>( item );
   if ( !item )
     return;
 

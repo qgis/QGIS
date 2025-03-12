@@ -243,7 +243,7 @@ bool QgsGeoPackageCollectionItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  const QgsGeoPackageCollectionItem *o = qobject_cast<const QgsGeoPackageCollectionItem *>( other );
+  auto o = qobject_cast<const QgsGeoPackageCollectionItem *>( other );
   return o && mPath == o->mPath && mName == o->mName;
 
 }
@@ -352,7 +352,7 @@ bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  const QgsGeoPackageConnectionItem *o = qobject_cast<const QgsGeoPackageConnectionItem *>( other );
+  auto o = qobject_cast<const QgsGeoPackageConnectionItem *>( other );
   return o && mPath == o->mPath && mName == o->mName;
 
 }

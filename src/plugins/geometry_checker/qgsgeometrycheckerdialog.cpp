@@ -83,7 +83,7 @@ void QgsGeometryCheckerDialog::done( int r )
 
 void QgsGeometryCheckerDialog::closeEvent( QCloseEvent *ev )
 {
-  if ( QgsGeometryCheckerSetupTab *setupTab = qobject_cast<QgsGeometryCheckerSetupTab *>( mTabWidget->widget( 0 ) ) )
+  if ( auto setupTab = qobject_cast<QgsGeometryCheckerSetupTab *>( mTabWidget->widget( 0 ) ) )
   {
     // do not allow closing the dialog - this would delete the geometry checker and crash
     if ( setupTab->isRunningInBackground() )

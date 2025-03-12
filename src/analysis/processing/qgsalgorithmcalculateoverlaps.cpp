@@ -95,7 +95,7 @@ bool QgsCalculateVectorOverlapsAlgorithm::prepareAlgorithm( const QVariantMap &p
   mLayerNames.reserve( layers.size() );
   for ( QgsMapLayer *layer : layers )
   {
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+    if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       mLayerNames << layer->name();
       mOverlayerSources.emplace_back( std::make_unique<QgsVectorLayerFeatureSource>( vl ) );

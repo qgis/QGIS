@@ -129,7 +129,7 @@ bool QgsVectorLayerUndoCommandChangeGeometry::mergeWith( const QUndoCommand *oth
   if ( other->id() != id() )
     return false;
 
-  const QgsVectorLayerUndoCommandChangeGeometry *merge = dynamic_cast<const QgsVectorLayerUndoCommandChangeGeometry *>( other );
+  auto merge = dynamic_cast<const QgsVectorLayerUndoCommandChangeGeometry *>( other );
   if ( !merge )
     return false;
 

@@ -208,7 +208,7 @@ void TestQgsPaintEffect::saveRestore()
   //test reading node
   restoredEffect = QgsApplication::paintEffectRegistry()->createEffect( effectElem );
   QVERIFY( restoredEffect );
-  DummyPaintEffect *restoredDummyEffect = dynamic_cast<DummyPaintEffect *>( restoredEffect );
+  auto restoredDummyEffect = dynamic_cast<DummyPaintEffect *>( restoredEffect );
   QVERIFY( restoredDummyEffect );
 
   //test properties
@@ -260,7 +260,7 @@ void TestQgsPaintEffect::stackSaveRestore()
   //test reading node
   QgsPaintEffect *restoredEffect = QgsApplication::paintEffectRegistry()->createEffect( effectElem );
   QVERIFY( restoredEffect );
-  QgsEffectStack *restoredStack = dynamic_cast<QgsEffectStack *>( restoredEffect );
+  auto restoredStack = dynamic_cast<QgsEffectStack *>( restoredEffect );
   QVERIFY( restoredStack );
   QCOMPARE( restoredStack->enabled(), stack->enabled() );
 
@@ -327,7 +327,7 @@ void TestQgsPaintEffect::drawSource()
 
   //clone
   QgsPaintEffect *clone = effect->clone();
-  QgsDrawSourceEffect *cloneCast = dynamic_cast<QgsDrawSourceEffect *>( clone );
+  auto cloneCast = dynamic_cast<QgsDrawSourceEffect *>( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
   QCOMPARE( cloneCast->opacity(), effect->opacity() );
@@ -338,7 +338,7 @@ void TestQgsPaintEffect::drawSource()
   //read/write
   const QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsDrawSourceEffect::create( props );
-  QgsDrawSourceEffect *readCast = dynamic_cast<QgsDrawSourceEffect *>( readEffect );
+  auto readCast = dynamic_cast<QgsDrawSourceEffect *>( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
   QCOMPARE( readCast->opacity(), effect->opacity() );
@@ -399,7 +399,7 @@ void TestQgsPaintEffect::blur()
 
   //clone
   QgsPaintEffect *clone = effect->clone();
-  QgsBlurEffect *cloneCast = dynamic_cast<QgsBlurEffect *>( clone );
+  auto cloneCast = dynamic_cast<QgsBlurEffect *>( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
   QCOMPARE( cloneCast->opacity(), effect->opacity() );
@@ -412,7 +412,7 @@ void TestQgsPaintEffect::blur()
   //read/write
   const QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsBlurEffect::create( props );
-  QgsBlurEffect *readCast = dynamic_cast<QgsBlurEffect *>( readEffect );
+  auto readCast = dynamic_cast<QgsBlurEffect *>( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
   QCOMPARE( readCast->opacity(), effect->opacity() );
@@ -487,7 +487,7 @@ void TestQgsPaintEffect::dropShadow()
 
   //clone
   QgsPaintEffect *clone = effect->clone();
-  QgsDropShadowEffect *cloneCast = dynamic_cast<QgsDropShadowEffect *>( clone );
+  auto cloneCast = dynamic_cast<QgsDropShadowEffect *>( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
   QCOMPARE( cloneCast->opacity(), effect->opacity() );
@@ -505,7 +505,7 @@ void TestQgsPaintEffect::dropShadow()
   //read/write
   const QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsDropShadowEffect::create( props );
-  QgsDropShadowEffect *readCast = dynamic_cast<QgsDropShadowEffect *>( readEffect );
+  auto readCast = dynamic_cast<QgsDropShadowEffect *>( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
   QCOMPARE( readCast->opacity(), effect->opacity() );
@@ -588,7 +588,7 @@ void TestQgsPaintEffect::glow()
 
   //clone
   QgsPaintEffect *clone = effect->clone();
-  QgsOuterGlowEffect *cloneCast = dynamic_cast<QgsOuterGlowEffect *>( clone );
+  auto cloneCast = dynamic_cast<QgsOuterGlowEffect *>( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
   QCOMPARE( cloneCast->opacity(), effect->opacity() );
@@ -607,7 +607,7 @@ void TestQgsPaintEffect::glow()
   //read/write
   const QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsOuterGlowEffect::create( props );
-  QgsOuterGlowEffect *readCast = dynamic_cast<QgsOuterGlowEffect *>( readEffect );
+  auto readCast = dynamic_cast<QgsOuterGlowEffect *>( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
   QCOMPARE( readCast->opacity(), effect->opacity() );
@@ -700,7 +700,7 @@ void TestQgsPaintEffect::transform()
 
   //clone
   std::unique_ptr<QgsPaintEffect> clone( effect->clone() );
-  QgsTransformEffect *cloneCast = dynamic_cast<QgsTransformEffect *>( clone.get() );
+  auto cloneCast = dynamic_cast<QgsTransformEffect *>( clone.get() );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->enabled(), false );
   QCOMPARE( cloneCast->translateX(), 6.0 );
@@ -721,7 +721,7 @@ void TestQgsPaintEffect::transform()
   //read/write
   const QVariantMap props = effect->properties();
   const std::unique_ptr<QgsPaintEffect> readEffect( QgsTransformEffect::create( props ) );
-  QgsTransformEffect *readCast = dynamic_cast<QgsTransformEffect *>( readEffect.get() );
+  auto readCast = dynamic_cast<QgsTransformEffect *>( readEffect.get() );
   QVERIFY( readCast );
   QCOMPARE( readCast->enabled(), false );
   QCOMPARE( readCast->translateX(), 6.0 );
@@ -759,7 +759,7 @@ void TestQgsPaintEffect::stack()
 
   //clone
   QgsPaintEffect *clone = effect->clone();
-  QgsEffectStack *cloneCast = dynamic_cast<QgsEffectStack *>( clone );
+  auto cloneCast = dynamic_cast<QgsEffectStack *>( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->enabled(), effect->enabled() );
   QCOMPARE( cloneCast->count(), effect->count() );
@@ -773,7 +773,7 @@ void TestQgsPaintEffect::stack()
   QVERIFY( effect );
   QCOMPARE( effect->count(), 1 );
   QgsPaintEffect *resultEffect = effect->effect( 0 );
-  QgsBlurEffect *blurEffect = dynamic_cast<QgsBlurEffect *>( resultEffect );
+  auto blurEffect = dynamic_cast<QgsBlurEffect *>( resultEffect );
   QVERIFY( blurEffect );
   delete effect;
 

@@ -153,7 +153,7 @@ QgsRasterRenderer *QgsPalettedRendererWidget::renderer()
 
 void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
 {
-  const QgsPalettedRasterRenderer *pr = dynamic_cast<const QgsPalettedRasterRenderer *>( r );
+  auto pr = dynamic_cast<const QgsPalettedRasterRenderer *>( r );
   if ( pr )
   {
     mBand = pr->inputBand();
@@ -347,7 +347,7 @@ void QgsPalettedRendererWidget::applyColorRamp()
   double numberOfEntries = data.count();
   int i = 0;
 
-  if ( QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp.get() ) )
+  if ( auto randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp.get() ) )
   {
     //ramp is a random colors ramp, so inform it of the total number of required colors
     //this allows the ramp to pregenerate a set of visually distinctive colors

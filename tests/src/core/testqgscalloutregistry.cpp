@@ -84,7 +84,7 @@ void TestQgsCalloutRegistry::metadata()
   const QVariantMap map;
   const std::unique_ptr<QgsCallout> callout( metadata.createCallout( map, QgsReadWriteContext() ) );
   QVERIFY( callout );
-  DummyCallout *dummyCallout = dynamic_cast<DummyCallout *>( callout.get() );
+  auto dummyCallout = dynamic_cast<DummyCallout *>( callout.get() );
   QVERIFY( dummyCallout );
 }
 
@@ -142,7 +142,7 @@ void TestQgsCalloutRegistry::createCallout()
   std::unique_ptr<QgsCallout> callout( registry->createCallout( QStringLiteral( "Dummy" ) ) );
 
   QVERIFY( callout.get() );
-  DummyCallout *dummyCallout = dynamic_cast<DummyCallout *>( callout.get() );
+  auto dummyCallout = dynamic_cast<DummyCallout *>( callout.get() );
   QVERIFY( dummyCallout );
 
   //try creating a bad callout

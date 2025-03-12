@@ -267,7 +267,7 @@ QWidget *QgsFieldMappingExpressionDelegate::createEditor( QWidget *parent, const
   QgsFieldExpressionWidget *editor = new QgsFieldExpressionWidget( parent );
   editor->setAutoFillBackground( true );
   editor->setAllowEvalErrors( false );
-  if ( const QgsFieldMappingModel *model = qobject_cast<const QgsFieldMappingModel *>( index.model() ) )
+  if ( auto model = qobject_cast<const QgsFieldMappingModel *>( index.model() ) )
   {
     editor->registerExpressionContextGenerator( model->contextGenerator() );
     editor->setFields( model->sourceFields() );
@@ -282,7 +282,7 @@ QWidget *QgsFieldMappingExpressionDelegate::createEditor( QWidget *parent, const
     Q_ASSERT( false );
   }
 
-  if ( QgsFieldMappingWidget *mappingWidget = qobject_cast<QgsFieldMappingWidget *>( QgsFieldMappingExpressionDelegate::parent() ) )
+  if ( auto mappingWidget = qobject_cast<QgsFieldMappingWidget *>( QgsFieldMappingExpressionDelegate::parent() ) )
   {
     if ( mappingWidget->sourceLayer() )
       editor->setLayer( mappingWidget->sourceLayer() );

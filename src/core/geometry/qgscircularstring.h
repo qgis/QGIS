@@ -95,7 +95,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
                       std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
                       std::function<bool( double, double, double, double, double )> comparator2D ) const
     {
-      const QgsCircularString *otherLine = qgsgeometry_cast< const QgsCircularString * >( &other );
+      auto otherLine = qgsgeometry_cast<const QgsCircularString *>( &other );
       if ( !otherLine )
         return false;
 

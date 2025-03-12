@@ -66,7 +66,7 @@ void QgsSingleBandPseudoColorRenderer::setClassificationMin( double min )
   mClassificationMin = min;
   if ( auto *lShader = shader() )
   {
-    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( lShader->rasterShaderFunction() );
+    auto colorRampShader = dynamic_cast<QgsColorRampShader *>( lShader->rasterShaderFunction() );
     if ( colorRampShader )
     {
       colorRampShader->setMinimumValue( min );
@@ -79,7 +79,7 @@ void QgsSingleBandPseudoColorRenderer::setClassificationMax( double max )
   mClassificationMax = max;
   if ( auto *lShader = shader() )
   {
-    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( lShader->rasterShaderFunction() );
+    auto colorRampShader = dynamic_cast<QgsColorRampShader *>( lShader->rasterShaderFunction() );
     if ( colorRampShader )
     {
       colorRampShader->setMaximumValue( max );
@@ -96,7 +96,7 @@ QgsSingleBandPseudoColorRenderer *QgsSingleBandPseudoColorRenderer::clone() cons
     shader = new QgsRasterShader( mShader->minimumValue(), mShader->maximumValue() );
 
     // Shader function
-    const QgsColorRampShader *origColorRampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
+    auto origColorRampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
 
     if ( origColorRampShader )
     {
@@ -385,7 +385,7 @@ void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &el
   // set type of ColorMap ramp [ramp, intervals, values]
   // basing on interpolation algorithm of the raster shader
   QString rampType = QStringLiteral( "ramp" );
-  const QgsColorRampShader *rampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
+  auto rampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
   if ( !rampShader )
     return;
 
@@ -429,7 +429,7 @@ void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &el
 
 bool QgsSingleBandPseudoColorRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
-  if ( const QgsColorRampShader *shader = dynamic_cast< const QgsColorRampShader * >( mShader->rasterShaderFunction() ) )
+  if ( auto shader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() ) )
   {
     QgsStyleColorRampEntity entity( shader->sourceColorRamp() );
     if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity ) ) )
@@ -444,7 +444,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
   if ( !mShader )
     return QList<QgsLayerTreeModelLegendNode *>();
 
-  const QgsColorRampShader *rampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
+  auto rampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
   if ( !rampShader )
     return QList<QgsLayerTreeModelLegendNode *>();
 
@@ -523,7 +523,7 @@ bool QgsSingleBandPseudoColorRenderer::refresh( const QgsRectangle &extent, cons
       refreshed = true;
     }
 
-    QgsColorRampShader *rampShader = dynamic_cast<QgsColorRampShader *>( mShader->rasterShaderFunction() );
+    auto rampShader = dynamic_cast<QgsColorRampShader *>( mShader->rasterShaderFunction() );
     if ( rampShader && refreshed )
     {
       rampShader->classifyColorRamp( mBand, extent, input() );

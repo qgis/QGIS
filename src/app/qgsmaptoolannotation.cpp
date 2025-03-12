@@ -128,7 +128,7 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
     const auto constItems = mCanvas->items();
     for ( QGraphicsItem *item : constItems )
     {
-      if ( QgsMapCanvasAnnotationItem *annotationItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( item ) )
+      if ( auto annotationItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( item ) )
       {
         if ( annotationItem->annotation() == annotation )
         {
@@ -314,7 +314,7 @@ QgsMapCanvasAnnotationItem *QgsMapToolAnnotation::itemAtPos( QPointF pos ) const
   QList<QGraphicsItem *>::iterator gIt = graphicItems.begin();
   for ( ; gIt != graphicItems.end(); ++gIt )
   {
-    QgsMapCanvasAnnotationItem *annotationItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( *gIt );
+    auto annotationItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( *gIt );
     // Consider only the topmost item that has a move action for the position
     // (i.e. cursor is over the frame or over the anchor point)
     if ( annotationItem && annotationItem->moveActionForPosition( pos ) != QgsMapCanvasAnnotationItem::NoAction )
@@ -335,7 +335,7 @@ QgsMapCanvasAnnotationItem *QgsMapToolAnnotation::selectedItem() const
   QList<QGraphicsItem *>::iterator it = gItemList.begin();
   for ( ; it != gItemList.end(); ++it )
   {
-    QgsMapCanvasAnnotationItem *aItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( *it );
+    auto aItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( *it );
     if ( aItem )
     {
       return aItem;

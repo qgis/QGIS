@@ -789,7 +789,7 @@ bool QgsGeometryCollection::hasCurvedSegments() const
 QgsAbstractGeometry *QgsGeometryCollection::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::linearType( mWkbType ) ) );
-  QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom.get() );
+  auto geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom.get() );
   if ( !geomCollection )
   {
     return clone();
@@ -988,7 +988,7 @@ QgsGeometryCollection *QgsGeometryCollection::extractPartsByType( Qgis::WkbType 
       if ( useFlatType )
       {
         // potential shortcut if we're already a matching subclass of QgsGeometryCollection
-        if ( const QgsMultiPoint *mp = qgsgeometry_cast< const QgsMultiPoint *>( this ) )
+        if ( auto mp = qgsgeometry_cast<const QgsMultiPoint *>( this ) )
           return mp->clone();
       }
 
@@ -1000,7 +1000,7 @@ QgsGeometryCollection *QgsGeometryCollection::extractPartsByType( Qgis::WkbType 
       if ( useFlatType )
       {
         // potential shortcut if we're already a matching subclass of QgsGeometryCollection
-        if ( const QgsMultiLineString *ml = qgsgeometry_cast< const QgsMultiLineString *>( this ) )
+        if ( auto ml = qgsgeometry_cast<const QgsMultiLineString *>( this ) )
           return ml->clone();
       }
 
@@ -1012,7 +1012,7 @@ QgsGeometryCollection *QgsGeometryCollection::extractPartsByType( Qgis::WkbType 
       if ( useFlatType )
       {
         // potential shortcut if we're already a matching subclass of QgsGeometryCollection
-        if ( const QgsMultiPolygon *mp = qgsgeometry_cast< const QgsMultiPolygon *>( this ) )
+        if ( auto mp = qgsgeometry_cast<const QgsMultiPolygon *>( this ) )
           return mp->clone();
       }
 
@@ -1126,7 +1126,7 @@ QgsAbstractGeometry *QgsGeometryCollection::childGeometry( int index ) const
 
 int QgsGeometryCollection::compareToSameClass( const QgsAbstractGeometry *other ) const
 {
-  const QgsGeometryCollection *otherCollection = qgsgeometry_cast<const QgsGeometryCollection *>( other );
+  auto otherCollection = qgsgeometry_cast<const QgsGeometryCollection *>( other );
   if ( !otherCollection )
     return -1;
 

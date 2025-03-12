@@ -457,7 +457,7 @@ void QgsAuthOAuth2Method::onLinkingSucceeded()
 void QgsAuthOAuth2Method::onReplyFinished()
 {
   QgsMessageLog::logMessage( tr( "Network reply finished" ), AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+  auto reply = qobject_cast<QNetworkReply *>( sender() );
   if ( !reply )
   {
     const QString msg = tr( "Network reply finished but no reply object accessible" );
@@ -544,7 +544,7 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
 
 void QgsAuthOAuth2Method::onRefreshFinished( QNetworkReply::NetworkError err )
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+  auto reply = qobject_cast<QNetworkReply *>( sender() );
   if ( !reply )
   {
     const QString msg = tr( "Token refresh finished but no reply object accessible" );

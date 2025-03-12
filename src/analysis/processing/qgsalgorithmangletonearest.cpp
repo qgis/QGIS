@@ -34,9 +34,9 @@ class SetMarkerRotationVisitor : public QgsStyleEntityVisitorInterface
 
     bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &entity ) override
     {
-      if ( const QgsStyleSymbolEntity *symbolEntity = dynamic_cast<const QgsStyleSymbolEntity *>( entity.entity ) )
+      if ( auto symbolEntity = dynamic_cast<const QgsStyleSymbolEntity *>( entity.entity ) )
       {
-        if ( QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( symbolEntity->symbol() ) )
+        if ( auto marker = dynamic_cast<QgsMarkerSymbol *>( symbolEntity->symbol() ) )
         {
           marker->setDataDefinedAngle( QgsProperty::fromField( mRotationField ) );
         }
@@ -58,7 +58,7 @@ class SetMarkerRotationPostProcessor : public QgsProcessingLayerPostProcessorInt
 
     void postProcessLayer( QgsMapLayer *layer, QgsProcessingContext &, QgsProcessingFeedback * ) override
     {
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
       {
         SetMarkerRotationVisitor visitor( mRotationField );
         mRenderer->accept( &visitor );
@@ -148,7 +148,7 @@ QgsAngleToNearestAlgorithm *QgsAngleToNearestAlgorithm::createInstance() const
 
 bool QgsAngleToNearestAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
+  if ( auto vl = qobject_cast<const QgsVectorLayer *>( layer ) )
   {
     return vl->geometryType() == Qgis::GeometryType::Point;
   }
@@ -260,7 +260,7 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
         }
 
         const QgsGeometry joinLine = f.geometry().shortestLine( index.geometry( nearest.at( 0 ) ) );
-        if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( joinLine.constGet() ) )
+        if ( auto line = qgsgeometry_cast<const QgsLineString *>( joinLine.constGet() ) )
         {
           if ( !mIsInPlace )
             attributes.append( line->startPoint().azimuth( line->endPoint() ) );

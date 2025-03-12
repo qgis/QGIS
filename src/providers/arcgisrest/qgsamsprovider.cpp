@@ -1022,7 +1022,7 @@ void QgsAmsTiledImageDownloadHandler::downloadBlocking()
 
 void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+  auto reply = qobject_cast<QNetworkReply *>( sender() );
 
   if ( QgsNetworkAccessManager::instance()->cache() )
   {

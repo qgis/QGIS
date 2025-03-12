@@ -406,7 +406,7 @@ void QgsPointCloudLayerSaveAsDialog::mFilterGeometryGroupBoxCheckToggled( bool c
 
 void QgsPointCloudLayerSaveAsDialog::mFilterGeometryLayerChanged( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
+  auto vlayer = dynamic_cast<QgsVectorLayer *>( layer );
   mSelectedFeaturesCheckBox->setChecked( false );
   mSelectedFeaturesCheckBox->setEnabled( hasFilterLayer() && vlayer && vlayer->selectedFeatureCount() );
 }

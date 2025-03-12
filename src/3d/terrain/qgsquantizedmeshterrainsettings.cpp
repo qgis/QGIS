@@ -62,7 +62,7 @@ void QgsQuantizedMeshTerrainSettings::resolveReferences( const QgsProject *proje
 
 bool QgsQuantizedMeshTerrainSettings::equals( const QgsAbstractTerrainSettings *other ) const
 {
-  const QgsQuantizedMeshTerrainSettings *otherMeshTerrain = dynamic_cast<const QgsQuantizedMeshTerrainSettings *>( other );
+  auto otherMeshTerrain = dynamic_cast<const QgsQuantizedMeshTerrainSettings *>( other );
   if ( !otherMeshTerrain )
     return false;
 

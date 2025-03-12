@@ -407,7 +407,7 @@ QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
 
 void QgsMemoryProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
 {
-  if ( QgsMemoryProvider *other = qobject_cast< QgsMemoryProvider * >( source ) )
+  if ( auto other = qobject_cast<QgsMemoryProvider *>( source ) )
   {
     // these properties aren't copied when cloning a memory provider by uri, so we need to do it manually
     mFeatures = other->mFeatures;

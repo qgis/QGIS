@@ -75,7 +75,7 @@ QgsSimpleLineMaterialSettings *QgsSimpleLineMaterialSettings::clone() const
 
 bool QgsSimpleLineMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
 {
-  const QgsSimpleLineMaterialSettings *otherLine = dynamic_cast<const QgsSimpleLineMaterialSettings *>( other );
+  auto otherLine = dynamic_cast<const QgsSimpleLineMaterialSettings *>( other );
   if ( !otherLine )
     return false;
 
@@ -148,7 +148,7 @@ QByteArray QgsSimpleLineMaterialSettings::dataDefinedVertexColorsAsByte( const Q
 
   QByteArray array;
   array.resize( sizeof( unsigned char ) * 3 );
-  unsigned char *fptr = reinterpret_cast<unsigned char *>( array.data() );
+  auto fptr = reinterpret_cast<unsigned char *>( array.data() );
 
   *fptr++ = static_cast<unsigned char>( ambient.red() );
   *fptr++ = static_cast<unsigned char>( ambient.green() );

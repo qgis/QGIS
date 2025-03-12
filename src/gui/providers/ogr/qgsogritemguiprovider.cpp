@@ -39,7 +39,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
   QgsDataItemGuiContext context
 )
 {
-  if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsLayerItem *>( item ) )
   {
     if ( layerItem->providerKey() == QLatin1String( "ogr" ) && !qobject_cast<QgsGeoPackageAbstractLayerItem *>( item ) )
     {
@@ -75,7 +75,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
     }
   }
 
-  if ( QgsDataCollectionItem *collectionItem = qobject_cast<QgsDataCollectionItem *>( item ) )
+  if ( auto collectionItem = qobject_cast<QgsDataCollectionItem *>( item ) )
   {
     if ( collectionItem->providerKey() == QLatin1String( "ogr" ) && !qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
     {

@@ -53,7 +53,7 @@ void QgsPointCloudAttributeComboBox::setLayer( QgsMapLayer *layer )
     return;
   }
 
-  QgsPointCloudLayer *pcl = qobject_cast<QgsPointCloudLayer *>( layer );
+  auto pcl = qobject_cast<QgsPointCloudLayer *>( layer );
   mAttributeModel->setLayer( pcl );
 }
 

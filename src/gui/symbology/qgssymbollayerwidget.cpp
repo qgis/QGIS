@@ -159,8 +159,8 @@ void QgsSymbolLayerWidget::createAuxiliaryField()
   if ( !mVectorLayer->auxiliaryLayer() )
     return;
 
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbolLayer::Property key = static_cast<QgsSymbolLayer::Property>( button->propertyKey() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto key = static_cast<QgsSymbolLayer::Property>( button->propertyKey() );
   QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[static_cast<int>( key )];
 
   // create property in auxiliary storage if necessary
@@ -188,7 +188,7 @@ void QgsSymbolLayerWidget::createAuxiliaryField()
 
 void QgsSymbolLayerWidget::updateDataDefinedProperty()
 {
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsSymbolLayer::Property key = static_cast<QgsSymbolLayer::Property>( button->propertyKey() );
   symbolLayer()->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
@@ -3100,7 +3100,7 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer 
     return;
   }
 
-  QgsLinePatternFillSymbolLayer *patternLayer = static_cast<QgsLinePatternFillSymbolLayer *>( layer );
+  auto patternLayer = static_cast<QgsLinePatternFillSymbolLayer *>( layer );
   if ( patternLayer )
   {
     mLayer = patternLayer;

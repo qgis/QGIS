@@ -117,7 +117,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     if ( layer->type() != Qgis::LayerType::Vector )
       throw QgsProcessingException( QObject::tr( "All layers must be vector layers!" ) );
 
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    auto vl = qobject_cast<QgsVectorLayer *>( layer );
 
     const Qgis::WkbType layerWkbType = vl->wkbType();
     const QgsCoordinateReferenceSystem layerCrs = vl->crs();
@@ -222,7 +222,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     if ( !layer )
       continue;
 
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    auto vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( !vl )
       continue;
 

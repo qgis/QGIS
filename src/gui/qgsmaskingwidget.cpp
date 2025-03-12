@@ -108,7 +108,7 @@ void QgsMaskingWidget::populate()
   for ( auto layerIt = layers.begin(); layerIt != layers.end(); layerIt++ )
   {
     const QString layerId = layerIt.key();
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() );
+    auto vl = qobject_cast<QgsVectorLayer *>( layerIt.value() );
     if ( !vl )
       continue;
 
@@ -167,7 +167,7 @@ void QgsMaskingWidget::apply()
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto layerIt = layers.begin(); layerIt != layers.end(); layerIt++ )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() );
+    auto vl = qobject_cast<QgsVectorLayer *>( layerIt.value() );
     if ( !vl )
       continue;
 
@@ -176,7 +176,7 @@ void QgsMaskingWidget::apply()
     SymbolLayerVisitor maskSetter( [&]( const QgsSymbolLayer *sl, const QString &slId ) {
       if ( sl->layerType() == "MaskMarker" )
       {
-        QgsMaskMarkerSymbolLayer *maskSl = const_cast<QgsMaskMarkerSymbolLayer *>( static_cast<const QgsMaskMarkerSymbolLayer *>( sl ) );
+        auto maskSl = const_cast<QgsMaskMarkerSymbolLayer *>( static_cast<const QgsMaskMarkerSymbolLayer *>( sl ) );
 
         const QgsSymbolLayerReferenceList masks = maskSl->masks();
         QgsSymbolLayerReferenceList newMasks;

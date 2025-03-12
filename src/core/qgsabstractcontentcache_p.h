@@ -111,7 +111,7 @@ QByteArray QgsAbstractContentCache<T>::getContent( const QString &path, const QB
       }
 
       // cast task to network content fetcher task
-      QgsNetworkContentFetcherTask *ncfTask = qobject_cast<QgsNetworkContentFetcherTask *>( task );
+      auto ncfTask = qobject_cast<QgsNetworkContentFetcherTask *>( task );
       if ( ncfTask )
       {
         // wait for task finished

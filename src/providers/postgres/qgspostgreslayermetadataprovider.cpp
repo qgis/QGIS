@@ -42,7 +42,7 @@ QgsLayerMetadataSearchResults QgsPostgresLayerMetadataProvider::search( const Qg
 
       if ( conn->configuration().value( QStringLiteral( "metadataInDatabase" ), false ).toBool() )
       {
-        if ( const QgsAbstractDatabaseProviderConnection *dbConn = static_cast<const QgsAbstractDatabaseProviderConnection *>( conn ) )
+        if ( auto dbConn = static_cast<const QgsAbstractDatabaseProviderConnection *>( conn ) )
         {
           try
           {

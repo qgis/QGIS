@@ -987,7 +987,7 @@ void TestQgsPolyhedralSurface::testBoundary()
   polySurface.addPatch( patch.clone() );
 
   QgsAbstractGeometry *boundary = polySurface.boundary();
-  QgsMultiLineString *multiLineBoundary = dynamic_cast<QgsMultiLineString *>( boundary );
+  auto multiLineBoundary = dynamic_cast<QgsMultiLineString *>( boundary );
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 1 );
   QgsLineString *lineBoundary = multiLineBoundary->lineStringN( 0 );

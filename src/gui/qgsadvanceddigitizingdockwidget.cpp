@@ -231,7 +231,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     updateCadPaintItem();
   } );
 
-  QToolButton *constructionModeToolButton = qobject_cast<QToolButton *>( mToolbar->widgetForAction( mConstructionModeAction ) );
+  auto constructionModeToolButton = qobject_cast<QToolButton *>( mToolbar->widgetForAction( mConstructionModeAction ) );
   constructionModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
   constructionModeToolButton->setMenu( constructionSettingsMenu );
   constructionModeToolButton->setObjectName( QStringLiteral( "ConstructionModeButton" ) );
@@ -596,7 +596,7 @@ void QgsAdvancedDigitizingDockWidget::switchZM()
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
         const Qgis::WkbType type = vlayer->wkbType();
         enableZ = QgsWkbTypes::hasZ( type );
         enableM = QgsWkbTypes::hasM( type );
@@ -605,7 +605,7 @@ void QgsAdvancedDigitizingDockWidget::switchZM()
 
       case Qgis::LayerType::Mesh:
       {
-        QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
+        auto mlayer = qobject_cast<QgsMeshLayer *>( layer );
         enableZ = mlayer->isEditable();
         break;
       }
@@ -797,7 +797,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
 
 QgsMapLayer *QgsAdvancedDigitizingDockWidget::targetLayer() const
 {
-  if ( QgsMapToolAdvancedDigitizing *advancedTool = qobject_cast<QgsMapToolAdvancedDigitizing *>( mMapCanvas->mapTool() ) )
+  if ( auto advancedTool = qobject_cast<QgsMapToolAdvancedDigitizing *>( mMapCanvas->mapTool() ) )
   {
     return advancedTool->layer();
   }

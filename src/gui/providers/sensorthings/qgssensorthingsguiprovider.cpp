@@ -128,7 +128,7 @@ class QgsSensorThingsSubsetStringEditorProvider : public QgsSubsetStringEditorPr
     QgsSubsetStringEditorInterface *createDialog( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl ) override
     {
       QgsDataProvider *provider = layer->dataProvider();
-      QgsSensorThingsProvider *sensorThingsProvider = qobject_cast<QgsSensorThingsProvider *>( provider );
+      auto sensorThingsProvider = qobject_cast<QgsSensorThingsProvider *>( provider );
       if ( !sensorThingsProvider )
         return nullptr;
 

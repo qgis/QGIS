@@ -137,7 +137,7 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
   mBlockUpdates = true;
 
-  const QgsRasterLayerElevationProperties *props = qgis::down_cast<const QgsRasterLayerElevationProperties *>( mLayer->elevationProperties() );
+  auto props = qgis::down_cast<const QgsRasterLayerElevationProperties *>( mLayer->elevationProperties() );
   if ( !props->isEnabled() )
   {
     mModeComboBox->setCurrentIndex( 0 );
@@ -249,7 +249,7 @@ void QgsRasterElevationPropertiesWidget::apply()
   if ( !mLayer )
     return;
 
-  QgsRasterLayerElevationProperties *props = qgis::down_cast<QgsRasterLayerElevationProperties *>( mLayer->elevationProperties() );
+  auto props = qgis::down_cast<QgsRasterLayerElevationProperties *>( mLayer->elevationProperties() );
 
   if ( !mModeComboBox->currentData().isValid() )
   {
@@ -803,7 +803,7 @@ QWidget *QgsFixedElevationRangeDelegate::createEditor( QWidget *parent, const QS
 
 void QgsFixedElevationRangeDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  if ( QgsDoubleSpinBox *spin = qobject_cast<QgsDoubleSpinBox *>( editor ) )
+  if ( auto spin = qobject_cast<QgsDoubleSpinBox *>( editor ) )
   {
     model->setData( index, spin->value() );
   }

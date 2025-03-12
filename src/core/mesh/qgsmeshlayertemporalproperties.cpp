@@ -102,7 +102,7 @@ void QgsMeshLayerTemporalProperties::setReferenceTime( const QDateTime &referenc
   mReferenceTime = referenceTime;
   if ( capabilities )
   {
-    const QgsMeshDataProviderTemporalCapabilities *tempCap = static_cast<const QgsMeshDataProviderTemporalCapabilities *>( capabilities );
+    auto tempCap = static_cast<const QgsMeshDataProviderTemporalCapabilities *>( capabilities );
     mTimeExtent = tempCap->timeExtent( referenceTime );
   }
   else

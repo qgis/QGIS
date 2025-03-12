@@ -58,7 +58,7 @@ void QgsGeometrySelfIntersectionCheckError::update( const QgsSingleGeometryCheck
 {
   QgsSingleGeometryCheckError::update( other );
   // Static cast since this should only get called if isEqual == true
-  const QgsGeometrySelfIntersectionCheckError *err = static_cast<const QgsGeometrySelfIntersectionCheckError *>( other );
+  auto err = static_cast<const QgsGeometrySelfIntersectionCheckError *>( other );
   mIntersection.point = err->mIntersection.point;
 }
 
@@ -84,7 +84,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
     return;
   }
 
-  const QgsGeometryCheckErrorSingle *singleError = static_cast<const QgsGeometryCheckErrorSingle *>( error );
+  auto singleError = static_cast<const QgsGeometryCheckErrorSingle *>( error );
   const QgsGeometryUtils::SelfIntersection &inter = static_cast<const QgsGeometrySelfIntersectionCheckError *>( singleError->singleError() )->intersection();
   // Check if error still applies
   bool ringIsClosed = false;
@@ -162,7 +162,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
 
     QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( geom, vidx.part );
     // If is a polygon...
-    if ( QgsCurvePolygon *poly = qgsgeometry_cast<QgsCurvePolygon *>( part ) )
+    if ( auto poly = qgsgeometry_cast<QgsCurvePolygon *>( part ) )
     {
       // If self-intersecting ring is an interior ring, create separate holes
       if ( vidx.ring > 0 )
@@ -205,7 +205,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
         if ( method == ToMultiObject )
         {
           // If is already a geometry collection, just add the new polygon.
-          if ( QgsGeometryCollection *collection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
+          if ( auto collection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
           {
             collection->addGeometry( poly2.release() );
             changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeChanged, QgsVertexId( vidx.part, vidx.ring ) ) );
@@ -241,7 +241,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
     {
       if ( method == ToMultiObject )
       {
-        if ( QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
+        if ( auto geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
         {
           geomCollection->removeGeometry( vidx.part );
           geomCollection->addGeometry( ringGeom1.release() );
@@ -264,7 +264,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
       }
       else // if(method == ToSingleObjects)
       {
-        if ( QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
+        if ( auto geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
         {
           geomCollection->removeGeometry( vidx.part );
           geomCollection->addGeometry( ringGeom1.release() );

@@ -4292,8 +4292,8 @@ void QgsSymbolLayerUtils::premultiplyColor( QColor &rgb, int alpha )
 
 bool QgsSymbolLayerUtils::condenseFillAndOutline( QgsFillSymbolLayer *fill, QgsLineSymbolLayer *outline )
 {
-  QgsSimpleFillSymbolLayer *simpleFill = dynamic_cast< QgsSimpleFillSymbolLayer *>( fill );
-  QgsSimpleLineSymbolLayer *simpleLine = dynamic_cast< QgsSimpleLineSymbolLayer *>( outline );
+  auto simpleFill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fill );
+  auto simpleLine = dynamic_cast<QgsSimpleLineSymbolLayer *>( outline );
 
   if ( !simpleFill || !simpleLine )
     return false;
@@ -4528,7 +4528,7 @@ QPolygonF lineStringToQPolygonF( const QgsLineString *line )
 
 QPolygonF curveToPolygonF( const QgsCurve *curve )
 {
-  if ( const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( curve ) )
+  if ( auto line = qgsgeometry_cast<const QgsLineString *>( curve ) )
   {
     return lineStringToQPolygonF( line );
   }
@@ -4587,7 +4587,7 @@ QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsAbstractGeom
       for ( auto it = geometry->const_parts_begin(); it != geometry->const_parts_end(); ++it )
       {
         QList<QPolygonF> thisPart;
-        const QgsCurvePolygon *surface = qgsgeometry_cast< const QgsCurvePolygon * >( *it );
+        auto surface = qgsgeometry_cast<const QgsCurvePolygon *>( *it );
         if ( !surface )
           continue;
 
@@ -5264,7 +5264,7 @@ double QgsSymbolLayerUtils::rendererFrameRate( const QgsFeatureRenderer *rendere
         for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
         {
           const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
-          if ( const QgsAnimatedMarkerSymbolLayer *animatedMarker = dynamic_cast< const QgsAnimatedMarkerSymbolLayer *>( sl ) )
+          if ( auto animatedMarker = dynamic_cast<const QgsAnimatedMarkerSymbolLayer *>( sl ) )
           {
             // this is a bit of a short cut -- if a symbol has multiple layers with different frame rates,
             // there's no guarantee that they will be even multiples of each other! But given we are looking for
@@ -5322,8 +5322,8 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
 
   double size;
-  const QgsMarkerSymbol *markerSymbol = dynamic_cast<const QgsMarkerSymbol *>( s );
-  const QgsLineSymbol *lineSymbol = dynamic_cast<const QgsLineSymbol *>( s );
+  auto markerSymbol = dynamic_cast<const QgsMarkerSymbol *>( s );
+  auto lineSymbol = dynamic_cast<const QgsLineSymbol *>( s );
   if ( markerSymbol )
   {
     size = markerSymbol->size( *context );
@@ -5358,7 +5358,7 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
 
   if ( markerSymbol )
   {
-    QgsMarkerSymbol *ms = dynamic_cast<QgsMarkerSymbol *>( s->clone() );
+    auto ms = dynamic_cast<QgsMarkerSymbol *>( s->clone() );
     ms->setSize( size );
     ms->setSizeUnit( Qgis::RenderUnit::Millimeters );
     width = size;
@@ -5367,7 +5367,7 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   else if ( lineSymbol )
   {
-    QgsLineSymbol *ls = dynamic_cast<QgsLineSymbol *>( s->clone() );
+    auto ls = dynamic_cast<QgsLineSymbol *>( s->clone() );
     ls->setWidth( size );
     ls->setWidthUnit( Qgis::RenderUnit::Millimeters );
     height = size;
@@ -5664,7 +5664,7 @@ void QgsSymbolLayerUtils::clearSymbolLayerMasks( QgsSymbol *symbol )
 
   for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
   {
-    if ( QgsMaskMarkerSymbolLayer *maskSl = dynamic_cast<QgsMaskMarkerSymbolLayer *>( symbol->symbolLayer( idx ) ) )
+    if ( auto maskSl = dynamic_cast<QgsMaskMarkerSymbolLayer *>( symbol->symbolLayer( idx ) ) )
     {
       maskSl->clearMasks();
 

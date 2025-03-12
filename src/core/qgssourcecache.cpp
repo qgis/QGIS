@@ -35,7 +35,7 @@ QgsSourceCacheEntry::QgsSourceCacheEntry( const QString &path )
 
 bool QgsSourceCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
-  const QgsSourceCacheEntry *otherSource = dynamic_cast< const QgsSourceCacheEntry * >( other );
+  auto otherSource = dynamic_cast<const QgsSourceCacheEntry *>( other );
   // cheapest checks first!
   if ( !otherSource || otherSource->filePath != filePath )
     return false;

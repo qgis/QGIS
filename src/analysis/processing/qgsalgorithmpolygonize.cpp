@@ -114,7 +114,7 @@ QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &paramet
 
   if ( !polygons.isEmpty() )
   {
-    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( polygons.constGet() );
+    auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( polygons.constGet() );
     step = collection->numGeometries() > 0 ? 50.0 / collection->numGeometries() : 1;
     for ( int part = 0; part < collection->numGeometries(); ++part )
     {

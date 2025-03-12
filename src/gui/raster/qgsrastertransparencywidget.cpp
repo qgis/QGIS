@@ -589,7 +589,7 @@ void QgsRasterTransparencyWidget::updateDataDefinedButton( QgsPropertyOverrideBu
 
 void QgsRasterTransparencyWidget::updateProperty()
 {
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsRasterPipe::Property key = static_cast<QgsRasterPipe::Property>( button->propertyKey() );
   mPropertyCollection.setProperty( key, button->toProperty() );
   emit widgetChanged();

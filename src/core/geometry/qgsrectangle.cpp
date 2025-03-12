@@ -38,7 +38,7 @@ QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
   if ( geom.isEmpty() )
     return QgsRectangle();
 
-  if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( geom.constGet()->simplifiedTypeRef() ) )
+  if ( auto polygon = qgsgeometry_cast<const QgsPolygon *>( geom.constGet()->simplifiedTypeRef() ) )
   {
     if ( polygon->numInteriorRings() > 0 )
       return QgsRectangle();

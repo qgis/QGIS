@@ -52,7 +52,7 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
   private:
     bool fuzzyHelper( const QgsAbstractGeometry &other, double epsilon, bool useDistance ) const
     {
-      const QgsPolyhedralSurface *otherPolygon = qgsgeometry_cast< const QgsPolyhedralSurface * >( &other );
+      auto otherPolygon = qgsgeometry_cast<const QgsPolyhedralSurface *>( &other );
       if ( !otherPolygon )
         return false;
 

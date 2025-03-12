@@ -484,7 +484,7 @@ QString QgsPostgresProvider::quotedByteaValue( const QVariant &value )
     return QStringLiteral( "NULL" );
 
   const QByteArray ba = value.toByteArray();
-  const unsigned char *buf = reinterpret_cast<const unsigned char *>( ba.constData() );
+  auto buf = reinterpret_cast<const unsigned char *>( ba.constData() );
   QString param;
   param.reserve( ba.length() * 4 );
   for ( int i = 0; i < ba.length(); ++i )
@@ -507,7 +507,7 @@ QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest &re
     return QgsFeatureIterator();
   }
 
-  QgsPostgresFeatureSource *featureSrc = static_cast<QgsPostgresFeatureSource *>( featureSource() );
+  auto featureSrc = static_cast<QgsPostgresFeatureSource *>( featureSource() );
   return QgsFeatureIterator( new QgsPostgresFeatureIterator( featureSrc, true, request ) );
 }
 
@@ -3072,7 +3072,7 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry &geom, QStringList 
 
   const QgsGeometry convertedGeom( convertToProviderType( geom, wkbType() ) );
   QByteArray wkb( !convertedGeom.isNull() ? convertedGeom.asWkb() : geom.asWkb() );
-  const unsigned char *buf = reinterpret_cast<const unsigned char *>( wkb.constData() );
+  auto buf = reinterpret_cast<const unsigned char *>( wkb.constData() );
   int wkbSize = wkb.length();
 
   for ( int i = 0; i < wkbSize; ++i )

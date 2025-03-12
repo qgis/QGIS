@@ -543,7 +543,7 @@ void QgsMetadataWidget::setUiFromMetadata()
     tabKeywords->item( currentRow, 1 )->setText( i.value().join( QLatin1Char( ',' ) ) );
   }
 
-  if ( QgsLayerMetadata *layerMetadata = dynamic_cast<QgsLayerMetadata *>( mMetadata.get() ) )
+  if ( auto layerMetadata = dynamic_cast<QgsLayerMetadata *>( mMetadata.get() ) )
   {
     // Encoding
     comboEncoding->setCurrentText( layerMetadata->encoding() );
@@ -712,7 +712,7 @@ void QgsMetadataWidget::saveMetadata( QgsAbstractMetadataBase *metadata )
   {
     case LayerMetadata:
     {
-      QgsLayerMetadata *layerMetadata = static_cast<QgsLayerMetadata *>( metadata );
+      auto layerMetadata = static_cast<QgsLayerMetadata *>( metadata );
       // Fees
       layerMetadata->setFees( lineEditFees->text() );
 
@@ -766,7 +766,7 @@ void QgsMetadataWidget::saveMetadata( QgsAbstractMetadataBase *metadata )
 
     case ProjectMetadata:
     {
-      QgsProjectMetadata *projectMetadata = static_cast<QgsProjectMetadata *>( metadata );
+      auto projectMetadata = static_cast<QgsProjectMetadata *>( metadata );
       projectMetadata->setAuthor( mLineEditAuthor->text() );
       break;
     }

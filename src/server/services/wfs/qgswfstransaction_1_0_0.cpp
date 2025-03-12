@@ -257,7 +257,7 @@ namespace QgsWfs
         }
 
         // get vector layer
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vlayer )
         {
           throw QgsRequestNotWellFormedException( QStringLiteral( "Layer error on '%1'" ).arg( name ) );

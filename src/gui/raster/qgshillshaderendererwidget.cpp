@@ -77,7 +77,7 @@ QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()
 
 void QgsHillshadeRendererWidget::setFromRenderer( const QgsRasterRenderer *renderer )
 {
-  const QgsHillshadeRenderer *r = dynamic_cast<const QgsHillshadeRenderer *>( renderer );
+  auto r = dynamic_cast<const QgsHillshadeRenderer *>( renderer );
   if ( r )
   {
     mBandsCombo->setBand( r->inputBand() );

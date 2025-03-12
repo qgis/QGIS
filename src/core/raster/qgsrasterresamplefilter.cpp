@@ -132,7 +132,7 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   double providerXRes = 0;
   if ( mZoomedInResampler || mZoomedOutResampler )
   {
-    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider *>( mInput->sourceInput() );
+    auto provider = dynamic_cast<QgsRasterDataProvider *>( mInput->sourceInput() );
     if ( provider && ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
     {
       outputXRes = extent.width() / width;
@@ -212,7 +212,7 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   {
     QgsDebugMsgLevel( QStringLiteral( "zoomed in resampling" ), 4 );
 
-    if ( QgsRasterResamplerV2 *resamplerV2 = dynamic_cast< QgsRasterResamplerV2 * >( mZoomedInResampler.get( ) ) )
+    if ( auto resamplerV2 = dynamic_cast<QgsRasterResamplerV2 *>( mZoomedInResampler.get( ) ) )
     {
       dstImg = resamplerV2->resampleV2( img, QSize( resampleWidth, resampleHeight ) );
     }
@@ -229,7 +229,7 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   {
     QgsDebugMsgLevel( QStringLiteral( "zoomed out resampling" ), 4 );
 
-    if ( QgsRasterResamplerV2 *resamplerV2 = dynamic_cast< QgsRasterResamplerV2 * >( mZoomedOutResampler.get( ) ) )
+    if ( auto resamplerV2 = dynamic_cast<QgsRasterResamplerV2 *>( mZoomedOutResampler.get( ) ) )
     {
       dstImg = resamplerV2->resampleV2( img, QSize( resampleWidth, resampleHeight ) );
     }

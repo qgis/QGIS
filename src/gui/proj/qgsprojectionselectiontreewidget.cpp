@@ -674,8 +674,8 @@ bool RemoveRecentCrsDelegate::eventFilter( QObject *obj, QEvent *event )
 {
   if ( event->type() == QEvent::HoverEnter || event->type() == QEvent::HoverMove )
   {
-    QHoverEvent *hoverEvent = static_cast<QHoverEvent *>( event );
-    if ( QAbstractItemView *view = qobject_cast<QAbstractItemView *>( obj->parent() ) )
+    auto hoverEvent = static_cast<QHoverEvent *>( event );
+    if ( auto view = qobject_cast<QAbstractItemView *>( obj->parent() ) )
     {
       const QModelIndex indexUnderMouse = view->indexAt( hoverEvent->pos() );
       setHoveredIndex( indexUnderMouse );

@@ -512,7 +512,7 @@ void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem *item )
   mListWidget->blockSignals( true );
   mListWidget->clear();
   mListRamps.clear();
-  QgsCptCityCollectionItem *colItem = qobject_cast<QgsCptCityCollectionItem *>( item );
+  auto colItem = qobject_cast<QgsCptCityCollectionItem *>( item );
   if ( colItem )
   {
     QgsDebugMsgLevel( "path= " + item->path(), 2 );
@@ -520,7 +520,7 @@ void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem *item )
     QVector<QgsCptCityDataItem *> childrenRamps = colItem->childrenRamps( true );
     for ( int i = 0; i < childrenRamps.count(); i++ )
     {
-      QgsCptCityColorRampItem *rampItem = qobject_cast<QgsCptCityColorRampItem *>( childrenRamps[i] );
+      auto rampItem = qobject_cast<QgsCptCityColorRampItem *>( childrenRamps[i] );
       if ( !rampItem )
       {
         QgsDebugError( "invalid item " + childrenRamps[i]->path() );
@@ -595,7 +595,7 @@ bool QgsCptCityColorRampDialog::updateRamp()
   {
     return false;
   }
-  QgsCptCityColorRampItem *childItem = qobject_cast<QgsCptCityColorRampItem *>( mModel->dataItem( modelIndex ) );
+  auto childItem = qobject_cast<QgsCptCityColorRampItem *>( mModel->dataItem( modelIndex ) );
   if ( !childItem )
     return false;
   if ( mRamp.schemeName() != childItem->ramp().schemeName() )

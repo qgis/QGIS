@@ -134,7 +134,7 @@ void QgsTerrainTextureGenerator::waitForFinished()
 
 void QgsTerrainTextureGenerator::onRenderingFinished()
 {
-  QgsMapRendererSequentialJob *mapJob = static_cast<QgsMapRendererSequentialJob *>( sender() );
+  auto mapJob = static_cast<QgsMapRendererSequentialJob *>( sender() );
 
   Q_ASSERT( mJobs.contains( mapJob ) );
   JobData jobData = mJobs.value( mapJob );

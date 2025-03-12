@@ -28,7 +28,7 @@
 
 void QgsSensorThingsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsSensorThingsConnectionItem *connectionItem = qobject_cast<QgsSensorThingsConnectionItem *>( item ) )
+  if ( auto connectionItem = qobject_cast<QgsSensorThingsConnectionItem *>( item ) )
   {
     const QList<QgsSensorThingsConnectionItem *> stConnectionItems = QgsDataItem::filteredItems<QgsSensorThingsConnectionItem>( selection );
 
@@ -50,7 +50,7 @@ void QgsSensorThingsDataItemGuiProvider::populateContextMenu( QgsDataItem *item,
     menu->addAction( actionDelete );
   }
 
-  if ( QgsSensorThingsRootItem *rootItem = qobject_cast<QgsSensorThingsRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsSensorThingsRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New SensorThings Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );

@@ -44,7 +44,7 @@ bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event 
   if ( event->type() != QEvent::MouseButtonPress )
     return QObject::eventFilter( obj, event );
 
-  QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>( event );
+  auto mouseEvent = dynamic_cast<QMouseEvent *>( event );
   if ( !mouseEvent )
     return QObject::eventFilter( obj, event );
 

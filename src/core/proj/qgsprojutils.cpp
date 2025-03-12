@@ -386,7 +386,7 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToDatumEnsemble( const PJ *crs
 
 void QgsProjUtils::proj_collecting_logger( void *user_data, int /*level*/, const char *message )
 {
-  QStringList *dest = reinterpret_cast< QStringList * >( user_data );
+  auto dest = reinterpret_cast<QStringList *>( user_data );
   QString messageString( message );
   messageString.replace( QLatin1String( "internal_proj_create: " ), QString() );
   dest->append( messageString );

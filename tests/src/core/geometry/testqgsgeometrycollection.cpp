@@ -205,7 +205,7 @@ void TestQgsGeometryCollection::geometryCollection()
   std::unique_ptr<QgsGeometryCollection> curveType( c11.toCurveType() );
   QCOMPARE( curveType->wkbType(), Qgis::WkbType::GeometryCollection );
   QCOMPARE( curveType->numGeometries(), 2 );
-  const QgsCompoundCurve *curve = static_cast<const QgsCompoundCurve *>( curveType->geometryN( 0 ) );
+  auto curve = static_cast<const QgsCompoundCurve *>( curveType->geometryN( 0 ) );
   QCOMPARE( curve->numPoints(), 5 );
   QCOMPARE( curve->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) );
   QCOMPARE( curve->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 ) );
@@ -461,7 +461,7 @@ void TestQgsGeometryCollection::geometryCollection()
   pTransform.addGeometry( l21.clone() );
   pTransform.addGeometry( l21.clone() );
   pTransform.transform( tr, Qgis::TransformDirection::Forward );
-  const QgsLineString *extR = static_cast<const QgsLineString *>( pTransform.geometryN( 0 ) );
+  auto extR = static_cast<const QgsLineString *>( pTransform.geometryN( 0 ) );
   QGSCOMPARENEAR( extR->pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 0 ).y(), -39.724, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 1 ).x(), 174.581448, 0.001 );
@@ -480,7 +480,7 @@ void TestQgsGeometryCollection::geometryCollection()
   QGSCOMPARENEAR( extR->boundingBox3D().xMaximum(), 176.959, 0.001 );
   QGSCOMPARENEAR( extR->boundingBox3D().yMaximum(), -38.7999, 0.001 );
   QGSCOMPARENEAR( extR->boundingBox3D().zMaximum(), std::numeric_limits<double>::quiet_NaN(), 0.001 );
-  const QgsLineString *intR = static_cast<const QgsLineString *>( pTransform.geometryN( 1 ) );
+  auto intR = static_cast<const QgsLineString *>( pTransform.geometryN( 1 ) );
   QGSCOMPARENEAR( intR->pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 0 ).y(), -39.724, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 1 ).x(), 174.581448, 0.001 );
@@ -1171,7 +1171,7 @@ void TestQgsGeometryCollection::geometryCollection()
   toSegment.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 10 ) << QgsPoint( 21, 2 ) );
   segmentC.addGeometry( toSegment.clone() );
   std::unique_ptr<QgsGeometryCollection> segmentized( static_cast<QgsGeometryCollection *>( segmentC.segmentize() ) );
-  const QgsLineString *segmentizedLine = static_cast<const QgsLineString *>( segmentized->geometryN( 0 ) );
+  auto segmentizedLine = static_cast<const QgsLineString *>( segmentized->geometryN( 0 ) );
   QCOMPARE( segmentizedLine->numPoints(), 156 );
   QCOMPARE( segmentizedLine->vertexCount(), 156 );
   QCOMPARE( segmentizedLine->ringCount(), 1 );

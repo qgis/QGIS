@@ -96,7 +96,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
 
   mChunkOrigin = chunkOrigin;
 
-  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
+  auto texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
   outNormal.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false, texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(), mSymbol->renderedFacade(), texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
   outSelected.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false, texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(), mSymbol->renderedFacade(), texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
@@ -126,12 +126,12 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
     if ( extrusionHeight )
     {
       // add roof and wall edges
-      const QgsLineString *exterior = static_cast<const QgsLineString *>( polyClone->exteriorRing() );
+      auto exterior = static_cast<const QgsLineString *>( polyClone->exteriorRing() );
       outEdges.addLineString( *exterior, extrusionHeight + offset );
       outEdges.addVerticalLines( *exterior, extrusionHeight, offset );
       for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
       {
-        const QgsLineString *interior = static_cast<const QgsLineString *>( polyClone->interiorRing( i ) );
+        auto interior = static_cast<const QgsLineString *>( polyClone->interiorRing( i ) );
         outEdges.addLineString( *interior, extrusionHeight + offset );
         outEdges.addVerticalLines( *interior, extrusionHeight, offset );
       }
@@ -188,7 +188,7 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   if ( hasDDExtrusion )
     extrusionHeight = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::ExtrusionHeight, context.expressionContext(), extrusionHeight );
 
-  if ( const QgsPolygon *poly = qgsgeometry_cast<const QgsPolygon *>( g ) )
+  if ( auto poly = qgsgeometry_cast<const QgsPolygon *>( g ) )
   {
     processPolygon( poly, f.id(), offset, extrusionHeight, context, out );
   }
@@ -207,7 +207,7 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
       const QgsAbstractGeometry *g2 = gc->geometryN( i );
       if ( QgsWkbTypes::flatType( g2->wkbType() ) == Qgis::WkbType::Polygon )
       {
-        const QgsPolygon *poly = static_cast<const QgsPolygon *>( g2 );
+        auto poly = static_cast<const QgsPolygon *>( g2 );
         processPolygon( poly, f.id(), offset, extrusionHeight, context, out );
       }
     }
@@ -277,7 +277,7 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   const QByteArray data( reinterpret_cast<const char *>( polyData.tessellator->data().constData() ), static_cast<int>( polyData.tessellator->data().count() * sizeof( float ) ) );
   const int nVerts = data.count() / polyData.tessellator->stride();
 
-  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
+  auto texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(), texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
 
@@ -346,7 +346,7 @@ namespace Qgs3DSymbolImpl
 
   QgsFeature3DHandler *handlerForPolygon3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
-    const QgsPolygon3DSymbol *polygonSymbol = dynamic_cast<const QgsPolygon3DSymbol *>( symbol );
+    auto polygonSymbol = dynamic_cast<const QgsPolygon3DSymbol *>( symbol );
     if ( !polygonSymbol )
       return nullptr;
 

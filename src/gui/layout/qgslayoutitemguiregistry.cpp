@@ -121,7 +121,7 @@ void QgsLayoutItemGuiRegistry::newItemAddedToLayout( int metadataId, QgsLayoutIt
   if ( !mMetadata.contains( metadataId ) )
     return;
 
-  if ( QgsLayoutItemGuiMetadata *metadata = dynamic_cast<QgsLayoutItemGuiMetadata *>( mMetadata.value( metadataId ) ) )
+  if ( auto metadata = dynamic_cast<QgsLayoutItemGuiMetadata *>( mMetadata.value( metadataId ) ) )
   {
     metadata->newItemAddedToLayout( item, properties );
   }

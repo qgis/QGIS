@@ -631,27 +631,27 @@ int vtableFilter( sqlite3_vtab_cursor *cursor, int idxNum, const char *idxStr, i
     }
     request.setFilterExpression( expr );
   }
-  VTableCursor *c = reinterpret_cast<VTableCursor *>( cursor );
+  auto c = reinterpret_cast<VTableCursor *>( cursor );
   c->filter( request );
   return SQLITE_OK;
 }
 
 int vtableNext( sqlite3_vtab_cursor *cursor )
 {
-  VTableCursor *c = reinterpret_cast<VTableCursor *>( cursor );
+  auto c = reinterpret_cast<VTableCursor *>( cursor );
   c->next();
   return SQLITE_OK;
 }
 
 int vtableEof( sqlite3_vtab_cursor *cursor )
 {
-  VTableCursor *c = reinterpret_cast<VTableCursor *>( cursor );
+  auto c = reinterpret_cast<VTableCursor *>( cursor );
   return c->eof();
 }
 
 int vtableRowId( sqlite3_vtab_cursor *cursor, sqlite3_int64 *outRowid )
 {
-  VTableCursor *c = reinterpret_cast<VTableCursor *>( cursor );
+  auto c = reinterpret_cast<VTableCursor *>( cursor );
   *outRowid = c->currentId();
 
   return SQLITE_OK;
@@ -659,7 +659,7 @@ int vtableRowId( sqlite3_vtab_cursor *cursor, sqlite3_int64 *outRowid )
 
 int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *ctxt, int idx )
 {
-  VTableCursor *c = reinterpret_cast<VTableCursor *>( cursor );
+  auto c = reinterpret_cast<VTableCursor *>( cursor );
 
   // geometry column
   if ( idx == c->nColumns() )
@@ -730,7 +730,7 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
   // geometries are converted between SpatiaLite and QgsGeometry
   // other data types (datetime mainly) are represented as BLOBs thanks to QVariant serializing functions
 
-  QgsExpressionFunction *foo = reinterpret_cast<QgsExpressionFunction *>( sqlite3_user_data( ctxt ) );
+  auto foo = reinterpret_cast<QgsExpressionFunction *>( sqlite3_user_data( ctxt ) );
 
   QVariantList variants;
   for ( int i = 0; i < nArgs; i++ )

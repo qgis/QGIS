@@ -393,7 +393,7 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayers( QString &error, QStringLi
 bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList<QgsMapLayer *> *subLayers )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  QgsVectorTileDataProvider *vtProvider = qgis::down_cast< QgsVectorTileDataProvider *> ( mDataProvider.get() );
+  auto vtProvider = qgis::down_cast<QgsVectorTileDataProvider *>( mDataProvider.get() );
   if ( !vtProvider )
     return false;
 
@@ -582,7 +582,7 @@ QString QgsVectorTileLayer::htmlMetadata() const
 
 QString QgsVectorTileLayer::sourcePath() const
 {
-  if ( QgsVectorTileDataProvider *vtProvider = qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() ) )
+  if ( auto vtProvider = qobject_cast<QgsVectorTileDataProvider *>( mDataProvider.get() ) )
     return vtProvider->sourcePath();
 
   return QString();
@@ -592,7 +592,7 @@ QgsVectorTileRawData QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsVectorTileDataProvider *vtProvider = qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() );
+  auto vtProvider = qobject_cast<QgsVectorTileDataProvider *>( mDataProvider.get() );
   if ( !vtProvider )
     return QgsVectorTileRawData();
 

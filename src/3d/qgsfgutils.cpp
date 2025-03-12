@@ -289,7 +289,7 @@ QStringList QgsFgUtils::dumpFG( FgDumpContext context, const Qt3DCore::QNode *no
 {
   QStringList reply;
 
-  const Qt3DRender::QFrameGraphNode *fgNode = qobject_cast<const Qt3DRender::QFrameGraphNode *>( node );
+  auto fgNode = qobject_cast<const Qt3DRender::QFrameGraphNode *>( node );
   if ( fgNode )
   {
     QString res = dumpFGNode( context, fgNode );

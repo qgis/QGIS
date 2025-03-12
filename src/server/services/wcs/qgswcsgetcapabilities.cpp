@@ -287,7 +287,7 @@ namespace QgsWcs
       }
 #endif
 
-      QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
+      auto rLayer = qobject_cast<QgsRasterLayer *>( layer );
       const QDomElement layerElem = getCoverageOffering( doc, const_cast<QgsRasterLayer *>( rLayer ), project, true );
 
       contentMetadataElement.appendChild( layerElem );

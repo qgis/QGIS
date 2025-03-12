@@ -110,7 +110,7 @@ QDomElement QgsMultiCurve::asGml3( QDomDocument &doc, int precision, const QStri
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
-      const QgsCurve *curve = static_cast<const QgsCurve *>( geom );
+      auto curve = static_cast<const QgsCurve *>( geom );
 
       QDomElement elemCurveMember = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
       elemCurveMember.appendChild( curve->asGml3( doc, precision, ns, axisOrder ) );

@@ -108,7 +108,7 @@ QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, 
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vLayer = qobject_cast<QgsVectorLayer *>( layer );
         if ( vLayer->geometryType() != Qgis::GeometryType::Polygon )
         {
           //if point or line use an artificial bounding box of 10x10 pixels
@@ -226,7 +226,7 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, false, true );
       if ( selectedFeatures.isEmpty() )
       {
@@ -259,7 +259,7 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
 
     case Qgis::LayerType::VectorTile:
     {
-      QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
+      auto vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
 
       QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), layer->crs(), QgsProject::instance() );
       QgsGeometry selectGeomTrans;
@@ -309,7 +309,7 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const Qgs
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vLayer = qobject_cast<QgsVectorLayer *>( layer );
       QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, doContains, singleSelect );
       vLayer->selectByIds( selectedFeatures, selectBehavior );
       break;
@@ -317,7 +317,7 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const Qgs
 
     case Qgis::LayerType::VectorTile:
     {
-      QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
+      auto vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
       QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), layer->crs(), QgsProject::instance() );
       QgsGeometry selectGeomTrans;
       if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
@@ -355,7 +355,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     return newSelectedFeatures;
 
   QgsMapLayer *targetLayer = QgsMapToolSelectUtils::getCurrentTargetLayer( canvas );
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( targetLayer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( targetLayer );
   if ( !vlayer )
     return newSelectedFeatures;
 

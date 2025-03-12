@@ -37,7 +37,7 @@ bool QgsLayoutItemUndoCommand::mergeWith( const QUndoCommand *command )
   if ( command->id() == 0 )
     return false;
 
-  const QgsLayoutItemUndoCommand *c = dynamic_cast<const QgsLayoutItemUndoCommand *>( command );
+  auto c = dynamic_cast<const QgsLayoutItemUndoCommand *>( command );
   if ( !c )
   {
     return false;

@@ -99,7 +99,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mEditingToolsAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSelectPolygon.svg" ) ), tr( "Select Editing Tool" ), this );
   mEditingToolsAction->setMenu( mEditingToolsMenu );
   mEditingToolBar->addAction( mEditingToolsAction );
-  QToolButton *editingToolsButton = qobject_cast<QToolButton *>( mEditingToolBar->widgetForAction( mEditingToolsAction ) );
+  auto editingToolsButton = qobject_cast<QToolButton *>( mEditingToolBar->widgetForAction( mEditingToolsAction ) );
   editingToolsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
   QAction *actionPointCloudChangeAttributeTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectPolygon.svg" ) ) ), tr( "Select by Polygon" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPolygon );
   QAction *actionPaintbrush = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "propertyicons/rendering.svg" ) ) ), tr( "Select by Paintbrush" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPaintbrush );
@@ -180,7 +180,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mActionExport = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSharingExport.svg" ) ), tr( "Export" ), this );
   mActionExport->setMenu( mExportMenu );
   toolBar->addAction( mActionExport );
-  QToolButton *exportButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionExport ) );
+  auto exportButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionExport ) );
   exportButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
   mExportMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ), tr( "Save as Image…" ), this, &Qgs3DMapCanvasWidget::saveAsImage );
@@ -198,7 +198,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mActionMapThemes->setMenu( mMapThemeMenu );
   mActionMapThemes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
   toolBar->addAction( mActionMapThemes );
-  QToolButton *mapThemesButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionMapThemes ) );
+  auto mapThemesButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionMapThemes ) );
   mapThemesButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
 
@@ -210,7 +210,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mActionCamera = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconCamera.svg" ) ), tr( "Camera" ), this );
   mActionCamera->setMenu( mCameraMenu );
   toolBar->addAction( mActionCamera );
-  QToolButton *cameraButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionCamera ) );
+  auto cameraButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionCamera ) );
   cameraButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
   mActionSync2DNavTo3D = new QAction( tr( "2D Map View Follows 3D Camera" ), this );
@@ -252,7 +252,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mActionEffects = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconShadow.svg" ) ), tr( "Effects" ), this );
   mActionEffects->setMenu( mEffectsMenu );
   toolBar->addAction( mActionEffects );
-  QToolButton *effectsButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionEffects ) );
+  auto effectsButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionEffects ) );
   effectsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
   mActionEnableShadows = new QAction( tr( "Show Shadows" ), this );
@@ -554,7 +554,7 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
   }
 
 
-  QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  auto pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
   const QVector<QgsPointCloudAttribute> attributes = pcLayer->attributes().attributes();
   const QString previousAttribute = mCboChangeAttribute->currentText();
   whileBlocking( mCboChangeAttribute )->clear();
@@ -592,7 +592,7 @@ bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
     if ( event->type() != QEvent::MouseButtonPress )
       return QObject::eventFilter( watched, event );
 
-    QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>( event );
+    auto mouseEvent = dynamic_cast<QMouseEvent *>( event );
     if ( !mouseEvent )
       return QObject::eventFilter( watched, event );
 
@@ -1004,15 +1004,15 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     QMap<int, QString> lasCodes = QgsPointCloudDataProvider::translatedLasClassificationCodes();
     QMap<int, QString> classes;
 
-    QgsPointCloudLayer *layer = qobject_cast<QgsPointCloudLayer *>( QgisApp::instance()->activeLayer() );
+    auto layer = qobject_cast<QgsPointCloudLayer *>( QgisApp::instance()->activeLayer() );
     if ( layer )
     {
       QgsAbstract3DRenderer *r = layer->renderer3D();
       // if there's a clsasification renderer, let's use the classes' labels
-      if ( QgsPointCloudLayer3DRenderer *cr = dynamic_cast<QgsPointCloudLayer3DRenderer *>( r ) )
+      if ( auto cr = dynamic_cast<QgsPointCloudLayer3DRenderer *>( r ) )
       {
         const QgsPointCloud3DSymbol *s = cr->symbol();
-        if ( const QgsClassificationPointCloud3DSymbol *cs = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( s ) )
+        if ( auto cs = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( s ) )
         {
           if ( cs->attribute() == QLatin1String( "Classification" ) )
           {

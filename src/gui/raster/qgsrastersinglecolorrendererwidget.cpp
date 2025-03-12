@@ -62,7 +62,7 @@ QgsRasterRenderer *QgsRasterSingleColorRendererWidget::renderer()
 
 void QgsRasterSingleColorRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
 {
-  const QgsRasterSingleColorRenderer *scr = dynamic_cast<const QgsRasterSingleColorRenderer *>( r );
+  auto scr = dynamic_cast<const QgsRasterSingleColorRenderer *>( r );
   if ( scr )
   {
     mBandComboBox->setBand( scr->inputBand() );

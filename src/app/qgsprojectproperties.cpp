@@ -895,7 +895,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     currentLayer = it.value();
     if ( currentLayer->type() == Qgis::LayerType::Vector )
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
       QgsVectorDataProvider *provider = vlayer->dataProvider();
       if ( !provider )
         continue;
@@ -1383,7 +1383,7 @@ void QgsProjectProperties::apply()
 
     layer->setFlags( flags );
 
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    auto vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( vl )
     {
       // read only is for vector layers only for now
@@ -2355,7 +2355,7 @@ void QgsProjectProperties::populateWmtsTree( const QgsLayerTreeGroup *treeGroup,
     QgsTreeWidgetItem *childItem = nullptr;
     if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
     {
-      QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
+      auto treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
       QString gName = treeGroupChild->name();
 
       childItem = new QgsTreeWidgetItem( QStringList() << gName );
@@ -2372,7 +2372,7 @@ void QgsProjectProperties::populateWmtsTree( const QgsLayerTreeGroup *treeGroup,
     }
     else
     {
-      QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
+      auto treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
       QgsMapLayer *l = treeLayer->layer();
 
       if ( !l )

@@ -97,7 +97,7 @@ void TestQgsMultiPolygon::assignment()
   mp1 = mp3;
   QCOMPARE( mp1.numGeometries(), 2 );
 
-  const QgsPolygon *ls = static_cast<const QgsPolygon *>( mp1.geometryN( 0 ) );
+  auto ls = static_cast<const QgsPolygon *>( mp1.geometryN( 0 ) );
   QCOMPARE( *ls, part );
 
   ls = static_cast<const QgsPolygon *>( mp1.geometryN( 1 ) );
@@ -123,7 +123,7 @@ void TestQgsMultiPolygon::clone()
 
   QCOMPARE( cloned->numGeometries(), 2 );
 
-  const QgsPolygon *ls = static_cast<const QgsPolygon *>( cloned->geometryN( 0 ) );
+  auto ls = static_cast<const QgsPolygon *>( cloned->geometryN( 0 ) );
   QCOMPARE( *ls, part );
 
   ls = static_cast<const QgsPolygon *>( cloned->geometryN( 1 ) );
@@ -150,7 +150,7 @@ void TestQgsMultiPolygon::copy()
   QCOMPARE( mp3.numGeometries(), 2 );
   QCOMPARE( mp3.wkbType(), Qgis::WkbType::MultiPolygonZM );
 
-  const QgsPolygon *ls = static_cast<const QgsPolygon *>( mp3.geometryN( 0 ) );
+  auto ls = static_cast<const QgsPolygon *>( mp3.geometryN( 0 ) );
   QCOMPARE( *ls, part );
 
   ls = static_cast<const QgsPolygon *>( mp3.geometryN( 1 ) );
@@ -256,7 +256,7 @@ void TestQgsMultiPolygon::addGeometry()
   QCOMPARE( mp.partCount(), 2 );
   QVERIFY( !mp.is3D() );
 
-  const QgsPolygon *ls = static_cast<const QgsPolygon *>( mp.geometryN( 0 ) );
+  auto ls = static_cast<const QgsPolygon *>( mp.geometryN( 0 ) );
   auto exteriorRing = static_cast<const QgsLineString *>( ls->exteriorRing() );
 
   // test polygonN by the same occasion
@@ -393,7 +393,7 @@ void TestQgsMultiPolygon::addGeometryZ()
   QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPolygonZ );
   QVERIFY( mp.is3D() );
 
-  const QgsPolygon *ls = static_cast<const QgsPolygon *>( mp.geometryN( 0 ) );
+  auto ls = static_cast<const QgsPolygon *>( mp.geometryN( 0 ) );
   auto exteriorRing = static_cast<const QgsLineString *>( ls->exteriorRing() );
 
   QCOMPARE( exteriorRing->pointN( 0 ), QgsPoint( 1, 10, 2 ) );
@@ -449,7 +449,7 @@ void TestQgsMultiPolygon::addGeometryM()
   QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPolygonM );
   QVERIFY( mp.isMeasure() );
 
-  const QgsPolygon *ls = static_cast<const QgsPolygon *>( mp.geometryN( 0 ) );
+  auto ls = static_cast<const QgsPolygon *>( mp.geometryN( 0 ) );
   auto exteriorRing = static_cast<const QgsLineString *>( ls->exteriorRing() );
 
   QCOMPARE( exteriorRing->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 ) );
@@ -504,7 +504,7 @@ void TestQgsMultiPolygon::addGeometryZM()
   QVERIFY( mp.isMeasure() );
   QVERIFY( mp.is3D() );
 
-  const QgsPolygon *ls = static_cast<const QgsPolygon *>( mp.geometryN( 0 ) );
+  auto ls = static_cast<const QgsPolygon *>( mp.geometryN( 0 ) );
   auto exteriorRing = static_cast<const QgsLineString *>( ls->exteriorRing() );
 
   QCOMPARE( exteriorRing->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) );
@@ -619,7 +619,7 @@ void TestQgsMultiPolygon::boundary()
   mp.addGeometry( part.clone() );
 
   std::unique_ptr<QgsAbstractGeometry> boundary( mp.boundary() );
-  QgsMultiLineString *mls = dynamic_cast<QgsMultiLineString *>( boundary.get() );
+  auto mls = dynamic_cast<QgsMultiLineString *>( boundary.get() );
 
   QVERIFY( mls );
   QCOMPARE( mls->numGeometries(), 1 );

@@ -160,7 +160,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
                       std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
                       std::function<bool( double, double, double, double, double )> comparator2D ) const
     {
-      const QgsPoint *pt = qgsgeometry_cast< const QgsPoint * >( &other );
+      auto pt = qgsgeometry_cast<const QgsPoint *>( &other );
       if ( !pt )
         return false;
 

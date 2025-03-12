@@ -72,7 +72,7 @@ QgsSocketMonitoringThread::QgsSocketMonitoringThread( std::shared_ptr<QgsFeedbac
 #if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
   if ( FCGI_stdout && FCGI_stdout->fcgx_stream && FCGI_stdout->fcgx_stream->data )
   {
-    QgsFCGXStreamData *stream = static_cast<QgsFCGXStreamData *>( FCGI_stdout->fcgx_stream->data );
+    auto stream = static_cast<QgsFCGXStreamData *>( FCGI_stdout->fcgx_stream->data );
     if ( stream && stream->reqDataPtr )
     {
       mIpcFd = stream->reqDataPtr->ipcFd;

@@ -80,7 +80,7 @@ void QgsLayoutViewToolEditNodes::layoutPressEvent( QgsLayoutViewMouseEvent *even
 
   for ( QGraphicsItem *graphicsItem : itemsAtCursorPos )
   {
-    QgsLayoutNodesItem *item = dynamic_cast<QgsLayoutNodesItem *>( graphicsItem );
+    auto item = dynamic_cast<QgsLayoutNodesItem *>( graphicsItem );
 
     if ( item && !item->isLocked() )
     {
@@ -164,7 +164,7 @@ void QgsLayoutViewToolEditNodes::layoutDoubleClickEvent( QgsLayoutViewMouseEvent
   bool rc = false;
   for ( QGraphicsItem *graphicsItem : itemsAtCursorPos )
   {
-    QgsLayoutNodesItem *item = dynamic_cast<QgsLayoutNodesItem *>( graphicsItem );
+    auto item = dynamic_cast<QgsLayoutNodesItem *>( graphicsItem );
 
     if ( item && !item->isLocked() )
     {

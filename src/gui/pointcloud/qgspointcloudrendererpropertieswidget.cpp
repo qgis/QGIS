@@ -40,7 +40,7 @@ static bool initPointCloudRenderer( const QString &name, QgsPointCloudRendererWi
   QgsPointCloudRendererAbstractMetadata *rendererAbstractMetadata = QgsApplication::pointCloudRendererRegistry()->rendererMetadata( name );
   if ( !rendererAbstractMetadata )
     return false;
-  QgsPointCloudRendererMetadata *rendererMetadata = dynamic_cast<QgsPointCloudRendererMetadata *>( rendererAbstractMetadata );
+  auto rendererMetadata = dynamic_cast<QgsPointCloudRendererMetadata *>( rendererAbstractMetadata );
   if ( !rendererMetadata )
     return false;
 

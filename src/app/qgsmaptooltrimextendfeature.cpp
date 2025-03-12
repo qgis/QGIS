@@ -319,7 +319,7 @@ void QgsMapToolTrimExtendFeature::extendLimit()
     return;
   }
 
-  QgsVectorLayer *refLayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  auto refLayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   refLayer = refLayer ? refLayer : mVlayer ? mVlayer
                                            : mLimitLayer;
 

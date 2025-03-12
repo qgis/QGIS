@@ -180,19 +180,19 @@ void TestQgsDateTimeEdit::focus()
   cfg.insert( QStringLiteral( "AllowNull" ), true );
 
   widget1->setConfig( cfg );
-  QgsDateTimeEdit *dateedit1 = qobject_cast<QgsDateTimeEdit *>( widget1->createWidget( &w ) );
+  auto dateedit1 = qobject_cast<QgsDateTimeEdit *>( widget1->createWidget( &w ) );
   QVERIFY( dateedit1 );
   widget1->initWidget( dateedit1 );
   widget1->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QDate ) );
 
   widget2->setConfig( cfg );
-  QgsDateTimeEdit *dateedit2 = qobject_cast<QgsDateTimeEdit *>( widget2->createWidget( &w ) );
+  auto dateedit2 = qobject_cast<QgsDateTimeEdit *>( widget2->createWidget( &w ) );
   QVERIFY( dateedit2 );
   widget2->initWidget( dateedit2 );
   widget2->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QDate ) );
 
   widget3->setConfig( cfg );
-  QgsDateTimeEdit *dateedit3 = qobject_cast<QgsDateTimeEdit *>( widget3->createWidget( &w ) );
+  auto dateedit3 = qobject_cast<QgsDateTimeEdit *>( widget3->createWidget( &w ) );
   QVERIFY( dateedit3 );
   widget3->initWidget( dateedit3 );
   widget3->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QDate ) );
@@ -297,7 +297,7 @@ void TestQgsDateTimeEdit::testDateTime()
   cfg.insert( QStringLiteral( "AllowNull" ), true );
 
   widget4->setConfig( cfg );
-  QgsDateTimeEdit *dateedit4 = qobject_cast<QgsDateTimeEdit *>( widget4->createWidget( &w ) );
+  auto dateedit4 = qobject_cast<QgsDateTimeEdit *>( widget4->createWidget( &w ) );
   QVERIFY( dateedit4 );
   widget4->initWidget( dateedit4 );
   widget4->setValue( QTime( 23, 10, 57 ) );
@@ -305,7 +305,7 @@ void TestQgsDateTimeEdit::testDateTime()
   QCOMPARE( value, QTime( 23, 10, 57 ) );
 
   widget5->setConfig( cfg );
-  QgsDateTimeEdit *dateedit5 = qobject_cast<QgsDateTimeEdit *>( widget5->createWidget( &w ) );
+  auto dateedit5 = qobject_cast<QgsDateTimeEdit *>( widget5->createWidget( &w ) );
   QVERIFY( dateedit5 );
   widget5->initWidget( dateedit5 );
   widget5->setValue( QDate( 1966, 11, 25 ) );
@@ -313,7 +313,7 @@ void TestQgsDateTimeEdit::testDateTime()
   QCOMPARE( value5, QDate( 1966, 11, 25 ) );
 
   widget6->setConfig( cfg );
-  QgsDateTimeEdit *dateedit6 = qobject_cast<QgsDateTimeEdit *>( widget6->createWidget( &w ) );
+  auto dateedit6 = qobject_cast<QgsDateTimeEdit *>( widget6->createWidget( &w ) );
   QVERIFY( dateedit6 );
   widget6->initWidget( dateedit6 );
   widget6->setValue( QDate( 1, 1, 1 ) );
@@ -322,7 +322,7 @@ void TestQgsDateTimeEdit::testDateTime()
 
   // Test for issue GH #46542
   widget7->setConfig( cfg );
-  QgsDateTimeEdit *dateedit7 = qobject_cast<QgsDateTimeEdit *>( widget7->createWidget( &w ) );
+  auto dateedit7 = qobject_cast<QgsDateTimeEdit *>( widget7->createWidget( &w ) );
   QVERIFY( dateedit7 );
   widget7->initWidget( dateedit7 );
   QgsFeature f { vl->fields() };

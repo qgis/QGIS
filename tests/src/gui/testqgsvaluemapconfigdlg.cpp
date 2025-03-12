@@ -80,7 +80,7 @@ void TestQgsValueMapConfigDlg::testLoadFromCSV()
   value.insert( QStringLiteral( "five" ), QString( "5" ) );
   valueList << value;
 
-  QgsValueMapConfigDlg *valueMapConfig = static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "ValueMap" ), &vl, 1, nullptr ) );
+  auto valueMapConfig = static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "ValueMap" ), &vl, 1, nullptr ) );
   valueMapConfig->loadMapFromCSV( dataDir + QStringLiteral( "/valuemapsample.csv" ) );
   QCOMPARE( valueMapConfig->config().value( QStringLiteral( "map" ) ).toList(), valueList );
   delete valueMapConfig;

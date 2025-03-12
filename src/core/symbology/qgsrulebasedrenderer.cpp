@@ -1465,7 +1465,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
   }
   else if ( renderer->type() == QLatin1String( "singleSymbol" ) )
   {
-    const QgsSingleSymbolRenderer *singleSymbolRenderer = dynamic_cast<const QgsSingleSymbolRenderer *>( renderer );
+    auto singleSymbolRenderer = dynamic_cast<const QgsSingleSymbolRenderer *>( renderer );
     if ( !singleSymbolRenderer )
       return nullptr;
 
@@ -1474,7 +1474,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
   }
   else if ( renderer->type() == QLatin1String( "categorizedSymbol" ) )
   {
-    const QgsCategorizedSymbolRenderer *categorizedRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer );
+    auto categorizedRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer );
     if ( !categorizedRenderer )
       return nullptr;
 
@@ -1572,7 +1572,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
   }
   else if ( renderer->type() == QLatin1String( "graduatedSymbol" ) )
   {
-    const QgsGraduatedSymbolRenderer *graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer );
+    auto graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer );
     if ( !graduatedRenderer )
       return nullptr;
 
@@ -1635,22 +1635,22 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
   }
   else if ( renderer->type() == QLatin1String( "pointDisplacement" ) || renderer->type() == QLatin1String( "pointCluster" ) )
   {
-    if ( const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer ) )
+    if ( auto pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer ) )
       return convertFromRenderer( pointDistanceRenderer->embeddedRenderer() );
   }
   else if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {
-    if ( const QgsInvertedPolygonRenderer *invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer *>( renderer ) )
+    if ( auto invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer *>( renderer ) )
       r.reset( convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() ) );
   }
   else if ( renderer->type() == QLatin1String( "mergedFeatureRenderer" ) )
   {
-    if ( const QgsMergedFeatureRenderer *mergedRenderer = dynamic_cast<const QgsMergedFeatureRenderer *>( renderer ) )
+    if ( auto mergedRenderer = dynamic_cast<const QgsMergedFeatureRenderer *>( renderer ) )
       r.reset( convertFromRenderer( mergedRenderer->embeddedRenderer() ) );
   }
   else if ( renderer->type() == QLatin1String( "embeddedSymbol" ) && layer )
   {
-    const QgsEmbeddedSymbolRenderer *embeddedRenderer = dynamic_cast<const QgsEmbeddedSymbolRenderer *>( renderer );
+    auto embeddedRenderer = dynamic_cast<const QgsEmbeddedSymbolRenderer *>( renderer );
 
     auto rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
 
@@ -1696,7 +1696,7 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol *symbol, con
     case Qgis::SymbolType::Marker:
       for ( int j = 0; j < symbol->symbolLayerCount(); ++j )
       {
-        QgsMarkerSymbolLayer *msl = static_cast<QgsMarkerSymbolLayer *>( symbol->symbolLayer( j ) );
+        auto msl = static_cast<QgsMarkerSymbolLayer *>( symbol->symbolLayer( j ) );
         if ( ! sizeScaleField.isEmpty() )
         {
           sizeExpression = QStringLiteral( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );
@@ -1715,7 +1715,7 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol *symbol, con
         {
           if ( symbol->symbolLayer( j )->layerType() == QLatin1String( "SimpleLine" ) )
           {
-            QgsLineSymbolLayer *lsl = static_cast<QgsLineSymbolLayer *>( symbol->symbolLayer( j ) );
+            auto lsl = static_cast<QgsLineSymbolLayer *>( symbol->symbolLayer( j ) );
             sizeExpression = QStringLiteral( "%1*(%2)" ).arg( lsl->width() ).arg( sizeScaleField );
             lsl->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeWidth, QgsProperty::fromExpression( sizeExpression ) );
           }
@@ -1724,7 +1724,7 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol *symbol, con
             QgsSymbol *marker = symbol->symbolLayer( j )->subSymbol();
             for ( int k = 0; k < marker->symbolLayerCount(); ++k )
             {
-              QgsMarkerSymbolLayer *msl = static_cast<QgsMarkerSymbolLayer *>( marker->symbolLayer( k ) );
+              auto msl = static_cast<QgsMarkerSymbolLayer *>( marker->symbolLayer( k ) );
               sizeExpression = QStringLiteral( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );
               msl->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( sizeExpression ) );
             }

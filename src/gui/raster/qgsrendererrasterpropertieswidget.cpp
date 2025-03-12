@@ -139,7 +139,7 @@ void QgsRendererRasterPropertiesWidget::apply()
     brightnessFilter->setGamma( mGammaSpinBox->value() );
   }
 
-  if ( QgsRasterRendererWidget *rendererWidget = dynamic_cast<QgsRasterRendererWidget *>( stackedWidget->currentWidget() ) )
+  if ( auto rendererWidget = dynamic_cast<QgsRasterRendererWidget *>( stackedWidget->currentWidget() ) )
   {
     rendererWidget->doComputations();
 
@@ -357,7 +357,7 @@ void QgsRendererRasterPropertiesWidget::refreshAfterStyleChanged()
   if ( mRendererWidget )
   {
     QgsRasterRenderer *renderer = mRasterLayer->renderer();
-    if ( QgsMultiBandColorRenderer *mbcr = dynamic_cast<QgsMultiBandColorRenderer *>( renderer ) )
+    if ( auto mbcr = dynamic_cast<QgsMultiBandColorRenderer *>( renderer ) )
     {
       const QgsContrastEnhancement *redCe = mbcr->redContrastEnhancement();
       if ( redCe )

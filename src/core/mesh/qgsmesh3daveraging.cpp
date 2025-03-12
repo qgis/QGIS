@@ -289,7 +289,7 @@ bool QgsMeshMultiLevelsAveragingMethod::equals( const QgsMesh3DAveragingMethod *
   if ( !other || other->method() != method() )
     return false;
 
-  const QgsMeshMultiLevelsAveragingMethod *otherMethod = static_cast<const QgsMeshMultiLevelsAveragingMethod *>( other );
+  auto otherMethod = static_cast<const QgsMeshMultiLevelsAveragingMethod *>( other );
 
   return ( otherMethod->startVerticalLevel() == startVerticalLevel() ) &&
          ( otherMethod->endVerticalLevel() == endVerticalLevel() ) &&
@@ -423,7 +423,7 @@ bool QgsMeshSigmaAveragingMethod::equals( const QgsMesh3DAveragingMethod *other 
   if ( !other || other->method() != method() )
     return false;
 
-  const QgsMeshSigmaAveragingMethod *otherMethod = static_cast<const QgsMeshSigmaAveragingMethod *>( other );
+  auto otherMethod = static_cast<const QgsMeshSigmaAveragingMethod *>( other );
 
   return qgsDoubleNear( otherMethod->startFraction(), startFraction() ) && qgsDoubleNear( otherMethod->endFraction(), endFraction() ) ;
 }
@@ -525,7 +525,7 @@ bool QgsMeshRelativeHeightAveragingMethod::equals( const QgsMesh3DAveragingMetho
   if ( !other || other->method() != method() )
     return false;
 
-  const QgsMeshRelativeHeightAveragingMethod *otherMethod = static_cast<const QgsMeshRelativeHeightAveragingMethod *>( other );
+  auto otherMethod = static_cast<const QgsMeshRelativeHeightAveragingMethod *>( other );
 
   return qgsDoubleNear( otherMethod->startHeight(), startHeight() ) &&
          qgsDoubleNear( otherMethod->endHeight(), endHeight() ) &&
@@ -621,7 +621,7 @@ bool QgsMeshElevationAveragingMethod::equals( const QgsMesh3DAveragingMethod *ot
   if ( !other || other->method() != method() )
     return false;
 
-  const QgsMeshElevationAveragingMethod *otherMethod = static_cast<const QgsMeshElevationAveragingMethod *>( other );
+  auto otherMethod = static_cast<const QgsMeshElevationAveragingMethod *>( other );
 
   return qgsDoubleNear( otherMethod->startElevation(), startElevation() ) && qgsDoubleNear( otherMethod->endElevation(), endElevation() ) ;
 }

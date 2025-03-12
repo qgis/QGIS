@@ -337,7 +337,7 @@ void QgsAbstractGeometry::transformVertices( const std::function<QgsPoint( const
 
 QgsAbstractGeometry::part_iterator QgsAbstractGeometry::parts_end()
 {
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( this );
+  auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( this );
   return part_iterator( this, collection ? collection->partCount() : 1 );
 }
 
@@ -353,7 +353,7 @@ QgsGeometryConstPartIterator QgsAbstractGeometry::parts() const
 
 QgsAbstractGeometry::const_part_iterator QgsAbstractGeometry::const_parts_end() const
 {
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( this );
+  auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( this );
   return const_part_iterator( this, collection ? collection->partCount() : 1 );
 }
 
@@ -512,7 +512,7 @@ QgsVertexId QgsAbstractGeometry::vertex_iterator::vertexId() const
 
   // get the vertex type: find out from the leaf geometry
   Qgis::VertexType vertexType = Qgis::VertexType::Segment;
-  if ( const QgsCurve *curve = dynamic_cast<const QgsCurve *>( levels[depth].g ) )
+  if ( auto curve = dynamic_cast<const QgsCurve *>( levels[depth].g ) )
   {
     QgsPoint p;
     curve->pointAt( vertex, p, vertexType );
@@ -557,7 +557,7 @@ QgsAbstractGeometry::part_iterator::part_iterator( QgsAbstractGeometry *g, int i
 
 QgsAbstractGeometry::part_iterator &QgsAbstractGeometry::part_iterator::operator++()
 {
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry );
+  auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( mGeometry );
   if ( !collection )
   {
     mIndex = 1;
@@ -580,7 +580,7 @@ QgsAbstractGeometry::part_iterator QgsAbstractGeometry::part_iterator::operator+
 
 QgsAbstractGeometry *QgsAbstractGeometry::part_iterator::operator*() const
 {
-  QgsGeometryCollection *collection = qgsgeometry_cast< QgsGeometryCollection * >( mGeometry );
+  auto collection = qgsgeometry_cast<QgsGeometryCollection *>( mGeometry );
   if ( !collection )
   {
     return mGeometry;
@@ -615,7 +615,7 @@ QgsAbstractGeometry::const_part_iterator::const_part_iterator( const QgsAbstract
 
 QgsAbstractGeometry::const_part_iterator &QgsAbstractGeometry::const_part_iterator::operator++()
 {
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry );
+  auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( mGeometry );
   if ( !collection )
   {
     mIndex = 1;
@@ -638,7 +638,7 @@ QgsAbstractGeometry::const_part_iterator QgsAbstractGeometry::const_part_iterato
 
 const QgsAbstractGeometry *QgsAbstractGeometry::const_part_iterator::operator*() const
 {
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry );
+  auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( mGeometry );
   if ( !collection )
   {
     return mGeometry;

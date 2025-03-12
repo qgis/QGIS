@@ -87,7 +87,7 @@ QgsLayerTreeView::~QgsLayerTreeView()
 
 void QgsLayerTreeView::setModel( QAbstractItemModel *model )
 {
-  QgsLayerTreeModel *treeModel = qobject_cast<QgsLayerTreeModel *>( model );
+  auto treeModel = qobject_cast<QgsLayerTreeModel *>( model );
   if ( !treeModel )
     return;
 

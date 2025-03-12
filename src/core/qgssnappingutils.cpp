@@ -389,7 +389,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QList<LayerAndAreaOfInterest> layers;
     const auto constLayers = mMapSettings.layers( true );
     for ( QgsMapLayer *layer : constLayers )
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
         layers << qMakePair( vl, aoi );
     prepareIndex( layers, relaxed );
 
@@ -426,7 +426,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
 
 void QgsSnappingUtils::onInitFinished( bool ok )
 {
-  QgsPointLocator *loc = static_cast<QgsPointLocator *>( sender() );
+  auto loc = static_cast<QgsPointLocator *>( sender() );
 
   // point locator init didn't work out - too many features!
   // let's make the allowed area smaller for the next time
@@ -631,7 +631,7 @@ QString QgsSnappingUtils::dump()
     const auto constLayers = mMapSettings.layers( true );
     for ( QgsMapLayer *layer : constLayers )
     {
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
         layers << LayerConfig( vl, _snappingTypeToPointLocatorType( mSnappingConfig.typeFlag() ), mSnappingConfig.tolerance(), mSnappingConfig.units() );
     }
   }

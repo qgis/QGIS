@@ -126,7 +126,7 @@ void QgsMapLayerStyleGuiUtils::addStyle()
   QAction *a = qobject_cast<QAction *>( sender() );
   if ( !a )
     return;
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
+  auto layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
   if ( !layer )
     return;
 
@@ -152,7 +152,7 @@ void QgsMapLayerStyleGuiUtils::useStyle()
   QAction *a = qobject_cast<QAction *>( sender() );
   if ( !a )
     return;
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
+  auto layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
   if ( !layer )
     return;
   const QString name = a->text();
@@ -170,7 +170,7 @@ void QgsMapLayerStyleGuiUtils::removeStyle()
   QAction *a = qobject_cast<QAction *>( sender() );
   if ( !a )
     return;
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
+  auto layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
   if ( !layer )
     return;
 
@@ -187,7 +187,7 @@ void QgsMapLayerStyleGuiUtils::renameStyle()
   QAction *a = qobject_cast<QAction *>( sender() );
   if ( !a )
     return;
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
+  auto layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
   if ( !layer )
     return;
 

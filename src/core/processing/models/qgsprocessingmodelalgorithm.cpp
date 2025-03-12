@@ -185,7 +185,7 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
     }
     else
     {
-      const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter * >( def );
+      auto destParam = static_cast<const QgsProcessingDestinationParameter *>( def );
 
       // is destination linked to one of the final outputs from this model?
       bool isFinalOutput = false;
@@ -936,7 +936,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       {
         if ( def->isDestination() )
         {
-          const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter * >( def );
+          auto destParam = static_cast<const QgsProcessingDestinationParameter *>( def );
 
           // is destination linked to one of the final outputs from this model?
           bool isFinalOutput = false;
@@ -1290,13 +1290,13 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
         value = value.value< QgsProperty >().valueAsString( context->expressionContext() );
       }
     }
-    if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( value ) ) )
+    if ( auto layer = qobject_cast<QgsVectorLayer *>( qvariant_cast<QObject *>( value ) ) )
     {
       featureSource = layer;
     }
     if ( context && !featureSource )
     {
-      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( value.toString(), *context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( value.toString(), *context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
         featureSource = vl;
     }
 
@@ -1340,7 +1340,7 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
       {
         if ( def->type() == QgsProcessingParameterField::typeName() )
         {
-          const QgsProcessingParameterField *fieldDef = static_cast< const QgsProcessingParameterField * >( def );
+          auto fieldDef = static_cast<const QgsProcessingParameterField *>( def );
           if ( !( dataTypes.contains( static_cast< int >( fieldDef->dataType() ) ) || fieldDef->dataType() == Qgis::ProcessingFieldParameterDataType::Any ) )
           {
             continue;
@@ -1348,7 +1348,7 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
         }
         else if ( def->type() == QgsProcessingParameterFeatureSource::typeName() || def->type() == QgsProcessingParameterVectorLayer::typeName() )
         {
-          const QgsProcessingParameterLimitedDataTypes *sourceDef = dynamic_cast< const QgsProcessingParameterLimitedDataTypes *>( def );
+          auto sourceDef = dynamic_cast<const QgsProcessingParameterLimitedDataTypes *>( def );
           if ( !sourceDef )
             continue;
 
@@ -1399,7 +1399,7 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
         {
           if ( out->type() == QgsProcessingOutputVectorLayer::typeName() )
           {
-            const QgsProcessingOutputVectorLayer *vectorOut = static_cast< const QgsProcessingOutputVectorLayer *>( out );
+            auto vectorOut = static_cast<const QgsProcessingOutputVectorLayer *>( out );
 
             if ( !vectorOutputIsCompatibleType( dataTypes, vectorOut->dataType() ) )
             {
@@ -1642,7 +1642,7 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       param->setDescription( outputIt->description() );
       param->setDefaultValue( outputIt->defaultValue() );
 
-      QgsProcessingDestinationParameter *newDestParam = dynamic_cast< QgsProcessingDestinationParameter * >( param.get() );
+      auto newDestParam = dynamic_cast<QgsProcessingDestinationParameter *>( param.get() );
       if ( addParameter( param.release() ) && newDestParam )
       {
         if ( QgsProcessingProvider *provider = childIt->algorithm()->provider() )

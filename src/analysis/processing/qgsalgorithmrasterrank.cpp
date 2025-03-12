@@ -154,7 +154,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   }
 
 
-  QgsRasterLayer *templateRasterLayer = qobject_cast<QgsRasterLayer *>( mLayers[0].get() );
+  auto templateRasterLayer = qobject_cast<QgsRasterLayer *>( mLayers[0].get() );
   const Qgis::DataType outputDataType = templateRasterLayer->dataProvider()->dataType( 1 );
   double outputNoData = 0.0;
   if ( templateRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
@@ -181,7 +181,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   double minCellSizeY = 1e9;
   for ( auto &layer : mLayers )
   {
-    QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer.get() );
+    auto rasterLayer = qobject_cast<QgsRasterLayer *>( layer.get() );
 
     QgsRectangle extent = rasterLayer->extent();
     if ( rasterLayer->crs() != outputCrs )
@@ -225,7 +225,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   outputBlocks.resize( mRanks.size() );
   for ( auto &layer : mLayers )
   {
-    QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer.get() );
+    auto rasterLayer = qobject_cast<QgsRasterLayer *>( layer.get() );
     if ( rasterLayer->crs() != outputCrs )
     {
       QgsRasterProjector *projector = new QgsRasterProjector();

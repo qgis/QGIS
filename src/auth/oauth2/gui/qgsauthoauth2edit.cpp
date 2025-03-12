@@ -128,7 +128,7 @@ QString QgsAuthOAuth2Edit::parentConfigId() const
     return QString();
   }
 
-  QgsAuthConfigEdit *cie = qobject_cast<QgsAuthConfigEdit *>( parentWidget() );
+  auto cie = qobject_cast<QgsAuthConfigEdit *>( parentWidget() );
   if ( !cie )
   {
     QgsDebugError( QStringLiteral( "Could not cast to QgsAuthConfigEdit" ) );
@@ -1120,7 +1120,7 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
 void QgsAuthOAuth2Edit::configReplyFinished()
 {
   qDebug() << "QgsAuthOAuth2Edit::onConfigReplyFinished";
-  QNetworkReply *configReply = qobject_cast<QNetworkReply *>( sender() );
+  auto configReply = qobject_cast<QNetworkReply *>( sender() );
   if ( configReply->error() == QNetworkReply::NoError )
   {
     const QByteArray replyData = configReply->readAll();
@@ -1159,7 +1159,7 @@ void QgsAuthOAuth2Edit::registerReplyFinished()
   //JSV todo
   //better error handling
   qDebug() << "QgsAuthOAuth2Edit::onRegisterReplyFinished";
-  QNetworkReply *registerReply = qobject_cast<QNetworkReply *>( sender() );
+  auto registerReply = qobject_cast<QNetworkReply *>( sender() );
   if ( registerReply->error() == QNetworkReply::NoError )
   {
     const QByteArray replyData = registerReply->readAll();
@@ -1191,7 +1191,7 @@ void QgsAuthOAuth2Edit::registerReplyFinished()
 
 void QgsAuthOAuth2Edit::networkError( QNetworkReply::NetworkError error )
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+  auto reply = qobject_cast<QNetworkReply *>( sender() );
   qWarning() << "QgsAuthOAuth2Edit::onNetworkError: " << error << ": " << reply->errorString();
   const QString errorMsg = QStringLiteral( "Network error: %1" ).arg( reply->errorString() );
   QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::MessageLevel::Critical );

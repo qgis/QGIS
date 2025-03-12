@@ -188,7 +188,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
           const auto constChildren = child->children();
           for ( QgsDataItem *child2 : constChildren )
           {
-            QgsMssqlLayerItem *layerItem = qobject_cast<QgsMssqlLayerItem *>( child2 );
+            auto layerItem = qobject_cast<QgsMssqlLayerItem *>( child2 );
             if ( child2->name() == layer.tableName && layerItem && layerItem->disableInvalidGeometryHandling() == disableInvalidGeometryHandling )
             {
               newLayers.append( child2 );
@@ -380,7 +380,7 @@ bool QgsMssqlConnectionItem::equal( const QgsDataItem *other )
     return false;
   }
 
-  const QgsMssqlConnectionItem *o = qobject_cast<const QgsMssqlConnectionItem *>( other );
+  auto o = qobject_cast<const QgsMssqlConnectionItem *>( other );
   return ( mPath == o->mPath && mName == o->mName );
 }
 
@@ -408,7 +408,7 @@ bool QgsMssqlLayerItem::disableInvalidGeometryHandling() const
 QString QgsMssqlLayerItem::createUri()
 {
   QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString();
-  QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( parent() ? parent()->parent() : nullptr );
+  auto connItem = qobject_cast<QgsMssqlConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
   {
@@ -460,7 +460,7 @@ void QgsMssqlSchemaItem::addLayers( QgsDataItem *newLayers )
     {
       continue;
     }
-    QgsMssqlLayerItem *layer = static_cast<QgsMssqlLayerItem *>( child )->createClone();
+    auto layer = static_cast<QgsMssqlLayerItem *>( child )->createClone();
     addChildItem( layer, true );
   }
 }

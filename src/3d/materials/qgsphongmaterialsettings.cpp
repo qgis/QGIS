@@ -76,7 +76,7 @@ QgsPhongMaterialSettings *QgsPhongMaterialSettings::clone() const
 
 bool QgsPhongMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
 {
-  const QgsPhongMaterialSettings *otherPhong = dynamic_cast<const QgsPhongMaterialSettings *>( other );
+  auto otherPhong = dynamic_cast<const QgsPhongMaterialSettings *>( other );
   if ( !otherPhong )
     return false;
 
@@ -189,7 +189,7 @@ QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExp
   else
   {
     array.resize( sizeof( unsigned char ) * 9 );
-    unsigned char *ptr = reinterpret_cast<unsigned char *>( array.data() );
+    auto ptr = reinterpret_cast<unsigned char *>( array.data() );
 
     *ptr++ = static_cast<unsigned char>( diffuse.red() );
     *ptr++ = static_cast<unsigned char>( diffuse.green() );

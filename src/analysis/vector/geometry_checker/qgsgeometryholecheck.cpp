@@ -31,7 +31,7 @@ void QgsGeometryHoleCheck::collectErrors( const QMap<QString, QgsFeaturePool *> 
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
-      const QgsCurvePolygon *poly = dynamic_cast<const QgsCurvePolygon *>( QgsGeometryCheckerUtils::getGeomPart( geom, iPart ) );
+      auto poly = dynamic_cast<const QgsCurvePolygon *>( QgsGeometryCheckerUtils::getGeomPart( geom, iPart ) );
       if ( !poly )
       {
         continue;

@@ -47,7 +47,7 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
     else
       mComboRelation->addItem( QStringLiteral( "%1 (%2)" ).arg( relation.name(), relation.referencedLayerId() ), relation.id() );
 
-    QStandardItemModel *model = qobject_cast<QStandardItemModel *>( mComboRelation->model() );
+    auto model = qobject_cast<QStandardItemModel *>( mComboRelation->model() );
     QStandardItem *item = model->item( model->rowCount() - 1 );
     item->setFlags( relation.type() == Qgis::RelationshipType::Generated ? item->flags() & ~Qt::ItemIsEnabled : item->flags() | Qt::ItemIsEnabled );
 
@@ -75,7 +75,7 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
 
 void QgsRelationReferenceConfigDlg::mEditExpression_clicked()
 {
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer() );
+  auto vl = qobject_cast<QgsVectorLayer *>( layer() );
   if ( !vl )
     return;
 

@@ -148,7 +148,7 @@ QString QgsProcessingParameters::parameterAsString( const QgsProcessingParameter
 
   if ( val == QgsProcessing::TEMPORARY_OUTPUT )
   {
-    if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( definition ) )
+    if ( auto destParam = dynamic_cast<const QgsProcessingDestinationParameter *>( definition ) )
       return destParam->generateTemporaryDestination( &context );
   }
 
@@ -439,7 +439,7 @@ int QgsProcessingParameters::parameterAsEnum( const QgsProcessingParameterDefini
     return 0;
 
   const int val = parameterAsInt( definition, value, context );
-  const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
+  auto enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( definition );
   if ( enumDef && val >= enumDef->options().size() )
   {
     return enumDef->defaultValue().toInt();
@@ -503,7 +503,7 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
   }
 
   QList< int > result;
-  const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
+  auto enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( definition );
   const auto constResultList = resultList;
   for ( const QVariant &var : constResultList )
   {
@@ -530,7 +530,7 @@ QString QgsProcessingParameters::parameterAsEnumString( const QgsProcessingParam
     return QString();
 
   QString enumText = parameterAsString( definition, value, context );
-  const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
+  auto enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( definition );
   if ( enumText.isEmpty() || !enumDef->options().contains( enumText ) )
     enumText = definition->defaultValue().toString();
 
@@ -587,7 +587,7 @@ QStringList QgsProcessingParameters::parameterAsEnumStrings( const QgsProcessing
 
   processVariant( val );
 
-  const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
+  auto enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( definition );
   // check that values are valid enum values. The resulting set will be empty
   // if all values are present in the enumDef->options(), otherwise it will contain
   // values which are invalid
@@ -716,7 +716,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   }
   if ( dest == QgsProcessing::TEMPORARY_OUTPUT )
   {
-    if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( definition ) )
+    if ( auto destParam = dynamic_cast<const QgsProcessingDestinationParameter *>( definition ) )
       dest = destParam->generateTemporaryDestination( &context );
   }
 
@@ -869,7 +869,7 @@ QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParam
     val = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   }
 
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( val ) ) )
   {
     return layer;
   }
@@ -892,7 +892,7 @@ QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParam
     val = definition->defaultValue();
   }
 
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( val ) ) )
   {
     return layer;
   }
@@ -968,7 +968,7 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
   }
   if ( dest == QgsProcessing::TEMPORARY_OUTPUT )
   {
-    if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( definition ) )
+    if ( auto destParam = dynamic_cast<const QgsProcessingDestinationParameter *>( definition ) )
       dest = destParam->generateTemporaryDestination( &context );
   }
 
@@ -1036,7 +1036,7 @@ QString QgsProcessingParameters::parameterAsFileOutput( const QgsProcessingParam
   }
   if ( dest == QgsProcessing::TEMPORARY_OUTPUT )
   {
-    if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( definition ) )
+    if ( auto destParam = dynamic_cast<const QgsProcessingDestinationParameter *>( definition ) )
       dest = destParam->generateTemporaryDestination( &context );
   }
   return dest;
@@ -1132,7 +1132,7 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
   }
 
   // maybe parameter is a direct layer value?
-  QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) );
+  auto layer = qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( val ) );
 
   QString rectText;
   if ( val.userType() == qMetaTypeId<QgsProperty>() )
@@ -1292,7 +1292,7 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
   // try as layer extent
 
   // maybe parameter is a direct layer value?
-  QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) );
+  auto layer = qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( val ) );
   if ( !layer )
     layer = QgsProcessingUtils::mapLayerFromString( rectText, context );
 
@@ -1390,7 +1390,7 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( cons
   }
 
   // try as layer crs
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( val ) ) )
     return layer->crs();
   else if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( valueAsString, context ) )
     return layer->crs();
@@ -1772,7 +1772,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
     return QList<QgsMapLayer *>();
 
   const QVariant val = value;
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( val ) ) )
   {
     return QList<QgsMapLayer *>() << layer;
   }
@@ -1827,7 +1827,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
   if ( layers.isEmpty() )
   {
     // check default
-    if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( definition->defaultValue() ) ) )
+    if ( auto layer = qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( definition->defaultValue() ) ) )
     {
       layers << layer;
     }
@@ -1836,7 +1836,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
       const auto constToList = definition->defaultValue().toList();
       for ( const QVariant &var : constToList )
       {
-        if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( var ) ) )
+        if ( auto layer = qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( var ) ) )
         {
           layers << layer;
         }
@@ -2114,7 +2114,7 @@ QColor QgsProcessingParameters::parameterAsColor( const QgsProcessingParameterDe
   if ( val.userType() == QMetaType::Type::QColor )
   {
     QColor c = val.value< QColor >();
-    if ( const QgsProcessingParameterColor *colorParam = dynamic_cast< const QgsProcessingParameterColor * >( definition ) )
+    if ( auto colorParam = dynamic_cast<const QgsProcessingParameterColor *>( definition ) )
       if ( !colorParam->opacityEnabled() )
         c.setAlpha( 255 );
     return c;
@@ -2134,7 +2134,7 @@ QColor QgsProcessingParameters::parameterAsColor( const QgsProcessingParameterDe
 
   bool containsAlpha = false;
   QColor c = QgsSymbolLayerUtils::parseColorWithAlpha( colorText, containsAlpha );
-  if ( const QgsProcessingParameterColor *colorParam = dynamic_cast< const QgsProcessingParameterColor * >( definition ) )
+  if ( auto colorParam = dynamic_cast<const QgsProcessingParameterColor *>( definition ) )
     if ( c.isValid() && !colorParam->opacityEnabled() )
       c.setAlpha( 255 );
   return c;
@@ -6282,7 +6282,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
     {
       QString layerString = fromVar.source.staticValue().toString();
       // prefer to use layer source instead of id if possible (since it's persistent)
-      if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
+      if ( auto layer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
         layerString = layer->source();
 
       if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.flags || !fromVar.filterExpression.isEmpty() )
@@ -6325,7 +6325,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
   QString layerString = value.toString();
 
   // prefer to use layer source if possible (since it's persistent)
-  if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
+  if ( auto layer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
     layerString = layer->providerType() != QLatin1String( "ogr" ) && layer->providerType() != QLatin1String( "gdal" ) && layer->providerType() != QLatin1String( "mdal" ) ? QgsProcessingUtils::encodeProviderKeyAndUri( layer->providerType(), layer->source() ) : layer->source();
 
   return QgsProcessingUtils::stringToPythonLiteral( layerString );

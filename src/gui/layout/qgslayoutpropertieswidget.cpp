@@ -110,7 +110,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
 
 void QgsLayoutPropertiesWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
 {
-  if ( QgsPrintLayout *printLayout = dynamic_cast<QgsPrintLayout *>( masterLayout ) )
+  if ( auto printLayout = dynamic_cast<QgsPrintLayout *>( masterLayout ) )
   {
     connect( printLayout, &QgsPrintLayout::nameChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
     connect( printLayout->atlas(), &QgsLayoutAtlas::coverageLayerChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
@@ -217,7 +217,7 @@ void QgsLayoutPropertiesWidget::resizeToContents()
 void QgsLayoutPropertiesWidget::referenceMapChanged( QgsLayoutItem *item )
 {
   mLayout->undoStack()->beginCommand( mLayout, tr( "Set Reference Map" ) );
-  QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( item );
+  auto map = qobject_cast<QgsLayoutItemMap *>( item );
   mLayout->setReferenceMap( map );
   mLayout->undoStack()->endCommand();
 }

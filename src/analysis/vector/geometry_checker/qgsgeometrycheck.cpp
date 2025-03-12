@@ -93,7 +93,7 @@ void QgsGeometryCheck::replaceFeatureGeometryPart( const QMap<QString, QgsFeatur
   QgsFeaturePool *featurePool = featurePools[layerId];
   QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometry *geom = featureGeom.get();
-  if ( QgsGeometryCollection *geomCollection = dynamic_cast<QgsGeometryCollection *>( geom ) )
+  if ( auto geomCollection = dynamic_cast<QgsGeometryCollection *>( geom ) )
   {
     geomCollection->removeGeometry( partIdx );
     geomCollection->addGeometry( newPartGeom );

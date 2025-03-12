@@ -30,7 +30,7 @@
 
 void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsStacRootItem *rootItem = qobject_cast<QgsStacRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsStacRootItem *>( item ) )
   {
     QAction *actionNewConnection = new QAction( tr( "New STAC Connection…" ), menu );
     connect( actionNewConnection, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -47,7 +47,7 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     menu->addAction( actionLoad );
   }
 
-  if ( QgsStacConnectionItem *connItem = qobject_cast<QgsStacConnectionItem *>( item ) )
+  if ( auto connItem = qobject_cast<QgsStacConnectionItem *>( item ) )
   {
     QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
@@ -61,7 +61,7 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     menu->addAction( actionDelete );
   }
 
-  if ( QgsStacCatalogItem *catalogItem = qobject_cast<QgsStacCatalogItem *>( item ) )
+  if ( auto catalogItem = qobject_cast<QgsStacCatalogItem *>( item ) )
   {
     menu->addSeparator();
 
@@ -77,7 +77,7 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     }
   }
 
-  if ( QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item ) )
+  if ( auto itemItem = qobject_cast<QgsStacItemItem *>( item ) )
   {
     QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
     connect( actionRefresh, &QAction::triggered, this, [itemItem] { itemItem->refresh(); } );
@@ -162,7 +162,7 @@ void QgsStacDataItemGuiProvider::showDetails( QgsDataItem *item )
 {
   QgsStacObject *obj = nullptr;
 
-  if ( QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item ) )
+  if ( auto itemItem = qobject_cast<QgsStacItemItem *>( item ) )
   {
     obj = itemItem->stacItem();
   }
@@ -181,7 +181,7 @@ void QgsStacDataItemGuiProvider::showDetails( QgsDataItem *item )
 
 void QgsStacDataItemGuiProvider::downloadAssets( QgsDataItem *item, QgsDataItemGuiContext context )
 {
-  QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item );
+  auto itemItem = qobject_cast<QgsStacItemItem *>( item );
 
   if ( !itemItem )
     return;

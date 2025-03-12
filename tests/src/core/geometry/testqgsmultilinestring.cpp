@@ -198,7 +198,7 @@ void TestQgsMultiLineString::addGeometryInitialDimension()
   QCOMPARE( mls.partCount(), 2 );
   QVERIFY( !mls.is3D() );
 
-  const QgsLineString *ls = static_cast<const QgsLineString *>( mls.geometryN( 0 ) );
+  auto ls = static_cast<const QgsLineString *>( mls.geometryN( 0 ) );
   QCOMPARE( ls->pointN( 0 ), QgsPoint( 9, 12 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( 3, 13 ) );
 
@@ -245,7 +245,7 @@ void TestQgsMultiLineString::addGeometryZ()
   QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringZ );
   QVERIFY( mls.is3D() );
 
-  const QgsLineString *ls = static_cast<const QgsLineString *>( mls.geometryN( 0 ) );
+  auto ls = static_cast<const QgsLineString *>( mls.geometryN( 0 ) );
   QCOMPARE( ls->pointN( 0 ), QgsPoint( 1, 10, 2 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( 2, 11, 3 ) );
 
@@ -283,7 +283,7 @@ void TestQgsMultiLineString::addGeometryM()
   QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringM );
   QVERIFY( mls.isMeasure() );
 
-  const QgsLineString *ls = static_cast<const QgsLineString *>( mls.geometryN( 0 ) );
+  auto ls = static_cast<const QgsLineString *>( mls.geometryN( 0 ) );
   QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointM, 6, 61, 0, 5 ) );
 
@@ -320,7 +320,7 @@ void TestQgsMultiLineString::addGeometryZM()
   QVERIFY( mls.isMeasure() );
   QVERIFY( mls.is3D() );
 
-  const QgsLineString *ls = static_cast<const QgsLineString *>( mls.geometryN( 0 ) );
+  auto ls = static_cast<const QgsLineString *>( mls.geometryN( 0 ) );
   QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) );
 
@@ -548,7 +548,7 @@ void TestQgsMultiLineString::boundary()
   mls.addGeometry( part.clone() );
 
   QgsAbstractGeometry *boundary = mls.boundary();
-  QgsMultiPoint *mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
+  auto mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
 
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 2 );
@@ -611,7 +611,7 @@ void TestQgsMultiLineString::boundaryZ()
   mls.addGeometry( part.clone() );
 
   QgsAbstractGeometry *boundary = mls.boundary();
-  QgsMultiPoint *mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
+  auto mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
 
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 4 );
@@ -709,7 +709,7 @@ void TestQgsMultiLineString::toCurveType()
   QCOMPARE( curveType->wkbType(), Qgis::WkbType::MultiCurveZM );
   QCOMPARE( curveType->numGeometries(), 2 );
 
-  const QgsCompoundCurve *curve = static_cast<const QgsCompoundCurve *>( curveType->geometryN( 0 ) );
+  auto curve = static_cast<const QgsCompoundCurve *>( curveType->geometryN( 0 ) );
   QCOMPARE( curve->asWkt(), QStringLiteral( "CompoundCurve ZM ((5 50 1 4, 6 61 3 5))" ) );
 
   curve = static_cast<const QgsCompoundCurve *>( curveType->geometryN( 1 ) );

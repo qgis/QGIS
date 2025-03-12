@@ -106,7 +106,7 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
 
 std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const QgsGeometry &mapBoundary, QgsRenderContext &context )
 {
-  QgsLabelingEngineFeedback *feedback = qobject_cast< QgsLabelingEngineFeedback * >( context.feedback() );
+  auto feedback = qobject_cast<QgsLabelingEngineFeedback *>( context.feedback() );
   QgsLabelingEngineContext labelContext( context );
   labelContext.setExtent( extent );
   labelContext.setMapBoundaryGeometry( mapBoundary );
@@ -654,7 +654,7 @@ void Pal::registerCancellationCallback( Pal::FnIsCanceled fnCanceled, void *cont
 
 QList<LabelPosition *> Pal::solveProblem( Problem *prob, QgsRenderContext &context, bool displayAll, QList<LabelPosition *> *unlabeled )
 {
-  QgsLabelingEngineFeedback *feedback = qobject_cast< QgsLabelingEngineFeedback * >( context.feedback() );
+  auto feedback = qobject_cast<QgsLabelingEngineFeedback *>( context.feedback() );
 
   if ( !prob )
     return QList<LabelPosition *>();

@@ -197,7 +197,7 @@ void QgsProcessingFieldMapPanelWidget::addField()
 
 void QgsProcessingFieldMapPanelWidget::loadLayerFields()
 {
-  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerCombo->currentLayer() ) )
+  if ( auto vl = qobject_cast<QgsVectorLayer *>( mLayerCombo->currentLayer() ) )
   {
     mFieldsView->setSourceFields( vl->fields() );
     mFieldsView->setDestinationFields( vl->fields() );
@@ -220,7 +220,7 @@ QgsProcessingFieldMapParameterDefinitionWidget::QgsProcessingFieldMapParameterDe
   mParentLayerComboBox->addItem( tr( "None" ), QVariant() );
 
   QString initialParent;
-  if ( const QgsProcessingParameterFieldMapping *mapParam = dynamic_cast<const QgsProcessingParameterFieldMapping *>( definition ) )
+  if ( auto mapParam = dynamic_cast<const QgsProcessingParameterFieldMapping *>( definition ) )
     initialParent = mapParam->parentLayerParameterName();
 
   if ( auto *lModel = widgetContext.model() )
@@ -229,7 +229,7 @@ QgsProcessingFieldMapParameterDefinitionWidget::QgsProcessingFieldMapParameterDe
     const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast<const QgsProcessingParameterFeatureSource *>( lModel->parameterDefinition( it.value().parameterName() ) ) )
+      if ( auto definition = dynamic_cast<const QgsProcessingParameterFeatureSource *>( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox->addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )

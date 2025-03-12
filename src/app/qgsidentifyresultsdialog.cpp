@@ -1530,7 +1530,7 @@ void QgsIdentifyResultsDialog::show()
 
       if ( QgsSettings().value( QStringLiteral( "/Map/identifyAutoFeatureForm" ), false ).toBool() )
       {
-        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
+        auto layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
         if ( layer )
         {
           // if this is the only feature and it's on a vector layer
@@ -1588,7 +1588,7 @@ void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
 
 void QgsIdentifyResultsDialog::itemExpanded( QTreeWidgetItem *item )
 {
-  QgsIdentifyResultsRelationItem *relationItem = dynamic_cast<QgsIdentifyResultsRelationItem *>( item );
+  auto relationItem = dynamic_cast<QgsIdentifyResultsRelationItem *>( item );
   if ( relationItem && item->childCount() == 0 )
   {
     const QgsRelation &relation = relationItem->relation();
@@ -1668,7 +1668,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
 
   int idx = -1;
   // QTreeWidgetItem *featItem = featureItem( item );
-  QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
+  auto featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
   if ( featItem )
   {
     if ( vlayer )
@@ -1919,7 +1919,7 @@ void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLa
   if ( !featItem )
     return;
 
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( featItem->parent()->data( 0, Qt::UserRole ).value<QObject *>() );
+  auto layer = qobject_cast<QgsVectorLayer *>( featItem->parent()->data( 0, Qt::UserRole ).value<QObject *>() );
   if ( !layer )
     return;
 
@@ -1986,7 +1986,7 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
 
     for ( int i = 0; i < item->childCount(); i++ )
     {
-      QgsIdentifyResultsFeatureItem *fi = dynamic_cast<QgsIdentifyResultsFeatureItem *>( item->child( i ) );
+      auto fi = dynamic_cast<QgsIdentifyResultsFeatureItem *>( item->child( i ) );
       if ( fi )
       {
         count++;
@@ -2028,7 +2028,7 @@ QgsVectorLayer *QgsIdentifyResultsDialog::vectorLayer( QTreeWidgetItem *item )
   QTreeWidgetItem *i = item;
   while ( i )
   {
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( i->data( 0, Qt::UserRole ).value<QObject *>() ) )
+    if ( auto vl = qobject_cast<QgsVectorLayer *>( i->data( 0, Qt::UserRole ).value<QObject *>() ) )
     {
       return vl;
     }
@@ -2115,7 +2115,7 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
 
   mActionPrint->setEnabled( false );
 
-  QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( current ) );
+  auto featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( current ) );
   mActionCopy->setEnabled( featItem && featItem->feature().isValid() );
   mOpenFormAction->setEnabled( featItem && featItem->feature().isValid() );
 
@@ -2134,7 +2134,7 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
   // An item may be printed if a child is QgsIdentifyResultsWebViewItem
   for ( int i = 0; i < current->childCount(); i++ )
   {
-    QgsIdentifyResultsWebViewItem *wv = dynamic_cast<QgsIdentifyResultsWebViewItem *>( current->child( i ) );
+    auto wv = dynamic_cast<QgsIdentifyResultsWebViewItem *>( current->child( i ) );
     if ( wv )
     {
       mActionPrint->setEnabled( true );
@@ -2213,7 +2213,7 @@ void QgsIdentifyResultsDialog::disconnectLayer( QObject *layer )
   if ( !layer )
     return;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( vlayer )
   {
     disconnect( vlayer, &QgsVectorLayer::featureDeleted, this, &QgsIdentifyResultsDialog::featureDeleted );
@@ -2264,7 +2264,7 @@ void QgsIdentifyResultsDialog::featureDeleted( QgsFeatureId fid )
 
 void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &val )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( sender() );
   QTreeWidgetItem *layItem = layerItem( sender() );
 
   if ( !layItem )
@@ -2297,7 +2297,7 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
           const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vlayer, fld.name() );
           value = representValue( vlayer, setup, fld.name(), val );
 
-          QgsTreeWidgetItem *treeItem = static_cast<QgsTreeWidgetItem *>( item );
+          auto treeItem = static_cast<QgsTreeWidgetItem *>( item );
           treeItem->setSortData( 1, value );
           treeItem->setToolTip( 1, value );
 
@@ -2344,7 +2344,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
       return; // not supported
   }
 
-  QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
+  auto featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
   if ( !featItem )
     return;
 
@@ -2376,7 +2376,7 @@ void QgsIdentifyResultsDialog::zoomToFeature()
   QTreeWidgetItem *item = lstResults->currentItem();
   QgsMapLayer *layer = QgsIdentifyResultsDialog::layer( item );
 
-  QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
+  auto featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
   if ( !featItem )
     return;
 
@@ -2405,7 +2405,7 @@ void QgsIdentifyResultsDialog::identifyFeature()
   if ( !vlayer )
     return;
 
-  QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
+  auto featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
   if ( !featItem )
     return;
 
@@ -2677,7 +2677,7 @@ void QgsIdentifyResultsDialog::mActionCopy_triggered( bool checked )
 
 void QgsIdentifyResultsDialog::copyFeature()
 {
-  QgsIdentifyResultsFeatureItem *item = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( lstResults->selectedItems().value( 0 ) ) );
+  auto item = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( lstResults->selectedItems().value( 0 ) ) );
 
   if ( !item ) // should not happen
   {
@@ -2693,7 +2693,7 @@ void QgsIdentifyResultsDialog::copyFeature()
 
 void QgsIdentifyResultsDialog::toggleFeatureSelection()
 {
-  QgsIdentifyResultsFeatureItem *item = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( lstResults->selectedItems().value( 0 ) ) );
+  auto item = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( lstResults->selectedItems().value( 0 ) ) );
 
   if ( !item ) // should not happen
   {
@@ -2701,7 +2701,7 @@ void QgsIdentifyResultsDialog::toggleFeatureSelection()
     return;
   }
 
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer( item ) );
+  auto vl = qobject_cast<QgsVectorLayer *>( layer( item ) );
   if ( !vl )
     return;
 
@@ -2722,7 +2722,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
 
   const Qgis::RasterIdentifyFormat format = combo->itemData( index, Qt::UserRole ).value<Qgis::RasterIdentifyFormat>();
   QgsDebugMsgLevel( QStringLiteral( "format = %1" ).arg( qgsEnumValueToKey( format ) ), 2 );
-  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( combo->itemData( index, Qt::UserRole + 1 ).value<QObject *>() );
+  auto layer = qobject_cast<QgsRasterLayer *>( combo->itemData( index, Qt::UserRole + 1 ).value<QObject *>() );
   if ( !layer )
   {
     QgsDebugError( QStringLiteral( "cannot get raster layer" ) );

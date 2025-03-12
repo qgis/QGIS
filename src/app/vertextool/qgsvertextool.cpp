@@ -64,7 +64,7 @@ uint qHash( const Vertex &v )
 static bool isEndpointAtVertexIndex( const QgsGeometry &geom, int vertexIndex )
 {
   const QgsAbstractGeometry *g = geom.constGet();
-  if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( g ) )
+  if ( auto curve = qgsgeometry_cast<const QgsCurve *>( g ) )
   {
     return vertexIndex == 0 || vertexIndex == curve->numPoints() - 1;
   }
@@ -93,7 +93,7 @@ static bool isEndpointAtVertexIndex( const QgsGeometry &geom, int vertexIndex )
 int adjacentVertexIndexToEndpoint( const QgsGeometry &geom, int vertexIndex )
 {
   const QgsAbstractGeometry *g = geom.constGet();
-  if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( g ) )
+  if ( auto curve = qgsgeometry_cast<const QgsCurve *>( g ) )
   {
     return vertexIndex == 0 ? 1 : curve->numPoints() - 2;
   }
@@ -839,7 +839,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
       const auto layers = canvas()->layers( true );
       for ( QgsMapLayer *layer : layers )
       {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vlayer )
           continue;
 
@@ -882,7 +882,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
     const auto layers = canvas()->layers( true );
     for ( QgsMapLayer *layer : layers )
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
         continue;
 
@@ -966,7 +966,7 @@ QgsPointLocator::Match QgsVertexTool::snapToPolygonInterior( QgsMapMouseEvent *e
     const auto layers = canvas()->layers( true );
     for ( QgsMapLayer *layer : layers )
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
         continue;
 
@@ -1035,7 +1035,7 @@ QSet<QPair<QgsVectorLayer *, QgsFeatureId>> QgsVertexTool::findAllEditableFeatur
     const auto layers = canvas()->layers( true );
     for ( QgsMapLayer *layer : layers )
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
         continue;
 
@@ -1436,7 +1436,7 @@ QgsGeometry QgsVertexTool::cachedGeometryForVertex( const Vertex &vertex )
 
 void QgsVertexTool::clearGeometryCache()
 {
-  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( sender() );
+  auto layer = qobject_cast<const QgsVectorLayer *>( sender() );
   mCache.remove( layer );
   disconnect( layer, &QgsVectorLayer::geometryChanged, this, &QgsVertexTool::onCachedGeometryChanged );
   disconnect( layer, &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::onCachedGeometryDeleted );
@@ -1446,7 +1446,7 @@ void QgsVertexTool::clearGeometryCache()
 
 void QgsVertexTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto layer = qobject_cast<QgsVectorLayer *>( sender() );
   Q_ASSERT( mCache.contains( layer ) );
   QHash<QgsFeatureId, QgsGeometry> &layerCache = mCache[layer];
   if ( layerCache.contains( fid ) )
@@ -1469,7 +1469,7 @@ void QgsVertexTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry
 
 void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto layer = qobject_cast<QgsVectorLayer *>( sender() );
   Q_ASSERT( mCache.contains( layer ) );
   QHash<QgsFeatureId, QgsGeometry> &layerCache = mCache[layer];
   if ( layerCache.contains( fid ) )
@@ -1699,7 +1699,7 @@ QList<QgsVectorLayer *> QgsVertexTool::editableVectorLayers()
   const auto layers = canvas()->layers( true );
   for ( QgsMapLayer *layer : layers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer && vlayer->isEditable() && vlayer->isSpatial() )
       editableLayers << vlayer;
   }
@@ -2215,7 +2215,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     {
       for ( QgsMapLayer *targetLayer : targetLayers )
       {
-        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( targetLayer );
+        auto vectorLayer = qobject_cast<QgsVectorLayer *>( targetLayer );
         QgsRectangle searchRect;
         QgsFeature f;
 
@@ -2855,7 +2855,7 @@ void QgsVertexTool::CircularBand::updateRubberBand( const QgsPointXY &mapPoint )
 
 void QgsVertexTool::validationErrorFound( const QgsGeometry::Error &e )
 {
-  QgsGeometryValidator *validator = qobject_cast<QgsGeometryValidator *>( sender() );
+  auto validator = qobject_cast<QgsGeometryValidator *>( sender() );
   if ( !validator )
     return;
 
@@ -2873,7 +2873,7 @@ void QgsVertexTool::validationErrorFound( const QgsGeometry::Error &e )
 
 void QgsVertexTool::validationFinished()
 {
-  QgsGeometryValidator *validator = qobject_cast<QgsGeometryValidator *>( sender() );
+  auto validator = qobject_cast<QgsGeometryValidator *>( sender() );
   if ( !validator )
     return;
 

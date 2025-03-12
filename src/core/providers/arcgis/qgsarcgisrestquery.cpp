@@ -622,7 +622,7 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
 
 void QgsArcGisAsyncParallelQuery::handleReply()
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( QObject::sender() );
+  auto reply = qobject_cast<QNetworkReply *>( QObject::sender() );
   const QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
   const int idx = reply->property( "idx" ).toInt();
   reply->deleteLater();

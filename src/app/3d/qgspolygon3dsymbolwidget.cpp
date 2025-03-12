@@ -65,7 +65,7 @@ Qgs3DSymbolWidget *QgsPolygon3DSymbolWidget::create( QgsVectorLayer * )
 
 void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer )
 {
-  const QgsPolygon3DSymbol *polygonSymbol = dynamic_cast<const QgsPolygon3DSymbol *>( symbol );
+  auto polygonSymbol = dynamic_cast<const QgsPolygon3DSymbol *>( symbol );
   if ( !polygonSymbol )
     return;
 

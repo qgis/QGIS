@@ -466,7 +466,7 @@ void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
   uri.setDatabase( filename );
 
   QString geomColumn;
-  if ( const QgsProcessingParameterFeatureSink *sink = dynamic_cast<const QgsProcessingParameterFeatureSink *>( mParameter ) )
+  if ( auto sink = dynamic_cast<const QgsProcessingParameterFeatureSink *>( mParameter ) )
   {
     if ( sink->hasGeometry() )
       geomColumn = QStringLiteral( "geom" );
@@ -494,7 +494,7 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
       mUseRemapping = false;
 
       QString geomColumn;
-      if ( const QgsProcessingParameterFeatureSink *sink = dynamic_cast<const QgsProcessingParameterFeatureSink *>( mParameter ) )
+      if ( auto sink = dynamic_cast<const QgsProcessingParameterFeatureSink *>( mParameter ) )
       {
         if ( sink->hasGeometry() )
           geomColumn = widget->dataProviderKey() == QLatin1String( "oracle" ) ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" );

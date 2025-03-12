@@ -55,7 +55,7 @@ bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout )
   }
 
   // ugly, but unavoidable for interfaces...
-  if ( QgsPrintLayout *l = dynamic_cast< QgsPrintLayout * >( layout ) )
+  if ( auto l = dynamic_cast<QgsPrintLayout *>( layout ) )
   {
     connect( l, &QgsPrintLayout::nameChanged, this, [this, l]( const QString & newName )
     {
@@ -455,7 +455,7 @@ QgsMasterLayoutInterface *QgsLayoutManagerModel::layoutFromIndex( const QModelIn
   if ( index.row() == 0 && mAllowEmpty )
     return nullptr;
 
-  if ( QgsPrintLayout *l = qobject_cast< QgsPrintLayout * >( qvariant_cast<QObject *>( data( index, static_cast< int >( CustomRole::Layout ) ) ) ) )
+  if ( auto l = qobject_cast<QgsPrintLayout *>( qvariant_cast<QObject *>( data( index, static_cast< int >( CustomRole::Layout ) ) ) ) )
     return l;
   else if ( QgsReport *r = qobject_cast< QgsReport * >( qvariant_cast<QObject *>( data( index, static_cast< int >( CustomRole::Layout ) ) ) ) )
     return r;
@@ -559,7 +559,7 @@ bool QgsLayoutManagerProxyModel::lessThan( const QModelIndex &left, const QModel
 
 bool QgsLayoutManagerProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  QgsLayoutManagerModel *model = qobject_cast< QgsLayoutManagerModel * >( sourceModel() );
+  auto model = qobject_cast<QgsLayoutManagerModel *>( sourceModel() );
   if ( !model )
     return false;
 

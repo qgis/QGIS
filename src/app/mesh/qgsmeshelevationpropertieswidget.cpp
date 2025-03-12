@@ -112,7 +112,7 @@ void QgsMeshElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     return;
 
   mBlockUpdates = true;
-  const QgsMeshLayerElevationProperties *props = qgis::down_cast<const QgsMeshLayerElevationProperties *>( mLayer->elevationProperties() );
+  auto props = qgis::down_cast<const QgsMeshLayerElevationProperties *>( mLayer->elevationProperties() );
 
   mModeComboBox->setCurrentIndex( mModeComboBox->findData( QVariant::fromValue( props->mode() ) ) );
   switch ( props->mode() )
@@ -173,7 +173,7 @@ void QgsMeshElevationPropertiesWidget::apply()
   if ( !mLayer )
     return;
 
-  QgsMeshLayerElevationProperties *props = qgis::down_cast<QgsMeshLayerElevationProperties *>( mLayer->elevationProperties() );
+  auto props = qgis::down_cast<QgsMeshLayerElevationProperties *>( mLayer->elevationProperties() );
   props->setMode( mModeComboBox->currentData().value<Qgis::MeshElevationMode>() );
 
   props->setZOffset( mOffsetZSpinBox->value() );
@@ -546,7 +546,7 @@ QWidget *QgsMeshFixedElevationRangeDelegate::createEditor( QWidget *parent, cons
 
 void QgsMeshFixedElevationRangeDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  if ( QgsDoubleSpinBox *spin = qobject_cast<QgsDoubleSpinBox *>( editor ) )
+  if ( auto spin = qobject_cast<QgsDoubleSpinBox *>( editor ) )
   {
     model->setData( index, spin->value() );
   }

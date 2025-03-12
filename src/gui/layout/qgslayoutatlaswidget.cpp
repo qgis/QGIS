@@ -97,7 +97,7 @@ void QgsLayoutAtlasWidget::changeCoverageLayer( QgsMapLayer *layer )
   if ( !mLayout )
     return;
 
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+  auto vl = qobject_cast<QgsVectorLayer *>( layer );
 
   const QString prevPageNameExpression = mAtlas->pageNameExpression();
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Layer" ) );
@@ -237,7 +237,7 @@ void QgsLayoutAtlasWidget::changesSortFeatureExpression( const QString &expressi
 
   mBlockUpdates = true;
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Sort" ) );
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mAtlasCoverageLayerComboBox->currentLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mAtlasCoverageLayerComboBox->currentLayer() );
   mAtlas->setSortExpression( QgsExpression::quoteFieldExpression( expression, vlayer ) );
   mLayout->undoStack()->endCommand();
   mBlockUpdates = false;
@@ -321,7 +321,7 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterButton_clicked()
   if ( !mLayout )
     return;
 
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mAtlasCoverageLayerComboBox->currentLayer() );
+  auto vl = qobject_cast<QgsVectorLayer *>( mAtlasCoverageLayerComboBox->currentLayer() );
 
   if ( !vl )
   {

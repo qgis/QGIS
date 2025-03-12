@@ -445,7 +445,7 @@ void TestQgis::testQgsEnumValueToKey()
 {
   bool ok = false;
   QgsMapLayerModel::CustomRole value = QgsMapLayerModel::CustomRole::Layer;
-  QgsMapLayerModel::CustomRole badValue = static_cast<QgsMapLayerModel::CustomRole>( -1 );
+  auto badValue = static_cast<QgsMapLayerModel::CustomRole>( -1 );
   QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::CustomRole>();
   QVERIFY( !metaEnum.valueToKey( static_cast<int>( badValue ) ) );
   QCOMPARE( qgsEnumValueToKey( value, &ok ), QStringLiteral( "Layer" ) );

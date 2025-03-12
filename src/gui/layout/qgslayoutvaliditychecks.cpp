@@ -50,7 +50,7 @@ bool QgsLayoutScaleBarValidityCheck::prepareCheck( const QgsValidityCheckContext
   if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
     return false;
 
-  const QgsLayoutValidityCheckContext *layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
+  auto layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
   if ( !layoutContext )
     return false;
 
@@ -102,7 +102,7 @@ bool QgsLayoutNorthArrowValidityCheck::prepareCheck( const QgsValidityCheckConte
   if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
     return false;
 
-  const QgsLayoutValidityCheckContext *layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
+  auto layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
   if ( !layoutContext )
     return false;
 
@@ -159,7 +159,7 @@ bool QgsLayoutOverviewValidityCheck::prepareCheck( const QgsValidityCheckContext
   if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
     return false;
 
-  const QgsLayoutValidityCheckContext *layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
+  auto layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
   if ( !layoutContext )
     return false;
 
@@ -215,7 +215,7 @@ bool QgsLayoutPictureSourceValidityCheck::prepareCheck( const QgsValidityCheckCo
   if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
     return false;
 
-  const QgsLayoutValidityCheckContext *layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
+  auto layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
   if ( !layoutContext )
     return false;
 
@@ -271,7 +271,7 @@ bool QgsLayoutHtmlItemValidityCheck::prepareCheck( const QgsValidityCheckContext
   if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
     return false;
 
-  const QgsLayoutValidityCheckContext *layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
+  auto layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
   if ( !layoutContext )
     return false;
 

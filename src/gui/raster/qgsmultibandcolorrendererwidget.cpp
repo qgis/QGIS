@@ -319,7 +319,7 @@ void QgsMultiBandColorRendererWidget::setMinMaxValue( const QgsContrastEnhanceme
 
 void QgsMultiBandColorRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
 {
-  const QgsMultiBandColorRenderer *mbcr = dynamic_cast<const QgsMultiBandColorRenderer *>( r );
+  auto mbcr = dynamic_cast<const QgsMultiBandColorRenderer *>( r );
   if ( mbcr )
   {
     mRedBandComboBox->setBand( mbcr->redBand() );

@@ -64,7 +64,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   QgsSettings settings;
   mMaxTotalResults = settings.value( QStringLiteral( "locator_filters/active_layer_features/limit_global" ), 30, QgsSettings::App ).toInt();
 
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  auto layer = qobject_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
   if ( !layer )
     return QStringList();
 

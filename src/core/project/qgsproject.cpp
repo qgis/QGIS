@@ -524,7 +524,7 @@ void QgsProject::setFlags( Qgis::ProjectFlags flags )
     const QMap<QString, QgsMapLayer *> layers = mapLayers();
     for ( auto layerIt = layers.constBegin(); layerIt != layers.constEnd(); ++layerIt )
     {
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( layerIt.value() ) )
         if ( vl->dataProvider() )
           vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, newEvaluateDefaultValues );
     }
@@ -537,7 +537,7 @@ void QgsProject::setFlags( Qgis::ProjectFlags flags )
     const QMap<QString, QgsMapLayer *> layers = mapLayers();
     for ( auto layerIt = layers.constBegin(); layerIt != layers.constEnd(); ++layerIt )
     {
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( layerIt.value() ) )
       {
         vl->setReadExtentFromXml( newTrustLayerMetadata );
       }
@@ -641,7 +641,7 @@ void QgsProject::registerTranslatableContainers( QgsTranslationContext *translat
   {
     if ( element->type() == Qgis::AttributeEditorType::Container )
     {
-      QgsAttributeEditorContainer *container = dynamic_cast<QgsAttributeEditorContainer *>( element );
+      auto container = dynamic_cast<QgsAttributeEditorContainer *>( element );
 
       translationContext->registerTranslation( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ), container->name() );
 
@@ -665,7 +665,7 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
     QgsMapLayer *mapLayer = layer->layer();
     if ( mapLayer && mapLayer->type() == Qgis::LayerType::Vector )
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
       //register aliases and widget settings
       const QgsFields fields = vlayer->fields();
@@ -679,11 +679,11 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
 
         translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), fieldName );
 
-        if ( field.editorWidgetSetup().type() == QStringLiteral( "ValueRelation" ) )
+        if ( field.editorWidgetSetup().type() == QLatin1String( "ValueRelation" ) )
         {
           translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString() );
         }
-        if ( field.editorWidgetSetup().type() == QStringLiteral( "ValueMap" ) )
+        if ( field.editorWidgetSetup().type() == QLatin1String( "ValueMap" ) )
         {
           if ( field.editorWidgetSetup().config().value( QStringLiteral( "map" ) ).canConvert<QList<QVariant>>() )
           {
@@ -1895,7 +1895,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem,
   const bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags, provider ) && mapLayer->isValid();
 
   // apply specific settings to vector layer
-  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+  if ( auto vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
   {
     vl->setReadExtentFromXml( layerFlags & QgsMapLayer::FlagReadExtentFromXml );
     if ( vl->dataProvider() )
@@ -1916,7 +1916,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem,
     // virtual layers that point to this layer's joined field in their query otherwise they won't be valid ),
     // a second attempt to resolve references will be done after all layers are loaded
     // see https://github.com/qgis/QGIS/issues/46834
-    if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+    if ( auto vLayer = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
     {
       vLayer->joinBuffer()->resolveReferences( this );
     }
@@ -2690,7 +2690,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   {
     if ( it.value()->isValid() && it.value()->customProperty( QStringLiteral( "_layer_was_editable" ) ).toBool() )
     {
-      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( it.value() ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
         vl->startEditing();
       it.value()->removeCustomProperty( QStringLiteral( "_layer_was_editable" ) );
     }
@@ -2824,7 +2824,7 @@ QList<QgsVectorLayer *> QgsProject::avoidIntersectionsLayers() const
   const auto constLayerIds = layerIds;
   for ( const QString &layerId : constLayerIds )
   {
-    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer( layerId ) ) )
+    if ( auto vlayer = qobject_cast<QgsVectorLayer *>( mapLayer( layerId ) ) )
       layers << vlayer;
   }
   return layers;
@@ -2972,7 +2972,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
     if ( ! layer->isValid() )
       return;
 
-    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
+    if ( auto vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       vlayer->setReadExtentFromXml( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics );
       if ( vlayer->dataProvider() )
@@ -3009,7 +3009,7 @@ void QgsProject::onMapLayersRemoved( const QList<QgsMapLayer *> &layers )
 
   for ( QgsMapLayer *layer : layers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( ! vlayer )
       continue;
 
@@ -3068,7 +3068,7 @@ void QgsProject::updateTransactionGroups()
     if ( ! layer->isValid() )
       continue;
 
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( ! vlayer )
       continue;
 
@@ -3818,7 +3818,7 @@ QStringList QgsProject::entryList( const QString &scope, const QString &key ) co
 
   if ( foundProperty )
   {
-    QgsProjectPropertyKey *propertyKey = dynamic_cast<QgsProjectPropertyKey *>( foundProperty );
+    auto propertyKey = dynamic_cast<QgsProjectPropertyKey *>( foundProperty );
 
     if ( propertyKey )
     { propertyKey->entryList( entries ); }
@@ -3837,7 +3837,7 @@ QStringList QgsProject::subkeyList( const QString &scope, const QString &key ) c
 
   if ( foundProperty )
   {
-    QgsProjectPropertyKey *propertyKey = dynamic_cast<QgsProjectPropertyKey *>( foundProperty );
+    auto propertyKey = dynamic_cast<QgsProjectPropertyKey *>( foundProperty );
 
     if ( propertyKey )
     { propertyKey->subkeyList( entries ); }
@@ -4776,7 +4776,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
       if ( mlayer->type() != Qgis::LayerType::Vector )
         continue;
 
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mlayer );
+      auto vl = qobject_cast<QgsVectorLayer *>( mlayer );
       if ( vl )
       {
         vl->loadAuxiliaryLayer( *mAuxiliaryStorage );
@@ -4808,7 +4808,7 @@ void QgsProject::removeAuxiliaryLayer( const QgsMapLayer *ml )
   if ( ! ml || ml->type() != Qgis::LayerType::Vector )
     return;
 
-  const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( ml );
+  auto vl = qobject_cast<const QgsVectorLayer *>( ml );
   if ( vl && vl->auxiliaryLayer() )
   {
     const QgsDataSourceUri uri( vl->auxiliaryLayer()->source() );
@@ -4971,7 +4971,7 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
     if ( it.value()->type() != Qgis::LayerType::Vector )
       continue;
 
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
+    auto vl = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( vl && vl->auxiliaryLayer() )
     {
       vl->auxiliaryLayer()->save();

@@ -199,7 +199,7 @@ bool QgsZipUtils::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
 
 bool QgsZipUtils::decodeGzip( const char *bytesIn, std::size_t size, QByteArray &bytesOut )
 {
-  unsigned char *bytesInPtr = reinterpret_cast<unsigned char *>( const_cast<char *>( bytesIn ) );
+  auto bytesInPtr = reinterpret_cast<unsigned char *>( const_cast<char *>( bytesIn ) );
   uint bytesInLeft = static_cast<uint>( size );
 
   const uint CHUNK = 16384;
@@ -257,7 +257,7 @@ bool QgsZipUtils::decodeGzip( const char *bytesIn, std::size_t size, QByteArray 
 
 bool QgsZipUtils::encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
 {
-  unsigned char *bytesInPtr = reinterpret_cast<unsigned char *>( const_cast<char *>( bytesIn.constData() ) );
+  auto bytesInPtr = reinterpret_cast<unsigned char *>( const_cast<char *>( bytesIn.constData() ) );
   const uint bytesInLeft = static_cast<uint>( bytesIn.count() );
 
   const uint CHUNK = 16384;

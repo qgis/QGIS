@@ -124,7 +124,7 @@ QList<QgsMapToolCapture *> QgsAppMapTools::captureTools() const
   QList<QgsMapToolCapture *> res;
   for ( auto it = mTools.constBegin(); it != mTools.constEnd(); ++it )
   {
-    if ( QgsMapToolCapture *captureTool = qobject_cast<QgsMapToolCapture *>( it.value() ) )
+    if ( auto captureTool = qobject_cast<QgsMapToolCapture *>( it.value() ) )
       res << captureTool;
   }
   return res;

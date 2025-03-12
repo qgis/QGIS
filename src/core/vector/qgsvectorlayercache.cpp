@@ -328,7 +328,7 @@ void QgsVectorLayerCache::onAttributeValueChanged( QgsFeatureId fid, int field, 
 
 void QgsVectorLayerCache::onJoinAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value )
 {
-  const QgsVectorLayer *joinLayer = qobject_cast<const QgsVectorLayer *>( sender() );
+  auto joinLayer = qobject_cast<const QgsVectorLayer *>( sender() );
 
   const auto constVectorJoins = mLayer->vectorJoins();
   for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )

@@ -53,7 +53,7 @@ class QgsMapRendererTaskGeospatialPdfExporter : public QgsAbstractGeospatialPdfE
         VectorComponentDetail detail;
         detail.name = layer->name();
         detail.mapLayerId = layer->id();
-        if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+        if ( auto vl = qobject_cast<const QgsVectorLayer *>( layer ) )
         {
           detail.displayAttribute = vl->displayField();
         }
@@ -183,7 +183,7 @@ bool QgsMapRendererTask::run()
   {
     QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > pdfComponents;
 
-    QgsMapRendererStagedRenderJob *job = static_cast< QgsMapRendererStagedRenderJob * >( mJob.get() );
+    auto job = static_cast<QgsMapRendererStagedRenderJob *>( mJob.get() );
     int outputLayer = 1;
     while ( !job->isFinished() )
     {

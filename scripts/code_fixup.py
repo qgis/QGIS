@@ -39,6 +39,20 @@
 import re
 import sys
 
+
+def should_update_type_to_auto(type_name: str) -> bool:
+    """
+    Returns True if variables of the specified type should be updated
+    to use auto
+    """
+    # only pointer or complex types allows
+    if "*" not in type_name and "::" not in type_name:
+        return False
+
+    # only update long types for now
+    return len(type_name) > 12
+
+
 lines = [l[0:-1] if l[-1] == "\n" else l for l in open(sys.argv[1]).readlines()]
 
 # Double quoted strings that only include ASCII characters
@@ -102,6 +116,12 @@ make_unique_shared2 = re.compile(
 )
 make_unique3 = re.compile(
     r"""^(\s*)std::unique_ptr<\s*(.*?)\s*>(?:\s*(.*?)\s*\()\s*new\s*(.*?)\s*(\(.*\s*\))\s*\)\s*;"""
+)
+cast = re.compile(
+    r"""^(\s*)([a-zA-Z0-9_: *]+?)\s*([a-zA-Z0-9_]+)\s*=\s*(dynamic_cast|reinterpret_cast|static_cast|const_cast|qobject_cast|qgsgeometry_cast|qgis::down_cast)\s*<\s*([a-zA-Z0-9_: *]+?)\s*>\s*\(\s*(.*?)\s*\)\s*;$"""
+)
+cast_if = re.compile(
+    r"""^(\s*)if\s*\(\s*([a-zA-Z0-9_: *]+?)\s*([a-zA-Z0-9_]+)\s*=\s*(dynamic_cast|reinterpret_cast|static_cast|const_cast|qobject_cast|qgsgeometry_cast|qgis::down_cast)\s*<\s*([a-zA-Z0-9_: *]+?)\s*>\s*\(\s*(.*?)\s*\)\s*\)$"""
 )
 
 
@@ -257,5 +277,35 @@ while i < len(lines):
             + ";"
         )
 
+    m = cast.match(line)
+    # only upgrade pointer or complex type to auto, not basic types like "int"
+    if m and m.group(2) == m.group(5) and should_update_type_to_auto(m.group(2)):
+        line = (
+            m.group(1)
+            + "auto "
+            + m.group(3)
+            + " = "
+            + m.group(4)
+            + "<"
+            + m.group(5)
+            + ">( "
+            + m.group(6)
+            + " );"
+        )
+
+    m = cast_if.match(line)
+    if m and m.group(2) == m.group(5) and should_update_type_to_auto(m.group(2)):
+        line = (
+            m.group(1)
+            + "if ( auto "
+            + m.group(3)
+            + " = "
+            + m.group(4)
+            + "<"
+            + m.group(5)
+            + ">( "
+            + m.group(6)
+            + " ) )"
+        )
     print(line)
     i += 1

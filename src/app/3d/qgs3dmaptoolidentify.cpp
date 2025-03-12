@@ -77,7 +77,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   for ( auto it = allHits.constKeyValueBegin(); it != allHits.constKeyValueEnd(); ++it )
   {
     //  We can directly show vector layer results
-    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( it->first ) )
+    if ( auto vlayer = qobject_cast<QgsVectorLayer *>( it->first ) )
     {
       const QgsRayCastingUtils::RayHit hit = it->second.first();
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->mapSettings()->origin() );

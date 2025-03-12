@@ -132,7 +132,7 @@ QgsFilterVerticesByM *QgsFilterVerticesByM::createInstance() const
 
 bool QgsFilterVerticesByM::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
+  auto layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
@@ -181,7 +181,7 @@ QgsFilterVerticesByZ *QgsFilterVerticesByZ::createInstance() const
 
 bool QgsFilterVerticesByZ::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
+  auto layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 

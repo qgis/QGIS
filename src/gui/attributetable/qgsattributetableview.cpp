@@ -494,7 +494,7 @@ void QgsAttributeTableView::actionTriggered()
   else if ( action->data().toString() == QLatin1String( "map_layer_action" ) )
   {
     QObject *object = action->property( "action" ).value<QObject *>();
-    QgsMapLayerAction *layerAction = qobject_cast<QgsMapLayerAction *>( object );
+    auto layerAction = qobject_cast<QgsMapLayerAction *>( object );
     if ( layerAction )
     {
       QgsMapLayerActionContext context;

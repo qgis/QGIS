@@ -1073,7 +1073,7 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
     return nullptr;
   }
 
-  if ( const QgsPalettedRasterRenderer *palettedRenderer = dynamic_cast<const QgsPalettedRasterRenderer *>( renderer ) )
+  if ( auto palettedRenderer = dynamic_cast<const QgsPalettedRasterRenderer *>( renderer ) )
   {
     QgsRasterAttributeTable *rat = new QgsRasterAttributeTable();
     rat->appendField( QStringLiteral( "Value" ), Qgis::RasterAttributeTableFieldUsage::MinMax, QMetaType::Type::Double );
@@ -1101,7 +1101,7 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
   {
     if ( const QgsRasterShader *shader = pseudoColorRenderer->shader() )
     {
-      if ( const QgsColorRampShader *shaderFunction = dynamic_cast<const QgsColorRampShader *>( shader->rasterShaderFunction() ) )
+      if ( auto shaderFunction = dynamic_cast<const QgsColorRampShader *>( shader->rasterShaderFunction() ) )
       {
         QgsRasterAttributeTable *rat = new QgsRasterAttributeTable();
         switch ( shaderFunction->colorRampType() )
@@ -1551,7 +1551,7 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
       pseudoColorRenderer->shader()->setMaximumValue( maximumValue() );
       pseudoColorRenderer->shader()->setMinimumValue( minimumValue() );
       // Set labels
-      if ( QgsColorRampShader *shaderFunction = static_cast<QgsColorRampShader *>( pseudoColorRenderer->shader()->rasterShaderFunction() ) )
+      if ( auto shaderFunction = static_cast<QgsColorRampShader *>( pseudoColorRenderer->shader()->rasterShaderFunction() ) )
       {
         shaderFunction->setMinimumValue( minimumValue() );
         shaderFunction->setMaximumValue( maximumValue() );

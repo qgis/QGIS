@@ -38,7 +38,7 @@ QgsModelDesignerFlatButtonGraphicItem::QgsModelDesignerFlatButtonGraphicItem( QG
 
 void QgsModelDesignerFlatButtonGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
-  if ( QgsModelGraphicsScene *modelScene = qobject_cast<QgsModelGraphicsScene *>( scene() ) )
+  if ( auto modelScene = qobject_cast<QgsModelGraphicsScene *>( scene() ) )
   {
     if ( modelScene->flags() & QgsModelGraphicsScene::FlagHideControls )
       return;

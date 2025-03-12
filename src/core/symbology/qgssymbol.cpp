@@ -201,7 +201,7 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
 
     const QgsLineString *lineString = nullptr;
     std::unique_ptr< QgsLineString > segmentized;
-    if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( &curve ) )
+    if ( auto ls = qgsgeometry_cast<const QgsLineString *>( &curve ) )
     {
       lineString = ls;
     }
@@ -216,7 +216,7 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
   else
   {
     // clone...
-    if ( const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( &curve ) )
+    if ( auto ls = qgsgeometry_cast<const QgsLineString *>( &curve ) )
     {
       pointsX = ls->xVector();
       pointsY = ls->yVector();
@@ -434,7 +434,7 @@ QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurv
 
     const QgsLineString *lineString = nullptr;
     std::unique_ptr< QgsLineString > segmentized;
-    if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( &curve ) )
+    if ( auto ls = qgsgeometry_cast<const QgsLineString *>( &curve ) )
     {
       lineString = ls;
     }
@@ -453,7 +453,7 @@ QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurv
   else
   {
     // clone...
-    if ( const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( &curve ) )
+    if ( auto ls = qgsgeometry_cast<const QgsLineString *>( &curve ) )
     {
       pointsX = ls->xVector();
       pointsY = ls->yVector();
@@ -1152,7 +1152,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     {
       // line symbol layer would normally draw just a line
       // so we override this case to force it to draw a polygon stroke
-      QgsLineSymbolLayer *lsl = dynamic_cast<QgsLineSymbolLayer *>( layer );
+      auto lsl = dynamic_cast<QgsLineSymbolLayer *>( layer );
       if ( lsl )
       {
         // from QgsFillSymbolLayer::drawPreviewIcon() -- would be nicer to add the
@@ -1402,7 +1402,7 @@ void QgsSymbol::renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext 
   if ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( QgsSymbolLayer::Property::LayerEnabled, context.renderContext().expressionContext(), true ) )
     return;
 
-  QgsGeometryGeneratorSymbolLayer *generatorLayer = static_cast<QgsGeometryGeneratorSymbolLayer *>( layer );
+  auto generatorLayer = static_cast<QgsGeometryGeneratorSymbolLayer *>( layer );
 
   QgsPaintEffect *effect = generatorLayer->paintEffect();
   if ( effect && effect->enabled() )
@@ -1766,7 +1766,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
       case Qgis::WkbType::MultiPoint:
       {
-        const QgsMultiPoint *mp = qgsgeometry_cast< const QgsMultiPoint * >( processedGeometry );
+        auto mp = qgsgeometry_cast<const QgsMultiPoint *>( processedGeometry );
         markers.reserve( mp->numGeometries() );
       }
       [[fallthrough]];
@@ -1774,7 +1774,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case Qgis::WkbType::MultiLineString:
       case Qgis::WkbType::GeometryCollection:
       {
-        const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( processedGeometry );
+        auto geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( processedGeometry );
 
         const unsigned int num = geomCollection->numGeometries();
         for ( unsigned int i = 0; i < num; ++i )
@@ -1798,7 +1798,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
         QPolygonF pts;
 
-        const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( processedGeometry );
+        auto geomCollection = dynamic_cast<const QgsGeometryCollection *>( processedGeometry );
         const unsigned int num = geomCollection->numGeometries();
 
         // Sort components by approximate area (probably a bit faster than using
@@ -1829,7 +1829,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case Qgis::WkbType::PolyhedralSurface:
       case Qgis::WkbType::TIN:
       {
-        const QgsPolyhedralSurface *polySurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( processedGeometry );
+        auto polySurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( processedGeometry );
 
         const int num = polySurface->numPatches();
         for ( int i = 0; i < num; ++i )

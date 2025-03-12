@@ -129,7 +129,7 @@ QModelIndex QgsHistoryEntryModel::index( int row, int column, const QModelIndex 
   if ( column < 0 || column >= columnCount( parent ) || row < 0 || row >= rowCount( parent ) )
     return QModelIndex();
 
-  QgsHistoryEntryGroup *n = dynamic_cast<QgsHistoryEntryGroup *>( index2node( parent ) );
+  auto n = dynamic_cast<QgsHistoryEntryGroup *>( index2node( parent ) );
   if ( !n )
     return QModelIndex(); // have no children
 
@@ -355,7 +355,7 @@ QgsHistoryEntryDateGroupNode *QgsHistoryEntryRootNode::dateNode( const QDateTime
     bool isInsert = false;
     for ( const auto &child : mChildren )
     {
-      if ( QgsHistoryEntryDateGroupNode *candidateNode = dynamic_cast<QgsHistoryEntryDateGroupNode *>( child.get() ) )
+      if ( auto candidateNode = dynamic_cast<QgsHistoryEntryDateGroupNode *>( child.get() ) )
       {
         if ( candidateNode->mKey > dateGroupKey )
         {

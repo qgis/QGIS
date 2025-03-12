@@ -62,7 +62,7 @@ void QgsTiledSceneTextureRendererWidget::setFromRenderer( const QgsTiledSceneRen
 {
   mBlockChangedSignal = true;
 
-  if ( const QgsTiledSceneTextureRenderer *textureRenderer = dynamic_cast<const QgsTiledSceneTextureRenderer *>( renderer ) )
+  if ( auto textureRenderer = dynamic_cast<const QgsTiledSceneTextureRenderer *>( renderer ) )
   {
     mFillSymbolButton->setSymbol( textureRenderer->fillSymbol()->clone() );
   }

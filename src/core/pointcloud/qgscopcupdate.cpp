@@ -161,7 +161,7 @@ bool QgsCopcUpdate::write( const QString &outputFilename, const QHash<QgsPointCl
 
   const long hierPositionShift = static_cast<long>( m_f.tellp() ) + 60 - static_cast<long>( mHierarchyOffset );
 
-  HierarchyEntry *oldCopcHierarchyBlobEntries = reinterpret_cast<HierarchyEntry *>( mHierarchyBlob.data() );
+  auto oldCopcHierarchyBlobEntries = reinterpret_cast<HierarchyEntry *>( mHierarchyBlob.data() );
   const int nEntries = static_cast<int>( mHierarchyBlob.size() / 32 );
   for ( int i = 0; i < nEntries; ++i )
   {

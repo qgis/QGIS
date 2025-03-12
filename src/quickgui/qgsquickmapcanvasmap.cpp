@@ -388,7 +388,7 @@ QSGNode *QgsQuickMapCanvasMap::updatePaintNode( QSGNode *oldNode, QQuickItem::Up
     return nullptr;
   }
 
-  QSGSimpleTextureNode *node = static_cast<QSGSimpleTextureNode *>( oldNode );
+  auto node = static_cast<QSGSimpleTextureNode *>( oldNode );
   if ( !node )
   {
     node = new QSGSimpleTextureNode();
@@ -526,7 +526,7 @@ void QgsQuickMapCanvasMap::clearTemporalCache()
     for ( QgsMapLayer *layer : layerList )
     {
       bool alreadyInvalidatedThisLayer = false;
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
       {
         if ( vl->renderer() && QgsSymbolLayerUtils::rendererFrameRate( vl->renderer() ) > -1 )
         {
@@ -541,7 +541,7 @@ void QgsQuickMapCanvasMap::clearTemporalCache()
 
       if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
       {
-        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+        if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
         {
           if ( vl->labelsEnabled() || vl->diagramsEnabled() )
             invalidateLabels = true;
@@ -588,7 +588,7 @@ void QgsQuickMapCanvasMap::clearElevationCache()
     {
       if ( layer->elevationProperties() && layer->elevationProperties()->hasElevation() )
       {
-        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+        if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
         {
           if ( vl->labelsEnabled() || vl->diagramsEnabled() )
             invalidateLabels = true;

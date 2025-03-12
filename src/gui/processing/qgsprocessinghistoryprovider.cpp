@@ -417,7 +417,7 @@ QgsHistoryEntryNode *QgsProcessingHistoryProvider::createNodeForEntry( const Qgs
 
 void QgsProcessingHistoryProvider::updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext & )
 {
-  if ( ProcessingHistoryRootNode *rootNode = dynamic_cast<ProcessingHistoryRootNode *>( node ) )
+  if ( auto rootNode = dynamic_cast<ProcessingHistoryRootNode *>( node ) )
   {
     rootNode->setEntry( entry );
   }

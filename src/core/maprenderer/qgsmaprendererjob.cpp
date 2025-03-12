@@ -251,7 +251,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( ml );
+        auto vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( vl->labelsEnabled() && vl->labeling()->requiresAdvancedEffects() )
         {
           canCache = false;
@@ -261,7 +261,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
 
       case Qgis::LayerType::Mesh:
       {
-        QgsMeshLayer *l = qobject_cast< QgsMeshLayer *>( ml );
+        auto l = qobject_cast<QgsMeshLayer *>( ml );
         if ( l->labelsEnabled() && l->labeling()->requiresAdvancedEffects() )
         {
           canCache = false;
@@ -271,7 +271,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
 
       case Qgis::LayerType::Raster:
       {
-        QgsRasterLayer *l = qobject_cast< QgsRasterLayer *>( ml );
+        auto l = qobject_cast<QgsRasterLayer *>( ml );
         if ( l->labelsEnabled() && l->labeling()->requiresAdvancedEffects() )
         {
           canCache = false;
@@ -548,7 +548,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       continue;
     }
 
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    auto vl = qobject_cast<QgsVectorLayer *>( ml );
 
     // Force render of layers that are being edited
     // or if there's a labeling engine that needs the layer to register features
@@ -593,7 +593,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     if ( ml->type() == Qgis::LayerType::Raster )
     {
       // raster layers are abnormal wrt opacity handling -- opacity is sometimes handled directly within the raster layer renderer
-      QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( ml );
+      auto rl = qobject_cast<QgsRasterLayer *>( ml );
       if ( rl->renderer()->flags() & Qgis::RasterRendererFlag::InternalLayerOpacityHandling )
       {
         job.opacity = 1.0;
@@ -738,7 +738,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // which don't have a corresponding render job
   for ( LayerRenderJob &job : firstPassJobs )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( job.layer );
+    auto vl = qobject_cast<QgsVectorLayer *>( job.layer );
     if ( ! vl )
       continue;
 
@@ -995,7 +995,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
 
     // FIXME: another possibility here, to avoid allocating a new map renderer and reuse the one from
     // the first pass job, would be to be able to call QgsMapLayerRenderer::render() with a QgsRenderContext.
-    QgsVectorLayerRenderer *mapRenderer = static_cast<QgsVectorLayerRenderer *>( ml->createMapRenderer( *job2.context() ) );
+    auto mapRenderer = static_cast<QgsVectorLayerRenderer *>( ml->createMapRenderer( *job2.context() ) );
     job2.renderer = mapRenderer;
     if ( job2.renderer )
     {
@@ -1041,7 +1041,7 @@ void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secon
       QPainter *maskPainter = p.first ? p.first->maskPainter.get() : labelJob.maskPainters[p.second].get();
 
       const QSet<QString> layers = job.context()->disabledSymbolLayersV2();
-      if ( QgsGeometryPaintDevice *geometryDevice = dynamic_cast<QgsGeometryPaintDevice *>( maskPainter->device() ) )
+      if ( auto geometryDevice = dynamic_cast<QgsGeometryPaintDevice *>( maskPainter->device() ) )
       {
         QgsGeometry geometry( geometryDevice->geometry().clone() );
 

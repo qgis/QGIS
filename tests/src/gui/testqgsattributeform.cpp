@@ -639,7 +639,7 @@ void TestQgsAttributeForm::testEditableJoin()
   form.setMode( QgsAttributeEditorContext::MultiEditMode );
 
   // multi edit button must be displayed for A
-  QgsAttributeFormEditorWidget *formWidget = qobject_cast<QgsAttributeFormEditorWidget *>( form.mFormWidgets[1] );
+  auto formWidget = qobject_cast<QgsAttributeFormEditorWidget *>( form.mFormWidgets[1] );
   QVERIFY( formWidget->mMultiEditButton->parent() );
 
   // multi edit button must be displayed for B (join is editable)
@@ -902,7 +902,7 @@ void TestQgsAttributeForm::testFixAttributeForm()
   form.setMode( QgsAttributeEditorContext::FixAttributeMode );
   form.setFeature( f );
 
-  QgsEditorWidgetWrapper *ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
+  auto ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
   QCOMPARE( ww->field().name(), QString( "col1" ) );
   QCOMPARE( ww->value(), QVariant( 681 ) );
 

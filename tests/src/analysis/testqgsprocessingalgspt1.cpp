@@ -358,7 +358,7 @@ void TestQgsProcessingAlgsPt1::exportLayersInformationAlg()
   QVERIFY( ok );
   QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( context.getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( context.getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
   QVERIFY( vlayer );
   QCOMPARE( vlayer->featureCount(), 1L );
   QCOMPARE( vlayer->crs().authid(), QStringLiteral( "EPSG:2056" ) );
@@ -1105,7 +1105,7 @@ void TestQgsProcessingAlgsPt1::categorizeByStyle()
   QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
   context->layerToLoadOnCompletionDetails( layer->id() ).postProcessor()->postProcessLayer( layer, *context, &feedback );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( layer->renderer() );
+  auto catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( layer->renderer() );
   QVERIFY( catRenderer );
 
   auto allValues = []( QgsVectorLayer *layer ) -> QStringList {
@@ -1118,9 +1118,9 @@ void TestQgsProcessingAlgsPt1::categorizeByStyle()
     }
     return all;
   };
-  QgsVectorLayer *nonMatchingCats = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "NON_MATCHING_CATEGORIES" ) ).toString() ) );
+  auto nonMatchingCats = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "NON_MATCHING_CATEGORIES" ) ).toString() ) );
   QCOMPARE( allValues( nonMatchingCats ), QStringList() << "b" << "c " );
-  QgsVectorLayer *nonMatchingSymbols = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "NON_MATCHING_SYMBOLS" ) ).toString() ) );
+  auto nonMatchingSymbols = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "NON_MATCHING_SYMBOLS" ) ).toString() ) );
   QCOMPARE( allValues( nonMatchingSymbols ), QStringList() << " ----c/- " << "B " );
 
   QCOMPARE( catRenderer->categories().count(), 3 );
@@ -1320,7 +1320,7 @@ void TestQgsProcessingAlgsPt1::flattenRelations()
   // one relation - should be ok!
   QVERIFY( ok );
 
-  QgsVectorLayer *outputLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  auto outputLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
   QVERIFY( outputLayer );
   QCOMPARE( outputLayer->fields().count(), 8 );
   QCOMPARE( outputLayer->fields().at( 0 ).name(), QStringLiteral( "Class" ) );

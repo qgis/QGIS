@@ -150,7 +150,7 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
     {
       if ( definition->isDestination() )
       {
-        const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter *>( definition );
+        auto destParam = static_cast<const QgsProcessingDestinationParameter *>( definition );
         const_cast< QgsProcessingDestinationParameter *>( destParam )->setSupportsNonFileBasedOutput( false );
       }
     }
@@ -410,7 +410,7 @@ bool QgsProcessingAlgorithm::addParameter( std::unique_ptr<QgsProcessingParamete
 
   if ( definition->isDestination() && mProvider )
   {
-    QgsProcessingDestinationParameter *destParam = static_cast< QgsProcessingDestinationParameter *>( definition.get() );
+    auto destParam = static_cast<QgsProcessingDestinationParameter *>( definition.get() );
     if ( !mProvider->supportsNonFileBasedOutput() )
       destParam->setSupportsNonFileBasedOutput( false );
   }
@@ -1057,7 +1057,7 @@ bool QgsProcessingAlgorithm::createAutoOutputForParameter( const QgsProcessingPa
   if ( !parameter->isDestination() )
     return true; // nothing created, but nothing went wrong - so return true
 
-  const QgsProcessingDestinationParameter *dest = static_cast< const QgsProcessingDestinationParameter * >( parameter );
+  auto dest = static_cast<const QgsProcessingDestinationParameter *>( parameter );
   QgsProcessingOutputDefinition *output( dest->toOutputDefinition() );
   if ( !output )
     return true; // nothing created - but nothing went wrong - so return true
@@ -1211,7 +1211,7 @@ QgsFeatureRequest QgsProcessingFeatureBasedAlgorithm::request() const
 
 bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  auto layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 

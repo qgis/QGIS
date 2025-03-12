@@ -223,7 +223,7 @@ void QgsMaskSourceSelectionWidget::update()
   for ( const QgsLayerTreeLayer *layerTreeLayer : layers )
   {
     QgsMapLayer *layer = layerTreeLayer->layer();
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    auto vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( !vl )
       continue;
     if ( !vl->renderer() )

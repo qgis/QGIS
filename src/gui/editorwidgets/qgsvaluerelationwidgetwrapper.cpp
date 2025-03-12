@@ -307,7 +307,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
 
 QWidget *QgsValueRelationWidgetWrapper::createWidget( QWidget *parent )
 {
-  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
+  auto form = qobject_cast<QgsAttributeForm *>( parent );
   if ( form )
     connect( form, &QgsAttributeForm::widgetValueChanged, this, &QgsValueRelationWidgetWrapper::widgetValueChanged );
 
@@ -353,7 +353,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   else if ( mLineEdit )
   {
-    if ( QgsFilterLineEdit *filterLineEdit = qobject_cast<QgsFilterLineEdit *>( editor ) )
+    if ( auto filterLineEdit = qobject_cast<QgsFilterLineEdit *>( editor ) )
     {
       connect( filterLineEdit, &QgsFilterLineEdit::valueChanged, this, [=]( const QString & ) {
         if ( mSubWidgetSignalBlocking == 0 )
@@ -571,7 +571,7 @@ void QgsValueRelationWidgetWrapper::populate()
     if ( !mCache.isEmpty() )
     {
       QVariant currentGroup;
-      QStandardItemModel *model = qobject_cast<QStandardItemModel *>( mComboBox->model() );
+      auto model = qobject_cast<QStandardItemModel *>( mComboBox->model() );
       const bool displayGroupName = config( QStringLiteral( "DisplayGroupName" ) ).toBool();
       for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : std::as_const( mCache ) )
       {

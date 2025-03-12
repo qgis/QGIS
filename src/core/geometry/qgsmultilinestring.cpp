@@ -106,7 +106,7 @@ QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const 
 
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
+    if ( auto lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
     {
       QDomElement elemLineStringMember = doc.createElementNS( ns, QStringLiteral( "lineStringMember" ) );
       elemLineStringMember.appendChild( lineString->asGml2( doc, precision, ns, axisOrder ) );
@@ -126,7 +126,7 @@ QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const 
 
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
+    if ( auto lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
     {
       QDomElement elemCurveMember = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
       elemCurveMember.appendChild( lineString->asGml3( doc, precision, ns, axisOrder ) );
@@ -144,7 +144,7 @@ json QgsMultiLineString::asJsonObject( int precision ) const
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
-      const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
+      auto lineString = static_cast<const QgsLineString *>( geom );
       QgsPointSequence pts;
       lineString->points( pts );
       coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision ) );

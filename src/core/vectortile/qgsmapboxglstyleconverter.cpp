@@ -226,11 +226,11 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
     rendererStyles.prepend( rendererBackgroundStyle );
 
   mRenderer = std::make_unique< QgsVectorTileBasicRenderer >();
-  QgsVectorTileBasicRenderer *renderer = dynamic_cast< QgsVectorTileBasicRenderer *>( mRenderer.get() );
+  auto renderer = dynamic_cast<QgsVectorTileBasicRenderer *>( mRenderer.get() );
   renderer->setStyles( rendererStyles );
 
   mLabeling = std::make_unique< QgsVectorTileBasicLabeling >();
-  QgsVectorTileBasicLabeling *labeling = dynamic_cast< QgsVectorTileBasicLabeling * >( mLabeling.get() );
+  auto labeling = dynamic_cast<QgsVectorTileBasicLabeling *>( mLabeling.get() );
   labeling->setStyles( labelingStyles );
 }
 
@@ -387,7 +387,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
     }
   }
 
-  QgsSimpleFillSymbolLayer *fillSymbol = dynamic_cast< QgsSimpleFillSymbolLayer * >( symbol->symbolLayer( 0 ) );
+  auto fillSymbol = dynamic_cast<QgsSimpleFillSymbolLayer *>( symbol->symbolLayer( 0 ) );
   Q_ASSERT( fillSymbol ); // should not fail since QgsFillSymbol() constructor instantiates a QgsSimpleFillSymbolLayer
 
   // set render units
@@ -824,7 +824,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   }
   else
   {
-    QgsSimpleLineSymbolLayer *lineSymbol = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) );
+    auto lineSymbol = dynamic_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) );
     Q_ASSERT( lineSymbol ); // should not fail since QgsLineSymbol() constructor instantiates a QgsSimpleLineSymbolLayer
 
     // set render units
@@ -1078,7 +1078,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
   }
 
   std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsMarkerSymbol >() );
-  QgsSimpleMarkerSymbolLayer *markerSymbolLayer = dynamic_cast< QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) );
+  auto markerSymbolLayer = dynamic_cast<QgsSimpleMarkerSymbolLayer *>( symbol->symbolLayer( 0 ) );
   Q_ASSERT( markerSymbolLayer );
 
   // set render units
@@ -3968,7 +3968,7 @@ QList<QgsMapLayer *> QgsMapBoxGlStyleConverter::createSubLayers() const
     {
       if ( source->type() == Qgis::MapBoxGlStyleSourceType::Raster && source->name() == sourceName )
       {
-        const QgsMapBoxGlStyleRasterSource *rasterSource = qgis::down_cast< const QgsMapBoxGlStyleRasterSource * >( source );
+        auto rasterSource = qgis::down_cast<const QgsMapBoxGlStyleRasterSource *>( source );
         rl.reset( rasterSource->toRasterLayer() );
         rl->pipe()->setDataDefinedProperties( subLayer.dataDefinedProperties() );
         break;

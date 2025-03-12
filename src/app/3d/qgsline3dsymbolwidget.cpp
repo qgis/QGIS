@@ -56,7 +56,7 @@ Qgs3DSymbolWidget *QgsLine3DSymbolWidget::create( QgsVectorLayer * )
 
 void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer )
 {
-  const QgsLine3DSymbol *lineSymbol = dynamic_cast<const QgsLine3DSymbol *>( symbol );
+  auto lineSymbol = dynamic_cast<const QgsLine3DSymbol *>( symbol );
   if ( !lineSymbol )
     return;
 

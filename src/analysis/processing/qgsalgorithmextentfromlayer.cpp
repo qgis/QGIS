@@ -106,7 +106,7 @@ QVariantMap QgsExtentFromLayerAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+  if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
   {
     vl->updateExtents();
   }

@@ -258,7 +258,7 @@ void TestQgsAttributeTable::testVisibleTemporal()
   f3.setAttributes( QgsAttributes() << 3 << QDate( 2020, 1, 1 ) );
   QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
 
-  QgsVectorLayerTemporalProperties *temporalProperties = qobject_cast<QgsVectorLayerTemporalProperties *>( tempLayer->temporalProperties() );
+  auto temporalProperties = qobject_cast<QgsVectorLayerTemporalProperties *>( tempLayer->temporalProperties() );
   temporalProperties->setIsActive( true );
   temporalProperties->setMode( Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromFields );
   temporalProperties->setStartField( QStringLiteral( "col1" ) );
@@ -633,7 +633,7 @@ void TestQgsAttributeTable::testOrderColumn()
 
   dlg->mMainView->setAttributeTableConfig( config );
 
-  QgsAttributeTableFilterModel *filterModel = static_cast<QgsAttributeTableFilterModel *>( dlg->mMainView->mTableView->model() );
+  auto filterModel = static_cast<QgsAttributeTableFilterModel *>( dlg->mMainView->mTableView->model() );
   filterModel->sort( 0, Qt::AscendingOrder );
 
   QModelIndex index = filterModel->mapToSource( filterModel->sourceModel()->index( 0, 0 ) );

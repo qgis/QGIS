@@ -33,7 +33,7 @@ static bool initTiledSceneRenderer( const QString &name, QgsTiledSceneRendererWi
   QgsTiledSceneRendererAbstractMetadata *rendererAbstractMetadata = QgsApplication::tiledSceneRendererRegistry()->rendererMetadata( name );
   if ( !rendererAbstractMetadata )
     return false;
-  QgsTiledSceneRendererMetadata *rendererMetadata = dynamic_cast<QgsTiledSceneRendererMetadata *>( rendererAbstractMetadata );
+  auto rendererMetadata = dynamic_cast<QgsTiledSceneRendererMetadata *>( rendererAbstractMetadata );
   if ( !rendererMetadata )
     return false;
 

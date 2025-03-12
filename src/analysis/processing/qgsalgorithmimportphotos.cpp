@@ -280,7 +280,7 @@ class SetEditorWidgetForPhotoAttributePostProcessor : public QgsProcessingLayerP
   public:
     void postProcessLayer( QgsMapLayer *layer, QgsProcessingContext &, QgsProcessingFeedback * ) override
     {
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
       {
         QVariantMap config;
         // photo field shows picture viewer

@@ -282,7 +282,7 @@ void QgsLayerTreeModelLegendNode::uncheckAllItems()
 
 void QgsLayerTreeModelLegendNode::toggleAllItems()
 {
-  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() ) )
+  if ( auto vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() ) )
   {
     if ( !vlayer->renderer() )
       return;
@@ -337,7 +337,7 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
   }
 
   updateLabel();
-  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
+  if ( auto vl = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
     connect( vl, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsSymbolLegendNode::updateLabel );
 
   connect( nodeLayer, &QObject::destroyed, this, [this]() { mLayerNode = nullptr; } );
@@ -465,7 +465,7 @@ void QgsSymbolLegendNode::setSymbol( QgsSymbol *symbol )
     return;
 
   std::unique_ptr< QgsSymbol > s( symbol ); // this method takes ownership of symbol
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
   if ( !vlayer || !vlayer->renderer() )
     return;
 
@@ -511,7 +511,7 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
 
 void QgsLayerTreeModelLegendNode::checkAll( bool state )
 {
-  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() ) )
+  if ( auto vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() ) )
   {
     if ( !vlayer->renderer() )
       return;
@@ -598,7 +598,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
     if ( !mItem.isCheckable() )
       return QVariant();
 
-    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() ) )
+    if ( auto vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() ) )
     {
       if ( !vlayer->renderer() )
         return QVariant();
@@ -630,7 +630,7 @@ bool QgsSymbolLegendNode::setData( const QVariant &value, int role )
   if ( !mItem.isCheckable() )
     return false;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
   if ( !vlayer || !vlayer->renderer() )
     return false;
 
@@ -696,7 +696,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   const double maxSymbolSize = settings.maximumSymbolSize();
   const double minSymbolSize = settings.minimumSymbolSize();
 
-  if ( QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( s ) )
+  if ( auto markerSymbol = dynamic_cast<QgsMarkerSymbol *>( s ) )
   {
     const double size = markerSymbol->size( *context ) / context->scaleFactor();
     if ( size > 0 )
@@ -917,7 +917,7 @@ void QgsSymbolLegendNode::updateLabel()
     return;
 
   const bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
+  auto vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
   if ( !mLayerNode->labelExpression().isEmpty() )
     mLabel = "[%" + mLayerNode->labelExpression() + "%]";
   else
@@ -942,7 +942,7 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
   if ( !mLayerNode )
     return QString();
 
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
+  auto vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
   if ( vl )
   {
@@ -975,7 +975,7 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
 
 QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
 {
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
+  auto vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), symbolLabel().remove( "[%" ).remove( "%]" ), true ) );
@@ -1127,7 +1127,7 @@ QVariant QgsRasterSymbolLegendNode::data( int role ) const
       if ( !mCheckable )
         return QVariant();
 
-      if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( mLayerNode->layer() ) )
+      if ( auto pclayer = qobject_cast<QgsPointCloudLayer *>( mLayerNode->layer() ) )
       {
         if ( !pclayer->renderer() )
           return QVariant();
@@ -1151,7 +1151,7 @@ bool QgsRasterSymbolLegendNode::setData( const QVariant &value, int role )
   if ( !mCheckable )
     return false;
 
-  if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( mLayerNode->layer() ) )
+  if ( auto pclayer = qobject_cast<QgsPointCloudLayer *>( mLayerNode->layer() ) )
   {
     if ( !pclayer->renderer() )
       return false;
@@ -1195,7 +1195,7 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings,
   if ( ctx && ctx->painter )
   {
     QColor itemColor = mColor;
-    if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layerNode()->layer() ) )
+    if ( auto rasterLayer = qobject_cast<QgsRasterLayer *>( layerNode()->layer() ) )
     {
       if ( QgsRasterRenderer *rasterRenderer = rasterLayer->renderer() )
         itemColor.setAlpha( rasterRenderer->opacity() * 255.0 );
@@ -1241,7 +1241,7 @@ QJsonObject QgsRasterSymbolLegendNode::exportSymbolToJson( const QgsLegendSettin
   painter.setRenderHint( QPainter::Antialiasing );
 
   QColor itemColor = mColor;
-  if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layerNode()->layer() ) )
+  if ( auto rasterLayer = qobject_cast<QgsRasterLayer *>( layerNode()->layer() ) )
   {
     if ( QgsRasterRenderer *rasterRenderer = rasterLayer->renderer() )
       itemColor.setAlpha( rasterRenderer->opacity() * 255.0 );
@@ -1290,7 +1290,7 @@ QImage QgsWmsLegendNode::getLegendGraphic( bool synchronous ) const
     // or maybe in presence of a downloader we should just delete it
     // and start a new one ?
 
-    QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( mLayerNode->layer() );
+    auto layer = qobject_cast<QgsRasterLayer *>( mLayerNode->layer() );
 
     if ( layer && layer->isValid() )
     {

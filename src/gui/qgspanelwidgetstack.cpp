@@ -73,7 +73,7 @@ void QgsPanelWidgetStack::clear()
 {
   for ( int i = mStackedWidget->count() - 1; i >= 0; i-- )
   {
-    if ( QgsPanelWidget *panelWidget = qobject_cast<QgsPanelWidget *>( mStackedWidget->widget( i ) ) )
+    if ( auto panelWidget = qobject_cast<QgsPanelWidget *>( mStackedWidget->widget( i ) ) )
     {
       mStackedWidget->removeWidget( panelWidget );
       if ( panelWidget->autoDelete() )
@@ -101,7 +101,7 @@ QgsPanelWidget *QgsPanelWidgetStack::currentPanel()
 
 QSize QgsPanelWidgetStack::sizeHint() const
 {
-  if ( const QgsPanelWidget *widget = qobject_cast<const QgsPanelWidget *>( mStackedWidget->currentWidget() ) )
+  if ( auto widget = qobject_cast<const QgsPanelWidget *>( mStackedWidget->currentWidget() ) )
   {
     if ( widget->applySizeConstraintsToStack() )
       return widget->sizeHint();
@@ -111,7 +111,7 @@ QSize QgsPanelWidgetStack::sizeHint() const
 
 QSize QgsPanelWidgetStack::minimumSizeHint() const
 {
-  if ( const QgsPanelWidget *widget = qobject_cast<const QgsPanelWidget *>( mStackedWidget->currentWidget() ) )
+  if ( auto widget = qobject_cast<const QgsPanelWidget *>( mStackedWidget->currentWidget() ) )
   {
     if ( widget->applySizeConstraintsToStack() )
       return widget->minimumSizeHint();
@@ -138,7 +138,7 @@ void QgsPanelWidgetStack::acceptAllPanels()
 
   for ( int i = mStackedWidget->count() - 1; i > 0; --i )
   {
-    if ( QgsPanelWidget *panelWidget = qobject_cast<QgsPanelWidget *>( mStackedWidget->widget( i ) ) )
+    if ( auto panelWidget = qobject_cast<QgsPanelWidget *>( mStackedWidget->widget( i ) ) )
     {
       panelWidget->acceptPanel();
     }

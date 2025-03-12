@@ -63,7 +63,7 @@ void QgsOnlineDemTerrainSettings::writeXml( QDomElement &element, const QgsReadW
 
 bool QgsOnlineDemTerrainSettings::equals( const QgsAbstractTerrainSettings *other ) const
 {
-  const QgsOnlineDemTerrainSettings *otherTerrain = dynamic_cast<const QgsOnlineDemTerrainSettings *>( other );
+  auto otherTerrain = dynamic_cast<const QgsOnlineDemTerrainSettings *>( other );
   if ( !otherTerrain )
     return false;
 

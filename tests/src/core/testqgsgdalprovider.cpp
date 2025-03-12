@@ -230,7 +230,7 @@ void TestQgsGdalProvider::scaleDataType()
 {
   const QString rasterWithOffset = QStringLiteral( TEST_DATA_DIR ) + "/int_raster_with_scale.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), rasterWithOffset, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
   //raster is an integer data type, but has a scale < 1, so data type must be float
   QCOMPARE( rp->dataType( 1 ), Qgis::DataType::Float32 );
@@ -242,7 +242,7 @@ void TestQgsGdalProvider::warpedVrt()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/requires_warped_vrt.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
 
   qDebug() << "x min: " << rp->extent().xMinimum();
@@ -261,7 +261,7 @@ void TestQgsGdalProvider::testVrtAlphaBandRequired()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/rotated_rgb.png";
   std::unique_ptr<QgsDataProvider> provider( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() ) );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider.get() );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider.get() );
   QVERIFY( rp );
 
   QCOMPARE( rp->bandCount(), 4 );
@@ -275,7 +275,7 @@ void TestQgsGdalProvider::testVrtAlphaBandNotRequired()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/72_528t50dgm.txt";
   std::unique_ptr<QgsDataProvider> provider( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() ) );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider.get() );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider.get() );
   QVERIFY( rp );
 
   QGSCOMPARENEAR( rp->extent().xMinimum(), 719975, 0.0001 );
@@ -291,7 +291,7 @@ void TestQgsGdalProvider::noData()
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
   if ( rp )
   {
@@ -305,7 +305,7 @@ void TestQgsGdalProvider::noDataOutsideExtent()
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
   if ( rp )
   {
@@ -329,7 +329,7 @@ void TestQgsGdalProvider::invalidNoDataInSourceIgnored()
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/byte_with_nan_nodata.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
   if ( rp )
   {
@@ -401,7 +401,7 @@ void TestQgsGdalProvider::mask()
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/rgb_with_mask.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
   if ( rp )
   {
@@ -423,7 +423,7 @@ void TestQgsGdalProvider::bandName()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_tags.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
   QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1: wvln=1.234 (um)" ) );
   delete provider;
@@ -433,7 +433,7 @@ void TestQgsGdalProvider::bandNameNoDescription()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
   QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1" ) );
   delete provider;
@@ -443,7 +443,7 @@ void TestQgsGdalProvider::bandNameWithDescription()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_desc.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
   QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1: 1.234 um" ) );
   delete provider;
@@ -453,7 +453,7 @@ void TestQgsGdalProvider::colorTable()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
   QCOMPARE( rp->colorTable( 1 ).size(), 256 );
   // invalid band
@@ -513,7 +513,7 @@ void TestQgsGdalProvider::scale0()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/scale0ingdal23.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
   QCOMPARE( rp->bandScale( 1 ), 1.0 );
   QCOMPARE( rp->bandOffset( 1 ), 0.0 );
@@ -525,7 +525,7 @@ void TestQgsGdalProvider::transformCoordinates()
   // Test implementation of QgsRasterDataProvider::transformCoordinates()
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/float1-16.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
   QVERIFY( rp );
   QVERIFY( rp->isValid() );
 

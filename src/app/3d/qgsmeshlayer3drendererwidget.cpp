@@ -88,12 +88,12 @@ void QgsMeshLayer3DRendererWidget::onEnabledClicked()
 void QgsMeshLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
   mLayer = layer;
-  QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
+  auto meshLayer = qobject_cast<QgsMeshLayer *>( layer );
   mWidgetMesh->setLayer( meshLayer );
   QgsAbstract3DRenderer *r = layer->renderer3D();
   if ( r && r->type() == QLatin1String( "mesh" ) )
   {
-    QgsMeshLayer3DRenderer *meshRenderer = static_cast<QgsMeshLayer3DRenderer *>( r );
+    auto meshRenderer = static_cast<QgsMeshLayer3DRenderer *>( r );
     setRenderer( meshRenderer );
     mWidgetMesh->setEnabled( meshRenderer->symbol()->isEnabled() );
   }
@@ -114,7 +114,7 @@ QgsMeshLayer3DRendererWidgetFactory::QgsMeshLayer3DRendererWidgetFactory( QObjec
 QgsMapLayerConfigWidget *QgsMeshLayer3DRendererWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const
 {
   Q_UNUSED( dockWidget )
-  QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
+  auto meshLayer = qobject_cast<QgsMeshLayer *>( layer );
   if ( !meshLayer )
     return nullptr;
   return new QgsMeshLayer3DRendererWidget( meshLayer, canvas, parent );

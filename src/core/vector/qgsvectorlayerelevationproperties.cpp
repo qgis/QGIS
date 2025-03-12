@@ -130,7 +130,7 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
 
 void QgsVectorLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
     return;
 

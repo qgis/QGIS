@@ -314,7 +314,7 @@ void QgsRendererWidget::copySymbol()
 
 void QgsRendererWidget::updateDataDefinedProperty()
 {
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsFeatureRenderer::Property key = static_cast<QgsFeatureRenderer::Property>( button->propertyKey() );
   renderer()->setDataDefinedProperty( key, button->toProperty() );
   emit widgetChanged();
@@ -557,7 +557,7 @@ QgsDataDefinedSizeDialog::QgsDataDefinedSizeDialog( const QList<QgsSymbol *> &sy
 
 QgsProperty QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
-  const QgsMarkerSymbol *marker = static_cast<const QgsMarkerSymbol *>( symbol );
+  auto marker = static_cast<const QgsMarkerSymbol *>( symbol );
   return marker->dataDefinedSize();
 }
 
@@ -581,7 +581,7 @@ QgsDataDefinedRotationDialog::QgsDataDefinedRotationDialog( const QList<QgsSymbo
 
 QgsProperty QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
-  const QgsMarkerSymbol *marker = static_cast<const QgsMarkerSymbol *>( symbol );
+  auto marker = static_cast<const QgsMarkerSymbol *>( symbol );
   return marker->dataDefinedAngle();
 }
 
@@ -604,7 +604,7 @@ QgsDataDefinedWidthDialog::QgsDataDefinedWidthDialog( const QList<QgsSymbol *> &
 
 QgsProperty QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
-  const QgsLineSymbol *line = static_cast<const QgsLineSymbol *>( symbol );
+  auto line = static_cast<const QgsLineSymbol *>( symbol );
   return line->dataDefinedWidth();
 }
 

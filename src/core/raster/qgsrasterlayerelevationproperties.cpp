@@ -231,7 +231,7 @@ bool QgsRasterLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange 
 
     case Qgis::RasterElevationMode::DynamicRangePerBand:
     {
-      if ( QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer ) )
+      if ( auto rl = qobject_cast<QgsRasterLayer *>( layer ) )
       {
         QgsExpressionContext context;
         context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
@@ -312,7 +312,7 @@ QgsDoubleRange QgsRasterLayerElevationProperties::calculateZRange( QgsMapLayer *
 
     case Qgis::RasterElevationMode::DynamicRangePerBand:
     {
-      if ( QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer ) )
+      if ( auto rl = qobject_cast<QgsRasterLayer *>( layer ) )
       {
         QgsExpressionContext context;
         context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
@@ -391,7 +391,7 @@ QList<double> QgsRasterLayerElevationProperties::significantZValues( QgsMapLayer
     case Qgis::RasterElevationMode::DynamicRangePerBand:
     {
       QList< double > res;
-      if ( QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer ) )
+      if ( auto rl = qobject_cast<QgsRasterLayer *>( layer ) )
       {
         QgsExpressionContext context;
         context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );

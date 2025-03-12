@@ -58,7 +58,7 @@ bool QgsProcessingParameterTinInputLayers::checkValueIsAcceptable( const QVarian
     if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector )
       return false;
 
-    QgsVectorLayer *vectorLayer = static_cast<QgsVectorLayer *>( mapLayer );
+    auto vectorLayer = static_cast<QgsVectorLayer *>( mapLayer );
 
     if ( layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt() >= vectorLayer->fields().count() )
       return false;

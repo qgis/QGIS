@@ -83,7 +83,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
   {
     case Qgis::LayerType::Raster:
     {
-      QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+      auto rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
       bool ok = false;
       layer->loadDefaultStyle( ok );
       layer->loadDefaultMetadata( ok );
@@ -128,7 +128,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
 
     case Qgis::LayerType::Mesh:
     {
-      QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
+      auto meshLayer = qobject_cast<QgsMeshLayer *>( layer );
       QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
       if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
         referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0 ), Qt::UTC );
@@ -191,7 +191,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
 #ifdef HAVE_3D
       if ( !layer->renderer3D() )
       {
-        QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
+        auto pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
         // If the layer has no 3D renderer and syncing 3D to 2D renderer is enabled, we create a renderer and set it up with the 2D renderer
         if ( pcLayer->sync3DRendererTo2DRenderer() )
         {
@@ -229,8 +229,8 @@ void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers 
 
       if ( a->type() == Qgis::LayerType::Vector && b->type() == Qgis::LayerType::Vector )
       {
-        QgsVectorLayer *av = qobject_cast<QgsVectorLayer *>( a );
-        QgsVectorLayer *bv = qobject_cast<QgsVectorLayer *>( b );
+        auto av = qobject_cast<QgsVectorLayer *>( a );
+        auto bv = qobject_cast<QgsVectorLayer *>( b );
         return av->geometryType() > bv->geometryType();
       }
 
@@ -262,7 +262,7 @@ void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> &la
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+        auto vl = qobject_cast<QgsVectorLayer *>( layer );
 
         // try to automatically load related tables for OGR layers
         if ( vl->providerType() == QLatin1String( "ogr" ) )
@@ -521,7 +521,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addOgrVectorLayers( const QStringList 
   {
     if ( !encoding.isEmpty() )
     {
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( l ) )
         vl->setProviderEncoding( encoding );
     }
   }

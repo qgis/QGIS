@@ -87,7 +87,7 @@ QWidget *QgsFormAnnotation::createDesignerWidget( const QString &filePath )
 
   //get feature and set attribute information
   const QgsAttributeEditorContext context;
-  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mapLayer() );
+  auto vectorLayer = qobject_cast<QgsVectorLayer *>( mapLayer() );
   if ( vectorLayer && associatedFeature().isValid() )
   {
     const QgsFields fields = vectorLayer->fields();

@@ -85,7 +85,7 @@ bool QgsPGConnectionItem::equal( const QgsDataItem *other )
     return false;
   }
 
-  const QgsPGConnectionItem *o = qobject_cast<const QgsPGConnectionItem *>( other );
+  auto o = qobject_cast<const QgsPGConnectionItem *>( other );
   return ( mPath == o->mPath && mName == o->mName );
 }
 
@@ -125,7 +125,7 @@ QString QgsPGLayerItem::comments() const
 
 QString QgsPGLayerItem::createUri()
 {
-  QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( parent() ? parent()->parent() : nullptr );
+  auto connItem = qobject_cast<QgsPGConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
   {
@@ -259,7 +259,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
         const QString mdKey { QStringLiteral( "%1.%2" ).arg( layerProperty.at( i ).schemaName, layerProperty.at( i ).tableName ) };
         if ( allowMetadataInDatabase && layerMetadata.contains( mdKey ) )
         {
-          if ( QgsLayerItem *lItem = static_cast<QgsLayerItem *>( layerItem ) )
+          if ( auto lItem = static_cast<QgsLayerItem *>( layerItem ) )
           {
             lItem->setLayerMetadata( layerMetadata.value( mdKey ) );
           }

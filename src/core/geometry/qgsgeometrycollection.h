@@ -61,7 +61,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
   private:
     bool fuzzyHelper( const QgsAbstractGeometry &other, double epsilon, bool useDistance ) const
     {
-      const QgsGeometryCollection *otherCollection = qgsgeometry_cast< const QgsGeometryCollection * >( &other );
+      auto otherCollection = qgsgeometry_cast<const QgsGeometryCollection *>( &other );
       if ( !otherCollection )
         return false;
 

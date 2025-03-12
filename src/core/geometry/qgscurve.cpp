@@ -26,7 +26,7 @@
 
 bool QgsCurve::operator==( const QgsAbstractGeometry &other ) const
 {
-  const QgsCurve *otherCurve = qgsgeometry_cast< const QgsCurve * >( &other );
+  auto otherCurve = qgsgeometry_cast<const QgsCurve *>( &other );
   if ( !otherCurve )
     return false;
 

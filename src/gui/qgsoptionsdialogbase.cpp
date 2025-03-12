@@ -136,7 +136,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
 
   const int frameMargin = QgsGuiUtils::scaleIconSize( 3 );
   optionsFrame->layout()->setContentsMargins( 0, frameMargin, frameMargin, frameMargin );
-  QVBoxLayout *layout = static_cast<QVBoxLayout *>( optionsFrame->layout() );
+  auto layout = static_cast<QVBoxLayout *>( optionsFrame->layout() );
 
   if ( buttonBoxFrame )
   {
@@ -666,12 +666,12 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
     for ( QWidget *widget : widgets )
     {
       // see if the widget also inherits QgsOptionsDialogHighlightWidget
-      QgsOptionsDialogHighlightWidget *shw = dynamic_cast<QgsOptionsDialogHighlightWidget *>( widget );
+      auto shw = dynamic_cast<QgsOptionsDialogHighlightWidget *>( widget );
       if ( !shw )
       {
         // get custom highlight widget in user added pages
         QHash<QWidget *, QgsOptionsDialogHighlightWidget *> customHighlightWidgets;
-        QgsOptionsPageWidget *opw = qobject_cast<QgsOptionsPageWidget *>( mOptStackedWidget->widget( i ) );
+        auto opw = qobject_cast<QgsOptionsPageWidget *>( mOptStackedWidget->widget( i ) );
         if ( opw )
         {
           customHighlightWidgets = opw->registeredHighlightWidgets();
@@ -867,7 +867,7 @@ void QgsOptionsProxyModel::setPageHidden( int page, bool hidden )
 
 QModelIndex QgsOptionsProxyModel::pageNumberToSourceIndex( int page ) const
 {
-  QStandardItemModel *itemModel = qobject_cast<QStandardItemModel *>( sourceModel() );
+  auto itemModel = qobject_cast<QStandardItemModel *>( sourceModel() );
   if ( !itemModel )
     return QModelIndex();
 
@@ -900,7 +900,7 @@ QModelIndex QgsOptionsProxyModel::pageNumberToSourceIndex( int page ) const
 
 int QgsOptionsProxyModel::sourceIndexToPageNumber( const QModelIndex &index ) const
 {
-  QStandardItemModel *itemModel = qobject_cast<QStandardItemModel *>( sourceModel() );
+  auto itemModel = qobject_cast<QStandardItemModel *>( sourceModel() );
   if ( !itemModel )
     return 0;
 
@@ -931,7 +931,7 @@ int QgsOptionsProxyModel::sourceIndexToPageNumber( const QModelIndex &index ) co
 
 bool QgsOptionsProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  QStandardItemModel *itemModel = qobject_cast<QStandardItemModel *>( sourceModel() );
+  auto itemModel = qobject_cast<QStandardItemModel *>( sourceModel() );
   if ( !itemModel )
     return true;
 

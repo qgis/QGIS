@@ -38,14 +38,14 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
   QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context
 )
 {
-  if ( QgsHanaRootItem *rootItem = qobject_cast<QgsHanaRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsHanaRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
   }
 
-  if ( QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( item ) )
+  if ( auto connItem = qobject_cast<QgsHanaConnectionItem *>( item ) )
   {
     const QList<QgsHanaConnectionItem *> hanaConnectionItems = QgsDataItem::filteredItems<QgsHanaConnectionItem>( selection );
 
@@ -81,12 +81,12 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
     }
   }
 
-  if ( QgsHanaSchemaItem *schemaItem = qobject_cast<QgsHanaSchemaItem *>( item ) )
+  if ( auto schemaItem = qobject_cast<QgsHanaSchemaItem *>( item ) )
   {
     QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
     menu->addAction( importVectorAction );
     const QString destinationSchema = schemaItem->name();
-    QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( schemaItem->parent() );
+    auto connItem = qobject_cast<QgsHanaConnectionItem *>( schemaItem->parent() );
     QObject::connect( importVectorAction, &QAction::triggered, item, [connItem, context, destinationSchema, this] { handleImportVector( connItem, destinationSchema, context ); } );
 
     QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
@@ -108,7 +108,7 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
     menu->addMenu( maintainMenu );
   }
 
-  if ( QgsHanaLayerItem *layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
   {
     const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
     if ( !layerInfo.isView )
@@ -126,7 +126,7 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
 
 bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
-  if ( QgsHanaLayerItem *layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
   {
     const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
     const QString layerName = QStringLiteral( "%1.%2" ).arg( layerInfo.schemaName, layerInfo.tableName );
@@ -176,13 +176,13 @@ bool QgsHanaDataItemGuiProvider::handleDrop(
   QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction
 )
 {
-  if ( QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( item ) )
+  if ( auto connItem = qobject_cast<QgsHanaConnectionItem *>( item ) )
   {
     return handleDrop( connItem, data, QString(), context );
   }
   else if ( QgsHanaSchemaItem *schemaItem = qobject_cast<QgsHanaSchemaItem *>( item ) )
   {
-    QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( schemaItem->parent() );
+    auto connItem = qobject_cast<QgsHanaConnectionItem *>( schemaItem->parent() );
     if ( !connItem )
       return false;
 
@@ -193,7 +193,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop(
 
 QWidget *QgsHanaDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDataItemGuiContext )
 {
-  QgsHanaRootItem *rootItem = qobject_cast<QgsHanaRootItem *>( root );
+  auto rootItem = qobject_cast<QgsHanaRootItem *>( root );
   if ( rootItem == nullptr )
     return nullptr;
   QgsHanaSourceSelect *select = new QgsHanaSourceSelect( nullptr, QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode::Manager );

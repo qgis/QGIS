@@ -815,7 +815,7 @@ void QgsLayoutScaleBarWidget::segmentSizeRadioChanged( QAbstractButton *radio )
 
 void QgsLayoutScaleBarWidget::mapChanged( QgsLayoutItem *item )
 {
-  QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( item );
+  auto map = qobject_cast<QgsLayoutItemMap *>( item );
   if ( !map )
   {
     return;

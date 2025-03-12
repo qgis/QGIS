@@ -213,7 +213,7 @@ QgsRuleBasedChunkedEntity::~QgsRuleBasedChunkedEntity()
 // if the AltitudeClamping is `Absolute`, do not apply the offset
 bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
 {
-  QgsRuleBasedChunkLoaderFactory *loaderFactory = static_cast<QgsRuleBasedChunkLoaderFactory *>( mChunkLoaderFactory );
+  auto loaderFactory = static_cast<QgsRuleBasedChunkLoaderFactory *>( mChunkLoaderFactory );
   if ( loaderFactory )
   {
     QgsRuleBased3DRenderer::Rule *rule = loaderFactory->mRootRule.get();
@@ -222,7 +222,7 @@ bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
       QString symbolType = rule->symbol()->type();
       if ( symbolType == "line" )
       {
-        QgsLine3DSymbol *lineSymbol = static_cast<QgsLine3DSymbol *>( rule->symbol() );
+        auto lineSymbol = static_cast<QgsLine3DSymbol *>( rule->symbol() );
         if ( lineSymbol && lineSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
         {
           return false;
@@ -230,7 +230,7 @@ bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
       }
       else if ( symbolType == "point" )
       {
-        QgsPoint3DSymbol *pointSymbol = static_cast<QgsPoint3DSymbol *>( rule->symbol() );
+        auto pointSymbol = static_cast<QgsPoint3DSymbol *>( rule->symbol() );
         if ( pointSymbol && pointSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
         {
           return false;
@@ -238,7 +238,7 @@ bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
       }
       else if ( symbolType == "polygon" )
       {
-        QgsPolygon3DSymbol *polygonSymbol = static_cast<QgsPolygon3DSymbol *>( rule->symbol() );
+        auto polygonSymbol = static_cast<QgsPolygon3DSymbol *>( rule->symbol() );
         if ( polygonSymbol && polygonSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
         {
           return false;

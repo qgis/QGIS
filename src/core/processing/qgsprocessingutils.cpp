@@ -577,7 +577,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
     val = fromVar.sink;
   }
 
-  if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( val ) ) )
+  if ( auto layer = qobject_cast<QgsVectorLayer *>( qvariant_cast<QObject *>( val ) ) )
   {
     auto source = std::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit, filterExpression );
     if ( overrideGeometryCheck )
@@ -593,7 +593,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   else if ( !val.isValid() || val.toString().isEmpty() )
   {
     // fall back to default
-    if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( fallbackValue ) ) )
+    if ( auto layer = qobject_cast<QgsVectorLayer *>( qvariant_cast<QObject *>( fallbackValue ) ) )
     {
       auto source = std::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit, filterExpression );
       if ( overrideGeometryCheck )
@@ -611,7 +611,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   if ( layerRef.isEmpty() )
     return nullptr;
 
-  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context, true, LayerHint::Vector ) );
+  auto vl = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context, true, LayerHint::Vector ) );
   if ( !vl )
     return nullptr;
 
@@ -658,7 +658,7 @@ QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &v
   }
 
   // maybe a map layer
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( val ) ) )
     return layer->crs();
 
   if ( val.userType() == qMetaTypeId<QgsProperty>() )
@@ -1622,7 +1622,7 @@ QVariantMap QgsProcessingUtils::removePointerValuesFromMap( const QVariantMap &m
 
   auto cleanPointerValues = [&layerPointerToString]( const QVariant & value ) -> QVariant
   {
-    if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( value.value< QObject * >() ) )
+    if ( auto layer = qobject_cast<QgsMapLayer *>( value.value< QObject * >() ) )
     {
       // don't store pointers in maps for long-term storage
       return layerPointerToString( layer );
@@ -1968,7 +1968,7 @@ Qgis::SpatialIndexPresence QgsProcessingFeatureSource::hasSpatialIndex() const
 QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextScope() const
 {
   QgsExpressionContextScope *expressionContextScope = nullptr;
-  QgsExpressionContextScopeGenerator *generator = dynamic_cast<QgsExpressionContextScopeGenerator *>( mSource );
+  auto generator = dynamic_cast<QgsExpressionContextScopeGenerator *>( mSource );
   if ( generator )
   {
     expressionContextScope = generator->createExpressionContextScope();

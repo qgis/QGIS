@@ -163,7 +163,7 @@ void QgsAuthMethodRegistry::init()
 
     bool libraryLoaded { false };
     QFunctionPointer func = myLib.resolve( QStringLiteral( "authMethodMetadataFactory" ).toLatin1().data() );
-    factory_function *function = reinterpret_cast< factory_function * >( cast_to_fptr( func ) );
+    auto function = reinterpret_cast<factory_function *>( cast_to_fptr( func ) );
     if ( function )
     {
       QgsAuthMethodMetadata *meta = function();
@@ -209,7 +209,7 @@ void QgsAuthMethodRegistry::clean()
     QLibrary myLib( lib );
     if ( myLib.isLoaded() )
     {
-      cleanupAuthMethod_t *cleanupFunc = reinterpret_cast< cleanupAuthMethod_t * >( cast_to_fptr( myLib.resolve( "cleanupAuthMethod" ) ) );
+      auto cleanupFunc = reinterpret_cast<cleanupAuthMethod_t *>( cast_to_fptr( myLib.resolve( "cleanupAuthMethod" ) ) );
       if ( cleanupFunc )
         cleanupFunc();
     }

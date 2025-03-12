@@ -33,7 +33,7 @@
 
 void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsArcGisRestRootItem *rootItem = qobject_cast<QgsArcGisRestRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsArcGisRestRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );

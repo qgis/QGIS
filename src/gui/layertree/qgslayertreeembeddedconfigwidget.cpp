@@ -80,7 +80,7 @@ void QgsLayerTreeEmbeddedConfigWidget::onAddClicked()
   if ( !provider )
     return;
 
-  if ( QStandardItemModel *model = qobject_cast<QStandardItemModel *>( mListUsed->model() ) )
+  if ( auto model = qobject_cast<QStandardItemModel *>( mListUsed->model() ) )
   {
     QStandardItem *item = new QStandardItem( provider->name() );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );

@@ -742,8 +742,8 @@ void TestQgsLayoutTable::attributeTableRestoreAtlasSource()
   QgsProject p;
   p.read( projectPath );
 
-  QgsPrintLayout *l = dynamic_cast<QgsPrintLayout *>( p.layoutManager()->layouts().at( 0 ) );
-  QgsLayoutItemAttributeTable *table = qobject_cast<QgsLayoutItemAttributeTable *>( l->multiFrames().at( 0 ) );
+  auto l = dynamic_cast<QgsPrintLayout *>( p.layoutManager()->layouts().at( 0 ) );
+  auto table = qobject_cast<QgsLayoutItemAttributeTable *>( l->multiFrames().at( 0 ) );
   QCOMPARE( table->source(), QgsLayoutItemAttributeTable::AtlasFeature );
   QVERIFY( l->atlas()->coverageLayer() );
   QVERIFY( l->atlas()->coverageLayer()->isValid() );

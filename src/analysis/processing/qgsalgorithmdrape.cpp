@@ -206,7 +206,7 @@ QgsDrapeToZAlgorithm *QgsDrapeToZAlgorithm::createInstance() const
 
 bool QgsDrapeToZAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
+  auto layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
@@ -269,7 +269,7 @@ QgsDrapeToMAlgorithm *QgsDrapeToMAlgorithm::createInstance() const
 
 bool QgsDrapeToMAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
+  auto layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 

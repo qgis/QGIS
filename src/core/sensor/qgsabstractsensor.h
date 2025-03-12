@@ -38,7 +38,7 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( QgsAbstractSensor *item = qobject_cast< QgsAbstractSensor * >( sipCpp ) )
+    if ( auto item = qobject_cast<QgsAbstractSensor *>( sipCpp ) )
     {
       if ( item->type() == QLatin1String( "tcp_socket" ) && dynamic_cast<QgsTcpSocketSensor *>( item ) != NULL )
       {

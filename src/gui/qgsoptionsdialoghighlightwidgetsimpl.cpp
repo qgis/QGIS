@@ -207,7 +207,7 @@ bool QgsOptionsDialogHighlightTree::searchText( const QString &text )
 bool QgsOptionsDialogHighlightTree::highlightText( const QString &text )
 {
   bool success = false;
-  QTreeWidget *treeWidget = qobject_cast<QTreeWidget *>( mTreeView );
+  auto treeWidget = qobject_cast<QTreeWidget *>( mTreeView );
   if ( treeWidget )
   {
     mTreeInitialVisible.clear();
@@ -249,7 +249,7 @@ void QgsOptionsDialogHighlightTree::reset()
   if ( !mTreeView )
     return;
 
-  QTreeWidget *treeWidget = qobject_cast<QTreeWidget *>( mTreeView );
+  auto treeWidget = qobject_cast<QTreeWidget *>( mTreeView );
   if ( treeWidget )
   {
     // show everything

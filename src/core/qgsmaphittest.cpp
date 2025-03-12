@@ -63,7 +63,7 @@ void QgsMapHitTest::run()
   const QList< QgsMapLayer * > layers = mSettings.layers();
   for ( QgsMapLayer *layer : layers )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    auto vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( !vl || !vl->renderer() )
       continue;
 
@@ -322,7 +322,7 @@ void QgsMapHitTestTask::prepare()
   const QList< QgsMapLayer * > layers = mSettings.layers();
   for ( QgsMapLayer *layer : layers )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    auto vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( !vl || !vl->renderer() )
       continue;
 

@@ -72,9 +72,9 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
 
   // get the type associated with the value first
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  QMetaType::Type type = static_cast<QMetaType::Type>( QMetaType::type( typeString.toLocal8Bit().constData() ) );
+  auto type = static_cast<QMetaType::Type>( QMetaType::type( typeString.toLocal8Bit().constData() ) );
 #else
-  QMetaType::Type type = static_cast<QMetaType::Type>( QMetaType::fromName( typeString.toLocal8Bit().constData() ).id() );
+  auto type = static_cast<QMetaType::Type>( QMetaType::fromName( typeString.toLocal8Bit().constData() ).id() );
 #endif
 
   // This huge switch is left-over from an earlier incarnation of
@@ -314,7 +314,7 @@ void QgsProjectPropertyKey::dump( int tabs ) const
     {
       if ( i.next().value()->isValue() )
       {
-        QgsProjectPropertyValue *propertyValue = static_cast<QgsProjectPropertyValue *>( i.value() );
+        auto propertyValue = static_cast<QgsProjectPropertyValue *>( i.value() );
 
         if ( QMetaType::Type::QStringList == propertyValue->value().userType() )
         {

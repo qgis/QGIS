@@ -223,7 +223,7 @@ QgsLayoutItemPage *QgsLayoutPageCollection::pageAtPoint( QPointF point ) const
   {
     if ( item->type() == QgsLayoutItemRegistry::LayoutPage )
     {
-      QgsLayoutItemPage *page = static_cast< QgsLayoutItemPage * >( item );
+      auto page = static_cast<QgsLayoutItemPage *>( item );
       if ( page->mapToScene( page->rect() ).boundingRect().contains( point ) )
         return page;
     }
@@ -335,9 +335,9 @@ void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, Qgis:
   const QList<QGraphicsItem *> itemList = mLayout->items();
   for ( QGraphicsItem *item : itemList )
   {
-    if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+    if ( auto layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
     {
-      QgsLayoutItemPage *pageItem = dynamic_cast<QgsLayoutItemPage *>( layoutItem );
+      auto pageItem = dynamic_cast<QgsLayoutItemPage *>( layoutItem );
       if ( !pageItem )
       {
         layoutItem->beginCommand( tr( "Move Item" ) );
@@ -562,7 +562,7 @@ QList<QgsLayoutItem *> QgsLayoutPageCollection::itemsOnPage( int page ) const
   itemList.reserve( graphicsItemList.size() );
   for ( QGraphicsItem *graphicsItem : graphicsItemList )
   {
-    QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+    auto item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
     if ( item && item->page() == page )
     {
       itemList.push_back( item );

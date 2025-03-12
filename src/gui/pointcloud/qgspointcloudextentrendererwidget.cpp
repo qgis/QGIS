@@ -70,7 +70,7 @@ void QgsPointCloudExtentRendererWidget::emitWidgetChanged()
 void QgsPointCloudExtentRendererWidget::setFromRenderer( const QgsPointCloudRenderer *r )
 {
   mBlockChangedSignal = true;
-  if ( const QgsPointCloudExtentRenderer *mbcr = dynamic_cast<const QgsPointCloudExtentRenderer *>( r ) )
+  if ( auto mbcr = dynamic_cast<const QgsPointCloudExtentRenderer *>( r ) )
   {
     mSymbolButton->setSymbol( mbcr->fillSymbol()->clone() );
   }

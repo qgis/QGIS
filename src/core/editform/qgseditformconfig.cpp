@@ -82,7 +82,7 @@ void QgsEditFormConfig::onRelationsLoaded()
 
   for ( QgsAttributeEditorElement *relElem : relations )
   {
-    QgsAttributeEditorRelation *rel = dynamic_cast< QgsAttributeEditorRelation * >( relElem );
+    auto rel = dynamic_cast<QgsAttributeEditorRelation *>( relElem );
     if ( !rel )
       continue;
 
@@ -97,7 +97,7 @@ bool QgsEditFormConfig::legacyUpdateRelationWidgetInTabs( QgsAttributeEditorCont
   {
     if ( child->type() ==  Qgis::AttributeEditorType::Container )
     {
-      QgsAttributeEditorContainer *container = dynamic_cast<QgsAttributeEditorContainer *>( child );
+      auto container = dynamic_cast<QgsAttributeEditorContainer *>( child );
       if ( legacyUpdateRelationWidgetInTabs( container, widgetName, config ) )
       {
         //return when a relation has been set in a child or child child...
@@ -106,7 +106,7 @@ bool QgsEditFormConfig::legacyUpdateRelationWidgetInTabs( QgsAttributeEditorCont
     }
     else if ( child->type() ==  Qgis::AttributeEditorType::Relation )
     {
-      QgsAttributeEditorRelation *relation = dynamic_cast< QgsAttributeEditorRelation * >( child );
+      auto relation = dynamic_cast<QgsAttributeEditorRelation *>( child );
       if ( relation )
       {
         if ( relation->relation().id() == widgetName )

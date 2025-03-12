@@ -197,7 +197,7 @@ QSize QgsStacItemDelegate::sizeHint( const QStyleOptionViewItem &option, const Q
 
   const QFontMetrics fm( option.font );
   int width = option.rect.width();
-  if ( const QAbstractItemView *view = qobject_cast<const QAbstractItemView *>( option.widget ) )
+  if ( auto view = qobject_cast<const QAbstractItemView *>( option.widget ) )
   {
     width -= view->verticalScrollBar()->width();
   }

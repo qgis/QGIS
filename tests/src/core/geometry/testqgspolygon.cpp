@@ -1540,7 +1540,7 @@ void TestQgsPolygon::boundary()
   pl.setExteriorRing( ext.clone() );
 
   QgsAbstractGeometry *boundary = pl.boundary();
-  QgsLineString *lineBoundary = dynamic_cast<QgsLineString *>( boundary );
+  auto lineBoundary = dynamic_cast<QgsLineString *>( boundary );
 
   QVERIFY( lineBoundary );
   QCOMPARE( lineBoundary->numPoints(), 4 );
@@ -1564,7 +1564,7 @@ void TestQgsPolygon::boundary()
   pl.setInteriorRings( QVector<QgsCurve *>() << ring.clone() << ring2.clone() );
 
   boundary = pl.boundary();
-  QgsMultiLineString *multiLineBoundary = dynamic_cast<QgsMultiLineString *>( boundary );
+  auto multiLineBoundary = dynamic_cast<QgsMultiLineString *>( boundary );
 
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 3 );
@@ -2001,7 +2001,7 @@ void TestQgsPolygon::transform2D()
   pl.addInteriorRing( ls.clone() );
 
   pl.transform( tr, Qgis::TransformDirection::Forward );
-  const QgsLineString *ext = static_cast<const QgsLineString *>( pl.exteriorRing() );
+  auto ext = static_cast<const QgsLineString *>( pl.exteriorRing() );
 
   QGSCOMPARENEAR( ext->pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( ext->pointN( 0 ).y(), -39.724, 0.001 );
@@ -2017,7 +2017,7 @@ void TestQgsPolygon::transform2D()
   QGSCOMPARENEAR( pl.exteriorRing()->boundingBox().xMaximum(), 176.959, 0.001 );
   QGSCOMPARENEAR( pl.exteriorRing()->boundingBox().yMaximum(), -38.7999, 0.001 );
 
-  const QgsLineString *ring = static_cast<const QgsLineString *>( pl.interiorRing( 0 ) );
+  auto ring = static_cast<const QgsLineString *>( pl.interiorRing( 0 ) );
 
   QGSCOMPARENEAR( ring->pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( ring->pointN( 0 ).y(), -39.724, 0.001 );
@@ -2050,7 +2050,7 @@ void TestQgsPolygon::transform3D()
 
   pl.transform( tr, Qgis::TransformDirection::Forward );
 
-  const QgsLineString *ext = static_cast<const QgsLineString *>( pl.exteriorRing() );
+  auto ext = static_cast<const QgsLineString *>( pl.exteriorRing() );
 
   QGSCOMPARENEAR( ext->pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( ext->pointN( 0 ).y(), -39.724, 0.001 );
@@ -2074,7 +2074,7 @@ void TestQgsPolygon::transform3D()
   QGSCOMPARENEAR( pl.exteriorRing()->boundingBox().xMaximum(), 176.959, 0.001 );
   QGSCOMPARENEAR( pl.exteriorRing()->boundingBox().yMaximum(), -38.7999, 0.001 );
 
-  const QgsLineString *ring = static_cast<const QgsLineString *>( pl.interiorRing( 0 ) );
+  auto ring = static_cast<const QgsLineString *>( pl.interiorRing( 0 ) );
 
   QGSCOMPARENEAR( ring->pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( ring->pointN( 0 ).y(), -39.724, 0.001 );
@@ -2116,7 +2116,7 @@ void TestQgsPolygon::transformReverse()
   pl.transform( tr, Qgis::TransformDirection::Forward );
   pl.transform( tr, Qgis::TransformDirection::Reverse );
 
-  const QgsLineString *ext = static_cast<const QgsLineString *>( pl.exteriorRing() );
+  auto ext = static_cast<const QgsLineString *>( pl.exteriorRing() );
 
   QGSCOMPARENEAR( ext->pointN( 0 ).x(), 6374984, 100 );
   QGSCOMPARENEAR( ext->pointN( 0 ).y(), -3626584, 100 );
@@ -2139,7 +2139,7 @@ void TestQgsPolygon::transformReverse()
   QGSCOMPARENEAR( pl.exteriorRing()->boundingBox().xMaximum(), 6474984, 100 );
   QGSCOMPARENEAR( pl.exteriorRing()->boundingBox().yMaximum(), -3526584, 100 );
 
-  const QgsLineString *ring = static_cast<const QgsLineString *>( pl.interiorRing( 0 ) );
+  auto ring = static_cast<const QgsLineString *>( pl.interiorRing( 0 ) );
 
   QGSCOMPARENEAR( ring->pointN( 0 ).x(), 6374984, 100 );
   QGSCOMPARENEAR( ring->pointN( 0 ).y(), -3626584, 100 );
@@ -2180,12 +2180,12 @@ void TestQgsPolygon::transformOldVersion()
 #if 0 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
   pl.transform( tr, Qgis::TransformDirection::Forward, true );
-  const QgsLineString *ext = static_cast< const QgsLineString * >( pl.exteriorRing() );
+  auto ext = static_cast<const QgsLineString *>( pl.exteriorRing() );
   QGSCOMPARENEAR( ext->pointN( 0 ).z(), -19.249066, 0.001 );
   QGSCOMPARENEAR( ext->pointN( 1 ).z(), -19.148357, 0.001 );
   QGSCOMPARENEAR( ext->pointN( 2 ).z(), -19.092128, 0.001 );
   QGSCOMPARENEAR( ext->pointN( 3 ).z(), -19.249066, 0.001 );
-  const QgsLineString *ring = static_cast< const QgsLineString * >( pl.interiorRing( 0 ) );
+  auto ring = static_cast<const QgsLineString *>( pl.interiorRing( 0 ) );
   QGSCOMPARENEAR( ring->pointN( 0 ).z(), -19.249066, 0.001 );
   QGSCOMPARENEAR( ring->pointN( 1 ).z(), -19.148357, 0.001 );
   QGSCOMPARENEAR( ring->pointN( 2 ).z(), -19.092128, 0.001 );
@@ -2216,7 +2216,7 @@ void TestQgsPolygon::Qtransform()
 
   pl.transform( qtr, 2, 3, 4, 5 );
 
-  const QgsLineString *ext = static_cast<const QgsLineString *>( pl.exteriorRing() );
+  auto ext = static_cast<const QgsLineString *>( pl.exteriorRing() );
 
   QGSCOMPARENEAR( ext->pointN( 0 ).x(), 2, 100 );
   QGSCOMPARENEAR( ext->pointN( 0 ).y(), 6, 100 );
@@ -2240,7 +2240,7 @@ void TestQgsPolygon::Qtransform()
   QGSCOMPARENEAR( pl.exteriorRing()->boundingBox().xMaximum(), 22, 0.001 );
   QGSCOMPARENEAR( pl.exteriorRing()->boundingBox().yMaximum(), 36, 0.001 );
 
-  const QgsLineString *ring = static_cast<const QgsLineString *>( pl.interiorRing( 0 ) );
+  auto ring = static_cast<const QgsLineString *>( pl.interiorRing( 0 ) );
 
   QGSCOMPARENEAR( ring->pointN( 0 ).x(), 2, 100 );
   QGSCOMPARENEAR( ring->pointN( 0 ).y(), 6, 100 );
@@ -2322,7 +2322,7 @@ void TestQgsPolygon::toCurveType()
 
   QCOMPARE( curveType->wkbType(), Qgis::WkbType::CurvePolygonZM );
 
-  const QgsLineString *exteriorRing = static_cast<const QgsLineString *>( curveType->exteriorRing() );
+  auto exteriorRing = static_cast<const QgsLineString *>( curveType->exteriorRing() );
   QCOMPARE( exteriorRing->numPoints(), 5 );
   QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) );
   QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 ) );
@@ -2332,7 +2332,7 @@ void TestQgsPolygon::toCurveType()
 
   QCOMPARE( curveType->numInteriorRings(), 1 );
 
-  const QgsLineString *interiorRing = static_cast<const QgsLineString *>( curveType->interiorRing( 0 ) );
+  auto interiorRing = static_cast<const QgsLineString *>( curveType->interiorRing( 0 ) );
   QCOMPARE( interiorRing->numPoints(), 5 );
   QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( Qgis::WkbType::PointZM, 1, 1, 1, 2 ) );
   QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( Qgis::WkbType::PointZM, 1, 9, 2, 3 ) );

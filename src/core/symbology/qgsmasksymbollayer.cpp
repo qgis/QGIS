@@ -57,7 +57,7 @@ QgsSymbolLayer *QgsMaskMarkerSymbolLayer::create( const QVariantMap &props )
 
 QgsMaskMarkerSymbolLayer *QgsMaskMarkerSymbolLayer::clone() const
 {
-  QgsMaskMarkerSymbolLayer *l = static_cast<QgsMaskMarkerSymbolLayer *>( create( properties() ) );
+  auto l = static_cast<QgsMaskMarkerSymbolLayer *>( create( properties() ) );
   l->setSubSymbol( mSymbol->clone() );
   l->setMasks( mMaskedSymbolLayers );
   copyDataDefinedProperties( l );

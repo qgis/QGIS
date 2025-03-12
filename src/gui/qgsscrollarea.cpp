@@ -90,14 +90,14 @@ bool ScrollAreaFilter::eventFilter( QObject *obj, QEvent *event )
     case QEvent::ChildAdded:
     {
       // need to install filter on all child widgets as well
-      QChildEvent *ce = static_cast<QChildEvent *>( event );
+      auto ce = static_cast<QChildEvent *>( event );
       addChild( ce->child() );
       break;
     }
 
     case QEvent::ChildRemoved:
     {
-      QChildEvent *ce = static_cast<QChildEvent *>( event );
+      auto ce = static_cast<QChildEvent *>( event );
       removeChild( ce->child() );
       break;
     }

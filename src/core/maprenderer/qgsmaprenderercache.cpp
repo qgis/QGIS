@@ -281,7 +281,7 @@ QList< QgsMapLayer * > QgsMapRendererCache::dependentLayers( const QString &cach
 
 void QgsMapRendererCache::layerRequestedRepaint()
 {
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  auto layer = qobject_cast<QgsMapLayer *>( sender() );
   invalidateCacheForLayer( layer );
 }
 

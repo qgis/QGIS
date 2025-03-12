@@ -704,7 +704,7 @@ void TestQgsMultiPoint::toCurveType()
   QCOMPARE( curveType->wkbType(), Qgis::WkbType::MultiPointZM );
   QCOMPARE( curveType->numGeometries(), 2 );
 
-  const QgsPoint *curve = static_cast<const QgsPoint *>( curveType->geometryN( 0 ) );
+  auto curve = static_cast<const QgsPoint *>( curveType->geometryN( 0 ) );
   QCOMPARE( *curve, QgsPoint( Qgis::WkbType::PointZM, 10, 0, 4, 8 ) );
 
   curve = static_cast<const QgsPoint *>( curveType->geometryN( 1 ) );

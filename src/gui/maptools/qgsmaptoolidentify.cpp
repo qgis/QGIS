@@ -966,7 +966,7 @@ QMap<QString, QString> QgsMapToolIdentify::featureDerivedAttributes( const QgsFe
       closestPointAttributes( layerToMapTransform, layerVertCrs, mapVertCrs, *layerCrsGeom, layerPoint, showTransformedZ, derivedAttributes );
     }
 
-    if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( layerCrsGeom ) )
+    if ( auto curve = qgsgeometry_cast<const QgsCurve *>( layerCrsGeom ) )
     {
       // Add the start and end points in as derived attributes
       QgsPointXY pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( curve->startPoint().x(), curve->startPoint().y() ) );
@@ -1036,7 +1036,7 @@ QMap<QString, QString> QgsMapToolIdentify::featureDerivedAttributes( const QgsFe
   else if ( geometryType == Qgis::GeometryType::Point )
   {
     // Include the x, y, z coordinates of the point as a derived attribute
-    if ( const QgsPoint *mapCrsPoint = qgsgeometry_cast<const QgsPoint *>( mapCrsGeometry.constGet() ) )
+    if ( auto mapCrsPoint = qgsgeometry_cast<const QgsPoint *>( mapCrsGeometry.constGet() ) )
     {
       QString x;
       QString y;
@@ -1198,7 +1198,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     identifyResult = dprovider->identify( point, format, viewExtent, width, height );
   }
 
-  QgsRasterLayerElevationProperties *elevationProperties = qobject_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() );
+  auto elevationProperties = qobject_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() );
   if ( identifyResult.isValid() && !identifyContext.zRange().isInfinite() && elevationProperties && elevationProperties->isEnabled() )
   {
     // filter results by z range
@@ -1485,7 +1485,7 @@ void QgsMapToolIdentify::fromPointCloudIdentificationToIdentifyResults( QgsPoint
   const QgsCoordinateTransform layerToMapTransform( layer->crs3D(), QgsProject::instance()->crs3D(), QgsProject::instance()->transformContext() );
 
   int id = 1;
-  const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast<const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
+  auto elevationProps = qobject_cast<const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
   for ( const QVariantMap &pt : identified )
   {
     QMap<QString, QString> ptStr;
@@ -1566,7 +1566,7 @@ void QgsMapToolIdentify::fromElevationProfileLayerIdentificationToIdentifyResult
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+      auto vl = qobject_cast<QgsVectorLayer *>( layer );
 
       QgsFeatureList features;
       QHash<QgsFeatureId, QVariant> featureDistances;
@@ -1634,7 +1634,7 @@ void QgsMapToolIdentify::fromElevationProfileLayerIdentificationToIdentifyResult
 
     case Qgis::LayerType::PointCloud:
     {
-      QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
+      auto pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
       fromPointCloudIdentificationToIdentifyResults( pcLayer, identified, results );
       break;
     }

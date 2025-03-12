@@ -863,7 +863,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
 
     if ( mType == Ogr && layer->type() == Qgis::LayerType::Vector )
     {
-      QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer );
+      auto vector = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vector || ( vector->providerType() != QLatin1String( "ogr" ) && vector->providerType() != QLatin1String( "postgres" ) ) )
         continue;
 
@@ -1199,7 +1199,7 @@ void QgsGrassModuleSelection::onLayerChanged()
   // add new layers matching selected input layer if not yet present
   for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
-    QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer && vectorLayer->providerType() == QLatin1String( "grass" ) )
     {
       QString uri = vectorLayer->dataProvider()->dataSourceUri();
@@ -1301,7 +1301,7 @@ void QgsGrassModuleSelection::onModeChanged()
   {
     QString id = mModeComboBox->itemData( index, Qt::UserRole + 1 ).toString();
     QgsMapLayer *layer = QgsProject::instance()->mapLayer( id );
-    QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer )
     {
       onLayerSelectionChanged();

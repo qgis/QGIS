@@ -51,7 +51,7 @@ void QgsMetalRoughMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTech
 
 void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
 {
-  const QgsMetalRoughMaterialSettings *material = dynamic_cast<const QgsMetalRoughMaterialSettings *>( settings );
+  auto material = dynamic_cast<const QgsMetalRoughMaterialSettings *>( settings );
   if ( !material )
     return;
   mButtonBaseColor->setColor( material->baseColor() );

@@ -97,7 +97,7 @@ void TestQgsLabelingWidget::testRuleKeyPreserved()
   QgsLabelingWidget widget( &layer, nullptr );
   widget.writeSettingsToLayer();
 
-  QgsRuleBasedLabeling *labelingAfter = dynamic_cast<QgsRuleBasedLabeling *>( layer.labeling() );
+  auto labelingAfter = dynamic_cast<QgsRuleBasedLabeling *>( layer.labeling() );
   QVERIFY( labelingAfter );
   QCOMPARE( labelingAfter->rootRule()->ruleKey(), rootRuleKey );
   QCOMPARE( labelingAfter->rootRule()->children().count(), 1 );

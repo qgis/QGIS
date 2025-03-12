@@ -167,7 +167,7 @@ QgsFields QgsSumLineLengthAlgorithm::outputFields( const QgsFields &inputFields 
 
 bool QgsSumLineLengthAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
+  if ( auto vl = qobject_cast<const QgsVectorLayer *>( layer ) )
   {
     return vl->geometryType() == Qgis::GeometryType::Polygon;
   }

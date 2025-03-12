@@ -34,7 +34,7 @@ QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas *canvas )
 void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer //todo: move this to a function in parent class to avoid duplication
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 
   if ( !vlayer )
   {

@@ -706,7 +706,7 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
     // Get a list of all the OR and IN nodes chained together
     std::function<bool ( QgsExpressionNode * )> visitOrNodes = [&visitOrNodes, &orValuesMap, &orFieldNames]( QgsExpressionNode * node ) -> bool
     {
-      if ( QgsExpressionNodeBinaryOperator *op = dynamic_cast<QgsExpressionNodeBinaryOperator *>( node ) )
+      if ( auto op = dynamic_cast<QgsExpressionNodeBinaryOperator *>( node ) )
       {
         if ( op->op() != boOr && op->op() != boEQ )
         {
@@ -917,9 +917,9 @@ bool QgsExpressionNodeBinaryOperator::leftAssociative() const
 
 QString QgsExpressionNodeBinaryOperator::dump() const
 {
-  QgsExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsExpressionNodeBinaryOperator *>( mOpLeft );
-  QgsExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsExpressionNodeBinaryOperator *>( mOpRight );
-  QgsExpressionNodeUnaryOperator *ruOp = dynamic_cast<QgsExpressionNodeUnaryOperator *>( mOpRight );
+  auto lOp = dynamic_cast<QgsExpressionNodeBinaryOperator *>( mOpLeft );
+  auto rOp = dynamic_cast<QgsExpressionNodeBinaryOperator *>( mOpRight );
+  auto ruOp = dynamic_cast<QgsExpressionNodeUnaryOperator *>( mOpRight );
 
   QString rdump( mOpRight->dump() );
 
@@ -1345,7 +1345,7 @@ QSet<QString> QgsExpressionNodeFunction::referencedVariables() const
   {
     if ( !mArgs->list().isEmpty() )
     {
-      QgsExpressionNodeLiteral *var = dynamic_cast<QgsExpressionNodeLiteral *>( mArgs->list().at( 0 ) );
+      auto var = dynamic_cast<QgsExpressionNodeLiteral *>( mArgs->list().at( 0 ) );
       if ( var )
         return QSet<QString>() << var->value().toString();
     }

@@ -146,7 +146,7 @@ void QgsMapCanvasAnnotationItem::setFeatureForMapPosition()
   if ( !mAnnotation || !mAnnotation->hasFixedMapPosition() )
     return;
 
-  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mAnnotation->mapLayer() );
+  auto vectorLayer = qobject_cast<QgsVectorLayer *>( mAnnotation->mapLayer() );
   if ( !vectorLayer )
     return;
 

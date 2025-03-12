@@ -112,7 +112,7 @@ QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &pa
 
     outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-    QgsVectorLayer *overlayLayer = qobject_cast<QgsVectorLayer *>( layers.at( 0 ) );
+    auto overlayLayer = qobject_cast<QgsVectorLayer *>( layers.at( 0 ) );
 
     const long total = sourceA->featureCount();
     QgsOverlayUtils::difference( *sourceA, *overlayLayer, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA );
@@ -134,7 +134,7 @@ QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( !layer )
         continue;
 
-      QgsVectorLayer *overlayLayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto overlayLayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !overlayLayer )
         continue;
 

@@ -63,7 +63,7 @@ void QgsProjectMetadata::combine( const QgsAbstractMetadataBase *other )
 {
   QgsAbstractMetadataBase::combine( other );
 
-  if ( const QgsProjectMetadata *otherProjectMetadata = dynamic_cast< const QgsProjectMetadata * >( other ) )
+  if ( auto otherProjectMetadata = dynamic_cast<const QgsProjectMetadata *>( other ) )
   {
     if ( !otherProjectMetadata->author().isEmpty() )
       mAuthor = otherProjectMetadata->author();

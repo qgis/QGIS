@@ -426,7 +426,7 @@ void QgsSymbolButton::wheelEvent( QWheelEvent *event )
     {
       case Qgis::SymbolType::Marker:
       {
-        QgsMarkerSymbol *marker = qgis::down_cast<QgsMarkerSymbol *>( mSymbol.get() );
+        auto marker = qgis::down_cast<QgsMarkerSymbol *>( mSymbol.get() );
         if ( marker )
         {
           const double size = std::max( 0.0, marker->size() + increment );
@@ -438,7 +438,7 @@ void QgsSymbolButton::wheelEvent( QWheelEvent *event )
 
       case Qgis::SymbolType::Line:
       {
-        QgsLineSymbol *line = qgis::down_cast<QgsLineSymbol *>( mSymbol.get() );
+        auto line = qgis::down_cast<QgsLineSymbol *>( mSymbol.get() );
         if ( line )
         {
           const double width = std::max( 0.0, line->width() + increment );

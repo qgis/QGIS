@@ -155,7 +155,7 @@ void QgsRenderedItemResults::appendResults( const QList<QgsRenderedItemDetails *
       QgsDebugError( QStringLiteral( "Could not transform rendered item's bounds to map CRS" ) );
     }
 
-    if ( QgsRenderedAnnotationItemDetails *annotationDetails = dynamic_cast< QgsRenderedAnnotationItemDetails * >( details ) )
+    if ( auto annotationDetails = dynamic_cast<QgsRenderedAnnotationItemDetails *>( details ) )
       mAnnotationItemsIndex->insert( annotationDetails, annotationDetails->boundingBox() );
 
 
@@ -175,7 +175,7 @@ void QgsRenderedItemResults::transferResults( QgsRenderedItemResults *other, con
 
     for ( std::unique_ptr< QgsRenderedItemDetails > &details : source )
     {
-      if ( QgsRenderedAnnotationItemDetails *annotationDetails = dynamic_cast< QgsRenderedAnnotationItemDetails * >( details.get() ) )
+      if ( auto annotationDetails = dynamic_cast<QgsRenderedAnnotationItemDetails *>( details.get() ) )
         mAnnotationItemsIndex->insert( annotationDetails, annotationDetails->boundingBox() );
 
       mDetails[layerId].emplace_back( std::move( details ) );
@@ -193,7 +193,7 @@ void QgsRenderedItemResults::transferResults( QgsRenderedItemResults *other )
     dest.reserve( layerIt->second.size() );
     for ( auto it = layerIt->second.begin(); it != layerIt->second.end(); ++it )
     {
-      if ( QgsRenderedAnnotationItemDetails *annotationDetails = dynamic_cast< QgsRenderedAnnotationItemDetails * >( ( *it ).get() ) )
+      if ( auto annotationDetails = dynamic_cast<QgsRenderedAnnotationItemDetails *>( ( *it ).get() ) )
         mAnnotationItemsIndex->insert( annotationDetails, annotationDetails->boundingBox() );
 
       dest.emplace_back( std::move( *it ) );

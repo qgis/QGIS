@@ -133,7 +133,7 @@ QgsPaintEffect *QgsPaintEffectRegistry::defaultStack()
 
 bool QgsPaintEffectRegistry::isDefaultStack( QgsPaintEffect *effect )
 {
-  QgsEffectStack *effectStack = dynamic_cast< QgsEffectStack * >( effect );
+  auto effectStack = dynamic_cast<QgsEffectStack *>( effect );
   if ( !effectStack )
     return false;
 
@@ -158,7 +158,7 @@ bool QgsPaintEffectRegistry::isDefaultStack( QgsPaintEffect *effect )
   if ( !dynamic_cast< QgsInnerGlowEffect * >( effectStack->effect( 4 ) ) )
     return false;
 
-  QgsDrawSourceEffect *sourceEffect = static_cast< QgsDrawSourceEffect * >( effectStack->effect( 2 ) );
+  auto sourceEffect = static_cast<QgsDrawSourceEffect *>( effectStack->effect( 2 ) );
   if ( !qgsDoubleNear( sourceEffect->opacity(), 1.0 ) )
     return false;
   if ( sourceEffect->blendMode() != QPainter::CompositionMode_SourceOver )

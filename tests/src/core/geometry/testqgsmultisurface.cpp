@@ -575,7 +575,7 @@ void TestQgsMultiSurface::boundary()
   ms.addGeometry( part1.clone() );
 
   QgsAbstractGeometry *boundary = ms.boundary();
-  QgsMultiCurve *mpBoundary = dynamic_cast<QgsMultiCurve *>( boundary );
+  auto mpBoundary = dynamic_cast<QgsMultiCurve *>( boundary );
 
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 1 );

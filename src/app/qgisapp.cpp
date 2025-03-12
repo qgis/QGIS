@@ -676,14 +676,14 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
       if ( mLayerTreeView )
       {
         // if it's a legend node, open symbol editor directly
-        if ( QgsSymbolLegendNode *node = qobject_cast<QgsSymbolLegendNode *>( mLayerTreeView->currentLegendNode() ) )
+        if ( auto node = qobject_cast<QgsSymbolLegendNode *>( mLayerTreeView->currentLegendNode() ) )
         {
           const QgsSymbol *originalSymbol = node->symbol();
           if ( !originalSymbol )
             return;
 
           std::unique_ptr<QgsSymbol> symbol( originalSymbol->clone() );
-          QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );
+          auto vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );
           QgsSymbolSelectorDialog dlg( symbol.get(), QgsStyle::defaultStyle(), vlayer, this );
           QgsSymbolWidgetContext context;
           context.setMapCanvas( mMapCanvas );
@@ -850,7 +850,7 @@ void QgisApp::annotationItemTypeAdded( int id )
     connect( tool->mapTool(), &QgsMapTool::deactivated, tool->mapTool(), &QObject::deleteLater );
     connect( tool->handler(), &QgsCreateAnnotationItemMapToolHandler::itemCreated, this, [=] {
       QgsAnnotationItem *item = tool->handler()->takeCreatedItem();
-      QgsAnnotationLayer *targetLayer = qobject_cast<QgsAnnotationLayer *>( activeLayer() );
+      auto targetLayer = qobject_cast<QgsAnnotationLayer *>( activeLayer() );
       if ( !targetLayer )
         targetLayer = QgsProject::instance()->mainAnnotationLayer();
 
@@ -2421,7 +2421,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
     QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( title, shortMessage );
     QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
     connect( detailsButton, &QPushButton::clicked, this, [=] {
-      if ( QgsMessageViewer *dialog = dynamic_cast<QgsMessageViewer *>( QgsMessageOutput::createMessageOutput() ) )
+      if ( auto dialog = dynamic_cast<QgsMessageViewer *>( QgsMessageOutput::createMessageOutput() ) )
       {
         dialog->setTitle( title );
         dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
@@ -2624,7 +2624,7 @@ bool QgisApp::event( QEvent *event )
   if ( event->type() == QEvent::FileOpen )
   {
     // handle FileOpen event (double clicking a file icon in Mac OS X Finder)
-    QFileOpenEvent *foe = static_cast<QFileOpenEvent *>( event );
+    auto foe = static_cast<QFileOpenEvent *>( event );
     openFile( foe->file() );
     done = true;
   }
@@ -2953,7 +2953,7 @@ void QgisApp::createActions()
   connect( mActionDeselectActiveLayer, &QAction::triggered, this, &QgisApp::deselectActiveLayer );
   connect( mActionSelectAll, &QAction::triggered, this, &QgisApp::selectAll );
   connect( mActionReselect, &QAction::triggered, this, [=] {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
     if ( !vlayer )
     {
       visibleMessageBar()->pushMessage(
@@ -3717,7 +3717,7 @@ void QgisApp::createToolBars()
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
   // vector layer edits tool buttons
-  QToolButton *tbAllEdits = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionAllEdits ) );
+  auto tbAllEdits = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionAllEdits ) );
   tbAllEdits->setPopupMode( QToolButton::InstantPopup );
 
   // new layer tool button
@@ -3862,7 +3862,7 @@ void QgisApp::createToolBars()
   pointSymbolAction->setObjectName( QStringLiteral( "ActionPointSymbolTools" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
-  QgsMapToolEditMeshFrame *editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
+  auto editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
   if ( editMeshMapTool )
   {
     QToolButton *meshEditToolButton = new QToolButton();
@@ -5696,7 +5696,7 @@ void QgisApp::addSelectedVectorLayer( const QString &uri, const QString &layerNa
 
 void QgisApp::replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider )
 {
-  QgsVectorLayer *oldLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( oldId ) );
+  auto oldLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( oldId ) );
   if ( !oldLayer )
     return;
 
@@ -6208,7 +6208,7 @@ void QgisApp::showRasterCalculator()
 
 void QgisApp::showMeshCalculator()
 {
-  QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( activeLayer() );
+  auto meshLayer = qobject_cast<QgsMeshLayer *>( activeLayer() );
   if ( meshLayer && meshLayer->isEditable() )
   {
     QMessageBox::information( this, tr( "Mesh Calculator" ), tr( "Mesh calculator with mesh layer in edit mode is not supported." ) );
@@ -7473,7 +7473,7 @@ void QgisApp::doFeatureAction()
 
 void QgisApp::updateDefaultFeatureAction( QAction *action )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !vlayer )
     return;
 
@@ -7505,7 +7505,7 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
     //action is from QgsMapLayerActionRegistry
     vlayer->actions()->setDefaultAction( QStringLiteral( "Canvas" ), QUuid() );
 
-    QgsMapLayerAction *mapLayerAction = qobject_cast<QgsMapLayerAction *>( action );
+    auto mapLayerAction = qobject_cast<QgsMapLayerAction *>( action );
     if ( mapLayerAction )
     {
       QgsGui::mapLayerActionRegistry()->setDefaultActionForLayer( vlayer, mapLayerAction );
@@ -7529,7 +7529,7 @@ void QgisApp::refreshFeatureActions()
 {
   mFeatureActionMenu->clear();
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !vlayer )
     return;
 
@@ -7616,7 +7616,7 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
         bool layerWasValid( layer->isValid() );
         const QString previousProvider = layer->providerType();
         // Store subset string from vlayer if we are fixing a bad layer
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
         QString subsetString;
         // Get the subset string directly from the data provider because
         // layer's method will return a null string from invalid layers
@@ -7687,7 +7687,7 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
           vlayer->updateExtents();
 
         // All the following code is necessary to refresh the layer
-        QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( mLayerTreeView->model() );
+        auto model = qobject_cast<QgsLayerTreeModel *>( mLayerTreeView->model() );
         if ( model )
         {
           QgsLayerTreeLayer *tl( model->rootGroup()->findLayer( layer->id() ) );
@@ -7831,7 +7831,7 @@ void QgisApp::commitError( QgsVectorLayer *vlayer, const QStringList &commitErro
 
 void QgisApp::labeling()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !vlayer )
   {
     return;
@@ -7879,7 +7879,7 @@ void QgisApp::blockActiveLayerChanges( bool blocked )
 
 void QgisApp::diagramProperties()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !vlayer )
   {
     visibleMessageBar()->pushMessage( tr( "Diagram Properties" ), tr( "Please select a vector layer first" ), Qgis::MessageLevel::Info );
@@ -7917,7 +7917,7 @@ void QgisApp::setCadDockVisible( bool visible )
 
 void QgisApp::fieldCalculator()
 {
-  QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  auto myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !myLayer )
   {
     return;
@@ -7932,7 +7932,7 @@ void QgisApp::fieldCalculator()
 
 void QgisApp::attributeTable( QgsAttributeTableFilterModel::FilterMode filter, const QString &filterExpression )
 {
-  QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  auto myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !myLayer || !myLayer->dataProvider() )
   {
     return;
@@ -8140,7 +8140,7 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
 
   auto onSuccess = [this, layerId]( const QString &newFilename, bool, const QString &newLayerName, const QString &, const QString & ) {
     // we have to re-retrieve the layer, in case it's been removed during the lifetime of the writer task
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+    auto vl = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
     if ( vl )
     {
       QgsDataProvider::ProviderOptions options;
@@ -8327,7 +8327,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     }
 
     // We need to re-retrieve the map layer here, in case it's been deleted during the lifetime of the task
-    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
+    if ( auto vlayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
       this->emit layerSavedAs( vlayer, vectorFileName );
 
     this->visibleMessageBar()->pushMessage( tr( "Layer Exported" ), tr( "Successfully saved vector layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ), Qgis::MessageLevel::Success, 0 );
@@ -8561,7 +8561,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *, bool checkFeaturesV
     return;
   }
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
   {
     visibleMessageBar()->pushMessage( tr( "No Vector Layer Selected" ), tr( "Deleting features only works on vector layers" ), Qgis::MessageLevel::Info );
@@ -8959,7 +8959,7 @@ void QgisApp::setupLayoutManagerConnections()
     QgsMasterLayoutInterface *l = QgsProject::instance()->layoutManager()->layoutByName( name );
     if ( !l )
       return;
-    QgsPrintLayout *pl = dynamic_cast<QgsPrintLayout *>( l );
+    auto pl = dynamic_cast<QgsPrintLayout *>( l );
     if ( !pl )
       return;
 
@@ -8987,7 +8987,7 @@ void QgisApp::setupLayoutManagerConnections()
     QgsMasterLayoutInterface *l = QgsProject::instance()->layoutManager()->layoutByName( name );
     if ( l )
     {
-      QgsPrintLayout *pl = dynamic_cast<QgsPrintLayout *>( l );
+      auto pl = dynamic_cast<QgsPrintLayout *>( l );
       if ( pl )
       {
         QgsMapLayerAction *action = mAtlasFeatureActions.value( pl );
@@ -9321,7 +9321,7 @@ QList<QgsMapCanvasAnnotationItem *> QgisApp::annotationItems()
     QList<QGraphicsItem *>::iterator gIt = graphicsItems.begin();
     for ( ; gIt != graphicsItems.end(); ++gIt )
     {
-      QgsMapCanvasAnnotationItem *currentItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( *gIt );
+      auto currentItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( *gIt );
       if ( currentItem )
       {
         itemList.push_back( currentItem );
@@ -9414,7 +9414,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
     return;
   }
 
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( activeMapLayer );
+  auto vl = qobject_cast<QgsVectorLayer *>( activeMapLayer );
   if ( !vl )
   {
     visibleMessageBar()->pushMessage(
@@ -9518,7 +9518,7 @@ void QgisApp::modifyAttributesOfSelectedFeatures()
     return;
   }
 
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( activeMapLayer );
+  auto vl = qobject_cast<QgsVectorLayer *>( activeMapLayer );
   if ( !vl )
   {
     visibleMessageBar()->pushMessage(
@@ -9579,7 +9579,7 @@ void QgisApp::mergeSelectedFeatures()
     );
     return;
   }
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( activeMapLayer );
+  auto vl = qobject_cast<QgsVectorLayer *>( activeMapLayer );
   if ( !vl )
   {
     visibleMessageBar()->pushMessage(
@@ -9630,7 +9630,7 @@ void QgisApp::mergeSelectedFeatures()
   }
   else if ( !QgsWkbTypes::isMultiType( vl->wkbType() ) )
   {
-    const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( unionGeom.constGet() );
+    auto c = qgsgeometry_cast<const QgsGeometryCollection *>( unionGeom.constGet() );
     if ( ( c && c->partCount() > 1 ) || !unionGeom.convertToSingleType() )
     {
       visibleMessageBar()->pushMessage(
@@ -9682,7 +9682,7 @@ void QgisApp::mergeSelectedFeatures()
     }
     else if ( !QgsWkbTypes::isMultiType( vl->wkbType() ) )
     {
-      const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( unionGeom.constGet() );
+      auto c = qgsgeometry_cast<const QgsGeometryCollection *>( unionGeom.constGet() );
       if ( ( c && c->partCount() > 1 ) || !unionGeom.convertToSingleType() )
       {
         visibleMessageBar()->pushMessage(
@@ -9795,7 +9795,7 @@ void QgisApp::deselectAll()
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); ++it )
   {
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
+    if ( auto vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
       vl->removeSelection();
     else if ( QgsVectorTileLayer *vtl = qobject_cast<QgsVectorTileLayer *>( it.value() ) )
       vtl->removeSelection();
@@ -9819,14 +9819,14 @@ void QgisApp::deselectActiveLayer()
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       vlayer->removeSelection();
       break;
     }
 
     case Qgis::LayerType::VectorTile:
     {
-      QgsVectorTileLayer *vtlayer = qobject_cast<QgsVectorTileLayer *>( layer );
+      auto vtlayer = qobject_cast<QgsVectorTileLayer *>( layer );
       vtlayer->removeSelection();
       break;
     }
@@ -9851,7 +9851,7 @@ void QgisApp::deselectActiveLayer()
 
 void QgisApp::invertSelection()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
   if ( !vlayer )
   {
     visibleMessageBar()->pushMessage(
@@ -9867,7 +9867,7 @@ void QgisApp::invertSelection()
 
 void QgisApp::selectAll()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
   if ( !vlayer )
   {
     visibleMessageBar()->pushMessage(
@@ -9883,7 +9883,7 @@ void QgisApp::selectAll()
 
 void QgisApp::selectByExpression()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
   if ( !vlayer )
   {
     visibleMessageBar()->pushMessage(
@@ -9903,7 +9903,7 @@ void QgisApp::selectByExpression()
 
 void QgisApp::selectByForm()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
   if ( !vlayer )
   {
     visibleMessageBar()->pushMessage(
@@ -9961,7 +9961,7 @@ void QgisApp::addPart()
 void QgisApp::cutSelectionToClipboard( QgsMapLayer *layerContainingSelection )
 {
   // Test for feature support in this layer
-  QgsVectorLayer *selectionVectorLayer = qobject_cast<QgsVectorLayer *>( layerContainingSelection ? layerContainingSelection : activeLayer() );
+  auto selectionVectorLayer = qobject_cast<QgsVectorLayer *>( layerContainingSelection ? layerContainingSelection : activeLayer() );
   if ( !selectionVectorLayer )
     return;
 
@@ -10014,7 +10014,7 @@ void QgisApp::clipboardChanged()
 
 void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
 {
-  QgsVectorLayer *pasteVectorLayer = qobject_cast<QgsVectorLayer *>( destinationLayer ? destinationLayer : activeLayer() );
+  auto pasteVectorLayer = qobject_cast<QgsVectorLayer *>( destinationLayer ? destinationLayer : activeLayer() );
   if ( !pasteVectorLayer )
     return;
 
@@ -10936,7 +10936,7 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
 
 void QgisApp::saveVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->isEditable() || !vlayer->isModified() )
     return;
 
@@ -10959,7 +10959,7 @@ void QgisApp::saveVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool
 
 void QgisApp::saveMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
-  QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
+  auto mlayer = qobject_cast<QgsMeshLayer *>( layer );
   if ( !mlayer || !mlayer->isEditable() || !mlayer->isModified() )
     return;
 
@@ -10983,7 +10983,7 @@ void QgisApp::saveMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool t
 
 void QgisApp::savePointCloudLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
-  QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  auto pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
   if ( !pclayer || !pclayer->isEditable() || !pclayer->isModified() )
     return;
 
@@ -11029,7 +11029,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
 
 void QgisApp::cancelVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->isEditable() )
     return;
 
@@ -11056,7 +11056,7 @@ void QgisApp::cancelVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bo
 
 void QgisApp::cancelMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
-  QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
+  auto mlayer = qobject_cast<QgsMeshLayer *>( layer );
   if ( !mlayer || !mlayer->isEditable() )
     return;
 
@@ -11079,7 +11079,7 @@ void QgisApp::cancelMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool
 
 void QgisApp::cancelPointCloudLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
-  QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  auto pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
   if ( !pclayer || !pclayer->isEditable() )
     return;
 
@@ -11107,7 +11107,7 @@ void QgisApp::enableMeshEditingTools( bool enable )
 {
   if ( !mMapTools )
     return;
-  QgsMapToolEditMeshFrame *editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
+  auto editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
 
   editMeshMapTool->setActionsEnable( enable );
 }
@@ -11116,7 +11116,7 @@ QList<QgsMapToolCapture *> QgisApp::captureTools()
 {
   QList<QgsMapToolCapture *> res = mMapTools->captureTools();
   // also check current tool, in case it's a custom tool
-  if ( QgsMapToolCapture *currentTool = qobject_cast<QgsMapToolCapture *>( mMapCanvas->mapTool() ) )
+  if ( auto currentTool = qobject_cast<QgsMapToolCapture *>( mMapCanvas->mapTool() ) )
   {
     if ( !res.contains( currentTool ) )
       res.append( currentTool );
@@ -11233,7 +11233,7 @@ void QgisApp::updateLayerModifiedActions()
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+        auto vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
         if ( QgsVectorDataProvider *dprovider = vlayer->dataProvider() )
         {
           enableSaveLayerEdits = ( dprovider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues && vlayer->isEditable() && vlayer->isModified() );
@@ -11319,11 +11319,11 @@ void QgisApp::layerSubsetString()
 
 void QgisApp::layerSubsetString( QgsMapLayer *mapLayer )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
   if ( !vlayer )
   {
     // Try PG raster
-    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( mapLayer );
+    auto rlayer = qobject_cast<QgsRasterLayer *>( mapLayer );
     if ( rlayer )
     {
       QgsRasterDataProvider *provider = rlayer->dataProvider();
@@ -11365,7 +11365,7 @@ void QgisApp::layerSubsetString( QgsMapLayer *mapLayer )
         }
       }
     }
-    QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( mapLayer );
+    auto pclayer = qobject_cast<QgsPointCloudLayer *>( mapLayer );
     if ( pclayer )
     {
       QgsPointCloudQueryBuilder qb { pclayer };
@@ -11560,7 +11560,7 @@ void QgisApp::removeLayer()
 
   for ( QgsMapLayer *layer : selectedLayers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
       return;
   }
@@ -11647,14 +11647,14 @@ void QgisApp::removeLayer()
 
   for ( QgsLayerTreeNode *node : selectedNodes )
   {
-    if ( QgsLayerTreeGroup *group = qobject_cast<QgsLayerTreeGroup *>( node ) )
+    if ( auto group = qobject_cast<QgsLayerTreeGroup *>( node ) )
     {
       if ( QgsGroupLayer *groupLayer = group->groupLayer() )
       {
         QgsProject::instance()->removeMapLayer( groupLayer );
       }
     }
-    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( node->parent() );
+    auto parentGroup = qobject_cast<QgsLayerTreeGroup *>( node->parent() );
     if ( parentGroup )
       parentGroup->removeChildNode( node );
   }
@@ -11702,7 +11702,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
 
       case Qgis::LayerType::Vector:
       {
-        if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( selectedLyr ) )
+        if ( auto vlayer = qobject_cast<QgsVectorLayer *>( selectedLyr ) )
         {
           if ( vlayer->auxiliaryLayer() )
             vlayer->auxiliaryLayer()->save();
@@ -11943,7 +11943,7 @@ void QgisApp::legendLayerZoomNative()
   if ( !currentLayer )
     return;
 
-  if ( QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer ) )
+  if ( auto layer = qobject_cast<QgsRasterLayer *>( currentLayer ) )
   {
     QgsDebugMsgLevel( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixelX() ), 2 );
     QgsDebugMsgLevel( "MapUnitsPerPixel before : " + QString::number( mMapCanvas->mapUnitsPerPixel() ), 2 );
@@ -12004,7 +12004,7 @@ void QgisApp::legendLayerStretchUsingCurrentExtent()
   if ( !currentLayer )
     return;
 
-  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer );
+  auto layer = qobject_cast<QgsRasterLayer *>( currentLayer );
   if ( layer )
   {
     QgsRectangle myRectangle;
@@ -12258,7 +12258,7 @@ void QgisApp::versionReplyFinished()
 {
   QApplication::restoreOverrideCursor();
 
-  QgsVersionInfo *versionInfo = qobject_cast<QgsVersionInfo *>( sender() );
+  auto versionInfo = qobject_cast<QgsVersionInfo *>( sender() );
   Q_ASSERT( versionInfo );
 
   if ( versionInfo->error() == QNetworkReply::NoError )
@@ -12534,7 +12534,7 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, Qgis::RasterRangeLimit lim
     return;
   }
 
-  QgsRasterLayer *myRasterLayer = qobject_cast<QgsRasterLayer *>( myLayer );
+  auto myRasterLayer = qobject_cast<QgsRasterLayer *>( myLayer );
   if ( !myRasterLayer )
   {
     visibleMessageBar()->pushMessage( tr( "No Layer Selected" ), tr( "To perform a full histogram stretch, you need to have a raster layer selected." ), Qgis::MessageLevel::Info );
@@ -12601,7 +12601,7 @@ void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
       return;
     }
 
-    QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+    auto rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
     if ( !rasterLayer )
     {
       visibleMessageBar()->pushMessage( tr( "No Layer Selected" ), tr( "To change brightness or contrast, you need to have a raster layer selected." ), Qgis::MessageLevel::Info );
@@ -12654,7 +12654,7 @@ void QgisApp::adjustGamma( double delta )
       return;
     }
 
-    QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+    auto rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
     if ( !rasterLayer )
     {
       visibleMessageBar()->pushMessage( tr( "No Layer Selected" ), tr( "To change gamma, you need to have a raster layer selected." ), Qgis::MessageLevel::Info );
@@ -12981,7 +12981,7 @@ void QgisApp::addEmbeddedItems( const QString &projectFile, const QStringList &g
   // fix broken relations and dependencies
   for ( const QString &id : constSortedIds )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
     if ( vlayer )
       QgsAppLayerHandling::onVectorLayerStyleLoaded( vlayer, QgsMapLayer::AllStyleCategories );
   }
@@ -13292,7 +13292,7 @@ bool QgisApp::saveDirty()
     QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
     for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); ++it )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
+      auto vl = qobject_cast<QgsVectorLayer *>( it.value() );
       // note that we skip the unsaved edits check for memory layers -- it's misleading, because their contents aren't actually
       // saved if this is part of a project close operation. Instead we let these get picked up by checkMemoryLayers().
       if ( !vl || vl->providerType() == QLatin1String( "memory" ) )
@@ -13348,7 +13348,7 @@ bool QgisApp::saveDirty()
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto it = layers.begin(); it != layers.end(); ++it )
   {
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
+    if ( auto vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
     {
       if ( vl->providerType() == QLatin1String( "memory" ) && vl->isEditable() && vl->isModified() )
       {
@@ -13369,7 +13369,7 @@ bool QgisApp::checkUnsavedLayerEdits()
     const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
     for ( auto it = layers.begin(); it != layers.end(); ++it )
     {
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
       {
         // note that we skip the unsaved edits check for memory layers -- it's misleading, because their contents aren't actually
         // saved if this is part of a project close operation. Instead we let these get picked up by checkMemoryLayers()
@@ -13399,7 +13399,7 @@ bool QgisApp::checkUnsavedRasterAttributeTableEdits( const QList<QgsMapLayer *> 
   {
     for ( QgsMapLayer *mapLayer : std::as_const( mapLayers ) )
     {
-      if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( mapLayer ) )
+      if ( auto rasterLayer = qobject_cast<QgsRasterLayer *>( mapLayer ) )
       {
         rasterLayers.push_back( rasterLayer );
       }
@@ -13483,7 +13483,7 @@ bool QgisApp::checkMemoryLayers()
   {
     if ( it.value() && it.value()->providerType() == QLatin1String( "memory" ) )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
+      auto vl = qobject_cast<QgsVectorLayer *>( it.value() );
       if ( vl && vl->featureCount() != 0 && !vl->customProperty( QStringLiteral( "skipMemoryLayersCheck" ) ).toInt() )
       {
         hasMemoryLayers = true;
@@ -14341,7 +14341,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
     connect( layer, &QgsMapLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
     connect( layer, &QgsMapLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
 
-    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
+    if ( auto vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       // Do not check for layer editing capabilities because they may change
       // (for example when subsetString is added/removed) and signals need to
@@ -14352,13 +14352,13 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
       connect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgisApp::selectionChanged );
     }
 
-    if ( QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer ) )
+    if ( auto rlayer = qobject_cast<QgsRasterLayer *>( layer ) )
     {
       // connect up any request the raster may make to update the statusbar message
       connect( rlayer, &QgsRasterLayer::statusChanged, this, &QgisApp::showStatusMessage );
     }
 
-    if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer ) )
+    if ( auto pclayer = qobject_cast<QgsPointCloudLayer *>( layer ) )
     {
       connect( pclayer, &QgsPointCloudLayer::raiseError, this, &QgisApp::onLayerError );
     }
@@ -14542,7 +14542,7 @@ QgsClipboard *QgisApp::clipboard()
 
 void QgisApp::selectionChanged( const QgsFeatureIds &, const QgsFeatureIds &, bool )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto layer = qobject_cast<QgsVectorLayer *>( sender() );
 
   if ( layer )
   {
@@ -14550,7 +14550,7 @@ void QgisApp::selectionChanged( const QgsFeatureIds &, const QgsFeatureIds &, bo
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
         const int selectedCount = vlayer->selectedFeatureCount();
         if ( selectedCount == 1 )
         {
@@ -14581,7 +14581,7 @@ void QgisApp::selectionChanged( const QgsFeatureIds &, const QgsFeatureIds &, bo
 
       case Qgis::LayerType::VectorTile:
       {
-        QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
+        auto vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
         const int selectedCount = vtLayer->selectedFeatureCount();
         showStatusMessage( tr( "%n feature(s) selected on layer %1.", "number of selected features", selectedCount ).arg( layer->name() ) );
         break;
@@ -14665,7 +14665,7 @@ void QgisApp::legendLayerSelectionChanged()
 
 void QgisApp::layerEditStateChanged()
 {
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  auto layer = qobject_cast<QgsMapLayer *>( sender() );
   if ( layer && layer == activeLayer() )
   {
     activateDeactivateLayerRelatedActions( layer );
@@ -14680,7 +14680,7 @@ void QgisApp::updateLabelToolButtons()
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); ++it )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( it.value() );
+    auto vlayer = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( vlayer && ( vlayer->diagramsEnabled() || vlayer->labelsEnabled() ) )
     {
       enablePin = true;
@@ -14711,13 +14711,13 @@ bool QgisApp::selectedLayersHaveSelection()
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+        auto layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
         return layer->selectedFeatureCount() > 0;
       }
 
       case Qgis::LayerType::VectorTile:
       {
-        QgsVectorTileLayer *layer = qobject_cast<QgsVectorTileLayer *>( activeLayer() );
+        auto layer = qobject_cast<QgsVectorTileLayer *>( activeLayer() );
         return layer->selectedFeatureCount() > 0;
       }
 
@@ -14741,14 +14741,14 @@ bool QgisApp::selectedLayersHaveSelection()
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
+        auto layer = qobject_cast<QgsVectorLayer *>( mapLayer );
         if ( layer->selectedFeatureCount() > 0 )
           return true;
         break;
       }
       case Qgis::LayerType::VectorTile:
       {
-        QgsVectorTileLayer *layer = qobject_cast<QgsVectorTileLayer *>( mapLayer );
+        auto layer = qobject_cast<QgsVectorTileLayer *>( mapLayer );
         if ( layer->selectedFeatureCount() > 0 )
           return true;
         break;
@@ -14948,7 +14948,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
       QgsVectorDataProvider *dprovider = vlayer->dataProvider();
       QString addFeatureText;
       bool addFeatureCheckable = true;
@@ -15170,7 +15170,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
     case Qgis::LayerType::Raster:
     {
-      const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
+      auto rlayer = qobject_cast<const QgsRasterLayer *>( layer );
       const QgsRasterDataProvider *dprovider = rlayer->dataProvider();
 
       if ( dprovider
@@ -15290,7 +15290,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
     case Qgis::LayerType::Mesh:
     {
-      QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
+      auto mlayer = qobject_cast<QgsMeshLayer *>( layer );
 
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
@@ -15368,7 +15368,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
     case Qgis::LayerType::VectorTile:
     {
-      QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
+      auto vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
       const bool layerHasSelection = vtLayer->selectedFeatureCount() > 0;
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
@@ -15440,7 +15440,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
     case Qgis::LayerType::PointCloud:
     {
-      QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
+      auto pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
       const QgsDataProvider *dprovider = layer->dataProvider();
 
       const bool isEditable = pcLayer->isEditable();
@@ -15665,7 +15665,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 void QgisApp::refreshActionFeatureAction()
 {
   mActionFeatureAction->setEnabled( false );
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !vlayer )
     return;
 
@@ -15675,7 +15675,7 @@ void QgisApp::refreshActionFeatureAction()
 
 void QgisApp::renameView()
 {
-  QgsMapCanvasDockWidget *view = qobject_cast<QgsMapCanvasDockWidget *>( sender() );
+  auto view = qobject_cast<QgsMapCanvasDockWidget *>( sender() );
   if ( !view )
     return;
 
@@ -16261,7 +16261,7 @@ void QgisApp::readProject( const QDomDocument &doc )
     {
       const QDomElement attributeTableElement = attributeTableNodes.at( i ).toElement();
       const QString layerId = attributeTableElement.attribute( QStringLiteral( "layer" ) );
-      if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
+      if ( auto layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
       {
         if ( layer->isValid() )
         {
@@ -16368,7 +16368,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
 
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
       QgsVectorLayerProperties *vectorLayerPropertiesDialog = new QgsVectorLayerProperties( mMapCanvas, visibleMessageBar(), vlayer, this );
       connect(
@@ -16474,7 +16474,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
 
     case Qgis::LayerType::Plugin:
     {
-      QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( mapLayer );
+      auto pl = qobject_cast<QgsPluginLayer *>( mapLayer );
       if ( !pl )
         return;
 
@@ -16656,7 +16656,7 @@ void QgisApp::completeInitialization()
 
 void QgisApp::toolButtonActionTriggered( QAction *action )
 {
-  QToolButton *bt = qobject_cast<QToolButton *>( sender() );
+  auto bt = qobject_cast<QToolButton *>( sender() );
   if ( !bt )
     return;
 
@@ -16833,7 +16833,7 @@ void QgisApp::showSystemNotification( const QString &title, const QString &messa
 
 void QgisApp::onLayerError( const QString &msg )
 {
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  auto layer = qobject_cast<QgsMapLayer *>( sender() );
 
   Q_ASSERT( layer );
 
@@ -16876,7 +16876,7 @@ QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &fe
   if ( mlayer->type() != Qgis::LayerType::Vector )
     return QgsFeature();
 
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mlayer );
+  auto layer = qobject_cast<QgsVectorLayer *>( mlayer );
 
   if ( !layer->isEditable() )
   {
@@ -16926,7 +16926,7 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
   if ( mlayer->type() != Qgis::LayerType::Vector )
     return QgsFeature();
 
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mlayer );
+  auto layer = qobject_cast<QgsVectorLayer *>( mlayer );
 
   if ( !layer->isEditable() )
   {
@@ -17252,9 +17252,9 @@ void QgisApp::handleRenderedLayerStatistics() const
 
   for ( const QgsRenderedItemDetails *item : renderedItemResults->renderedItems() )
   {
-    if ( const QgsRenderedLayerStatistics *layerStatistics = dynamic_cast<const QgsRenderedLayerStatistics *>( item ) )
+    if ( auto layerStatistics = dynamic_cast<const QgsRenderedLayerStatistics *>( item ) )
     {
-      QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( QgsProject::instance()->mapLayer( layerStatistics->layerId() ) );
+      auto rasterLayer = qobject_cast<QgsRasterLayer *>( QgsProject::instance()->mapLayer( layerStatistics->layerId() ) );
       if ( rasterLayer )
       {
         // refresh the renderer of the layer, the style and the legend of the main canvas
@@ -17263,7 +17263,7 @@ void QgisApp::handleRenderedLayerStatistics() const
         emit rasterLayer->rendererChanged();
       }
 
-      QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( QgsProject::instance()->mapLayer( layerStatistics->layerId() ) );
+      auto meshLayer = qobject_cast<QgsMeshLayer *>( QgsProject::instance()->mapLayer( layerStatistics->layerId() ) );
       if ( meshLayer )
       {
         QgsMeshRendererSettings rendererSettings = meshLayer->rendererSettings();

@@ -541,7 +541,7 @@ void TestQgsCompositionConverter::convertComposition()
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
 
-  QgsPrintLayout *layout = dynamic_cast<QgsPrintLayout *>( project.layoutManager()->layouts().first() );
+  auto layout = dynamic_cast<QgsPrintLayout *>( project.layoutManager()->layouts().first() );
 
   QVERIFY( layout );
   QCOMPARE( layout->pageCollection()->pageCount(), 2 );

@@ -71,7 +71,7 @@ bool QgsWCSConnectionItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  const QgsWCSConnectionItem *o = dynamic_cast<const QgsWCSConnectionItem *>( other );
+  auto o = dynamic_cast<const QgsWCSConnectionItem *>( other );
   if ( !o )
   {
     return false;

@@ -1410,7 +1410,7 @@ void TestQgsCompoundCurve::deleteVertex()
   QVERIFY( cc.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
   QCOMPARE( cc.nCurves(), 1 );
 
-  const QgsLineString *lsPtr = dynamic_cast<const QgsLineString *>( cc.curveAt( 0 ) );
+  auto lsPtr = dynamic_cast<const QgsLineString *>( cc.curveAt( 0 ) );
 
   QCOMPARE( lsPtr->numPoints(), 3 );
   QCOMPARE( lsPtr->startPoint(), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) );
@@ -2199,7 +2199,7 @@ void TestQgsCompoundCurve::boundary()
   cc.addCurve( cs.clone() );
 
   QgsAbstractGeometry *boundary = cc.boundary();
-  QgsMultiPoint *mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
+  auto mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
 
   QVERIFY( mpBoundary );
   QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );

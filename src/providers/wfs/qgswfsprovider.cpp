@@ -469,7 +469,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     QgsDebugError( QStringLiteral( "SQL statement is not a SELECT. This should not happen" ) );
     return false;
   }
-  const QgsSQLStatement::NodeSelect *select = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
+  auto select = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
   if ( !select )
   {
     // Makes Coverity happy, but cannot happen in practice
@@ -660,7 +660,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
       errorMsg = tr( "Column '%1' is not a direct reference to a table column." ).arg( column->dump() );
       return false;
     }
-    QgsSQLStatement::NodeColumnRef *columnRef = dynamic_cast<QgsSQLStatement::NodeColumnRef *>( column );
+    auto columnRef = dynamic_cast<QgsSQLStatement::NodeColumnRef *>( column );
     Q_ASSERT( columnRef );
 
     QString columnTableTypename = defaultTypeName;

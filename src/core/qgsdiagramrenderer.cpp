@@ -1020,7 +1020,7 @@ void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRen
     }
 
     stackedRenderer->diagram()->renderDiagram( feature, c, s, newPos );
-    QgsStackedDiagram *stackedDiagram = dynamic_cast< QgsStackedDiagram *>( mDiagram.get() );
+    auto stackedDiagram = dynamic_cast<QgsStackedDiagram *>( mDiagram.get() );
     stackedDiagram->subDiagramPosition( newPos, c, mSettings, s );
   }
 }

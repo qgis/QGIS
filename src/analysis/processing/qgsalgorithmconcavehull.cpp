@@ -199,7 +199,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr<QgsFeatureSink> &
   std::unique_ptr<QgsProcessingAlgorithm> algorithm;
   algorithm.reset( delaunayAlg->create() );
   QVariantMap results = algorithm->run( params, context, &multiStepFeedback );
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( results["OUTPUT"].toString(), context ) );
+  auto layer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( results["OUTPUT"].toString(), context ) );
 
   if ( !layer )
   {

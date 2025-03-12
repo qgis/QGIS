@@ -65,7 +65,7 @@ QgsPhongTexturedMaterialSettings *QgsPhongTexturedMaterialSettings::clone() cons
 
 bool QgsPhongTexturedMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
 {
-  const QgsPhongTexturedMaterialSettings *otherPhong = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( other );
+  auto otherPhong = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( other );
   if ( !otherPhong )
     return false;
 

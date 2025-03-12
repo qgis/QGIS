@@ -142,7 +142,7 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   }
 
   mBlockUpdates = true;
-  const QgsVectorLayerElevationProperties *props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( mLayer->elevationProperties() );
+  auto props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( mLayer->elevationProperties() );
 
   mComboClamping->setCurrentIndex( mComboClamping->findData( static_cast<int>( props->clamping() ) ) );
   if ( mComboClamping->currentIndex() == -1 )
@@ -229,7 +229,7 @@ void QgsVectorElevationPropertiesWidget::apply()
   if ( !mLayer )
     return;
 
-  QgsVectorLayerElevationProperties *props = qgis::down_cast<QgsVectorLayerElevationProperties *>( mLayer->elevationProperties() );
+  auto props = qgis::down_cast<QgsVectorLayerElevationProperties *>( mLayer->elevationProperties() );
 
   props->setZOffset( mOffsetZSpinBox->value() );
   props->setZScale( mScaleZSpinBox->value() );
@@ -368,8 +368,8 @@ void QgsVectorElevationPropertiesWidget::toggleSymbolWidgets()
 
 void QgsVectorElevationPropertiesWidget::updateProperty()
 {
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsMapLayerElevationProperties::Property key = static_cast<QgsMapLayerElevationProperties::Property>( button->propertyKey() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto key = static_cast<QgsMapLayerElevationProperties::Property>( button->propertyKey() );
   mPropertyCollection.setProperty( key, button->toProperty() );
 }
 
@@ -442,7 +442,7 @@ void QgsVectorElevationPropertiesWidget::updateDataDefinedButton( QgsPropertyOve
   if ( button->propertyKey() < 0 )
     return;
 
-  QgsMapLayerElevationProperties::Property key = static_cast<QgsMapLayerElevationProperties::Property>( button->propertyKey() );
+  auto key = static_cast<QgsMapLayerElevationProperties::Property>( button->propertyKey() );
   whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
   whileBlocking( button )->setVectorLayer( mLayer );
 }

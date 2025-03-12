@@ -917,7 +917,7 @@ namespace QgsWms
 
         if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
         {
-          QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
+          auto treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
 
           QString name = treeGroupChild->name();
           if ( restrictedLayers.contains( name ) ) //unpublished group
@@ -982,7 +982,7 @@ namespace QgsWms
         }
         else
         {
-          QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
+          auto treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
           QgsMapLayer *l = treeLayer->layer();
           if ( !wmsLayerInfos.contains( treeLayer->layerId() ) ) //unpublished layer
           {
@@ -1157,8 +1157,8 @@ namespace QgsWms
           // Add dimensions
           if ( l->type() == Qgis::LayerType::Vector )
           {
-            QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
-            QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( vl->serverProperties() );
+            auto vl = qobject_cast<QgsVectorLayer *>( l );
+            auto serverProperties = static_cast<QgsMapLayerServerProperties *>( vl->serverProperties() );
             const QList<QgsMapLayerServerProperties::WmsDimensionInfo> wmsDims = serverProperties->wmsDimensions();
             for ( const QgsMapLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
             {
@@ -1635,7 +1635,7 @@ namespace QgsWms
       {
         case Qgis::LayerType::Vector:
         {
-          QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( currentLayer );
+          auto vLayer = static_cast<QgsVectorLayer *>( currentLayer );
 
           int displayFieldIdx = -1;
           QString displayField = QStringLiteral( "maptip" );
@@ -1745,7 +1745,7 @@ namespace QgsWms
           }
 
           //opacity
-          QgsRasterLayer *rl = static_cast<QgsRasterLayer *>( currentLayer );
+          auto rl = static_cast<QgsRasterLayer *>( currentLayer );
           QgsRasterRenderer *rasterRenderer = rl->renderer();
           if ( rasterRenderer )
           {

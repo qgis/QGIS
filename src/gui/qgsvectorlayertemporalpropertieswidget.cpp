@@ -118,11 +118,11 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
 
 void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
 {
-  QgsVectorLayerTemporalProperties *properties = qobject_cast<QgsVectorLayerTemporalProperties *>( mLayer->temporalProperties() );
+  auto properties = qobject_cast<QgsVectorLayerTemporalProperties *>( mLayer->temporalProperties() );
 
   properties->setIsActive( mTemporalGroupBox->isChecked() );
   properties->setMode( static_cast<Qgis::VectorTemporalMode>( mModeComboBox->currentData().toInt() ) );
-  Qgis::VectorTemporalLimitMode limitMode = static_cast<Qgis::VectorTemporalLimitMode>( mLimitsComboBox->currentData().toInt() );
+  auto limitMode = static_cast<Qgis::VectorTemporalLimitMode>( mLimitsComboBox->currentData().toInt() );
   properties->setLimitMode( limitMode );
 
   const QgsDateTimeRange normalRange = QgsDateTimeRange(

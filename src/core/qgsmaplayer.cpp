@@ -1825,7 +1825,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
   {
     if ( type() == Qgis::LayerType::Vector && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
+      auto vl = qobject_cast<QgsVectorLayer *>( this );
       const Qgis::GeometryType importLayerGeometryType = static_cast<Qgis::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
       if ( importLayerGeometryType != Qgis::GeometryType::Unknown && vl->geometryType() != importLayerGeometryType )
       {
@@ -1885,7 +1885,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, const 
   if ( type() == Qgis::LayerType::Vector )
   {
     //Getting the selectionLayer geometry
-    const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( this );
+    auto vl = qobject_cast<const QgsVectorLayer *>( this );
     const QString geoType = QString::number( static_cast<int>( vl->geometryType() ) );
 
     //Adding geometryinformation
@@ -1943,7 +1943,7 @@ QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::Propert
   // everything else goes to the database
   QString filename;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( this );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( this );
   if ( vlayer && vlayer->providerType() == QLatin1String( "ogr" ) )
   {
     QStringList theURIParts = uri.split( '|' );
@@ -2190,8 +2190,8 @@ void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const 
   const QDomNode header = myDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
   myDocument.appendChild( header );
 
-  const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( this );
-  const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( this );
+  auto vlayer = qobject_cast<const QgsVectorLayer *>( this );
+  auto rlayer = qobject_cast<const QgsRasterLayer *>( this );
   if ( !vlayer && !rlayer )
   {
     errorMsg = tr( "Could not save symbology because:\n%1" )
@@ -2277,7 +2277,7 @@ QString QgsMapLayer::saveSldStyleV2( bool &resultFlag, const QgsSldExportContext
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  const QgsMapLayer *mlayer = qobject_cast<const QgsMapLayer *>( this );
+  auto mlayer = qobject_cast<const QgsMapLayer *>( this );
 
   const QString uri { exportContext.exportFilePath() };
 
@@ -3065,7 +3065,7 @@ QgsProject *QgsMapLayer::project() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( QgsMapLayerStore *store = qobject_cast<QgsMapLayerStore *>( parent() ) )
+  if ( auto store = qobject_cast<QgsMapLayerStore *>( parent() ) )
   {
     return qobject_cast<QgsProject *>( store->parent() );
   }

@@ -121,7 +121,7 @@ QgsFeatureList QgsProjectPointCartesianAlgorithm::processFeature( const QgsFeatu
     const QgsGeometry g = f.geometry();
     if ( QgsWkbTypes::isMultiType( g.wkbType() ) )
     {
-      const QgsMultiPoint *mp = static_cast<const QgsMultiPoint *>( g.constGet() );
+      auto mp = static_cast<const QgsMultiPoint *>( g.constGet() );
       auto result = std::make_unique<QgsMultiPoint>();
       result->reserve( mp->numGeometries() );
       for ( int i = 0; i < mp->numGeometries(); ++i )
@@ -133,7 +133,7 @@ QgsFeatureList QgsProjectPointCartesianAlgorithm::processFeature( const QgsFeatu
     }
     else
     {
-      const QgsPoint *p = static_cast<const QgsPoint *>( g.constGet() );
+      auto p = static_cast<const QgsPoint *>( g.constGet() );
       const QgsPoint result = p->project( distance, bearing );
       f.setGeometry( QgsGeometry( result.clone() ) );
     }

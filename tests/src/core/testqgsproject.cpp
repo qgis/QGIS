@@ -207,14 +207,14 @@ static QString _getLayerSvgMarkerPath( const QgsProject &prj, const QString &lay
   QList<QgsMapLayer *> layers = prj.mapLayersByName( layerName );
   Q_ASSERT( layers.count() == 1 );
   Q_ASSERT( layers[0]->type() == Qgis::LayerType::Vector );
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layers[0] );
+  auto layer = qobject_cast<QgsVectorLayer *>( layers[0] );
   Q_ASSERT( layer->renderer() );
   Q_ASSERT( layer->renderer()->type() == "singleSymbol" );
-  QgsSingleSymbolRenderer *r = static_cast<QgsSingleSymbolRenderer *>( layer->renderer() );
+  auto r = static_cast<QgsSingleSymbolRenderer *>( layer->renderer() );
   QgsSymbol *s = r->symbol();
   Q_ASSERT( s && s->symbolLayerCount() == 1 );
   Q_ASSERT( s->symbolLayer( 0 )->layerType() == "SvgMarker" );
-  QgsSvgMarkerSymbolLayer *sl = static_cast<QgsSvgMarkerSymbolLayer *>( s->symbolLayer( 0 ) );
+  auto sl = static_cast<QgsSvgMarkerSymbolLayer *>( s->symbolLayer( 0 ) );
   return sl->path();
 }
 
@@ -427,7 +427,7 @@ void TestQgsProject::testLayerFlags()
   prj2.setFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics, true );
   prj2.setFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide, true );
   QVERIFY( prj2.isDirty() );
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( prj2.mapLayer( layer2id ) );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( prj2.mapLayer( layer2id ) );
   QVERIFY( vlayer->readExtentFromXml() );
   // vlayer doesn't have trust because it will be done for new layer or when reloading the project
   // no need to set trust on a layer which has already loaded everything
@@ -1195,7 +1195,7 @@ void TestQgsProject::testSymlinks1LayerRasterChange()
   // Initial state - points to raster1
   project = std::make_unique<QgsProject>();
   project->read( projectPath );
-  QgsRasterLayer *loadedLayer = qobject_cast<QgsRasterLayer *>( project->mapLayersByName( QStringLiteral( "Latest" ) ).at( 0 ) );
+  auto loadedLayer = qobject_cast<QgsRasterLayer *>( project->mapLayersByName( QStringLiteral( "Latest" ) ).at( 0 ) );
   QCOMPARE( QFileInfo( loadedLayer->source() ).canonicalFilePath(), dataDir + "/" + rasters[0] );
   project->write( projectPath );
   project.reset();
@@ -1258,7 +1258,7 @@ void TestQgsProject::testSymlinks2LayerFolder()
   // Absolute layer source still in projectDir
   project = std::make_unique<QgsProject>();
   project->read( projectPath );
-  QgsVectorLayer *loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
+  auto loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
   QCOMPARE( loadedLayer->source(), projectDir + "/data/points.shp" );
 }
 
@@ -1301,7 +1301,7 @@ void TestQgsProject::testSymlinks3LayerShapefile()
   // Absolute layer source still in projectDir
   project = std::make_unique<QgsProject>();
   project->read( projectPath );
-  QgsVectorLayer *loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
+  auto loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
   QCOMPARE( loadedLayer->source(), projectDir + "/points.shp" );
 
   // ++Verify that layer edit follows symlinks++
@@ -1395,7 +1395,7 @@ void TestQgsProject::testSymlinks4LayerShapefileBroken()
   // Verify layer has 1 feature
   project = std::make_unique<QgsProject>();
   project->read( projectPath );
-  QgsVectorLayer *loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
+  auto loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
   QCOMPARE( loadedLayer->featureCount(), 1L );
 }
 
@@ -1440,7 +1440,7 @@ void TestQgsProject::testSymlinks5ProjectFile()
   // Open symlinked project and verify paths
   project = std::make_unique<QgsProject>();
   project->read( originalPath );
-  QgsVectorLayer *loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
+  auto loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
   QCOMPARE( loadedLayer->source(), projectDir + "/points.shp" );
 
   // Save and verify XML content
@@ -1531,7 +1531,7 @@ void TestQgsProject::testSymlinks6ProjectFolder()
   // Absolute layer source does NOT resolve the symlink
   project = std::make_unique<QgsProject>();
   project->read( symlinkprojPath );
-  QgsVectorLayer *loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
+  auto loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
   QCOMPARE( loadedLayer->source(), symlinkprojDir + "/points.shp" );
 }
 

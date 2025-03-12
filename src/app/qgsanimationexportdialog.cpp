@@ -105,7 +105,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
     mTimeStepsComboBox->addItem( QgsUnitTypes::toString( u ), static_cast<int>( u ) );
   }
 
-  if ( const QgsTemporalNavigationObject *controller = qobject_cast<const QgsTemporalNavigationObject *>( mMapCanvas->temporalController() ) )
+  if ( auto controller = qobject_cast<const QgsTemporalNavigationObject *>( mMapCanvas->temporalController() ) )
   {
     mStartDateTime->setDateTime( controller->temporalExtents().begin() );
     mEndDateTime->setDateTime( controller->temporalExtents().end() );

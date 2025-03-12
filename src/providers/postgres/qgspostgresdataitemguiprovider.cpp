@@ -41,7 +41,7 @@
 
 void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsPGRootItem *rootItem = qobject_cast<QgsPGRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsPGRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -56,7 +56,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     menu->addAction( actionLoadServers );
   }
 
-  if ( QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( item ) )
+  if ( auto connItem = qobject_cast<QgsPGConnectionItem *>( item ) )
   {
     const QList<QgsPGConnectionItem *> pgConnectionItems = QgsDataItem::filteredItems<QgsPGConnectionItem>( selection );
 
@@ -95,12 +95,12 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     }
   }
 
-  if ( QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( item ) )
+  if ( auto schemaItem = qobject_cast<QgsPGSchemaItem *>( item ) )
   {
     QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
     menu->addAction( importVectorAction );
     const QString destinationSchema = schemaItem->name();
-    QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( schemaItem->parent() );
+    auto connItem = qobject_cast<QgsPGConnectionItem *>( schemaItem->parent() );
     QObject::connect( importVectorAction, &QAction::triggered, item, [connItem, context, destinationSchema, this] { handleImportVector( connItem, destinationSchema, context ); } );
 
     QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
@@ -122,7 +122,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     menu->addMenu( maintainMenu );
   }
 
-  if ( QgsPGLayerItem *layerItem = qobject_cast<QgsPGLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsPGLayerItem *>( item ) )
   {
     const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
     const QString typeName = typeNameFromLayer( layerInfo );
@@ -153,7 +153,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
 bool QgsPostgresDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
-  if ( QgsPGLayerItem *layerItem = qobject_cast<QgsPGLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsPGLayerItem *>( item ) )
   {
     const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
     const QString typeName = typeNameFromLayer( layerInfo );
@@ -191,13 +191,13 @@ bool QgsPostgresDataItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemG
 
 bool QgsPostgresDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction )
 {
-  if ( QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( item ) )
+  if ( auto connItem = qobject_cast<QgsPGConnectionItem *>( item ) )
   {
     return handleDrop( connItem, data, QString(), context );
   }
   else if ( QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( item ) )
   {
-    QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( schemaItem->parent() );
+    auto connItem = qobject_cast<QgsPGConnectionItem *>( schemaItem->parent() );
     if ( !connItem )
       return false;
 
@@ -208,7 +208,7 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemG
 
 QWidget *QgsPostgresDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDataItemGuiContext )
 {
-  QgsPGRootItem *pgRootItem = qobject_cast<QgsPGRootItem *>( root );
+  auto pgRootItem = qobject_cast<QgsPGRootItem *>( root );
   if ( pgRootItem )
   {
     QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode::Manager );

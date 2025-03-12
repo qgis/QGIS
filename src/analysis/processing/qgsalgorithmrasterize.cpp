@@ -163,7 +163,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   {
     if ( QgsMapLayerUtils::isOpenStreetMapLayer( layer.get() ) )
     {
-      if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( ( layer.get() ) ) )
+      if ( auto rasterLayer = qobject_cast<QgsRasterLayer *>( ( layer.get() ) ) )
       {
         const QList<double> resolutions = rasterLayer->dataProvider()->nativeResolutions();
         if ( resolutions.isEmpty() )

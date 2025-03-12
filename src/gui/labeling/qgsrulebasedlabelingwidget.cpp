@@ -87,7 +87,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
 
   if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
   {
-    const QgsRuleBasedLabeling *rl = static_cast<const QgsRuleBasedLabeling *>( mLayer->labeling() );
+    auto rl = static_cast<const QgsRuleBasedLabeling *>( mLayer->labeling() );
     mRootRule = rl->rootRule()->clone( false );
   }
   else if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
@@ -157,7 +157,7 @@ void QgsRuleBasedLabelingWidget::addRule()
 
 void QgsRuleBasedLabelingWidget::ruleWidgetPanelAccepted( QgsPanelWidget *panel )
 {
-  QgsLabelingRulePropsWidget *widget = qobject_cast<QgsLabelingRulePropsWidget *>( panel );
+  auto widget = qobject_cast<QgsLabelingRulePropsWidget *>( panel );
   widget->apply();
 
   const QModelIndex index = viewRules->selectionModel()->currentIndex();

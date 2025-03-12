@@ -43,7 +43,7 @@ class CORE_EXPORT QgsMesh3DAveragingMethod SIP_ABSTRACT
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    QgsMesh3DAveragingMethod *averagingMethod = dynamic_cast<QgsMesh3DAveragingMethod *>( sipCpp );
+    auto averagingMethod = dynamic_cast<QgsMesh3DAveragingMethod *>( sipCpp );
 
     sipType = 0;
 

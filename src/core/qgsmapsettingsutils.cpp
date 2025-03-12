@@ -52,7 +52,7 @@ QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &
         layers << layer->name();
       }
       // if vector layer, check labels and feature blend mode
-      if ( QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer ) )
+      if ( auto currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer ) )
       {
         if ( currentVectorLayer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
         {

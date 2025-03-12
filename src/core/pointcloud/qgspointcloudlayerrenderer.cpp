@@ -71,7 +71,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
     mOffset = mIndex.offset();
   }
 
-  if ( const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast< const QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() ) )
+  if ( auto elevationProps = qobject_cast<const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() ) )
   {
     mZOffset = elevationProps->zOffset();
     mZScale = elevationProps->zScale();

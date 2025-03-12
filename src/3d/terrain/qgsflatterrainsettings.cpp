@@ -45,7 +45,7 @@ void QgsFlatTerrainSettings::writeXml( QDomElement &element, const QgsReadWriteC
 
 bool QgsFlatTerrainSettings::equals( const QgsAbstractTerrainSettings *other ) const
 {
-  const QgsFlatTerrainSettings *otherFlatTerrain = dynamic_cast<const QgsFlatTerrainSettings *>( other );
+  auto otherFlatTerrain = dynamic_cast<const QgsFlatTerrainSettings *>( other );
   if ( !otherFlatTerrain )
     return false;
 

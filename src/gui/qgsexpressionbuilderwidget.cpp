@@ -841,7 +841,7 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
   {
     case QgsExpressionNode::NodeType::ntFunction:
     {
-      const QgsExpressionNodeFunction *node = static_cast<const QgsExpressionNodeFunction *>( inNode );
+      auto node = static_cast<const QgsExpressionNodeFunction *>( inNode );
       txtExpressionString->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, FUNCTION_MARKER_ID );
       txtExpressionString->SendScintilla( QsciScintilla::SCI_SETINDICATORVALUE, node->fnIndex() );
       int start = inNode->parserFirstColumn - 1;
@@ -864,20 +864,20 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
     }
     case QgsExpressionNode::NodeType::ntUnaryOperator:
     {
-      const QgsExpressionNodeUnaryOperator *node = static_cast<const QgsExpressionNodeUnaryOperator *>( inNode );
+      auto node = static_cast<const QgsExpressionNodeUnaryOperator *>( inNode );
       createMarkers( node->operand() );
       break;
     }
     case QgsExpressionNode::NodeType::ntBetweenOperator:
     {
-      const QgsExpressionNodeBetweenOperator *node = static_cast<const QgsExpressionNodeBetweenOperator *>( inNode );
+      auto node = static_cast<const QgsExpressionNodeBetweenOperator *>( inNode );
       createMarkers( node->lowerBound() );
       createMarkers( node->higherBound() );
       break;
     }
     case QgsExpressionNode::NodeType::ntBinaryOperator:
     {
-      const QgsExpressionNodeBinaryOperator *node = static_cast<const QgsExpressionNodeBinaryOperator *>( inNode );
+      auto node = static_cast<const QgsExpressionNodeBinaryOperator *>( inNode );
       createMarkers( node->opLeft() );
       createMarkers( node->opRight() );
       break;
@@ -888,7 +888,7 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
     }
     case QgsExpressionNode::NodeType::ntInOperator:
     {
-      const QgsExpressionNodeInOperator *node = static_cast<const QgsExpressionNodeInOperator *>( inNode );
+      auto node = static_cast<const QgsExpressionNodeInOperator *>( inNode );
       if ( node->list() )
       {
         const QList<QgsExpressionNode *> nodeList = node->list()->list();
@@ -901,7 +901,7 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
     }
     case QgsExpressionNode::NodeType::ntCondition:
     {
-      const QgsExpressionNodeCondition *node = static_cast<const QgsExpressionNodeCondition *>( inNode );
+      auto node = static_cast<const QgsExpressionNodeCondition *>( inNode );
       const QList<QgsExpressionNodeCondition::WhenThen *> conditions = node->conditions();
       for ( QgsExpressionNodeCondition::WhenThen *cond : conditions )
       {
@@ -953,7 +953,7 @@ void QgsExpressionBuilderWidget::mValuesListView_doubleClicked( const QModelInde
 
 void QgsExpressionBuilderWidget::operatorButtonClicked()
 {
-  QPushButton *button = qobject_cast<QPushButton *>( sender() );
+  auto button = qobject_cast<QPushButton *>( sender() );
 
   // Insert the button text or replace selected text
   txtExpressionString->insertText( ' ' + button->text() + ' ' );

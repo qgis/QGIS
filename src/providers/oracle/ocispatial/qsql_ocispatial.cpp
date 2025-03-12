@@ -784,7 +784,7 @@ void QOCISpatialResultPrivate::outValues( QVector<QVariant> &values, IndicatorAr
     qOraOutValue( values[i], tmpStorage, err );
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    QMetaType::Type typ = static_cast<QMetaType::Type>( values.at( i ).userType() );
+    auto typ = static_cast<QMetaType::Type>( values.at( i ).userType() );
 #else
     QMetaType typ = values.at( i ).metaType();
 #endif
@@ -1614,7 +1614,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
   QVarLengthArray<QMetaType::Type> fieldTypes;
   for ( i = 0; i < columnCount; ++i )
   {
-    QMetaType::Type tp = static_cast<QMetaType::Type>( boundValues.at( i ).userType() );
+    auto tp = static_cast<QMetaType::Type>( boundValues.at( i ).userType() );
     fieldTypes.append( tp == QMetaType::Type::QVariantList ? static_cast<QMetaType::Type>( boundValues.at( i ).toList().value( 0 ).userType() ) : tp );
   }
 
@@ -1880,7 +1880,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
     if ( !d->isOutValue( i ) )
       continue;
 
-    QMetaType::Type tp = static_cast<QMetaType::Type>( boundValues.at( i ).userType() );
+    auto tp = static_cast<QMetaType::Type>( boundValues.at( i ).userType() );
     if ( tp != QMetaType::Type::QVariantList )
     {
       qOraOutValue( boundValues[i], tmpStorage, d->err );
@@ -1893,7 +1893,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
       continue;
     }
 
-    QVariantList *list = static_cast<QVariantList *>( const_cast<void *>( boundValues.at( i ).data() ) );
+    auto list = static_cast<QVariantList *>( const_cast<void *>( boundValues.at( i ).data() ) );
 
     const char *data = columns[i].data.data();
     for ( uint r = 0; r < columns[i].recordCount; ++r )
@@ -3224,7 +3224,7 @@ bool QOCISpatialResult::prepare( const QString &query )
     return false;
   }
   d->setStatementAttributes();
-  const OraText *txt = reinterpret_cast<const OraText *>( query.utf16() );
+  auto txt = reinterpret_cast<const OraText *>( query.utf16() );
   const int len = query.length() * sizeof( QChar );
   r = OCIStmtPrepare( d->sql, d->err, txt, len, OCI_NTV_SYNTAX, OCI_DEFAULT );
   if ( r != OCI_SUCCESS )

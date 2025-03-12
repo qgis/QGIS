@@ -677,7 +677,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
   {
     node = QgsExpressionUtils::getNode( values.at( 3 ), parent );
     ENSURE_NO_EVAL_ERROR
-    QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
+    auto nl = dynamic_cast<QgsExpressionNodeLiteral *>( node );
     if ( !nl || nl->value().isValid() )
       parameters.filter = node->dump();
   }
@@ -698,7 +698,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
   {
     node = QgsExpressionUtils::getNode( values.at( 5 ), parent );
     ENSURE_NO_EVAL_ERROR
-    QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
+    auto nl = dynamic_cast<QgsExpressionNodeLiteral *>( node );
     if ( !nl || nl->value().isValid() )
     {
       orderBy = node->dump();
@@ -884,7 +884,7 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
   {
     node = QgsExpressionUtils::getNode( values.at( 4 ), parent );
     ENSURE_NO_EVAL_ERROR
-    QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
+    auto nl = dynamic_cast<QgsExpressionNodeLiteral *>( node );
     if ( !nl || nl->value().isValid() )
     {
       orderBy = node->dump();
@@ -962,7 +962,7 @@ static QVariant fcnAggregateGeneric( Qgis::Aggregate aggregate, const QVariantLi
   {
     node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
     ENSURE_NO_EVAL_ERROR
-    QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
+    auto nl = dynamic_cast<QgsExpressionNodeLiteral *>( node );
     if ( !nl || nl->value().isValid() )
       groupBy = node->dump();
   }
@@ -972,7 +972,7 @@ static QVariant fcnAggregateGeneric( Qgis::Aggregate aggregate, const QVariantLi
   {
     node = QgsExpressionUtils::getNode( values.at( 2 ), parent );
     ENSURE_NO_EVAL_ERROR
-    QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
+    auto nl = dynamic_cast<QgsExpressionNodeLiteral *>( node );
     if ( !nl || nl->value().isValid() )
       parameters.filter = node->dump();
   }
@@ -983,7 +983,7 @@ static QVariant fcnAggregateGeneric( Qgis::Aggregate aggregate, const QVariantLi
   {
     node = QgsExpressionUtils::getNode( values.at( orderByPos ), parent );
     ENSURE_NO_EVAL_ERROR
-    QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
+    auto nl = dynamic_cast<QgsExpressionNodeLiteral *>( node );
     if ( !nl || nl->value().isValid() )
     {
       orderBy = node->dump();
@@ -1534,7 +1534,7 @@ static QVariant fcnLength3D( const QVariantList &values, const QgsExpressionCont
   double totalLength = 0;
   for ( auto it = geom.const_parts_begin(); it != geom.const_parts_end(); ++it )
   {
-    if ( const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( *it ) )
+    if ( auto line = qgsgeometry_cast<const QgsLineString *>( *it ) )
     {
       totalLength += line->length3D();
     }
@@ -1781,7 +1781,7 @@ static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionC
   bool foundLayer = false;
   const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, bandNb, geom]( QgsMapLayer * mapLayer )
   {
-    QgsRasterLayer *layer = qobject_cast< QgsRasterLayer * >( mapLayer );
+    auto layer = qobject_cast<QgsRasterLayer *>( mapLayer );
     if ( !layer || !layer->dataProvider() )
     {
       parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid raster layer." ) );
@@ -1839,7 +1839,7 @@ static QVariant fcnRasterAttributes( const QVariantList &values, const QgsExpres
   bool foundLayer = false;
   const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, bandNb, value]( QgsMapLayer * mapLayer )-> QVariant
   {
-    QgsRasterLayer *layer = qobject_cast< QgsRasterLayer *>( mapLayer );
+    auto layer = qobject_cast<QgsRasterLayer *>( mapLayer );
     if ( !layer || !layer->dataProvider() )
     {
       parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster layer." ) );
@@ -2037,7 +2037,7 @@ static QVariant fcnValidateFeature( const QVariantList &values, const QgsExpress
   bool foundLayer = false;
   const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( layer, context, parent, [parent, feature, constraintStrength]( QgsMapLayer * mapLayer ) -> QVariant
   {
-    QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( mapLayer );
+    auto layer = qobject_cast<QgsVectorLayer *>( mapLayer );
     if ( !layer )
     {
       parent->setEvalErrorString( QObject::tr( "No layer provided to conduct constraints checks" ) );
@@ -2110,7 +2110,7 @@ static QVariant fcnValidateAttribute( const QVariantList &values, const QgsExpre
   bool foundLayer = false;
   const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( layer, context, parent, [parent, feature, attributeName, constraintStrength]( QgsMapLayer * mapLayer ) -> QVariant
   {
-    QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( mapLayer );
+    auto layer = qobject_cast<QgsVectorLayer *>( mapLayer );
     if ( !layer )
     {
       return QVariant();
@@ -2364,7 +2364,7 @@ static QVariant fcnIsSelected( const QVariantList &values, const QgsExpressionCo
   bool foundLayer = false;
   const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( layer, context, parent, [feature]( QgsMapLayer * mapLayer ) -> QVariant
   {
-    QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( mapLayer );
+    auto layer = qobject_cast<QgsVectorLayer *>( mapLayer );
     if ( !layer || !feature.isValid() )
     {
       return QgsVariantUtils::createNullVariant( QMetaType::Type::Bool );
@@ -2395,7 +2395,7 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
   bool foundLayer = false;
   const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( layer, context, parent, []( QgsMapLayer * mapLayer ) -> QVariant
   {
-    QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( mapLayer );
+    auto layer = qobject_cast<QgsVectorLayer *>( mapLayer );
     if ( !layer )
     {
       return QgsVariantUtils::createNullVariant( QMetaType::Type::LongLong );
@@ -3022,17 +3022,17 @@ static QVariant fcnZ( const QVariantList &, const QgsExpressionContext *context,
 
   if ( g.type() == Qgis::GeometryType::Point && !g.isMultipart() )
   {
-    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( g.constGet() );
+    auto point = qgsgeometry_cast<const QgsPoint *>( g.constGet() );
     if ( point )
       return point->z();
   }
   else if ( g.type() == Qgis::GeometryType::Point && g.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( g.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( g.constGet() ) )
     {
       if ( collection->numGeometries() > 0 )
       {
-        if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) ) )
+        if ( auto point = qgsgeometry_cast<const QgsPoint *>( collection->geometryN( 0 ) ) )
           return point->z();
       }
     }
@@ -3149,17 +3149,17 @@ static QVariant fcnGeomZ( const QVariantList &values, const QgsExpressionContext
   //if single point, return the point's z coordinate
   if ( geom.type() == Qgis::GeometryType::Point && !geom.isMultipart() )
   {
-    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom.constGet() );
+    auto point = qgsgeometry_cast<const QgsPoint *>( geom.constGet() );
     if ( point )
       return point->z();
   }
   else if ( geom.type() == Qgis::GeometryType::Point && geom.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
-        if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) ) )
+        if ( auto point = qgsgeometry_cast<const QgsPoint *>( collection->geometryN( 0 ) ) )
           return point->z();
       }
     }
@@ -3180,17 +3180,17 @@ static QVariant fcnGeomM( const QVariantList &values, const QgsExpressionContext
   //if single point, return the point's m value
   if ( geom.type() == Qgis::GeometryType::Point && !geom.isMultipart() )
   {
-    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom.constGet() );
+    auto point = qgsgeometry_cast<const QgsPoint *>( geom.constGet() );
     if ( point )
       return point->m();
   }
   else if ( geom.type() == Qgis::GeometryType::Point && geom.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
-        if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) ) )
+        if ( auto point = qgsgeometry_cast<const QgsPoint *>( collection->geometryN( 0 ) ) )
           return point->m();
       }
     }
@@ -3335,10 +3335,10 @@ static QVariant fcnInteriorRingN( const QVariantList &values, const QgsExpressio
   if ( geom.isNull() )
     return QVariant();
 
-  const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( geom.constGet() );
+  auto curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( geom.constGet() );
   if ( !curvePolygon && geom.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -3368,7 +3368,7 @@ static QVariant fcnGeometryN( const QVariantList &values, const QgsExpressionCon
   if ( geom.isNull() )
     return QVariant();
 
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() );
+  auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() );
   if ( !collection )
     return QVariant();
 
@@ -3794,7 +3794,7 @@ static QVariant fcnMakeLine( const QVariantList &values, const QgsExpressionCont
     if ( geom.type() != Qgis::GeometryType::Point || geom.isMultipart() )
       return;
 
-    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom.constGet() );
+    auto point = qgsgeometry_cast<const QgsPoint *>( geom.constGet() );
     if ( !point )
       return;
 
@@ -3844,7 +3844,7 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
   const QgsCurve *exteriorRing = qgsgeometry_cast< QgsCurve * >( outerRing.constGet() );
   if ( !exteriorRing && outerRing.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( outerRing.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( outerRing.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -3871,7 +3871,7 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
     const QgsCurve *ring = qgsgeometry_cast< QgsCurve * >( ringGeom.constGet() );
     if ( !ring && ringGeom.isMultipart() )
     {
-      if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( ringGeom.constGet() ) )
+      if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( ringGeom.constGet() ) )
       {
         if ( collection->numGeometries() == 1 )
         {
@@ -3904,10 +3904,10 @@ static QVariant fcnMakeTriangle( const QVariantList &values, const QgsExpression
     if ( geom.type() != Qgis::GeometryType::Point || geom.isMultipart() )
       return QVariant();
 
-    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom.constGet() );
+    auto point = qgsgeometry_cast<const QgsPoint *>( geom.constGet() );
     if ( !point && geom.isMultipart() )
     {
-      if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+      if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() ) )
       {
         if ( collection->numGeometries() == 1 )
         {
@@ -3944,10 +3944,10 @@ static QVariant fcnMakeCircle( const QVariantList &values, const QgsExpressionCo
     parent->setEvalErrorString( QObject::tr( "Segment must be greater than 2" ) );
     return QVariant();
   }
-  const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom.constGet() );
+  auto point = qgsgeometry_cast<const QgsPoint *>( geom.constGet() );
   if ( !point && geom.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -3980,10 +3980,10 @@ static QVariant fcnMakeEllipse( const QVariantList &values, const QgsExpressionC
     parent->setEvalErrorString( QObject::tr( "Segment must be greater than 2" ) );
     return QVariant();
   }
-  const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom.constGet() );
+  auto point = qgsgeometry_cast<const QgsPoint *>( geom.constGet() );
   if ( !point && geom.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -4022,17 +4022,17 @@ static QVariant fcnMakeRegularPolygon( const QVariantList &values, const QgsExpr
     return QVariant();
   }
 
-  QgsRegularPolygon::ConstructionOption option = static_cast< QgsRegularPolygon::ConstructionOption >( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
+  auto option = static_cast<QgsRegularPolygon::ConstructionOption>( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
   if ( ( option < QgsRegularPolygon::InscribedCircle ) || ( option > QgsRegularPolygon::CircumscribedCircle ) )
   {
     parent->setEvalErrorString( QObject::tr( "Option can be 0 (inscribed) or 1 (circumscribed)" ) );
     return QVariant();
   }
 
-  const QgsPoint *center = qgsgeometry_cast< const QgsPoint * >( pt1.constGet() );
+  auto center = qgsgeometry_cast<const QgsPoint *>( pt1.constGet() );
   if ( !center && pt1.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( pt1.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( pt1.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -4043,10 +4043,10 @@ static QVariant fcnMakeRegularPolygon( const QVariantList &values, const QgsExpr
   if ( !center )
     return QVariant();
 
-  const QgsPoint *corner = qgsgeometry_cast< const QgsPoint * >( pt2.constGet() );
+  auto corner = qgsgeometry_cast<const QgsPoint *>( pt2.constGet() );
   if ( !corner && pt2.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( pt2.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( pt2.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -4077,8 +4077,8 @@ static QVariant fcnMakeSquare( const QVariantList &values, const QgsExpressionCo
   if ( pt2.type() != Qgis::GeometryType::Point || pt2.isMultipart() )
     return QVariant();
 
-  const QgsPoint *point1 = qgsgeometry_cast< const QgsPoint *>( pt1.constGet() );
-  const QgsPoint *point2 = qgsgeometry_cast< const QgsPoint *>( pt2.constGet() );
+  auto point1 = qgsgeometry_cast<const QgsPoint *>( pt1.constGet() );
+  auto point2 = qgsgeometry_cast<const QgsPoint *>( pt2.constGet() );
   QgsQuadrilateral square = QgsQuadrilateral::squareFromDiagonal( *point1, *point2 );
 
   return QVariant::fromValue( QgsGeometry( square.toPolygon() ) );
@@ -4104,15 +4104,15 @@ static QVariant fcnMakeRectangleFrom3Points( const QVariantList &values, const Q
   if ( pt3.type() != Qgis::GeometryType::Point || pt3.isMultipart() )
     return QVariant();
 
-  QgsQuadrilateral::ConstructionOption option = static_cast< QgsQuadrilateral::ConstructionOption >( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
+  auto option = static_cast<QgsQuadrilateral::ConstructionOption>( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
   if ( ( option < QgsQuadrilateral::Distance ) || ( option > QgsQuadrilateral::Projected ) )
   {
     parent->setEvalErrorString( QObject::tr( "Option can be 0 (distance) or 1 (projected)" ) );
     return QVariant();
   }
-  const QgsPoint *point1 = qgsgeometry_cast< const QgsPoint *>( pt1.constGet() );
-  const QgsPoint *point2 = qgsgeometry_cast< const QgsPoint *>( pt2.constGet() );
-  const QgsPoint *point3 = qgsgeometry_cast< const QgsPoint *>( pt3.constGet() );
+  auto point1 = qgsgeometry_cast<const QgsPoint *>( pt1.constGet() );
+  auto point2 = qgsgeometry_cast<const QgsPoint *>( pt2.constGet() );
+  auto point3 = qgsgeometry_cast<const QgsPoint *>( pt3.constGet() );
   QgsQuadrilateral rect = QgsQuadrilateral::rectangleFrom3Points( *point1, *point2, *point3, option );
   return QVariant::fromValue( QgsGeometry( rect.toPolygon() ) );
 }
@@ -4432,11 +4432,11 @@ static QVariant fcnGeomNumInteriorRings( const QVariantList &values, const QgsEx
   if ( geom.isNull() )
     return QVariant();
 
-  const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( geom.constGet() );
+  auto curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( geom.constGet() );
   if ( curvePolygon )
     return QVariant( curvePolygon->numInteriorRings() );
 
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() );
+  auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() );
   if ( collection )
   {
     //find first CurvePolygon in collection
@@ -4460,13 +4460,13 @@ static QVariant fcnGeomNumRings( const QVariantList &values, const QgsExpression
   if ( geom.isNull() )
     return QVariant();
 
-  const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( geom.constGet() );
+  auto curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( geom.constGet() );
   if ( curvePolygon )
     return QVariant( curvePolygon->ringCount() );
 
   bool foundPoly = false;
   int ringCount = 0;
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() );
+  auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() );
   if ( collection )
   {
     //find CurvePolygons in collection
@@ -4647,7 +4647,7 @@ static QVariant fcnMMax( const QVariantList &values, const QgsExpressionContext 
 static QVariant fcnSinuosity( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom.constGet() );
+  auto curve = qgsgeometry_cast<const QgsCurve *>( geom.constGet() );
   if ( !curve )
   {
     parent->setEvalErrorString( QObject::tr( "Function `sinuosity` requires a line geometry." ) );
@@ -4703,10 +4703,10 @@ static QVariant fcnIsClosed( const QVariantList &values, const QgsExpressionCont
   if ( fGeom.isNull() )
     return QVariant();
 
-  const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( fGeom.constGet() );
+  auto curve = qgsgeometry_cast<const QgsCurve *>( fGeom.constGet() );
   if ( !curve && fGeom.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( fGeom.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -4731,7 +4731,7 @@ static QVariant fcnCloseLine( const QVariantList &values, const QgsExpressionCon
   QVariant result;
   if ( !geom.isMultipart() )
   {
-    const QgsLineString *line = qgsgeometry_cast<const QgsLineString * >( geom.constGet() );
+    auto line = qgsgeometry_cast<const QgsLineString *>( geom.constGet() );
 
     if ( !line )
       return QVariant();
@@ -4743,13 +4743,13 @@ static QVariant fcnCloseLine( const QVariantList &values, const QgsExpressionCon
   }
   else
   {
-    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection *>( geom.constGet() );
+    auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() );
 
     std::unique_ptr< QgsGeometryCollection > closed( collection->createEmptyWithSameType() );
 
     for ( int i = 0; i < collection->numGeometries(); ++i )
     {
-      if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString * >( collection->geometryN( i ) ) )
+      if ( auto line = qgsgeometry_cast<const QgsLineString *>( collection->geometryN( i ) ) )
       {
         std::unique_ptr< QgsLineString > closedLine( line->clone() );
         closedLine->close();
@@ -4908,10 +4908,10 @@ static QVariant fcnForcePolygonCCW( const QVariantList &values, const QgsExpress
 static QVariant fcnWedgeBuffer( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  const QgsPoint *pt = qgsgeometry_cast<const QgsPoint *>( fGeom.constGet() );
+  auto pt = qgsgeometry_cast<const QgsPoint *>( fGeom.constGet() );
   if ( !pt && fGeom.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( fGeom.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -5257,7 +5257,7 @@ static QVariant fcnReverse( const QVariantList &values, const QgsExpressionConte
   QVariant result;
   if ( !fGeom.isMultipart() )
   {
-    const QgsCurve *curve = qgsgeometry_cast<const QgsCurve * >( fGeom.constGet() );
+    auto curve = qgsgeometry_cast<const QgsCurve *>( fGeom.constGet() );
     if ( !curve )
       return QVariant();
 
@@ -5266,11 +5266,11 @@ static QVariant fcnReverse( const QVariantList &values, const QgsExpressionConte
   }
   else
   {
-    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection *>( fGeom.constGet() );
+    auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( fGeom.constGet() );
     std::unique_ptr< QgsGeometryCollection > reversed( collection->createEmptyWithSameType() );
     for ( int i = 0; i < collection->numGeometries(); ++i )
     {
-      if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve * >( collection->geometryN( i ) ) )
+      if ( auto curve = qgsgeometry_cast<const QgsCurve *>( collection->geometryN( i ) ) )
       {
         reversed->addGeometry( curve->reversed() );
       }
@@ -5290,10 +5290,10 @@ static QVariant fcnExteriorRing( const QVariantList &values, const QgsExpression
   if ( fGeom.isNull() )
     return QVariant();
 
-  const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( fGeom.constGet() );
+  auto curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( fGeom.constGet() );
   if ( !curvePolygon && fGeom.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( fGeom.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -5392,10 +5392,10 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   QgsGeometry fGeom1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   QgsGeometry fGeom2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
 
-  const QgsPoint *pt1 = qgsgeometry_cast<const QgsPoint *>( fGeom1.constGet() );
+  auto pt1 = qgsgeometry_cast<const QgsPoint *>( fGeom1.constGet() );
   if ( !pt1 && fGeom1.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom1.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( fGeom1.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -5404,10 +5404,10 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
     }
   }
 
-  const QgsPoint *pt2 = qgsgeometry_cast<const QgsPoint *>( fGeom2.constGet() );
+  auto pt2 = qgsgeometry_cast<const QgsPoint *>( fGeom2.constGet() );
   if ( !pt2 && fGeom2.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom2.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( fGeom2.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -5552,7 +5552,7 @@ static QVariant fcnProject( const QVariantList &values, const QgsExpressionConte
   double azimuth = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
   double inclination = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
 
-  const QgsPoint *p = static_cast<const QgsPoint *>( geom.constGet()->simplifiedTypeRef( ) );
+  auto p = static_cast<const QgsPoint *>( geom.constGet()->simplifiedTypeRef( ) );
   QgsPoint newPoint = p->project( distance,  180.0 * azimuth / M_PI, 180.0 * inclination / M_PI );
 
   return QVariant::fromValue( QgsGeometry( new QgsPoint( newPoint ) ) );
@@ -5563,10 +5563,10 @@ static QVariant fcnInclination( const QVariantList &values, const QgsExpressionC
   QgsGeometry fGeom1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   QgsGeometry fGeom2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
 
-  const QgsPoint *pt1 = qgsgeometry_cast<const QgsPoint *>( fGeom1.constGet() );
+  auto pt1 = qgsgeometry_cast<const QgsPoint *>( fGeom1.constGet() );
   if ( !pt1 && fGeom1.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom1.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( fGeom1.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -5574,10 +5574,10 @@ static QVariant fcnInclination( const QVariantList &values, const QgsExpressionC
       }
     }
   }
-  const QgsPoint *pt2 = qgsgeometry_cast<const QgsPoint *>( fGeom2.constGet() );
+  auto pt2 = qgsgeometry_cast<const QgsPoint *>( fGeom2.constGet() );
   if ( !pt2 && fGeom2.isMultipart() )
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom2.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( fGeom2.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
@@ -5652,7 +5652,7 @@ static QVariant fcnOrderParts( const QVariantList &values, const QgsExpressionCo
     unconstedContext = new QgsExpressionContext();
   }
 
-  const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( fGeom.constGet() );
+  auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( fGeom.constGet() );
   Q_ASSERT( collection ); // Should have failed the multipart check above
 
   QgsFeatureRequest::OrderBy orderBy;
@@ -5669,7 +5669,7 @@ static QVariant fcnOrderParts( const QVariantList &values, const QgsExpressionCo
 
   sorter.sortFeatures( partFeatures, unconstedContext );
 
-  QgsGeometryCollection *orderedGeom = qgsgeometry_cast<QgsGeometryCollection *>( fGeom.constGet()->clone() );
+  auto orderedGeom = qgsgeometry_cast<QgsGeometryCollection *>( fGeom.constGet()->clone() );
 
   Q_ASSERT( orderedGeom );
 
@@ -5730,7 +5730,7 @@ static QVariant fcnLineInterpolatePointByM( const QVariantList &values, const Qg
 
   double x, y, z, distance;
 
-  const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( lineGeom.constGet() );
+  auto line = qgsgeometry_cast<const QgsLineString *>( lineGeom.constGet() );
   if ( !line )
   {
     return QVariant();
@@ -5763,7 +5763,7 @@ static QVariant fcnLineSubset( const QVariantList &values, const QgsExpressionCo
     curve = qgsgeometry_cast< const QgsCurve * >( lineGeom.constGet() );
   else
   {
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( lineGeom.constGet() ) )
+    if ( auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( lineGeom.constGet() ) )
     {
       if ( collection->numGeometries() > 0 )
       {
@@ -5836,7 +5836,7 @@ static QVariant fcnLineLocateM( const QVariantList &values, const QgsExpressionC
 
   double x, y, z, distance;
 
-  const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( lineGeom.constGet() );
+  auto line = qgsgeometry_cast<const QgsLineString *>( lineGeom.constGet() );
   if ( !line )
   {
     return QVariant();
@@ -6644,7 +6644,7 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
   {
     if ( !values.isEmpty() )
     {
-      QgsExpressionNodeColumnRef *col = dynamic_cast<QgsExpressionNodeColumnRef *>( node->args()->at( 0 ) );
+      auto col = dynamic_cast<QgsExpressionNodeColumnRef *>( node->args()->at( 0 ) );
       if ( col && ( values.size() == 1 || !values.at( 1 ).isValid() ) )
         fieldName = col->name();
       else if ( values.size() == 2 )
@@ -6802,7 +6802,7 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
     else
     {
       //vector layer methods
-      QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
+      auto vLayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( vLayer )
       {
         if ( QString::compare( layerProperty, QStringLiteral( "storage_type" ), Qt::CaseInsensitive ) == 0 )
@@ -6868,7 +6868,7 @@ static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpre
   bool foundLayer = false;
   const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, band, layerProperty]( QgsMapLayer * layer )-> QVariant
   {
-    QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer );
+    auto rl = qobject_cast<QgsRasterLayer *>( layer );
     if ( !rl )
       return QVariant();
 
@@ -7996,7 +7996,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     const QgsGeometry merged { intersection.mergeLines() };
     for ( auto it = merged.const_parts_begin(); ! testResult && it != merged.const_parts_end(); ++it )
     {
-      const QgsCurve *geom = qgsgeometry_cast< const QgsCurve * >( *it );
+      auto geom = qgsgeometry_cast<const QgsCurve *>( *it );
       // Check min overlap for intersection (if set)
       if ( minOverlap != -1  || requireMeasures )
       {
@@ -8034,7 +8034,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     QVector<double> radiusValues;
     for ( auto it = intersection.const_parts_begin(); ( ! testResult || requireMeasures ) && it != intersection.const_parts_end(); ++it )
     {
-      const QgsCurvePolygon *geom = qgsgeometry_cast< const QgsCurvePolygon * >( *it );
+      auto geom = qgsgeometry_cast<const QgsCurvePolygon *>( *it );
       // Check min overlap for intersection (if set)
       if ( minOverlap != -1 || requireMeasures )
       {
@@ -9417,7 +9417,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       Q_UNUSED( context )
       if ( node->args()->count() == 1 )
       {
-        QgsExpressionNodeColumnRef *colRef = dynamic_cast<QgsExpressionNodeColumnRef *>( node->args()->at( 0 ) );
+        auto colRef = dynamic_cast<QgsExpressionNodeColumnRef *>( node->args()->at( 0 ) );
         if ( colRef )
         {
           return true;
@@ -9493,7 +9493,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       if ( node && node->args()->count() > 0 )
       {
         QgsExpressionNode *argNode = node->args()->at( 0 );
-        if ( QgsExpressionNodeLiteral *literal = dynamic_cast<QgsExpressionNodeLiteral *>( argNode ) )
+        if ( auto literal = dynamic_cast<QgsExpressionNodeLiteral *>( argNode ) )
         {
           if ( literal->value() == QLatin1String( "geometry" ) || literal->value() == QLatin1String( "feature" ) )
             return true;
@@ -9740,7 +9740,7 @@ QVariant QgsArrayForeachExpressionFunction::run( QgsExpressionNode::NodeList *ar
 
   QVariantList array = args->at( 0 )->eval( parent, context ).toList();
 
-  QgsExpressionContext *subContext = const_cast<QgsExpressionContext *>( context );
+  auto subContext = const_cast<QgsExpressionContext *>( context );
   std::unique_ptr< QgsExpressionContext > tempContext;
   if ( !subContext )
   {
@@ -9838,7 +9838,7 @@ QVariant QgsArrayFilterExpressionFunction::run( QgsExpressionNode::NodeList *arg
 
   const QVariantList array = args->at( 0 )->eval( parent, context ).toList();
 
-  QgsExpressionContext *subContext = const_cast<QgsExpressionContext *>( context );
+  auto subContext = const_cast<QgsExpressionContext *>( context );
   std::unique_ptr< QgsExpressionContext > tempContext;
   if ( !subContext )
   {
@@ -10022,7 +10022,7 @@ bool QgsWithVariableExpressionFunction::prepare( const QgsExpressionNodeFunction
 
 void QgsWithVariableExpressionFunction::popTemporaryVariable( const QgsExpressionContext *context ) const
 {
-  QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
+  auto updatedContext = const_cast<QgsExpressionContext *>( context );
   delete updatedContext->popScope();
 }
 
@@ -10031,6 +10031,6 @@ void QgsWithVariableExpressionFunction::appendTemporaryVariable( const QgsExpres
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
   scope->addVariable( QgsExpressionContextScope::StaticVariable( name, value, true ) );
 
-  QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
+  auto updatedContext = const_cast<QgsExpressionContext *>( context );
   updatedContext->appendScope( scope );
 }

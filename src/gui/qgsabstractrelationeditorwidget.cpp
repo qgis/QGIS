@@ -477,7 +477,7 @@ void QgsAbstractRelationEditorWidget::linkFeature( const QString &filterExpressi
 
 void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
 {
-  QgsFeatureSelectionDlg *selectionDlg = qobject_cast<QgsFeatureSelectionDlg *>( sender() );
+  auto selectionDlg = qobject_cast<QgsFeatureSelectionDlg *>( sender() );
 
   if ( mNmRelation.isValid() )
   {

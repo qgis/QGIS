@@ -38,7 +38,7 @@ static bool _initWidgetFunction( const QString &name, QgsPaintEffectWidgetFunc f
     QgsDebugError( QStringLiteral( "Failed to find paint effect entry in registry: %1" ).arg( name ) );
     return false;
   }
-  QgsPaintEffectMetadata *metadata = dynamic_cast<QgsPaintEffectMetadata *>( abstractMetadata );
+  auto metadata = dynamic_cast<QgsPaintEffectMetadata *>( abstractMetadata );
   if ( !metadata )
   {
     QgsDebugError( QStringLiteral( "Failed to cast paint effect's metadata: " ).arg( name ) );
@@ -114,7 +114,7 @@ void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect *effect 
   if ( stackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    if ( QgsPaintEffectWidget *pew = qobject_cast<QgsPaintEffectWidget *>( stackedWidget->currentWidget() ) )
+    if ( auto pew = qobject_cast<QgsPaintEffectWidget *>( stackedWidget->currentWidget() ) )
       disconnect( pew, &QgsPaintEffectWidget::changed, this, &QgsPaintEffectPropertiesWidget::emitSignalChanged );
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }

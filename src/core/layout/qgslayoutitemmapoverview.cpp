@@ -428,7 +428,7 @@ QgsLayoutItemMapOverview *QgsLayoutItemMapOverviewStack::overview( const int ind
 QgsLayoutItemMapOverview &QgsLayoutItemMapOverviewStack::operator[]( int idx ) // cppcheck-suppress duplInheritedMember
 {
   QgsLayoutItemMapItem *item = mItems.at( idx );
-  QgsLayoutItemMapOverview *overview = qobject_cast<QgsLayoutItemMapOverview *>( item );
+  auto overview = qobject_cast<QgsLayoutItemMapOverview *>( item );
   return *overview;
 }
 
@@ -438,7 +438,7 @@ QList<QgsLayoutItemMapOverview *> QgsLayoutItemMapOverviewStack::asList() const 
   QList< QgsLayoutItemMapItem * >::const_iterator it = mItems.begin();
   for ( ; it != mItems.end(); ++it )
   {
-    QgsLayoutItemMapOverview *overview = qobject_cast<QgsLayoutItemMapOverview *>( *it );
+    auto overview = qobject_cast<QgsLayoutItemMapOverview *>( *it );
     if ( overview )
     {
       list.append( overview );

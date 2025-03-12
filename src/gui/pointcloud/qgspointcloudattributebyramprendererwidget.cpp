@@ -138,7 +138,7 @@ void QgsPointCloudAttributeByRampRendererWidget::setMinMaxFromLayer()
 void QgsPointCloudAttributeByRampRendererWidget::setFromRenderer( const QgsPointCloudRenderer *r )
 {
   mBlockChangedSignal = true;
-  const QgsPointCloudAttributeByRampRenderer *mbcr = dynamic_cast<const QgsPointCloudAttributeByRampRenderer *>( r );
+  auto mbcr = dynamic_cast<const QgsPointCloudAttributeByRampRenderer *>( r );
   if ( mbcr )
   {
     // we will be restoring the existing ramp classes -- we don't want to regenerate any automatically!

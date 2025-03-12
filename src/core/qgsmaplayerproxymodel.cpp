@@ -63,7 +63,7 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
                               filters.testFlag( Qgis::LayerFilter::HasGeometry );
   if ( detectGeometry && layer->type() == Qgis::LayerType::Vector )
   {
-    if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
+    if ( auto vl = qobject_cast<const QgsVectorLayer *>( layer ) )
     {
       if ( filters.testFlag( Qgis::LayerFilter::HasGeometry ) && vl->isSpatial() )
         return true;

@@ -180,7 +180,7 @@ void QgsProcessingAggregatePanelWidget::addField()
 
 void QgsProcessingAggregatePanelWidget::loadLayerFields()
 {
-  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerCombo->currentLayer() ) )
+  if ( auto vl = qobject_cast<QgsVectorLayer *>( mLayerCombo->currentLayer() ) )
   {
     mFieldsView->setSourceFields( vl->fields() );
   }
@@ -202,7 +202,7 @@ QgsProcessingAggregateParameterDefinitionWidget::QgsProcessingAggregateParameter
   mParentLayerComboBox->addItem( tr( "None" ), QVariant() );
 
   QString initialParent;
-  if ( const QgsProcessingParameterAggregate *aggregateParam = dynamic_cast<const QgsProcessingParameterAggregate *>( definition ) )
+  if ( auto aggregateParam = dynamic_cast<const QgsProcessingParameterAggregate *>( definition ) )
     initialParent = aggregateParam->parentLayerParameterName();
 
   if ( auto *lModel = widgetContext.model() )
@@ -211,7 +211,7 @@ QgsProcessingAggregateParameterDefinitionWidget::QgsProcessingAggregateParameter
     const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast<const QgsProcessingParameterFeatureSource *>( lModel->parameterDefinition( it.value().parameterName() ) ) )
+      if ( auto definition = dynamic_cast<const QgsProcessingParameterFeatureSource *>( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox->addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )

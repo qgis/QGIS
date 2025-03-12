@@ -159,7 +159,7 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
       evaluatedAngle = angleProperty.valueAsDouble( context.expressionContext(), angle );
 
     inputGeometry.convertToMultiType();
-    const QgsMultiLineString *multiLine = static_cast<const QgsMultiLineString *>( inputGeometry.constGet() );
+    auto multiLine = static_cast<const QgsMultiLineString *>( inputGeometry.constGet() );
     for ( int id = 0; id < multiLine->numGeometries(); ++id )
     {
       const QgsLineString *line = multiLine->lineStringN( id );

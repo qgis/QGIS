@@ -206,7 +206,7 @@ void TestQgsMultiCurve::addGeometryDimensionPreservation()
   QCOMPARE( mc.partCount(), 2 );
   QVERIFY( !mc.is3D() );
 
-  const QgsCircularString *ls = static_cast<const QgsCircularString *>( mc.geometryN( 0 ) );
+  auto ls = static_cast<const QgsCircularString *>( mc.geometryN( 0 ) );
 
   QCOMPARE( ls->pointN( 0 ), QgsPoint( 9, 12 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( 3, 13 ) );
@@ -253,7 +253,7 @@ void TestQgsMultiCurve::addGeometryDimensionPreservationZ()
   QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveZ );
   QVERIFY( mc.is3D() );
 
-  const QgsCircularString *ls = static_cast<const QgsCircularString *>( mc.geometryN( 0 ) );
+  auto ls = static_cast<const QgsCircularString *>( mc.geometryN( 0 ) );
 
   QCOMPARE( ls->pointN( 0 ), QgsPoint( 1, 10, 2 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( 2, 11, 3 ) );
@@ -297,7 +297,7 @@ void TestQgsMultiCurve::addGeometryDimensionPreservationM()
   QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveM );
   QVERIFY( mc.isMeasure() );
 
-  const QgsCircularString *ls = static_cast<const QgsCircularString *>( mc.geometryN( 0 ) );
+  auto ls = static_cast<const QgsCircularString *>( mc.geometryN( 0 ) );
 
   QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 5, 50, 0, 4 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointM, 6, 61, 0, 5 ) );
@@ -339,7 +339,7 @@ void TestQgsMultiCurve::addGeometryDimensionPreservationZM()
   QVERIFY( mc.isMeasure() );
   QVERIFY( mc.is3D() );
 
-  const QgsCircularString *ls = static_cast<const QgsCircularString *>( mc.geometryN( 0 ) );
+  auto ls = static_cast<const QgsCircularString *>( mc.geometryN( 0 ) );
 
   QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) );
@@ -471,7 +471,7 @@ void TestQgsMultiCurve::clone()
   cloned.reset( mc.clone() );
   QCOMPARE( cloned->numGeometries(), 2 );
 
-  const QgsCircularString *ls = static_cast<const QgsCircularString *>( cloned->geometryN( 0 ) );
+  auto ls = static_cast<const QgsCircularString *>( cloned->geometryN( 0 ) );
 
   QCOMPARE( *ls, part );
 
@@ -497,7 +497,7 @@ void TestQgsMultiCurve::copy()
   QCOMPARE( mc2.numGeometries(), 2 );
   QCOMPARE( mc2.wkbType(), Qgis::WkbType::MultiCurveZM );
 
-  const QgsCircularString *ls = static_cast<const QgsCircularString *>( mc2.geometryN( 0 ) );
+  auto ls = static_cast<const QgsCircularString *>( mc2.geometryN( 0 ) );
 
   QCOMPARE( *ls, part );
 
@@ -523,7 +523,7 @@ void TestQgsMultiCurve::assignment()
   mc1 = mc2;
   QCOMPARE( mc1.numGeometries(), 2 );
 
-  const QgsCircularString *ls = static_cast<const QgsCircularString *>( mc1.geometryN( 0 ) );
+  auto ls = static_cast<const QgsCircularString *>( mc1.geometryN( 0 ) );
   QCOMPARE( *ls, part );
 
   ls = static_cast<const QgsCircularString *>( mc1.geometryN( 1 ) );
@@ -559,7 +559,7 @@ void TestQgsMultiCurve::boundary()
   mc.addGeometry( cs.clone() );
 
   QgsAbstractGeometry *boundary = mc.boundary();
-  QgsMultiPoint *mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
+  auto mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
 
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 2 );
@@ -667,7 +667,7 @@ void TestQgsMultiCurve::reversed()
   reversed.reset( mc.reversed() );
   QVERIFY( !reversed->isEmpty() );
 
-  const QgsCircularString *ls = static_cast<const QgsCircularString *>( reversed->geometryN( 0 ) );
+  auto ls = static_cast<const QgsCircularString *>( reversed->geometryN( 0 ) );
 
   QCOMPARE( ls->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 7, 11, 2, 8 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 3, 13, 1, 4 ) );
@@ -691,7 +691,7 @@ void TestQgsMultiCurve::segmentize()
   QgsMultiCurve mc;
   mc.addGeometry( cc.clone() );
 
-  QgsMultiLineString *segmentized2 = static_cast<QgsMultiLineString *>( mc.segmentize() );
+  auto segmentized2 = static_cast<QgsMultiLineString *>( mc.segmentize() );
 
   QCOMPARE( segmentized2->vertexCount(), 156 );
   QCOMPARE( segmentized2->partCount(), 1 );
@@ -713,7 +713,7 @@ void TestQgsMultiCurve::toCurveType()
   QCOMPARE( curveType->wkbType(), Qgis::WkbType::MultiCurveZM );
   QCOMPARE( curveType->numGeometries(), 2 );
 
-  const QgsCircularString *curve = static_cast<const QgsCircularString *>( curveType->geometryN( 0 ) );
+  auto curve = static_cast<const QgsCircularString *>( curveType->geometryN( 0 ) );
   QCOMPARE( *curve, *static_cast<const QgsCircularString *>( mc.geometryN( 0 ) ) );
 
   curve = static_cast<const QgsCircularString *>( curveType->geometryN( 1 ) );

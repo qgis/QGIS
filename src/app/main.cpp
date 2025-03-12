@@ -1694,7 +1694,7 @@ int main( int argc, char *argv[] )
       const auto constMapThemeVisibleLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme );
       for ( QgsMapLayer *layer : constMapThemeVisibleLayers )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+        auto vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
           continue;
         layers << QgsDxfExport::DxfLayer( vl );
@@ -1706,7 +1706,7 @@ int main( int argc, char *argv[] )
       const auto constMapLayers = QgsProject::instance()->mapLayers();
       for ( QgsMapLayer *ml : constMapLayers )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+        auto vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( !vl )
           continue;
         layers << QgsDxfExport::DxfLayer( vl );

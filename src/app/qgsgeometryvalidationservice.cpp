@@ -82,7 +82,7 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
 {
   for ( QgsMapLayer *layer : layers )
   {
-    QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer )
     {
       connect( vectorLayer->geometryOptions(), &QgsGeometryOptions::checkConfigurationChanged, this, [this, vectorLayer]() {

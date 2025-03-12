@@ -104,7 +104,7 @@ void QgsDataDefinedSizeLegend::updateFromSymbolAndProperty( const QgsMarkerSymbo
   mSymbol.reset( symbol->clone() );
   mSymbol->setDataDefinedSize( QgsProperty() );  // original symbol may have had data-defined size associated
 
-  const QgsSizeScaleTransformer *sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer * >( ddSize.transformer() );
+  auto sizeTransformer = dynamic_cast<const QgsSizeScaleTransformer *>( ddSize.transformer() );
   mSizeScaleTransformer.reset( sizeTransformer ? sizeTransformer->clone() : nullptr );
 
   if ( mTitleLabel.isEmpty() )
@@ -151,7 +151,7 @@ QgsLegendSymbolList QgsDataDefinedSizeLegend::legendSymbolList() const
       {
         QgsLegendSymbolItem si( mSymbol.get(), cl.label, QString() );
         si.setUserData( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::IsDataDefinedSize ), isDataDefinedSize );
-        QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( si.symbol() );
+        auto s = static_cast<QgsMarkerSymbol *>( si.symbol() );
         double size = cl.size;
         if ( mSizeScaleTransformer )
         {

@@ -145,7 +145,7 @@ void QgsTinInterpolator::initialize()
 
   if ( mInterpolation == CloughTocher )
   {
-    NormVecDecorator *dec = dynamic_cast<NormVecDecorator *>( mTriangulation );
+    auto dec = dynamic_cast<NormVecDecorator *>( mTriangulation );
     if ( dec )
     {
       auto ctInterpolator = std::make_unique<CloughTocherInterpolator>();
@@ -241,7 +241,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
             std::vector<const QgsCurvePolygon *> polygons;
             if ( g.isMultipart() )
             {
-              const QgsMultiSurface *ms = qgsgeometry_cast<const QgsMultiSurface *>( g.constGet() );
+              auto ms = qgsgeometry_cast<const QgsMultiSurface *>( g.constGet() );
               for ( int i = 0; i < ms->numGeometries(); ++i )
               {
                 polygons.emplace_back( qgsgeometry_cast<const QgsCurvePolygon *>( ms->geometryN( i ) ) );
@@ -270,7 +270,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
           {
             if ( g.isMultipart() )
             {
-              const QgsMultiCurve *mc = qgsgeometry_cast<const QgsMultiCurve *>( g.constGet() );
+              auto mc = qgsgeometry_cast<const QgsMultiCurve *>( g.constGet() );
               for ( int i = 0; i < mc->numGeometries(); ++i )
               {
                 curves.emplace_back( mc->curveN( i ) );

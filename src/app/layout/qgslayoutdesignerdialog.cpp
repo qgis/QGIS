@@ -1138,7 +1138,7 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
 
   setTitle( mMasterLayout->name() );
 
-  if ( QgsPrintLayout *l = dynamic_cast<QgsPrintLayout *>( layout ) )
+  if ( auto l = dynamic_cast<QgsPrintLayout *>( layout ) )
   {
     connect( l, &QgsPrintLayout::nameChanged, this, &QgsLayoutDesignerDialog::setTitle );
     setCurrentLayout( l );
@@ -1349,7 +1349,7 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPa
   widget->setReportTypeString( reportTypeString() );
   widget->setMasterLayout( mMasterLayout );
 
-  if ( QgsLayoutPagePropertiesWidget *ppWidget = qobject_cast<QgsLayoutPagePropertiesWidget *>( widget.get() ) )
+  if ( auto ppWidget = qobject_cast<QgsLayoutPagePropertiesWidget *>( widget.get() ) )
     connect( ppWidget, &QgsLayoutPagePropertiesWidget::pageOrientationChanged, this, &QgsLayoutDesignerDialog::pageOrientationChanged );
 
   widget->setDockMode( true );
@@ -2539,7 +2539,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
 
 void QgsLayoutDesignerDialog::atlasPreviewTriggered( bool checked )
 {
-  QgsPrintLayout *printLayout = qobject_cast<QgsPrintLayout *>( mLayout );
+  auto printLayout = qobject_cast<QgsPrintLayout *>( mLayout );
   if ( !printLayout )
     return;
   QgsLayoutAtlas *atlas = printLayout->atlas();
@@ -2612,7 +2612,7 @@ void QgsLayoutDesignerDialog::atlasPageComboEditingFinished()
   }
   bool ok = ( page > 0 );
 
-  QgsPrintLayout *printLayout = qobject_cast<QgsPrintLayout *>( mLayout );
+  auto printLayout = qobject_cast<QgsPrintLayout *>( mLayout );
   if ( !printLayout )
     return;
   QgsLayoutAtlas *atlas = printLayout->atlas();
@@ -3963,7 +3963,7 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
 
 void QgsLayoutDesignerDialog::createAtlasWidget()
 {
-  QgsPrintLayout *printLayout = dynamic_cast<QgsPrintLayout *>( mMasterLayout );
+  auto printLayout = dynamic_cast<QgsPrintLayout *>( mMasterLayout );
   if ( !printLayout )
     return;
 
@@ -4285,7 +4285,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   forceVector = options.mForceVectorCheckBox->isChecked();
   disableRasterTiles = options.mDisableRasterTilingCheckBox->isChecked();
   simplify = options.mSimplifyGeometriesCheckbox->isChecked();
-  Qgis::TextRenderFormat textRenderFormat = static_cast<Qgis::TextRenderFormat>( options.mTextRenderFormatComboBox->currentData().toInt() );
+  auto textRenderFormat = static_cast<Qgis::TextRenderFormat>( options.mTextRenderFormatComboBox->currentData().toInt() );
   QgsLayoutExporter::settingOpenAfterExportingSvg->setValue( options.mOpenAfterExportingCheckBox->isChecked() );
 
   if ( mLayout )
@@ -4472,7 +4472,7 @@ void QgsLayoutDesignerDialog::toggleAtlasControls( bool atlasEnabled )
 
 void QgsLayoutDesignerDialog::updateAtlasPageComboBox( int pageCount )
 {
-  QgsPrintLayout *printLayout = qobject_cast<QgsPrintLayout *>( mLayout );
+  auto printLayout = qobject_cast<QgsPrintLayout *>( mLayout );
   if ( !printLayout )
     return;
 
@@ -4496,7 +4496,7 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
   if ( mIsExportingAtlas )
     return;
 
-  QgsPrintLayout *printLayout = qobject_cast<QgsPrintLayout *>( mLayout );
+  auto printLayout = qobject_cast<QgsPrintLayout *>( mLayout );
   if ( !printLayout )
     return;
 
@@ -4553,7 +4553,7 @@ void QgsLayoutDesignerDialog::loadPredefinedScalesFromProject()
 
 QgsLayoutAtlas *QgsLayoutDesignerDialog::atlas()
 {
-  QgsPrintLayout *layout = qobject_cast<QgsPrintLayout *>( mLayout );
+  auto layout = qobject_cast<QgsPrintLayout *>( mLayout );
   if ( !layout )
     return nullptr;
   return layout->atlas();
@@ -4801,7 +4801,7 @@ void QgsLayoutDesignerDialog::backgroundTaskCountChanged( int total )
 
 void QgsLayoutDesignerDialog::onMapPreviewRefreshed()
 {
-  QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( sender() );
+  auto map = qobject_cast<QgsLayoutItemMap *>( sender() );
   if ( !map )
     return;
 
@@ -4810,7 +4810,7 @@ void QgsLayoutDesignerDialog::onMapPreviewRefreshed()
 
 void QgsLayoutDesignerDialog::onItemAdded( QgsLayoutItem *item )
 {
-  if ( QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( item ) )
+  if ( auto map = qobject_cast<QgsLayoutItemMap *>( item ) )
   {
     connect( map, &QgsLayoutItemMap::previewRefreshed, this, &QgsLayoutDesignerDialog::onMapPreviewRefreshed );
   }
@@ -4904,7 +4904,7 @@ void QgsLayoutDesignerDialog::setSectionTitle( const QString &title )
 
 void QgsLayoutDesignerDialog::toolButtonActionTriggered( QAction *action )
 {
-  QToolButton *bt = qobject_cast<QToolButton *>( sender() );
+  auto bt = qobject_cast<QToolButton *>( sender() );
   if ( !bt )
     return;
 
@@ -4921,7 +4921,7 @@ void QgsLayoutDesignerDialog::toolButtonActionTriggered( QAction *action )
 
 void QgsLayoutDesignerDialog::onItemDestroyed( QObject *item )
 {
-  if ( QgsLayoutItemBaseWidget *widget = qobject_cast<QgsLayoutItemBaseWidget *>( mItemPropertiesStack->mainPanel() ) )
+  if ( auto widget = qobject_cast<QgsLayoutItemBaseWidget *>( mItemPropertiesStack->mainPanel() ) )
   {
     if ( widget->layoutObject() == item )
       delete mItemPropertiesStack->takeMainPanel();

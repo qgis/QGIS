@@ -378,7 +378,7 @@ void QgsCopcPointCloudIndex::populateHierarchy( const char *hierarchyPageData, u
 
   for ( uint64_t i = 0; i < byteSize; i += sizeof( CopcEntry ) )
   {
-    const CopcEntry *entry = reinterpret_cast<const CopcEntry *>( hierarchyPageData + i );
+    auto entry = reinterpret_cast<const CopcEntry *>( hierarchyPageData + i );
     const QgsPointCloudNodeId nodeId( entry->key.level, entry->key.x, entry->key.y, entry->key.z );
     mHierarchy[nodeId] = entry->pointCount;
     mHierarchyNodePos.insert( nodeId, QPair<uint64_t, int32_t>( entry->offset, entry->byteSize ) );

@@ -127,7 +127,7 @@ QList<Qgis::GeometryType> QgsPoint3DSymbol::compatibleGeometryTypes() const
 
 void QgsPoint3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *layer )
 {
-  const QgsVectorLayerElevationProperties *props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( const_cast<QgsVectorLayer *>( layer )->elevationProperties() );
+  auto props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( const_cast<QgsVectorLayer *>( layer )->elevationProperties() );
 
   mAltClamping = props->clamping();
   mTransform.data()[13] = static_cast<float>( props->zOffset() );

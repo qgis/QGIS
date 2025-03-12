@@ -482,7 +482,7 @@ void TestQgsOgrUtils::stringToFeatureList()
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPoint *point = dynamic_cast<const QgsPoint *>( featureGeom.constGet() );
+  auto point = dynamic_cast<const QgsPoint *>( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
@@ -1142,7 +1142,7 @@ void TestQgsOgrUtils::testConvertFieldDomain()
   OGRFieldDomainH domain = OGR_CodedFldDomain_Create( "name", "desc", OFTInteger, OFSTNone, values );
 
   std::unique_ptr<QgsFieldDomain> res = QgsOgrUtils::convertFieldDomain( domain );
-  QgsCodedFieldDomain *codedFieldDomain = dynamic_cast<QgsCodedFieldDomain *>( res.get() );
+  auto codedFieldDomain = dynamic_cast<QgsCodedFieldDomain *>( res.get() );
   QVERIFY( codedFieldDomain );
   QCOMPARE( codedFieldDomain->name(), QStringLiteral( "name" ) );
   QCOMPARE( codedFieldDomain->description(), QStringLiteral( "desc" ) );
@@ -1182,7 +1182,7 @@ void TestQgsOgrUtils::testConvertFieldDomain()
   max.Integer = 15;
   domain = OGR_RangeFldDomain_Create( "name", "desc", OFTInteger, OFSTNone, &min, true, &max, false );
   res = QgsOgrUtils::convertFieldDomain( domain );
-  QgsRangeFieldDomain *rangeDomain = dynamic_cast<QgsRangeFieldDomain *>( res.get() );
+  auto rangeDomain = dynamic_cast<QgsRangeFieldDomain *>( res.get() );
   QVERIFY( rangeDomain );
   QCOMPARE( rangeDomain->name(), QStringLiteral( "name" ) );
   QCOMPARE( rangeDomain->description(), QStringLiteral( "desc" ) );
@@ -1201,7 +1201,7 @@ void TestQgsOgrUtils::testConvertFieldDomain()
 
   domain = OGR_GlobFldDomain_Create( "name", "desc", OFTString, OFSTNone, "*a*" );
   res = QgsOgrUtils::convertFieldDomain( domain );
-  QgsGlobFieldDomain *globDomain = dynamic_cast<QgsGlobFieldDomain *>( res.get() );
+  auto globDomain = dynamic_cast<QgsGlobFieldDomain *>( res.get() );
   QVERIFY( globDomain );
   QCOMPARE( globDomain->name(), QStringLiteral( "name" ) );
   QCOMPARE( globDomain->description(), QStringLiteral( "desc" ) );

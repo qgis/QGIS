@@ -27,7 +27,7 @@
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 void QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer, QHash<QgsMapLayer *, QString> &originalLayerFilters )
 {
-  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer ) )
+  if ( auto layer = qobject_cast<QgsVectorLayer *>( mapLayer ) )
   {
     QString sql = accessControl->extraSubsetString( layer );
     if ( !sql.isEmpty() )
@@ -53,7 +53,7 @@ void QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( const QgsAccess
 
 void QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer )
 {
-  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer ) )
+  if ( auto layer = qobject_cast<QgsVectorLayer *>( mapLayer ) )
   {
     QString sql = accessControl->extraSubsetString( layer );
     if ( !sql.isEmpty() )
@@ -80,7 +80,7 @@ void QgsOWSServerFilterRestorer::restoreLayerFilters( const QHash<QgsMapLayer *,
   QHash<QgsMapLayer *, QString>::const_iterator filterIt = filterMap.constBegin();
   for ( ; filterIt != filterMap.constEnd(); ++filterIt )
   {
-    QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( filterIt.key() );
+    auto filteredLayer = qobject_cast<QgsVectorLayer *>( filterIt.key() );
     if ( filteredLayer )
     {
       if ( !filteredLayer->setSubsetString( filterIt.value() ) )

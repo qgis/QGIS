@@ -306,8 +306,8 @@ bool QgsPointCloudExpressionNodeBinaryOperator::leftAssociative() const
 
 QString QgsPointCloudExpressionNodeBinaryOperator::dump() const
 {
-  QgsPointCloudExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft );
-  QgsPointCloudExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight );
+  auto lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft );
+  auto rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight );
 
   QString rdump( mOpRight->dump() );
 
@@ -523,8 +523,8 @@ bool QgsPointCloudExpressionNodeBinaryOperator::convert( const QgsExpressionNode
 
 QString QgsPointCloudExpressionNodeBinaryOperator::toPdal() const
 {
-  QgsPointCloudExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft );
-  QgsPointCloudExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight );
+  auto lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft );
+  auto rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight );
 
   QString rdump( mOpRight->toPdal() );
 

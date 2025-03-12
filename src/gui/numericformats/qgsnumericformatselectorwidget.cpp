@@ -78,7 +78,7 @@ QgsNumericFormat *QgsNumericFormatSelectorWidget::format() const
 void QgsNumericFormatSelectorWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {
   mExpressionContextGenerator = generator;
-  if ( QgsNumericFormatWidget *w = qobject_cast<QgsNumericFormatWidget *>( stackedWidget->currentWidget() ) )
+  if ( auto w = qobject_cast<QgsNumericFormatWidget *>( stackedWidget->currentWidget() ) )
     w->registerExpressionContextGenerator( mExpressionContextGenerator );
 }
 
@@ -101,7 +101,7 @@ void QgsNumericFormatSelectorWidget::formatTypeChanged()
 
 void QgsNumericFormatSelectorWidget::formatChanged()
 {
-  if ( QgsNumericFormatWidget *w = qobject_cast<QgsNumericFormatWidget *>( stackedWidget->currentWidget() ) )
+  if ( auto w = qobject_cast<QgsNumericFormatWidget *>( stackedWidget->currentWidget() ) )
     mCurrentFormat.reset( w->format() );
 
   updateSampleText();
@@ -137,7 +137,7 @@ void QgsNumericFormatSelectorWidget::updateFormatWidget()
   if ( stackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    if ( QgsNumericFormatWidget *w = qobject_cast<QgsNumericFormatWidget *>( stackedWidget->currentWidget() ) )
+    if ( auto w = qobject_cast<QgsNumericFormatWidget *>( stackedWidget->currentWidget() ) )
       disconnect( w, &QgsNumericFormatWidget::changed, this, &QgsNumericFormatSelectorWidget::formatChanged );
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }

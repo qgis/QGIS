@@ -281,7 +281,7 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
     }
   }
 
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( val.value<QObject *>() );
+  auto layer = qobject_cast<QgsMapLayer *>( val.value<QObject *>() );
   if ( !layer && val.userType() == QMetaType::Type::QString )
   {
     layer = QgsProcessingUtils::mapLayerFromString( val.toString(), context, false );
@@ -600,9 +600,9 @@ void QgsProcessingMapLayerComboBox::onLayerChanged( QgsMapLayer *layer )
 {
   if ( mUseSelectionCheckBox && mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
   {
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+    if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
     {
-      if ( QgsVectorLayer *prevLayer = qobject_cast<QgsVectorLayer *>( mPrevLayer ) )
+      if ( auto prevLayer = qobject_cast<QgsVectorLayer *>( mPrevLayer ) )
       {
         disconnect( prevLayer, &QgsVectorLayer::selectionChanged, this, &QgsProcessingMapLayerComboBox::selectionChanged );
       }
@@ -671,7 +671,7 @@ void QgsProcessingMapLayerComboBox::selectFromFile()
     path = settings.value( QStringLiteral( "/Processing/LastInputPath" ) ).toString();
 
   QString filter;
-  if ( const QgsFileFilterGenerator *generator = dynamic_cast<const QgsFileFilterGenerator *>( mParameter.get() ) )
+  if ( auto generator = dynamic_cast<const QgsFileFilterGenerator *>( mParameter.get() ) )
     filter = generator->createFileFilter();
   else
     filter = QObject::tr( "All files (*.*)" );

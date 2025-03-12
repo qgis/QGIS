@@ -78,7 +78,7 @@ QgsLayerTreeView *QgisAppInterface::layerTreeView()
 
 void QgisAppInterface::addCustomActionForLayerType( QAction *action, QString menu, Qgis::LayerType type, bool allLayers )
 {
-  QgsAppLayerTreeViewMenuProvider *menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider *>( qgis->layerTreeView()->menuProvider() );
+  auto menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider *>( qgis->layerTreeView()->menuProvider() );
   if ( !menuProvider )
     return;
 
@@ -87,7 +87,7 @@ void QgisAppInterface::addCustomActionForLayerType( QAction *action, QString men
 
 void QgisAppInterface::addCustomActionForLayer( QAction *action, QgsMapLayer *layer )
 {
-  QgsAppLayerTreeViewMenuProvider *menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider *>( qgis->layerTreeView()->menuProvider() );
+  auto menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider *>( qgis->layerTreeView()->menuProvider() );
   if ( !menuProvider )
     return;
 
@@ -96,7 +96,7 @@ void QgisAppInterface::addCustomActionForLayer( QAction *action, QgsMapLayer *la
 
 bool QgisAppInterface::removeCustomActionForLayerType( QAction *action )
 {
-  QgsAppLayerTreeViewMenuProvider *menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider *>( qgis->layerTreeView()->menuProvider() );
+  auto menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider *>( qgis->layerTreeView()->menuProvider() );
   if ( !menuProvider )
     return false;
 

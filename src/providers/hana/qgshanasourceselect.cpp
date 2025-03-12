@@ -128,7 +128,7 @@ void QgsHanaSourceSelectDelegate::setModelData(
     }
     else if ( index.column() == QgsHanaTableModel::DbtmPkCol )
     {
-      QStandardItemModel *cbm = qobject_cast<QStandardItemModel *>( cb->model() );
+      auto cbm = qobject_cast<QStandardItemModel *>( cb->model() );
       QStringList cols;
       for ( int idx = 0; idx < cbm->rowCount(); idx++ )
       {
@@ -169,7 +169,7 @@ void QgsHanaSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIn
       const QStringList columns = index.data( Qt::UserRole + 2 ).toStringList();
       for ( const QString &colName : columns )
       {
-        QStandardItemModel *cbm = qobject_cast<QStandardItemModel *>( cb->model() );
+        auto cbm = qobject_cast<QStandardItemModel *>( cb->model() );
         for ( int idx = 0; idx < cbm->rowCount(); ++idx )
         {
           QStandardItem *item = cbm->item( idx, 0 );

@@ -306,7 +306,7 @@ void QgsFeatureAction::setForceSuppressFormPopup( bool force )
 
 void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
 {
-  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( sender() );
+  auto form = qobject_cast<QgsAttributeForm *>( sender() );
   Q_UNUSED( form ) // only used for Q_ASSERT
   Q_ASSERT( form );
 

@@ -130,7 +130,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
     const Qgis::SnappingTypes type = static_cast<Qgis::SnappingTypes>( val.toInt() );
-    QToolButton *tb = qobject_cast<QToolButton *>( editor );
+    auto tb = qobject_cast<QToolButton *>( editor );
     if ( tb )
     {
       const QList<QAction *> actions = tb->menu()->actions();
@@ -142,7 +142,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::ToleranceColumn )
   {
-    QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( editor );
+    auto w = qobject_cast<QDoubleSpinBox *>( editor );
     if ( w )
     {
       w->setValue( val.toDouble() );
@@ -159,7 +159,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
   {
-    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    auto w = qobject_cast<QgsScaleWidget *>( editor );
     if ( w )
     {
       w->setScale( val.toDouble() );
@@ -167,7 +167,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
   {
-    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    auto w = qobject_cast<QgsScaleWidget *>( editor );
     if ( w )
     {
       w->setScale( val.toDouble() );
@@ -179,7 +179,7 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
 {
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
-    QToolButton *t = qobject_cast<QToolButton *>( editor );
+    auto t = qobject_cast<QToolButton *>( editor );
     if ( t )
     {
       const QList<QAction *> actions = t->menu()->actions();
@@ -208,7 +208,7 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::ToleranceColumn )
   {
-    QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( editor );
+    auto w = qobject_cast<QDoubleSpinBox *>( editor );
     if ( w )
     {
       model->setData( index, w->value(), Qt::EditRole );
@@ -216,7 +216,7 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
   {
-    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    auto w = qobject_cast<QgsScaleWidget *>( editor );
     if ( w )
     {
       model->setData( index, w->scale(), Qt::EditRole );
@@ -224,7 +224,7 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
   {
-    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    auto w = qobject_cast<QgsScaleWidget *>( editor );
     if ( w )
     {
       model->setData( index, w->scale(), Qt::EditRole );
@@ -462,7 +462,7 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode *node ) const
   }
   else
   {
-    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
+    auto layer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
     return layer && layer->isSpatial() && ( mFilterText.isEmpty() || layer->name().contains( mFilterText, Qt::CaseInsensitive ) );
   }
 }

@@ -334,7 +334,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
     {
       case Qgis::LayerType::Vector:
       {
-        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer.get() );
+        auto vectorLayer = qobject_cast<QgsVectorLayer *>( layer.get() );
         if ( !packageVectorLayer( vectorLayer, packagePath, context, &multiStepFeedback, saveStyles, saveMetadata, selectedFeaturesOnly ) )
           errored = true;
         else

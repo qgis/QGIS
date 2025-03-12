@@ -158,11 +158,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
     else if ( QgsLayerTree::isLayer( node ) )
     {
       QPointer<QgsMapLayer> layer { QgsLayerTree::toLayer( node )->layer() };
-      QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-      QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
-      QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
-      QgsVectorTileLayer *vectorTileLayer = qobject_cast<QgsVectorTileLayer *>( layer );
+      auto rlayer = qobject_cast<QgsRasterLayer *>( layer );
+      auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
+      auto meshLayer = qobject_cast<QgsMeshLayer *>( layer );
+      auto vectorTileLayer = qobject_cast<QgsVectorTileLayer *>( layer );
 
       if ( layer && layer->isSpatial() )
       {
@@ -175,7 +175,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           bool hasSelectedFeature = false;
           for ( const QgsMapLayer *layer : selectedLayers )
           {
-            if ( const QgsVectorLayer *vLayer = qobject_cast<const QgsVectorLayer *>( layer ) )
+            if ( auto vLayer = qobject_cast<const QgsVectorLayer *>( layer ) )
             {
               if ( vLayer->selectedFeatureCount() > 0 )
               {
@@ -778,7 +778,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( vlayer )
         {
-          const QgsSingleSymbolRenderer *singleRenderer = dynamic_cast<const QgsSingleSymbolRenderer *>( vlayer->renderer() );
+          auto singleRenderer = dynamic_cast<const QgsSingleSymbolRenderer *>( vlayer->renderer() );
           if ( !singleRenderer && vlayer->renderer() && vlayer->renderer()->embeddedRenderer() )
           {
             singleRenderer = dynamic_cast<const QgsSingleSymbolRenderer *>( vlayer->renderer()->embeddedRenderer() );
@@ -883,7 +883,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addSeparator();
     }
 
-    if ( QgsSymbolLegendNode *symbolNode = qobject_cast<QgsSymbolLegendNode *>( node ) )
+    if ( auto symbolNode = qobject_cast<QgsSymbolLegendNode *>( node ) )
     {
       // symbology item
       QgsMapLayer *layer = QgsLayerTree::toLayer( node->layerNode() )->layer();
@@ -896,7 +896,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *selectMatching = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelected.svg" ) ), tr( "Select Features" ), menu );
         menu->addAction( selectMatching );
         connect( selectMatching, &QAction::triggered, this, [layerId, ruleKey] {
-          if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
+          if ( auto layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
           {
             bool ok = false;
             QString filterExp = layer->renderer() ? layer->renderer()->legendKeyToExpression( ruleKey, layer, ok ) : QString();
@@ -927,7 +927,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *showMatchingInAttributeTable = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/attributes.svg" ) ), tr( "Show in Attribute Table" ), menu );
         menu->addAction( showMatchingInAttributeTable );
         connect( showMatchingInAttributeTable, &QAction::triggered, this, [layerId, ruleKey] {
-          if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
+          if ( auto layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
           {
             bool ok = false;
             QString filterExp = layer->renderer() ? layer->renderer()->legendKeyToExpression( ruleKey, layer, ok ) : QString();
@@ -1156,7 +1156,7 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol( const QString &layerId )
   if ( !layer )
     return;
 
-  QgsSingleSymbolRenderer *singleRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( layer->renderer() );
+  auto singleRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( layer->renderer() );
   std::unique_ptr<QgsSymbol> newSymbol;
   if ( singleRenderer && singleRenderer->symbol() )
     newSymbol.reset( singleRenderer->symbol()->clone() );
@@ -1204,7 +1204,7 @@ void QgsAppLayerTreeViewMenuProvider::copyVectorSymbol( const QString &layerId )
   if ( !layer )
     return;
 
-  const QgsSingleSymbolRenderer *singleRenderer = dynamic_cast<const QgsSingleSymbolRenderer *>( layer->renderer() );
+  auto singleRenderer = dynamic_cast<const QgsSingleSymbolRenderer *>( layer->renderer() );
   if ( !singleRenderer && layer->renderer() && layer->renderer()->embeddedRenderer() )
   {
     singleRenderer = dynamic_cast<const QgsSingleSymbolRenderer *>( layer->renderer()->embeddedRenderer() );
@@ -1222,7 +1222,7 @@ void QgsAppLayerTreeViewMenuProvider::pasteVectorSymbol( const QString &layerId 
   if ( !layer )
     return;
 
-  QgsSingleSymbolRenderer *singleRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( layer->renderer() );
+  auto singleRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( layer->renderer() );
   const QgsSymbol *originalSymbol = nullptr;
   if ( singleRenderer )
     originalSymbol = singleRenderer->symbol();
@@ -1270,7 +1270,7 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor &color 
   if ( !layer )
     return;
 
-  QgsSingleSymbolRenderer *singleRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( layer->renderer() );
+  auto singleRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( layer->renderer() );
   QgsSymbol *newSymbol = nullptr;
 
   if ( singleRenderer && singleRenderer->symbol() )
@@ -1307,7 +1307,7 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor &color 
 
 void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey )
 {
-  QgsSymbolLegendNode *node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  auto node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
   if ( !node )
     return;
 
@@ -1319,7 +1319,7 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol( const QString 
   }
 
   std::unique_ptr<QgsSymbol> symbol( originalSymbol->clone() );
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );
   QgsSymbolSelectorDialog dlg( symbol.get(), QgsStyle::defaultStyle(), vlayer, mView->window() );
   dlg.setWindowTitle( tr( "Symbol Selector" ) );
   QgsSymbolWidgetContext context;
@@ -1339,7 +1339,7 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol( const QString 
 
 void QgsAppLayerTreeViewMenuProvider::copySymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey )
 {
-  QgsSymbolLegendNode *node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  auto node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
   if ( !node )
     return;
 
@@ -1352,7 +1352,7 @@ void QgsAppLayerTreeViewMenuProvider::copySymbolLegendNodeSymbol( const QString 
 
 void QgsAppLayerTreeViewMenuProvider::pasteSymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey )
 {
-  QgsSymbolLegendNode *node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  auto node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
   if ( !node )
     return;
 
@@ -1360,7 +1360,7 @@ void QgsAppLayerTreeViewMenuProvider::pasteSymbolLegendNodeSymbol( const QString
   if ( !originalSymbol )
     return;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );
 
   std::unique_ptr<QgsSymbol> tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
   QgsSymbolLayerUtils::resetSymbolLayerIds( tempSymbol.get() );
@@ -1384,7 +1384,7 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   const QString layerId = action->property( "layerId" ).toString();
   const QString ruleKey = action->property( "ruleKey" ).toString();
 
-  QgsSymbolLegendNode *node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  auto node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
   if ( !node )
     return;
 
@@ -1437,7 +1437,7 @@ void QgsAppLayerTreeViewMenuProvider::toggleLabels( bool enabled )
   const QList<QgsLayerTreeLayer *> selectedLayerNodes = mView->selectedLayerNodes();
   for ( QgsLayerTreeLayer *l : selectedLayerNodes )
   {
-    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( l->layer() ) )
+    if ( auto vlayer = qobject_cast<QgsVectorLayer *>( l->layer() ) )
     {
       if ( !vlayer->isSpatial() )
         continue;

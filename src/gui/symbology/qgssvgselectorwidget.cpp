@@ -640,7 +640,7 @@ int QgsSvgParametersModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsSvgParametersModel::data( const QModelIndex &index, int role ) const
 {
-  QgsSvgParametersModel::Column col = static_cast<QgsSvgParametersModel::Column>( index.column() );
+  auto col = static_cast<QgsSvgParametersModel::Column>( index.column() );
   if ( role == Qt::DisplayRole )
   {
     switch ( col )
@@ -660,7 +660,7 @@ bool QgsSvgParametersModel::setData( const QModelIndex &index, const QVariant &v
   if ( !index.isValid() || role != Qt::EditRole )
     return false;
 
-  QgsSvgParametersModel::Column col = static_cast<QgsSvgParametersModel::Column>( index.column() );
+  auto col = static_cast<QgsSvgParametersModel::Column>( index.column() );
   switch ( col )
   {
     case QgsSvgParametersModel::Column::NameColumn:
@@ -693,7 +693,7 @@ QVariant QgsSvgParametersModel::headerData( int section, Qt::Orientation orienta
 {
   if ( role == Qt::DisplayRole && orientation == Qt::Horizontal )
   {
-    QgsSvgParametersModel::Column col = static_cast<QgsSvgParametersModel::Column>( section );
+    auto col = static_cast<QgsSvgParametersModel::Column>( section );
     switch ( col )
     {
       case QgsSvgParametersModel::Column::NameColumn:
@@ -731,7 +731,7 @@ QWidget *QgsSvgParameterValueDelegate::createEditor( QWidget *parent, const QSty
 {
   Q_UNUSED( option )
   QgsFieldExpressionWidget *w = new QgsFieldExpressionWidget( parent );
-  const QgsSvgParametersModel *model = qobject_cast<const QgsSvgParametersModel *>( index.model() );
+  auto model = qobject_cast<const QgsSvgParametersModel *>( index.model() );
   w->registerExpressionContextGenerator( model->expressionContextGenerator() );
   w->setLayer( model->layer() );
   return w;
@@ -739,7 +739,7 @@ QWidget *QgsSvgParameterValueDelegate::createEditor( QWidget *parent, const QSty
 
 void QgsSvgParameterValueDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  QgsFieldExpressionWidget *w = qobject_cast<QgsFieldExpressionWidget *>( editor );
+  auto w = qobject_cast<QgsFieldExpressionWidget *>( editor );
   if ( !w )
     return;
 
@@ -748,7 +748,7 @@ void QgsSvgParameterValueDelegate::setEditorData( QWidget *editor, const QModelI
 
 void QgsSvgParameterValueDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QgsFieldExpressionWidget *w = qobject_cast<QgsFieldExpressionWidget *>( editor );
+  auto w = qobject_cast<QgsFieldExpressionWidget *>( editor );
   if ( !w )
     return;
   model->setData( index, w->currentField() );

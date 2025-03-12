@@ -94,7 +94,7 @@ void QgsGeometryOverlapCheck::collectErrors( const QMap<QString, QgsFeaturePool 
 void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
   QString errMsg;
-  QgsGeometryOverlapCheckError *overlapError = static_cast<QgsGeometryOverlapCheckError *>( error );
+  auto overlapError = static_cast<QgsGeometryOverlapCheckError *>( error );
 
   QgsFeaturePool *featurePoolA = featurePools[overlapError->layerId()];
   QgsFeaturePool *featurePoolB = featurePools[overlapError->overlappedFeature().layerId()];
@@ -269,13 +269,13 @@ QgsGeometryOverlapCheckError::QgsGeometryOverlapCheckError( const QgsGeometryChe
 
 bool QgsGeometryOverlapCheckError::isEqual( QgsGeometryCheckError *other ) const
 {
-  QgsGeometryOverlapCheckError *err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
+  auto err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
   return err && other->layerId() == layerId() && other->featureId() == featureId() && err->overlappedFeature() == overlappedFeature() && location().distanceCompare( other->location(), mCheck->context()->reducedTolerance ) && std::fabs( value().toDouble() - other->value().toDouble() ) < mCheck->context()->reducedTolerance;
 }
 
 bool QgsGeometryOverlapCheckError::closeMatch( QgsGeometryCheckError *other ) const
 {
-  QgsGeometryOverlapCheckError *err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
+  auto err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
   return err && other->layerId() == layerId() && other->featureId() == featureId() && err->overlappedFeature() == overlappedFeature();
 }
 

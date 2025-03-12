@@ -233,7 +233,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectItem::applyEditV2( QgsA
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      auto moveOperation = dynamic_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       if ( moveOperation->nodeId().part == 0 )
       {
         switch ( mPlacementMode )
@@ -304,7 +304,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectItem::applyEditV2( QgsA
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      auto moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       switch ( mPlacementMode )
       {
 
@@ -358,7 +358,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      auto moveOperation = dynamic_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       if ( moveOperation->nodeId().part == 0 )
       {
         switch ( mPlacementMode )
@@ -406,7 +406,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
       }
       else
       {
-        QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+        auto moveOperation = dynamic_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
         return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
       }
       break;
@@ -414,7 +414,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      auto moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       switch ( mPlacementMode )
       {
         case Qgis::AnnotationPlacementMode::SpatialBounds:
@@ -661,7 +661,7 @@ void QgsAnnotationRectItem::setFrameSymbol( QgsFillSymbol *symbol )
 
 void QgsAnnotationRectItem::copyCommonProperties( const QgsAnnotationItem *other )
 {
-  if ( const QgsAnnotationRectItem *otherRect = dynamic_cast< const QgsAnnotationRectItem * >( other ) )
+  if ( auto otherRect = dynamic_cast<const QgsAnnotationRectItem *>( other ) )
   {
     setPlacementMode( otherRect->mPlacementMode );
     setFixedSize( otherRect->mFixedSize );

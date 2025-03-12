@@ -958,7 +958,7 @@ void QgsGradientFillSymbolLayer::applyGradient( const QgsSymbolRenderContext &co
        ( gradientRamp->type() == QgsGradientColorRamp::typeString() || gradientRamp->type() == QgsCptCityColorRamp::typeString() ) )
   {
     //color ramp gradient
-    QgsGradientColorRamp *gradRamp = static_cast<QgsGradientColorRamp *>( gradientRamp );
+    auto gradRamp = static_cast<QgsGradientColorRamp *>( gradientRamp );
     gradRamp->addStopsToGradient( &gradient, context.opacity() );
   }
   else
@@ -2340,7 +2340,7 @@ bool QgsSVGFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
     return false;
   }
 
-  QgsLineSymbol *lineSymbol = dynamic_cast<QgsLineSymbol *>( symbol );
+  auto lineSymbol = dynamic_cast<QgsLineSymbol *>( symbol );
   if ( lineSymbol )
   {
     mStroke.reset( lineSymbol );
@@ -2920,7 +2920,7 @@ bool QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
     double outputPixelLayerBleed = layer->estimateMaxBleed( context.renderContext() );
     outputPixelBleed = std::max( outputPixelBleed, outputPixelLayerBleed );
 
-    QgsMarkerLineSymbolLayer *markerLineLayer = dynamic_cast<QgsMarkerLineSymbolLayer *>( layer );
+    auto markerLineLayer = dynamic_cast<QgsMarkerLineSymbolLayer *>( layer );
     if ( markerLineLayer )
     {
       double outputPixelLayerInterval = ctx.convertToPainterUnits( markerLineLayer->interval(), markerLineLayer->intervalUnit(), markerLineLayer->intervalMapUnitScale() );
@@ -2945,7 +2945,7 @@ bool QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
     {
       QgsSymbolLayer *layer = fillLineSymbol->symbolLayer( i );
 
-      QgsMarkerLineSymbolLayer *markerLineLayer = dynamic_cast<QgsMarkerLineSymbolLayer *>( layer );
+      auto markerLineLayer = dynamic_cast<QgsMarkerLineSymbolLayer *>( layer );
       if ( markerLineLayer )
       {
         markerLineLayer->setInterval( intervalScale * markerLineLayer->interval() );
@@ -3387,7 +3387,7 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
       std::unique_ptr< QgsAbstractGeometry > intersection( shapeEngine->intersection( &ls ) );
       for ( auto it = intersection->const_parts_begin(); it != intersection->const_parts_end(); ++it )
       {
-        if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( *it ) )
+        if ( auto ls = qgsgeometry_cast<const QgsLineString *>( *it ) )
         {
           mFillLineSymbol->renderPolyline( ls->asQPolygonF(), context.feature(), context.renderContext(), -1, useSelectedColor );
         }
@@ -3426,7 +3426,7 @@ QVariantMap QgsLinePatternFillSymbolLayer::properties() const
 
 QgsLinePatternFillSymbolLayer *QgsLinePatternFillSymbolLayer::clone() const
 {
-  QgsLinePatternFillSymbolLayer *clonedLayer = static_cast<QgsLinePatternFillSymbolLayer *>( QgsLinePatternFillSymbolLayer::create( properties() ) );
+  auto clonedLayer = static_cast<QgsLinePatternFillSymbolLayer *>( QgsLinePatternFillSymbolLayer::create( properties() ) );
   if ( mFillLineSymbol )
   {
     clonedLayer->setSubSymbol( mFillLineSymbol->clone() );
@@ -4386,7 +4386,7 @@ QVariantMap QgsPointPatternFillSymbolLayer::properties() const
 
 QgsPointPatternFillSymbolLayer *QgsPointPatternFillSymbolLayer::clone() const
 {
-  QgsPointPatternFillSymbolLayer *clonedLayer = static_cast<QgsPointPatternFillSymbolLayer *>( QgsPointPatternFillSymbolLayer::create( properties() ) );
+  auto clonedLayer = static_cast<QgsPointPatternFillSymbolLayer *>( QgsPointPatternFillSymbolLayer::create( properties() ) );
   if ( mMarkerSymbol )
   {
     clonedLayer->setSubSymbol( mMarkerSymbol->clone() );
@@ -4452,7 +4452,7 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
       QDomElement graphicMarginElem = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "graphic-margin" ), marginSpec );
       symbolizerElem.appendChild( graphicMarginElem );
 
-      if ( QgsMarkerSymbolLayer *markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
+      if ( auto markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
       {
         markerLayer->writeSldMarker( doc, graphicFillElem, props );
       }
@@ -4676,7 +4676,7 @@ bool QgsPointPatternFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 
   if ( symbol->type() == Qgis::SymbolType::Marker )
   {
-    QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( symbol );
+    auto markerSymbol = static_cast<QgsMarkerSymbol *>( symbol );
     mMarkerSymbol.reset( markerSymbol );
   }
   return true;

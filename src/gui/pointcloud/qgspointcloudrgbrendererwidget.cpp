@@ -312,7 +312,7 @@ void QgsPointCloudRgbRendererWidget::setMinMaxValue( const QgsContrastEnhancemen
 void QgsPointCloudRgbRendererWidget::setFromRenderer( const QgsPointCloudRenderer *r )
 {
   mBlockChangedSignal = true;
-  const QgsPointCloudRgbRenderer *mbcr = dynamic_cast<const QgsPointCloudRgbRenderer *>( r );
+  auto mbcr = dynamic_cast<const QgsPointCloudRgbRenderer *>( r );
   if ( mbcr )
   {
     mRedAttributeComboBox->setAttribute( mbcr->redAttribute() );

@@ -63,7 +63,7 @@ struct DxfLayerJob
       if ( labeling )
       {
         QgsLabelingEngine *labelingEngine = renderContext.labelingEngine();
-        if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling *>( labeling.get() ) )
+        if ( auto rbl = dynamic_cast<const QgsRuleBasedLabeling *>( labeling.get() ) )
         {
           ruleBasedLabelProvider = new QgsRuleBasedLabelSinkProvider( *rbl, vl, dxfExport );
           labelingEngine->addProvider( ruleBasedLabelProvider );

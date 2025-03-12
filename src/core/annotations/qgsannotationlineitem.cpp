@@ -100,7 +100,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEditV2( QgsA
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      auto moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       if ( mCurve->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
         return Qgis::AnnotationItemEditOperationResult::Success;
       break;
@@ -108,7 +108,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEditV2( QgsA
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     {
-      QgsAnnotationItemEditOperationDeleteNode *deleteOperation = qgis::down_cast< QgsAnnotationItemEditOperationDeleteNode * >( operation );
+      auto deleteOperation = qgis::down_cast<QgsAnnotationItemEditOperationDeleteNode *>( operation );
       if ( mCurve->deleteVertex( deleteOperation->nodeId() ) )
         return mCurve->isEmpty() ? Qgis::AnnotationItemEditOperationResult::ItemCleared : Qgis::AnnotationItemEditOperationResult::Success;
       break;
@@ -116,7 +116,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEditV2( QgsA
 
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
     {
-      QgsAnnotationItemEditOperationAddNode *addOperation = qgis::down_cast< QgsAnnotationItemEditOperationAddNode * >( operation );
+      auto addOperation = qgis::down_cast<QgsAnnotationItemEditOperationAddNode *>( operation );
 
       QgsPoint segmentPoint;
       QgsVertexId endOfSegmentVertex;
@@ -128,7 +128,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEditV2( QgsA
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      auto moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
       mCurve->transform( transform );
       return Qgis::AnnotationItemEditOperationResult::Success;
@@ -144,7 +144,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transient
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      auto moveOperation = dynamic_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
       if ( modifiedCurve->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
       {
@@ -155,7 +155,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transient
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      auto moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
       std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
       modifiedCurve->transform( transform );
@@ -183,7 +183,7 @@ bool QgsAnnotationLineItem::readXml( const QDomElement &element, const QgsReadWr
 {
   const QString wkt = element.attribute( QStringLiteral( "wkt" ) );
   const QgsGeometry geometry = QgsGeometry::fromWkt( wkt );
-  if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geometry.constGet() ) )
+  if ( auto curve = qgsgeometry_cast<const QgsCurve *>( geometry.constGet() ) )
     mCurve.reset( curve->clone() );
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );

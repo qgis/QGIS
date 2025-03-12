@@ -95,7 +95,7 @@ bool QgsLayoutMapExtentToLayerAlgorithm::prepareAlgorithm( const QVariantMap &pa
   if ( !layout )
     throw QgsProcessingException( QObject::tr( "Cannot find layout with name \"%1\"" ).arg( parameters.value( QStringLiteral( "LAYOUT" ) ).toString() ) );
 
-  QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( parameterAsLayoutItem( parameters, QStringLiteral( "MAP" ), context, layout ) );
+  auto map = qobject_cast<QgsLayoutItemMap *>( parameterAsLayoutItem( parameters, QStringLiteral( "MAP" ), context, layout ) );
   if ( !map && parameters.value( QStringLiteral( "MAP" ) ).isValid() )
     throw QgsProcessingException( QObject::tr( "Cannot find matching map item with ID %1" ).arg( parameters.value( QStringLiteral( "MAP" ) ).toString() ) );
 

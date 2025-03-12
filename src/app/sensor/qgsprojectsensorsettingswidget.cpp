@@ -84,7 +84,7 @@ void QgsProjectSensorSettingsWidget::cancel()
 void QgsProjectSensorSettingsWidget::apply()
 {
   // If a sensor settings panel is open, apply changes
-  if ( QgsSensorSettingsWidget *widget = dynamic_cast<QgsSensorSettingsWidget *>( mPanelStack->currentPanel() ) )
+  if ( auto widget = dynamic_cast<QgsSensorSettingsWidget *>( mPanelStack->currentPanel() ) )
   {
     widget->apply();
   }

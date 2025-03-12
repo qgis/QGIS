@@ -79,7 +79,7 @@ bool QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject *project, QgsMapL
     const QList< QgsLayerTreeNode * > children = group->children();
     for ( QgsLayerTreeNode *node : children )
     {
-      if ( QgsLayerTreeGroup *childGroup = qobject_cast< QgsLayerTreeGroup * >( node ) )
+      if ( auto childGroup = qobject_cast<QgsLayerTreeGroup *>( node ) )
       {
         if ( traverseTree( childGroup ) )
           return true;

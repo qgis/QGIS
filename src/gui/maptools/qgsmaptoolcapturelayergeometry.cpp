@@ -23,7 +23,7 @@
 
 void QgsMapToolCaptureLayerGeometry::geometryCaptured( const QgsGeometry &geometry )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer() );
   if ( !vlayer )
     return;
 

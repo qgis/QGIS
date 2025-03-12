@@ -344,7 +344,7 @@ void QgsDataSourceSelectWidget::onLayerSelected( const QModelIndex &index )
     const QgsDataItem *dataItem( mBrowserProxyModel.dataItem( index ) );
     if ( dataItem )
     {
-      const QgsLayerItem *layerItem = qobject_cast<const QgsLayerItem *>( dataItem );
+      auto layerItem = qobject_cast<const QgsLayerItem *>( dataItem );
       if ( layerItem && ( !mBrowserProxyModel.filterByLayerType() || ( layerItem->mapLayerType() == mBrowserProxyModel.layerType() ) ) )
       {
         isLayerCompatible = true;

@@ -45,7 +45,7 @@ bool QgsVersionInfo::isDevelopmentVersion() const
 
 void QgsVersionInfo::versionReplyFinished()
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+  auto reply = qobject_cast<QNetworkReply *>( sender() );
   Q_ASSERT( reply );
 
   mError = reply->error();

@@ -175,7 +175,7 @@ bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &
   QList<QgsAbstractProfileSource *> sources;
   for ( QgsMapLayer *layer : layers )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
       sources.append( source );
   }
 
@@ -187,7 +187,7 @@ bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &
 
   if ( terrainLayer )
   {
-    if ( QgsRasterLayer *rasterLayer = dynamic_cast<QgsRasterLayer *>( terrainLayer ) )
+    if ( auto rasterLayer = dynamic_cast<QgsRasterLayer *>( terrainLayer ) )
     {
       auto terrainProvider = std::make_unique<QgsRasterDemTerrainProvider>();
       terrainProvider->setLayer( rasterLayer );

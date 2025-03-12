@@ -313,7 +313,7 @@ void QgsRubberBand3D::addPoint( const QgsPoint &pt )
 {
   if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.constGet() ) )
   {
-    QgsLineString *exteriorRing = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() );
+    auto exteriorRing = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() );
     const int lastVertexIndex = exteriorRing->numPoints() - 1;
     exteriorRing->insertVertex( QgsVertexId( 0, 0, lastVertexIndex ), pt );
   }
@@ -398,7 +398,7 @@ void QgsRubberBand3D::updateGeometry()
   lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, Qgs3DRenderContext::fromMapSettings( mMapSettings ), mMapSettings->origin() );
   if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.constGet() ) )
   {
-    QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing()->clone() );
+    auto lineString = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing()->clone() );
     const int lastVertexIndex = lineString->numPoints() - 1;
     lineString->deleteVertex( QgsVertexId( 0, 0, lastVertexIndex ) );
     lineData.addLineString( *lineString, 0, true );

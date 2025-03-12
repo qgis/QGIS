@@ -239,7 +239,7 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
   if ( !e.rootNode() )
     return nullptr;
 
-  const QgsExpressionNodeFunction *f = dynamic_cast<const QgsExpressionNodeFunction *>( e.rootNode() );
+  auto f = dynamic_cast<const QgsExpressionNodeFunction *>( e.rootNode() );
   if ( !f )
     return nullptr;
 
@@ -452,7 +452,7 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
   if ( !e.rootNode() )
     return nullptr;
 
-  const QgsExpressionNodeFunction *f = dynamic_cast<const QgsExpressionNodeFunction *>( e.rootNode() );
+  auto f = dynamic_cast<const QgsExpressionNodeFunction *>( e.rootNode() );
   if ( !f )
     return nullptr;
 

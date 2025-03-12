@@ -90,7 +90,7 @@ QgsFeatureList QgsReverseLineDirectionAlgorithm ::processFeature( const QgsFeatu
     const QgsGeometry geom = feature.geometry();
     if ( !geom.isMultipart() )
     {
-      const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( geom.constGet() );
+      auto curve = qgsgeometry_cast<const QgsCurve *>( geom.constGet() );
       if ( curve )
       {
         std::unique_ptr<QgsCurve> reversed( curve->reversed() );
@@ -106,12 +106,12 @@ QgsFeatureList QgsReverseLineDirectionAlgorithm ::processFeature( const QgsFeatu
     else
     {
       std::unique_ptr<QgsAbstractGeometry> dest( geom.constGet()->createEmptyWithSameType() );
-      const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() );
-      QgsGeometryCollection *destCollection = qgsgeometry_cast<QgsGeometryCollection *>( dest.get() );
+      auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() );
+      auto destCollection = qgsgeometry_cast<QgsGeometryCollection *>( dest.get() );
       destCollection->reserve( collection->numGeometries() );
       for ( int i = 0; i < collection->numGeometries(); ++i )
       {
-        const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( collection->geometryN( i ) );
+        auto curve = qgsgeometry_cast<const QgsCurve *>( collection->geometryN( i ) );
         if ( curve )
         {
           std::unique_ptr<QgsCurve> reversed( curve->reversed() );

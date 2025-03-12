@@ -114,7 +114,7 @@ QVariantMap QgsMultiIntersectionAlgorithm::processAlgorithm( const QVariantMap &
 
   if ( totalLayerCount == 1 )
   {
-    QgsVectorLayer *overlayLayer = qobject_cast<QgsVectorLayer *>( layers.at( 0 ) );
+    auto overlayLayer = qobject_cast<QgsVectorLayer *>( layers.at( 0 ) );
 
     fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceA->fields() );
     fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), overlayLayer->fields() );
@@ -153,7 +153,7 @@ QVariantMap QgsMultiIntersectionAlgorithm::processAlgorithm( const QVariantMap &
       if ( !layer )
         continue;
 
-      QgsVectorLayer *overlayLayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto overlayLayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !overlayLayer )
         continue;
 

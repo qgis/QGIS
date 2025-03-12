@@ -128,7 +128,7 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
         return false;
       }
       // add the layer to the list
-      QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
+      auto vl = static_cast<QgsVectorLayer *>( l );
       mLayers << SourceLayer( vl, layer.name() );
       // connect to modification signals to invalidate statistics
       connect( vl, &QgsVectorLayer::featureAdded, this, &QgsVirtualLayerProvider::invalidateStatistics );
@@ -253,7 +253,7 @@ bool QgsVirtualLayerProvider::createIt()
         if ( l->type() != Qgis::LayerType::Vector )
           continue;
 
-        const QgsVectorLayer *vl = static_cast<const QgsVectorLayer *>( l );
+        auto vl = static_cast<const QgsVectorLayer *>( l );
         if ( ( vl->name() == tname ) || ( vl->name().compare( tname.toLower(), Qt::CaseInsensitive ) == 0 ) || ( vl->id() == tname ) )
         {
           mDefinition.addSource( tname, vl->id() );

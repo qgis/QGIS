@@ -1505,7 +1505,7 @@ void QgsMapToolEditMeshFrame::onEditingStarted()
 
 void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
 {
-  QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
+  auto meshLayer = qobject_cast<QgsMeshLayer *>( layer );
 
   if ( mCurrentLayer == meshLayer && mCurrentEditor )
   {

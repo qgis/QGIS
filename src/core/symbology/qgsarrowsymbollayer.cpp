@@ -115,7 +115,7 @@ QgsSymbolLayer *QgsArrowSymbolLayer::create( const QVariantMap &props )
 
 QgsArrowSymbolLayer *QgsArrowSymbolLayer::clone() const
 {
-  QgsArrowSymbolLayer *l = static_cast<QgsArrowSymbolLayer *>( create( properties() ) );
+  auto l = static_cast<QgsArrowSymbolLayer *>( create( properties() ) );
   l->setSubSymbol( mSymbol->clone() );
   copyDataDefinedProperties( l );
   copyPaintEffect( l );

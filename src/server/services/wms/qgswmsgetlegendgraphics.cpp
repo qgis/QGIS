@@ -340,7 +340,7 @@ namespace QgsWms
       if ( ml->type() != Qgis::LayerType::Vector || !showFeatureCount )
         continue;
 
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+      auto vl = qobject_cast<QgsVectorLayer *>( ml );
       QgsVectorLayerFeatureCounter *counter = vl->countSymbolFeatures();
       if ( !counter )
         continue;

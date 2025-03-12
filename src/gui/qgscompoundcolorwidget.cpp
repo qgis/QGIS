@@ -454,7 +454,7 @@ void QgsCompoundColorWidget::removePalette()
   }
 
   //make user scheme is a user removable scheme
-  QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( schemeList.at( prevIndex ) );
+  auto userScheme = dynamic_cast<QgsUserColorScheme *>( schemeList.at( prevIndex ) );
   if ( !userScheme )
   {
     return;
@@ -637,7 +637,7 @@ void QgsCompoundColorWidget::mTabWidget_currentChanged( int index )
 
 void QgsCompoundColorWidget::mActionShowInButtons_toggled( bool state )
 {
-  QgsUserColorScheme *scheme = dynamic_cast<QgsUserColorScheme *>( mSchemeList->scheme() );
+  auto scheme = dynamic_cast<QgsUserColorScheme *>( mSchemeList->scheme() );
   if ( scheme )
   {
     scheme->setShowSchemeInMenu( state );
@@ -913,7 +913,7 @@ void QgsCompoundColorWidget::updateActionsForCurrentScheme()
   mAddColorToSchemeButton->setEnabled( scheme->isEditable() );
   mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
 
-  QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( scheme );
+  auto userScheme = dynamic_cast<QgsUserColorScheme *>( scheme );
   mActionRemovePalette->setEnabled( static_cast<bool>( userScheme ) );
   if ( userScheme )
   {

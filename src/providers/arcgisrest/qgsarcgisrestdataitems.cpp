@@ -230,7 +230,7 @@ QVector<QgsDataItem *> QgsArcGisRestConnectionItem::createChildren()
 
 bool QgsArcGisRestConnectionItem::equal( const QgsDataItem *other )
 {
-  const QgsArcGisRestConnectionItem *o = qobject_cast<const QgsArcGisRestConnectionItem *>( other );
+  auto o = qobject_cast<const QgsArcGisRestConnectionItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
@@ -289,7 +289,7 @@ QVector<QgsDataItem *> QgsArcGisPortalGroupsItem::createChildren()
 
 bool QgsArcGisPortalGroupsItem::equal( const QgsDataItem *other )
 {
-  const QgsArcGisPortalGroupsItem *o = qobject_cast<const QgsArcGisPortalGroupsItem *>( other );
+  auto o = qobject_cast<const QgsArcGisPortalGroupsItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
@@ -349,7 +349,7 @@ QVector<QgsDataItem *> QgsArcGisPortalGroupItem::createChildren()
 
 bool QgsArcGisPortalGroupItem::equal( const QgsDataItem *other )
 {
-  const QgsArcGisPortalGroupItem *o = qobject_cast<const QgsArcGisPortalGroupItem *>( other );
+  auto o = qobject_cast<const QgsArcGisPortalGroupItem *>( other );
   return ( type() == other->type() && o && mId == o->mId && mName == o->mName );
 }
 
@@ -394,7 +394,7 @@ QVector<QgsDataItem *> QgsArcGisRestServicesItem::createChildren()
 
 bool QgsArcGisRestServicesItem::equal( const QgsDataItem *other )
 {
-  const QgsArcGisRestServicesItem *o = qobject_cast<const QgsArcGisRestServicesItem *>( other );
+  auto o = qobject_cast<const QgsArcGisRestServicesItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
@@ -447,7 +447,7 @@ QVector<QgsDataItem *> QgsArcGisRestFolderItem::createChildren()
 
 bool QgsArcGisRestFolderItem::equal( const QgsDataItem *other )
 {
-  const QgsArcGisRestFolderItem *o = qobject_cast<const QgsArcGisRestFolderItem *>( other );
+  auto o = qobject_cast<const QgsArcGisRestFolderItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
@@ -498,7 +498,7 @@ QVector<QgsDataItem *> QgsArcGisFeatureServiceItem::createChildren()
 
 bool QgsArcGisFeatureServiceItem::equal( const QgsDataItem *other )
 {
-  const QgsArcGisFeatureServiceItem *o = qobject_cast<const QgsArcGisFeatureServiceItem *>( other );
+  auto o = qobject_cast<const QgsArcGisFeatureServiceItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
@@ -550,7 +550,7 @@ QVector<QgsDataItem *> QgsArcGisMapServiceItem::createChildren()
 
 bool QgsArcGisMapServiceItem::equal( const QgsDataItem *other )
 {
-  const QgsArcGisMapServiceItem *o = qobject_cast<const QgsArcGisMapServiceItem *>( other );
+  auto o = qobject_cast<const QgsArcGisMapServiceItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
@@ -628,7 +628,7 @@ QgsArcGisRestParentLayerItem::QgsArcGisRestParentLayerItem( QgsDataItem *parent,
 
 bool QgsArcGisRestParentLayerItem::equal( const QgsDataItem *other )
 {
-  const QgsArcGisRestParentLayerItem *o = qobject_cast<const QgsArcGisRestParentLayerItem *>( other );
+  auto o = qobject_cast<const QgsArcGisRestParentLayerItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 

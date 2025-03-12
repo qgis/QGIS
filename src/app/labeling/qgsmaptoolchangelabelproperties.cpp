@@ -171,7 +171,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap &chang
 
 void QgsMapToolChangeLabelProperties::dialogPropertiesApplied()
 {
-  QgsLabelPropertyDialog *dlg = qobject_cast<QgsLabelPropertyDialog *>( sender() );
+  auto dlg = qobject_cast<QgsLabelPropertyDialog *>( sender() );
   if ( !dlg )
     return;
 

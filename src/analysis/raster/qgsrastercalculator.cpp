@@ -46,7 +46,7 @@ int CPL_STDCALL GdalProgressCallback( double dfComplete, const char *pszMessage,
 
   static double sDfLastComplete = -1.0;
 
-  QgsFeedback *feedback = static_cast<QgsFeedback *>( pProgressArg );
+  auto feedback = static_cast<QgsFeedback *>( pProgressArg );
 
   if ( sDfLastComplete > dfComplete )
   {
@@ -771,7 +771,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
   QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layerIt.value() );
+    auto rlayer = qobject_cast<QgsRasterLayer *>( layerIt.value() );
     if ( rlayer && rlayer->dataProvider() && ( rlayer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
     {
       //get number of bands

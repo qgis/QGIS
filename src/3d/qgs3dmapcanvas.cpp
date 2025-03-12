@@ -362,7 +362,7 @@ void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *l
     const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
     band->setColor( color );
     band->setMarkerType( QgsRubberBand3D::MarkerType::Square );
-    if ( QgsPointCloudLayer3DRenderer *pcRenderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
+    if ( auto pcRenderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
     {
       band->setWidth( pcRenderer->symbol()->pointSize() + 1 );
     }
@@ -375,9 +375,9 @@ void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *l
 
 void Qgs3DMapCanvas::updateHighlightSizes()
 {
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( sender() ) )
   {
-    if ( QgsPointCloudLayer3DRenderer *rnd = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
+    if ( auto rnd = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
     {
       if ( mHighlights.contains( layer ) )
       {

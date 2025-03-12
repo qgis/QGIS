@@ -72,7 +72,7 @@ QVariant QgsCoordinateReferenceSystemModel::data( const QModelIndex &index, int 
   {
     case QgsCoordinateReferenceSystemModelNode::NodeGroup:
     {
-      QgsCoordinateReferenceSystemModelGroupNode *groupNode = qgis::down_cast<QgsCoordinateReferenceSystemModelGroupNode *>( n );
+      auto groupNode = qgis::down_cast<QgsCoordinateReferenceSystemModelGroupNode *>( n );
       switch ( role )
       {
         case Qt::DecorationRole:
@@ -115,7 +115,7 @@ QVariant QgsCoordinateReferenceSystemModel::data( const QModelIndex &index, int 
     }
     case QgsCoordinateReferenceSystemModelNode::NodeCrs:
     {
-      QgsCoordinateReferenceSystemModelCrsNode *crsNode = qgis::down_cast<QgsCoordinateReferenceSystemModelCrsNode *>( n );
+      auto crsNode = qgis::down_cast<QgsCoordinateReferenceSystemModelCrsNode *>( n );
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -315,7 +315,7 @@ void QgsCoordinateReferenceSystemModel::userCrsRemoved( long id )
   {
     for ( int row = 0; row < group->children().size(); ++row )
     {
-      if ( QgsCoordinateReferenceSystemModelCrsNode *crsNode = dynamic_cast<QgsCoordinateReferenceSystemModelCrsNode *>( group->children().at( row ) ) )
+      if ( auto crsNode = dynamic_cast<QgsCoordinateReferenceSystemModelCrsNode *>( group->children().at( row ) ) )
       {
         if ( crsNode->record().authId == QString::number( id ) )
         {
@@ -337,7 +337,7 @@ void QgsCoordinateReferenceSystemModel::userCrsChanged( const QString &id )
   {
     for ( int row = 0; row < group->children().size(); ++row )
     {
-      if ( QgsCoordinateReferenceSystemModelCrsNode *crsNode = dynamic_cast<QgsCoordinateReferenceSystemModelCrsNode *>( group->children().at( row ) ) )
+      if ( auto crsNode = dynamic_cast<QgsCoordinateReferenceSystemModelCrsNode *>( group->children().at( row ) ) )
       {
         if ( QStringLiteral( "USER:%1" ).arg( crsNode->record().authId ) == id )
         {
@@ -567,7 +567,7 @@ QgsCoordinateReferenceSystemModelGroupNode *QgsCoordinateReferenceSystemModelNod
   {
     if ( node->nodeType() == NodeGroup )
     {
-      QgsCoordinateReferenceSystemModelGroupNode *groupNode = qgis::down_cast<QgsCoordinateReferenceSystemModelGroupNode *>( node );
+      auto groupNode = qgis::down_cast<QgsCoordinateReferenceSystemModelGroupNode *>( node );
       if ( groupNode && groupNode->id() == id )
         return groupNode;
     }
@@ -733,8 +733,8 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
 
 bool QgsCoordinateReferenceSystemProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-  QgsCoordinateReferenceSystemModelNode::NodeType leftType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>( sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
-  QgsCoordinateReferenceSystemModelNode::NodeType rightType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>( sourceModel()->data( right, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
+  auto leftType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>( sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
+  auto rightType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>( sourceModel()->data( right, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
 
   if ( leftType != rightType )
   {

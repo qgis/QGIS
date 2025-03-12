@@ -38,7 +38,7 @@ QgsMaterialSettingsWidget *QgsSimpleLineMaterialWidget::create()
 
 void QgsSimpleLineMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
 {
-  const QgsSimpleLineMaterialSettings *lineMaterial = dynamic_cast<const QgsSimpleLineMaterialSettings *>( settings );
+  auto lineMaterial = dynamic_cast<const QgsSimpleLineMaterialSettings *>( settings );
   if ( !lineMaterial )
     return;
 

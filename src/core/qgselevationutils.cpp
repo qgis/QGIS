@@ -99,7 +99,7 @@ bool QgsElevationUtils::enableElevationForLayer( QgsMapLayer *layer )
   {
     case Qgis::LayerType::Raster:
     {
-      if ( QgsRasterLayerElevationProperties *properties = qobject_cast<QgsRasterLayerElevationProperties * >( layer->elevationProperties() ) )
+      if ( auto properties = qobject_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() ) )
       {
         properties->setEnabled( true );
         properties->setMode( Qgis::RasterElevationMode::RepresentsElevationSurface );

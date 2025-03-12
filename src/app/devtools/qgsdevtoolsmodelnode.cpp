@@ -103,7 +103,7 @@ QVariant QgsDevToolsModelGroup::toVariant() const
   QVariantMap res;
   for ( const std::unique_ptr<QgsDevToolsModelNode> &child : mChildren )
   {
-    if ( const QgsDevToolsModelValueNode *valueNode = dynamic_cast<const QgsDevToolsModelValueNode *>( child.get() ) )
+    if ( auto valueNode = dynamic_cast<const QgsDevToolsModelValueNode *>( child.get() ) )
     {
       res.insert( valueNode->key(), valueNode->value() );
     }

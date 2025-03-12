@@ -221,7 +221,7 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
     QgsRectangle extent;
     for ( QgsMapLayer *ml : std::as_const( mLayerList ) )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+      auto vl = qobject_cast<QgsVectorLayer *>( ml );
       if ( !vl )
         continue;
 
@@ -257,7 +257,7 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
   QStringList skippedLayers;
   for ( QgsMapLayer *ml : std::as_const( mLayerList ) )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    auto vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( !vl )
     {
       continue;
@@ -425,7 +425,7 @@ void QgsDxfExport::writeTables()
   int i = 0;
   for ( const auto &symbolLayer : std::as_const( slList ) )
   {
-    QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer *>( symbolLayer.first );
+    auto ml = dynamic_cast<QgsMarkerSymbolLayer *>( symbolLayer.first );
     if ( !ml )
       continue;
 
@@ -545,7 +545,7 @@ void QgsDxfExport::writeTables()
     if ( !layerIsScaleBasedVisible( ml ) )
       continue;
 
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    auto vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( !vl )
       continue;
 
@@ -676,7 +676,7 @@ void QgsDxfExport::writeBlocks()
 
   for ( const auto &symbolLayer : std::as_const( slList ) )
   {
-    QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer *>( symbolLayer.first );
+    auto ml = dynamic_cast<QgsMarkerSymbolLayer *>( symbolLayer.first );
     if ( !ml )
       continue;
 
@@ -895,7 +895,7 @@ void QgsDxfExport::prepareRenderers()
   const QList< QgsMapLayer * > layers = mMapSettings.layers();
   for ( QgsMapLayer *ml : layers )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    auto vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( !vl )
       continue;
 
@@ -1031,7 +1031,7 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
 {
 #if 0
   // debug: draw rectangle for debugging
-  const QgsMarkerSymbolLayer *msl = dynamic_cast< const QgsMarkerSymbolLayer * >( symbolLayer );
+  auto msl = dynamic_cast<const QgsMarkerSymbolLayer *>( symbolLayer );
   if ( msl )
   {
     double halfSize = msl->size() * mapUnitScaleFactor( mSymbologyScale,
@@ -1072,7 +1072,7 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
   }
 
   //no block has been created for the symbol. Write it directly here
-  const QgsMarkerSymbolLayer *msl = dynamic_cast< const QgsMarkerSymbolLayer * >( symbolLayer );
+  auto msl = dynamic_cast<const QgsMarkerSymbolLayer *>( symbolLayer );
   if ( msl && symbol )
   {
     if ( msl->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, msl->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
@@ -1814,20 +1814,20 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
             sourceGeom = geom.constGet();
         }
 
-        const QgsCurve *curve = dynamic_cast<const QgsCurve *>( sourceGeom );
+        auto curve = dynamic_cast<const QgsCurve *>( sourceGeom );
         if ( curve )
         {
           writePolyline( *curve, layer, lineStyleName, penColor, width );
         }
         else
         {
-          const QgsGeometryCollection *gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
+          auto gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
           Q_ASSERT( gc );
           if ( gc )
           {
             for ( int i = 0; i < gc->numGeometries(); i++ )
             {
-              const QgsCurve *curve = dynamic_cast<const QgsCurve *>( gc->geometryN( i ) );
+              auto curve = dynamic_cast<const QgsCurve *>( gc->geometryN( i ) );
               Q_ASSERT( curve );
               writePolyline( *curve, layer, lineStyleName, penColor, width );
             }
@@ -1851,7 +1851,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
             sourceGeom = geom.constGet();
         }
 
-        const QgsCurvePolygon *polygon = dynamic_cast<const QgsCurvePolygon *>( sourceGeom );
+        auto polygon = dynamic_cast<const QgsCurvePolygon *>( sourceGeom );
         if ( polygon )
         {
           writePolyline( *polygon->exteriorRing(), layer, lineStyleName, penColor, width );
@@ -1860,13 +1860,13 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         }
         else
         {
-          const QgsGeometryCollection *gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
+          auto gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
           Q_ASSERT( gc );
           if ( gc )
           {
             for ( int i = 0; i < gc->numGeometries(); i++ )
             {
-              const QgsCurvePolygon *polygon = dynamic_cast<const QgsCurvePolygon *>( gc->geometryN( i ) );
+              auto polygon = dynamic_cast<const QgsCurvePolygon *>( gc->geometryN( i ) );
               Q_ASSERT( polygon );
 
               writePolyline( *polygon->exteriorRing(), layer, lineStyleName, penColor, width );
@@ -1894,7 +1894,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
       case Qgis::WkbType::CurvePolygon:
       case Qgis::WkbType::Polygon:
       {
-        const QgsCurvePolygon *polygon = dynamic_cast<const QgsCurvePolygon *>( sourceGeom );
+        auto polygon = dynamic_cast<const QgsCurvePolygon *>( sourceGeom );
         Q_ASSERT( polygon );
         writePolygon( *polygon, layer, QStringLiteral( "SOLID" ), brushColor );
         break;
@@ -1903,12 +1903,12 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
       case Qgis::WkbType::MultiSurface:
       case Qgis::WkbType::MultiPolygon:
       {
-        const QgsGeometryCollection *gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
+        auto gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
         Q_ASSERT( gc );
 
         for ( int i = 0; i < gc->numGeometries(); i++ )
         {
-          const QgsCurvePolygon *polygon = dynamic_cast<const QgsCurvePolygon *>( gc->geometryN( i ) );
+          auto polygon = dynamic_cast<const QgsCurvePolygon *>( gc->geometryN( i ) );
           Q_ASSERT( polygon );
           writePolygon( *polygon, layer, QStringLiteral( "SOLID" ), brushColor );
         }
@@ -2144,7 +2144,7 @@ int QgsDxfExport::nLineTypes( const QList< QPair< QgsSymbolLayer *, QgsSymbol * 
   int nLineTypes = 0;
   for ( const auto &symbolLayer : symbolLayers )
   {
-    const QgsSimpleLineSymbolLayer *simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayer * >( symbolLayer.first );
+    auto simpleLine = dynamic_cast<const QgsSimpleLineSymbolLayer *>( symbolLayer.first );
     if ( simpleLine )
     {
       if ( simpleLine->useCustomDashPattern() )
@@ -2190,7 +2190,7 @@ void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal>
 
 void QgsDxfExport::addGeometryGeneratorSymbolLayer( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform &ct, const QString &layer, QgsSymbolLayer *symbolLayer, bool allSymbolLayers )
 {
-  QgsGeometryGeneratorSymbolLayer *gg = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( symbolLayer );
+  auto gg = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( symbolLayer );
   if ( !gg )
   {
     return;
@@ -2341,7 +2341,7 @@ QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
   // TODO: make this thread safe
   for ( QgsMapLayer *ml : std::as_const( mLayerList ) )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    auto vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( vl && vl->id() == id )
     {
       int attrIdx = mLayerNameAttribute.value( vl->id(), -1 );
@@ -2414,7 +2414,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
   if ( !settings.drawLabels )
     return;
 
-  QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
+  auto lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
 
   // Copy to temp, editable layer settings
   // these settings will be changed by any data defined values, then used for rendering label components

@@ -139,7 +139,7 @@ void QgsProjectElevationSettingsWidget::apply()
     provider = std::make_unique<QgsRasterDemTerrainProvider>();
     provider->setOffset( mDemOffsetSpinBox->value() );
     provider->setScale( mDemScaleSpinBox->value() );
-    QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( mComboDemLayer->currentLayer() );
+    auto demLayer = qobject_cast<QgsRasterLayer *>( mComboDemLayer->currentLayer() );
     // always mark the terrain layer as a "dem" layer -- it seems odd for a user to have to manually set this after picking a terrain raster!
     qobject_cast<QgsRasterLayerElevationProperties *>( demLayer->elevationProperties() )->setEnabled( true );
     qobject_cast<QgsRasterLayerElevationProperties *>( demLayer->elevationProperties() )->setMode( Qgis::RasterElevationMode::RepresentsElevationSurface );

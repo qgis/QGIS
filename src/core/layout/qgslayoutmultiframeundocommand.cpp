@@ -37,7 +37,7 @@ bool QgsLayoutMultiFrameUndoCommand::mergeWith( const QUndoCommand *command )
   if ( command->id() == 0 )
     return false;
 
-  const QgsLayoutMultiFrameUndoCommand *c = dynamic_cast<const QgsLayoutMultiFrameUndoCommand *>( command );
+  auto c = dynamic_cast<const QgsLayoutMultiFrameUndoCommand *>( command );
   if ( !c )
   {
     return false;

@@ -51,7 +51,7 @@ bool QgsVectorLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
 
 QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer *layer ) const
 {
-  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !layer )
     return QgsDateTimeRange();
 
@@ -333,7 +333,7 @@ QDomElement QgsVectorLayerTemporalProperties::writeXml( QDomElement &element, QD
 
 void QgsVectorLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities )
 {
-  if ( const QgsVectorDataProviderTemporalCapabilities *vectorCaps = dynamic_cast< const QgsVectorDataProviderTemporalCapabilities *>( capabilities ) )
+  if ( auto vectorCaps = dynamic_cast<const QgsVectorDataProviderTemporalCapabilities *>( capabilities ) )
   {
     setIsActive( vectorCaps->hasTemporalCapabilities() );
     setFixedTemporalRange( vectorCaps->availableTemporalRange() );

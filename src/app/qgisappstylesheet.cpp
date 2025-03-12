@@ -233,7 +233,7 @@ void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant> &opts )
 
 void QgisAppStyleSheet::setActiveValues()
 {
-  QgsAppStyle *style = dynamic_cast<QgsAppStyle *>( qApp->style() );
+  auto style = dynamic_cast<QgsAppStyle *>( qApp->style() );
   mStyle = style ? style->baseStyle() : qApp->style()->objectName(); // active style name (lowercase)
   QgsDebugMsgLevel( QStringLiteral( "Style name: %1" ).arg( mStyle ), 2 );
 

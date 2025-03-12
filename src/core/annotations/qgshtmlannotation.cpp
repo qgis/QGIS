@@ -172,7 +172,7 @@ void QgsHtmlAnnotation::setAssociatedFeature( const QgsFeature &feature )
 {
   QgsAnnotation::setAssociatedFeature( feature );
   QString newText;
-  QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( mapLayer() );
+  auto vectorLayer = qobject_cast<QgsVectorLayer *>( mapLayer() );
   if ( feature.isValid() && vectorLayer )
   {
     QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vectorLayer ) );

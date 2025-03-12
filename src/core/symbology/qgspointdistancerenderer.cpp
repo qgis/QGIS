@@ -97,7 +97,7 @@ bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRend
   const QgsGeometry transformedGeometry = transformedFeature.geometry();
   for ( auto partIt = transformedGeometry.const_parts_begin(); partIt != transformedGeometry.const_parts_end(); ++partIt )
   {
-    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( *partIt );
+    auto point = qgsgeometry_cast<const QgsPoint *>( *partIt );
     // create a new feature which is JUST this point, no other parts from the multi-point
     QgsFeature pointFeature = transformedFeature;
     pointFeature.setGeometry( QgsGeometry( point->clone() ) );

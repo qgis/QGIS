@@ -72,7 +72,7 @@ void TestQgsServerWmsDxf::use_title_as_layername_true()
   project.read( filename );
 
   QgsMapLayer *layer = project.layerStore()->mapLayersByName( "testlayer èé" )[0];
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+  auto vl = qobject_cast<QgsVectorLayer *>( layer );
 
   QgsServiceRegistry registry;
   QgsServerSettings settings;
@@ -120,7 +120,7 @@ void TestQgsServerWmsDxf::use_title_as_layername_false()
   project.read( filename );
 
   QgsMapLayer *layer = project.layerStore()->mapLayersByName( "testlayer èé" )[0];
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+  auto vl = qobject_cast<QgsVectorLayer *>( layer );
 
   QgsServiceRegistry registry;
   QgsServerSettings settings;

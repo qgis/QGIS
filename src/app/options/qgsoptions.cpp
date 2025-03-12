@@ -904,7 +904,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     }
 
     //make user scheme is a user removable scheme
-    QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( schemeList.at( prevIndex ) );
+    auto userScheme = dynamic_cast<QgsUserColorScheme *>( schemeList.at( prevIndex ) );
     if ( !userScheme )
     {
       return;
@@ -927,7 +927,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   } );
 
   connect( mActionShowInButtons, &QAction::toggled, this, [=]( bool state ) {
-    QgsUserColorScheme *scheme = dynamic_cast<QgsUserColorScheme *>( mTreeCustomColors->scheme() );
+    auto scheme = dynamic_cast<QgsUserColorScheme *>( mTreeCustomColors->scheme() );
     if ( scheme )
     {
       scheme->setShowSchemeInMenu( state );
@@ -1684,13 +1684,13 @@ void QgsOptions::saveOptions()
   //measurement settings
   mSettings->setValue( QStringLiteral( "measure/planimetric" ), mPlanimetricMeasurementsComboBox->isChecked(), QgsSettings::Core );
 
-  Qgis::DistanceUnit distanceUnit = static_cast<Qgis::DistanceUnit>( mDistanceUnitsComboBox->currentData().toInt() );
+  auto distanceUnit = static_cast<Qgis::DistanceUnit>( mDistanceUnitsComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( distanceUnit ) );
 
-  Qgis::AreaUnit areaUnit = static_cast<Qgis::AreaUnit>( mAreaUnitsComboBox->currentData().toInt() );
+  auto areaUnit = static_cast<Qgis::AreaUnit>( mAreaUnitsComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/measure/areaunits" ), QgsUnitTypes::encodeUnit( areaUnit ) );
 
-  Qgis::AngleUnit angleUnit = static_cast<Qgis::AngleUnit>( mAngleUnitsComboBox->currentData().toInt() );
+  auto angleUnit = static_cast<Qgis::AngleUnit>( mAngleUnitsComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( angleUnit ) );
 
   int decimalPlaces = mDecimalPlacesSpinBox->value();
@@ -2708,7 +2708,7 @@ void QgsOptions::updateActionsForCurrentColorScheme( QgsColorScheme *scheme )
   mButtonAddColor->setEnabled( scheme->isEditable() );
   mButtonRemoveColor->setEnabled( scheme->isEditable() );
 
-  QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( scheme );
+  auto userScheme = dynamic_cast<QgsUserColorScheme *>( scheme );
   mActionRemovePalette->setEnabled( static_cast<bool>( userScheme ) && userScheme->isEditable() );
   if ( userScheme )
   {

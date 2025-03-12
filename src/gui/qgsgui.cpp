@@ -510,7 +510,7 @@ void QgsGui::initCalloutWidgets()
       {
         QgsDebugError( QStringLiteral( "Failed to find callout entry in registry: %1" ).arg( name ) );
       }
-      QgsCalloutMetadata *metadata = dynamic_cast<QgsCalloutMetadata *>( abstractMetadata );
+      auto metadata = dynamic_cast<QgsCalloutMetadata *>( abstractMetadata );
       if ( !metadata )
       {
         QgsDebugError( QStringLiteral( "Failed to cast callout's metadata: " ).arg( name ) );

@@ -242,7 +242,7 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
     QgsGeometry g = featuresList[i].geometry();
     QgsGeometryCollection *gc = new QgsGeometryCollection;
     const QgsAbstractGeometry *gg = g.constGet();
-    if ( const QgsGeometryCollection *ggc = qgsgeometry_cast<const QgsGeometryCollection *>( gg ) )
+    if ( auto ggc = qgsgeometry_cast<const QgsGeometryCollection *>( gg ) )
     {
       for ( int k = 0; k < ggc->numGeometries(); ++k )
         gc->addGeometry( ggc->geometryN( k )->clone() );

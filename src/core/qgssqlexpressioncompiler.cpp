@@ -103,23 +103,23 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
     {
       case QgsExpressionNode::ntColumnRef:
       {
-        const QgsExpressionNodeColumnRef *col = static_cast<const QgsExpressionNodeColumnRef *>( node );
+        auto col = static_cast<const QgsExpressionNodeColumnRef *>( node );
         const int idx = mFields.indexFromName( col->name() );
         return idx >= 0 && QgsVariantUtils::isNumericType( mFields[idx].type() );
       }
       case QgsExpressionNode::ntLiteral:
       {
-        const QgsExpressionNodeLiteral *lit = static_cast<const QgsExpressionNodeLiteral *>( node );
+        auto lit = static_cast<const QgsExpressionNodeLiteral *>( node );
         return QgsVariantUtils::isNumericType( static_cast< QMetaType::Type >( lit->value().userType() ) );
       }
       case QgsExpressionNode::ntBinaryOperator:
       {
-        const QgsExpressionNodeBinaryOperator *op = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+        auto op = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
         return nodeIsNumeric( op->opLeft() ) && nodeIsNumeric( op->opRight() );
       }
       case QgsExpressionNode::ntUnaryOperator:
       {
-        const QgsExpressionNodeUnaryOperator *op = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
+        auto op = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
         return nodeIsNumeric( op->operand() );
       }
 
@@ -133,7 +133,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
   {
     case QgsExpressionNode::ntUnaryOperator:
     {
-      const QgsExpressionNodeUnaryOperator *n = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
+      auto n = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
       switch ( n->op() )
       {
         case QgsExpressionNodeUnaryOperator::uoNot:
@@ -169,7 +169,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
     case QgsExpressionNodeBinaryOperator::ntBinaryOperator:
     {
-      const QgsExpressionNodeBinaryOperator *n = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+      auto n = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
 
       QString op;
       bool partialCompilation = false;
@@ -269,7 +269,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
         case QgsExpressionNodeBinaryOperator::boPlus:
         {
-          const QgsExpressionNodeBinaryOperator *nodeOp = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+          auto nodeOp = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
           if ( nodeIsNumeric( nodeOp->opLeft() ) && nodeIsNumeric( nodeOp->opRight() ) )
           {
             op = QStringLiteral( "+" );
@@ -352,7 +352,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
     case QgsExpressionNode::ntBetweenOperator:
     {
-      const QgsExpressionNodeBetweenOperator *n = static_cast<const QgsExpressionNodeBetweenOperator *>( node );
+      auto n = static_cast<const QgsExpressionNodeBetweenOperator *>( node );
       QString res;
       Result betweenResult = Complete;
 
@@ -405,7 +405,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
     case QgsExpressionNode::ntLiteral:
     {
-      const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( node );
+      auto n = static_cast<const QgsExpressionNodeLiteral *>( node );
       bool ok = false;
       if ( mFlags.testFlag( CaseInsensitiveStringMatch ) && n->value().userType() == QMetaType::Type::QString )
       {
@@ -423,7 +423,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
     case QgsExpressionNode::ntColumnRef:
     {
-      const QgsExpressionNodeColumnRef *n = static_cast<const QgsExpressionNodeColumnRef *>( node );
+      auto n = static_cast<const QgsExpressionNodeColumnRef *>( node );
 
       // QGIS expressions don't care about case sensitive field naming, so we match case insensitively here to the
       // layer's fields and then retrieve the actual case of the field name for use in the compilation
@@ -439,7 +439,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
     case QgsExpressionNode::ntInOperator:
     {
-      const QgsExpressionNodeInOperator *n = static_cast<const QgsExpressionNodeInOperator *>( node );
+      auto n = static_cast<const QgsExpressionNodeInOperator *>( node );
       QStringList list;
 
       Result inResult = Complete;
@@ -469,7 +469,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
     case QgsExpressionNode::ntFunction:
     {
-      const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
+      auto n = static_cast<const QgsExpressionNodeFunction *>( node );
       QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
 
       // get sql function to compile node expression
@@ -572,6 +572,6 @@ bool QgsSqlExpressionCompiler::nodeIsNullLiteral( const QgsExpressionNode *node 
   if ( node->nodeType() != QgsExpressionNode::ntLiteral )
     return false;
 
-  const QgsExpressionNodeLiteral *nLit = static_cast<const QgsExpressionNodeLiteral *>( node );
+  auto nLit = static_cast<const QgsExpressionNodeLiteral *>( node );
   return QgsVariantUtils::isNull( nLit->value() );
 }

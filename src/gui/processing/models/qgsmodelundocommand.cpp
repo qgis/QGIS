@@ -70,7 +70,7 @@ bool QgsModelUndoCommand::mergeWith( const QUndoCommand *other )
   if ( other->id() == 0 || other->id() != mId )
     return false;
 
-  if ( const QgsModelUndoCommand *c = dynamic_cast<const QgsModelUndoCommand *>( other ) )
+  if ( auto c = dynamic_cast<const QgsModelUndoCommand *>( other ) )
   {
     mAfterState = c->mAfterState;
     return true;

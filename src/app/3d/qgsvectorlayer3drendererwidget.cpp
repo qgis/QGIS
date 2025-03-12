@@ -60,7 +60,7 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
   QgsAbstract3DRenderer *r = layer->renderer3D();
   if ( r && r->type() == QLatin1String( "vector" ) )
   {
-    QgsVectorLayer3DRenderer *vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
+    auto vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
     widgetSymbol->setSymbol( vectorRenderer->symbol(), layer );
   }
   else
@@ -121,7 +121,7 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
 
 void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
   {
     return;

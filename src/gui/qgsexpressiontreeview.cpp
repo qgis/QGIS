@@ -169,7 +169,7 @@ void QgsExpressionTreeView::refresh()
 QgsExpressionItem *QgsExpressionTreeView::currentItem() const
 {
   QModelIndex idx = mProxyModel->mapToSource( currentIndex() );
-  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  auto item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   return item;
 }
 
@@ -212,7 +212,7 @@ void QgsExpressionTreeView::setSearchText( const QString &text )
 void QgsExpressionTreeView::onDoubleClicked( const QModelIndex &index )
 {
   QModelIndex idx = mProxyModel->mapToSource( index );
-  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  auto item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   if ( !item )
     return;
 
@@ -227,7 +227,7 @@ void QgsExpressionTreeView::showContextMenu( QPoint pt )
 {
   QModelIndex idx = indexAt( pt );
   idx = mProxyModel->mapToSource( idx );
-  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  auto item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   if ( !item )
     return;
 
@@ -244,7 +244,7 @@ void QgsExpressionTreeView::currentItemChanged( const QModelIndex &index, const 
 {
   // Get the item
   QModelIndex idx = mProxyModel->mapToSource( index );
-  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  auto item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   if ( !item )
     return;
 

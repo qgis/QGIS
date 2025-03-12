@@ -93,7 +93,7 @@ void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   if ( !mLayer )
     return;
 
-  const QgsPointCloudLayerElevationProperties *properties = qgis::down_cast<const QgsPointCloudLayerElevationProperties *>( mLayer->elevationProperties() );
+  auto properties = qgis::down_cast<const QgsPointCloudLayerElevationProperties *>( mLayer->elevationProperties() );
 
   mBlockUpdates = true;
   mOffsetZSpinBox->setValue( properties->zOffset() );
@@ -117,7 +117,7 @@ void QgsPointCloudElevationPropertiesWidget::apply()
   if ( !mLayer )
     return;
 
-  QgsPointCloudLayerElevationProperties *properties = qgis::down_cast<QgsPointCloudLayerElevationProperties *>( mLayer->elevationProperties() );
+  auto properties = qgis::down_cast<QgsPointCloudLayerElevationProperties *>( mLayer->elevationProperties() );
 
   const bool changed3DrelatedProperties = !qgsDoubleNear( mOffsetZSpinBox->value(), properties->zOffset() )
                                           || !qgsDoubleNear( mScaleZSpinBox->value(), properties->zScale() );

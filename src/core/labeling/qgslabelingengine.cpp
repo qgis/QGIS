@@ -130,8 +130,8 @@ QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const
   std::sort( providersByZ.begin(), providersByZ.end(),
              []( const QgsAbstractLabelProvider * a, const QgsAbstractLabelProvider * b ) -> bool
   {
-    const QgsVectorLayerLabelProvider *providerA = dynamic_cast<const QgsVectorLayerLabelProvider *>( a );
-    const QgsVectorLayerLabelProvider *providerB = dynamic_cast<const QgsVectorLayerLabelProvider *>( b );
+    auto providerA = dynamic_cast<const QgsVectorLayerLabelProvider *>( a );
+    auto providerB = dynamic_cast<const QgsVectorLayerLabelProvider *>( b );
 
     if ( providerA && providerB )
     {
@@ -144,8 +144,8 @@ QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const
   std::sort( subProvidersByZ.begin(), subProvidersByZ.end(),
              []( const QgsAbstractLabelProvider * a, const QgsAbstractLabelProvider * b ) -> bool
   {
-    const QgsVectorLayerLabelProvider *providerA = dynamic_cast<const QgsVectorLayerLabelProvider *>( a );
-    const QgsVectorLayerLabelProvider *providerB = dynamic_cast<const QgsVectorLayerLabelProvider *>( b );
+    auto providerA = dynamic_cast<const QgsVectorLayerLabelProvider *>( a );
+    auto providerB = dynamic_cast<const QgsVectorLayerLabelProvider *>( b );
 
     if ( providerA && providerB )
     {
@@ -176,8 +176,8 @@ QStringList QgsLabelingEngine::participatingLayerIds() const
   std::sort( providersByZ.begin(), providersByZ.end(),
              []( const QgsAbstractLabelProvider * a, const QgsAbstractLabelProvider * b ) -> bool
   {
-    const QgsVectorLayerLabelProvider *providerA = dynamic_cast<const QgsVectorLayerLabelProvider *>( a );
-    const QgsVectorLayerLabelProvider *providerB = dynamic_cast<const QgsVectorLayerLabelProvider *>( b );
+    auto providerA = dynamic_cast<const QgsVectorLayerLabelProvider *>( a );
+    auto providerB = dynamic_cast<const QgsVectorLayerLabelProvider *>( b );
 
     if ( providerA && providerB )
     {
@@ -190,8 +190,8 @@ QStringList QgsLabelingEngine::participatingLayerIds() const
   std::sort( subProvidersByZ.begin(), subProvidersByZ.end(),
              []( const QgsAbstractLabelProvider * a, const QgsAbstractLabelProvider * b ) -> bool
   {
-    const QgsVectorLayerLabelProvider *providerA = dynamic_cast<const QgsVectorLayerLabelProvider *>( a );
-    const QgsVectorLayerLabelProvider *providerB = dynamic_cast<const QgsVectorLayerLabelProvider *>( b );
+    auto providerA = dynamic_cast<const QgsVectorLayerLabelProvider *>( a );
+    auto providerB = dynamic_cast<const QgsVectorLayerLabelProvider *>( b );
 
     if ( providerA && providerB )
     {
@@ -294,7 +294,7 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
     registeringProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Registering labels" ), QStringLiteral( "rendering" ) );
   }
 
-  QgsLabelingEngineFeedback *feedback = qobject_cast< QgsLabelingEngineFeedback * >( context.feedback() );
+  auto feedback = qobject_cast<QgsLabelingEngineFeedback *>( context.feedback() );
 
   if ( feedback )
     feedback->emit labelRegistrationAboutToBegin();
@@ -773,7 +773,7 @@ void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMa
     painter->drawRect( outerBoundsPixel );
   }
 
-  if ( QgsTextLabelFeature *textFeature = dynamic_cast< QgsTextLabelFeature * >( label->getFeaturePart()->feature() ) )
+  if ( auto textFeature = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() ) )
   {
     const QgsTextDocumentMetrics &metrics = textFeature->documentMetrics();
     const QgsTextDocument &document = textFeature->document();
@@ -903,7 +903,7 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QS
   , mLayer( layer )
   , mProviderId( providerId )
 {
-  if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
+  if ( auto vl = qobject_cast<QgsVectorLayer *>( layer ) )
   {
     mLayerExpressionContextScope.reset( vl->createExpressionContextScope() );
     if ( const QgsFeatureRenderer *renderer = vl->renderer() )

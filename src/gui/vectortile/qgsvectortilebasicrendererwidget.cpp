@@ -369,7 +369,7 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
 
 void QgsVectorTileBasicRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
-  QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
+  auto vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
   if ( !vtLayer )
     return;
 

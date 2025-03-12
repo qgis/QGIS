@@ -320,7 +320,7 @@ QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const 
   {
     case QgsGdalCredentialOptionsModel::Column::Key:
     {
-      const QgsGdalCredentialOptionsModel *model = qgis::down_cast<const QgsGdalCredentialOptionsModel *>( index.model() );
+      auto model = qgis::down_cast<const QgsGdalCredentialOptionsModel *>( index.model() );
       QComboBox *combo = new QComboBox( parent );
       const QStringList availableKeys = model->availableKeys();
       for ( const QString &key : availableKeys )
@@ -339,7 +339,7 @@ QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const 
     case QgsGdalCredentialOptionsModel::Column::Value:
     {
       // need to find out key for this row
-      const QgsGdalCredentialOptionsModel *model = qgis::down_cast<const QgsGdalCredentialOptionsModel *>( index.model() );
+      auto model = qgis::down_cast<const QgsGdalCredentialOptionsModel *>( index.model() );
       const QString key = index.model()->data( model->index( index.row(), QgsGdalCredentialOptionsModel::Column::Key ), Qt::EditRole ).toString();
       if ( key.isEmpty() )
         return nullptr;
@@ -449,8 +449,8 @@ bool QgsGdalCredentialOptionsRemoveOptionDelegate::eventFilter( QObject *obj, QE
 {
   if ( event->type() == QEvent::HoverEnter || event->type() == QEvent::HoverMove )
   {
-    QHoverEvent *hoverEvent = static_cast<QHoverEvent *>( event );
-    if ( QAbstractItemView *view = qobject_cast<QAbstractItemView *>( obj->parent() ) )
+    auto hoverEvent = static_cast<QHoverEvent *>( event );
+    if ( auto view = qobject_cast<QAbstractItemView *>( obj->parent() ) )
     {
       const QModelIndex indexUnderMouse = view->indexAt( hoverEvent->pos() );
       setHoveredIndex( indexUnderMouse );

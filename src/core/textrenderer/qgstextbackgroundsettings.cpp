@@ -351,7 +351,7 @@ void QgsTextBackgroundSettings::setStrokeWidth( double width )
   d->strokeWidth = width;
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
-    QgsSimpleFillSymbolLayer *fill = qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) );
+    auto fill = qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) );
     fill->setStrokeWidth( width );
     fill->setStrokeStyle( !qgsDoubleNear( width, 0.0 ) ? Qt::SolidLine : Qt::NoPen );
   }
@@ -753,7 +753,7 @@ void QgsTextBackgroundSettings::upgradeDataDefinedProperties( QgsPropertyCollect
 {
   if ( !d->fillSymbol || d->fillSymbol->symbolLayers().at( 0 )->layerType() != QLatin1String( "SimpleFill" ) )
     return;
-  QgsSimpleFillSymbolLayer *fill = qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) );
+  auto fill = qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) );
 
   if ( d->type != QgsTextBackgroundSettings::ShapeSVG )
   {

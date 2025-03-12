@@ -262,7 +262,7 @@ bool QgsCheckableComboBox::eventFilter( QObject *object, QEvent *event )
       const QModelIndex index = view()->indexAt( static_cast<QMouseEvent *>( event )->pos() );
       if ( index.isValid() )
       {
-        QgsCheckableItemModel *myModel = qobject_cast<QgsCheckableItemModel *>( model() );
+        auto myModel = qobject_cast<QgsCheckableItemModel *>( model() );
         QStandardItem *item = myModel->itemFromIndex( index );
         item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
         updateCheckedItems();

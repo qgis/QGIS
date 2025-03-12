@@ -618,7 +618,7 @@ void QgsChunkedEntity::onActiveJobFinished()
 {
   int oldJobsCount = pendingJobsCount();
 
-  QgsChunkQueueJob *job = qobject_cast<QgsChunkQueueJob *>( sender() );
+  auto job = qobject_cast<QgsChunkQueueJob *>( sender() );
   Q_ASSERT( job );
   Q_ASSERT( mActiveJobs.contains( job ) );
 
@@ -626,7 +626,7 @@ void QgsChunkedEntity::onActiveJobFinished()
 
   if ( node->state() == QgsChunkNode::Loading )
   {
-    QgsChunkLoader *loader = qobject_cast<QgsChunkLoader *>( job );
+    auto loader = qobject_cast<QgsChunkLoader *>( job );
     Q_ASSERT( loader );
     Q_ASSERT( node->loader() == loader );
 
@@ -671,7 +671,7 @@ void QgsChunkedEntity::onActiveJobFinished()
     // with QgsChunkUpdaterFactory passed to updatedNodes(). The returned
     // updater is actually a chunk loader that will give us a completely
     // new QEntity, so we just delete the old one and use the new one
-    if ( QgsChunkLoader *nodeUpdater = qobject_cast<QgsChunkLoader *>( node->updater() ) )
+    if ( auto nodeUpdater = qobject_cast<QgsChunkLoader *>( node->updater() ) )
     {
       Qt3DCore::QEntity *newEntity = nodeUpdater->createEntity( this );
       node->replaceEntity( newEntity );

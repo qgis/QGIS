@@ -407,7 +407,7 @@ void QgsMapCanvasDockWidget::syncViewCenter( QgsMapCanvas *sourceCanvas )
 
 void QgsMapCanvasDockWidget::syncSelection()
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  auto layer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
 
   if ( !layer )
     return;
@@ -420,7 +420,7 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
   if ( mBlockExtentSync )
     return;
 
-  QgsMapCanvas *sourceCanvas = qobject_cast<QgsMapCanvas *>( sender() );
+  auto sourceCanvas = qobject_cast<QgsMapCanvas *>( sender() );
   if ( !sourceCanvas )
     return;
 

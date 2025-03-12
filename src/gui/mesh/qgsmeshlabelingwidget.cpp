@@ -78,7 +78,7 @@ void QgsMeshLabelingWidget::setLayer( QgsMapLayer *mapLayer )
     setEnabled( true );
   }
 
-  QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( mapLayer );
+  auto layer = qobject_cast<QgsMeshLayer *>( mapLayer );
   mLayer = layer;
   if ( mLayer->labeling() )
   {
@@ -104,14 +104,14 @@ void QgsMeshLabelingWidget::adaptToLayer()
   Mode mode = ModeNone;
   if ( mLayer->labelsEnabled() )
   {
-    if ( QgsMeshLayerSimpleLabeling *labeling = dynamic_cast<QgsMeshLayerSimpleLabeling *>( mLayer->labeling() ) )
+    if ( auto labeling = dynamic_cast<QgsMeshLayerSimpleLabeling *>( mLayer->labeling() ) )
     {
       mode = labeling->provider( mLayer )->labelFaces() ? ModeFaces : ModeVertices;
     }
   }
   mLabelModeComboBox->setCurrentIndex( mLabelModeComboBox->findData( mode ) );
 
-  if ( QgsLabelingGui *lg = qobject_cast<QgsLabelingGui *>( mWidget ) )
+  if ( auto lg = qobject_cast<QgsLabelingGui *>( mWidget ) )
   {
     lg->updateUi();
   }
@@ -170,7 +170,7 @@ void QgsMeshLabelingWidget::labelModeChanged( int index )
     case ModeVertices:
     case ModeFaces:
     {
-      QgsMeshLayerSimpleLabeling *labeling = dynamic_cast<QgsMeshLayerSimpleLabeling *>( mLayer->labeling() );
+      auto labeling = dynamic_cast<QgsMeshLayerSimpleLabeling *>( mLayer->labeling() );
       if ( labeling )
       {
         mSettings.reset( new QgsPalLayerSettings( labeling->settings() ) );

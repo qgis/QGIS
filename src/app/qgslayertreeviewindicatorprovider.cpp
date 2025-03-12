@@ -53,7 +53,7 @@ void QgsLayerTreeViewIndicatorProvider::onAddedChildren( QgsLayerTreeNode *node,
     }
     else if ( QgsLayerTree::isLayer( childNode ) )
     {
-      if ( QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( childNode ) )
+      if ( auto layerNode = qobject_cast<QgsLayerTreeLayer *>( childNode ) )
       {
         if ( layerNode->layer() )
         {
@@ -94,7 +94,7 @@ void QgsLayerTreeViewIndicatorProvider::onWillRemoveChildren( QgsLayerTreeNode *
 
 void QgsLayerTreeViewIndicatorProvider::onLayerLoaded()
 {
-  QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( sender() );
+  auto layerNode = qobject_cast<QgsLayerTreeLayer *>( sender() );
   if ( !layerNode )
     return;
 
@@ -113,7 +113,7 @@ void QgsLayerTreeViewIndicatorProvider::onLayerLoaded()
 
 void QgsLayerTreeViewIndicatorProvider::onLayerChanged()
 {
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  auto layer = qobject_cast<QgsMapLayer *>( sender() );
   if ( !layer )
     return;
 

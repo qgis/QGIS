@@ -305,10 +305,10 @@ void QgsGrassPlugin::onGisbaseChanged()
 void QgsGrassPlugin::onLayerWasAdded( QgsMapLayer *mapLayer )
 {
   QgsDebugMsgLevel( "name = " + mapLayer->name(), 2 );
-  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mapLayer );
+  auto vectorLayer = qobject_cast<QgsVectorLayer *>( mapLayer );
   if ( !vectorLayer )
     return;
-  QgsGrassProvider *grassProvider = dynamic_cast<QgsGrassProvider *>( vectorLayer->dataProvider() );
+  auto grassProvider = dynamic_cast<QgsGrassProvider *>( vectorLayer->dataProvider() );
   if ( !grassProvider )
     return;
 
@@ -325,7 +325,7 @@ void QgsGrassPlugin::onCurrentLayerChanged( QgsMapLayer *layer )
 void QgsGrassPlugin::resetEditActions()
 {
   QgsGrassProvider *grassProvider = nullptr;
-  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
+  auto vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
   if ( vectorLayer )
   {
     grassProvider = dynamic_cast<QgsGrassProvider *>( vectorLayer->dataProvider() );
@@ -354,13 +354,13 @@ void QgsGrassPlugin::resetEditActions()
 
 void QgsGrassPlugin::onEditingStarted()
 {
-  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
   if ( !vectorLayer )
     return;
   QgsDebugMsgLevel( "started editing of layer " + vectorLayer->name(), 2 );
 
   // Set editing renderer
-  QgsGrassProvider *grassProvider = dynamic_cast<QgsGrassProvider *>( vectorLayer->dataProvider() );
+  auto grassProvider = dynamic_cast<QgsGrassProvider *>( vectorLayer->dataProvider() );
   if ( !grassProvider )
     return;
 
@@ -401,7 +401,7 @@ void QgsGrassPlugin::onEditingStarted()
 
 void QgsGrassPlugin::onEditingStopped()
 {
-  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  auto vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
   if ( vectorLayer )
   {
     QString style = mOldStyles.value( vectorLayer );
@@ -416,7 +416,7 @@ void QgsGrassPlugin::onEditingStopped()
 
 void QgsGrassPlugin::onFieldsChanged()
 {
-  QgsGrassProvider *grassProvider = dynamic_cast<QgsGrassProvider *>( sender() );
+  auto grassProvider = dynamic_cast<QgsGrassProvider *>( sender() );
   if ( !grassProvider )
   {
     return;
@@ -432,7 +432,7 @@ void QgsGrassPlugin::onFieldsChanged()
       continue;
     }
 
-    QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer && vectorLayer->providerType() == QLatin1String( "grass" ) && vectorLayer->dataProvider() )
     {
       if ( vectorLayer->dataProvider()->dataSourceUri().startsWith( uri ) )
@@ -446,7 +446,7 @@ void QgsGrassPlugin::onFieldsChanged()
 void QgsGrassPlugin::addFeature()
 {
   QgsGrassProvider *grassProvider = nullptr;
-  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
+  auto vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
   if ( vectorLayer )
   {
     grassProvider = dynamic_cast<QgsGrassProvider *>( vectorLayer->dataProvider() );
@@ -494,7 +494,7 @@ void QgsGrassPlugin::onSplitFeaturesTriggered( bool checked )
   if ( checked )
   {
     QgsGrassProvider *grassProvider = nullptr;
-    QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
+    auto vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
     if ( vectorLayer )
     {
       grassProvider = dynamic_cast<QgsGrassProvider *>( vectorLayer->dataProvider() );
@@ -790,7 +790,7 @@ void QgsGrassPlugin::unload()
       continue;
     }
 
-    QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+    auto vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer && vectorLayer->providerType() == QLatin1String( "grass" ) )
     {
       disconnect( vectorLayer, &QgsVectorLayer::editingStarted, this, &QgsGrassPlugin::onEditingStarted );

@@ -175,7 +175,7 @@ QModelIndex QgsAppQueryLogger::index( int row, int column, const QModelIndex &pa
   if ( column < 0 || column >= columnCount( parent ) || row < 0 || row >= rowCount( parent ) )
     return QModelIndex();
 
-  QgsDevToolsModelGroup *n = dynamic_cast<QgsDevToolsModelGroup *>( index2node( parent ) );
+  auto n = dynamic_cast<QgsDevToolsModelGroup *>( index2node( parent ) );
   if ( !n )
     return QModelIndex(); // have no children
 
@@ -283,7 +283,7 @@ bool QgsDatabaseQueryLoggerProxyModel::filterAcceptsRow( int source_row, const Q
   if ( !mFilterString.isEmpty() )
   {
     QgsDevToolsModelNode *node = mLogger->index2node( mLogger->index( source_row, 0, source_parent ) );
-    if ( QgsDatabaseQueryLoggerQueryGroup *request = dynamic_cast<QgsDatabaseQueryLoggerQueryGroup *>( node ) )
+    if ( auto request = dynamic_cast<QgsDatabaseQueryLoggerQueryGroup *>( node ) )
     {
       if ( request->data().toString().contains( mFilterString, Qt::CaseInsensitive ) )
       {
@@ -291,7 +291,7 @@ bool QgsDatabaseQueryLoggerProxyModel::filterAcceptsRow( int source_row, const Q
       }
       for ( int i = 0; i < request->childCount(); i++ )
       {
-        if ( QgsDevToolsModelValueNode *valueNode = static_cast<QgsDevToolsModelValueNode *>( request->childAt( i ) ); valueNode->value().contains( mFilterString, Qt::CaseInsensitive ) )
+        if ( auto valueNode = static_cast<QgsDevToolsModelValueNode *>( request->childAt( i ) ); valueNode->value().contains( mFilterString, Qt::CaseInsensitive ) )
         {
           return true;
         }

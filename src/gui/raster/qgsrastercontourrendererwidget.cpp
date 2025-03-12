@@ -40,7 +40,7 @@ QgsRasterContourRendererWidget::QgsRasterContourRendererWidget( QgsRasterLayer *
     return;
   }
 
-  const QgsRasterContourRenderer *rcr = dynamic_cast<const QgsRasterContourRenderer *>( mRasterLayer->renderer() );
+  auto rcr = dynamic_cast<const QgsRasterContourRenderer *>( mRasterLayer->renderer() );
   if ( rcr )
   {
     mInputBandComboBox->setBand( rcr->inputBand() );

@@ -44,7 +44,7 @@ void QgsLayoutViewToolMoveItemContent::layoutPressEvent( QgsLayoutViewMouseEvent
   //(other graphics items may be higher, e.g., selection handles)
   for ( QGraphicsItem *graphicsItem : itemsAtCursorPos )
   {
-    QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+    auto item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
     if ( item && !item->isLocked() )
     {
       //we've found the highest QgsLayoutItem

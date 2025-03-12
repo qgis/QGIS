@@ -629,7 +629,7 @@ void TestQgsLayoutScaleBar::oldDataDefinedProject()
 
   // ensure the deprecated scalebar datadefined properties were automatically copied to the scalebar's line symbol
   QgsLineSymbol *ls = scaleBar->lineSymbol();
-  QgsSimpleLineSymbolLayer *sll = dynamic_cast<QgsSimpleLineSymbolLayer *>( ls->symbolLayer( 0 ) );
+  auto sll = dynamic_cast<QgsSimpleLineSymbolLayer *>( ls->symbolLayer( 0 ) );
 
   QVERIFY( sll->dataDefinedProperties().property( QgsSymbolLayer::Property::StrokeWidth ).isActive() );
   QCOMPARE( sll->dataDefinedProperties().property( QgsSymbolLayer::Property::StrokeWidth ).asExpression(), QStringLiteral( "3" ) );

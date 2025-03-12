@@ -34,7 +34,7 @@ QgsScaleBarSettings::QgsScaleBarSettings()
   mLineSymbol = std::make_unique< QgsLineSymbol >();
   mLineSymbol->setColor( QColor( 0, 0, 0 ) );
   mLineSymbol->setWidth( 0.3 );
-  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  if ( auto line = dynamic_cast<QgsSimpleLineSymbolLayer *>( mLineSymbol->symbolLayer( 0 ) ) )
   {
     line->setPenJoinStyle( Qt::MiterJoin );
     line->setPenCapStyle( Qt::SquareCap );
@@ -45,13 +45,13 @@ QgsScaleBarSettings::QgsScaleBarSettings()
 
   mFillSymbol = std::make_unique< QgsFillSymbol >();
   mFillSymbol->setColor( QColor( 0, 0, 0 ) );
-  if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mFillSymbol->symbolLayer( 0 ) ) )
+  if ( auto fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( mFillSymbol->symbolLayer( 0 ) ) )
   {
     fill->setStrokeStyle( Qt::NoPen );
   }
   mAlternateFillSymbol = std::make_unique< QgsFillSymbol >();
   mAlternateFillSymbol->setColor( QColor( 255, 255, 255 ) );
-  if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mAlternateFillSymbol->symbolLayer( 0 ) ) )
+  if ( auto fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( mAlternateFillSymbol->symbolLayer( 0 ) ) )
   {
     fill->setStrokeStyle( Qt::NoPen );
   }
@@ -165,7 +165,7 @@ void QgsScaleBarSettings::setLineWidth( double width )
 QPen QgsScaleBarSettings::pen() const
 {
   QPen pen( mLineSymbol->color() );
-  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  if ( auto line = dynamic_cast<QgsSimpleLineSymbolLayer *>( mLineSymbol->symbolLayer( 0 ) ) )
   {
     pen.setJoinStyle( line->penJoinStyle() );
     pen.setCapStyle( line->penCapStyle() );
@@ -181,7 +181,7 @@ void QgsScaleBarSettings::setPen( const QPen &pen )
     symbol->setColor( pen.color() );
     symbol->setWidth( pen.widthF() );
     symbol->setOutputUnit( Qgis::RenderUnit::Millimeters );
-    if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) ) )
+    if ( auto line = dynamic_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) ) )
     {
       line->setPenJoinStyle( pen.joinStyle() );
       line->setPenCapStyle( pen.capStyle() );
@@ -243,7 +243,7 @@ QBrush QgsScaleBarSettings::brush() const
 {
   QBrush b;
   b.setColor( mFillSymbol->color() );
-  if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mFillSymbol->symbolLayer( 0 ) ) )
+  if ( auto fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( mFillSymbol->symbolLayer( 0 ) ) )
   {
     b.setStyle( fill->brushStyle() );
   }
@@ -254,7 +254,7 @@ QBrush QgsScaleBarSettings::brush() const
 void QgsScaleBarSettings::setBrush( const QBrush &brush )
 {
   mFillSymbol->setColor( brush.color() );
-  if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mFillSymbol->symbolLayer( 0 ) ) )
+  if ( auto fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( mFillSymbol->symbolLayer( 0 ) ) )
   {
     fill->setBrushStyle( brush.style() );
   }
@@ -264,7 +264,7 @@ QBrush QgsScaleBarSettings::brush2() const
 {
   QBrush b;
   b.setColor( mAlternateFillSymbol->color() );
-  if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mAlternateFillSymbol->symbolLayer( 0 ) ) )
+  if ( auto fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( mAlternateFillSymbol->symbolLayer( 0 ) ) )
   {
     b.setStyle( fill->brushStyle() );
   }
@@ -275,7 +275,7 @@ QBrush QgsScaleBarSettings::brush2() const
 void QgsScaleBarSettings::setBrush2( const QBrush &brush )
 {
   mAlternateFillSymbol->setColor( brush.color() );
-  if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mAlternateFillSymbol->symbolLayer( 0 ) ) )
+  if ( auto fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( mAlternateFillSymbol->symbolLayer( 0 ) ) )
   {
     fill->setBrushStyle( brush.style() );
   }
@@ -283,7 +283,7 @@ void QgsScaleBarSettings::setBrush2( const QBrush &brush )
 
 Qt::PenJoinStyle QgsScaleBarSettings::lineJoinStyle() const
 {
-  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  if ( auto line = dynamic_cast<QgsSimpleLineSymbolLayer *>( mLineSymbol->symbolLayer( 0 ) ) )
   {
     return line->penJoinStyle();
   }
@@ -294,7 +294,7 @@ void QgsScaleBarSettings::setLineJoinStyle( Qt::PenJoinStyle style )
 {
   for ( QgsLineSymbol *symbol : { mLineSymbol.get(), mDivisionLineSymbol.get(), mSubdivisionLineSymbol.get() } )
   {
-    if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) ) )
+    if ( auto line = dynamic_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) ) )
     {
       line->setPenJoinStyle( style );
     }
@@ -303,7 +303,7 @@ void QgsScaleBarSettings::setLineJoinStyle( Qt::PenJoinStyle style )
 
 Qt::PenCapStyle QgsScaleBarSettings::lineCapStyle() const
 {
-  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  if ( auto line = dynamic_cast<QgsSimpleLineSymbolLayer *>( mLineSymbol->symbolLayer( 0 ) ) )
   {
     return line->penCapStyle();
   }
@@ -314,7 +314,7 @@ void QgsScaleBarSettings::setLineCapStyle( Qt::PenCapStyle style )
 {
   for ( QgsLineSymbol *symbol : { mLineSymbol.get(), mDivisionLineSymbol.get(), mSubdivisionLineSymbol.get() } )
   {
-    if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) ) )
+    if ( auto line = dynamic_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) ) )
     {
       line->setPenCapStyle( style );
     }

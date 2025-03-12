@@ -126,13 +126,13 @@ static void encodeLineString( const QgsLineString *lineString, bool isRing, bool
 
 static void encodePolygon( const QgsPolygon *polygon, MVTGeometryWriter &geomWriter )
 {
-  const QgsLineString *exteriorRing = qgsgeometry_cast<const QgsLineString *>( polygon->exteriorRing() );
+  auto exteriorRing = qgsgeometry_cast<const QgsLineString *>( polygon->exteriorRing() );
   encodeLineString( exteriorRing, true, !QgsVectorTileMVTUtils::isExteriorRing( exteriorRing ), geomWriter );
   geomWriter.addClosePath();
 
   for ( int i = 0; i < polygon->numInteriorRings(); ++i )
   {
-    const QgsLineString *interiorRing = qgsgeometry_cast<const QgsLineString *>( polygon->interiorRing( i ) );
+    auto interiorRing = qgsgeometry_cast<const QgsLineString *>( polygon->interiorRing( i ) );
     encodeLineString( interiorRing, true, QgsVectorTileMVTUtils::isExteriorRing( interiorRing ), geomWriter );
     geomWriter.addClosePath();
   }
@@ -325,7 +325,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
   {
     case Qgis::WkbType::Point:
     {
-      const QgsPoint *pt = static_cast<const QgsPoint *>( geom );
+      auto pt = static_cast<const QgsPoint *>( geom );
       geomWriter.addMoveTo( 1 );
       geomWriter.addPoint( *pt );
     }
@@ -345,7 +345,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
 
     case Qgis::WkbType::MultiPoint:
     {
-      const QgsMultiPoint *mpt = static_cast<const QgsMultiPoint *>( geom );
+      auto mpt = static_cast<const QgsMultiPoint *>( geom );
       geomWriter.addMoveTo( mpt->numGeometries() );
       for ( int i = 0; i < mpt->numGeometries(); ++i )
         geomWriter.addPoint( *mpt->pointN( i ) );
@@ -354,7 +354,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
 
     case Qgis::WkbType::MultiLineString:
     {
-      const QgsMultiLineString *mls = qgsgeometry_cast<const QgsMultiLineString *>( geom );
+      auto mls = qgsgeometry_cast<const QgsMultiLineString *>( geom );
       for ( int i = 0; i < mls->numGeometries(); ++i )
       {
         encodeLineString( mls->lineStringN( i ), true, false, geomWriter );
@@ -364,7 +364,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
 
     case Qgis::WkbType::MultiPolygon:
     {
-      const QgsMultiPolygon *mp = qgsgeometry_cast<const QgsMultiPolygon *>( geom );
+      auto mp = qgsgeometry_cast<const QgsMultiPolygon *>( geom );
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
         encodePolygon( mp->polygonN( i ), geomWriter );

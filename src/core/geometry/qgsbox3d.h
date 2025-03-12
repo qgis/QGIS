@@ -85,7 +85,7 @@ class CORE_EXPORT QgsBox3D
       int state;
       sipIsErr = 0;
 
-      QgsRectangle *p = reinterpret_cast<QgsRectangle *>( sipConvertToType( a0, sipType_QgsRectangle, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      auto p = reinterpret_cast<QgsRectangle *>( sipConvertToType( a0, sipType_QgsRectangle, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
       if ( !sipIsErr )
       {
         double z1 = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
@@ -119,10 +119,10 @@ class CORE_EXPORT QgsBox3D
       int state;
       sipIsErr = 0;
 
-      QgsVector3D *corner1 = reinterpret_cast<QgsVector3D *>( sipConvertToType( a0, sipType_QgsVector3D, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      auto corner1 = reinterpret_cast<QgsVector3D *>( sipConvertToType( a0, sipType_QgsVector3D, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
       if ( !sipIsErr )
       {
-        QgsVector3D *corner2 = reinterpret_cast<QgsVector3D *>( sipConvertToType( a1, sipType_QgsVector3D, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+        auto corner2 = reinterpret_cast<QgsVector3D *>( sipConvertToType( a1, sipType_QgsVector3D, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
         if ( !sipIsErr )
         {
           bool n = a2 == Py_None ? true : PyObject_IsTrue( a2 );

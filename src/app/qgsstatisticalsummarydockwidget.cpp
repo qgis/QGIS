@@ -299,7 +299,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
 
 void QgsStatisticalSummaryDockWidget::gathererFinished()
 {
-  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  auto gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
   // this may have been sent from a gatherer which was canceled previously and we don't care
   // about it anymore...
   if ( gatherer == mGatherer )
@@ -313,7 +313,7 @@ void QgsStatisticalSummaryDockWidget::gathererFinished()
 
 void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
 {
-  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  auto gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
   // this may have been sent from a gatherer which was canceled previously and we don't care
   // about it anymore...
   if ( gatherer != mGatherer )
@@ -358,7 +358,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
 
 void QgsStatisticalSummaryDockWidget::updateStringStatistics()
 {
-  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  auto gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
   // this may have been sent from a gatherer which was canceled previously and we don't care
   // about it anymore...
   if ( gatherer != mGatherer )
@@ -392,7 +392,7 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics()
 
 void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 {
-  QgsVectorLayer *newLayer = qobject_cast<QgsVectorLayer *>( layer );
+  auto newLayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( mLayer && mLayer != newLayer )
   {
     disconnect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );
@@ -477,7 +477,7 @@ void QgsStatisticalSummaryDockWidget::layerSelectionChanged()
 
 void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
 {
-  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  auto gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
   // this may have been sent from a gatherer which was canceled previously and we don't care
   // about it anymore...
   if ( gatherer != mGatherer )

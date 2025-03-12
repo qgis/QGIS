@@ -69,17 +69,17 @@ void TestQgsMaskingWidget::testTreeWidget()
   // get layers
   QList<QgsMapLayer *> layers = QgsProject::instance()->mapLayersByName( "lines_with_labels" );
   QCOMPARE( layers.count(), 1 );
-  QgsVectorLayer *linesWithLabels = qobject_cast<QgsVectorLayer *>( layers.at( 0 ) );
+  auto linesWithLabels = qobject_cast<QgsVectorLayer *>( layers.at( 0 ) );
   QVERIFY( linesWithLabels );
 
   layers = QgsProject::instance()->mapLayersByName( "polys" );
   QCOMPARE( layers.count(), 1 );
-  QgsVectorLayer *polys = qobject_cast<QgsVectorLayer *>( layers.at( 0 ) );
+  auto polys = qobject_cast<QgsVectorLayer *>( layers.at( 0 ) );
   QVERIFY( polys );
 
   layers = QgsProject::instance()->mapLayersByName( "points" );
   QCOMPARE( layers.count(), 1 );
-  QgsVectorLayer *points = qobject_cast<QgsVectorLayer *>( layers.at( 0 ) );
+  auto points = qobject_cast<QgsVectorLayer *>( layers.at( 0 ) );
   QVERIFY( points );
 
   // add masks on polys label and B52 points
@@ -91,7 +91,7 @@ void TestQgsMaskingWidget::testTreeWidget()
 
   QgsMaskMarkerSymbolLayer *maskLayer = new QgsMaskMarkerSymbolLayer();
   maskLayer->setSubSymbol( QgsMarkerSymbol::createSimple( { { QStringLiteral( "size" ), 6 } } ) );
-  QgsCategorizedSymbolRenderer *renderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( points->renderer() );
+  auto renderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( points->renderer() );
   QVERIFY( renderer );
   const QgsCategoryList categories = renderer->categories();
   QCOMPARE( categories.count(), 3 );

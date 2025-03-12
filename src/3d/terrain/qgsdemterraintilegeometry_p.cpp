@@ -175,7 +175,7 @@ static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
   indexBytes.resize( indices * sizeof( quint32 ) );
   quint32 *indexPtr = reinterpret_cast<quint32 *>( indexBytes.data() );
 
-  const float *heightMapFloat = reinterpret_cast<const float *>( heightMap.constData() );
+  auto heightMapFloat = reinterpret_cast<const float *>( heightMap.constData() );
 
   // Iterate over z
   for ( int j = 0; j < numVerticesZ - 1; ++j )
@@ -303,7 +303,7 @@ static bool intersectionDemTriangles( const QByteArray &vertexBuf, const QByteAr
   // WARNING! this code is specific to how vertex buffers are built for DEM tiles,
   // it is not usable for any mesh...
 
-  const float *vertices = reinterpret_cast<const float *>( vertexBuf.constData() );
+  auto vertices = reinterpret_cast<const float *>( vertexBuf.constData() );
   const uint *indices = reinterpret_cast<const uint *>( indexBuf.constData() );
 #ifdef QGISDEBUG
   int vertexCnt = vertexBuf.count() / sizeof( float );

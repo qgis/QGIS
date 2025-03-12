@@ -35,7 +35,7 @@ void QgsStacObjectDetailsDialog::setStacObject( QgsStacObject *stacObject )
     return;
 
   QStringList thumbnails;
-  if ( QgsStacItem *item = dynamic_cast<QgsStacItem *>( stacObject ) )
+  if ( auto item = dynamic_cast<QgsStacItem *>( stacObject ) )
   {
     const QMap<QString, QgsStacAsset> assets = item->assets();
     for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )

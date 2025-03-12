@@ -434,7 +434,7 @@ void QgsEffectStackCompactWidget::setPaintEffect( QgsPaintEffect *effect )
   }
 
   //is effect a stack?
-  QgsEffectStack *stack = dynamic_cast<QgsEffectStack *>( effect );
+  auto stack = dynamic_cast<QgsEffectStack *>( effect );
   if ( !stack )
   {
     //not already a stack, so promote to stack
@@ -500,7 +500,7 @@ void QgsEffectStackCompactWidget::enableToggled( bool checked )
 
 void QgsEffectStackCompactWidget::updateAcceptWidget( QgsPanelWidget *panel )
 {
-  QgsEffectStackPropertiesWidget *widget = qobject_cast<QgsEffectStackPropertiesWidget *>( panel );
+  auto widget = qobject_cast<QgsEffectStackPropertiesWidget *>( panel );
   *mStack = *widget->stack();
   emit changed();
   //    delete widget->stack();
@@ -508,7 +508,7 @@ void QgsEffectStackCompactWidget::updateAcceptWidget( QgsPanelWidget *panel )
 
 void QgsEffectStackCompactWidget::updateEffectLive()
 {
-  QgsEffectStackPropertiesWidget *widget = qobject_cast<QgsEffectStackPropertiesWidget *>( sender() );
+  auto widget = qobject_cast<QgsEffectStackPropertiesWidget *>( sender() );
   *mStack = *widget->stack();
   emit changed();
 }

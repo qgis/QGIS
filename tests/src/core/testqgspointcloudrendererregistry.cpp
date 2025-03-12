@@ -82,7 +82,7 @@ void TestQgsPointCloudRendererRegistry::metadata()
   QDomElement elem;
   const std::unique_ptr<QgsPointCloudRenderer> renderer( metadata.createRenderer( elem, QgsReadWriteContext() ) );
   QVERIFY( renderer );
-  DummyRenderer *dummyRenderer = dynamic_cast<DummyRenderer *>( renderer.get() );
+  auto dummyRenderer = dynamic_cast<DummyRenderer *>( renderer.get() );
   QVERIFY( dummyRenderer );
 }
 

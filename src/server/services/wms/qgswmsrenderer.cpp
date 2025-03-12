@@ -136,7 +136,7 @@ namespace QgsWms
       // If it is a cascading WMS layer, get legend node image size
       if ( layer->dataProvider()->name() == QLatin1String( "wms" ) )
       {
-        if ( QgsWmsLegendNode *layerNode = qobject_cast<QgsWmsLegendNode *>( model.findLegendNode( layer->id(), QString() ) ) )
+        if ( auto layerNode = qobject_cast<QgsWmsLegendNode *>( model.findLegendNode( layer->id(), QString() ) ) )
         {
           const auto image { layerNode->getLegendGraphicBlocking() };
           if ( !image.isNull() )
@@ -284,7 +284,7 @@ namespace QgsWms
     if ( jsonRenderFlags.testFlag( Qgis::LegendJsonRenderFlag::ShowRuleDetails ) )
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( legendNode.layerNode() );
-      if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
+      if ( auto vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
       {
         if ( vLayer->renderer() )
         {
@@ -308,7 +308,7 @@ namespace QgsWms
 
     for ( const QString &id : mapSettings.layerIds() )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mProject->mapLayer( id ) );
+      auto vl = qobject_cast<QgsVectorLayer *>( mProject->mapLayer( id ) );
       if ( !vl || !vl->renderer() )
         continue;
 
@@ -549,7 +549,7 @@ namespace QgsWms
     QHash<const QgsVectorLayer *, QStringList> fltrs;
     for ( QgsMapLayer *l : lyrs )
     {
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l ) )
+      if ( auto vl = qobject_cast<QgsVectorLayer *>( l ) )
       {
         fltrs.insert( vl, dimensionFilter( vl ) );
       }
@@ -1123,7 +1123,7 @@ namespace QgsWms
         continue;
 
       // cast for dxf layers
-      QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( layer );
+      auto vlayer = static_cast<QgsVectorLayer *>( layer );
 
       // get the layer attribute used in dxf
       int layerAttribute = -1;
@@ -1688,7 +1688,7 @@ namespace QgsWms
 
           if ( layer->type() == Qgis::LayerType::Vector )
           {
-            QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+            auto vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
             if ( vectorLayer )
             {
               ( void ) featureInfoFromVectorLayer( vectorLayer, infoPoint.get(), featureCount, result, layerElement, mapSettings, renderContext, version, featuresRect.get(), filterGeom.get() );
@@ -1697,7 +1697,7 @@ namespace QgsWms
           }
           else
           {
-            QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+            auto rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
             if ( !rasterLayer )
             {
               break;
@@ -2080,7 +2080,7 @@ namespace QgsWms
 
   void QgsRenderer::writeAttributesTabGroup( const QgsAttributeEditorElement *group, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &parentElem, QgsRenderContext &renderContext, QStringList *attributes ) const
   {
-    const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
+    auto container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
     if ( container )
     {
       QString groupName = container->name();
@@ -2101,7 +2101,7 @@ namespace QgsWms
         }
         else if ( child->type() == Qgis::AttributeEditorType::Field )
         {
-          const QgsAttributeEditorField *editorField = dynamic_cast<const QgsAttributeEditorField *>( child );
+          auto editorField = dynamic_cast<const QgsAttributeEditorField *>( child );
           if ( editorField )
           {
             const int idx { fields.indexFromName( editorField->name() ) };
@@ -2841,7 +2841,7 @@ namespace QgsWms
 
       if ( layer->type() == Qgis::LayerType::Vector )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+        auto vl = qobject_cast<QgsVectorLayer *>( layer );
 
         // search features to export
         QgsFeatureList features;
@@ -3058,7 +3058,7 @@ namespace QgsWms
     // find if an attribute is in any form tab
     std::function<bool( const QString &, const QgsAttributeEditorElement * )> findAttributeInTree;
     findAttributeInTree = [&findAttributeInTree, &layer]( const QString &attributeName, const QgsAttributeEditorElement *group ) -> bool {
-      const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
+      auto container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
       if ( container )
       {
         const QList<QgsAttributeEditorElement *> children = container->children();
@@ -3084,7 +3084,7 @@ namespace QgsWms
             }
             case Qgis::AttributeEditorType::Relation:
             {
-              const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( child );
+              auto relationEditor = static_cast<const QgsAttributeEditorRelation *>( child );
               if ( relationEditor )
               {
                 const QgsRelation &relation { relationEditor->relation() };
@@ -3506,7 +3506,7 @@ namespace QgsWms
       {
         case Qgis::LayerType::Vector:
         {
-          QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+          auto vl = qobject_cast<QgsVectorLayer *>( layer );
           vl->setOpacity( opacity / 255. );
           // Labeling
           if ( vl->labelsEnabled() && vl->labeling() )
@@ -3519,7 +3519,7 @@ namespace QgsWms
 
         case Qgis::LayerType::Raster:
         {
-          QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
+          auto rl = qobject_cast<QgsRasterLayer *>( layer );
           QgsRasterRenderer *rasterRenderer = rl->renderer();
           rasterRenderer->setOpacity( opacity / 255. );
           break;
@@ -3527,7 +3527,7 @@ namespace QgsWms
 
         case Qgis::LayerType::VectorTile:
         {
-          QgsVectorTileLayer *vl = qobject_cast<QgsVectorTileLayer *>( layer );
+          auto vl = qobject_cast<QgsVectorTileLayer *>( layer );
           vl->setOpacity( opacity / 255. );
           break;
         }
@@ -3547,7 +3547,7 @@ namespace QgsWms
   {
     if ( layer->type() == Qgis::LayerType::Vector )
     {
-      QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
+      auto filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
       QStringList expList;
       for ( const QgsWmsParametersFilter &filter : filters )
       {
@@ -3628,7 +3628,7 @@ namespace QgsWms
   {
     QStringList expList;
     // WMS Dimension filters
-    QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( layer->serverProperties() );
+    auto serverProperties = static_cast<QgsMapLayerServerProperties *>( layer->serverProperties() );
     const QList<QgsMapLayerServerProperties::WmsDimensionInfo> wmsDims = serverProperties->wmsDimensions();
     if ( wmsDims.isEmpty() )
     {
@@ -3816,7 +3816,7 @@ namespace QgsWms
   {
     if ( !fids.empty() && layer->type() == Qgis::LayerType::Vector )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+      auto vl = qobject_cast<QgsVectorLayer *>( layer );
 
       QgsFeatureRequest request;
       QgsServerFeatureId::updateFeatureRequestFromServerFids( request, fids, vl->dataProvider() );

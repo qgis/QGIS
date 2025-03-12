@@ -67,7 +67,7 @@ void QgsMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique tech
   else
     mMaterialTypeComboBox->setCurrentIndex( prevIndex );
 
-  if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
+  if ( auto w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
     w->setTechnique( technique );
 
   mMaterialTypeComboBox->blockSignals( false );
@@ -125,7 +125,7 @@ void QgsMaterialWidget::materialTypeChanged()
 
 void QgsMaterialWidget::materialWidgetChanged()
 {
-  if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
+  if ( auto w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
   {
     mCurrentSettings.reset( w->settings() );
   }
@@ -137,7 +137,7 @@ void QgsMaterialWidget::updateMaterialWidget()
   if ( mStackedWidget->currentWidget() != mPageDummy )
   {
     // stop updating from the original widget
-    if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
+    if ( auto w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
       disconnect( w, &QgsMaterialSettingsWidget::changed, this, &QgsMaterialWidget::materialWidgetChanged );
     mStackedWidget->removeWidget( mStackedWidget->currentWidget() );
   }

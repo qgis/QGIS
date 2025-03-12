@@ -1857,7 +1857,7 @@ QgsLineString *QgsLineString::createEmptyWithSameType() const
 
 int QgsLineString::compareToSameClass( const QgsAbstractGeometry *other ) const
 {
-  const QgsLineString *otherLine = qgsgeometry_cast<const QgsLineString *>( other );
+  auto otherLine = qgsgeometry_cast<const QgsLineString *>( other );
   if ( !otherLine )
     return -1;
 

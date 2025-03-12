@@ -1509,7 +1509,7 @@ QVariantList QgsArcGisRestUtils::curveToJsonCurve( const QgsCurve *curve, bool i
 
     case Qgis::WkbType::CircularString:
     {
-      const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString * >( curve );
+      auto circularString = qgsgeometry_cast<const QgsCircularString *>( curve );
       if ( includeStart && !circularString->isEmpty() )
       {
         res.push_back( pointToList( circularString->startPoint() ) );
@@ -1533,7 +1533,7 @@ QVariantList QgsArcGisRestUtils::curveToJsonCurve( const QgsCurve *curve, bool i
 
     case Qgis::WkbType::CompoundCurve:
     {
-      const QgsCompoundCurve *compoundCurve = qgsgeometry_cast<const QgsCompoundCurve * >( curve );
+      auto compoundCurve = qgsgeometry_cast<const QgsCompoundCurve *>( curve );
 
       const int size = compoundCurve->nCurves();
       for ( int i = 0; i < size; ++i )
@@ -1632,7 +1632,7 @@ QVariantList QgsArcGisRestUtils::polygonToJsonRings( const QgsPolygon *polygon )
   const int numInteriorRings = polygon->numInteriorRings();
   rings.reserve( numInteriorRings + 1 );
 
-  if ( const QgsLineString *exterior = qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() ) )
+  if ( auto exterior = qgsgeometry_cast<const QgsLineString *>( polygon->exteriorRing() ) )
   {
     // exterior ring MUST be clockwise
     switch ( exterior->orientation() )
@@ -1654,7 +1654,7 @@ QVariantList QgsArcGisRestUtils::polygonToJsonRings( const QgsPolygon *polygon )
 
   for ( int i = 0; i < numInteriorRings; ++i )
   {
-    const QgsLineString *ring = qgsgeometry_cast< const QgsLineString * >( polygon->interiorRing( i ) );
+    auto ring = qgsgeometry_cast<const QgsLineString *>( polygon->interiorRing( i ) );
     // holes MUST be counter-clockwise
     switch ( ring->orientation() )
     {
@@ -1681,7 +1681,7 @@ QVariantList QgsArcGisRestUtils::curvePolygonToJsonRings( const QgsCurvePolygon 
   const int numInteriorRings = polygon->numInteriorRings();
   rings.reserve( numInteriorRings + 1 );
 
-  if ( const QgsCurve *exterior = qgsgeometry_cast< const QgsCurve * >( polygon->exteriorRing() ) )
+  if ( auto exterior = qgsgeometry_cast<const QgsCurve *>( polygon->exteriorRing() ) )
   {
     // exterior ring MUST be clockwise
     switch ( exterior->orientation() )
@@ -1703,7 +1703,7 @@ QVariantList QgsArcGisRestUtils::curvePolygonToJsonRings( const QgsCurvePolygon 
 
   for ( int i = 0; i < numInteriorRings; ++i )
   {
-    const QgsCurve *ring = qgsgeometry_cast< const QgsCurve * >( polygon->interiorRing( i ) );
+    auto ring = qgsgeometry_cast<const QgsCurve *>( polygon->interiorRing( i ) );
     // holes MUST be counter-clockwise
     switch ( ring->orientation() )
     {
@@ -1778,7 +1778,7 @@ QVariantMap QgsArcGisRestUtils::multiSurfaceToJson( const QgsMultiSurface *multi
   QVariantList rings;
   for ( int i = 0; i < size; ++i )
   {
-    const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( multiSurface->geometryN( i ) );
+    auto polygon = qgsgeometry_cast<const QgsCurvePolygon *>( multiSurface->geometryN( i ) );
     if ( !polygon )
       continue;
 

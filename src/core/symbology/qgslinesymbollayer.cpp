@@ -1414,7 +1414,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
 
 void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
-  const QgsCurvePolygon *curvePolygon = dynamic_cast<const QgsCurvePolygon *>( context.renderContext().geometry() );
+  auto curvePolygon = dynamic_cast<const QgsCurvePolygon *>( context.renderContext().geometry() );
 
   if ( curvePolygon )
   {
@@ -2542,7 +2542,7 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     strokeElem.appendChild( graphicStrokeElem );
 
     QgsSymbolLayer *layer = mMarker->symbolLayer( i );
-    if ( QgsMarkerSymbolLayer *markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
+    if ( auto markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
     {
       markerLayer->writeSldMarker( doc, graphicStrokeElem, props );
     }
@@ -3749,7 +3749,7 @@ void QgsLineburstSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbol
        ( mGradientRamp->type() == QgsGradientColorRamp::typeString() || mGradientRamp->type() == QgsCptCityColorRamp::typeString() ) )
   {
     //color ramp gradient
-    QgsGradientColorRamp *gradRamp = static_cast<QgsGradientColorRamp *>( mGradientRamp.get() );
+    auto gradRamp = static_cast<QgsGradientColorRamp *>( mGradientRamp.get() );
     gradRamp->addStopsToGradient( &gradient, context.opacity() );
   }
   else

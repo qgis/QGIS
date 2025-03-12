@@ -1032,7 +1032,7 @@ void TestQgsMeshLayer::test_path()
   QCOMPARE( layers1.count(), 1 );
 
   // Check if the mesh is still here but invalid
-  QgsMeshLayer *meshLayer1 = qobject_cast<QgsMeshLayer *>( layers1.first() );
+  auto meshLayer1 = qobject_cast<QgsMeshLayer *>( layers1.first() );
   QVERIFY( meshLayer1 );
   QVERIFY( !meshLayer1->isValid() );
   QCOMPARE( meshLayer1->name(), QStringLiteral( "mesh layer" ) );
@@ -1044,7 +1044,7 @@ void TestQgsMeshLayer::test_path()
   QMap<QString, QgsMapLayer *> layers2 = project2.mapLayers();
   QCOMPARE( layers2.count(), 1 );
 
-  QgsMeshLayer *meshLayer2 = qobject_cast<QgsMeshLayer *>( layers2.first() );
+  auto meshLayer2 = qobject_cast<QgsMeshLayer *>( layers2.first() );
   QVERIFY( meshLayer2 );
   QVERIFY( meshLayer2->isValid() );
   QCOMPARE( meshLayer2->name(), QStringLiteral( "mesh layer" ) );
@@ -2260,7 +2260,7 @@ void TestQgsMeshLayer::test_temporal()
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1.addSecs( 400 ), time_2.addSecs( 400 ) ) ).dataset(), 19 );
 
   // change reference time
-  QgsMeshLayerTemporalProperties *tempProp = static_cast<QgsMeshLayerTemporalProperties *>( mMdal3DLayer->temporalProperties() );
+  auto tempProp = static_cast<QgsMeshLayerTemporalProperties *>( mMdal3DLayer->temporalProperties() );
   tempProp->setReferenceTime( QDateTime( QDate( 1980, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), mMdal3DLayer->dataProvider()->temporalCapabilities() );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), -1 );
   QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, Qgis::TemporalUnit::Hours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
@@ -2291,7 +2291,7 @@ void TestQgsMeshLayer::updateTimePropertiesWhenReloading()
   auto layer = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
   QVERIFY( layer->isValid() );
 
-  QgsMeshLayerTemporalProperties *temporalProperties = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() );
+  auto temporalProperties = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() );
 
   QDateTime referenceTime1 = temporalProperties->referenceTime();
   QgsDateTimeRange timeExtent1 = temporalProperties->timeExtent();

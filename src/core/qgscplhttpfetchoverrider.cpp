@@ -42,7 +42,7 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
     void *pWriteArg,
     void *pUserData )
 {
-  QgsCPLHTTPFetchOverrider *pThis = static_cast<QgsCPLHTTPFetchOverrider *>( pUserData );
+  auto pThis = static_cast<QgsCPLHTTPFetchOverrider *>( pUserData );
 
   auto psResult = static_cast<CPLHTTPResult *>( CPLCalloc( sizeof( CPLHTTPResult ), 1 ) );
   if ( CSLFetchNameValue( papszOptions, "CLOSE_PERSISTENT" ) )

@@ -563,7 +563,7 @@ void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool 
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+      auto vl = qobject_cast<QgsVectorLayer *>( layer );
       if ( isDisconnect )
       {
         disconnect( vl, &QgsVectorLayer::featureAdded, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
@@ -878,7 +878,7 @@ void QgsElevationProfileCanvas::refresh()
   sources << registrySources;
   for ( QgsMapLayer *layer : layersToGenerate )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
       sources.append( source );
   }
 
@@ -938,13 +938,13 @@ void QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged()
   if ( !mCurrentJob || mCurrentJob->isActive() )
     return;
 
-  QgsMapLayerElevationProperties *properties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
+  auto properties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
   if ( !properties )
     return;
 
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
     {
       if ( mCurrentJob->invalidateResults( source ) )
         scheduleDeferredRegeneration();
@@ -958,13 +958,13 @@ void QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged()
   if ( !mCurrentJob || mCurrentJob->isActive() )
     return;
 
-  QgsMapLayerElevationProperties *properties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
+  auto properties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
   if ( !properties )
     return;
 
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
     {
       mCurrentJob->replaceSource( source );
     }
@@ -978,9 +978,9 @@ void QgsElevationProfileCanvas::regenerateResultsForLayer()
   if ( !mCurrentJob )
     return;
 
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
+  if ( auto layer = qobject_cast<QgsMapLayer *>( sender() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( auto source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
     {
       if ( mCurrentJob->invalidateResults( source ) )
         scheduleDeferredRegeneration();

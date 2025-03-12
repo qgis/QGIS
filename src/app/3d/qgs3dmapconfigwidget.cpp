@@ -117,7 +117,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   if ( terrainSettings && terrainSettings->type() == QLatin1String( "dem" ) )
   {
     cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Dem ) );
-    const QgsDemTerrainSettings *demTerrainSettings = qgis::down_cast<const QgsDemTerrainSettings *>( terrainSettings );
+    auto demTerrainSettings = qgis::down_cast<const QgsDemTerrainSettings *>( terrainSettings );
     spinTerrainResolution->setValue( demTerrainSettings->resolution() );
     spinTerrainSkirtHeight->setValue( demTerrainSettings->skirtHeight() );
     cboTerrainLayer->setFilters( Qgis::LayerFilter::RasterLayer );
@@ -126,14 +126,14 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   else if ( terrainSettings && terrainSettings->type() == QLatin1String( "online" ) )
   {
     cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Online ) );
-    const QgsOnlineDemTerrainSettings *demTerrainSettings = qgis::down_cast<const QgsOnlineDemTerrainSettings *>( terrainSettings );
+    auto demTerrainSettings = qgis::down_cast<const QgsOnlineDemTerrainSettings *>( terrainSettings );
     spinTerrainResolution->setValue( demTerrainSettings->resolution() );
     spinTerrainSkirtHeight->setValue( demTerrainSettings->skirtHeight() );
   }
   else if ( terrainSettings && terrainSettings->type() == QLatin1String( "mesh" ) )
   {
     cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Mesh ) );
-    const QgsMeshTerrainSettings *meshTerrainSettings = qgis::down_cast<const QgsMeshTerrainSettings *>( terrainSettings );
+    auto meshTerrainSettings = qgis::down_cast<const QgsMeshTerrainSettings *>( terrainSettings );
     cboTerrainLayer->setFilters( Qgis::LayerFilter::MeshLayer );
     cboTerrainLayer->setLayer( meshTerrainSettings->layer() );
     mMeshSymbolWidget->setLayer( meshTerrainSettings->layer(), false );
@@ -143,7 +143,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   else if ( terrainSettings && terrainSettings->type() == QLatin1String( "quantizedmesh" ) )
   {
     cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::QuantizedMesh ) );
-    const QgsQuantizedMeshTerrainSettings *quantizedMeshTerrainSettings = qgis::down_cast<const QgsQuantizedMeshTerrainSettings *>( terrainSettings );
+    auto quantizedMeshTerrainSettings = qgis::down_cast<const QgsQuantizedMeshTerrainSettings *>( terrainSettings );
     cboTerrainLayer->setFilters( Qgis::LayerFilter::TiledSceneLayer );
     cboTerrainLayer->setLayer( quantizedMeshTerrainSettings->layer() );
   }
@@ -336,7 +336,7 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
 
   const std::unique_ptr<QgsAbstractMaterialSettings> terrainMaterial( widgetTerrainMaterial->settings() );
-  if ( QgsPhongMaterialSettings *phongMaterial = dynamic_cast<QgsPhongMaterialSettings *>( terrainMaterial.get() ) )
+  if ( auto phongMaterial = dynamic_cast<QgsPhongMaterialSettings *>( terrainMaterial.get() ) )
     mMap->setTerrainShadingMaterial( *phongMaterial );
 
   mMap->setLightSources( widgetLights->lightSources() );
@@ -403,7 +403,7 @@ void Qgs3DMapConfigWidget::onTerrainLayerChanged()
 
   if ( cboTerrainType->currentData() == QgsTerrainGenerator::Mesh )
   {
-    QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( cboTerrainLayer->currentLayer() );
+    auto meshLayer = qobject_cast<QgsMeshLayer *>( cboTerrainLayer->currentLayer() );
     if ( meshLayer )
     {
       QgsMeshLayer *oldLayer = mMeshSymbolWidget->meshLayer();

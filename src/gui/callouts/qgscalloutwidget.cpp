@@ -84,7 +84,7 @@ void QgsCalloutWidget::registerDataDefinedButton( QgsPropertyOverrideButton *but
 void QgsCalloutWidget::createAuxiliaryField()
 {
   // try to create an auxiliary layer if not yet created
-  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  auto vectorLayer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( !vectorLayer )
     return;
 
@@ -98,7 +98,7 @@ void QgsCalloutWidget::createAuxiliaryField()
   if ( !vectorLayer->auxiliaryLayer() )
     return;
 
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsCallout::Property key = static_cast<QgsCallout::Property>( button->propertyKey() );
   const QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[static_cast<int>( key )];
 
@@ -122,7 +122,7 @@ void QgsCalloutWidget::createAuxiliaryField()
 
 void QgsCalloutWidget::updateDataDefinedProperty()
 {
-  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  auto button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsCallout::Property key = static_cast<QgsCallout::Property>( button->propertyKey() );
   callout()->dataDefinedProperties().setProperty( key, button->toProperty() );
   emit changed();

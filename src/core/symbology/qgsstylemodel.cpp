@@ -752,7 +752,7 @@ void QgsStyleModel::onEntityRename( QgsStyle::StyleEntity type, const QString &o
 
 void QgsStyleModel::onTagsChanged( int entity, const QString &name, const QStringList & )
 {
-  QgsStyle::StyleEntity type = static_cast< QgsStyle::StyleEntity >( entity );
+  auto type = static_cast<QgsStyle::StyleEntity>( entity );
   int row = mEntityNames[type].indexOf( name ) + offsetForEntity( type );
   switch ( static_cast< QgsStyle::StyleEntity >( entity ) )
   {
@@ -907,11 +907,11 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   const QString name = sourceModel()->data( index ).toString();
   const QStringList tags = sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::Tag ) ).toStringList();
 
-  QgsStyle::StyleEntity styleEntityType = static_cast< QgsStyle::StyleEntity >( sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::Type ) ).toInt() );
+  auto styleEntityType = static_cast<QgsStyle::StyleEntity>( sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::Type ) ).toInt() );
   if ( mEntityFilterEnabled && ( mEntityFilters.empty() || !mEntityFilters.contains( styleEntityType ) ) )
     return false;
 
-  Qgis::SymbolType symbolType = static_cast< Qgis::SymbolType >( sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::SymbolType ) ).toInt() );
+  auto symbolType = static_cast<Qgis::SymbolType>( sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::SymbolType ) ).toInt() );
   if ( mSymbolTypeFilterEnabled && symbolType != mSymbolType )
     return false;
 

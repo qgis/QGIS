@@ -94,7 +94,7 @@ void QgsLayoutHtmlWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayou
 
 bool QgsLayoutHtmlWidget::setNewItem( QgsLayoutItem *item )
 {
-  QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( item );
+  auto frame = qobject_cast<QgsLayoutFrame *>( item );
   if ( !frame )
     return false;
 

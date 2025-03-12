@@ -2825,7 +2825,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         if ( QgsPalLabeling::geometryRequiresPreparation( ddPoint, context, ct ) )
         {
           ddPoint = QgsPalLabeling::prepareGeometry( ddPoint, context, ct );
-          if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( ddPoint.constGet() ) )
+          if ( auto point = qgsgeometry_cast<const QgsPoint *>( ddPoint.constGet() ) )
           {
             xPos = point->x();
             yPos = point->y();
@@ -3181,7 +3181,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerObstacleFeature( c
   }
 
   // don't even try to register linestrings with only one vertex as an obstacle
-  if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( geom.constGet() ) )
+  if ( auto ls = qgsgeometry_cast<const QgsLineString *>( geom.constGet() ) )
   {
     if ( ls->numPoints() < 2 )
       return nullptr;
@@ -4112,17 +4112,17 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
   {
     case Qgis::LayerType::Vector:
     {
-      const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer );
+      auto vl = qobject_cast<const QgsVectorLayer *>( layer );
       return vl->labelsEnabled() || vl->diagramsEnabled() || ( vl->renderer() && vl->renderer()->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) );
     }
 
     case Qgis::LayerType::VectorTile:
     {
-      const QgsVectorTileLayer *vl = qobject_cast< const QgsVectorTileLayer * >( layer );
+      auto vl = qobject_cast<const QgsVectorTileLayer *>( layer );
       if ( !vl->labeling() )
         return false;
 
-      if ( const QgsVectorTileBasicLabeling *labeling = dynamic_cast< const QgsVectorTileBasicLabeling *>( vl->labeling() ) )
+      if ( auto labeling = dynamic_cast<const QgsVectorTileBasicLabeling *>( vl->labeling() ) )
         return !labeling->styles().empty();
 
       return false;
@@ -4130,13 +4130,13 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
 
     case Qgis::LayerType::Mesh:
     {
-      const QgsMeshLayer *ml = qobject_cast< const QgsMeshLayer * >( layer );
+      auto ml = qobject_cast<const QgsMeshLayer *>( layer );
       return ml->labeling() && ml->labelsEnabled();
     }
 
     case Qgis::LayerType::Raster:
     {
-      const QgsRasterLayer *rl = qobject_cast< const QgsRasterLayer * >( layer );
+      auto rl = qobject_cast<const QgsRasterLayer *>( layer );
       return rl->labeling() && rl->labelsEnabled();
     }
 
@@ -4261,7 +4261,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     {
       return std::isfinite( point.x() ) && std::isfinite( point.y() );
     } );
-    if ( QgsCurvePolygon *cp = qgsgeometry_cast< QgsCurvePolygon * >( geom.get() ) )
+    if ( auto cp = qgsgeometry_cast<QgsCurvePolygon *>( geom.get() ) )
     {
       cp->removeInvalidRings();
     }
@@ -4269,7 +4269,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     {
       for ( int i = 0; i < ms->numGeometries(); ++i )
       {
-        if ( QgsCurvePolygon *cp = qgsgeometry_cast< QgsCurvePolygon * >( ms->geometryN( i ) ) )
+        if ( auto cp = qgsgeometry_cast<QgsCurvePolygon *>( ms->geometryN( i ) ) )
           cp->removeInvalidRings();
       }
     }
@@ -4563,7 +4563,7 @@ void QgsPalLabeling::dataDefinedTextBuffer( QgsPalLayerSettings &tmpLyr,
   //buffer size units
   if ( ddValues.contains( QgsPalLayerSettings::Property::BufferUnit ) )
   {
-    Qgis::RenderUnit bufunit = static_cast< Qgis::RenderUnit >( ddValues.value( QgsPalLayerSettings::Property::BufferUnit ).toInt() );
+    auto bufunit = static_cast<Qgis::RenderUnit>( ddValues.value( QgsPalLayerSettings::Property::BufferUnit ).toInt() );
     buffer.setSizeUnit( bufunit );
     changed = true;
   }
@@ -4644,7 +4644,7 @@ void QgsPalLabeling::dataDefinedTextMask( QgsPalLayerSettings &tmpLyr,
   // buffer size units
   if ( ddValues.contains( QgsPalLayerSettings::Property::MaskBufferUnit ) )
   {
-    Qgis::RenderUnit bufunit = static_cast< Qgis::RenderUnit >( ddValues.value( QgsPalLayerSettings::Property::MaskBufferUnit ).toInt() );
+    auto bufunit = static_cast<Qgis::RenderUnit>( ddValues.value( QgsPalLayerSettings::Property::MaskBufferUnit ).toInt() );
     mask.setSizeUnit( bufunit );
     changed = true;
   }

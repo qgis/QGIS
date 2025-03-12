@@ -64,7 +64,7 @@ QString QgsTiledSceneLayerElevationProperties::htmlSummary() const
 
 QgsDoubleRange QgsTiledSceneLayerElevationProperties::calculateZRange( QgsMapLayer *layer ) const
 {
-  if ( QgsTiledSceneLayer *tiledSceneLayer = qobject_cast< QgsTiledSceneLayer * >( layer ) )
+  if ( auto tiledSceneLayer = qobject_cast<QgsTiledSceneLayer *>( layer ) )
   {
     if ( QgsTiledSceneDataProvider *dp = tiledSceneLayer->dataProvider() )
     {

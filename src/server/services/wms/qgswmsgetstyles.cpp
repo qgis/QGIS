@@ -92,7 +92,7 @@ namespace QgsWms
         if ( layer->type() != Qgis::LayerType::Vector )
           continue;
 
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        auto vlayer = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vlayer->isSpatial() )
           continue;
 

@@ -507,7 +507,7 @@ QVariantMap QgsPointCloudIndex::extraMetadata() const
 bool QgsPointCloudIndex::commitChanges( QString *errorMessage )
 {
   Q_ASSERT( mIndex );
-  if ( QgsPointCloudEditingIndex *index = dynamic_cast<QgsPointCloudEditingIndex *>( mIndex.get() ) )
+  if ( auto index = dynamic_cast<QgsPointCloudEditingIndex *>( mIndex.get() ) )
     return index->commitChanges( errorMessage );
 
   return false;
@@ -515,7 +515,7 @@ bool QgsPointCloudIndex::commitChanges( QString *errorMessage )
 
 bool QgsPointCloudIndex::isModified() const
 {
-  if ( QgsPointCloudEditingIndex *index = dynamic_cast<QgsPointCloudEditingIndex *>( mIndex.get() ) )
+  if ( auto index = dynamic_cast<QgsPointCloudEditingIndex *>( mIndex.get() ) )
     return index->isModified();
 
   return false;
@@ -523,7 +523,7 @@ bool QgsPointCloudIndex::isModified() const
 
 QList<QgsPointCloudNodeId> QgsPointCloudIndex::updatedNodes() const
 {
-  if ( QgsPointCloudEditingIndex *index = dynamic_cast<QgsPointCloudEditingIndex *>( mIndex.get() ) )
+  if ( auto index = dynamic_cast<QgsPointCloudEditingIndex *>( mIndex.get() ) )
     return index->updatedNodes();
 
   return QList<QgsPointCloudNodeId>();

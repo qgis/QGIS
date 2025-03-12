@@ -38,7 +38,7 @@
 
 void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsSLRootItem *rootItem = qobject_cast<QgsSLRootItem *>( item ) )
+  if ( auto rootItem = qobject_cast<QgsSLRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -49,7 +49,7 @@ void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     menu->addAction( actionCreateDatabase );
   }
 
-  if ( QgsSLConnectionItem *connItem = qobject_cast<QgsSLConnectionItem *>( item ) )
+  if ( auto connItem = qobject_cast<QgsSLConnectionItem *>( item ) )
   {
     QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
     menu->addAction( importVectorAction );
@@ -68,7 +68,7 @@ void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 
 bool QgsSpatiaLiteDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
-  if ( QgsSLLayerItem *layerItem = qobject_cast<QgsSLLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsSLLayerItem *>( item ) )
   {
     if ( QMessageBox::question( nullptr, QObject::tr( "Delete Object" ), QObject::tr( "Are you sure you want to delete %1?" ).arg( layerItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
       return false;
@@ -100,7 +100,7 @@ bool QgsSpatiaLiteDataItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataIte
 
 bool QgsSpatiaLiteDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action )
 {
-  if ( QgsSLConnectionItem *connItem = qobject_cast<QgsSLConnectionItem *>( item ) )
+  if ( auto connItem = qobject_cast<QgsSLConnectionItem *>( item ) )
   {
     return handleDropConnectionItem( connItem, data, action, context );
   }

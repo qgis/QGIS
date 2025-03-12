@@ -589,7 +589,7 @@ void TestQgsNetworkAccessManager::fetchPost()
 void TestQgsNetworkAccessManager::fetchPostMultiPart()
 {
   QFETCH( int, iContentType );
-  QHttpMultiPart::ContentType contentType = static_cast<QHttpMultiPart::ContentType>( iContentType );
+  auto contentType = static_cast<QHttpMultiPart::ContentType>( iContentType );
   QHttpMultiPart *multipart = new QHttpMultiPart( contentType );
   QHttpPart part;
   part.setHeader( QNetworkRequest::ContentDispositionHeader, QStringLiteral( "form-data; name=\"param\"" ) );

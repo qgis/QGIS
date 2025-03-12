@@ -523,7 +523,7 @@ QgsPalettedRasterRenderer::MultiValueClassData QgsPalettedRasterRenderer::raster
   {
     int i = 0;
 
-    if ( QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp ) )
+    if ( auto randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp ) )
     {
       //ramp is a random colors ramp, so inform it of the total number of required colors
       //this allows the ramp to pregenerate a set of visually distinctive colors
@@ -782,7 +782,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
     {
       int i = 0;
 
-      if ( QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp ) )
+      if ( auto randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp ) )
       {
         //ramp is a random colors ramp, so inform it of the total number of required colors
         //this allows the ramp to pregenerate a set of visually distinctive colors

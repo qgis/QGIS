@@ -46,7 +46,7 @@ void QgsGeometryValidator::stop()
 
 void QgsGeometryValidator::checkRingIntersections( int partIndex0, int ringIndex0, const QgsCurve *ring0, int partIndex1, int ringIndex1, const QgsCurve *ring1 )
 {
-  const QgsLineString *ringLine0 = qgsgeometry_cast< const QgsLineString * >( ring0 );
+  auto ringLine0 = qgsgeometry_cast<const QgsLineString *>( ring0 );
   std::unique_ptr< QgsLineString > segmentisedRing0;
   if ( !ringLine0 )
   {
@@ -54,7 +54,7 @@ void QgsGeometryValidator::checkRingIntersections( int partIndex0, int ringIndex
     ringLine0 = segmentisedRing0.get();
   }
 
-  const QgsLineString *ringLine1 = qgsgeometry_cast< const QgsLineString * >( ring1 );
+  auto ringLine1 = qgsgeometry_cast<const QgsLineString *>( ring1 );
   std::unique_ptr< QgsLineString > segmentisedRing1;
   if ( !ringLine1 )
   {
@@ -293,7 +293,7 @@ void QgsGeometryValidator::run()
 
         case Qgis::WkbType::MultiLineString:
         {
-          const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry.constGet() );
+          auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( mGeometry.constGet() );
           for ( int i = 0; !mStop && i < collection->numGeometries(); i++ )
             validatePolyline( i, qgsgeometry_cast< const QgsLineString * >( collection->geometryN( i ) ) );
           break;
@@ -307,13 +307,13 @@ void QgsGeometryValidator::run()
         case Qgis::WkbType::MultiPolygon:
         case Qgis::WkbType::MultiSurface:
         {
-          const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry.constGet() );
+          auto collection = qgsgeometry_cast<const QgsGeometryCollection *>( mGeometry.constGet() );
           for ( int i = 0; !mStop && i < collection->numGeometries(); i++ )
             validatePolygon( i, qgsgeometry_cast< const QgsCurvePolygon * >( collection->geometryN( i ) ) );
 
           for ( int i = 0; !mStop && i < collection->numGeometries(); i++ )
           {
-            const QgsCurvePolygon *poly = qgsgeometry_cast< const QgsCurvePolygon * >( collection->geometryN( i ) );
+            auto poly = qgsgeometry_cast<const QgsCurvePolygon *>( collection->geometryN( i ) );
             if ( !poly->exteriorRing() || poly->exteriorRing()->isEmpty() )
             {
               emit errorFound( QgsGeometry::Error( QObject::tr( "Polygon %1 has no rings" ).arg( i ) ) );
@@ -323,7 +323,7 @@ void QgsGeometryValidator::run()
 
             for ( int j = i + 1;  !mStop && j < collection->numGeometries(); j++ )
             {
-              const QgsCurvePolygon *poly2 = qgsgeometry_cast< const QgsCurvePolygon * >( collection->geometryN( j ) );
+              auto poly2 = qgsgeometry_cast<const QgsCurvePolygon *>( collection->geometryN( j ) );
               if ( !poly2->exteriorRing() || poly2->exteriorRing()->isEmpty() )
                 continue;
 

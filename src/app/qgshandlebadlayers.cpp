@@ -350,7 +350,7 @@ void QgsHandleBadLayers::browseClicked()
 
 void QgsHandleBadLayers::editAuthCfg()
 {
-  QToolButton *btn = qobject_cast<QToolButton *>( sender() );
+  auto btn = qobject_cast<QToolButton *>( sender() );
   int row = -1;
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
@@ -427,7 +427,7 @@ void QgsHandleBadLayers::apply()
       if ( mapLayer )
       {
         QString subsetString;
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
+        auto vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
         if ( vlayer )
         {
           // store the previous layer subset string, so we can restore after fixing the data source

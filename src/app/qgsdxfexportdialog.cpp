@@ -89,7 +89,7 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
 
   if ( index.column() == LAYER_COL )
   {
-    QgsFilterLineEdit *le = qobject_cast<QgsFilterLineEdit *>( editor );
+    auto le = qobject_cast<QgsFilterLineEdit *>( editor );
     if ( le )
     {
       le->setText( index.data().toString() );
@@ -97,7 +97,7 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
   }
   else if ( index.column() == OUTPUT_LAYER_ATTRIBUTE_COL )
   {
-    QgsFieldComboBox *fcb = qobject_cast<QgsFieldComboBox *>( editor );
+    auto fcb = qobject_cast<QgsFieldComboBox *>( editor );
     if ( !fcb )
       return;
 
@@ -125,7 +125,7 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
 
   if ( index.column() == LAYER_COL )
   {
-    QgsFilterLineEdit *le = qobject_cast<QgsFilterLineEdit *>( editor );
+    auto le = qobject_cast<QgsFilterLineEdit *>( editor );
     if ( le )
     {
       model->setData( index, le->text() );
@@ -133,7 +133,7 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
   }
   else if ( index.column() == OUTPUT_LAYER_ATTRIBUTE_COL )
   {
-    QgsFieldComboBox *fcb = qobject_cast<QgsFieldComboBox *>( editor );
+    auto fcb = qobject_cast<QgsFieldComboBox *>( editor );
     if ( !fcb )
       return;
 
@@ -151,10 +151,10 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
 
 QgsVectorLayer *FieldSelectorDelegate::indexToLayer( const QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  const QgsLayerTreeProxyModel *proxy = qobject_cast<const QgsLayerTreeProxyModel *>( model );
+  auto proxy = qobject_cast<const QgsLayerTreeProxyModel *>( model );
   Q_ASSERT( proxy );
 
-  const QgsVectorLayerAndAttributeModel *m = qobject_cast<const QgsVectorLayerAndAttributeModel *>( proxy->sourceModel() );
+  auto m = qobject_cast<const QgsVectorLayerAndAttributeModel *>( proxy->sourceModel() );
   Q_ASSERT( m );
 
   return m->vectorLayer( proxy->mapToSource( index ) );
@@ -162,10 +162,10 @@ QgsVectorLayer *FieldSelectorDelegate::indexToLayer( const QAbstractItemModel *m
 
 int FieldSelectorDelegate::attributeIndex( const QAbstractItemModel *model, const QgsVectorLayer *vl ) const
 {
-  const QgsLayerTreeProxyModel *proxy = qobject_cast<const QgsLayerTreeProxyModel *>( model );
+  auto proxy = qobject_cast<const QgsLayerTreeProxyModel *>( model );
   Q_ASSERT( proxy );
 
-  const QgsVectorLayerAndAttributeModel *m = qobject_cast<const QgsVectorLayerAndAttributeModel *>( proxy->sourceModel() );
+  auto m = qobject_cast<const QgsVectorLayerAndAttributeModel *>( proxy->sourceModel() );
   Q_ASSERT( m );
 
   return m->attributeIndex( vl );
@@ -179,7 +179,7 @@ QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *
   retrieveAllLayers( rootNode, layerIds );
   for ( const auto &id : std::as_const( layerIds ) )
   {
-    const QgsVectorLayer *vLayer = qobject_cast<const QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
+    auto vLayer = qobject_cast<const QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
     if ( vLayer )
     {
       mCreateDDBlockInfo[vLayer] = DEFAULT_DXF_DATA_DEFINED_BLOCKS;
@@ -468,7 +468,7 @@ QList<QgsDxfExport::DxfLayer> QgsVectorLayerAndAttributeModel::layers() const
       const auto childLayers = QgsLayerTree::toGroup( node )->findLayers();
       for ( QgsLayerTreeLayer *treeLayer : childLayers )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( treeLayer->layer() );
+        auto vl = qobject_cast<QgsVectorLayer *>( treeLayer->layer() );
         Q_ASSERT( vl );
         if ( !layerIdx.contains( vl->id() ) )
         {
@@ -479,7 +479,7 @@ QList<QgsDxfExport::DxfLayer> QgsVectorLayerAndAttributeModel::layers() const
     }
     else if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
+      auto vl = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
       Q_ASSERT( vl );
       if ( !layerIdx.contains( vl->id() ) )
       {
@@ -521,7 +521,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
     const auto constLayers = QgisApp::instance()->mapCanvas()->layers( true );
     for ( const QgsMapLayer *ml : constLayers )
     {
-      const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( ml );
+      auto vl = qobject_cast<const QgsVectorLayer *>( ml );
       if ( !vl )
         continue;
       visibleLayers.insert( vl->id() );
@@ -550,7 +550,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLay
   {
     if ( QgsLayerTree::isLayer( child ) )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( child )->layer() );
+      auto vl = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( child )->layer() );
       if ( vl )
       {
         QModelIndex idx = node2index( child );
@@ -575,7 +575,7 @@ void QgsVectorLayerAndAttributeModel::loadLayersOutputAttribute( QgsLayerTreeNod
   {
     if ( QgsLayerTree::isLayer( child ) )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( child )->layer() );
+      auto vl = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( child )->layer() );
       if ( vl )
       {
         QModelIndex idx = node2index( child );
@@ -623,7 +623,7 @@ void QgsVectorLayerAndAttributeModel::saveLayersOutputAttribute( QgsLayerTreeNod
   {
     if ( QgsLayerTree::isLayer( child ) )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( child )->layer() );
+      auto vl = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( child )->layer() );
       if ( vl )
       {
         QModelIndex idx = node2index( child );

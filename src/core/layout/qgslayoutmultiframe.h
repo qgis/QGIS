@@ -55,7 +55,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     SIP_CONVERT_TO_SUBCLASS_CODE
     // the conversions have to be static, because they're using multiple inheritance
     // (seen in PyQt4 .sip files for some QGraphicsItem classes)
-    if ( QgsLayoutMultiFrame *mf = qobject_cast< QgsLayoutMultiFrame *>( sipCpp ) )
+    if ( auto mf = qobject_cast<QgsLayoutMultiFrame *>( sipCpp ) )
     {
       switch ( mf->type() )
       {

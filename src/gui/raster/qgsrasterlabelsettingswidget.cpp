@@ -166,7 +166,7 @@ QgsRasterLabelSettingsWidget::~QgsRasterLabelSettingsWidget() = default;
 
 void QgsRasterLabelSettingsWidget::setLabeling( QgsAbstractRasterLayerLabeling *labeling )
 {
-  if ( QgsRasterLayerSimpleLabeling *simpleLabeling = dynamic_cast<QgsRasterLayerSimpleLabeling *>( labeling ) )
+  if ( auto simpleLabeling = dynamic_cast<QgsRasterLayerSimpleLabeling *>( labeling ) )
   {
     setFormat( simpleLabeling->textFormat() );
     mBandCombo->setBand( simpleLabeling->band() );
@@ -194,7 +194,7 @@ void QgsRasterLabelSettingsWidget::setLabeling( QgsAbstractRasterLayerLabeling *
 
 void QgsRasterLabelSettingsWidget::updateLabeling( QgsAbstractRasterLayerLabeling *labeling )
 {
-  if ( QgsRasterLayerSimpleLabeling *simpleLabeling = dynamic_cast<QgsRasterLayerSimpleLabeling *>( labeling ) )
+  if ( auto simpleLabeling = dynamic_cast<QgsRasterLayerSimpleLabeling *>( labeling ) )
   {
     simpleLabeling->setTextFormat( format() );
     simpleLabeling->setBand( mBandCombo->currentBand() );

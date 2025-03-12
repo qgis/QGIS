@@ -68,7 +68,7 @@ QgsTriangle::QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 )
 
 bool QgsTriangle::operator==( const QgsAbstractGeometry &other ) const
 {
-  const QgsTriangle *otherTriangle = qgsgeometry_cast< const QgsTriangle * >( &other );
+  auto otherTriangle = qgsgeometry_cast<const QgsTriangle *>( &other );
   if ( !otherTriangle )
     return false;
 
@@ -337,7 +337,7 @@ void QgsTriangle::setExteriorRing( QgsCurve *ring )
       delete ring;
       return;
     }
-    QgsLineString *lineString = static_cast< QgsLineString *>( ring );
+    auto lineString = static_cast<QgsLineString *>( ring );
     if ( !lineString->isClosed() )
     {
       lineString->close();

@@ -541,7 +541,7 @@ bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event 
 {
   if ( event->type() == QEvent::ContextMenu )
   {
-    QContextMenuEvent *contextEvent = static_cast<QContextMenuEvent *>( event );
+    auto contextEvent = static_cast<QContextMenuEvent *>( event );
     QMenu *menu = nullptr;
     menu = mOptionsLineEdit->createStandardContextMenu();
     menu->addSeparator();

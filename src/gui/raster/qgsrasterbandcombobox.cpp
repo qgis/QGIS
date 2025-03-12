@@ -86,7 +86,7 @@ void QgsRasterBandComboBox::setLayer( QgsMapLayer *layer )
 {
   const int oldBand = currentBand();
 
-  QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
+  auto rl = qobject_cast<QgsRasterLayer *>( layer );
   mLayer = rl;
 
   blockSignals( true );

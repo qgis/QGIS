@@ -105,7 +105,7 @@ void TestQgsGltf3DUtils::testBox()
   QVERIFY( entity );
 
   QCOMPARE( entity->children().count(), 1 ); // there's one primitive to render
-  Qt3DCore::QEntity *child = qobject_cast<Qt3DCore::QEntity *>( entity->children()[0] );
+  auto child = qobject_cast<Qt3DCore::QEntity *>( entity->children()[0] );
   QVERIFY( child );
 
   QVector<Qt3DRender::QGeometryRenderer *> geomRenderers = child->componentsOfType<Qt3DRender::QGeometryRenderer>();
@@ -160,7 +160,7 @@ void TestQgsGltf3DUtils::testBoxTextured()
   QVERIFY( entity );
 
   QCOMPARE( entity->children().count(), 1 ); // there's one primitive to render
-  Qt3DCore::QEntity *child = qobject_cast<Qt3DCore::QEntity *>( entity->children()[0] );
+  auto child = qobject_cast<Qt3DCore::QEntity *>( entity->children()[0] );
   QVERIFY( child );
 
   QVector<Qt3DRender::QGeometryRenderer *> geomRenderers = child->componentsOfType<Qt3DRender::QGeometryRenderer>();
@@ -210,7 +210,7 @@ void TestQgsGltf3DUtils::testBoxTextured()
 
 static void extractTriangleCoordinates( Qt3DCore::QEntity *entity, QVector3D &v1, QVector3D &v2, QVector3D &v3 )
 {
-  Qt3DCore::QEntity *child = qobject_cast<Qt3DCore::QEntity *>( entity->children()[0] );
+  auto child = qobject_cast<Qt3DCore::QEntity *>( entity->children()[0] );
   QVector<Qt3DRender::QGeometryRenderer *> geomRenderers = child->componentsOfType<Qt3DRender::QGeometryRenderer>();
   Qt3DRender::QGeometryRenderer *geomRenderer = geomRenderers[0];
   Qt3DQAttribute *positionAttr = geomRenderer->geometry()->attributes()[0];

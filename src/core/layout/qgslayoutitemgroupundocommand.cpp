@@ -60,7 +60,7 @@ void QgsLayoutItemGroupUndoCommand::switchState()
   if ( mState == Grouped )
   {
     // ungroup
-    QgsLayoutItemGroup *group = dynamic_cast< QgsLayoutItemGroup * >( mLayout->itemByUuid( mGroupUuid ) );
+    auto group = dynamic_cast<QgsLayoutItemGroup *>( mLayout->itemByUuid( mGroupUuid ) );
     Q_ASSERT_X( group, "QgsLayoutItemGroupUndoCommand::switchState", "Could not find group" );
     group->removeItems();
     mLayout->removeLayoutItemPrivate( group );
@@ -69,7 +69,7 @@ void QgsLayoutItemGroupUndoCommand::switchState()
   else //Ungrouped
   {
     // find group by uuid...
-    QgsLayoutItemGroup *group = dynamic_cast< QgsLayoutItemGroup * >( mLayout->itemByUuid( mGroupUuid ) );
+    auto group = dynamic_cast<QgsLayoutItemGroup *>( mLayout->itemByUuid( mGroupUuid ) );
     if ( !group )
     {
       group = new QgsLayoutItemGroup( mLayout );

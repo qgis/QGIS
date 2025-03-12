@@ -132,7 +132,7 @@ QgsCircularString *QgsCircularString::createEmptyWithSameType() const
 
 int QgsCircularString::compareToSameClass( const QgsAbstractGeometry *other ) const
 {
-  const QgsCircularString *otherLine = qgsgeometry_cast<const QgsCircularString *>( other );
+  auto otherLine = qgsgeometry_cast<const QgsCircularString *>( other );
   if ( !otherLine )
     return -1;
 

@@ -209,7 +209,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
     return true;
   };
 
-  if ( const QgsSvgAnnotation *svg = dynamic_cast< const QgsSvgAnnotation *>( annotation ) )
+  if ( auto svg = dynamic_cast<const QgsSvgAnnotation *>( annotation ) )
   {
     QgsPointXY mapPosition = svg->mapPosition();
     QgsCoordinateTransform transform( svg->mapPositionCrs(), layer->crs(), transformContext );

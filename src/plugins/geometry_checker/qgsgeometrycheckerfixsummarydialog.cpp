@@ -112,7 +112,7 @@ void QgsGeometryCheckerFixSummaryDialog::setupTable( QTableWidget *table )
 
 void QgsGeometryCheckerFixSummaryDialog::onTableSelectionChanged( const QItemSelection &newSel, const QItemSelection & /*oldSel*/ )
 {
-  QItemSelectionModel *selModel = qobject_cast<QItemSelectionModel *>( QObject::sender() );
+  auto selModel = qobject_cast<QItemSelectionModel *>( QObject::sender() );
   const QAbstractItemModel *model = selModel->model();
 
   for ( QTableWidget *table : { ui.tableWidgetFixedErrors, ui.tableWidgetNewErrors, ui.tableWidgetNotFixed, ui.tableWidgetObsoleteErrors } )
@@ -128,7 +128,7 @@ void QgsGeometryCheckerFixSummaryDialog::onTableSelectionChanged( const QItemSel
   if ( !newSel.isEmpty() && !newSel.first().indexes().isEmpty() )
   {
     const QModelIndex idx = newSel.first().indexes().first();
-    QgsGeometryCheckError *error = reinterpret_cast<QgsGeometryCheckError *>( model->data( model->index( idx.row(), 0 ), Qt::UserRole ).value<void *>() );
+    auto error = reinterpret_cast<QgsGeometryCheckError *>( model->data( model->index( idx.row(), 0 ), Qt::UserRole ).value<void *>() );
     emit errorSelected( error );
   }
 }

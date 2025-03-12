@@ -2319,8 +2319,8 @@ class TestQgsExpression : public QObject
 
       QVERIFY( exp.prepare( &context ) );
 
-      QMetaType::Type resultType = static_cast<QMetaType::Type>( result.userType() );
-      QMetaType::Type expectedType = static_cast<QMetaType::Type>( expected.userType() );
+      auto resultType = static_cast<QMetaType::Type>( result.userType() );
+      auto expectedType = static_cast<QMetaType::Type>( expected.userType() );
 
       if ( resultType == QMetaType::Type::Int )
         resultType = QMetaType::Type::LongLong;

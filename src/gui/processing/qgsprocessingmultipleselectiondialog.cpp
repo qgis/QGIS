@@ -340,7 +340,7 @@ void QgsProcessingMultipleInputPanelWidget::addFiles()
   QString path = settings.value( QStringLiteral( "/Processing/LastInputPath" ), QDir::homePath() ).toString();
 
   QString filter;
-  if ( const QgsFileFilterGenerator *generator = dynamic_cast<const QgsFileFilterGenerator *>( mParameter ) )
+  if ( auto generator = dynamic_cast<const QgsFileFilterGenerator *>( mParameter ) )
     filter = generator->createFileFilter();
   else
     filter = QObject::tr( "All files (*.*)" );
@@ -371,7 +371,7 @@ void QgsProcessingMultipleInputPanelWidget::addDirectory()
   settings.setValue( QStringLiteral( "/Processing/LastInputPath" ), dir );
 
   QStringList nameFilters;
-  if ( const QgsFileFilterGenerator *generator = dynamic_cast<const QgsFileFilterGenerator *>( mParameter ) )
+  if ( auto generator = dynamic_cast<const QgsFileFilterGenerator *>( mParameter ) )
   {
     const QStringList extensions = QgsFileUtils::extensionsFromFilter( generator->createFileFilter() );
     for ( const QString &extension : extensions )

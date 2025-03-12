@@ -2264,7 +2264,7 @@ void TestQgsLineString::boundary()
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   QgsAbstractGeometry *boundary = ls.boundary();
-  QgsMultiPoint *mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
+  auto mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
 
   QVERIFY( mpBoundary );
   QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );

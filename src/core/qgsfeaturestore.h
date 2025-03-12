@@ -174,7 +174,7 @@ typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
   {
     PyObject *obj = PyList_GET_ITEM( sipPy, i );
     int state;
-    QgsFeatureStore *t = reinterpret_cast<QgsFeatureStore *>( sipConvertToType( obj, sipType_QgsFeatureStore, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr ) );
+    auto t = reinterpret_cast<QgsFeatureStore *>( sipConvertToType( obj, sipType_QgsFeatureStore, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr ) );
 
     if ( *sipIsErr )
     {

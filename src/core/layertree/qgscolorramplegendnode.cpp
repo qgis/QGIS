@@ -308,7 +308,7 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
     if ( mRamp->type() == QgsGradientColorRamp::typeString() || mRamp->type() == QgsCptCityColorRamp::typeString() )
     {
       //color ramp gradient
-      QgsGradientColorRamp *gradRamp = static_cast<QgsGradientColorRamp *>( mRamp.get() );
+      auto gradRamp = static_cast<QgsGradientColorRamp *>( mRamp.get() );
       gradRamp->addStopsToGradient( &gradient, opacity );
     }
 

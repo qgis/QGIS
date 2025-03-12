@@ -141,7 +141,7 @@ void QgsGdalItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu
 {
   Q_UNUSED( selectedItems )
 
-  if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
+  if ( auto layerItem = qobject_cast<QgsLayerItem *>( item ) )
   {
     if ( layerItem->providerKey() == QLatin1String( "gdal" ) )
     {

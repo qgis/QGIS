@@ -152,7 +152,7 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
   , mField( field )
 {
   // Precondition
-  QgsFieldsItem *fieldsItem = qgis::down_cast<QgsFieldsItem *>( parent );
+  auto fieldsItem = qgis::down_cast<QgsFieldsItem *>( parent );
   Q_ASSERT( fieldsItem );
 
   if ( fieldsItem->canRenameFields() )
@@ -210,7 +210,7 @@ bool QgsFieldItem::equal( const QgsDataItem *other )
     return false;
   }
 
-  const QgsFieldItem *o = qobject_cast<const QgsFieldItem *>( other );
+  auto o = qobject_cast<const QgsFieldItem *>( other );
   if ( !o )
     return false;
 

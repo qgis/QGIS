@@ -142,10 +142,10 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
   // See https://github.com/qgis/QGIS/issues/25773
   // QGIS 3 Vector Layer Fields Garbled when Clicking the Toggle Editing Icon
 
-  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  auto editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
   QVERIFY( editor );
   widget1->initWidget( editor );
-  QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
+  auto editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
 
@@ -189,12 +189,12 @@ void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
   cfg.insert( QStringLiteral( "Max" ), 100.0 );
   cfg.insert( QStringLiteral( "Step" ), 1 );
   widget1->setConfig( cfg );
-  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  auto editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
   QVERIFY( editor );
   widget1->initWidget( editor );
 
   widget2->setConfig( cfg );
-  QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
+  auto editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
 
@@ -242,12 +242,12 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
   cfg.insert( QStringLiteral( "Max" ), std::numeric_limits<double>::max() );
   cfg.insert( QStringLiteral( "Step" ), 1 );
   widget1->setConfig( cfg );
-  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  auto editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
   QVERIFY( editor );
   widget1->initWidget( editor );
 
   widget2->setConfig( cfg );
-  QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
+  auto editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
 
@@ -294,7 +294,7 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   cfg.insert( QStringLiteral( "Step" ), 1 );
   cfg.insert( QStringLiteral( "Precision" ), 0 );
   widget1->setConfig( cfg );
-  QgsDoubleSpinBox *editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  auto editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
   QVERIFY( editor1 );
   widget1->initWidget( editor1 );
   // Out of range
@@ -376,14 +376,14 @@ void TestQgsRangeWidgetWrapper::test_focus()
 
   //QgsDoubleSpinBox
   widget1->setConfig( cfg );
-  QgsDoubleSpinBox *editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( w ) );
+  auto editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( w ) );
   QVERIFY( editor1 );
   widget1->initWidget( editor1 );
   widget1->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
 
   //QgsDoubleSpinBox
   widget2->setConfig( cfg );
-  QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( w ) );
+  auto editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( w ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
   widget2->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
@@ -468,7 +468,7 @@ void TestQgsRangeWidgetWrapper::testLongLong()
   auto wrapper = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 4, nullptr, nullptr );
 
   // should use a double spin box, as a integer spin box does not have sufficient range
-  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( wrapper->createWidget( nullptr ) );
+  auto editor = qobject_cast<QgsDoubleSpinBox *>( wrapper->createWidget( nullptr ) );
   QVERIFY( editor );
   wrapper->initWidget( editor );
   // no decimals, it's for long long value editing!

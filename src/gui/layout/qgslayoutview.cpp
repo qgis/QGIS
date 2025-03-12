@@ -326,7 +326,7 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
   for ( QgsLayoutItem *item : items )
   {
     // copy every child from a group
-    if ( QgsLayoutItemGroup *itemGroup = qobject_cast<QgsLayoutItemGroup *>( item ) )
+    if ( auto itemGroup = qobject_cast<QgsLayoutItemGroup *>( item ) )
     {
       const QList<QgsLayoutItem *> groupedItems = itemGroup->items();
       for ( const QgsLayoutItem *groupedItem : groupedItems )
@@ -595,8 +595,8 @@ void QgsLayoutView::selectAll()
   const QList<QGraphicsItem *> itemList = currentLayout()->items();
   for ( QGraphicsItem *graphicsItem : itemList )
   {
-    QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
-    QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( graphicsItem );
+    auto item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+    auto paperItem = dynamic_cast<QgsLayoutItemPage *>( graphicsItem );
     if ( item && !paperItem )
     {
       if ( !item->isLocked() )
@@ -637,8 +637,8 @@ void QgsLayoutView::invertSelection()
   const QList<QGraphicsItem *> itemList = currentLayout()->items();
   for ( QGraphicsItem *graphicsItem : itemList )
   {
-    QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
-    QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( graphicsItem );
+    auto item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+    auto paperItem = dynamic_cast<QgsLayoutItemPage *>( graphicsItem );
     if ( item && !paperItem )
     {
       //flip selected state for items (and deselect any locked items)
@@ -826,7 +826,7 @@ void QgsLayoutView::unlockAllItems()
   const QList<QGraphicsItem *> itemList = currentLayout()->items();
   for ( QGraphicsItem *graphicItem : itemList )
   {
-    QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicItem );
+    auto item = dynamic_cast<QgsLayoutItem *>( graphicItem );
     if ( item && item->isLocked() )
     {
       focusItem = item;
@@ -905,7 +905,7 @@ void QgsLayoutView::ungroupSelectedItems()
   {
     if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
     {
-      QgsLayoutItemGroup *itemGroup = static_cast<QgsLayoutItemGroup *>( item );
+      auto itemGroup = static_cast<QgsLayoutItemGroup *>( item );
       ungroupedItems.append( currentLayout()->ungroupItems( itemGroup ) );
     }
   }

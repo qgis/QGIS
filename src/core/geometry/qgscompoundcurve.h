@@ -39,7 +39,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
   private:
     bool fuzzyHelper( const QgsAbstractGeometry &other, double epsilon, bool useDistance ) const
     {
-      const QgsCompoundCurve *otherCurve = qgsgeometry_cast< const QgsCompoundCurve * >( &other );
+      auto otherCurve = qgsgeometry_cast<const QgsCompoundCurve *>( &other );
       if ( !otherCurve )
         return false;
 

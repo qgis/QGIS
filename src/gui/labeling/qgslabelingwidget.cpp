@@ -83,7 +83,7 @@ void QgsLabelingWidget::setLayer( QgsMapLayer *mapLayer )
     setEnabled( true );
   }
 
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
+  auto layer = qobject_cast<QgsVectorLayer *>( mapLayer );
   mLayer = layer;
   if ( mLayer->labeling() )
   {
@@ -119,7 +119,7 @@ void QgsLabelingWidget::adaptToLayer()
     mLabelModeComboBox->setCurrentIndex( mLabelModeComboBox->findData( ModeNone ) );
   }
 
-  if ( QgsLabelingGui *lg = qobject_cast<QgsLabelingGui *>( mWidget ) )
+  if ( auto lg = qobject_cast<QgsLabelingGui *>( mWidget ) )
   {
     lg->updateUi();
   }
@@ -207,7 +207,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
       else if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
       {
         // changing from rule-based to simple labels... grab first rule, and copy settings
-        const QgsRuleBasedLabeling *rl = static_cast<const QgsRuleBasedLabeling *>( mLayer->labeling() );
+        auto rl = static_cast<const QgsRuleBasedLabeling *>( mLayer->labeling() );
         if ( const QgsRuleBasedLabeling::Rule *rootRule = rl->rootRule() )
         {
           if ( const QgsRuleBasedLabeling::Rule *firstChild = rootRule->children().value( 0 ) )

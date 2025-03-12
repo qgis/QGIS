@@ -68,7 +68,7 @@ void QgsDemTerrainSettings::resolveReferences( const QgsProject *project )
 
 bool QgsDemTerrainSettings::equals( const QgsAbstractTerrainSettings *other ) const
 {
-  const QgsDemTerrainSettings *otherTerrain = dynamic_cast<const QgsDemTerrainSettings *>( other );
+  auto otherTerrain = dynamic_cast<const QgsDemTerrainSettings *>( other );
   if ( !otherTerrain )
     return false;
 

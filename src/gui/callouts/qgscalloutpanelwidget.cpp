@@ -46,7 +46,7 @@ void QgsCalloutPanelWidget::setGeometryType( Qgis::GeometryType type )
 void QgsCalloutPanelWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   mContext = context;
-  if ( QgsCalloutWidget *cw = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
+  if ( auto cw = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
   {
     cw->setContext( context );
   }
@@ -71,7 +71,7 @@ QgsCallout *QgsCalloutPanelWidget::callout()
 {
   const QString calloutType = mCalloutStyleComboBox->currentData().toString();
   std::unique_ptr<QgsCallout> callout;
-  if ( QgsCalloutWidget *pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
+  if ( auto pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
   {
     callout.reset( pew->callout()->clone() );
   }
@@ -85,7 +85,7 @@ QgsCallout *QgsCalloutPanelWidget::callout()
 void QgsCalloutPanelWidget::calloutTypeChanged()
 {
   const QString newCalloutType = mCalloutStyleComboBox->currentData().toString();
-  QgsCalloutWidget *pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() );
+  auto pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() );
   if ( pew )
   {
     if ( pew->callout() && pew->callout()->type() == newCalloutType )
@@ -119,7 +119,7 @@ void QgsCalloutPanelWidget::updateCalloutWidget( const QgsCallout *callout )
   if ( mCalloutStackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    if ( QgsCalloutWidget *pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
+    if ( auto pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
       disconnect( pew, &QgsCalloutWidget::changed, this, &QgsCalloutPanelWidget::calloutChanged );
   }
 
@@ -129,7 +129,7 @@ void QgsCalloutPanelWidget::updateCalloutWidget( const QgsCallout *callout )
     if ( QgsCalloutWidget *w = am->createCalloutWidget( mLayer ) )
     {
       Qgis::GeometryType geometryType = mGeometryType;
-      if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer ) )
+      if ( auto vLayer = qobject_cast<QgsVectorLayer *>( mLayer ) )
         geometryType = vLayer->geometryType();
       w->setGeometryType( geometryType );
       w->setCallout( callout );

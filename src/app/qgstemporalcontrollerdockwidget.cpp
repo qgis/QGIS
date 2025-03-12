@@ -59,7 +59,7 @@ bool QgsTemporalControllerDockWidget::eventFilter( QObject *object, QEvent *even
 {
   if ( event->type() == QEvent::Wheel )
   {
-    QWheelEvent *wheelEvent = dynamic_cast<QWheelEvent *>( event );
+    auto wheelEvent = dynamic_cast<QWheelEvent *>( event );
     // handle horizontal wheel events by scrubbing timeline
     if ( wheelEvent->angleDelta().x() != 0 )
     {

@@ -271,7 +271,7 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
   const auto constMWidgets = mWidgets;
   for ( QgsWidgetWrapper *ww : constMWidgets )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
       if ( eww->field().name() == field )
@@ -362,11 +362,11 @@ bool QgsAttributeForm::saveEdits( QString *error )
 
     for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
     {
-      QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+      auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
       if ( eww )
       {
         // check for invalid JSON values
-        QgsTextEditWrapper *textEdit = qobject_cast<QgsTextEditWrapper *>( eww );
+        auto textEdit = qobject_cast<QgsTextEditWrapper *>( eww );
         if ( textEdit && textEdit->isInvalidJSON() )
         {
           if ( error )
@@ -500,7 +500,7 @@ QgsFeature QgsAttributeForm::getUpdatedFeature() const
   QgsAttributes featureAttributes = mFeature.attributes();
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( !eww )
       continue;
 
@@ -553,7 +553,7 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
   QList<QgsWidgetWrapper *> relevantWidgets = mDefaultValueDependencies.values( originIdx );
   for ( QgsWidgetWrapper *ww : std::as_const( relevantWidgets ) )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
       // Update only on form opening (except when applyOnUpdate is activated)
@@ -594,7 +594,7 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
   const QList<QgsWidgetWrapper *> relevantWidgets = mVirtualFieldsDependencies.values( originIdx );
   for ( QgsWidgetWrapper *ww : relevantWidgets )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( !eww )
       continue;
 
@@ -939,7 +939,7 @@ void QgsAttributeForm::resetValues()
   // Update dependent virtual fields (not default values / not referencing layer values)
   for ( QgsWidgetWrapper *ww : constMWidgets )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( !eww )
       continue;
 
@@ -1015,7 +1015,7 @@ QgsExpressionContext QgsAttributeForm::createExpressionContext( const QgsFeature
 
 void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariantList &additionalFieldValues )
 {
-  QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( sender() );
+  auto eww = qobject_cast<QgsEditorWidgetWrapper *>( sender() );
   Q_ASSERT( eww );
 
   bool signalEmitted = false;
@@ -1125,7 +1125,7 @@ void QgsAttributeForm::updateAllConstraints()
   const auto constMWidgets = mWidgets;
   for ( QgsWidgetWrapper *ww : constMWidgets )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
       updateConstraints( eww );
   }
@@ -1280,7 +1280,7 @@ bool QgsAttributeForm::currentFormValuesFeature( QgsFeature &feature )
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
 
     if ( !eww )
       continue;
@@ -1344,7 +1344,7 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields, 
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
       if ( !eww->isValidConstraint() )
@@ -1368,7 +1368,7 @@ bool QgsAttributeForm::currentFormValidHardConstraints( QStringList &invalidFiel
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
       if ( eww->isBlockingCommit() )
@@ -1447,7 +1447,7 @@ void QgsAttributeForm::onUpdatedFields()
 
 void QgsAttributeForm::onConstraintStatusChanged( const QString &constraint, const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result )
 {
-  QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( sender() );
+  auto eww = qobject_cast<QgsEditorWidgetWrapper *>( sender() );
   Q_ASSERT( eww );
 
   const QList<QgsAttributeFormEditorWidget *> formEditorWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
@@ -1471,7 +1471,7 @@ QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEdi
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     // get the wrapper
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
       // compare name to not compare w to itself
@@ -1545,7 +1545,7 @@ void QgsAttributeForm::parentFormValueChanged( const QString &attribute, const Q
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
       eww->parentFormValueChanged( attribute, newValue );
@@ -1567,7 +1567,7 @@ void QgsAttributeForm::synchronizeState()
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
       const QList<QgsAttributeFormEditorWidget *> formWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
@@ -1731,7 +1731,7 @@ void QgsAttributeForm::init()
     {
       if ( widgDef->type() == Qgis::AttributeEditorType::Container )
       {
-        QgsAttributeEditorContainer *containerDef = dynamic_cast<QgsAttributeEditorContainer *>( widgDef );
+        auto containerDef = dynamic_cast<QgsAttributeEditorContainer *>( widgDef );
         if ( !containerDef )
           continue;
 
@@ -2400,7 +2400,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
   {
     case Qgis::AttributeEditorType::Action:
     {
-      const QgsAttributeEditorAction *elementDef = dynamic_cast<const QgsAttributeEditorAction *>( widgetDef );
+      auto elementDef = dynamic_cast<const QgsAttributeEditorAction *>( widgetDef );
       if ( !elementDef )
         break;
 
@@ -2417,7 +2417,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
     case Qgis::AttributeEditorType::Field:
     {
-      const QgsAttributeEditorField *fieldDef = dynamic_cast<const QgsAttributeEditorField *>( widgetDef );
+      auto fieldDef = dynamic_cast<const QgsAttributeEditorField *>( widgetDef );
       if ( !fieldDef )
         break;
 
@@ -2452,7 +2452,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
     case Qgis::AttributeEditorType::Relation:
     {
-      const QgsAttributeEditorRelation *relDef = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
+      auto relDef = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
 
       QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( relDef->relationWidgetTypeId(), relDef->relation(), context );
 
@@ -2480,7 +2480,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
     case Qgis::AttributeEditorType::Container:
     {
-      const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( widgetDef );
+      auto container = dynamic_cast<const QgsAttributeEditorContainer *>( widgetDef );
       if ( !container )
         break;
 
@@ -2569,7 +2569,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
         if ( childDef->type() == Qgis::AttributeEditorType::Container )
         {
-          QgsAttributeEditorContainer *containerDef = static_cast<QgsAttributeEditorContainer *>( childDef );
+          auto containerDef = static_cast<QgsAttributeEditorContainer *>( childDef );
           if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
           {
             registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
@@ -2701,7 +2701,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
     case Qgis::AttributeEditorType::QmlElement:
     {
-      const QgsAttributeEditorQmlElement *elementDef = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
+      auto elementDef = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       qmlWrapper->setQmlCode( elementDef->qmlCode() );
@@ -2719,7 +2719,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
     case Qgis::AttributeEditorType::HtmlElement:
     {
-      const QgsAttributeEditorHtmlElement *elementDef = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
+      auto elementDef = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
 
       QgsHtmlWidgetWrapper *htmlWrapper = new QgsHtmlWidgetWrapper( mLayer, nullptr, this );
       context.setAttributeFormMode( mMode );
@@ -2737,7 +2737,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
     case Qgis::AttributeEditorType::TextElement:
     {
-      const QgsAttributeEditorTextElement *elementDef = static_cast<const QgsAttributeEditorTextElement *>( widgetDef );
+      auto elementDef = static_cast<const QgsAttributeEditorTextElement *>( widgetDef );
 
       QgsTextWidgetWrapper *textWrapper = new QgsTextWidgetWrapper( mLayer, nullptr, this );
       context.setAttributeFormMode( mMode );
@@ -2755,7 +2755,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
     case Qgis::AttributeEditorType::SpacerElement:
     {
-      const QgsAttributeEditorSpacerElement *elementDef = static_cast<const QgsAttributeEditorSpacerElement *>( widgetDef );
+      auto elementDef = static_cast<const QgsAttributeEditorSpacerElement *>( widgetDef );
       QgsSpacerWidgetWrapper *spacerWrapper = new QgsSpacerWidgetWrapper( mLayer, nullptr, this );
       spacerWrapper->setDrawLine( elementDef->drawLine() );
       context.setAttributeFormMode( mMode );
@@ -2822,7 +2822,7 @@ void QgsAttributeForm::afterWidgetInit()
   const auto constMWidgets = mWidgets;
   for ( QgsWidgetWrapper *ww : constMWidgets )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
 
     if ( eww )
     {
@@ -2837,7 +2837,7 @@ void QgsAttributeForm::afterWidgetInit()
     }
     else
     {
-      QgsRelationWidgetWrapper *relationWidgetWrapper = qobject_cast<QgsRelationWidgetWrapper *>( ww );
+      auto relationWidgetWrapper = qobject_cast<QgsRelationWidgetWrapper *>( ww );
       if ( relationWidgetWrapper )
       {
         connect( relationWidgetWrapper, &QgsRelationWidgetWrapper::relatedFeaturesChanged, this, &QgsAttributeForm::onRelatedFeaturesChanged, static_cast<Qt::ConnectionType>( Qt::UniqueConnection | Qt::QueuedConnection ) );
@@ -3157,7 +3157,7 @@ void QgsAttributeForm::updateFieldDependencies()
   //create defaultValueDependencies
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    auto eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( !eww )
       continue;
 
@@ -3243,7 +3243,7 @@ void QgsAttributeForm::updateRelatedLayerFieldsDependencies( QgsEditorWidgetWrap
     //create defaultValueDependencies
     for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
     {
-      QgsEditorWidgetWrapper *editorWidgetWrapper = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+      auto editorWidgetWrapper = qobject_cast<QgsEditorWidgetWrapper *>( ww );
       if ( !editorWidgetWrapper )
         continue;
 
@@ -3273,7 +3273,7 @@ void QgsAttributeForm::setMultiEditFeatureIdsRelations( const QgsFeatureIds &fid
 {
   for ( QgsAttributeFormWidget *formWidget : mFormWidgets )
   {
-    QgsAttributeFormRelationEditorWidget *relationEditorWidget = dynamic_cast<QgsAttributeFormRelationEditorWidget *>( formWidget );
+    auto relationEditorWidget = dynamic_cast<QgsAttributeFormRelationEditorWidget *>( formWidget );
     if ( !relationEditorWidget )
       continue;
 

@@ -10463,8 +10463,8 @@ void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
   std::unique_ptr<QWidget> layerWidget( layerWrapper.createWrappedWidget( context ) );
   std::unique_ptr<QWidget> groupWidget( groupsWrapper.createWrappedWidget( context ) );
   std::unique_ptr<QWidget> timeWidget( timeWrapper.createWrappedWidget( context ) );
-  QgsProcessingMeshDatasetGroupsWidget *datasetGroupWidget = qobject_cast<QgsProcessingMeshDatasetGroupsWidget *>( groupWidget.get() );
-  QgsProcessingMeshDatasetTimeWidget *datasetTimeWidget = qobject_cast<QgsProcessingMeshDatasetTimeWidget *>( timeWidget.get() );
+  auto datasetGroupWidget = qobject_cast<QgsProcessingMeshDatasetGroupsWidget *>( groupWidget.get() );
+  auto datasetTimeWidget = qobject_cast<QgsProcessingMeshDatasetTimeWidget *>( timeWidget.get() );
 
   QVERIFY( layerWidget );
   QVERIFY( groupWidget );
@@ -10699,8 +10699,8 @@ void TestProcessingGui::testMeshDatasetWrapperLayerOutsideProject()
   std::unique_ptr<QWidget> layerWidget( layerWrapper.createWrappedWidget( context ) );
   std::unique_ptr<QWidget> groupWidget( groupsWrapper.createWrappedWidget( context ) );
   std::unique_ptr<QWidget> timeWidget( timeWrapper.createWrappedWidget( context ) );
-  QgsProcessingMeshDatasetGroupsWidget *datasetGroupWidget = qobject_cast<QgsProcessingMeshDatasetGroupsWidget *>( groupWidget.get() );
-  QgsProcessingMeshDatasetTimeWidget *datasetTimeWidget = qobject_cast<QgsProcessingMeshDatasetTimeWidget *>( timeWidget.get() );
+  auto datasetGroupWidget = qobject_cast<QgsProcessingMeshDatasetGroupsWidget *>( groupWidget.get() );
+  auto datasetTimeWidget = qobject_cast<QgsProcessingMeshDatasetTimeWidget *>( timeWidget.get() );
 
   QVERIFY( layerWidget );
   QVERIFY( groupWidget );
@@ -11329,7 +11329,7 @@ void TestProcessingGui::testModelGraphicsView()
   QgsModelParameterGraphicItem *layerItem = nullptr;
   for ( QGraphicsItem *item : items )
   {
-    if ( QgsModelParameterGraphicItem *param = dynamic_cast<QgsModelParameterGraphicItem *>( item ) )
+    if ( auto param = dynamic_cast<QgsModelParameterGraphicItem *>( item ) )
     {
       layerItem = param;
       break;
@@ -11339,7 +11339,7 @@ void TestProcessingGui::testModelGraphicsView()
   QgsModelCommentGraphicItem *layerCommentItem = nullptr;
   for ( QGraphicsItem *item : items )
   {
-    if ( QgsModelCommentGraphicItem *comment = dynamic_cast<QgsModelCommentGraphicItem *>( item ) )
+    if ( auto comment = dynamic_cast<QgsModelCommentGraphicItem *>( item ) )
     {
       layerCommentItem = comment;
       break;
@@ -11360,7 +11360,7 @@ void TestProcessingGui::testModelGraphicsView()
   layerItem = nullptr;
   for ( QGraphicsItem *item : items )
   {
-    if ( QgsModelParameterGraphicItem *param = dynamic_cast<QgsModelParameterGraphicItem *>( item ) )
+    if ( auto param = dynamic_cast<QgsModelParameterGraphicItem *>( item ) )
     {
       layerItem = param;
     }
@@ -11373,7 +11373,7 @@ void TestProcessingGui::testModelGraphicsView()
   QgsModelChildAlgorithmGraphicItem *algItem = nullptr;
   for ( QGraphicsItem *item : items )
   {
-    if ( QgsModelChildAlgorithmGraphicItem *param = dynamic_cast<QgsModelChildAlgorithmGraphicItem *>( item ) )
+    if ( auto param = dynamic_cast<QgsModelChildAlgorithmGraphicItem *>( item ) )
     {
       algItem = param;
       break;
@@ -11385,7 +11385,7 @@ void TestProcessingGui::testModelGraphicsView()
   QgsModelOutputGraphicItem *outputItem = nullptr;
   for ( QGraphicsItem *item : items )
   {
-    if ( QgsModelOutputGraphicItem *comment = dynamic_cast<QgsModelOutputGraphicItem *>( item ) )
+    if ( auto comment = dynamic_cast<QgsModelOutputGraphicItem *>( item ) )
     {
       outputItem = comment;
       break;
@@ -11400,7 +11400,7 @@ void TestProcessingGui::testModelGraphicsView()
   QgsModelCommentGraphicItem *outputCommentItem = nullptr;
   for ( QGraphicsItem *item : items )
   {
-    if ( QgsModelCommentGraphicItem *comment = dynamic_cast<QgsModelCommentGraphicItem *>( item ) )
+    if ( auto comment = dynamic_cast<QgsModelCommentGraphicItem *>( item ) )
     {
       if ( comment->parentComponentItem() == layerItem )
       {
@@ -11431,7 +11431,7 @@ void TestProcessingGui::testModelGraphicsView()
   QgsModelGroupBoxGraphicItem *groupItem = nullptr;
   for ( QGraphicsItem *item : items )
   {
-    if ( QgsModelGroupBoxGraphicItem *comment = dynamic_cast<QgsModelGroupBoxGraphicItem *>( item ) )
+    if ( auto comment = dynamic_cast<QgsModelGroupBoxGraphicItem *>( item ) )
     {
       groupItem = comment;
       break;

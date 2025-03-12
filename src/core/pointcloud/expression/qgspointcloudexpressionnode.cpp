@@ -116,7 +116,7 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
     }
     case QgsExpressionNode::NodeType::ntLiteral:
     {
-      const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( expressionNode );
+      auto n = static_cast<const QgsExpressionNodeLiteral *>( expressionNode );
       bool ok;
       const double value = n->value().toDouble( &ok );
       if ( !ok )
@@ -128,7 +128,7 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
     }
     case QgsExpressionNode::NodeType::ntBinaryOperator:
     {
-      const QgsExpressionNodeBinaryOperator *n = static_cast<const QgsExpressionNodeBinaryOperator *>( expressionNode );
+      auto n = static_cast<const QgsExpressionNodeBinaryOperator *>( expressionNode );
       QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op;
       if ( !QgsPointCloudExpressionNodeBinaryOperator::convert( n->op(), op ) )
       {
@@ -150,12 +150,12 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
     }
     case QgsExpressionNode::NodeType::ntColumnRef:
     {
-      const QgsExpressionNodeColumnRef *n = static_cast<const QgsExpressionNodeColumnRef *>( expressionNode );
+      auto n = static_cast<const QgsExpressionNodeColumnRef *>( expressionNode );
       return new QgsPointCloudExpressionNodeAttributeRef( n->name() );
     }
     case QgsExpressionNode::NodeType::ntInOperator:
     {
-      const QgsExpressionNodeInOperator *n = static_cast<const QgsExpressionNodeInOperator *>( expressionNode );
+      auto n = static_cast<const QgsExpressionNodeInOperator *>( expressionNode );
       QgsPointCloudExpressionNode *node = convert( n->node(), error );
       if ( !node )
       {
@@ -179,7 +179,7 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
     }
     case QgsExpressionNode::NodeType::ntUnaryOperator:
     {
-      const QgsExpressionNodeUnaryOperator *n = static_cast<const QgsExpressionNodeUnaryOperator *>( expressionNode );
+      auto n = static_cast<const QgsExpressionNodeUnaryOperator *>( expressionNode );
       QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator op;
       if ( !QgsPointCloudExpressionNodeUnaryOperator::convert( n->op(), op ) )
       {

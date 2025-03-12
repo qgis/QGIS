@@ -205,7 +205,7 @@ QgsHistoryEntryNode *QgsDatabaseQueryHistoryProvider::createNodeForEntry( const 
 
 void QgsDatabaseQueryHistoryProvider::updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext & )
 {
-  if ( DatabaseQueryRootNode *dbNode = dynamic_cast<DatabaseQueryRootNode *>( node ) )
+  if ( auto dbNode = dynamic_cast<DatabaseQueryRootNode *>( node ) )
   {
     dbNode->setEntry( entry );
   }

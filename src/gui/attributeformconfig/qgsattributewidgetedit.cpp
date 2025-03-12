@@ -79,7 +79,7 @@ void QgsAttributeWidgetEdit::updateItemData()
   {
     case QgsAttributesFormProperties::DnDTreeItemData::Relation:
     {
-      QgsAttributeWidgetRelationEditWidget *editWidget = qobject_cast<QgsAttributeWidgetRelationEditWidget *>( mSpecificEditWidget );
+      auto editWidget = qobject_cast<QgsAttributeWidgetRelationEditWidget *>( mSpecificEditWidget );
       if ( editWidget )
       {
         itemData.setRelationEditorConfiguration( editWidget->relationEditorConfiguration() );

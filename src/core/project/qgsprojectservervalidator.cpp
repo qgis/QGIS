@@ -49,7 +49,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
     QgsLayerTreeNode *treeNode = treeGroupChildren.at( i );
     if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
     {
-      QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
+      auto treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
       const QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
       if ( shortName.isEmpty() )
         owsNames << treeGroupChild->name();
@@ -59,7 +59,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
     }
     else
     {
-      QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
+      auto treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
       QgsMapLayer *layer = treeLayer->layer();
       if ( layer )
       {
@@ -71,7 +71,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
 
         if ( layer->type() == Qgis::LayerType::Vector )
         {
-          QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( layer );
+          auto vl = static_cast<QgsVectorLayer *>( layer );
           if ( vl->dataProvider() && vl->dataProvider()->encoding() == QLatin1String( "System" ) )
             encodingMessages << layer->name();
         }

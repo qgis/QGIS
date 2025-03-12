@@ -32,8 +32,8 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry
   }
 
   QVector< QgsCurvePolygon * > polygonList;
-  QgsCurvePolygon *curvePoly = qgsgeometry_cast< QgsCurvePolygon * >( geom );
-  QgsGeometryCollection *multiGeom = qgsgeometry_cast< QgsGeometryCollection * >( geom );
+  auto curvePoly = qgsgeometry_cast<QgsCurvePolygon *>( geom );
+  auto multiGeom = qgsgeometry_cast<QgsGeometryCollection *>( geom );
   if ( curvePoly )
   {
     polygonList.append( curvePoly );
@@ -106,7 +106,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
   }
 
   //multitype?
-  QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom );
+  auto geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom );
   if ( !geomCollection )
   {
     return Qgis::GeometryOperationResult::AddPartNotMultiGeometry;
@@ -136,7 +136,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
               || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::Triangle
               || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::CurvePolygon )
     {
-      if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon *>( part.get() ) )
+      if ( auto curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( part.get() ) )
       {
         if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiPolygon && curvePolygon->hasCurvedSegments() )
         {
@@ -239,7 +239,7 @@ bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometry *geom, int ringNum, i
   }
 
   QgsAbstractGeometry *g = geom;
-  QgsGeometryCollection *c = qgsgeometry_cast<QgsGeometryCollection *>( geom );
+  auto c = qgsgeometry_cast<QgsGeometryCollection *>( geom );
   if ( c )
   {
     g = c->geometryN( partNum );
@@ -250,7 +250,7 @@ bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometry *geom, int ringNum, i
     return false;
   }
 
-  QgsCurvePolygon *cpoly = qgsgeometry_cast<QgsCurvePolygon *>( g );
+  auto cpoly = qgsgeometry_cast<QgsCurvePolygon *>( g );
   if ( !cpoly )
   {
     return false;
@@ -266,7 +266,7 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry *geom, int partNum )
     return false;
   }
 
-  QgsGeometryCollection *c = qgsgeometry_cast<QgsGeometryCollection *>( geom );
+  auto c = qgsgeometry_cast<QgsGeometryCollection *>( geom );
   if ( !c )
   {
     return false;

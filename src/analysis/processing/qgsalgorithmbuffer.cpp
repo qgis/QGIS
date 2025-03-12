@@ -269,7 +269,7 @@ QgsProcessingAlgorithm::VectorProperties QgsBufferAlgorithm::sinkProperties( con
 
 bool QgsBufferAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( layer );
+  auto vlayer = qobject_cast<const QgsVectorLayer *>( layer );
   if ( !vlayer )
     return false;
   //Only Polygons

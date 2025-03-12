@@ -306,7 +306,7 @@ void QgsBookmarkManagerModel::bookmarkAboutToBeRemoved( const QString &id )
   if ( mBlocked )
     return;
 
-  QgsBookmarkManager *manager = qobject_cast< QgsBookmarkManager * >( sender() );
+  auto manager = qobject_cast<QgsBookmarkManager *>( sender() );
 
   const QList< QgsBookmark > bookmarks = manager->bookmarks();
   bool found = false;
@@ -342,7 +342,7 @@ void QgsBookmarkManagerModel::bookmarkChanged( const QString &id )
   if ( mBlocked )
     return;
 
-  QgsBookmarkManager *manager = qobject_cast< QgsBookmarkManager * >( sender() );
+  auto manager = qobject_cast<QgsBookmarkManager *>( sender() );
   const QList< QgsBookmark > bookmarks = manager->bookmarks();
   bool found = false;
   int i = 0;

@@ -93,7 +93,7 @@ const QgsRenderedAnnotationItemDetails *QgsAnnotationItemBaseWidget::renderedIte
   const QList<QgsRenderedItemDetails *> items = renderedItemResults->renderedItems();
   const QString annotationId = mItemId;
   auto it = std::find_if( items.begin(), items.end(), [layerId, annotationId]( const QgsRenderedItemDetails *item ) {
-    if ( const QgsRenderedAnnotationItemDetails *annotationItem = dynamic_cast<const QgsRenderedAnnotationItemDetails *>( item ) )
+    if ( auto annotationItem = dynamic_cast<const QgsRenderedAnnotationItemDetails *>( item ) )
     {
       if ( annotationItem->itemId() == annotationId && annotationItem->layerId() == layerId )
         return true;
