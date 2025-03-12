@@ -138,8 +138,11 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
 void QgsMapToolClippingPlanes::calculateClippingPlanes()
 {
   QgsVector vec( mPoints.at( 1 ) - mPoints.at( 0 ) );
-  vec = vec.normalized().perpVector();
-  emit clippingPlanesChanged( QVector<QPair<QgsVector3D, QgsVector3D>>( { QPair<QgsVector3D, QgsVector3D>( QgsVector3D( mPoints.at( 0 ).x(), mPoints.at( 0 ).y(), 0 ), QgsVector3D( vec.x(), vec.y(), 0 ) ) } ) );
+  vec = vec.normalized();
+  QVector<QPair<QgsVector3D, QgsVector3D>> planes;
+  planes.append( QPair<QgsVector3D, QgsVector3D>( QgsVector3D( mPoints.at( 0 ).x(), mPoints.at( 0 ).y(), 0 ), QgsVector3D( vec.x(), vec.y(), 0 ) ) );
+  planes.append( QPair<QgsVector3D, QgsVector3D>( QgsVector3D( mPoints.at( 1 ).x(), mPoints.at( 1 ).y(), 0 ), QgsVector3D( -vec.x(), -vec.y(), 0 ) ) );
+  emit clippingPlanesChanged( planes );
 }
 
 void QgsMapToolClippingPlanes::clearRubberBand()
