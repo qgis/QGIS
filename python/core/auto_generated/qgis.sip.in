@@ -615,7 +615,10 @@ The development version
     enum class HttpMethod
     {
       Get,
-      Post
+      Post,
+      Head,
+      Put,
+      Delete,
     };
 
     enum class VectorExportResult

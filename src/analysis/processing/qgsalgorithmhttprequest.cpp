@@ -148,6 +148,11 @@ QVariantMap QgsHttpRequestAlgorithm::processAlgorithm( const QVariantMap &parame
       errorCode = blockingRequest.post( request, data.toUtf8() );
       break;
     }
+
+    case Qgis::HttpMethod::Head:
+    case Qgis::HttpMethod::Put:
+    case Qgis::HttpMethod::Delete:
+      throw QgsProcessingException( QObject::tr( "Unsupported HTTP method: %1" ).arg( qgsEnumValueToKey( httpMethod ) ) );
   }
 
   // Handle reply
