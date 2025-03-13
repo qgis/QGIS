@@ -451,6 +451,8 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   if ( oCPLXML.get() )
   {
     psFeatureTypeIter = CPLGetXMLNode( oCPLXML.get(), "=wfs:WFS_Capabilities.wfs:FeatureTypeList" );
+    // also try FeatureTypeList without prefix:
+    psFeatureTypeIter = psFeatureTypeIter ? psFeatureTypeIter : CPLGetXMLNode( oCPLXML.get(), "=wfs:WFS_Capabilities.FeatureTypeList" );
     if ( psFeatureTypeIter )
       psFeatureTypeIter = psFeatureTypeIter->psChild;
   }
