@@ -968,6 +968,6 @@ QgsShadowRenderView *QgsFrameGraph::shadowRenderView() const
 {
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::SHADOW_RENDERVIEW].get();
   if ( rv )
-    return dynamic_cast<QgsShadowRenderView *>( rv );
+    return qobject_cast<QgsShadowRenderView *>( rv );
   return nullptr;
 }
