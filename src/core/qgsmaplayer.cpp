@@ -380,21 +380,21 @@ void QgsMapLayer::setLegendUrl( const QString &legendUrl )
 
 QString QgsMapLayer::legendUrl() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mServerProperties->legendUrl();
 }
 
 void QgsMapLayer::setLegendUrlFormat( const QString &legendUrlFormat )
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   mServerProperties->setLegendUrlFormat( legendUrlFormat );
 }
 
 QString QgsMapLayer::legendUrlFormat() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mServerProperties->legendUrlFormat();
 }
