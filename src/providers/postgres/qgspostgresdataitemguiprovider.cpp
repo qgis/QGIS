@@ -766,13 +766,13 @@ void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *proj
   QgsSettings settings;
   QString defaultPath = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
 
-  Qgis::ProjectFileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
+  const Qgis::ProjectFileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
   const QString qgisProjectExt = tr( "QGIS Project Formats" ) + ( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgz ? " (*.qgz *.QGZ *.qgs *.QGS)" : " (*.qgs *.QGS *.qgz *.QGZ)" );
   const QString qgzProjectExt = tr( "QGIS Bundled Project Format" ) + " (*.qgz *.QGZ)";
   const QString qgsProjectExt = tr( "QGIS XML Project Format" ) + " (*.qgs *.QGS)";
 
   QString filter;
-  QString path = QFileDialog::getSaveFileName(
+  const QString path = QFileDialog::getSaveFileName(
     nullptr,
     tr( "Save Project As" ),
     defaultPath,
@@ -782,7 +782,7 @@ void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *proj
   if ( path.isEmpty() )
     return;
 
-  QFileInfo fullPath( path );
+  const QFileInfo fullPath( path );
   QgsSettings().setValue( QStringLiteral( "UI/lastProjectDir" ), fullPath.path() );
 
   const QString ext = fullPath.suffix().toLower();
@@ -814,7 +814,7 @@ void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *proj
   QgsProject project = QgsProject();
   project.read( projectItem->path() );
   project.setFileName( fullPath.filePath() );
-  bool result = project.write();
+  const bool result = project.write();
 
   if ( !result && context.messageBar() )
   {
@@ -852,7 +852,7 @@ void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectIte
   }
 
   // write project to the database
-  bool success = project.write();
+  const bool success = project.write();
   if ( !success )
   {
     notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
@@ -905,7 +905,7 @@ void QgsPostgresDataItemGuiProvider::duplicateProject( QgsPGProjectItem *project
     return;
   }
 
-  QString newUri = projectItem->uriWithNewName( dlg.name() );
+  const QString newUri = projectItem->uriWithNewName( dlg.name() );
 
   // read the project, set title and new filename
   QgsProject project = QgsProject();
@@ -914,7 +914,7 @@ void QgsPostgresDataItemGuiProvider::duplicateProject( QgsPGProjectItem *project
   project.setFileName( newUri );
 
   // write project to the database
-  bool success = project.write();
+  const bool success = project.write();
   if ( !success )
   {
     notify( tr( "Duplicate Project" ), tr( "Unable to duplicate project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
@@ -939,7 +939,7 @@ void QgsPostgresDataItemGuiProvider::moveProjectToSchema( QgsPGProjectItem *proj
       return;
     }
 
-    QString newSchemaName = dlg->schema();
+    const QString newSchemaName = dlg->schema();
     if ( newSchemaName == projectItem->schemaName() )
     {
       notify( tr( "Move Project to Another Schema" ), tr( "Cannot copy to the schema where the project already is." ), context, Qgis::MessageLevel::Warning );
