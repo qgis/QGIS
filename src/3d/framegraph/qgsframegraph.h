@@ -211,7 +211,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     /**
      * Registers a new the render view \a renderView with name \a name
      *
-     * Will take owner ship of the renderView
+     * Will take ownership of the renderView
      */
     bool registerRenderView( QgsAbstractRenderView *renderView, const QString &name );
 
