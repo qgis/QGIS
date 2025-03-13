@@ -810,6 +810,31 @@ bool QgsMssqlProviderConnection::validateSqlVectorLayer( const SqlVectorLayerOpt
     return false;
   }
 
+  if ( !options.geometryColumn.isEmpty() )
+  {
+    // if trying to load as geometry, make sure we can determine geometry type
+    const QString sql = QStringLiteral( "SELECT TOP 1"
+                                        " UPPER(%1.STGeometryType()),"
+                                        " %1.STSrid,"
+                                        " %1.HasZ,"
+                                        " %1.HasM"
+                                        " FROM (%2) AS _subq_"
+                                        " WHERE %1 IS NOT NULL %3"
+                                        " GROUP BY %1.STGeometryType(), %1.STSrid, %1.HasZ, %1.HasM" )
+                          .arg( QgsMssqlUtils::quotedIdentifier( options.geometryColumn ), sanitizeSqlForQueryLayer( options.sql ), options.filter.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( options.filter ) );
+
+    try
+    {
+      ( void ) executeSql( sql );
+    }
+    catch ( QgsProviderConnectionException &e )
+    {
+      message = e.what();
+      return false;
+    }
+  }
+
+
   return true;
 }
 
