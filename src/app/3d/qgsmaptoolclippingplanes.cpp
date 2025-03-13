@@ -16,13 +16,17 @@
 
 #include "qgsmaptoolclippingplanes.h"
 #include "moc_qgsmaptoolclippingplanes.cpp"
+#include "qgs3dmapcanvas.h"
+#include "qgs3dutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgspolygon.h"
 
+#include <QVector4D>
 
-QgsMapToolClippingPlanes::QgsMapToolClippingPlanes( QgsMapCanvas *canvas )
-  : QgsMapTool( canvas )
+
+QgsMapToolClippingPlanes::QgsMapToolClippingPlanes( QgsMapCanvas *canvas, const QgsVector3D &sceneOrigin )
+  : QgsMapTool( canvas ), mSceneOrigin( sceneOrigin )
 {
   mRubberBandPolygon.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
   mRubberBandLines.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Line ) );
@@ -157,14 +161,14 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolClippingPlanes::calculateClippingPlanes()
 {
-  QgsVector vec( mPoints.at( 1 ) - mPoints.at( 0 ) );
-  vec = vec.normalized();
-  QVector<QPair<QgsVector3D, QgsVector3D>> planes;
-  planes.append( QPair<QgsVector3D, QgsVector3D>( QgsVector3D( mPoints.at( 0 ).x(), mPoints.at( 0 ).y(), 0 ), QgsVector3D( vec.x(), vec.y(), 0 ) ) );                             //! left clip plane
-  planes.append( QPair<QgsVector3D, QgsVector3D>( QgsVector3D( mPoints.at( 0 ).x(), mPoints.at( 0 ).y(), 0 ), QgsVector3D( -vec.perpVector().x(), -vec.perpVector().y(), 0 ) ) ); //! top clip plane
-  planes.append( QPair<QgsVector3D, QgsVector3D>( QgsVector3D( mPoints.at( 1 ).x(), mPoints.at( 1 ).y(), 0 ), QgsVector3D( -vec.x(), -vec.y(), 0 ) ) );                           //! right clip plane
-  planes.append( QPair<QgsVector3D, QgsVector3D>( QgsVector3D( mPoints.at( 2 ).x(), mPoints.at( 2 ).y(), 0 ), QgsVector3D( vec.perpVector().x(), vec.perpVector().y(), 0 ) ) );   //! bottom clip plane
-  emit clippingPlanesChanged( planes );
+  QList<QVector4D> clippingPlanes = Qgs3DUtils::rectangleToClippingPlanes( mPoints.mid( 0, 4 ) );
+  for ( int i = 0; i < clippingPlanes.size(); i++ )
+  {
+    QgsVector3D planePoint( mPoints.at( i ).x(), mPoints.at( i ).y(), 0 );
+    const double distance = QgsVector3D::dotProduct( mSceneOrigin - planePoint, clippingPlanes.at( i ).toVector3D() );
+    clippingPlanes[i].setW( distance );
+  }
+  emit clippingPlanesChanged( clippingPlanes );
 }
 
 void QgsMapToolClippingPlanes::clearRubberBand() const

@@ -259,8 +259,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   };
   createShortcuts( QStringLiteral( "m3DSetSceneExtent" ), &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
 
-  mActionSetClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCut.svg" ) ), tr( "Set 3D Scene Clipping Planes on 2D Map View" ), this, &Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas );
+  mActionSetClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCut.svg" ) ), tr( "Cross Section Tool" ), this, &Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas );
   mActionSetClippingPlanes->setCheckable( true );
+  mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCutDisabled.svg" ) ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableClippingPlanes );
 
   // Effects Menu
   mEffectsMenu = new QMenu( this );
@@ -704,6 +705,10 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   mActionMapThemes->setDisabled( !mCanvas->mapSettings()->terrainRenderingEnabled() || !mCanvas->mapSettings()->terrainGenerator() || mCanvas->mapSettings()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
 
+  mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( mMainCanvas, map->origin() );
+  mMapToolClippingPlanes->setAction( mActionSetClippingPlanes );
+  connect( mMapToolClippingPlanes.get(), &QgsMapToolClippingPlanes::clippingPlanesChanged, this, &Qgs3DMapCanvasWidget::setClippingPlanes );
+
   connect( map, &Qgs3DMapSettings::viewFrustumVisualizationEnabledChanged, this, &Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged );
   connect( map, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapCanvasWidget::onExtentChanged );
   connect( map, &Qgs3DMapSettings::showExtentIn2DViewChanged, this, &Qgs3DMapCanvasWidget::onExtentChanged );
@@ -717,10 +722,6 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
   mMapToolExtent = std::make_unique<QgsMapToolExtent>( canvas );
   mMapToolExtent->setAction( mActionSetSceneExtent );
   connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &Qgs3DMapCanvasWidget::setSceneExtent );
-
-  mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( canvas );
-  mMapToolClippingPlanes->setAction( mActionSetClippingPlanes );
-  connect( mMapToolClippingPlanes.get(), &QgsMapToolClippingPlanes::clippingPlanesChanged, this, &Qgs3DMapCanvasWidget::setClippingPlanes );
 
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasLayersChanged );
   connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasColorChanged );
@@ -1187,29 +1188,23 @@ void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
   mMessageBar->pushInfo( QString(), tr( "Select a rectangle by 3 points on the main 2D map view to define this 3D scene's cross section" ) );
 }
 
-void Qgs3DMapCanvasWidget::setClippingPlanes( const QVector<QPair<QgsVector3D, QgsVector3D>> &planes )
+void Qgs3DMapCanvasWidget::setClippingPlanes( const QList<QVector4D> &planes )
 {
   this->activateWindow();
   this->raise();
   mMessageBar->clearWidgets();
 
-  if ( !planes.isEmpty() )
-  {
-    QList<QVector4D> clippingPlanes;
-
-    for ( QPair<QgsVector3D, QgsVector3D> plane : planes )
-    {
-      const double distance = QgsVector3D::dotProduct( mCanvas->mapSettings()->origin() - plane.first, plane.second );
-
-      clippingPlanes.append( QVector4D( static_cast<float>( plane.second.x() ), static_cast<float>( plane.second.y() ), static_cast<float>( plane.second.z() ), distance ) );
-    }
-    mCanvas->scene()->enableClipping( clippingPlanes );
-  }
+  mCanvas->scene()->enableClipping( planes );
 
   if ( mMapToolPrevious )
     mMainCanvas->setMapTool( mMapToolPrevious );
   else
     mMainCanvas->unsetMapTool( mMapToolClippingPlanes.get() );
+}
+
+void Qgs3DMapCanvasWidget::disableClippingPlanes() const
+{
+  mCanvas->scene()->disableClipping();
 }
 
 ClassValidator::ClassValidator( QWidget *parent )
