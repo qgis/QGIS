@@ -69,6 +69,22 @@ class ANALYSIS_EXPORT QgsGridFileWriter
      */
     QStringList createOptions() const { return mCreateOptions; }
 
+    /**
+     * Set no data value for output file.
+     *
+     * \see noDataValue()
+     * \since QGIS 3.44
+     */
+    void setNoDataValue( double noDataValue ) { mNoDataValue = noDataValue; }
+
+    /**
+     * Returns no data value used for output file.
+     *
+     * \see setNoDataValue()
+     * \since QGIS 3.44
+     */
+    double noDataValue() const { return mNoDataValue; }
+
   private:
     QgsGridFileWriter() = delete;
 
@@ -82,6 +98,7 @@ class ANALYSIS_EXPORT QgsGridFileWriter
     double mCellSizeY = 0;
 
     QStringList mCreateOptions;
+    double mNoDataValue = -9999.0;
 };
 
 #endif
