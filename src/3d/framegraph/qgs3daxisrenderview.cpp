@@ -145,9 +145,8 @@ void Qgs3DAxisRenderView::updateWindowResize( int width, int height )
 void Qgs3DAxisRenderView::onViewportSizeUpdate( int width, int height )
 {
   Qgs3DAxisSettings settings = mMapSettings->get3DAxisSettings();
-
-  double windowWidth = static_cast<double>( width );
-  double windowHeight = static_cast<double>( height );
+  double windowWidth = static_cast<double>( width < 0 ? mCanvas->width() : width );
+  double windowHeight = static_cast<double>( height < 0 ? mCanvas->height : height );
 
   if ( 2 <= QgsLogger::debugLevel() )
   {

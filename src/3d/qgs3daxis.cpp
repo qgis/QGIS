@@ -927,7 +927,7 @@ void Qgs3DAxis::onAxisSettingsChanged()
 
 void Qgs3DAxis::onAxisViewportSizeUpdate()
 {
-  mRenderView->onViewportSizeUpdate( mCanvas->width(), mCanvas->height() ); // will call onViewportScaleFactorChanged as callback
+  mRenderView->onViewportSizeUpdate(); // will call onViewportScaleFactorChanged as callback
 
   // mRenderView->onViewportSizeUpdate() has updated `mTwoDLabelCamera` lens parameters.
   // The position of the labels needs to be updated.
