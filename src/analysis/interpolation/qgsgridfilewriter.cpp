@@ -59,7 +59,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
     return 2;
   }
 
-  provider->setNoDataValue( 1, -9999 );
+  provider->setNoDataValue( 1, mNoDataValue );
 
   double currentYValue = mInterpolationExtent.yMaximum() - mCellSizeY / 2.0; //calculate value in the center of the cell
   double currentXValue;
@@ -85,7 +85,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
       }
       else
       {
-        float32Row[col] = -9999;
+        float32Row[col] = mNoDataValue;
       }
       currentXValue += mCellSizeX;
     }

@@ -57,6 +57,24 @@ Returns the list of data source creation options which will be used when creatin
 .. versionadded:: 3.44
 %End
 
+    void setNoDataValue( double noDataValue );
+%Docstring
+Set no data value for output file.
+
+.. seealso:: :py:func:`noDataValue`
+
+.. versionadded:: 3.44
+%End
+
+    double noDataValue() const;
+%Docstring
+Returns no data value used for output file.
+
+.. seealso:: :py:func:`setNoDataValue`
+
+.. versionadded:: 3.44
+%End
+
 };
 
 /************************************************************************
