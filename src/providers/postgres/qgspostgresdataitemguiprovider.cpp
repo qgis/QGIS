@@ -951,7 +951,7 @@ void QgsPostgresDataItemGuiProvider::moveProjectToSchema( QgsPGProjectItem *proj
     {
       if ( !QgsPostgresUtils::createProjectsTable( conn, newSchemaName ) )
       {
-        QString errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( projectItem->postgresProjectUri().connInfo.username() );
+        const QString errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( projectItem->postgresProjectUri().connInfo.username() );
 
         notify( tr( "Move Project to Another Schema" ), errCause, context, Qgis::MessageLevel::Warning );
         conn->unref();
