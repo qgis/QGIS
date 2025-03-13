@@ -1983,9 +1983,9 @@ class TestQgsUnitTypes(unittest.TestCase):
         )
         self.assertEqual(
             QgsUnitTypes.formatDistance(
-                0.5, 2, QgsUnitTypes.DistanceUnit.DistanceMiles, False
+                0.05, 2, QgsUnitTypes.DistanceUnit.DistanceMiles, False
             ),
-            "2.640,00 ft",
+            "264,00 ft",
         )
 
     def testFormatArea(self):
@@ -2219,9 +2219,9 @@ class TestQgsUnitTypes(unittest.TestCase):
         )
         self.assertEqual(
             QgsUnitTypes.formatArea(
-                2787, 2, QgsUnitTypes.AreaUnit.AreaSquareFeet, False
+                20787, 2, QgsUnitTypes.AreaUnit.AreaSquareFeet, False
             ),
-            "2.787,00 ft²",
+            "20.787,00 ft²",
         )
 
     def testEncodeDecodeLayoutUnits(self):

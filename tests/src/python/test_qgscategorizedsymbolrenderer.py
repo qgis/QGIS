@@ -903,10 +903,10 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         locale.setNumberOptions(QLocale.NumberOption.DefaultNumberOptions)
         QLocale().setDefault(locale)
         self.assertEqual(
-            QgsCategorizedSymbolRenderer.displayString(1234.56), "1.234,56"
+            QgsCategorizedSymbolRenderer.displayString(10234.56), "10.234,56"
         )
         self.assertEqual(
-            QgsCategorizedSymbolRenderer.displayString(1234.56, 4), "1.234,5600"
+            QgsCategorizedSymbolRenderer.displayString(10234.56, 4), "10.234,5600"
         )
         self.assertEqual(
             QgsCategorizedSymbolRenderer.displayString(1234567), "1.234.567"
@@ -954,23 +954,26 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
             "Point?field=flddbl:double&field=fldint:integer", "addfeat", "memory"
         )
         result = QgsCategorizedSymbolRenderer.createCategories(
-            [1234.5, 2345.6, 3456.7], QgsMarkerSymbol(), layer, "flddouble"
+            [10234.5, 20345.6, 30456.7], QgsMarkerSymbol(), layer, "flddouble"
         )
 
-        self.assertEqual(result[0].label(), "1,234.5")
-        self.assertEqual(result[1].label(), "2,345.6")
-        self.assertEqual(result[2].label(), "3,456.7")
+        self.assertEqual(result[0].label(), "10,234.5")
+        self.assertEqual(result[1].label(), "20,345.6")
+        self.assertEqual(result[2].label(), "30,456.7")
 
         # Test a non-dot locale
         QLocale().setDefault(QLocale(QLocale.Language.Italian))
 
         result = QgsCategorizedSymbolRenderer.createCategories(
-            [[1234.5, 6789.1], 2345.6, 3456.7], QgsMarkerSymbol(), layer, "flddouble"
+            [[10234.5, 60789.1], 20345.6, 30456.7],
+            QgsMarkerSymbol(),
+            layer,
+            "flddouble",
         )
 
-        self.assertEqual(result[0].label(), "1.234,5;6.789,1")
-        self.assertEqual(result[1].label(), "2.345,6")
-        self.assertEqual(result[2].label(), "3.456,7")
+        self.assertEqual(result[0].label(), "10.234,5;60.789,1")
+        self.assertEqual(result[1].label(), "20.345,6")
+        self.assertEqual(result[2].label(), "30.456,7")
 
         # Test round trip
         temp_dir = QTemporaryDir()
@@ -987,12 +990,12 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         project.read(temp_file)
         results = project.mapLayersByName("addfeat")[0].renderer().categories()
 
-        self.assertEqual(result[0].label(), "1.234,5;6.789,1")
-        self.assertEqual(result[1].label(), "2.345,6")
-        self.assertEqual(result[2].label(), "3.456,7")
-        self.assertEqual(result[0].value(), [1234.5, 6789.1])
-        self.assertEqual(result[1].value(), 2345.6)
-        self.assertEqual(result[2].value(), 3456.7)
+        self.assertEqual(result[0].label(), "10.234,5;60.789,1")
+        self.assertEqual(result[1].label(), "20.345,6")
+        self.assertEqual(result[2].label(), "30.456,7")
+        self.assertEqual(result[0].value(), [10234.5, 60789.1])
+        self.assertEqual(result[1].value(), 20345.6)
+        self.assertEqual(result[2].value(), 30456.7)
 
     def test_legend_key_to_expression(self):
         renderer = QgsCategorizedSymbolRenderer()
