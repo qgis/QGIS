@@ -19,6 +19,7 @@
 #include "qgis_3d.h"
 
 #include <QObject>
+#include <QPointer>
 
 #define SIP_NO_FILE
 
@@ -49,6 +50,14 @@ class _3D_EXPORT QgsAbstractRenderView : public QObject
      */
     QgsAbstractRenderView( QObject *parent, const QString &viewName );
 
+    //! Disabled copy constructor
+    QgsAbstractRenderView( const QgsAbstractRenderView &other ) = delete;
+    //! Disabled operator=
+    QgsAbstractRenderView &operator=( const QgsAbstractRenderView &other ) = delete;
+
+    //! Default destructor
+    virtual ~QgsAbstractRenderView();
+
     /**
      * Called when 3D window is resized. Render views may update their textures accordingly.
      * Default implementation does nothing.
@@ -56,7 +65,7 @@ class _3D_EXPORT QgsAbstractRenderView : public QObject
     virtual void updateWindowResize( int width, int height );
 
     //! Returns the top node of this render view branch. Will be used to register the render view.
-    Qt3DRender::QFrameGraphNode *topGraphNode() const;
+    QPointer<Qt3DRender::QFrameGraphNode> topGraphNode() const;
 
     //! Enable or disable via \a enable the render view sub tree
     virtual void setEnabled( bool enable );
@@ -65,7 +74,7 @@ class _3D_EXPORT QgsAbstractRenderView : public QObject
     virtual bool isEnabled() const;
 
   protected:
-    Qt3DRender::QFrameGraphNode *mRoot = nullptr;
+    QPointer<Qt3DRender::QFrameGraphNode> mRoot;
     Qt3DRender::QSubtreeEnabler *mRendererEnabler = nullptr;
 };
 
