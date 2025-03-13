@@ -788,7 +788,7 @@ QgsForwardRenderView *QgsFrameGraph::forwardRenderView() const
 {
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::FORWARD_RENDERVIEW].get();
   if ( rv )
-    return dynamic_cast<QgsForwardRenderView *>( rv );
+    return qobject_cast<QgsForwardRenderView *>( rv );
   return nullptr;
 }
 
