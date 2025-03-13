@@ -33,6 +33,8 @@
 #include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsdbimportvectorlayerdialog.h"
+#include "qgsproject.h"
+#include "qgspostgresschemaselectiondialog.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -147,6 +149,29 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       maintainMenu->addAction( actionRefreshMaterializedView );
     }
     menu->addMenu( maintainMenu );
+  }
+
+  if ( QgsPGProjectItem *projectItem = qobject_cast<QgsPGProjectItem *>( item ) )
+  {
+    QAction *exportProjectToFileAction = new QAction( tr( "Export Project to File…" ), menu );
+    connect( exportProjectToFileAction, &QAction::triggered, this, [projectItem, context] { exportProjectToFile( projectItem, context ); } );
+    menu->addAction( exportProjectToFileAction );
+
+    QAction *renameProjectAction = new QAction( tr( "Rename Project…" ), menu );
+    connect( renameProjectAction, &QAction::triggered, this, [projectItem, context] { renameProject( projectItem, context ); } );
+    menu->addAction( renameProjectAction );
+
+    QAction *deleteProjectAction = new QAction( tr( "Delete Project…" ), menu );
+    connect( deleteProjectAction, &QAction::triggered, this, [projectItem, context] { deleteProject( projectItem, context ); } );
+    menu->addAction( deleteProjectAction );
+
+    QAction *duplicateProjectAction = new QAction( tr( "Duplicate Project…" ), menu );
+    connect( duplicateProjectAction, &QAction::triggered, this, [projectItem, context] { duplicateProject( projectItem, context ); } );
+    menu->addAction( duplicateProjectAction );
+
+    QAction *moveProjectToSchemaAction = new QAction( tr( "Move Project to Schema…" ), menu );
+    connect( moveProjectToSchemaAction, &QAction::triggered, this, [projectItem, context] { moveProjectToSchema( projectItem, context ); } );
+    menu->addAction( moveProjectToSchemaAction );
   }
 }
 
@@ -734,4 +759,240 @@ void QgsPostgresDataItemGuiProvider::handleImportVector( QgsPGConnectionItem *co
   };
 
   QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), toSchema, context, tr( "PostGIS Import" ), tr( "Import to PostGIS database" ), QVariantMap(), onSuccess, onFailure, this );
+}
+
+void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
+{
+  QgsSettings settings;
+  QString defaultPath = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
+
+  Qgis::ProjectFileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
+  const QString qgisProjectExt = tr( "QGIS Project Formats" ) + ( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgz ? " (*.qgz *.QGZ *.qgs *.QGS)" : " (*.qgs *.QGS *.qgz *.QGZ)" );
+  const QString qgzProjectExt = tr( "QGIS Bundled Project Format" ) + " (*.qgz *.QGZ)";
+  const QString qgsProjectExt = tr( "QGIS XML Project Format" ) + " (*.qgs *.QGS)";
+
+  QString filter;
+  QString path = QFileDialog::getSaveFileName(
+    nullptr,
+    tr( "Save Project As" ),
+    defaultPath,
+    qgisProjectExt + QStringLiteral( ";;" ) + qgzProjectExt + QStringLiteral( ";;" ) + qgsProjectExt, &filter
+  );
+
+  if ( path.isEmpty() )
+    return;
+
+  QFileInfo fullPath( path );
+  QgsSettings().setValue( QStringLiteral( "UI/lastProjectDir" ), fullPath.path() );
+
+  const QString ext = fullPath.suffix().toLower();
+  if ( filter == qgisProjectExt && ext != QLatin1String( "qgz" ) && ext != QLatin1String( "qgs" ) )
+  {
+    switch ( defaultProjectFileFormat )
+    {
+      case Qgis::ProjectFileFormat::Qgs:
+      {
+        fullPath.setFile( fullPath.filePath() + ".qgs" );
+        break;
+      }
+      case Qgis::ProjectFileFormat::Qgz:
+      {
+        fullPath.setFile( fullPath.filePath() + ".qgz" );
+        break;
+      }
+    }
+  }
+  else if ( filter == qgzProjectExt && ext != QLatin1String( "qgz" ) )
+  {
+    fullPath.setFile( fullPath.filePath() + ".qgz" );
+  }
+  else if ( filter == qgsProjectExt && ext != QLatin1String( "qgs" ) )
+  {
+    fullPath.setFile( fullPath.filePath() + ".qgs" );
+  }
+
+  QgsProject project = QgsProject();
+  project.read( projectItem->path() );
+  project.setFileName( fullPath.filePath() );
+  bool result = project.write();
+
+  if ( !result && context.messageBar() )
+  {
+    context.messageBar()->pushWarning( tr( "Export Project to File" ), tr( "Could not save project file" ) );
+  }
+}
+
+void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
+{
+  QgsNewNameDialog dlg( tr( "project “%1”" ).arg( projectItem->name() ) );
+  dlg.setWindowTitle( tr( "Rename Project" ) );
+  if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
+    return;
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( projectItem->postgresProjectUri().connInfo, false );
+  if ( !conn )
+  {
+    notify( tr( "Rename Project" ), tr( "Unable to rename project." ), context, Qgis::MessageLevel::Warning );
+    return;
+  }
+
+  QString newUri = projectItem->uriWithNewName( dlg.name() );
+
+  // read the project, set title and new filename
+  QgsProject project = QgsProject();
+  project.read( projectItem->path() );
+  project.setTitle( dlg.name() );
+  project.setFileName( newUri );
+
+  if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectItem->name(), projectItem->schemaName() ) )
+  {
+    notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
+    conn->unref();
+    return;
+  }
+
+  // write project to the database
+  bool success = project.write();
+  if ( !success )
+  {
+    notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
+    conn->unref();
+    return;
+  }
+
+  // refresh
+  projectItem->parent()->refresh();
+
+  conn->unref();
+}
+
+void QgsPostgresDataItemGuiProvider::deleteProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
+{
+  if ( QMessageBox::question( nullptr, tr( "Delete Project" ), tr( "Are you sure you want to delete project “%1”?" ).arg( projectItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( projectItem->postgresProjectUri().connInfo, false );
+  if ( !conn )
+  {
+    notify( tr( "Delete Project" ), tr( "Unable to delete project." ), context, Qgis::MessageLevel::Warning );
+    return;
+  }
+
+  if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectItem->name(), projectItem->schemaName() ) )
+  {
+    notify( tr( "Delete Project" ), tr( "Unable to delete project “%1” " ).arg( projectItem->name() ), context, Qgis::MessageLevel::Warning );
+    conn->unref();
+    return;
+  }
+
+  // refresh
+  projectItem->parent()->refresh();
+
+  conn->unref();
+}
+
+void QgsPostgresDataItemGuiProvider::duplicateProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
+{
+  QgsNewNameDialog dlg( tr( "Project “%1”" ).arg( projectItem->name() ) );
+  dlg.setWindowTitle( tr( "Duplicate Project" ) );
+  if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
+    return;
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( projectItem->postgresProjectUri().connInfo, false );
+  if ( !conn )
+  {
+    notify( tr( "Duplicate Project" ), tr( "Unable to duplicate project." ), context, Qgis::MessageLevel::Warning );
+    return;
+  }
+
+  QString newUri = projectItem->uriWithNewName( dlg.name() );
+
+  // read the project, set title and new filename
+  QgsProject project = QgsProject();
+  project.read( projectItem->path() );
+  project.setTitle( dlg.name() );
+  project.setFileName( newUri );
+
+  // write project to the database
+  bool success = project.write();
+  if ( !success )
+  {
+    notify( tr( "Duplicate Project" ), tr( "Unable to duplicate project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
+    conn->unref();
+    return;
+  }
+
+  // refresh
+  projectItem->parent()->refresh();
+}
+
+void QgsPostgresDataItemGuiProvider::moveProjectToSchema( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
+{
+  QgsPostgresSchemaSelectionDialog *dlg = new QgsPostgresSchemaSelectionDialog( projectItem->postgresProjectUri().connInfo );
+
+  if ( dlg->exec() == QDialog::Accepted )
+  {
+    QgsPostgresConn *conn = QgsPostgresConn::connectDb( projectItem->postgresProjectUri().connInfo, false );
+    if ( !conn )
+    {
+      notify( tr( "Move Project to Another Schema" ), tr( "Unable to move project to anoter schema." ), context, Qgis::MessageLevel::Warning );
+      return;
+    }
+
+    QString newSchemaName = dlg->schema();
+    if ( newSchemaName == projectItem->schemaName() )
+    {
+      notify( tr( "Move Project to Another Schema" ), tr( "Cannot copy to the schema where the project already is." ), context, Qgis::MessageLevel::Warning );
+      conn->unref();
+      return;
+    }
+
+    if ( !QgsPostgresUtils::projectsTableExists( conn, newSchemaName ) )
+    {
+      if ( !QgsPostgresUtils::createProjectsTable( conn, newSchemaName ) )
+      {
+        QString errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( projectItem->postgresProjectUri().connInfo.username() );
+
+        notify( tr( "Move Project to Another Schema" ), errCause, context, Qgis::MessageLevel::Warning );
+        conn->unref();
+        return;
+      }
+    }
+
+    const QString sql = QStringLiteral( "INSERT INTO %1.qgis_projects SELECT * FROM %2.qgis_projects WHERE name=%3;" )
+                          .arg( QgsPostgresConn::quotedIdentifier( newSchemaName ) )
+                          .arg( QgsPostgresConn::quotedIdentifier( projectItem->schemaName() ) )
+                          .arg( QgsPostgresConn::quotedValue( projectItem->name() ) );
+
+    QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      notify( tr( "Move Project to Another Schema" ), tr( "Unable to move project “%1” to scheme “%2” " ).arg( projectItem->name(), newSchemaName ), context, Qgis::MessageLevel::Warning );
+      conn->unref();
+      return;
+    }
+
+    if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectItem->name(), projectItem->schemaName() ) )
+    {
+      notify( tr( "Move Project to Another Schema" ), tr( "Unable to move project “%1” to scheme “%2” " ).arg( projectItem->name(), newSchemaName ), context, Qgis::MessageLevel::Warning );
+      conn->unref();
+      return;
+    }
+
+    // refresh
+    projectItem->parent()->refresh();
+
+    for ( QgsDataItem *item : projectItem->parent()->parent()->children() )
+    {
+      if ( QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( item ) )
+      {
+        if ( schemaItem->name() == newSchemaName )
+        {
+          schemaItem->refresh();
+        }
+      }
+    }
+
+    conn->unref();
+  }
 }
