@@ -19,22 +19,21 @@
 #include "qgsmaptool.h"
 #include "qgspointxy.h"
 #include "qgsrubberband.h"
-#include "qgis_gui.h"
 #include "qobjectuniqueptr.h"
 
 class QgsMapCanvas;
 
 
 /**
- * \ingroup gui
+ * \ingroup app
  * \brief A map tool that stores clipping planes from lines drawn onto map canvas.
  */
-class GUI_EXPORT QgsMapToolClippingPlanes : public QgsMapTool
+class QgsMapToolClippingPlanes : public QgsMapTool
 {
     Q_OBJECT
 
   public:
-    QgsMapToolClippingPlanes( QgsMapCanvas *canvas );
+    QgsMapToolClippingPlanes( QgsMapCanvas *canvas, const QgsVector3D &sceneOrigin );
 
     Flags flags() const override { return AllowZoomRect; }
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
@@ -49,7 +48,7 @@ class GUI_EXPORT QgsMapToolClippingPlanes : public QgsMapTool
 
   signals:
     //! signal emitted on clipping planes change
-    void clippingPlanesChanged( QVector<QPair<QgsVector3D, QgsVector3D>> normalVectors );
+    void clippingPlanesChanged( QList<QVector4D> normalVectors );
 
   private:
     void calculateClippingPlanes();
@@ -58,6 +57,7 @@ class GUI_EXPORT QgsMapToolClippingPlanes : public QgsMapTool
     QObjectUniquePtr<QgsRubberBand> mRubberBandLines;
     QObjectUniquePtr<QgsRubberBand> mRubberBandPoints;
     QVector< QgsPointXY > mPoints;
+    QgsVector3D mSceneOrigin;
     bool mClicked = false;
 };
 
