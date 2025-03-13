@@ -546,7 +546,7 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 
 void QgsFrameGraph::unregisterRenderView( const QString &name )
 {
-  QgsAbstractRenderView *renderView = mRenderViewMap.find( name ).value().get();
+  std::shared_ptr<QgsAbstractRenderView> renderView = mRenderViewMap.find( name ).value();
   if ( renderView )
   {
     renderView->topGraphNode()->setParent( ( QNode * ) nullptr );
@@ -560,9 +560,8 @@ bool QgsFrameGraph::registerRenderView( QgsAbstractRenderView *renderView, const
   if ( mRenderViewMap.find( name ) == mRenderViewMap.end() )
   {
     mRenderViewMap.insert( name, std::shared_ptr<QgsAbstractRenderView>( renderView ) );
-    QgsAbstractRenderView *rv = mRenderViewMap.find( name ).value().get();
-    rv->topGraphNode()->setParent( mMainViewPort );
-    rv->updateWindowResize( mSize.width(), mSize.height() );
+    renderView->topGraphNode()->setParent( mMainViewPort );
+    renderView->updateWindowResize( mSize.width(), mSize.height() );
     out = true;
   }
   else
@@ -651,9 +650,7 @@ QString QgsFrameGraph::dumpSceneGraph() const
 
 void QgsFrameGraph::setClearColor( const QColor &clearColor )
 {
-  QgsForwardRenderView *rv = forwardRenderView();
-  if ( rv )
-    rv->setClearColor( clearColor );
+  forwardRenderView()->setClearColor( clearColor );
 }
 
 void QgsFrameGraph::setAmbientOcclusionEnabled( bool enabled )
@@ -750,7 +747,7 @@ void QgsFrameGraph::setSize( QSize s )
   mSize = s;
   for ( QMap<QString, std::shared_ptr<QgsAbstractRenderView>>::iterator it = mRenderViewMap.begin(); it != mRenderViewMap.end(); ++it )
   {
-    QgsAbstractRenderView *rv = it.value().get();
+    std::shared_ptr<QgsAbstractRenderView> rv = it.value();
     rv->updateWindowResize( mSize.width(), mSize.height() );
   }
 
