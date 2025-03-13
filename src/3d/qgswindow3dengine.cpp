@@ -38,7 +38,7 @@ QgsWindow3DEngine::QgsWindow3DEngine( Qgs3DMapCanvas *parent )
   mMapCanvas3D->setActiveFrameGraph( mFrameGraph->frameGraphRoot() );
 
   // force switching to no shadow rendering
-  mFrameGraph->setRenderViewEnabled( QgsFrameGraph::SHADOW_RENDERVIEW, false );
+  mFrameGraph->shadowRenderView()->setEnabled( false );
 }
 
 QWindow *QgsWindow3DEngine::window()
