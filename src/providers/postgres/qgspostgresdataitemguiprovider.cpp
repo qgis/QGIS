@@ -782,7 +782,7 @@ void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *proj
   if ( path.isEmpty() )
     return;
 
-  const QFileInfo fullPath( path );
+  QFileInfo fullPath( path );
   QgsSettings().setValue( QStringLiteral( "UI/lastProjectDir" ), fullPath.path() );
 
   const QString ext = fullPath.suffix().toLower();
