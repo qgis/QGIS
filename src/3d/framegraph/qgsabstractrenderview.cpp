@@ -33,12 +33,22 @@ QgsAbstractRenderView::QgsAbstractRenderView( QObject *parent, const QString &vi
   mRendererEnabler->setObjectName( viewName + "::SubtreeEnabler" );
 }
 
+QgsAbstractRenderView::~QgsAbstractRenderView()
+{
+  // if mRoot is still defined and not attached to a parent we have the responsibility to delete it
+  if ( !mRoot.isNull() && mRoot->parent() == nullptr )
+  {
+    delete mRoot.data();
+    mRoot.clear();
+  }
+}
+
 void QgsAbstractRenderView::updateWindowResize( int, int )
 {
   // noop
 }
 
-Qt3DRender::QFrameGraphNode *QgsAbstractRenderView::topGraphNode() const
+QPointer<Qt3DRender::QFrameGraphNode> QgsAbstractRenderView::topGraphNode() const
 {
   return mRoot;
 }
