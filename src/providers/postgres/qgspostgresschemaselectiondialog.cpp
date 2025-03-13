@@ -60,7 +60,7 @@ void QgsPostgresSchemaSelectionDialog::populateSchemas()
   }
 
   QList<QgsPostgresSchemaProperty> schemas;
-  bool ok = conn->getSchemas( schemas );
+  const bool ok = conn->getSchemas( schemas );
   conn->unref();
 
   QApplication::restoreOverrideCursor();
