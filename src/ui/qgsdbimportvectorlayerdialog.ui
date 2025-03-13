@@ -304,7 +304,6 @@
   <zorder>mButtonBox</zorder>
   <zorder>mGroupBoxOutput</zorder>
   <zorder>groupBox</zorder>
-  <zorder>verticalSpacer</zorder>
   <zorder>groupBox_2</zorder>
   <zorder>mExtentGroupBox</zorder>
   <zorder>groupBox_3</zorder>
