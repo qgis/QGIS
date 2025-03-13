@@ -40,50 +40,6 @@ namespace Qt3DRender
 /**
  * \ingroup 3d
  * \brief Container class that holds different objects related to forward rendering
- *
- * The branch structure:
- * We define two forward passes: one for solid objects, followed by one for transparent objects.
- *
- *                                  |
- *                         +-----------------+
- *                         | QCameraSelector |  (using the main camera)
- *                         +-----------------+
- *                                  |
- *                         +-----------------+
- *                         |  QLayerFilter   |  (using mForwardRenderLayer)
- *                         +-----------------+
- *                                  |
- *                         +-----------------+
- *                         | QRenderStateSet |  define clip planes
- *                         +-----------------+
- *                                  |
- *                      +-----------------------+
- *                      | QRenderTargetSelector | (write mForwardColorTexture + mForwardDepthTexture)
- *                      +-----------------------+
- *                                  |
- *         +------------------------+---------------------+
- *         |                                              |
- *  +-----------------+    discard               +-----------------+    accept
- *  |  QLayerFilter   |  transparent             |  QLayerFilter   |  transparent
- *  +-----------------+    objects               +-----------------+    objects
- *         |                                              |
- *  +-----------------+  use depth test          +-----------------+   sort entities
- *  | QRenderStateSet |  cull back faces         |  QSortPolicy    |  back to front
- *  +-----------------+                          +-----------------+
- *         |                                              |
- *  +-----------------+              +--------------------+--------------------+
- *  | QFrustumCulling |              |                                         |
- *  +-----------------+     +-----------------+  use depth tests      +-----------------+  use depth tests
- *         |                | QRenderStateSet |  don't write depths   | QRenderStateSet |  write depths
- *         |                +-----------------+  write colors         +-----------------+  don't write colors
- *  +-----------------+                          use alpha blending                        don't use alpha blending
- *  |  QClearBuffers  |  color and depth         no culling                                no culling
- *  +-----------------+
- *         |
- *  +-----------------+
- *  |  QDebugOverlay  |
- *  +-----------------+
- *
  * \note Not available in Python bindings
  *
  * \since QGIS 3.40
@@ -163,7 +119,55 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     Qt3DRender::QDebugOverlay *mDebugOverlay = nullptr;
 #endif
 
+    /**
+     * We define three forward passes: one for solid objects, followed by two for transparent objects (one to write colors but no depths, one to write depths) :
+     *
+     *                                  |
+     *                         +-----------------+
+     *                         | QCameraSelector |  (using the main camera)
+     *                         +-----------------+
+     *                                  |
+     *                         +-----------------+
+     *                         |  QLayerFilter   |  (using mForwardRenderLayer)
+     *                         +-----------------+
+     *                                  |
+     *                         +-----------------+
+     *                         | QRenderStateSet |  define clip planes
+     *                         +-----------------+
+     *                                  |
+     *                      +-----------------------+
+     *                      | QRenderTargetSelector | (write mForwardColorTexture + mForwardDepthTexture)
+     *                      +-----------------------+
+     *                                  |
+     *         +------------------------+---------------------+
+     *         |                                              |
+     *  +-----------------+    discard               +-----------------+    accept
+     *  |  QLayerFilter   |  transparent             |  QLayerFilter   |  transparent
+     *  +-----------------+    objects               +-----------------+    objects
+     *         |                                              |
+     *  +-----------------+  use depth test          +-----------------+   sort entities
+     *  | QRenderStateSet |  cull back faces         |  QSortPolicy    |  back to front
+     *  +-----------------+                          +-----------------+
+     *         |                                              |
+     *  +-----------------+              +--------------------+--------------------+
+     *  | QFrustumCulling |              |                                         |
+     *  +-----------------+     +-----------------+  use depth tests      +-----------------+  use depth tests
+     *         |                | QRenderStateSet |  don't write depths   | QRenderStateSet |  write depths
+     *         |                +-----------------+  write colors         +-----------------+  don't write colors
+     *  +-----------------+                          use alpha blending                        don't use alpha blending
+     *  |  QClearBuffers  |  color and depth         no culling                                no culling
+     *  +-----------------+
+     *         |
+     *  +-----------------+
+     *  |  QDebugOverlay  |
+     *  +-----------------+
+     *
+     */
     void buildRenderPasses();
+
+    /**
+     * Build color and depth textures and add then to a new rendertarget
+     */
     Qt3DRender::QRenderTarget *buildTextures();
 };
 
