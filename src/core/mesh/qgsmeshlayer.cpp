@@ -893,6 +893,30 @@ void QgsMeshLayer::setDatasetGroupTreeRootItem( QgsMeshDatasetGroupTreeItem *roo
   updateActiveDatasetGroups();
 }
 
+QgsMeshDatasetIndex QgsMeshLayer::staticVectorDatasetIndex( int group ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QgsMeshDatasetIndex( group >= 0 ? group : mRendererSettings.activeVectorDatasetGroup(), mStaticVectorDatasetIndex );
+}
+
+void QgsMeshLayer::setReferenceTime( const QDateTime &referenceTime )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( auto *lDataProvider = dataProvider() )
+    mTemporalProperties->setReferenceTime( referenceTime, lDataProvider->temporalCapabilities() );
+  else
+    mTemporalProperties->setReferenceTime( referenceTime, nullptr );
+}
+
+void QgsMeshLayer::setTemporalMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mTemporalProperties->setMatchingMethod( matchingMethod );
+}
+
 int QgsMeshLayer::closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -923,30 +947,6 @@ int QgsMeshLayer::closestEdge( const QgsPointXY &point, double searchRadius, Qgs
   }
 
   return selectedIndex;
-}
-
-QgsMeshDatasetIndex QgsMeshLayer::staticVectorDatasetIndex( int group ) const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QgsMeshDatasetIndex( group >= 0 ? group : mRendererSettings.activeVectorDatasetGroup(), mStaticVectorDatasetIndex );
-}
-
-void QgsMeshLayer::setReferenceTime( const QDateTime &referenceTime )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( auto *lDataProvider = dataProvider() )
-    mTemporalProperties->setReferenceTime( referenceTime, lDataProvider->temporalCapabilities() );
-  else
-    mTemporalProperties->setReferenceTime( referenceTime, nullptr );
-}
-
-void QgsMeshLayer::setTemporalMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  mTemporalProperties->setMatchingMethod( matchingMethod );
 }
 
 QgsPointXY QgsMeshLayer::snapOnVertex( const QgsPointXY &point, double searchRadius )
