@@ -680,9 +680,7 @@ void QgsFrameGraph::setAmbientOcclusionThreshold( float threshold )
 
 void QgsFrameGraph::setFrustumCullingEnabled( bool enabled )
 {
-  QgsForwardRenderView *rv = forwardRenderView();
-  if ( rv )
-    rv->setFrustumCullingEnabled( enabled );
+  forwardRenderView()->setFrustumCullingEnabled( enabled );
 }
 
 void QgsFrameGraph::setupEyeDomeLighting( bool enabled, double strength, int distance )
@@ -771,9 +769,7 @@ void QgsFrameGraph::setRenderCaptureEnabled( bool enabled )
 
 void QgsFrameGraph::setDebugOverlayEnabled( bool enabled )
 {
-  QgsForwardRenderView *rv = forwardRenderView();
-  if ( rv )
-    rv->setDebugOverlayEnabled( enabled );
+  forwardRenderView()->setDebugOverlayEnabled( enabled );
 }
 
 QgsForwardRenderView *QgsFrameGraph::forwardRenderView() const
