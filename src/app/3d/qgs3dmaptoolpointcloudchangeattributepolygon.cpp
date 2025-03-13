@@ -72,7 +72,7 @@ void Qgs3DMapToolPointCloudChangeAttributePolygon::keyPressEvent( QKeyEvent *eve
     else if ( mScreenPoints.size() > 1 )
     {
       mScreenPoints.removeLast();
-      mPolygonRubberBand->removeLastPoint();
+      mPolygonRubberBand->removePenultimatePoint();
       if ( mToolType != Polygon )
       {
         mPolygonRubberBand->removeLastPoint();
