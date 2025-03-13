@@ -363,6 +363,16 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.44
      */
     static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings );
+
+    /**
+     * Returns list of 4 planes, which are calculated from \a rectangle. They are returned
+     * back in the format of 4D Vector, where first 3 coordinates are the coordinates of
+     * normalized normal of given plane.
+     * \note Rectangle vertices are expected in clockwise order. Clipping planes are returned
+     * in clockwise order beginning by plane to the left of first given vertex.
+     * \since QGIS 3.44
+     */
+    static QList<QVector4D> rectangleToClippingPlanes( const QVector<QgsPointXY> &rectangle );
 };
 
 #endif // QGS3DUTILS_H

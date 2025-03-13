@@ -1026,3 +1026,23 @@ QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, con
   const QgsPoint mapPoint( mapTransform.x(), mapTransform.y(), mapTransform.z() );
   return mapPoint;
 }
+
+QList<QVector4D> Qgs3DUtils::rectangleToClippingPlanes( const QVector<QgsPointXY> &rectangle )
+{
+  QgsVector vecLeftRight( rectangle.at( 1 ) - rectangle.at( 0 ) );
+  vecLeftRight = vecLeftRight.normalized();
+  QgsVector vecTopBottom( rectangle.at( 2 ) - rectangle.at( 1 ) );
+  vecTopBottom = vecTopBottom.normalized();
+  QList<QVector4D> clippingPlanes( {
+    //! left clip plane
+    QVector4D( vecLeftRight.x(), vecLeftRight.y(), 0, 0 ),
+    //! top clip plane
+    QVector4D( vecTopBottom.x(), vecTopBottom.y(), 0, 0 ),
+    //! right clip plane
+    QVector4D( -vecLeftRight.x(), -vecLeftRight.y(), 0, 0 ),
+    //! bottom clip plane
+    QVector4D( -vecTopBottom.x(), -vecTopBottom.y(), 0, 0 ),
+  } );
+
+  return clippingPlanes;
+}

@@ -62,6 +62,9 @@ class TestQgs3DUtils : public QgsTest
     void testDefinesToShaderCode();
     void testDecomposeTransformMatrix();
     void testScreenPointToMapCoordinates();
+    void testRectangleToClippingPlanes();
+
+  private:
 };
 
 //runs before all tests
@@ -516,6 +519,30 @@ void TestQgs3DUtils::testScreenPointToMapCoordinates()
   QGSCOMPARENEAR( mapPoint.z(), -252, 2 );
 }
 
+void TestQgs3DUtils::testRectangleToClippingPlanes()
+{
+  const QVector<QgsPointXY> vertices( {
+    QgsPointXY( 20, 20 ),
+    QgsPointXY( 50, 20 ),
+    QgsPointXY( 50, 50 ),
+    QgsPointXY( 20, 50 ),
+  } );
+  const QgsPointXY temp = QgsRectangle( vertices.at( 0 ), vertices.at( 2 ), false ).center();
+  const QgsVector3D center = QgsVector3D( temp.x(), temp.y(), 0 );
+  const QList<QVector4D> clippingPlanes = Qgs3DUtils::rectangleToClippingPlanes( vertices );
+  for ( int i = 0; i < clippingPlanes.size(); i++ )
+  {
+    QgsVector3D planePoint( vertices.at( i ).x(), vertices.at( i ).y(), 0 );
+    const double distance = QgsVector3D::dotProduct( center - planePoint, clippingPlanes.at( i ).toVector3D() );
+    // verify all normals are pointing inside the rectangle
+    QVERIFY( distance > 0 );
+  }
+
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
+}
 
 QGSTEST_MAIN( TestQgs3DUtils )
 #include "testqgs3dutils.moc"
