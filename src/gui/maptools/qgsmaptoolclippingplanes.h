@@ -45,7 +45,7 @@ class GUI_EXPORT QgsMapToolClippingPlanes : public QgsMapTool
     void deactivate() override;
 
     //! Removes the tool's rubber band from the canvas.
-    void clearRubberBand();
+    void clearRubberBand() const;
 
   signals:
     //! signal emitted on clipping planes change
@@ -54,6 +54,7 @@ class GUI_EXPORT QgsMapToolClippingPlanes : public QgsMapTool
   private:
     void calculateClippingPlanes();
 
+    QObjectUniquePtr<QgsRubberBand> mRubberBandPolygon;
     QObjectUniquePtr<QgsRubberBand> mRubberBandLines;
     QObjectUniquePtr<QgsRubberBand> mRubberBandPoints;
     QVector< QgsPointXY > mPoints;
