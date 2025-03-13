@@ -926,6 +926,7 @@ int QgsMeshLayer::closestEdge( const QgsPointXY &point, double searchRadius, Qgs
   // search for the closest edge in search area from point
   const QList<int> edgeIndexes = mesh->edgeIndexesForRectangle( searchRectangle );
   int selectedIndex = -1;
+  projectedPoint = QgsPointXY();
   if ( mesh->contains( QgsMesh::Edge ) &&
        mDataProvider->isValid() )
   {
