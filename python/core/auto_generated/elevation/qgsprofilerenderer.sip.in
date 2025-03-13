@@ -152,6 +152,35 @@ Renders a portion of the profile using the specified render ``context``.
 If ``sourceId`` is empty then all sources will be rendered, otherwise only the matching source will be rendered.
 %End
 
+    QgsLineSymbol *subsectionsSymbol();
+%Docstring
+Returns the line symbol used to draw the subsections.
+
+.. seealso:: :py:func:`setSubsectionsSymbol`
+
+.. versionadded:: 3.44
+%End
+
+    void setSubsectionsSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to draw the subsections. If ``symbol`` is ``None``, the subsections are not drawn.
+Ownership of ``symbol`` is transferred.
+
+.. seealso:: :py:func:`subsectionsSymbol`
+
+.. versionadded:: 3.44
+%End
+
+    void renderSubsectionsIndicator( QgsRenderContext &context, const QRectF &plotArea, double distanceMin, double distanceMax, double zMin, double zMax );
+%Docstring
+Renders the vertices of the profile curve as vertical lines using the specified render ``context``.
+The style of the lines the style corresponds to the symbol defined by :py:func:`~QgsProfilePlotRenderer.setSubsectionsSymbol`.
+
+.. seealso:: :py:func:`setSubsectionsSymbol`
+
+.. versionadded:: 3.44
+%End
+
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 %Docstring
 Snap a ``point`` to the results.
