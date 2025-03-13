@@ -1,0 +1,120 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsstoredquerymanager.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsStoredQueryManager : QObject
+{
+%Docstring(signature="appended")
+A manager for stored SQL queries.
+
+:py:class:`QgsStoredQueryManager` is not usually directly created, instead
+use the instance accessible through :py:func:`QgsGui.storedQueryManager()`.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstoredquerymanager.h"
+%End
+  public:
+
+    QgsStoredQueryManager( QObject *parent = 0 );
+%Docstring
+Constructor for QgsStoredQueryManager, with the specified
+``parent`` object.
+%End
+
+    void storeQuery( const QString &name, const QString &query, Qgis::QueryStorageBackend backend = Qgis::QueryStorageBackend::LocalProfile );
+%Docstring
+Saves a query to the manager.
+
+If a query with the same ``name`` already exists it will be overwritten with the new definition.
+
+:param name: user-set, unique name for the query.
+:param query: query definition to store
+:param backend: storage backend for query
+
+.. seealso:: :py:func:`queryAdded`
+
+.. seealso:: :py:func:`queryChanged`
+%End
+
+    void removeQuery( const QString &name, Qgis::QueryStorageBackend backend = Qgis::QueryStorageBackend::LocalProfile );
+%Docstring
+Removes the stored query with matching ``name``.
+
+:param name: name of query to remove
+:param backend: storage backend for query
+
+.. seealso:: :py:func:`queryRemoved`
+%End
+
+    QStringList allQueryNames( Qgis::QueryStorageBackend backend = Qgis::QueryStorageBackend::LocalProfile ) const;
+%Docstring
+Returns a list of the names of all stored queries for the specified ``backend``.
+%End
+
+    QString query( const QString &name, Qgis::QueryStorageBackend backend = Qgis::QueryStorageBackend::LocalProfile ) const;
+%Docstring
+Returns the query definition with matching ``name``, from the specified ``backend``.
+%End
+
+    class QueryDetails
+{
+%Docstring(signature="appended")
+Contains details about a stored query.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstoredquerymanager.h"
+%End
+      public:
+        QString name;
+
+        QString definition;
+
+        Qgis::QueryStorageBackend backend;
+    };
+
+    QList< QgsStoredQueryManager::QueryDetails > allQueries() const;
+%Docstring
+Returns details of all queries stored in the manager.
+
+Queries will be sorted by name.
+%End
+
+  signals:
+
+    void queryAdded( const QString &name, Qgis::QueryStorageBackend backend );
+%Docstring
+Emitted when a query is added to the manager.
+%End
+
+    void queryChanged( const QString &name, Qgis::QueryStorageBackend backend );
+%Docstring
+Emitted when an existing query is changed in the manager.
+%End
+
+    void queryRemoved( const QString &name, Qgis::QueryStorageBackend backend );
+%Docstring
+Emitted when a query is removed from the manager.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsstoredquerymanager.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

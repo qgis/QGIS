@@ -964,7 +964,7 @@ MDAL::DateTime MDAL::parseCFReferenceTime( const std::string &timeInformation, c
   if ( strings.size() > 3 )
   {
     std::string timeString = strings[3];
-    auto timeStringsValue = MDAL::split( timeString, ":" );
+    auto timeStringsValue = MDAL::split( timeString, ':' );
     if ( timeStringsValue.size() == 3 )
     {
       hours = MDAL::toInt( timeStringsValue[0] );

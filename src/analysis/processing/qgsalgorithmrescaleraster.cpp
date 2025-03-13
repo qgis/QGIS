@@ -191,7 +191,10 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
         }
       }
     }
-    destProvider->writeBlock( outputBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destProvider->writeBlock( outputBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destProvider->error().summary() ) );
+    }
   }
   destProvider->setEditable( false );
 

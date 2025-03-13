@@ -31,6 +31,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerExporter,
     QgsWkbTypes,
+    QgsProviderConnectionException,
+    QgsVectorDataProvider,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -42,97 +44,19 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
+class MssqlProviderTestBase(ProviderTestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        """Run before all tests"""
-        super().setUpClass()
-        # These are the connection details for the SQL Server instance running on Travis
-        cls.dbconn = "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' "
-        if "QGIS_MSSQLTEST_DB" in os.environ:
-            cls.dbconn = os.environ["QGIS_MSSQLTEST_DB"]
-        # Create test layers
-        cls.vl = QgsVectorLayer(
-            cls.dbconn
-            + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=',
-            "test",
-            "mssql",
-        )
-        assert (
-            cls.vl.dataProvider() is not None
-        ), f"No data provider for {cls.vl.source()}"
-        assert cls.vl.isValid(), cls.vl.dataProvider().error().message()
-        cls.source = cls.vl.dataProvider()
-        cls.poly_vl = QgsVectorLayer(
-            cls.dbconn
-            + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=',
-            "test",
-            "mssql",
-        )
-        assert cls.poly_vl.isValid(), cls.poly_vl.dataProvider().error().message()
-        cls.poly_provider = cls.poly_vl.dataProvider()
+    def getSubsetString(self):
+        return "[cnt] > 100 and [cnt] < 410"
 
-        # Triggers a segfault in the sql server odbc driver on Travis - TODO test with more recent Ubuntu base image
-        if os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"):
-            del cls.getEditableLayer
+    def getSubsetString2(self):
+        return "[cnt] > 100 and [cnt] < 400"
 
-        # Use connections API
-        md = QgsProviderRegistry.instance().providerMetadata("mssql")
-        cls.conn_api = md.createConnection(cls.dbconn, {})
+    def getSubsetString3(self):
+        return "[name]='Apple'"
 
-    def setUp(self):
-        for t in ["new_table", "new_table_multipoint", "new_table_multipolygon"]:
-            self.execSQLCommand(f"DROP TABLE IF EXISTS qgis_test.[{t}]")
-
-    def execSQLCommand(self, sql):
-        self.assertTrue(self.conn_api)
-        self.conn_api.executeSql(sql)
-
-    def getSource(self):
-        # create temporary table for edit tests
-        self.execSQLCommand("DROP TABLE IF EXISTS qgis_test.edit_data")
-        self.execSQLCommand(
-            """CREATE TABLE qgis_test.edit_data (pk INTEGER PRIMARY KEY,cnt integer, name nvarchar(max), name2 nvarchar(max), num_char nvarchar(max), dt datetime, [date] date, [time] time, geom geometry)"""
-        )
-        self.execSQLCommand(
-            "INSERT INTO [qgis_test].[edit_data] (pk, cnt, name, name2, num_char, dt, [date], [time], geom) VALUES "
-            "(5, -200, NULL, 'NuLl', '5', '2020-05-04T12:13:14', '2020-05-02', '12:13:01', geometry::STGeomFromText('POINT(-71.123 78.23)', 4326)),"
-            "(3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL),"
-            "(1, 100, 'Orange', 'oranGe', '1', '2020-05-03T12:13:14', '2020-05-03', '12:13:14', geometry::STGeomFromText('POINT(-70.332 66.33)', 4326)),"
-            "(2, 200, 'Apple', 'Apple', '2', '2020-05-04T12:14:14', '2020-05-04', '12:14:14', geometry::STGeomFromText('POINT(-68.2 70.8)', 4326)),"
-            "(4, 400, 'Honey', 'Honey', '4', '2021-05-04T13:13:14', '2021-05-04', '13:13:14', geometry::STGeomFromText('POINT(-65.32 78.3)', 4326))"
-        )
-
-        vl = QgsVectorLayer(
-            self.dbconn
-            + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."edit_data" (geom) sql=',
-            "test",
-            "mssql",
-        )
-        return vl
-
-    def testDeleteFeaturesPktInt(self):
-        vl = self.getSource()
-        dp = vl.dataProvider()
-
-        self.assertEqual(dp.featureCount(), 5)
-
-        self.assertTrue(dp.deleteFeatures([1, 3, 4]))
-        self.assertEqual(dp.featureCount(), 2)
-
-        self.assertFalse(dp.deleteFeatures([3]))
-        self.assertFalse(dp.deleteFeatures([10]))
-        self.assertFalse(dp.deleteFeatures([3, 10]))
-
-        self.assertTrue(dp.deleteFeatures([5]))
-        self.assertEqual(dp.featureCount(), 1)
-
-        self.assertTrue(dp.deleteFeatures([2]))
-        self.assertEqual(dp.featureCount(), 0)
-
-    def getEditableLayer(self):
-        return self.getSource()
+    def getSubsetStringNoMatching(self):
+        return "[name]='AppleBearOrangePear'"
 
     def enableCompiler(self):
         QgsSettings().setValue("/qgis/compileExpressions", True)
@@ -227,25 +151,134 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         }
         return filters
 
-    def testGetFeaturesUncompiled(self):
-        if os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"):
-            return
-        super().testGetFeaturesUncompiled()
 
-    def testGetFeaturesExp(self):
-        if os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"):
-            return
-        super().testGetFeaturesExp()
+class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
 
-    def testOrderBy(self):
-        if os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"):
-            return
-        super().testOrderBy()
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        super().setUpClass()
+        # These are the connection details for the SQL Server instance running on Travis
+        cls.dbconn = "service='testsqlserver' user=sa password='QGIStestSQLServer1234' "
+        if "QGIS_MSSQLTEST_DB" in os.environ:
+            cls.dbconn = os.environ["QGIS_MSSQLTEST_DB"]
+        # Create test layers
+        cls.vl = QgsVectorLayer(
+            cls.dbconn
+            + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=',
+            "test",
+            "mssql",
+        )
+        assert (
+            cls.vl.dataProvider() is not None
+        ), f"No data provider for {cls.vl.source()}"
+        assert cls.vl.isValid(), cls.vl.dataProvider().error().message()
+        cls.source = cls.vl.dataProvider()
+        cls.poly_vl = QgsVectorLayer(
+            cls.dbconn
+            + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=',
+            "test",
+            "mssql",
+        )
+        assert cls.poly_vl.isValid(), cls.poly_vl.dataProvider().error().message()
+        cls.poly_provider = cls.poly_vl.dataProvider()
 
-    def testOrderByCompiled(self):
-        if os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"):
+        # Use connections API
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        cls.conn_api = md.createConnection(cls.dbconn, {})
+
+    def setUp(self):
+        for t in ["new_table", "new_table_multipoint", "new_table_multipolygon"]:
+            self.execSQLCommand(f"DROP TABLE IF EXISTS qgis_test.[{t}]")
+
+    def execSQLCommand(self, sql):
+        self.assertTrue(self.conn_api)
+        self.conn_api.executeSql(sql)
+
+    def getSource(self):
+        # create temporary table for edit tests
+        self.execSQLCommand("DROP TABLE IF EXISTS qgis_test.edit_data")
+        self.execSQLCommand(
+            """CREATE TABLE qgis_test.edit_data (pk INTEGER PRIMARY KEY,cnt integer, name nvarchar(max), name2 nvarchar(max), num_char nvarchar(max), dt datetime, [date] date, [time] time, geom geometry)"""
+        )
+        self.execSQLCommand(
+            "INSERT INTO [qgis_test].[edit_data] (pk, cnt, name, name2, num_char, dt, [date], [time], geom) VALUES "
+            "(5, -200, NULL, 'NuLl', '5', '2020-05-04T12:13:14', '2020-05-02', '12:13:01', geometry::STGeomFromText('POINT(-71.123 78.23)', 4326)),"
+            "(3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL),"
+            "(1, 100, 'Orange', 'oranGe', '1', '2020-05-03T12:13:14', '2020-05-03', '12:13:14', geometry::STGeomFromText('POINT(-70.332 66.33)', 4326)),"
+            "(2, 200, 'Apple', 'Apple', '2', '2020-05-04T12:14:14', '2020-05-04', '12:14:14', geometry::STGeomFromText('POINT(-68.2 70.8)', 4326)),"
+            "(4, 400, 'Honey', 'Honey', '4', '2021-05-04T13:13:14', '2021-05-04', '13:13:14', geometry::STGeomFromText('POINT(-65.32 78.3)', 4326))"
+        )
+
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."edit_data" (geom) sql=',
+            "test",
+            "mssql",
+        )
+        return vl
+
+    def testDeleteFeaturesPktInt(self):
+        vl = self.getSource()
+        dp = vl.dataProvider()
+
+        self.assertEqual(dp.featureCount(), 5)
+
+        self.assertTrue(dp.deleteFeatures([1, 3, 4]))
+        self.assertEqual(dp.featureCount(), 2)
+
+        self.assertFalse(dp.deleteFeatures([3]))
+        self.assertFalse(dp.deleteFeatures([10]))
+        self.assertFalse(dp.deleteFeatures([3, 10]))
+
+        self.assertTrue(dp.deleteFeatures([5]))
+        self.assertEqual(dp.featureCount(), 1)
+
+        self.assertTrue(dp.deleteFeatures([2]))
+        self.assertEqual(dp.featureCount(), 0)
+
+    def getEditableLayer(self):
+        return self.getSource()
+
+    def testAddFeatureAllNull(self):
+        # overridden from base test because of non-null primary key, with no default clause
+        if not getattr(self, "getEditableLayer", None):
             return
-        super().testOrderByCompiled()
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        f1 = QgsFeature()
+        f1.setAttributes([8, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL])
+        f1.setGeometry(QgsGeometry.fromWkt("Point (-72.345 71.987)"))
+
+        if (
+            l.dataProvider().capabilities()
+            & QgsVectorDataProvider.Capability.AddFeatures
+        ):
+            # expect success
+            result, added = l.dataProvider().addFeatures([f1])
+            self.assertTrue(
+                result,
+                "Provider reported AddFeatures capability, but returned False to addFeatures",
+            )
+
+            # check result
+            f_new = next(
+                l.dataProvider().getFeatures(
+                    QgsFeatureRequest().setFilterFid(added[0].id())
+                )
+            )
+            self.assertEqual(
+                f_new.attributes(),
+                [8, NULL, NULL, NULL, NULL, NULL, NULL, NULL],
+            )
+        else:
+            # expect fail
+            self.assertFalse(
+                l.dataProvider().addFeatures([f1]),
+                "Provider reported no AddFeatures capability, but returned true to addFeatures",
+            )
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDateTimeTypes(self):
@@ -310,9 +343,6 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         self.assertIsInstance(f.attributes()[dec_idx], float)
         self.assertEqual(f.attributes()[dec_idx], 1.123)
 
-    @unittest.skipIf(
-        os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"), "Failing on Travis"
-    )
     def testCreateLayer(self):
         layer = QgsVectorLayer(
             "Point?field=id:integer&field=fldtxt:string&field=fldint:integer",
@@ -360,9 +390,6 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ["Point (1 2)", "", "Point (3 2)", "Point (4 3)"])
 
-    @unittest.skipIf(
-        os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"), "Failing on Travis"
-    )
     def testCreateLayerMultiPoint(self):
         layer = QgsVectorLayer(
             "MultiPoint?crs=epsg:3111&field=id:integer&field=fldtxt:string&field=fldint:integer",
@@ -402,9 +429,6 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ["MultiPoint ((1 2),(3 4))", "", "MultiPoint ((7 8))"])
 
-    @unittest.skipIf(
-        os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"), "Failing on Travis"
-    )
     def testCurveGeometries(self):
         geomtypes = [
             "CompoundCurveM",
@@ -421,15 +445,15 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
             "CircularString",
         ]
         geoms = [
-            "CompoundCurveM ((0 -23.43778 10, 0 23.43778 10),CircularStringM (0 23.43778 10, -45 33.43778 10, -90 23.43778 10),(-90 23.43778 10, -90 -23.43778 10),CircularStringM (-90 -23.43778 10, -45 -23.43778 10, 0 -23.43778 10))",
-            "CurvePolygonM (CompoundCurveM ((0 -23.43778 10, 0 -15.43778 10, 0 23.43778 10),CircularStringM (0 23.43778 10, -45 100 10, -90 23.43778 10),(-90 23.43778 10, -90 -23.43778 10),CircularStringM (-90 -23.43778 10, -45 -16.43778 10, 0 -23.43778 10)),CompoundCurveM (CircularStringM (-30 0 10, -48 -12 10, -60 0 10, -48 -6 10, -30 0 10)))",
-            "CircularStringM (0 0 10, 0.14644660940672 0.35355339059327 10, 0.5 0.5 10, 0.85355339059327 0.35355339059327 10, 1 0 10, 0.85355339059327 -0.35355339059327 10, 0.5 -0.5 10, 0.14644660940672 -0.35355339059327 10, 0 0 10)",
-            "CompoundCurveZM ((0 -23.43778 2 10, 0 23.43778 2 10),CircularStringZM (0 23.43778 2 10, -45 33.43778 2 10, -90 23.43778 2 10),(-90 23.43778 2 10, -90 -23.43778 2 10),CircularStringZM (-90 -23.43778 2 10, -45 -23.43778 2 10, 0 -23.43778 2 10))",
-            "CurvePolygonZM (CompoundCurveZM ((0 -23.43778 5 10, 0 -15.43778 8 10, 0 23.43778 6 10),CircularStringZM (0 23.43778 6 10, -45 100 6 10, -90 23.43778 6 10),(-90 23.43778 6 10, -90 -23.43778 5 10),CircularStringZM (-90 -23.43778 5 10, -45 -16.43778 5 10, 0 -23.43778 5 10)),CompoundCurveZM (CircularStringZM (-30 0 10 10, -48 -12 10 10, -60 0 10 10, -48 -6 10 10, -30 0 10 10)))",
-            "CircularStringZM (0 0 1 10, 0.14644660940672 0.35355339059327 1 10, 0.5 0.5 1 10, 0.85355339059327 0.35355339059327 1 10, 1 0 1 10, 0.85355339059327 -0.35355339059327 1 10, 0.5 -0.5 1 10, 0.14644660940672 -0.35355339059327 1 10, 0 0 1 10)",
-            "CompoundCurveZ ((0 -23.43778 2, 0 23.43778 2),CircularStringZ (0 23.43778 2, -45 33.43778 2, -90 23.43778 2),(-90 23.43778 2, -90 -23.43778 2),CircularStringZ (-90 -23.43778 2, -45 -23.43778 2, 0 -23.43778 2))",
-            "CurvePolygonZ (CompoundCurveZ ((0 -23.43778 5, 0 -15.43778 8, 0 23.43778 6),CircularStringZ (0 23.43778 6, -45 100 6, -90 23.43778 6),(-90 23.43778 6, -90 -23.43778 5),CircularStringZ (-90 -23.43778 5, -45 -16.43778 5, 0 -23.43778 5)),CompoundCurveZ (CircularStringZ (-30 0 10, -48 -12 10, -60 0 10, -48 -6 10, -30 0 10)))",
-            "CircularStringZ (0 0 1, 0.14644660940672 0.35355339059327 1, 0.5 0.5 1, 0.85355339059327 0.35355339059327 1, 1 0 1, 0.85355339059327 -0.35355339059327 1, 0.5 -0.5 1, 0.14644660940672 -0.35355339059327 1, 0 0 1)",
+            "CompoundCurve M ((0 -23.43778 10, 0 23.43778 10),CircularString M (0 23.43778 10, -45 33.43778 10, -90 23.43778 10),(-90 23.43778 10, -90 -23.43778 10),CircularString M (-90 -23.43778 10, -45 -23.43778 10, 0 -23.43778 10))",
+            "CurvePolygon M (CompoundCurve M ((0 -23.43778 10, 0 -15.43778 10, 0 23.43778 10),CircularString M (0 23.43778 10, -45 100 10, -90 23.43778 10),(-90 23.43778 10, -90 -23.43778 10),CircularString M (-90 -23.43778 10, -45 -16.43778 10, 0 -23.43778 10)),CompoundCurve M (CircularString M (-30 0 10, -48 -12 10, -60 0 10, -48 -6 10, -30 0 10)))",
+            "CircularString M (0 0 10, 0.14644660940672 0.35355339059327 10, 0.5 0.5 10, 0.85355339059327 0.35355339059327 10, 1 0 10, 0.85355339059327 -0.35355339059327 10, 0.5 -0.5 10, 0.14644660940672 -0.35355339059327 10, 0 0 10)",
+            "CompoundCurve ZM ((0 -23.43778 2 10, 0 23.43778 2 10),CircularString ZM (0 23.43778 2 10, -45 33.43778 2 10, -90 23.43778 2 10),(-90 23.43778 2 10, -90 -23.43778 2 10),CircularString ZM (-90 -23.43778 2 10, -45 -23.43778 2 10, 0 -23.43778 2 10))",
+            "CurvePolygon ZM (CompoundCurve ZM ((0 -23.43778 5 10, 0 -15.43778 8 10, 0 23.43778 6 10),CircularString ZM (0 23.43778 6 10, -45 100 6 10, -90 23.43778 6 10),(-90 23.43778 6 10, -90 -23.43778 5 10),CircularString ZM (-90 -23.43778 5 10, -45 -16.43778 5 10, 0 -23.43778 5 10)),CompoundCurve ZM (CircularString ZM (-30 0 10 10, -48 -12 10 10, -60 0 10 10, -48 -6 10 10, -30 0 10 10)))",
+            "CircularString ZM (0 0 1 10, 0.14644660940672 0.35355339059327 1 10, 0.5 0.5 1 10, 0.85355339059327 0.35355339059327 1 10, 1 0 1 10, 0.85355339059327 -0.35355339059327 1 10, 0.5 -0.5 1 10, 0.14644660940672 -0.35355339059327 1 10, 0 0 1 10)",
+            "CompoundCurve Z ((0 -23.43778 2, 0 23.43778 2),CircularString Z (0 23.43778 2, -45 33.43778 2, -90 23.43778 2),(-90 23.43778 2, -90 -23.43778 2),CircularString Z (-90 -23.43778 2, -45 -23.43778 2, 0 -23.43778 2))",
+            "CurvePolygon Z (CompoundCurve Z ((0 -23.43778 5, 0 -15.43778 8, 0 23.43778 6),CircularString Z (0 23.43778 6, -45 100 6, -90 23.43778 6),(-90 23.43778 6, -90 -23.43778 5),CircularString Z (-90 -23.43778 5, -45 -16.43778 5, 0 -23.43778 5)),CompoundCurve Z (CircularString Z (-30 0 10, -48 -12 10, -60 0 10, -48 -6 10, -30 0 10)))",
+            "CircularString Z (0 0 1, 0.14644660940672 0.35355339059327 1, 0.5 0.5 1, 0.85355339059327 0.35355339059327 1, 1 0 1, 0.85355339059327 -0.35355339059327 1, 0.5 -0.5 1, 0.14644660940672 -0.35355339059327 1, 0 0 1)",
             "CompoundCurve ((0 -23.43778, 0 23.43778),CircularString (0 23.43778, -45 33.43778, -90 23.43778),(-90 23.43778, -90 -23.43778),CircularString (-90 -23.43778, -45 -23.43778, 0 -23.43778))",
             "CurvePolygon (CompoundCurve ((0 -23.43778, 0 -15.43778, 0 23.43778),CircularString (0 23.43778, -45 100, -90 23.43778),(-90 23.43778, -90 -23.43778),CircularString (-90 -23.43778, -45 -16.43778, 0 -23.43778)),CompoundCurve (CircularString (-30 0, -48 -12, -60 0, -48 -6, -30 0)))",
             "CircularString (0 0, 0.14644660940672 0.35355339059327, 0.5 0.5, 0.85355339059327 0.35355339059327, 1 0, 0.85355339059327 -0.35355339059327, 0.5 -0.5, 0.14644660940672 -0.35355339059327, 0 0)",
@@ -441,18 +465,26 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
             layer = QgsVectorLayer(
                 geomtypes[idx] + "?crs=epsg:4326", "addfeat", "memory"
             )
+            self.assertTrue(layer.isValid())
             pr = layer.dataProvider()
-            pr.addFeatures([f])
+            self.assertTrue(pr.addFeatures([f]))
             uri = (
                 self.dbconn
                 + ' table="qgis_test"."new_table_curvegeom_'
                 + str(idx)
                 + '" sql='
             )
+
+            self.conn_api.dropVectorTable("qgis_test", f"new_table_curvegeom_{idx}")
+
             error, message = QgsVectorLayerExporter.exportLayer(
                 layer, uri, "mssql", QgsCoordinateReferenceSystem("EPSG:4326")
             )
-            self.assertEqual(error, QgsVectorLayerExporter.ExportError.NoError)
+            self.assertEqual(
+                error,
+                QgsVectorLayerExporter.ExportError.NoError,
+                f"got {error} for {t}",
+            )
             new_layer = QgsVectorLayer(uri, "new", "mssql")
             self.assertTrue(new_layer.isValid())
             self.assertEqual(new_layer.wkbType(), g.wkbType())
@@ -1149,18 +1181,6 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         )
         self.assertTrue(identity_field.isReadOnly())
 
-    def getSubsetString(self):
-        return "[cnt] > 100 and [cnt] < 410"
-
-    def getSubsetString2(self):
-        return "[cnt] > 100 and [cnt] < 400"
-
-    def getSubsetString3(self):
-        return "[name]='Apple'"
-
-    def getSubsetStringNoMatching(self):
-        return "[name]='AppleBearOrangePear'"
-
     def testExtentFromGeometryTable(self):
         """
         Check if the behavior of the mssql provider if extent is defined in the geometry_column table
@@ -1209,26 +1229,29 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
 
         md = QgsProviderRegistry.instance().providerMetadata("mssql")
         conn = md.createConnection(self.dbconn, {})
-        conn.addField(
-            QgsField("qgis_xmin", QVariant.Double, "FLOAT(24)"),
-            "dbo",
-            "geometry_columns",
-        )
-        conn.addField(
-            QgsField("qgis_xmax", QVariant.Double, "FLOAT(24)"),
-            "dbo",
-            "geometry_columns",
-        )
-        conn.addField(
-            QgsField("qgis_ymin", QVariant.Double, "FLOAT(24)"),
-            "dbo",
-            "geometry_columns",
-        )
-        conn.addField(
-            QgsField("qgis_ymax", QVariant.Double, "FLOAT(24)"),
-            "dbo",
-            "geometry_columns",
-        )
+        try:
+            conn.addField(
+                QgsField("qgis_xmin", QVariant.Double, "FLOAT(24)"),
+                "dbo",
+                "geometry_columns",
+            )
+            conn.addField(
+                QgsField("qgis_xmax", QVariant.Double, "FLOAT(24)"),
+                "dbo",
+                "geometry_columns",
+            )
+            conn.addField(
+                QgsField("qgis_ymin", QVariant.Double, "FLOAT(24)"),
+                "dbo",
+                "geometry_columns",
+            )
+            conn.addField(
+                QgsField("qgis_ymax", QVariant.Double, "FLOAT(24)"),
+                "dbo",
+                "geometry_columns",
+            )
+        except QgsProviderConnectionException:
+            pass
 
         # try with empty attribute
         layerUri.setParam("extentInGeometryColumns", "1")
@@ -1302,6 +1325,273 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
             )
         )
         self.assertEqual(vl.dataProvider().fields().at(1).length(), 12)
+
+    def test_query(self):
+
+        uri = f"{self.dbconn} key='_uid1_' table=\"(SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS _uid1_, concat('a', cnt ) as b, cast(cnt as numeric)/100 as c, * FROM [qgis_test].[someData])\""
+        vl = QgsVectorLayer(uri, "", "mssql")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(
+            [f.name() for f in vl.dataProvider().fields()],
+            [
+                "_uid1_",
+                "b",
+                "c",
+                "pk",
+                "cnt",
+                "name",
+                "name2",
+                "num_char",
+                "dt",
+                "date",
+                "time",
+            ],
+        )
+        self.assertEqual(
+            [f.type() for f in vl.dataProvider().fields()],
+            [
+                QVariant.LongLong,
+                QVariant.String,
+                QVariant.Double,
+                QVariant.Int,
+                QVariant.Int,
+                QVariant.String,
+                QVariant.String,
+                QVariant.String,
+                QVariant.DateTime,
+                QVariant.Date,
+                QVariant.Time,
+            ],
+        )
+        self.assertEqual(
+            [f.typeName() for f in vl.dataProvider().fields()],
+            [
+                "bigint",
+                "varchar(13)",
+                "numeric(24,6)",
+                "int",
+                "int",
+                "nvarchar(max)",
+                "nvarchar(max)",
+                "nvarchar(max)",
+                "datetime",
+                "date",
+                "time(7)",
+            ],
+        )
+        self.assertEqual(
+            [f.length() for f in vl.dataProvider().fields()],
+            [0, 13, 24, 0, 0, 0, 0, 0, -1, -1, -1],
+        )
+        self.assertEqual(
+            [f.precision() for f in vl.dataProvider().fields()],
+            [0, 0, -1, 0, 0, 0, 0, 0, -1, -1, -1],
+        )
+
+        self.assertEqual(vl.dataProvider().featureCount(), 5)
+
+        features = [f for f in vl.dataProvider().getFeatures()]
+        self.assertEqual(
+            [f.attributes() for f in features],
+            [
+                [
+                    1,
+                    "a100",
+                    1.0,
+                    1,
+                    100,
+                    "Orange",
+                    "oranGe",
+                    "1",
+                    QDateTime(2020, 5, 3, 12, 13, 14),
+                    QDate(2020, 5, 3),
+                    QTime(12, 13, 14),
+                ],
+                [
+                    2,
+                    "a200",
+                    2.0,
+                    2,
+                    200,
+                    "Apple",
+                    "Apple",
+                    "2",
+                    QDateTime(2020, 5, 4, 12, 14, 14),
+                    QDate(2020, 5, 4),
+                    QTime(12, 14, 14),
+                ],
+                [3, "a300", 3.0, 3, 300, "Pear", "PEaR", "3", NULL, NULL, NULL],
+                [
+                    4,
+                    "a400",
+                    4.0,
+                    4,
+                    400,
+                    "Honey",
+                    "Honey",
+                    "4",
+                    QDateTime(2021, 5, 4, 13, 13, 14),
+                    QDate(2021, 5, 4),
+                    QTime(13, 13, 14),
+                ],
+                [
+                    5,
+                    "a-200",
+                    -2.0,
+                    5,
+                    -200,
+                    NULL,
+                    "NuLl",
+                    "5",
+                    QDateTime(2020, 5, 4, 12, 13, 14),
+                    QDate(2020, 5, 2),
+                    QTime(12, 13, 1),
+                ],
+            ],
+        )
+
+    def test_query_without_row_number(self):
+
+        uri = f"{self.dbconn} table=\"(SELECT concat('a', cnt ) as b, cast(cnt as numeric)/100 as c, * FROM [qgis_test].[someData])\" key='pk'"
+        vl = QgsVectorLayer(uri, "", "mssql")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.dataProvider().fields()), 10)
+        self.assertEqual(
+            [f.name() for f in vl.dataProvider().fields()],
+            ["b", "c", "pk", "cnt", "name", "name2", "num_char", "dt", "date", "time"],
+        )
+        self.assertEqual(
+            [f.type() for f in vl.dataProvider().fields()],
+            [
+                QVariant.String,
+                QVariant.Double,
+                QVariant.Int,
+                QVariant.Int,
+                QVariant.String,
+                QVariant.String,
+                QVariant.String,
+                QVariant.DateTime,
+                QVariant.Date,
+                QVariant.Time,
+            ],
+        )
+        self.assertEqual(
+            [f.typeName() for f in vl.dataProvider().fields()],
+            [
+                "varchar(13)",
+                "numeric(24,6)",
+                "int",
+                "int",
+                "nvarchar(max)",
+                "nvarchar(max)",
+                "nvarchar(max)",
+                "datetime",
+                "date",
+                "time(7)",
+            ],
+        )
+        self.assertEqual(
+            [f.length() for f in vl.dataProvider().fields()],
+            [13, 24, 0, 0, 0, 0, 0, -1, -1, -1],
+        )
+        self.assertEqual(
+            [f.precision() for f in vl.dataProvider().fields()],
+            [0, -1, 0, 0, 0, 0, 0, -1, -1, -1],
+        )
+
+        self.assertEqual(vl.dataProvider().featureCount(), 5)
+
+        features = [f for f in vl.dataProvider().getFeatures()]
+        self.assertEqual(
+            [f.attributes() for f in features],
+            [
+                [
+                    "a100",
+                    1.0,
+                    1,
+                    100,
+                    "Orange",
+                    "oranGe",
+                    "1",
+                    QDateTime(2020, 5, 3, 12, 13, 14),
+                    QDate(2020, 5, 3),
+                    QTime(12, 13, 14),
+                ],
+                [
+                    "a200",
+                    2.0,
+                    2,
+                    200,
+                    "Apple",
+                    "Apple",
+                    "2",
+                    QDateTime(2020, 5, 4, 12, 14, 14),
+                    QDate(2020, 5, 4),
+                    QTime(12, 14, 14),
+                ],
+                ["a300", 3.0, 3, 300, "Pear", "PEaR", "3", NULL, NULL, NULL],
+                [
+                    "a400",
+                    4.0,
+                    4,
+                    400,
+                    "Honey",
+                    "Honey",
+                    "4",
+                    QDateTime(2021, 5, 4, 13, 13, 14),
+                    QDate(2021, 5, 4),
+                    QTime(13, 13, 14),
+                ],
+                [
+                    "a-200",
+                    -2.0,
+                    5,
+                    -200,
+                    NULL,
+                    "NuLl",
+                    "5",
+                    QDateTime(2020, 5, 4, 12, 13, 14),
+                    QDate(2020, 5, 2),
+                    QTime(12, 13, 1),
+                ],
+            ],
+        )
+
+
+class TestPyQgsMssqlProviderQuery(QgisTestCase, MssqlProviderTestBase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        super().setUpClass()
+        # These are the connection details for the SQL Server instance running on Travis
+        cls.dbconn = "service='testsqlserver' user=sa password='QGIStestSQLServer1234' "
+        if "QGIS_MSSQLTEST_DB" in os.environ:
+            cls.dbconn = os.environ["QGIS_MSSQLTEST_DB"]
+        # Create test layers
+        cls.vl = QgsVectorLayer(
+            cls.dbconn
+            + " sslmode=disable srid=4326 type=POINT key='pk' table=\"(SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS pk, cnt as cnt, name as name, name2 as name2, num_char as num_char, dt as dt, date as date, time as time, geom as geom FROM [qgis_test].[someData])\" (geom) sql=",
+            "test",
+            "mssql",
+        )
+        assert (
+            cls.vl.dataProvider() is not None
+        ), f"No data provider for {cls.vl.source()}"
+        assert cls.vl.isValid(), cls.vl.dataProvider().error().message()
+        cls.source = cls.vl.dataProvider()
+        cls.poly_vl = QgsVectorLayer(
+            cls.dbconn
+            + " sslmode=disable srid=4326 type=POINT key='pk' table=\"(SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS pk, geom as geometry FROM [qgis_test].[some_poly_data])\" (geometry) sql=",
+            "test",
+            "mssql",
+        )
+        assert cls.poly_vl.isValid(), cls.poly_vl.dataProvider().error().message()
+        cls.poly_provider = cls.poly_vl.dataProvider()
+
+        # Use connections API
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        cls.conn_api = md.createConnection(cls.dbconn, {})
 
 
 if __name__ == "__main__":

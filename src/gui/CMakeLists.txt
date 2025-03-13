@@ -593,6 +593,7 @@ set(QGIS_GUI_SRCS
   qgsdataitemguiproviderregistry.cpp
   qgsdataitemguiproviderutils.cpp
   qgsdatasourceselectdialog.cpp
+  qgsdbimportvectorlayerdialog.cpp
   qgsdbqueryhistoryprovider.cpp
   qgsdbrelationshipwidget.cpp
   qgsdecoratedscrollbar.cpp
@@ -773,6 +774,7 @@ set(QGIS_GUI_SRCS
   qgssqlcomposerdialog.cpp
   qgsstackedwidget.cpp
   qgsstatusbar.cpp
+  qgsstoredquerymanager.cpp
   qgssymbolbutton.cpp
   qgssymbollayerselectionwidget.cpp
   qgstabbarproxystyle.cpp
@@ -857,6 +859,7 @@ set(QGIS_GUI_HDRS
   qgsdataitemguiproviderutils.h
   qgsdatasourcemanagerdialog.h
   qgsdatasourceselectdialog.h
+  qgsdbimportvectorlayerdialog.h
   qgsdbqueryhistoryprovider.h
   qgsdbrelationshipwidget.h
   qgsdecoratedscrollbar.h
@@ -1041,6 +1044,7 @@ set(QGIS_GUI_HDRS
   qgssqlcomposerdialog.h
   qgsstackedwidget.h
   qgsstatusbar.h
+  qgsstoredquerymanager.h
   qgsstyleitemslistwidget.h
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h

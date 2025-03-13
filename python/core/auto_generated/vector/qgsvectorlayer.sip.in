@@ -1148,9 +1148,6 @@ Moves the vertex at the given position number,
 ring and item (first number is index 0), and feature
 to the given coordinates.
 
-.. note::
-
-   available in Python as moveVertexV2
 
 .. note::
 
@@ -1257,9 +1254,6 @@ Adds a ring to polygon/multipolygon features (takes ownership)
          - AddRingNotValid
          - AddRingCrossesExistingRings
 
-.. note::
-
-   available in Python as addCurvedRing
 
 .. note::
 
@@ -1343,9 +1337,6 @@ Adds a new part polygon to a multipart feature
          - InvalidBaseGeometry
          - InvalidInputGeometryType
 
-.. note::
-
-   available in Python bindings as addPartV2
 
 .. note::
 
@@ -1358,9 +1349,6 @@ Adds a new part polygon to a multipart feature
     Qgis::GeometryOperationResult addPart( QgsCurve *ring /Transfer/ ) /PyName=addCurvedPart/;
 %Docstring
 
-.. note::
-
-   available in Python as addCurvedPart
 
 .. note::
 

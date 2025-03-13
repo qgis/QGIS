@@ -140,12 +140,12 @@ void TestQgsRasterMarker::rasterMarkerSymbol()
 
 void TestQgsRasterMarker::anchor()
 {
-  mRasterMarker->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::Right );
-  mRasterMarker->setVerticalAnchorPoint( QgsMarkerSymbolLayer::Bottom );
+  mRasterMarker->setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint::Right );
+  mRasterMarker->setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Bottom );
   const bool result = imageCheck( QStringLiteral( "rastermarker_anchor" ) );
   QVERIFY( result );
-  mRasterMarker->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HCenter );
-  mRasterMarker->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VCenter );
+  mRasterMarker->setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint::Center );
+  mRasterMarker->setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Center );
 }
 
 void TestQgsRasterMarker::alpha()
@@ -205,11 +205,11 @@ void TestQgsRasterMarker::percentageAnchor()
 {
   mRasterMarker->setSizeUnit( Qgis::RenderUnit::Percentage );
   mRasterMarker->setSize( 6.3 );
-  mRasterMarker->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::Right );
-  mRasterMarker->setVerticalAnchorPoint( QgsMarkerSymbolLayer::Bottom );
+  mRasterMarker->setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint::Right );
+  mRasterMarker->setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Bottom );
   const bool result = imageCheck( QStringLiteral( "rastermarker_anchor_percentage" ) );
-  mRasterMarker->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HCenter );
-  mRasterMarker->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VCenter );
+  mRasterMarker->setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint::Center );
+  mRasterMarker->setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Center );
   QVERIFY( result );
 }
 

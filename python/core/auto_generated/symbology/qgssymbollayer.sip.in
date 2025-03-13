@@ -759,20 +759,6 @@ Abstract base class for marker symbol layers.
 %End
   public:
 
-    enum HorizontalAnchorPoint
-    {
-      Left,
-      HCenter,
-      Right,
-    };
-
-    enum VerticalAnchorPoint
-    {
-      Top,
-      VCenter,
-      Bottom,
-    };
-
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
@@ -985,7 +971,7 @@ Returns the map unit scale for the symbol's offset.
 .. seealso:: :py:func:`offsetUnit`
 %End
 
-    void setHorizontalAnchorPoint( HorizontalAnchorPoint h );
+    void setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint h );
 %Docstring
 Sets the horizontal anchor point for positioning the symbol.
 
@@ -997,7 +983,7 @@ Sets the horizontal anchor point for positioning the symbol.
 .. seealso:: :py:func:`setVerticalAnchorPoint`
 %End
 
-    HorizontalAnchorPoint horizontalAnchorPoint() const;
+    Qgis::HorizontalAnchorPoint horizontalAnchorPoint() const;
 %Docstring
 Returns the horizontal anchor point for positioning the symbol. The symbol will be drawn so that
 the horizontal anchor point is aligned with the marker's desired location.
@@ -1007,7 +993,7 @@ the horizontal anchor point is aligned with the marker's desired location.
 .. seealso:: :py:func:`verticalAnchorPoint`
 %End
 
-    void setVerticalAnchorPoint( VerticalAnchorPoint v );
+    void setVerticalAnchorPoint( Qgis::VerticalAnchorPoint v );
 %Docstring
 Sets the vertical anchor point for positioning the symbol.
 
@@ -1019,7 +1005,7 @@ Sets the vertical anchor point for positioning the symbol.
 .. seealso:: :py:func:`setHorizontalAnchorPoint`
 %End
 
-    VerticalAnchorPoint verticalAnchorPoint() const;
+    Qgis::VerticalAnchorPoint verticalAnchorPoint() const;
 %Docstring
 Returns the vertical anchor point for positioning the symbol. The symbol will be drawn so that
 the vertical anchor point is aligned with the marker's desired location.
@@ -1091,9 +1077,6 @@ and any displacement required to align with the marker's anchor point.
 :param offsetX: will be set to required horizontal offset (in painter units)
 :param offsetY: will be set to required vertical offset (in painter units)
 
-.. note::
-
-   available in Python as markerOffsetWithWidthAndHeight
 %End
 
     void markerOffset( QgsSymbolRenderContext &context, double width, double height,
@@ -1102,9 +1085,6 @@ and any displacement required to align with the marker's anchor point.
                        const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const /PyName=markerOffset2/;
 %Docstring
 
-.. note::
-
-   available in Python bindings as markerOffset2
 %End
 
     static QPointF _rotatedOffset( QPointF offset, double angle );

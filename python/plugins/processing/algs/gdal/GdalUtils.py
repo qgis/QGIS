@@ -189,6 +189,15 @@ class GdalUtils:
         proc.setStdErrHandler(on_stderr)
 
         res = proc.run(feedback)
+
+        # Ensure to flush the buffers if they are not empty.
+        # For example, this can happen on stdout if the
+        # output did not end with a new line.
+        if on_stdout.buffer:
+            loglines.append(on_stdout.buffer.rstrip())
+        if on_stderr.buffer:
+            loglines.append(on_stderr.buffer.rstrip())
+
         if feedback.isCanceled() and res != 0:
             feedback.pushInfo(GdalUtils.tr("Process was canceled and did not complete"))
         elif (

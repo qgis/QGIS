@@ -21,6 +21,8 @@ typedef QMap<int, QString> QgsFieldNameMap;
 typedef QMap<int, QgsField> QgsFieldMap;
 
 
+
+
 typedef QVector<QVariant> QgsAttributes;
 
 %MappedType QgsAttributes
@@ -39,14 +41,60 @@ typedef QVector<QVariant> QgsAttributes;
   // Set the list elements.
   for ( int i = 0; i < sipCpp->size(); ++i )
   {
-    QVariant *v = new QVariant( sipCpp->at( i ) );
-    PyObject *tobj;
+    const QVariant v = sipCpp->at( i );
+    PyObject *tobj = NULL;
+    // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+    if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+    {
+      Py_INCREF( Py_None );
+      tobj = Py_None;
+    }
+    else
+    {
+      switch ( v.userType() )
+      {
+        case QMetaType::Type::Int:
+          tobj = PyLong_FromLong( v.toInt() );
+          break;
 
-    if ( ( tobj = sipConvertFromNewType( v, sipType_QVariant, Py_None ) ) == NULL )
+        case QMetaType::Type::UInt:
+          tobj = PyLong_FromUnsignedLong( v.toUInt() );
+          break;
+
+        case QMetaType::Type::Long:
+        case QMetaType::Type::LongLong:
+          tobj = PyLong_FromLongLong( v.toLongLong() );
+          break;
+
+        case QMetaType::Type::ULong:
+        case QMetaType::Type::ULongLong:
+          tobj = PyLong_FromUnsignedLongLong( v.toULongLong() );
+          break;
+
+        case QMetaType::Type::Bool:
+          tobj = PyBool_FromLong( v.toBool() ? 1 : 0 );
+          break;
+
+        case QMetaType::Type::Float:
+        case QMetaType::Type::Double:
+          tobj = PyFloat_FromDouble( v.toDouble() );
+          break;
+
+        case QMetaType::Type::QString:
+          tobj = PyUnicode_FromString( v.toString().toUtf8().constData() );
+          break;
+
+        default:
+        {
+          QVariant *newV = new QVariant( v );
+          tobj = sipConvertFromNewType( newV, sipType_QVariant, sipTransferObj );
+          break;
+        }
+      }
+    }
+    if ( tobj == NULL )
     {
       Py_DECREF( l );
-      delete v;
-
       return NULL;
     }
 
@@ -125,8 +173,6 @@ typedef QVector<QVariant> QgsAttributes;
   return sipGetState( sipTransferObj );
 %End
 };
-
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

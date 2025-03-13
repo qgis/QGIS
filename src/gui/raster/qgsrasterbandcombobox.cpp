@@ -54,6 +54,8 @@ QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
 
   // default to editable, until a layer is set
   setEditable( true );
+
+  setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
 }
 
 QgsRasterLayer *QgsRasterBandComboBox::layer() const

@@ -217,6 +217,13 @@ Returns the global input controller manager.
 .. versionadded:: 3.32
 %End
 
+    static QgsStoredQueryManager *storedQueryManager() /KeepReference/;
+%Docstring
+Returns the global stored SQL query manager.
+
+.. versionadded:: 3.44
+%End
+
     enum HigFlag
     {
       HigMenuTextIsTitleCase,

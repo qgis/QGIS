@@ -162,9 +162,6 @@ default values in the SVG file, only the first one is considered.
 :param defaultStrokeOpacity: will be set to default stroke opacity specified in SVG, if present
 :param blocking: forces to wait for loading before returning image (optional).
 
-.. note::
-
-   Available in Python bindings as containsParamsV3
 
 .. warning::
 

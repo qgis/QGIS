@@ -48,9 +48,6 @@ Moves the vertex at the given position number,
 ring and item (first number is index 0), and feature
 to the given coordinates
 
-.. note::
-
-   available in Python bindings as moveVertexV2
 %End
 
     Qgis::VectorEditResult deleteVertex( QgsFeatureId featureId, int vertex );
@@ -114,9 +111,6 @@ Adds a ring to polygon/multipolygon features
 
 :return: OperationResult result code: success or reason of failure
 
-.. note::
-
-   available in python bindings as addCurvedRing
 %End
 
   Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &ring, QgsFeatureId featureId ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
@@ -162,9 +156,6 @@ Adds a new part polygon to a multipart feature
          - :py:class:`QgsGeometry`.InvalidBaseGeometry
          - :py:class:`QgsGeometry`.InvalidInput
 
-.. note::
-
-   available in python bindings as addCurvedPart
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );

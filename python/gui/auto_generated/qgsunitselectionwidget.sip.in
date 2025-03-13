@@ -182,9 +182,6 @@ Sets the selected unit index
 
 :param unitIndex: index of unit to set as current
 
-.. note::
-
-   available in Python bindings as setUnitIndex
 %End
 
     void setUnit( Qgis::RenderUnit unit );

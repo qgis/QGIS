@@ -137,7 +137,9 @@ class StyleStorageTestBase:
         vl.saveStyleToDatabase("style3", "style3", False, None)
         num, ids, names, desc, err = vl.listStylesInDatabase()
 
-        self.assertTrue({"style2", "style3", "style1"}.issubset(set(names)))
+        self.assertIn("style1", names)
+        self.assertIn("style2", names)
+        self.assertIn("style3", names)
 
         del vl
         vl = QgsVectorLayer(uri, "vl", self.providerKey)

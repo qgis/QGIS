@@ -337,9 +337,19 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
       }
     }
     if ( groundDestProvider )
-      groundDestProvider->writeBlock( outputGroundBlock.get(), mBand, tileLeft, tileTop );
+    {
+      if ( !groundDestProvider->writeBlock( outputGroundBlock.get(), mBand, tileLeft, tileTop ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( groundDestProvider->error().summary() ) );
+      }
+    }
     if ( nonGroundDestProvider )
-      nonGroundDestProvider->writeBlock( outputNonGroundBlock.get(), mBand, tileLeft, tileTop );
+    {
+      if ( !nonGroundDestProvider->writeBlock( outputNonGroundBlock.get(), mBand, tileLeft, tileTop ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( nonGroundDestProvider->error().summary() ) );
+      }
+    }
   }
   if ( groundDestProvider )
     groundDestProvider->setEditable( false );

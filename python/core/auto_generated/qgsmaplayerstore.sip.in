@@ -167,9 +167,6 @@ These layers will also be deleted.
 
 .. seealso:: :py:func:`removeAllMapLayers`
 
-.. note::
-
-   available in Python bindings as removeMapLayersById.
 %End
 
     void removeMapLayers( const QList<QgsMapLayer *> &layers );

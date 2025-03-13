@@ -723,7 +723,9 @@ bool QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *data 
   CPLErr err = gdalRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, data, mXBlockSize, mYBlockSize, gdalDataType, 0, 0 );
   if ( err != CPLE_None )
   {
-    QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    const QString error = QStringLiteral( "RasterIO error: %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    setError( QgsError( error, QStringLiteral( "readBlock" ) ) );
+    QgsLogger::warning( error );
     return false;
   }
   return true;
@@ -1077,7 +1079,8 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
 
     if ( err != CPLE_None )
     {
-      const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
+      const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() );
+      setError( QgsError( lastError, QStringLiteral( "readBlock" ) ) );
       if ( feedback )
         feedback->appendError( lastError );
 
@@ -1118,6 +1121,10 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
                                   dataSize,
                                   dataSize * bufferWidthPix,
                                   &sExtraArg );
+    if ( err != CPLE_None )
+    {
+      setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "readBlock" ) ) );
+    }
 
     qgsFree( tmpBlock );
 
@@ -1184,7 +1191,8 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
 
   if ( err != CPLE_None )
   {
-    const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
+    const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() );
+    setError( QgsError( lastError, QStringLiteral( "readBlock" ) ) );
     if ( feedback )
       feedback->appendError( lastError );
 
@@ -1609,7 +1617,10 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
       break;
   }
   if ( err != CE_None )
+  {
+    setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "sample" ) ) );
     return std::numeric_limits<double>::quiet_NaN();
+  }
 
   if ( ( sourceHasNoDataValue( band ) && useSourceNoDataValue( band ) &&
          ( std::isnan( value ) || qgsDoubleNear( static_cast< double >( value ), sourceNoDataValue( band ) ) ) ) ||
@@ -1957,6 +1968,7 @@ bool QgsGdalProvider::hasHistogram( int bandNo,
   // if there was any error/warning assume the histogram is not valid or non-existent
   if ( myError != CE_None )
   {
+    setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "hasHistogram" ) ) );
     QgsDebugMsgLevel( QStringLiteral( "Cannot get default GDAL histogram" ), 2 );
     return false;
   }
@@ -2111,6 +2123,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
   if ( myError != CE_None || ( feedback && feedback->isCanceled() ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Cannot get histogram" ), 2 );
+    setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "histogram" ) ) );
     delete [] myHistogramArray;
     return myHistogram;
   }
@@ -4022,7 +4035,15 @@ bool QgsGdalProvider::write( const void *data, int band, int width, int height, 
     gdalDataType = GDT_Float64;
 #endif
 
-  return gdalRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, const_cast< void * >( data ), width, height, gdalDataType, 0, 0 ) == CE_None;
+  if ( gdalRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, const_cast< void * >( data ), width, height, gdalDataType, 0, 0 ) == CE_None )
+  {
+    return true;
+  }
+  else
+  {
+    setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "write" ) ) );
+    return false;
+  }
 }
 
 bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
@@ -4081,6 +4102,7 @@ bool QgsGdalProvider::remove()
     CPLErr err = GDALDeleteDataset( driver, dataSourceUri( true ).toUtf8().constData() );
     if ( err != CPLE_None )
     {
+      setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "remove" ) ) );
       QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
       QgsDebugError( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
       return false;

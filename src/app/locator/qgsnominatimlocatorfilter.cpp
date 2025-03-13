@@ -33,6 +33,13 @@ QgsNominatimLocatorFilter::QgsNominatimLocatorFilter( QgsGeocoderInterface *geoc
   setUseWithoutPrefix( false );
 }
 
+QgsNominatimLocatorFilter *QgsNominatimLocatorFilter::clone() const
+{
+  auto filter = std::make_unique< QgsNominatimLocatorFilter >( geocoder(), mCanvas );
+  filter->setFetchResultsDelay( fetchResultsDelay() );
+  return filter.release();
+}
+
 void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
   QgsSettings settings;

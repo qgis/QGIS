@@ -240,7 +240,10 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
       feedback->setProgress( static_cast<double>( cellcnt ) / static_cast<double>( totalCellcnt ) * 100 );
       cellcnt++;
     }
-    provider->writeBlock( rasterDataLine.get(), 1, 0, row );
+    if ( !provider->writeBlock( rasterDataLine.get(), 1, 0, row ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( provider->error().summary() ) );
+    }
 
     //'carriage return and newline' for search geometry
     mSearchGeometry.translate( ( cols - 1 ) * -mPixelSize, -mPixelSize );

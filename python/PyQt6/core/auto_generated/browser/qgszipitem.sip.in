@@ -64,9 +64,6 @@ Creates a new data item from the specified path.
 %Docstring
 Creates a new data item from the specified path.
 
-.. note::
-
-   available in Python as itemFromFilePath
 %End
 
     static QIcon iconZip();

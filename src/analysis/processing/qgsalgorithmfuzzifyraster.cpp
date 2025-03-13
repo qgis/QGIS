@@ -239,7 +239,10 @@ void QgsFuzzifyRasterLinearMembershipAlgorithm::fuzzify( QgsRasterDataProvider *
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationProvider->error().summary() ) );
+    }
   }
 }
 
@@ -365,7 +368,10 @@ void QgsFuzzifyRasterPowerMembershipAlgorithm::fuzzify( QgsRasterDataProvider *d
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationProvider->error().summary() ) );
+    }
   }
 }
 
@@ -468,7 +474,10 @@ void QgsFuzzifyRasterLargeMembershipAlgorithm::fuzzify( QgsRasterDataProvider *d
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationProvider->error().summary() ) );
+    }
   }
 }
 
@@ -572,7 +581,10 @@ void QgsFuzzifyRasterSmallMembershipAlgorithm::fuzzify( QgsRasterDataProvider *d
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationProvider->error().summary() ) );
+    }
   }
 }
 
@@ -676,7 +688,10 @@ void QgsFuzzifyRasterGaussianMembershipAlgorithm::fuzzify( QgsRasterDataProvider
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationProvider->error().summary() ) );
+    }
   }
 }
 
@@ -781,7 +796,10 @@ void QgsFuzzifyRasterNearMembershipAlgorithm::fuzzify( QgsRasterDataProvider *de
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationProvider->error().summary() ) );
+    }
   }
 }
 

@@ -21,7 +21,7 @@ static const char *EMPTY_STR = "";
 
 const char *MDAL_Version()
 {
-  return "1.3.0";
+  return "1.3.1";
 }
 
 MDAL_Status MDAL_LastStatus()

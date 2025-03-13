@@ -536,9 +536,6 @@ a hierarchy of keys and corresponding values
 
    The key string must be valid xml tag names in order to be saved to the file.
 
-.. note::
-
-   available in Python bindings as writeEntryBool
 
 .. seealso:: :py:func:`readBoolEntry`
 %End
@@ -554,9 +551,6 @@ a hierarchy of keys and corresponding values
 
    The key string must be valid xml tag names in order to be saved to the file.
 
-.. note::
-
-   available in Python bindings as writeEntryDouble
 
 .. seealso:: :py:func:`readDoubleEntry`
 %End

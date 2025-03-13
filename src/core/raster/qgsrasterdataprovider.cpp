@@ -370,6 +370,7 @@ bool QgsRasterDataProvider::writeBlock( QgsRasterBlock *block, int band, int xOf
     return false;
   if ( !isEditable() )
   {
+    setError( QgsError( QStringLiteral( "writeBlock() called on read-only provider." ), QStringLiteral( "writeBlock" ) ) );
     QgsDebugError( QStringLiteral( "writeBlock() called on read-only provider." ) );
     return false;
   }

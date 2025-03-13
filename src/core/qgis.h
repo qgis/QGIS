@@ -753,6 +753,36 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( SymbolRotationMode )
 
+
+    /**
+     * Marker symbol horizontal anchor points.
+     *
+     * \note Prior to QGIS 3.44 this was available as QgsMarkerSymbolLayer::HorizontalAnchorPoint
+     * \since QGIS 3.44
+     */
+    enum class HorizontalAnchorPoint SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMarkerSymbolLayer, HorizontalAnchorPoint ) : int
+      {
+      Left, //!< Align to left side of symbol
+      Center SIP_MONKEYPATCH_COMPAT_NAME( HCenter ), //!< Align to horizontal center of symbol
+      Right, //!< Align to right side of symbol
+    };
+    Q_ENUM( HorizontalAnchorPoint )
+
+    /**
+     * Marker symbol vertical anchor points.
+     *
+     * \note Prior to QGIS 3.44 this was available as QgsMarkerSymbolLayer::VerticalAnchorPoint
+     * \since QGIS 3.44
+     */
+    enum class VerticalAnchorPoint SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMarkerSymbolLayer, VerticalAnchorPoint ) : int
+      {
+      Top, //!< Align to top of symbol
+      Center SIP_MONKEYPATCH_COMPAT_NAME( VCenter ), //!< Align to vertical center of symbol
+      Bottom, //!< Align to bottom of symbol
+      Baseline, //!< Align to baseline of symbol, e.g. font baseline for font marker symbol layers. Treated as Bottom if no baseline is available for the symbol layer type. \since QGIS 3.44
+    };
+    Q_ENUM( VerticalAnchorPoint )
+
     /**
      * \brief Flags controlling behavior of vector feature renderers.
      *
@@ -970,7 +1000,10 @@ class CORE_EXPORT Qgis
     enum class HttpMethod : int
     {
       Get = 0, //!< GET method
-      Post = 1 //!< POST method
+      Post = 1, //!< POST method
+      Head, //!< HEAD method. \since QGIS 3.44
+      Put, //!< PUT method. \since QGIS 3.44
+      Delete, //!< DELETE method. \since QGIS 3.44
     };
     Q_ENUM( HttpMethod )
 
@@ -3343,6 +3376,18 @@ class CORE_EXPORT Qgis
     Q_FLAG( HistoryProviderBackends )
 
     /**
+     * Stored query storage backends.
+     *
+     * \since QGIS 3.44
+     */
+    enum class QueryStorageBackend : int
+    {
+      LocalProfile, //!< Local user profile
+      CurrentProject, //!< Current QGIS project
+    };
+    Q_ENUM( QueryStorageBackend )
+
+    /**
      * Processing data source types.
      *
      * \note Prior to QGIS 3.36 this was available as QgsProcessing::SourceType
@@ -5120,10 +5165,25 @@ class CORE_EXPORT Qgis
     {
       SetFieldComment = 1 << 0, //!< Can set comments for fields via setFieldComment()
       SetFieldAlias = 1 << 1, //!< Can set aliases for fields via setFieldAlias()
+      SetTableComment = 1 << 2, //!< Can set comments for tables via setTableComment() \since QGIS 3.44
     };
     Q_ENUM( DatabaseProviderConnectionCapability2 )
     Q_DECLARE_FLAGS( DatabaseProviderConnectionCapabilities2, DatabaseProviderConnectionCapability2 )
     Q_FLAG( DatabaseProviderConnectionCapabilities2 )
+
+    /**
+     * Represents capabilities of a database provider connection when importing table data.
+     *
+     * \since QGIS 3.44
+     */
+    enum class DatabaseProviderTableImportCapability : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      SetGeometryColumnName = 1 << 0, //!< Can set the name of the geometry column
+      SetPrimaryKeyName = 1 << 1, //!< Can set the name of the primary key column
+    };
+    Q_ENUM( DatabaseProviderTableImportCapability )
+    Q_DECLARE_FLAGS( DatabaseProviderTableImportCapabilities, DatabaseProviderTableImportCapability )
+    Q_FLAG( DatabaseProviderTableImportCapabilities )
 
     /**
      * The StorageCapability enum represents the style storage operations supported by the provider.
@@ -5915,6 +5975,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderTableImportCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FileOperationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GeometryValidityFlags )

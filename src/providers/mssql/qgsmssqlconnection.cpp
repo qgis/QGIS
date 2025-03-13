@@ -18,6 +18,7 @@
 #include "qgsmssqlconnection.h"
 #include "qgsmssqlprovider.h"
 #include "qgsmssqldatabase.h"
+#include "qgsmssqlutils.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsdatasourceuri.h"
@@ -422,7 +423,7 @@ QString QgsMssqlConnection::buildQueryForTables( bool allowTablesWithNoGeometry,
   {
     QStringList quotedSchemas;
     for ( const QString &sch : excludedSchemaList )
-      quotedSchemas.append( QgsMssqlProvider::quotedValue( sch ) );
+      quotedSchemas.append( QgsMssqlUtils::quotedValue( sch ) );
     notSelectedSchemas = quotedSchemas.join( ',' );
     notSelectedSchemas.prepend( QStringLiteral( "( " ) );
     notSelectedSchemas.append( QStringLiteral( " )" ) );

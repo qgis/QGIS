@@ -67,9 +67,6 @@ Does the given action.
 :param defaultValueIndex: index of the field to be used if the action has a $currfield placeholder.
 :param scope: expression context scope to add during expression evaluation
 
-.. note::
-
-   available in Python bindings as doActionFeature
 %End
 
     void doAction( QUuid actionId, const QgsFeature &feature, const QgsExpressionContext &context );

@@ -382,9 +382,6 @@ temporary layer store.
    this version of the :py:func:`~QgsProcessingUtils.createFeatureSink` function has an API designed around use from the
    SIP bindings. c++ code should call the other :py:func:`~QgsProcessingUtils.createFeatureSink` version.
 
-.. note::
-
-   available in Python bindings as :py:func:`~QgsProcessingUtils.createFeatureSink`
 %End
 
 

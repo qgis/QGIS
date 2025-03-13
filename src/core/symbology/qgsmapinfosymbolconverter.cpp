@@ -1398,7 +1398,7 @@ QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier,
   bool isNull = false;
   bool hasShadow = false;
   double angle = 0;
-  QgsMarkerSymbolLayer::VerticalAnchorPoint vertAlign = QgsMarkerSymbolLayer::VCenter;
+  Qgis::VerticalAnchorPoint vertAlign = Qgis::VerticalAnchorPoint::Center;
   QPointF shadowOffset;
   switch ( identifier )
   {
@@ -1486,14 +1486,14 @@ QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier,
       shape = Qgis::MarkerShape::Arrow;
       size *= 0.66666;
       angle = 45;
-      vertAlign = QgsMarkerSymbolLayer::Top;
+      vertAlign = Qgis::VerticalAnchorPoint::Top;
       break;
 
     case 48:
       shape = Qgis::MarkerShape::Arrow;
       size *= 0.66666;
       angle = 225;
-      vertAlign = QgsMarkerSymbolLayer::Top;
+      vertAlign = Qgis::VerticalAnchorPoint::Top;
       break;
 
     case 49:

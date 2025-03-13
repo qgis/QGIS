@@ -61,6 +61,7 @@
 #include "qgsalgorithmcoveragevalidate.h"
 #include "qgsalgorithmcreatedirectory.h"
 #include "qgsalgorithmdbscanclustering.h"
+#include "qgsalgorithmdefineprojection.h"
 #include "qgsalgorithmdelaunaytriangulation.h"
 #include "qgsalgorithmdeleteduplicategeometries.h"
 #include "qgsalgorithmdensifygeometriesbycount.h"
@@ -175,6 +176,7 @@
 #include "qgsalgorithmrasterlogicalop.h"
 #include "qgsalgorithmrasterminmax.h"
 #include "qgsalgorithmrasterize.h"
+#include "qgsalgorithmrasterrank.h"
 #include "qgsalgorithmrastersampling.h"
 #include "qgsalgorithmrasterstackposition.h"
 #include "qgsalgorithmrasterstatistics.h"
@@ -349,6 +351,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCoverageValidateAlgorithm() );
   addAlgorithm( new QgsCreateDirectoryAlgorithm() );
   addAlgorithm( new QgsDbscanClusteringAlgorithm() );
+  addAlgorithm( new QgsDefineProjectionAlgorithm() );
   addAlgorithm( new QgsDelaunayTriangulationAlgorithm() );
   addAlgorithm( new QgsDeleteDuplicateGeometriesAlgorithm() );
   addAlgorithm( new QgsDetectVectorChangesAlgorithm() );
@@ -499,6 +502,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRasterizeAlgorithm() );
   addAlgorithm( new QgsRasterPixelsToPointsAlgorithm() );
   addAlgorithm( new QgsRasterPixelsToPolygonsAlgorithm() );
+  addAlgorithm( new QgsRasterRankAlgorithm() );
   addAlgorithm( new QgsRasterSamplingAlgorithm() );
   addAlgorithm( new QgsRasterStackHighestPositionAlgorithm() );
   addAlgorithm( new QgsRasterStackLowestPositionAlgorithm() );

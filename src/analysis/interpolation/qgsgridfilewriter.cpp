@@ -89,7 +89,10 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
       currentXValue += mCellSizeX;
     }
     block.setData( QByteArray( reinterpret_cast<const char *>( float32Row.data() ), QgsRasterBlock::typeSize( Qgis::DataType::Float32 ) * mNumColumns ) );
-    provider->writeBlock( &block, 1, 0, row );
+    if ( !provider->writeBlock( &block, 1, 0, row ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( provider->error().summary() ) );
+    }
     currentYValue -= mCellSizeY;
     if ( feedback )
     {

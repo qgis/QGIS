@@ -28,9 +28,20 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgscodeeditorwidget.h"
+#include "qgsfileutils.h"
+#include "qgsstoredquerymanager.h"
+#include "qgsproject.h"
+#include "qgsnewnamedialog.h"
 
 #include <QClipboard>
 #include <QShortcut>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QInputDialog>
+
+///@cond PRIVATE
+const QgsSettingsEntryString *QgsQueryResultWidget::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeSqlQueries, QString(), QStringLiteral( "Last used folder for SQL source files" ) );
+///@endcond PRIVATE
 
 QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabaseProviderConnection *connection )
   : QWidget( parent )
@@ -39,6 +50,21 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 
   // Unsure :/
   // mSqlEditor->setLineNumbersVisible( true );
+
+  mToolBar->setIconSize( QgsGuiUtils::iconSize( false ) );
+
+  mPresetQueryMenu = new QMenu( this );
+  connect( mPresetQueryMenu, &QMenu::aboutToShow, this, &QgsQueryResultWidget::populatePresetQueryMenu );
+
+  QToolButton *presetQueryButton = new QToolButton();
+  presetQueryButton->setMenu( mPresetQueryMenu );
+  presetQueryButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconStoredQueries.svg" ) ) );
+  presetQueryButton->setPopupMode( QToolButton::InstantPopup );
+  mToolBar->addWidget( presetQueryButton );
+
+  // explicitly needed for some reason (Qt 5.15)
+  mainLayout->setSpacing( 6 );
+  progressLayout->setSpacing( 6 );
 
   mQueryResultsTableView->hide();
   mQueryResultsTableView->setItemDelegate( new QgsQueryResultItemDelegate( mQueryResultsTableView ) );
@@ -54,17 +80,58 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   vl->addWidget( mCodeEditorWidget );
   mSqlEditorContainer->setLayout( vl );
 
+  connect( mActionOpenQuery, &QAction::triggered, this, &QgsQueryResultWidget::openQuery );
+  connect( mActionSaveQuery, &QAction::triggered, this, [this] { saveQuery( false ); } );
+  connect( mActionSaveQueryAs, &QAction::triggered, this, [this] { saveQuery( true ); } );
+
+  connect( mActionCut, &QAction::triggered, mSqlEditor, &QgsCodeEditor::cut );
+  connect( mActionCopy, &QAction::triggered, mSqlEditor, &QgsCodeEditor::copy );
+  connect( mActionPaste, &QAction::triggered, mSqlEditor, &QgsCodeEditor::paste );
+  connect( mActionUndo, &QAction::triggered, mSqlEditor, &QgsCodeEditor::undo );
+  connect( mActionRedo, &QAction::triggered, mSqlEditor, &QgsCodeEditor::redo );
+  mActionUndo->setEnabled( false );
+  mActionRedo->setEnabled( false );
+
+  connect( mActionFindReplace, &QAction::toggled, mCodeEditorWidget, &QgsCodeEditorWidget::setSearchBarVisible );
+  connect( mCodeEditorWidget, &QgsCodeEditorWidget::searchBarToggled, mActionFindReplace, &QAction::setChecked );
+  connect( mSqlEditor, &QgsCodeEditor::modificationChanged, this, &QgsQueryResultWidget::setHasChanged );
+
   connect( mExecuteButton, &QPushButton::pressed, this, &QgsQueryResultWidget::executeQuery );
-  connect( mClearButton, &QPushButton::pressed, this, [=] {
+
+  connect( mActionClear, &QAction::triggered, this, [=] {
     mSqlEditor->setText( QString() );
+    mActionUndo->setEnabled( false );
+    mActionRedo->setEnabled( false );
   } );
   connect( mLoadLayerPushButton, &QPushButton::pressed, this, [=] {
     if ( mConnection )
     {
-      emit createSqlVectorLayer( mConnection->providerKey(), mConnection->uri(), sqlVectorLayerOptions() );
+      const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options = sqlVectorLayerOptions();
+
+      try
+      {
+        QString message;
+        const bool res = mConnection->validateSqlVectorLayer( options, message );
+        if ( !res )
+        {
+          mMessageBar->pushCritical( QString(), message );
+        }
+        else
+        {
+          emit createSqlVectorLayer( mConnection->providerKey(), mConnection->uri(), options );
+        }
+      }
+      catch ( QgsProviderConnectionException &e )
+      {
+        mMessageBar->pushCritical( tr( "Error validating query" ), e.what() );
+      }
     }
   } );
   connect( mSqlEditor, &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultWidget::updateButtons );
+
+  connect( mSqlEditor, &QgsCodeEditorSQL::copyAvailable, mActionCut, &QAction::setEnabled );
+  connect( mSqlEditor, &QgsCodeEditorSQL::copyAvailable, mActionCopy, &QAction::setEnabled );
+
   connect( mSqlEditor, &QgsCodeEditorSQL::selectionChanged, this, [=] {
     mExecuteButton->setText( mSqlEditor->selectedText().isEmpty() ? tr( "Execute" ) : tr( "Execute Selection" ) );
   } );
@@ -119,6 +186,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   connect( copySelection, &QShortcut::activated, this, &QgsQueryResultWidget::copySelection );
 
   setConnection( connection );
+  setHasChanged( false );
 }
 
 QgsQueryResultWidget::~QgsQueryResultWidget()
@@ -232,7 +300,9 @@ void QgsQueryResultWidget::updateButtons()
   mFilterToolButton->setEnabled( mFirstRowFetched );
   const bool isEmpty = mSqlEditor->text().isEmpty();
   mExecuteButton->setEnabled( !isEmpty );
-  mClearButton->setEnabled( !isEmpty );
+  mActionClear->setEnabled( !isEmpty );
+  mActionUndo->setEnabled( mSqlEditor->isUndoAvailable() );
+  mActionRedo->setEnabled( mSqlEditor->isRedoAvailable() );
   mLoadAsNewLayerGroupBox->setVisible( mConnection && mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers ) );
   mLoadAsNewLayerGroupBox->setEnabled(
     mSqlErrorMessage.isEmpty() && mFirstRowFetched
@@ -495,9 +565,72 @@ void QgsQueryResultWidget::copyResults( int fromRow, int toRow, int fromColumn, 
   }
 }
 
+void QgsQueryResultWidget::openQuery()
+{
+  if ( !mCodeEditorWidget->filePath().isEmpty() && mHasChangedFileContents )
+  {
+    if ( QMessageBox::warning( this, tr( "Unsaved Changes" ), tr( "There are unsaved changes in the query. Continue?" ), QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No, QMessageBox::StandardButton::No ) == QMessageBox::StandardButton::No )
+      return;
+  }
+
+  QString initialDir = settingLastSourceFolder->value();
+  if ( initialDir.isEmpty() )
+    initialDir = QDir::homePath();
+
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Open Query" ), initialDir, tr( "SQL queries (*.sql *.SQL)" ) + QStringLiteral( ";;" ) + QObject::tr( "All files" ) + QStringLiteral( " (*.*)" ) );
+
+  if ( fileName.isEmpty() )
+    return;
+
+  QFileInfo fi( fileName );
+  settingLastSourceFolder->setValue( fi.path() );
+
+  QgsTemporaryCursorOverride cursor( Qt::CursorShape::WaitCursor );
+
+  mCodeEditorWidget->loadFile( fileName );
+  setHasChanged( false );
+}
+
+void QgsQueryResultWidget::saveQuery( bool saveAs )
+{
+  if ( mCodeEditorWidget->filePath().isEmpty() || saveAs )
+  {
+    QString selectedFilter;
+
+    QString initialDir = settingLastSourceFolder->value();
+    if ( initialDir.isEmpty() )
+      initialDir = QDir::homePath();
+
+    QString newPath = QFileDialog::getSaveFileName(
+      this,
+      tr( "Save Query" ),
+      initialDir,
+      tr( "SQL queries (*.sql *.SQL)" ) + QStringLiteral( ";;" ) + QObject::tr( "All files" ) + QStringLiteral( " (*.*)" ),
+      &selectedFilter
+    );
+
+    if ( !newPath.isEmpty() )
+    {
+      QFileInfo fi( newPath );
+      settingLastSourceFolder->setValue( fi.path() );
+
+      if ( !selectedFilter.contains( QStringLiteral( "*.*)" ) ) )
+        newPath = QgsFileUtils::ensureFileNameHasExtension( newPath, { QStringLiteral( "sql" ) } );
+      mCodeEditorWidget->save( newPath );
+      setHasChanged( false );
+    }
+  }
+  else if ( !mCodeEditorWidget->filePath().isEmpty() )
+  {
+    mCodeEditorWidget->save();
+    setHasChanged( false );
+  }
+}
+
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsQueryResultWidget::sqlVectorLayerOptions() const
 {
-  mSqlVectorLayerOptions.sql = mSqlEditor->text().replace( QRegularExpression( ";\\s*$" ), QString() );
+  const thread_local QRegularExpression rx( QStringLiteral( ";\\s*$" ) );
+  mSqlVectorLayerOptions.sql = mSqlEditor->text().replace( rx, QString() );
   mSqlVectorLayerOptions.filter = mFilterLineEdit->text();
   mSqlVectorLayerOptions.primaryKeyColumns = mPkColumnsComboBox->checkedItems();
   mSqlVectorLayerOptions.geometryColumn = mGeometryColumnComboBox->currentText();
@@ -559,13 +692,194 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
 void QgsQueryResultWidget::setQuery( const QString &sql )
 {
   mSqlEditor->setText( sql );
+  // from the QScintilla docs, calling setText clears undo history!
+  mActionUndo->setEnabled( false );
+  mActionRedo->setEnabled( false );
 }
+
+
+bool QgsQueryResultWidget::promptUnsavedChanges()
+{
+  if ( !mCodeEditorWidget->filePath().isEmpty() && mHasChangedFileContents )
+  {
+    const QMessageBox::StandardButton ret = QMessageBox::question(
+      this,
+      tr( "Save Query?" ),
+      tr(
+        "There are unsaved changes in this query. Do you want to save those?"
+      ),
+      QMessageBox::StandardButton::Save
+        | QMessageBox::StandardButton::Cancel
+        | QMessageBox::StandardButton::Discard,
+      QMessageBox::StandardButton::Cancel
+    );
+
+    if ( ret == QMessageBox::StandardButton::Save )
+    {
+      saveQuery( false );
+      return true;
+    }
+    else if ( ret == QMessageBox::StandardButton::Discard )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else
+  {
+    return true;
+  }
+}
+
 
 void QgsQueryResultWidget::notify( const QString &title, const QString &text, Qgis::MessageLevel level )
 {
   mMessageBar->pushMessage( title, text, level );
 }
 
+
+void QgsQueryResultWidget::setHasChanged( bool hasChanged )
+{
+  mHasChangedFileContents = hasChanged;
+  mActionSaveQuery->setEnabled( hasChanged );
+  updateDialogTitle();
+}
+
+void QgsQueryResultWidget::updateDialogTitle()
+{
+  QString fileName;
+  if ( !mCodeEditorWidget->filePath().isEmpty() )
+  {
+    const QFileInfo fi( mCodeEditorWidget->filePath() );
+    fileName = fi.fileName();
+    if ( mHasChangedFileContents )
+    {
+      fileName.prepend( '*' );
+    }
+  }
+
+  emit requestDialogTitleUpdate( fileName );
+}
+
+void QgsQueryResultWidget::populatePresetQueryMenu()
+{
+  mPresetQueryMenu->clear();
+
+  QMenu *storeQueryMenu = new QMenu( tr( "Store Current Query" ), mPresetQueryMenu );
+  mPresetQueryMenu->addMenu( storeQueryMenu );
+  QAction *storeInProfileAction = new QAction( tr( "In User Profile…" ), storeQueryMenu );
+  storeQueryMenu->addAction( storeInProfileAction );
+  storeInProfileAction->setEnabled( !mSqlEditor->text().isEmpty() );
+  connect( storeInProfileAction, &QAction::triggered, this, [this] {
+    storeCurrentQuery( Qgis::QueryStorageBackend::LocalProfile );
+  } );
+  QAction *storeInProjectAction = new QAction( tr( "In Current Project…" ), storeQueryMenu );
+  storeQueryMenu->addAction( storeInProjectAction );
+  storeInProjectAction->setEnabled( !mSqlEditor->text().isEmpty() );
+  connect( storeInProjectAction, &QAction::triggered, this, [this] {
+    storeCurrentQuery( Qgis::QueryStorageBackend::CurrentProject );
+  } );
+
+
+  const QList< QgsStoredQueryManager::QueryDetails > storedQueries = QgsGui::storedQueryManager()->allQueries();
+  if ( !storedQueries.isEmpty() )
+  {
+    QList< QgsStoredQueryManager::QueryDetails > userProfileQueries;
+    std::copy_if( storedQueries.begin(), storedQueries.end(), std::back_inserter( userProfileQueries ), []( const QgsStoredQueryManager::QueryDetails &details ) {
+      return details.backend == Qgis::QueryStorageBackend::LocalProfile;
+    } );
+
+    QList< QgsStoredQueryManager::QueryDetails > projectQueries;
+    std::copy_if( storedQueries.begin(), storedQueries.end(), std::back_inserter( projectQueries ), []( const QgsStoredQueryManager::QueryDetails &details ) {
+      return details.backend == Qgis::QueryStorageBackend::CurrentProject;
+    } );
+
+    mPresetQueryMenu->addSection( QgsApplication::getThemeIcon( QStringLiteral( "mIconStoredQueries.svg" ) ), tr( "User Profile" ) );
+    for ( const QgsStoredQueryManager::QueryDetails &query : std::as_const( userProfileQueries ) )
+    {
+      QAction *action = new QAction( query.name, mPresetQueryMenu );
+      mPresetQueryMenu->addAction( action );
+      connect( action, &QAction::triggered, this, [this, query] {
+        mSqlEditor->insertText( query.definition );
+      } );
+    }
+    if ( userProfileQueries.empty() )
+    {
+      QAction *action = new QAction( tr( "No Stored Queries Available" ), mPresetQueryMenu );
+      action->setEnabled( false );
+      mPresetQueryMenu->addAction( action );
+    }
+
+    mPresetQueryMenu->addSection( QgsApplication::getThemeIcon( QStringLiteral( "mIconStoredQueries.svg" ) ), tr( "Current Project" ) );
+    for ( const QgsStoredQueryManager::QueryDetails &query : std::as_const( projectQueries ) )
+    {
+      QAction *action = new QAction( query.name, mPresetQueryMenu );
+      mPresetQueryMenu->addAction( action );
+      connect( action, &QAction::triggered, this, [this, query] {
+        mSqlEditor->insertText( query.definition );
+      } );
+    }
+    if ( projectQueries.empty() )
+    {
+      QAction *action = new QAction( tr( "No Stored Queries Available" ), mPresetQueryMenu );
+      action->setEnabled( false );
+      mPresetQueryMenu->addAction( action );
+    }
+
+    mPresetQueryMenu->addSeparator();
+
+    QMenu *removeQueryMenu = new QMenu( tr( "Removed Stored Query" ), mPresetQueryMenu );
+    mPresetQueryMenu->addMenu( removeQueryMenu );
+
+    for ( const QgsStoredQueryManager::QueryDetails &query : storedQueries )
+    {
+      QAction *action = new QAction( tr( "%1…" ).arg( query.name ), mPresetQueryMenu );
+      removeQueryMenu->addAction( action );
+      connect( action, &QAction::triggered, this, [this, query] {
+        const QMessageBox::StandardButton res = QMessageBox::question( this, tr( "Remove Stored Query" ), tr( "Are you sure you want to remove the stored query “%1”?" ).arg( query.name ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+        if ( res == QMessageBox::Yes )
+        {
+          QgsGui::storedQueryManager()->removeQuery( query.name, query.backend );
+          if ( query.backend == Qgis::QueryStorageBackend::CurrentProject )
+          {
+            QgsProject::instance()->setDirty();
+          }
+        }
+      } );
+    }
+  }
+}
+
+void QgsQueryResultWidget::storeCurrentQuery( Qgis::QueryStorageBackend backend )
+{
+  const QStringList existingQueryNames = QgsGui::storedQueryManager()->allQueryNames( backend );
+  QgsNewNameDialog dlg(
+    QString(),
+    QString(),
+    QStringList(),
+    existingQueryNames
+  );
+  dlg.setWindowTitle( tr( "Store Query" ) );
+  dlg.setHintString( tr( "Name for the stored query" ) );
+  dlg.setOverwriteEnabled( true );
+  dlg.setConflictingNameWarning( tr( "A stored query with this name already exists, it will be overwritten." ) );
+  dlg.setShowExistingNamesCompleter( true );
+  if ( dlg.exec() != QDialog::Accepted )
+    return;
+
+  const QString name = dlg.name();
+  if ( name.isEmpty() )
+    return;
+
+  QgsGui::storedQueryManager()->storeQuery( name, mSqlEditor->text(), backend );
+  if ( backend == Qgis::QueryStorageBackend::CurrentProject )
+  {
+    QgsProject::instance()->setDirty();
+  }
+}
 
 ///@cond private
 
@@ -707,3 +1021,81 @@ QString QgsQueryResultItemDelegate::displayText( const QVariant &value, const QL
 }
 
 ///@endcond private
+
+//
+// QgsQueryResultDialog
+//
+
+QgsQueryResultDialog::QgsQueryResultDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
+  : QDialog( parent )
+{
+  setObjectName( QStringLiteral( "QgsQueryResultDialog" ) );
+  QgsGui::enableAutoGeometryRestore( this );
+
+  mWidget = new QgsQueryResultWidget( this, connection );
+  QVBoxLayout *l = new QVBoxLayout();
+  l->setContentsMargins( 0, 0, 0, 0 );
+  l->addWidget( mWidget );
+  setLayout( l );
+}
+
+void QgsQueryResultDialog::closeEvent( QCloseEvent *event )
+{
+  if ( !mWidget->promptUnsavedChanges() )
+  {
+    event->ignore();
+  }
+  else
+  {
+    event->accept();
+  }
+}
+
+//
+// QgsQueryResultMainWindow
+//
+
+QgsQueryResultMainWindow::QgsQueryResultMainWindow( QgsAbstractDatabaseProviderConnection *connection, const QString &identifierName )
+  : mIdentifierName( identifierName )
+{
+  setObjectName( QStringLiteral( "SQLCommandsDialog" ) );
+
+  QgsGui::enableAutoGeometryRestore( this );
+
+  mWidget = new QgsQueryResultWidget( nullptr, connection );
+  setCentralWidget( mWidget );
+
+  connect( mWidget, &QgsQueryResultWidget::requestDialogTitleUpdate, this, &QgsQueryResultMainWindow::updateWindowTitle );
+
+  updateWindowTitle( QString() );
+}
+
+void QgsQueryResultMainWindow::closeEvent( QCloseEvent *event )
+{
+  if ( !mWidget->promptUnsavedChanges() )
+  {
+    event->ignore();
+  }
+  else
+  {
+    event->accept();
+  }
+}
+
+void QgsQueryResultMainWindow::updateWindowTitle( const QString &fileName )
+{
+  if ( fileName.isEmpty() )
+  {
+    if ( !mIdentifierName.isEmpty() )
+      setWindowTitle( tr( "%1 — Execute SQL" ).arg( mIdentifierName ) );
+    else
+      setWindowTitle( tr( "Execute SQL" ) );
+  }
+  else
+  {
+    if ( !mIdentifierName.isEmpty() )
+      setWindowTitle( tr( "%1 — %2 — Execute SQL" ).arg( fileName, mIdentifierName ) );
+    else
+      setWindowTitle( tr( "%1 — Execute SQL" ).arg( fileName ) );
+  }
+}

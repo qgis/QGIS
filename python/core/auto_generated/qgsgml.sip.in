@@ -49,9 +49,6 @@ Does the HTTP GET request to the WFS server
 
 :return: 0 in case of success
 
-.. note::
-
-   available in Python as getFeaturesUri
 %End
 
     int getFeatures( const QByteArray &data, Qgis::WkbType *wkbType, QgsRectangle *extent = 0 );

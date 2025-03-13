@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsiconutils.h"
+#include "qgsmssqlutils.h"
 
 QgsMssqlTableModel::QgsMssqlTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )
@@ -90,7 +91,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
     invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), schemaItem );
   }
 
-  Qgis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
+  Qgis::WkbType wkbType = QgsMssqlUtils::wkbTypeFromGeometryType( layerProperty.type );
   if ( wkbType == Qgis::WkbType::Unknown && layerProperty.geometryColName.isEmpty() )
   {
     wkbType = Qgis::WkbType::NoGeometry;
@@ -298,7 +299,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
       else
       {
         // update existing row
-        Qgis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList.at( 0 ) );
+        Qgis::WkbType wkbType = QgsMssqlUtils::wkbTypeFromGeometryType( typeList.at( 0 ) );
 
         row[DbtmType]->setIcon( QgsIconUtils::iconForWkbType( wkbType ) );
         row[DbtmType]->setText( QgsWkbTypes::translatedDisplayString( wkbType ) );
@@ -414,12 +415,6 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
     uri.setParam( QStringLiteral( "primaryKeyInGeometryColumns" ), QgsMssqlConnection::primaryKeyInGeometryColumns( mConnectionName ) ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   return uri.uri();
-}
-
-Qgis::WkbType QgsMssqlTableModel::wkbTypeFromMssql( QString type )
-{
-  type = type.toUpper();
-  return QgsWkbTypes::parseType( type );
 }
 
 void QgsMssqlTableModel::setConnectionName( const QString &connectionName )

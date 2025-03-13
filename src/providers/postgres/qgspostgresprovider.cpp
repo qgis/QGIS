@@ -4372,7 +4372,7 @@ void postgisGeometryType( Qgis::WkbType wkbType, QString &geometryType, int &dim
   }
 }
 
-Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString *errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString &createdLayerUri, QString *errorMessage, const QMap<QString, QVariant> *options )
 {
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
@@ -4395,6 +4395,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
     schemaTableName += quotedIdentifier( schemaName ) + '.';
   }
   schemaTableName += quotedIdentifier( tableName );
+  createdLayerUri = uri;
 
   QgsDebugMsgLevel( QStringLiteral( "Connection info is: %1" ).arg( dsUri.connectionInfo( false ) ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Geometry column is: %1" ).arg( geometryColumn ), 2 );
@@ -5136,11 +5137,11 @@ QList<QgsDataItemProvider *> QgsPostgresProviderMetadata::dataItemProviders() co
 
 // ---------------------------------------------------------------------------
 
-Qgis::VectorExportResult QgsPostgresProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsPostgresProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri )
 {
   return QgsPostgresProvider::createEmptyLayer(
     uri, fields, wkbType, srs, overwrite,
-    &oldToNewAttrIdxMap, &errorMessage, options
+    &oldToNewAttrIdxMap, createdLayerUri, &errorMessage, options
   );
 }
 
@@ -5688,10 +5689,8 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri ) const
     uriParts[QStringLiteral( "authcfg" )] = dsUri.authConfigId();
   if ( dsUri.wkbType() != Qgis::WkbType::Unknown )
     uriParts[QStringLiteral( "type" )] = static_cast<quint32>( dsUri.wkbType() );
-
   if ( uri.contains( QStringLiteral( "selectatid=" ), Qt::CaseSensitivity::CaseInsensitive ) )
     uriParts[QStringLiteral( "selectatid" )] = !dsUri.selectAtIdDisabled();
-
   if ( !dsUri.table().isEmpty() )
     uriParts[QStringLiteral( "table" )] = dsUri.table();
   if ( !dsUri.schema().isEmpty() )
@@ -5700,15 +5699,14 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri ) const
     uriParts[QStringLiteral( "key" )] = dsUri.keyColumn();
   if ( !dsUri.srid().isEmpty() )
     uriParts[QStringLiteral( "srid" )] = dsUri.srid();
-
   if ( uri.contains( QStringLiteral( "estimatedmetadata=" ), Qt::CaseSensitivity::CaseInsensitive ) )
     uriParts[QStringLiteral( "estimatedmetadata" )] = dsUri.useEstimatedMetadata();
-
   if ( uri.contains( QStringLiteral( "sslmode=" ), Qt::CaseSensitivity::CaseInsensitive ) )
     uriParts[QStringLiteral( "sslmode" )] = dsUri.sslMode();
-
   if ( !dsUri.sql().isEmpty() )
     uriParts[QStringLiteral( "sql" )] = dsUri.sql();
+  if ( !dsUri.param( QStringLiteral( "checkPrimaryKeyUnicity" ) ).isEmpty() )
+    uriParts[QStringLiteral( "checkPrimaryKeyUnicity" )] = dsUri.param( QStringLiteral( "checkPrimaryKeyUnicity" ) );
   if ( !dsUri.geometryColumn().isEmpty() )
     uriParts[QStringLiteral( "geometrycolumn" )] = dsUri.geometryColumn();
 

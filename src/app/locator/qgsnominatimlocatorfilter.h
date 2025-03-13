@@ -28,6 +28,7 @@ class APP_EXPORT QgsNominatimLocatorFilter : public QgsGeocoderLocatorFilter
 
   public:
     QgsNominatimLocatorFilter( QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas );
+    QgsNominatimLocatorFilter *clone() const override SIP_FACTORY;
 
     void triggerResult( const QgsLocatorResult &result ) override;
 };

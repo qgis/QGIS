@@ -49,6 +49,8 @@ filter.
     virtual QgsLocatorFilter *clone() const /Factory/;
 
 
+  protected:
+
 };
 
 /************************************************************************

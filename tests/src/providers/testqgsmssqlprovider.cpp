@@ -26,8 +26,9 @@
 #include "qgsmssqltransaction.h"
 #include "qgsmssqlconnection.h"
 #include "qgsvectorlayer.h"
-//#include "qgsmssqldatabase.h"
 #include "qgsproject.h"
+#include "qgsmssqlgeomcolumntypethread.h"
+#include "qgsmssqldatabase.h"
 
 /**
  * \ingroup UnitTests
@@ -49,6 +50,12 @@ class TestQgsMssqlProvider : public QObject
 
     void transactionTwoLayers();
     void transactionUndoRedo();
+    void testGeomTypeResolutionValid();
+    void testGeomTypeResolutionValidNoWorkaround();
+    void testGeomTypeResolutionInvalid();
+    void testGeomTypeResolutionInvalidNoWorkaround();
+    void testFieldsForTable();
+    void testFieldsForQuery();
 
   private:
     QString mDbConn;
@@ -65,7 +72,7 @@ void TestQgsMssqlProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mDbConn = qEnvironmentVariable( "QGIS_MSSQLTEST_DB", "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' " );
+  mDbConn = qEnvironmentVariable( "QGIS_MSSQLTEST_DB", "service='testsqlserver' user=sa password='QGIStestSQLServer1234' " );
 
   mSomeDataWktGeom << QStringLiteral( "Point (-70.33199999999999363 66.32999999999999829)" )
                    << QStringLiteral( "Point (-68.20000000000000284 70.79999999999999716)" )
@@ -281,6 +288,210 @@ void TestQgsMssqlProvider::transactionUndoRedo()
   vectorLayerPoint1->rollBack();
 
   // 2. with transaction, try to add a feature to the first layer -> both layers are affected
+}
+
+void TestQgsMssqlProvider::testGeomTypeResolutionValid()
+{
+  QgsDataSourceUri uri( mDbConn );
+
+  // with invalid geometry handling workaround:
+  QgsMssqlGeomColumnTypeThread thread( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), false, false );
+
+  QgsMssqlLayerProperty layerProperty;
+  layerProperty.schemaName = QStringLiteral( "qgis_test" );
+  layerProperty.tableName = QStringLiteral( "someData" );
+  layerProperty.geometryColName = QStringLiteral( "geom" );
+  thread.addGeometryColumn( layerProperty );
+
+  thread.run();
+  const QList<QgsMssqlLayerProperty> results = thread.results();
+  QCOMPARE( results.size(), 1 );
+  const QgsMssqlLayerProperty result = results.at( 0 );
+  QCOMPARE( result.type, QStringLiteral( "POINT" ) );
+  QCOMPARE( result.schemaName, QStringLiteral( "qgis_test" ) );
+  QCOMPARE( result.tableName, QStringLiteral( "someData" ) );
+  QCOMPARE( result.geometryColName, QStringLiteral( "geom" ) );
+  QCOMPARE( result.pkCols.size(), 0 );
+  QCOMPARE( result.srid, QStringLiteral( "4326" ) );
+  QCOMPARE( result.isGeography, false );
+  QCOMPARE( result.sql, QString() );
+  QCOMPARE( result.isView, false );
+}
+
+void TestQgsMssqlProvider::testGeomTypeResolutionValidNoWorkaround()
+{
+  QgsDataSourceUri uri( mDbConn );
+
+  // WITHOUT invalid geometry handling workaround:
+  QgsMssqlGeomColumnTypeThread thread( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), false, true );
+
+  QgsMssqlLayerProperty layerProperty;
+  layerProperty.schemaName = QStringLiteral( "qgis_test" );
+  layerProperty.tableName = QStringLiteral( "someData" );
+  layerProperty.geometryColName = QStringLiteral( "geom" );
+  thread.addGeometryColumn( layerProperty );
+
+  thread.run();
+  const QList<QgsMssqlLayerProperty> results = thread.results();
+  QCOMPARE( results.size(), 1 );
+  const QgsMssqlLayerProperty result = results.at( 0 );
+  QCOMPARE( result.type, QStringLiteral( "POINT" ) );
+  QCOMPARE( result.schemaName, QStringLiteral( "qgis_test" ) );
+  QCOMPARE( result.tableName, QStringLiteral( "someData" ) );
+  QCOMPARE( result.geometryColName, QStringLiteral( "geom" ) );
+  QCOMPARE( result.pkCols.size(), 0 );
+  QCOMPARE( result.srid, QStringLiteral( "4326" ) );
+  QCOMPARE( result.isGeography, false );
+  QCOMPARE( result.sql, QString() );
+  QCOMPARE( result.isView, false );
+}
+
+
+void TestQgsMssqlProvider::testGeomTypeResolutionInvalid()
+{
+  QgsDataSourceUri uri( mDbConn );
+
+  // with invalid geometry handling workaround:
+  QgsMssqlGeomColumnTypeThread thread( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), false, false );
+
+  QgsMssqlLayerProperty layerProperty;
+  layerProperty.schemaName = QStringLiteral( "qgis_test" );
+  layerProperty.tableName = QStringLiteral( "invalid_polys" );
+  layerProperty.geometryColName = QStringLiteral( "ogr_geometry" );
+  thread.addGeometryColumn( layerProperty );
+
+  thread.run();
+  const QList<QgsMssqlLayerProperty> results = thread.results();
+  QCOMPARE( results.size(), 1 );
+  const QgsMssqlLayerProperty result = results.at( 0 );
+  QCOMPARE( result.type, QStringLiteral( "MULTIPOLYGON,POLYGON" ) );
+  QCOMPARE( result.schemaName, QStringLiteral( "qgis_test" ) );
+  QCOMPARE( result.tableName, QStringLiteral( "invalid_polys" ) );
+  QCOMPARE( result.geometryColName, QStringLiteral( "ogr_geometry" ) );
+  QCOMPARE( result.pkCols.size(), 0 );
+  QCOMPARE( result.srid, QStringLiteral( "4167,4167" ) );
+  QCOMPARE( result.isGeography, false );
+  QCOMPARE( result.sql, QString() );
+  QCOMPARE( result.isView, false );
+}
+
+void TestQgsMssqlProvider::testGeomTypeResolutionInvalidNoWorkaround()
+{
+  QgsDataSourceUri uri( mDbConn );
+
+  // WITHOUT invalid geometry handling workaround.
+  // We expect this to fail
+  QgsMssqlGeomColumnTypeThread thread( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), false, true );
+
+  QgsMssqlLayerProperty layerProperty;
+  layerProperty.schemaName = QStringLiteral( "qgis_test" );
+  layerProperty.tableName = QStringLiteral( "invalid_polys" );
+  layerProperty.geometryColName = QStringLiteral( "ogr_geometry" );
+  thread.addGeometryColumn( layerProperty );
+
+  thread.run();
+  const QList<QgsMssqlLayerProperty> results = thread.results();
+  QCOMPARE( results.size(), 1 );
+  const QgsMssqlLayerProperty result = results.at( 0 );
+  // geometry type resolution will fail because of unhandled exception raised by SQL Server
+  QCOMPARE( result.type, QString() );
+  QCOMPARE( result.schemaName, QStringLiteral( "qgis_test" ) );
+  QCOMPARE( result.tableName, QStringLiteral( "invalid_polys" ) );
+  QCOMPARE( result.geometryColName, QStringLiteral( "ogr_geometry" ) );
+  QCOMPARE( result.pkCols.size(), 0 );
+  QCOMPARE( result.srid, QString() );
+  QCOMPARE( result.isGeography, false );
+  QCOMPARE( result.sql, QString() );
+  QCOMPARE( result.isView, false );
+}
+
+void TestQgsMssqlProvider::testFieldsForTable()
+{
+  QgsDataSourceUri uri( mDbConn );
+
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( uri );
+
+  QgsMssqlDatabase::FieldDetails details;
+  QString error;
+  QVERIFY( db->loadFields( details, QStringLiteral( "qgis_test" ), QStringLiteral( "someData" ), error ) );
+  QCOMPARE( error, QString() );
+  QCOMPARE( details.attributeFields.size(), 8 );
+  QCOMPARE( details.attributeFields.at( 0 ).name(), QStringLiteral( "pk" ) );
+  QCOMPARE( details.attributeFields.at( 0 ).type(), QVariant::Int );
+  QCOMPARE( details.attributeFields.at( 0 ).typeName(), QStringLiteral( "int" ) );
+  QCOMPARE( details.attributeFields.at( 1 ).name(), QStringLiteral( "cnt" ) );
+  QCOMPARE( details.attributeFields.at( 1 ).type(), QVariant::Int );
+  QCOMPARE( details.attributeFields.at( 1 ).typeName(), QStringLiteral( "int" ) );
+  QCOMPARE( details.attributeFields.at( 2 ).name(), QStringLiteral( "name" ) );
+  QCOMPARE( details.attributeFields.at( 2 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 2 ).typeName(), QStringLiteral( "ntext" ) );
+  QCOMPARE( details.attributeFields.at( 3 ).name(), QStringLiteral( "name2" ) );
+  QCOMPARE( details.attributeFields.at( 3 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 3 ).typeName(), QStringLiteral( "ntext" ) );
+  QCOMPARE( details.attributeFields.at( 4 ).name(), QStringLiteral( "num_char" ) );
+  QCOMPARE( details.attributeFields.at( 4 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 4 ).typeName(), QStringLiteral( "ntext" ) );
+  QCOMPARE( details.attributeFields.at( 5 ).name(), QStringLiteral( "dt" ) );
+  QCOMPARE( details.attributeFields.at( 5 ).type(), QVariant::DateTime );
+  QCOMPARE( details.attributeFields.at( 5 ).typeName(), QStringLiteral( "datetime" ) );
+  QCOMPARE( details.attributeFields.at( 6 ).name(), QStringLiteral( "date" ) );
+  QCOMPARE( details.attributeFields.at( 6 ).type(), QVariant::Date );
+  QCOMPARE( details.attributeFields.at( 6 ).typeName(), QStringLiteral( "date" ) );
+  QCOMPARE( details.attributeFields.at( 7 ).name(), QStringLiteral( "time" ) );
+  QCOMPARE( details.attributeFields.at( 7 ).type(), QVariant::Time );
+  QCOMPARE( details.attributeFields.at( 7 ).typeName(), QStringLiteral( "time" ) );
+}
+
+void TestQgsMssqlProvider::testFieldsForQuery()
+{
+  QgsDataSourceUri uri( mDbConn );
+
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( uri );
+
+  QgsMssqlDatabase::FieldDetails details;
+  QString error;
+  QVERIFY( db->loadQueryFields( details, QStringLiteral( "SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS _uid1_, concat('a', cnt ) as b, cast(cnt as numeric)/100 as c, * FROM [qgis_test].[someData]" ), error ) );
+  QCOMPARE( error, QString() );
+  QCOMPARE( details.attributeFields.size(), 11 );
+
+  QCOMPARE( details.attributeFields.at( 0 ).name(), QStringLiteral( "_uid1_" ) );
+  QCOMPARE( details.attributeFields.at( 0 ).type(), QVariant::LongLong );
+  QCOMPARE( details.attributeFields.at( 0 ).typeName(), QStringLiteral( "bigint" ) );
+  QCOMPARE( details.attributeFields.at( 1 ).name(), QStringLiteral( "b" ) );
+  QCOMPARE( details.attributeFields.at( 1 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 1 ).typeName(), QStringLiteral( "varchar(13)" ) );
+  QCOMPARE( details.attributeFields.at( 2 ).name(), QStringLiteral( "c" ) );
+  QCOMPARE( details.attributeFields.at( 2 ).type(), QVariant::Double );
+  QCOMPARE( details.attributeFields.at( 2 ).typeName(), QStringLiteral( "numeric(24,6)" ) );
+  QCOMPARE( details.attributeFields.at( 2 ).length(), 24 );
+  QCOMPARE( details.attributeFields.at( 3 ).name(), QStringLiteral( "pk" ) );
+  QCOMPARE( details.attributeFields.at( 3 ).type(), QVariant::Int );
+  QCOMPARE( details.attributeFields.at( 3 ).typeName(), QStringLiteral( "int" ) );
+  QCOMPARE( details.attributeFields.at( 4 ).name(), QStringLiteral( "cnt" ) );
+  QCOMPARE( details.attributeFields.at( 4 ).type(), QVariant::Int );
+  QCOMPARE( details.attributeFields.at( 4 ).typeName(), QStringLiteral( "int" ) );
+  QCOMPARE( details.attributeFields.at( 5 ).name(), QStringLiteral( "name" ) );
+  QCOMPARE( details.attributeFields.at( 5 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 5 ).typeName(), QStringLiteral( "nvarchar(max)" ) );
+  QCOMPARE( details.attributeFields.at( 6 ).name(), QStringLiteral( "name2" ) );
+  QCOMPARE( details.attributeFields.at( 6 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 6 ).typeName(), QStringLiteral( "nvarchar(max)" ) );
+  QCOMPARE( details.attributeFields.at( 7 ).name(), QStringLiteral( "num_char" ) );
+  QCOMPARE( details.attributeFields.at( 7 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 7 ).typeName(), QStringLiteral( "nvarchar(max)" ) );
+  QCOMPARE( details.attributeFields.at( 8 ).name(), QStringLiteral( "dt" ) );
+  QCOMPARE( details.attributeFields.at( 8 ).type(), QVariant::DateTime );
+  QCOMPARE( details.attributeFields.at( 8 ).typeName(), QStringLiteral( "datetime" ) );
+  QCOMPARE( details.attributeFields.at( 9 ).name(), QStringLiteral( "date" ) );
+  QCOMPARE( details.attributeFields.at( 9 ).type(), QVariant::Date );
+  QCOMPARE( details.attributeFields.at( 9 ).typeName(), QStringLiteral( "date" ) );
+  QCOMPARE( details.attributeFields.at( 10 ).name(), QStringLiteral( "time" ) );
+  QCOMPARE( details.attributeFields.at( 10 ).type(), QVariant::Time );
+  QCOMPARE( details.attributeFields.at( 10 ).typeName(), QStringLiteral( "time(7)" ) );
+
+  QCOMPARE( details.geometryColumnName, QStringLiteral( "geom" ) );
+  QCOMPARE( details.geometryColumnType, QStringLiteral( "geometry" ) );
+  QVERIFY( !details.isGeography );
 }
 
 QGSTEST_MAIN( TestQgsMssqlProvider )

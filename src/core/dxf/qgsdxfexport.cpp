@@ -319,7 +319,7 @@ void QgsDxfExport::writeHeader( const QString &codepage )
 
   // ACADVER
   writeGroup( 9, QStringLiteral( "$ACADVER" ) );
-  writeGroup( 1, QStringLiteral( "AC1015" ) );
+  writeGroup( 1, QStringLiteral( "AC1018" ) );
 
   // EXTMIN
   writeGroup( 9, QStringLiteral( "$EXTMIN" ) );
@@ -2354,20 +2354,17 @@ QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
 
 QString QgsDxfExport::dxfEncoding( const QString &name )
 {
-  const QList< QByteArray > codecs = QTextCodec::availableCodecs();
-  for ( const QByteArray &codec : codecs )
+  const QByteArray codec = name.toLocal8Bit();
+  if ( QTextCodec::codecForName( codec ) )
   {
-    if ( name != codec )
-      continue;
-
     int i;
-    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && name != DXF_ENCODINGS[i][1]; ++i )
+    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && strcasecmp( codec.data(), DXF_ENCODINGS[i][1] ) != 0; ++i )
       ;
 
-    if ( i == static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) )
-      continue;
-
-    return DXF_ENCODINGS[i][0];
+    if ( i != static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) )
+    {
+      return DXF_ENCODINGS[i][0];
+    }
   }
 
   return QString();

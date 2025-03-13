@@ -22,6 +22,8 @@
 #include "qgsflatterraingenerator.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
@@ -50,6 +52,8 @@ class TestQgs3DCameraController : public QgsTest
     void testTranslateZoomWheelTranslate();
     void testTranslateRotationCameraTranslate();
     void testRotationCenterRotationCameraRotationCenter();
+    void testResetViewRaster();
+    void testResetViewPointCloud();
 
   private:
     void waitForNearPlane( QgsOffscreen3DEngine &engine, Qgs3DMapScene *scene, float atLeast ); //#spellok
@@ -267,15 +271,15 @@ void TestQgs3DCameraController::testZoomWheel()
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
-  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() * 5 );
+  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() / 120.0 );
   QCOMPARE( scene->cameraController()->mCameraBefore->viewCenter(), scene->cameraController()->cameraPose().centerPoint().toVector3D() );
 
   QImage depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -1381.3, 1036.7, 1.0 ), 5.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -479.2, 359.4, 1.6 ), 5.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1631.9, 5.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -428.79, 321.59, 0.049 ), 5.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1723.55, 5.0 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
@@ -516,7 +520,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
-  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() * 5 );
+  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() / 120.0 );
   QCOMPARE( scene->cameraController()->mCameraBefore->viewCenter(), scene->cameraController()->cameraPose().centerPoint().toVector3D() );
 
 
@@ -524,8 +528,8 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( 312.936, -950.772, -125.381 ), 3.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( 109.8, -329.4, -43.3 ), 3.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1631.9, 3.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( 98.4, -294.6, -38.7 ), 3.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1723.55, 3.0 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
@@ -560,9 +564,9 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 26.9, 7.3, 5.4 ), 2.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 28.25, 7.70, 5.75 ), 2.0 );
   diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -43.2, -9.1, -11.1 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -45.84, -9.70, -11.83 ), 1.0 );
   diffPitch = scene->cameraController()->pitch() - initialPitch;
   diffYaw = scene->cameraController()->yaw() - initialYaw;
   QGSCOMPARENEAR( diffPitch, 2.5, 0.1 );
@@ -807,7 +811,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
-  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() * 5 );
+  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() / 120.0 );
   QCOMPARE( scene->cameraController()->mCameraBefore->viewCenter(), scene->cameraController()->cameraPose().centerPoint().toVector3D() );
 
 
@@ -815,8 +819,8 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( 4.8, -4.4, 9.9 ), 1.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -615.5, 116.2, 3.4 ), 4.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1631.9, 2.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -650.47, 123.10, 3.10 ), 4.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1723.55, 2.0 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
@@ -1188,6 +1192,76 @@ void TestQgs3DCameraController::waitForNearPlane( QgsOffscreen3DEngine &engine, 
     // this call is not used but ensures to synchronize the scene
     Qgs3DUtils::captureSceneImage( engine, scene );
   } while ( scene->cameraController()->camera()->nearPlane() < atLeast ); //#spellok
+}
+
+void TestQgs3DCameraController::testResetViewRaster()
+{
+  const QgsRectangle fullExtent = mLayerRgb->extent();
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mLayerRgb->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  constexpr QPoint winSize = QPoint( 640, 480 ); // default window size
+  QgsOffscreen3DEngine engine;
+  engine.setSize( QSize( winSize.x(), winSize.y() ) );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  // compare raster layer + vector layer
+  scene->viewZoomFull();
+  QGSCOMPARENEAR( scene->cameraController()->distance(), 2172, 1 );
+}
+
+void TestQgs3DCameraController::testResetViewPointCloud()
+{
+  QgsMapLayer *vpcLayer = new QgsPointCloudLayer( testDataPath( "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc" ), "vpc", "vpc" );
+  QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer;
+  QgsSingleColorPointCloud3DSymbol *symbol = new QgsSingleColorPointCloud3DSymbol;
+  symbol->setSingleColor( QColor( 255, 0, 0 ) );
+  renderer->setSymbol( symbol );
+  vpcLayer->setRenderer3D( renderer );
+  const QgsRectangle fullExtent = vpcLayer->extent();
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( vpcLayer->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << vpcLayer );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  constexpr QPoint winSize = QPoint( 640, 480 ); // default window size
+  QgsOffscreen3DEngine engine;
+  engine.setSize( QSize( winSize.x(), winSize.y() ) );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  // compare virtual point cloud layer
+  scene->viewZoomFull();
+  QGSCOMPARENEAR( scene->cameraController()->distance(), 86, 1 );
+
+  QgsMapLayer *pcLayer = new QgsPointCloudLayer( testDataPath( "/point_clouds/copc/sunshine-coast.copc.laz" ), "test", "copc" );
+  QgsPointCloudLayer3DRenderer *renderer2 = new QgsPointCloudLayer3DRenderer;
+  QgsSingleColorPointCloud3DSymbol *symbol2 = new QgsSingleColorPointCloud3DSymbol;
+  symbol2->setSingleColor( QColor( 255, 0, 0 ) );
+  renderer2->setSymbol( symbol2 );
+  pcLayer->setRenderer3D( renderer2 );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << pcLayer );
+  scene->cameraController()->setViewFromTop( 0, 0, 10 );
+
+  // compare point cloud layer
+  scene->viewZoomFull();
+  QGSCOMPARENEAR( scene->cameraController()->distance(), 86, 1 );
+
+  delete vpcLayer;
+  delete pcLayer;
 }
 
 QGSTEST_MAIN( TestQgs3DCameraController )

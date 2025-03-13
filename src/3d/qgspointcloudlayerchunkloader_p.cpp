@@ -255,6 +255,9 @@ static QgsChunkNode *findChunkNodeFromNodeId( QgsChunkNode *rootNode, QgsPointCl
     QgsPointCloudNodeId p = parentIds.takeLast();
     QgsChunkNodeId childNodeId( p.d(), p.x(), p.y(), p.z() );
 
+    if ( !chunk->hasChildrenPopulated() )
+      return nullptr;
+
     QgsChunkNode *chunkChild = nullptr;
     QgsChunkNode *const *children = chunk->children();
     for ( int i = 0; i < chunk->childCount(); ++i )
@@ -287,9 +290,11 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettin
     mChunkUpdaterFactory.reset( new QgsChunkUpdaterFactory( mChunkLoaderFactory ) );
 
     connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QgsPointCloudNodeId &n ) {
-      QList<QgsChunkNode *> nodes;
-      nodes << findChunkNodeFromNodeId( mRootNode, n );
-      updateNodes( nodes, mChunkUpdaterFactory.get() );
+      QgsChunkNode *node = findChunkNodeFromNodeId( mRootNode, n );
+      if ( node )
+      {
+        updateNodes( QList<QgsChunkNode *>() << node, mChunkUpdaterFactory.get() );
+      }
     } );
   }
 }

@@ -85,9 +85,6 @@ Sets a generic parameter ``value`` on the URI.
 %Docstring
 Sets a generic parameter list ``value`` on the URI.
 
-.. note::
-
-   available in Python as setParamList
 %End
 
     int removeParam( const QString &key );

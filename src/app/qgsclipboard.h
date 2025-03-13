@@ -32,6 +32,7 @@
 class QgsVectorLayer;
 class QgsVectorTileLayer;
 class QgsFeatureStore;
+class QgsMessageBar;
 
 /**
  * \brief QGIS internal clipboard for features.
@@ -142,6 +143,15 @@ class APP_EXPORT QgsClipboard : public QObject
     QgsFields fields() const;
 
     QgsMapLayer *layer() const;
+
+    /**
+     * Pastes clipboard features to a new memory layer.
+     *
+     * If no features are in clipboard an empty layer is returned.
+     *
+     * Returns a new memory layer or NULLPTR if the operation failed.
+     */
+    std::unique_ptr<QgsVectorLayer> pasteToNewMemoryVector( QgsMessageBar *messageBar );
 
   private slots:
 

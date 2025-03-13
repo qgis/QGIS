@@ -500,9 +500,6 @@ Checks if ``element`` contains a graphic fill with a raster image of type PNG, J
                                         double &strokeWidth, double &size ) /PyName=wellKnownMarkerFromSld2/;
 %Docstring
 
-.. note::
-
-   available in Python as wellKnownMarkerFromSld2
 %End
 
     static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,

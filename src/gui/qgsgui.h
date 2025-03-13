@@ -54,6 +54,7 @@ class QgsHistoryProviderRegistry;
 class QgsSensorGuiRegistry;
 class QgsSettingsEditorWidgetRegistry;
 class QgsInputControllerManager;
+class QgsStoredQueryManager;
 
 /**
  * \ingroup gui
@@ -65,6 +66,7 @@ class GUI_EXPORT QgsGui : public QObject
     Q_OBJECT
 
   public:
+    static inline QgsSettingsTreeNode *sTtreeWidgetGeometry = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "widget-geometry" ) ) SIP_SKIP;
     static inline QgsSettingsTreeNode *sTtreeWidgetLastUsedValues = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "widget-last-used-values" ) ) SIP_SKIP;
 
     /**
@@ -261,6 +263,12 @@ class GUI_EXPORT QgsGui : public QObject
     static QgsInputControllerManager *inputControllerManager() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the global stored SQL query manager.
+     * \since QGIS 3.44
+     */
+    static QgsStoredQueryManager *storedQueryManager() SIP_KEEPREFERENCE;
+
+    /**
      * HIG flags, which indicate the Human Interface Guidelines for the current platform.
      * \since QGIS 3.4
     */
@@ -372,6 +380,7 @@ class GUI_EXPORT QgsGui : public QObject
     QgsSensorGuiRegistry *mSensorGuiRegistry = nullptr;
     QgsSettingsEditorWidgetRegistry *mSettingsEditorRegistry = nullptr;
     QgsInputControllerManager *mInputControllerManager = nullptr;
+    QgsStoredQueryManager *mStoredQueryManager = nullptr;
     std::unique_ptr<QgsWindowManagerInterface> mWindowManager;
 
 #ifdef SIP_RUN

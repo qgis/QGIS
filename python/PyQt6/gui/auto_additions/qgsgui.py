@@ -45,6 +45,7 @@ try:
     QgsGui.windowManager = staticmethod(QgsGui.windowManager)
     QgsGui.setWindowManager = staticmethod(QgsGui.setWindowManager)
     QgsGui.inputControllerManager = staticmethod(QgsGui.inputControllerManager)
+    QgsGui.storedQueryManager = staticmethod(QgsGui.storedQueryManager)
     QgsGui.higFlags = staticmethod(QgsGui.higFlags)
     QgsGui.sampleColor = staticmethod(QgsGui.sampleColor)
     QgsGui.findScreenAt = staticmethod(QgsGui.findScreenAt)

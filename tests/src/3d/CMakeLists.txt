@@ -21,6 +21,7 @@ add_subdirectory(sandbox)
 
 set(TESTS
   testqgs3dcameracontroller.cpp
+  testqgs3dmapscene.cpp
   testqgs3dmaterial.cpp
   testqgs3drendering.cpp
   testqgs3dsymbolregistry.cpp
@@ -31,6 +32,7 @@ set(TESTS
   testqgsmaterialregistry.cpp
   testqgsmesh3drendering.cpp
   testqgspointcloud3drendering.cpp
+  testqgsrubberband3drendering.cpp
   testqgstessellator.cpp
   testqgstilingscheme.cpp
 )
