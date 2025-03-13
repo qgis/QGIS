@@ -24,6 +24,8 @@ class QgsPGLayerItem;
 class QgsPGConnectionItem;
 
 struct QgsPostgresLayerProperty;
+class QgsPGProjectItem;
+class QgsPostgresConn;
 
 class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -57,6 +59,11 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     bool handleDrop( QgsPGConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext context );
     bool handleDropUri( QgsPGConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, const QString &toSchema, QgsDataItemGuiContext context );
     void handleImportVector( QgsPGConnectionItem *connectionItem, const QString &toSchema, QgsDataItemGuiContext context );
+    static void exportProjectToFile( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
+    static void renameProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
+    static void deleteProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
+    static void duplicateProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
+    static void moveProjectToSchema( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
 };
 
 #endif // QGSPOSTGRESDATAITEMGUIPROVIDER_H
