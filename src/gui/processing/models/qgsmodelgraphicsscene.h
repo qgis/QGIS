@@ -119,7 +119,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QgsModelComponentGraphicItem *groupBoxItem( const QString &uuid );
 
     /**
-     * Returns the graphic item corresponding to the specified  specified child algorithm
+     * Returns the graphic item corresponding to the specified child algorithm
      */
     QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
 

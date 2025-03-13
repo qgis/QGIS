@@ -107,7 +107,7 @@ Returns the graphic item corresponding to the specified group box ``uuid``.
 
     QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
 %Docstring
-Returns the graphic item corresponding to the specified  specified child algorithm
+Returns the graphic item corresponding to the specified child algorithm
 %End
 
     QgsModelComponentGraphicItem *parameterItem( const QString &name );
