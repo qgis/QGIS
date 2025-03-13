@@ -797,7 +797,7 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
   // Finalize adding the 3D transparent objects by adding the layer components to the entities
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
-  Qt3DRender::QLayer *transparentLayer = frameGraph->transparentObjectLayer();
+  Qt3DRender::QLayer *transparentLayer = frameGraph->forwardRenderView()->transparentObjectLayer();
   const QList<Qt3DRender::QMaterial *> childMaterials = newEntity->findChildren<Qt3DRender::QMaterial *>();
   for ( Qt3DRender::QMaterial *material : childMaterials )
   {

@@ -82,12 +82,6 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Returns a layer object used to indicate that an entity is to be rendered during the preview textures rendering pass
     Qt3DRender::QLayer *previewLayer() { return mPreviewLayer; }
 
-    /**
-     * Returns a layer object used to indicate that the object is transparent
-     * \since QGIS 3.26
-     */
-    Qt3DRender::QLayer *transparentObjectLayer();
-
     //! Returns the main camera
     Qt3DRender::QCamera *mainCamera() { return mMainCamera; }
     //! Returns the postprocessing entity

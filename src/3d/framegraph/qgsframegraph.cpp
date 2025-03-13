@@ -68,11 +68,6 @@ void QgsFrameGraph::constructForwardRenderPass()
   registerRenderView( forwardRenderView, FORWARD_RENDERVIEW );
 }
 
-Qt3DRender::QLayer *QgsFrameGraph::transparentObjectLayer()
-{
-  return forwardRenderView()->transparentObjectLayer();
-}
-
 void QgsFrameGraph::constructShadowRenderPass()
 {
   QgsShadowRenderView *shadowRenderView = new QgsShadowRenderView( this, SHADOW_RENDERVIEW );
