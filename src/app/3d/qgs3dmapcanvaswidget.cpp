@@ -1184,7 +1184,7 @@ void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
   mMainCanvas->setMapTool( mMapToolClippingPlanes.get() );
   QgisApp::instance()->activateWindow();
   QgisApp::instance()->raise();
-  // mMessageBar->pushInfo( QString(), tr( "Drag a rectangle on the main 2D map view to define this 3D scene's extent" ) );
+  mMessageBar->pushInfo( QString(), tr( "Select a rectangle by 3 points on the main 2D map view to define this 3D scene's cross section" ) );
 }
 
 void Qgs3DMapCanvasWidget::setClippingPlanes( const QVector<QPair<QgsVector3D, QgsVector3D>> &planes )
