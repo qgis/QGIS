@@ -133,7 +133,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     float mCylinderLength = 40.0f;
     int mFontSize = 12;
 
-    Qgs3DAxisRenderView *mRenderView = nullptr;
+    std::shared_ptr<Qgs3DAxisRenderView> mRenderView = nullptr;
     Qt3DCore::QEntity *mAxisSceneEntity = nullptr;
     Qt3DRender::QCamera *mAxisCamera = nullptr;
 

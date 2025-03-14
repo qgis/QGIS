@@ -38,7 +38,7 @@ QgsWindow3DEngine::QgsWindow3DEngine( Qgs3DMapCanvas *parent )
   mMapCanvas3D->setActiveFrameGraph( mFrameGraph->frameGraphRoot() );
 
   // force switching to no shadow rendering
-  mFrameGraph->shadowRenderView()->setEnabled( false );
+  mFrameGraph->shadowRenderView().setEnabled( false );
 }
 
 QWindow *QgsWindow3DEngine::window()
@@ -66,8 +66,8 @@ void QgsWindow3DEngine::setRootEntity( Qt3DCore::QEntity *root )
 {
   mSceneRoot = root;
   mSceneRoot->setParent( mRoot );
-  mSceneRoot->addComponent( mFrameGraph->forwardRenderView()->renderLayer() );
-  mSceneRoot->addComponent( mFrameGraph->shadowRenderView()->entityCastingShadowsLayer() );
+  mSceneRoot->addComponent( mFrameGraph->forwardRenderView().renderLayer() );
+  mSceneRoot->addComponent( mFrameGraph->shadowRenderView().entityCastingShadowsLayer() );
 }
 
 Qt3DRender::QRenderSettings *QgsWindow3DEngine::renderSettings()

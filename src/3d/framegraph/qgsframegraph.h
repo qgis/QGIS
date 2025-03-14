@@ -207,7 +207,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
      *
      * Will take ownership of the renderView
      */
-    bool registerRenderView( QgsAbstractRenderView *renderView, const QString &name );
+    bool registerRenderView( std::shared_ptr<QgsAbstractRenderView> renderView, const QString &name );
 
     //! Unregisters the render view named \a name, if any
     void unregisterRenderView( const QString &name );
@@ -219,13 +219,13 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     bool isRenderViewEnabled( const QString &name );
 
     //! Returns shadow renderview or nullptr if not defined
-    QgsShadowRenderView *shadowRenderView() const;
+    QgsShadowRenderView &shadowRenderView() const;
 
     //! Returns forward renderview or nullptr if not defined
-    QgsForwardRenderView *forwardRenderView() const;
+    QgsForwardRenderView &forwardRenderView() const;
 
     //! Returns the render view named \a name, if any
-    QgsAbstractRenderView *renderView( const QString &name );
+    QgsAbstractRenderView &renderView( const QString &name );
 
     //! Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources
     void updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources );

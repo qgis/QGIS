@@ -56,8 +56,10 @@ Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, 
   , mCameraController( cameraCtrl )
   , mCrs( map->crs() )
 {
-  mRenderView = new Qgs3DAxisRenderView( QgsFrameGraph::AXIS3D_RENDERVIEW, //
-                                         mCanvas, mCameraController, mMapSettings );
+  mRenderView = std::shared_ptr<Qgs3DAxisRenderView>(
+    new Qgs3DAxisRenderView( QgsFrameGraph::AXIS3D_RENDERVIEW, //
+                             mCanvas, mCameraController, mMapSettings )
+  );
   mMapScene->engine()->frameGraph()->registerRenderView( mRenderView, QgsFrameGraph::AXIS3D_RENDERVIEW );
 
   constructAxisScene( parent3DScene );
@@ -67,7 +69,7 @@ Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, 
 
   connect( cameraCtrl, &QgsCameraController::cameraChanged, this, &Qgs3DAxis::onCameraUpdate );
   // callback for Qgs3DAxisRenderView::onViewportSizeUpdate:
-  connect( mRenderView, &Qgs3DAxisRenderView::viewportScaleFactorChanged, this, &Qgs3DAxis::onViewportScaleFactorChanged );
+  connect( mRenderView.get(), &Qgs3DAxisRenderView::viewportScaleFactorChanged, this, &Qgs3DAxis::onViewportScaleFactorChanged );
 
   createAxisScene();
   onAxisViewportSizeUpdate();
