@@ -64,13 +64,13 @@ const QString QgsFrameGraph::AXIS3D_RENDERVIEW = "3daxis";
 void QgsFrameGraph::constructForwardRenderPass()
 {
   // This is where rendering of the 3D scene actually happens.
-  QgsForwardRenderView *forwardRenderView = new QgsForwardRenderView( this, mMainCamera );
+  QgsForwardRenderView *forwardRenderView = new QgsForwardRenderView( FORWARD_RENDERVIEW, mMainCamera );
   registerRenderView( forwardRenderView, FORWARD_RENDERVIEW );
 }
 
 void QgsFrameGraph::constructShadowRenderPass()
 {
-  QgsShadowRenderView *shadowRenderView = new QgsShadowRenderView( this, SHADOW_RENDERVIEW );
+  QgsShadowRenderView *shadowRenderView = new QgsShadowRenderView( SHADOW_RENDERVIEW );
   registerRenderView( shadowRenderView, SHADOW_RENDERVIEW );
 }
 

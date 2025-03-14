@@ -46,10 +46,9 @@ namespace Qt3DRender
  */
 class QgsForwardRenderView : public QgsAbstractRenderView
 {
-    Q_OBJECT
   public:
     //! Constructor with 3D scene camera
-    QgsForwardRenderView( QObject *parent, Qt3DRender::QCamera *mainCamera );
+    QgsForwardRenderView( const QString &viewName, Qt3DRender::QCamera *mainCamera );
 
     //! Returns a layer object used to indicate that the object is transparent
     Qt3DRender::QLayer *renderLayer() { return mRenderLayer; }

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsshadowrenderview.h"
-#include "moc_qgsshadowrenderview.cpp"
 #include "qgsdirectionallightsettings.h"
 #include "qgsshadowsettings.h"
 
@@ -36,14 +35,14 @@
 #include <Qt3DRender/QPolygonOffset>
 #include <Qt3DRender/qsubtreeenabler.h>
 
-QgsShadowRenderView::QgsShadowRenderView( QObject *parent, const QString &viewName )
-  : QgsAbstractRenderView( parent, viewName )
+QgsShadowRenderView::QgsShadowRenderView( const QString &viewName )
+  : QgsAbstractRenderView( viewName )
 {
   mLightCamera = new Qt3DRender::QCamera;
-  mLightCamera->setObjectName( objectName() + "::LightCamera" );
+  mLightCamera->setObjectName( mViewName + "::LightCamera" );
   mEntityCastingShadowsLayer = new Qt3DRender::QLayer;
   mEntityCastingShadowsLayer->setRecursive( true );
-  mEntityCastingShadowsLayer->setObjectName( objectName() + "::Layer" );
+  mEntityCastingShadowsLayer->setObjectName( mViewName + "::Layer" );
 
   // shadow rendering pass
   buildRenderPass();
@@ -73,7 +72,7 @@ Qt3DRender::QRenderTarget *QgsShadowRenderView::buildTextures()
   renderTargetOutput->setTexture( mMapTexture );
 
   Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget;
-  renderTarget->setObjectName( objectName() + "::Target" );
+  renderTarget->setObjectName( mViewName + "::Target" );
   renderTarget->addOutput( renderTargetOutput );
 
   return renderTarget;
@@ -83,7 +82,7 @@ void QgsShadowRenderView::buildRenderPass()
 {
   // build render pass
   mLightCameraSelector = new Qt3DRender::QCameraSelector( mRendererEnabler );
-  mLightCameraSelector->setObjectName( objectName() + "::CameraSelector" );
+  mLightCameraSelector->setObjectName( mViewName + "::CameraSelector" );
   mLightCameraSelector->setCamera( mLightCamera );
 
   mLayerFilter = new Qt3DRender::QLayerFilter( mLightCameraSelector );

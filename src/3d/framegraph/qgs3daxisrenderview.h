@@ -57,14 +57,14 @@ class Qgs3DMapSettings;
  * \note Not available in Python bindings
  * \since QGIS 3.40
  */
-class _3D_EXPORT Qgs3DAxisRenderView : public QgsAbstractRenderView
+class _3D_EXPORT Qgs3DAxisRenderView : public QObject, public QgsAbstractRenderView
 {
     Q_OBJECT
   public:
     /**
      * Constructor for Qgs3DAxisRenderView with the specified \a parent object.
      */
-    Qgs3DAxisRenderView( QObject *parent, const QString &viewName, Qgs3DMapCanvas *canvas, //
+    Qgs3DAxisRenderView( const QString &viewName, Qgs3DMapCanvas *canvas, //
                          QgsCameraController *cameraCtrl, Qgs3DMapSettings *settings );
 
     //! Returns the viewport associated to this renderview

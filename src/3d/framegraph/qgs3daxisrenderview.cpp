@@ -45,21 +45,22 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 #include "qgs3dmapcanvas.h"
 #include "qgscameracontroller.h"
 
-Qgs3DAxisRenderView::Qgs3DAxisRenderView( QObject *parent, const QString &viewName, Qgs3DMapCanvas *canvas, //
+Qgs3DAxisRenderView::Qgs3DAxisRenderView( const QString &viewName, Qgs3DMapCanvas *canvas, //
                                           QgsCameraController *cameraCtrl, Qgs3DMapSettings *settings )
-  : QgsAbstractRenderView( parent, viewName )
+  : QObject()
+  , QgsAbstractRenderView( viewName )
   , mCanvas( canvas )
   , mMapSettings( settings )
 {
   mViewport = new Qt3DRender::QViewport( mRendererEnabler );
-  mViewport->setObjectName( objectName() + "::Viewport" );
+  mViewport->setObjectName( mViewName + "::Viewport" );
 
   mObjectLayer = new Qt3DRender::QLayer;
-  mObjectLayer->setObjectName( objectName() + "::ObjectLayer" );
+  mObjectLayer->setObjectName( mViewName + "::ObjectLayer" );
   mObjectLayer->setRecursive( true );
 
   mLabelLayer = new Qt3DRender::QLayer;
-  mLabelLayer->setObjectName( objectName() + "::LabelLayer" );
+  mLabelLayer->setObjectName( mViewName + "::LabelLayer" );
   mLabelLayer->setRecursive( true );
 
   // render pass for the object (axis or cube)
@@ -67,7 +68,7 @@ Qgs3DAxisRenderView::Qgs3DAxisRenderView( QObject *parent, const QString &viewNa
   objectFilter->addLayer( mObjectLayer );
 
   mObjectCamera = new Qt3DRender::QCamera;
-  mObjectCamera->setObjectName( objectName() + "::ObjectCamera" );
+  mObjectCamera->setObjectName( mViewName + "::ObjectCamera" );
   mObjectCamera->setProjectionType( cameraCtrl->camera()->projectionType() );
   mObjectCamera->lens()->setFieldOfView( cameraCtrl->camera()->lens()->fieldOfView() * 0.5f );
 
@@ -91,7 +92,7 @@ Qgs3DAxisRenderView::Qgs3DAxisRenderView( QObject *parent, const QString &viewNa
   labelFilter->addLayer( mLabelLayer );
 
   mLabelCamera = new Qt3DRender::QCamera;
-  mLabelCamera->setObjectName( objectName() + "::LabelCamera" );
+  mLabelCamera->setObjectName( mViewName + "::LabelCamera" );
   mLabelCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
 
   Qt3DRender::QCameraSelector *labelCameraSelector = new Qt3DRender::QCameraSelector( labelFilter );
