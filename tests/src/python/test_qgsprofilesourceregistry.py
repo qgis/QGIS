@@ -445,6 +445,74 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
         self.assertTrue(self.render_layout_check("custom_profile", layout))
         QgsApplication.profileSourceRegistry().unregisterProfileSource(source)
 
+    def test_layout_item_profile_custom_source_with_subsections(self):
+        """
+        Test getting a custom profile in a layout item
+        """
+        source = MyProfileSource()
+        QgsApplication.profileSourceRegistry().registerProfileSource(source)
+
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        profile_item = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile_item)
+        profile_item.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            "LINESTRING (2584085.816 1216473.232, 2577540.6 1219433.6, 2581425.1 1219439.0, 2583062.0 1216570.2)"
+        )
+
+        profile_item.setProfileCurve(curve)
+        profile_item.setCrs(QgsCoordinateReferenceSystem("EPSG:2056"))
+
+        profile_item.plot().setXMinimum(-100)
+        profile_item.plot().setXMaximum(curve.length() + 100)
+        profile_item.plot().setYMaximum(1300)
+
+        profile_item.plot().xAxis().setGridIntervalMajor(1000)
+        profile_item.plot().xAxis().setGridIntervalMinor(500)
+        profile_item.plot().xAxis().setGridMajorSymbol(
+            QgsLineSymbol.createSimple({"color": "#ffaaff", "width": 2})
+        )
+        profile_item.plot().xAxis().setGridMinorSymbol(
+            QgsLineSymbol.createSimple({"color": "#ffffaa", "width": 2})
+        )
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        profile_item.plot().xAxis().setTextFormat(format)
+        profile_item.plot().xAxis().setLabelInterval(4000)
+
+        profile_item.plot().yAxis().setGridIntervalMajor(1000)
+        profile_item.plot().yAxis().setGridIntervalMinor(500)
+        profile_item.plot().yAxis().setGridMajorSymbol(
+            QgsLineSymbol.createSimple({"color": "#ffffaa", "width": 2})
+        )
+        profile_item.plot().yAxis().setGridMinorSymbol(
+            QgsLineSymbol.createSimple({"color": "#aaffaa", "width": 2})
+        )
+
+        profile_item.plot().yAxis().setTextFormat(format)
+        profile_item.plot().yAxis().setLabelInterval(500)
+
+        profile_item.plot().setChartBorderSymbol(
+            QgsFillSymbol.createSimple(
+                {"style": "no", "color": "#aaffaa", "width_border": 2}
+            )
+        )
+
+        profile_item.setSubsectionsSymbol(
+            QgsLineSymbol.createSimple({"color": "#ff0000", "width": 1})
+        )
+
+        self.assertTrue(self.render_layout_check("custom_profile_subsections", layout))
+        QgsApplication.profileSourceRegistry().unregisterProfileSource(source)
+
 
 if __name__ == "__main__":
     unittest.main()
