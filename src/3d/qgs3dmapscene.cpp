@@ -835,7 +835,7 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
   // Finalize adding the 3D transparent objects by adding the layer components to the entities
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
-  Qt3DRender::QLayer *transparentLayer = frameGraph->forwardRenderView()->transparentObjectLayer();
+  Qt3DRender::QLayer *transparentLayer = frameGraph->forwardRenderView().transparentObjectLayer();
   const QList<Qt3DRender::QMaterial *> childMaterials = newEntity->findChildren<Qt3DRender::QMaterial *>();
   for ( Qt3DRender::QMaterial *material : childMaterials )
   {
@@ -1277,8 +1277,8 @@ void Qgs3DMapScene::enableClipping( const QList<QVector4D> &clipPlaneEquations )
   mClipPlanesEquations = clipPlaneEquations.mid( 0, mMaxClipPlanes );
 
   // enable the clip planes on the framegraph
-  QgsForwardRenderView *forwardRenderView = mEngine->frameGraph()->forwardRenderView();
-  forwardRenderView->addClipPlanes( clipPlaneEquations.size() );
+  QgsForwardRenderView &forwardRenderView = mEngine->frameGraph()->forwardRenderView();
+  forwardRenderView.addClipPlanes( clipPlaneEquations.size() );
 
   // Enable the clip planes for the material of each entity.
   handleClippingOnAllEntities();
@@ -1289,8 +1289,8 @@ void Qgs3DMapScene::disableClipping()
   mClipPlanesEquations.clear();
 
   // disable the clip planes on the framegraph
-  QgsForwardRenderView *forwardRenderView = mEngine->frameGraph()->forwardRenderView();
-  forwardRenderView->removeClipPlanes();
+  QgsForwardRenderView &forwardRenderView = mEngine->frameGraph()->forwardRenderView();
+  forwardRenderView.removeClipPlanes();
 
   // Disable the clip planes for the material of each entity.
   handleClippingOnAllEntities();

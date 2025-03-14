@@ -63,15 +63,12 @@ const QString QgsFrameGraph::AXIS3D_RENDERVIEW = "3daxis";
 
 void QgsFrameGraph::constructForwardRenderPass()
 {
-  // This is where rendering of the 3D scene actually happens.
-  QgsForwardRenderView *forwardRenderView = new QgsForwardRenderView( FORWARD_RENDERVIEW, mMainCamera );
-  registerRenderView( forwardRenderView, FORWARD_RENDERVIEW );
+  registerRenderView( std::make_unique<QgsForwardRenderView>( FORWARD_RENDERVIEW, mMainCamera ), FORWARD_RENDERVIEW );
 }
 
 void QgsFrameGraph::constructShadowRenderPass()
 {
-  QgsShadowRenderView *shadowRenderView = new QgsShadowRenderView( SHADOW_RENDERVIEW );
-  registerRenderView( shadowRenderView, SHADOW_RENDERVIEW );
+  registerRenderView( std::make_unique<QgsShadowRenderView>( SHADOW_RENDERVIEW ), SHADOW_RENDERVIEW );
 }
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForTexturesPreview()
@@ -95,7 +92,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForProcessing()
 {
   Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector;
   cameraSelector->setObjectName( "Sub pass Postprocessing" );
-  cameraSelector->setCamera( shadowRenderView()->lightCamera() );
+  cameraSelector->setCamera( shadowRenderView().lightCamera() );
 
   Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( cameraSelector );
 
@@ -215,7 +212,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionRenderPass(
   mAmbientOcclusionRenderCaptureTargetSelector->setTarget( colorRenderTarget );
 
   Qt3DRender::QLayer *ambientOcclusionRenderLayer = new Qt3DRender::QLayer();
-  Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView()->depthTexture();
+  Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView().depthTexture();
   mAmbientOcclusionRenderEntity = new QgsAmbientOcclusionRenderEntity( forwardDepthTexture, ambientOcclusionRenderLayer, mMainCamera, mRootEntity );
   mAmbientOcclusionRenderLayerFilter->addLayer( ambientOcclusionRenderLayer );
 
@@ -299,7 +296,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
   // This is kind of okay, but as a result, post-processing effects get applied
   // to rubber bands too. Ideally we would want them on top of everything.
   mRubberBandsRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mRubberBandsStateSet );
-  mRubberBandsRenderTargetSelector->setTarget( forwardRenderView()->renderTargetSelector()->target() );
+  mRubberBandsRenderTargetSelector->setTarget( forwardRenderView().renderTargetSelector()->target() );
 
   return mRubberBandsCameraSelector;
 }
@@ -407,7 +404,7 @@ Qt3DCore::QEntity *QgsFrameGraph::constructDepthRenderQuad()
   // construct material
 
   Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
-  Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView()->depthTexture();
+  Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView().depthTexture();
   Qt3DRender::QParameter *textureParameter = new Qt3DRender::QParameter( "depthTexture", forwardDepthTexture );
   Qt3DRender::QParameter *textureTransformParameter = new Qt3DRender::QParameter( "modelMatrix", QVariant::fromValue( modelMatrix ) );
   material->addParameter( textureParameter );
@@ -530,10 +527,10 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   Qt3DRender::QParameter *depthMapIsDepthParam = new Qt3DRender::QParameter( "isDepth", true );
   Qt3DRender::QParameter *shadowMapIsDepthParam = new Qt3DRender::QParameter( "isDepth", true );
 
-  Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView()->depthTexture();
+  Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView().depthTexture();
   mDebugDepthMapPreviewQuad = this->addTexturePreviewOverlay( forwardDepthTexture, QPointF( 0.9f, 0.9f ), QSizeF( 0.1, 0.1 ), QVector<Qt3DRender::QParameter *> { depthMapIsDepthParam } );
 
-  Qt3DRender::QTexture2D *shadowMapTexture = shadowRenderView()->mapTexture();
+  Qt3DRender::QTexture2D *shadowMapTexture = shadowRenderView().mapTexture();
   mDebugShadowMapPreviewQuad = this->addTexturePreviewOverlay( shadowMapTexture, QPointF( 0.9f, 0.9f ), QSizeF( 0.1, 0.1 ), QVector<Qt3DRender::QParameter *> { shadowMapIsDepthParam } );
 
   mDebugDepthMapPreviewQuad->setEnabled( false );
@@ -546,22 +543,21 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 
 void QgsFrameGraph::unregisterRenderView( const QString &name )
 {
-  std::shared_ptr<QgsAbstractRenderView> renderView = mRenderViewMap.find( name ).value();
-  if ( renderView )
+  if ( mRenderViewMap.find( name ) != mRenderViewMap.end() )
   {
-    renderView->topGraphNode()->setParent( ( QNode * ) nullptr );
-    mRenderViewMap.remove( name );
+    mRenderViewMap[name]->topGraphNode()->setParent( ( QNode * ) nullptr );
+    mRenderViewMap.erase( name );
   }
 }
 
-bool QgsFrameGraph::registerRenderView( QgsAbstractRenderView *renderView, const QString &name )
+bool QgsFrameGraph::registerRenderView( std::unique_ptr<QgsAbstractRenderView> renderView, const QString &name )
 {
   bool out;
   if ( mRenderViewMap.find( name ) == mRenderViewMap.end() )
   {
-    mRenderViewMap.insert( name, std::shared_ptr<QgsAbstractRenderView>( renderView ) );
-    renderView->topGraphNode()->setParent( mMainViewPort );
-    renderView->updateWindowResize( mSize.width(), mSize.height() );
+    mRenderViewMap[name] = std::move( renderView );
+    mRenderViewMap[name]->topGraphNode()->setParent( mMainViewPort );
+    mRenderViewMap[name]->updateWindowResize( mSize.width(), mSize.height() );
     out = true;
   }
   else
@@ -580,7 +576,11 @@ void QgsFrameGraph::setRenderViewEnabled( const QString &name, bool enable )
 
 QgsAbstractRenderView *QgsFrameGraph::renderView( const QString &name )
 {
-  return mRenderViewMap[name].get();
+  if ( mRenderViewMap.find( name ) != mRenderViewMap.end() )
+  {
+    return mRenderViewMap[name].get();
+  }
+  return nullptr;
 }
 
 bool QgsFrameGraph::isRenderViewEnabled( const QString &name )
@@ -615,8 +615,8 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
 
     if ( light )
     {
-      shadowRenderView()->setMapSize( shadowSettings.shadowMapResolution(), shadowSettings.shadowMapResolution() );
-      shadowRenderView()->setEnabled( true );
+      shadowRenderView().setMapSize( shadowSettings.shadowMapResolution(), shadowSettings.shadowMapResolution() );
+      shadowRenderView().setEnabled( true );
       mPostprocessingEntity->setShadowRenderingEnabled( true );
       mPostprocessingEntity->setShadowBias( static_cast<float>( shadowSettings.shadowBias() ) );
       mPostprocessingEntity->updateShadowSettings( *light, static_cast<float>( shadowSettings.maximumShadowRenderingDistance() ) );
@@ -624,7 +624,7 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
   }
   else
   {
-    shadowRenderView()->setEnabled( false );
+    shadowRenderView().setEnabled( false );
     mPostprocessingEntity->setShadowRenderingEnabled( false );
   }
 }
@@ -650,9 +650,7 @@ QString QgsFrameGraph::dumpSceneGraph() const
 
 void QgsFrameGraph::setClearColor( const QColor &clearColor )
 {
-  QgsForwardRenderView *rv = forwardRenderView();
-  if ( rv )
-    rv->setClearColor( clearColor );
+  forwardRenderView().setClearColor( clearColor );
 }
 
 void QgsFrameGraph::setAmbientOcclusionEnabled( bool enabled )
@@ -682,7 +680,7 @@ void QgsFrameGraph::setAmbientOcclusionThreshold( float threshold )
 
 void QgsFrameGraph::setFrustumCullingEnabled( bool enabled )
 {
-  forwardRenderView()->setFrustumCullingEnabled( enabled );
+  forwardRenderView().setFrustumCullingEnabled( enabled );
 }
 
 void QgsFrameGraph::setupEyeDomeLighting( bool enabled, double strength, int distance )
@@ -745,9 +743,9 @@ void QgsFrameGraph::setupDepthMapDebugging( bool enabled, Qt::Corner corner, dou
 void QgsFrameGraph::setSize( QSize s )
 {
   mSize = s;
-  for ( QMap<QString, std::shared_ptr<QgsAbstractRenderView>>::iterator it = mRenderViewMap.begin(); it != mRenderViewMap.end(); ++it )
+  for ( auto it = mRenderViewMap.begin(); it != mRenderViewMap.end(); ++it )
   {
-    std::shared_ptr<QgsAbstractRenderView> rv = it.value();
+    QgsAbstractRenderView *rv = it->second.get();
     rv->updateWindowResize( mSize.width(), mSize.height() );
   }
 
@@ -771,21 +769,17 @@ void QgsFrameGraph::setRenderCaptureEnabled( bool enabled )
 
 void QgsFrameGraph::setDebugOverlayEnabled( bool enabled )
 {
-  forwardRenderView()->setDebugOverlayEnabled( enabled );
+  forwardRenderView().setDebugOverlayEnabled( enabled );
 }
 
-QgsForwardRenderView *QgsFrameGraph::forwardRenderView() const
+QgsForwardRenderView &QgsFrameGraph::forwardRenderView()
 {
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::FORWARD_RENDERVIEW].get();
-  if ( rv )
-    return dynamic_cast<QgsForwardRenderView *>( rv );
-  return nullptr;
+  return *( dynamic_cast<QgsForwardRenderView *>( rv ) );
 }
 
-QgsShadowRenderView *QgsFrameGraph::shadowRenderView() const
+QgsShadowRenderView &QgsFrameGraph::shadowRenderView()
 {
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::SHADOW_RENDERVIEW].get();
-  if ( rv )
-    return dynamic_cast<QgsShadowRenderView *>( rv );
-  return nullptr;
+  return *( dynamic_cast<QgsShadowRenderView *>( rv ) );
 }
