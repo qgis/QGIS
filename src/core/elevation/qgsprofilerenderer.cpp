@@ -465,4 +465,3 @@ void QgsProfilePlotRenderer::generateProfileStatic( std::unique_ptr< ProfileJob 
   job->invalidatedResults.reset();
   job->mutex.unlock();
 }
-
