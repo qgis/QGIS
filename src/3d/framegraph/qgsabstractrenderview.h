@@ -41,14 +41,13 @@ namespace Qt3DRender
  * \note Not available in Python bindings
  * \since QGIS 3.44
  */
-class _3D_EXPORT QgsAbstractRenderView : public QObject
+class _3D_EXPORT QgsAbstractRenderView
 {
-    Q_OBJECT
   public:
     /**
      * Constructor for QgsAbstractRenderView with the specified \a parent object.
      */
-    QgsAbstractRenderView( QObject *parent, const QString &viewName );
+    QgsAbstractRenderView( const QString &viewName );
 
     //! Disabled copy constructor
     QgsAbstractRenderView( const QgsAbstractRenderView &other ) = delete;
@@ -74,6 +73,7 @@ class _3D_EXPORT QgsAbstractRenderView : public QObject
     virtual bool isEnabled() const;
 
   protected:
+    QString mViewName;
     QPointer<Qt3DRender::QFrameGraphNode> mRoot;
     Qt3DRender::QSubtreeEnabler *mRendererEnabler = nullptr;
 };

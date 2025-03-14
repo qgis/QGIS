@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsforwardrenderview.h"
-#include "moc_qgsforwardrenderview.cpp"
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QViewport>
 #include <Qt3DRender/QCameraSelector>
@@ -42,17 +41,17 @@
 #include <Qt3DRender/QDebugOverlay>
 #endif
 
-QgsForwardRenderView::QgsForwardRenderView( QObject *parent, Qt3DRender::QCamera *mainCamera )
-  : QgsAbstractRenderView( parent, "forward" )
+QgsForwardRenderView::QgsForwardRenderView( const QString &viewName, Qt3DRender::QCamera *mainCamera )
+  : QgsAbstractRenderView( viewName )
   , mMainCamera( mainCamera )
 {
   mRenderLayer = new Qt3DRender::QLayer;
   mRenderLayer->setRecursive( true );
-  mRenderLayer->setObjectName( objectName() + "::Layer" );
+  mRenderLayer->setObjectName( mViewName + "::Layer" );
 
   mTransparentObjectsLayer = new Qt3DRender::QLayer;
   mTransparentObjectsLayer->setRecursive( true );
-  mTransparentObjectsLayer->setObjectName( objectName() + "::TransparentLayer" );
+  mTransparentObjectsLayer->setObjectName( mViewName + "::TransparentLayer" );
 
   // forward rendering pass
   buildRenderPasses();
@@ -137,14 +136,14 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
 void QgsForwardRenderView::buildRenderPasses()
 {
   mMainCameraSelector = new Qt3DRender::QCameraSelector( mRendererEnabler );
-  mMainCameraSelector->setObjectName( objectName() + "::CameraSelector" );
+  mMainCameraSelector->setObjectName( mViewName + "::CameraSelector" );
   mMainCameraSelector->setCamera( mMainCamera );
 
   mLayerFilter = new Qt3DRender::QLayerFilter( mMainCameraSelector );
   mLayerFilter->addLayer( mRenderLayer );
 
   mClipRenderStateSet = new Qt3DRender::QRenderStateSet( mLayerFilter );
-  mClipRenderStateSet->setObjectName( objectName() + "::Clip Plane RenderStateSet" );
+  mClipRenderStateSet->setObjectName( mViewName + "::Clip Plane RenderStateSet" );
 
   Qt3DRender::QRenderTarget *renderTarget = buildTextures();
 
