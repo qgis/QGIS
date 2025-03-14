@@ -141,9 +141,25 @@ void QgsCheckboxSearchWidgetWrapper::setExpression( const QString &expression )
 {
   QString exp = expression;
   const QString fieldName = layer()->fields().at( mFieldIdx ).name();
+  const QMetaType::Type fieldType = layer()->fields().at( mFieldIdx ).type();
 
-  const QString str = QStringLiteral( "%1 = '%3'" )
-                        .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
+  QString str;
+  switch ( fieldType )
+  {
+    case QMetaType::Type::Bool:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::ULongLong:
+    case QMetaType::Type::Double:
+      str = QStringLiteral( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( fieldName ), exp );
+      break;
+
+    default:
+      str = QStringLiteral( "%1 = '%2'" )
+              .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
+      break;
+  }
   mExpression = str;
 }
 
@@ -152,7 +168,18 @@ void QgsCheckboxSearchWidgetWrapper::stateChanged( int )
   if ( mCheckBox )
   {
     mCheckBox->setTristate( false );
-    const QString exp = value().toString();
+
+    QString exp;
+    const QVariant currentValue = value();
+    if ( currentValue.userType() == QMetaType::Type::Bool )
+    {
+      exp = currentValue.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
+    }
+    else
+    {
+      exp = currentValue.toString();
+    }
+
     setExpression( exp );
     emit valueChanged();
     emit expressionChanged( mExpression );
