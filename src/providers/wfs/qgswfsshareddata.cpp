@@ -451,7 +451,7 @@ QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( const QgsWFSDataSourceURI &u
 {
 }
 
-long long QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion, const QString &filter, const QgsWfsCapabilities::Capabilities &caps )
+long long QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion, const QString &filter, const QgsWfsCapabilities &caps )
 {
   const QString typeName = mUri.typeName();
 

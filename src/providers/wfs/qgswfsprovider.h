@@ -67,7 +67,7 @@ class QgsWFSProvider final : public QgsVectorDataProvider
     static const QString WFS_PROVIDER_KEY;
     static const QString WFS_PROVIDER_DESCRIPTION;
 
-    explicit QgsWFSProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, const QgsWfsCapabilities::Capabilities &caps = QgsWfsCapabilities::Capabilities() );
+    explicit QgsWFSProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, const QgsWfsCapabilities &caps = QgsWfsCapabilities() );
     ~QgsWFSProvider() override;
 
     /* Inherited from QgsVectorDataProvider */
@@ -125,10 +125,10 @@ class QgsWFSProvider final : public QgsVectorDataProvider
 
     void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
 
-    static QgsWfsCapabilities::Capabilities getCachedCapabilities( const QString &uri );
-    static QString buildFilterByGeometryType( const QgsWfsCapabilities::Capabilities &caps, const QString &geometryElement, const QString &function );
-    static QString buildIsNullGeometryFilter( const QgsWfsCapabilities::Capabilities &caps, const QString &geometryElement );
-    static QString buildGeometryCollectionFilter( const QgsWfsCapabilities::Capabilities &caps, const QString &geometryElement );
+    static QgsWfsCapabilities getCachedCapabilities( const QString &uri );
+    static QString buildFilterByGeometryType( const QgsWfsCapabilities &caps, const QString &geometryElement, const QString &function );
+    static QString buildIsNullGeometryFilter( const QgsWfsCapabilities &caps, const QString &geometryElement );
+    static QString buildGeometryCollectionFilter( const QgsWfsCapabilities &caps, const QString &geometryElement );
 
     //! Perform an initial GetFeature request with a 1-feature limit.
     void issueInitialGetFeature();

@@ -8,6 +8,7 @@ set(WFS_SRCS
   qgswfscapabilities.cpp
   qgswfsdataitems.cpp
   qgswfsfeatureiterator.cpp
+  qgswfsgetcapabilities.cpp
   qgswfsgetfeature.cpp
   qgswfsrequest.cpp
   qgswfsconnection.cpp

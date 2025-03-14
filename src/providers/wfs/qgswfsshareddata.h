@@ -52,7 +52,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     bool hasGeometry() const override { return !mGeometryAttribute.isEmpty(); }
 
-    const QgsWfsCapabilities::Capabilities &capabilities() const { return mCaps; }
+    const QgsWfsCapabilities &capabilities() const { return mCaps; }
 
     //! Set a new filter and return the previous one. Only used to temporarily disable filtering when trying to get layer geometry type.
     QString setWFSFilter( const QString &newFilter )
@@ -112,7 +112,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     long long mPageSize = 0;
 
     //! Server capabilities
-    QgsWfsCapabilities::Capabilities mCaps;
+    QgsWfsCapabilities mCaps;
 
     //! If we have already issued a warning about missing feature ids
     bool mHasWarnedAboutMissingFeatureId = false;
@@ -177,7 +177,7 @@ class QgsWFSFeatureHitsRequest : public QgsWfsRequest
     explicit QgsWFSFeatureHitsRequest( const QgsWFSDataSourceURI &uri );
 
     //! Returns the feature count, or -1 in case of error
-    long long getFeatureCount( const QString &WFSVersion, const QString &filter, const QgsWfsCapabilities::Capabilities &caps );
+    long long getFeatureCount( const QString &WFSVersion, const QString &filter, const QgsWfsCapabilities &caps );
 
   protected:
     QString errorMessageWithReason( const QString &reason ) override;
