@@ -16,6 +16,7 @@
 #ifndef QGSFRAMEGRAPH_H
 #define QGSFRAMEGRAPH_H
 
+#include <map>
 #include <QWindow>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSurfaceSelector>
@@ -203,12 +204,12 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     void removeClipPlanes();
 
     /**
-     * Registers a new the render view \a renderView with name \a name
+     * Registers a new the render view \a renderView with name \a name.
      *
-     * Will take ownership of the renderView
+     * Will take ownership of the renderView.
      * \since QGIS 3.44
      */
-    bool registerRenderView( QgsAbstractRenderView *renderView, const QString &name );
+    bool registerRenderView( std::unique_ptr<QgsAbstractRenderView> renderView, const QString &name );
 
     /**
      * Unregisters the render view named \a name, if any
@@ -235,16 +236,16 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     QgsAbstractRenderView *renderView( const QString &name );
 
     /**
-     * Returns shadow renderview or nullptr if not defined
+     * Returns shadow renderview
      * \since QGIS 3.44
      */
-    QgsShadowRenderView *shadowRenderView() const;
+    QgsShadowRenderView &shadowRenderView();
 
     /**
-     * Returns forward renderview or nullptr if not defined
+     * Returns forward renderview
      * \since QGIS 3.44
      */
-    QgsForwardRenderView *forwardRenderView() const;
+    QgsForwardRenderView &forwardRenderView();
 
     /**
      * Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources
@@ -355,7 +356,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     bool mRenderCaptureEnabled = false;
 
     // holds renderviews according to their name
-    QMap<QString, std::shared_ptr<QgsAbstractRenderView>> mRenderViewMap;
+    std::map<QString, std::unique_ptr<QgsAbstractRenderView>> mRenderViewMap;
 
     Q_DISABLE_COPY( QgsFrameGraph )
 };
