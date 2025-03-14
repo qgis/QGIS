@@ -1381,6 +1381,3 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItem::Flags )
 
 #endif //QGSLAYOUTITEM_H
-
-
-
