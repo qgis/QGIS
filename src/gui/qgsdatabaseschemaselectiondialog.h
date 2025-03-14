@@ -22,9 +22,6 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsdatabaseschemacombobox.h"
 
-///@cond PRIVATE
-#ifndef SIP_RUN
-
 /**
  * \ingroup gui
  * \brief The QgsDatabaseSchemaSelectionDialog class is a dialog which displays selection of schema for a specific database connection.
@@ -54,6 +51,4 @@ class GUI_EXPORT QgsDatabaseSchemaSelectionDialog : public QDialog
     QgsDatabaseSchemaComboBox *mCboSchema = nullptr;
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> mDatabaseConnection = nullptr;
 };
-#endif
-
 #endif // QGSDATABASESCHEMASELECTIONDIALOG_H
