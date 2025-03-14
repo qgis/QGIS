@@ -56,7 +56,7 @@ Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, 
   , mCameraController( cameraCtrl )
   , mCrs( map->crs() )
 {
-  mRenderView = new Qgs3DAxisRenderView( mMapScene->engine()->frameGraph(), QgsFrameGraph::AXIS3D_RENDERVIEW, //
+  mRenderView = new Qgs3DAxisRenderView( QgsFrameGraph::AXIS3D_RENDERVIEW, //
                                          mCanvas, mCameraController, mMapSettings,
                                          this );
   mMapScene->engine()->frameGraph()->registerRenderView( mRenderView, QgsFrameGraph::AXIS3D_RENDERVIEW );

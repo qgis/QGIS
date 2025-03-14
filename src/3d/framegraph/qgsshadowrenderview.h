@@ -66,10 +66,9 @@ class QgsLightSource;
  */
 class QgsShadowRenderView : public QgsAbstractRenderView
 {
-    Q_OBJECT
   public:
     //! Default constructor
-    QgsShadowRenderView( QObject *parent, const QString &viewName );
+    QgsShadowRenderView( const QString &viewName );
 
     //! Enable or disable via \a enable the renderview sub tree
     virtual void setEnabled( bool enable ) override;

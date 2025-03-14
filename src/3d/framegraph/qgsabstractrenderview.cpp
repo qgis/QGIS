@@ -14,14 +14,12 @@
  ***************************************************************************/
 
 #include "qgsabstractrenderview.h"
-#include "moc_qgsabstractrenderview.cpp"
 #include <Qt3DRender/QNoDraw>
 #include <Qt3DRender/qsubtreeenabler.h>
 
-QgsAbstractRenderView::QgsAbstractRenderView( QObject *parent, const QString &viewName )
-  : QObject( parent )
+QgsAbstractRenderView::QgsAbstractRenderView( const QString &viewName )
 {
-  setObjectName( viewName );
+  mViewName = viewName;
   // in order to avoid a render pass on the render view, we add a NoDraw node
   // which is disabled when the enabler is enabled, and vice versa
   using namespace Qt3DRender;

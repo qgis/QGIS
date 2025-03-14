@@ -59,12 +59,11 @@ class Qgs3DAxis;
  */
 class _3D_EXPORT Qgs3DAxisRenderView : public QgsAbstractRenderView
 {
-    Q_OBJECT
   public:
     /**
      * Constructor for Qgs3DAxisRenderView with the specified \a parent object.
      */
-    Qgs3DAxisRenderView( QObject *parent, const QString &viewName, Qgs3DMapCanvas *canvas, //
+    Qgs3DAxisRenderView( const QString &viewName, Qgs3DMapCanvas *canvas,             //
                          QgsCameraController *cameraCtrl, Qgs3DMapSettings *settings, //
                          Qgs3DAxis *axis3D );
 

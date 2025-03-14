@@ -64,13 +64,13 @@ const QString QgsFrameGraph::AXIS3D_RENDERVIEW = "3daxis";
 void QgsFrameGraph::constructForwardRenderPass()
 {
   // This is where rendering of the 3D scene actually happens.
-  QgsForwardRenderView *forwardRenderView = new QgsForwardRenderView( this, mMainCamera );
+  QgsForwardRenderView *forwardRenderView = new QgsForwardRenderView( FORWARD_RENDERVIEW, mMainCamera );
   registerRenderView( forwardRenderView, FORWARD_RENDERVIEW );
 }
 
 void QgsFrameGraph::constructShadowRenderPass()
 {
-  QgsShadowRenderView *shadowRenderView = new QgsShadowRenderView( this, SHADOW_RENDERVIEW );
+  QgsShadowRenderView *shadowRenderView = new QgsShadowRenderView( SHADOW_RENDERVIEW );
   registerRenderView( shadowRenderView, SHADOW_RENDERVIEW );
 }
 
@@ -778,7 +778,7 @@ QgsForwardRenderView *QgsFrameGraph::forwardRenderView() const
 {
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::FORWARD_RENDERVIEW].get();
   if ( rv )
-    return qobject_cast<QgsForwardRenderView *>( rv );
+    return dynamic_cast<QgsForwardRenderView *>( rv );
   return nullptr;
 }
 
@@ -786,6 +786,6 @@ QgsShadowRenderView *QgsFrameGraph::shadowRenderView() const
 {
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::SHADOW_RENDERVIEW].get();
   if ( rv )
-    return qobject_cast<QgsShadowRenderView *>( rv );
+    return dynamic_cast<QgsShadowRenderView *>( rv );
   return nullptr;
 }
