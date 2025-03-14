@@ -34,7 +34,7 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsdbimportvectorlayerdialog.h"
 #include "qgsproject.h"
-#include "qgspostgresschemaselectiondialog.h"
+#include "qgsdatabaseschemaselectiondialog.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -928,7 +928,19 @@ void QgsPostgresDataItemGuiProvider::duplicateProject( QgsPGProjectItem *project
 
 void QgsPostgresDataItemGuiProvider::moveProjectToSchema( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
 {
-  QgsPostgresSchemaSelectionDialog *dlg = new QgsPostgresSchemaSelectionDialog( projectItem->postgresProjectUri().connInfo );
+  QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( projectItem->parent() );
+  if ( !schemaItem )
+  {
+    return;
+  }
+
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> dbConnection( schemaItem->databaseConnection() );
+  if ( !dbConnection )
+  {
+    return;
+  }
+
+  QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( std::move( dbConnection ) );
 
   if ( dlg->exec() == QDialog::Accepted )
   {
@@ -939,7 +951,7 @@ void QgsPostgresDataItemGuiProvider::moveProjectToSchema( QgsPGProjectItem *proj
       return;
     }
 
-    const QString newSchemaName = dlg->schema();
+    const QString newSchemaName = dlg->selectedSchema();
     if ( newSchemaName == projectItem->schemaName() )
     {
       notify( tr( "Move Project to Another Schema" ), tr( "Cannot copy to the schema where the project already is." ), context, Qgis::MessageLevel::Warning );
