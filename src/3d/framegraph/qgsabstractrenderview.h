@@ -49,6 +49,11 @@ class _3D_EXPORT QgsAbstractRenderView
      */
     QgsAbstractRenderView( const QString &viewName );
 
+    //! Disabled copy constructor
+    QgsAbstractRenderView( const QgsAbstractRenderView &other ) = delete;
+    //! Disabled operator=
+    QgsAbstractRenderView &operator=( const QgsAbstractRenderView &other ) = delete;
+
     //! Default destructor
     virtual ~QgsAbstractRenderView();
 
@@ -69,7 +74,7 @@ class _3D_EXPORT QgsAbstractRenderView
 
   protected:
     QString mViewName;
-    QPointer<Qt3DRender::QFrameGraphNode> mRoot = nullptr;
+    QPointer<Qt3DRender::QFrameGraphNode> mRoot;
     Qt3DRender::QSubtreeEnabler *mRendererEnabler = nullptr;
 };
 

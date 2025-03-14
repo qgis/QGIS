@@ -18,8 +18,8 @@
 #include <Qt3DRender/qsubtreeenabler.h>
 
 QgsAbstractRenderView::QgsAbstractRenderView( const QString &viewName )
+  : mViewName( viewName )
 {
-  mViewName = viewName;
   // in order to avoid a render pass on the render view, we add a NoDraw node
   // which is disabled when the enabler is enabled, and vice versa
   using namespace Qt3DRender;
