@@ -1,0 +1,42 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layertree/qgslayertreeviewitemdelegate.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsLayerTreeViewItemDelegate : QStyledItemDelegate
+{
+%Docstring(signature="appended")
+Item delegate that adds drawing of indicators
+%End
+
+%TypeHeaderCode
+#include "qgslayertreeviewitemdelegate.h"
+%End
+  public:
+    explicit QgsLayerTreeViewItemDelegate( QgsLayerTreeView *parent );
+
+    virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
+
+    virtual bool helpEvent( QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index );
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layertree/qgslayertreeviewitemdelegate.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -18,24 +18,12 @@
 
 #include "qgis_sip.h"
 
-SIP_NO_FILE
-
-/// @cond PRIVATE
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the QGIS API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-
 class QgsLayerTreeView;
 
 #include "qgsproxystyle.h"
 #include <QStyledItemDelegate>
 
+#ifndef SIP_RUN
 /**
  * Proxy style for layer items with indicators
  */
@@ -54,12 +42,23 @@ class QgsLayerTreeViewProxyStyle : public QgsProxyStyle
     QgsLayerTreeView *mLayerTreeView;
 };
 
+#endif
+
 
 /**
  * Item delegate that adds drawing of indicators
  */
-class QgsLayerTreeViewItemDelegate : public QStyledItemDelegate
+class GUI_EXPORT QgsLayerTreeViewItemDelegate : public QStyledItemDelegate
 {
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->inherits( "QgsLayerTreeViewItemDelegate" ) )
+      sipType = QgsLayerTreeViewItemDelegate;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
     Q_OBJECT
   public:
     explicit QgsLayerTreeViewItemDelegate( QgsLayerTreeView *parent );
@@ -75,6 +74,5 @@ class QgsLayerTreeViewItemDelegate : public QStyledItemDelegate
     QgsLayerTreeView *mLayerTreeView;
 };
 
-/// @endcond
 
 #endif // QGSLAYERTREEVIEWITEMDELEGATE_H
