@@ -15,7 +15,6 @@
 
 #include "qgswfsgetfeature.h"
 #include "moc_qgswfsgetfeature.cpp"
-#include "qgsmessagelog.h"
 #include <QUrlQuery>
 
 QgsWFSGetFeature::QgsWFSGetFeature( QgsWFSDataSourceURI &uri )
@@ -23,7 +22,7 @@ QgsWFSGetFeature::QgsWFSGetFeature( QgsWFSDataSourceURI &uri )
 {
 }
 
-bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion, const QString &typeName, const QString &filter, bool hitsOnly, const QgsWfsCapabilities::Capabilities &caps )
+bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion, const QString &typeName, const QString &filter, bool hitsOnly, const QgsWfsCapabilities &caps )
 {
   QUrl url( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
   QUrlQuery query( url );

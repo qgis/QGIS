@@ -23,6 +23,7 @@
 #include "qgssqlcomposerdialog.h"
 #include "qgswfsprovider.h"
 #include "qgswfscapabilities.h"
+#include "qgswfsdatasourceuri.h"
 
 #include <QWidget>
 
@@ -38,13 +39,13 @@ class QgsWFSValidatorCallback : public QObject, public QgsSQLComposerDialog::SQL
     Q_OBJECT
 
   public:
-    QgsWFSValidatorCallback( QObject *parent, const QgsWFSDataSourceURI &uri, const QString &allSql, const QgsWfsCapabilities::Capabilities &caps );
+    QgsWFSValidatorCallback( QObject *parent, const QgsWFSDataSourceURI &uri, const QString &allSql, const QgsWfsCapabilities &caps );
     bool isValid( const QString &sql, QString &errorReason, QString &warningMsg ) override;
 
   private:
     QgsWFSDataSourceURI mURI;
     QString mAllSql;
-    const QgsWfsCapabilities::Capabilities mCaps;
+    const QgsWfsCapabilities mCaps;
 };
 
 class QgsWFSTableSelectedCallback : public QObject, public QgsSQLComposerDialog::TableSelectedCallback
@@ -52,13 +53,13 @@ class QgsWFSTableSelectedCallback : public QObject, public QgsSQLComposerDialog:
     Q_OBJECT
 
   public:
-    QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog, const QgsWFSDataSourceURI &uri, const QgsWfsCapabilities::Capabilities &caps );
+    QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog, const QgsWFSDataSourceURI &uri, const QgsWfsCapabilities &caps );
     void tableSelected( const QString &name ) override;
 
   private:
     QgsSQLComposerDialog *mDialog = nullptr;
     QgsWFSDataSourceURI mURI;
-    const QgsWfsCapabilities::Capabilities mCaps;
+    const QgsWfsCapabilities mCaps;
 };
 
 #endif
