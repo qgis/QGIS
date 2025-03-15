@@ -21,7 +21,7 @@
 
 #include <QWidget>
 
-#include "qgsattributesformproperties.h"
+#include "qgsattributesformmodel.h"
 
 #include "ui_qgsattributewidgeteditgroupbox.h"
 #include "ui_qgsattributewidgetrelationeditwidget.h"
@@ -70,9 +70,9 @@ class GUI_EXPORT QgsAttributeWidgetRelationEditWidget : public QWidget, private 
   public:
     explicit QgsAttributeWidgetRelationEditWidget( QWidget *parent = nullptr );
 
-    void setRelationEditorConfiguration( const QgsAttributesFormProperties::RelationEditorConfiguration &config, const QString &relationId );
+    void setRelationEditorConfiguration( const QgsAttributeFormTreeData::RelationEditorConfiguration &config, const QString &relationId );
 
-    QgsAttributesFormProperties::RelationEditorConfiguration relationEditorConfiguration() const;
+    QgsAttributeFormTreeData::RelationEditorConfiguration relationEditorConfiguration() const;
 
     static QString title() { return tr( "Relation" ); }
 
