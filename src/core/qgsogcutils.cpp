@@ -1125,12 +1125,12 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLEnvelope( const QDomNode &envelopeNode
   return rect;
 }
 
-QDomElement QgsOgcUtils::rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc, int precision )
+QDomElement QgsOgcUtils::rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc, int precision )
 {
   return rectangleToGMLBox( box, doc, QString(), false, precision );
 }
 
-QDomElement QgsOgcUtils::rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc,
+QDomElement QgsOgcUtils::rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc,
     const QString &srsName,
     bool invertAxisOrientation,
     int precision )
@@ -1165,12 +1165,12 @@ QDomElement QgsOgcUtils::rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc
   return boxElem;
 }
 
-QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc, int precision )
+QDomElement QgsOgcUtils::rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc, int precision )
 {
   return rectangleToGMLEnvelope( env, doc, QString(), false, precision );
 }
 
-QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc,
+QDomElement QgsOgcUtils::rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc,
     const QString &srsName,
     bool invertAxisOrientation,
     int precision )

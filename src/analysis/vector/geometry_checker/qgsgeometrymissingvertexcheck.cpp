@@ -52,16 +52,16 @@ void QgsGeometryMissingVertexCheck::collectErrors( const QMap<QString, QgsFeatur
     const QgsGeometry geometry = layerFeature.geometry();
     const QgsAbstractGeometry *geom = geometry.constGet();
 
-    if ( QgsCurvePolygon *polygon = qgsgeometry_cast<QgsCurvePolygon *>( geom ) )
+    if ( const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
     {
       processPolygon( polygon, featurePool, errors, layerFeature, feedback );
     }
-    else if ( QgsGeometryCollection *collection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
+    else if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom ) )
     {
       const int numGeometries = collection->numGeometries();
       for ( int i = 0; i < numGeometries; ++i )
       {
-        if ( QgsCurvePolygon *polygon = qgsgeometry_cast<QgsCurvePolygon *>( collection->geometryN( i ) ) )
+        if ( const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( collection->geometryN( i ) ) )
         {
           processPolygon( polygon, featurePool, errors, layerFeature, feedback );
         }

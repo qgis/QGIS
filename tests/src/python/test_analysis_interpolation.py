@@ -87,6 +87,45 @@ class TestInterpolation(QgisTestCase):
             os.path.join(TEST_DATA_DIR, "analysis", "idw_interpolation.tif"),
         )
         self.report += checker.report()
+        self.assertTrue(ok)
+
+        # with raster creation options
+        output_file = os.path.join(tempfile.gettempdir(), "idw_interpolation_tfw.tif")
+        tfw_file = os.path.join(tempfile.gettempdir(), "idw_interpolation_tfw.tfw")
+        self.assertFalse(os.path.exists(tfw_file))
+
+        writer = QgsGridFileWriter(interpolator, output_file, extent, cols, rows)
+        writer.setCreateOptions(["TFW=yes"])
+        writer.writeFile()
+
+        checker = QgsRasterChecker()
+        ok = checker.runTest(
+            "gdal",
+            output_file,
+            "gdal",
+            os.path.join(TEST_DATA_DIR, "analysis", "idw_interpolation.tif"),
+        )
+        self.report += checker.report()
+
+        self.assertTrue(ok)
+        self.assertTrue(os.path.exists(tfw_file))
+
+        # with custom nodata
+        output_file = os.path.join(
+            tempfile.gettempdir(), "idw_interpolation_nodata.tif"
+        )
+        writer = QgsGridFileWriter(interpolator, output_file, extent, cols, rows)
+        writer.setNoDataValue(1)
+        writer.writeFile()
+
+        checker = QgsRasterChecker()
+        ok = checker.runTest(
+            "gdal",
+            output_file,
+            "gdal",
+            os.path.join(TEST_DATA_DIR, "analysis", "idw_interpolation_nodata.tif"),
+        )
+        self.report += checker.report()
 
         report_file = os.path.join(tempfile.gettempdir(), "idw_interpolation_test.html")
         with open(report_file, "w", encoding="utf-8") as f:
@@ -129,6 +168,42 @@ class TestInterpolation(QgisTestCase):
             output_file,
             "gdal",
             os.path.join(TEST_DATA_DIR, "analysis", "tin_interpolation.tif"),
+        )
+        self.report += checker.report()
+        self.assertTrue(ok)
+
+        # with raster creation options
+        output_file = os.path.join(tempfile.gettempdir(), "tin_interpolation_tfw.tif")
+        tfw_file = os.path.join(tempfile.gettempdir(), "tin_interpolation_tfw.tfw")
+        self.assertFalse(os.path.exists(tfw_file))
+
+        writer = QgsGridFileWriter(interpolator, output_file, extent, cols, rows)
+        writer.setCreateOptions(["TFW=yes"])
+        writer.writeFile()
+
+        ok = checker.runTest(
+            "gdal",
+            output_file,
+            "gdal",
+            os.path.join(TEST_DATA_DIR, "analysis", "tin_interpolation.tif"),
+        )
+        self.report += checker.report()
+        self.assertTrue(ok)
+        self.assertTrue(os.path.exists(tfw_file))
+
+        # with custom nodata
+        output_file = os.path.join(
+            tempfile.gettempdir(), "tin_interpolation_nodata.tif"
+        )
+        writer = QgsGridFileWriter(interpolator, output_file, extent, cols, rows)
+        writer.setNoDataValue(1)
+        writer.writeFile()
+
+        ok = checker.runTest(
+            "gdal",
+            output_file,
+            "gdal",
+            os.path.join(TEST_DATA_DIR, "analysis", "tin_interpolation_nodata.tif"),
         )
         self.report += checker.report()
 

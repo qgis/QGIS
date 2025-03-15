@@ -17,9 +17,17 @@ from qgis.PyQt.QtCore import (
     QModelIndex,
     QVariant,
     Qt,
+    QMetaType,
 )
 from qgis.PyQt.QtGui import QColor
-from qgis.core import QgsField, QgsFieldConstraints, QgsFields, QgsProperty, NULL
+from qgis.core import (
+    QgsField,
+    QgsFieldConstraints,
+    QgsFields,
+    QgsProperty,
+    NULL,
+    QgsVectorDataProvider,
+)
 from qgis.gui import QgsFieldMappingModel, QgsFieldMappingWidget
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -281,6 +289,281 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
                 "destination_field2": QgsProperty.fromExpression("55*6"),
                 "destination_field3": QgsProperty.fromExpression("6"),
             },
+        )
+
+    def test_set_destination_fields(self):
+        """
+        Test setting destination fields
+        """
+        source_fields = QgsFields()
+        source_fields.append(
+            QgsField("a_string", QMetaType.Type.QString, "input_string_type")
+        )
+        source_fields.append(
+            QgsField("short_string", QMetaType.Type.QString, "input_short_string")
+        )
+        source_fields.append(QgsField("a_int", QMetaType.Type.Int, "input_int_type"))
+        source_fields.append(
+            QgsField("a_double", QMetaType.Type.Double, "input_double_type")
+        )
+        source_fields.append(
+            QgsField("a_date", QMetaType.Type.QDate, "input_date_type")
+        )
+        source_fields.append(
+            QgsField("a_datetime", QMetaType.Type.QDateTime, "input_datetime_type")
+        )
+        source_fields.append(
+            QgsField("a_time", QMetaType.Type.QTime, "input_time_type")
+        )
+
+        model = QgsFieldMappingModel(source_fields)
+
+        # with exact type name matches:
+        model.setNativeTypes(
+            [
+                QgsVectorDataProvider.NativeType(
+                    "input string", "input_string_type", QMetaType.Type.QString
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "input short string", "input_short_string", QMetaType.Type.QString
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "input int", "input_int_type", QMetaType.Type.Int
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "input double", "input_double_type", QMetaType.Type.Double
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "input date", "input_date_type", QMetaType.Type.QDate
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "input datetime", "input_datetime_type", QMetaType.Type.QDateTime
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "input time", "input_time_type", QMetaType.Type.QTime
+                ),
+            ]
+        )
+
+        dest_fields = QgsFields()
+        dest_fields.append(
+            QgsField("a_string", QMetaType.Type.QString, "input_string_type")
+        )
+        dest_fields.append(
+            QgsField("short_string", QMetaType.Type.QString, "input_short_string")
+        )
+        dest_fields.append(QgsField("a_int", QMetaType.Type.Int, "input_int_type"))
+        dest_fields.append(
+            QgsField("a_double", QMetaType.Type.Double, "input_double_type")
+        )
+        dest_fields.append(QgsField("a_date", QMetaType.Type.QDate, "input_date_type"))
+        dest_fields.append(
+            QgsField("a_datetime", QMetaType.Type.QDateTime, "input_datetime_type")
+        )
+        dest_fields.append(QgsField("a_time", QMetaType.Type.QTime, "input_time_type"))
+
+        model.setDestinationFields(dest_fields, {})
+
+        self.assertEqual(
+            [m.originalName for m in model.mapping()],
+            [
+                "a_string",
+                "short_string",
+                "a_int",
+                "a_double",
+                "a_date",
+                "a_datetime",
+                "a_time",
+            ],
+        )
+        self.assertEqual(
+            [m.field.name() for m in model.mapping()],
+            [
+                "a_string",
+                "short_string",
+                "a_int",
+                "a_double",
+                "a_date",
+                "a_datetime",
+                "a_time",
+            ],
+        )
+        self.assertEqual(
+            [m.field.type() for m in model.mapping()],
+            [
+                QMetaType.Type.QString,
+                QMetaType.Type.QString,
+                QMetaType.Type.Int,
+                QMetaType.Type.Double,
+                QMetaType.Type.QDate,
+                QMetaType.Type.QDateTime,
+                QMetaType.Type.QTime,
+            ],
+        )
+        self.assertEqual(
+            [m.field.typeName() for m in model.mapping()],
+            [
+                "input_string_type",
+                "input_string_type",
+                "input_int_type",
+                "input_double_type",
+                "input_date_type",
+                "input_datetime_type",
+                "input_time_type",
+            ],
+        )
+        self.assertEqual(
+            [m.expression for m in model.mapping()],
+            [
+                '"a_string"',
+                '"short_string"',
+                '"a_int"',
+                '"a_double"',
+                '"a_date"',
+                '"a_datetime"',
+                '"a_time"',
+            ],
+        )
+
+        # type names don't match, but metatypes do:
+        model.setNativeTypes(
+            [
+                QgsVectorDataProvider.NativeType(
+                    "output string", "output_string_type", QMetaType.Type.QString
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "output short string", "output_short_string", QMetaType.Type.QString
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "output int", "output_int_type", QMetaType.Type.Int
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "output double", "output_double_type", QMetaType.Type.Double
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "output date", "output_date_type", QMetaType.Type.QDate
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "output datetime", "output_datetime_type", QMetaType.Type.QDateTime
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "output time", "output_time_type", QMetaType.Type.QTime
+                ),
+            ]
+        )
+
+        model.setDestinationFields(dest_fields, {})
+
+        self.assertEqual(
+            [m.originalName for m in model.mapping()],
+            [
+                "a_string",
+                "short_string",
+                "a_int",
+                "a_double",
+                "a_date",
+                "a_datetime",
+                "a_time",
+            ],
+        )
+        self.assertEqual(
+            [m.field.name() for m in model.mapping()],
+            [
+                "a_string",
+                "short_string",
+                "a_int",
+                "a_double",
+                "a_date",
+                "a_datetime",
+                "a_time",
+            ],
+        )
+        self.assertEqual(
+            [m.field.typeName() for m in model.mapping()],
+            [
+                "output_string_type",
+                "output_string_type",
+                "output_int_type",
+                "output_double_type",
+                "output_date_type",
+                "output_datetime_type",
+                "output_time_type",
+            ],
+        )
+        self.assertEqual(
+            [m.expression for m in model.mapping()],
+            [
+                '"a_string"',
+                '"short_string"',
+                '"a_int"',
+                '"a_double"',
+                '"a_date"',
+                '"a_datetime"',
+                '"a_time"',
+            ],
+        )
+
+        # type promotion fallback:
+        model.setNativeTypes(
+            [
+                QgsVectorDataProvider.NativeType(
+                    "output string", "output_string_type", QMetaType.Type.QString
+                ),
+                QgsVectorDataProvider.NativeType(
+                    "output longlong", "output_longlong_type", QMetaType.Type.LongLong
+                ),
+            ]
+        )
+
+        model.setDestinationFields(dest_fields, {})
+
+        self.assertEqual(
+            [m.originalName for m in model.mapping()],
+            [
+                "a_string",
+                "short_string",
+                "a_int",
+                "a_double",
+                "a_date",
+                "a_datetime",
+                "a_time",
+            ],
+        )
+        self.assertEqual(
+            [m.field.name() for m in model.mapping()],
+            [
+                "a_string",
+                "short_string",
+                "a_int",
+                "a_double",
+                "a_date",
+                "a_datetime",
+                "a_time",
+            ],
+        )
+        self.assertEqual(
+            [m.field.typeName() for m in model.mapping()],
+            [
+                "output_string_type",
+                "output_string_type",
+                "output_longlong_type",
+                "output_string_type",
+                "output_string_type",
+                "output_string_type",
+                "output_string_type",
+            ],
+        )
+        self.assertEqual(
+            [m.expression for m in model.mapping()],
+            [
+                '"a_string"',
+                '"short_string"',
+                '"a_int"',
+                '"a_double"',
+                '"a_date"',
+                '"a_datetime"',
+                '"a_time"',
+            ],
         )
 
     def testWidget(self):

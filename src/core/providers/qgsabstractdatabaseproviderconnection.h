@@ -582,6 +582,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual GeometryColumnCapabilities geometryColumnCapabilities();
 
     /**
+     * Represents capabilities of the database provider connection when importing table data.
+     *
+     * \since QGIS 3.44
+     */
+    virtual Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const = 0;
+
+    /**
      * Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
      * \since QGIS 3.22
      */
@@ -603,6 +610,42 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException if any errors are encountered.
      */
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * \brief Stores all information required to create a QgsVectorLayerExporter for the backend.
+     * \see createVectorLayerExporterDestinationUri()
+     *
+     * \since QGIS 3.44
+     */
+    struct CORE_EXPORT VectorLayerExporterOptions
+    {
+      //! Name for the new layer
+      QString layerName;
+
+      //! Optional schema for the new layer. May not be supported by all providers.
+      QString schema;
+
+      //! WKB type for destination layer geometry
+      Qgis::WkbType wkbType = Qgis::WkbType::NoGeometry;
+
+      //! List of primary key column names. Note that some providers may ignore this if not supported.
+      QStringList primaryKeyColumns;
+
+      //! Preferred name for the geometry column, if required. Note that some providers may ignore this if a specific geometry column name is required.
+      QString geometryColumn;
+
+    };
+
+    /**
+     * Creates a URI for use with QgsVectorLayerExporter corresponding to given destination table \a options for the backend.
+     *
+     * \param options defines the desired destination table details
+     * \param providerOptions will be set to a map of options to pass to createVectorTable() or the provider's createEmptyTable method.
+     * \returns destination URI for use with QgsVectorLayerExporter
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     */
+    virtual QString createVectorLayerExporterDestinationUri( const QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions &options, QVariantMap &providerOptions SIP_OUT ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Checks whether a table \a name exists in the given \a schema.
@@ -889,6 +932,28 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QSet< QString > illegalFieldNames() const;
 
     /**
+     * Returns the default name to use for a primary key column for the connection.
+     *
+     * The returned name will match common practice for the database backend.
+     *
+     * The base class method returns "pk".
+     *
+     * \since QGIS 3.44
+     */
+    virtual QString defaultPrimaryKeyColumnName() const;
+
+    /**
+     * Returns the default name to use for a geometry column for the connection.
+     *
+     * The returned name will match common practice for the database backend.
+     *
+     * The base class method returns "geom".
+     *
+     * \since QGIS 3.44
+     */
+    virtual QString defaultGeometryColumnName() const;
+
+    /**
      * Returns a list of field domain names present on the provider.
      *
      * This is supported on providers with the Capability::ListFieldDomains capability only.
@@ -957,6 +1022,18 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.32
      */
     virtual void setFieldAlias( const QString &fieldName, const QString &schema, const QString &tableName, const QString &alias ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Sets the \a comment for the existing table with the specified name.
+     *
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     * \param tableName name of the table
+     * \param comment comment to set for the table. Set to an empty string to remove a previously set comment.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.44
+     */
+    virtual void setTableComment( const QString &schema, const QString &tableName, const QString &comment ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Sets the \a comment for the existing field with the specified name.

@@ -178,6 +178,27 @@ void QgsMssqlProviderConnection::createVectorTable( const QString &schema, const
   }
 }
 
+QString QgsMssqlProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const
+{
+  QgsDataSourceUri destUri( uri() );
+
+  destUri.setTable( options.layerName );
+  destUri.setSchema( options.schema );
+  destUri.setGeometryColumn( options.wkbType != Qgis::WkbType::NoGeometry ? ( options.geometryColumn.isEmpty() ? QStringLiteral( "geom" ) : options.geometryColumn ) : QString() );
+  if ( !options.primaryKeyColumns.isEmpty() )
+  {
+    if ( options.primaryKeyColumns.length() > 1 )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Multiple primary keys are not supported by SQL Server, ignoring" ), QString(), Qgis::MessageLevel::Info );
+    }
+    destUri.setKeyColumn( options.primaryKeyColumns.at( 0 ) );
+  }
+
+  providerOptions.clear();
+
+  return destUri.uri( false );
+}
+
 QString QgsMssqlProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
   const auto tableInfo { table( schema, name ) };
@@ -789,7 +810,42 @@ bool QgsMssqlProviderConnection::validateSqlVectorLayer( const SqlVectorLayerOpt
     return false;
   }
 
+  if ( !options.geometryColumn.isEmpty() )
+  {
+    // if trying to load as geometry, make sure we can determine geometry type
+    const QString sql = QStringLiteral( "SELECT TOP 1"
+                                        " UPPER(%1.STGeometryType()),"
+                                        " %1.STSrid,"
+                                        " %1.HasZ,"
+                                        " %1.HasM"
+                                        " FROM (%2) AS _subq_"
+                                        " WHERE %1 IS NOT NULL %3"
+                                        " GROUP BY %1.STGeometryType(), %1.STSrid, %1.HasZ, %1.HasM" )
+                          .arg( QgsMssqlUtils::quotedIdentifier( options.geometryColumn ), sanitizeSqlForQueryLayer( options.sql ), options.filter.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( options.filter ) );
+
+    try
+    {
+      ( void ) executeSql( sql );
+    }
+    catch ( QgsProviderConnectionException &e )
+    {
+      message = e.what();
+      return false;
+    }
+  }
+
+
   return true;
+}
+
+Qgis::DatabaseProviderTableImportCapabilities QgsMssqlProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName;
+}
+
+QString QgsMssqlProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "qgs_fid" );
 }
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsMssqlProviderConnection::sqlOptions( const QString &layerSource )

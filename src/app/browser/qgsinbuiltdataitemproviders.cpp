@@ -66,6 +66,7 @@
 #include "qgsdbrelationshipwidget.h"
 #include "qgsdbqueryhistoryprovider.h"
 #include "qgshistoryproviderregistry.h"
+#include "qgsdataitemguiproviderutils.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -1753,6 +1754,13 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         }
       } );
       menu->addAction( newTableAction );
+
+      if ( qobject_cast<QgsFileDataCollectionItem *>( item ) )
+      {
+        QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
+        menu->addAction( importVectorAction );
+        QObject::connect( importVectorAction, &QAction::triggered, item, [item, context, this] { handleImportVector( item, context ); } );
+      }
     }
 
     // SQL dialog
@@ -1894,6 +1902,16 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
 
+  const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
+  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == QLatin1String( "vector" ) )
+  {
+    return handleDropUri( item, sourceUris.at( 0 ), context );
+  }
+
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( item->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
+
   QString uri;
 
   QStringList importResults;
@@ -1903,8 +1921,7 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
   auto mainTask = std::make_unique<QgsTaskWithSerialSubTasks>( tr( "Layer import" ) );
   bool hasSubTasks = false;
 
-  const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  for ( const QgsMimeDataUtils::Uri &dropUri : lst )
+  for ( const QgsMimeDataUtils::Uri &dropUri : sourceUris )
   {
     // Check that we are not copying over self
     if ( dropUri.uri.startsWith( item->path() ) )
@@ -1954,12 +1971,16 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
         if ( !exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ), tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( dropUri.name ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
         {
           QgsVectorLayer *vectorSrcLayer = qobject_cast<QgsVectorLayer *>( srcLayer );
-          QVariantMap options;
-          //  options.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
-          options.insert( QStringLiteral( "update" ), true );
-          options.insert( QStringLiteral( "overwrite" ), true );
-          options.insert( QStringLiteral( "layerName" ), dropUri.name );
-          QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner );
+
+          QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions exporterOptions;
+          exporterOptions.layerName = dropUri.name;
+          exporterOptions.wkbType = vectorSrcLayer->wkbType();
+
+          QVariantMap providerOptions;
+          providerOptions.insert( QStringLiteral( "update" ), true );
+          providerOptions.insert( QStringLiteral( "overwrite" ), true );
+
+          QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), providerOptions, owner );
           mainTask->addSubTask( exportTask );
           hasSubTasks = true;
           // when export is successful:
@@ -2002,6 +2023,68 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
   return true;
 }
 
+bool QgsDatabaseItemGuiProvider::handleDropUri( QgsDataItem *item, const QgsMimeDataUtils::Uri &sourceUri, QgsDataItemGuiContext context )
+{
+  QPointer< QgsDataItem > connectionItemPointer( item );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( item->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
+
+  auto onSuccess = [connectionItemPointer]() {
+    if ( connectionItemPointer )
+    {
+      connectionItemPointer->refresh();
+    }
+  };
+
+  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+    {
+      connectionItemPointer->refresh();
+    }
+  };
+
+  QVariantMap providerOptions;
+  providerOptions.insert( QStringLiteral( "update" ), true );
+  providerOptions.insert( QStringLiteral( "overwrite" ), true );
+
+  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "Database Import" ), tr( "Import to database" ), providerOptions, onSuccess, onFailure, this );
+}
+
+void QgsDatabaseItemGuiProvider::handleImportVector( QgsDataItem *item, QgsDataItemGuiContext context )
+{
+  if ( !qobject_cast<QgsFileDataCollectionItem *>( item ) )
+    return;
+
+  if ( qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
+    return; // GPKG is handled elsewhere (QgsGeoPackageItemGuiProvider)
+
+  QPointer< QgsDataItem > connectionItemPointer( item );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( item->databaseConnection() );
+  if ( !databaseConnection )
+    return;
+
+  auto onSuccess = [connectionItemPointer]() {
+    if ( connectionItemPointer )
+    {
+      connectionItemPointer->refresh();
+    }
+  };
+
+  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+    {
+      connectionItemPointer->refresh();
+    }
+  };
+
+  QVariantMap providerOptions;
+  providerOptions.insert( QStringLiteral( "update" ), true );
+  providerOptions.insert( QStringLiteral( "overwrite" ), true );
+
+  return QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), QString(), context, tr( "Database Import" ), tr( "Import to database" ), providerOptions, onSuccess, onFailure, this );
+}
+
 void QgsDatabaseItemGuiProvider::openSqlDialog( const QString &connectionUri, const QString &provider, const QString &query, QgsDataItemGuiContext context, const QString &identifierName )
 {
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( provider ) };
@@ -2042,6 +2125,7 @@ void QgsDatabaseItemGuiProvider::openSqlDialogGeneric( const QString &connection
 {
   QgsDataItemGuiContext context;
   context.setMessageBar( QgisApp::instance()->messageBar() );
+  context.setMapCanvas( QgisApp::instance()->mapCanvas() );
 
   openSqlDialog( connectionUri, provider, query, context );
 }

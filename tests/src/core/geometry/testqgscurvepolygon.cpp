@@ -1685,20 +1685,23 @@ void TestQgsCurvePolygon::testExportOfCompoundCurveRing()
 
 void TestQgsCurvePolygon::testCast()
 {
-  QVERIFY( !QgsCurvePolygon().cast( nullptr ) );
+  QVERIFY( !QgsCurvePolygon::cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
 
   QgsCurvePolygon pCast;
-  QVERIFY( QgsCurvePolygon().cast( &pCast ) );
+  QVERIFY( QgsCurvePolygon::cast( &pCast ) );
 
   QgsCurvePolygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CurvePolygonZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))" ) );
-  QVERIFY( QgsCurvePolygon().cast( &pCast2 ) );
+  QVERIFY( QgsCurvePolygon::cast( &pCast2 ) );
+  QVERIFY( QgsSurface::cast( &pCast2 ) );
 
   pCast2.fromWkt( QStringLiteral( "CurvePolygonM((0 0 1, 0 1 2, 1 0 3, 0 0 1))" ) );
-  QVERIFY( QgsCurvePolygon().cast( &pCast2 ) );
+  QVERIFY( QgsCurvePolygon::cast( &pCast2 ) );
+  QVERIFY( QgsSurface::cast( &pCast2 ) );
 
   pCast2.fromWkt( QStringLiteral( "CurvePolygonZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))" ) );
-  QVERIFY( QgsCurvePolygon().cast( &pCast2 ) );
+  QVERIFY( QgsCurvePolygon::cast( &pCast2 ) );
+  QVERIFY( QgsSurface::cast( &pCast2 ) );
 
   QVERIFY( !pCast2.fromWkt( QStringLiteral( "CurvePolygonZ((111111))" ) ) );
 }

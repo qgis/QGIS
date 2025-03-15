@@ -1080,20 +1080,28 @@ void TestQgsTriangulatedSurface::testExport()
 
 void TestQgsTriangulatedSurface::testCast()
 {
-  QVERIFY( !QgsTriangulatedSurface().cast( nullptr ) );
+  QVERIFY( !QgsTriangulatedSurface::cast( static_cast< const QgsAbstractGeometry * >( nullptr ) ) );
 
   QgsTriangulatedSurface pCast;
-  QVERIFY( QgsTriangulatedSurface().cast( &pCast ) );
+  QVERIFY( QgsTriangulatedSurface::cast( &pCast ) );
+  QVERIFY( QgsPolyhedralSurface::cast( &pCast ) );
+  QVERIFY( QgsSurface::cast( &pCast ) );
 
   QgsTriangulatedSurface pCast2;
   pCast2.fromWkt( QStringLiteral( "TINZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))" ) );
-  QVERIFY( QgsTriangulatedSurface().cast( &pCast2 ) );
+  QVERIFY( QgsTriangulatedSurface::cast( &pCast2 ) );
+  QVERIFY( QgsPolyhedralSurface::cast( &pCast ) );
+  QVERIFY( QgsSurface::cast( &pCast ) );
 
   pCast2.fromWkt( QStringLiteral( "TINM((0 0 1, 0 1 2, 1 0 3, 0 0 1))" ) );
-  QVERIFY( QgsTriangulatedSurface().cast( &pCast2 ) );
+  QVERIFY( QgsTriangulatedSurface::cast( &pCast2 ) );
+  QVERIFY( QgsPolyhedralSurface::cast( &pCast ) );
+  QVERIFY( QgsSurface::cast( &pCast ) );
 
   pCast2.fromWkt( QStringLiteral( "TINZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))" ) );
-  QVERIFY( QgsTriangulatedSurface().cast( &pCast2 ) );
+  QVERIFY( QgsTriangulatedSurface::cast( &pCast2 ) );
+  QVERIFY( QgsPolyhedralSurface::cast( &pCast ) );
+  QVERIFY( QgsSurface::cast( &pCast ) );
 
   QVERIFY( !pCast2.fromWkt( QStringLiteral( "TINZ((0 0 0, 0 1 1, 1 0 2, 2 0 2, 0 0 0))" ) ) );
   QVERIFY( !pCast2.fromWkt( QStringLiteral( "TINZ((111111))" ) ) );

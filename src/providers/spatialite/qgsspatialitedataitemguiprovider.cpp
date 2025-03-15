@@ -29,6 +29,8 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsfileutils.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgsdbimportvectorlayerdialog.h"
+#include "qgsmessagebar.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -47,8 +49,12 @@ void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     menu->addAction( actionCreateDatabase );
   }
 
-  if ( qobject_cast<QgsSLConnectionItem *>( item ) )
+  if ( QgsSLConnectionItem *connItem = qobject_cast<QgsSLConnectionItem *>( item ) )
   {
+    QAction *importVectorAction = new QAction( QObject::tr( "Import Vector Layer…" ), menu );
+    menu->addAction( importVectorAction );
+    QObject::connect( importVectorAction, &QAction::triggered, item, [connItem, context, this] { handleImportVector( connItem, context ); } );
+
     const QList<QgsSLConnectionItem *> slConnectionItems = QgsDataItem::filteredItems<QgsSLConnectionItem>( selection );
     QAction *actionDeleteConnection = new QAction( slConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDeleteConnection, &QAction::triggered, this, [slConnectionItems, context] {
@@ -92,11 +98,11 @@ bool QgsSpatiaLiteDataItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataIte
   return false;
 }
 
-bool QgsSpatiaLiteDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext, const QMimeData *data, Qt::DropAction action )
+bool QgsSpatiaLiteDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action )
 {
   if ( QgsSLConnectionItem *connItem = qobject_cast<QgsSLConnectionItem *>( item ) )
   {
-    return handleDropConnectionItem( connItem, data, action );
+    return handleDropConnectionItem( connItem, data, action, context );
   }
   return false;
 }
@@ -140,22 +146,27 @@ void QgsSpatiaLiteDataItemGuiProvider::createDatabase( QgsDataItem *item )
   }
 }
 
-bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnectionItem *connItem, const QMimeData *data, Qt::DropAction )
+bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnectionItem *connItem, const QMimeData *data, Qt::DropAction, QgsDataItemGuiContext context )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
 
-  // TODO: probably should show a GUI with settings etc
+  const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
+  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == QLatin1String( "vector" ) )
+  {
+    return handleDropUri( connItem, sourceUris.at( 0 ), context );
+  }
 
-  QgsDataSourceUri destUri;
-  destUri.setDatabase( connItem->databasePath() );
+  // TODO: when dropping multiple layers, we need a dedicated "bulk import" dialog for settings which apply to ALL layers
+
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connItem->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
 
   QStringList importResults;
   bool hasError = false;
 
-  const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  const auto constLst = lst;
-  for ( const QgsMimeDataUtils::Uri &u : constLst )
+  for ( const QgsMimeDataUtils::Uri &u : sourceUris )
   {
     // open the source layer
     bool owner;
@@ -170,10 +181,22 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnection
 
     if ( srcLayer->isValid() )
     {
-      destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != Qgis::GeometryType::Null ? QStringLiteral( "geom" ) : QString() );
-      QgsDebugMsgLevel( "URI " + destUri.uri(), 2 );
+      QString geomColumn { QStringLiteral( "geom" ) };
+      if ( !srcLayer->dataProvider()->geometryColumnName().isEmpty() )
+      {
+        geomColumn = srcLayer->dataProvider()->geometryColumnName();
+      }
 
-      auto exportTask = std::make_unique<QgsVectorLayerExporterTask>( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), QVariantMap(), owner );
+      QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions exporterOptions;
+      exporterOptions.layerName = u.name;
+      exporterOptions.wkbType = srcLayer->wkbType();
+      exporterOptions.geometryColumn = geomColumn;
+
+      QVariantMap providerOptions;
+      const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
+      QgsDebugMsgLevel( "URI " + destUri, 2 );
+
+      auto exportTask = std::make_unique<QgsVectorLayerExporterTask>( srcLayer, destUri, QStringLiteral( "spatialite" ), srcLayer->crs(), providerOptions, owner );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connItem, [=]() {
@@ -212,4 +235,47 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnection
   }
 
   return true;
+}
+
+bool QgsSpatiaLiteDataItemGuiProvider::handleDropUri( QgsSLConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, QgsDataItemGuiContext context )
+{
+  QPointer< QgsSLConnectionItem > connectionItemPointer( connectionItem );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
+
+  auto onSuccess = [connectionItemPointer]() {
+    if ( connectionItemPointer )
+      connectionItemPointer->refresh();
+  };
+
+  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+      connectionItemPointer->refresh();
+  };
+
+  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "Spatialite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
+}
+
+void QgsSpatiaLiteDataItemGuiProvider::handleImportVector( QgsSLConnectionItem *connectionItem, QgsDataItemGuiContext context )
+{
+  if ( !connectionItem )
+    return;
+
+  QPointer< QgsSLConnectionItem > connectionItemPointer( connectionItem );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return;
+
+  auto onSuccess = [connectionItemPointer]() {
+    if ( connectionItemPointer )
+      connectionItemPointer->refresh();
+  };
+
+  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+    if ( connectionItemPointer )
+      connectionItemPointer->refresh();
+  };
+
+  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), QString(), context, tr( "Spatialite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
 }

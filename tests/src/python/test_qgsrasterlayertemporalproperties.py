@@ -94,12 +94,99 @@ class TestQgsRasterLayerTemporalProperties(QgisTestCase):
 
         props2 = QgsRasterLayerTemporalProperties(None)
         props2.readXml(elem, QgsReadWriteContext())
-        self.assertEqual(props2.mode(), Qgis.RasterElevationMode.FixedElevationRange)
+        self.assertEqual(props2.mode(), Qgis.RasterTemporalMode.FixedTemporalRange)
         self.assertEqual(
             props2.fixedTemporalRange(),
             QgsDateTimeRange(
                 QDateTime(QDate(2023, 5, 6), QTime(12, 13, 14)),
                 QDateTime(QDate(2023, 7, 3), QTime(1, 3, 4)),
+            ),
+        )
+
+    def test_basic_fixed_range(self):
+        """
+        Basic tests for the class using the FixedTemporalRange mode
+        """
+        props = QgsRasterLayerTemporalProperties(None)
+        self.assertTrue(props.fixedTemporalRange().isInfinite())
+
+        props.setIsActive(True)
+        props.setMode(Qgis.RasterTemporalMode.FixedDateTime)
+        props.setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime(QDate(2023, 5, 6), QTime(12, 13, 14)),
+                QDateTime(QDate(2023, 5, 6), QTime(12, 13, 14)),
+            )
+        )
+        self.assertEqual(
+            props.fixedTemporalRange(),
+            QgsDateTimeRange(
+                QDateTime(QDate(2023, 5, 6), QTime(12, 13, 14)),
+                QDateTime(QDate(2023, 5, 6), QTime(12, 13, 14)),
+            ),
+        )
+        self.assertFalse(
+            props.isVisibleInTemporalRange(
+                QgsDateTimeRange(
+                    QDateTime(QDate(2022, 5, 6), QTime(12, 13, 14)),
+                    QDateTime(QDate(2022, 7, 3), QTime(1, 3, 4)),
+                )
+            )
+        )
+        self.assertTrue(
+            props.isVisibleInTemporalRange(
+                QgsDateTimeRange(
+                    QDateTime(QDate(2023, 1, 6), QTime(12, 13, 14)),
+                    QDateTime(QDate(2023, 6, 3), QTime(1, 3, 4)),
+                )
+            )
+        )
+        self.assertTrue(
+            props.isVisibleInTemporalRange(
+                QgsDateTimeRange(
+                    QDateTime(QDate(2023, 5, 6), QTime(12, 13, 14)),
+                    QDateTime(QDate(2023, 9, 3), QTime(1, 3, 4)),
+                )
+            )
+        )
+        self.assertTrue(
+            props.isVisibleInTemporalRange(
+                QgsDateTimeRange(
+                    QDateTime(QDate(2023, 1, 6), QTime(0, 0, 0)),
+                    QDateTime(QDate(2023, 5, 6), QTime(12, 13, 14)),
+                )
+            )
+        )
+        self.assertFalse(
+            props.isVisibleInTemporalRange(
+                QgsDateTimeRange(
+                    QDateTime(QDate(2024, 5, 6), QTime(12, 13, 14)),
+                    QDateTime(QDate(2024, 7, 3), QTime(1, 3, 4)),
+                )
+            )
+        )
+        self.assertEqual(
+            props.allTemporalRanges(None),
+            [
+                QgsDateTimeRange(
+                    QDateTime(QDate(2023, 5, 6), QTime(12, 13, 14)),
+                    QDateTime(QDate(2023, 5, 6), QTime(12, 13, 14)),
+                )
+            ],
+        )
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        props.writeXml(elem, doc, QgsReadWriteContext())
+
+        props2 = QgsRasterLayerTemporalProperties(None)
+        props2.readXml(elem, QgsReadWriteContext())
+        self.assertEqual(props2.mode(), Qgis.RasterTemporalMode.FixedDateTime)
+        self.assertEqual(
+            props2.fixedTemporalRange(),
+            QgsDateTimeRange(
+                QDateTime(QDate(2023, 5, 6), QTime(12, 13, 14)),
+                QDateTime(QDate(2023, 5, 6), QTime(12, 13, 14)),
             ),
         )
 

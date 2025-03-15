@@ -28,6 +28,7 @@
 class QTableView;
 class QItemSelectionModel;
 class QgsVectorLayer;
+class QgsFieldMappingTypeDelegate;
 
 /**
  * \ingroup gui
@@ -47,8 +48,19 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
      * optionally specified through \a expressions which is a map from the original
      * field name to the corresponding expression. A \a parent object
      * can also be specified.
+     *
+     * Since QGIS 3.44, the \a nativeTypes argument can be used to specify the list of
+     * field types natively supported by a data provider. If this list is non-empty, then
+     * the destination field types will be populated accordingly. If the list is empty,
+     * then a set of default native types will be used instead.
      */
-    explicit QgsFieldMappingWidget( QWidget *parent = nullptr, const QgsFields &sourceFields = QgsFields(), const QgsFields &destinationFields = QgsFields(), const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+    explicit QgsFieldMappingWidget(
+      QWidget *parent = nullptr,
+      const QgsFields &sourceFields = QgsFields(),
+      const QgsFields &destinationFields = QgsFields(),
+      const QMap<QString, QString> &expressions = QMap<QString, QString>(),
+      const QList< QgsVectorDataProvider::NativeType > &nativeTypes = QList< QgsVectorDataProvider::NativeType >()
+    );
 
     //! Sets the destination fields editable state to \a editable
     void setDestinationEditable( bool editable );
@@ -108,6 +120,17 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
     void setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
     /**
+     * Sets the list of \a nativeTypes supported by a data provider.
+     *
+     * If this list is non-empty, then the destination field types will be populated
+     * accordingly. If the list is empty, then a set of default native types will be
+     * used instead.
+     *
+     * \since QGIS 3.44
+     */
+    void setNativeTypes( const QList< QgsVectorDataProvider::NativeType > &nativeTypes );
+
+    /**
      * Scroll the fields view to \a index
      */
     void scrollTo( const QModelIndex &index ) const;
@@ -148,7 +171,9 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
 
   private:
     QTableView *mTableView = nullptr;
-    QAbstractTableModel *mModel = nullptr;
+    QgsFieldMappingModel *mModel = nullptr;
+
+    QgsFieldMappingTypeDelegate *mTypeDelegate = nullptr;
 
     QPointer<QgsVectorLayer> mSourceLayer;
     void updateColumns();
@@ -180,12 +205,26 @@ class QgsFieldMappingTypeDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-    QgsFieldMappingTypeDelegate( QObject *parent = nullptr );
+    QgsFieldMappingTypeDelegate( const QList< QgsVectorDataProvider::NativeType > &nativeTypes, QObject *parent = nullptr );
 
     // QAbstractItemDelegate interface
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+
+    /**
+     * Sets the list of \a nativeTypes supported by a data provider.
+     *
+     * If this list is non-empty, then the destination field types will be populated
+     * accordingly. If the list is empty, then a set of default native types will be
+     * used instead.
+     *
+     * \since QGIS 3.44
+     */
+    void setNativeTypes( const QList< QgsVectorDataProvider::NativeType > &nativeTypes );
+
+  private:
+    QList< QgsVectorDataProvider::NativeType > mNativeTypes;
 };
 
 #endif

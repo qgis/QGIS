@@ -201,6 +201,10 @@ QgsGraphVertex.incomingEdges: src/analysis/network/qgsgraph.h#L103
 QgsGraphVertex.outgoingEdges: src/analysis/network/qgsgraph.h#L109
 QgsGraphVertex.point: src/analysis/network/qgsgraph.h#L114
 QgsGraphVertex: src/analysis/network/qgsgraph.h#L88
+QgsGridFileWriter.createOptions: src/analysis/interpolation/qgsgridfilewriter.h#L70
+QgsGridFileWriter.noDataValue: src/analysis/interpolation/qgsgridfilewriter.h#L86
+QgsGridFileWriter.setCreateOptions: src/analysis/interpolation/qgsgridfilewriter.h#L62
+QgsGridFileWriter.setNoDataValue: src/analysis/interpolation/qgsgridfilewriter.h#L78
 QgsGridFileWriter.writeFile: src/analysis/interpolation/qgsgridfilewriter.h#L54
 QgsGridFileWriter: src/analysis/interpolation/qgsgridfilewriter.h#L35
 QgsHillshadeFilter.lightAngle: src/analysis/raster/qgshillshadefilter.h#L38

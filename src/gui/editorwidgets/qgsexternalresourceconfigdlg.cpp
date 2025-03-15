@@ -43,7 +43,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   {
     mStorageType->addItem( storage->displayName(), storage->type() );
   }
-
+  mAuthSettingsProtocol->removeBasicSettings();
   mExternalStorageGroupBox->setVisible( false );
 
   initializeDataDefinedButton( mStorageUrlPropertyOverrideButton, QgsEditorWidgetWrapper::Property::StorageUrl );

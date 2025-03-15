@@ -81,6 +81,17 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
      */
     QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(), const QgsFields &destinationFields = QgsFields(), const QMap<QString, QString> &expressions = QMap<QString, QString>(), QObject *parent = nullptr );
 
+    /**
+     * Sets the list of \a nativeTypes supported by a data provider.
+     *
+     * If this list is non-empty, then the destination field types will be populated
+     * accordingly. If the list is empty, then a set of default native types will be
+     * used instead.
+     *
+     * \since QGIS 3.44
+     */
+    void setNativeTypes( const QList< QgsVectorDataProvider::NativeType > &nativeTypes );
+
     //! Returns TRUE if the destination fields are editable
     bool destinationEditable() const;
 
@@ -184,13 +195,13 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
      * Returns the field type name matching the \a field settings.
      * \since QGIS 3.24
      */
-    static const QString qgsFieldToTypeName( const QgsField &field );
+    QString qgsFieldToTypeName( const QgsField &field ) const;
 
     /**
      * Sets the \a field type and subtype based on the type \a name provided.
      * \since QGIS 3.24
      */
-    static void setFieldTypeFromName( QgsField &field, const QString &name );
+    void setFieldTypeFromName( QgsField &field, const QString &name ) const;
 
     bool moveUpOrDown( const QModelIndex &index, bool up = true );
 
@@ -204,6 +215,8 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
      * Returns an expression containing a reference to the field that matches first.
      */
     QString findExpressionForDestinationField( const QgsFieldMappingModel::Field &field, QStringList &excludedFieldNames );
+
+    QList< QgsVectorDataProvider::NativeType > mNativeTypes;
 
     QList<Field> mMapping;
     bool mDestinationEditable = false;

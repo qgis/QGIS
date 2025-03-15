@@ -615,7 +615,10 @@ The development version
     enum class HttpMethod /BaseType=IntEnum/
     {
       Get,
-      Post
+      Post,
+      Head,
+      Put,
+      Delete,
     };
 
     enum class VectorExportResult /BaseType=IntEnum/
@@ -1504,6 +1507,7 @@ The development version
       RedrawLayerOnly,
       FixedRangePerBand,
       RepresentsTemporalValues,
+      FixedDateTime,
     };
 
     enum class TemporalIntervalMatchMethod /BaseType=IntEnum/
@@ -2920,8 +2924,17 @@ The development version
     {
       SetFieldComment,
       SetFieldAlias,
+      SetTableComment,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
+
+
+    enum class DatabaseProviderTableImportCapability /BaseType=IntFlag/
+    {
+      SetGeometryColumnName,
+      SetPrimaryKeyName,
+    };
+    typedef QFlags<Qgis::DatabaseProviderTableImportCapability> DatabaseProviderTableImportCapabilities;
 
 
     enum class ProviderStyleStorageCapability /BaseType=IntFlag/
@@ -3393,6 +3406,8 @@ QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QF
 QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
 
 QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
+
+QFlags<Qgis::DatabaseProviderTableImportCapability> operator|(Qgis::DatabaseProviderTableImportCapability f1, QFlags<Qgis::DatabaseProviderTableImportCapability> f2);
 
 QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
 
