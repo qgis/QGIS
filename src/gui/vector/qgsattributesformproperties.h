@@ -39,7 +39,7 @@
 
 #include "ui_qgsattributesformproperties.h"
 #include "qgis_gui.h"
-#include "qgsoptionalexpression.h"
+#include "qgsattributesformmodel.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsattributeeditorelement.h"
 #include "qgspropertycollection.h"
@@ -421,6 +421,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QgsAttributesDnDTree *mAvailableWidgetsTree = nullptr;
     QgsAttributesDnDTree *mFormLayoutTree = nullptr;
 
+    QTreeView *mAvailableWidgetsTreeView = nullptr;
+
     QgsAttributeWidgetEdit *mAttributeWidgetEdit = nullptr;
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
     QgsAttributeFormContainerEdit *mAttributeContainerEdit = nullptr;
@@ -434,7 +436,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void mTbInitCode_clicked();
 
     void onInvertSelectionButtonClicked( bool checked );
-    void loadAttributeSpecificEditor( QgsAttributesDnDTree *emitter, QgsAttributesDnDTree *receiver );
+    void loadAttributeSpecificEditor( QTreeView *emitter, QgsAttributesDnDTree *receiver );
     void onAttributeSelectionChanged();
     void onFormLayoutSelectionChanged();
 
@@ -451,7 +453,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void storeAttributeWidgetEdit();
 
     void loadAttributeTypeDialog();
-    void loadAttributeTypeDialogFromConfiguration( const FieldConfig &cfg );
+    void loadAttributeTypeDialogFromConfiguration( const QgsAttributeFormTreeData::FieldConfig &cfg );
     void storeAttributeTypeDialog();
 
     void storeAttributeContainerEdit();
@@ -463,6 +465,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void pasteWidgetConfiguration();
 
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree );
+
+    QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel;
 
     QgsMessageBar *mMessageBar = nullptr;
 
@@ -481,8 +485,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 };
 
 
-QDataStream &operator<<( QDataStream &stream, const QgsAttributesFormProperties::DnDTreeItemData &data );
-QDataStream &operator>>( QDataStream &stream, QgsAttributesFormProperties::DnDTreeItemData &data );
+//QDataStream &operator<<( QDataStream &stream, const QgsAttributesFormProperties::DnDTreeItemData &data );
+//QDataStream &operator>>( QDataStream &stream, QgsAttributesFormProperties::DnDTreeItemData &data );
 
 
 /**
@@ -507,7 +511,7 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget, private QgsExpressio
      * Adds a new item to a \a parent. If \a index is -1, the item is added to the end of the parent's existing children.
      * Otherwise it is inserted at the specified \a index.
      */
-    QTreeWidgetItem *addItem( QTreeWidgetItem *parent, const QgsAttributesFormProperties::DnDTreeItemData &data, int index = -1, const QIcon &icon = QIcon() );
+    //QTreeWidgetItem *addItem( QTreeWidgetItem *parent, const QgsAttributesFormProperties::DnDTreeItemData &data, int index = -1, const QIcon &icon = QIcon() );
 
     /**
      * Adds a new container to \a parent.
@@ -527,13 +531,12 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget, private QgsExpressio
     void setType( QgsAttributesDnDTree::Type value );
 
   public slots:
-    void selectFirstMatchingItem( const QgsAttributesFormProperties::DnDTreeItemData &data );
+    void selectFirstMatchingItem( const QgsAttributeFormTreeData::DnDTreeItemData &data );
 
   protected:
     void dragMoveEvent( QDragMoveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
     bool dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action ) override;
-    /* Qt::DropActions supportedDropActions() const;*/
 
     // QTreeWidget interface
   protected:
@@ -557,9 +560,5 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget, private QgsExpressio
     QgsExpressionContext createExpressionContext() const override;
 };
 
-
-Q_DECLARE_METATYPE( QgsAttributesFormProperties::RelationEditorConfiguration )
-Q_DECLARE_METATYPE( QgsAttributesFormProperties::FieldConfig )
-Q_DECLARE_METATYPE( QgsAttributesFormProperties::DnDTreeItemData )
 
 #endif // QGSATTRIBUTESFORMPROPERTIES_H
