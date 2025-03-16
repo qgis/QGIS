@@ -49,6 +49,11 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   grpEnable->setChecked( mDeco.enabled() );
   connect( grpEnable, &QGroupBox::toggled, this, [=] { updateSymbolButtons(); } );
 
+  mOffsetXEdit->setShowClearButton( true );
+  mOffsetXEdit->setClearValue( 0 );
+  mOffsetYEdit->setShowClearButton( true );
+  mOffsetYEdit->setClearValue( 0 );
+
   // mXMinLineEdit->setValidator( new QDoubleValidator( mXMinLineEdit ) );
 
   mGridTypeComboBox->addItem( tr( "Line" ), QgsDecorationGrid::Line );
