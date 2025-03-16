@@ -1,8 +1,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO OSGeo/gdal
-    REF "v${VERSION}"
-    SHA512 fccdcf484bdc833dc5f0d6ad1fce9d152fa8b861cf23b634400d8bf7fd97d2c33a6b87050538c5a6c896d4ba870469134521cc44fdad3e071adffbf29329cb9b
+    REF "bb4e0ed67154d70ab17fad6752f23af6e161bc56" # pre-gdal 3.11 release for adbc support
+    SHA512 cdf86e9b5f20ffc4f6fac39badb46d7aa0db4c6fb115d60433ca0f0fb1866b41d7f617da11580ce94eb4b5e5613e93a7ee094f9d3cb3dbc6e583042f58dce3e5
     HEAD_REF master
     PATCHES
         find-link-libraries.patch
@@ -22,6 +22,7 @@ vcpkg_replace_string("${SOURCE_PATH}/ogr/ogrsf_frmts/flatgeobuf/flatbuffers/base
 # "core" is used for a dependency which must be enabled to avoid vendored lib.
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
+        arrow-adbc       GDAL_USE_ADBCDRIVERMANAGER
         cfitsio          GDAL_USE_CFITSIO
         curl             GDAL_USE_CURL
         expat            GDAL_USE_EXPAT
