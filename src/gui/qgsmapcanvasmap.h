@@ -43,7 +43,7 @@ class QgsMapCanvasMap : public QgsMapCanvasItem
 
     void paint( QPainter *painter ) override;
 
-    void addPreviewImage( const QImage &image, const QgsRectangle &rect );
+    void addPreviewImage( const QImage &image, const QPolygonF &visiblePolygon );
 
     QRectF boundingRect() const override;
 
@@ -51,7 +51,7 @@ class QgsMapCanvasMap : public QgsMapCanvasItem
     QImage mImage;
 
     //! Preview images for panning. Usually cover area around the rendered image
-    QList<QPair<QImage, QgsRectangle>> mPreviewImages;
+    QList<QPair<QImage, QPolygonF>> mPreviewImages;
 };
 
 /// @endcond

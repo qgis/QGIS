@@ -44,9 +44,9 @@ void QgsMapCanvasMap::setContent( const QImage &image, const QgsRectangle &rect 
   setRect( rect );
 }
 
-void QgsMapCanvasMap::addPreviewImage( const QImage &image, const QgsRectangle &rect )
+void QgsMapCanvasMap::addPreviewImage( const QImage &image, const QPolygonF &visiblePolygon )
 {
-  mPreviewImages.append( qMakePair( image, rect ) );
+  mPreviewImages.append( qMakePair( image, visiblePolygon ) );
   update();
 }
 
@@ -80,14 +80,14 @@ void QgsMapCanvasMap::paint( QPainter *painter )
   const double offsetY = pt.y() - mRect.yMaximum();
 
   //draw preview images first
-  QList<QPair<QImage, QgsRectangle>>::const_iterator imIt = mPreviewImages.constBegin();
+  QList<QPair<QImage, QPolygonF>>::const_iterator imIt = mPreviewImages.constBegin();
   for ( ; imIt != mPreviewImages.constEnd(); ++imIt )
   {
-    const QgsPointXY extentCenter = imIt->second.center();
-    const QPointF canvasCenter = toCanvasCoordinates( QgsPoint( extentCenter.x() + offsetX, extentCenter.y() + offsetY ) );
-    const double imageWidth = imIt->first.width();
-    const double imageHeight = imIt->first.height();
-    painter->drawImage( QRectF( canvasCenter.x() - imageWidth / 2, canvasCenter.y() - imageHeight / 2, imageWidth, imageHeight ), imIt->first, QRect( 0, 0, imIt->first.width(), imIt->first.height() ) );
+    const QPointF mapTopLeft = imIt->second.at( 0 );
+    const QPointF mapBottomRight = imIt->second.at( 2 );
+    const QPointF canvasTopLeft = toCanvasCoordinates( QgsPoint( mapTopLeft.x() + offsetX, mapTopLeft.y() + offsetY ) );
+    const QPointF canvasBottomRight = toCanvasCoordinates( QgsPoint( mapBottomRight.x() + offsetX, mapBottomRight.y() + offsetY ) );
+    painter->drawImage( QRectF( canvasTopLeft, canvasBottomRight ), imIt->first, QRect( 0, 0, imIt->first.width(), imIt->first.height() ) );
   }
 
   if ( scale )
