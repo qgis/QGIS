@@ -111,6 +111,16 @@
            </property>
           </widget>
          </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lblVersion_2">
+           <property name="text">
+            <string>Preferred HTTP method</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" colspan="2">
+          <widget class="QComboBox" name="mComboHttpMethod"/>
+         </item>
         </layout>
        </widget>
       </item>
@@ -380,6 +390,7 @@
   <tabstop>txtUrl</tabstop>
   <tabstop>cmbVersion</tabstop>
   <tabstop>mWfsVersionDetectButton</tabstop>
+  <tabstop>mComboHttpMethod</tabstop>
   <tabstop>txtMaxNumFeatures</tabstop>
   <tabstop>cmbFeaturePaging</tabstop>
   <tabstop>txtPageSize</tabstop>
