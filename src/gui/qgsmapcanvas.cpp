@@ -1006,7 +1006,7 @@ void QgsMapCanvas::previewJobFinished()
 
   if ( mMap )
   {
-    mMap->addPreviewImage( job->renderedImage(), job->mapSettings().visibleExtent() );
+    mMap->addPreviewImage( job->renderedImage(), job->mapSettings().visiblePolygon() );
     mPreviewJobs.removeAll( job );
 
     int number = job->property( "number" ).toInt();
