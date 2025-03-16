@@ -1070,7 +1070,6 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
     }
     CPLErrorReset();
 
-
     CPLErr err = gdalRasterIO( gdalBand, GF_Read,
                                srcLeft, srcTop, srcWidth, srcHeight,
                                static_cast<void *>( tmpBlock ),
@@ -1110,17 +1109,17 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
 
     sExtraArg.eResampleAlg = getGDALResamplingAlg( mZoomedOutResamplingMethod );
 
-    CPLErr eErr = GDALRasterIOEx( GDALGetRasterBand( hSrcDS.get(), 1 ),
-                                  GF_Read,
-                                  0, 0, tmpWidth, tmpHeight,
-                                  static_cast<char *>( data ) +
-                                  ( tgtTopOri * bufferWidthPix + tgtLeftOri ) * dataSize,
-                                  tgtWidth,
-                                  tgtHeight,
-                                  type,
-                                  dataSize,
-                                  dataSize * bufferWidthPix,
-                                  &sExtraArg );
+    err = GDALRasterIOEx( GDALGetRasterBand( hSrcDS.get(), 1 ),
+                          GF_Read,
+                          0, 0, tmpWidth, tmpHeight,
+                          static_cast<char *>( data ) +
+                          ( tgtTopOri * bufferWidthPix + tgtLeftOri ) * dataSize,
+                          tgtWidth,
+                          tgtHeight,
+                          type,
+                          dataSize,
+                          dataSize * bufferWidthPix,
+                          &sExtraArg );
     if ( err != CPLE_None )
     {
       setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "readBlock" ) ) );
@@ -1128,7 +1127,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
 
     qgsFree( tmpBlock );
 
-    return eErr == CE_None;
+    return err == CE_None;
   }
 
   const int tgtTop = tgtTopOri;
