@@ -90,6 +90,7 @@ jobs:
                 -D BUILD_WITH_QT6=ON \
                 -D WITH_QTWEBKIT=OFF \
                 -D WITH_BINDINGS=ON \
+                -D WITH_ORACLE=ON \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \

@@ -24,6 +24,7 @@ set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
+set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
 set(WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 
 set(SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
@@ -335,7 +336,6 @@ if(WITH_CORE)
       set (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
   endif()
 
-  set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
   if(WITH_ORACLE)
     set(HAVE_ORACLE TRUE)
     set(ORACLE_INCLUDEDIR "" CACHE STRING "Path to OCI headers")

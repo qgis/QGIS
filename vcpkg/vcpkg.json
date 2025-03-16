@@ -2,13 +2,13 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "80d54ff62d528339c626a6fbc3489a7f25956ade",
+      "baseline": "782ccc18d8b819cdef6794a6c03eb3d9f7cd04aa",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "e494c9c25f3b0139c6274ece17f5c15374f9241f",
+        "baseline": "192194b251512ea908bde2d1ae8f03642ea1b7d9",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -33,6 +33,7 @@
   "description": "QGIS is a free, open source, cross platform (lin/win/mac) geographical information system (GIS)",
   "homepage": "https://qgis.org",
   "dependencies": [
+    "duckdb",
     {
       "name": "exiv2",
       "features": [
@@ -43,6 +44,7 @@
     {
       "name": "gdal",
       "features": [
+        "arrow-adbc",
         "freexl",
         "kea",
         "poppler"
@@ -138,6 +140,12 @@
       "description": "Should OpenCL support be added",
       "dependencies": [
         "opencl"
+      ]
+    },
+    "oracle": {
+      "description": "Build with oracle support",
+      "dependencies": [
+        "oracle-instantclient"
       ]
     },
     "server": {
