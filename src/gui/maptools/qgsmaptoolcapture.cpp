@@ -160,7 +160,6 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
   else
   {
     setCursor( QCursor( Qt::ArrowCursor ) );
-    mCanvas->mapTool()->clean();
   }
 
   switch ( vlayer->geometryType() )
