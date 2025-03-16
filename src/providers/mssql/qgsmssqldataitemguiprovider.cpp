@@ -403,7 +403,7 @@ bool QgsMssqlDataItemGuiProvider::handleDropUri( QgsMssqlConnectionItem *connect
     }
   };
 
-  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer )]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
       if ( connectionItemPointer->state() == Qgis::BrowserItemState::Populated )
@@ -436,7 +436,7 @@ void QgsMssqlDataItemGuiProvider::handleImportVector( QgsMssqlConnectionItem *co
     }
   };
 
-  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer )]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
       if ( connectionItemPointer->state() == Qgis::BrowserItemState::Populated )

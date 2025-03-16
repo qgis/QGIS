@@ -62,7 +62,7 @@ using namespace std::chrono_literals;
 
 // QgsSocketMonitoringThread constructor
 QgsSocketMonitoringThread::QgsSocketMonitoringThread( std::shared_ptr<QgsFeedback> feedback )
-  : mFeedback( feedback )
+  : mFeedback( std::move( feedback ) )
   , mIpcFd( -1 )
 {
   Q_ASSERT( mFeedback );

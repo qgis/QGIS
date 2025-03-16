@@ -529,7 +529,7 @@ bool QgsHanaDataItemGuiProvider::handleDropUri( QgsHanaConnectionItem *connectio
     }
   };
 
-  auto onFailure = [connectionItemPointer, toSchema]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer ), toSchema]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
       connectionItemPointer->refreshSchema( toSchema );
@@ -556,7 +556,7 @@ void QgsHanaDataItemGuiProvider::handleImportVector( QgsHanaConnectionItem *conn
     }
   };
 
-  auto onFailure = [connectionItemPointer, toSchema]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer ), toSchema]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
       connectionItemPointer->refreshSchema( toSchema );
