@@ -146,6 +146,9 @@ bool QgsWFSFeatureDownloaderImpl::useInvertedAxis() const
   bool invertAxis = false;
   if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) && !mShared->mURI.ignoreAxisOrientation() )
   {
+    // cloned branches are intentional here for improved readability
+    // NOLINTBEGIN(bugprone-branch-clone)
+
     // This is a bit nasty, but if the server reports OGC::CRS84
     // mSourceCrs will report hasAxisInverted() == false, but srsName()
     // will be urn:ogc:def:crs:EPSG::4326, so axis inversion is needed...
@@ -157,6 +160,8 @@ bool QgsWFSFeatureDownloaderImpl::useInvertedAxis() const
     {
       invertAxis = true;
     }
+
+    // NOLINTEND(bugprone-branch-clone)
   }
   if ( mShared->mURI.invertAxisOrientation() )
   {
