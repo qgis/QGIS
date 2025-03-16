@@ -25,6 +25,7 @@
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   : QgsBackgroundCachedSharedData( "wfs", tr( "WFS" ) )
   , mURI( uri )
+  , mHttpMethod( mURI.httpMethod() )
 {
   mHideProgressDialog = mURI.hideDownloadProgressDialog();
   mServerPrefersCoordinatesForTransactions_1_1 = mURI.preferCoordinatesForWfst11();
