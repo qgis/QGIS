@@ -1,0 +1,31 @@
+<svg version="1.1" width="70" height="120" viewBox="0 0 70 120" xmlns="http://www.w3.org/2000/svg">
+    <!-- Vertical arrow (Up only) -->
+    <path
+        d="M 15 110 L 15 22"
+        stroke="black"
+        stroke-width="5"
+        fill="none"
+    />
+    <path
+        d="M 10 22 L 15 10 L 20 22 Z"
+        fill="black"
+        stroke="black"
+        stroke-width="2"
+        stroke-linejoin="round"
+    />
+
+    <!-- Horizontal arrow (at 2/3 from top, pointing right) -->
+    <path
+        d="M 15 50 L 52 50"
+        stroke="black"
+        stroke-width="5"
+        fill="none"
+    />
+    <path
+        d="M 52 45 L 60 50 L 52 55 Z"
+        fill="black"
+        stroke="black"
+        stroke-width="2"
+        stroke-linejoin="round"
+    />
+</svg>
