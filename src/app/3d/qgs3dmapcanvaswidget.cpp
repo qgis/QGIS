@@ -1195,6 +1195,12 @@ void Qgs3DMapCanvasWidget::setClippingPlanes( const QList<QVector4D> &planes )
   mMessageBar->clearWidgets();
 
   mCanvas->scene()->enableClipping( planes );
+  mCanvas->scene()->cameraController()->setLookingAtPoint(
+    mCanvas->scene()->cameraController()->lookingAtPoint(),
+    mCanvas->scene()->cameraController()->distance(),
+    90,
+    mCanvas->scene()->cameraController()->yaw()
+  );
 
   if ( mMapToolPrevious )
     mMainCanvas->setMapTool( mMapToolPrevious );
