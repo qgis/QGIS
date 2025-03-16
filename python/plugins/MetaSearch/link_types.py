@@ -54,8 +54,8 @@ WCS_LINK_TYPES = [
     "OGC Web Coverage Service",
 ]
 
-AMS_LINK_TYPES = ["ESRI:ArcGIS:MapServer", "Esri REST: Map Service", "ESRI REST"]
+AMS_LINK_TYPES = ["ESRI:ArcGIS:MapServer", "Esri REST: Map Service", "ESRI REST", "MapServer"]
 
-AFS_LINK_TYPES = ["ESRI:ArcGIS:FeatureServer", "Esri REST: Feature Service"]
+AFS_LINK_TYPES = ["ESRI:ArcGIS:FeatureServer", "Esri REST: Feature Service", "FeatureServer"]
 
 GIS_FILE_LINK_TYPES = ["FILE:GEO"]
