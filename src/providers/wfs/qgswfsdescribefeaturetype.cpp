@@ -74,7 +74,7 @@ bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion, c
       // not supported, impossible to hit
       break;
   }
-  BUILTIN_UNREACHABLE
+  return false;
 }
 
 QString QgsWFSDescribeFeatureType::errorMessageWithReason( const QString &reason )
