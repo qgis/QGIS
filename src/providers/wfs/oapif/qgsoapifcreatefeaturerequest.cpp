@@ -55,7 +55,7 @@ QString QgsOapifCreateFeatureRequest::createFeature( const QgsOapifSharedData *s
   QList<QNetworkReply::RawHeaderPair> extraHeaders;
   if ( !contentCrs.isEmpty() )
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
-  if ( !sendPOST( sharedData->mItemsUrl, "application/geo+json", jsonFeature.toUtf8(), extraHeaders ) )
+  if ( !sendPOST( sharedData->mItemsUrl, "application/geo+json", jsonFeature.toUtf8(), true /*synchronous*/, extraHeaders ) )
     return QString();
 
   QString location;
