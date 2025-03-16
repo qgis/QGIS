@@ -111,6 +111,9 @@ class QgsWFSDataSourceURI
     //! Sets GetFeature output format
     void setOutputFormat( const QString &outputFormat );
 
+    //! Returns the preferred HTTP method for requests
+    Qgis::HttpMethod httpMethod() const;
+
     //! Returns whether GetFeature request should include the request bounding box. Defaults to false
     bool isRestrictedToRequestBBOX() const;
 
