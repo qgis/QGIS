@@ -249,7 +249,7 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropUri( QgsSLConnectionItem *conne
       connectionItemPointer->refresh();
   };
 
-  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer )]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
       connectionItemPointer->refresh();
   };
@@ -272,7 +272,7 @@ void QgsSpatiaLiteDataItemGuiProvider::handleImportVector( QgsSLConnectionItem *
       connectionItemPointer->refresh();
   };
 
-  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer )]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
       connectionItemPointer->refresh();
   };
