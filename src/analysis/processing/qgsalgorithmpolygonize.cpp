@@ -128,7 +128,7 @@ QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &paramet
       outFeat.setGeometry( QgsGeometry( ( *partIt )->clone() ) );
       if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
-      feedback->setProgress( 50 + i * step );
+      feedback->setProgress( 50 + part * step );
       polygonCount += 1;
     }
   }
