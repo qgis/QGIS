@@ -23,12 +23,11 @@ import os
 import json
 import warnings
 from pathlib import Path
-from typing import Optional, List, Dict
+from typing import Optional
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
-    QComboBox,
     QHeaderView,
     QFileDialog,
     QMessageBox,
@@ -88,6 +87,7 @@ from qgis.gui import (
     QgsFindFilesByPatternDialog,
     QgsExpressionBuilderDialog,
     QgsPanelWidget,
+    QgisInterface,
 )
 from qgis.utils import iface
 
@@ -95,7 +95,6 @@ from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 
 from processing.tools import dataobjects
-from processing.tools.dataobjects import createContext
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -511,12 +510,19 @@ class BatchPanel(QgsPanelWidget, WIDGET):
     FORMAT = "format"
     CURRENT_FORMAT = "batch_3.40"
 
-    def __init__(self, parent, alg):
+    def __init__(
+        self,
+        parent,
+        alg,
+        context: Optional[QgsProcessingContext] = None,
+        iface: Optional[QgisInterface] = iface,
+    ):
         super().__init__(None)
         self.setupUi(self)
 
+        self.parent_context = context
         self.wrappers = []
-
+        self.iface = iface
         self.btnAdvanced.hide()
 
         # Set icons
@@ -543,7 +549,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
         self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
 
-        self.processing_context = createContext()
+        self.processing_context = dataobjects.createContext(context=self.parent_context)
 
         class ContextGenerator(QgsProcessingContextGenerator):
 
@@ -678,7 +684,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         """
         Loads the newer version 3.40 batch parameter JSON format
         """
-        context = dataobjects.createContext()
+        context = dataobjects.createContext(context=self.parent_context)
         rows: list = values.get(self.ROWS, [])
 
         self.clear()
@@ -725,7 +731,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
             return
 
         self.clear()
-        context = dataobjects.createContext()
+        context = dataobjects.createContext(context=self.parent_context)
         try:
             for row, alg in enumerate(values):
                 self.addRow()
@@ -758,7 +764,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
 
     def save(self):
         row_parameters = []
-        context = dataobjects.createContext()
+        context = dataobjects.createContext(context=self.parent_context)
         for row in range(self.batchRowCount()):
             this_row_params = {}
             this_row_outputs = {}
@@ -827,10 +833,11 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         self.wrappers[row - 1][column] = wrapper
 
         widget_context = QgsProcessingParameterWidgetContext()
-        widget_context.setProject(QgsProject.instance())
-        if iface is not None:
-            widget_context.setActiveLayer(iface.activeLayer())
-            widget_context.setMapCanvas(iface.mapCanvas())
+        if context.project():
+            widget_context.setProject(context.project())
+        if self.iface is not None:
+            widget_context.setActiveLayer(self.iface.activeLayer())
+            widget_context.setMapCanvas(self.iface.mapCanvas())
 
         widget_context.setMessageBar(self.parent.messageBar())
 
@@ -865,7 +872,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         self.tblParameters.setUpdatesEnabled(False)
         self.tblParameters.setRowCount(self.tblParameters.rowCount() + nb)
 
-        context = dataobjects.createContext()
+        context = dataobjects.createContext(context=self.parent_context)
 
         wrappers = {}
         row = self.tblParameters.rowCount() - nb
@@ -890,7 +897,9 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                 self.tblParameters.setCellWidget(
                     row,
                     column,
-                    BatchOutputSelectionPanel(out, self.alg, row, column, self),
+                    BatchOutputSelectionPanel(
+                        out, self.alg, row, column, self, project=context.project()
+                    ),
                 )
 
             for wrapper in list(wrappers.values()):
