@@ -249,9 +249,32 @@ QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, Qgis::HttpMethod m
   switch ( method )
   {
     case Qgis::HttpMethod::Post:
+    {
       url = QUrl( mPostEndpoints.contains( request ) ? mPostEndpoints[request] : mURI.param( QgsWFSConstants::URI_PARAM_URL ) );
       urlQuery = QUrlQuery( url );
+
+      if ( method == Qgis::HttpMethod::Get && !request.isEmpty() )
+        urlQuery.addQueryItem( QStringLiteral( "REQUEST" ), request );
+
+      const QList<QPair<QString, QString>> items = urlQuery.queryItems();
+      bool hasService = false;
+      bool hasRequest = false;
+      for ( const auto &item : items )
+      {
+        if ( item.first.toUpper() == QLatin1String( "SERVICE" ) )
+          hasService = true;
+        if ( item.first.toUpper() == QLatin1String( "REQUEST" ) )
+          hasRequest = true;
+      }
+
+      // add service / request parameters only if they don't exist in the explicitly defined post URL
+      if ( !hasService )
+        urlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
+      if ( !hasRequest && !request.isEmpty() )
+        urlQuery.addQueryItem( QStringLiteral( "REQUEST" ), request );
+
       break;
+    }
 
     case Qgis::HttpMethod::Get:
     {
@@ -286,6 +309,9 @@ QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, Qgis::HttpMethod m
         url = defaultUrl;
         urlQuery = QUrlQuery( url );
       }
+      urlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
+      if ( !request.isEmpty() )
+        urlQuery.addQueryItem( QStringLiteral( "REQUEST" ), request );
       break;
     }
 
@@ -296,9 +322,6 @@ QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, Qgis::HttpMethod m
       break;
   }
 
-  urlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
-  if ( method == Qgis::HttpMethod::Get && !request.isEmpty() )
-    urlQuery.addQueryItem( QStringLiteral( "REQUEST" ), request );
   url.setQuery( urlQuery );
   return url;
 }
