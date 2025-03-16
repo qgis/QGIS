@@ -112,18 +112,13 @@ QgsFeatureList QgsKeepNBiggestPartsAlgorithm::processFeature( const QgsFeature &
     const QgsGeometry geometry = f.geometry();
 
     QgsGeometry outputGeometry;
-    if ( !geometry.isMultipart() )
-    {
-      outputGeometry = geometry;
-      outputGeometry.convertToMultiType();
-    }
-    else
+
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry.constGet() ) )
     {
       int nPartsToKeep = mPartsToKeep;
       if ( mDynamicPartsToKeep )
         nPartsToKeep = mPartsToKeepProperty.valueAsInt( context.expressionContext(), nPartsToKeep );
 
-      const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry.constGet() );
       const int numParts = collection->numGeometries();
       if ( nPartsToKeep >= numParts )
       {
@@ -156,6 +151,11 @@ QgsFeatureList QgsKeepNBiggestPartsAlgorithm::processFeature( const QgsFeature &
 
         outputGeometry = QgsGeometry( std::move( res ) );
       }
+    }
+    else
+    {
+      outputGeometry = geometry;
+      outputGeometry.convertToMultiType();
     }
 
     f.setGeometry( outputGeometry );
