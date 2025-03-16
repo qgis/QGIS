@@ -18,7 +18,7 @@
 #include "qgswfsconstants.h"
 #include "qgslogger.h"
 #include "qgssettingsentryimpl.h"
-
+#include "qgssettingsentryenumflag.h"
 
 static const QString SERVICE_WFS = QStringLiteral( "WFS" );
 
@@ -58,6 +58,27 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ); // setParam allow for duplicates!
     mUri.setParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES, settingsPreferCoordinatesForWfsT11->value( detailsParameters ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  }
+
+  if ( settingsPreferredHttpMethod->exists( detailsParameters ) )
+  {
+    mUri.removeParam( QgsWFSConstants::URI_PARAM_HTTPMETHOD ); // setParam allow for duplicates!
+    switch ( settingsPreferredHttpMethod->value( detailsParameters ) )
+    {
+      case Qgis::HttpMethod::Get:
+        // default, we don't set to explicitly set
+        break;
+
+      case Qgis::HttpMethod::Post:
+        mUri.setParam( QgsWFSConstants::URI_PARAM_HTTPMETHOD, QStringLiteral( "post" ) );
+        break;
+
+      case Qgis::HttpMethod::Head:
+      case Qgis::HttpMethod::Put:
+      case Qgis::HttpMethod::Delete:
+        // not supported
+        break;
+    }
   }
 
   QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( QString( mUri.uri() ) ), 4 );

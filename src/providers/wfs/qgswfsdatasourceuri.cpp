@@ -192,6 +192,7 @@ QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const
     QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE,
     QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER,
     QgsWFSConstants::URI_PARAM_SQL,
+    QgsWFSConstants::URI_PARAM_HTTPMETHOD
   };
 
   QSet<QString> l_unknownParamKeys;
@@ -416,6 +417,19 @@ void QgsWFSDataSourceURI::setOutputFormat( const QString &outputFormat )
   mURI.removeParam( QgsWFSConstants::URI_PARAM_OUTPUTFORMAT );
   if ( !outputFormat.isEmpty() )
     mURI.setParam( QgsWFSConstants::URI_PARAM_OUTPUTFORMAT, outputFormat );
+}
+
+Qgis::HttpMethod QgsWFSDataSourceURI::httpMethod() const
+{
+  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_HTTPMETHOD ) )
+    return Qgis::HttpMethod::Get;
+
+  const QString method = mURI.param( QgsWFSConstants::URI_PARAM_HTTPMETHOD );
+  if ( method.compare( QLatin1String( "post" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::HttpMethod::Post;
+
+  // default
+  return Qgis::HttpMethod::Get;
 }
 
 bool QgsWFSDataSourceURI::isRestrictedToRequestBBOX() const
