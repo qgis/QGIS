@@ -371,14 +371,15 @@ class _3D_EXPORT Qgs3DUtils
     static void calculateViewExtent( const Qt3DRender::QCamera *camera, float maxRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ );
 
     /**
-     * Returns list of 4 planes, which are calculated from \a rectangle. They are returned
-     * back in the format of 4D Vector, where first 3 coordinates are the coordinates of
-     * normalized normal of given plane.
-     * \note Rectangle vertices are expected in clockwise order. Clipping planes are returned
-     * in clockwise order beginning by plane to the left of first given vertex.
+     * Returns list of 4 planes, which are calculated from line defined by \a point1 and \a point2. \a distance defines
+     * the distance between parallel clipping planes and the line.
+     * Clipping planes are returned back in the format of 4D Vector, where first 3 coordinates are the coordinates of
+     * normalized normal of given plane and the last is the distance from origin of the scene.
+     * \note Clipping planes are returned in clockwise order beginning by plane perpendicular to the line and crossing
+     * \a point1.
      * \since QGIS 3.44
      */
-    static QList<QVector4D> rectangleToClippingPlanes( const QVector<QgsPointXY> &rectangle );
+    static QList<QVector4D> lineSegmentToClippingPlanes( const QgsPointXY &point1, const QgsPointXY &point2, double distance, const QgsVector3D &origin );
 };
 
 #endif // QGS3DUTILS_H
