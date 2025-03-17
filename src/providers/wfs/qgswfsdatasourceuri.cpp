@@ -253,9 +253,6 @@ QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, Qgis::HttpMethod m
       url = QUrl( mPostEndpoints.contains( request ) ? mPostEndpoints[request] : mURI.param( QgsWFSConstants::URI_PARAM_URL ) );
       urlQuery = QUrlQuery( url );
 
-      if ( method == Qgis::HttpMethod::Get && !request.isEmpty() )
-        urlQuery.addQueryItem( QStringLiteral( "REQUEST" ), request );
-
       const QList<QPair<QString, QString>> items = urlQuery.queryItems();
       bool hasService = false;
       bool hasRequest = false;
