@@ -138,6 +138,9 @@ class QgsOapifProvider final : public QgsVectorDataProvider
 
     //! Compute capabilities
     void computeCapabilities( const QgsOapifItemsRequest &itemsRequest );
+
+    //! Issue a GET /schema request and handle it
+    void handleGetSchemaRequest( const QString &schemaUrl );
 };
 
 class QgsOapifProviderMetadata final : public QgsProviderMetadata
