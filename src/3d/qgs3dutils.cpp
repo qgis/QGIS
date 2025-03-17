@@ -1086,22 +1086,36 @@ void Qgs3DUtils::calculateViewExtent( const Qt3DRender::QCamera *camera, float m
   }
 }
 
-QList<QVector4D> Qgs3DUtils::rectangleToClippingPlanes( const QVector<QgsPointXY> &rectangle )
+QList<QVector4D> Qgs3DUtils::lineSegmentToClippingPlanes( const QgsPointXY &point1, const QgsPointXY &point2, const double distance, const QgsVector3D &origin )
 {
-  QgsVector vecLeftRight( rectangle.at( 1 ) - rectangle.at( 0 ) );
+  QgsVector vecLeftRight( point2 - point1 );
   vecLeftRight = vecLeftRight.normalized();
-  QgsVector vecTopBottom( rectangle.at( 2 ) - rectangle.at( 1 ) );
-  vecTopBottom = vecTopBottom.normalized();
-  QList<QVector4D> clippingPlanes( {
-    //! left clip plane
-    QVector4D( vecLeftRight.x(), vecLeftRight.y(), 0, 0 ),
-    //! top clip plane
-    QVector4D( vecTopBottom.x(), vecTopBottom.y(), 0, 0 ),
-    //! right clip plane
-    QVector4D( -vecLeftRight.x(), -vecLeftRight.y(), 0, 0 ),
-    //! bottom clip plane
-    QVector4D( -vecTopBottom.x(), -vecTopBottom.y(), 0, 0 ),
-  } );
+  const QgsVector3D vec1( vecLeftRight.x(), vecLeftRight.y(), 0 );
+  const QgsVector3D vec2( vecLeftRight.perpVector().x(), vecLeftRight.perpVector().y(), 0 );
+
+  QList<QVector4D> clippingPlanes;
+  QgsVector3D planePoint;
+  double originDistance;
+
+  //! left clip plane
+  planePoint = QgsVector3D( point1.x(), point1.y(), 0 );
+  originDistance = QgsVector3D::dotProduct( origin - planePoint, vec1 );
+  clippingPlanes << QVector4D( vec1.x(), vec1.y(), 0, originDistance );
+
+  //! top clip plane
+  planePoint = QgsVector3D( point1.x() + vec2.x() * std::abs( distance ), point1.y() + vec2.y() * std::abs( distance ), 0 );
+  originDistance = QgsVector3D::dotProduct( origin - planePoint, -vec2 );
+  clippingPlanes << QVector4D( -vec2.x(), -vec2.y(), 0, originDistance );
+
+  //! right clip plane
+  planePoint = QgsVector3D( point2.x(), point2.y(), 0 );
+  originDistance = QgsVector3D::dotProduct( origin - planePoint, -vec1 );
+  clippingPlanes << QVector4D( -vec1.x(), -vec1.y(), 0, originDistance );
+
+  //! bottom clip plane
+  planePoint = QgsVector3D( point1.x() + ( -vec2.x() * std::abs( distance ) ), point1.y() + ( -vec2.y() * std::abs( distance ) ), 0 );
+  originDistance = QgsVector3D::dotProduct( origin - planePoint, vec2 );
+  clippingPlanes << QVector4D( vec2.x(), vec2.y(), 0, originDistance );
 
   return clippingPlanes;
 }
