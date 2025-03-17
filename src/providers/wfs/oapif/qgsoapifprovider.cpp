@@ -501,6 +501,8 @@ bool QgsOapifProvider::empty() const
   return !getFeatures( request ).nextFeature( f );
 };
 
+QString QgsOapifProvider::geometryColumnName() const { return mShared->mGeometryColumnName; }
+
 bool QgsOapifProvider::setSubsetString( const QString &filter, bool updateFeatureCount )
 {
   QgsDebugMsgLevel( QStringLiteral( "filter = '%1'" ).arg( filter ), 4 );
@@ -588,6 +590,7 @@ void QgsOapifProvider::handleGetSchemaRequest( const QString &schemaUrl )
   if ( schemaRequest.errorCode() == QgsBaseNetworkRequest::NoError )
   {
     mShared->mFields = schema.mFields;
+    mShared->mGeometryColumnName = schema.mGeometryColumnName;
     if ( schema.mWKBType != Qgis::WkbType::Unknown )
       mShared->mWKBType = schema.mWKBType;
   }

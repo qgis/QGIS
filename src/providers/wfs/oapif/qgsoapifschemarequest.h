@@ -36,6 +36,9 @@ class QgsOapifSchemaRequest : public QgsBaseNetworkRequest
         //! Fields
         QgsFields mFields;
 
+        QString mGeometryColumnName;
+        //! Geometry column name;
+
         //! Geometry type;
         Qgis::WkbType mWKBType = Qgis::WkbType::NoGeometry;
     };
