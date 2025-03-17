@@ -51,31 +51,24 @@ void QgsMapToolClippingPlanes::keyReleaseEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Escape )
   {
-    mPoints.clear();
     clearRubberBand();
   }
 
   if ( e->key() == Qt::Key_Delete || e->key() == Qt::Key_Backspace )
   {
-    if ( mPoints.size() == 2 )
-    {
-      mPoints.clear();
-      clearRubberBand();
-    }
-    else if ( mPoints.empty() )
+    if ( mRubberBandPoints->numberOfVertices() == 0 )
     {
       return;
+    }
+
+    if ( mRubberBandPoints->numberOfVertices() == 1 )
+    {
+      clearRubberBand();
     }
     else
     {
       mRubberBandPoints->removeLastPoint();
-      mPoints.removeLast();
       mRubberBandPolygon->reset( Qgis::GeometryType::Polygon );
-    }
-
-    if ( mPoints.size() % 2 == 1 )
-    {
-      mRubberBandLines->removeLastPoint();
     }
   }
   //TODO: somehow consume the event so we don't get the annoying info message about not having vector layer
@@ -83,14 +76,13 @@ void QgsMapToolClippingPlanes::keyReleaseEvent( QKeyEvent *e )
 
 void QgsMapToolClippingPlanes::deactivate()
 {
-  mPoints.clear();
   clearRubberBand();
   QgsMapTool::deactivate();
 }
 
 void QgsMapToolClippingPlanes::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( mClicked || mPoints.isEmpty() )
+  if ( mClicked || mRubberBandPoints->numberOfVertices() == 0 )
     return;
 
   const QgsPointXY point = toMapCoordinates( e->pos() );
@@ -98,24 +90,22 @@ void QgsMapToolClippingPlanes::canvasMoveEvent( QgsMapMouseEvent *e )
   {
     QgsVector vec( *mRubberBandPoints->getPoint( 0, 1 ) - *mRubberBandPoints->getPoint( 0, 0 ) );
     vec = vec.normalized().perpVector();
-    const double distance = vec * ( point - *mRubberBandPoints->getPoint( 0 ) );
+    mRectangleWidth = QgsGeometryUtils::distToInfiniteLine(
+      QgsPoint( point ),
+      QgsPoint( *mRubberBandPoints->getPoint( 0, 0 ) ),
+      QgsPoint( *mRubberBandPoints->getPoint( 0, 1 ) )
+    );
     const QVector<QgsPointXY> points( {
-      *mRubberBandPoints->getPoint( 0, 0 ) + vec * distance,  //! top left corner
-      *mRubberBandPoints->getPoint( 0, 1 ) + vec * distance,  //! top right corner
-      *mRubberBandPoints->getPoint( 0, 1 ) + -vec * distance, //! bottom right corner
-      *mRubberBandPoints->getPoint( 0, 0 ) + -vec * distance  //! bottom left corner
+      *mRubberBandPoints->getPoint( 0, 0 ) + vec * mRectangleWidth,  //! top left corner
+      *mRubberBandPoints->getPoint( 0, 1 ) + vec * mRectangleWidth,  //! top right corner
+      *mRubberBandPoints->getPoint( 0, 1 ) + -vec * mRectangleWidth, //! bottom right corner
+      *mRubberBandPoints->getPoint( 0, 0 ) + -vec * mRectangleWidth  //! bottom left corner
     } );
-    QgsPolygon *rect = new QgsPolygon( new QgsLineString( points ) );
-    mRubberBandPolygon->setToGeometry( QgsGeometry( rect ) );
-    mPoints = points;
+    mRubberBandPolygon->setToGeometry( QgsGeometry( new QgsPolygon( new QgsLineString( points ) ) ) );
   }
   else
   {
-    mPoints.replace( mPoints.size() - 1, point );
-    if ( mPoints.size() % 2 == 0 )
-    {
-      mRubberBandLines->movePoint( point );
-    }
+    mRubberBandLines->movePoint( point );
   }
 }
 
@@ -129,46 +119,35 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( e->button() == Qt::LeftButton )
   {
     const QgsPointXY point = toMapCoordinates( e->pos() );
-    if ( mPoints.isEmpty() )
+    if ( mRubberBandPoints->numberOfVertices() == 2 )
     {
-      mPoints << point;
-      mRubberBandPoints->addPoint( point );
-      mRubberBandLines->addPoint( point );
+      const QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes(
+        *mRubberBandPoints->getPoint( 0, 0 ),
+        *mRubberBandPoints->getPoint( 0, 1 ),
+        mRectangleWidth,
+        mSceneOrigin
+      );
+      emit clippingPlanesChanged( clippingPlanes );
     }
     else
     {
-      mRubberBandPoints->addPoint( point );
+      if ( mRubberBandPoints->numberOfVertices() == 0 )
+      {
+        mRubberBandPoints->addPoint( point );
+        mRubberBandLines->addPoint( point );
+        mRubberBandLines->addPoint( point );
+      }
+      else
+      {
+        mRubberBandPoints->addPoint( point );
+      }
     }
-
-    mPoints << point;
-    if ( mPoints.size() <= 2 )
-    {
-      mRubberBandLines->addPoint( point );
-    }
-    else if ( mPoints.size() > 3 )
-    {
-      calculateClippingPlanes();
-    }
-
     mClicked = false;
   }
   else if ( e->button() == Qt::RightButton )
   {
-    mPoints.clear();
     clearRubberBand();
   }
-}
-
-void QgsMapToolClippingPlanes::calculateClippingPlanes()
-{
-  QList<QVector4D> clippingPlanes = Qgs3DUtils::rectangleToClippingPlanes( mPoints.mid( 0, 4 ) );
-  for ( int i = 0; i < clippingPlanes.size(); i++ )
-  {
-    QgsVector3D planePoint( mPoints.at( i ).x(), mPoints.at( i ).y(), 0 );
-    const double distance = QgsVector3D::dotProduct( mSceneOrigin - planePoint, clippingPlanes.at( i ).toVector3D() );
-    clippingPlanes[i].setW( distance );
-  }
-  emit clippingPlanesChanged( clippingPlanes );
 }
 
 void QgsMapToolClippingPlanes::clearRubberBand() const

@@ -51,14 +51,12 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     void clippingPlanesChanged( QList<QVector4D> normalVectors );
 
   private:
-    void calculateClippingPlanes();
-
     QObjectUniquePtr<QgsRubberBand> mRubberBandPolygon;
     QObjectUniquePtr<QgsRubberBand> mRubberBandLines;
     QObjectUniquePtr<QgsRubberBand> mRubberBandPoints;
-    QVector< QgsPointXY > mPoints;
     QgsVector3D mSceneOrigin;
     bool mClicked = false;
+    double mRectangleWidth = 0;
 };
 
 #endif //QGSMAPTOOLCLIPPINGPLANES_H

@@ -62,7 +62,7 @@ class TestQgs3DUtils : public QgsTest
     void testDefinesToShaderCode();
     void testDecomposeTransformMatrix();
     void testScreenPointToMapCoordinates();
-    void testRectangleToClippingPlanes();
+    void testLineSegmentToClippingPlanes();
 
   private:
 };
@@ -519,21 +519,79 @@ void TestQgs3DUtils::testScreenPointToMapCoordinates()
   QGSCOMPARENEAR( mapPoint.z(), -252, 2 );
 }
 
-void TestQgs3DUtils::testRectangleToClippingPlanes()
+void TestQgs3DUtils::testLineSegmentToClippingPlanes()
 {
-  const QVector<QgsPointXY> vertices( {
-    QgsPointXY( 20, 20 ),
-    QgsPointXY( 50, 20 ),
-    QgsPointXY( 50, 50 ),
-    QgsPointXY( 20, 50 ),
-  } );
-  const QgsPointXY temp = QgsRectangle( vertices.at( 0 ), vertices.at( 2 ), false ).center();
-  const QgsVector3D center = QgsVector3D( temp.x(), temp.y(), 0 );
-  const QList<QVector4D> clippingPlanes = Qgs3DUtils::rectangleToClippingPlanes( vertices );
+  const QgsPointXY point1( 20, 20 );
+  const QgsPointXY point2( 50, 50 );
+  const QgsVector3D midPoint( point2.x() - point1.x(), point2.y() - point1.y(), 0 );
+  QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point1, point2, 10, QgsVector3D( 0, 0, 0 ) );
   for ( int i = 0; i < clippingPlanes.size(); i++ )
   {
-    QgsVector3D planePoint( vertices.at( i ).x(), vertices.at( i ).y(), 0 );
-    const double distance = QgsVector3D::dotProduct( center - planePoint, clippingPlanes.at( i ).toVector3D() );
+    QgsVector3D planePoint(
+      i % 2 ? midPoint.x() : ( -clippingPlanes.at( i ).y() * midPoint.y() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).x(),
+      i % 2 ? ( -clippingPlanes.at( i ).x() * midPoint.x() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).y() : midPoint.y(),
+      0
+    );
+    const double distance = QgsVector3D::dotProduct( midPoint - planePoint, clippingPlanes.at( i ).toVector3D() );
+    // verify all normals are pointing inside the rectangle
+    QVERIFY( distance > 0 );
+  }
+
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
+
+  //verify that it works in reverse order too
+  clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point2, point1, 10, QgsVector3D( 0, 0, 0 ) );
+  for ( int i = 0; i < clippingPlanes.size(); i++ )
+  {
+    QgsVector3D planePoint(
+      i % 2 ? midPoint.x() : ( -clippingPlanes.at( i ).y() * midPoint.y() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).x(),
+      i % 2 ? ( -clippingPlanes.at( i ).x() * midPoint.x() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).y() : midPoint.y(),
+      0
+    );
+    const double distance = QgsVector3D::dotProduct( midPoint - planePoint, clippingPlanes.at( i ).toVector3D() );
+    // verify all normals are pointing inside the rectangle
+    QVERIFY( distance > 0 );
+  }
+
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
+
+  // verify that it works for perpendicular line too
+  const QgsPointXY point3( 50, 20 );
+  const QgsPointXY point4( 20, 50 );
+  clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point3, point4, 10, QgsVector3D( 0, 0, 0 ) );
+  for ( int i = 0; i < clippingPlanes.size(); i++ )
+  {
+    QgsVector3D planePoint(
+      i % 2 ? midPoint.x() : ( -clippingPlanes.at( i ).y() * midPoint.y() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).x(),
+      i % 2 ? ( -clippingPlanes.at( i ).x() * midPoint.x() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).y() : midPoint.y(),
+      0
+    );
+    const double distance = QgsVector3D::dotProduct( midPoint - planePoint, clippingPlanes.at( i ).toVector3D() );
+    // verify all normals are pointing inside the rectangle
+    QVERIFY( distance > 0 );
+  }
+
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
+  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
+
+  // verify that it works for perpendicular line in reverse order too
+  clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point4, point3, 10, QgsVector3D( 0, 0, 0 ) );
+  for ( int i = 0; i < clippingPlanes.size(); i++ )
+  {
+    QgsVector3D planePoint(
+      i % 2 ? midPoint.x() : ( -clippingPlanes.at( i ).y() * midPoint.y() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).x(),
+      i % 2 ? ( -clippingPlanes.at( i ).x() * midPoint.x() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).y() : midPoint.y(),
+      0
+    );
+    const double distance = QgsVector3D::dotProduct( midPoint - planePoint, clippingPlanes.at( i ).toVector3D() );
     // verify all normals are pointing inside the rectangle
     QVERIFY( distance > 0 );
   }
