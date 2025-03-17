@@ -6231,6 +6231,10 @@ void QgisApp::showMeshCalculator()
     switch ( res )
     {
       case QgsMeshCalculator::Success:
+        if ( d.addLayerToProject() )
+        {
+          addMeshLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QStringLiteral( "mdal" ) );
+        }
         visibleMessageBar()->pushMessage( tr( "Mesh calculator" ), tr( "Calculation complete." ), Qgis::MessageLevel::Success );
         break;
 
