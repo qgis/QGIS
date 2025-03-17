@@ -108,7 +108,7 @@ QgsGdalOption QgsGdalOption::fromXmlNode( const CPLXMLNode *node )
     }
     return option;
   }
-  else if ( pszType && EQUAL( pszType, "double" ) )
+  else if ( pszType && ( EQUAL( pszType, "double" ) || EQUAL( pszType, "float" ) ) )
   {
     option.type = QgsGdalOption::Type::Double;
     if ( pszDefault )
