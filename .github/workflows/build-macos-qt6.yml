@@ -77,6 +77,8 @@ jobs:
           ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
 
       - name: 🌱 Install dependencies and generate project files
+        env:
+          X_VCPKG_ASSET_SOURCES: x-azurl,https://assetcache.open-vcpkg.org/assetcache,,read
         run: |
           echo "VCPKG_ROOT: ${VCPKG_ROOT}"
 
