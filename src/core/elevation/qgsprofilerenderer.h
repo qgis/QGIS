@@ -185,6 +185,14 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     void render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId = QString() );
 
     /**
+     * Returns the default line symbol to use for subsections lines.
+     *
+     * \see setSubsectionsSymbol()
+     * \since QGIS 3.44
+     */
+    static std::unique_ptr<QgsLineSymbol> defaultSubSectionsSymbol() SIP_FACTORY;
+
+    /**
      * Returns the line symbol used to draw the subsections.
      *
      * \see setSubsectionsSymbol()
