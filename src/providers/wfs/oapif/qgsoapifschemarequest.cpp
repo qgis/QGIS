@@ -206,6 +206,7 @@ void QgsOapifSchemaRequest::processReply()
             {
               if ( QString::fromStdString( jOgcRole.get<std::string>() ) == QLatin1String( "primary-geometry" ) )
               {
+                mSchema.mGeometryColumnName = QString::fromStdString( key );
                 mSchema.mWKBType = Qgis::WkbType::Unknown;
                 if ( val.contains( "format" ) )
                 {
