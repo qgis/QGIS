@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsprofilerenderer.h
+                         qgsprofilerenderer.cpp
                          ---------------
     begin                : March 2022
     copyright            : (C) 2022 by Nyall Dawson
