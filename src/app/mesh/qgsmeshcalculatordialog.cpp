@@ -707,3 +707,8 @@ void QgsMeshCalculatorDialog::repopulateTimeCombos()
     mEndTimeComboBox->setCurrentIndex( times.size() - 1 );
   }
 }
+
+bool QgsMeshCalculatorDialog::addLayerToProject() const
+{
+  return mAddResultToProjectCheckBox->isChecked();
+}
