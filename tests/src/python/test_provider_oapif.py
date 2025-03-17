@@ -2913,6 +2913,8 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         ]
         self.assertEqual(values, [["feat.1", "foo", 1, 1.25, True]])
 
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "geometry")
+
     def _testPart5SchemaSingleOrMulti(
         self, geometryFormat, geojsonGeom, expectedWkbType, expectedWkt
     ):
