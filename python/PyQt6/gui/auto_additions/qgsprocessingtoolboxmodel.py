@@ -12,10 +12,17 @@ QgsProcessingToolboxModelNode.NodeAlgorithm = QgsProcessingToolboxModelNode.Node
 QgsProcessingToolboxModelNode.NodeType.NodeAlgorithm = QgsProcessingToolboxModelNode.NodeType.Algorithm
 QgsProcessingToolboxModelNode.NodeAlgorithm.is_monkey_patched = True
 QgsProcessingToolboxModelNode.NodeAlgorithm.__doc__ = "Algorithm node"
+QgsProcessingToolboxModelNode.NodeParameter = QgsProcessingToolboxModelNode.NodeType.Parameter
+QgsProcessingToolboxModelNode.NodeType.NodeParameter = QgsProcessingToolboxModelNode.NodeType.Parameter
+QgsProcessingToolboxModelNode.NodeParameter.is_monkey_patched = True
+QgsProcessingToolboxModelNode.NodeParameter.__doc__ = "Parameter node, since QGIS 3.44"
 QgsProcessingToolboxModelNode.NodeRecent = QgsProcessingToolboxModelNode.NodeType.Recent
 QgsProcessingToolboxModelNode.NodeType.NodeRecent = QgsProcessingToolboxModelNode.NodeType.Recent
 QgsProcessingToolboxModelNode.NodeRecent.is_monkey_patched = True
 QgsProcessingToolboxModelNode.NodeRecent.__doc__ = "Recent algorithms node"
+QgsProcessingToolboxModelNode.ParameterGroup = QgsProcessingToolboxModelNode.NodeType.ParameterGroup
+QgsProcessingToolboxModelNode.ParameterGroup.is_monkey_patched = True
+QgsProcessingToolboxModelNode.ParameterGroup.__doc__ = "Parameter group node since QGIS 3.44"
 QgsProcessingToolboxModelNode.Favorite = QgsProcessingToolboxModelNode.NodeType.Favorite
 QgsProcessingToolboxModelNode.Favorite.is_monkey_patched = True
 QgsProcessingToolboxModelNode.Favorite.__doc__ = "Favorites algorithms node, since QGIS 3.40"
@@ -33,10 +40,15 @@ QgsProcessingToolboxModelNode.NodeType.__doc__ = """Enumeration of possible mode
 
   Available as ``QgsProcessingToolboxModelNode.NodeAlgorithm`` in older QGIS releases.
 
+* ``Parameter``: Parameter node, since QGIS 3.44
+
+  Available as ``QgsProcessingToolboxModelNode.NodeParameter`` in older QGIS releases.
+
 * ``Recent``: Recent algorithms node
 
   Available as ``QgsProcessingToolboxModelNode.NodeRecent`` in older QGIS releases.
 
+* ``ParameterGroup``: Parameter group node since QGIS 3.44
 * ``Favorite``: Favorites algorithms node, since QGIS 3.40
 
 """
@@ -172,6 +184,10 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelParameterGroupNode.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
     QgsProcessingToolboxModelProviderNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -181,6 +197,10 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingToolboxModelAlgorithmNode.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsProcessingToolboxModelParameterNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:

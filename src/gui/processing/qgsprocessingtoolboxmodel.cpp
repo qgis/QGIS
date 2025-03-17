@@ -113,6 +113,15 @@ const QgsProcessingAlgorithm *QgsProcessingToolboxModelAlgorithmNode::algorithm(
 
 ///@endcond
 
+QgsProcessingToolboxModelParameterNode::QgsProcessingToolboxModelParameterNode( const QgsProcessingParameterType *paramType )
+  : mParamType( paramType )
+{}
+
+const QgsProcessingParameterType *QgsProcessingToolboxModelParameterNode::parameterType() const
+{
+  return mParamType;
+}
+
 //
 // QgsProcessingToolboxModel
 //
@@ -161,6 +170,45 @@ void QgsProcessingToolboxModel::rebuild()
     mRootNode->addChildNode( favoriteNode.release() );
     repopulateFavoriteAlgorithms( true );
   }
+
+  /*
+
+  /home/valentin/Documents/QGIS/src/gui/processing/qgsprocessingtoolboxmodel.cpp:116: warning: documented symbol 'QgsProcessingToolboxModelParameterNode::QgsProcessingToolboxModelParameterNode' was not declared or defined.
+/home/valentin/Documents/QGIS/src/gui/processing/qgsprocessingtoolboxmodel.cpp:120: warning: no uniquely matching class member found for 
+  const QgsProcessingParameterType * QgsProcessingToolboxModelParameterNode::parameterType() const
+Possible candidates:
+  'QgsProcessingParameterType * QgsProcessingRegistry::parameterType(const QString &id) const' at line 201 of file /home/valentin/Documents/QGIS/src/core/processing/qgsprocessingregistry.h
+  'virtual QString QgsProcessingParameterWidgetFactoryInterface::parameterType() const =0' at line 519 of file /home/valentin/Documents/QGIS/src/gui/processing/qgsprocessingwidgetwrapper.h
+
+
+   */
+
+  // Only in designer
+  // bool insideModeler =  mFilters & Filter::Modeler;
+  if ( true )
+  {
+    // auto groupNode = std::make_unique<QgsProcessingToolboxModelFavoriteNode>();
+    // auto groupNode = std::make_unique<QgsProcessingToolboxModelGroupNode>( "Model parameters", "Model parameters" );
+    auto groupNode = std::make_unique<QgsProcessingToolboxModelParameterGroupNode>();
+
+    QList<QgsProcessingParameterType *> available = QgsApplication::processingRegistry()->parameterTypes();
+
+    std::sort( available.begin(), available.end(), []( const QgsProcessingParameterType *a, const QgsProcessingParameterType *b ) -> bool {
+      return QString::localeAwareCompare( a->name(), b->name() ) < 0;
+    } );
+    for ( QgsProcessingParameterType *param : std::as_const( available ) )
+    {
+      if ( param->flags() & Qgis::ProcessingParameterTypeFlag::ExposeToModeler )
+      {
+        qDebug() << "Add param" << param->name();
+        auto paramNode = std::make_unique<QgsProcessingToolboxModelParameterNode>( param );
+        groupNode->addChildNode( paramNode.release() );
+      }
+    }
+    qDebug() << "Adding group node to root";
+    mRootNode->addChildNode( groupNode.release() );
+  }
+
 
   if ( mRegistry )
   {
@@ -428,9 +476,14 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
   if ( QgsProcessingToolboxModelNode *node = index2node( index ) )
     isFavoriteNode = node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Favorite;
 
+  bool isParameterGroupNode = false;
+  if ( QgsProcessingToolboxModelNode *node = index2node( index ) )
+    isParameterGroupNode = node->nodeType() == QgsProcessingToolboxModelNode::NodeType::ParameterGroup;
+
   QgsProcessingProvider *provider = providerForIndex( index );
   QgsProcessingToolboxModelGroupNode *groupNode = qobject_cast<QgsProcessingToolboxModelGroupNode *>( index2node( index ) );
   const QgsProcessingAlgorithm *algorithm = algorithmForIndex( index );
+  const QgsProcessingParameterType *paramType = parameterTypeForIndex( index );
 
   switch ( role )
   {
@@ -443,12 +496,16 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
             return provider->name();
           else if ( algorithm )
             return algorithm->displayName();
+          else if ( paramType )
+            return paramType->name();
           else if ( groupNode )
             return groupNode->name();
           else if ( isRecentNode )
             return tr( "Recently used" );
           else if ( isFavoriteNode )
             return tr( "Favorites" );
+          else if ( isParameterGroupNode )
+            return tr( "Model parameters" );
           else
             return QVariant();
 
@@ -464,8 +521,12 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
         return provider->longName();
       else if ( algorithm )
         return toolTipForAlgorithm( algorithm );
+      else if ( paramType )
+        return paramType->description();
       else if ( groupNode )
         return groupNode->name();
+      else if ( isParameterGroupNode )
+        return tr( "Model parameters used in the modeler" );
       else
         return QVariant();
     }
@@ -492,10 +553,14 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
               return QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
             return algorithm->icon();
           }
+          else if ( paramType )
+            return QgsApplication::getThemeIcon( QStringLiteral( "mIconModelInput.svg" ) );
           else if ( isRecentNode )
             return QgsApplication::getThemeIcon( QStringLiteral( "/mIconHistory.svg" ) );
           else if ( isFavoriteNode )
             return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavorites.svg" ) );
+          else if ( isParameterGroupNode )
+            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconModelInput.svg" ) );
           else if ( !index.parent().isValid() )
             // top level groups get the QGIS icon
             return QgsApplication::getThemeIcon( QStringLiteral( "/providerQgis.svg" ) );
@@ -711,6 +776,21 @@ bool QgsProcessingToolboxModel::isAlgorithm( const QModelIndex &index ) const
   return ( n && n->nodeType() == QgsProcessingToolboxModelNode::NodeType::Algorithm );
 }
 
+bool QgsProcessingToolboxModel::isParameter( const QModelIndex &index ) const
+{
+  QgsProcessingToolboxModelNode *n = index2node( index );
+  return ( n && n->nodeType() == QgsProcessingToolboxModelNode::NodeType::Parameter );
+}
+
+const QgsProcessingParameterType *QgsProcessingToolboxModel::parameterTypeForIndex( const QModelIndex &index ) const
+{
+  QgsProcessingToolboxModelNode *n = index2node( index );
+  if ( !n || n->nodeType() != QgsProcessingToolboxModelNode::NodeType::Parameter )
+    return nullptr;
+
+  return qobject_cast<QgsProcessingToolboxModelParameterNode *>( n )->parameterType();
+}
+
 QModelIndex QgsProcessingToolboxModel::indexForProvider( const QString &providerId ) const
 {
   std::function<QModelIndex( const QModelIndex &parent, const QString &providerId )> findIndex = [&]( const QModelIndex &parent, const QString &providerId ) -> QModelIndex {
@@ -794,6 +874,8 @@ void QgsProcessingToolboxProxyModel::setFilterString( const QString &filter )
 
 bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
+  /*tmp display all*/
+  return true;
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( mModel->isAlgorithm( sourceIndex ) )
   {
@@ -867,7 +949,11 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
     }
     return true;
   }
-
+  if ( mModel->isParameter( sourceIndex ) )
+  {
+    /* tmp return all the parameter for now*/
+    return true;
+  }
   bool hasChildren = false;
   // groups/providers are shown only if they have visible children
   int count = sourceModel()->rowCount( sourceIndex );
