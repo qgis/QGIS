@@ -350,7 +350,7 @@ void QgsO2::link()
 
     const QUrl url( tokenUrl_ );
     QNetworkRequest tokenRequest( url );
-    QgsLogger::debug("Test");
+    QgsLogger::debug( "Test" );
     QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
     tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, payload );

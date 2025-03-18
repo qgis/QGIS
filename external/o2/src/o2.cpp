@@ -301,10 +301,10 @@ void O2::link() {
       QNetworkReply *tokenReply = getManager()->post(tokenRequest, payload);
 
       connect(tokenReply,
-               &QNetworkReply::finished,
-               this,
-               &O2::onTokenReplyFinished,
-               Qt::QueuedConnection);
+              &QNetworkReply::finished,
+              this,
+              &O2::onTokenReplyFinished,
+              Qt::QueuedConnection);
 #if QT_VERSION < QT_VERSION_CHECK(5,15,0)
       connect(tokenReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onTokenReplyError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
 #else
