@@ -537,10 +537,10 @@ void TestQgs3DUtils::testLineSegmentToClippingPlanes()
     QVERIFY( distance > 0 );
   }
 
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
 
   //verify that it works in reverse order too
   clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point2, point1, 10, QgsVector3D( 0, 0, 0 ) );
@@ -556,10 +556,10 @@ void TestQgs3DUtils::testLineSegmentToClippingPlanes()
     QVERIFY( distance > 0 );
   }
 
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
 
   // verify that it works for perpendicular line too
   const QgsPointXY point3( 50, 20 );
@@ -577,10 +577,10 @@ void TestQgs3DUtils::testLineSegmentToClippingPlanes()
     QVERIFY( distance > 0 );
   }
 
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
 
   // verify that it works for perpendicular line in reverse order too
   clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point4, point3, 10, QgsVector3D( 0, 0, 0 ) );
@@ -596,10 +596,10 @@ void TestQgs3DUtils::testLineSegmentToClippingPlanes()
     QVERIFY( distance > 0 );
   }
 
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
-  QVERIFY( QVector4D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
+  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
 }
 
 QGSTEST_MAIN( TestQgs3DUtils )
