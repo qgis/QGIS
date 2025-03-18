@@ -394,15 +394,19 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     //Request handler
     QgsRequestHandler requestHandler( request, response );
 
-    try
+    if ( !response.feedback()
+         || !response.feedback()->isCanceled() ) // to avoid to much log when request is canceled
     {
-      // TODO: split parse input into plain parse and processing from specific services
-      requestHandler.parseInput();
-    }
-    catch ( QgsMapServiceException &e )
-    {
-      QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
-      requestHandler.setServiceException( e );
+      try
+      {
+        // TODO: split parse input into plain parse and processing from specific services
+        requestHandler.parseInput();
+      }
+      catch ( QgsMapServiceException &e )
+      {
+        QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+        requestHandler.setServiceException( e );
+      }
     }
 
     // Set the request handler into the interface for plugins to manipulate it
@@ -436,7 +440,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     }
 
     // Plugins may have set exceptions
-    if ( !requestHandler.exceptionRaised() )
+    if ( !requestHandler.exceptionRaised() && ( !response.feedback() || !response.feedback()->isCanceled() ) )
     {
       try
       {
@@ -480,34 +484,46 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         // TODO: QGIS 4 fix the OWS services and treat them as APIs
         QgsServerApi *api = nullptr;
 
-        if ( params.service().isEmpty() && ( api = sServiceRegistry->apiForRequest( request ) ) )
+        if ( !response.feedback() || !response.feedback()->isCanceled() )
         {
-          const QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
-          api->executeRequest( context );
-        }
-        else
-        {
-          // Project is mandatory for OWS at this point
-          if ( !project )
+          api = sServiceRegistry->apiForRequest( request );
+          if ( params.service().isEmpty() && api )
           {
-            throw QgsServerException( QStringLiteral( "Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file" ) );
-          }
-
-          if ( !params.fileName().isEmpty() )
-          {
-            const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
-            requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
-          }
-
-          // Lookup for service
-          QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
-          if ( service )
-          {
-            service->executeRequest( request, responseDecorator, project );
+            const QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
+            api->executeRequest( context );
           }
           else
           {
-            throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ), QStringLiteral( "Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint" ) );
+            // Project is mandatory for OWS at this point
+            if ( !project )
+            {
+              throw QgsServerException(
+                QStringLiteral( "Project file error. For OWS services: please provide a SERVICE "
+                                "and a MAP parameter pointing to a valid QGIS project file" )
+              );
+            }
+
+            if ( !params.fileName().isEmpty() )
+            {
+              const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
+              requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
+            }
+
+            // Lookup for service
+            QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
+            if ( service )
+            {
+              service->executeRequest( request, responseDecorator, project );
+            }
+            else
+            {
+              throw QgsOgcServiceException(
+                QStringLiteral( "Service configuration error" ),
+                QStringLiteral( "Service unknown or unsupported. Current supported services "
+                                "(case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 "
+                                "(OGC API Features) endpoint" )
+              );
+            }
           }
         }
       }
