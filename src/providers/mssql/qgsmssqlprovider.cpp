@@ -1251,14 +1251,16 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
 bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
 {
-  QString statement;
-
   if ( attributes.isEmpty() )
     return true;
 
   if ( mIsQuery )
     return false;
 
+  QString statement = QStringLiteral( "ALTER TABLE %1.%2 ADD " ).arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) );
+
+  QStringList attributeClauses;
+  attributeClauses.reserve( attributes.size() );
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
     QString type = it->typeName();
@@ -1273,15 +1275,9 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
         type = QStringLiteral( "%1(%2,%3)" ).arg( type ).arg( it->length() ).arg( it->precision() );
     }
 
-    if ( statement.isEmpty() )
-    {
-      statement = QStringLiteral( "ALTER TABLE [%1].[%2] ADD " ).arg( mSchemaName, mTableName );
-    }
-    else
-      statement += ',';
-
-    statement += QStringLiteral( "[%1] %2" ).arg( it->name(), type );
+    attributeClauses.append( QStringLiteral( "[%1] %2" ).arg( it->name(), type ) );
   }
+  statement += attributeClauses.join( QStringLiteral( ", " ) );
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
