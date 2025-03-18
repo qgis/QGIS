@@ -80,6 +80,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcoveragevalidate.cpp
   processing/qgsalgorithmcreatedirectory.cpp
   processing/qgsalgorithmdbscanclustering.cpp
+  processing/qgsalgorithmdefineprojection.cpp
   processing/qgsalgorithmdelaunaytriangulation.cpp
   processing/qgsalgorithmdeleteduplicategeometries.cpp
   processing/qgsalgorithmdensifygeometriesbycount.cpp
@@ -193,6 +194,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrasterminmax.cpp
   processing/qgsalgorithmrasterize.cpp
+  processing/qgsalgorithmrasterrank.cpp
   processing/qgsalgorithmrastersampling.cpp
   processing/qgsalgorithmrasterstackposition.cpp
   processing/qgsalgorithmrasterstatistics.cpp

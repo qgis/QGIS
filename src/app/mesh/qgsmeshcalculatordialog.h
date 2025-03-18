@@ -39,6 +39,9 @@ class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCa
     //! Returns new mesh calculator created from dialog options
     std::unique_ptr<QgsMeshCalculator> calculator() const;
 
+    QString outputFile() const;
+    bool addLayerToProject() const;
+
   private slots:
     void datasetGroupEntry( const QModelIndex &index );
     void mCurrentLayerExtentButton_clicked();
@@ -80,7 +83,6 @@ class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCa
     QString formulaString() const;
     QgsMeshLayer *meshLayer() const;
 
-    QString outputFile() const;
     QgsRectangle outputExtent() const;
     QgsGeometry maskGeometry() const;
     QString driver() const;

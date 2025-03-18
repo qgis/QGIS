@@ -31,6 +31,7 @@
 #include "qgsfileutils.h"
 #include "qgsstoredquerymanager.h"
 #include "qgsproject.h"
+#include "qgsnewnamedialog.h"
 
 #include <QClipboard>
 #include <QShortcut>
@@ -105,7 +106,25 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   connect( mLoadLayerPushButton, &QPushButton::pressed, this, [=] {
     if ( mConnection )
     {
-      emit createSqlVectorLayer( mConnection->providerKey(), mConnection->uri(), sqlVectorLayerOptions() );
+      const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options = sqlVectorLayerOptions();
+
+      try
+      {
+        QString message;
+        const bool res = mConnection->validateSqlVectorLayer( options, message );
+        if ( !res )
+        {
+          mMessageBar->pushCritical( QString(), message );
+        }
+        else
+        {
+          emit createSqlVectorLayer( mConnection->providerKey(), mConnection->uri(), options );
+        }
+      }
+      catch ( QgsProviderConnectionException &e )
+      {
+        mMessageBar->pushCritical( tr( "Error validating query" ), e.what() );
+      }
     }
   } );
   connect( mSqlEditor, &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultWidget::updateButtons );
@@ -768,14 +787,46 @@ void QgsQueryResultWidget::populatePresetQueryMenu()
   const QList< QgsStoredQueryManager::QueryDetails > storedQueries = QgsGui::storedQueryManager()->allQueries();
   if ( !storedQueries.isEmpty() )
   {
-    mPresetQueryMenu->addSeparator();
-    for ( const QgsStoredQueryManager::QueryDetails &query : storedQueries )
+    QList< QgsStoredQueryManager::QueryDetails > userProfileQueries;
+    std::copy_if( storedQueries.begin(), storedQueries.end(), std::back_inserter( userProfileQueries ), []( const QgsStoredQueryManager::QueryDetails &details ) {
+      return details.backend == Qgis::QueryStorageBackend::LocalProfile;
+    } );
+
+    QList< QgsStoredQueryManager::QueryDetails > projectQueries;
+    std::copy_if( storedQueries.begin(), storedQueries.end(), std::back_inserter( projectQueries ), []( const QgsStoredQueryManager::QueryDetails &details ) {
+      return details.backend == Qgis::QueryStorageBackend::CurrentProject;
+    } );
+
+    mPresetQueryMenu->addSection( QgsApplication::getThemeIcon( QStringLiteral( "mIconStoredQueries.svg" ) ), tr( "User Profile" ) );
+    for ( const QgsStoredQueryManager::QueryDetails &query : std::as_const( userProfileQueries ) )
     {
       QAction *action = new QAction( query.name, mPresetQueryMenu );
       mPresetQueryMenu->addAction( action );
       connect( action, &QAction::triggered, this, [this, query] {
         mSqlEditor->insertText( query.definition );
       } );
+    }
+    if ( userProfileQueries.empty() )
+    {
+      QAction *action = new QAction( tr( "No Stored Queries Available" ), mPresetQueryMenu );
+      action->setEnabled( false );
+      mPresetQueryMenu->addAction( action );
+    }
+
+    mPresetQueryMenu->addSection( QgsApplication::getThemeIcon( QStringLiteral( "mIconStoredQueries.svg" ) ), tr( "Current Project" ) );
+    for ( const QgsStoredQueryManager::QueryDetails &query : std::as_const( projectQueries ) )
+    {
+      QAction *action = new QAction( query.name, mPresetQueryMenu );
+      mPresetQueryMenu->addAction( action );
+      connect( action, &QAction::triggered, this, [this, query] {
+        mSqlEditor->insertText( query.definition );
+      } );
+    }
+    if ( projectQueries.empty() )
+    {
+      QAction *action = new QAction( tr( "No Stored Queries Available" ), mPresetQueryMenu );
+      action->setEnabled( false );
+      mPresetQueryMenu->addAction( action );
     }
 
     mPresetQueryMenu->addSeparator();
@@ -804,9 +855,23 @@ void QgsQueryResultWidget::populatePresetQueryMenu()
 
 void QgsQueryResultWidget::storeCurrentQuery( Qgis::QueryStorageBackend backend )
 {
-  bool ok;
-  const QString name = QInputDialog::getText( this, tr( "Query Name" ), tr( "Name for the stored query" ), QLineEdit::Normal, QString(), &ok );
-  if ( !ok || name.isEmpty() )
+  const QStringList existingQueryNames = QgsGui::storedQueryManager()->allQueryNames( backend );
+  QgsNewNameDialog dlg(
+    QString(),
+    QString(),
+    QStringList(),
+    existingQueryNames
+  );
+  dlg.setWindowTitle( tr( "Store Query" ) );
+  dlg.setHintString( tr( "Name for the stored query" ) );
+  dlg.setOverwriteEnabled( true );
+  dlg.setConflictingNameWarning( tr( "A stored query with this name already exists, it will be overwritten." ) );
+  dlg.setShowExistingNamesCompleter( true );
+  if ( dlg.exec() != QDialog::Accepted )
+    return;
+
+  const QString name = dlg.name();
+  if ( name.isEmpty() )
     return;
 
   QgsGui::storedQueryManager()->storeQuery( name, mSqlEditor->text(), backend );

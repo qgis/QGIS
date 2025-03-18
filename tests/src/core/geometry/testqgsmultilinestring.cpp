@@ -465,17 +465,20 @@ void TestQgsMultiLineString::clear()
 
 void TestQgsMultiLineString::cast()
 {
-  QVERIFY( !QgsMultiLineString().cast( nullptr ) );
+  QVERIFY( !QgsMultiLineString::cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
 
   QgsMultiLineString mls;
-  QVERIFY( QgsMultiLineString().cast( &mls ) );
+  QVERIFY( QgsMultiLineString::cast( &mls ) );
 
   mls.fromWkt( QStringLiteral( "MultiLineStringZ()" ) );
-  QVERIFY( QgsMultiLineString().cast( &mls ) );
+  QVERIFY( QgsMultiLineString::cast( &mls ) );
+  QVERIFY( QgsGeometryCollection::cast( &mls ) );
   mls.fromWkt( QStringLiteral( "MultiLineStringM()" ) );
-  QVERIFY( QgsMultiLineString().cast( &mls ) );
+  QVERIFY( QgsMultiLineString::cast( &mls ) );
+  QVERIFY( QgsGeometryCollection::cast( &mls ) );
   mls.fromWkt( QStringLiteral( "MultiLineStringZM()" ) );
-  QVERIFY( QgsMultiLineString().cast( &mls ) );
+  QVERIFY( QgsMultiLineString::cast( &mls ) );
+  QVERIFY( QgsGeometryCollection::cast( &mls ) );
 }
 
 void TestQgsMultiLineString::vertexIterator()

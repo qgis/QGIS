@@ -21,6 +21,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFields,
     QgsAbstractDatabaseProviderConnection,
+    QgsProviderConnectionException,
 )
 from qgis.testing import unittest
 
@@ -318,6 +319,132 @@ class TestPyQgsProviderConnectionMssql(
         self.assertEqual(
             vl.dataProvider().crs(), QgsCoordinateReferenceSystem("EPSG:4326")
         )
+
+    def test_validate_query_layer(self):
+        """Test validating query layers"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        conn = md.createConnection(self.uri, {})
+
+        # valid query
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT pk as pk, pk * 2 as computed, geom as geometry FROM qgis_test.someData WHERE pk < 3"
+        ok, message = conn.validateSqlVectorLayer(options)
+        self.assertTrue(ok)
+        self.assertFalse(message)
+
+        # one unnamed column
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT pk as pk, pk * 2, geom as geometry FROM qgis_test.someData WHERE pk < 3"
+        ok, message = conn.validateSqlVectorLayer(options)
+        self.assertFalse(ok)
+        self.assertEqual(
+            message,
+            'Column 2 is unnamed. SQL Server requires that all columns computed in a query have an explicit name set. Please add an "AS column_name" argument for this column.',
+        )
+
+        # two unnamed columns
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT pk as pk, pk * 2, geom as geometry, pk+3 FROM qgis_test.someData WHERE pk < 3"
+        ok, message = conn.validateSqlVectorLayer(options)
+        self.assertFalse(ok)
+        self.assertEqual(
+            message,
+            'Columns 2, 3 are unnamed. SQL Server requires that all columns computed in a query have an explicit name set. Please add an "AS column_name" argument for these columns.',
+        )
+
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        # invalid SQL
+        options.sql = "SELECT pk"
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.validateSqlVectorLayer(options)
+
+    def test_createVectorLayerExporterDestinationUri(self):
+        """
+        Test createVectorLayerExporterDestinationUri
+        """
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        conn = md.createConnection(self.uri, {})
+
+        export_options = (
+            QgsAbstractDatabaseProviderConnection.VectorLayerExporterOptions()
+        )
+        export_options.layerName = "new_layer"
+
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertFalse(res_ds.schema())
+        self.assertFalse(res_ds.geometryColumn())
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.schema = "dest_schema"
+
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertFalse(res_ds.geometryColumn())
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.wkbType = Qgis.WkbType.Point
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geom")
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.geometryColumn = "geometry"
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geometry")
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.primaryKeyColumns = ["pk"]
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geometry")
+        self.assertEqual(res_ds.keyColumn(), "pk")
 
 
 if __name__ == "__main__":

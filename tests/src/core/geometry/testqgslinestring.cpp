@@ -110,6 +110,7 @@ class TestQgsLineString : public QObject
     void interpolatePoint();
     void visitPoints();
     void setPointsFromData();
+    void cast();
 };
 
 void TestQgsLineString::constructorEmpty()
@@ -2893,6 +2894,28 @@ void TestQgsLineString::setPointsFromData()
   QCOMPARE( l8.wkbType(), Qgis::WkbType::LineStringZM );
   l8.points( pts );
   QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 4, 5 ) );
+}
+
+void TestQgsLineString::cast()
+{
+  QVERIFY( !QgsLineString::cast( static_cast< const QgsAbstractGeometry * >( nullptr ) ) );
+
+  QgsLineString cs;
+  QVERIFY( QgsLineString::cast( &cs ) );
+
+  cs.clear();
+
+  cs.fromWkt( QStringLiteral( "LineString Z (6 0 -0.6, 6.5 0 -0.4)" ) );
+  QVERIFY( QgsLineString::cast( &cs ) );
+  QVERIFY( QgsCurve::cast( &cs ) );
+
+  cs.fromWkt( QStringLiteral( "LineString M (6 0 -0.6, 6.5 0 -0.4)" ) );
+  QVERIFY( QgsLineString::cast( &cs ) );
+  QVERIFY( QgsCurve::cast( &cs ) );
+
+  cs.fromWkt( QStringLiteral( "LineString ZM (6 0 -0.6 -1.2, 6.5 0 -0.4 -0.8)" ) );
+  QVERIFY( QgsLineString::cast( &cs ) );
+  QVERIFY( QgsCurve::cast( &cs ) );
 }
 
 QGSTEST_MAIN( TestQgsLineString )

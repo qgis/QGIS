@@ -42,6 +42,26 @@ This bar can be used to provide non-blocking feedback to users.
 .. seealso:: :py:func:`messageBar`
 %End
 
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+Sets the map canvas associated with the data item.
+
+This allows the item to retrieve the current map scale and other properties from the canvas.
+
+.. seealso:: :py:func:`mapCanvas`
+
+.. versionadded:: 3.44
+%End
+
+    QgsMapCanvas *mapCanvas() const;
+%Docstring
+Returns the map canvas associated with the item.
+
+.. seealso:: :py:func:`setMapCanvas`
+
+.. versionadded:: 3.44
+%End
+
     QgsBrowserTreeView *view() const;
 %Docstring
 Returns the associated view.

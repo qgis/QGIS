@@ -2256,13 +2256,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Sets project properties, including map untis
     void projectProperties( const QString &currentPage = QString() );
 
-    /**
-     * Paste features from clipboard into a new memory layer.
-     * If no features are in clipboard an empty layer is returned.
-     * Returns a new memory layer or NULLPTR if the operation failed.
-     */
-    std::unique_ptr<QgsVectorLayer> pasteToNewMemoryVector();
-
     //! Returns all annotation items in the canvas
     QList<QgsMapCanvasAnnotationItem *> annotationItems();
 

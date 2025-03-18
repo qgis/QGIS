@@ -94,6 +94,7 @@ void QgsSpatiaLiteProviderConnection::createVectorTable( const QString &schema, 
   opts[QStringLiteral( "update" )] = true;
   QMap<int, int> map;
   QString errCause;
+  QString createdLayerUri;
   Qgis::VectorExportResult res = QgsSpatiaLiteProvider::createEmptyLayer(
     uri() + QStringLiteral( " table=%1 (geom)" ).arg( QgsSqliteUtils::quotedIdentifier( name ) ),
     fields,
@@ -101,6 +102,7 @@ void QgsSpatiaLiteProviderConnection::createVectorTable( const QString &schema, 
     srs,
     overwrite,
     &map,
+    createdLayerUri,
     &errCause,
     &opts
   );
@@ -142,6 +144,31 @@ QgsVectorLayer *QgsSpatiaLiteProviderConnection::createSqlVectorLayer( const Qgs
   }
 
   return new QgsVectorLayer { tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() };
+}
+
+QString QgsSpatiaLiteProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const
+{
+  if ( !options.schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  QgsDataSourceUri destUri( uri() );
+  destUri.setTable( options.layerName );
+  destUri.setGeometryColumn( options.wkbType != Qgis::WkbType::NoGeometry ? ( options.geometryColumn.isEmpty() ? QStringLiteral( "geom" ) : options.geometryColumn ) : QString() );
+
+  if ( !options.primaryKeyColumns.isEmpty() )
+  {
+    if ( options.primaryKeyColumns.length() > 1 )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Multiple primary keys are not supported by Spatialite, ignoring" ), QString(), Qgis::MessageLevel::Info );
+    }
+    destUri.setKeyColumn( options.primaryKeyColumns.at( 0 ) );
+  }
+
+  providerOptions.clear();
+
+  return destUri.uri( false );
 }
 
 void QgsSpatiaLiteProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
@@ -1099,6 +1126,15 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsSpatiaLiteProviderConnection
   );
 }
 
+Qgis::DatabaseProviderTableImportCapabilities QgsSpatiaLiteProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName;
+}
+
+QString QgsSpatiaLiteProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "pk" );
+}
 
 void QgsSpatiaLiteProviderConnection::deleteField( const QString &fieldName, const QString &, const QString &tableName, bool ) const
 {

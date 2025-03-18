@@ -209,7 +209,7 @@ QString QgsPolygon::asWkt( int precision ) const
       if ( !curve->isEmpty() )
       {
         QString childWkt;
-        if ( ! qgsgeometry_cast<QgsLineString *>( curve ) )
+        if ( ! qgsgeometry_cast< const QgsLineString *>( curve ) )
         {
           std::unique_ptr<QgsLineString> line( curve->curveToLine() );
           childWkt = line->asWkt( precision );

@@ -160,6 +160,7 @@ void QgsMssqlProviderConnection::createVectorTable( const QString &schema, const
   }
   QMap<int, int> map;
   QString errCause;
+  QString createdLayerUri;
   const Qgis::VectorExportResult res = QgsMssqlProvider::createEmptyLayer(
     newUri.uri(),
     fields,
@@ -167,6 +168,7 @@ void QgsMssqlProviderConnection::createVectorTable( const QString &schema, const
     srs,
     overwrite,
     &map,
+    createdLayerUri,
     &errCause,
     options
   );
@@ -174,6 +176,27 @@ void QgsMssqlProviderConnection::createVectorTable( const QString &schema, const
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
+}
+
+QString QgsMssqlProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const
+{
+  QgsDataSourceUri destUri( uri() );
+
+  destUri.setTable( options.layerName );
+  destUri.setSchema( options.schema );
+  destUri.setGeometryColumn( options.wkbType != Qgis::WkbType::NoGeometry ? ( options.geometryColumn.isEmpty() ? QStringLiteral( "geom" ) : options.geometryColumn ) : QString() );
+  if ( !options.primaryKeyColumns.isEmpty() )
+  {
+    if ( options.primaryKeyColumns.length() > 1 )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Multiple primary keys are not supported by SQL Server, ignoring" ), QString(), Qgis::MessageLevel::Info );
+    }
+    destUri.setKeyColumn( options.primaryKeyColumns.at( 0 ) );
+  }
+
+  providerOptions.clear();
+
+  return destUri.uri( false );
 }
 
 QString QgsMssqlProviderConnection::tableUri( const QString &schema, const QString &name ) const
@@ -740,6 +763,89 @@ QgsVectorLayer *QgsMssqlProviderConnection::createSqlVectorLayer( const SqlVecto
   QgsVectorLayer::LayerOptions vectorLayerOptions { false, true };
   vectorLayerOptions.skipCrsValidation = true;
   return new QgsVectorLayer { tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions };
+}
+
+bool QgsMssqlProviderConnection::validateSqlVectorLayer( const SqlVectorLayerOptions &options, QString &message ) const
+{
+  const QgsDataSourceUri dsUri { uri() };
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
+  if ( !db->isValid() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" )
+                                            .arg( uri(), db->errorText() ) );
+  }
+
+  QgsMssqlDatabase::FieldDetails details;
+
+  // check that all query fields have explicit names -- if this is not done, we cannot run aggregates on the query such
+  // as count(*)
+  QString error;
+  const bool result = db->loadQueryFields( details, sanitizeSqlForQueryLayer( options.sql ), error );
+  if ( !result )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving fields information: %1" ).arg( error ) );
+  }
+
+  QStringList emptyFieldIndexes;
+  int i = 1;
+  for ( const QgsField &f : details.attributeFields )
+  {
+    if ( f.name().isEmpty() || f.name().startsWith( QLatin1String( "__unnamed__" ) ) )
+    {
+      emptyFieldIndexes << QString::number( i );
+    }
+    i++;
+  }
+
+  if ( !emptyFieldIndexes.empty() )
+  {
+    if ( emptyFieldIndexes.length() == 1 )
+    {
+      message = QObject::tr( "Column %1 is unnamed. SQL Server requires that all columns computed in a query have an explicit name set. Please add an \"AS column_name\" argument for this column." ).arg( emptyFieldIndexes.at( 0 ) );
+    }
+    else
+    {
+      message = QObject::tr( "Columns %1 are unnamed. SQL Server requires that all columns computed in a query have an explicit name set. Please add an \"AS column_name\" argument for these columns." ).arg( emptyFieldIndexes.join( QObject::tr( ", " ) ) );
+    }
+    return false;
+  }
+
+  if ( !options.geometryColumn.isEmpty() )
+  {
+    // if trying to load as geometry, make sure we can determine geometry type
+    const QString sql = QStringLiteral( "SELECT TOP 1"
+                                        " UPPER(%1.STGeometryType()),"
+                                        " %1.STSrid,"
+                                        " %1.HasZ,"
+                                        " %1.HasM"
+                                        " FROM (%2) AS _subq_"
+                                        " WHERE %1 IS NOT NULL %3"
+                                        " GROUP BY %1.STGeometryType(), %1.STSrid, %1.HasZ, %1.HasM" )
+                          .arg( QgsMssqlUtils::quotedIdentifier( options.geometryColumn ), sanitizeSqlForQueryLayer( options.sql ), options.filter.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( options.filter ) );
+
+    try
+    {
+      ( void ) executeSql( sql );
+    }
+    catch ( QgsProviderConnectionException &e )
+    {
+      message = e.what();
+      return false;
+    }
+  }
+
+
+  return true;
+}
+
+Qgis::DatabaseProviderTableImportCapabilities QgsMssqlProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName;
+}
+
+QString QgsMssqlProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "qgs_fid" );
 }
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsMssqlProviderConnection::sqlOptions( const QString &layerSource )

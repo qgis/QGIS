@@ -304,7 +304,9 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
      * Cast the \a geom to a QgsPolyhedralSurface.
      * Should be used by qgsgeometry_cast<QgsPolyhedralSurface *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsPolyhedralSurface *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
@@ -315,6 +317,27 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
       if ( flatType == Qgis::WkbType::PolyhedralSurface
            || flatType == Qgis::WkbType::TIN )
         return static_cast<const QgsPolyhedralSurface *>( geom );
+
+      return nullptr;
+    }
+
+    /**
+     * Cast the \a geom to a QgsPolyhedralSurface.
+     * Should be used by qgsgeometry_cast<QgsPolyhedralSurface *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
+     */
+    inline static QgsPolyhedralSurface *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( !geom )
+        return nullptr;
+
+      const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
+      if ( flatType == Qgis::WkbType::PolyhedralSurface
+           || flatType == Qgis::WkbType::TIN )
+        return static_cast<QgsPolyhedralSurface *>( geom );
 
       return nullptr;
     }

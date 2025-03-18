@@ -95,6 +95,12 @@ class CORE_EXPORT QgsAbstractGeometry
       sipType = sipType_QgsPolygon;
     else if ( qgsgeometry_cast<QgsCurvePolygon *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCurvePolygon;
+    else if ( qgsgeometry_cast<QgsTriangulatedSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsTriangulatedSurface;
+    else if ( qgsgeometry_cast<QgsPolyhedralSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPolyhedralSurface;
+    else if ( qgsgeometry_cast<QgsSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsSurface;
     else if ( qgsgeometry_cast<QgsMultiPoint *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiPoint;
     else if ( qgsgeometry_cast<QgsMultiLineString *>( sipCpp ) != nullptr )
@@ -1185,9 +1191,15 @@ class CORE_EXPORT QgsAbstractGeometry
 #ifndef SIP_RUN
 
 template <class T>
+inline T qgsgeometry_cast( QgsAbstractGeometry *geom )
+{
+  return std::remove_pointer<T>::type::cast( geom );
+}
+
+template <class T>
 inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 {
-  return const_cast<T>( std::remove_pointer<T>::type::cast( geom ) );
+  return std::remove_pointer<T>::type::cast( geom );
 }
 
 #endif

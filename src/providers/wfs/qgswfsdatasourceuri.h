@@ -32,13 +32,6 @@
 class QgsWFSDataSourceURI
 {
   public:
-    //! Http method for DCP URIs
-    enum Method
-    {
-      Get,
-      Post
-    };
-
     explicit QgsWFSDataSourceURI( const QString &uri );
 
     //! Copy constructor
@@ -54,7 +47,7 @@ class QgsWFSDataSourceURI
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
 
     //! Returns request URL (with SERVICE=WFS parameter)
-    QUrl requestUrl( const QString &request, const Method &method = Method::Get ) const;
+    QUrl requestUrl( const QString &request, Qgis::HttpMethod method = Qgis::HttpMethod::Get ) const;
 
     //! Gets WFS version. Can be auto, 1.0.0, 1.1.0 or 2.0.0.
     QString version() const;

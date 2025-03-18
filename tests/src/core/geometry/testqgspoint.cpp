@@ -76,6 +76,7 @@ class TestQgsPoint : public QObject
     void toFromWkb();
     void toFromWkt();
     void exportImport();
+    void cast();
 };
 
 void TestQgsPoint::constructorv2()
@@ -1220,6 +1221,24 @@ void TestQgsPoint::exportImport()
 
   QString expectedKmlPrec3( QStringLiteral( "<Point><coordinates>0.333,0.667</coordinates></Point>" ) );
   QCOMPARE( exportPointFloat.asKml( 3 ), expectedKmlPrec3 );
+}
+
+void TestQgsPoint::cast()
+{
+  QVERIFY( !QgsPoint::cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
+
+  QgsPoint mc1;
+  QVERIFY( QgsPoint::cast( &mc1 ) );
+
+  QgsPoint mc2;
+  mc2.fromWkt( QStringLiteral( "PointZ(1 2 3)" ) );
+  QVERIFY( QgsPoint::cast( &mc2 ) );
+
+  mc2.fromWkt( QStringLiteral( "PointM(1 2 3)" ) );
+  QVERIFY( QgsPoint::cast( &mc2 ) );
+
+  mc2.fromWkt( QStringLiteral( "PointZM(1 2 3 4)" ) );
+  QVERIFY( QgsPoint::cast( &mc2 ) );
 }
 
 QGSTEST_MAIN( TestQgsPoint )

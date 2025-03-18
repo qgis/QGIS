@@ -4687,6 +4687,95 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         values = [f["intfield"] for f in vl.getFeatures()]
         self.assertEqual(values, [1])
 
+    def testGetFeatureWithNamespaces2(self):
+        """test https://github.com/qgis/QGIS/issues/22649, for a server which returns
+        elements like FeatureTypeList without the wfs: prefix"""
+
+        endpoint = (
+            self.__class__.basetestpath + "/fake_qgis_http_endpoint_getfeature_with_ns2"
+        )
+
+        with open(
+            sanitize(endpoint, "?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=2.0.0"),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+<wfs:WFS_Capabilities version="2.0.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1">
+  <FeatureTypeList>
+    <FeatureType xmlns:my="http://my">
+      <wfs:Name>my:typename</wfs:Name>
+      <wfs:Title>Title</wfs:Title>
+      <wfs:Abstract>Abstract</wfs:Abstract>
+      <wfs:SRS>EPSG:32631</wfs:SRS>
+      <WGS84BoundingBox>
+        <LowerCorner>0 40</LowerCorner>
+        <UpperCorner>15 50</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>"""
+            )
+
+        with open(
+            sanitize(
+                endpoint,
+                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&NAMESPACES=xmlns(my,http://my)&TYPENAME=my:typename&NAMESPACE=xmlns(my,http://my)",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="intfield" nillable="true" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+"""
+            )
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='my:typename' version='2.0.0' skipInitialGetFeature='true'",
+            "test",
+            "WFS",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 1)
+
+        with open(
+            sanitize(
+                endpoint,
+                "?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <my:intfield>1</my:intfield>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>"""
+            )
+
+        values = [f["intfield"] for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
     def testGetFeatureWithNamespaceAndFilter(self):
         """test https://github.com/qgis/QGIS/issues/43957"""
 

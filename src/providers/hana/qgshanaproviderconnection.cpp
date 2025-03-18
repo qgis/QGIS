@@ -187,6 +187,7 @@ void QgsHanaProviderConnection::createVectorTable( const QString &schema, const 
   }
   QMap<int, int> map;
   QString errCause;
+  QString createdLayerUri;
   Qgis::VectorExportResult res = QgsHanaProvider::createEmptyLayer(
     newUri.uri(),
     fields,
@@ -194,6 +195,7 @@ void QgsHanaProviderConnection::createVectorTable( const QString &schema, const 
     srs,
     overwrite,
     &map,
+    createdLayerUri,
     &errCause,
     options
   );
@@ -201,6 +203,28 @@ void QgsHanaProviderConnection::createVectorTable( const QString &schema, const 
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
+}
+
+QString QgsHanaProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const
+{
+  QgsDataSourceUri destUri( uri() );
+
+  destUri.setTable( options.layerName );
+  destUri.setSchema( options.schema );
+  destUri.setGeometryColumn( options.wkbType != Qgis::WkbType::NoGeometry ? ( options.geometryColumn.isEmpty() ? QStringLiteral( "geom" ) : options.geometryColumn ) : QString() );
+
+  if ( !options.primaryKeyColumns.isEmpty() )
+  {
+    if ( options.primaryKeyColumns.length() > 1 )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Multiple primary keys are not supported by HANA, ignoring" ), QString(), Qgis::MessageLevel::Info );
+    }
+    destUri.setKeyColumn( options.primaryKeyColumns.at( 0 ) );
+  }
+
+  providerOptions.clear();
+
+  return destUri.uri( false );
 }
 
 QString QgsHanaProviderConnection::tableUri( const QString &schema, const QString &name ) const
@@ -2017,6 +2041,16 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
       }
     }
   );
+}
+
+Qgis::DatabaseProviderTableImportCapabilities QgsHanaProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName;
+}
+
+QString QgsHanaProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "id" );
 }
 
 QVariantList QgsHanaEmptyProviderResultIterator::nextRowPrivate()

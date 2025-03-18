@@ -24,7 +24,7 @@
 #include <QObject>
 
 
-#include <nlohmann/json_fwd.hpp>
+#include <nlohmann/json.hpp>
 
 #ifndef SIP_RUN
 using namespace nlohmann;

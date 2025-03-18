@@ -19,6 +19,7 @@
 #include <QPushButton>
 #include <QRegularExpressionValidator>
 #include <QSizePolicy>
+#include <QCompleter>
 
 #include "qgslogger.h"
 #include "qgsnewnamedialog.h"
@@ -116,6 +117,20 @@ void QgsNewNameDialog::setRegularExpression( const QString &expression )
     mLineEdit->setValidator( nullptr );
   }
   nameChanged();
+}
+
+void QgsNewNameDialog::setShowExistingNamesCompleter( bool show )
+{
+  if ( !show )
+  {
+    mLineEdit->setCompleter( nullptr );
+    return;
+  }
+
+  QCompleter *completer = new QCompleter( mExiting, this );
+  completer->setCaseSensitivity( Qt::CaseInsensitive );
+  completer->setCompletionMode( QCompleter::UnfilteredPopupCompletion );
+  mLineEdit->setCompleter( completer );
 }
 
 QString QgsNewNameDialog::highlightText( const QString &text )

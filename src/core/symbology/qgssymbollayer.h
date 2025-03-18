@@ -765,22 +765,6 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 {
   public:
 
-    //! Symbol horizontal anchor points
-    enum HorizontalAnchorPoint
-    {
-      Left, //!< Align to left side of symbol
-      HCenter, //!< Align to horizontal center of symbol
-      Right, //!< Align to right side of symbol
-    };
-
-    //! Symbol vertical anchor points
-    enum VerticalAnchorPoint
-    {
-      Top, //!< Align to top of symbol
-      VCenter, //!< Align to vertical center of symbol
-      Bottom, //!< Align to bottom of symbol
-    };
-
     QgsMarkerSymbolLayer &operator=( const QgsMarkerSymbolLayer &other ) = delete;
 
     void startRender( QgsSymbolRenderContext &context ) override;
@@ -945,7 +929,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see horizontalAnchorPoint()
      * \see setVerticalAnchorPoint()
      */
-    void setHorizontalAnchorPoint( HorizontalAnchorPoint h ) { mHorizontalAnchorPoint = h; }
+    void setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint h ) { mHorizontalAnchorPoint = h; }
 
     /**
      * Returns the horizontal anchor point for positioning the symbol. The symbol will be drawn so that
@@ -953,7 +937,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see setHorizontalAnchorPoint()
      * \see verticalAnchorPoint()
      */
-    HorizontalAnchorPoint horizontalAnchorPoint() const { return mHorizontalAnchorPoint; }
+    Qgis::HorizontalAnchorPoint horizontalAnchorPoint() const { return mHorizontalAnchorPoint; }
 
     /**
      * Sets the vertical anchor point for positioning the symbol.
@@ -962,7 +946,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see verticalAnchorPoint()
      * \see setHorizontalAnchorPoint()
      */
-    void setVerticalAnchorPoint( VerticalAnchorPoint v ) { mVerticalAnchorPoint = v; }
+    void setVerticalAnchorPoint( Qgis::VerticalAnchorPoint v ) { mVerticalAnchorPoint = v; }
 
     /**
      * Returns the vertical anchor point for positioning the symbol. The symbol will be drawn so that
@@ -970,7 +954,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see setVerticalAnchorPoint()
      * \see horizontalAnchorPoint()
      */
-    VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
+    Qgis::VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
 
@@ -1061,13 +1045,13 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     //! Marker size scaling method
     Qgis::ScaleMethod mScaleMethod = Qgis::ScaleMethod::ScaleDiameter;
     //! Horizontal anchor point
-    HorizontalAnchorPoint mHorizontalAnchorPoint = HCenter;
+    Qgis::HorizontalAnchorPoint mHorizontalAnchorPoint = Qgis::HorizontalAnchorPoint::Center;
     //! Vertical anchor point
-    VerticalAnchorPoint mVerticalAnchorPoint = VCenter;
+    Qgis::VerticalAnchorPoint mVerticalAnchorPoint = Qgis::VerticalAnchorPoint::Center;
 
   private:
-    static QgsMarkerSymbolLayer::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString &str );
-    static QgsMarkerSymbolLayer::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString &str );
+    static Qgis::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString &str );
+    static Qgis::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString &str );
 
 #ifdef SIP_RUN
     QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other );

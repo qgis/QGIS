@@ -134,6 +134,8 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
     Qt3DCore::QTransform *mTransform = nullptr;
 
     bool applyTerrainOffset() const;
+
+    friend class TestQgsChunkedEntity;
 };
 
 /// @endcond

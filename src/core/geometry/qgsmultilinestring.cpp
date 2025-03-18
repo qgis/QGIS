@@ -273,7 +273,7 @@ QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end )
     const double subStart{ ( start + range *lengthSoFar / length ) };
     const double subEnd{ ( start + range * ( lengthSoFar + subLength ) / length ) };
 
-    std::unique_ptr< QgsLineString > measuredLine = qgsgeometry_cast<QgsLineString *>( geometryN( i ) )->measuredLine( subStart, subEnd );
+    std::unique_ptr< QgsLineString > measuredLine = qgsgeometry_cast<const QgsLineString *>( geometryN( i ) )->measuredLine( subStart, subEnd );
     result->addGeometry( measuredLine.release() );
 
     lengthSoFar += subLength;

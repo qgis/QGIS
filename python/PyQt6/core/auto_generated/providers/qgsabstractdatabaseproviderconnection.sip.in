@@ -420,6 +420,13 @@ Returns connection geometry column capabilities (Z, M, SinglePart, Curves).
 .. versionadded:: 3.16
 %End
 
+    virtual Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const = 0;
+%Docstring
+Represents capabilities of the database provider connection when importing table data.
+
+.. versionadded:: 3.44
+%End
+
     virtual Qgis::SqlLayerDefinitionCapabilities sqlLayerDefinitionCapabilities();
 %Docstring
 Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
@@ -440,6 +447,32 @@ Returns the URI string for the given ``table`` and ``schema``.
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const;
 %Docstring
 Creates an empty table with ``name`` in the given ``schema`` (schema is ignored if not supported by the backend).
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+%End
+
+    struct VectorLayerExporterOptions
+    {
+      QString layerName;
+
+      QString schema;
+
+      Qgis::WkbType wkbType;
+
+      QStringList primaryKeyColumns;
+
+      QString geometryColumn;
+
+    };
+
+    virtual QString createVectorLayerExporterDestinationUri( const QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions &options, QVariantMap &providerOptions /Out/ ) const;
+%Docstring
+Creates a URI for use with :py:class:`QgsVectorLayerExporter` corresponding to given destination table ``options`` for the backend.
+
+:param options: defines the desired destination table details
+
+:return: - destination URI for use with :py:class:`QgsVectorLayerExporter`
+         - providerOptions: a map of options to pass to :py:func:`~QgsAbstractDatabaseProviderConnection.createVectorTable` or the provider's createEmptyTable method.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End
@@ -592,11 +625,34 @@ Executes raw ``sql`` and returns the (possibly empty) list of results in a multi
 
     virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const  /Factory/;
 %Docstring
-Creates and returns a (possibly invalid) vector layer based on the ``sql`` statement and optional ``options``.
+Creates and returns a (possibly invalid) vector layer based on a SQL statement and ``options``.
+
+The :py:func:`~QgsAbstractDatabaseProviderConnection.validateSqlVectorLayer` method can be used in advance to test whether the options are valid
+for the provider, and retrieve a user-friendly explanation if not.
 
 :raises QgsProviderConnectionException: if any errors are encountered or if SQL layer creation is not supported.
 
+.. seealso:: :py:func:`validateSqlVectorLayer`
+
 .. versionadded:: 3.22
+%End
+
+    virtual bool validateSqlVectorLayer( const SqlVectorLayerOptions &options, QString &message /Out/ ) const;
+%Docstring
+Validates the SQL query ``options`` to determine if it is possible to create a vector layer based on a SQL statement and ``options``.
+
+The base class method returns ``True`` and does not do any checks.
+
+:param options: SQL statement and options
+
+:return: - ``True`` if the SQL is valid for the provider.
+         - message: a translated, user-friendly explanation if the SQL is not valid for the provider.
+
+:raises QgsProviderConnectionException: if any errors are encountered or if SQL layer creation is not supported.
+
+.. seealso:: :py:func:`createSqlVectorLayer`
+
+.. versionadded:: 3.44
 %End
 
     virtual SqlVectorLayerOptions sqlOptions( const QString &layerSource );
@@ -749,6 +805,28 @@ should not be used when creating or altering fields.
 .. versionadded:: 3.30
 %End
 
+    virtual QString defaultPrimaryKeyColumnName() const;
+%Docstring
+Returns the default name to use for a primary key column for the connection.
+
+The returned name will match common practice for the database backend.
+
+The base class method returns "pk".
+
+.. versionadded:: 3.44
+%End
+
+    virtual QString defaultGeometryColumnName() const;
+%Docstring
+Returns the default name to use for a geometry column for the connection.
+
+The returned name will match common practice for the database backend.
+
+The base class method returns "geom".
+
+.. versionadded:: 3.44
+%End
+
     virtual QStringList fieldDomainNames() const;
 %Docstring
 Returns a list of field domain names present on the provider.
@@ -822,6 +900,19 @@ Sets the ``alias`` for the existing field with the specified name.
 :raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.32
+%End
+
+    virtual void setTableComment( const QString &schema, const QString &tableName, const QString &comment ) const;
+%Docstring
+Sets the ``comment`` for the existing table with the specified name.
+
+:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param tableName: name of the table
+:param comment: comment to set for the table. Set to an empty string to remove a previously set comment.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.44
 %End
 
     virtual void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const;

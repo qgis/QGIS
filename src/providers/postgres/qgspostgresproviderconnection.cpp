@@ -132,7 +132,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
   };
 
-  mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::SetFieldComment;
+  mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::SetFieldComment
+                    | Qgis::DatabaseProviderConnectionCapability2::SetTableComment;
 
   // see https://www.postgresql.org/docs/current/ddl-system-columns.html
   mIllegalFieldNames = {
@@ -166,6 +167,7 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema, co
   }
   QMap<int, int> map;
   QString errCause;
+  QString createdLayerUri;
   Qgis::VectorExportResult res = QgsPostgresProvider::createEmptyLayer(
     newUri.uri(),
     fields,
@@ -173,6 +175,7 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema, co
     srs,
     overwrite,
     &map,
+    createdLayerUri,
     &errCause,
     options
   );
@@ -180,6 +183,20 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema, co
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
+}
+
+QString QgsPostgresProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const
+{
+  QgsDataSourceUri destUri( uri() );
+
+  destUri.setTable( options.layerName );
+  destUri.setSchema( options.schema );
+  destUri.setGeometryColumn( options.wkbType != Qgis::WkbType::NoGeometry ? ( options.geometryColumn.isEmpty() ? QStringLiteral( "geom" ) : options.geometryColumn ) : QString() );
+  if ( !options.primaryKeyColumns.isEmpty() )
+    destUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
+
+  providerOptions.clear();
+  return destUri.uri( false );
 }
 
 QString QgsPostgresProviderConnection::tableUri( const QString &schema, const QString &name ) const
@@ -727,6 +744,12 @@ void QgsPostgresProviderConnection::setFieldComment( const QString &fieldName, c
                        .arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( tableName ), QgsPostgresConn::quotedIdentifier( fieldName ), QgsPostgresConn::quotedValue( comment ) ) );
 }
 
+void QgsPostgresProviderConnection::setTableComment( const QString &schema, const QString &tableName, const QString &comment ) const
+{
+  executeSqlPrivate( QStringLiteral( "COMMENT ON TABLE %1.%2 IS %3;" )
+                       .arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( tableName ), QgsPostgresConn::quotedValue( comment ) ) );
+}
+
 QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   return tablesPrivate( schema, QString(), flags, feedback );
@@ -858,6 +881,16 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsPostgresProvider
 QList<QgsLayerMetadataProviderResult> QgsPostgresProviderConnection::searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
 {
   return QgsPostgresProviderMetadataUtils::searchLayerMetadata( searchContext, uri(), searchString, geographicExtent, feedback );
+}
+
+Qgis::DatabaseProviderTableImportCapabilities QgsPostgresProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName;
+}
+
+QString QgsPostgresProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "id" );
 }
 
 QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVectorLayerOptions &options ) const

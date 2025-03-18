@@ -324,6 +324,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   {
     switch ( temporalProperties->mode() )
     {
+      case Qgis::RasterTemporalMode::FixedDateTime:
       case Qgis::RasterTemporalMode::FixedTemporalRange:
       case Qgis::RasterTemporalMode::RedrawLayerOnly:
       case Qgis::RasterTemporalMode::FixedRangePerBand:
