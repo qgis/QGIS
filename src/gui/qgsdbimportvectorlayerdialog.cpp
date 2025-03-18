@@ -101,6 +101,9 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
   mExtentGroupBox->setCollapsed( true );
 
   mFilterExpressionWidget->registerExpressionContextGenerator( this );
+
+  // populate initial layer
+  sourceLayerComboChanged();
 }
 
 QgsDbImportVectorLayerDialog::~QgsDbImportVectorLayerDialog() = default;
