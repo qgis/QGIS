@@ -1203,16 +1203,14 @@ ErrorList topolTest::checkMultipart( QgsVectorLayer *layer1, QgsVectorLayer *lay
       continue;
     }
 
-    if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( g.constGet() ) )
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( g.constGet() );
+         collection && collection->numGeometries() > 1 )
     {
-      if ( collection->numGeometries() > 1 )
-      {
-        const QgsRectangle r = g.boundingBox();
-        QList<FeatureLayer> fls;
-        fls << *it << *it;
-        TopolErroMultiPart *err = new TopolErroMultiPart( r, g, fls );
-        errorList << err;
-      }
+      const QgsRectangle r = g.boundingBox();
+      QList<FeatureLayer> fls;
+      fls << *it << *it;
+      TopolErroMultiPart *err = new TopolErroMultiPart( r, g, fls );
+      errorList << err;
     }
   }
   return errorList;
