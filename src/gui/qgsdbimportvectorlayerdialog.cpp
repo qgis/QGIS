@@ -309,6 +309,11 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
     allProviderOptions.insert( QStringLiteral( "overwrite" ), true );
   }
 
+  // This flag tells to the provider that field types do not need conversion -- we have already
+  // explicitly set all fields to provider-specific field types and we do not need to treat
+  // them as generic/different provider fields
+  allProviderOptions.insert( QStringLiteral( "skipConvertFields" ), true );
+
   QgsVectorLayerExporter::ExportOptions exportOptions;
   if ( mCrsSelector )
   {
