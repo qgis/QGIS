@@ -12,6 +12,7 @@ __copyright__ = "Copyright 2016, Even Rouault"
 
 import hashlib
 import http.server
+from pathlib import Path
 import os
 import re
 import shutil
@@ -21,6 +22,8 @@ import threading
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ["QT_HASH_SEED"] = "1"
+
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 from providertestbase import ProviderTestCase
 from qgis.core import (
@@ -42,6 +45,8 @@ from qgis.core import (
     QgsVectorDataProvider,
     QgsVectorLayer,
     QgsWkbTypes,
+    QgsNetworkAccessManager,
+    QgsNetworkRequestParameters,
 )
 from qgis.PyQt.QtCore import (
     QT_VERSION_STR,
@@ -53,6 +58,8 @@ from qgis.PyQt.QtCore import (
     Qt,
     QTime,
     QVariant,
+    QUrl,
+    QUrlQuery,
 )
 
 import unittest
@@ -8745,6 +8752,427 @@ Can't recognize service requested.
 
         got_f = [f for f in vl.getFeatures()]
         self.assertEqual(len(got_f), 1)
+
+
+class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
+    """
+    Test WFS provider, using POST requests
+    """
+
+    def treat_date_as_datetime(self):
+        return True
+
+    def treat_time_as_string(self):
+        return True
+
+    @classmethod
+    def _preprocess_url(cls, url: QUrl, is_post: bool = False):
+        endpoint = url.toString(QUrl.UrlFormattingOption.RemoveQuery)[len("http://") :]
+        local_path = sanitize(endpoint, "?" + url.query())
+        return QUrl.fromLocalFile(local_path)
+
+    @classmethod
+    def _nam_request_preprocessor(cls, request: QNetworkRequest):
+        request.setUrl(cls._preprocess_url(request.url()))
+
+    @classmethod
+    def _nam_advanced_request_preprocessor(cls, request: QNetworkRequest, op, content):
+        if op == QgsNetworkAccessManager.Operation.PostOperation:
+            # maps post data to response
+            RESPONSES = {
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:DescribeFeatureType xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:TypeName>my:typename</wfs:TypeName>\n</wfs:DescribeFeatureType>\n': b"""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <!-- add a trailing space to the name to test https://github.com/qgis/QGIS/issues/13486 -->
+          <xsd:element maxOccurs="1" minOccurs="0" name="pk  " nillable="true" type="xsd:long"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="cnt" nillable="true" type="xsd:long"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="name" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="name2" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="num_char" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="dt" nillable="true" type="xsd:datetime"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="date" nillable="true" type="xsd:datetime"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="time" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
+          <!-- check that an element with ref without name doesn't confuse the DescribeFeatureType analyzer -->
+          <xsd:element maxOccurs="0" minOccurs="0" ref="my:somethingElseType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+  <xsd:complexType name="somethingElseType"/>
+</xsd:schema>
+""",
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:Query typeNames="my:typename" srsName="urn:ogc:def:crs:EPSG::4326"/>\n</wfs:GetFeature>\n': b"""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my"
+                       numberMatched="5" numberReturned="5" timeStamp="2016-03-25T14:51:48.998Z">
+  <wfs:member>
+    <my:typename gml:id="typename.0">
+      <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>66.33 -70.332</gml:lowerCorner><gml:upperCorner>66.33 -70.332</gml:upperCorner></gml:Envelope></gml:boundedBy>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.0"><gml:pos>66.33 -70.332</gml:pos></gml:Point></my:geometryProperty>
+      <my:pk>1</my:pk>
+      <my:cnt>100</my:cnt>
+      <my:name>Orange</my:name>
+      <my:name2>oranGe</my:name2>
+      <my:num_char>1</my:num_char>
+      <my:dt>2020-05-03 12:13:14</my:dt>
+      <my:date>2020-05-03</my:date>
+      <my:time>12:13:14</my:time>
+    </my:typename>
+  </wfs:member>
+  <wfs:member>
+    <my:typename gml:id="typename.1">
+      <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>70.8 -68.2</gml:lowerCorner><gml:upperCorner>70.8 -68.2</gml:upperCorner></gml:Envelope></gml:boundedBy>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.1"><gml:pos>70.8 -68.2</gml:pos></gml:Point></my:geometryProperty>
+      <my:pk>2</my:pk>
+      <my:cnt>200</my:cnt>
+      <my:name>Apple</my:name>
+      <my:name2>Apple</my:name2>
+      <my:num_char>2</my:num_char>
+      <my:dt>2020-05-04 12:14:14</my:dt>
+      <my:date>2020-05-04</my:date>
+      <my:time>12:14:14</my:time>
+    </my:typename>
+  </wfs:member>
+  <wfs:member>
+    <my:typename gml:id="typename.2">
+      <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>78.3 -65.32</gml:lowerCorner><gml:upperCorner>78.3 -65.32</gml:upperCorner></gml:Envelope></gml:boundedBy>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.2"><gml:pos>78.3 -65.32</gml:pos></gml:Point></my:geometryProperty>
+      <my:pk>4</my:pk>
+      <my:cnt>400</my:cnt>
+      <my:name>Honey</my:name>
+      <my:name2>Honey</my:name2>
+      <my:num_char>4</my:num_char>
+      <my:dt>2021-05-04 13:13:14</my:dt>
+      <my:date>2021-05-04</my:date>
+      <my:time>13:13:14</my:time>
+    </my:typename>
+  </wfs:member>
+  <wfs:member>
+    <my:typename gml:id="typename.3">
+      <my:pk>3</my:pk>
+      <my:cnt>300</my:cnt>
+      <my:name>Pear</my:name>
+      <my:name2>PEaR</my:name2>
+      <my:num_char>3</my:num_char>
+    </my:typename>
+  </wfs:member>
+  <wfs:member>
+    <my:typename gml:id="typename.4">
+      <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>78.23 -71.123</gml:lowerCorner><gml:upperCorner>78.23 -71.123</gml:upperCorner></gml:Envelope></gml:boundedBy>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.4"><gml:pos>78.23 -71.123</gml:pos></gml:Point></my:geometryProperty>
+      <my:pk>5</my:pk>
+      <my:cnt>-200</my:cnt>
+      <my:name2>NuLl</my:name2>
+      <my:num_char>5</my:num_char>
+      <my:dt>2020-05-04 12:13:14</my:dt>
+      <my:date>2020-05-02</my:date>
+      <my:time>12:13:01</my:time>
+    </my:typename>
+  </wfs:member>
+</wfs:FeatureCollection>""",
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:Query typeNames="my:typename" srsName="urn:ogc:def:crs:EPSG::4326">\n  <fes:Filter>\n   <fes:And>\n    <fes:PropertyIsGreaterThan>\n     <fes:ValueReference>cnt</fes:ValueReference>\n     <fes:Literal>100</fes:Literal>\n    </fes:PropertyIsGreaterThan>\n    <fes:PropertyIsLessThan>\n     <fes:ValueReference>cnt</fes:ValueReference>\n     <fes:Literal>410</fes:Literal>\n    </fes:PropertyIsLessThan>\n   </fes:And>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
+                    <wfs:FeatureCollection
+                                           xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                                           xmlns:gml="http://www.opengis.net/gml/3.2"
+                                           xmlns:my="http://my"
+                                           numberMatched="3" numberReturned="3" timeStamp="2016-03-25T14:51:48.998Z">
+                      <wfs:member>
+                        <my:typename gml:id="typename.1">
+                          <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>70.8 -68.2</gml:lowerCorner><gml:upperCorner>70.8 -68.2</gml:upperCorner></gml:Envelope></gml:boundedBy>
+                          <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.1"><gml:pos>70.8 -68.2</gml:pos></gml:Point></my:geometryProperty>
+                          <my:pk>2</my:pk>
+                          <my:cnt>200</my:cnt>
+                          <my:name>Apple</my:name>
+                          <my:name2>Apple</my:name2>
+                          <my:num_char>2</my:num_char>
+                        </my:typename>
+                      </wfs:member>
+                      <wfs:member>
+                        <my:typename gml:id="typename.2">
+                          <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>78.3 -65.32</gml:lowerCorner><gml:upperCorner>78.3 -65.32</gml:upperCorner></gml:Envelope></gml:boundedBy>
+                          <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.2"><gml:pos>78.3 -65.32</gml:pos></gml:Point></my:geometryProperty>
+                          <my:pk>4</my:pk>
+                          <my:cnt>400</my:cnt>
+                          <my:name>Honey</my:name>
+                          <my:name2>Honey</my:name2>
+                          <my:num_char>4</my:num_char>
+                        </my:typename>
+                      </wfs:member>
+                      <wfs:member>
+                        <my:typename gml:id="typename.3">
+                          <my:pk>3</my:pk>
+                          <my:cnt>300</my:cnt>
+                          <my:name>Pear</my:name>
+                          <my:name2>PEaR</my:name2>
+                          <my:num_char>3</my:num_char>
+                        </my:typename>
+                      </wfs:member>
+                    </wfs:FeatureCollection>""",
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:Query typeNames="my:typename" srsName="urn:ogc:def:crs:EPSG::4326">\n  <fes:Filter>\n   <fes:PropertyIsEqualTo>\n    <fes:ValueReference>name</fes:ValueReference>\n    <fes:Literal>AppleBearOrangePear</fes:Literal>\n   </fes:PropertyIsEqualTo>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
+            <wfs:FeatureCollection
+                                   xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                                   xmlns:gml="http://www.opengis.net/gml/3.2"
+                                   xmlns:my="http://my"
+                                   numberMatched="0" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
+            </wfs:FeatureCollection>""",
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0" resultType="hits">\n <wfs:Query typeNames="my:typename"/>\n</wfs:GetFeature>\n': b"""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my"
+                       numberMatched="5" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
+</wfs:FeatureCollection>""",
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0" resultType="hits">\n <wfs:Query typeNames="my:typename">\n  <fes:Filter>\n   <fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">\n    <fes:And>\n     <fes:PropertyIsGreaterThan>\n      <fes:ValueReference>cnt</fes:ValueReference>\n      <fes:Literal>100</fes:Literal>\n     </fes:PropertyIsGreaterThan>\n     <fes:PropertyIsLessThan>\n      <fes:ValueReference>cnt</fes:ValueReference>\n      <fes:Literal>410</fes:Literal>\n     </fes:PropertyIsLessThan>\n    </fes:And>\n   </fes:Filter>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
+                    <wfs:FeatureCollection
+                                           xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                                           xmlns:gml="http://www.opengis.net/gml/3.2"
+                                           numberMatched="3" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
+                    </wfs:FeatureCollection>""",
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0" resultType="hits">\n <wfs:Query typeNames="my:typename">\n  <fes:Filter>\n   <fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">\n    <fes:PropertyIsEqualTo>\n     <fes:ValueReference>name</fes:ValueReference>\n     <fes:Literal>Apple</fes:Literal>\n    </fes:PropertyIsEqualTo>\n   </fes:Filter>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
+                    <wfs:FeatureCollection
+                                           xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                                           xmlns:gml="http://www.opengis.net/gml/3.2"
+                                           numberMatched="1" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
+                    </wfs:FeatureCollection>""",
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0" resultType="hits">\n <wfs:Query typeNames="my:typename">\n  <fes:Filter>\n   <fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">\n    <fes:PropertyIsEqualTo>\n     <fes:ValueReference>name</fes:ValueReference>\n     <fes:Literal>AppleBearOrangePear</fes:Literal>\n    </fes:PropertyIsEqualTo>\n   </fes:Filter>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
+                    <wfs:FeatureCollection
+                                           xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                                           xmlns:gml="http://www.opengis.net/gml/3.2"
+                                           numberMatched="0" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
+                    </wfs:FeatureCollection>""",
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:Query typeNames="my:typename" srsName="urn:ogc:def:crs:EPSG::4326">\n  <fes:Filter>\n   <fes:Not>\n    <fes:PropertyIsEqualTo>\n     <fes:ValueReference>name</fes:ValueReference>\n     <fes:Literal>Apple</fes:Literal>\n    </fes:PropertyIsEqualTo>\n   </fes:Not>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
+                    <wfs:FeatureCollection
+                                           xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                                           xmlns:gml="http://www.opengis.net/gml/3.2"
+                                           xmlns:my="http://my"
+                                           numberMatched="1" numberReturned="1" timeStamp="2016-03-25T14:51:48.998Z">
+                      <wfs:member>
+                        <my:typename gml:id="typename.1">
+                          <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>70.8 -68.2</gml:lowerCorner><gml:upperCorner>70.8 -68.2</gml:upperCorner></gml:Envelope></gml:boundedBy>
+                          <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.1"><gml:pos>70.8 -68.2</gml:pos></gml:Point></my:geometryProperty>
+                          <my:pk>2</my:pk>
+                          <my:cnt>200</my:cnt>
+                          <my:name>Apple</my:name>
+                          <my:name2>Apple</my:name2>
+                          <my:num_char>2</my:num_char>
+                        </my:typename>
+                      </wfs:member>
+                    </wfs:FeatureCollection>""",
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:Query typeNames="my:typename" srsName="urn:ogc:def:crs:EPSG::4326">\n  <fes:Filter>\n   <fes:Not>\n    <fes:PropertyIsNull>\n     <fes:ValueReference>name</fes:ValueReference>\n    </fes:PropertyIsNull>\n   </fes:Not>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
+                    <wfs:FeatureCollection
+                                           xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                                           xmlns:gml="http://www.opengis.net/gml/3.2"
+                                           xmlns:my="http://my"
+                                           numberMatched="4" numberReturned="4" timeStamp="2016-03-25T14:51:48.998Z">
+                      <wfs:member>
+                        <my:typename gml:id="typename.0">
+                          <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>66.33 -70.332</gml:lowerCorner><gml:upperCorner>66.33 -70.332</gml:upperCorner></gml:Envelope></gml:boundedBy>
+                          <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.0"><gml:pos>66.33 -70.332</gml:pos></gml:Point></my:geometryProperty>
+                          <my:pk>1</my:pk>
+                          <my:cnt>100</my:cnt>
+                          <my:name>Orange</my:name>
+                          <my:name2>oranGe</my:name2>
+                          <my:num_char>1</my:num_char>
+                          <my:dt>2020-05-03 12:13:14</my:dt>
+                          <my:date>2020-05-03</my:date>
+                          <my:time>12:13:14</my:time>
+                        </my:typename>
+                      </wfs:member>
+                      <wfs:member>
+                        <my:typename gml:id="typename.1">
+                          <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>70.8 -68.2</gml:lowerCorner><gml:upperCorner>70.8 -68.2</gml:upperCorner></gml:Envelope></gml:boundedBy>
+                          <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.1"><gml:pos>70.8 -68.2</gml:pos></gml:Point></my:geometryProperty>
+                          <my:pk>2</my:pk>
+                          <my:cnt>200</my:cnt>
+                          <my:name>Apple</my:name>
+                          <my:name2>Apple</my:name2>
+                          <my:num_char>2</my:num_char>
+                          <my:dt>2020-05-04 12:14:14</my:dt>
+                          <my:date>2020-05-04</my:date>
+                          <my:time>12:14:14</my:time>
+                        </my:typename>
+                      </wfs:member>
+                      <wfs:member>
+                        <my:typename gml:id="typename.2">
+                          <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>78.3 -65.32</gml:lowerCorner><gml:upperCorner>78.3 -65.32</gml:upperCorner></gml:Envelope></gml:boundedBy>
+                          <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.2"><gml:pos>78.3 -65.32</gml:pos></gml:Point></my:geometryProperty>
+                          <my:pk>4</my:pk>
+                          <my:cnt>400</my:cnt>
+                          <my:name>Honey</my:name>
+                          <my:name2>Honey</my:name2>
+                          <my:num_char>4</my:num_char>
+                          <my:dt>2021-05-04 13:13:14</my:dt>
+                          <my:date>2021-05-04</my:date>
+                          <my:time>13:13:14</my:time>
+                        </my:typename>
+                      </wfs:member>
+                      <wfs:member>
+                        <my:typename gml:id="typename.3">
+                          <my:pk>3</my:pk>
+                          <my:cnt>300</my:cnt>
+                          <my:name>Pear</my:name>
+                          <my:name2>PEaR</my:name2>
+                          <my:num_char>3</my:num_char>
+                        </my:typename>
+                      </wfs:member>
+                    </wfs:FeatureCollection>""",
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:Query typeNames="my:typename" srsName="urn:ogc:def:crs:EPSG::4326">\n  <fes:Filter>\n   <fes:And>\n    <fes:PropertyIsGreaterThan>\n     <fes:ValueReference>cnt</fes:ValueReference>\n     <fes:Literal>100</fes:Literal>\n    </fes:PropertyIsGreaterThan>\n    <fes:PropertyIsLessThan>\n     <fes:ValueReference>cnt</fes:ValueReference>\n     <fes:Literal>400</fes:Literal>\n    </fes:PropertyIsLessThan>\n   </fes:And>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
+                    <wfs:FeatureCollection
+                                           xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                                           xmlns:gml="http://www.opengis.net/gml/3.2"
+                                           xmlns:my="http://my"
+                                           numberMatched="2" numberReturned="2" timeStamp="2016-03-25T14:51:48.998Z">
+                      <wfs:member>
+                        <my:typename gml:id="typename.1">
+                          <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>70.8 -68.2</gml:lowerCorner><gml:upperCorner>70.8 -68.2</gml:upperCorner></gml:Envelope></gml:boundedBy>
+                          <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.1"><gml:pos>70.8 -68.2</gml:pos></gml:Point></my:geometryProperty>
+                          <my:pk>2</my:pk>
+                          <my:cnt>200</my:cnt>
+                          <my:name>Apple</my:name>
+                          <my:name2>Apple</my:name2>
+                          <my:num_char>2</my:num_char>
+                          <my:dt>2020-05-04 12:14:14</my:dt>
+                          <my:date>2020-05-04</my:date>
+                          <my:time>12:14:14</my:time>
+                        </my:typename>
+                      </wfs:member>
+                      <wfs:member>
+                        <my:typename gml:id="typename.3">
+                          <my:pk>3</my:pk>
+                          <my:cnt>300</my:cnt>
+                          <my:name>Pear</my:name>
+                          <my:name2>PEaR</my:name2>
+                          <my:num_char>3</my:num_char>
+                        </my:typename>
+                      </wfs:member>
+                    </wfs:FeatureCollection>""",
+            }
+
+            if content.data() in RESPONSES:
+                endpoint = request.url().toString(QUrl.UrlFormattingOption.RemoveQuery)[
+                    len("http://") :
+                ]
+                local_path = (
+                    sanitize(endpoint, "?" + request.url().query()) + "post_data"
+                )
+                with open(local_path, "wb") as f:
+                    f.write(RESPONSES[content.data()])
+                op = QgsNetworkAccessManager.Operation.GetOperation
+                request.setUrl(QUrl.fromLocalFile(local_path))
+                return op, content
+
+            print(f"\n\n\n\n\n\n\n\n{content}\n\n\n\n\n\n\n")
+
+            assert False
+
+        return op, content
+
+    @classmethod
+    def on_request_about_to_be_created(cls, request):
+        print(request)
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        super().setUpClass()
+
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("TestPyQgsWFSProviderPost.com")
+        QCoreApplication.setApplicationName("TestPyQgsWFSProviderPost")
+        QgsSettings().clear()
+        start_app()
+
+        cls._request_preprocessor_id = QgsNetworkAccessManager.setRequestPreprocessor(
+            cls._nam_request_preprocessor
+        )
+
+        cls._advanced_request_preprocessor_id = (
+            QgsNetworkAccessManager.setAdvancedRequestPreprocessor(
+                cls._nam_advanced_request_preprocessor
+            )
+        )
+
+        # On Windows we must make sure that any backslash in the path is
+        # replaced by a forward slash so that QUrl can process it
+        cls.basetestpath = tempfile.mkdtemp().replace("\\", "/")
+        endpoint = cls.basetestpath + "/fake_post"
+        with open(
+            sanitize(
+                endpoint,
+                "?SERVICE=WFS?REQUEST=GetCapabilities?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+<wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>-71.123 66.33</LowerCorner>
+        <UpperCorner>-65.32 78.3</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>"""
+            )
+
+        # Create test layer
+        cls.vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='my:typename' httpMethod='post' skipInitialGetFeature='true'",
+            "test",
+            "WFS",
+        )
+        assert cls.vl.isValid()
+        cls.source = cls.vl.dataProvider()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+        QgsSettings().clear()
+        # shutil.rmtree(cls.basetestpath, True)
+        cls.vl = (
+            None  # so as to properly close the provider and remove any temporary file
+        )
+        QgsNetworkAccessManager.removeRequestPreprocessor(cls._request_preprocessor_id)
+        QgsNetworkAccessManager.removeAdvancedRequestPreprocessor(
+            cls._advanced_request_preprocessor_id
+        )
+
+        super().tearDownClass()
+
+    def tearDown(self):
+        """Run after each test"""
+        # clear possible settings modification made during test
+        QgsSettings().clear()
+
+    def testWkbType(self):
+        """N/A for WFS provider"""
+        pass
+
+    def providerCompatibleOfSubsetStringWithStableFID(self):
+        """Return whether the provider is expected to have stable FID when changing subsetString.
+        The WFS provider might not always be able to have that guarantee."""
+        return False
+
+    def testExtentSubsetString(self):
+        # can't run the base provider test suite here - WFS/OAPIF extent handling is different
+        # to other providers
+        pass
 
 
 if __name__ == "__main__":
