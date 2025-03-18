@@ -235,6 +235,12 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      */
     void toggleDialogVisibility( bool visible );
 
+    /**
+     * Emitted when the extent layer is changed.
+     * \since QGIS 3.44
+     */
+    void extentLayerChanged( QgsMapLayer *layer );
+
   protected:
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dragLeaveEvent( QDragLeaveEvent *event ) override;
