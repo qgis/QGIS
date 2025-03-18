@@ -927,6 +927,13 @@ std::unique_ptr<QgsDiagramSettings> QgsDiagramProperties::createDiagramSettings(
   ds->diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );
 
   ds->barWidth = mBarWidthSpinBox->value();
+  if ( mDiagramType == QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR )
+  {
+    if ( ds->diagramOrientation == QgsDiagramSettings::DiagramOrientation::Up || ds->diagramOrientation == QgsDiagramSettings::DiagramOrientation::Down )
+      ds->size.setWidth( ds->barWidth );
+    else
+      ds->size.setHeight( ds->barWidth );
+  }
 
   ds->setAxisLineSymbol( mAxisLineStyleButton->clonedSymbol<QgsLineSymbol>() );
   ds->setShowAxis( mShowAxisGroupBox->isChecked() );
