@@ -748,8 +748,8 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
   if ( resowner || ccredentials )
     leRequestUrl->setText( QString() );
 
-  lblRedirectUrl->setVisible( !resowner && !ccredentials);
-  frameRedirectUrl->setVisible( !resowner && !ccredentials);
+  lblRedirectUrl->setVisible( !resowner && !ccredentials );
+  frameRedirectUrl->setVisible( !resowner && !ccredentials );
 
   lblClientSecret->setVisible( !implicit );
   leClientSecret->setVisible( !implicit );
