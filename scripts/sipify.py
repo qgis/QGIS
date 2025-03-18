@@ -124,6 +124,9 @@ class Context:
         self.struct_docstrings = defaultdict(dict)
         self.current_method_name: str = ""
         self.static_methods = defaultdict(dict)
+        self.virtual_methods = defaultdict(dict)
+        self.abstract_methods = defaultdict(dict)
+        self.overridden_methods = defaultdict(dict)
         self.current_signal_args = []
         self.signal_arguments = defaultdict(dict)
         self.deprecated_message = None
@@ -1745,9 +1748,30 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     exit_with_error("could not reach opening definition")
             dbg_info("removed multiline definition of SIP_SKIP method")
             CONTEXT.multiline_definition = MultiLineType.NotMultiline
-            del CONTEXT.static_methods[CONTEXT.current_fully_qualified_class_name()][
-                CONTEXT.current_method_name
-            ]
+            try:
+                del CONTEXT.static_methods[
+                    CONTEXT.current_fully_qualified_class_name()
+                ][CONTEXT.current_method_name]
+            except KeyError:
+                pass
+            try:
+                del CONTEXT.virtual_methods[
+                    CONTEXT.current_fully_qualified_class_name()
+                ][CONTEXT.current_method_name]
+            except KeyError:
+                pass
+            try:
+                del CONTEXT.abstract_methods[
+                    CONTEXT.current_fully_qualified_class_name()
+                ][CONTEXT.current_method_name]
+            except KeyError:
+                pass
+            try:
+                del CONTEXT.overridden_methods[
+                    CONTEXT.current_fully_qualified_class_name()
+                ][CONTEXT.current_method_name]
+            except KeyError:
+                pass
 
         # also skip method body if there is one
         detect_and_remove_following_body_or_initializerlist()
@@ -2392,6 +2416,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         r"\1\2,\3,\4\5",
         CONTEXT.current_line,
     )
+    is_override = re.search(r"\b(?:override|final)\b", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(r"\s*\boverride\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(r"\s*\bSIP_MAKE_PRIVATE\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(
@@ -2645,6 +2670,17 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.current_method_name = match.group(3)
         return_type_candidate = match.group(2)
         is_static = bool(match.group(1) and "static" in match.group(1))
+        is_virtual = bool(match.group(1) and "virtual" in match.group(1))
+        is_abstract = bool(
+            is_virtual
+            and match.group(4)
+            and re.match(
+                r".*\s*=\s*0\s*(?:\s*SIP[A-Za-z_() ]*\s*)*\s*;", match.group(4)
+            )
+        )
+        if is_abstract or is_override:
+            is_virtual = False  # assumed!
+
         class_name = CONTEXT.current_fully_qualified_class_name()
         if CONTEXT.current_method_name in CONTEXT.static_methods[class_name]:
             if (
@@ -2654,6 +2690,26 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.static_methods[class_name][CONTEXT.current_method_name] = False
         else:
             CONTEXT.static_methods[class_name][CONTEXT.current_method_name] = is_static
+
+        if CONTEXT.current_method_name in CONTEXT.virtual_methods[class_name]:
+            if (
+                CONTEXT.virtual_methods[class_name][CONTEXT.current_method_name]
+                != is_virtual
+            ):
+                CONTEXT.virtual_methods[class_name][CONTEXT.current_method_name] = False
+        else:
+            CONTEXT.virtual_methods[class_name][
+                CONTEXT.current_method_name
+            ] = is_virtual
+
+        if is_abstract:
+            CONTEXT.abstract_methods[class_name][CONTEXT.current_method_name] = True
+
+        if CONTEXT.multiline_definition != MultiLineType.Method:
+            if is_override:
+                CONTEXT.overridden_methods[class_name][
+                    CONTEXT.current_method_name
+                ] = True
 
         if CONTEXT.access[-1] == Visibility.Signals:
             CONTEXT.current_signal_args = []
@@ -2730,6 +2786,19 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 + " "
                 + str(CONTEXT.current_signal_args)
             )
+    elif CONTEXT.multiline_definition == MultiLineType.Method:
+        is_abstract = bool(
+            re.match(
+                r".*\s*=\s*0\s*(?:\s*SIP[A-Za-z_() ]*\s*)*\s*;",
+                CONTEXT.current_line.strip(),
+            )
+        )
+        class_name = CONTEXT.current_fully_qualified_struct_name()
+        if is_abstract:
+            CONTEXT.abstract_methods[class_name][CONTEXT.current_method_name] = True
+
+        if is_override:
+            CONTEXT.overridden_methods[class_name][CONTEXT.current_method_name] = True
 
     # deleted functions
     if re.match(
@@ -3130,6 +3199,42 @@ for class_name, static_methods in CONTEXT.static_methods.items():
 
         class_additions[class_name].append(
             f"{class_name}.{method_name} = staticmethod({class_name}.{method_name})"
+        )
+
+for class_name, virtual_methods in CONTEXT.virtual_methods.items():
+    virtual_method_names = []
+    for method_name, is_virtual in virtual_methods.items():
+        if not is_virtual:
+            continue
+
+        virtual_method_names.append(method_name)
+    if virtual_method_names:
+        class_additions[class_name].append(
+            f"{class_name}.__virtual_methods__ = {str(virtual_method_names)}"
+        )
+
+for class_name, abstract_methods in CONTEXT.abstract_methods.items():
+    abstract_method_names = []
+    for method_name, is_abstract in abstract_methods.items():
+        if not is_abstract:
+            continue
+
+        abstract_method_names.append(method_name)
+    if abstract_method_names:
+        class_additions[class_name].append(
+            f"{class_name}.__abstract_methods__ = {str(abstract_method_names)}"
+        )
+
+for class_name, overridden_methods in CONTEXT.overridden_methods.items():
+    overridden_method_names = []
+    for method_name, is_override in overridden_methods.items():
+        if not is_override:
+            continue
+
+        overridden_method_names.append(method_name)
+    if overridden_method_names:
+        class_additions[class_name].append(
+            f"{class_name}.__overridden_methods__ = {str(overridden_method_names)}"
         )
 
 for class_name, signal_arguments in CONTEXT.signal_arguments.items():
