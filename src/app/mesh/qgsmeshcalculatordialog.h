@@ -22,6 +22,8 @@
 #include "qgsmeshcalculator.h"
 #include "qgis_app.h"
 
+class QgsMapCanvas;
+
 //! A dialog to enter a mesh calculation expression
 class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCalculatorDialogBase
 {
@@ -33,7 +35,7 @@ class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCa
      * \param parent widget
      * \param f window flags
      */
-    QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer = nullptr, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer = nullptr, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsMeshCalculatorDialog();
 
     //! Returns new mesh calculator created from dialog options
@@ -44,7 +46,6 @@ class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCa
 
   private slots:
     void datasetGroupEntry( const QModelIndex &index );
-    void mCurrentLayerExtentButton_clicked();
     void mAllTimesButton_clicked();
     void toggleExtendMask();
     void updateInfoMessage();
@@ -127,6 +128,7 @@ class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCa
     void populateDriversComboBox();
 
     QgsMeshLayer *mLayer;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QHash<QString, QgsMeshDriverMetadata> mMeshDrivers;
     QStringList mVariableNames;
 
