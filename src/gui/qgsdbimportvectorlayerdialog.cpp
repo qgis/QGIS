@@ -227,7 +227,7 @@ void QgsDbImportVectorLayerDialog::loadFieldsFromLayer()
 void QgsDbImportVectorLayerDialog::addField()
 {
   const int rowCount = mFieldsView->model()->rowCount();
-  mFieldsView->appendField( QgsField( QStringLiteral( "new_field" ) ) );
+  mFieldsView->appendField( QgsField( QStringLiteral( "new_field" ) ), QStringLiteral( "NULL" ) );
   const QModelIndex index = mFieldsView->model()->index( rowCount, 0 );
   mFieldsView->selectionModel()->select(
     index,
