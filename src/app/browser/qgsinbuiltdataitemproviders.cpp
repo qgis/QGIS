@@ -2037,7 +2037,7 @@ bool QgsDatabaseItemGuiProvider::handleDropUri( QgsDataItem *item, const QgsMime
     }
   };
 
-  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer )]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
       connectionItemPointer->refresh();
@@ -2071,7 +2071,7 @@ void QgsDatabaseItemGuiProvider::handleImportVector( QgsDataItem *item, QgsDataI
     }
   };
 
-  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer )]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
       connectionItemPointer->refresh();

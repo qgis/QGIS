@@ -619,7 +619,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropUri( QgsGeoPackageCollectionItem *c
     }
   };
 
-  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer )]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
       connectionItemPointer->refresh();
@@ -651,7 +651,7 @@ void QgsGeoPackageItemGuiProvider::handleImportVector( QgsGeoPackageCollectionIt
     }
   };
 
-  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer )]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
       connectionItemPointer->refresh();

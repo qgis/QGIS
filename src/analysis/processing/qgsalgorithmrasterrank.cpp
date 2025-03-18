@@ -190,8 +190,13 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
       extent = ct.transformBoundingBox( extent );
     }
 
-    minCellSizeX = std::min( minCellSizeX, ( extent.xMaximum() - extent.xMinimum() ) / rasterLayer->width() );
-    minCellSizeY = std::min( minCellSizeY, ( extent.yMaximum() - extent.yMinimum() ) / rasterLayer->height() );
+    const int width = rasterLayer->width();
+    const int height = rasterLayer->height();
+    if ( width <= 0 || height <= 0 )
+      throw QgsProcessingException( QObject::tr( "%1: raster is empty, cannot proceed" ).arg( rasterLayer->name() ) );
+
+    minCellSizeX = std::min( minCellSizeX, ( extent.xMaximum() - extent.xMinimum() ) / width );
+    minCellSizeY = std::min( minCellSizeY, ( extent.yMaximum() - extent.yMinimum() ) / height );
   }
 
   double outputCellSizeX = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE" ), context );
