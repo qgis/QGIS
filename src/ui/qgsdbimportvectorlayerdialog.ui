@@ -57,9 +57,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="mEditSchema"/>
-      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
@@ -76,6 +73,13 @@
          <string>Replace destination table (if exists)</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="mLayoutSchemeCombo">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -348,7 +352,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>mSourceLayerComboBox</tabstop>
-  <tabstop>mEditSchema</tabstop>
   <tabstop>mEditTable</tabstop>
   <tabstop>mChkDropTable</tabstop>
   <tabstop>mEditPrimaryKey</tabstop>
