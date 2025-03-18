@@ -477,7 +477,7 @@ std::pair<QUrl, QByteArray> QgsWFSFeatureDownloaderImpl::buildPostRequest( qint6
       QDomElement filterElement = postDocument.createElement( useVersion2 ? QStringLiteral( "fes:Filter" ) : QStringLiteral( "ogc:Filter" ) );
       if ( filterDoc.setContent( sanitizeFilter( mShared->combineWFSFilters( filters ) ) ) )
       {
-        filterElement.appendChild( filterDoc.documentElement() );
+        filterElement.appendChild( filterDoc.documentElement().firstChildElement() );
       }
       queryElement.appendChild( filterElement );
     }
