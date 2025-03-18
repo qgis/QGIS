@@ -1411,11 +1411,12 @@ tests:
   - algorithm: native:mergevectorlayers
     name: Merge vector layers with different fields lenghts and precision
     params:
+      ADD_SOURCE_FIELDS: false
       LAYERS:
         params:
-        - name: layer_A_base.shp
+        - name: custom/layer_A_base.shp
           type: vector
-        - name: layer_B_tomerge.shp
+        - name: custom/layer_B_tomerge.shp
           type: vector
         type: multi
     results:
