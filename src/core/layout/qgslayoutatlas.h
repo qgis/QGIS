@@ -36,6 +36,18 @@ class QgsLayout;
  * QgsLayoutAtlas object. Instead, the atlas attached to the print layout
  * should be used. This can be retrieved by calling QgsPrintLayout::atlas().
  *
+ * Custom properties: Every atlas may have custom properties assigned to it.
+ * This mechanism allows third parties store additional data with the atlas.
+ * The properties are used within QGIS code, but may be also used by third party
+ * plugins. Custom properties are stored also in the project file. The storage
+ * is not efficient for large amount of data.
+ *
+ * All custom properties used by QGIS with QgsLayoutAtlas (with where they are
+ * set indicated); plugins may set additional ones:
+ *
+ * - "singleFile"
+ *       QgsLayoutAtlas::QgsLayoutAtlas
+ *
  */
 class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutIterator, public QgsLayoutSerializableObject, public QgsExpressionContextGenerator
 {
