@@ -1425,7 +1425,7 @@ QString QgsApplication::osName()
 int QgsApplication::systemMemorySizeMb()
 {
   // Bytes to Mb (using 1024 * 1024)
-  return CPLGetUsablePhysicalRAM() / 1048576;
+  return static_cast<int>( CPLGetUsablePhysicalRAM() / 1048576 );
 }
 
 QString QgsApplication::platform()
