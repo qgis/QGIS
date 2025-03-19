@@ -583,7 +583,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \since QGIS 3.44
      */
 #ifndef SIP_RUN
-    static QString setAdvancedRequestPreprocessor( const std::function< void( QNetworkRequest *, QNetworkAccessManager::Operation &op, QByteArray *data )> &processor );
+    static QString setAdvancedRequestPreprocessor( const std::function< void( QNetworkRequest *, int &op, QByteArray *data )> &processor );
 #else
     static QString setAdvancedRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
@@ -591,14 +591,14 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QString id;
     Py_XINCREF( a0 );
     Py_BEGIN_ALLOW_THREADS
-    id = QgsNetworkAccessManager::setAdvancedRequestPreprocessor( [a0]( QNetworkRequest *reqArg, QNetworkAccessManager::Operation &op, QByteArray *data )
+    id = QgsNetworkAccessManager::setAdvancedRequestPreprocessor( [a0]( QNetworkRequest *reqArg, int &op, QByteArray *data )
     {
       SIP_BLOCK_THREADS
 
       PyObject *requestObj = sipConvertFromType( reqArg, sipType_QNetworkRequest, NULL );
       PyObject *postDataObj = sipConvertFromType( new QByteArray( *data ), sipType_QByteArray, Py_None );
 
-      PyObject *result = sipCallMethod( NULL, a0, "RiR", requestObj, static_cast<int>( op ), postDataObj );
+      PyObject *result = sipCallMethod( NULL, a0, "RiR", requestObj, op, postDataObj );
 
       Py_XDECREF( requestObj );
       Py_XDECREF( postDataObj );
@@ -609,7 +609,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
         PyObject *opObj = PyTuple_GetItem( result, 0 );
         if ( opObj && PyLong_Check( opObj ) )
         {
-          op = static_cast<QNetworkAccessManager::Operation>( PyLong_AsLong( opObj ) );
+          op = static_cast<int>( PyLong_AsLong( opObj ) );
         }
         PyObject *dataObj = PyTuple_GetItem( result, 1 );
         if ( dataObj && dataObj != Py_None )
