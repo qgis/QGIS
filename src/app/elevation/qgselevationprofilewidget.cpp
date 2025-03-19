@@ -724,6 +724,10 @@ void QgsElevationProfileWidget::clear()
   if ( mMapPointRubberBand )
     mMapPointRubberBand->hide();
   mCanvas->clear();
+  if ( mMeasureTool->isActive() )
+  {
+    mMeasureTool->clear();
+  }
   mNudgeLeftAction->setEnabled( false );
   mNudgeRightAction->setEnabled( false );
   mProfileCurve = QgsGeometry();
