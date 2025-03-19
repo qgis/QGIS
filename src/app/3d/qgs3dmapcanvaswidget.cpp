@@ -705,9 +705,9 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   mActionMapThemes->setDisabled( !mCanvas->mapSettings()->terrainRenderingEnabled() || !mCanvas->mapSettings()->terrainGenerator() || mCanvas->mapSettings()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
 
-  mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( mMainCanvas, map->origin() );
+  mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( mMainCanvas, this );
   mMapToolClippingPlanes->setAction( mActionSetClippingPlanes );
-  connect( mMapToolClippingPlanes.get(), &QgsMapToolClippingPlanes::clippingPlanesChanged, this, &Qgs3DMapCanvasWidget::setClippingPlanes );
+  connect( mMapToolClippingPlanes.get(), &QgsMapToolClippingPlanes::clippingPlanesChanged, this, &Qgs3DMapCanvasWidget::setViewOnClippingPlanesChanged );
 
   connect( map, &Qgs3DMapSettings::viewFrustumVisualizationEnabledChanged, this, &Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged );
   connect( map, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapCanvasWidget::onExtentChanged );
@@ -1188,19 +1188,28 @@ void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
   mMessageBar->pushInfo( QString(), tr( "Select a rectangle by 3 points on the main 2D map view to define this 3D scene's cross section" ) );
 }
 
-void Qgs3DMapCanvasWidget::setClippingPlanes( const QList<QVector4D> &planes )
+void Qgs3DMapCanvasWidget::setViewOnClippingPlanesChanged( const QList<QVector4D> &planes )
 {
   this->activateWindow();
   this->raise();
   mMessageBar->clearWidgets();
 
-  mCanvas->scene()->enableClipping( planes );
-  mCanvas->scene()->cameraController()->setLookingAtPoint(
-    mCanvas->scene()->cameraController()->lookingAtPoint(),
-    mCanvas->scene()->cameraController()->distance(),
-    90,
-    mCanvas->scene()->cameraController()->yaw()
+  // calculate the middle of the front side defined by clipping planes with Cramer's rule
+  double det = planes.at( 0 ).x() * planes.at( 3 ).y() - planes.at( 3 ).x() * planes.at( 0 ).y();
+  const QgsVector3D point1(
+    ( planes.at( 0 ).w() * planes.at( 3 ).y() - planes.at( 3 ).w() * planes.at( 0 ).y() ) / -det,
+    ( planes.at( 3 ).w() * planes.at( 0 ).x() - planes.at( 0 ).w() * planes.at( 3 ).x() ) / -det,
+    0
   );
+  det = planes.at( 2 ).x() * planes.at( 3 ).y() - planes.at( 3 ).x() * planes.at( 2 ).y();
+  const QgsVector3D point2(
+    ( planes.at( 2 ).w() * planes.at( 3 ).y() - planes.at( 3 ).w() * planes.at( 2 ).y() ) / -det,
+    ( planes.at( 3 ).w() * planes.at( 2 ).x() - planes.at( 2 ).w() * planes.at( 3 ).x() ) / -det,
+    0
+  );
+  const QgsVector3D middle( point1 + ( point2 - point1 ) / 2 );
+  const double distance = ( middle - point1 ).length() / std::tan( mCanvas->scene()->cameraController()->camera()->fieldOfView() / 2 * M_PI / 180 );
+  mCanvas->scene()->cameraController()->setLookingAtPoint( middle, static_cast<float>( distance ), 90, 270 );
 
   if ( mMapToolPrevious )
     mMainCanvas->setMapTool( mMapToolPrevious );
@@ -1211,6 +1220,7 @@ void Qgs3DMapCanvasWidget::setClippingPlanes( const QList<QVector4D> &planes )
 void Qgs3DMapCanvasWidget::disableClippingPlanes() const
 {
   mCanvas->scene()->disableClipping();
+  mMapToolClippingPlanes->clearHighLightedArea();
 }
 
 ClassValidator::ClassValidator( QWidget *parent )

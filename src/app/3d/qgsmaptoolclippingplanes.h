@@ -21,6 +21,8 @@
 #include "qgsrubberband.h"
 #include "qobjectuniqueptr.h"
 
+
+class Qgs3DMapCanvasWidget;
 class QgsMapCanvas;
 
 
@@ -33,7 +35,7 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     Q_OBJECT
 
   public:
-    QgsMapToolClippingPlanes( QgsMapCanvas *canvas, const QgsVector3D &sceneOrigin );
+    QgsMapToolClippingPlanes( QgsMapCanvas *canvas, Qgs3DMapCanvasWidget *mapCanvas );
 
     Flags flags() const override { return AllowZoomRect; }
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
@@ -45,16 +47,17 @@ class QgsMapToolClippingPlanes : public QgsMapTool
 
     //! Removes the tool's rubber band from the canvas.
     void clearRubberBand() const;
+    void clearHighLightedArea() const;
 
   signals:
     //! signal emitted on clipping planes change
-    void clippingPlanesChanged( QList<QVector4D> normalVectors );
+    void clippingPlanesChanged( QList<QVector4D> clippingPlanes );
 
   private:
     QObjectUniquePtr<QgsRubberBand> mRubberBandPolygon;
     QObjectUniquePtr<QgsRubberBand> mRubberBandLines;
     QObjectUniquePtr<QgsRubberBand> mRubberBandPoints;
-    QgsVector3D mSceneOrigin;
+    Qgs3DMapCanvasWidget *m3DCanvas = nullptr;
     bool mClicked = false;
     double mRectangleWidth = 0;
 };
