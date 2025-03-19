@@ -1628,7 +1628,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   if ( options.testFlag( AppOption::EnablePython ) )
   {
-    mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
+    mSplash->showMessage( tr( "Starting Python" ), static_cast<int>( Qt::AlignHCenter | Qt::AlignBottom ), splashTextColor );
     qApp->processEvents();
     loadPythonSupport();
 
