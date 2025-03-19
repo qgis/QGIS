@@ -94,7 +94,7 @@ class BatchOutputSelectionPanel(QWidget):
 
         self.actionTemporaryOutputIcon = QAction(
             QgsApplication.getThemeIcon("/mActionCreateMemory.svg"),
-            self.tr( "Temporary Output" ),
+            self.tr("Temporary Output"),
             self,
         )
 
