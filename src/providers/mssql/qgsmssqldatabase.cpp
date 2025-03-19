@@ -68,10 +68,11 @@ std::shared_ptr<QgsMssqlDatabase> QgsMssqlDatabase::connectDb( const QString &se
 
   QMutexLocker locker( &sMutex );
 
-  QString connName = connectionName( service, host, database, transaction );
+  const QString connName = connectionName( service, host, database, transaction );
 
-  if ( sConnections.contains( connName ) && !sConnections[connName].expired() )
-    return sConnections[connName].lock();
+  auto existingConnectionIt = sConnections.constFind( connName );
+  if ( existingConnectionIt != sConnections.constEnd() && !existingConnectionIt->expired() )
+    return existingConnectionIt->lock();
 
   QSqlDatabase db = getDatabase( service, host, database, username, password, transaction );
 
