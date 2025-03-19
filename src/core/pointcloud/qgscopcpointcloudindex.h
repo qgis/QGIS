@@ -109,6 +109,8 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
     mutable lazperf::copc_info_vlr mCopcInfoVlr;
     mutable QHash<QgsPointCloudNodeId, QPair<uint64_t, int32_t>> mHierarchyNodePos; //!< Additional data hierarchy for COPC
 
+    mutable QMutex mFileMutex;
+
     QVariantMap mOriginalMetadata;
     mutable std::optional<QgsPointCloudStatistics> mStatistics;
 
