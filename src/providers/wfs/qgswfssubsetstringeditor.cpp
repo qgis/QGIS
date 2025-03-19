@@ -128,7 +128,7 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
   return d;
 }
 
-QgsWFSValidatorCallback::QgsWFSValidatorCallback( QObject *parent, const QgsWFSDataSourceURI &uri, const QString &allSql, const QgsWfsCapabilities::Capabilities &caps )
+QgsWFSValidatorCallback::QgsWFSValidatorCallback( QObject *parent, const QgsWFSDataSourceURI &uri, const QString &allSql, const QgsWfsCapabilities &caps )
   : QObject( parent )
   , mURI( uri )
   , mAllSql( allSql )
@@ -157,7 +157,7 @@ bool QgsWFSValidatorCallback::isValid( const QString &sqlStr, QString &errorReas
   return true;
 }
 
-QgsWFSTableSelectedCallback::QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog, const QgsWFSDataSourceURI &uri, const QgsWfsCapabilities::Capabilities &caps )
+QgsWFSTableSelectedCallback::QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog, const QgsWFSDataSourceURI &uri, const QgsWfsCapabilities &caps )
   : QObject( dialog )
   , mDialog( dialog )
   , mURI( uri )

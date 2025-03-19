@@ -308,6 +308,12 @@ void QgsGeometryValidator::run()
         case Qgis::WkbType::MultiSurface:
         {
           const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry.constGet() );
+          if ( !collection )
+          {
+            // should not be possible
+            break;
+          }
+
           for ( int i = 0; !mStop && i < collection->numGeometries(); i++ )
             validatePolygon( i, qgsgeometry_cast< const QgsCurvePolygon * >( collection->geometryN( i ) ) );
 

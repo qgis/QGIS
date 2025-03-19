@@ -160,7 +160,6 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
   else
   {
     setCursor( QCursor( Qt::ArrowCursor ) );
-    mCanvas->mapTool()->clean();
   }
 
   switch ( vlayer->geometryType() )
@@ -352,7 +351,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
       }
       else
       {
-        mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
+        mCaptureCurve = *qgsgeometry_cast<const QgsCompoundCurve *>( curved.constGet() );
       }
     }
 
@@ -922,7 +921,7 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
     else
     {
       const int curvesBefore = mCaptureCurve.nCurves();
-      const bool lastCurveIsLineString = qgsgeometry_cast<QgsLineString *>( mCaptureCurve.curveAt( curvesBefore - 1 ) );
+      const bool lastCurveIsLineString = qgsgeometry_cast<const QgsLineString *>( mCaptureCurve.curveAt( curvesBefore - 1 ) );
 
       const int pointsCountBefore = mCaptureCurve.numPoints();
       mCaptureCurve.deleteVertex( vertexToRemove );

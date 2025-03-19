@@ -192,7 +192,7 @@ QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( Qgs3DMapSettings *map,
   mTransform = new Qt3DCore::QTransform;
   if ( applyTerrainOffset() )
   {
-    mTransform->setTranslation( QVector3D( 0.0f, static_cast<float>( map->terrainSettings()->elevationOffset() ), 0.0f ) );
+    mTransform->setTranslation( QVector3D( 0.0f, 0.0f, static_cast<float>( map->terrainSettings()->elevationOffset() ) ) );
   }
   this->addComponent( mTransform );
 
@@ -255,7 +255,7 @@ void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged()
   {
     newOffset = 0.0;
   }
-  mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
+  mTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
 }
 
 QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const

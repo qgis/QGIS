@@ -53,6 +53,38 @@ class ANALYSIS_EXPORT QgsGridFileWriter
     */
     int writeFile( QgsFeedback *feedback = nullptr );
 
+    /**
+     * Sets a list of data source creation options to use when creating the output raster file.
+     *
+     * \see createOptions()
+     * \since QGIS 3.44t
+     */
+    void setCreateOptions( const QStringList &list ) { mCreateOptions = list; }
+
+    /**
+     * Returns the list of data source creation options which will be used when creating the output raster file.
+     *
+     * \see setCreateOptions()
+     * \since QGIS 3.44
+     */
+    QStringList createOptions() const { return mCreateOptions; }
+
+    /**
+     * Set no data value for output file.
+     *
+     * \see noDataValue()
+     * \since QGIS 3.44
+     */
+    void setNoDataValue( double noDataValue ) { mNoDataValue = noDataValue; }
+
+    /**
+     * Returns no data value used for output file.
+     *
+     * \see setNoDataValue()
+     * \since QGIS 3.44
+     */
+    double noDataValue() const { return mNoDataValue; }
+
   private:
     QgsGridFileWriter() = delete;
 
@@ -64,6 +96,9 @@ class ANALYSIS_EXPORT QgsGridFileWriter
 
     double mCellSizeX = 0;
     double mCellSizeY = 0;
+
+    QStringList mCreateOptions;
+    double mNoDataValue = -9999.0;
 };
 
 #endif

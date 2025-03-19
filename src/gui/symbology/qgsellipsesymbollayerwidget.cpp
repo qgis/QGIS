@@ -24,6 +24,15 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
 
 {
   setupUi( this );
+
+  mHorizontalAnchorComboBox->addItem( tr( "Left" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Left ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Horizontal Center" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Center ) );
+  mHorizontalAnchorComboBox->addItem( tr( "Right" ), QVariant::fromValue( Qgis::HorizontalAnchorPoint::Right ) );
+
+  mVerticalAnchorComboBox->addItem( tr( "Top" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Top ) );
+  mVerticalAnchorComboBox->addItem( tr( "Vertical Center" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Center ) );
+  mVerticalAnchorComboBox->addItem( tr( "Bottom" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Bottom ) );
+
   connect( mShapeListWidget, &QListWidget::itemSelectionChanged, this, &QgsEllipseSymbolLayerWidget::mShapeListWidget_itemSelectionChanged );
   connect( mWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::mWidthSpinBox_valueChanged );
   connect( mHeightSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::mHeightSpinBox_valueChanged );
@@ -134,8 +143,8 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   const QPointF offsetPt = mLayer->offset();
   spinOffsetX->setValue( offsetPt.x() );
   spinOffsetY->setValue( offsetPt.y() );
-  mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
-  mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  mHorizontalAnchorComboBox->setCurrentIndex( mHorizontalAnchorComboBox->findData( QVariant::fromValue( mLayer->horizontalAnchorPoint() ) ) );
+  mVerticalAnchorComboBox->setCurrentIndex( mVerticalAnchorComboBox->findData( QVariant::fromValue( mLayer->verticalAnchorPoint() ) ) );
   cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
   cboCapStyle->setPenCapStyle( mLayer->penCapStyle() );
   blockComboSignals( false );
@@ -306,20 +315,20 @@ void QgsEllipseSymbolLayerWidget::blockComboSignals( bool block )
   cboCapStyle->blockSignals( block );
 }
 
-void QgsEllipseSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )
+void QgsEllipseSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setHorizontalAnchorPoint( ( QgsMarkerSymbolLayer::HorizontalAnchorPoint ) index );
+    mLayer->setHorizontalAnchorPoint( mHorizontalAnchorComboBox->currentData().value< Qgis::HorizontalAnchorPoint >() );
     emit changed();
   }
 }
 
-void QgsEllipseSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int index )
+void QgsEllipseSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int )
 {
   if ( mLayer )
   {
-    mLayer->setVerticalAnchorPoint( ( QgsMarkerSymbolLayer::VerticalAnchorPoint ) index );
+    mLayer->setVerticalAnchorPoint( mVerticalAnchorComboBox->currentData().value< Qgis::VerticalAnchorPoint >() );
     emit changed();
   }
 }

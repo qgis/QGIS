@@ -132,13 +132,13 @@ QList<QgsCurve *> QgsPolygonsToLinesAlgorithm::extractRings( const QgsAbstractGe
 {
   QList<QgsCurve *> rings;
 
-  if ( QgsGeometryCollection *collection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
+  if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom ) )
   {
-    QgsGeometryPartIterator parts = collection->parts();
+    QgsGeometryConstPartIterator parts = collection->parts();
     while ( parts.hasNext() )
       rings.append( extractRings( parts.next() ) );
   }
-  else if ( QgsCurvePolygon *polygon = qgsgeometry_cast<QgsCurvePolygon *>( geom ) )
+  else if ( const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
   {
     if ( auto exteriorRing = polygon->exteriorRing() )
       rings.append( exteriorRing->clone() );

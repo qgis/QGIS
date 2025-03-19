@@ -23,6 +23,7 @@
 #include "qgsdatabaseschemaitem.h"
 #include "qgsdatacollectionitem.h"
 #include "qgslayeritem.h"
+#include "qgsdatasourceuri.h"
 
 class QgsHanaRootItem;
 class QgsHanaConnectionItem;
@@ -52,8 +53,7 @@ class QgsHanaConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
-    using QgsDataCollectionItem::handleDrop;
-    bool handleDrop( const QMimeData *data, const QString &toSchema );
+    QgsDataSourceUri connectionUri() const;
 
   private:
     void updateToolTip( const QString &userName, const QString &dbmsVersion );

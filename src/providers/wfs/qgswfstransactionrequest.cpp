@@ -24,7 +24,7 @@ QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QgsWFSDataSourceURI &u
 
 bool QgsWFSTransactionRequest::send( const QDomDocument &doc, QDomDocument &serverResponse )
 {
-  const QUrl url( mUri.requestUrl( QStringLiteral( "Transaction" ), QgsWFSDataSourceURI::Method::Post ) );
+  const QUrl url( mUri.requestUrl( QStringLiteral( "Transaction" ), Qgis::HttpMethod::Post ) );
 
   QgsDebugMsgLevel( doc.toString(), 4 );
 

@@ -759,21 +759,6 @@ Abstract base class for marker symbol layers.
 %End
   public:
 
-    enum HorizontalAnchorPoint /BaseType=IntEnum/
-    {
-      Left,
-      HCenter,
-      Right,
-    };
-
-    enum VerticalAnchorPoint /BaseType=IntEnum/
-    {
-      Top,
-      VCenter,
-      Bottom,
-      Baseline,
-    };
-
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
@@ -986,7 +971,7 @@ Returns the map unit scale for the symbol's offset.
 .. seealso:: :py:func:`offsetUnit`
 %End
 
-    void setHorizontalAnchorPoint( HorizontalAnchorPoint h );
+    void setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint h );
 %Docstring
 Sets the horizontal anchor point for positioning the symbol.
 
@@ -998,7 +983,7 @@ Sets the horizontal anchor point for positioning the symbol.
 .. seealso:: :py:func:`setVerticalAnchorPoint`
 %End
 
-    HorizontalAnchorPoint horizontalAnchorPoint() const;
+    Qgis::HorizontalAnchorPoint horizontalAnchorPoint() const;
 %Docstring
 Returns the horizontal anchor point for positioning the symbol. The symbol will be drawn so that
 the horizontal anchor point is aligned with the marker's desired location.
@@ -1008,7 +993,7 @@ the horizontal anchor point is aligned with the marker's desired location.
 .. seealso:: :py:func:`verticalAnchorPoint`
 %End
 
-    void setVerticalAnchorPoint( VerticalAnchorPoint v );
+    void setVerticalAnchorPoint( Qgis::VerticalAnchorPoint v );
 %Docstring
 Sets the vertical anchor point for positioning the symbol.
 
@@ -1020,7 +1005,7 @@ Sets the vertical anchor point for positioning the symbol.
 .. seealso:: :py:func:`setHorizontalAnchorPoint`
 %End
 
-    VerticalAnchorPoint verticalAnchorPoint() const;
+    Qgis::VerticalAnchorPoint verticalAnchorPoint() const;
 %Docstring
 Returns the vertical anchor point for positioning the symbol. The symbol will be drawn so that
 the vertical anchor point is aligned with the marker's desired location.

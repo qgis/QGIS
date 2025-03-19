@@ -128,6 +128,8 @@ class GUI_EXPORT QgsAggregateMappingModel : public QAbstractTableModel
 
   private:
     bool moveUpOrDown( const QModelIndex &index, bool up = true );
+    static QString qgsFieldToTypeName( const QgsField &field );
+    static void setFieldTypeFromName( QgsField &field, const QString &name );
 
     QList<Aggregate> mMapping;
     QgsFields mSourceFields;

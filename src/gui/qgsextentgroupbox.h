@@ -23,8 +23,6 @@
 #include "qgsrectangle.h"
 #include "qgis_gui.h"
 
-#include <memory>
-
 class QgsCoordinateReferenceSystem;
 class QgsMapLayer;
 class QgsExtentWidget;
@@ -200,6 +198,12 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
      * Emitted when the widget's extent is changed.
      */
     void extentChanged( const QgsRectangle &r );
+
+    /**
+     * Emitted when the extent layer is changed.
+     * \since QGIS 3.44
+     */
+    void extentLayerChanged( QgsMapLayer *layer );
 
   private slots:
 

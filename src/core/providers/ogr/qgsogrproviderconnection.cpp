@@ -315,6 +315,7 @@ void QgsOgrProviderConnection::createVectorTable( const QString &schema,
   opts[ QStringLiteral( "driverName" ) ] = QString( GDALGetDriverShortName( hDriver ) );
   QMap<int, int> map;
   QString errCause;
+  QString createdLayerName;
   Qgis::VectorExportResult errCode = QgsOgrProvider::createEmptyLayer(
                                        uri(),
                                        fields,
@@ -322,13 +323,29 @@ void QgsOgrProviderConnection::createVectorTable( const QString &schema,
                                        srs,
                                        overwrite,
                                        &map,
+                                       createdLayerName,
                                        &errCause,
                                        &opts
                                      );
+  // TODO we need some way to hand createdLayerName back to caller, as it may differ from the requested name...
   if ( errCode != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
+}
+
+QString QgsOgrProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const
+{
+  if ( !options.schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  // OGR provider uses "layerName" from options rather then the table name from the URI
+  providerOptions.clear();
+  providerOptions.insert( QStringLiteral( "layerName" ), options.layerName );
+
+  return uri();
 }
 
 void QgsOgrProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
@@ -1315,6 +1332,11 @@ void QgsOgrProviderConnection::deleteRelationship( const QgsWeakRelation &relati
   Q_UNUSED( relationship )
   throw QgsProviderConnectionException( QObject::tr( "Deleting relationships for datasets requires GDAL 3.6 or later" ) );
 #endif
+}
+
+Qgis::DatabaseProviderTableImportCapabilities QgsOgrProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapabilities();
 }
 
 ///@endcond

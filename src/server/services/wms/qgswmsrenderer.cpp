@@ -1044,12 +1044,17 @@ namespace QgsWms
     return true;
   }
 
-  QImage *QgsRenderer::getMap()
+  std::unique_ptr<QImage> QgsRenderer::getMap()
   {
     // check size
     if ( !mContext.isValidWidthHeight() )
     {
       throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, QStringLiteral( "The requested map size is too large" ) );
+    }
+
+    if ( mContext.socketFeedback() && mContext.socketFeedback()->isCanceled() )
+    {
+      return nullptr;
     }
 
     // init layer restorer before doing anything
@@ -1074,7 +1079,7 @@ namespace QgsWms
     mapSettings.setLayers( layers );
 
     // rendering step for layers
-    QPainter *renderedPainter = layersRendering( mapSettings, *image );
+    QPainter *renderedPainter = layersRendering( mapSettings, image.get() );
     if ( !renderedPainter ) // job has been canceled
     {
       return nullptr;
@@ -1094,7 +1099,11 @@ namespace QgsWms
       image.reset( scaledImage );
 
     // return
-    return image.release();
+    if ( mContext.socketFeedback() && mContext.socketFeedback()->isCanceled() )
+    {
+      return nullptr;
+    }
+    return image;
   }
 
   std::unique_ptr<QgsDxfExport> QgsRenderer::getDxf()
@@ -3452,7 +3461,7 @@ namespace QgsWms
     mTemporaryLayers.clear();
   }
 
-  QPainter *QgsRenderer::layersRendering( const QgsMapSettings &mapSettings, QImage &image ) const
+  QPainter *QgsRenderer::layersRendering( const QgsMapSettings &mapSettings, QImage *image ) const
   {
     QPainter *painter = nullptr;
 
@@ -3464,7 +3473,7 @@ namespace QgsWms
 #endif
     QgsMapRendererJobProxy renderJob( mContext.settings().parallelRendering(), mContext.settings().maxThreads(), &filters );
 
-    renderJob.render( mapSettings, &image, mContext.socketFeedback() );
+    renderJob.render( mapSettings, image, mContext.socketFeedback() );
     painter = renderJob.takePainter();
 
     if ( !renderJob.errors().isEmpty() )

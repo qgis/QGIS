@@ -24,7 +24,7 @@
 #include "qgsoapifprovider.h"
 #include "qgswfsconstants.h"
 #include "qgswfsconnection.h"
-#include "qgswfscapabilities.h"
+#include "qgswfsgetcapabilities.h"
 #include "qgswfsdataitems.h"
 #include "moc_qgswfsdataitems.cpp"
 #include "qgswfsdatasourceuri.h"
@@ -114,7 +114,7 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
   }
   else
   {
-    QgsWfsCapabilities capabilities( mUri );
+    QgsWfsGetCapabilitiesRequest capabilities( mUri );
     if ( version == QgsWFSConstants::VERSION_AUTO )
     {
       capabilities.setLogErrors( false ); // as this might be a OAPIF server
@@ -122,7 +122,7 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
     capabilities.requestCapabilities( synchronous, forceRefresh );
 
     QVector<QgsDataItem *> layers;
-    if ( capabilities.errorCode() == QgsWfsCapabilities::NoError )
+    if ( capabilities.errorCode() == QgsWfsGetCapabilitiesRequest::NoError )
     {
       const QString projectCrs = QgsProject::instance()->crs().authid();
       const auto featureTypes = capabilities.capabilities().featureTypes;

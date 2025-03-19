@@ -136,14 +136,14 @@ QByteArray QgsPointCloudLayerEditUtils::updateChunkValues( QgsCopcPointCloudInde
   lazperf::reader::chunk_decompressor decompressor( header.pointFormat(), header.ebCount(), chunkData.constData() );
   lazperf::writer::chunk_compressor compressor( header.pointFormat(), header.ebCount() );
 
-  std::unique_ptr<char []> decodedData( new char[ header.point_record_length ] );
+  std::unique_ptr<char[]> decodedData( new char[header.point_record_length] );
 
   // only PDRF 6/7/8 is allowed by COPC
   Q_ASSERT( header.pointFormat() == 6 || header.pointFormat() == 7 || header.pointFormat() == 8 );
 
   QString attributeName = attribute.name();
 
-  for ( int i = 0 ; i < pointCount; ++i )
+  for ( int i = 0; i < pointCount; ++i )
   {
     decompressor.decompress( decodedData.get() );
     char *buf = decodedData.get();

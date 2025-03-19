@@ -135,12 +135,12 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
       const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
       for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
       {
-        allPoints.addPartV2( qgsgeometry_cast< QgsPoint * >( *pit )->clone(), Qgis::WkbType::Point );
+        allPoints.addPartV2( qgsgeometry_cast< const QgsPoint * >( *pit )->clone(), Qgis::WkbType::Point );
       }
     }
     else
     {
-      allPoints.addPartV2( qgsgeometry_cast< QgsPoint * >( geom )->clone(), Qgis::WkbType::Point );
+      allPoints.addPartV2( qgsgeometry_cast< const QgsPoint * >( geom )->clone(), Qgis::WkbType::Point );
     }
 
     attributeCache.insert( f.id(), f.attributes() );
@@ -228,12 +228,12 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
       const QgsMultiPoint mp( *qgsgeometry_cast<const QgsMultiPoint *>( geom ) );
       for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
       {
-        points->addGeometry( qgsgeometry_cast<QgsPoint *>( *pit )->clone() );
+        points->addGeometry( qgsgeometry_cast<const QgsPoint *>( *pit )->clone() );
       }
     }
     else
     {
-      points->addGeometry( qgsgeometry_cast<QgsPoint *>( geom )->clone() );
+      points->addGeometry( qgsgeometry_cast<const QgsPoint *>( geom )->clone() );
     }
   }
 

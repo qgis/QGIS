@@ -30,6 +30,7 @@ QgsDataItemGuiContext QgsBrowserGuiModel::createDataItemContext() const
 {
   QgsDataItemGuiContext context;
   context.setMessageBar( mMessageBar );
+  context.setMapCanvas( mMapCanvas );
   return context;
 }
 
@@ -178,4 +179,9 @@ bool QgsBrowserGuiModel::setData( const QModelIndex &index, const QVariant &valu
 void QgsBrowserGuiModel::setMessageBar( QgsMessageBar *bar )
 {
   mMessageBar = bar;
+}
+
+void QgsBrowserGuiModel::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
 }

@@ -14,17 +14,14 @@
  ***************************************************************************/
 
 #include <Qt3DCore/QAspectEngine>
-#include <Qt3DCore/QEntity>
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DCore/QCoreAspect>
 #endif
-#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/QInputSettings>
 #include <Qt3DLogic/QLogicAspect>
-#include <Qt3DRender/QCamera>
 #include <Qt3DLogic/QFrameAction>
 
 #include "qgs3dmapcanvas.h"
@@ -255,10 +252,6 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
     mScene->cameraController()->setEnabled( true );
     setCursor( Qt::OpenHandCursor );
   }
-  else if ( !mMapTool && tool )
-  {
-    mScene->cameraController()->setEnabled( tool->allowsCameraControls() );
-  }
 
   if ( mMapTool )
     mMapTool->deactivate();
@@ -306,6 +299,9 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
       break;
     case QEvent::KeyPress:
       mMapTool->keyPressEvent( static_cast<QKeyEvent *>( event ) );
+      break;
+    case QEvent::Wheel:
+      mMapTool->mouseWheelEvent( static_cast<QWheelEvent *>( event ) );
       break;
     default:
       break;

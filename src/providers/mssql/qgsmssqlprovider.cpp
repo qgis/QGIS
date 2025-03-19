@@ -1251,14 +1251,16 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
 bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
 {
-  QString statement;
-
   if ( attributes.isEmpty() )
     return true;
 
   if ( mIsQuery )
     return false;
 
+  QString statement = QStringLiteral( "ALTER TABLE %1.%2 ADD " ).arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) );
+
+  QStringList attributeClauses;
+  attributeClauses.reserve( attributes.size() );
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
     QString type = it->typeName();
@@ -1273,15 +1275,9 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
         type = QStringLiteral( "%1(%2,%3)" ).arg( type ).arg( it->length() ).arg( it->precision() );
     }
 
-    if ( statement.isEmpty() )
-    {
-      statement = QStringLiteral( "ALTER TABLE [%1].[%2] ADD " ).arg( mSchemaName, mTableName );
-    }
-    else
-      statement += ',';
-
-    statement += QStringLiteral( "[%1] %2" ).arg( it->name(), type );
+    attributeClauses.append( QStringLiteral( "[%1] %2" ).arg( it->name(), type ) );
   }
+  statement += attributeClauses.join( QStringLiteral( ", " ) );
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
@@ -2026,10 +2022,8 @@ Qgis::WkbType QgsMssqlProvider::getWkbType( const QString &geometryType )
 }
 
 
-Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString *errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString &createdLayerUri, QString *errorMessage, const QMap<QString, QVariant> *options )
 {
-  Q_UNUSED( options )
-
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
 
@@ -2042,6 +2036,8 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
       *errorMessage = db->errorText();
     return Qgis::VectorExportResult::ErrorConnectionFailed;
   }
+
+  createdLayerUri = uri;
 
   const QString dbName = dsUri.database();
 
@@ -2352,11 +2348,11 @@ void QgsMssqlProviderMetadata::saveConnection( const QgsAbstractProviderConnecti
   saveConnectionProtected( conn, name );
 }
 
-Qgis::VectorExportResult QgsMssqlProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsMssqlProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri )
 {
   return QgsMssqlProvider::createEmptyLayer(
     uri, fields, wkbType, srs, overwrite,
-    &oldToNewAttrIdxMap, &errorMessage, options
+    &oldToNewAttrIdxMap, createdLayerUri, &errorMessage, options
   );
 }
 

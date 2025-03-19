@@ -401,10 +401,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
 
   // layer legend url
-  mLayerLegendUrlLineEdit->setText( mLayer->legendUrl() );
+  mLayerLegendUrlLineEdit->setText( mLayer->serverProperties()->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex(
     mLayerLegendUrlFormatComboBox->findText(
-      mLayer->legendUrlFormat()
+      mLayer->serverProperties()->legendUrlFormat()
     )
   );
 
@@ -890,13 +890,13 @@ void QgsVectorLayerProperties::apply()
   mLayer->serverProperties()->setMetadataUrls( metaUrls );
 
   // LegendURL
-  if ( mLayer->legendUrl() != mLayerLegendUrlLineEdit->text() )
+  if ( mLayer->serverProperties()->legendUrl() != mLayerLegendUrlLineEdit->text() )
     mMetadataFilled = false;
-  mLayer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+  mLayer->serverProperties()->setLegendUrl( mLayerLegendUrlLineEdit->text() );
 
-  if ( mLayer->legendUrlFormat() != mLayerLegendUrlFormatComboBox->currentText() )
+  if ( mLayer->serverProperties()->legendUrlFormat() != mLayerLegendUrlFormatComboBox->currentText() )
     mMetadataFilled = false;
-  mLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
+  mLayer->serverProperties()->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   //layer simplify drawing configuration
   Qgis::VectorRenderingSimplificationFlags simplifyHints = Qgis::VectorRenderingSimplificationFlag::NoSimplification;

@@ -84,23 +84,7 @@
     </widget>
    </item>
    <item row="13" column="1">
-    <widget class="QComboBox" name="mHorizontalAnchorComboBox">
-     <item>
-      <property name="text">
-       <string>Left</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>HCenter</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Right</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="QComboBox" name="mHorizontalAnchorComboBox"/>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="mSymbolHeightLabel">
@@ -201,23 +185,7 @@
     <widget class="QgsPenJoinStyleComboBox" name="cboJoinStyle"/>
    </item>
    <item row="12" column="1">
-    <widget class="QComboBox" name="mVerticalAnchorComboBox">
-     <item>
-      <property name="text">
-       <string>Top</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>VCenter</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Bottom</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="QComboBox" name="mVerticalAnchorComboBox"/>
    </item>
    <item row="9" column="0">
     <widget class="QLabel" name="label_9">

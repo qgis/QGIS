@@ -17,7 +17,6 @@
 
 #include "qgswfsconstants.h"
 #include "qgswfsdatasourceuri.h"
-#include "qgsmessagelog.h"
 
 #include <QUrlQuery>
 
@@ -242,18 +241,18 @@ QUrl QgsWFSDataSourceURI::baseURL( bool bIncludeServiceWFS ) const
   return url;
 }
 
-QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, const Method &method ) const
+QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, Qgis::HttpMethod method ) const
 {
   QUrl url;
   QUrlQuery urlQuery;
   switch ( method )
   {
-    case Post:
+    case Qgis::HttpMethod::Post:
       url = QUrl( mPostEndpoints.contains( request ) ? mPostEndpoints[request] : mURI.param( QgsWFSConstants::URI_PARAM_URL ) );
       urlQuery = QUrlQuery( url );
       break;
-    default:
-    case Get:
+
+    case Qgis::HttpMethod::Get:
     {
       const auto defaultUrl( QUrl( mURI.param( QgsWFSConstants::URI_PARAM_URL ) ) );
       if ( mGetEndpoints.contains( request ) )
@@ -288,9 +287,16 @@ QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, const Method &meth
       }
       break;
     }
+
+    case Qgis::HttpMethod::Head:
+    case Qgis::HttpMethod::Put:
+    case Qgis::HttpMethod::Delete:
+      // not supported, impossible to reach
+      break;
   }
+
   urlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
-  if ( method == Method::Get && !request.isEmpty() )
+  if ( method == Qgis::HttpMethod::Get && !request.isEmpty() )
     urlQuery.addQueryItem( QStringLiteral( "REQUEST" ), request );
   url.setQuery( urlQuery );
   return url;

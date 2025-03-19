@@ -19,7 +19,6 @@
 #define QGSWFSSOURCESELECT_H
 
 #include "ui_qgswfssourceselectbase.h"
-#include "qgshelp.h"
 #include "qgswfscapabilities.h"
 #include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifcollection.h"
@@ -31,7 +30,7 @@
 #include <QSortFilterProxyModel>
 
 class QgsProjectionSelectionDialog;
-class QgsWfsCapabilities;
+class QgsWfsGetCapabilitiesRequest;
 class QgsSubsetStringEditorInterface;
 
 class QgsWFSItemDelegate : public QItemDelegate
@@ -65,7 +64,7 @@ class QgsWFSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWF
      * stores the CRS for the typename in the form 'EPSG:XXXX'
     */
     QMap<QString, QStringList> mAvailableCRS;
-    std::unique_ptr<QgsWfsCapabilities> mCapabilities;
+    std::unique_ptr<QgsWfsGetCapabilitiesRequest> mCapabilities;
     std::unique_ptr<QgsOapifLandingPageRequest> mOAPIFLandingPage;
     std::unique_ptr<QgsOapifCollectionsRequest> mOAPIFCollections;
     QString mUri; // data source URI
@@ -73,7 +72,7 @@ class QgsWFSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWF
     QStandardItemModel *mModel = nullptr;
     QSortFilterProxyModel *mModelProxy = nullptr;
     QPushButton *mBuildQueryButton = nullptr;
-    QgsWfsCapabilities::Capabilities mCaps;
+    QgsWfsCapabilities mCaps;
     QModelIndex mSQLIndex;
     QgsSubsetStringEditorInterface *mSQLComposerDialog = nullptr;
     QString mVersion;

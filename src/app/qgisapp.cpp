@@ -1406,6 +1406,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), mBrowserModel, this );
   mBrowserWidget->setObjectName( QStringLiteral( "Browser" ) );
   mBrowserWidget->setMessageBar( mInfoBar );
+  mBrowserWidget->setMapCanvas( mMapCanvas );
 
   mTemporalControllerWidget = new QgsTemporalControllerDockWidget( tr( "Temporal Controller" ), this );
   mTemporalControllerWidget->setObjectName( QStringLiteral( "Temporal Controller" ) );
@@ -6107,7 +6108,7 @@ void QgisApp::newGpxLayer()
 
 void QgisApp::showRasterCalculator()
 {
-  QgsRasterCalcDialog d( qobject_cast<QgsRasterLayer *>( activeLayer() ), this );
+  QgsRasterCalcDialog d( qobject_cast<QgsRasterLayer *>( activeLayer() ), mMapCanvas, this );
   if ( d.exec() != QDialog::Accepted )
   {
     return;
@@ -6210,7 +6211,7 @@ void QgisApp::showMeshCalculator()
     QMessageBox::information( this, tr( "Mesh Calculator" ), tr( "Mesh calculator with mesh layer in edit mode is not supported." ) );
     return;
   }
-  QgsMeshCalculatorDialog d( meshLayer, this );
+  QgsMeshCalculatorDialog d( meshLayer, mMapCanvas, this );
   if ( d.exec() == QDialog::Accepted )
   {
     //invoke analysis library
@@ -6227,6 +6228,10 @@ void QgisApp::showMeshCalculator()
     switch ( res )
     {
       case QgsMeshCalculator::Success:
+        if ( d.addLayerToProject() )
+        {
+          addMeshLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QStringLiteral( "mdal" ) );
+        }
         visibleMessageBar()->pushMessage( tr( "Mesh calculator" ), tr( "Calculation complete." ), Qgis::MessageLevel::Success );
         break;
 
@@ -11366,7 +11371,10 @@ void QgisApp::layerSubsetString( QgsMapLayer *mapLayer )
     {
       QgsPointCloudQueryBuilder qb { pclayer };
       qb.setSubsetString( pclayer->subsetString() );
-      qb.exec();
+      if ( qb.exec() )
+      {
+        pclayer->setSubsetString( qb.subsetString() );
+      }
     }
     return;
   }
@@ -11762,6 +11770,12 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
 
     // always set duplicated layers to not visible so layer can be configured before being turned on
     nodeDupLayer->setItemVisibilityChecked( false );
+
+    // duplicate the layer tree layer's custom properties
+    for ( const QString &key : nodeSelectedLyr->customProperties() )
+    {
+      nodeDupLayer->setCustomProperty( key, nodeSelectedLyr->customProperty( key ) );
+    }
 
     // duplicate the layer style
     QString errMsg;
@@ -13206,7 +13220,6 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name )
 
     const QgsReferencedRectangle projectExtent = prj->viewSettings()->fullExtent();
     const QgsRectangle fullExtent = Qgs3DUtils::tryReprojectExtent2D( projectExtent, projectExtent.crs(), map->crs(), prj->transformContext() );
-    map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
     map->setLayers( mMapCanvas->layers( true ) );

@@ -266,9 +266,9 @@ void TestQgsFontMarkerSymbol::fontMarkerSymbolVerticalAnchor()
   mMapSettings.setExtent( mpPointsLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "fontmarker", "fontmarker", mMapSettings, 30 );
-  mFontMarkerLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::Bottom );
+  mFontMarkerLayer->setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Bottom );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "fontmarker_vertical_anchor_bottom", "fontmarker_vertical_anchor_bottom", mMapSettings, 30 );
-  mFontMarkerLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::Baseline );
+  mFontMarkerLayer->setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Baseline );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "fontmarker_vertical_anchor_baseline", "fontmarker_vertical_anchor_baseline", mMapSettings, 30 );
 }
 
