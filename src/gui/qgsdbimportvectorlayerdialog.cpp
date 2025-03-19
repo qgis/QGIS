@@ -114,7 +114,17 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
   sourceLayerComboChanged();
 }
 
-QgsDbImportVectorLayerDialog::~QgsDbImportVectorLayerDialog() = default;
+QgsDbImportVectorLayerDialog::~QgsDbImportVectorLayerDialog()
+{
+  // these widgets all potentially access mOwnedSource, so we need to force
+  // them to be deleted BEFORE the layer
+  delete mSourceLayerComboBox;
+  mSourceLayerComboBox = nullptr;
+  delete mFilterExpressionWidget;
+  mFilterExpressionWidget = nullptr;
+  delete mFieldsView;
+  mFieldsView = nullptr;
+}
 
 void QgsDbImportVectorLayerDialog::setDestinationSchema( const QString &schema )
 {
