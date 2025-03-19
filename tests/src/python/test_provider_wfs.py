@@ -47,6 +47,7 @@ from qgis.core import (
     QgsWkbTypes,
     QgsNetworkAccessManager,
     QgsNetworkRequestParameters,
+    QgsTestUtils,
 )
 from qgis.PyQt.QtCore import (
     QT_VERSION_STR,
@@ -60,7 +61,10 @@ from qgis.PyQt.QtCore import (
     QVariant,
     QUrl,
     QUrlQuery,
+    QByteArray,
 )
+from qgis.PyQt.QtNetwork import QNetworkAccessManager
+from qgis.PyQt.QtXml import QDomDocument
 
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -8777,7 +8781,7 @@ class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def _nam_advanced_request_preprocessor(cls, request: QNetworkRequest, op, content):
-        if op == QgsNetworkAccessManager.Operation.PostOperation:
+        if op == 4:
             # maps post data to response
             RESPONSES = {
                 b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:DescribeFeatureType xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:TypeName>my:typename</wfs:TypeName>\n</wfs:DescribeFeatureType>\n': b"""
@@ -9056,20 +9060,26 @@ class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
                     </wfs:FeatureCollection>""",
             }
 
-            if content.data() in RESPONSES:
-                endpoint = request.url().toString(QUrl.UrlFormattingOption.RemoveQuery)[
-                    len("http://") :
-                ]
-                local_path = (
-                    sanitize(endpoint, "?" + request.url().query()) + "post_data"
-                )
-                with open(local_path, "wb") as f:
-                    f.write(RESPONSES[content.data()])
-                op = QgsNetworkAccessManager.Operation.GetOperation
-                request.setUrl(QUrl.fromLocalFile(local_path))
-                return op, content
+            content_doc = QDomDocument()
+            content_doc.setContent(QByteArray(content))
 
-            print(f"\n\n\n\n\n\n\n\n{content}\n\n\n\n\n\n\n")
+            for test_content_data, response_data in RESPONSES.items():
+                compare_content = QDomDocument()
+                compare_content.setContent(QByteArray(test_content_data))
+                if QgsTestUtils.compareDomElements(
+                    content_doc.documentElement(), compare_content.documentElement()
+                ):
+                    endpoint = request.url().toString(
+                        QUrl.UrlFormattingOption.RemoveQuery
+                    )[len("http://") :]
+                    local_path = (
+                        sanitize(endpoint, "?" + request.url().query()) + "post_data"
+                    )
+                    with open(local_path, "wb") as f:
+                        f.write(response_data)
+                    op = 2
+                    request.setUrl(QUrl.fromLocalFile(local_path))
+                    return op, content
 
             assert False
 
