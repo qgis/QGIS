@@ -48,6 +48,13 @@ void QgsMssqlGeomColumnTypeThread::run()
 {
   mStopped = false;
 
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( mService, mHost, mDatabase, mUsername, mPassword );
+  if ( !db->isValid() )
+  {
+    QgsDebugError( db->errorText() );
+    return;
+  }
+
   for ( QList<QgsMssqlLayerProperty>::iterator it = layerProperties.begin(),
                                                end = layerProperties.end();
         it != end; ++it )
@@ -86,13 +93,6 @@ void QgsMssqlGeomColumnTypeThread::run()
       }
 
       // issue the sql query
-      std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( mService, mHost, mDatabase, mUsername, mPassword );
-      if ( !db->isValid() )
-      {
-        QgsDebugError( db->errorText() );
-        continue;
-      }
-
       QSqlQuery q = QSqlQuery( db->db() );
       q.setForwardOnly( true );
       if ( !q.exec( query ) )
