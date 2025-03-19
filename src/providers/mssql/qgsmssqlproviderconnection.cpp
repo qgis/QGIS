@@ -542,42 +542,31 @@ QgsFields QgsMssqlProviderConnection::fields( const QString &schema, const QStri
 QStringList QgsMssqlProviderConnection::schemas() const
 {
   checkCapability( Capability::Schemas );
-  QStringList schemas;
 
-  const QgsDataSourceUri connUri( uri() );
+  QString errorMessage;
+  const QStringList allSchemas = QgsMssqlConnection::schemas( uri(), &errorMessage );
+  if ( !errorMessage.isEmpty() )
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving schemas: %1" ).arg( errorMessage ) );
 
-  const QString sql {
-    QStringLiteral(
-      R"raw(
-    SELECT s.name AS schema_name,
-        s.schema_id,
-        u.name AS schema_owner
-    FROM sys.schemas s
-        INNER JOIN sys.sysusers u
-            ON u.uid = s.principal_id
-     WHERE u.issqluser = 1
-        AND u.name NOT IN ('sys', 'guest', 'INFORMATION_SCHEMA')
-    )raw"
-    )
-  };
-
-  const QList<QVariantList> result { executeSqlPrivate( sql, false ).rows() };
+  const QgsDataSourceUri connUri { uri() };
 
   QStringList excludedSchemaList;
   if ( connUri.hasParam( QStringLiteral( "excludedSchemas" ) ) )
     excludedSchemaList = QgsDataSourceUri( uri() ).param( QStringLiteral( "excludedSchemas" ) ).split( ',' );
-  for ( const auto &row : result )
+  QStringList schemas;
+  schemas.reserve( allSchemas.size() );
+  for ( const QString &schema : allSchemas )
   {
-    if ( row.size() > 0 )
-    {
-      const QString schema = row.at( 0 ).toString();
-      if ( !excludedSchemaList.contains( schema ) )
-        schemas.push_back( schema );
-    }
+    if ( QgsMssqlConnection::isSystemSchema( schema ) )
+      continue;
+
+    if ( excludedSchemaList.contains( schema ) )
+      continue;
+
+    schemas.push_back( schema );
   }
   return schemas;
 }
-
 
 void QgsMssqlProviderConnection::store( const QString &name ) const
 {
