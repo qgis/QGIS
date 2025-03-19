@@ -3079,6 +3079,25 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toGeographicCrs() con
     if ( !geoCrs )
       return QgsCoordinateReferenceSystem();
 
+    const PJ_TYPE pjType = proj_get_type( geoCrs.get( ) );
+    if ( pjType == PJ_TYPE_GEOCENTRIC_CRS )
+    {
+      // special case: while a geocentric crs IS a geodetic CRS, this particular QGIS method advertises
+      // that it will always return a geographic latitude/longitude based CRS. So we build a geographic
+      // CRS using the same datum as the original CRS
+      QgsProjUtils::proj_pj_unique_ptr cs( proj_create_ellipsoidal_2D_cs(
+                                             pjContext, PJ_ELLPS2D_LONGITUDE_LATITUDE, "Degree", 1.0 ) );
+      QgsProjUtils::proj_pj_unique_ptr datum( proj_crs_get_datum( pjContext, geoCrs.get() ) );
+      QgsProjUtils::proj_pj_unique_ptr datumEnsemble( proj_crs_get_datum_ensemble( pjContext, geoCrs.get() ) );
+      QgsProjUtils::proj_pj_unique_ptr geoGraphicCrs( proj_create_geographic_crs_from_datum(
+            pjContext, nullptr, datum ? datum.get() : datumEnsemble.get(),
+            cs.get()
+          ) );
+      if ( !geoGraphicCrs )
+        return QgsCoordinateReferenceSystem();
+      return QgsCoordinateReferenceSystem::fromProjObject( geoGraphicCrs.get() );
+    }
+
     if ( !testIsGeographic( geoCrs.get() ) )
       return QgsCoordinateReferenceSystem();
 
