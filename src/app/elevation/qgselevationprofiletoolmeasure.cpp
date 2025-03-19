@@ -151,9 +151,7 @@ QgsElevationProfileToolMeasure::QgsElevationProfileToolMeasure( QgsElevationProf
     mDialog->show();
   } );
   connect( mDialog, &QgsProfileMeasureResultsDialog::closed, this, [=] {
-    mMeasureInProgress = false;
-    mRubberBand->hide();
-    emit cleared();
+    clear();
   } );
 }
 
@@ -231,9 +229,7 @@ void QgsElevationProfileToolMeasure::plotReleaseEvent( QgsPlotMouseEvent *event 
   if ( event->button() == Qt::RightButton && mRubberBand->isVisible() )
   {
     event->ignore();
-    mMeasureInProgress = false;
-    mRubberBand->hide();
-    emit cleared();
+    clear();
   }
   else if ( event->button() != Qt::LeftButton )
   {
@@ -256,4 +252,11 @@ void QgsElevationProfileToolMeasure::updateRubberBand()
   const QgsPointXY p2 = mElevationCanvas->plotPointToCanvasPoint( QgsProfilePoint( distance2, elevation2 ) );
 
   mRubberBand->setLine( QLineF( p1.x(), p1.y(), p2.x(), p2.y() ) );
+}
+
+void QgsElevationProfileToolMeasure::clear()
+{
+  mMeasureInProgress = false;
+  mRubberBand->hide();
+  emit cleared();
 }
