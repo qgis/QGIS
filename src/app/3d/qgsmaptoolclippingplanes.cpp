@@ -21,12 +21,14 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgspolygon.h"
+#include "qgs3dmapcanvaswidget.h"
+#include "qgs3dmapscene.h"
 
 #include <QVector4D>
 
 
-QgsMapToolClippingPlanes::QgsMapToolClippingPlanes( QgsMapCanvas *canvas, const QgsVector3D &sceneOrigin )
-  : QgsMapTool( canvas ), mSceneOrigin( sceneOrigin )
+QgsMapToolClippingPlanes::QgsMapToolClippingPlanes( QgsMapCanvas *canvas, Qgs3DMapCanvasWidget *mapCanvas )
+  : QgsMapTool( canvas ), m3DCanvas( mapCanvas )
 {
   mRubberBandPolygon.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
   mRubberBandLines.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Line ) );
@@ -45,6 +47,7 @@ void QgsMapToolClippingPlanes::activate()
   QgsMapTool::activate();
   mRubberBandPoints->show();
   mRubberBandLines->show();
+  mRubberBandPolygon->show();
 }
 
 void QgsMapToolClippingPlanes::keyReleaseEvent( QKeyEvent *e )
@@ -52,26 +55,8 @@ void QgsMapToolClippingPlanes::keyReleaseEvent( QKeyEvent *e )
   if ( e->key() == Qt::Key_Escape )
   {
     clearRubberBand();
+    mRubberBandPolygon->reset( Qgis::GeometryType::Polygon );
   }
-
-  if ( e->key() == Qt::Key_Delete || e->key() == Qt::Key_Backspace )
-  {
-    if ( mRubberBandPoints->numberOfVertices() == 0 )
-    {
-      return;
-    }
-
-    if ( mRubberBandPoints->numberOfVertices() == 1 )
-    {
-      clearRubberBand();
-    }
-    else
-    {
-      mRubberBandPoints->removeLastPoint();
-      mRubberBandPolygon->reset( Qgis::GeometryType::Polygon );
-    }
-  }
-  //TODO: somehow consume the event so we don't get the annoying info message about not having vector layer
 }
 
 void QgsMapToolClippingPlanes::deactivate()
@@ -111,6 +96,10 @@ void QgsMapToolClippingPlanes::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolClippingPlanes::canvasPressEvent( QgsMapMouseEvent * )
 {
+  if ( mRubberBandPoints->numberOfVertices() == 0 )
+  {
+    mRubberBandPolygon->reset( Qgis::GeometryType::Polygon );
+  }
   mClicked = true;
 }
 
@@ -122,31 +111,33 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
     if ( mRubberBandPoints->numberOfVertices() == 2 )
     {
       const QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes(
-        *mRubberBandPoints->getPoint( 0, 0 ),
-        *mRubberBandPoints->getPoint( 0, 1 ),
+        QgsVector3D( mRubberBandPoints->getPoint( 0, 0 )->x(), mRubberBandPoints->getPoint( 0, 0 )->y(), 0 ),
+        QgsVector3D( mRubberBandPoints->getPoint( 0, 1 )->x(), mRubberBandPoints->getPoint( 0, 1 )->y(), 0 ),
         mRectangleWidth,
-        mSceneOrigin
+        m3DCanvas->mapCanvas3D()->mapSettings()->origin()
       );
+      m3DCanvas->mapCanvas3D()->scene()->enableClipping( clippingPlanes );
       emit clippingPlanesChanged( clippingPlanes );
+      const QgsSettings settings;
+      QColor highlightColor = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+      highlightColor.setAlphaF( 0.5 );
+      mRubberBandPolygon->setColor( highlightColor );
     }
     else
     {
       if ( mRubberBandPoints->numberOfVertices() == 0 )
       {
-        mRubberBandPoints->addPoint( point );
         mRubberBandLines->addPoint( point );
         mRubberBandLines->addPoint( point );
       }
-      else
-      {
-        mRubberBandPoints->addPoint( point );
-      }
+      mRubberBandPoints->addPoint( point );
     }
     mClicked = false;
   }
   else if ( e->button() == Qt::RightButton )
   {
     clearRubberBand();
+    mRubberBandPolygon->reset( Qgis::GeometryType::Polygon );
   }
 }
 
@@ -154,5 +145,9 @@ void QgsMapToolClippingPlanes::clearRubberBand() const
 {
   mRubberBandLines->reset( Qgis::GeometryType::Line );
   mRubberBandPoints->reset( Qgis::GeometryType::Point );
+}
+
+void QgsMapToolClippingPlanes::clearHighLightedArea() const
+{
   mRubberBandPolygon->reset( Qgis::GeometryType::Polygon );
 }

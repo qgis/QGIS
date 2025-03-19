@@ -117,7 +117,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setSceneExtentOn2DCanvas();
     void setSceneExtent( const QgsRectangle &extent );
     void setClippingPlanesOn2DCanvas();
-    void setClippingPlanes( const QList<QVector4D> &planes );
+    void setViewOnClippingPlanesChanged( const QList<QVector4D> &planes );
     void disableClippingPlanes() const;
 
     void onMainCanvasLayersChanged();

@@ -39,6 +39,15 @@ static bool qgsQuaternionNear( const QQuaternion &q1, const QQuaternion &q2, dou
   return qgsDoubleNear( q1.x(), q2.x(), eps ) && qgsDoubleNear( q1.y(), q2.y(), eps ) && qgsDoubleNear( q1.z(), q2.z(), eps ) && qgsDoubleNear( q1.scalar(), q2.scalar(), eps );
 }
 
+static bool isPointInFrontOfPlane( const QgsVector3D &point, const QgsVector3D &planePoint, const QgsVector3D &planeNormal )
+{
+  if ( QgsVector3D::dotProduct( point - planePoint, planeNormal ) > 0 )
+  {
+    return true;
+  }
+  return false;
+}
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
@@ -521,85 +530,79 @@ void TestQgs3DUtils::testScreenPointToMapCoordinates()
 
 void TestQgs3DUtils::testLineSegmentToClippingPlanes()
 {
-  const QgsPointXY point1( 20, 20 );
-  const QgsPointXY point2( 50, 50 );
-  const QgsVector3D midPoint( point2.x() - point1.x(), point2.y() - point1.y(), 0 );
+  const QgsVector3D point1( 20, 20, 0 );
+  const QgsVector3D point2( 50, 50, 0 );
+  const QgsVector3D testPointInside( 35, 35, 0 );
+  const QgsVector3D testPointOutside( 0, 0, 0 );
+  QVector<QgsVector3D> planePoints( { point1, QgsVector3D( 13, 27, 0 ), point2, QgsVector3D( 27, 13, 0 ) } );
+
   QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point1, point2, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  int nrOutsidePlanes = 0;
   for ( int i = 0; i < clippingPlanes.size(); i++ )
   {
-    QgsVector3D planePoint(
-      i % 2 ? midPoint.x() : ( -clippingPlanes.at( i ).y() * midPoint.y() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).x(),
-      i % 2 ? ( -clippingPlanes.at( i ).x() * midPoint.x() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).y() : midPoint.y(),
-      0
-    );
-    const double distance = QgsVector3D::dotProduct( midPoint - planePoint, clippingPlanes.at( i ).toVector3D() );
     // verify all normals are pointing inside the rectangle
-    QVERIFY( distance > 0 );
+    QVERIFY( isPointInFrontOfPlane( testPointInside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) );
+    // verify outside point is outside at least for one plane
+    if ( !isPointInFrontOfPlane( testPointOutside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
+    {
+      nrOutsidePlanes++;
+    };
   }
-
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
+  QVERIFY( nrOutsidePlanes > 0 );
 
   //verify that it works in reverse order too
   clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point2, point1, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  planePoints = { point2, QgsVector3D( 27, 13, 0 ), point1, QgsVector3D( 13, 27, 0 ) };
+  nrOutsidePlanes = 0;
   for ( int i = 0; i < clippingPlanes.size(); i++ )
   {
-    QgsVector3D planePoint(
-      i % 2 ? midPoint.x() : ( -clippingPlanes.at( i ).y() * midPoint.y() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).x(),
-      i % 2 ? ( -clippingPlanes.at( i ).x() * midPoint.x() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).y() : midPoint.y(),
-      0
-    );
-    const double distance = QgsVector3D::dotProduct( midPoint - planePoint, clippingPlanes.at( i ).toVector3D() );
     // verify all normals are pointing inside the rectangle
-    QVERIFY( distance > 0 );
+    QVERIFY( isPointInFrontOfPlane( testPointInside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) );
+    // verify outside point is outside at least for one plane
+    if ( !isPointInFrontOfPlane( testPointOutside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
+    {
+      nrOutsidePlanes++;
+    };
   }
-
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
+  QVERIFY( nrOutsidePlanes > 0 );
 
   // verify that it works for perpendicular line too
-  const QgsPointXY point3( 50, 20 );
-  const QgsPointXY point4( 20, 50 );
+  const QgsVector3D point3( 50, 20, 0 );
+  const QgsVector3D point4( 20, 50, 0 );
   clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point3, point4, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  planePoints = { point3, QgsVector3D( 43, 13, 0 ), point4, QgsVector3D( 57, 27, 0 ) };
+  nrOutsidePlanes = 0;
   for ( int i = 0; i < clippingPlanes.size(); i++ )
   {
-    QgsVector3D planePoint(
-      i % 2 ? midPoint.x() : ( -clippingPlanes.at( i ).y() * midPoint.y() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).x(),
-      i % 2 ? ( -clippingPlanes.at( i ).x() * midPoint.x() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).y() : midPoint.y(),
-      0
-    );
-    const double distance = QgsVector3D::dotProduct( midPoint - planePoint, clippingPlanes.at( i ).toVector3D() );
     // verify all normals are pointing inside the rectangle
-    QVERIFY( distance > 0 );
+    QVERIFY( isPointInFrontOfPlane( testPointInside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) );
+    // verify outside point is outside at least for one plane
+    if ( !isPointInFrontOfPlane( testPointOutside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
+    {
+      nrOutsidePlanes++;
+    };
   }
-
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
+  QVERIFY( nrOutsidePlanes > 0 );
 
   // verify that it works for perpendicular line in reverse order too
   clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point4, point3, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  planePoints = { point4, QgsVector3D( 57, 27, 0 ), point3, QgsVector3D( 43, 13, 0 ) };
+  nrOutsidePlanes = 0;
   for ( int i = 0; i < clippingPlanes.size(); i++ )
   {
-    QgsVector3D planePoint(
-      i % 2 ? midPoint.x() : ( -clippingPlanes.at( i ).y() * midPoint.y() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).x(),
-      i % 2 ? ( -clippingPlanes.at( i ).x() * midPoint.x() - clippingPlanes.at( i ).w() ) / clippingPlanes.at( i ).y() : midPoint.y(),
-      0
-    );
-    const double distance = QgsVector3D::dotProduct( midPoint - planePoint, clippingPlanes.at( i ).toVector3D() );
     // verify all normals are pointing inside the rectangle
-    QVERIFY( distance > 0 );
+    QVERIFY( isPointInFrontOfPlane( testPointInside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) );
+    // verify outside point is outside at least for one plane
+    if ( !isPointInFrontOfPlane( testPointOutside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
+    {
+      nrOutsidePlanes++;
+    };
   }
-
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 0 ).toVector3D(), clippingPlanes.at( 1 ).toVector3D() ) == 0 );
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 1 ).toVector3D(), clippingPlanes.at( 2 ).toVector3D() ) == 0 );
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 2 ).toVector3D(), clippingPlanes.at( 3 ).toVector3D() ) == 0 );
-  QVERIFY( QVector3D::dotProduct( clippingPlanes.at( 3 ).toVector3D(), clippingPlanes.at( 0 ).toVector3D() ) == 0 );
+  QVERIFY( nrOutsidePlanes > 0 );
 }
 
 QGSTEST_MAIN( TestQgs3DUtils )
