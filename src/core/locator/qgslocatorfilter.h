@@ -25,6 +25,7 @@
 #include "qgis_core.h"
 #include "qgslocatorcontext.h"
 #include "qgslogger.h"
+#include "qgssettingstree.h"
 
 class QgsFeedback;
 class QgsLocatorFilter;
@@ -36,6 +37,15 @@ class QgsLocatorFilter;
  */
 class CORE_EXPORT QgsLocatorResult
 {
+    Q_GADGET
+
+    Q_PROPERTY( QVariant userData READ userData WRITE setUserData )
+    Q_PROPERTY( QString displayString MEMBER displayString )
+    Q_PROPERTY( QString description MEMBER description )
+    Q_PROPERTY( double score MEMBER score )
+    Q_PROPERTY( QString group MEMBER group )
+    Q_PROPERTY( double groupScore MEMBER groupScore )
+
   public:
 
     QgsLocatorResult() = default;
@@ -169,6 +179,9 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
 
   public:
 
+#ifndef SIP_RUN
+    static inline QgsSettingsTreeNamedListNode *sTreeAppLocatorFilters = QgsSettingsTree::sTreeApp->createNamedListNode( QStringLiteral( "locator-filters" ) );
+#endif
     //! Filter priority. Controls the order of results in the locator.
     enum Priority
     {
