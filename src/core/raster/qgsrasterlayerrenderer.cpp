@@ -163,11 +163,34 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
   // clip raster extent to view extent
   QgsRectangle visibleExtentOfRasterInMapCrs = layer->ignoreExtents() ? viewExtentInMapCrs : viewExtentInMapCrs.intersect( layerExtentInMapCrs );
-  if ( visibleExtentOfRasterInMapCrs.isEmpty() )
+  if ( visibleExtentOfRasterInMapCrs.isEmpty() && !rendererContext.coordinateTransform().isShortCircuited() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "draw request outside view extent." ), 2 );
-    // nothing to do
-    return;
+    // fallback logic, try the inverse operation
+    // eg if we are trying to view a global layer in a small area local projection, then the transform of the
+    // map extent to the layer's local projection probably failed.
+    // So we'll try the opposite logic here, and see if we can first calculate the visible region in the
+    // layers extent, and then transform that small region back to the map's crs
+    try
+    {
+      QgsCoordinateTransform layerToMapTransform = rendererContext.coordinateTransform();
+      layerToMapTransform.setBallparkTransformsAreAppropriate( true );
+      const QgsRectangle viewExtentInLayerCrs = layerToMapTransform.transformBoundingBox( rendererContext.mapExtent(), Qgis::TransformDirection::Reverse );
+
+      const QgsRectangle visibleExtentInLayerCrs = layer->ignoreExtents() ? viewExtentInLayerCrs : viewExtentInLayerCrs.intersect( layer->extent() );
+      if ( visibleExtentInLayerCrs.isEmpty() )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "draw request outside view extent." ), 2 );
+        // nothing to do
+        return;
+      }
+
+      visibleExtentOfRasterInMapCrs = layerToMapTransform.transformBoundingBox( visibleExtentInLayerCrs );
+    }
+    catch ( QgsCsException &cs )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Could not reproject layer extent: %1" ).arg( cs.what() ), QObject::tr( "Raster" ) );
+      return;
+    }
   }
 
   QgsDebugMsgLevel( "map extent in layer crs is " + rendererContext.extent().toString(), 4 );
