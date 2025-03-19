@@ -75,7 +75,7 @@ class BatchOutputSelectionPanel(QWidget):
         self.pushButton.setText("…")
 
         self.actionTemporaryOutput = QAction(
-            "Create temporary layer",
+            "Create Temporary Layer",
             self,
         )
         self.actionTemporaryOutput.setCheckable(True)
@@ -85,7 +85,7 @@ class BatchOutputSelectionPanel(QWidget):
             self.pushButton.clicked.connect(self.showSelectionDialog)
         else:
             self.menu = QMenu(self.pushButton)
-            self.menu.addAction("Select file/folder…", self.showSelectionDialog)
+            self.menu.addAction("Select File/Folder…", self.showSelectionDialog)
             self.menu.addAction(self.actionTemporaryOutput)
             self.pushButton.setMenu(self.menu)
 
@@ -94,7 +94,7 @@ class BatchOutputSelectionPanel(QWidget):
 
         self.actionTemporaryOutputIcon = QAction(
             QgsApplication.getThemeIcon("/mActionCreateMemory.svg"),
-            "Temporary Output",
+            self.tr( "Temporary Output" ),
             self,
         )
 
