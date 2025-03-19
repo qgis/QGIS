@@ -219,10 +219,10 @@ class BatchOutputSelectionPanel(QWidget):
     def getValue(self):
         return str(self.text.text())
 
-    def outputName(self):
+    def outputName(self) -> str:
         return self.text.text()
 
-    def isTemporaryOutput(self):
+    def isTemporaryOutput(self) -> bool:
         return self.actionTemporaryOutput.isChecked()
 
     def onTemporaryOutputChanged(self) -> None:
