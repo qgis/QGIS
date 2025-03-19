@@ -47,5 +47,106 @@ bool QgsTestUtils::testProviderIteratorThreadSafety( QgsVectorDataProvider *prov
   return true;
 }
 
+bool QgsTestUtils::compareDomElements( const QDomElement &element1, const QDomElement &element2 )
+{
+  QString tag1 = element1.tagName();
+  tag1.replace( QRegularExpression( ".*:" ), QString() );
+  QString tag2 = element2.tagName();
+  tag2.replace( QRegularExpression( ".*:" ), QString() );
+  if ( tag1 != tag2 )
+  {
+    qDebug( "Different tag names: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
+    return false;
+  }
+
+  if ( element1.hasAttributes() != element2.hasAttributes() )
+  {
+    qDebug( "Different hasAttributes: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
+    return false;
+  }
+
+  if ( element1.hasAttributes() )
+  {
+    const QDomNamedNodeMap attrs1 = element1.attributes();
+    const QDomNamedNodeMap attrs2 = element2.attributes();
+
+    if ( attrs1.size() != attrs2.size() )
+    {
+      qDebug( "Different attributes size: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
+      return false;
+    }
+
+    for ( int i = 0; i < attrs1.size(); ++i )
+    {
+      const QDomNode node1 = attrs1.item( i );
+      const QDomAttr attr1 = node1.toAttr();
+
+      if ( !element2.hasAttribute( attr1.name() ) )
+      {
+        qDebug( "Element2 has not attribute: %s, %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data(), attr1.name().toLatin1().data() );
+        return false;
+      }
+
+      if ( element2.attribute( attr1.name() ) != attr1.value() )
+      {
+        qDebug( "Element2 attribute has not the same value: %s, %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data(), attr1.name().toLatin1().data() );
+        return false;
+      }
+    }
+  }
+
+  if ( element1.hasChildNodes() != element2.hasChildNodes() )
+  {
+    qDebug( "Different childNodes: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
+    return false;
+  }
+
+  if ( element1.hasChildNodes() )
+  {
+    const QDomNodeList nodes1 = element1.childNodes();
+    const QDomNodeList nodes2 = element2.childNodes();
+
+    if ( nodes1.size() != nodes2.size() )
+    {
+      qDebug( "Different childNodes size: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
+      return false;
+    }
+
+    for ( int i = 0; i < nodes1.size(); ++i )
+    {
+      const QDomNode node1 = nodes1.at( i );
+      const QDomNode node2 = nodes2.at( i );
+      if ( node1.isElement() && node2.isElement() )
+      {
+        QDomElement elt1 = node1.toElement();
+        QDomElement elt2 = node2.toElement();
+
+        if ( !compareDomElements( elt1, elt2 ) )
+          return false;
+      }
+      else if ( node1.isText() && node2.isText() )
+      {
+        const QDomText txt1 = node1.toText();
+        const QDomText txt2 = node2.toText();
+
+        if ( txt1.data() != txt2.data() )
+        {
+          qDebug( "Different text data: %s %s", tag1.toLatin1().data(), txt1.data().toLatin1().data() );
+          qDebug( "Different text data: %s %s", tag2.toLatin1().data(), txt2.data().toLatin1().data() );
+          return false;
+        }
+      }
+    }
+  }
+
+  if ( element1.text() != element2.text() )
+  {
+    qDebug( "Different text: %s %s", tag1.toLatin1().data(), element1.text().toLatin1().data() );
+    qDebug( "Different text: %s %s", tag2.toLatin1().data(), element2.text().toLatin1().data() );
+    return false;
+  }
+
+  return true;
+}
 
 ///@endcond
