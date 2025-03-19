@@ -263,8 +263,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
     }
 
     // add missing schemas (i.e., empty schemas)
-    const QString uri = connInfo();
-    const QStringList allSchemas = QgsMssqlConnection::schemas( uri, nullptr );
+    const QStringList allSchemas = QgsMssqlConnection::schemas( db, nullptr );
     QStringList excludedSchema = QgsMssqlConnection::excludedSchemasList( mName );
     for ( const QString &schema : allSchemas )
     {
