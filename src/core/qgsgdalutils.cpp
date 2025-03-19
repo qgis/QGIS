@@ -545,6 +545,24 @@ QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOp
   return QString();
 }
 
+static void setRPCTransformerOptions( GDALDatasetH hSrcDS, char  ***opts )
+{
+  if ( GDALGetMetadata( hSrcDS, "RPC" ) )
+  {
+    // Some RPC may contain a HEIGHT_AVERAGE entry, that must be used as the
+    // best default for RPC_HEIGHT. See https://github.com/OSGeo/gdal/pull/11989
+    const char *heightStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_AVERAGE", "RPC" );
+    if ( !heightStr )
+    {
+      // Otherwise well-behaved RPC should have height offset which is also
+      // a resaonable default for RPC_HEIGHT.
+      heightStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_OFF", "RPC" );
+    }
+    if ( heightStr )
+      *opts = CSLAddNameValue( *opts, "RPC_HEIGHT", heightStr );
+  }
+}
+
 GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
   GDALDatasetH hSrcDS,
   const char *pszSrcWKT,
@@ -554,27 +572,16 @@ GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
   const GDALWarpOptions *psOptionsIn )
 {
   char **opts = nullptr;
-  if ( GDALGetMetadata( hSrcDS, "RPC" ) )
-  {
-    // well-behaved RPC should have height offset a good value for RPC_HEIGHT
-    const char *heightOffStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_OFF", "RPC" );
-    if ( heightOffStr )
-      opts = CSLAddNameValue( opts, "RPC_HEIGHT", heightOffStr );
-  }
-
-  return GDALAutoCreateWarpedVRTEx( hSrcDS, pszSrcWKT, pszDstWKT, eResampleAlg, dfMaxError, psOptionsIn, opts );
+  setRPCTransformerOptions( hSrcDS, &opts );
+  GDALDatasetH hRetDS = GDALAutoCreateWarpedVRTEx( hSrcDS, pszSrcWKT, pszDstWKT, eResampleAlg, dfMaxError, psOptionsIn, opts );
+  CSLDestroy( opts );
+  return hRetDS;
 }
 
 void *QgsGdalUtils::rpcAwareCreateTransformer( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, char **papszOptions )
 {
   char **opts = CSLDuplicate( papszOptions );
-  if ( GDALGetMetadata( hSrcDS, "RPC" ) )
-  {
-    // well-behaved RPC should have height offset a good value for RPC_HEIGHT
-    const char *heightOffStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_OFF", "RPC" );
-    if ( heightOffStr )
-      opts = CSLAddNameValue( opts, "RPC_HEIGHT", heightOffStr );
-  }
+  setRPCTransformerOptions( hSrcDS, &opts );
   void *transformer = GDALCreateGenImgProjTransformer2( hSrcDS, hDstDS, opts );
   CSLDestroy( opts );
   return transformer;
