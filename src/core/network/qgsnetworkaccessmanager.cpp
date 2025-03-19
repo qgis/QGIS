@@ -57,7 +57,7 @@ const QgsSettingsEntryInteger *QgsNetworkAccessManager::settingsNetworkTimeout =
 QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
 
 static std::vector< std::pair< QString, std::function< void( QNetworkRequest * ) > > > sCustomPreprocessors;
-static std::vector< std::pair< QString, std::function< void( QNetworkRequest *, QNetworkAccessManager::Operation &op, QByteArray *data ) > > > sCustomAdvancedPreprocessors;
+static std::vector< std::pair< QString, std::function< void( QNetworkRequest *, int &op, QByteArray *data ) > > > sCustomAdvancedPreprocessors;
 static std::vector< std::pair< QString, std::function< void( const QNetworkRequest &, QNetworkReply * ) > > > sCustomReplyPreprocessors;
 
 /// @cond PRIVATE
@@ -357,7 +357,9 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   for ( const auto &preprocessor :  sCustomAdvancedPreprocessors )
   {
-    preprocessor.second( pReq, op, &content );
+    int intOp = static_cast< int >( op );
+    preprocessor.second( pReq, intOp, &content );
+    op = static_cast< QNetworkAccessManager::Operation >( intOp );
   }
 
   emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, req, requestId, content ) );
@@ -835,14 +837,14 @@ bool QgsNetworkAccessManager::removeRequestPreprocessor( const QString &id )
 bool QgsNetworkAccessManager::removeAdvancedRequestPreprocessor( const QString &id )
 {
   const size_t prevCount = sCustomAdvancedPreprocessors.size();
-  sCustomAdvancedPreprocessors.erase( std::remove_if( sCustomAdvancedPreprocessors.begin(), sCustomAdvancedPreprocessors.end(), [id]( std::pair< QString, std::function< void( QNetworkRequest *, QNetworkAccessManager::Operation &, QByteArray * ) > > &a )
+  sCustomAdvancedPreprocessors.erase( std::remove_if( sCustomAdvancedPreprocessors.begin(), sCustomAdvancedPreprocessors.end(), [id]( std::pair< QString, std::function< void( QNetworkRequest *, int &, QByteArray * ) > > &a )
   {
     return a.first == id;
   } ), sCustomAdvancedPreprocessors.end() );
   return prevCount != sCustomAdvancedPreprocessors.size();
 }
 
-QString QgsNetworkAccessManager::setAdvancedRequestPreprocessor( const std::function<void ( QNetworkRequest *, QNetworkAccessManager::Operation &, QByteArray * )> &processor )
+QString QgsNetworkAccessManager::setAdvancedRequestPreprocessor( const std::function<void ( QNetworkRequest *, int &, QByteArray * )> &processor )
 {
   QString id = QUuid::createUuid().toString();
   sCustomAdvancedPreprocessors.emplace_back( std::make_pair( id, processor ) );
