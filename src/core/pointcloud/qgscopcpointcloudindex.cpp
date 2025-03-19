@@ -248,6 +248,8 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
     return false;
   }
 
+  QMutexLocker locker( &mFileMutex );
+
   if ( mLazInfo->version() != qMakePair<uint8_t, uint8_t>( 1, 4 ) )
   {
     // EVLR isn't supported in the first place
@@ -428,6 +430,8 @@ QByteArray QgsCopcPointCloudIndex::readRange( uint64_t offset, uint64_t length )
 {
   if ( mAccessType == Qgis::PointCloudAccessType::Local )
   {
+    QMutexLocker locker( &mFileMutex );
+
     QByteArray buffer( length, Qt::Initialization::Uninitialized );
     mCopcFile.seekg( offset );
     mCopcFile.read( buffer.data(), length );
