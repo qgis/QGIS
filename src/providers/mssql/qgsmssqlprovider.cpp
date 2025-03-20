@@ -2225,26 +2225,6 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
     }
     createdNewPk = true;
   }
-  else
-  {
-    // search for the passed field
-    for ( int i = 0, n = fields.size(); i < n; ++i )
-    {
-      if ( fields.at( i ).name() == primaryKey )
-      {
-        // found, get the field type
-        QgsField fld = fields.at( i );
-        if ( ( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) || convertField( fld ) )
-        {
-          primaryKeyType = fld.typeName();
-        }
-      }
-    }
-  }
-
-  // if the field doesn't not exist yet, create it as a serial field
-  if ( primaryKeyType.isEmpty() )
-    primaryKeyType = QStringLiteral( "serial" );
 
   QString sql;
   QSqlQuery q = QSqlQuery( db->db() );
