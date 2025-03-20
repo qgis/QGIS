@@ -175,15 +175,15 @@ void QgsLayoutItemMap::refresh()
 
 double QgsLayoutItemMap::scale() const
 {
-  if ( rect().isEmpty() )
+  if ( rect().isEmpty() || !mLayout )
     return 0;
 
   QgsScaleCalculator calculator;
   calculator.setMapUnits( crs().mapUnits() );
   calculator.setDpi( 25.4 );  //Using mm
-  if ( mLayout && mLayout->project() )
+  if ( QgsProject *project = mLayout->project() )
   {
-    calculator.setMethod( mLayout->project()->scaleMethod() );
+    calculator.setMethod( project->scaleMethod() );
   }
   double widthInMm = mLayout->convertFromLayoutUnits( rect().width(), Qgis::LayoutUnit::Millimeters ).length();
   return calculator.calculate( extent(), widthInMm );
@@ -2939,9 +2939,9 @@ void QgsLayoutItemMap::updateAtlasFeature()
     QgsScaleCalculator calc;
     calc.setMapUnits( crs().mapUnits() );
     calc.setDpi( 25.4 );
-    if ( mLayout && mLayout->project() )
+    if ( QgsProject *project = mLayout->project() )
     {
-      calc.setMethod( mLayout->project()->scaleMethod() );
+      calc.setMethod( project->scaleMethod() );
     }
     double originalScale = calc.calculate( originalExtent, rect().width() );
     double geomCenterX = ( xa1 + xa2 ) / 2.0;
