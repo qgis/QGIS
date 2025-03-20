@@ -30,7 +30,7 @@ QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( const QString &provider, c
   init();
 }
 
-QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
+QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER, QWidget *parent )
   : QWidget( parent )
 {
   mModel = new QgsDatabaseSchemaModel( connection, this );

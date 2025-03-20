@@ -39,7 +39,7 @@ class GUI_EXPORT QgsDatabaseSchemaSelectionDialog : public QDialog
      *
      * Ownership of \a connection is transferred.
      */
-    explicit QgsDatabaseSchemaSelectionDialog( std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsDatabaseSchemaSelectionDialog( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the name of the current schema selected in the combo box.
@@ -49,6 +49,5 @@ class GUI_EXPORT QgsDatabaseSchemaSelectionDialog : public QDialog
   private:
     QDialogButtonBox *mButtonBox;
     QgsDatabaseSchemaComboBox *mCboSchema = nullptr;
-    std::unique_ptr<QgsAbstractDatabaseProviderConnection> mDatabaseConnection = nullptr;
 };
 #endif // QGSDATABASESCHEMASELECTIONDIALOG_H

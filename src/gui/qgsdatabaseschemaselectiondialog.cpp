@@ -20,14 +20,14 @@
 #include "qgsdatabaseschemaselectiondialog.h"
 #include "moc_qgsdatabaseschemaselectiondialog.cpp"
 
-QgsDatabaseSchemaSelectionDialog::QgsDatabaseSchemaSelectionDialog( std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection, QWidget *parent )
+QgsDatabaseSchemaSelectionDialog::QgsDatabaseSchemaSelectionDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
   : QDialog( parent )
 {
   setWindowTitle( tr( "Select schema" ) );
 
   QFormLayout *layout = new QFormLayout( this );
 
-  mCboSchema = new QgsDatabaseSchemaComboBox( connection.get(), this );
+  mCboSchema = new QgsDatabaseSchemaComboBox( connection, this );
   mCboSchema->setAllowEmptySchema( false );
 
   layout->addRow( "Select Schema", mCboSchema );
