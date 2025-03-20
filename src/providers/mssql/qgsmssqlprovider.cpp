@@ -1977,16 +1977,12 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
   QString geometryColumn = dsUri.geometryColumn();
 
   QString primaryKey = dsUri.keyColumn();
-  QString primaryKeyType;
 
   if ( schemaName.isEmpty() )
     schemaName = QStringLiteral( "dbo" );
 
   if ( wkbType != Qgis::WkbType::NoGeometry && geometryColumn.isEmpty() )
     geometryColumn = QStringLiteral( "geom" );
-
-  // get the pk's name and type
-  bool createdNewPk = false;
 
   // if no pk name was passed, define the new pk field name
   if ( primaryKey.isEmpty() )
@@ -2002,7 +1998,6 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
         i = 0;
       }
     }
-    createdNewPk = true;
   }
 
   QString sql;
@@ -2160,37 +2155,42 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
 
   if ( fields.size() > 0 )
   {
-    // if we had to create a primary key column, we start the old columns from 1
-    int offset = createdNewPk ? 1 : 0;
+    const QgsFields providerFields = provider->fields();
+    int offset = providerFields.size();
 
     // get the list of fields
     QList<QgsField> flist;
-    for ( int i = 0, n = fields.size(); i < n; ++i )
+    for ( int originalFieldIndex = 0, n = fields.size(); originalFieldIndex < n; ++originalFieldIndex )
     {
-      QgsField fld = fields.at( i );
-      if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
-      {
-        oldToNewAttrIdxMap->insert( fields.lookupField( fld.name() ), 0 );
-        continue;
-      }
-
-      if ( fld.name() == geometryColumn )
+      QgsField field = fields.at( originalFieldIndex );
+      if ( field.name() == geometryColumn )
       {
         // Found a field with the same name of the geometry column. Skip it!
         continue;
       }
 
-      if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && !convertField( fld ) )
+      const int providerIndex = providerFields.lookupField( field.name() );
+
+      if ( providerIndex >= 0 )
+      {
+        // we've already created this field (i.e. it was set in the CREATE TABLE statement), so
+        // we don't need to re-add it now
+        if ( oldToNewAttrIdxMap )
+          oldToNewAttrIdxMap->insert( originalFieldIndex, providerIndex );
+        continue;
+      }
+
+      if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && !convertField( field ) )
       {
         if ( errorMessage )
-          *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
+          *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( field.name() );
 
         return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
-      flist.append( fld );
+      flist.append( field );
       if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( fields.lookupField( fld.name() ), offset++ );
+        oldToNewAttrIdxMap->insert( originalFieldIndex, offset++ );
     }
 
     if ( !provider->addAttributes( flist ) )
