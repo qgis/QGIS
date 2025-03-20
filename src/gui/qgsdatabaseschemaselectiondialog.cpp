@@ -18,6 +18,7 @@
 #include <QMessageBox>
 
 #include "qgsdatabaseschemaselectiondialog.h"
+#include "moc_qgsdatabaseschemaselectiondialog.cpp"
 
 QgsDatabaseSchemaSelectionDialog::QgsDatabaseSchemaSelectionDialog( std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection, QWidget *parent )
   : QDialog( parent )
