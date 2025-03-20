@@ -18,10 +18,12 @@
 #ifndef QGSSCALEMETHODWIDGET_H
 #define QGSSCALEMETHODWIDGET_H
 
-#include <QComboBox>
 #include "qgis_sip.h"
-#include <QPainter> // For QPainter::CompositionMode enum
 #include "qgis_gui.h"
+#include <QWidget>
+
+class QLabel;
+class QComboBox;
 
 /**
  * \ingroup gui
@@ -56,6 +58,11 @@ class GUI_EXPORT QgsScaleMethodWidget : public QWidget
 
   private:
     QComboBox *mCombo = nullptr;
+    QWidget *mWarningLabelContainer = nullptr;
+    QLabel *mWarningLabel = nullptr;
+
+  private slots:
+    void updateWarning();
 };
 
 #endif // QGSSCALEMETHODWIDGET_H
