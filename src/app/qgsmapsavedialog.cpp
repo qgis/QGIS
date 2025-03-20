@@ -262,6 +262,7 @@ void QgsMapSaveDialog::updateScale( double scale )
   QgsScaleCalculator calculator;
   calculator.setMapUnits( mExtentGroupBox->currentCrs().mapUnits() );
   calculator.setDpi( mDpi );
+  calculator.setMethod( QgsProject::instance()->scaleMethod() );
 
   const double oldScale = calculator.calculate( mExtent, mSize.width() );
   const double scaleRatio = scale / oldScale;
