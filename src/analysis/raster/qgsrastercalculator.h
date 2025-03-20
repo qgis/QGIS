@@ -160,6 +160,22 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      */
     QString lastError() const;
 
+    /**
+     * Sets a list of data source creation options to use when creating the output raster file.
+     *
+     * \see createOptions()
+     * \since QGIS 3.44
+     */
+    void setCreateOptions( const QStringList &list ) { mCreateOptions = list; }
+
+    /**
+     * Returns the list of data source creation options which will be used when creating the output raster file.
+     *
+     * \see setCreateOptions()
+     * \since QGIS 3.44
+     */
+    QStringList createOptions() const { return mCreateOptions; }
+
   private:
     //default constructor forbidden. We need formula, output file, output format and output raster resolution obligatory
     QgsRasterCalculator() = delete;
@@ -199,6 +215,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     int mNumOutputRows = 0;
 
     QString mLastError;
+    QStringList mCreateOptions;
 
     /***/
     QVector<QgsRasterCalculatorEntry> mRasterEntries;
