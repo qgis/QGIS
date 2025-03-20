@@ -176,6 +176,22 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      */
     QStringList createOptions() const { return mCreateOptions; }
 
+    /**
+     * Set no data value for output file.
+     *
+     * \see noDataValue()
+     * \since QGIS 3.44
+     */
+    void setNoDataValue( double noDataValue ) { mNoDataValue = noDataValue; }
+
+    /**
+     * Returns no data value used for output file.
+     *
+     * \see setNoDataValue()
+     * \since QGIS 3.44
+     */
+    double noDataValue() const { return mNoDataValue; }
+
   private:
     //default constructor forbidden. We need formula, output file, output format and output raster resolution obligatory
     QgsRasterCalculator() = delete;
@@ -216,6 +232,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
 
     QString mLastError;
     QStringList mCreateOptions;
+    double mNoDataValue = -FLT_MAX;
 
     /***/
     QVector<QgsRasterCalculatorEntry> mRasterEntries;
