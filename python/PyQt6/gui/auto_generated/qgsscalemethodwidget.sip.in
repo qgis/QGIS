@@ -22,6 +22,7 @@ A widget which which lets the user select from scale calculation methods.
 #include "qgsscalemethodwidget.h"
 %End
   public:
+
     QgsScaleMethodWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsScaleMethodWidget, with the specified ``parent`` widget
@@ -31,14 +32,18 @@ Constructor for QgsScaleMethodWidget, with the specified ``parent`` widget
 %Docstring
 Returns the selected scale method.
 
-.. seealso:: :py:func:`setBlendMode`
+.. seealso:: :py:func:`setScaleMethod`
+
+.. seealso:: :py:func:`methodChanged`
 %End
 
     void setScaleMethod( Qgis::ScaleCalculationMethod method );
 %Docstring
 Sets the selected blend mode.
 
-.. seealso:: :py:func:`blendMode`
+.. seealso:: :py:func:`scaleMethod`
+
+.. seealso:: :py:func:`methodChanged`
 %End
 
   signals:
