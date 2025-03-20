@@ -411,6 +411,8 @@ bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   }
   mMapSettings.setBackgroundColor( bgColor );
 
+  mMapSettings.setScaleMethod( context.project()->scaleMethod() );
+
   return mMapLayers.size() > 0;
 }
 
