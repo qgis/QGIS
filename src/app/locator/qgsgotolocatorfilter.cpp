@@ -302,6 +302,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
         QgsScaleCalculator calculator;
         calculator.setMapUnits( currentCrs.mapUnits() );
+        calculator.setMethod( QgsProject::instance()->scaleMethod() );
         calculator.setDpi( QgisApp::instance()->mapCanvas()->mapSettings().outputDpi() );
         scale = calculator.calculate( extent, outputSize.width() );
       }
