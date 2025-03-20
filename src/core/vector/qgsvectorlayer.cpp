@@ -2389,9 +2389,6 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
   }
   layer_node.appendChild( asElem );
 
-  // save QGIS Server properties (WMS Dimension, metadata URLS...)
-  mServerProperties->writeXml( layer_node, document );
-
   // renderer specific settings
   QString errorMsg;
   return writeSymbology( layer_node, document, errorMsg, context );
