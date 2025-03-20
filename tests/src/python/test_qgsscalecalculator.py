@@ -128,6 +128,21 @@ class TestQgsScaleCalculator(QgisTestCase):
         scale = calculator.calculate(extent, 2000)
         self.assertAlmostEqual(scale, 4383348, -3)
 
+    def testCalculateAtEquator(self):
+        calculator = QgsScaleCalculator()
+        calculator.setMethod(Qgis.ScaleCalculationMethod.AtEquator)
+        self.assertEqual(calculator.method(), Qgis.ScaleCalculationMethod.AtEquator)
+
+        calculator.setDpi(96)
+        extent = QgsRectangle(-49.42, 102.1, -4.44, 161.56)
+
+        calculator.setMapUnits(Qgis.DistanceUnit.Degrees)
+        self.assertAlmostEqual(
+            calculator.calculateGeographicDistance(extent), 4974125, -3
+        )
+        scale = calculator.calculate(extent, 2000)
+        self.assertAlmostEqual(scale, 9399921, -3)
+
     def testCalculateImageSize(self):
         calculator = QgsScaleCalculator()
 
