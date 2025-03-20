@@ -135,13 +135,14 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsCoordinateReferenceSystem crs() const;
 
     /**
-     * Returns TRUE if the 3D scene represents a globe (when using Geocentric CRS
-     * such as EPSG:4978), returns FALSE if the 3D scene uses a projected CRS.
+     * Returns mode of the 3D scene - whether it is represented as a globe
+     * (when using Geocentric CRS such as EPSG:4978), or whether it is
+     * a local scene when using a projected CRS.
      *
      * In case of globe scene, we always show the whole globe and extent() is ignored.
      * \since QGIS 3.44
      */
-    bool isGlobe() const;
+    Qgis::SceneMode sceneMode() const;
 
     /**
      * Returns the coordinate transform context, which stores various

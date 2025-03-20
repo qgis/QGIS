@@ -118,10 +118,11 @@ Returns coordinate reference system used in the 3D scene.
 .. seealso:: :py:func:`setCrs`
 %End
 
-    bool isGlobe() const;
+    Qgis::SceneMode sceneMode() const;
 %Docstring
-Returns ``True`` if the 3D scene represents a globe (when using Geocentric CRS
-such as EPSG:4978), returns ``False`` if the 3D scene uses a projected CRS.
+Returns mode of the 3D scene - whether it is represented as a globe
+(when using Geocentric CRS such as EPSG:4978), or whether it is
+a local scene when using a projected CRS.
 
 In case of globe scene, we always show the whole globe and :py:func:`~Qgs3DMapSettings.extent` is ignored.
 
