@@ -754,6 +754,7 @@ set(QGIS_GUI_SRCS
   qgsrichtexteditor.cpp
   qgsrubberband.cpp
   qgsscalecombobox.cpp
+  qgsscalemethodwidget.cpp
   qgsscalerangewidget.cpp
   qgsscalevisibilitydialog.cpp
   qgsscalewidget.cpp
@@ -1025,6 +1026,7 @@ set(QGIS_GUI_HDRS
   qgsrichtexteditor.h
   qgsrubberband.h
   qgsscalecombobox.h
+  qgsscalemethodwidget.h
   qgsscalerangewidget.h
   qgsscalevisibilitydialog.h
   qgsscalewidget.h
