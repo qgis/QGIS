@@ -25,6 +25,7 @@ class QgsLayoutItemElevationProfilePlot;
 class Qgs2DPlot;
 class QgsProfileRequest;
 class QgsProfilePlotRenderer;
+class QgsLineSymbol;
 
 /**
  * \ingroup core
@@ -185,6 +186,26 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
      */
     void setDistanceUnit( Qgis::DistanceUnit unit );
 
+    /**
+     * Returns the symbol used to draw the subsections.
+     *
+     * \see setSubsectionsSymbol()
+     * \since QGIS 3.44
+     */
+    QgsLineSymbol *subsectionsSymbol()
+    {
+      return mSubsectionsSymbol.get();
+    }
+
+    /**
+     * Sets the \a symbol used to draw the subsections. If \a symbol is NULLPTR, the subsections are not drawn.
+     * Ownership of \a symbol is transferred.
+     *
+     * \see subsectionsSymbol()
+     * \since QGIS 3.44
+     */
+    void setSubsectionsSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
   public slots:
 
     void refresh() override;
@@ -220,6 +241,8 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     bool mAtlasDriven = false;
 
     double mTolerance = 0;
+
+    std::unique_ptr<QgsLineSymbol> mSubsectionsSymbol;
 
     // render job handling
 
