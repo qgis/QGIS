@@ -362,6 +362,22 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     Qgis::DistanceUnit mapUnits() const;
 
     /**
+     * Returns the method to use for scale calculations for the map.
+     *
+     * \see setScaleMethod()
+     * \since QGIS 3.44
+     */
+    Qgis::ScaleCalculationMethod scaleMethod() const;
+
+    /**
+     * Sets the \a method to use for scale calculations for the map.
+     *
+     * \see scaleMethod()
+     * \since QGIS 3.44
+     */
+    void setScaleMethod( Qgis::ScaleCalculationMethod method );
+
+    /**
      * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
      * retrieved using QgsEllipsoidUtils::acronyms().
      * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
