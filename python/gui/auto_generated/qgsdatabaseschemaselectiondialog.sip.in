@@ -25,7 +25,7 @@ The :py:class:`QgsDatabaseSchemaSelectionDialog` class is a dialog which display
 #include "qgsdatabaseschemaselectiondialog.h"
 %End
   public:
-    explicit QgsDatabaseSchemaSelectionDialog( std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection, QWidget *parent /TransferThis/ = 0 );
+    explicit QgsDatabaseSchemaSelectionDialog( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDatabaseSchemaSelectionDialog, for the specified ``connection``.
 

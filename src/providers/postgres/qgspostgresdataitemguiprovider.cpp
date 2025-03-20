@@ -940,7 +940,7 @@ void QgsPostgresDataItemGuiProvider::moveProjectToSchema( QgsPGProjectItem *proj
     return;
   }
 
-  QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( std::move( dbConnection ) );
+  QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( dbConnection.release() );
 
   if ( dlg->exec() == QDialog::Accepted )
   {
