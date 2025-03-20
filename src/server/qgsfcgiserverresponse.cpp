@@ -116,7 +116,6 @@ void QgsSocketMonitoringThread::run()
 #if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
   const pid_t threadId = gettid();
 
-  mShouldStop.store( false );
   char c;
 
   fd_set setOptions;
