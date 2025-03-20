@@ -62,9 +62,7 @@ QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
 
   if ( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
   {
-    mGlobeCrsToLatLon = QgsCoordinateTransform( mScene->mapSettings()->crs(),
-                                                mScene->mapSettings()->crs().toGeographicCrs(),
-                                                mScene->mapSettings()->transformContext() );
+    mGlobeCrsToLatLon = QgsCoordinateTransform( mScene->mapSettings()->crs(), mScene->mapSettings()->crs().toGeographicCrs(), mScene->mapSettings()->transformContext() );
   }
 }
 
@@ -597,14 +595,14 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     // Applies smoothing
     if ( mMousePos.y() > mClickPoint.y() ) // zoom in
     {
-      double f = ( double )( mMousePos.y() - mClickPoint.y() ) / ( double )( screenHeight - mClickPoint.y() - yOffset );
+      double f = ( double ) ( mMousePos.y() - mClickPoint.y() ) / ( double ) ( screenHeight - mClickPoint.y() - yOffset );
       f = std::max( 0.0, std::min( 1.0, f ) );
       f = 1 - ( std::expm1( -2 * f ) ) / ( std::expm1( -2 ) );
       newDist = newDist * f;
     }
     else // zoom out
     {
-      double f = 1 - ( double )( mMousePos.y() + yOffset ) / ( double )( mClickPoint.y() + yOffset );
+      double f = 1 - ( double ) ( mMousePos.y() + yOffset ) / ( double ) ( mClickPoint.y() + yOffset );
       f = std::max( 0.0, std::min( 1.0, f ) );
       f = ( std::expm1( 2 * f ) ) / ( std::expm1( 2 ) );
       newDist = newDist + 2 * newDist * f;
@@ -644,7 +642,7 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
 
   double newDepth = sampleDepthBuffer( mouse->x(), mouse->y() );
   if ( newDepth == 1 )
-    return;    // the mouse is somewhere in the void...
+    return; // the mouse is somewhere in the void...
 
   const QVector3D newWorldPosition = Qgs3DUtils::screenPointToWorldPos( QPoint( mouse->x(), mouse->y() ), newDepth, mScene->engine()->size(), mCameraBefore.get() );
   if ( !std::isfinite( newWorldPosition.x() ) || !std::isfinite( newWorldPosition.y() ) || !std::isfinite( newWorldPosition.z() ) )
@@ -916,7 +914,7 @@ void QgsCameraController::onKeyPressedGlobeTerrainNavigation( Qt3DInput::QKeyEve
 {
   // both move factor and zoom factor are just empirically picked numbers
   // that seem to work well (providing steps that are not too big / not too small)
-  constexpr float MOVE_FACTOR = 0.000001f;  // multiplied by distance to get angle
+  constexpr float MOVE_FACTOR = 0.000001f; // multiplied by distance to get angle
   constexpr float ZOOM_FACTOR = 0.9f;
 
   const bool hasShift = ( event->modifiers() & Qt::ShiftModifier );
@@ -1282,7 +1280,6 @@ bool QgsCameraController::willHandleKeyEvent( QKeyEvent *event )
       }
       break;
     }
-
   }
   return false;
 }
