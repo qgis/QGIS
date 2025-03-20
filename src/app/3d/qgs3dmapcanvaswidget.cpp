@@ -56,6 +56,7 @@
 #include "qgs3dmaptoolpointcloudchangeattributepolygon.h"
 
 #include "qgsdockablewidgethelper.h"
+#include "qgsflatterrainsettings.h"
 #include "qgsmaptoolclippingplanes.h"
 #include "qgsrubberband.h"
 #include "qgspointcloudlayer.h"
@@ -1207,9 +1208,24 @@ void Qgs3DMapCanvasWidget::setViewOnClippingPlanesChanged( const QList<QVector4D
     ( planes.at( 3 ).w() * planes.at( 2 ).x() - planes.at( 2 ).w() * planes.at( 3 ).x() ) / -det,
     0
   );
-  const QgsVector3D middle( point1 + ( point2 - point1 ) / 2 );
-  const double distance = ( middle - point1 ).length() / std::tan( mCanvas->scene()->cameraController()->camera()->fieldOfView() / 2 * M_PI / 180 );
-  mCanvas->scene()->cameraController()->setLookingAtPoint( middle, static_cast<float>( distance ), 90, 270 );
+  QgsVector3D middle( point1 + ( point2 - point1 ) / 2 );
+  // we temporarily disable terrain so the elevation calculation won't take it in account if the terrain is flat
+  const bool lastTerrainState = mCanvas->scene()->mapSettings()->terrainRenderingEnabled();
+  if ( dynamic_cast<const QgsFlatTerrainSettings *>( mCanvas->scene()->mapSettings()->terrainSettings() ) )
+  {
+    mCanvas->scene()->mapSettings()->setTerrainRenderingEnabled( false );
+  }
+  const double side = std::max( middle.distance( point1 ), ( mCanvas->scene()->elevationRange().upper() - mCanvas->scene()->elevationRange().lower() ) / 2 );
+  const double distance = side / std::tan( mCanvas->scene()->cameraController()->camera()->fieldOfView() / 2 * M_PI / 180 ) + 50;
+  float yawAngle = static_cast<float>( acos( QgsVector3D::dotProduct( planes.at( 1 ).toVector3D(), QgsVector3D( 0, -1, 0 ) ) ) * 180 / M_PI );
+  // check if the angle between the view point is to the left or right of the scene north, apply angle offset if necessary for camera
+  if ( QgsVector3D::crossProduct( planes.at( 1 ).toVector3D(), QgsVector3D( 0, -1, 0 ) ).z() > 0 )
+  {
+    yawAngle = 180 + ( 180 - yawAngle );
+  }
+  mCanvas->scene()->elevationRange().isInfinite() ? middle.setZ( 0 ) : middle.setZ( mCanvas->scene()->elevationRange().lower() + ( mCanvas->scene()->elevationRange().upper() - mCanvas->scene()->elevationRange().lower() ) / 2 );
+  mCanvas->scene()->mapSettings()->setTerrainRenderingEnabled( lastTerrainState );
+  mCanvas->scene()->cameraController()->setLookingAtPoint( middle, static_cast<float>( distance ), 90, yawAngle );
 
   if ( mMapToolPrevious )
     mMainCanvas->setMapTool( mMapToolPrevious );
