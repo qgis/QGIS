@@ -178,7 +178,7 @@ void QgsSocketMonitoringThread::run()
 
   if ( mShouldStop.load() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "FCGIServer::run %1: socket monitoring quits normally." ).arg( threadId ), 2 );
+    QgsMessageLog::logMessage( QStringLiteral( "FCGIServer::run %1: socket monitoring quits normally." ).arg( threadId ), QStringLiteral( "FCGIServer" ), Qgis::MessageLevel::Info );
   }
   else
   {
