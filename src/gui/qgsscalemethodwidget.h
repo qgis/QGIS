@@ -34,7 +34,7 @@ class GUI_EXPORT QgsScaleMethodWidget : public QWidget
 {
     Q_OBJECT
   public:
-    Q_PROPERTY( int scaleMethod READ scaleMethod WRITE setScaleMethod NOTIFY methodChanged )
+    Q_PROPERTY( Qgis::ScaleCalculationMethod scaleMethod READ scaleMethod WRITE setScaleMethod NOTIFY methodChanged )
 
     //! Constructor for QgsScaleMethodWidget, with the specified \a parent widget
     QgsScaleMethodWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
