@@ -196,7 +196,8 @@ double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapE
       return calculateGeographicDistanceAtLatitude( 0,
              mapExtent.xMinimum(), mapExtent.xMaximum() );
   }
-  BUILTIN_UNREACHABLE
+  // unreachable!
+  return 0;
 }
 
 double QgsScaleCalculator::calculateGeographicDistanceAtLatitude( double lat, double longitude1, double longitude2 ) const
