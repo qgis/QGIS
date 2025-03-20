@@ -293,6 +293,15 @@ void QgsRelationReferenceWidget::deleteForeignKeys()
   emitForeignKeysChanged( foreignKeys() );
 }
 
+bool QgsRelationReferenceWidget::saveReferencedAttributeForm()
+{
+  if ( !mEmbedForm )
+    // if there is no embedded form, everything is fine anyway
+    return true;
+
+  return mReferencedAttributeForm->save();
+}
+
 QgsFeature QgsRelationReferenceWidget::referencedFeature() const
 {
   QgsFeature f;
