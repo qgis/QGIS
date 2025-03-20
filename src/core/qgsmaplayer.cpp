@@ -822,6 +822,8 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   layerElement.setAttribute( QStringLiteral( "legendPlaceholderImage" ), mLegendPlaceholderImage );
 
+  serverProperties()->writeXml( layerElement, document );
+
   // now append layer node to map layer node
   return writeXml( layerElement, document, context );
 }
