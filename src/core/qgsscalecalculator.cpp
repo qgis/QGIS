@@ -191,6 +191,10 @@ double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapE
                              mapExtent.xMinimum(), mapExtent.xMaximum() );
       return ( dTop + dMiddle + dBottom ) / 3.0;
     }
+
+    case Qgis::ScaleCalculationMethod::AtEquator:
+      return calculateGeographicDistanceAtLatitude( 0,
+             mapExtent.xMinimum(), mapExtent.xMaximum() );
   }
   BUILTIN_UNREACHABLE
 }

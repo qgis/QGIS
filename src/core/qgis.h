@@ -5077,6 +5077,7 @@ class CORE_EXPORT Qgis
       HorizontalMiddle, //!< Calculate horizontally, across midle of map
       HorizontalBottom, //!< Calculate horizontally, across bottom of map
       HorizontalAverage, //!< Calculate horizontally, using the average of the top, middle and bottom scales
+      AtEquator, //!< Always calculate the scale at the equator, regardless of the actual visible map extent. This method can be used to provide a consistent, static scale for maps in geographic reference systems, regardless of the latitudes actually visible in the map (permitting consistent appearance of these maps when rendering relies on scale based visibility or calculations). This method is only applicable when calculating scales with a degree based reference system. \since QGIS 3.44
     };
     Q_ENUM( ScaleCalculationMethod )
 

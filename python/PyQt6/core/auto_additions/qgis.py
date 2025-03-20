@@ -10026,6 +10026,7 @@ Qgis.ScaleCalculationMethod.HorizontalTop.__doc__ = "Calculate horizontally, acr
 Qgis.ScaleCalculationMethod.HorizontalMiddle.__doc__ = "Calculate horizontally, across midle of map"
 Qgis.ScaleCalculationMethod.HorizontalBottom.__doc__ = "Calculate horizontally, across bottom of map"
 Qgis.ScaleCalculationMethod.HorizontalAverage.__doc__ = "Calculate horizontally, using the average of the top, middle and bottom scales"
+Qgis.ScaleCalculationMethod.AtEquator.__doc__ = "Always calculate the scale at the equator, regardless of the actual visible map extent. This method can be used to provide a consistent, static scale for maps in geographic reference systems, regardless of the latitudes actually visible in the map (permitting consistent appearance of these maps when rendering relies on scale based visibility or calculations). This method is only applicable when calculating scales with a degree based reference system. \n.. versionadded:: 3.44"
 Qgis.ScaleCalculationMethod.__doc__ = """Scale calculation logic.
 
 .. versionadded:: 3.40
@@ -10034,6 +10035,10 @@ Qgis.ScaleCalculationMethod.__doc__ = """Scale calculation logic.
 * ``HorizontalMiddle``: Calculate horizontally, across midle of map
 * ``HorizontalBottom``: Calculate horizontally, across bottom of map
 * ``HorizontalAverage``: Calculate horizontally, using the average of the top, middle and bottom scales
+* ``AtEquator``: Always calculate the scale at the equator, regardless of the actual visible map extent. This method can be used to provide a consistent, static scale for maps in geographic reference systems, regardless of the latitudes actually visible in the map (permitting consistent appearance of these maps when rendering relies on scale based visibility or calculations). This method is only applicable when calculating scales with a degree based reference system.
+
+  .. versionadded:: 3.44
+
 
 """
 # --

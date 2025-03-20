@@ -706,6 +706,8 @@ void TestQgsMapSettings::testScale()
   QGSCOMPARENEAR( settings.scale(), 36132079, 10000 );
   settings.setScaleMethod( Qgis::ScaleCalculationMethod::HorizontalBottom );
   QGSCOMPARENEAR( settings.scale(), 36132079, 10000 );
+  settings.setScaleMethod( Qgis::ScaleCalculationMethod::AtEquator );
+  QGSCOMPARENEAR( settings.scale(), 36132079, 10000 );
 
   // geographic CRS
   settings.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
@@ -719,6 +721,8 @@ void TestQgsMapSettings::testScale()
   QGSCOMPARENEAR( settings.scale(), 3372951, 10000 );
   settings.setScaleMethod( Qgis::ScaleCalculationMethod::HorizontalAverage );
   QGSCOMPARENEAR( settings.scale(), 11588878, 10000 );
+  settings.setScaleMethod( Qgis::ScaleCalculationMethod::AtEquator );
+  QGSCOMPARENEAR( settings.scale(), 24851905, 10000 );
 }
 
 void TestQgsMapSettings::testComputeExtentForScale()
