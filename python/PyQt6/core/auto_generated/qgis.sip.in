@@ -2268,6 +2268,12 @@ The development version
       GlobeTerrainBased
     };
 
+    enum class SceneMode /BaseType=IntEnum/
+    {
+      Local,
+      Globe
+    };
+
     enum class VerticalAxisInversion /BaseType=IntEnum/
     {
       Never,

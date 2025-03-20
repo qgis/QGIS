@@ -4006,6 +4006,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( NavigationMode )
 
     /**
+     * The 3D scene mode used in 3D map views.
+     *
+     * \since QGIS 3.44
+     */
+    enum class SceneMode : int
+    {
+      Local,   //!< Local scene based on a projected CRS
+      Globe    //!< Scene is represented as a globe using a geocentric CRS
+    };
+    Q_ENUM( SceneMode )
+
+    /**
      * Vertical axis inversion options for 3D views.
      *
      * \since QGIS 3.30

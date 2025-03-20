@@ -527,11 +527,11 @@ QgsCoordinateReferenceSystem Qgs3DMapSettings::crs() const
   return mCrs;
 }
 
-bool Qgs3DMapSettings::isGlobe() const
+Qgis::SceneMode Qgs3DMapSettings::sceneMode() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mCrs.type() == Qgis::CrsType::Geocentric;
+  return mCrs.type() == Qgis::CrsType::Geocentric ? Qgis::SceneMode::Globe : Qgis::SceneMode::Local;
 }
 
 QgsCoordinateTransformContext Qgs3DMapSettings::transformContext() const
