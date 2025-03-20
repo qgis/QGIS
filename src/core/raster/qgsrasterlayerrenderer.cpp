@@ -133,7 +133,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
       {
         QgsCoordinateTransform ct = rendererContext.coordinateTransform();
         ct.setBallparkTransformsAreAppropriate( true );
-        viewExtentInMapCrs = rendererContext.mapExtent(); //ct.transformBoundingBox( rendererContext.extent() );
+        viewExtentInMapCrs = rendererContext.mapExtent();
       }
       catch ( QgsCsException &cs )
       {
@@ -163,8 +163,17 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
   // clip raster extent to view extent
   QgsRectangle visibleExtentOfRasterInMapCrs = layer->ignoreExtents() ? viewExtentInMapCrs : viewExtentInMapCrs.intersect( layerExtentInMapCrs );
-  if ( visibleExtentOfRasterInMapCrs.isEmpty() && !rendererContext.coordinateTransform().isShortCircuited() )
+  if ( visibleExtentOfRasterInMapCrs.isEmpty() )
   {
+    if ( rendererContext.coordinateTransform().isShortCircuited() )
+    {
+      // no point doing the fallback logic, we aren't using transforms
+
+      QgsDebugMsgLevel( QStringLiteral( "draw request outside view extent." ), 2 );
+      // nothing to do
+      return;
+    }
+
     // fallback logic, try the inverse operation
     // eg if we are trying to view a global layer in a small area local projection, then the transform of the
     // map extent to the layer's local projection probably failed.
@@ -191,6 +200,13 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
       QgsMessageLog::logMessage( QObject::tr( "Could not reproject layer extent: %1" ).arg( cs.what() ), QObject::tr( "Raster" ) );
       return;
     }
+  }
+
+  if ( visibleExtentOfRasterInMapCrs.isEmpty() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "draw request outside view extent." ), 2 );
+    // nothing to do
+    return;
   }
 
   QgsDebugMsgLevel( "map extent in layer crs is " + rendererContext.extent().toString(), 4 );
