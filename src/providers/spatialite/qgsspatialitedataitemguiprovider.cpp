@@ -254,7 +254,7 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropUri( QgsSLConnectionItem *conne
       connectionItemPointer->refresh();
   };
 
-  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "Spatialite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
+  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "SpatiaLite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
 }
 
 void QgsSpatiaLiteDataItemGuiProvider::handleImportVector( QgsSLConnectionItem *connectionItem, QgsDataItemGuiContext context )
@@ -277,5 +277,5 @@ void QgsSpatiaLiteDataItemGuiProvider::handleImportVector( QgsSLConnectionItem *
       connectionItemPointer->refresh();
   };
 
-  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), QString(), context, tr( "Spatialite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
+  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), QString(), context, tr( "SpatiaLite Import" ), tr( "Import to SpatiaLite database" ), QVariantMap(), onSuccess, onFailure, this );
 }
