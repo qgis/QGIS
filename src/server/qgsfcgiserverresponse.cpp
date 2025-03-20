@@ -117,7 +117,6 @@ void QgsSocketMonitoringThread::run()
 #if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
   quint64 threadId = reinterpret_cast<quint64>( QThread::currentThreadId() );
 
-  mShouldStop.store( false );
   char c;
 
   fd_set setOptions;
