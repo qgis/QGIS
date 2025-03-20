@@ -55,6 +55,10 @@ if (WITH_BINDINGS)
   add_definitions(-DWITH_BINDINGS)
 endif()
 
+if(HAVE_OPENCL)
+  include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
+endif()
+
 # install
 
 install (TARGETS qgis_process
