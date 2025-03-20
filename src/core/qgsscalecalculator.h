@@ -131,7 +131,7 @@ class CORE_EXPORT QgsScaleCalculator
      *
      * \param latitude latitude (in degrees) to calculate distance at
      * \param longitude1 first longitude (left side of map, or x-minimum) to calculate distance between
-     * \param longitude1 second longitude (right side of map, or x-maximum) to calculate distance between
+     * \param longitude2 second longitude (right side of map, or x-maximum) to calculate distance between
      *
      * \returns distance in meters between the two longitudes
      *
