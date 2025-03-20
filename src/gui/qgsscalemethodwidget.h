@@ -34,18 +34,22 @@ class GUI_EXPORT QgsScaleMethodWidget : public QWidget
 {
     Q_OBJECT
   public:
+    Q_PROPERTY( int scaleMethod READ scaleMethod WRITE setScaleMethod NOTIFY methodChanged )
+
     //! Constructor for QgsScaleMethodWidget, with the specified \a parent widget
     QgsScaleMethodWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the selected scale method.
-     * \see setBlendMode()
+     * \see setScaleMethod()
+     * \see methodChanged()
      */
     Qgis::ScaleCalculationMethod scaleMethod() const;
 
     /**
      * Sets the selected blend mode.
-     * \see blendMode()
+     * \see scaleMethod()
+     * \see methodChanged()
      */
     void setScaleMethod( Qgis::ScaleCalculationMethod method );
 
