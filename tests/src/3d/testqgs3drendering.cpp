@@ -1818,8 +1818,10 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
 
   scene->setSceneOriginShiftEnabled( false );
 
+  scene->cameraController()->setCameraNavigationMode( Qgis::NavigationMode::GlobeTerrainBased );
+
   // look from the top
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1.5e7, 0, 0 );
+  scene->cameraController()->resetGlobe( 8'625'000, 90, 270 );
 
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
@@ -1830,7 +1832,8 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   QGSVERIFYIMAGECHECK( "4978_line_rendering_1", "4978_line_rendering_1", img, QString(), 40, QSize( 0, 0 ), 2 );
 
   // more perspective look
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1.5e7, 45, 45 );
+  scene->cameraController()->globeUpdateHeadingAngle( 45 );
+  scene->cameraController()->globeUpdatePitchAngle( 45 );
 
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
   delete scene;
