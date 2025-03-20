@@ -29,6 +29,9 @@
 #include "qgsproject.h"
 #include "qgsmssqlgeomcolumntypethread.h"
 #include "qgsmssqldatabase.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 /**
  * \ingroup UnitTests
@@ -56,6 +59,7 @@ class TestQgsMssqlProvider : public QObject
     void testGeomTypeResolutionInvalidNoWorkaround();
     void testFieldsForTable();
     void testFieldsForQuery();
+    void testEmptyLayer();
 
   private:
     QString mDbConn;
@@ -492,6 +496,85 @@ void TestQgsMssqlProvider::testFieldsForQuery()
   QCOMPARE( details.geometryColumnName, QStringLiteral( "geom" ) );
   QCOMPARE( details.geometryColumnType, QStringLiteral( "geometry" ) );
   QVERIFY( !details.isGeography );
+}
+
+void TestQgsMssqlProvider::testEmptyLayer()
+{
+  QgsDataSourceUri uri( mDbConn );
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( "mssql" );
+  QVERIFY( metadata );
+
+  metadata->createConnection( mDbConn, {} );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn;
+  conn.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( metadata->createConnection( uri.uri(), QVariantMap() ) ) );
+  conn->executeSql( QStringLiteral( "DROP TABLE IF EXISTS qgis_test.empty_layer" ) );
+
+  uri.setTable( QStringLiteral( "empty_layer" ) );
+  uri.setSchema( QStringLiteral( "qgis_test" ) );
+  QgsFields fields;
+  QMap<int, int> oldToNewAttrIdxMap;
+  QString errorMessage;
+  QString createdUri;
+
+  // with explicit primary key
+  fields.append( QgsField( "some_string", QMetaType::Type::QString ) );
+  fields.append( QgsField( "my_pk", QMetaType::Type::LongLong ) );
+  fields.append( QgsField( "some_real", QMetaType::Type::Double ) );
+
+  uri.setKeyColumn( QStringLiteral( "my_pk" ) );
+
+  QCOMPARE(
+    metadata->createEmptyLayer( uri.uri(), fields, Qgis::WkbType::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), true, oldToNewAttrIdxMap, errorMessage, {}, createdUri ),
+    Qgis::VectorExportResult::Success
+  );
+
+  auto vl = std::make_unique< QgsVectorLayer >( createdUri, "test", "mssql" );
+  QVERIFY( vl->isValid() );
+  QCOMPARE( vl->crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( vl->wkbType(), Qgis::WkbType::Point );
+  QCOMPARE( vl->fields().size(), 3 );
+  // primary key will always be first
+  QCOMPARE( vl->fields().at( 0 ).name(), QStringLiteral( "my_pk" ) );
+  // currently primary key is always an int (it's created as serial type)
+  QCOMPARE( static_cast< int >( vl->fields().at( 0 ).type() ), static_cast< int >( QMetaType::Type::Int ) );
+  QCOMPARE( vl->fields().at( 1 ).name(), QStringLiteral( "some_string" ) );
+  QCOMPARE( static_cast< int >( vl->fields().at( 1 ).type() ), static_cast< int >( QMetaType::Type::QString ) );
+  QCOMPARE( vl->fields().at( 2 ).name(), QStringLiteral( "some_real" ) );
+  QCOMPARE( static_cast< int >( vl->fields().at( 2 ).type() ), static_cast< int >( QMetaType::Type::Double ) );
+
+  QCOMPARE( oldToNewAttrIdxMap.size(), 3 );
+  QCOMPARE( oldToNewAttrIdxMap.value( 0 ), 1 );
+  QCOMPARE( oldToNewAttrIdxMap.value( 1 ), 0 );
+  QCOMPARE( oldToNewAttrIdxMap.value( 2 ), 2 );
+
+  // creating a brand new primary key
+  uri.setKeyColumn( QStringLiteral( "my_new_pk" ) );
+
+  QCOMPARE(
+    metadata->createEmptyLayer( uri.uri(), fields, Qgis::WkbType::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), true, oldToNewAttrIdxMap, errorMessage, {}, createdUri ),
+    Qgis::VectorExportResult::Success
+  );
+
+  vl = std::make_unique< QgsVectorLayer >( createdUri, "test", "mssql" );
+  QVERIFY( vl->isValid() );
+  QCOMPARE( vl->crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( vl->wkbType(), Qgis::WkbType::Point );
+  QCOMPARE( vl->fields().size(), 4 );
+  // primary key will always be first
+  QCOMPARE( vl->fields().at( 0 ).name(), QStringLiteral( "my_new_pk" ) );
+  // currently primary key is always an int (it's created as serial type)
+  QCOMPARE( static_cast< int >( vl->fields().at( 0 ).type() ), static_cast< int >( QMetaType::Type::Int ) );
+  QCOMPARE( vl->fields().at( 1 ).name(), QStringLiteral( "some_string" ) );
+  QCOMPARE( static_cast< int >( vl->fields().at( 1 ).type() ), static_cast< int >( QMetaType::Type::QString ) );
+  QCOMPARE( vl->fields().at( 2 ).name(), QStringLiteral( "my_pk" ) );
+  QCOMPARE( static_cast< int >( vl->fields().at( 2 ).type() ), static_cast< int >( QMetaType::Type::LongLong ) );
+  QCOMPARE( vl->fields().at( 3 ).name(), QStringLiteral( "some_real" ) );
+  QCOMPARE( static_cast< int >( vl->fields().at( 3 ).type() ), static_cast< int >( QMetaType::Type::Double ) );
+
+  QCOMPARE( oldToNewAttrIdxMap.size(), 3 );
+  QCOMPARE( oldToNewAttrIdxMap.value( 0 ), 1 );
+  QCOMPARE( oldToNewAttrIdxMap.value( 1 ), 2 );
+  QCOMPARE( oldToNewAttrIdxMap.value( 2 ), 3 );
 }
 
 QGSTEST_MAIN( TestQgsMssqlProvider )
