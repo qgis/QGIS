@@ -240,6 +240,10 @@ Returns whether the camera controller responds to mouse and keyboard events
 Orbits camera around the globe by the specified amount given as the difference
 in latitude/longitude angles (in degrees)
 
+.. note::
+
+   the final latitude gets clamped to 0-90 degrees, while the longitude does not get clamped
+
 .. versionadded:: 3.44
 %End
 
