@@ -344,10 +344,10 @@ QList<QgsVectorDataProvider::NativeType> QgsMssqlConnection::nativeTypes()
 {
   return QList<QgsVectorDataProvider::NativeType>()
          // integer types
-         << QgsVectorDataProvider::NativeType( QObject::tr( "8 Bytes Integer" ), QStringLiteral( "bigint" ), QMetaType::Type::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "4 Bytes Integer" ), QStringLiteral( "int" ), QMetaType::Type::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "2 Bytes Integer" ), QStringLiteral( "smallint" ), QMetaType::Type::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "1 Bytes Integer" ), QStringLiteral( "tinyint" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "8 Bytes Integer (bigint)" ), QStringLiteral( "bigint" ), QMetaType::Type::LongLong )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "4 Bytes Integer (int)" ), QStringLiteral( "int" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "2 Bytes Integer (smallint)" ), QStringLiteral( "smallint" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "1 Bytes Integer (tinyint)" ), QStringLiteral( "tinyint" ), QMetaType::Type::Int )
          << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (numeric)" ), QStringLiteral( "numeric" ), QMetaType::Type::Double, 1, 20, 0, 20 )
          << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (decimal)" ), QStringLiteral( "decimal" ), QMetaType::Type::Double, 1, 20, 0, 20 )
 
