@@ -49,14 +49,14 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
 
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
     const QString fileName { QFileInfo( path ).fileName() };
-    if ( mCboConnection->findData( path ) == -1 )
+    if ( mCboFileName->findData( path ) == -1 )
     {
       // the call to filePath standardizes the path and prevents
       // an error when opening the file on windows
-      mCboConnection->addItem( fileName, QFileInfo( path ).filePath() );
-      mCboConnection->setItemData( mCboConnection->findText( fileName ), path, Qt::ItemDataRole::ToolTipRole );
+      mCboFileName->addItem( fileName, QFileInfo( path ).filePath() );
+      mCboFileName->setItemData( mCboFileName->findText( fileName ), path, Qt::ItemDataRole::ToolTipRole );
     }
-    mCboConnection->setCurrentIndex( mCboConnection->findText( fileName ) );
+    mCboFileName->setCurrentIndex( mCboFileName->findText( fileName ) );
   } );
 
   if ( saving )
@@ -74,24 +74,24 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   for ( const auto &connName : connList )
   {
     const QgsOgrDbConnection conn { connName, QStringLiteral( "GPKG" ) };
-    mCboConnection->addItem( connName, conn.path() );
-    mCboConnection->setItemData( mCboConnection->findText( connName ), conn.path(), Qt::ItemDataRole::ToolTipRole );
+    mCboFileName->addItem( connName, conn.path() );
+    mCboFileName->setItemData( mCboFileName->findText( connName ), conn.path(), Qt::ItemDataRole::ToolTipRole );
   }
 
   connect( mCboProject, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::projectChanged );
   connect( mCboProject, qOverload<const QString &>( &QComboBox::currentTextChanged ), this, [=]( const QString & ) {
     mCboProject->setItemData( mCboProject->currentIndex(), false );
   } );
-  connect( mCboConnection, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::populateProjects );
+  connect( mCboFileName, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::populateProjects );
 
   // If possible, set the item currently displayed database
   const QString toSelect = QgsOgrDbConnection::selectedConnection( QStringLiteral( "GPKG" ) );
-  mCboConnection->setCurrentIndex( mCboConnection->findText( toSelect ) );
+  mCboFileName->setCurrentIndex( mCboFileName->findText( toSelect ) );
 }
 
 QString QgsGeoPackageProjectStorageDialog::connectionName() const
 {
-  return mCboConnection->currentText();
+  return mCboFileName->currentText();
 }
 
 
@@ -157,7 +157,7 @@ void QgsGeoPackageProjectStorageDialog::removeProject()
 QString QgsGeoPackageProjectStorageDialog::currentProjectUri()
 {
   QgsGeoPackageProjectUri gpkgUri;
-  gpkgUri.database = mCboConnection->currentData().toString();
+  gpkgUri.database = mCboFileName->currentData().toString();
   gpkgUri.projectName = mCboProject->currentText();
   return QgsGeoPackageProjectStorage::encodeUri( gpkgUri );
 }
