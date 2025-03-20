@@ -84,6 +84,10 @@ QgsProcessingToolboxModel.RoleProviderFlags = QgsProcessingToolboxModel.CustomRo
 QgsProcessingToolboxModel.Roles.RoleProviderFlags = QgsProcessingToolboxModel.CustomRole.ProviderFlags
 QgsProcessingToolboxModel.RoleProviderFlags.is_monkey_patched = True
 QgsProcessingToolboxModel.RoleProviderFlags.__doc__ = "Returns the node's provider flags"
+QgsProcessingToolboxModel.RoleParameterTypeId = QgsProcessingToolboxModel.CustomRole.ParameterTypeId
+QgsProcessingToolboxModel.Roles.RoleParameterTypeId = QgsProcessingToolboxModel.CustomRole.ParameterTypeId
+QgsProcessingToolboxModel.RoleParameterTypeId.is_monkey_patched = True
+QgsProcessingToolboxModel.RoleParameterTypeId.__doc__ = "Untranslated paremter type unique identifer, for parameter nodes"
 QgsProcessingToolboxModel.CustomRole.__doc__ = """Custom model roles.
 
 .. note::
@@ -119,6 +123,10 @@ QgsProcessingToolboxModel.CustomRole.__doc__ = """Custom model roles.
 * ``ProviderFlags``: Returns the node's provider flags
 
   Available as ``QgsProcessingToolboxModel.RoleProviderFlags`` in older QGIS releases.
+
+* ``ParameterTypeId``: Untranslated paremter type unique identifer, for parameter nodes
+
+  Available as ``QgsProcessingToolboxModel.RoleParameterTypeId`` in older QGIS releases.
 
 
 """

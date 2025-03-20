@@ -355,6 +355,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
       AlgorithmShortDescription SIP_MONKEYPATCH_COMPAT_NAME( RoleAlgorithmShortDescription ), //!< Short algorithm description, for algorithm nodes
       AlgorithmTags SIP_MONKEYPATCH_COMPAT_NAME( RoleAlgorithmTags ),                         //!< List of algorithm tags, for algorithm nodes
       ProviderFlags SIP_MONKEYPATCH_COMPAT_NAME( RoleProviderFlags ),                         //!< Returns the node's provider flags
+      ParameterTypeId SIP_MONKEYPATCH_COMPAT_NAME( RoleParameterTypeId ),                     //!< Untranslated paremter type unique identifer, for parameter nodes
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*

@@ -332,6 +332,7 @@ of this model.
       AlgorithmShortDescription,
       AlgorithmTags,
       ProviderFlags,
+      ParameterTypeId,
     };
 
     QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );

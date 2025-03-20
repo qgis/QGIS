@@ -200,7 +200,6 @@ Possible candidates:
     {
       if ( param->flags() & Qgis::ProcessingParameterTypeFlag::ExposeToModeler )
       {
-        qDebug() << "Add param" << param->name();
         auto paramNode = std::make_unique<QgsProcessingToolboxModelParameterNode>( param );
         groupNode->addChildNode( paramNode.release() );
       }
@@ -673,7 +672,21 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
           return QVariant();
       }
       break;
+    case static_cast<int>( CustomRole::ParameterTypeId ):
+      switch ( index.column() )
+      {
+        case 0:
+        {
+          if ( paramType )
+            return paramType->id();
+          else
+            return QVariant();
+        }
 
+        default:
+          return QVariant();
+      }
+      break;
     default:
       return QVariant();
   }
@@ -874,8 +887,6 @@ void QgsProcessingToolboxProxyModel::setFilterString( const QString &filter )
 
 bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  /*tmp display all*/
-  return true;
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( mModel->isAlgorithm( sourceIndex ) )
   {
@@ -900,15 +911,15 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
         parent = parent.parent();
       }
 
-      const QStringList partsToMatch = mFilterString.trimmed().split( ' ' );
-
-      QStringList partsToSearch = sourceModel()->data( sourceIndex, Qt::DisplayRole ).toString().split( ' ' );
+      QStringList partsToSearch;
+      partsToSearch << sourceModel()->data( sourceIndex, Qt::DisplayRole ).toString().split( ' ' );
       partsToSearch << algId << algName;
       partsToSearch.append( algTags );
       if ( !shortDesc.isEmpty() )
         partsToSearch.append( shortDesc.split( ' ' ) );
       partsToSearch.append( parentText );
 
+      const QStringList partsToMatch = mFilterString.trimmed().split( ' ' );
       for ( const QString &part : partsToMatch )
       {
         bool found = false;
@@ -951,7 +962,35 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
   }
   if ( mModel->isParameter( sourceIndex ) )
   {
-    /* tmp return all the parameter for now*/
+    if ( mFilters & Filter::Toolbox )
+    {
+      /* Always hide in the toolbox */
+      return false;
+    }
+
+    if ( !mFilterString.trimmed().isEmpty() )
+    {
+      QStringList partsToSearch;
+      partsToSearch << sourceModel()->data( sourceIndex, Qt::DisplayRole ).toString().split( ' ' );
+      partsToSearch << sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::ParameterTypeId ) ).toString();
+
+      const QStringList partsToMatch = mFilterString.trimmed().split( ' ' );
+      for ( const QString &part : partsToMatch )
+      {
+        bool found = false;
+        for ( const QString &partToSearch : std::as_const( partsToSearch ) )
+        {
+          if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
+          {
+            found = true;
+            break;
+          }
+        }
+        if ( !found )
+          return false; // couldn't find a match for this word, so hide algorithm
+      }
+    }
+
     return true;
   }
   bool hasChildren = false;
