@@ -51,12 +51,12 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog : public QDialog, private Ui::QgsNe
     /**
      * Returns the database path
      */
-    QString databasePath() const { return mDatabase->filePath(); }
+    QString databasePath() const { return mFileName->filePath(); }
 
     /**
      * Sets the initial database \a path
      */
-    void setDatabasePath( const QString &path ) { mDatabase->setFilePath( path ); }
+    void setDatabasePath( const QString &path ) { mFileName->setFilePath( path ); }
 
     /**
      * Sets the database path widgets to a locked and read-only mode.
@@ -84,8 +84,8 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog : public QDialog, private Ui::QgsNe
     void mRemoveAttributeButton_clicked();
     void mFieldTypeBox_currentIndexChanged( int index );
     void mGeometryTypeBox_currentIndexChanged( int index );
-    void mTableNameEdit_textChanged( const QString &text );
-    void mTableNameEdit_textEdited( const QString &text );
+    void mLayerNameEdit_textChanged( const QString &text );
+    void mLayerNameEdit_textEdited( const QString &text );
     void mLayerIdentifierEdit_textEdited( const QString &text );
     void fieldNameChanged( const QString & );
     void selectionChanged();
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog : public QDialog, private Ui::QgsNe
 
     QPushButton *mOkButton = nullptr;
     QString mCrsId;
-    bool mTableNameEdited = false;
+    bool mLayerNameEdited = false;
     bool mLayerIdentifierEdited = false;
     OverwriteBehavior mBehavior = Prompt;
     bool mAddToProject = true;
