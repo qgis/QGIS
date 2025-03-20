@@ -246,6 +246,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     /**
      * Orbits camera around the globe by the specified amount given as the difference
      * in latitude/longitude angles (in degrees)
+     * \note the final latitude gets clamped to 0-90 degrees, while the longitude does not get clamped
      * \since QGIS 3.44
      */
     void globeMoveCenterPoint( double latDiff, double lonDiff );

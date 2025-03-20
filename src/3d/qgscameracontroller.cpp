@@ -60,11 +60,10 @@ QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
   connect( mFpsNavTimer, &QTimer::timeout, this, &QgsCameraController::applyFlyModeKeyMovements );
   mFpsNavTimer->start();
 
-  if ( mScene->mapSettings()->isGlobe() )
+  if ( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
   {
-    // TODO: is it okay to transform to EPSG:4326 if the geocentric CRS is based on other datum?
     mGlobeCrsToLatLon = QgsCoordinateTransform( mScene->mapSettings()->crs(),
-                                                QgsCoordinateReferenceSystem( "EPSG:4326" ),
+                                                mScene->mapSettings()->crs().toGeographicCrs(),
                                                 mScene->mapSettings()->transformContext() );
   }
 }
@@ -174,7 +173,7 @@ void QgsCameraController::frameTriggered( float dt )
 
   if ( mCameraChanged )
   {
-    // %%% emit cameraChanged();
+    emit cameraChanged();
     mCameraChanged = false;
   }
 }
@@ -315,17 +314,25 @@ double QgsCameraController::depthBufferNonVoidAverage()
 
 QgsVector3D QgsCameraController::moveGeocentricPoint( const QgsVector3D &point, double latDiff, double lonDiff )
 {
-  QgsVector3D pointLatLon = mGlobeCrsToLatLon.transform( point );
-  pointLatLon.setX( pointLatLon.x() + lonDiff );
-  pointLatLon.setY( std::clamp( pointLatLon.y() + latDiff, -90., 90. ) );
+  try
+  {
+    QgsVector3D pointLatLon = mGlobeCrsToLatLon.transform( point );
+    pointLatLon.setX( pointLatLon.x() + lonDiff );
+    pointLatLon.setY( std::clamp( pointLatLon.y() + latDiff, -90., 90. ) );
 
-  return mGlobeCrsToLatLon.transform( pointLatLon, Qgis::TransformDirection::Reverse );
+    return mGlobeCrsToLatLon.transform( pointLatLon, Qgis::TransformDirection::Reverse );
+  }
+  catch ( const QgsCsException & )
+  {
+    QgsDebugError( QStringLiteral( "moveGeocentricPoint: transform failed!" ) );
+    return point;
+  }
 }
 
 void QgsCameraController::globeMoveCenterPoint( double latDiff, double lonDiff )
 {
-  QgsVector3D viewCenter = mCameraPose.centerPoint() + mOrigin;
-  QgsVector3D newViewCenter = moveGeocentricPoint( viewCenter, latDiff, lonDiff );
+  const QgsVector3D viewCenter = mCameraPose.centerPoint() + mOrigin;
+  const QgsVector3D newViewCenter = moveGeocentricPoint( viewCenter, latDiff, lonDiff );
   mCameraPose.setCenterPoint( newViewCenter - mOrigin );
   updateCameraFromPose();
 }
@@ -350,7 +357,16 @@ void QgsCameraController::globeUpdateHeadingAngle( float angleDiff )
 
 void QgsCameraController::resetGlobe( float distance, double lat, double lon )
 {
-  QgsVector3D mapPoint = mGlobeCrsToLatLon.transform( QgsVector3D( lon, lat, 0 ), Qgis::TransformDirection::Reverse );
+  QgsVector3D mapPoint;
+  try
+  {
+    mapPoint = mGlobeCrsToLatLon.transform( QgsVector3D( lon, lat, 0 ), Qgis::TransformDirection::Reverse );
+  }
+  catch ( const QgsCsException & )
+  {
+    QgsDebugError( QStringLiteral( "resetGlobe: transform failed!" ) );
+    return;
+  }
 
   QgsCameraPose cp;
   cp.setCenterPoint( mapPoint - mOrigin );
@@ -362,16 +378,22 @@ void QgsCameraController::updateCameraFromPose()
 {
   if ( mCamera )
   {
-    if ( mScene->mapSettings()->isGlobe() )
+    if ( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
     {
-      QgsVector3D viewCenter = mCameraPose.centerPoint() + mOrigin;
+      const QgsVector3D viewCenter = mCameraPose.centerPoint() + mOrigin;
 
-      QgsVector3D viewCenterLatLon = mGlobeCrsToLatLon.transform( viewCenter );
+      QgsVector3D viewCenterLatLon;
+      try
+      {
+        viewCenterLatLon = mGlobeCrsToLatLon.transform( viewCenter );
+      }
+      catch ( const QgsCsException & )
+      {
+        QgsDebugError( QStringLiteral( "updateCameraFromPose: transform failed!" ) );
+        return;
+      }
 
       mCameraPose.updateCameraGlobe( mCamera, viewCenterLatLon.y(), viewCenterLatLon.x() );
-
-      // TODO: this should not be needed - but without that, we get a weird flicker
-      emit cameraChanged();
     }
     else
     {
@@ -610,39 +632,46 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
   {
     double depth;
     QVector3D worldPosition;
-    if ( screenPointToWorldPos( mClickPoint, mCameraBefore.get(), depth, worldPosition ) )
-    {
-      mDragDepth = depth;
-      mDragPoint = worldPosition;
-      mDragPointCalculated = true;
-    }
-    else
+    if ( !screenPointToWorldPos( mClickPoint, mCameraBefore.get(), depth, worldPosition ) )
       return;
+
+    mDragDepth = depth;
+    mDragPoint = worldPosition;
+    mDragPointCalculated = true;
   }
 
-  QgsVector3D mapPressPos = QgsVector3D( mDragPoint ) + mOrigin;
+  const QgsVector3D mapPressPos = QgsVector3D( mDragPoint ) + mOrigin;
 
   double newDepth = sampleDepthBuffer( mouse->x(), mouse->y() );
   if ( newDepth == 1 )
     return;    // the mouse is somewhere in the void...
 
-  QVector3D newWorldPosition = Qgs3DUtils::screenPointToWorldPos( QPoint( mouse->x(), mouse->y() ), newDepth, mScene->engine()->size(), mCameraBefore.get() );
+  const QVector3D newWorldPosition = Qgs3DUtils::screenPointToWorldPos( QPoint( mouse->x(), mouse->y() ), newDepth, mScene->engine()->size(), mCameraBefore.get() );
   if ( !std::isfinite( newWorldPosition.x() ) || !std::isfinite( newWorldPosition.y() ) || !std::isfinite( newWorldPosition.z() ) )
     return;
 
-  QgsVector3D newMapPos = QgsVector3D( newWorldPosition ) + mOrigin;
+  const QgsVector3D newMapPos = QgsVector3D( newWorldPosition ) + mOrigin;
 
   // now that we have old and new mouse position in ECEF coordinates,
   // let's figure out the difference in lat/lon angles and update the center point
 
-  QgsVector3D oldLatLon = mGlobeCrsToLatLon.transform( mapPressPos );
-  QgsVector3D newLatLon = mGlobeCrsToLatLon.transform( newMapPos );
+  QgsVector3D oldLatLon, newLatLon;
+  try
+  {
+    oldLatLon = mGlobeCrsToLatLon.transform( mapPressPos );
+    newLatLon = mGlobeCrsToLatLon.transform( newMapPos );
+  }
+  catch ( const QgsCsException & )
+  {
+    QgsDebugError( QStringLiteral( "onPositionChangedGlobeTerrainNavigation: transform failed!" ) );
+    return;
+  }
 
-  double latDiff = oldLatLon.y() - newLatLon.y();
-  double lonDiff = oldLatLon.x() - newLatLon.x();
+  const double latDiff = oldLatLon.y() - newLatLon.y();
+  const double lonDiff = oldLatLon.x() - newLatLon.x();
 
-  QgsVector3D newVC = moveGeocentricPoint( mMousePressViewCenter, latDiff, lonDiff );
-  QgsVector3D newVCWorld = newVC - mOrigin;
+  const QgsVector3D newVC = moveGeocentricPoint( mMousePressViewCenter, latDiff, lonDiff );
+  const QgsVector3D newVCWorld = newVC - mOrigin;
   mCameraPose.setCenterPoint( newVCWorld );
   updateCameraFromPose();
 }
@@ -789,7 +818,7 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
     switch ( mCameraNavigationMode )
     {
       case Qgis::NavigationMode::Walk:
-        setCameraNavigationMode( mScene->mapSettings()->isGlobe() ? Qgis::NavigationMode::GlobeTerrainBased : Qgis::NavigationMode::TerrainBased );
+        setCameraNavigationMode( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe ? Qgis::NavigationMode::GlobeTerrainBased : Qgis::NavigationMode::TerrainBased );
         break;
       case Qgis::NavigationMode::TerrainBased:
         setCameraNavigationMode( Qgis::NavigationMode::Walk );
@@ -885,8 +914,10 @@ void QgsCameraController::onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *e
 
 void QgsCameraController::onKeyPressedGlobeTerrainNavigation( Qt3DInput::QKeyEvent *event )
 {
-  const float moveFactor = 0.000001f;  // multiplied by distance to get angle
-  const float zoomFactor = 0.9f;
+  // both move factor and zoom factor are just empirically picked numbers
+  // that seem to work well (providing steps that are not too big / not too small)
+  constexpr float MOVE_FACTOR = 0.000001f;  // multiplied by distance to get angle
+  constexpr float ZOOM_FACTOR = 0.9f;
 
   const bool hasShift = ( event->modifiers() & Qt::ShiftModifier );
 
@@ -896,31 +927,31 @@ void QgsCameraController::onKeyPressedGlobeTerrainNavigation( Qt3DInput::QKeyEve
       if ( hasShift )
         globeUpdateHeadingAngle( -5 );
       else
-        globeMoveCenterPoint( 0, -moveFactor * mCameraPose.distanceFromCenterPoint() );
+        globeMoveCenterPoint( 0, -MOVE_FACTOR * mCameraPose.distanceFromCenterPoint() );
       break;
     case Qt::Key_Right:
       if ( hasShift )
         globeUpdateHeadingAngle( 5 );
       else
-        globeMoveCenterPoint( 0, moveFactor * mCameraPose.distanceFromCenterPoint() );
+        globeMoveCenterPoint( 0, MOVE_FACTOR * mCameraPose.distanceFromCenterPoint() );
       break;
     case Qt::Key_Up:
       if ( hasShift )
         globeUpdatePitchAngle( -5 );
       else
-        globeMoveCenterPoint( moveFactor * mCameraPose.distanceFromCenterPoint(), 0 );
+        globeMoveCenterPoint( MOVE_FACTOR * mCameraPose.distanceFromCenterPoint(), 0 );
       break;
     case Qt::Key_Down:
       if ( hasShift )
         globeUpdatePitchAngle( 5 );
       else
-        globeMoveCenterPoint( -moveFactor * mCameraPose.distanceFromCenterPoint(), 0 );
+        globeMoveCenterPoint( -MOVE_FACTOR * mCameraPose.distanceFromCenterPoint(), 0 );
       break;
     case Qt::Key_PageDown:
-      globeZoom( zoomFactor );
+      globeZoom( ZOOM_FACTOR );
       break;
     case Qt::Key_PageUp:
-      globeZoom( 1 / zoomFactor );
+      globeZoom( 1 / ZOOM_FACTOR );
       break;
     default:
       break;
