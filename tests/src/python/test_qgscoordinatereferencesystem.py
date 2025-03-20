@@ -36,6 +36,27 @@ class TestQgsCoordinateReferenceSystem(QgisTestCase):
             [Qgis.CrsAxisDirection.East, Qgis.CrsAxisDirection.North],
         )
 
+    def test_geocentric_to_geographic_crs(self):
+        res = QgsCoordinateReferenceSystem("EPSG:4978").toGeographicCrs()
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.type(), Qgis.CrsType.Geographic2d)
+        self.assertEqual(res.mapUnits(), Qgis.DistanceUnit.Degrees)
+        self.assertEqual(res.ellipsoidAcronym(), "EPSG:7030")
+        self.assertEqual(
+            res.axisOrdering(),
+            [Qgis.CrsAxisDirection.East, Qgis.CrsAxisDirection.North],
+        )
+
+        res = QgsCoordinateReferenceSystem("IGNF:ATI").toGeographicCrs()
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.type(), Qgis.CrsType.Geographic2d)
+        self.assertEqual(res.mapUnits(), Qgis.DistanceUnit.Degrees)
+        self.assertEqual(res.ellipsoidAcronym(), "EPSG:7027")
+        self.assertEqual(
+            res.axisOrdering(),
+            [Qgis.CrsAxisDirection.East, Qgis.CrsAxisDirection.North],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
