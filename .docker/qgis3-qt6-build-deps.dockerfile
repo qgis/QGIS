@@ -72,7 +72,7 @@ RUN dnf -y --refresh install \
     qtkeychain-qt6-devel \
     qwt-qt6-devel \
     qscintilla-qt6-devel \
-    sip6-6.8.6-2.fc41.noarch \
+    sip6 \
     spatialindex-devel \
     sqlite-devel \
     unzip \
