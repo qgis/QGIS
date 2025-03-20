@@ -308,7 +308,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>671</width>
-                <height>802</height>
+                <height>794</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -652,7 +652,11 @@
                    </widget>
                   </item>
                   <item row="4" column="1" colspan="4">
-                   <widget class="QComboBox" name="mScaleMethodCombo"/>
+                   <widget class="QgsScaleMethodWidget" name="mScaleMethodWidget" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1201,7 +1205,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>276</width>
-                <height>454</height>
+                <height>448</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12" stretch="0,0,1">
@@ -3653,6 +3657,12 @@
    <extends>QWidget</extends>
    <header>qsvgwidget.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsScaleMethodWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalemethodwidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
@@ -3673,7 +3683,7 @@
   <tabstop>leSemiMinor</tabstop>
   <tabstop>mDistanceUnitsCombo</tabstop>
   <tabstop>mAreaUnitsCombo</tabstop>
-  <tabstop>mScaleMethodCombo</tabstop>
+  <tabstop>mScaleMethodWidget</tabstop>
   <tabstop>mCoordinateDisplayComboBox</tabstop>
   <tabstop>mCustomizeCoordinateFormatButton</tabstop>
   <tabstop>radAutomatic</tabstop>
