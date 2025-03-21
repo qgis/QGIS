@@ -152,15 +152,15 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &f, const 
 
   if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::Polygon )
   {
-    QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( buffered );
+    QgsPolygon *polyBuffered = qgsgeometry_cast<QgsPolygon *>( buffered );
     processPolygon( polyBuffered, f.id(), mSymbol->offset(), mSymbol->extrusionHeight(), context, out );
   }
   else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::MultiPolygon )
   {
-    QgsMultiPolygon *mpolyBuffered = static_cast<QgsMultiPolygon *>( buffered );
+    QgsMultiPolygon *mpolyBuffered = qgsgeometry_cast<QgsMultiPolygon *>( buffered );
     for ( int i = 0; i < mpolyBuffered->numGeometries(); ++i )
     {
-      QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( mpolyBuffered->polygonN( i ) )->clone(); // need to clone individual geometry parts
+      QgsPolygon *polyBuffered = qgsgeometry_cast<QgsPolygon *>( mpolyBuffered->polygonN( i ) )->clone(); // need to clone individual geometry parts
       processPolygon( polyBuffered, f.id(), mSymbol->offset(), mSymbol->extrusionHeight(), context, out );
     }
     delete buffered;
