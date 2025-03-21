@@ -348,8 +348,19 @@ class TEST_EXPORT QgsTest : public QObject
             qWarning() << header.toStdString().c_str() << "Unable to write actual data to file" << actualPath << ".";
           }
 
+          QString errPos = "_";
+          for ( int i = 0; i < std::min( act.size(), exp.size() ); i++ )
+          {
+            if ( act[i] == exp[i] )
+              errPos += "__";
+            else
+              break;
+          }
+          errPos += "^^";
           qWarning() << header.toStdString().c_str() << "Hex version of the parts of array that differ starting from char" << i << "."
-                     << "\n   Actual hex:  " << act.toHex() << "\n   Expected hex:" << exp.toHex();
+                     << "\n   Actual hex:  " << act.toHex()
+                     << "\n   Expected hex:" << exp.toHex()
+                     << "\n   Char error:  " << errPos.toStdString().c_str();
           QString msg = QString( "%1 Comparison failed in starting from char %2." ).arg( header ).arg( QString::number( i ) );
 
           // create copies of data as QTest::compare_helper will delete them
@@ -360,8 +371,10 @@ class TEST_EXPORT QgsTest : public QObject
           memcpy( expectedCopy, exp.data(), exp.size() );
           expectedCopy[exp.size()] = 0;
 
-          return QTest::compare_helper( act == exp, msg.toStdString().c_str(), // NOLINT(clang-analyzer-cplusplus.NewDeleteLeaks)
-                                        actualCopy, expectedCopy, actualPath.toStdString().c_str(), subPath.toStdString().c_str(), file, line );
+          return QTest::compare_helper( act == exp, msg.toStdString().c_str(),                           // NOLINT(clang-analyzer-cplusplus.NewDeleteLeaks)
+                                        actualCopy, expectedCopy,                                        //
+                                        actualPath.toStdString().c_str(), subPath.toStdString().c_str(), //
+                                        file, line );
         }
       }
       return true;
