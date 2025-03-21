@@ -22,7 +22,9 @@
 #include "qgsmeshlayer.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"
-
+#include "qgsproject.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsterrainprovider.h"
 
 QgsMeshAdvancedEditing::QgsMeshAdvancedEditing() = default;
 
@@ -610,7 +612,7 @@ QString QgsMeshEditRefineFaces::text() const
   return QObject::tr( "Refine %n face(s)", nullptr, mInputFaces.count() );
 }
 
-bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
+bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer, QgsProject *project )
 {
   if ( !layer || !layer->meshEditor() || !layer->nativeMesh() )
     return false;
@@ -657,13 +659,26 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
   }
 
   QgsExpression expressionZ;
-  if ( calcZ )
+  if ( calcZ || mZFromTerrain )
   {
     expressionZ = QgsExpression( mExpressionZ );
     expressionZ.prepare( &context );
     mNewZValues.reserve( inputCount );
     mOldZValues.reserve( inputCount );
   }
+
+  QgsCoordinateTransform transformation;
+  const QgsAbstractTerrainProvider *terrainProvider = nullptr;
+
+  if ( mZFromTerrain && project )
+  {
+    terrainProvider = project->elevationProperties()->terrainProvider();
+    if ( terrainProvider )
+    {
+      transformation = QgsCoordinateTransform( layer->crs(), terrainProvider->crs(), project );
+    }
+  }
+
 
   for ( int i = 0; i < mInputVertices.count(); ++i )
   {
@@ -721,7 +736,7 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
         return false;
     }
 
-    if ( calcZ )
+    if ( calcZ && !mZFromTerrain )
     {
       double z = std::numeric_limits<double>::quiet_NaN();
       if ( zvar.isValid() )
@@ -732,6 +747,46 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
       }
 
       mNewZValues.append( z );
+      mOldZValues.append( vert.z() );
+    }
+
+    if ( mZFromTerrain && terrainProvider )
+    {
+      QgsPointXY point;
+      bool vertexTransformed;
+      double elevation;
+
+      try
+      {
+        if ( calcX || calcY )
+        {
+          point = transformation.transform( mNewXYValues.last().x(), mNewXYValues.last().y() );
+        }
+        else
+        {
+          point = transformation.transform( vert.x(), vert.y() );
+        }
+        vertexTransformed = true;
+      }
+      catch ( const QgsCsException & )
+      {
+        vertexTransformed = false;
+      }
+
+      // default elevation is the previous Z
+      elevation = vert.z();
+
+      if ( vertexTransformed )
+      {
+        double terrainElevation = terrainProvider->heightAt( point.x(), point.y() );
+        // if elevation at terrain provider is NaN, use the original vertex Z value
+        if ( ! std::isnan( terrainElevation ) )
+        {
+          elevation = terrainElevation;
+        }
+      }
+
+      mNewZValues.append( elevation );
       mOldZValues.append( vert.z() );
     }
   }
@@ -788,4 +843,9 @@ QgsMeshVertex QgsMeshTransformVerticesByExpression::transformedVertex( QgsMeshLa
   }
   else
     return layer->nativeMesh()->vertex( vertexIndex );
+}
+
+void QgsMeshTransformVerticesByExpression::setZFromTerrain( bool enable )
+{
+  mZFromTerrain = enable;
 }
