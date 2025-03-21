@@ -20,6 +20,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsconditionalstyle.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsvaluerelationfieldformatter.h"
 
 QgsFeaturePickerModelBase::QgsFeaturePickerModelBase( QObject *parent )
   : QAbstractItemModel( parent )
@@ -114,6 +115,41 @@ void QgsFeaturePickerModelBase::setFilterExpression( const QString &filterExpres
   emit filterExpressionChanged();
 }
 
+QgsFeature QgsFeaturePickerModelBase::formFeature() const
+{
+  return mFormFeature;
+}
+
+void QgsFeaturePickerModelBase::setFormFeature( const QgsFeature &feature )
+{
+  if ( mFormFeature == feature )
+    return;
+
+  mFormFeature = feature;
+  if ( !mFilterExpression.isEmpty() && QgsValueRelationFieldFormatter::expressionRequiresFormScope( mFilterExpression ) )
+  {
+    reload();
+  }
+  emit formFeatureChanged();
+}
+
+QgsFeature QgsFeaturePickerModelBase::parentFormFeature() const
+{
+  return mParentFormFeature;
+}
+
+void QgsFeaturePickerModelBase::setParentFormFeature( const QgsFeature &feature )
+{
+  if ( mParentFormFeature == feature )
+    return;
+
+  mParentFormFeature = feature;
+  if ( !mFilterExpression.isEmpty() && QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( mFilterExpression ) )
+  {
+    reload();
+  }
+  emit parentFormFeatureChanged();
+}
 
 bool QgsFeaturePickerModelBase::isLoading() const
 {
@@ -405,6 +441,18 @@ void QgsFeaturePickerModelBase::scheduledReload()
     {
       request.setFilterExpression( filterClause );
       request.expressionContext()->appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( sourceLayer() ) );
+
+      if ( !mFilterExpression.isEmpty() )
+      {
+        if ( mFormFeature.isValid() && QgsValueRelationFieldFormatter::expressionRequiresFormScope( mFilterExpression ) )
+        {
+          request.expressionContext()->appendScope( QgsExpressionContextUtils::formScope( mFormFeature ) );
+        }
+        if ( mParentFormFeature.isValid() && QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( mFilterExpression ) )
+        {
+          request.expressionContext()->appendScope( QgsExpressionContextUtils::parentFormScope( mParentFormFeature ) );
+        }
+      }
     }
   }
   QSet<QString> attributes = requestedAttributes();
