@@ -78,7 +78,7 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
         QVector<uint> triangleIndexStartingIndices;
     };
 
-    void processPolygon( QgsPolygon *polyBuffered, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, LineData &out );
+    void processPolygon( std::unique_ptr<QgsPolygon> &polyBuffered, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, LineData &out );
 
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, LineData &out, bool selected );
 
@@ -146,31 +146,30 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &f, const 
     width = 0.001;
   }
 
-  QgsAbstractGeometry *buffered = engine.buffer( width / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
+  std::unique_ptr<QgsAbstractGeometry> buffered( engine.buffer( width / 2., nSegments, endCapStyle, joinStyle, mitreLimit ) ); // factory
   if ( !buffered )
     return;
 
   if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::Polygon )
   {
-    QgsPolygon *polyBuffered = qgsgeometry_cast<QgsPolygon *>( buffered )->clone();
+    std::unique_ptr<QgsPolygon> polyBuffered( qgsgeometry_cast<QgsPolygon *>( buffered.get() )->clone() );
     processPolygon( polyBuffered, f.id(), mSymbol->offset(), mSymbol->extrusionHeight(), context, out );
   }
   else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::MultiPolygon )
   {
-    QgsMultiPolygon *mpolyBuffered = qgsgeometry_cast<QgsMultiPolygon *>( buffered );
+    QgsMultiPolygon *mpolyBuffered = qgsgeometry_cast<QgsMultiPolygon *>( buffered.get() );
     for ( int i = 0; i < mpolyBuffered->numGeometries(); ++i )
     {
-      QgsPolygon *polyBuffered = qgsgeometry_cast<QgsPolygon *>( mpolyBuffered->polygonN( i ) )->clone(); // need to clone individual geometry parts
+      std::unique_ptr<QgsPolygon> polyBuffered( qgsgeometry_cast<QgsPolygon *>( mpolyBuffered->polygonN( i ) )->clone() ); // need to clone individual geometry parts
       processPolygon( polyBuffered, f.id(), mSymbol->offset(), mSymbol->extrusionHeight(), context, out );
     }
   }
-  delete buffered;
   mFeatureCount++;
 }
 
-void QgsBufferedLine3DSymbolHandler::processPolygon( QgsPolygon *polyBuffered, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, LineData &out )
+void QgsBufferedLine3DSymbolHandler::processPolygon( std::unique_ptr<QgsPolygon> &polyBuffered, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, LineData &out )
 {
-  Qgs3DUtils::clampAltitudes( polyBuffered, mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), height, context );
+  Qgs3DUtils::clampAltitudes( polyBuffered.get(), mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), height, context );
 
   Q_ASSERT( out.tessellator->dataVerticesCount() % 3 == 0 );
   const uint startingTriangleIndex = static_cast<uint>( out.tessellator->dataVerticesCount() / 3 );
@@ -181,8 +180,6 @@ void QgsBufferedLine3DSymbolHandler::processPolygon( QgsPolygon *polyBuffered, Q
   {
     QgsMessageLog::logMessage( out.tessellator->error(), QObject::tr( "3D" ) );
   }
-
-  delete polyBuffered;
 }
 
 void QgsBufferedLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
