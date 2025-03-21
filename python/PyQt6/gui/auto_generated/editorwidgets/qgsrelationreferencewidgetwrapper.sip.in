@@ -52,9 +52,23 @@ Constructor for QgsRelationReferenceWidgetWrapper
     virtual void setEnabled( bool enabled );
 
 
+    virtual void parentFormValueChanged( const QString &attribute, const QVariant &value );
+
+
   protected:
     virtual void updateConstraintWidgetStatus();
 
+
+    void widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged );
+%Docstring
+Will be called when a value in the current edited form or table row changes
+
+:param attribute: The name of the attribute that changed.
+:param newValue: The new value of the attribute.
+:param attributeChanged: If ``True``, it corresponds to an actual change of the feature attribute
+
+.. versionadded:: 3.42.2
+%End
 
 };
 
