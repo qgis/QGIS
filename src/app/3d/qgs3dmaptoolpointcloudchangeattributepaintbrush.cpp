@@ -146,9 +146,9 @@ void Qgs3DMapToolPointCloudChangeAttributePaintbrush::mouseWheelEvent( QWheelEve
   const bool shrink = reverseZoom ? event->angleDelta().y() > 0 : event->angleDelta().y() < 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
-  const float zoomFactor = 1 + 0.25f * std::abs( event->angleDelta().y() ) / 120.f;
+  const float zoomFactor = 1 + 0.25f * std::fabs( static_cast<float>( event->angleDelta().y() ) ) / 120.f;
   const float newWidth = shrink ? mSelectionRubberBand->width() / zoomFactor : mSelectionRubberBand->width() * zoomFactor;
-  mSelectionRubberBand->setWidth( std::clamp<float>( newWidth, 1.f, static_cast<float>( mCanvas->width() ) / 2.f ) );
+  mSelectionRubberBand->setWidth( std::clamp<float>( newWidth, 5.f, static_cast<float>( mCanvas->width() ) / 2.f ) );
 }
 
 void Qgs3DMapToolPointCloudChangeAttributePaintbrush::keyPressEvent( QKeyEvent *event )
