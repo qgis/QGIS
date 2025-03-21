@@ -50,7 +50,7 @@ fi
 set -e
 
 # determine changed files
-MODIFIED=$(git status --porcelain| ${GP}sed -ne "s/^ *[MA]  *//p" | sort -u)
+MODIFIED=$(git status --porcelain| ${GP}sed -ne 's/^ *[AM][AM]* *//p' | sort -u)
 
 if [ -z "$MODIFIED" ]; then
   echo nothing was modified
