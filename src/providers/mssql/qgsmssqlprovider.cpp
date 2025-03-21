@@ -1958,7 +1958,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
   QgsDataSourceUri dsUri( uri );
 
   // connect to database
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
 
   if ( !db->isValid() )
   {
@@ -1977,16 +1977,12 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
   QString geometryColumn = dsUri.geometryColumn();
 
   QString primaryKey = dsUri.keyColumn();
-  QString primaryKeyType;
 
   if ( schemaName.isEmpty() )
     schemaName = QStringLiteral( "dbo" );
 
   if ( wkbType != Qgis::WkbType::NoGeometry && geometryColumn.isEmpty() )
     geometryColumn = QStringLiteral( "geom" );
-
-  // get the pk's name and type
-  bool createdNewPk = false;
 
   // if no pk name was passed, define the new pk field name
   if ( primaryKey.isEmpty() )
@@ -2002,28 +1998,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
         i = 0;
       }
     }
-    createdNewPk = true;
   }
-  else
-  {
-    // search for the passed field
-    for ( int i = 0, n = fields.size(); i < n; ++i )
-    {
-      if ( fields.at( i ).name() == primaryKey )
-      {
-        // found, get the field type
-        QgsField fld = fields.at( i );
-        if ( ( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) || convertField( fld ) )
-        {
-          primaryKeyType = fld.typeName();
-        }
-      }
-    }
-  }
-
-  // if the field doesn't not exist yet, create it as a serial field
-  if ( primaryKeyType.isEmpty() )
-    primaryKeyType = QStringLiteral( "serial" );
 
   QString sql;
   QSqlQuery q = QSqlQuery( db->db() );
@@ -2165,13 +2140,12 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
 
   const QgsDataProvider::ProviderOptions providerOptions;
   const Qgis::DataProviderReadFlags flags;
-  QgsMssqlProvider *provider = new QgsMssqlProvider( dsUri.uri(), providerOptions, flags );
+  auto provider = std::make_unique< QgsMssqlProvider >( dsUri.uri(), providerOptions, flags );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
       *errorMessage = QObject::tr( "Loading of the MSSQL provider failed" );
 
-    delete provider;
     return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
@@ -2181,38 +2155,42 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
 
   if ( fields.size() > 0 )
   {
-    // if we had to create a primary key column, we start the old columns from 1
-    int offset = createdNewPk ? 1 : 0;
+    const QgsFields providerFields = provider->fields();
+    int offset = providerFields.size();
 
     // get the list of fields
     QList<QgsField> flist;
-    for ( int i = 0, n = fields.size(); i < n; ++i )
+    for ( int originalFieldIndex = 0, n = fields.size(); originalFieldIndex < n; ++originalFieldIndex )
     {
-      QgsField fld = fields.at( i );
-      if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
-      {
-        oldToNewAttrIdxMap->insert( fields.lookupField( fld.name() ), 0 );
-        continue;
-      }
-
-      if ( fld.name() == geometryColumn )
+      QgsField field = fields.at( originalFieldIndex );
+      if ( field.name() == geometryColumn )
       {
         // Found a field with the same name of the geometry column. Skip it!
         continue;
       }
 
-      if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && !convertField( fld ) )
+      const int providerIndex = providerFields.lookupField( field.name() );
+
+      if ( providerIndex >= 0 )
+      {
+        // we've already created this field (i.e. it was set in the CREATE TABLE statement), so
+        // we don't need to re-add it now
+        if ( oldToNewAttrIdxMap )
+          oldToNewAttrIdxMap->insert( originalFieldIndex, providerIndex );
+        continue;
+      }
+
+      if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && !convertField( field ) )
       {
         if ( errorMessage )
-          *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
+          *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( field.name() );
 
-        delete provider;
         return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
-      flist.append( fld );
+      flist.append( field );
       if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( fields.lookupField( fld.name() ), offset++ );
+        oldToNewAttrIdxMap->insert( originalFieldIndex, offset++ );
     }
 
     if ( !provider->addAttributes( flist ) )
@@ -2220,7 +2198,6 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
       if ( errorMessage )
         *errorMessage = QObject::tr( "Creation of fields failed" );
 
-      delete provider;
       return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
   }

@@ -659,7 +659,13 @@ void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve, bool 
   mProfileCurve = curve;
   createOrUpdateRubberBands();
   if ( resetView )
+  {
     mCanvas->invalidateCurrentPlotExtent();
+    if ( mMeasureTool->isActive() )
+    {
+      mMeasureTool->clear();
+    }
+  }
   scheduleUpdate();
 }
 
@@ -718,6 +724,10 @@ void QgsElevationProfileWidget::clear()
   if ( mMapPointRubberBand )
     mMapPointRubberBand->hide();
   mCanvas->clear();
+  if ( mMeasureTool->isActive() )
+  {
+    mMeasureTool->clear();
+  }
   mNudgeLeftAction->setEnabled( false );
   mNudgeRightAction->setEnabled( false );
   mProfileCurve = QgsGeometry();
