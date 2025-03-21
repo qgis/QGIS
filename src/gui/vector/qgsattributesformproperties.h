@@ -374,6 +374,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         QString mComment;
         Qgis::FieldDomainSplitPolicy mSplitPolicy = Qgis::FieldDomainSplitPolicy::Duplicate;
         Qgis::FieldDuplicatePolicy mDuplicatePolicy = Qgis::FieldDuplicatePolicy::Duplicate;
+        Qgis::FieldDomainMergePolicy mMergePolicy = Qgis::FieldDomainMergePolicy::DefaultValue;
 
         operator QVariant();
     };
