@@ -71,6 +71,8 @@ class _3D_EXPORT QgsMaterial : public Qt3DRender::QMaterial
     static const QString CLIP_PLANE_DEFINE;
 
     bool mClippingEnabled = false;
+
+    friend class TestQgs3dMaterial;
 };
 
 #endif // QGSMATERIAL_H
