@@ -63,9 +63,13 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
   mModel = new QgsStackedDiagramPropertiesModel();
   mSubDiagramsView->setModel( mModel );
 
+  mSubDiagramsView->setStyle( new QgsStackedDiagramsViewStyle( mSubDiagramsView ) );
+
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsStackedDiagramProperties::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsStackedDiagramProperties::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsStackedDiagramProperties::widgetChanged );
+
+  connect( mModel, &QgsStackedDiagramPropertiesModel::subDiagramsMoved, this, &QgsStackedDiagramProperties::clearCurrentIndex );
 
   syncToLayer();
 }
@@ -86,7 +90,7 @@ void QgsStackedDiagramProperties::addSubDiagramRenderer()
     const QModelIndex currentIndex = mSubDiagramsView->selectionModel()->currentIndex();
     mModel->insertSubDiagram( currentIndex.row() + 1, renderer.release() );
     const QModelIndex newIndex = mModel->index( currentIndex.row() + 1, 0 );
-    mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect );
+    mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
   }
   else
   {
@@ -101,7 +105,7 @@ void QgsStackedDiagramProperties::appendSubDiagramRenderer( QgsDiagramRenderer *
   const int rows = mModel->rowCount();
   mModel->insertSubDiagram( rows, dr ); // Transfers ownership
   const QModelIndex newIndex = mModel->index( rows, 0 );
-  mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect );
+  mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
 }
 
 void QgsStackedDiagramProperties::editSubDiagramRenderer()
@@ -169,6 +173,11 @@ void QgsStackedDiagramProperties::removeSubDiagramRenderer()
   mSubDiagramsView->selectionModel()->clear();
 }
 
+void QgsStackedDiagramProperties::clearCurrentIndex()
+{
+  mSubDiagramsView->selectionModel()->clearCurrentIndex();
+}
+
 void QgsStackedDiagramProperties::syncToLayer()
 {
   const QgsDiagramRenderer *dr = mLayer->diagramRenderer();
@@ -197,6 +206,8 @@ void QgsStackedDiagramProperties::syncToLayer()
 
     const QgsDiagramLayerSettings *dls = mLayer->diagramLayerSettings();
     mModel->updateDiagramLayerSettings( *dls );
+
+    mSubDiagramsView->selectionModel()->clear();
   }
 }
 
@@ -372,12 +383,16 @@ QgsStackedDiagramPropertiesModel::~QgsStackedDiagramPropertiesModel()
 
 Qt::ItemFlags QgsStackedDiagramPropertiesModel::flags( const QModelIndex &index ) const
 {
-  const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
+  // Flat list, to ease drop handling valid indexes are not dropEnabled
+  if ( !index.isValid() )
+    return Qt::ItemIsDropEnabled;
 
-  // allow drop only at first column
-  const Qt::ItemFlag drop = ( index.column() == 0 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags );
+  Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | drop | checkable;
+  if ( index.column() == 0 )
+    flags |= Qt::ItemIsUserCheckable;
+
+  return flags;
 }
 
 Qt::DropActions QgsStackedDiagramPropertiesModel::supportedDropActions() const
@@ -399,7 +414,11 @@ QMimeData *QgsStackedDiagramPropertiesModel::mimeData( const QModelIndexList &in
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  for ( const QModelIndex &index : indexes )
+  // Sort indexes since their order reflects selection order
+  QModelIndexList sortedIndexes = indexes;
+  std::sort( sortedIndexes.begin(), sortedIndexes.end() );
+
+  for ( const QModelIndex &index : std::as_const( sortedIndexes ) )
   {
     // each item consists of several columns - let's add it with just first one
     if ( !index.isValid() || index.column() != 0 )
@@ -423,6 +442,7 @@ QMimeData *QgsStackedDiagramPropertiesModel::mimeData( const QModelIndexList &in
 bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   Q_UNUSED( column )
+  Q_UNUSED( parent )
 
   if ( action == Qt::IgnoreAction )
     return true;
@@ -430,17 +450,14 @@ bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::
   if ( !data->hasFormat( QStringLiteral( "application/vnd.text.list" ) ) )
     return false;
 
-  if ( parent.column() > 0 )
-    return false;
-
   QByteArray encodedData = data->data( QStringLiteral( "application/vnd.text.list" ) );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   int rows = 0;
 
+  // the item was dropped at parent, we may decide where to put the items
   if ( row == -1 )
   {
-    // the item was dropped at a parent - we may decide where to put the items - let's append them
-    row = rowCount( parent );
+    row = mRenderers.count(); // let's append them (e.g., drop in empty space)
   }
 
   while ( !stream.atEnd() )
@@ -480,6 +497,7 @@ bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::
     }
   }
 
+  emit subDiagramsMoved(); // Let views know they can clean some things up
   return true;
 }
 
@@ -680,4 +698,25 @@ void QgsStackedDiagramPropertiesModel::updateDiagramLayerSettings( QgsDiagramLay
 QgsDiagramLayerSettings QgsStackedDiagramPropertiesModel::diagramLayerSettings() const
 {
   return mDiagramLayerSettings;
+}
+
+// ------------------------------ View style --------------------------------
+QgsStackedDiagramsViewStyle::QgsStackedDiagramsViewStyle( QWidget *parent )
+  : QgsProxyStyle( parent )
+{}
+
+void QgsStackedDiagramsViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget ) const
+{
+  if ( element == QStyle::PE_IndicatorItemViewItemDrop && !option->rect.isNull() )
+  {
+    QStyleOption opt( *option );
+    opt.rect.setLeft( 0 );
+    // draw always as line above, because we move item to that index
+    opt.rect.setHeight( 0 );
+    if ( widget )
+      opt.rect.setRight( widget->width() );
+    QProxyStyle::drawPrimitive( element, &opt, painter, widget );
+    return;
+  }
+  QProxyStyle::drawPrimitive( element, option, painter, widget );
 }

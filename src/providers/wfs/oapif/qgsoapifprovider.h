@@ -81,6 +81,8 @@ class QgsOapifProvider final : public QgsVectorDataProvider
 
     bool empty() const override;
 
+    QString geometryColumnName() const override;
+
     enum class FilterTranslationState
     {
       FULLY_CLIENT,
@@ -138,6 +140,9 @@ class QgsOapifProvider final : public QgsVectorDataProvider
 
     //! Compute capabilities
     void computeCapabilities( const QgsOapifItemsRequest &itemsRequest );
+
+    //! Issue a GET /schema request and handle it
+    void handleGetSchemaRequest( const QString &schemaUrl );
 };
 
 class QgsOapifProviderMetadata final : public QgsProviderMetadata
@@ -207,6 +212,9 @@ class QgsOapifSharedData final : public QObject, public QgsBackgroundCachedShare
 
     //! Server filter
     QString mServerFilter;
+
+    //! Geometry column name
+    QString mGeometryColumnName;
 
     //! Translation state of filter to server-side filter.
     QgsOapifProvider::FilterTranslationState mFilterTranslationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
