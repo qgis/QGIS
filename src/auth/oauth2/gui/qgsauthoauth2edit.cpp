@@ -504,6 +504,7 @@ void QgsAuthOAuth2Edit::populateGrantFlows()
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::AuthCode ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::AuthCode ) );
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::Implicit ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::Implicit ) );
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::ResourceOwner ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::ResourceOwner ) );
+  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::ClientCredentials ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::ClientCredentials ) );
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::Pkce ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::Pkce ) );
 }
 
@@ -739,15 +740,16 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
   // bool authcode = ( flow == QgsAuthOAuth2Config::AuthCode );
   const bool implicit = ( flow == QgsAuthOAuth2Config::GrantFlow::Implicit );
   const bool resowner = ( flow == QgsAuthOAuth2Config::GrantFlow::ResourceOwner );
+  const bool ccredentials = ( flow == QgsAuthOAuth2Config::GrantFlow::ClientCredentials );
   const bool pkce = ( flow == QgsAuthOAuth2Config::GrantFlow::Pkce );
 
-  lblRequestUrl->setVisible( !resowner );
-  leRequestUrl->setVisible( !resowner );
-  if ( resowner )
+  lblRequestUrl->setVisible( !resowner && !ccredentials );
+  leRequestUrl->setVisible( !resowner && !ccredentials );
+  if ( resowner || ccredentials )
     leRequestUrl->setText( QString() );
 
-  lblRedirectUrl->setVisible( !resowner );
-  frameRedirectUrl->setVisible( !resowner );
+  lblRedirectUrl->setVisible( !resowner && !ccredentials );
+  frameRedirectUrl->setVisible( !resowner && !ccredentials );
 
   lblClientSecret->setVisible( !implicit );
   leClientSecret->setVisible( !implicit );
@@ -760,7 +762,6 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
   lblClientSecret->setVisible( !pkce );
   leClientSecret->setVisible( !pkce );
   leClientSecret->setPlaceholderText( resowner ? tr( "Optional" ) : tr( "Required" ) );
-
 
   lblUsername->setVisible( resowner );
   leUsername->setVisible( resowner );
