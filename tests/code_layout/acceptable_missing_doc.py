@@ -235,7 +235,9 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsScopeLogger": ["QgsScopeLogger(const char *file, const char *func, int line)"],
     "QgsPythonRunner": [
         "evalCommand(QString command, QString &result)=0",
+        "runFileCommand(const QString &filename, const QString &messageOnError=QString())=0",
         "runCommand(QString command, QString messageOnError=QString())=0",
+        "setArgvCommand(const QStringList &arguments, const QString &messageOnError=QString())=0",
     ],
     "QgsAttributeActionDialog": [
         "init(const QgsActionManager &action, const QgsAttributeTableConfig &attributeTableConfig)",
