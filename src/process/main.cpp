@@ -45,6 +45,10 @@ typedef SInt32 SRefCon;
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
 
+#ifdef HAVE_OPENCL
+#include "qgsopenclutils.h"
+#endif
+
 #undef QgsDebugCall
 #undef QgsDebugError
 #undef QgsDebugMsgLevel
@@ -180,6 +184,23 @@ int main( int argc, char *argv[] )
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
   ( void ) QgsApplication::resolvePkgPath(); // trigger storing of application path in QgsApplication
+
+#ifdef HAVE_OPENCL
+
+  // Set the OpenCL source path to the folder containing the programs
+  // - use the environment variable QGIS_OPENCL_PROGRAM_FOLDER,
+  // - use a default location as a fallback
+
+  QString openClProgramFolder = getenv( "QGIS_OPENCL_PROGRAM_FOLDER" );
+
+  if ( openClProgramFolder.isEmpty() )
+  {
+    openClProgramFolder = QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/opencl_programs" ) );
+  }
+
+  QgsOpenClUtils::setSourcePath( openClProgramFolder );
+
+#endif
 
   QgsProcessingExec exec;
   int res = 0;
