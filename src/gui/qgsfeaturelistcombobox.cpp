@@ -40,6 +40,8 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   connect( mModel, &QgsFeatureFilterModel::sourceLayerChanged, this, &QgsFeatureListComboBox::sourceLayerChanged );
   connect( mModel, &QgsFeatureFilterModel::displayExpressionChanged, this, &QgsFeatureListComboBox::displayExpressionChanged );
   connect( mModel, &QgsFeatureFilterModel::filterExpressionChanged, this, &QgsFeatureListComboBox::filterExpressionChanged );
+  connect( mModel, &QgsFeatureFilterModel::formFeatureChanged, this, &QgsFeatureListComboBox::formFeatureChanged );
+  connect( mModel, &QgsFeatureFilterModel::parentFormFeatureChanged, this, &QgsFeatureListComboBox::parentFormFeatureChanged );
   connect( mModel, &QgsFeatureFilterModel::isLoadingChanged, this, &QgsFeatureListComboBox::onLoadingChanged );
   connect( mModel, &QgsFeatureFilterModel::filterJobCompleted, this, &QgsFeatureListComboBox::onFilterUpdateCompleted );
   connect( mModel, &QgsFeatureFilterModel::allowNullChanged, this, &QgsFeatureListComboBox::allowNullChanged );
@@ -327,4 +329,24 @@ QString QgsFeatureListComboBox::filterExpression() const
 void QgsFeatureListComboBox::setFilterExpression( const QString &filterExpression )
 {
   mModel->setFilterExpression( filterExpression );
+}
+
+QgsFeature QgsFeatureListComboBox::formFeature() const
+{
+  return mModel->formFeature();
+}
+
+void QgsFeatureListComboBox::setFormFeature( const QgsFeature &feature )
+{
+  mModel->setFormFeature( feature );
+}
+
+QgsFeature QgsFeatureListComboBox::parentFormFeature() const
+{
+  return mModel->parentFormFeature();
+}
+
+void QgsFeatureListComboBox::setParentFormFeature( const QgsFeature &feature )
+{
+  mModel->setParentFormFeature( feature );
 }
