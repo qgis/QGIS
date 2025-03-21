@@ -81,12 +81,6 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     void setDisplayExpression( const QString &displayExpression );
 
     /**
-     * An additional expression to further restrict the available features.
-     * This can be used to integrate additional spatial or other constraints.
-     */
-    QString filterExpression() const;
-
-    /**
      * Returns the current index of the NULL value, or -1 if NULL values are
      * not allowed.
      *
@@ -98,7 +92,37 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * An additional expression to further restrict the available features.
      * This can be used to integrate additional spatial or other constraints.
      */
+    QString filterExpression() const;
+
+    /**
+     * An additional expression to further restrict the available features.
+     * This can be used to integrate additional spatial or other constraints.
+     */
     void setFilterExpression( const QString &filterExpression );
+
+    /**
+     * Returns an attribute form feature to be used with the filter expression.
+     * \since QGIS 3.42.2
+     */
+    QgsFeature formFeature() const;
+
+    /**
+     * Sets an attribute form \a feature to be used with the filter expression.
+     * \since QGIS 3.42.2
+     */
+    void setFormFeature( const QgsFeature &feature );
+
+    /**
+     * Returns a parent attribute form feature to be used with the filter expression.
+     * \since QGIS 3.42.2
+     */
+    QgsFeature parentFormFeature() const;
+
+    /**
+     * Sets a parent attribute form \a feature to be used with the filter expression.
+     * \since QGIS 3.42.2
+     */
+    void setParentFormFeature( const QgsFeature &feature );
 
     /**
      * The identifier value of the currently selected feature. A value from the
@@ -226,6 +250,18 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * This can be used to integrate additional spatial or other constraints.
      */
     void filterExpressionChanged();
+
+    /**
+     * An attribute form feature to be used alongside the filter expression.
+     * \since QGIS 3.42.2
+     */
+    void formFeatureChanged();
+
+    /**
+     * A parent attribute form feature to be used alongside the filter expression.
+     * \since QGIS 3.42.2
+     */
+    void parentFormFeatureChanged();
 
     /**
      * The identifier value of the currently selected feature. A value from the

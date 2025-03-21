@@ -71,6 +71,8 @@ class TestQgsRelationReferenceWidget : public QObject
     void testDependencies(); // Test relation datasource, id etc. config storage
     void testSetFilterExpression();
     void testSetFilterExpressionWithOrClause();
+    void testSetFilterExpressionWithCurrentValue();
+    void testSetFilterExpressionWithParentValue();
     void testComboLimit();
     void testAllowNullDefault();
 
@@ -785,6 +787,66 @@ void TestQgsRelationReferenceWidget::testSetFilterExpressionWithOrClause()
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "NULL" ) );
   // in case there is no field filter, the number of filtered features will be 2
   QCOMPARE( w.mComboBox->count(), 1 );
+}
+
+void TestQgsRelationReferenceWidget::testSetFilterExpressionWithCurrentValue()
+{
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+
+  QEventLoop loop;
+  connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
+  QgsFields fields(
+    QList<QgsField> {
+      QgsField( QStringLiteral( "field1" ), QMetaType::Type::QString ),
+      QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ),
+      QgsField( QStringLiteral( "field3" ), QMetaType::Type::Double ),
+    }
+  );
+  QgsFeature feature( fields );
+  feature.setAttribute( QStringLiteral( "field1" ), QStringLiteral( "iron" ) );
+  feature.setAttribute( QStringLiteral( "field2" ), 1 );
+  feature.setAttribute( QStringLiteral( "field3" ), 1.0 );
+
+  w.setRelation( *mRelation, true );
+  w.setFormFeature( feature );
+  w.setFilterExpression( QStringLiteral( "\"material\" = current_value('field1')" ) );
+  w.init();
+
+  loop.exec();
+
+  QCOMPARE( w.mComboBox->count(), 3 );
+}
+
+void TestQgsRelationReferenceWidget::testSetFilterExpressionWithParentValue()
+{
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+
+  QEventLoop loop;
+  connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
+  QgsFields fields(
+    QList<QgsField> {
+      QgsField( QStringLiteral( "field1" ), QMetaType::Type::QString ),
+      QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ),
+      QgsField( QStringLiteral( "field3" ), QMetaType::Type::Double ),
+    }
+  );
+  QgsFeature feature( fields );
+  feature.setAttribute( QStringLiteral( "field1" ), QStringLiteral( "iron" ) );
+  feature.setAttribute( QStringLiteral( "field2" ), 1 );
+  feature.setAttribute( QStringLiteral( "field3" ), 1.0 );
+
+  w.setRelation( *mRelation, true );
+  w.setParentFormFeature( feature );
+  w.setFilterExpression( QStringLiteral( "\"material\" = current_parent_value('field1')" ) );
+  w.init();
+
+  loop.exec();
+
+  QCOMPARE( w.mComboBox->count(), 3 );
 }
 
 void TestQgsRelationReferenceWidget::testComboLimit()

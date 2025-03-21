@@ -891,7 +891,7 @@ void QgsRelationReferenceWidget::addEntry()
   {
     QString title = tr( "Relation %1 for %2." ).arg( mRelation.name(), mReferencingLayer->name() );
 
-    QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mReferencingLayer, mFormFeature );
+    QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mReferencingLayer, mComboBox->formFeature() );
     QString msg = tr( "Link feature to %1 \"%2\" : Digitize the geometry for the new feature on layer %3. Press &lt;ESC&gt; to cancel." )
                     .arg( mReferencingLayer->name(), displayString, mReferencedLayer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
@@ -1016,5 +1016,10 @@ void QgsRelationReferenceWidget::setReferencedLayerDataSource( const QString &re
 
 void QgsRelationReferenceWidget::setFormFeature( const QgsFeature &formFeature )
 {
-  mFormFeature = formFeature;
+  mComboBox->setFormFeature( formFeature );
+}
+
+void QgsRelationReferenceWidget::setParentFormFeature( const QgsFeature &parentFormFeature )
+{
+  mComboBox->setParentFormFeature( parentFormFeature );
 }
