@@ -780,6 +780,28 @@ Sets the default area measurement units for the project.
 .. seealso:: :py:func:`setDistanceUnits`
 %End
 
+    Qgis::ScaleCalculationMethod scaleMethod() const;
+%Docstring
+Returns the method to use for map scale calculations for the project.
+
+.. seealso:: :py:func:`setScaleMethod`
+
+.. seealso:: :py:func:`scaleMethodChanged`
+
+.. versionadded:: 3.44
+%End
+
+    void setScaleMethod( Qgis::ScaleCalculationMethod method );
+%Docstring
+Sets the ``method`` to use for map scale calculations for the project.
+
+.. seealso:: :py:func:`scaleMethod`
+
+.. seealso:: :py:func:`scaleMethodChanged`
+
+.. versionadded:: 3.44
+%End
+
     QString homePath() const;
 %Docstring
 Returns the project's home path. This will either be a manually set home path
@@ -1884,6 +1906,17 @@ Emitted when the default area units changes.
 .. seealso:: :py:func:`setAreaUnits`
 
 .. versionadded:: 3.28
+%End
+
+    void scaleMethodChanged();
+%Docstring
+Emitted when the project's scale method is changed.
+
+.. seealso:: :py:func:`scaleMethod`
+
+.. seealso:: :py:func:`setScaleMethod`
+
+.. versionadded:: 3.44
 %End
 
     void transformContextChanged();

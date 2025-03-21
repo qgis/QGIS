@@ -363,6 +363,24 @@ Returns the destination coordinate reference system for the map render.
 Returns the units of the map's geographical coordinates - used for scale calculation.
 %End
 
+    Qgis::ScaleCalculationMethod scaleMethod() const;
+%Docstring
+Returns the method to use for scale calculations for the map.
+
+.. seealso:: :py:func:`setScaleMethod`
+
+.. versionadded:: 3.44
+%End
+
+    void setScaleMethod( Qgis::ScaleCalculationMethod method );
+%Docstring
+Sets the ``method`` to use for scale calculations for the map.
+
+.. seealso:: :py:func:`scaleMethod`
+
+.. versionadded:: 3.44
+%End
+
     bool setEllipsoid( const QString &ellipsoid );
 %Docstring
 Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be

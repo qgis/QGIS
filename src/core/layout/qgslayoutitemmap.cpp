@@ -175,12 +175,16 @@ void QgsLayoutItemMap::refresh()
 
 double QgsLayoutItemMap::scale() const
 {
-  if ( rect().isEmpty() )
+  if ( rect().isEmpty() || !mLayout )
     return 0;
 
   QgsScaleCalculator calculator;
   calculator.setMapUnits( crs().mapUnits() );
   calculator.setDpi( 25.4 );  //Using mm
+  if ( QgsProject *project = mLayout->project() )
+  {
+    calculator.setMethod( project->scaleMethod() );
+  }
   double widthInMm = mLayout->convertFromLayoutUnits( rect().width(), Qgis::LayoutUnit::Millimeters ).length();
   return calculator.calculate( extent(), widthInMm );
 }
@@ -205,6 +209,11 @@ void QgsLayoutItemMap::setScale( double scaleDenominator, bool forceUpdate )
     QgsScaleCalculator calculator;
     calculator.setMapUnits( crs().mapUnits() );
     calculator.setDpi( 25.4 );  //QGraphicsView units are mm
+    if ( mLayout && mLayout->project() )
+    {
+      calculator.setMethod( mLayout->project()->scaleMethod() );
+    }
+
     const double newScale = calculator.calculate( mExtent, rect().width() );
     if ( !qgsDoubleNear( newScale, 0 ) )
     {
@@ -480,6 +489,10 @@ void QgsLayoutItemMap::zoomContent( double factor, QPointF point )
     QgsScaleCalculator calculator;
     calculator.setMapUnits( crs().mapUnits() );
     calculator.setDpi( 25.4 );  //QGraphicsView units are mm
+    if ( mLayout && mLayout->project() )
+    {
+      calculator.setMethod( mLayout->project()->scaleMethod() );
+    }
     const double newScale = calculator.calculate( mExtent, rect().width() );
     if ( !qgsDoubleNear( newScale, 0 ) )
     {
@@ -1711,6 +1724,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   {
     jobMapSettings.setEllipsoid( mLayout->project()->ellipsoid() );
     jobMapSettings.setElevationShadingRenderer( mLayout->project()->elevationShadingRenderer() );
+    jobMapSettings.setScaleMethod( mLayout->project()->scaleMethod() );
   }
 
   if ( includeLayerSettings )
@@ -2925,6 +2939,10 @@ void QgsLayoutItemMap::updateAtlasFeature()
     QgsScaleCalculator calc;
     calc.setMapUnits( crs().mapUnits() );
     calc.setDpi( 25.4 );
+    if ( QgsProject *project = mLayout->project() )
+    {
+      calc.setMethod( project->scaleMethod() );
+    }
     double originalScale = calc.calculate( originalExtent, rect().width() );
     double geomCenterX = ( xa1 + xa2 ) / 2.0;
     double geomCenterY = ( ya1 + ya2 ) / 2.0;

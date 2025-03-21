@@ -56,6 +56,8 @@ class QgsRasterizeAlgorithm : public QgsProcessingAlgorithm
     void checkLayersUsagePolicy( QgsProcessingFeedback *feedback );
 
   private:
+    QgsCoordinateReferenceSystem mCrs;
+    QgsMapSettings mMapSettings;
     QMap<QString, QString> mMapThemeStyleOverrides;
     std::vector<std::unique_ptr<QgsMapLayer>> mMapLayers;
 };

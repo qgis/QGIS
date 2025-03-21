@@ -41,6 +41,7 @@ class QgsDxfExportAlgorithm : public QgsProcessingAlgorithm
 
   private:
     QMap<QString, QString> mMapThemeStyleOverrides;
+    Qgis::ScaleCalculationMethod mScaleMethod = Qgis::ScaleCalculationMethod::HorizontalMiddle;
 };
 
 ///@endcond PRIVATE
