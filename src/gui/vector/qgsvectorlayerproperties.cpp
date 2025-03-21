@@ -33,7 +33,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmetadatawidget.h"
-#include "qgsmetadataurlitemdelegate.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
@@ -117,8 +116,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mWmsDimensionsTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked );
   connect( mButtonRemoveWmsDimension, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonRemoveWmsDimension_clicked );
   connect( mSimplifyDrawingGroupBox, &QGroupBox::toggled, this, &QgsVectorLayerProperties::mSimplifyDrawingGroupBox_toggled );
-  connect( buttonRemoveMetadataUrl, &QPushButton::clicked, this, &QgsVectorLayerProperties::removeSelectedMetadataUrl );
-  connect( buttonAddMetadataUrl, &QPushButton::clicked, this, &QgsVectorLayerProperties::addMetadataUrl );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );
 
   mProjectDirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
@@ -354,60 +351,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mLegendWidget->setLayer( mLayer );
   mLegendConfigEmbeddedWidget->setLayer( mLayer );
 
-  // WMS Name as layer short name
-  mLayerShortNameLineEdit->setText( mLayer->serverProperties()->shortName() );
-  // WMS Name validator
-  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
-  mLayerShortNameLineEdit->setValidator( shortNameValidator );
-
-  //layer title and abstract
-  mLayerTitleLineEdit->setText( mLayer->serverProperties()->title() );
-  if ( mLayer->serverProperties()->wfsTitle() != mLayer->serverProperties()->title() )
-    mLayerOptWfsTitleLineEdit->setText( mLayer->serverProperties()->wfsTitle() );
-  mLayerAbstractTextEdit->setPlainText( mLayer->serverProperties()->abstract() );
-  mLayerKeywordListLineEdit->setText( mLayer->serverProperties()->keywordList() );
-  mLayerDataUrlLineEdit->setText( mLayer->serverProperties()->dataUrl() );
-  mLayerDataUrlFormatComboBox->setCurrentIndex(
-    mLayerDataUrlFormatComboBox->findText(
-      mLayer->serverProperties()->dataUrlFormat()
-    )
-  );
-  //layer attribution
-  mLayerAttributionLineEdit->setText( mLayer->serverProperties()->attribution() );
-  mLayerAttributionUrlLineEdit->setText( mLayer->serverProperties()->attributionUrl() );
-
-  // Setup the layer metadata URL
-  tableViewMetadataUrl->setSelectionMode( QAbstractItemView::SingleSelection );
-  tableViewMetadataUrl->setSelectionBehavior( QAbstractItemView::SelectRows );
-  tableViewMetadataUrl->horizontalHeader()->setStretchLastSection( true );
-  tableViewMetadataUrl->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
-
-  mMetadataUrlModel = new QStandardItemModel( tableViewMetadataUrl );
-  mMetadataUrlModel->clear();
-  mMetadataUrlModel->setColumnCount( 3 );
-  QStringList metadataUrlHeaders;
-  metadataUrlHeaders << tr( "URL" ) << tr( "Type" ) << tr( "Format" );
-  mMetadataUrlModel->setHorizontalHeaderLabels( metadataUrlHeaders );
-  tableViewMetadataUrl->setModel( mMetadataUrlModel );
-  tableViewMetadataUrl->setItemDelegate( new MetadataUrlItemDelegate( this ) );
-
-  const QList<QgsMapLayerServerProperties::MetadataUrl> &metaUrls = mLayer->serverProperties()->metadataUrls();
-  for ( const QgsMapLayerServerProperties::MetadataUrl &metaUrl : metaUrls )
-  {
-    const int row = mMetadataUrlModel->rowCount();
-    mMetadataUrlModel->setItem( row, 0, new QStandardItem( metaUrl.url ) );
-    mMetadataUrlModel->setItem( row, 1, new QStandardItem( metaUrl.type ) );
-    mMetadataUrlModel->setItem( row, 2, new QStandardItem( metaUrl.format ) );
-  }
-
-  // layer legend url
-  mLayerLegendUrlLineEdit->setText( mLayer->serverProperties()->legendUrl() );
-  mLayerLegendUrlFormatComboBox->setCurrentIndex(
-    mLayerLegendUrlFormatComboBox->findText(
-      mLayer->serverProperties()->legendUrlFormat()
-    )
-  );
-
   //insert existing dimension info
   QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
   const QList<QgsMapLayerServerProperties::WmsDimensionInfo> &wmsDims = serverProperties->wmsDimensions();
@@ -449,6 +392,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel );
 
   mRefreshSettingsWidget->setLayer( mLayer );
+  mMapLayerServerPropertiesWidget->setHasWfsTitle( true );
+  mMapLayerServerPropertiesWidget->setServerProperties( mLayer->serverProperties() );
 
   // auxiliary layer
   QMenu *menu = new QMenu( this );
@@ -540,22 +485,6 @@ void QgsVectorLayerProperties::insertOrEditExpression()
     mMapTipWidget->insertText( "[%" + exprDlg.expressionText().trimmed() + "%]" );
   else // Restore the selection
     mMapTipWidget->setLinearSelection( selectionStart, selectionEnd );
-}
-
-void QgsVectorLayerProperties::addMetadataUrl()
-{
-  const int row = mMetadataUrlModel->rowCount();
-  mMetadataUrlModel->setItem( row, 0, new QStandardItem( QLatin1String() ) );
-  mMetadataUrlModel->setItem( row, 1, new QStandardItem( QLatin1String() ) );
-  mMetadataUrlModel->setItem( row, 2, new QStandardItem( QLatin1String() ) );
-}
-
-void QgsVectorLayerProperties::removeSelectedMetadataUrl()
-{
-  const QModelIndexList selectedRows = tableViewMetadataUrl->selectionModel()->selectedRows();
-  if ( selectedRows.empty() )
-    return;
-  mMetadataUrlModel->removeRow( selectedRows[0].row() );
 }
 
 void QgsVectorLayerProperties::syncToLayer()
@@ -713,6 +642,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mForceRasterCheckBox->setChecked( mLayer->renderer() && mLayer->renderer()->forceRasterRender() );
 
   mRefreshSettingsWidget->syncToLayer();
+  mMapLayerServerPropertiesWidget->sync();
 
   mRefreshLayerNotificationCheckBox->setChecked( mLayer->isRefreshOnNotifyEnabled() );
   mNotificationMessageCheckBox->setChecked( !mLayer->refreshOnNotifyMessage().isEmpty() );
@@ -832,71 +762,8 @@ void QgsVectorLayerProperties::apply()
     page->apply();
   }
 
-  //layer title and abstract
-  if ( mLayer->serverProperties()->shortName() != mLayerShortNameLineEdit->text() )
+  if ( mMapLayerServerPropertiesWidget->save() )
     mMetadataFilled = false;
-  mLayer->serverProperties()->setShortName( mLayerShortNameLineEdit->text() );
-
-  if ( mLayer->serverProperties()->title() != mLayerTitleLineEdit->text() )
-    mMetadataFilled = false;
-  mLayer->serverProperties()->setTitle( mLayerTitleLineEdit->text() );
-
-  if ( !mLayerOptWfsTitleLineEdit->text().isEmpty() && mLayerOptWfsTitleLineEdit->text() != mLayerTitleLineEdit->text() )
-  {
-    mLayer->serverProperties()->setWfsTitle( mLayerOptWfsTitleLineEdit->text() );
-    mMetadataFilled = false;
-  }
-  else
-  {
-    mLayer->serverProperties()->setWfsTitle( QString() );
-  }
-
-  if ( mLayer->serverProperties()->abstract() != mLayerAbstractTextEdit->toPlainText() )
-    mMetadataFilled = false;
-  mLayer->serverProperties()->setAbstract( mLayerAbstractTextEdit->toPlainText() );
-
-  if ( mLayer->serverProperties()->keywordList() != mLayerKeywordListLineEdit->text() )
-    mMetadataFilled = false;
-  mLayer->serverProperties()->setKeywordList( mLayerKeywordListLineEdit->text() );
-
-  if ( mLayer->serverProperties()->dataUrl() != mLayerDataUrlLineEdit->text() )
-    mMetadataFilled = false;
-  mLayer->serverProperties()->setDataUrl( mLayerDataUrlLineEdit->text() );
-
-  if ( mLayer->serverProperties()->dataUrlFormat() != mLayerDataUrlFormatComboBox->currentText() )
-    mMetadataFilled = false;
-  mLayer->serverProperties()->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
-
-  //layer attribution
-  if ( mLayer->serverProperties()->attribution() != mLayerAttributionLineEdit->text() )
-    mMetadataFilled = false;
-  mLayer->serverProperties()->setAttribution( mLayerAttributionLineEdit->text() );
-
-  if ( mLayer->serverProperties()->attributionUrl() != mLayerAttributionUrlLineEdit->text() )
-    mMetadataFilled = false;
-  mLayer->serverProperties()->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
-
-  // Metadata URL
-  QList<QgsMapLayerServerProperties::MetadataUrl> metaUrls;
-  for ( int row = 0; row < mMetadataUrlModel->rowCount(); row++ )
-  {
-    QgsMapLayerServerProperties::MetadataUrl metaUrl;
-    metaUrl.url = mMetadataUrlModel->item( row, 0 )->text();
-    metaUrl.type = mMetadataUrlModel->item( row, 1 )->text();
-    metaUrl.format = mMetadataUrlModel->item( row, 2 )->text();
-    metaUrls.append( metaUrl );
-    mMetadataFilled = false;
-  }
-  mLayer->serverProperties()->setMetadataUrls( metaUrls );
-
-  // LegendURL
-  if ( mLayer->serverProperties()->legendUrl() != mLayerLegendUrlLineEdit->text() )
-    mMetadataFilled = false;
-  mLayer->serverProperties()->setLegendUrl( mLayerLegendUrlLineEdit->text() );
-
-  if ( mLayer->serverProperties()->legendUrlFormat() != mLayerLegendUrlFormatComboBox->currentText() )
-    mMetadataFilled = false;
-  mLayer->serverProperties()->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   //layer simplify drawing configuration
   Qgis::VectorRenderingSimplificationFlags simplifyHints = Qgis::VectorRenderingSimplificationFlag::NoSimplification;

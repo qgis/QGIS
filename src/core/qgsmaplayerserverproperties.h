@@ -106,10 +106,10 @@ class CORE_EXPORT QgsServerMetadataUrlProperties
 
   protected:
     //! Saves server properties to xml under the layer node
-    void writeXml( QDomNode &layer_node, QDomDocument &document ) const SIP_SKIP;
+    void writeXml( QDomNode &layerNode, QDomDocument &document ) const SIP_SKIP;
 
     //! Reads server properties from project file.
-    void readXml( const QDomNode &layer_node ) SIP_SKIP;
+    void readXml( const QDomNode &layerNode ) SIP_SKIP;
 
     /**
      * Copy properties to another instance
