@@ -18,15 +18,16 @@ endif()
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
 option (WITH_PYTHON "Determines whether Python support should be built (disabling it will in particular disable processing)" ON)
-set(WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
+set (WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
 
 set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
-set(WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
+set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 
-set(SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
+set (SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
+set (QGISPOSTFIX "" CACHE STRING "Optional postfix to apply to public shared objects and executables")
 
 if(NOT SDK_PATH STREQUAL "")
   message(STATUS "Building with SDK -- ${SDK_PATH}")
@@ -656,7 +657,15 @@ if(WITH_CORE)
   # search for QScintilla2 (C++ lib)
   if (WITH_GUI)
     find_package(QScintilla REQUIRED)
-    find_package(Qwt REQUIRED)
+
+    set (WITH_INTERNAL_QWT FALSE CACHE BOOL "Determines if the internal copy of qwt should be used.")
+    if(NOT WITH_INTERNAL_QWT)
+      find_package(Qwt REQUIRED)
+    else()
+      set(QWT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/qwt-6.2)
+      set(QWT_LIBRARY "")
+      set(QWT_VERSION_STR 6.2.0)
+    endif()
   endif()
 
   # Password helper
@@ -1191,6 +1200,12 @@ endif()
 # installed with app target
 configure_file(${CMAKE_SOURCE_DIR}/cmake_templates/qgsconfig.h.in ${CMAKE_BINARY_DIR}/qgsconfig.h)
 include_directories(${CMAKE_BINARY_DIR})
+
+if(WITH_INTERNAL_NLOHMANN_JSON)
+  include_directories(SYSTEM
+    ${CMAKE_SOURCE_DIR}/external/nlohmann
+  )
+endif()
 
 #############################################################
 # create qgsversion.h
