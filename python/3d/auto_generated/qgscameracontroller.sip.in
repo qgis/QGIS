@@ -235,6 +235,48 @@ Returns whether the camera controller responds to mouse and keyboard events
 .. versionadded:: 3.44
 %End
 
+    void globeMoveCenterPoint( double latDiff, double lonDiff );
+%Docstring
+Orbits camera around the globe by the specified amount given as the difference
+in latitude/longitude angles (in degrees)
+
+.. note::
+
+   the final latitude gets clamped to 0-90 degrees, while the longitude does not get clamped
+
+.. versionadded:: 3.44
+%End
+
+    void globeZoom( float factor );
+%Docstring
+Moves camera closer or further away from the globe. Use factor greater than one
+to zoom in, or less than one to zoom out.
+
+.. versionadded:: 3.44
+%End
+
+    void globeUpdatePitchAngle( float angleDiff );
+%Docstring
+Updates pitch angle by the specified amount given as the angular difference in degrees
+
+.. versionadded:: 3.44
+%End
+
+    void globeUpdateHeadingAngle( float angleDiff );
+%Docstring
+Updates heading angle by the specified amount given as the angular difference in degrees
+
+.. versionadded:: 3.44
+%End
+
+    void resetGlobe( float distance, double lat = 0, double lon = 0 );
+%Docstring
+Resets view of the globe to look at a particular location given as latitude
+and longitude (in degrees) and distance from that point on ellipsoid
+
+.. versionadded:: 3.44
+%End
+
   public slots:
 
     void setCameraNavigationMode( Qgis::NavigationMode navigationMode );

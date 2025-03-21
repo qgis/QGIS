@@ -7312,16 +7312,34 @@ Qgis.LightSourceType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.NavigationMode.TerrainBased.__doc__ = "The default navigation based on the terrain"
 Qgis.NavigationMode.Walk.__doc__ = "Uses WASD keys or arrows to navigate in walking (first person) manner"
+Qgis.NavigationMode.GlobeTerrainBased.__doc__ = "Navigation similar to TerrainBased, but for use with globe  \n.. versionadded:: 3.44"
 Qgis.NavigationMode.__doc__ = """The navigation mode used by 3D cameras.
 
 .. versionadded:: 3.30
 
 * ``TerrainBased``: The default navigation based on the terrain
 * ``Walk``: Uses WASD keys or arrows to navigate in walking (first person) manner
+* ``GlobeTerrainBased``: Navigation similar to TerrainBased, but for use with globe
+
+  .. versionadded:: 3.44
+
 
 """
 # --
 Qgis.NavigationMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SceneMode.Local.__doc__ = "Local scene based on a projected CRS"
+Qgis.SceneMode.Globe.__doc__ = "Scene is represented as a globe using a geocentric CRS"
+Qgis.SceneMode.__doc__ = """The 3D scene mode used in 3D map views.
+
+.. versionadded:: 3.44
+
+* ``Local``: Local scene based on a projected CRS
+* ``Globe``: Scene is represented as a globe using a geocentric CRS
+
+"""
+# --
+Qgis.SceneMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements"
 Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes"

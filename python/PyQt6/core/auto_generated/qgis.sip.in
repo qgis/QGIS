@@ -2264,7 +2264,14 @@ The development version
     enum class NavigationMode /BaseType=IntEnum/
     {
       TerrainBased,
-      Walk
+      Walk,
+      GlobeTerrainBased
+    };
+
+    enum class SceneMode /BaseType=IntEnum/
+    {
+      Local,
+      Globe
     };
 
     enum class VerticalAxisInversion /BaseType=IntEnum/

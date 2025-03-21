@@ -4000,9 +4000,22 @@ class CORE_EXPORT Qgis
     enum class NavigationMode : int
     {
       TerrainBased, //!< The default navigation based on the terrain
-      Walk //!< Uses WASD keys or arrows to navigate in walking (first person) manner
+      Walk, //!< Uses WASD keys or arrows to navigate in walking (first person) manner
+      GlobeTerrainBased  //!< Navigation similar to TerrainBased, but for use with globe  \since QGIS 3.44
     };
     Q_ENUM( NavigationMode )
+
+    /**
+     * The 3D scene mode used in 3D map views.
+     *
+     * \since QGIS 3.44
+     */
+    enum class SceneMode : int
+    {
+      Local,   //!< Local scene based on a projected CRS
+      Globe    //!< Scene is represented as a globe using a geocentric CRS
+    };
+    Q_ENUM( SceneMode )
 
     /**
      * Vertical axis inversion options for 3D views.

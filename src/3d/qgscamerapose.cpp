@@ -74,3 +74,31 @@ void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
   camera->setPosition( mCenterPoint.toVector3D() - cameraToCenter );
   camera->setViewCenter( mCenterPoint.toVector3D() );
 }
+
+void QgsCameraPose::updateCameraGlobe( Qt3DRender::QCamera *camera, double lat, double lon )
+{
+  // how the camera setup works:
+  // - we are using ECEF coordinates (https://en.wikipedia.org/wiki/Earth-centered,_Earth-fixed_coordinate_system)
+  //    - point (0,0,0) is in the center of reference ellipsoid
+  //    - X and Y axes define equator plane
+  //    - X axis grows towards the prime meridian (zero longitude)
+  //    - Y axis grows towards 90 degrees of longitude
+  //    - Z axis grows towards the north pole
+
+  QVector3D viewCenter = mCenterPoint.toVector3D();
+
+  // rotate camera so that it is looking towards the tangent plane to ellipsoid at given
+  // lat/lon coordinates
+  QQuaternion qLatLon = QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), static_cast<float>( lon ) ) * QQuaternion::fromAxisAndAngle( QVector3D( 0, -1, 0 ), static_cast<float>( lat ) );
+
+  // rotate camera using the pitch and heading angles
+  QQuaternion qPitchHeading = QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), mHeadingAngle ) * QQuaternion::fromAxisAndAngle( QVector3D( 0, 1, 0 ), mPitchAngle );
+
+  // combine the two rotations (the order is important: pitch/heading is applied first)
+  QQuaternion q = qLatLon * qPitchHeading;
+
+  QVector3D cameraToCenter = ( q * QVector3D( -1, 0, 0 ) ) * mDistanceFromCenterPoint;
+  camera->setUpVector( q * QVector3D( 0, 0, 1 ) );
+  camera->setPosition( viewCenter - cameraToCenter );
+  camera->setViewCenter( viewCenter );
+}
