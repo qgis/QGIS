@@ -363,6 +363,16 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.44
      */
     static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings );
+
+    /**
+     * Returns list of 4 planes, which are calculated from line defined by \a point1 and \a point2. \a distance defines
+     * the distance between parallel clipping planes and the line.
+     * Clipping planes are returned back in the format of 4D Vector, where first 3 coordinates are the coordinates of
+     * normalized normal of given plane and the last is the distance from origin of the scene.
+     * \note \a distance is expected to be positive
+     * \since QGIS 3.44
+     */
+    static QList<QVector4D> lineSegmentToClippingPlanes( const QgsVector3D &point1, const QgsVector3D &point2, double distance, const QgsVector3D &origin );
 };
 
 #endif // QGS3DUTILS_H

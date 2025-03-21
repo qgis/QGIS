@@ -56,6 +56,8 @@
 #include "qgs3dmaptoolpointcloudchangeattributepolygon.h"
 
 #include "qgsdockablewidgethelper.h"
+#include "qgsflatterrainsettings.h"
+#include "qgsmaptoolclippingplanes.h"
 #include "qgsrubberband.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
@@ -257,6 +259,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
       connect( sc, &QShortcut::activated, this, slot );
   };
   createShortcuts( QStringLiteral( "m3DSetSceneExtent" ), &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
+
+  mActionSetClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCut.svg" ) ), tr( "Cross Section Tool" ), this, &Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas );
+  mActionSetClippingPlanes->setCheckable( true );
+  mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCutDisabled.svg" ) ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableClippingPlanes );
 
   // Effects Menu
   mEffectsMenu = new QMenu( this );
@@ -699,6 +705,10 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   // Disable button for switching the map theme if the terrain generator is a mesh, or if there is no terrain
   mActionMapThemes->setDisabled( !mCanvas->mapSettings()->terrainRenderingEnabled() || !mCanvas->mapSettings()->terrainGenerator() || mCanvas->mapSettings()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
+
+  mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( mMainCanvas, this );
+  mMapToolClippingPlanes->setAction( mActionSetClippingPlanes );
+  connect( mMapToolClippingPlanes.get(), &QgsMapToolClippingPlanes::clippingPlanesChanged, this, &Qgs3DMapCanvasWidget::setViewOnClippingPlanesChanged );
 
   connect( map, &Qgs3DMapSettings::viewFrustumVisualizationEnabledChanged, this, &Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged );
   connect( map, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapCanvasWidget::onExtentChanged );
@@ -1166,6 +1176,67 @@ void Qgs3DMapCanvasWidget::setSceneExtent( const QgsRectangle &extent )
     mMainCanvas->setMapTool( mMapToolPrevious );
   else
     mMainCanvas->unsetMapTool( mMapToolExtent.get() );
+}
+
+void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
+{
+  if ( !qobject_cast<QgsMapToolClippingPlanes *>( mMainCanvas->mapTool() ) )
+    mMapToolPrevious = mMainCanvas->mapTool();
+
+  mMainCanvas->setMapTool( mMapToolClippingPlanes.get() );
+  QgisApp::instance()->activateWindow();
+  QgisApp::instance()->raise();
+  mMessageBar->pushInfo( QString(), tr( "Select a rectangle by 3 points on the main 2D map view to define this 3D scene's cross section" ) );
+}
+
+void Qgs3DMapCanvasWidget::setViewOnClippingPlanesChanged( const QList<QVector4D> &planes )
+{
+  this->activateWindow();
+  this->raise();
+  mMessageBar->clearWidgets();
+
+  // calculate the middle of the front side defined by clipping planes with Cramer's rule
+  double det = planes.at( 0 ).x() * planes.at( 3 ).y() - planes.at( 3 ).x() * planes.at( 0 ).y();
+  const QgsVector3D point1(
+    ( planes.at( 0 ).w() * planes.at( 3 ).y() - planes.at( 3 ).w() * planes.at( 0 ).y() ) / -det,
+    ( planes.at( 3 ).w() * planes.at( 0 ).x() - planes.at( 0 ).w() * planes.at( 3 ).x() ) / -det,
+    0
+  );
+  det = planes.at( 2 ).x() * planes.at( 3 ).y() - planes.at( 3 ).x() * planes.at( 2 ).y();
+  const QgsVector3D point2(
+    ( planes.at( 2 ).w() * planes.at( 3 ).y() - planes.at( 3 ).w() * planes.at( 2 ).y() ) / -det,
+    ( planes.at( 3 ).w() * planes.at( 2 ).x() - planes.at( 2 ).w() * planes.at( 3 ).x() ) / -det,
+    0
+  );
+  QgsVector3D middle( point1 + ( point2 - point1 ) / 2 );
+  // we temporarily disable terrain so the elevation calculation won't take it in account if the terrain is flat
+  const bool lastTerrainState = mCanvas->scene()->mapSettings()->terrainRenderingEnabled();
+  if ( dynamic_cast<const QgsFlatTerrainSettings *>( mCanvas->scene()->mapSettings()->terrainSettings() ) )
+  {
+    mCanvas->scene()->mapSettings()->setTerrainRenderingEnabled( false );
+  }
+  const double side = std::max( middle.distance( point1 ), ( mCanvas->scene()->elevationRange().upper() - mCanvas->scene()->elevationRange().lower() ) / 2 );
+  const double distance = side / std::tan( mCanvas->scene()->cameraController()->camera()->fieldOfView() / 2 * M_PI / 180 ) + 50;
+  float yawAngle = static_cast<float>( acos( QgsVector3D::dotProduct( planes.at( 1 ).toVector3D(), QgsVector3D( 0, -1, 0 ) ) ) * 180 / M_PI );
+  // check if the angle between the view point is to the left or right of the scene north, apply angle offset if necessary for camera
+  if ( QgsVector3D::crossProduct( planes.at( 1 ).toVector3D(), QgsVector3D( 0, -1, 0 ) ).z() > 0 )
+  {
+    yawAngle = 180 + ( 180 - yawAngle );
+  }
+  mCanvas->scene()->elevationRange().isInfinite() ? middle.setZ( 0 ) : middle.setZ( mCanvas->scene()->elevationRange().lower() + ( mCanvas->scene()->elevationRange().upper() - mCanvas->scene()->elevationRange().lower() ) / 2 );
+  mCanvas->scene()->mapSettings()->setTerrainRenderingEnabled( lastTerrainState );
+  mCanvas->scene()->cameraController()->setLookingAtPoint( middle, static_cast<float>( distance ), 90, yawAngle );
+
+  if ( mMapToolPrevious )
+    mMainCanvas->setMapTool( mMapToolPrevious );
+  else
+    mMainCanvas->unsetMapTool( mMapToolClippingPlanes.get() );
+}
+
+void Qgs3DMapCanvasWidget::disableClippingPlanes() const
+{
+  mCanvas->scene()->disableClipping();
+  mMapToolClippingPlanes->clearHighLightedArea();
 }
 
 ClassValidator::ClassValidator( QWidget *parent )

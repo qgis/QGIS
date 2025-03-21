@@ -28,6 +28,7 @@
 #define SIP_NO_FILE
 
 
+class QgsMapToolClippingPlanes;
 class Qgs3DMapToolPointCloudChangeAttributePaintbrush;
 class QLabel;
 class QProgressBar;
@@ -115,6 +116,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void toggleDebugWidget() const;
     void setSceneExtentOn2DCanvas();
     void setSceneExtent( const QgsRectangle &extent );
+    void setClippingPlanesOn2DCanvas();
+    void setViewOnClippingPlanesChanged( const QList<QVector4D> &planes );
+    void disableClippingPlanes() const;
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
@@ -148,6 +152,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
     Qgs3DMapToolPointCloudChangeAttribute *mMapToolChangeAttribute = nullptr;
     std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
+    std::unique_ptr<QgsMapToolClippingPlanes> mMapToolClippingPlanes;
     QgsMapTool *mMapToolPrevious = nullptr;
     QMenu *mExportMenu = nullptr;
     QMenu *mMapThemeMenu = nullptr;
@@ -167,6 +172,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionCamera = nullptr;
     QAction *mActionEffects = nullptr;
     QAction *mActionSetSceneExtent = nullptr;
+    QAction *mActionSetClippingPlanes = nullptr;
     QAction *mActionToggleEditing = nullptr;
     QAction *mActionUndo = nullptr;
     QAction *mActionRedo = nullptr;
