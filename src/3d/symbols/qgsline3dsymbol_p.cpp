@@ -104,8 +104,10 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
-  mLineDataNormal.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false, 3, texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
-  mLineDataSelected.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false, 3, texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
+  const float textureRotation = texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0;
+  const bool requiresTextureCoordinates = texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false;
+  mLineDataNormal.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, requiresTextureCoordinates, 3, textureRotation ) );
+  mLineDataSelected.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, requiresTextureCoordinates, 3, textureRotation ) );
 
   mLineDataNormal.tessellator->setOutputZUp( true );
   mLineDataSelected.tessellator->setOutputZUp( true );
@@ -207,7 +209,7 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   QgsMaterial *material = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
   // extract vertex buffer data from tessellator
-  const QByteArray data( ( const char * ) lineData.tessellator->data().constData(), lineData.tessellator->data().count() * sizeof( float ) );
+  const QByteArray data( ( const char * ) lineData.tessellator->data().constData(), static_cast<int>( lineData.tessellator->data().count() * sizeof( float ) ) );
   const int nVerts = data.count() / lineData.tessellator->stride();
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
@@ -396,7 +398,7 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
 void QgsThickLine3DSymbolHandler::processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsLineVertexData &lineVertexData )
 {
   const QByteArray bytes = mSymbol->materialSettings()->dataDefinedVertexColorsAsByte( context );
-  lineVertexData.materialDataDefined.append( bytes.repeated( verticesCount ) );
+  lineVertexData.materialDataDefined.append( bytes.repeated( static_cast<int>( verticesCount ) ) );
 }
 
 
