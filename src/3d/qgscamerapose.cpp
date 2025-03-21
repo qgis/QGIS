@@ -89,7 +89,7 @@ void QgsCameraPose::updateCameraGlobe( Qt3DRender::QCamera *camera, double lat, 
 
   // rotate camera so that it is looking towards the tangent plane to ellipsoid at given
   // lat/lon coordinates
-  QQuaternion qLatLon = QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), lon ) * QQuaternion::fromAxisAndAngle( QVector3D( 0, -1, 0 ), lat );
+  QQuaternion qLatLon = QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), static_cast<float>( lon ) ) * QQuaternion::fromAxisAndAngle( QVector3D( 0, -1, 0 ), static_cast<float>( lat ) );
 
   // rotate camera using the pitch and heading angles
   QQuaternion qPitchHeading = QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), mHeadingAngle ) * QQuaternion::fromAxisAndAngle( QVector3D( 0, 1, 0 ), mPitchAngle );

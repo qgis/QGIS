@@ -753,7 +753,7 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 
     case Qgis::NavigationMode::GlobeTerrainBased:
     {
-      int wheelAmount = wheel->angleDelta().y();
+      float wheelAmount = static_cast<float>( wheel->angleDelta().y() );
       float factor = abs( wheelAmount ) / 1000.f;
       float mulFactor = wheelAmount > 0 ? ( 1 - factor ) : ( 1 + factor );
       mCameraPose.setDistanceFromCenterPoint( mCameraPose.distanceFromCenterPoint() * mulFactor );
@@ -819,8 +819,6 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
         setCameraNavigationMode( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe ? Qgis::NavigationMode::GlobeTerrainBased : Qgis::NavigationMode::TerrainBased );
         break;
       case Qgis::NavigationMode::TerrainBased:
-        setCameraNavigationMode( Qgis::NavigationMode::Walk );
-        break;
       case Qgis::NavigationMode::GlobeTerrainBased:
         setCameraNavigationMode( Qgis::NavigationMode::Walk );
         break;
