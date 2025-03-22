@@ -21,14 +21,17 @@ __copyright__ = "(C) 2016, Médéric Ribreux"
 
 from processing.tools.system import getTempFilename
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """Verify if we have the right parameters"""
     if alg.parameterAsString(parameters, "rules", context) and alg.parameterAsString(
         parameters, "txtrules", context
     ):
-        return False, alg.tr(
-            "You need to set either a rules file or write directly the rules!"
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            "You need to set either a rules file or write directly the rules!",
         )
 
     return True, None
