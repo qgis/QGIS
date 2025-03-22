@@ -37,11 +37,6 @@ class QgisAlgorithm(QgsProcessingAlgorithm):
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
 
-    def trAlgorithm(self, string, context=""):
-        if context == "":
-            context = self.__class__.__name__
-        return string, QCoreApplication.translate(context, string)
-
     def createInstance(self):
         return type(self)()
 
@@ -58,11 +53,6 @@ class QgisFeatureBasedAlgorithm(QgsProcessingFeatureBasedAlgorithm):
         if context == "":
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
-
-    def trAlgorithm(self, string, context=""):
-        if context == "":
-            context = self.__class__.__name__
-        return string, QCoreApplication.translate(context, string)
 
     def createInstance(self):
         return type(self)()

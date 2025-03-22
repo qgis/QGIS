@@ -22,6 +22,8 @@ __copyright__ = "(C) 2017, Médéric Ribreux"
 import os
 import math
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """Verify if we have the right parameters"""
@@ -30,9 +32,14 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     step = alg.parameterAsDouble(parameters, "step", context)
 
     if start >= end:
-        return False, alg.tr("The start position must be inferior to the end position!")
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            "The start position must be inferior to the end position!",
+        )
     if step == 0.0:
-        return False, alg.tr("The step must be greater than zero!")
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt", "The step must be greater than zero!"
+        )
     return True, None
 
 
