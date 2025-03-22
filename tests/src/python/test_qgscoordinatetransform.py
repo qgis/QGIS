@@ -127,6 +127,99 @@ class TestQgsCoordinateTransform(QgisTestCase):
             myTransformedExtentReverse.yMinimum(), myExtent.yMinimum()
         )
 
+    def test_transform_bounding_box_5514(self):
+        """
+        Testing data from https://github.com/qgis/QGIS/issues/60807
+        """
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:3857"),
+            QgsCoordinateReferenceSystem("EPSG:5514"),
+            QgsCoordinateTransformContext(),
+        )
+        res = transform.transformBoundingBox(
+            QgsRectangle(
+                -787309.78412999748,
+                -1242399.5252388765,
+                -692024.8894337106,
+                -1172964.7912488377,
+            ),
+            Qgis.TransformDirection.Reverse,
+        )
+        self.assertAlmostEqual(res.xMinimum(), 1565349, -2)
+        self.assertAlmostEqual(res.yMinimum(), 6149667, -2)
+        self.assertAlmostEqual(res.xMaximum(), 1721768, -2)
+        self.assertAlmostEqual(res.yMaximum(), 6272889, -2)
+
+        res = transform.transformBoundingBox(
+            QgsRectangle(
+                -787309.78412999748,
+                -1172964.7912488377,
+                -692024.8894337106,
+                -1103530.057258799,
+            ),
+            Qgis.TransformDirection.Reverse,
+        )
+        self.assertAlmostEqual(res.xMinimum(), 1550304, -2)
+        self.assertAlmostEqual(res.yMinimum(), 6253654, -2)
+        self.assertAlmostEqual(res.xMaximum(), 1708837, -2)
+        self.assertAlmostEqual(res.yMaximum(), 6378640, -2)
+
+        res = transform.transformBoundingBox(
+            QgsRectangle(
+                1565349.531718306,
+                6149667.9437137973,
+                1721768.6637274709,
+                6272889.0581493312,
+            ),
+            Qgis.TransformDirection.Forward,
+        )
+        self.assertAlmostEqual(res.xMinimum(), -796998, -2)
+        self.assertAlmostEqual(res.yMinimum(), -1254766, -2)
+        self.assertAlmostEqual(res.xMaximum(), -683588, -2)
+        self.assertAlmostEqual(res.yMaximum(), -1160466, -2)
+
+        res = transform.transformBoundingBox(
+            QgsRectangle(
+                1550304.7179158437,
+                6253654.2054561656,
+                1708837.6382380251,
+                6378640.2628159299,
+            ),
+            Qgis.TransformDirection.Forward,
+        )
+        self.assertAlmostEqual(res.xMinimum(), -797124, -2)
+        self.assertAlmostEqual(res.yMinimum(), -1185490, -2)
+        self.assertAlmostEqual(res.xMaximum(), -683481, -2)
+        self.assertAlmostEqual(res.yMaximum(), -1090873, -2)
+
+        res = transform.transformBoundingBox(
+            QgsRectangle(
+                -882594.67882628436,
+                -1172964.7912488377,
+                -787309.78412999748,
+                -1103530.057258799,
+            ),
+            Qgis.TransformDirection.Reverse,
+        )
+        self.assertAlmostEqual(res.xMinimum(), 1405770, -2)
+        self.assertAlmostEqual(res.yMinimum(), 6232013, -2)
+        self.assertAlmostEqual(res.xMaximum(), 1565349, -2)
+        self.assertAlmostEqual(res.yMaximum(), 6358910, -2)
+
+        res = transform.transformBoundingBox(
+            QgsRectangle(
+                1405770.2540319383,
+                6232013.9054610878,
+                1565349.531718306,
+                6358910.5078411084,
+            ),
+            Qgis.TransformDirection.Forward,
+        )
+        self.assertAlmostEqual(res.xMinimum(), -893558, -2)
+        self.assertAlmostEqual(res.yMinimum(), -1187060, -2)
+        self.assertAlmostEqual(res.xMaximum(), -777618, -2)
+        self.assertAlmostEqual(res.yMaximum(), -1089288, -2)
+
     def test_transform_bounding_box_grid(self):
         """
         This test assumes the ca_nrc_NA83SCRS.tif grid is available on the system!

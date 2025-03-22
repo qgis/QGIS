@@ -1,8 +1,8 @@
 /***************************************************************************
-    qgsoapifqueryablesrequest.h
-    ---------------------------
-    begin                : April 2023
-    copyright            : (C) 2023 by Even Rouault
+    qgsoapifschemarequest.h
+    -----------------------
+    begin                : March 2025
+    copyright            : (C) 2025 by Even Rouault
     email                : even.rouault at spatialys.com
  ***************************************************************************
  *                                                                         *
@@ -13,46 +13,49 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSOAPIFQUERYABLESREQUEST_H
-#define QGSOAPIFQUERYABLESREQUEST_H
+#ifndef QGSOAPIFSCHEMAREQUEST_H
+#define QGSOAPIFSCHEMAREQUEST_H
 
 #include <QObject>
 #include <QMap>
 
 #include "qgsdatasourceuri.h"
+#include "qgsfields.h"
 #include "qgsbasenetworkrequest.h"
+#include "qgswkbtypes.h"
 
-//! Manages the queryable request
-class QgsOapifQueryablesRequest : public QgsBaseNetworkRequest
+//! Manages the schema request
+class QgsOapifSchemaRequest : public QgsBaseNetworkRequest
 {
     Q_OBJECT
   public:
-    explicit QgsOapifQueryablesRequest( const QgsDataSourceUri &uri );
+    explicit QgsOapifSchemaRequest( const QgsDataSourceUri &uri );
 
-    //! Describes a queryable parameter.
-    struct Queryable
+    struct Schema
     {
-        //! whether the parameter is a geometry
-        bool mIsGeometry = false;
+        //! Fields
+        QgsFields mFields;
 
-        //! type as in a JSON schema: "string", "integer", "number", etc.
-        QString mType;
+        QString mGeometryColumnName;
+        //! Geometry column name;
 
-        //! format as in JSON schema. e.g "date-time" if mType="string"
-        QString mFormat;
+        //! Geometry type;
+        Qgis::WkbType mWKBType = Qgis::WkbType::NoGeometry;
     };
 
-    //! Issue the request synchronously and return queryables
-    const QMap<QString, Queryable> &queryables( const QUrl &queryablesUrl );
+    //! Issue the request synchronously and return fields
+    const Schema &schema( const QUrl &schemaUrl );
 
   private slots:
     void processReply();
 
   private:
-    QMap<QString, Queryable> mQueryables;
+    QUrl mUrl;
+
+    Schema mSchema;
 
   protected:
     QString errorMessageWithReason( const QString &reason ) override;
 };
 
-#endif // QGSOAPIFQUERYABLESREQUEST_H
+#endif // QGSOAPIFSCHEMAREQUEST_H

@@ -62,6 +62,8 @@ void Qgs3DMapToolPointCloudChangeAttributePaintbrush::activate()
 void Qgs3DMapToolPointCloudChangeAttributePaintbrush::deactivate()
 {
   restart();
+  // this makes sure there are no leftover artifacts when switching from paintbrush tool to another
+  mSelectionRubberBand->setMarkersEnabled( false );
   mSelectionRubberBand.reset();
   mIsActive = false;
   mCanvas->cameraController()->setInputHandlersEnabled( true );
@@ -142,9 +144,12 @@ void Qgs3DMapToolPointCloudChangeAttributePaintbrush::mouseWheelEvent( QWheelEve
   const QgsSettings settings;
   const bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
   const bool shrink = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
+  if ( ( shrink && mSelectionRubberBand->width() <= 5 ) || ( !shrink && mSelectionRubberBand->width() >= mCanvas->width() / 2 ) )
+    return;
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
   const double zoomFactor = ( shrink ? 0.8 : 1.25 ) / 120.0 * std::fabs( event->angleDelta().y() );
-  mSelectionRubberBand->setWidth( mSelectionRubberBand->width() * zoomFactor );
+  const float newWidth = mSelectionRubberBand->width() * zoomFactor < 5 ? 5 : mSelectionRubberBand->width() * static_cast<float>( zoomFactor );
+  mSelectionRubberBand->setWidth( newWidth );
 }
 
 void Qgs3DMapToolPointCloudChangeAttributePaintbrush::keyPressEvent( QKeyEvent *event )
@@ -154,10 +159,18 @@ void Qgs3DMapToolPointCloudChangeAttributePaintbrush::keyPressEvent( QKeyEvent *
     restart();
   }
 
-  if ( !mIsClicked && event->key() == Qt::Key_Space )
+  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() )
   {
-    const bool newState = !mCanvas->cameraController()->hasInputHandlersEnabled();
-    mCanvas->cameraController()->setInputHandlersEnabled( newState );
-    mIsMoving = newState;
+    mCanvas->cameraController()->setInputHandlersEnabled( true );
+    mIsMoving = true;
+  }
+}
+
+void Qgs3DMapToolPointCloudChangeAttributePaintbrush::keyReleaseEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() )
+  {
+    mCanvas->cameraController()->setInputHandlersEnabled( false );
+    mIsMoving = false;
   }
 }

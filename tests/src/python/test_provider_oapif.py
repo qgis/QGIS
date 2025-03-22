@@ -19,7 +19,7 @@ import tempfile
 
 from osgeo import gdal
 
-from qgis.PyQt.QtCore import QCoreApplication, QDateTime, Qt, QVariant
+from qgis.PyQt.QtCore import QCoreApplication, QDateTime, QMetaType, Qt, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsApplication,
@@ -30,6 +30,7 @@ from qgis.core import (
     QgsRectangle,
     QgsSettings,
     QgsVectorLayer,
+    QgsWkbTypes,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -81,6 +82,7 @@ ACCEPT_COLLECTION = "Accept=application/json"
 ACCEPT_CONFORMANCE = "Accept=application/json"
 ACCEPT_ITEMS = "Accept=application/geo+json, application/json"
 ACCEPT_QUERYABLES = "Accept=application/schema+json"
+ACCEPT_SCHEMA = "Accept=application/schema+json"
 
 
 def mergeDict(d1, d2):
@@ -101,6 +103,7 @@ def create_landing_page_api_collection(
     bbox=[-71.123, 66.33, -65.32, 78.3],
     additionalApiResponse={},
     additionalConformance=[],
+    collectionLinks=None,
 ):
 
     questionmark_extraparam = "?" + extraparam if extraparam else ""
@@ -191,6 +194,8 @@ def create_landing_page_api_collection(
         collection["storageCrs"] = storageCrs
     if crsList:
         collection["crs"] = crsList
+    if collectionLinks:
+        collection["links"] = collectionLinks
 
     with open(
         sanitize(
@@ -2740,6 +2745,291 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         # serialization and deserialization
         values = [f["center"] for f in vl.getFeatures()]
         self.assertEqual(values, [{"coordinates": [6.5, 51.8], "type": "Point"}])
+
+    def testPart5Schema(self):
+        """Base test for OGC API Features Part 5 - Schema"""
+
+        endpoint = (
+            self.__class__.basetestpath + "/fake_qgis_http_endpoint_testPart5Schema"
+        )
+        additionalConformance = [
+            "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
+        ]
+        collectionLinks = [
+            {
+                "type": "text/html",
+                "rel": "http://www.opengis.net/def/rel/ogc/1.0/schema",
+                "title": "Schema of collection in HTML",
+                "href": "http://"
+                + endpoint
+                + "/collections/mycollection/schema?f=html",
+            },
+            {
+                "type": "application/schema+json",
+                "rel": "http://www.opengis.net/def/rel/ogc/1.0/schema",
+                "title": "Schema of collection in JSON",
+                "href": "http://"
+                + endpoint
+                + "/collections/mycollection/schema?f=json",
+            },
+        ]
+        create_landing_page_api_collection(
+            endpoint,
+            additionalConformance=additionalConformance,
+            collectionLinks=collectionLinks,
+        )
+
+        filename = sanitize(
+            endpoint, "/collections/mycollection/schema?f=json&" + ACCEPT_SCHEMA
+        )
+        schema = {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "$id": "http://" + endpoint + "/collections/mycollection/schema?f=json",
+            "type": "object",
+            "title": "My Collection",
+            "properties": {
+                "id": {
+                    "title": "Feature identifier",
+                    "description": "Long description",
+                    "type": "string",
+                    "readOnly": True,
+                    "x-ogc-role": "id",
+                    "x-ogc-propertySeq": 1,
+                },
+                "intfield": {"type": "integer", "x-ogc-propertySeq": 3},
+                "strfield": {"type": "string", "x-ogc-propertySeq": 2},
+                "doublefield": {"type": "number", "x-ogc-propertySeq": 4},
+                "boolfield": {"type": "boolean", "x-ogc-propertySeq": 5},
+                "datetimefield": {
+                    "type": "string",
+                    "format": "date-time",
+                    "x-ogc-propertySeq": 6,
+                },
+                "datefield": {
+                    "type": "string",
+                    "format": "date",
+                    "x-ogc-propertySeq": 7,
+                },
+                "geometry": {
+                    "x-ogc-role": "primary-geometry",
+                    "format": "geometry-point",
+                    "x-ogc-propertySeq": 8,
+                },
+                "str2field": {"type": "string", "x-ogc-propertySeq": 9},
+                "objectfield": {"type": "object", "x-ogc-propertySeq": 10},
+                "arrayfield": {"type": "array", "x-ogc-propertySeq": 11},
+            },
+        }
+        with open(filename, "wb") as f:
+            f.write(json.dumps(schema).encode("UTF-8"))
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "feat.1",
+                    "properties": {
+                        "intfield": 1,
+                        "strfield": "foo",
+                        "doublefield": 1.25,
+                        "boolfield": True,
+                        "datetimefield": "2025-03-17T17:13:00+0100",
+                        "datefield": "2025-03-17",
+                    },
+                    "geometry": {"type": "Point", "coordinates": [66.33, -70.332]},
+                }
+            ],
+        }
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(first_items).encode("UTF-8"))
+
+        # real page
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=1000&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(first_items).encode("UTF-8"))
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='mycollection' restrictToRequestBBOX=1",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+        self.assertEqual(len(fields), 10)
+        self.assertEqual(
+            [fields[i].name() for i in range(len(fields))],
+            [
+                "id",
+                "strfield",
+                "intfield",
+                "doublefield",
+                "boolfield",
+                "datetimefield",
+                "datefield",
+                "str2field",
+                "objectfield",
+                "arrayfield",
+            ],
+        )
+        self.assertEqual(fields[0].alias(), "Feature identifier")
+        self.assertEqual(fields[0].comment(), "Long description")
+        self.assertTrue(fields[0].isReadOnly())
+        self.assertFalse(fields[1].isReadOnly())
+        self.assertEqual(
+            [fields[i].type() for i in range(len(fields))],
+            [
+                QMetaType.Type.QString,
+                QMetaType.Type.QString,
+                QMetaType.Type.LongLong,
+                QMetaType.Type.Double,
+                QMetaType.Type.Bool,
+                QMetaType.Type.QDateTime,
+                QMetaType.Type.QDate,
+                QMetaType.Type.QString,
+                QMetaType.Type.QVariantMap,
+                QMetaType.Type.QVariantList,
+            ],
+        )
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
+
+        values = [
+            [f["id"], f["strfield"], f["intfield"], f["doublefield"], f["boolfield"]]
+            for f in vl.getFeatures()
+        ]
+        self.assertEqual(values, [["feat.1", "foo", 1, 1.25, True]])
+
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "geometry")
+
+    def _testPart5SchemaSingleOrMulti(
+        self, geometryFormat, geojsonGeom, expectedWkbType, expectedWkt
+    ):
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint__testPart5SchemaSingleOrMulti"
+        )
+        additionalConformance = [
+            "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
+        ]
+        collectionLinks = [
+            {
+                "type": "application/schema+json",
+                "rel": "[ogc-rel:schema]",
+                "title": "Schema of collection in JSON",
+                "href": "http://" + endpoint + "/collections/mycollection/schema",
+            }
+        ]
+        create_landing_page_api_collection(
+            endpoint,
+            additionalConformance=additionalConformance,
+            collectionLinks=collectionLinks,
+        )
+
+        filename = sanitize(
+            endpoint, "/collections/mycollection/schema?" + ACCEPT_SCHEMA
+        )
+        schema = {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "$id": "http://" + endpoint + "/collections/mycollection/schema?f=json",
+            "type": "object",
+            "title": "My Collection",
+            "properties": {
+                "id": {"type": "string", "x-ogc-role": "id", "type": "string"},
+                "geometry": {
+                    "x-ogc-role": "primary-geometry",
+                    "format": geometryFormat,
+                },
+            },
+        }
+        with open(filename, "wb") as f:
+            f.write(json.dumps(schema).encode("UTF-8"))
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "feat.1",
+                    "properties": {},
+                    "geometry": geojsonGeom,
+                }
+            ],
+        }
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(first_items).encode("UTF-8"))
+
+        # real page
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=1000&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(first_items).encode("UTF-8"))
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='mycollection' restrictToRequestBBOX=1",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), expectedWkbType)
+
+        f = next(vl.getFeatures())
+        self.assertEqual(f.geometry().wkbType(), expectedWkbType)
+        self.assertEqual(f.geometry().asWkt().upper(), expectedWkt)
+
+    def testPart5SchemaPointOrMultiPoint(self):
+        """Test "format": "geometry-point-or-multipoint" """
+        self._testPart5SchemaSingleOrMulti(
+            "geometry-point-or-multipoint",
+            {"type": "Point", "coordinates": [2, 49]},
+            QgsWkbTypes.Type.MultiPoint,
+            "MULTIPOINT ((2 49))",
+        )
+
+    def testPart5SchemaLineStringOrMultiLineString(self):
+        """Test "format": "geometry-linestring-or-multilinestring" """
+        self._testPart5SchemaSingleOrMulti(
+            "geometry-linestring-or-multilinestring",
+            {"type": "LineString", "coordinates": [[2, 49], [3, 50]]},
+            QgsWkbTypes.Type.MultiLineString,
+            "MULTILINESTRING ((2 49, 3 50))",
+        )
+
+    def testPart5SchemaPolygonOrMultiPolygon(self):
+        """Test "format": "geometry-linestring-or-multilinestring" """
+        self._testPart5SchemaSingleOrMulti(
+            "geometry-polygon-or-multipolygon",
+            {
+                "type": "Polygon",
+                "coordinates": [[[2, 49], [2, 50], [3, 50], [3, 49], [2, 49]]],
+            },
+            QgsWkbTypes.Type.MultiPolygon,
+            "MULTIPOLYGON (((2 49, 2 50, 3 50, 3 49, 2 49)))",
+        )
 
 
 if __name__ == "__main__":

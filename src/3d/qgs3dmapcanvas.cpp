@@ -78,7 +78,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
 Qgs3DMapCanvas::~Qgs3DMapCanvas()
 {
   if ( mMapTool )
-    mMapTool->deactivate();
+    delete mMapTool;
   // make sure the scene is deleted while map settings object is still alive
   mScene->deleteLater();
   mScene = nullptr;
@@ -299,6 +299,9 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
       break;
     case QEvent::KeyPress:
       mMapTool->keyPressEvent( static_cast<QKeyEvent *>( event ) );
+      break;
+    case QEvent::KeyRelease:
+      mMapTool->keyReleaseEvent( static_cast<QKeyEvent *>( event ) );
       break;
     case QEvent::Wheel:
       mMapTool->mouseWheelEvent( static_cast<QWheelEvent *>( event ) );

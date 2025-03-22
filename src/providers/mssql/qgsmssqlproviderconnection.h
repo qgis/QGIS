@@ -19,17 +19,16 @@
 
 #include "qgsabstractdatabaseproviderconnection.h"
 
-#include <QSqlQuery>
-
+class QgsMssqlQuery;
 
 struct QgssMssqlProviderResultIterator : public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
-    QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, std::unique_ptr<QSqlQuery> query );
+    QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, std::unique_ptr<QgsMssqlQuery> query );
 
   private:
     bool mResolveTypes = true;
     int mColumnCount = 0;
-    std::unique_ptr<QSqlQuery> mQuery;
+    std::unique_ptr<QgsMssqlQuery> mQuery;
     QVariantList mNextRow;
 
     QVariantList nextRowPrivate() override;
