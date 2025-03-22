@@ -470,7 +470,7 @@ class ProcessingAlgFactory:
         Define the help for the algorithm using @alg.help. This method will
         be used instead of the doc string on the function as the help in the processing dialogs.
 
-        :param helpstring: The help text. Use alg.tr() for translation support.
+        :param helpstring: The help text. Use QCoreApplication.translate() for translation support.
         """
 
         def dec(f):
