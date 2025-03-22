@@ -84,8 +84,8 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog : public QDialog, private Ui::QgsNe
     void mRemoveAttributeButton_clicked();
     void mFieldTypeBox_currentIndexChanged( int index );
     void mGeometryTypeBox_currentIndexChanged( int index );
-    void mLayerNameEdit_textChanged( const QString &text );
-    void mLayerNameEdit_textEdited( const QString &text );
+    void mTableNameEdit_textChanged( const QString &text );
+    void mTableNameEdit_textEdited( const QString &text );
     void mLayerIdentifierEdit_textEdited( const QString &text );
     void fieldNameChanged( const QString & );
     void selectionChanged();
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog : public QDialog, private Ui::QgsNe
 
     QPushButton *mOkButton = nullptr;
     QString mCrsId;
-    bool mLayerNameEdited = false;
+    bool mTableNameEdited = false;
     bool mLayerIdentifierEdited = false;
     OverwriteBehavior mBehavior = Prompt;
     bool mAddToProject = true;

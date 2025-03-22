@@ -424,7 +424,7 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="mLayerNameEdit">
+          <widget class="QLineEdit" name="mTableNameEdit">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -447,9 +447,9 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="mLayerNameLabel">
+          <widget class="QLabel" name="mTableNameLabel">
            <property name="text">
-            <string>Layer name</string>
+            <string>Table name</string>
            </property>
            <property name="buddy">
             <cstring>mLayerIdentifierEdit</cstring>
@@ -547,7 +547,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mLayerNameEdit</tabstop>
+  <tabstop>mTableNameEdit</tabstop>
   <tabstop>mGeometryTypeBox</tabstop>
   <tabstop>mGeometryWithZCheckBox</tabstop>
   <tabstop>mGeometryWithMCheckBox</tabstop>
