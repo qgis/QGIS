@@ -31,7 +31,6 @@ from .CheckValidity import CheckValidity
 from .Climb import Climb
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
-from .ExportGeometryInfo import ExportGeometryInfo
 from .FieldPyculator import FieldsPyculator
 from .FindProjection import FindProjection
 from .GeometryConvert import GeometryConvert
@@ -95,7 +94,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             Climb(),
             EliminateSelection(),
             ExecuteSQL(),
-            ExportGeometryInfo(),
             FieldsPyculator(),
             FindProjection(),
             GeometryConvert(),
