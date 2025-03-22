@@ -111,8 +111,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     mapToPixel.setMapRotation( 0, center.x(), center.y() );
   }
 
-  QgsRectangle myProjectedViewExtent;
-  QgsRectangle myProjectedLayerExtent;
+  QgsRectangle viewExtentInMapCrs;
+  QgsRectangle layerExtentInMapCrs;
 
   if ( rendererContext.coordinateTransform().isValid() )
   {
@@ -127,7 +127,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
       // layer CRS, then this dummy extent is returned by QgsMapRendererJob::reprojectToLayerExtent()
       // Don't try to reproject it now to view extent as this would return
       // a null rectangle.
-      myProjectedViewExtent = rendererContext.extent();
+      viewExtentInMapCrs = rendererContext.extent();
     }
     else
     {
@@ -135,12 +135,12 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
       {
         QgsCoordinateTransform ct = rendererContext.coordinateTransform();
         ct.setBallparkTransformsAreAppropriate( true );
-        myProjectedViewExtent = ct.transformBoundingBox( rendererContext.extent() );
+        viewExtentInMapCrs = rendererContext.mapExtent();
       }
       catch ( QgsCsException &cs )
       {
         QgsMessageLog::logMessage( QObject::tr( "Could not reproject view extent: %1" ).arg( cs.what() ), QObject::tr( "Raster" ) );
-        myProjectedViewExtent.setNull();
+        viewExtentInMapCrs.setNull();
       }
     }
 
@@ -148,34 +148,73 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     {
       QgsCoordinateTransform ct = rendererContext.coordinateTransform();
       ct.setBallparkTransformsAreAppropriate( true );
-      myProjectedLayerExtent = ct.transformBoundingBox( layer->extent() );
+      layerExtentInMapCrs = ct.transformBoundingBox( layer->extent() );
     }
     catch ( QgsCsException &cs )
     {
       QgsMessageLog::logMessage( QObject::tr( "Could not reproject layer extent: %1" ).arg( cs.what() ), QObject::tr( "Raster" ) );
-      myProjectedLayerExtent.setNull();
+      layerExtentInMapCrs.setNull();
     }
   }
   else
   {
     QgsDebugMsgLevel( QStringLiteral( "coordinateTransform not set" ), 4 );
-    myProjectedViewExtent = rendererContext.extent();
-    myProjectedLayerExtent = layer->extent();
+    viewExtentInMapCrs = rendererContext.extent();
+    layerExtentInMapCrs = layer->extent();
   }
 
   // clip raster extent to view extent
-  QgsRectangle myRasterExtent = layer->ignoreExtents() ? myProjectedViewExtent : myProjectedViewExtent.intersect( myProjectedLayerExtent );
-  if ( myRasterExtent.isEmpty() )
+  QgsRectangle visibleExtentOfRasterInMapCrs = layer->ignoreExtents() ? viewExtentInMapCrs : viewExtentInMapCrs.intersect( layerExtentInMapCrs );
+  if ( visibleExtentOfRasterInMapCrs.isEmpty() )
+  {
+    if ( rendererContext.coordinateTransform().isShortCircuited() )
+    {
+      // no point doing the fallback logic, we aren't using transforms
+
+      QgsDebugMsgLevel( QStringLiteral( "draw request outside view extent." ), 2 );
+      // nothing to do
+      return;
+    }
+
+    // fallback logic, try the inverse operation
+    // eg if we are trying to view a global layer in a small area local projection, then the transform of the
+    // map extent to the layer's local projection probably failed.
+    // So we'll try the opposite logic here, and see if we can first calculate the visible region in the
+    // layers extent, and then transform that small region back to the map's crs
+    try
+    {
+      QgsCoordinateTransform layerToMapTransform = rendererContext.coordinateTransform();
+      layerToMapTransform.setBallparkTransformsAreAppropriate( true );
+      const QgsRectangle viewExtentInLayerCrs = layerToMapTransform.transformBoundingBox( rendererContext.mapExtent(), Qgis::TransformDirection::Reverse );
+
+      const QgsRectangle visibleExtentInLayerCrs = layer->ignoreExtents() ? viewExtentInLayerCrs : viewExtentInLayerCrs.intersect( layer->extent() );
+      if ( visibleExtentInLayerCrs.isEmpty() )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "draw request outside view extent." ), 2 );
+        // nothing to do
+        return;
+      }
+
+      visibleExtentOfRasterInMapCrs = layerToMapTransform.transformBoundingBox( visibleExtentInLayerCrs );
+    }
+    catch ( QgsCsException &cs )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Could not reproject layer extent: %1" ).arg( cs.what() ), QObject::tr( "Raster" ) );
+      return;
+    }
+  }
+
+  if ( visibleExtentOfRasterInMapCrs.isEmpty() )
   {
     QgsDebugMsgLevel( QStringLiteral( "draw request outside view extent." ), 2 );
     // nothing to do
     return;
   }
 
-  QgsDebugMsgLevel( "theViewExtent is " + rendererContext.extent().toString(), 4 );
-  QgsDebugMsgLevel( "myProjectedViewExtent is " + myProjectedViewExtent.toString(), 4 );
-  QgsDebugMsgLevel( "myProjectedLayerExtent is " + myProjectedLayerExtent.toString(), 4 );
-  QgsDebugMsgLevel( "myRasterExtent is " + myRasterExtent.toString(), 4 );
+  QgsDebugMsgLevel( "map extent in layer crs is " + rendererContext.extent().toString(), 4 );
+  QgsDebugMsgLevel( "map extent in map crs is " + viewExtentInMapCrs.toString(), 4 );
+  QgsDebugMsgLevel( "layer extent in map crs is " + layerExtentInMapCrs.toString(), 4 );
+  QgsDebugMsgLevel( "visible extent of raster in map crs is " + visibleExtentOfRasterInMapCrs.toString(), 4 );
 
   //
   // The first thing we do is set up the QgsRasterViewPort. This struct stores all the settings
@@ -186,7 +225,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   //the contents of the rasterViewPort will change
   mRasterViewPort = new QgsRasterViewPort();
 
-  mRasterViewPort->mDrawnExtent = myRasterExtent;
+  mRasterViewPort->mDrawnExtent = visibleExtentOfRasterInMapCrs;
   if ( rendererContext.coordinateTransform().isValid() )
   {
     mRasterViewPort->mSrcCRS = layer->crs();
@@ -200,8 +239,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   }
 
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
-  mRasterViewPort->mTopLeftPoint = mapToPixel.transform( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() );
-  mRasterViewPort->mBottomRightPoint = mapToPixel.transform( myRasterExtent.xMaximum(), myRasterExtent.yMinimum() );
+  mRasterViewPort->mTopLeftPoint = mapToPixel.transform( visibleExtentOfRasterInMapCrs.xMinimum(), visibleExtentOfRasterInMapCrs.yMaximum() );
+  mRasterViewPort->mBottomRightPoint = mapToPixel.transform( visibleExtentOfRasterInMapCrs.xMaximum(), visibleExtentOfRasterInMapCrs.yMinimum() );
 
   // align to output device grid, i.e. std::floor/ceil to integers
   // TODO: this should only be done if paint device is raster - screen, image
@@ -214,7 +253,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mRasterViewPort->mBottomRightPoint.setX( std::ceil( mRasterViewPort->mBottomRightPoint.x() ) );
   mRasterViewPort->mBottomRightPoint.setY( std::ceil( mRasterViewPort->mBottomRightPoint.y() ) );
   // recalc myRasterExtent to aligned values
-  myRasterExtent.set(
+  visibleExtentOfRasterInMapCrs.set(
     mapToPixel.toMapCoordinates( mRasterViewPort->mTopLeftPoint.x(),
                                  mRasterViewPort->mBottomRightPoint.y() ),
     mapToPixel.toMapCoordinates( mRasterViewPort->mBottomRightPoint.x(),
@@ -246,10 +285,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   QgsDebugMsgLevel( QStringLiteral( "mapUnitsPerPixel = %1" ).arg( mapToPixel.mapUnitsPerPixel() ), 3 );
   QgsDebugMsgLevel( QStringLiteral( "mWidth = %1" ).arg( layer->width() ), 3 );
   QgsDebugMsgLevel( QStringLiteral( "mHeight = %1" ).arg( layer->height() ), 3 );
-  QgsDebugMsgLevel( QStringLiteral( "myRasterExtent.xMinimum() = %1" ).arg( myRasterExtent.xMinimum() ), 3 );
-  QgsDebugMsgLevel( QStringLiteral( "myRasterExtent.xMaximum() = %1" ).arg( myRasterExtent.xMaximum() ), 3 );
-  QgsDebugMsgLevel( QStringLiteral( "myRasterExtent.yMinimum() = %1" ).arg( myRasterExtent.yMinimum() ), 3 );
-  QgsDebugMsgLevel( QStringLiteral( "myRasterExtent.yMaximum() = %1" ).arg( myRasterExtent.yMaximum() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "visibleExtentOfRasterInMapCrs.xMinimum() = %1" ).arg( visibleExtentOfRasterInMapCrs.xMinimum() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "visibleExtentOfRasterInMapCrs.xMaximum() = %1" ).arg( visibleExtentOfRasterInMapCrs.xMaximum() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "visibleExtentOfRasterInMapCrs.yMinimum() = %1" ).arg( visibleExtentOfRasterInMapCrs.yMinimum() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "visibleExtentOfRasterInMapCrs.yMaximum() = %1" ).arg( visibleExtentOfRasterInMapCrs.yMaximum() ), 3 );
 
   QgsDebugMsgLevel( QStringLiteral( "mTopLeftPoint.x() = %1" ).arg( mRasterViewPort->mTopLeftPoint.x() ), 3 );
   QgsDebugMsgLevel( QStringLiteral( "mBottomRightPoint.x() = %1" ).arg( mRasterViewPort->mBottomRightPoint.x() ), 3 );
