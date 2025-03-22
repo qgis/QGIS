@@ -21,6 +21,8 @@ __copyright__ = "(C) 2015, Médéric Ribreux"
 
 from .v_net import incorporatePoints, variableOutput
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """Verify if we have the right parameters"""
@@ -33,8 +35,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     if (values[0] or values[2]) and (values[1] or values[3]):
         return True, None
 
-    return False, alg.tr(
-        "You need to set at least setX_where or setX_cats parameters for each set!"
+    return False, QCoreApplication.translate(
+        "GrassAlgorithmExt",
+        "You need to set at least setX_where or setX_cats parameters for each set!",
     )
 
 
