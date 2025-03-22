@@ -163,7 +163,7 @@ class Climb(QgisAlgorithm):
             # In case of multigeometries we need to do the parts
             parts = feature.geometry().constParts()
             if not feature.hasGeometry():
-                no_geometry.append(self.tr(f"Feature: {feature.id()}"))
+                no_geometry.append(self.tr("Feature: {0}").format(feature.id()))
             for partnumber, part in enumerate(parts):
                 # Calculate the climb
                 first = True
@@ -173,11 +173,11 @@ class Climb(QgisAlgorithm):
                     if math.isnan(zval):
                         no_z_nodes.append(
                             self.tr(
-                                "Feature: {feature_id}, part: {part_id}, point: {point_id}".format(
-                                    feature_id=feature.id(),
-                                    part_id=partnumber,
-                                    point_id=idx,
-                                )
+                                "Feature: {feature_id}, part: {part_id}, point: {point_id}"
+                            ).format(
+                                feature_id=feature.id(),
+                                part_id=partnumber,
+                                point_id=idx,
                             )
                         )
                         continue
@@ -212,17 +212,13 @@ class Climb(QgisAlgorithm):
 
         feedback.pushInfo(
             self.tr(
-                "The following features do not have geometry: {no_geometry_report}".format(
-                    no_geometry_report=(", ".join(no_geometry))
-                )
-            )
+                "The following features do not have geometry: {no_geometry_report}"
+            ).format(no_geometry_report=(", ".join(no_geometry)))
         )
 
         feedback.pushInfo(
-            self.tr(
-                "The following points do not have Z values: {no_z_report}".format(
-                    no_z_report=(", ".join(no_z_nodes))
-                )
+            self.tr("The following points do not have Z values: {no_z_report}").format(
+                no_z_report=(", ".join(no_z_nodes))
             )
         )
 
