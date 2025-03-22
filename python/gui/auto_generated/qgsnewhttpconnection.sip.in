@@ -97,6 +97,13 @@ Returns the "test connection" button.
 
 
 
+    Qgis::HttpMethod preferredHttpMethod() const;
+%Docstring
+Returns the selected preferred HTTP method.
+
+.. versionadded:: 3.44
+%End
+
 
     virtual QString wfsSettingsKey( const QString &base, const QString &connectionName ) const;
 %Docstring

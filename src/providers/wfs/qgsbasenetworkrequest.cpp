@@ -375,7 +375,7 @@ bool QgsBaseNetworkRequest::issueRequest( QNetworkRequest &request, const QByteA
   return success;
 }
 
-bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteArray &verb, const QString &contentTypeHeader, const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &extraHeaders )
+bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteArray &verb, const QString &contentTypeHeader, const QByteArray &data, bool synchronous, const QList<QNetworkReply::RawHeaderPair> &extraHeaders )
 {
   abort(); // cancel previous
   mIsAborted = false;
@@ -450,7 +450,7 @@ bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteAr
   for ( const QNetworkReply::RawHeaderPair &headerPair : std::as_const( mRequestHeaders ) )
     request.setRawHeader( headerPair.first, headerPair.second );
 
-  if ( !issueRequest( request, verb, &data, /*synchronous=*/true ) )
+  if ( !issueRequest( request, verb, &data, synchronous ) )
   {
     return false;
   }
@@ -458,19 +458,19 @@ bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteAr
   return mErrorMessage.isEmpty();
 }
 
-bool QgsBaseNetworkRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &extraHeaders )
+bool QgsBaseNetworkRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data, bool synchronous, const QList<QNetworkReply::RawHeaderPair> &extraHeaders )
 {
-  return sendPOSTOrPUTOrPATCH( url, QByteArray( "POST" ), contentTypeHeader, data, extraHeaders );
+  return sendPOSTOrPUTOrPATCH( url, QByteArray( "POST" ), contentTypeHeader, data, synchronous, extraHeaders );
 }
 
 bool QgsBaseNetworkRequest::sendPUT( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &extraHeaders )
 {
-  return sendPOSTOrPUTOrPATCH( url, QByteArray( "PUT" ), contentTypeHeader, data, extraHeaders );
+  return sendPOSTOrPUTOrPATCH( url, QByteArray( "PUT" ), contentTypeHeader, data, true /*synchronous*/, extraHeaders );
 }
 
 bool QgsBaseNetworkRequest::sendPATCH( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &extraHeaders )
 {
-  return sendPOSTOrPUTOrPATCH( url, QByteArray( "PATCH" ), contentTypeHeader, data, extraHeaders );
+  return sendPOSTOrPUTOrPATCH( url, QByteArray( "PATCH" ), contentTypeHeader, data, true /*synchronous*/, extraHeaders );
 }
 
 QStringList QgsBaseNetworkRequest::sendOPTIONS( const QUrl &url )

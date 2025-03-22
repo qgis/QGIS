@@ -108,6 +108,9 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Map a namespace prefix to its URI
     QMap<QString, QString> mNamespacePrefixToURIMap;
 
+    //! Preferred HTTP method
+    Qgis::HttpMethod mHttpMethod = Qgis::HttpMethod::Get;
+
     //! Page size for WFS 2.0. 0 = disabled
     long long mPageSize = 0;
 

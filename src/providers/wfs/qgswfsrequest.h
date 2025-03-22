@@ -23,6 +23,7 @@
 
 #include "qgswfsdatasourceuri.h"
 #include "qgsbasenetworkrequest.h"
+#include "qgswfscapabilities.h"
 
 //! Abstract base class for a WFS request.
 class QgsWfsRequest : public QgsBaseNetworkRequest
@@ -35,6 +36,15 @@ class QgsWfsRequest : public QgsBaseNetworkRequest
     QUrl requestUrl( const QString &request ) const;
 
   protected:
+    QDomDocument createPostDocument() const;
+    QDomElement createRootPostElement(
+      const QgsWfsCapabilities &capabilities,
+      const QString &wfsVersion,
+      QDomDocument &postDocument,
+      const QString &name,
+      const QStringList &typeNamesForNamespaces = QStringList()
+    ) const;
+
     //! URI
     QgsWFSDataSourceURI mUri;
 };

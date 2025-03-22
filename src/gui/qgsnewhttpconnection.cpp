@@ -89,6 +89,10 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   cmbVersion->addItem( tr( "OGC API - Features" ) );
   connect( cmbVersion, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewHttpConnection::wfsVersionCurrentIndexChanged );
 
+  mComboHttpMethod->addItem( QStringLiteral( "GET" ), QVariant::fromValue( Qgis::HttpMethod::Get ) );
+  mComboHttpMethod->addItem( QStringLiteral( "POST" ), QVariant::fromValue( Qgis::HttpMethod::Post ) );
+  mComboHttpMethod->setCurrentIndex( mComboHttpMethod->findData( QVariant::fromValue( Qgis::HttpMethod::Get ) ) );
+
   cmbFeaturePaging->clear();
   cmbFeaturePaging->addItem( tr( "Default (trust server capabilities)" ) );
   cmbFeaturePaging->addItem( tr( "Enabled" ) );
@@ -287,6 +291,11 @@ QLineEdit *QgsNewHttpConnection::wfsPageSizeLineEdit()
   return txtPageSize;
 }
 
+Qgis::HttpMethod QgsNewHttpConnection::preferredHttpMethod() const
+{
+  return mComboHttpMethod->currentData().value< Qgis::HttpMethod >();
+}
+
 QString QgsNewHttpConnection::wfsSettingsKey( const QString &base, const QString &connectionName ) const
 {
   return base + connectionName;
@@ -347,6 +356,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   else
     cmbFeaturePaging->setCurrentIndex( static_cast<int>( QgsNewHttpConnection::WfsFeaturePagingIndex::DEFAULT ) );
 
+  mComboHttpMethod->setCurrentIndex( mComboHttpMethod->findData( QVariant::fromValue( QgsOwsConnection::settingsPreferredHttpMethod->value( detailsParameters ) ) ) );
   txtPageSize->setText( QgsOwsConnection::settingsPagesize->value( detailsParameters ) );
 }
 
@@ -449,6 +459,7 @@ void QgsNewHttpConnection::accept()
     QgsOwsConnection::settingsVersion->setValue( version, detailsParameters );
     QgsOwsConnection::settingsMaxNumFeatures->setValue( txtMaxNumFeatures->text(), detailsParameters );
     QgsOwsConnection::settingsPagesize->setValue( txtPageSize->text(), detailsParameters );
+    QgsOwsConnection::settingsPreferredHttpMethod->setValue( mComboHttpMethod->currentData().value< Qgis::HttpMethod >(), detailsParameters );
 
     QString pagingEnabled = QStringLiteral( "default" );
     switch ( cmbFeaturePaging->currentIndex() )
