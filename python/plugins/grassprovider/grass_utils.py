@@ -599,10 +599,8 @@ class GrassUtils:
                     return GrassUtils.tr(
                         'The GRASS GIS folder "{}" does not contain a valid set '
                         "of GRASS modules.\nPlease, check that GRASS is correctly "
-                        "installed and available on your system.".format(
-                            os.path.join(GrassUtils.path, "bin")
-                        )
-                    )
+                        "installed and available on your system."
+                    ).format(os.path.join(GrassUtils.path, "bin"))
             GrassUtils.isGrassInstalled = True
             return
         # Return error messages
@@ -618,10 +616,10 @@ class GrassUtils:
                 if GrassUtils.command is None:
                     return GrassUtils.tr(
                         "GRASS GIS binary {} can't be found on this system from a shell. "
-                        "Please install it or configure your PATH {} environment variable.".format(
-                            "(grass.bat)" if isWindows() else "(grass.sh)",
-                            "or OSGEO4W_ROOT" if isWindows() else "",
-                        )
+                        "Please install it or configure your PATH {} environment variable."
+                    ).format(
+                        "(grass.bat)" if isWindows() else "(grass.sh)",
+                        "or OSGEO4W_ROOT" if isWindows() else "",
                     )
             # GNU/Linux
             else:
