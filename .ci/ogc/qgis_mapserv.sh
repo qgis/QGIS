@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export QGIS_SERVER_LOG_FILE=/var/log/qgisserver.log
+export QGIS_SERVER_LOG_STDERR=true
 export QGIS_SERVER_LOG_LEVEL=0
 export QGIS_PREFIX_PATH=/usr/src/qgis/build/output
 
