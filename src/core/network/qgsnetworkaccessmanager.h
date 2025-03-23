@@ -573,8 +573,11 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     /**
      * Sets an advanced request pre-processor function, which allows manipulation of a network request before it is processed.
      *
-     * The \a processor function takes the QNetworkRequest, network operation, and request data as its arguments, and can mutate the request if necessary.
-     * It should return the desired operation and request data as a tuple, transforming as desired.
+     * The \a processor function takes the QNetworkRequest, network operation (a QNetworkAccessManager::Operation cast to an integer value),
+     * and request data as its arguments, and can mutate the request if necessary.
+     *
+     * It should return the desired operation (as a QNetworkAccessManager::Operation cast to an integer value) and request data as a tuple,
+     * transforming as desired.
      *
      * \returns An auto-generated string uniquely identifying the preprocessor, which can later be
      * used to remove the preprocessor (via a call to removeAdvancedRequestPreprocessor()).
