@@ -8781,7 +8781,7 @@ class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def _nam_advanced_request_preprocessor(cls, request: QNetworkRequest, op, content):
-        if op == 4:
+        if op == 4:  # QNetworkAccessManager.Operation.Post
             # maps post data to response
             RESPONSES = {
                 b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:DescribeFeatureType xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:TypeName>my:typename</wfs:TypeName>\n</wfs:DescribeFeatureType>\n': b"""
