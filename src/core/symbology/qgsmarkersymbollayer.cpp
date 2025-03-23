@@ -1867,7 +1867,7 @@ QColor QgsSimpleMarkerSymbolLayer::color() const
 QgsFilledMarkerSymbolLayer::QgsFilledMarkerSymbolLayer( Qgis::MarkerShape shape, double size, double angle, Qgis::ScaleMethod scaleMethod )
   : QgsSimpleMarkerSymbolLayerBase( shape, size, angle, scaleMethod )
 {
-  mFill.reset( static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
+  mFill = QgsFillSymbol::createSimple( QVariantMap() );
 }
 
 QgsFilledMarkerSymbolLayer::~QgsFilledMarkerSymbolLayer() = default;
@@ -1908,7 +1908,7 @@ QgsSymbolLayer *QgsFilledMarkerSymbolLayer::create( const QVariantMap &props )
     m->setVerticalAnchorPoint( static_cast< Qgis::VerticalAnchorPoint >( props[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
   }
 
-  m->setSubSymbol( QgsFillSymbol::createSimple( props ) );
+  m->setSubSymbol( QgsFillSymbol::createSimple( props ).release() );
 
   m->restoreOldDataDefinedProperties( props );
 

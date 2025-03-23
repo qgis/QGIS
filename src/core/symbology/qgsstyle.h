@@ -683,7 +683,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param tags is a list of tags that are associated with the symbol as a QStringList.
      *  \returns returns the success state of the save operation
      */
-    bool saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags );
+    bool saveSymbol( const QString &name, const QgsSymbol *symbol, bool favorite, const QStringList &tags );
 
     /**
      * Adds the colorramp to the database.

@@ -1034,7 +1034,7 @@ void TestQgsLabelingEngine::testParallelLabelSmallFeature()
   settings.placement = Qgis::LabelPlacement::Line;
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "linestring?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
   QgsFeature f( vl2->fields(), 1 );
@@ -1103,7 +1103,7 @@ void TestQgsLabelingEngine::testAllowDegradedPlacements()
   settings.placementSettings().setAllowDegradedPlacement( false );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "linestring?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
   QgsFeature f( vl2->fields(), 1 );
@@ -1181,7 +1181,7 @@ void TestQgsLabelingEngine::testOverlapHandling()
   settings.priority = 5;
 
   auto vl1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl1->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0 }, { QStringLiteral( "outline_style" ), QStringLiteral( "no" ) } } ) ) );
+  vl1->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0 }, { QStringLiteral( "outline_style" ), QStringLiteral( "no" ) } } ).release() ) );
 
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl1.get(), QStringLiteral( "test" ), true, &settings );
   QgsFeature f( vl1->fields(), 1 );
@@ -1198,7 +1198,7 @@ void TestQgsLabelingEngine::testOverlapHandling()
   settings.priority = 10;
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) }, { QStringLiteral( "outline_width" ), 0 }, { QStringLiteral( "outline_style" ), QStringLiteral( "no" ) } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) }, { QStringLiteral( "outline_width" ), 0 }, { QStringLiteral( "outline_style" ), QStringLiteral( "no" ) } } ).release() ) );
 
   QgsVectorLayerLabelProvider *provider2 = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
   f = QgsFeature( vl2->fields(), 1 );
@@ -1344,7 +1344,7 @@ void TestQgsLabelingEngine::testAllowOverlapsIgnoresObstacles()
   settings.priority = 2;
 
   auto vl1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl1->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0 }, { QStringLiteral( "outline_style" ), QStringLiteral( "no" ) } } ) ) );
+  vl1->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0 }, { QStringLiteral( "outline_style" ), QStringLiteral( "no" ) } } ).release() ) );
 
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl1.get(), QStringLiteral( "test" ), true, &settings );
   QgsFeature f( vl1->fields(), 1 );
@@ -1361,7 +1361,7 @@ void TestQgsLabelingEngine::testAllowOverlapsIgnoresObstacles()
   settings.obstacleSettings().setFactor( 10 );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) }, { QStringLiteral( "outline_width" ), 0 }, { QStringLiteral( "outline_style" ), QStringLiteral( "no" ) } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) }, { QStringLiteral( "outline_width" ), 0 }, { QStringLiteral( "outline_style" ), QStringLiteral( "no" ) } } ).release() ) );
 
   QgsVectorLayerLabelProvider *provider2 = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
   f = QgsFeature( vl2->fields(), 1 );
@@ -1503,7 +1503,7 @@ void TestQgsLabelingEngine::testTouchingParts()
   // if treated individually, none of these parts are long enough for the label to fit -- but the label should be rendered if the mergeLines setting is true,
   // because the parts should be merged into a single linestring
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -1559,7 +1559,7 @@ void TestQgsLabelingEngine::testMergingLinesWithForks()
 
   // if treated individually, none of these parts are long enough for the label to fit -- but the label should be rendered if the mergeLines setting is true
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -1626,7 +1626,7 @@ void TestQgsLabelingEngine::testMergingLinesWithMinimumSize()
 
   // if treated individually, none of these parts exceed the minimum feature size set above -- but the label should be rendered if the mergeLines setting is true
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -2291,7 +2291,7 @@ void TestQgsLabelingEngine::testCurvedLabelsWithTinySegments()
   settings.placement = Qgis::LabelPlacement::Curved;
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -2350,7 +2350,7 @@ void TestQgsLabelingEngine::testCurvedLabelCorrectLinePlacement()
   settings.maxCurvedCharAngleOut = 99;
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -2416,7 +2416,7 @@ void TestQgsLabelingEngine::testCurvedLabelNegativeDistance()
   settings.dist = -5;
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -2469,7 +2469,7 @@ void TestQgsLabelingEngine::testCurvedLabelOnSmallLineNearCenter()
   settings.labelPerPart = false;
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -2521,7 +2521,7 @@ void TestQgsLabelingEngine::testCurvedLabelLineOrientationAbove()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -2586,7 +2586,7 @@ void TestQgsLabelingEngine::testCurvedLabelLineOrientationBelow()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -2655,7 +2655,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbove()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -2723,7 +2723,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownBelow()
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -2792,7 +2792,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbovePositiveOffset()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -2860,7 +2860,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAboveNegativeOffset()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -2927,7 +2927,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftPositiveOffset()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -2995,7 +2995,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftNegativeOffset()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -3062,7 +3062,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightPositiveOffset()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -3130,7 +3130,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightNegativeOffset()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -3196,7 +3196,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbove()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -3262,7 +3262,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintBelow()
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -3329,7 +3329,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbovePositiveOffse
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -3397,7 +3397,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAboveNegativeOffse
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -3464,7 +3464,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftPositiveOffset
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -3532,7 +3532,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftNegativeOffset
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -3599,7 +3599,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightPositiveOffse
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -3667,7 +3667,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightNegativeOffse
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -3731,7 +3731,7 @@ void TestQgsLabelingEngine::testRepeatDistanceWithSmallLine()
   settings.repeatDistance = 55;
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -3785,7 +3785,7 @@ void TestQgsLabelingEngine::testParallelPlacementPreferAbove()
   settings.labelPerPart = false;
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -4954,7 +4954,7 @@ void TestQgsLabelingEngine::curvedOverrun()
   settings.lineSettings().setOverrunDistance( 0 );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -5029,7 +5029,7 @@ void TestQgsLabelingEngine::parallelOverrun()
   settings.lineSettings().setOverrunDistance( 0 );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -5507,7 +5507,7 @@ void TestQgsLabelingEngine::testMapUnitLetterSpacing()
   settings.setFormat( format );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -5561,7 +5561,7 @@ void TestQgsLabelingEngine::testMapUnitWordSpacing()
   settings.setFormat( format );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -5751,7 +5751,7 @@ void TestQgsLabelingEngine::testLineAnchorParallel()
   settings.lineSettings().setLineAnchorPercent( 0.0 );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -5815,7 +5815,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -6013,7 +6013,7 @@ void TestQgsLabelingEngine::testLineAnchorDataDefinedType()
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LineAnchorType, QgsProperty::fromExpression( QStringLiteral( "'strict'" ) ) );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -6080,7 +6080,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -6164,7 +6164,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -6365,7 +6365,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedOverrun()
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -6435,7 +6435,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedStrictAllUpsideDown()
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -6490,7 +6490,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontal()
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -6555,7 +6555,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontalConstraints()
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=l:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << QVariant() );
@@ -6647,7 +6647,7 @@ void TestQgsLabelingEngine::testLineAnchorClipping()
   settings.lineSettings().setAnchorClipping( QgsLabelLineSettings::AnchorClipping::UseEntireLine );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=l:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (189950 5000000, 190100 5000000)" ) ) );
@@ -6703,7 +6703,7 @@ void TestQgsLabelingEngine::testShowAllLabelsWhenALabelHasNoCandidates()
   settings.lineSettings().setOverrunDistance( 50 );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:23700&field=l:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << QVariant() );
@@ -6781,7 +6781,7 @@ void TestQgsLabelingEngine::testSymbologyScalingFactor()
 
   QgsBalloonCallout *callout = new QgsBalloonCallout();
   callout->setEnabled( true );
-  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ) );
+  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ).release() );
   callout->setMargins( QgsMargins( 2, 2, 2, 2 ) );
 
   settings.setCallout( callout );
@@ -6841,7 +6841,7 @@ void TestQgsLabelingEngine::testSymbologyScalingFactor2()
   format.buffer().setColor( QColor( 200, 255, 200 ) );
 
   format.background().setEnabled( true );
-  format.background().setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ) );
+  format.background().setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ).release() );
   format.background().setSize( QSizeF( 2, 3 ) );
 
   settings.setFormat( format );
@@ -6886,7 +6886,7 @@ void TestQgsLabelingEngine::testLineDirectionSymbolRight()
   settings.lineSettings().setDirectionSymbolPlacement( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -6940,7 +6940,7 @@ void TestQgsLabelingEngine::testLineDirectionSymbolLeft()
   settings.lineSettings().setDirectionSymbolPlacement( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -6994,7 +6994,7 @@ void TestQgsLabelingEngine::testLineDirectionSymbolAbove()
   settings.lineSettings().setDirectionSymbolPlacement( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
@@ -7048,7 +7048,7 @@ void TestQgsLabelingEngine::testLineDirectionSymbolBelow()
   settings.lineSettings().setDirectionSymbolPlacement( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );

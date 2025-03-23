@@ -141,12 +141,13 @@ QgsSymbolLayer *QgsSymbolLayerRegistry::defaultSymbolLayer( Qgis::SymbolType typ
 }
 
 
-QgsSymbolLayer *QgsSymbolLayerRegistry::createSymbolLayer( const QString &name, const QVariantMap &properties ) const
+std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerRegistry::createSymbolLayer( const QString &name, const QVariantMap &properties ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;
 
-  return mMetadata[name]->createSymbolLayer( properties );
+  std::unique_ptr< QgsSymbolLayer > res( mMetadata[name]->createSymbolLayer( properties ) );
+  return res;
 }
 
 QgsSymbolLayer *QgsSymbolLayerRegistry::createSymbolLayerFromSld( const QString &name, QDomElement &element ) const

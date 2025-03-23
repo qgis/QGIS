@@ -29,7 +29,7 @@ QgsTiledSceneTextureRendererWidget::QgsTiledSceneTextureRendererWidget( QgsTiled
   setupUi( this );
 
   mFillSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
-  mFillSymbolButton->setSymbol( QgsTiledSceneTextureRenderer::createDefaultFillSymbol() );
+  mFillSymbolButton->setSymbol( QgsTiledSceneTextureRenderer::createDefaultFillSymbol().release() );
 
   if ( layer )
   {
