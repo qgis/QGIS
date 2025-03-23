@@ -62,7 +62,7 @@ void QgsDecorationLayoutExtent::projectRead()
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    mSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elem, rwContext ) );
+    mSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elem, rwContext ).release() );
   }
   if ( !mSymbol )
   {

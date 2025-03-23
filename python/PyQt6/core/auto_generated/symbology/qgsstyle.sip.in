@@ -622,7 +622,7 @@ Removes the entry of the specified ``type`` with matching ``name`` from the data
 .. versionadded:: 3.14
 %End
 
-    bool saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags );
+    bool saveSymbol( const QString &name, const QgsSymbol *symbol, bool favorite, const QStringList &tags );
 %Docstring
 Adds the symbol to the database with tags.
 

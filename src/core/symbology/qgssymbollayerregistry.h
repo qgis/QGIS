@@ -202,7 +202,7 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     bool removeSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata );
 
     //! create a new instance of symbol layer given symbol layer name and properties
-    QgsSymbolLayer *createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const SIP_FACTORY;
+    std::unique_ptr< QgsSymbolLayer > createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const;
 
     //! create a new instance of symbol layer given symbol layer name and SLD
     QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const SIP_FACTORY;

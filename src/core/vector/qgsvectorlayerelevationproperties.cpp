@@ -111,17 +111,17 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
   const QColor color = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 
   const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileLineSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mProfileLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( profileLineSymbolElement, context ) );
+  mProfileLineSymbol = QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( profileLineSymbolElement, context );
   if ( !mProfileLineSymbol )
     setDefaultProfileLineSymbol( color );
 
   const QDomElement profileFillSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileFillSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mProfileFillSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( profileFillSymbolElement, context ) );
+  mProfileFillSymbol = QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( profileFillSymbolElement, context );
   if ( !mProfileFillSymbol )
     setDefaultProfileFillSymbol( color );
 
   const QDomElement profileMarkerSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileMarkerSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mProfileMarkerSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( profileMarkerSymbolElement, context ) );
+  mProfileMarkerSymbol = QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( profileMarkerSymbolElement, context );
   if ( !mProfileMarkerSymbol )
     setDefaultProfileMarkerSymbol( color );
 

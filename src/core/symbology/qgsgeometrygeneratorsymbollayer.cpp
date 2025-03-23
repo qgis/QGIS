@@ -39,15 +39,15 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QVariantMap &prop
 
   if ( properties.value( QStringLiteral( "SymbolType" ) ) == QLatin1String( "Marker" ) )
   {
-    symbolLayer->setSubSymbol( QgsMarkerSymbol::createSimple( properties ) );
+    symbolLayer->setSubSymbol( QgsMarkerSymbol::createSimple( properties ).release() );
   }
   else if ( properties.value( QStringLiteral( "SymbolType" ) ) == QLatin1String( "Line" ) )
   {
-    symbolLayer->setSubSymbol( QgsLineSymbol::createSimple( properties ) );
+    symbolLayer->setSubSymbol( QgsLineSymbol::createSimple( properties ).release() );
   }
   else
   {
-    symbolLayer->setSubSymbol( QgsFillSymbol::createSimple( properties ) );
+    symbolLayer->setSubSymbol( QgsFillSymbol::createSimple( properties ).release() );
   }
   symbolLayer->setUnits( QgsUnitTypes::decodeRenderUnit( properties.value( QStringLiteral( "units" ), QStringLiteral( "mapunits" ) ).toString() ) );
 
@@ -74,19 +74,19 @@ void QgsGeometryGeneratorSymbolLayer::setSymbolType( Qgis::SymbolType symbolType
   if ( symbolType == Qgis::SymbolType::Fill )
   {
     if ( !mFillSymbol )
-      mFillSymbol.reset( QgsFillSymbol::createSimple( QVariantMap() ) );
+      mFillSymbol = QgsFillSymbol::createSimple( QVariantMap() );
     mSymbol = mFillSymbol.get();
   }
   else if ( symbolType == Qgis::SymbolType::Line )
   {
     if ( !mLineSymbol )
-      mLineSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ) );
+      mLineSymbol = QgsLineSymbol::createSimple( QVariantMap() );
     mSymbol = mLineSymbol.get();
   }
   else if ( symbolType == Qgis::SymbolType::Marker )
   {
     if ( !mMarkerSymbol )
-      mMarkerSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+      mMarkerSymbol = QgsMarkerSymbol::createSimple( QVariantMap() );
     mSymbol = mMarkerSymbol.get();
   }
   else

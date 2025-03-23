@@ -39,7 +39,7 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
   properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
-  mShapeStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+  mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
   refreshSymbol( false );
 
   connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [this]
@@ -287,7 +287,7 @@ bool QgsLayoutItemShape::readPropertiesFromElement( const QDomElement &element, 
   const QDomElement shapeStyleSymbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !shapeStyleSymbolElem.isNull() )
   {
-    mShapeStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem, context ) );
+    mShapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem, context );
     refreshSymbol( false );
   }
 

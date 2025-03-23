@@ -399,7 +399,7 @@ Draws a vertex symbol at (painter) coordinates x, y. (Useful to assist vertex ed
 Returns the maximum estimated bleed for the symbol
 %End
 
-    static QgsSymbol *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr< QgsSymbol > loadSymbol( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Attempts to load a symbol from a DOM element
 
@@ -410,10 +410,11 @@ Attempts to load a symbol from a DOM element
 %End
 
 
-    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr< QgsSymbolLayer > loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
 %End
+
     static QDomElement saveSymbol( const QString &symbolName, const QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
 Writes a symbol definition to XML
@@ -599,7 +600,7 @@ can be paste in places where a color is expected.
 .. seealso:: :py:func:`symbolFromMimeData`
 %End
 
-    static QgsSymbol *symbolFromMimeData( const QMimeData *data ) /Factory/;
+    static std::unique_ptr< QgsSymbol > symbolFromMimeData( const QMimeData *data );
 %Docstring
 Attempts to parse ``mime`` data as a symbol. A new symbol instance will be returned
 if the data was successfully converted to a symbol.

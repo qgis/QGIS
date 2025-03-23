@@ -140,7 +140,7 @@ Removes a symbol layer type
 .. versionadded:: 3.22.2
 %End
 
-    QgsSymbolLayer *createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const /Factory/;
+    std::unique_ptr< QgsSymbolLayer > createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const;
 %Docstring
 create a new instance of symbol layer given symbol layer name and properties
 %End

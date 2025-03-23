@@ -224,7 +224,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   if ( !elem.isNull() )
   {
     QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
-    mDefaultMarkerSymbol.reset( !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context ) : nullptr );
+    mDefaultMarkerSymbol = !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context ) : nullptr;
   }
   else
   {
@@ -235,7 +235,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   if ( !elem.isNull() )
   {
     QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
-    mDefaultLineSymbol.reset( !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) : nullptr );
+    mDefaultLineSymbol = !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) : nullptr;
   }
   else
   {
@@ -246,7 +246,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   if ( !elem.isNull() )
   {
     QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
-    mDefaultFillSymbol.reset( !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) : nullptr );
+    mDefaultFillSymbol = !symbolElem.isNull() ? QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) : nullptr;
   }
   else
   {

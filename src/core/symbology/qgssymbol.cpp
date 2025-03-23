@@ -138,7 +138,7 @@ void QgsSymbolBufferSettings::readXml( const QDomElement &element, const QgsRead
   const QDomElement fillSymbolElem = symbolBufferElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !fillSymbolElem.isNull() )
   {
-    mFillSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( fillSymbolElem, context ) );
+    mFillSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( fillSymbolElem, context );
   }
   else
   {

@@ -148,7 +148,7 @@ void TestQgsInvertedPolygon::projectionWithSimplificationTest()
   mapSettings.setLayers( QList<QgsMapLayer *>() << polyLayer.get() );
   mapSettings.setOutputDpi( 96 );
 
-  QgsFillSymbol *fill = QgsFillSymbol::createSimple( QVariantMap( { { "color", "#fdbf6f" }, { "outline_color", "black" }, { "outline_width", "1" } } ) );
+  QgsFillSymbol *fill = QgsFillSymbol::createSimple( QVariantMap( { { "color", "#fdbf6f" }, { "outline_color", "black" }, { "outline_width", "1" } } ) ).release();
   QgsInvertedPolygonRenderer *renderer = new QgsInvertedPolygonRenderer();
   QgsSingleSymbolRenderer *singleSymbolRenderer = new QgsSingleSymbolRenderer( fill );
   renderer->setEmbeddedRenderer( singleSymbolRenderer );

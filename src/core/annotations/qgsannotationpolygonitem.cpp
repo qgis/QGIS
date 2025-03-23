@@ -218,7 +218,7 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
-    setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElem, context ) );
+    setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElem, context ).release() );
 
   readCommonProperties( element, context );
   return true;

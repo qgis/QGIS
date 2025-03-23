@@ -153,7 +153,7 @@ the legend node.
 .. versionadded:: 3.14
 %End
 
-    static QgsSymbol *legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex ) /Factory/;
+    static std::unique_ptr< QgsSymbol > legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 %Docstring
 Returns the custom legend symbol for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
 

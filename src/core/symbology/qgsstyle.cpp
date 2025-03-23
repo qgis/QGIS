@@ -245,7 +245,7 @@ bool QgsStyle::addSymbol( const QString &name, QgsSymbol *symbol, bool update )
   return true;
 }
 
-bool QgsStyle::saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags )
+bool QgsStyle::saveSymbol( const QString &name, const QgsSymbol *symbol, bool favorite, const QStringList &tags )
 {
   // TODO add support for groups
   QDomDocument doc( QStringLiteral( "dummy" ) );
@@ -275,7 +275,7 @@ bool QgsStyle::saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite
 
   tagSymbol( SymbolEntity, name, tags );
 
-  emit symbolSaved( name, symbol );
+  emit symbolSaved( name, const_cast< QgsSymbol * >( symbol ) );
   emit entityAdded( SymbolEntity, name );
 
   return true;
@@ -740,9 +740,9 @@ bool QgsStyle::load( const QString &filename )
       }
 
       QDomElement symElement = doc.documentElement();
-      QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsReadWriteContext() );
+      std::unique_ptr< QgsSymbol  >symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsReadWriteContext() );
       if ( symbol )
-        mSymbols.insert( symbolName, symbol );
+        mSymbols.insert( symbolName, symbol.release() );
     }
   }
 
@@ -2803,13 +2803,13 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
           favorite = true;
         }
 
-        QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( e, QgsReadWriteContext() );
+        std::unique_ptr< QgsSymbol > symbol = QgsSymbolLayerUtils::loadSymbol( e, QgsReadWriteContext() );
         if ( symbol )
         {
-          addSymbol( name, symbol );
+          addSymbol( name, symbol->clone() );
           if ( mCurrentDB )
           {
-            saveSymbol( name, symbol, favorite, tags );
+            saveSymbol( name, symbol.get(), favorite, tags );
           }
         }
       }

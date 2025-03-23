@@ -76,7 +76,7 @@ void QgsLayoutItemPolygon::createDefaultPolygonStyleSymbol()
   properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
 
-  mPolygonStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+  mPolygonStyleSymbol = QgsFillSymbol::createSimple( properties );
 
   refreshSymbol();
 }
@@ -176,7 +176,7 @@ void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QSt
 
 void QgsLayoutItemPolygon::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context )
 {
-  mPolygonStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt, context ) );
+  mPolygonStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt, context );
 }
 
 void QgsLayoutItemPolygon::setSymbol( QgsFillSymbol *symbol )

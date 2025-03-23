@@ -390,7 +390,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param context object to transform relative to absolute paths
      * \returns decoded symbol, if possible
      */
-    static QgsSymbol *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr< QgsSymbol > loadSymbol( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Attempts to load a symbol from a DOM element and cast it to a particular symbol
@@ -400,25 +400,26 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns decoded symbol cast to specified type, if possible
      * \note not available in Python bindings
      */
-    template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_SKIP
+    template <class SymbolType> static std::unique_ptr< SymbolType > loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_SKIP
     {
-      QgsSymbol *tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element, context );
-      SymbolType *symbolCastToType = dynamic_cast<SymbolType *>( tmpSymbol );
+      std::unique_ptr< QgsSymbol > tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element, context );
+      const bool canCast = dynamic_cast<SymbolType *>( tmpSymbol.get() );
 
-      if ( symbolCastToType )
+      if ( canCast )
       {
-        return symbolCastToType;
+        std::unique_ptr< SymbolType > castRes( dynamic_cast<SymbolType *>( tmpSymbol.release() ) );
+        return castRes;
       }
       else
       {
         //could not cast
-        delete tmpSymbol;
         return nullptr;
       }
     }
 
     //! Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
-    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr< QgsSymbolLayer > loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context );
+
     //! Writes a symbol definition to XML
     static QDomElement saveSymbol( const QString &symbolName, const QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 
@@ -594,7 +595,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * if the data was successfully converted to a symbol.
      * \see symbolToMimeData()
      */
-    static QgsSymbol *symbolFromMimeData( const QMimeData *data ) SIP_FACTORY;
+    static std::unique_ptr< QgsSymbol > symbolFromMimeData( const QMimeData *data );
 
     /**
      * Creates a color ramp from the settings encoded in an XML element
