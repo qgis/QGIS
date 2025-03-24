@@ -267,9 +267,13 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
       QgsVector3D pointInWorldCoords = Qgs3DUtils::mapToWorldCoordinates( QgsVector3D( x, y, z ), mCanvas->mapSettings()->origin() );
       for ( auto clipPlane : clipPlanes )
       {
-        double distance = QgsVector3D::dotProduct( pointInWorldCoords, clipPlane.toVector3D() ) + clipPlane.w();
+        // we manually calculate the dot product here so we save resources on some transformation
+        double distance = clipPlane.x() * pointInWorldCoords.x() + clipPlane.y() * pointInWorldCoords.y() + clipPlane.z() * pointInWorldCoords.z() + clipPlane.w();
         if ( distance < 0 )
+        {
           isClipped = true;
+          break;
+        }
       }
       if ( isClipped )
       {
