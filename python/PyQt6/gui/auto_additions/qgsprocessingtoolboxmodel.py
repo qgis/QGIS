@@ -20,9 +20,10 @@ QgsProcessingToolboxModelNode.NodeRecent = QgsProcessingToolboxModelNode.NodeTyp
 QgsProcessingToolboxModelNode.NodeType.NodeRecent = QgsProcessingToolboxModelNode.NodeType.Recent
 QgsProcessingToolboxModelNode.NodeRecent.is_monkey_patched = True
 QgsProcessingToolboxModelNode.NodeRecent.__doc__ = "Recent algorithms node"
-QgsProcessingToolboxModelNode.ParameterGroup = QgsProcessingToolboxModelNode.NodeType.ParameterGroup
-QgsProcessingToolboxModelNode.ParameterGroup.is_monkey_patched = True
-QgsProcessingToolboxModelNode.ParameterGroup.__doc__ = "Parameter group node since QGIS 3.44"
+QgsProcessingToolboxModelNode.NodeParameterGroup = QgsProcessingToolboxModelNode.NodeType.ParameterGroup
+QgsProcessingToolboxModelNode.NodeType.NodeParameterGroup = QgsProcessingToolboxModelNode.NodeType.ParameterGroup
+QgsProcessingToolboxModelNode.NodeParameterGroup.is_monkey_patched = True
+QgsProcessingToolboxModelNode.NodeParameterGroup.__doc__ = "Parameter group node since QGIS 3.44"
 QgsProcessingToolboxModelNode.Favorite = QgsProcessingToolboxModelNode.NodeType.Favorite
 QgsProcessingToolboxModelNode.Favorite.is_monkey_patched = True
 QgsProcessingToolboxModelNode.Favorite.__doc__ = "Favorites algorithms node, since QGIS 3.40"
@@ -49,6 +50,9 @@ QgsProcessingToolboxModelNode.NodeType.__doc__ = """Enumeration of possible mode
   Available as ``QgsProcessingToolboxModelNode.NodeRecent`` in older QGIS releases.
 
 * ``ParameterGroup``: Parameter group node since QGIS 3.44
+
+  Available as ``QgsProcessingToolboxModelNode.NodeParameterGroup`` in older QGIS releases.
+
 * ``Favorite``: Favorites algorithms node, since QGIS 3.40
 
 """

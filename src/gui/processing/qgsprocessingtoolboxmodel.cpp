@@ -143,6 +143,9 @@ QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProces
 
   connect( mRegistry, &QgsProcessingRegistry::providerAdded, this, &QgsProcessingToolboxModel::rebuild );
   connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::providerRemoved );
+
+  connect( mRegistry, &QgsProcessingRegistry::parameterTypeAdded, this, &QgsProcessingToolboxModel::rebuild );
+  connect( mRegistry, &QgsProcessingRegistry::parameterTypeRemoved, this, &QgsProcessingToolboxModel::rebuild );
 }
 
 void QgsProcessingToolboxModel::rebuild()
@@ -171,24 +174,9 @@ void QgsProcessingToolboxModel::rebuild()
     repopulateFavoriteAlgorithms( true );
   }
 
-  /*
 
-  /home/valentin/Documents/QGIS/src/gui/processing/qgsprocessingtoolboxmodel.cpp:116: warning: documented symbol 'QgsProcessingToolboxModelParameterNode::QgsProcessingToolboxModelParameterNode' was not declared or defined.
-/home/valentin/Documents/QGIS/src/gui/processing/qgsprocessingtoolboxmodel.cpp:120: warning: no uniquely matching class member found for 
-  const QgsProcessingParameterType * QgsProcessingToolboxModelParameterNode::parameterType() const
-Possible candidates:
-  'QgsProcessingParameterType * QgsProcessingRegistry::parameterType(const QString &id) const' at line 201 of file /home/valentin/Documents/QGIS/src/core/processing/qgsprocessingregistry.h
-  'virtual QString QgsProcessingParameterWidgetFactoryInterface::parameterType() const =0' at line 519 of file /home/valentin/Documents/QGIS/src/gui/processing/qgsprocessingwidgetwrapper.h
-
-
-   */
-
-  // Only in designer
-  // bool insideModeler =  mFilters & Filter::Modeler;
-  if ( true )
+  if ( mRegistry )
   {
-    // auto groupNode = std::make_unique<QgsProcessingToolboxModelFavoriteNode>();
-    // auto groupNode = std::make_unique<QgsProcessingToolboxModelGroupNode>( "Model parameters", "Model parameters" );
     auto groupNode = std::make_unique<QgsProcessingToolboxModelParameterGroupNode>();
 
     QList<QgsProcessingParameterType *> available = QgsApplication::processingRegistry()->parameterTypes();

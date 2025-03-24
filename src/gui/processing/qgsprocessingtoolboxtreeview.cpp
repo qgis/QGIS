@@ -89,7 +89,6 @@ const QgsProcessingAlgorithm *QgsProcessingToolboxTreeView::selectedAlgorithm()
   }
 }
 
-/* Why not use this directly ? */
 const QgsProcessingParameterType *QgsProcessingToolboxTreeView::parameterTypeForIndex( const QModelIndex &index )
 {
   const QModelIndex sourceIndex = mModel->mapToSource( index );

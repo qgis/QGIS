@@ -75,13 +75,13 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
     //! Enumeration of possible model node types
     enum class NodeType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingToolboxModelNode, NodeType ) : int
     {
-      Provider SIP_MONKEYPATCH_COMPAT_NAME( NodeProvider ) = 0, //!< Provider node
-      Group SIP_MONKEYPATCH_COMPAT_NAME( NodeGroup ),           //!< Group node
-      Algorithm SIP_MONKEYPATCH_COMPAT_NAME( NodeAlgorithm ),   //!< Algorithm node
-      Parameter SIP_MONKEYPATCH_COMPAT_NAME( NodeParameter ),   //!< Parameter node, since QGIS 3.44
-      Recent SIP_MONKEYPATCH_COMPAT_NAME( NodeRecent ),         //!< Recent algorithms node
-      ParameterGroup,                                           //!< Parameter group node since QGIS 3.44
-      Favorite,                                                 //!< Favorites algorithms node, since QGIS 3.40
+      Provider SIP_MONKEYPATCH_COMPAT_NAME( NodeProvider ) = 0,         //!< Provider node
+      Group SIP_MONKEYPATCH_COMPAT_NAME( NodeGroup ),                   //!< Group node
+      Algorithm SIP_MONKEYPATCH_COMPAT_NAME( NodeAlgorithm ),           //!< Algorithm node
+      Parameter SIP_MONKEYPATCH_COMPAT_NAME( NodeParameter ),           //!< Parameter node, since QGIS 3.44
+      Recent SIP_MONKEYPATCH_COMPAT_NAME( NodeRecent ),                 //!< Recent algorithms node
+      ParameterGroup SIP_MONKEYPATCH_COMPAT_NAME( NodeParameterGroup ), //!< Parameter group node since QGIS 3.44
+      Favorite,                                                         //!< Favorites algorithms node, since QGIS 3.40
     };
     Q_ENUM( NodeType )
     // *INDENT-ON*
