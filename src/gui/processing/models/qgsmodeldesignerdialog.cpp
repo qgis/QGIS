@@ -69,7 +69,6 @@ Qt::ItemFlags QgsModelerToolboxModel::flags( const QModelIndex &index ) const
   const QModelIndex sourceIndex = mapToSource( index );
   if ( toolboxModel()->isAlgorithm( sourceIndex ) || toolboxModel()->isParameter( sourceIndex ) )
   {
-    // qDebug() << "param name" << toolboxModel()->parameterTypeForIndex( sourceIndex )->name();
     f = f | Qt::ItemIsDragEnabled;
   }
   return f;
@@ -78,11 +77,6 @@ Qt::ItemFlags QgsModelerToolboxModel::flags( const QModelIndex &index ) const
 Qt::DropActions QgsModelerToolboxModel::supportedDragActions() const
 {
   return Qt::CopyAction;
-}
-
-void QgsModelDesignerDialog::itemDoubleClicked( const QModelIndex &index )
-{
-  qDebug() << "itemDoubleClicked!";
 }
 
 QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags flags )
@@ -249,12 +243,9 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
       addAlgorithm( mAlgorithmsTree->selectedAlgorithm()->id(), QPointF() );
     if ( mAlgorithmsTree->selectedParameterType() )
     {
-      // qDebug() << "Parameter clicked ";
       addInput( mAlgorithmsTree->selectedParameterType()->id(), QPointF() );
     }
   } );
-
-  connect( mAlgorithmsTree, &QgsProcessingToolboxTreeView::doubleClicked, this, &QgsModelDesignerDialog::itemDoubleClicked );
 
   // Ctrl+= should also trigger a zoom in action
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );

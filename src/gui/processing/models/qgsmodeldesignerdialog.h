@@ -187,9 +187,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void showChildAlgorithmOutputs( const QString &childId );
     void showChildAlgorithmLog( const QString &childId );
 
-    void itemDoubleClicked( const QModelIndex &index );
-
-
   private:
     enum UndoCommand
     {
