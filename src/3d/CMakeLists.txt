@@ -25,6 +25,7 @@ set(QGIS_3D_SRCS
   qgsfgutils.cpp
   qgsframegraph.cpp
   qgsgeotransform.cpp
+  qgsglobechunkedentity.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
@@ -147,6 +148,7 @@ set(QGIS_3D_HDRS
   qgsfgutils.h
   qgsframegraph.h
   qgsgeotransform.h
+  qgsglobechunkedentity.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
   qgsmeshlayer3drenderer.h

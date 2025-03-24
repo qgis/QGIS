@@ -275,6 +275,9 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      */
     void disableClipping();
 
+    void addSceneEntity( Qgs3DMapSceneEntity *entity ) SIP_SKIP;
+    void removeSceneEntity( Qgs3DMapSceneEntity *entity ) SIP_SKIP;
+
 #ifndef SIP_RUN
     //! Static function for returning open 3D map scenes
     static std::function<QMap<QString, Qgs3DMapScene *>()> sOpenScenesFunction;
