@@ -56,6 +56,15 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
 
     bool updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data ) override;
 
+    //! Returns index for the underlying non-edited data
+    QgsPointCloudIndex backingIndex() const;
+
+    //! Returns the raw, encoded, compressed data for a node or empty if missing
+    const QByteArray rawEditedNodeData( QgsPointCloudNodeId n ) const;
+
+    //! Removes node edits from index, returning it to its original state
+    void resetNodeEdits( QgsPointCloudNodeId n );
+
     /**
      * Tries to store pending changes to the data provider.
      * If errorMessage is not a null pointer, it will receive
@@ -67,6 +76,9 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
     //! Returns TRUE if there are uncommitted changes, FALSE otherwise
     bool isModified() const;
 
+    //! Returns true if this node was modified
+    bool isNodeModified( QgsPointCloudNodeId n ) const;
+
     //! Returns a list of node IDs that have been modified
     QList<QgsPointCloudNodeId> updatedNodes() const;
 
@@ -75,6 +87,7 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
     QgsPointCloudIndex mIndex;
     bool mIsValid = false;
     QHash<QgsPointCloudNodeId, QByteArray> mEditedNodeData;
+    mutable QMutex mEditedNodeDataMutex;
 
     friend class QgsPointCloudLayerEditUtils;
     friend class QgsPointCloudLayerUndoCommandChangeAttribute;
