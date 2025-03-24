@@ -34,6 +34,7 @@
 #include "moc_qgswfsprovider.cpp"
 #include "qgswfscapabilities.h"
 #include "qgswfsdescribefeaturetype.h"
+#include "qgswfsgetcapabilities.h"
 #include "qgswfstransactionrequest.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
@@ -65,7 +66,7 @@
 const QString QgsWFSProvider::WFS_PROVIDER_KEY = QStringLiteral( "WFS" );
 const QString QgsWFSProvider::WFS_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );
 
-QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &options, const QgsWfsCapabilities::Capabilities &caps )
+QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &options, const QgsWfsCapabilities &caps )
   : QgsVectorDataProvider( uri, options )
   , mShared( new QgsWFSSharedData( uri ) )
 {
@@ -352,7 +353,7 @@ class QgsWFSProviderSQLColumnRefValidator : public QgsSQLStatement::RecursiveVis
 {
   public:
     QgsWFSProviderSQLColumnRefValidator(
-      const QgsWfsCapabilities::Capabilities &caps,
+      const QgsWfsCapabilities &caps,
       const QString &defaultTypeName,
       const QMap<QString, QString> &mapTypenameAliasToTypename,
       const QMap<QString, QgsFields> &mapTypenameToFields,
@@ -367,7 +368,7 @@ class QgsWFSProviderSQLColumnRefValidator : public QgsSQLStatement::RecursiveVis
     void visit( const QgsSQLStatement::NodeColumnRef &n ) override;
 
   private:
-    const QgsWfsCapabilities::Capabilities mCaps;
+    const QgsWfsCapabilities mCaps;
     QString mDefaultTypeName;
     const QMap<QString, QString> &mMapTableAliasToName;
     const QMap<QString, QgsFields> &mMapTypenameToFields;
@@ -377,7 +378,7 @@ class QgsWFSProviderSQLColumnRefValidator : public QgsSQLStatement::RecursiveVis
 };
 
 QgsWFSProviderSQLColumnRefValidator::QgsWFSProviderSQLColumnRefValidator(
-  const QgsWfsCapabilities::Capabilities &caps,
+  const QgsWfsCapabilities &caps,
   const QString &defaultTypeName,
   const QMap<QString, QString> &mapTypenameAliasToTypename,
   const QMap<QString, QgsFields> &mapTypenameToFields,
@@ -2746,11 +2747,11 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
   pushError( tr( "Unhandled response: %1" ).arg( exceptionElem.tagName() ) );
 }
 
-QgsWfsCapabilities::Capabilities QgsWFSProvider::getCachedCapabilities( const QString &uri )
+QgsWfsCapabilities QgsWFSProvider::getCachedCapabilities( const QString &uri )
 {
   static QMutex mutex;
-  static std::map<QUrl, std::pair<QDateTime, QgsWfsCapabilities::Capabilities>> gCacheCaps;
-  QgsWfsCapabilities getCapabilities( uri );
+  static std::map<QUrl, std::pair<QDateTime, QgsWfsCapabilities>> gCacheCaps;
+  QgsWfsGetCapabilitiesRequest getCapabilities( uri );
   QUrl requestUrl = getCapabilities.requestUrl();
 
   QDateTime now = QDateTime::currentDateTime();
@@ -2765,7 +2766,7 @@ QgsWfsCapabilities::Capabilities QgsWFSProvider::getCachedCapabilities( const QS
       return iter->second.second;
     }
   }
-  QgsWfsCapabilities::Capabilities caps;
+  QgsWfsCapabilities caps;
   const bool synchronous = true;
   const bool forceRefresh = false;
   if ( !getCapabilities.requestCapabilities( synchronous, forceRefresh ) )

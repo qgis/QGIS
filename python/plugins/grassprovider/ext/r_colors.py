@@ -23,20 +23,25 @@ import os
 from grassprovider.grass_utils import GrassUtils
 from processing.tools.system import getTempFilename
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """Verify if we have the right parameters"""
     txtRules = alg.parameterAsString(parameters, "rules_txt", context)
     rules = alg.parameterAsString(parameters, "rules", context)
     if txtRules and rules:
-        return False, alg.tr("You need to set either inline rules or a rules file!")
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt", "You need to set either inline rules or a rules file!"
+        )
 
     rules_or_txtRules = bool(txtRules or rules)
     color = bool(alg.parameterAsEnum(parameters, "color", context))
     raster = bool(alg.parameterAsString(parameters, "raster", context))
     if not sum([rules_or_txtRules, color, raster]) == 1:
-        return False, alg.tr(
-            "The color table, color rules and raster map parameters are mutually exclusive. You need to set one and only one of them!"
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            "The color table, color rules and raster map parameters are mutually exclusive. You need to set one and only one of them!",
         )
 
     return True, None

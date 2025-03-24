@@ -72,10 +72,7 @@ QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer,
   pbn->setToolTip( tr( "Load query from QQF file" ) );
   connect( pbn, &QAbstractButton::clicked, this, &QgsPointCloudQueryBuilder::loadQuery );
 
-  mOrigSubsetString = layer->subsetString();
-
   lblDataUri->setText( tr( "Set provider filter on %1" ).arg( layer->name() ) );
-  mTxtSql->setText( mOrigSubsetString );
 }
 
 void QgsPointCloudQueryBuilder::showEvent( QShowEvent *event )
@@ -244,32 +241,26 @@ void QgsPointCloudQueryBuilder::btnOr_clicked()
 
 void QgsPointCloudQueryBuilder::accept()
 {
-  if ( mTxtSql->text() != mOrigSubsetString )
-  {
-    if ( !mLayer->setSubsetString( mTxtSql->text() ) )
-    {
-      QMessageBox::warning( this, tr( "Query Result" ), tr( "Error in query. The subset string could not be set." ) );
-      return;
-    }
-  }
+  if ( !test( true ) )
+    return;
 
   QDialog::accept();
 }
 
 void QgsPointCloudQueryBuilder::reject()
 {
-  if ( mLayer->subsetString() != mOrigSubsetString )
-    mLayer->setSubsetString( mOrigSubsetString );
+  mTxtSql->setText( mOrigSubsetString );
 
   QDialog::reject();
 }
 
-void QgsPointCloudQueryBuilder::test()
+bool QgsPointCloudQueryBuilder::test( bool skipConfirmation )
 {
   QgsPointCloudExpression expression( mTxtSql->text() );
   if ( !expression.isValid() && !mTxtSql->text().isEmpty() )
   {
     QMessageBox::warning( this, tr( "Query Result" ), tr( "An error occurred while parsing the expression:\n%1" ).arg( expression.parserErrorString() ) );
+    return false;
   }
   else
   {
@@ -280,18 +271,19 @@ void QgsPointCloudQueryBuilder::test()
       if ( mLayer->dataProvider() && !mLayer->dataProvider()->attributes().find( attribute, offset ) )
       {
         QMessageBox::warning( this, tr( "Query Result" ), tr( "\"%1\" not recognized as an available attribute." ).arg( attribute ) );
-        return;
+        return false;
       }
     }
-    mLayer->setSubsetString( mTxtSql->text() );
-    QMessageBox::information( this, tr( "Query Result" ), tr( "The expression was successfully parsed." ) );
+
+    if ( !skipConfirmation )
+      QMessageBox::information( this, tr( "Query Result" ), tr( "The expression was successfully parsed." ) );
   }
+  return true;
 }
 
 void QgsPointCloudQueryBuilder::clear()
 {
   mTxtSql->clear();
-  mLayer->setSubsetString( QString() );
 }
 
 void QgsPointCloudQueryBuilder::saveQuery()

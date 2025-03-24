@@ -59,7 +59,7 @@ void QgsBlockingNetworkRequest::setAuthCfg( const QString &authCfg )
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::get( QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback, RequestFlags requestFlags )
 {
-  return doRequest( Get, request, forceRefresh, feedback, requestFlags );
+  return doRequest( Qgis::HttpMethod::Get, request, forceRefresh, feedback, requestFlags );
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh, QgsFeedback *feedback )
@@ -73,12 +73,12 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRe
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, QIODevice *data, bool forceRefresh, QgsFeedback *feedback )
 {
   mPayloadData = data;
-  return doRequest( Post, request, forceRefresh, feedback );
+  return doRequest( Qgis::HttpMethod::Post, request, forceRefresh, feedback );
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::head( QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback )
 {
-  return doRequest( Head, request, forceRefresh, feedback );
+  return doRequest( Qgis::HttpMethod::Head, request, forceRefresh, feedback );
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback )
@@ -92,41 +92,41 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkReq
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkRequest &request, QIODevice *data, QgsFeedback *feedback )
 {
   mPayloadData = data;
-  return doRequest( Put, request, true, feedback );
+  return doRequest( Qgis::HttpMethod::Put, request, true, feedback );
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::deleteResource( QNetworkRequest &request, QgsFeedback *feedback )
 {
-  return doRequest( Delete, request, true, feedback );
+  return doRequest( Qgis::HttpMethod::Delete, request, true, feedback );
 }
 
 void QgsBlockingNetworkRequest::sendRequestToNetworkAccessManager( const QNetworkRequest &request )
 {
   switch ( mMethod )
   {
-    case Get:
+    case Qgis::HttpMethod::Get:
       mReply = QgsNetworkAccessManager::instance()->get( request );
       break;
 
-    case Post:
+    case Qgis::HttpMethod::Post:
       mReply = QgsNetworkAccessManager::instance()->post( request, mPayloadData );
       break;
 
-    case Head:
+    case Qgis::HttpMethod::Head:
       mReply = QgsNetworkAccessManager::instance()->head( request );
       break;
 
-    case Put:
+    case Qgis::HttpMethod::Put:
       mReply = QgsNetworkAccessManager::instance()->put( request, mPayloadData );
       break;
 
-    case Delete:
+    case Qgis::HttpMethod::Delete:
       mReply = QgsNetworkAccessManager::instance()->deleteResource( request );
       break;
   };
 }
 
-QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBlockingNetworkRequest::Method method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback, RequestFlags requestFlags )
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( Qgis::HttpMethod method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback, RequestFlags requestFlags )
 {
   mMethod = method;
   mFeedback = feedback;
@@ -329,7 +329,7 @@ void QgsBlockingNetworkRequest::replyProgress( qint64 bytesReceived, qint64 byte
     }
   }
 
-  if ( mMethod == Put || mMethod == Post )
+  if ( mMethod == Qgis::HttpMethod::Put || mMethod == Qgis::HttpMethod::Post )
     emit uploadProgress( bytesReceived, bytesTotal );
   else
     emit downloadProgress( bytesReceived, bytesTotal );
@@ -451,7 +451,7 @@ void QgsBlockingNetworkRequest::replyFinished()
 
         mReplyContent = QgsNetworkReplyContent( mReply );
         const QByteArray content = mReply->readAll();
-        if ( !( mRequestFlags & RequestFlag::EmptyResponseIsValid ) && content.isEmpty() && !mGotNonEmptyResponse && mMethod == Get )
+        if ( !( mRequestFlags & RequestFlag::EmptyResponseIsValid ) && content.isEmpty() && !mGotNonEmptyResponse && mMethod == Qgis::HttpMethod::Get )
         {
           mErrorMessage = tr( "empty response: %1" ).arg( mReply->errorString() );
           mErrorCode = ServerExceptionError;

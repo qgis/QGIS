@@ -472,6 +472,7 @@ void QgsExtentWidget::setExtentToLayerExtent( const QString &layerId )
   if ( !layer )
     return;
 
+  emit extentLayerChanged( layer );
   setOutputExtentFromLayer( layer );
 }
 

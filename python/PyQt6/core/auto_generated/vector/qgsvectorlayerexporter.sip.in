@@ -53,6 +53,219 @@ Writes the contents of vector layer to a different datasource.
          - errorMessage: if non-null, any error messages
 %End
 
+
+    struct OutputField
+    {
+
+      OutputField( const QgsField &field, const QString &expression );
+%Docstring
+Constructor for OutputField, with the specified ``field`` definition and source ``expression``.
+%End
+
+      QgsField field;
+      QString expression;
+    };
+
+    class ExportOptions
+{
+%Docstring(signature="appended")
+Encapsulates options for use with QgsVectorLayerExporter.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerexporter.h"
+%End
+      public:
+
+        void setSelectedOnly( bool selected );
+%Docstring
+Sets whether the export should only include selected features.
+
+.. warning::
+
+   This setting is incompatible with :py:func:`~ExportOptions.setFilterExpression`
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`selectedOnly`
+%End
+
+        bool selectedOnly() const;
+%Docstring
+Returns whether the export will only include selected features.
+
+.. warning::
+
+   This setting is incompatible with :py:func:`~ExportOptions.filterExpression`
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`setSelectedOnly`
+%End
+
+        void setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+Sets the coordinate transform ``context`` to use when transforming exported features.
+
+.. seealso:: :py:func:`transformContext`
+%End
+
+        QgsCoordinateTransformContext transformContext() const;
+%Docstring
+Returns the coordinate transform context used when transforming exported features.
+
+.. seealso:: :py:func:`setTransformContext`
+%End
+
+        void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the destination coordinate reference system to use for exported features.
+
+.. seealso:: :py:func:`destinationCrs`
+%End
+
+        QgsCoordinateReferenceSystem destinationCrs() const;
+%Docstring
+Returns the destination coordinate reference system used for exported features.
+
+.. seealso:: :py:func:`setDestinationCrs`
+%End
+
+        void setExtent( const QgsReferencedRectangle &extent );
+%Docstring
+Sets an ``extent`` filter for the features to export.
+
+Only features with a bounding box intersecting ``extent`` will be exported.
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`extent`
+%End
+
+        QgsReferencedRectangle extent() const;
+%Docstring
+Returns the extent filter for the features to export.
+
+Only features with a bounding box intersecting this extent will be exported.
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`setExtent`
+%End
+
+        void setFilterExpression( const QString &expression );
+%Docstring
+Set the filter ``expression`` for the features to export.
+
+Only features matching this expression will be exported.
+
+.. warning::
+
+   This setting is incompatible with :py:func:`~ExportOptions.setSelectedOnly`
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`setExpressionContext`
+
+.. seealso:: :py:func:`filterExpression`
+%End
+
+        QString filterExpression() const;
+%Docstring
+Returns the filter expression for features to export.
+
+Only features matching this expression will be exported.
+
+.. warning::
+
+   This setting is incompatible with :py:func:`~ExportOptions.selectedOnly`
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`expressionContext`
+
+.. seealso:: :py:func:`setFilterExpression`
+%End
+
+        void setExpressionContext( const QgsExpressionContext &context );
+%Docstring
+Sets the expression ``context`` to use when a :py:func:`~ExportOptions.filterExpression` is set.
+
+.. seealso:: :py:func:`expressionContext`
+%End
+
+        const QgsExpressionContext &expressionContext() const;
+%Docstring
+Returns the expression context used when a :py:func:`~ExportOptions.filterExpression` is set.
+
+.. seealso:: :py:func:`setExpressionContext`
+%End
+
+        QList<QgsVectorLayerExporter::OutputField> outputFields() const;
+%Docstring
+Returns the output field definitions for the destination table.
+
+If empty, all input fields will be copied directly.
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`setOutputFields`
+%End
+
+        void setOutputFields( const QList<QgsVectorLayerExporter::OutputField> &fields );
+%Docstring
+Sets the output field definitions for the destination table.
+
+If empty, all input fields will be copied directly.
+
+.. note::
+
+   This option only applies when the :py:func:`QgsVectorLayerExporter.exportLayer()` method is used.
+
+.. seealso:: :py:func:`outputFields`
+%End
+
+    };
+
+    static Qgis::VectorExportResult exportLayer( QgsVectorLayer *layer,
+        const QString &uri,
+        const QString &providerKey,
+        const QgsVectorLayerExporter::ExportOptions &exportOptions,
+        QString *errorMessage /Out/ = 0,
+        const QMap<QString, QVariant> &providerOptions = QMap<QString, QVariant>(),
+        QgsFeedback *feedback = 0 );
+%Docstring
+Writes the contents of vector layer to a different data provider.
+
+:param layer: source layer
+:param uri: URI for destination data source
+:param providerKey: string key for destination data provider
+:param exportOptions: options controlling the feature export
+:param providerOptions: optional provider dataset options
+:param feedback: optional feedback object to show progress and cancellation of export
+
+:return: - :py:class:`Qgis`.VectorExportResult.NoError for a successful export, or encountered error
+         - errorMessage: any error messages which occur during the export
+
+.. versionadded:: 3.44
+%End
+
     QgsVectorLayerExporter( const QString &uri,
                             const QString &provider,
                             const QgsFields &fields,
@@ -155,6 +368,22 @@ Constructor for QgsVectorLayerExporterTask. Takes a source ``layer``, destinatio
 and ``providerKey``, and various export related parameters such as destination CRS
 and export ``options``. ``ownsLayer`` has to be set to ``True`` if the task should take ownership
 of the layer and delete it after export.
+%End
+
+    QgsVectorLayerExporterTask( QgsVectorLayer *layer,
+                                const QString &uri,
+                                const QString &providerKey,
+                                const QgsVectorLayerExporter::ExportOptions &exportOptions,
+                                const QMap<QString, QVariant> &providerOptions = QMap<QString, QVariant>(),
+                                bool ownsLayer = false );
+%Docstring
+Constructor for QgsVectorLayerExporterTask. Takes a source ``layer``, destination ``uri``
+and ``providerKey``, and various export related parameters via the ``exportOptions`` argument.
+
+``ownsLayer`` has to be set to ``True`` if the task should take ownership
+of the layer and delete it after export.
+
+.. versionadded:: 3.44
 %End
 
     static QgsVectorLayerExporterTask *withLayerOwnership( QgsVectorLayer *layer /Transfer/,

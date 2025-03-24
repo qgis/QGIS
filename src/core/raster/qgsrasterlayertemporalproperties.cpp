@@ -33,6 +33,7 @@ bool QgsRasterLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
 
   switch ( mMode )
   {
+    case Qgis::RasterTemporalMode::FixedDateTime:
     case Qgis::RasterTemporalMode::FixedTemporalRange:
       return range.isInfinite() || mFixedRange.isInfinite() || mFixedRange.overlaps( range );
 
@@ -62,6 +63,7 @@ QgsDateTimeRange QgsRasterLayerTemporalProperties::calculateTemporalExtent( QgsM
 
   switch ( mMode )
   {
+    case Qgis::RasterTemporalMode::FixedDateTime:
     case Qgis::RasterTemporalMode::FixedTemporalRange:
       return mFixedRange;
 
@@ -112,6 +114,7 @@ QList<QgsDateTimeRange> QgsRasterLayerTemporalProperties::allTemporalRanges( Qgs
 
   switch ( mMode )
   {
+    case Qgis::RasterTemporalMode::FixedDateTime:
     case Qgis::RasterTemporalMode::FixedTemporalRange:
       return { mFixedRange };
 
@@ -159,6 +162,7 @@ QgsTemporalProperty::Flags QgsRasterLayerTemporalProperties::flags() const
 {
   switch ( mMode )
   {
+    case Qgis::RasterTemporalMode::FixedDateTime:
     case Qgis::RasterTemporalMode::FixedTemporalRange:
       return QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges;
 
@@ -211,6 +215,7 @@ int QgsRasterLayerTemporalProperties::bandForTemporalRange( QgsRasterLayer *, co
 {
   switch ( mMode )
   {
+    case Qgis::RasterTemporalMode::FixedDateTime:
     case Qgis::RasterTemporalMode::FixedTemporalRange:
     case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
     case Qgis::RasterTemporalMode::RedrawLayerOnly:
@@ -247,6 +252,7 @@ QList<int> QgsRasterLayerTemporalProperties::filteredBandsForTemporalRange( QgsR
 {
   switch ( mMode )
   {
+    case Qgis::RasterTemporalMode::FixedDateTime:
     case Qgis::RasterTemporalMode::FixedTemporalRange:
     case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
     case Qgis::RasterTemporalMode::RedrawLayerOnly:
@@ -335,6 +341,16 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
 
   switch ( mMode )
   {
+    case Qgis::RasterTemporalMode::FixedDateTime:
+    {
+      const QDomNode instantElement = temporalNode.namedItem( QStringLiteral( "fixedInstant" ) );
+      const QDateTime date = QDateTime::fromString( instantElement.toElement().text(), Qt::ISODate );
+
+      const QgsDateTimeRange range = QgsDateTimeRange( date, date );
+      setFixedTemporalRange( range );
+      break;
+    }
+
     case Qgis::RasterTemporalMode::FixedTemporalRange:
     {
       const QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
@@ -398,6 +414,16 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
 
   switch ( mMode )
   {
+    case Qgis::RasterTemporalMode::FixedDateTime:
+    {
+      QDomElement instantElement = document.createElement( QStringLiteral( "fixedInstant" ) );
+      const QDomText instantText = document.createTextNode( mFixedRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+      instantElement.appendChild( instantText );
+
+      temporalElement.appendChild( instantElement );
+      break;
+    }
+
     case Qgis::RasterTemporalMode::FixedTemporalRange:
     {
 

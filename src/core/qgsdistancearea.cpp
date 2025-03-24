@@ -189,7 +189,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
         return 0.0;
 
       double area = 0;
-      QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( surface );
+      const QgsCurvePolygon *curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( surface );
       if ( curvePolygon )
       {
         QgsPolygon *polygon = curvePolygon->surfaceToPolygon();
@@ -269,7 +269,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
       continue;
     }
 
-    QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( *surfaceIt );
+    const QgsCurvePolygon *curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( *surfaceIt );
     if ( curvePolygon )
     {
       QgsPolygon *poly = curvePolygon->surfaceToPolygon();

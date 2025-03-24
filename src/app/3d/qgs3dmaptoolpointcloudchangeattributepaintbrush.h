@@ -42,6 +42,7 @@ class Qgs3DMapToolPointCloudChangeAttributePaintbrush : public Qgs3DMapToolPoint
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mouseWheelEvent( QWheelEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
+    void keyReleaseEvent( QKeyEvent *event ) override;
 
   private:
     void run() override;

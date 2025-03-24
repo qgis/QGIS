@@ -10,7 +10,6 @@
 
 
 
-
 class QgsExtentGroupBox : QgsCollapsibleGroupBox
 {
 %Docstring(signature="appended")
@@ -194,6 +193,13 @@ To unset a fixed aspect ratio, set the width and height to zero.
     void extentChanged( const QgsRectangle &r );
 %Docstring
 Emitted when the widget's extent is changed.
+%End
+
+    void extentLayerChanged( QgsMapLayer *layer );
+%Docstring
+Emitted when the extent layer is changed.
+
+.. versionadded:: 3.44
 %End
 
 };

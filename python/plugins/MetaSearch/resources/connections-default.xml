@@ -17,5 +17,6 @@
     <csw type="OGC CSW 2.0.2" name="Spain: Centro Nacional de Información Geográfica (CNIG)" url="http://www.ign.es/csw-inspire/srv/spa/csw"/>
     <csw type="OGC CSW 2.0.2" name="Germany: GDI-DE Geodatenkatalog.de" url="https://gdk.gdi-de.org/gdi-de/srv/ger/csw"/>
     <csw type="OGC CSW 2.0.2" name="Canada: Federal Geospatial Platform-Plateforme géospatiale fédérale (FGP-PGF)" url="https://maps.canada.ca/geonetwork/srv/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Austria: National CSW (BEV)" url="https://data.bev.gv.at/geonetwork/srv/ger/csw"/>
 <!-- <csw type="OGC API - Records" name="Sample OARec entry" url="https://example.org/collections/collectionId"/> -->
 </qgsCSWConnections>

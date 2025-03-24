@@ -1203,7 +1203,8 @@ ErrorList topolTest::checkMultipart( QgsVectorLayer *layer1, QgsVectorLayer *lay
       continue;
     }
 
-    if ( g.isMultipart() && qgsgeometry_cast<const QgsGeometryCollection *>( g.constGet() )->numGeometries() > 1 )
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( g.constGet() );
+         collection && collection->numGeometries() > 1 )
     {
       const QgsRectangle r = g.boundingBox();
       QList<FeatureLayer> fls;

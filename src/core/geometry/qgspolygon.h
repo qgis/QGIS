@@ -79,10 +79,12 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
 #ifndef SIP_RUN
 
     /**
-     * Cast the \a geom to a QgsPolygonV2.
+     * Cast the \a geom to a QgsPolygon.
      * Should be used by qgsgeometry_cast<QgsPolygon *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsPolygon *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
@@ -94,6 +96,27 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
       if ( flatType == Qgis::WkbType::Polygon
            || flatType == Qgis::WkbType::Triangle )
         return static_cast<const QgsPolygon *>( geom );
+      return nullptr;
+    }
+
+    /**
+     * Cast the \a geom to a QgsPolygon.
+     * Should be used by qgsgeometry_cast<QgsPolygon *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
+     */
+    inline static QgsPolygon *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( !geom )
+        return nullptr;
+
+      const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
+
+      if ( flatType == Qgis::WkbType::Polygon
+           || flatType == Qgis::WkbType::Triangle )
+        return static_cast<QgsPolygon *>( geom );
       return nullptr;
     }
 #endif

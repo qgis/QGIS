@@ -196,7 +196,7 @@ QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity( Qgs3DMapSettings *map, Qgs
   mTransform = new Qt3DCore::QTransform;
   if ( applyTerrainOffset() )
   {
-    mTransform->setTranslation( QVector3D( 0.0f, static_cast<float>( map->terrainSettings()->elevationOffset() ), 0.0f ) );
+    mTransform->setTranslation( QVector3D( 0.0f, 0.0f, static_cast<float>( map->terrainSettings()->elevationOffset() ) ) );
   }
   this->addComponent( mTransform );
   connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged );
@@ -216,37 +216,41 @@ bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
   QgsRuleBasedChunkLoaderFactory *loaderFactory = static_cast<QgsRuleBasedChunkLoaderFactory *>( mChunkLoaderFactory );
   if ( loaderFactory )
   {
-    QgsRuleBased3DRenderer::Rule *rule = loaderFactory->mRootRule.get();
-    if ( rule->symbol() )
+    QgsRuleBased3DRenderer::Rule *rootRule = loaderFactory->mRootRule.get();
+    const QgsRuleBased3DRenderer::RuleList rules = rootRule->children();
+    for ( const auto &rule : rules )
     {
-      QString symbolType = rule->symbol()->type();
-      if ( symbolType == "line" )
+      if ( rule->symbol() )
       {
-        QgsLine3DSymbol *lineSymbol = static_cast<QgsLine3DSymbol *>( rule->symbol() );
-        if ( lineSymbol && lineSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+        QString symbolType = rule->symbol()->type();
+        if ( symbolType == "line" )
         {
-          return false;
+          QgsLine3DSymbol *lineSymbol = static_cast<QgsLine3DSymbol *>( rule->symbol() );
+          if ( lineSymbol && lineSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+          {
+            return false;
+          }
         }
-      }
-      else if ( symbolType == "point" )
-      {
-        QgsPoint3DSymbol *pointSymbol = static_cast<QgsPoint3DSymbol *>( rule->symbol() );
-        if ( pointSymbol && pointSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+        else if ( symbolType == "point" )
         {
-          return false;
+          QgsPoint3DSymbol *pointSymbol = static_cast<QgsPoint3DSymbol *>( rule->symbol() );
+          if ( pointSymbol && pointSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+          {
+            return false;
+          }
         }
-      }
-      else if ( symbolType == "polygon" )
-      {
-        QgsPolygon3DSymbol *polygonSymbol = static_cast<QgsPolygon3DSymbol *>( rule->symbol() );
-        if ( polygonSymbol && polygonSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+        else if ( symbolType == "polygon" )
         {
-          return false;
+          QgsPolygon3DSymbol *polygonSymbol = static_cast<QgsPolygon3DSymbol *>( rule->symbol() );
+          if ( polygonSymbol && polygonSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+          {
+            return false;
+          }
         }
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "QgsRuleBasedChunkedEntityChunkedEntity::applyTerrainOffset, unhandled symbol type %1" ).arg( symbolType ), 2 );
+        else
+        {
+          QgsDebugMsgLevel( QStringLiteral( "QgsRuleBasedChunkedEntityChunkedEntity::applyTerrainOffset, unhandled symbol type %1" ).arg( symbolType ), 2 );
+        }
       }
     }
   }
@@ -265,7 +269,7 @@ void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged()
 
   if ( newOffset != previousOffset )
   {
-    mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
+    mTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
   }
 }
 

@@ -86,10 +86,11 @@ std::shared_ptr<QgsMssqlDatabase> QgsMssqlDatabase::connectDb( const QgsDataSour
 
   QMutexLocker locker( &sMutex );
 
-  QString connName = connectionName( uri.service(), uri.host(), uri.database(), transaction );
+  const QString connName = connectionName( uri.service(), uri.host(), uri.database(), transaction );
 
-  if ( sConnections.contains( connName ) && !sConnections[connName].expired() )
-    return sConnections[connName].lock();
+  auto existingConnectionIt = sConnections.constFind( connName );
+  if ( existingConnectionIt != sConnections.constEnd() && !existingConnectionIt->expired() )
+    return existingConnectionIt->lock();
 
   QSqlDatabase db = getDatabase( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), transaction );
 
@@ -403,6 +404,14 @@ bool QgsMssqlDatabase::loadQueryFields( FieldDetails &details, const QString &qu
     {
       details.geometryColumnName = name;
       details.geometryColumnType = systemTypeName;
+
+      // some versions/setups of SQL Server incorrectly report geometry columns as 'image' types in sp_describe_first_result_set results!
+      // let's just fix that up here...
+      if ( details.geometryColumnType == QLatin1String( "image" ) )
+      {
+        details.geometryColumnType = QStringLiteral( "geometry" );
+      }
+
       details.isGeography = systemTypeName == QLatin1String( "geography" );
     }
     else

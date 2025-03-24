@@ -54,6 +54,17 @@ field name to the corresponding expression. A ``parent`` object
 can be also specified.
 %End
 
+    void setNativeTypes( const QList< QgsVectorDataProvider::NativeType > &nativeTypes );
+%Docstring
+Sets the list of ``nativeTypes`` supported by a data provider.
+
+If this list is non-empty, then the destination field types will be populated
+accordingly. If the list is empty, then a set of default native types will be
+used instead.
+
+.. versionadded:: 3.44
+%End
+
     bool destinationEditable() const;
 %Docstring
 Returns ``True`` if the destination fields are editable

@@ -961,7 +961,9 @@ static bool cmpByText_( QAction *a, QAction *b )
 QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
+const QgisApp::AppOptions QgisApp::DEFAULT_OPTIONS = QgisApp::AppOptions( QgisApp::AppOption::RestorePlugins ) | QgisApp::AppOption::EnablePython;
+
+QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
   , mSplash( splash )
 {
@@ -1098,7 +1100,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   endProfile();
 
   startProfile( tr( "Welcome page" ) );
-  mWelcomePage = new QgsWelcomePage( skipVersionCheck );
+  mWelcomePage = new QgsWelcomePage( options.testFlag( AppOption::SkipVersionCheck ) );
   connect( mWelcomePage, &QgsWelcomePage::projectRemoved, this, [this]( int row ) {
     mRecentProjects.removeAt( row );
     saveRecentProjects();
@@ -1308,7 +1310,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   // initialize the plugin manager
   startProfile( tr( "Plugin manager" ) );
-  mPluginManager = new QgsPluginManager( this, restorePlugins );
+  mPluginManager = new QgsPluginManager( this, options.testFlag( AppOption::RestorePlugins ) );
   endProfile();
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoDock );
@@ -1409,6 +1411,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), mBrowserModel, this );
   mBrowserWidget->setObjectName( QStringLiteral( "Browser" ) );
   mBrowserWidget->setMessageBar( mInfoBar );
+  mBrowserWidget->setMapCanvas( mMapCanvas );
 
   mTemporalControllerWidget = new QgsTemporalControllerDockWidget( tr( "Temporal Controller" ), this );
   mTemporalControllerWidget->setObjectName( QStringLiteral( "Temporal Controller" ) );
@@ -1616,21 +1619,24 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsHtmlDataItemProvider() );
 
   // set handler for missing layers (will be owned by QgsProject)
-  if ( !skipBadLayers )
+  if ( !options.testFlag( AppOption::SkipBadLayers ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Creating bad layers handler" ), 2 );
     mAppBadLayersHandler = new QgsHandleBadLayersHandler();
     QgsProject::instance()->setBadLayerHandler( mAppBadLayersHandler );
   }
 
-  mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
-  qApp->processEvents();
-  loadPythonSupport();
+  if ( options.testFlag( AppOption::EnablePython ) )
+  {
+    mSplash->showMessage( tr( "Starting Python" ), static_cast<int>( Qt::AlignHCenter | Qt::AlignBottom ), splashTextColor );
+    qApp->processEvents();
+    loadPythonSupport();
 
 #ifdef WITH_BINDINGS
-  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsPyDataItemProvider() );
-  registerCustomDropHandler( new QgsPyDropHandler() );
+    QgsApplication::dataItemProviderRegistry()->addProvider( new QgsPyDataItemProvider() );
+    registerCustomDropHandler( new QgsPyDropHandler() );
 #endif
+  }
 
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsProjectDataItemProvider() );
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsStacDataItemProvider() );
@@ -1656,7 +1662,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   qApp->processEvents();
   QgsPluginRegistry::instance()->setQgisInterface( mQgisInterface );
 
-  if ( restorePlugins )
+  if ( options.testFlag( AppOption::RestorePlugins ) )
   {
     // Restoring of plugins can be disabled with --noplugins command line option
     // because some plugins may cause QGIS to crash during startup
@@ -6110,7 +6116,7 @@ void QgisApp::newGpxLayer()
 
 void QgisApp::showRasterCalculator()
 {
-  QgsRasterCalcDialog d( qobject_cast<QgsRasterLayer *>( activeLayer() ), this );
+  QgsRasterCalcDialog d( qobject_cast<QgsRasterLayer *>( activeLayer() ), mMapCanvas, this );
   if ( d.exec() != QDialog::Accepted )
   {
     return;
@@ -6213,7 +6219,7 @@ void QgisApp::showMeshCalculator()
     QMessageBox::information( this, tr( "Mesh Calculator" ), tr( "Mesh calculator with mesh layer in edit mode is not supported." ) );
     return;
   }
-  QgsMeshCalculatorDialog d( meshLayer, this );
+  QgsMeshCalculatorDialog d( meshLayer, mMapCanvas, this );
   if ( d.exec() == QDialog::Accepted )
   {
     //invoke analysis library
@@ -6230,6 +6236,10 @@ void QgisApp::showMeshCalculator()
     switch ( res )
     {
       case QgsMeshCalculator::Success:
+        if ( d.addLayerToProject() )
+        {
+          addMeshLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QStringLiteral( "mdal" ) );
+        }
         visibleMessageBar()->pushMessage( tr( "Mesh calculator" ), tr( "Calculation complete." ), Qgis::MessageLevel::Success );
         break;
 
@@ -11369,7 +11379,10 @@ void QgisApp::layerSubsetString( QgsMapLayer *mapLayer )
     {
       QgsPointCloudQueryBuilder qb { pclayer };
       qb.setSubsetString( pclayer->subsetString() );
-      qb.exec();
+      if ( qb.exec() )
+      {
+        pclayer->setSubsetString( qb.subsetString() );
+      }
     }
     return;
   }
@@ -11765,6 +11778,12 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
 
     // always set duplicated layers to not visible so layer can be configured before being turned on
     nodeDupLayer->setItemVisibilityChecked( false );
+
+    // duplicate the layer tree layer's custom properties
+    for ( const QString &key : nodeSelectedLyr->customProperties() )
+    {
+      nodeDupLayer->setCustomProperty( key, nodeSelectedLyr->customProperty( key ) );
+    }
 
     // duplicate the layer style
     QString errMsg;
@@ -13209,7 +13228,6 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name )
 
     const QgsReferencedRectangle projectExtent = prj->viewSettings()->fullExtent();
     const QgsRectangle fullExtent = Qgs3DUtils::tryReprojectExtent2D( projectExtent, projectExtent.crs(), map->crs(), prj->transformContext() );
-    map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
     map->setLayers( mMapCanvas->layers( true ) );

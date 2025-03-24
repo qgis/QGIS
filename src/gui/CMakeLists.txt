@@ -592,6 +592,7 @@ set(QGIS_GUI_SRCS
   qgsdataitemguiproviderregistry.cpp
   qgsdataitemguiproviderutils.cpp
   qgsdatasourceselectdialog.cpp
+  qgsdbimportvectorlayerdialog.cpp
   qgsdbqueryhistoryprovider.cpp
   qgsdbrelationshipwidget.cpp
   qgsdecoratedscrollbar.cpp
@@ -684,6 +685,7 @@ set(QGIS_GUI_SRCS
   qgsmaplayerloadstyledialog.cpp
   qgsmaplayerrefreshsettingswidget.cpp
   qgsmaplayersavestyledialog.cpp
+  qgsmaplayerserverpropertieswidget.cpp
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmaplayerstylemanagerwidget.cpp
@@ -857,6 +859,7 @@ set(QGIS_GUI_HDRS
   qgsdataitemguiproviderutils.h
   qgsdatasourcemanagerdialog.h
   qgsdatasourceselectdialog.h
+  qgsdbimportvectorlayerdialog.h
   qgsdbqueryhistoryprovider.h
   qgsdbrelationshipwidget.h
   qgsdecoratedscrollbar.h

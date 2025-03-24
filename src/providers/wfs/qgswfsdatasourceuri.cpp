@@ -17,7 +17,6 @@
 
 #include "qgswfsconstants.h"
 #include "qgswfsdatasourceuri.h"
-#include "qgsmessagelog.h"
 
 #include <QUrlQuery>
 
@@ -193,6 +192,7 @@ QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const
     QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE,
     QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER,
     QgsWFSConstants::URI_PARAM_SQL,
+    QgsWFSConstants::URI_PARAM_HTTPMETHOD
   };
 
   QSet<QString> l_unknownParamKeys;
@@ -242,18 +242,38 @@ QUrl QgsWFSDataSourceURI::baseURL( bool bIncludeServiceWFS ) const
   return url;
 }
 
-QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, const Method &method ) const
+QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, Qgis::HttpMethod method ) const
 {
   QUrl url;
   QUrlQuery urlQuery;
   switch ( method )
   {
-    case Post:
+    case Qgis::HttpMethod::Post:
+    {
       url = QUrl( mPostEndpoints.contains( request ) ? mPostEndpoints[request] : mURI.param( QgsWFSConstants::URI_PARAM_URL ) );
       urlQuery = QUrlQuery( url );
+
+      const QList<QPair<QString, QString>> items = urlQuery.queryItems();
+      bool hasService = false;
+      bool hasRequest = false;
+      for ( const auto &item : items )
+      {
+        if ( item.first.toUpper() == QLatin1String( "SERVICE" ) )
+          hasService = true;
+        if ( item.first.toUpper() == QLatin1String( "REQUEST" ) )
+          hasRequest = true;
+      }
+
+      // add service / request parameters only if they don't exist in the explicitly defined post URL
+      if ( !hasService )
+        urlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
+      if ( !hasRequest && !request.isEmpty() )
+        urlQuery.addQueryItem( QStringLiteral( "REQUEST" ), request );
+
       break;
-    default:
-    case Get:
+    }
+
+    case Qgis::HttpMethod::Get:
     {
       const auto defaultUrl( QUrl( mURI.param( QgsWFSConstants::URI_PARAM_URL ) ) );
       if ( mGetEndpoints.contains( request ) )
@@ -286,12 +306,19 @@ QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, const Method &meth
         url = defaultUrl;
         urlQuery = QUrlQuery( url );
       }
+      urlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
+      if ( !request.isEmpty() )
+        urlQuery.addQueryItem( QStringLiteral( "REQUEST" ), request );
       break;
     }
+
+    case Qgis::HttpMethod::Head:
+    case Qgis::HttpMethod::Put:
+    case Qgis::HttpMethod::Delete:
+      // not supported, impossible to reach
+      break;
   }
-  urlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
-  if ( method == Method::Get && !request.isEmpty() )
-    urlQuery.addQueryItem( QStringLiteral( "REQUEST" ), request );
+
   url.setQuery( urlQuery );
   return url;
 }
@@ -410,6 +437,19 @@ void QgsWFSDataSourceURI::setOutputFormat( const QString &outputFormat )
   mURI.removeParam( QgsWFSConstants::URI_PARAM_OUTPUTFORMAT );
   if ( !outputFormat.isEmpty() )
     mURI.setParam( QgsWFSConstants::URI_PARAM_OUTPUTFORMAT, outputFormat );
+}
+
+Qgis::HttpMethod QgsWFSDataSourceURI::httpMethod() const
+{
+  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_HTTPMETHOD ) )
+    return Qgis::HttpMethod::Get;
+
+  const QString method = mURI.param( QgsWFSConstants::URI_PARAM_HTTPMETHOD );
+  if ( method.compare( QLatin1String( "post" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::HttpMethod::Post;
+
+  // default
+  return Qgis::HttpMethod::Get;
 }
 
 bool QgsWFSDataSourceURI::isRestrictedToRequestBBOX() const

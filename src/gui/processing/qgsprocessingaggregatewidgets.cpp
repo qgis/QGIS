@@ -200,7 +200,7 @@ bool QgsAggregateMappingModel::setData( const QModelIndex &index, const QVariant
         }
         case ColumnDataIndex::DestinationType:
         {
-          QgsFieldMappingModel::setFieldTypeFromName( f.field, value.toString() );
+          setFieldTypeFromName( f.field, value.toString() );
           break;
         }
         case ColumnDataIndex::DestinationLength:
@@ -249,6 +249,34 @@ bool QgsAggregateMappingModel::moveUpOrDown( const QModelIndex &index, bool up )
   return true;
 }
 
+QString QgsAggregateMappingModel::qgsFieldToTypeName( const QgsField &field )
+{
+  const QList<QgsVectorDataProvider::NativeType> types = QgsFieldMappingModel::supportedDataTypes();
+  for ( const QgsVectorDataProvider::NativeType &type : types )
+  {
+    if ( type.mType == field.type() && type.mSubType == field.subType() )
+    {
+      return type.mTypeName;
+    }
+  }
+  return QString();
+}
+
+void QgsAggregateMappingModel::setFieldTypeFromName( QgsField &field, const QString &name )
+{
+  const QList<QgsVectorDataProvider::NativeType> types = QgsFieldMappingModel::supportedDataTypes();
+  for ( const QgsVectorDataProvider::NativeType &type : types )
+  {
+    if ( type.mTypeName == name )
+    {
+      field.setType( type.mType );
+      field.setTypeName( type.mTypeName );
+      field.setSubType( type.mSubType );
+      return;
+    }
+  }
+}
+
 void QgsAggregateMappingModel::setSourceFields( const QgsFields &sourceFields )
 {
   mSourceFields = sourceFields;
@@ -262,7 +290,7 @@ void QgsAggregateMappingModel::setSourceFields( const QgsFields &sourceFields )
   {
     Aggregate aggregate;
     aggregate.field = f;
-    aggregate.field.setTypeName( QgsFieldMappingModel::qgsFieldToTypeName( f ) );
+    aggregate.field.setTypeName( qgsFieldToTypeName( f ) );
     aggregate.source = QgsExpression::quotedColumnRef( f.name() );
 
     if ( f.isNumeric() )
@@ -298,7 +326,7 @@ void QgsAggregateMappingModel::setMapping( const QList<QgsAggregateMappingModel:
   mMapping = mapping;
   for ( auto &agg : mMapping )
   {
-    agg.field.setTypeName( QgsFieldMappingModel::qgsFieldToTypeName( agg.field ) );
+    agg.field.setTypeName( qgsFieldToTypeName( agg.field ) );
   }
   endResetModel();
 }
@@ -309,7 +337,7 @@ void QgsAggregateMappingModel::appendField( const QgsField &field, const QString
   beginInsertRows( QModelIndex(), lastRow, lastRow );
   Aggregate agg;
   agg.field = field;
-  agg.field.setTypeName( QgsFieldMappingModel::qgsFieldToTypeName( field ) );
+  agg.field.setTypeName( qgsFieldToTypeName( field ) );
   agg.source = source;
   agg.aggregate = aggregate;
   agg.delimiter = ',';
@@ -360,7 +388,7 @@ QgsAggregateMappingWidget::QgsAggregateMappingWidget( QWidget *parent, const Qgs
   mTableView->setModel( mModel );
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::SourceExpression ), new QgsFieldMappingExpressionDelegate( this ) );
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::Aggregate ), new QgsAggregateMappingDelegate( mTableView ) );
-  mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::DestinationType ), new QgsFieldMappingTypeDelegate( mTableView ) );
+  mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::DestinationType ), new QgsFieldMappingTypeDelegate( {}, mTableView ) );
   updateColumns();
   // Make sure columns are updated when rows are added
   connect( mModel, &QgsAggregateMappingModel::rowsInserted, this, [=] { updateColumns(); } );

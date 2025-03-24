@@ -29,6 +29,7 @@ class QgsDataItem;
 class QgsMessageBar;
 class QgsLayerItem;
 class QgsBrowserTreeView;
+class QgsMapCanvas;
 
 /**
  * \class QgsDataItemGuiContext
@@ -62,6 +63,24 @@ class GUI_EXPORT QgsDataItemGuiContext
     void setMessageBar( QgsMessageBar *bar );
 
     /**
+     * Sets the map canvas associated with the data item.
+     *
+     * This allows the item to retrieve the current map scale and other properties from the canvas.
+     *
+     * \see mapCanvas()
+     * \since QGIS 3.44
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Returns the map canvas associated with the item.
+     *
+     * \see setMapCanvas()
+     * \since QGIS 3.44
+     */
+    QgsMapCanvas *mapCanvas() const;
+
+    /**
      * Returns the associated view.
      *
      * \see setView()
@@ -81,6 +100,8 @@ class GUI_EXPORT QgsDataItemGuiContext
     QgsMessageBar *mMessageBar = nullptr;
 
     QgsBrowserTreeView *mView = nullptr;
+
+    QgsMapCanvas *mCanvas = nullptr;
 };
 
 Q_DECLARE_METATYPE( QgsDataItemGuiContext );

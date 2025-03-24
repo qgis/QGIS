@@ -1889,12 +1889,27 @@ Qgis.BrowserDirectoryMonitoring.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.HttpMethod.Get.__doc__ = "GET method"
 Qgis.HttpMethod.Post.__doc__ = "POST method"
+Qgis.HttpMethod.Head.__doc__ = "HEAD method. \n.. versionadded:: 3.44"
+Qgis.HttpMethod.Put.__doc__ = "PUT method. \n.. versionadded:: 3.44"
+Qgis.HttpMethod.Delete.__doc__ = "DELETE method. \n.. versionadded:: 3.44"
 Qgis.HttpMethod.__doc__ = """Different methods of HTTP requests
 
 .. versionadded:: 3.22
 
 * ``Get``: GET method
 * ``Post``: POST method
+* ``Head``: HEAD method.
+
+  .. versionadded:: 3.44
+
+* ``Put``: PUT method.
+
+  .. versionadded:: 3.44
+
+* ``Delete``: DELETE method.
+
+  .. versionadded:: 3.44
+
 
 """
 # --
@@ -4711,6 +4726,9 @@ QgsRasterLayerTemporalProperties.FixedRangePerBand.__doc__ = "Layer has a fixed 
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues = Qgis.RasterTemporalMode.RepresentsTemporalValues
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues.is_monkey_patched = True
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues.__doc__ = "Pixel values represent an datetime"
+QgsRasterLayerTemporalProperties.FixedDateTime = Qgis.RasterTemporalMode.FixedDateTime
+QgsRasterLayerTemporalProperties.FixedDateTime.is_monkey_patched = True
+QgsRasterLayerTemporalProperties.FixedDateTime.__doc__ = "Layer has a fixed date time instant. \n.. versionadded:: 3.44"
 Qgis.RasterTemporalMode.__doc__ = """Raster layer temporal modes
 
 .. versionadded:: 3.22
@@ -4735,6 +4753,10 @@ Qgis.RasterTemporalMode.__doc__ = """Raster layer temporal modes
   .. versionadded:: 3.38
 
 * ``RepresentsTemporalValues``: Pixel values represent an datetime
+* ``FixedDateTime``: Layer has a fixed date time instant.
+
+  .. versionadded:: 3.44
+
 
 """
 # --
@@ -7290,16 +7312,34 @@ Qgis.LightSourceType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.NavigationMode.TerrainBased.__doc__ = "The default navigation based on the terrain"
 Qgis.NavigationMode.Walk.__doc__ = "Uses WASD keys or arrows to navigate in walking (first person) manner"
+Qgis.NavigationMode.GlobeTerrainBased.__doc__ = "Navigation similar to TerrainBased, but for use with globe  \n.. versionadded:: 3.44"
 Qgis.NavigationMode.__doc__ = """The navigation mode used by 3D cameras.
 
 .. versionadded:: 3.30
 
 * ``TerrainBased``: The default navigation based on the terrain
 * ``Walk``: Uses WASD keys or arrows to navigate in walking (first person) manner
+* ``GlobeTerrainBased``: Navigation similar to TerrainBased, but for use with globe
+
+  .. versionadded:: 3.44
+
 
 """
 # --
 Qgis.NavigationMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SceneMode.Local.__doc__ = "Local scene based on a projected CRS"
+Qgis.SceneMode.Globe.__doc__ = "Scene is represented as a globe using a geocentric CRS"
+Qgis.SceneMode.__doc__ = """The 3D scene mode used in 3D map views.
+
+.. versionadded:: 3.44
+
+* ``Local``: Local scene based on a projected CRS
+* ``Globe``: Scene is represented as a globe using a geocentric CRS
+
+"""
+# --
+Qgis.SceneMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements"
 Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes"
@@ -10173,12 +10213,17 @@ Qgis.PostgresRelKind.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.DatabaseProviderConnectionCapability2.SetFieldComment.__doc__ = "Can set comments for fields via setFieldComment()"
 Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias.__doc__ = "Can set aliases for fields via setFieldAlias()"
+Qgis.DatabaseProviderConnectionCapability2.SetTableComment.__doc__ = "Can set comments for tables via setTableComment() \n.. versionadded:: 3.44"
 Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum represents the extended operations supported by the connection.
 
 .. versionadded:: 3.32
 
 * ``SetFieldComment``: Can set comments for fields via setFieldComment()
 * ``SetFieldAlias``: Can set aliases for fields via setFieldAlias()
+* ``SetTableComment``: Can set comments for tables via setTableComment()
+
+  .. versionadded:: 3.44
+
 
 """
 # --
@@ -10186,6 +10231,22 @@ Qgis.DatabaseProviderConnectionCapability2.baseClass = Qgis
 Qgis.DatabaseProviderConnectionCapabilities2 = lambda flags=0: Qgis.DatabaseProviderConnectionCapability2(flags)
 Qgis.DatabaseProviderConnectionCapabilities2.baseClass = Qgis
 DatabaseProviderConnectionCapabilities2 = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.DatabaseProviderTableImportCapability.SetGeometryColumnName.__doc__ = "Can set the name of the geometry column"
+Qgis.DatabaseProviderTableImportCapability.SetPrimaryKeyName.__doc__ = "Can set the name of the primary key column"
+Qgis.DatabaseProviderTableImportCapability.__doc__ = """Represents capabilities of a database provider connection when importing table data.
+
+.. versionadded:: 3.44
+
+* ``SetGeometryColumnName``: Can set the name of the geometry column
+* ``SetPrimaryKeyName``: Can set the name of the primary key column
+
+"""
+# --
+Qgis.DatabaseProviderTableImportCapability.baseClass = Qgis
+Qgis.DatabaseProviderTableImportCapabilities = lambda flags=0: Qgis.DatabaseProviderTableImportCapability(flags)
+Qgis.DatabaseProviderTableImportCapabilities.baseClass = Qgis
+DatabaseProviderTableImportCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.ProviderStyleStorageCapability.SaveToDatabase.__doc__ = ""
 Qgis.ProviderStyleStorageCapability.LoadFromDatabase.__doc__ = ""

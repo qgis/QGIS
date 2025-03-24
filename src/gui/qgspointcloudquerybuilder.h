@@ -65,8 +65,9 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 
     /**
      * Test if the typed expression is valid and can be used as a \a QgsPointCloudExpression
+     * Returns TRUE if valid, otherwise FALSE
      */
-    virtual void test();
+    bool test( bool skipConfirmation = false );
 
     /**
      * Clears the typed expression

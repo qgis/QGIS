@@ -3841,14 +3841,14 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
 
   auto polygon = std::make_unique< QgsPolygon >();
 
-  const QgsCurve *exteriorRing = qgsgeometry_cast< QgsCurve * >( outerRing.constGet() );
+  const QgsCurve *exteriorRing = qgsgeometry_cast< const QgsCurve * >( outerRing.constGet() );
   if ( !exteriorRing && outerRing.isMultipart() )
   {
     if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( outerRing.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
-        exteriorRing = qgsgeometry_cast< QgsCurve * >( collection->geometryN( 0 ) );
+        exteriorRing = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( 0 ) );
       }
     }
   }
@@ -3868,14 +3868,14 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
     if ( ringGeom.type() != Qgis::GeometryType::Line || ringGeom.isNull() )
       continue;
 
-    const QgsCurve *ring = qgsgeometry_cast< QgsCurve * >( ringGeom.constGet() );
+    const QgsCurve *ring = qgsgeometry_cast< const QgsCurve * >( ringGeom.constGet() );
     if ( !ring && ringGeom.isMultipart() )
     {
       if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( ringGeom.constGet() ) )
       {
         if ( collection->numGeometries() == 1 )
         {
-          ring = qgsgeometry_cast< QgsCurve * >( collection->geometryN( 0 ) );
+          ring = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( 0 ) );
         }
       }
     }
@@ -4472,7 +4472,7 @@ static QVariant fcnGeomNumRings( const QVariantList &values, const QgsExpression
     //find CurvePolygons in collection
     for ( int i = 0; i < collection->numGeometries(); ++i )
     {
-      curvePolygon = qgsgeometry_cast< QgsCurvePolygon *>( collection->geometryN( i ) );
+      curvePolygon = qgsgeometry_cast< const QgsCurvePolygon *>( collection->geometryN( i ) );
       if ( !curvePolygon )
         continue;
 
@@ -4744,6 +4744,8 @@ static QVariant fcnCloseLine( const QVariantList &values, const QgsExpressionCon
   else
   {
     const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection *>( geom.constGet() );
+    if ( !collection )
+      return QVariant();
 
     std::unique_ptr< QgsGeometryCollection > closed( collection->createEmptyWithSameType() );
 

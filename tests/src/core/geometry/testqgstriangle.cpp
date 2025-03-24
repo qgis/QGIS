@@ -452,11 +452,19 @@ void TestQgsTriangle::toCurveType()
 
 void TestQgsTriangle::cast()
 {
+  QVERIFY( !QgsTriangle::cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
+
   QgsTriangle pCast;
-  QVERIFY( QgsPolygon().cast( &pCast ) );
+  QVERIFY( QgsTriangle::cast( &pCast ) );
+  QVERIFY( QgsPolygon::cast( &pCast ) );
+  QVERIFY( QgsCurvePolygon::cast( &pCast ) );
+  QVERIFY( QgsSurface::cast( &pCast ) );
 
   QgsTriangle pCast2( QgsPoint( 7, 4 ), QgsPoint( 13, 3 ), QgsPoint( 9, 6 ) );
-  QVERIFY( QgsPolygon().cast( &pCast2 ) );
+  QVERIFY( QgsTriangle::cast( &pCast2 ) );
+  QVERIFY( QgsPolygon::cast( &pCast2 ) );
+  QVERIFY( QgsCurvePolygon::cast( &pCast2 ) );
+  QVERIFY( QgsSurface::cast( &pCast2 ) );
 }
 
 void TestQgsTriangle::toFromWkt()

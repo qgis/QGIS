@@ -1446,24 +1446,40 @@ Returns pointer to layer's undo stack
 Returns pointer to layer's style undo stack
 %End
 
-    void setLegendUrl( const QString &legendUrl );
+ void setLegendUrl( const QString &legendUrl ) /Deprecated="Since 3.44. Use serverProperties()->setLegendUrl() instead."/;
 %Docstring
 Sets the URL for the layer's legend.
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setLegendUrl` instead.
 %End
 
-    QString legendUrl() const;
+ QString legendUrl() const /Deprecated="Since 3.44. Use serverProperties()->legendUrl() instead."/;
 %Docstring
 Returns the URL for the layer's legend.
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.legendUrl` instead.
 %End
 
-    void setLegendUrlFormat( const QString &legendUrlFormat );
+ void setLegendUrlFormat( const QString &legendUrlFormat ) /Deprecated="Since 3.44. Use serverProperties()->setLegendUrlFormat() instead."/;
 %Docstring
 Sets the format for a URL based layer legend.
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setLegendUrlFormat` instead.
 %End
 
-    QString legendUrlFormat() const;
+ QString legendUrlFormat() const /Deprecated="Since 3.44. Use serverProperties()->legendUrlFormat() instead."/;
 %Docstring
 Returns the format for a URL based layer legend.
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.legendUrlFormat` instead.
 %End
 
     void setLegend( QgsMapLayerLegend *legend /Transfer/ );
@@ -2318,7 +2334,6 @@ happens.
 
 .. versionadded:: 3.20
 %End
-
 
 
 

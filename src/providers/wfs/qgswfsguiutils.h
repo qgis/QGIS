@@ -16,15 +16,14 @@
 #ifndef QGSWFSGUIUTILS_H
 #define QGSWFSGUIUTILS_H
 
-#include "qgswfscapabilities.h"
-
+class QgsWfsGetCapabilitiesRequest;
 class QWidget;
 
 class QgsWfsGuiUtils
 {
   public:
     //! Display a message box when a capability error occur.
-    static void displayErrorMessageOnFailedCapabilities( QgsWfsCapabilities *capabilities, QWidget *parent );
+    static void displayErrorMessageOnFailedCapabilities( QgsWfsGetCapabilitiesRequest *request, QWidget *parent );
 };
 
 #endif // QGSWFSGUIUTILS_H
