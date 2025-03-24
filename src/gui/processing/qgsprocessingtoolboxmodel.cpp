@@ -204,7 +204,6 @@ Possible candidates:
         groupNode->addChildNode( paramNode.release() );
       }
     }
-    qDebug() << "Adding group node to root";
     mRootNode->addChildNode( groupNode.release() );
   }
 
@@ -739,7 +738,11 @@ QModelIndex QgsProcessingToolboxModel::parent( const QModelIndex &child ) const
 
 QMimeData *QgsProcessingToolboxModel::mimeData( const QModelIndexList &indexes ) const
 {
-  if ( !indexes.isEmpty() && isAlgorithm( indexes.at( 0 ) ) )
+  if ( indexes.isEmpty() )
+  {
+    return nullptr;
+  }
+  if ( isAlgorithm( indexes.at( 0 ) ) )
   {
     QByteArray encodedData;
     QDataStream stream( &encodedData, QIODevice::WriteOnly | QIODevice::Truncate );
@@ -751,6 +754,20 @@ QMimeData *QgsProcessingToolboxModel::mimeData( const QModelIndexList &indexes )
       stream << algorithm->id();
     }
     mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ), encodedData );
+    return mimeData.release();
+  }
+  if ( isParameter( indexes.at( 0 ) ) )
+  {
+    QByteArray encodedData;
+    QDataStream stream( &encodedData, QIODevice::WriteOnly | QIODevice::Truncate );
+
+    auto mimeData = std::make_unique<QMimeData>();
+    const QgsProcessingParameterType *paramType = parameterTypeForIndex( indexes.at( 0 ) );
+    if ( paramType )
+    {
+      stream << paramType->id();
+    }
+    mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ), encodedData );
     return mimeData.release();
   }
   return nullptr;

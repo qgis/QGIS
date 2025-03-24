@@ -89,6 +89,29 @@ const QgsProcessingAlgorithm *QgsProcessingToolboxTreeView::selectedAlgorithm()
   }
 }
 
+/* Why not use this directly ? */
+const QgsProcessingParameterType *QgsProcessingToolboxTreeView::parameterTypeForIndex( const QModelIndex &index )
+{
+  const QModelIndex sourceIndex = mModel->mapToSource( index );
+  if ( mToolboxModel->isParameter( sourceIndex ) )
+    return mToolboxModel->parameterTypeForIndex( sourceIndex );
+  else
+    return nullptr;
+}
+
+const QgsProcessingParameterType *QgsProcessingToolboxTreeView::selectedParameterType()
+{
+  if ( selectionModel()->hasSelection() )
+  {
+    const QModelIndex index = selectionModel()->selectedIndexes().at( 0 );
+    return parameterTypeForIndex( index );
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
 void QgsProcessingToolboxTreeView::setFilters( QgsProcessingToolboxProxyModel::Filters filters )
 {
   mModel->setFilters( filters );

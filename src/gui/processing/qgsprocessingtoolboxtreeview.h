@@ -86,6 +86,11 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      */
     const QgsProcessingAlgorithm *selectedAlgorithm();
 
+
+    const QgsProcessingParameterType *parameterTypeForIndex( const QModelIndex &index );
+    const QgsProcessingParameterType *selectedParameterType();
+
+
     /**
      * Sets \a filters controlling the view's contents.
      * \see filters()

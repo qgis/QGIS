@@ -67,8 +67,9 @@ Qt::ItemFlags QgsModelerToolboxModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags f = QgsProcessingToolboxProxyModel::flags( index );
   const QModelIndex sourceIndex = mapToSource( index );
-  if ( toolboxModel()->isAlgorithm( sourceIndex ) )
+  if ( toolboxModel()->isAlgorithm( sourceIndex ) || toolboxModel()->isParameter( sourceIndex ) )
   {
+    // qDebug() << "param name" << toolboxModel()->parameterTypeForIndex( sourceIndex )->name();
     f = f | Qt::ItemIsDragEnabled;
   }
   return f;
@@ -79,6 +80,10 @@ Qt::DropActions QgsModelerToolboxModel::supportedDragActions() const
   return Qt::CopyAction;
 }
 
+void QgsModelDesignerDialog::itemDoubleClicked( const QModelIndex &index )
+{
+  qDebug() << "itemDoubleClicked!";
+}
 
 QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags flags )
   : QMainWindow( parent, flags )
@@ -245,16 +250,23 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mView, &QgsModelGraphicsView::algorithmDropped, this, [=]( const QString &algorithmId, const QPointF &pos ) {
     addAlgorithm( algorithmId, pos );
   } );
-  connect( mAlgorithmsTree, &QgsProcessingToolboxTreeView::doubleClicked, this, [=]() {
+  connect( mAlgorithmsTree, &QgsProcessingToolboxTreeView::doubleClicked, this, [=]( const QModelIndex & ) {
     if ( mAlgorithmsTree->selectedAlgorithm() )
       addAlgorithm( mAlgorithmsTree->selectedAlgorithm()->id(), QPointF() );
+    if ( mAlgorithmsTree->selectedParameterType() )
+    {
+      // qDebug() << "Parameter clicked ";
+      addInput( mAlgorithmsTree->selectedParameterType()->id(), QPointF() );
+    }
   } );
+
+  connect( mAlgorithmsTree, &QgsProcessingToolboxTreeView::doubleClicked, this, &QgsModelDesignerDialog::itemDoubleClicked );
+
+  connect( mView, &QgsModelGraphicsView::inputDropped, this, &QgsModelDesignerDialog::addInput );
   connect( mInputsTreeWidget, &QgsModelDesignerInputsTreeWidget::doubleClicked, this, [=]( const QModelIndex & ) {
     const QString parameterType = mInputsTreeWidget->currentItem()->data( 0, Qt::UserRole ).toString();
     addInput( parameterType, QPointF() );
   } );
-
-  connect( mView, &QgsModelGraphicsView::inputDropped, this, &QgsModelDesignerDialog::addInput );
 
   // Ctrl+= should also trigger a zoom in action
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
