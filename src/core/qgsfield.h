@@ -545,6 +545,26 @@ class CORE_EXPORT QgsField
      */
     void setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy ) SIP_HOLDGIL;
 
+    /**
+     * Returns the field's merge policy, which indicates how field values should
+     * be handled during a merge operation.
+     *
+     * \see setMergePolicy()
+     *
+     * \since QGIS 3.44
+     */
+    Qgis::FieldDomainMergePolicy mergePolicy() const SIP_HOLDGIL;
+
+    /**
+     * Sets the field's merge \a policy, which indicates how field values should
+     * be handled during a merge operation.
+     *
+     * \see mergePolicy()
+     *
+     * \since QGIS 3.44
+     */
+    void setMergePolicy( Qgis::FieldDomainMergePolicy policy ) SIP_HOLDGIL;
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
