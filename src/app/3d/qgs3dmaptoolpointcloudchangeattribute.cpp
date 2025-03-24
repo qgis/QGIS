@@ -16,6 +16,7 @@
 #include "qgs3dmaptoolpointcloudchangeattribute.h"
 #include "moc_qgs3dmaptoolpointcloudchangeattribute.cpp"
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgscoordinatetransform.h"
@@ -228,6 +229,7 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
   const double layerZOffset = static_cast<const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->zOffset();
 
   QgsPoint pt;
+  QList<QVector4D> clipPlanes = mCanvas->scene()->clipPlaneEquations();
 
   for ( int i = 0; i < block->pointCount(); ++i )
   {
@@ -257,6 +259,24 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
     // check if inside map extent
     if ( !mapExtent.contains( x, y ) )
       continue;
+
+    // check if clipped
+    if ( clipPlanes.size() > 0 )
+    {
+      bool isClipped = false;
+      QgsVector3D pointInWorldCoords = Qgs3DUtils::mapToWorldCoordinates( QgsVector3D( x, y, z ), mCanvas->mapSettings()->origin() );
+      for ( auto clipPlane : clipPlanes )
+      {
+        double distance = QgsVector3D::dotProduct( pointInWorldCoords, clipPlane.toVector3D() ) + clipPlane.w();
+        if ( distance < 0 )
+          isClipped = true;
+      }
+      if ( isClipped )
+      {
+        continue;
+      }
+    }
+
 
     // project to screen (map coords -> world coords -> clip coords -> NDC -> screen coords)
     bool isInFrustum;
