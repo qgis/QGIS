@@ -859,10 +859,17 @@ void TestQgsExpressionContext::layerScope()
   QCOMPARE( fromVar, vectorLayer->fields() );
 
   //test setting layer variables
-  QgsExpressionContextUtils::setLayerVariable( vectorLayer.get(), QStringLiteral( "testvar" ), "testval" );
+  QgsExpressionContextUtils::setLayerVariable( vectorLayer.get(), QStringLiteral( "testvar1" ), "testval1" );
+  QgsExpressionContextUtils::setLayerVariable( vectorLayer.get(), QStringLiteral( "testvar2" ), "testval2" );
+  QgsExpressionContextUtils::setLayerVariable( vectorLayer.get(), QStringLiteral( "testvar2" ), "testval2override" );
   delete layerScope;
   layerScope = QgsExpressionContextUtils::layerScope( vectorLayer.get() );
-  QCOMPARE( layerScope->variable( "testvar" ).toString(), QString( "testval" ) );
+  QCOMPARE( layerScope->variable( "testvar1" ).toString(), QString( "testval1" ) );
+
+  // Check that values were correctly overridden, with no duplicated entries
+  QCOMPARE( layerScope->variable( "testvar2" ).toString(), QString( "testval2override" ) );
+  QCOMPARE( vectorLayer->customProperty( QStringLiteral( "variableNames" ) ).toStringList(), QStringList() << "testvar1" << "testvar2" );
+  QCOMPARE( vectorLayer->customProperty( QStringLiteral( "variableValues" ) ).toStringList(), QStringList() << "testval1" << "testval2override" );
 
   QVariantMap variables;
   variables.insert( QStringLiteral( "var1" ), QStringLiteral( "val1" ) );
