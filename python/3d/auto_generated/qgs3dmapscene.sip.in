@@ -95,7 +95,7 @@ Returns the scene extent in the map's CRS
 .. versionadded:: 3.20
 %End
 
-    QgsDoubleRange elevationRange() const;
+    QgsDoubleRange elevationRange( bool ignoreTerrain = false ) const;
 %Docstring
 Returns the scene's elevation range
 

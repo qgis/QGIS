@@ -168,7 +168,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      *
      * \since QGIS 3.30
      */
-    QgsDoubleRange elevationRange() const;
+    QgsDoubleRange elevationRange( bool ignoreTerrain = false ) const;
 
     /**
      * Returns the 3D axis object
