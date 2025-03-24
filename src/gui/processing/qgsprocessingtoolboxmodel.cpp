@@ -111,8 +111,6 @@ const QgsProcessingAlgorithm *QgsProcessingToolboxModelAlgorithmNode::algorithm(
   return mAlgorithm;
 }
 
-///@endcond
-
 QgsProcessingToolboxModelParameterNode::QgsProcessingToolboxModelParameterNode( const QgsProcessingParameterType *paramType )
   : mParamType( paramType )
 {}
@@ -121,6 +119,8 @@ const QgsProcessingParameterType *QgsProcessingToolboxModelParameterNode::parame
 {
   return mParamType;
 }
+
+///@endcond
 
 //
 // QgsProcessingToolboxModel
