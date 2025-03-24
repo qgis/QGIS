@@ -1086,12 +1086,16 @@ void Qgs3DUtils::calculateViewExtent( const Qt3DRender::QCamera *camera, float m
   }
 }
 
-QList<QVector4D> Qgs3DUtils::lineSegmentToClippingPlanes( const QgsVector3D &point1, const QgsVector3D &point2, const double distance, const QgsVector3D &origin )
+QList<QVector4D> Qgs3DUtils::lineSegmentToClippingPlanes( const QgsVector3D &startPoint, const QgsVector3D &endPoint, const double distance, const QgsVector3D &origin )
 {
-  QgsVector3D lineDirection( point2 - point1 );
+  // return empty vector if distance is negative
+  if ( distance < 0 )
+    return QList<QVector4D>();
+
+  QgsVector3D lineDirection( endPoint - startPoint );
   lineDirection.normalize();
-  const QgsVector tempVec( lineDirection.x(), lineDirection.y() );
-  const QgsVector3D linePerp( tempVec.perpVector().x(), tempVec.perpVector().y(), 0 );
+  const QgsVector lineDirection2DPerp = QgsVector( lineDirection.x(), lineDirection.y() ).perpVector();
+  const QgsVector3D linePerp( lineDirection2DPerp.x(), lineDirection2DPerp.y(), 0 );
 
   QList<QVector4D> clippingPlanes;
   QgsVector3D planePoint;
@@ -1099,22 +1103,22 @@ QList<QVector4D> Qgs3DUtils::lineSegmentToClippingPlanes( const QgsVector3D &poi
 
   // the naming is assigned according to line direction
   //! back clip plane
-  planePoint = point1;
+  planePoint = startPoint;
   originDistance = QgsVector3D::dotProduct( planePoint - origin, lineDirection );
   clippingPlanes << QVector4D( static_cast<float>( lineDirection.x() ), static_cast<float>( lineDirection.y() ), 0, static_cast<float>( -originDistance ) );
 
   //! left clip plane
-  planePoint = point1 + linePerp * distance;
+  planePoint = startPoint + linePerp * distance;
   originDistance = QgsVector3D::dotProduct( planePoint - origin, -linePerp );
   clippingPlanes << QVector4D( static_cast<float>( -linePerp.x() ), static_cast<float>( -linePerp.y() ), 0, static_cast<float>( -originDistance ) );
 
   //! front clip plane
-  planePoint = point2;
+  planePoint = endPoint;
   originDistance = QgsVector3D::dotProduct( planePoint - origin, -lineDirection );
   clippingPlanes << QVector4D( static_cast<float>( -lineDirection.x() ), static_cast<float>( -lineDirection.y() ), 0, static_cast<float>( -originDistance ) );
 
   //! right clip plane
-  planePoint = point1 - linePerp * distance;
+  planePoint = startPoint - linePerp * distance;
   originDistance = QgsVector3D::dotProduct( planePoint - origin, linePerp );
   clippingPlanes << QVector4D( static_cast<float>( linePerp.x() ), static_cast<float>( linePerp.y() ), 0, static_cast<float>( -originDistance ) );
 

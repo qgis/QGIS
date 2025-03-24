@@ -46,7 +46,8 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     void deactivate() override;
 
     //! Removes the tool's rubber band from the canvas.
-    void clearRubberBand() const;
+    void clear() const;
+    //! Removes the tool's rubber band from canvas, which highlights the cross-section.
     void clearHighLightedArea() const;
 
   signals:
@@ -54,6 +55,8 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     void clippingPlanesChanged( QList<QVector4D> clippingPlanes );
 
   private:
+    void clearRubberBand() const;
+
     QObjectUniquePtr<QgsRubberBand> mRubberBandPolygon;
     QObjectUniquePtr<QgsRubberBand> mRubberBandLines;
     QObjectUniquePtr<QgsRubberBand> mRubberBandPoints;

@@ -1107,11 +1107,11 @@ QgsRectangle Qgs3DMapScene::sceneExtent() const
   return mMap.extent();
 }
 
-QgsDoubleRange Qgs3DMapScene::elevationRange() const
+QgsDoubleRange Qgs3DMapScene::elevationRange( const bool ignoreTerrain ) const
 {
   double zMin = std::numeric_limits<double>::max();
   double zMax = std::numeric_limits<double>::lowest();
-  if ( mMap.terrainRenderingEnabled() && mTerrain )
+  if ( mMap.terrainRenderingEnabled() && mTerrain && !ignoreTerrain )
   {
     const QgsBox3D box3D = mTerrain->rootNode()->box3D();
     zMin = std::min( zMin, box3D.zMinimum() );

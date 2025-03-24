@@ -1186,7 +1186,7 @@ void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
   mMainCanvas->setMapTool( mMapToolClippingPlanes.get() );
   QgisApp::instance()->activateWindow();
   QgisApp::instance()->raise();
-  mMessageBar->pushInfo( QString(), tr( "Select a rectangle by 3 points on the main 2D map view to define this 3D scene's cross section" ) );
+  mMessageBar->pushInfo( QString(), tr( "Select a rectangle using 3 points on the main 2D map view to define the cross-section of this 3D scene" ) );
 }
 
 void Qgs3DMapCanvasWidget::setViewOnClippingPlanesChanged( const QList<QVector4D> &planes )
@@ -1196,35 +1196,33 @@ void Qgs3DMapCanvasWidget::setViewOnClippingPlanesChanged( const QList<QVector4D
   mMessageBar->clearWidgets();
 
   // calculate the middle of the front side defined by clipping planes with Cramer's rule
-  double det = planes.at( 0 ).x() * planes.at( 3 ).y() - planes.at( 3 ).x() * planes.at( 0 ).y();
-  const QgsVector3D point1(
-    ( planes.at( 0 ).w() * planes.at( 3 ).y() - planes.at( 3 ).w() * planes.at( 0 ).y() ) / -det,
-    ( planes.at( 3 ).w() * planes.at( 0 ).x() - planes.at( 0 ).w() * planes.at( 3 ).x() ) / -det,
+  const QVector4D leftPlane = planes.at( 0 );
+  const QVector4D rightPlane = planes.at( 2 );
+  const QVector4D frontPlane = planes.at( 3 );
+  double det = leftPlane.x() * frontPlane.y() - frontPlane.x() * leftPlane.y();
+  const QgsVector3D startPoint(
+    ( leftPlane.w() * frontPlane.y() - frontPlane.w() * leftPlane.y() ) / -det,
+    ( frontPlane.w() * leftPlane.x() - leftPlane.w() * frontPlane.x() ) / -det,
     0
   );
-  det = planes.at( 2 ).x() * planes.at( 3 ).y() - planes.at( 3 ).x() * planes.at( 2 ).y();
-  const QgsVector3D point2(
-    ( planes.at( 2 ).w() * planes.at( 3 ).y() - planes.at( 3 ).w() * planes.at( 2 ).y() ) / -det,
-    ( planes.at( 3 ).w() * planes.at( 2 ).x() - planes.at( 2 ).w() * planes.at( 3 ).x() ) / -det,
+  det = rightPlane.x() * frontPlane.y() - frontPlane.x() * rightPlane.y();
+  const QgsVector3D endPoint(
+    ( rightPlane.w() * frontPlane.y() - frontPlane.w() * rightPlane.y() ) / -det,
+    ( frontPlane.w() * rightPlane.x() - rightPlane.w() * frontPlane.x() ) / -det,
     0
   );
-  QgsVector3D middle( point1 + ( point2 - point1 ) / 2 );
-  // we temporarily disable terrain so the elevation calculation won't take it in account if the terrain is flat
-  const bool lastTerrainState = mCanvas->scene()->mapSettings()->terrainRenderingEnabled();
-  if ( dynamic_cast<const QgsFlatTerrainSettings *>( mCanvas->scene()->mapSettings()->terrainSettings() ) )
-  {
-    mCanvas->scene()->mapSettings()->setTerrainRenderingEnabled( false );
-  }
-  const double side = std::max( middle.distance( point1 ), ( mCanvas->scene()->elevationRange().upper() - mCanvas->scene()->elevationRange().lower() ) / 2 );
+  QgsVector3D middle( startPoint + ( endPoint - startPoint ) / 2 );
+
+  const QgsDoubleRange sceneElevationRange = mCanvas->scene()->elevationRange( true );
+  const double side = std::max( middle.distance( startPoint ), ( sceneElevationRange.upper() - sceneElevationRange.lower() ) / 2 );
   const double distance = side / std::tan( mCanvas->scene()->cameraController()->camera()->fieldOfView() / 2 * M_PI / 180 ) + 50;
   float yawAngle = static_cast<float>( acos( QgsVector3D::dotProduct( planes.at( 1 ).toVector3D(), QgsVector3D( 0, -1, 0 ) ) ) * 180 / M_PI );
   // check if the angle between the view point is to the left or right of the scene north, apply angle offset if necessary for camera
   if ( QgsVector3D::crossProduct( planes.at( 1 ).toVector3D(), QgsVector3D( 0, -1, 0 ) ).z() > 0 )
   {
-    yawAngle = 180 + ( 180 - yawAngle );
+    yawAngle = 360 - yawAngle;
   }
-  mCanvas->scene()->elevationRange().isInfinite() ? middle.setZ( 0 ) : middle.setZ( mCanvas->scene()->elevationRange().lower() + ( mCanvas->scene()->elevationRange().upper() - mCanvas->scene()->elevationRange().lower() ) / 2 );
-  mCanvas->scene()->mapSettings()->setTerrainRenderingEnabled( lastTerrainState );
+  sceneElevationRange.isInfinite() ? middle.setZ( 0 ) : middle.setZ( sceneElevationRange.lower() + ( sceneElevationRange.upper() - sceneElevationRange.lower() ) / 2 );
   mCanvas->scene()->cameraController()->setLookingAtPoint( middle, static_cast<float>( distance ), 90, yawAngle );
 
   if ( mMapToolPrevious )

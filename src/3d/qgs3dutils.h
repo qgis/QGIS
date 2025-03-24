@@ -371,14 +371,14 @@ class _3D_EXPORT Qgs3DUtils
     static void calculateViewExtent( const Qt3DRender::QCamera *camera, float maxRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ );
 
     /**
-     * Returns list of 4 planes, which are calculated from line defined by \a point1 and \a point2. \a distance defines
-     * the distance between parallel clipping planes and the line.
-     * Clipping planes are returned back in the format of 4D Vector, where first 3 coordinates are the coordinates of
-     * normalized normal of given plane and the last is the distance from origin of the scene.
+     * Returns a list of 4 planes derived from a line extending from \a startPoint to \a endPoint.
+     * The parameter \a distance defines the distance between the parallel clipping planes and the line.
+     * Each clipping plane is represented as a 4D vector, where the first three components correspond to
+     * the normalized normal of the plane, and the fourth component represents its distance from the origin of the scene.
      * \note \a distance is expected to be positive
      * \since QGIS 3.44
      */
-    static QList<QVector4D> lineSegmentToClippingPlanes( const QgsVector3D &point1, const QgsVector3D &point2, double distance, const QgsVector3D &origin );
+    static QList<QVector4D> lineSegmentToClippingPlanes( const QgsVector3D &startPoint, const QgsVector3D &endPoint, double distance, const QgsVector3D &origin );
 };
 
 #endif // QGS3DUTILS_H
