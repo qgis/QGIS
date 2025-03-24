@@ -96,14 +96,6 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
     } );
     event->accept();
   }
-  else if ( event->mimeData()->hasText() )
-  {
-    const QString itemId = event->mimeData()->text();
-    QTimer::singleShot( 0, this, [this, dropPoint, itemId] {
-      emit inputDropped( itemId, dropPoint );
-    } );
-    event->accept();
-  }
   else
   {
     event->ignore();

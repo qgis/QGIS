@@ -118,7 +118,6 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   } );
 
   mPropertiesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
-  mInputsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
   mAlgorithmsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
   mVariablesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
 
@@ -126,11 +125,6 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mAlgorithmSearchEdit->setShowSearchIcon( true );
   mAlgorithmSearchEdit->setPlaceholderText( tr( "Search…" ) );
   connect( mAlgorithmSearchEdit, &QgsFilterLineEdit::textChanged, mAlgorithmsTree, &QgsProcessingToolboxTreeView::setFilterString );
-
-  mInputsTreeWidget->header()->setVisible( false );
-  mInputsTreeWidget->setAlternatingRowColors( true );
-  mInputsTreeWidget->setDragDropMode( QTreeWidget::DragOnly );
-  mInputsTreeWidget->setDropIndicatorShown( true );
 
   mNameEdit->setPlaceholderText( tr( "Enter model name here" ) );
   mGroupEdit->setPlaceholderText( tr( "Enter group name here" ) );
@@ -262,12 +256,6 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
   connect( mAlgorithmsTree, &QgsProcessingToolboxTreeView::doubleClicked, this, &QgsModelDesignerDialog::itemDoubleClicked );
 
-  connect( mView, &QgsModelGraphicsView::inputDropped, this, &QgsModelDesignerDialog::addInput );
-  connect( mInputsTreeWidget, &QgsModelDesignerInputsTreeWidget::doubleClicked, this, [=]( const QModelIndex & ) {
-    const QString parameterType = mInputsTreeWidget->currentItem()->data( 0, Qt::UserRole ).toString();
-    addInput( parameterType, QPointF() );
-  } );
-
   // Ctrl+= should also trigger a zoom in action
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
   connect( ctrlEquals, &QShortcut::activated, this, &QgsModelDesignerDialog::zoomIn );
@@ -282,8 +270,6 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   tabifyDockWidget( mUndoDock, mPropertiesDock );
   tabifyDockWidget( mVariablesDock, mPropertiesDock );
   mPropertiesDock->raise();
-  tabifyDockWidget( mInputsDock, mAlgorithmsDock );
-  mInputsDock->raise();
 
   connect( mVariablesEditor, &QgsVariableEditorWidget::scopeChanged, this, [=] {
     if ( mModel )
@@ -312,7 +298,6 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     }
   } );
 
-  fillInputsTree();
 
   QToolButton *toolbuttonExportToScript = new QToolButton();
   toolbuttonExportToScript->setPopupMode( QToolButton::InstantPopup );
@@ -1255,34 +1240,6 @@ bool QgsModelDesignerDialog::isDirty() const
 {
   return mHasChanged && mUndoStack->index() != -1;
 }
-
-void QgsModelDesignerDialog::fillInputsTree()
-{
-  const QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconModelInput.svg" ) );
-  auto parametersItem = std::make_unique<QTreeWidgetItem>();
-  parametersItem->setText( 0, tr( "Parameters" ) );
-  QList<QgsProcessingParameterType *> available = QgsApplication::processingRegistry()->parameterTypes();
-  std::sort( available.begin(), available.end(), []( const QgsProcessingParameterType *a, const QgsProcessingParameterType *b ) -> bool {
-    return QString::localeAwareCompare( a->name(), b->name() ) < 0;
-  } );
-
-  for ( QgsProcessingParameterType *param : std::as_const( available ) )
-  {
-    if ( param->flags() & Qgis::ProcessingParameterTypeFlag::ExposeToModeler )
-    {
-      auto paramItem = std::make_unique<QTreeWidgetItem>();
-      paramItem->setText( 0, param->name() );
-      paramItem->setData( 0, Qt::UserRole, param->id() );
-      paramItem->setIcon( 0, icon );
-      paramItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
-      paramItem->setToolTip( 0, param->description() );
-      parametersItem->addChild( paramItem.release() );
-    }
-  }
-  mInputsTreeWidget->addTopLevelItem( parametersItem.release() );
-  mInputsTreeWidget->topLevelItem( 0 )->setExpanded( true );
-}
-
 
 //
 // QgsModelChildDependenciesWidget
