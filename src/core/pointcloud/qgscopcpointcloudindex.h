@@ -54,6 +54,9 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
     std::unique_ptr< QgsPointCloudBlock> nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
 
+    //! Returns the raw, encoded, compressed data for a node or empty if missing
+    const QByteArray rawNodeData( QgsPointCloudNodeId n ) const;
+
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
