@@ -627,9 +627,39 @@ void Qgs3DMapScene::updateTemporal()
   }
 }
 
+void Qgs3DMapScene::addSceneEntity( Qgs3DMapSceneEntity *sceneNewEntity )
+{
+  Q_ASSERT( sceneNewEntity );
+
+  mSceneEntities.append( sceneNewEntity );
+
+  sceneNewEntity->setParent( this );
+
+  finalizeNewEntity( sceneNewEntity );
+
+  connect( sceneNewEntity, &Qgs3DMapSceneEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity *entity ) {
+    finalizeNewEntity( entity );
+    // this ensures to update the near/far planes with the exact bounding box of the new entity.
+    updateCameraNearFarPlanes();
+  } );
+
+  connect( sceneNewEntity, &Qgs3DMapSceneEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+
+  onCameraChanged(); // needed for chunked entities
+}
+
+void Qgs3DMapScene::removeSceneEntity( Qgs3DMapSceneEntity *sceneEntity )
+{
+  Q_ASSERT( sceneEntity );
+
+  mSceneEntities.removeOne( sceneEntity );
+
+  sceneEntity->deleteLater();
+}
+
+
 void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 {
-  bool needsSceneUpdate = false;
   QgsAbstract3DRenderer *renderer = layer->renderer3D();
   if ( renderer )
   {
@@ -691,29 +721,20 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     Qt3DCore::QEntity *newEntity = renderer->createEntity( &mMap );
     if ( newEntity )
     {
-      newEntity->setParent( this );
       mLayerEntities.insert( layer, newEntity );
-
-      finalizeNewEntity( newEntity );
 
       if ( Qgs3DMapSceneEntity *sceneNewEntity = qobject_cast<Qgs3DMapSceneEntity *>( newEntity ) )
       {
-        needsSceneUpdate = true;
-        mSceneEntities.append( sceneNewEntity );
-
-        connect( sceneNewEntity, &Qgs3DMapSceneEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity *entity ) {
-          finalizeNewEntity( entity );
-          // this ensures to update the near/far planes with the exact bounding box of the new entity.
-          updateCameraNearFarPlanes();
-        } );
-
-        connect( sceneNewEntity, &Qgs3DMapSceneEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+        // also sets this scene as the entity's parent and finalizes it
+        addSceneEntity( sceneNewEntity );
+      }
+      else
+      {
+        newEntity->setParent( this );
+        finalizeNewEntity( newEntity );
       }
     }
   }
-
-  if ( needsSceneUpdate )
-    onCameraChanged(); // needed for chunked entities
 
   connect( layer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
@@ -743,11 +764,14 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 
   if ( Qgs3DMapSceneEntity *sceneEntity = qobject_cast<Qgs3DMapSceneEntity *>( entity ) )
   {
-    mSceneEntities.removeOne( sceneEntity );
+    // also schedules the entity for deletion
+    removeSceneEntity( sceneEntity );
   }
-
-  if ( entity )
-    entity->deleteLater();
+  else
+  {
+    if ( entity )
+      entity->deleteLater();
+  }
 
   disconnect( layer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 

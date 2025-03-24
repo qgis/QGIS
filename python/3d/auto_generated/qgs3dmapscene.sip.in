@@ -207,6 +207,7 @@ Disables OpenGL clipping.
 %End
 
 
+
   signals:
     void terrainEntityChanged();
 %Docstring
