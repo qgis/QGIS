@@ -41,11 +41,7 @@ static bool qgsQuaternionNear( const QQuaternion &q1, const QQuaternion &q2, dou
 
 static bool isPointInFrontOfPlane( const QgsVector3D &point, const QgsVector3D &planePoint, const QgsVector3D &planeNormal )
 {
-  if ( QgsVector3D::dotProduct( point - planePoint, planeNormal ) > 0 )
-  {
-    return true;
-  }
-  return false;
+  return QgsVector3D::dotProduct( point - planePoint, planeNormal ) > 0;
 }
 
 /**

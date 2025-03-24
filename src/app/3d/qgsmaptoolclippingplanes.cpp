@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptoolclippingplanes.h  -
+    qgsmaptoolclippingplanes.cpp
     ---------------------
     begin                : March 2025
     copyright            : (C) 2025 by Matej Bagar
@@ -54,8 +54,7 @@ void QgsMapToolClippingPlanes::keyReleaseEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Escape )
   {
-    clearRubberBand();
-    mRubberBandPolygon->reset( Qgis::GeometryType::Polygon );
+    clear();
   }
 }
 
@@ -81,10 +80,10 @@ void QgsMapToolClippingPlanes::canvasMoveEvent( QgsMapMouseEvent *e )
       QgsPoint( *mRubberBandPoints->getPoint( 0, 1 ) )
     );
     const QVector<QgsPointXY> points( {
-      *mRubberBandPoints->getPoint( 0, 0 ) + vec * mRectangleWidth,  //! top left corner
-      *mRubberBandPoints->getPoint( 0, 1 ) + vec * mRectangleWidth,  //! top right corner
-      *mRubberBandPoints->getPoint( 0, 1 ) + -vec * mRectangleWidth, //! bottom right corner
-      *mRubberBandPoints->getPoint( 0, 0 ) + -vec * mRectangleWidth  //! bottom left corner
+      *mRubberBandPoints->getPoint( 0, 0 ) + vec * mRectangleWidth, //! top left corner
+      *mRubberBandPoints->getPoint( 0, 1 ) + vec * mRectangleWidth, //! top right corner
+      *mRubberBandPoints->getPoint( 0, 1 ) - vec * mRectangleWidth, //! bottom right corner
+      *mRubberBandPoints->getPoint( 0, 0 ) - vec * mRectangleWidth  //! bottom left corner
     } );
     mRubberBandPolygon->setToGeometry( QgsGeometry( new QgsPolygon( new QgsLineString( points ) ) ) );
   }
@@ -98,7 +97,7 @@ void QgsMapToolClippingPlanes::canvasPressEvent( QgsMapMouseEvent * )
 {
   if ( mRubberBandPoints->numberOfVertices() == 0 )
   {
-    mRubberBandPolygon->reset( Qgis::GeometryType::Polygon );
+    clearHighLightedArea();
   }
   mClicked = true;
 }
@@ -136,9 +135,14 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
   else if ( e->button() == Qt::RightButton )
   {
-    clearRubberBand();
-    mRubberBandPolygon->reset( Qgis::GeometryType::Polygon );
+    clear();
   }
+}
+
+void QgsMapToolClippingPlanes::clear() const
+{
+  clearRubberBand();
+  clearHighLightedArea();
 }
 
 void QgsMapToolClippingPlanes::clearRubberBand() const
