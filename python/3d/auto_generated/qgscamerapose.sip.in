@@ -67,6 +67,7 @@ Sets heading (yaw) angle in degrees
 %End
 
 
+
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element and returns it

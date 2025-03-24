@@ -25,6 +25,7 @@
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   : QgsBackgroundCachedSharedData( "wfs", tr( "WFS" ) )
   , mURI( uri )
+  , mHttpMethod( mURI.httpMethod() )
 {
   mHideProgressDialog = mURI.hideDownloadProgressDialog();
   mServerPrefersCoordinatesForTransactions_1_1 = mURI.preferCoordinatesForWfst11();
@@ -455,40 +456,111 @@ long long QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion, 
 {
   const QString typeName = mUri.typeName();
 
-  QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
-  QUrlQuery query( getFeatureUrl );
-  query.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
-  if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
-  {
-    query.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
-  }
-  else
-  {
-    query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
-  }
+  QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ), mUri.httpMethod() ) );
 
-  const QString namespaceValue( caps.getNamespaceParameterValue( WFSVersion, typeName ) );
-  if ( !namespaceValue.isEmpty() )
+  switch ( mUri.httpMethod() )
   {
-    if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+    case Qgis::HttpMethod::Get:
     {
-      query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
+      QUrlQuery query( getFeatureUrl );
+      query.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
+      if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+      {
+        query.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
+      }
+      else
+      {
+        query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
+      }
+
+      const QString namespaceValue( caps.getNamespaceParameterValue( WFSVersion, typeName ) );
+      if ( !namespaceValue.isEmpty() )
+      {
+        if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+        {
+          query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
+        }
+        else
+        {
+          query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+        }
+      }
+
+      if ( !filter.isEmpty() )
+      {
+        query.addQueryItem( QStringLiteral( "FILTER" ), filter );
+      }
+      query.addQueryItem( QStringLiteral( "RESULTTYPE" ), QStringLiteral( "hits" ) );
+
+      getFeatureUrl.setQuery( query );
+      if ( !sendGET( getFeatureUrl, QString(), true ) )
+        return -1;
+
+      break;
     }
-    else
+    case Qgis::HttpMethod::Post:
     {
-      query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+      QUrlQuery query( getFeatureUrl );
+      const QList<QPair<QString, QString>> items = query.queryItems();
+      bool hasService = false;
+      bool hasRequest = false;
+      for ( const auto &item : items )
+      {
+        if ( item.first.toUpper() == QLatin1String( "SERVICE" ) )
+          hasService = true;
+        if ( item.first.toUpper() == QLatin1String( "REQUEST" ) )
+          hasRequest = true;
+      }
+
+      // add service / request parameters only if they don't exist in the explicitly defined post URL
+      if ( !hasService )
+        query.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
+      if ( !hasRequest )
+        query.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+
+      getFeatureUrl.setQuery( query );
+
+      QDomDocument postDocument = createPostDocument();
+      QDomElement getFeatureElement = createRootPostElement( caps, WFSVersion, postDocument, QStringLiteral( "wfs:GetFeature" ), { typeName } );
+
+      const bool useVersion2 = !WFSVersion.startsWith( QLatin1String( "1." ) );
+
+      QDomElement queryElement = postDocument.createElement( QStringLiteral( "wfs:Query" ) );
+      if ( useVersion2 )
+      {
+        queryElement.setAttribute( QStringLiteral( "typeNames" ), typeName );
+      }
+      else
+      {
+        queryElement.setAttribute( QStringLiteral( "typeName" ), typeName );
+      }
+
+      if ( !filter.isEmpty() )
+      {
+        QDomDocument filterDoc;
+        QDomElement filterElement = postDocument.createElement( useVersion2 ? QStringLiteral( "fes:Filter" ) : QStringLiteral( "ogc:Filter" ) );
+        if ( filterDoc.setContent( filter ) )
+        {
+          filterElement.appendChild( filterDoc.documentElement() );
+        }
+        queryElement.appendChild( filterElement );
+      }
+      getFeatureElement.appendChild( queryElement );
+
+      getFeatureElement.setAttribute( QStringLiteral( "resultType" ), QStringLiteral( "hits" ) );
+
+      if ( !sendPOST( getFeatureUrl, QStringLiteral( "application/xml; charset=utf-8" ), postDocument.toByteArray(), true, { QNetworkReply::RawHeaderPair { "Accept", "application/xml" } } ) )
+        return -1;
+
+      break;
     }
-  }
 
-  if ( !filter.isEmpty() )
-  {
-    query.addQueryItem( QStringLiteral( "FILTER" ), filter );
+    case Qgis::HttpMethod::Head:
+    case Qgis::HttpMethod::Put:
+    case Qgis::HttpMethod::Delete:
+      // not supported, impossible to hit
+      return -1;
   }
-  query.addQueryItem( QStringLiteral( "RESULTTYPE" ), QStringLiteral( "hits" ) );
-
-  getFeatureUrl.setQuery( query );
-  if ( !sendGET( getFeatureUrl, QString(), true ) )
-    return -1;
 
   const QByteArray &buffer = response();
 
@@ -534,31 +606,79 @@ QgsWFSSingleFeatureRequest::QgsWFSSingleFeatureRequest( const QgsWFSSharedData *
 
 QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
 {
-  QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
-  QUrlQuery query( getFeatureUrl );
-  query.addQueryItem( QStringLiteral( "VERSION" ), mShared->mWFSVersion );
-  if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
-    query.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
-  else
-    query.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
+  QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ), mUri.httpMethod() ) );
 
-  const QString namespaceValue( mShared->mCaps.getNamespaceParameterValue( mShared->mWFSVersion, mUri.typeName() ) );
-  if ( !namespaceValue.isEmpty() )
+  switch ( mUri.httpMethod() )
   {
-    if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
-      query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
-    else
-      query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+    case Qgis::HttpMethod::Get:
+    {
+      QUrlQuery query( getFeatureUrl );
+      query.addQueryItem( QStringLiteral( "VERSION" ), mShared->mWFSVersion );
+      if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+        query.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
+      else
+        query.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
+
+      const QString namespaceValue( mShared->mCaps.getNamespaceParameterValue( mShared->mWFSVersion, mUri.typeName() ) );
+      if ( !namespaceValue.isEmpty() )
+      {
+        if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+          query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
+        else
+          query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+      }
+
+      if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+        query.addQueryItem( QStringLiteral( "COUNT" ), QString::number( 1 ) );
+      else
+        query.addQueryItem( QStringLiteral( "MAXFEATURES" ), QString::number( 1 ) );
+
+      getFeatureUrl.setQuery( query );
+      if ( !sendGET( getFeatureUrl, QString(), true ) )
+        return QgsRectangle();
+      break;
+    }
+
+    case Qgis::HttpMethod::Post:
+    {
+      QDomDocument postDocument = createPostDocument();
+      QDomElement getFeatureElement = createRootPostElement( mShared->mCaps, mShared->mWFSVersion, postDocument, QStringLiteral( "wfs:GetFeature" ), { mUri.typeName() } );
+
+      const bool useVersion2 = !mShared->mWFSVersion.startsWith( QLatin1String( "1." ) );
+
+      QDomElement queryElement = postDocument.createElement( QStringLiteral( "wfs:Query" ) );
+      if ( useVersion2 )
+      {
+        queryElement.setAttribute( QStringLiteral( "typeNames" ), mUri.typeName() );
+      }
+      else
+      {
+        queryElement.setAttribute( QStringLiteral( "typeName" ), mUri.typeName() );
+      }
+
+      getFeatureElement.appendChild( queryElement );
+
+      if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+      {
+        getFeatureElement.setAttribute( QStringLiteral( "count" ), QString::number( 1 ) );
+      }
+      else
+      {
+        getFeatureElement.setAttribute( QStringLiteral( "maxFeatures" ), QString::number( 1 ) );
+      }
+
+      if ( !sendPOST( getFeatureUrl, QStringLiteral( "application/xml; charset=utf-8" ), postDocument.toByteArray(), true, { QNetworkReply::RawHeaderPair { "Accept", "application/xml" } } ) )
+        return QgsRectangle();
+
+      break;
+    }
+
+    case Qgis::HttpMethod::Head:
+    case Qgis::HttpMethod::Put:
+    case Qgis::HttpMethod::Delete:
+      // not supported, impossible to hit
+      return QgsRectangle();
   }
-
-  if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
-    query.addQueryItem( QStringLiteral( "COUNT" ), QString::number( 1 ) );
-  else
-    query.addQueryItem( QStringLiteral( "MAXFEATURES" ), QString::number( 1 ) );
-
-  getFeatureUrl.setQuery( query );
-  if ( !sendGET( getFeatureUrl, QString(), true ) )
-    return QgsRectangle();
 
   const QByteArray &buffer = response();
 

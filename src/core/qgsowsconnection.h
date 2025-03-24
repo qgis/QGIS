@@ -116,6 +116,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     static const QgsSettingsEntryString *settingsPassword;
     static const QgsSettingsEntryString *settingsAuthCfg;
     static const QgsSettingsEntryInteger *settingsFeatureCount;
+    static const QgsSettingsEntryEnumFlag<Qgis::HttpMethod> *settingsPreferredHttpMethod;
 
 #endif
 

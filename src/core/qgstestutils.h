@@ -42,6 +42,13 @@ namespace QgsTestUtils
    */
   CORE_EXPORT bool testProviderIteratorThreadSafety( QgsVectorDataProvider *provider, const QgsFeatureRequest &request = QgsFeatureRequest() );
 
+  /**
+   * Compares two DOM elements and returns TRUE if they are equivalent.
+   *
+   * Dumps useful diff information to the console if the elements differ.
+   */
+  CORE_EXPORT bool compareDomElements( const QDomElement &element1, const QDomElement &element2 );
+
 };
 
 ///@endcond

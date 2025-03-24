@@ -15,6 +15,8 @@
 
 #include "qgswfsgetfeature.h"
 #include "moc_qgswfsgetfeature.cpp"
+#include "qgsmessagelog.h"
+#include "qgswfsconstants.h"
 #include <QUrlQuery>
 
 QgsWFSGetFeature::QgsWFSGetFeature( QgsWFSDataSourceURI &uri )
@@ -24,42 +26,91 @@ QgsWFSGetFeature::QgsWFSGetFeature( QgsWFSDataSourceURI &uri )
 
 bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion, const QString &typeName, const QString &filter, bool hitsOnly, const QgsWfsCapabilities &caps )
 {
-  QUrl url( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
-  QUrlQuery query( url );
-  query.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
+  QUrl url( mUri.requestUrl( QStringLiteral( "GetFeature" ), mUri.httpMethod() ) );
 
-  const QString namespaceValue( caps.getNamespaceParameterValue( WFSVersion, typeName ) );
-
-  if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+  switch ( mUri.httpMethod() )
   {
-    query.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
-    if ( !namespaceValue.isEmpty() )
+    case Qgis::HttpMethod::Get:
     {
-      query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
+      QUrlQuery query( url );
+      query.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
+
+      const QString namespaceValue( caps.getNamespaceParameterValue( WFSVersion, typeName ) );
+
+      if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+      {
+        query.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
+        if ( !namespaceValue.isEmpty() )
+        {
+          query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
+        }
+      }
+      else
+      {
+        query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
+      }
+
+      if ( !namespaceValue.isEmpty() )
+      {
+        query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+      }
+
+      if ( !filter.isEmpty() )
+      {
+        query.addQueryItem( QStringLiteral( "FILTER" ), filter );
+      }
+
+      if ( hitsOnly )
+      {
+        query.addQueryItem( QStringLiteral( "RESULTTYPE" ), "hits" );
+      }
+      url.setQuery( query );
+      return sendGET( url, QString(), synchronous, /*forceRefresh=*/true, /* cache=*/false );
     }
-  }
-  else
-  {
-    query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
-  }
+    case Qgis::HttpMethod::Post:
+    {
+      QDomDocument postDocument = createPostDocument();
+      QDomElement getFeatureElement = createRootPostElement( caps, WFSVersion, postDocument, QStringLiteral( "wfs:GetFeature" ), { typeName } );
 
-  if ( !namespaceValue.isEmpty() )
-  {
-    query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
-  }
+      const bool useVersion2 = !WFSVersion.startsWith( QLatin1String( "1." ) );
 
-  if ( !filter.isEmpty() )
-  {
-    query.addQueryItem( QStringLiteral( "FILTER" ), filter );
-  }
+      QDomElement queryElement = postDocument.createElement( QStringLiteral( "wfs:Query" ) );
+      if ( useVersion2 )
+      {
+        queryElement.setAttribute( QStringLiteral( "typeNames" ), typeName );
+      }
+      else
+      {
+        queryElement.setAttribute( QStringLiteral( "typeName" ), typeName );
+      }
 
-  if ( hitsOnly )
-  {
-    query.addQueryItem( QStringLiteral( "RESULTTYPE" ), "hits" );
-  }
+      if ( !filter.isEmpty() )
+      {
+        QDomDocument filterDoc;
+        QDomElement filterElement = postDocument.createElement( useVersion2 ? QStringLiteral( "fes:Filter" ) : QStringLiteral( "ogc:Filter" ) );
+        if ( filterDoc.setContent( filter ) )
+        {
+          filterElement.appendChild( filterDoc.documentElement() );
+        }
+        queryElement.appendChild( filterElement );
+      }
+      getFeatureElement.appendChild( queryElement );
 
-  url.setQuery( query );
-  return sendGET( url, QString(), synchronous, /*forceRefresh=*/true, /* cache=*/false );
+      if ( hitsOnly )
+      {
+        getFeatureElement.setAttribute( QStringLiteral( "resultType" ), QStringLiteral( "hits" ) );
+      }
+
+      return sendPOST( url, QStringLiteral( "application/xml; charset=utf-8" ), postDocument.toByteArray(), synchronous, { QNetworkReply::RawHeaderPair { "Accept", "application/xml" } } );
+    }
+
+    case Qgis::HttpMethod::Head:
+    case Qgis::HttpMethod::Put:
+    case Qgis::HttpMethod::Delete:
+      // not supported, impossible to hit
+      break;
+  }
+  return false;
 }
 
 QString QgsWFSGetFeature::errorMessageWithReason( const QString &reason )

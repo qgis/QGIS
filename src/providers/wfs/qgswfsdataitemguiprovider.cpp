@@ -22,6 +22,7 @@
 #include "qgswfsconstants.h"
 #include "qgswfsdataitems.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -116,6 +117,8 @@ void QgsWfsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   QgsOwsConnection::settingsMaxNumFeatures->setValue( QgsOwsConnection::settingsMaxNumFeatures->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsPagesize->setValue( QgsOwsConnection::settingsPagesize->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsPagingEnabled->setValue( QgsOwsConnection::settingsPagingEnabled->value( detailsParameters ), newDetailsParameters );
+
+  QgsOwsConnection::settingsPreferredHttpMethod->setValue( QgsOwsConnection::settingsPreferredHttpMethod->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsUsername->setValue( QgsOwsConnection::settingsUsername->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsPassword->setValue( QgsOwsConnection::settingsPassword->value( detailsParameters ), newDetailsParameters );

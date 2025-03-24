@@ -38,7 +38,8 @@ class QgsWFSFeatureHitsAsyncRequest final : public QgsWfsRequest
   public:
     explicit QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri );
 
-    void launch( const QUrl &url );
+    void launchGet( const QUrl &url );
+    void launchPost( const QUrl &url, const QByteArray &data );
 
     //! Returns result of request, or -1 if not known/error
     int numberMatched() const { return mNumberMatched; }
@@ -95,8 +96,12 @@ class QgsWFSFeatureDownloaderImpl final : public QgsWfsRequest, public QgsFeatur
 
   private:
     QUrl buildURL( qint64 startIndex, long long maxFeatures, bool forHits );
+    std::pair<QUrl, QByteArray> buildPostRequest( qint64 startIndex, long long maxFeatures, bool forHits );
+
     void pushError( const QString &errorMsg );
     QString sanitizeFilter( QString filter );
+    std::pair<QString, QString> determineTypeNames() const;
+    bool useInvertedAxis() const;
 
     //! Mutable data shared between provider, feature sources and downloader.
     QgsWFSSharedData *mShared = nullptr;
@@ -106,6 +111,8 @@ class QgsWFSFeatureDownloaderImpl final : public QgsWfsRequest, public QgsFeatur
     long long mNumberMatched = -1;
     QgsWFSFeatureHitsAsyncRequest mFeatureHitsAsyncRequest;
     qint64 mTotalDownloadedFeatureCount = 0;
+
+    const QStringList WFS1FORMATS { QStringLiteral( "text/xml; subtype=gml/3.2.1" ), QStringLiteral( "application/gml+xml; version=3.2" ), QStringLiteral( "text/xml; subtype=gml/3.1.1" ), QStringLiteral( "application/gml+xml; version=3.1" ), QStringLiteral( "text/xml; subtype=gml/3.0.1" ), QStringLiteral( "application/gml+xml; version=3.0" ), QStringLiteral( "GML3" ) };
 };
 
 
