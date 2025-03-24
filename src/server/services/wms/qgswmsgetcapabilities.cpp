@@ -893,12 +893,199 @@ namespace QgsWms
 
   namespace
   {
+    //! helper method to write all server properties except
+    // - name: because it's differently managed between group and layer
+    // - legendUrl because it's part of styles
+    void writeServerProperties( QDomDocument &doc, QDomElement &layerElem, const QgsProject *project, const QgsMapLayerServerProperties *serverProperties, const QString &name, const QString &version )
+    {
+      const QString title = serverProperties->title();
+      QDomElement titleElem = doc.createElement( QStringLiteral( "Title" ) );
+      QDomText titleText = doc.createTextNode( !title.isEmpty() ? title : name );
+      titleElem.appendChild( titleText );
+      layerElem.appendChild( titleElem );
+
+      const QString abstract = serverProperties->abstract();
+      if ( !abstract.isEmpty() )
+      {
+        QDomElement abstractElem = doc.createElement( QStringLiteral( "Abstract" ) );
+        QDomText abstractText = doc.createTextNode( abstract );
+        abstractElem.appendChild( abstractText );
+        layerElem.appendChild( abstractElem );
+      }
+
+      //keyword list
+      const bool siaFormat = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
+      const QStringList keywords = !serverProperties->keywordList().isEmpty() ? serverProperties->keywordList().split( ',' ) : QStringList();
+      if ( !keywords.isEmpty() )
+      {
+        QDomElement keywordListElem = doc.createElement( QStringLiteral( "KeywordList" ) );
+        for ( const QString &keyword : std::as_const( keywords ) )
+        {
+          QDomElement keywordElem = doc.createElement( QStringLiteral( "Keyword" ) );
+          QDomText keywordText = doc.createTextNode( keyword.trimmed() );
+          keywordElem.appendChild( keywordText );
+          if ( siaFormat )
+          {
+            keywordElem.setAttribute( QStringLiteral( "vocabulary" ), QStringLiteral( "SIA_Geo405" ) );
+          }
+          keywordListElem.appendChild( keywordElem );
+        }
+        layerElem.appendChild( keywordListElem );
+      }
+
+      // layer data URL
+      const QString dataUrl = serverProperties->dataUrl();
+      if ( !dataUrl.isEmpty() )
+      {
+        QDomElement dataUrlElem = doc.createElement( QStringLiteral( "DataURL" ) );
+        QDomElement dataUrlFormatElem = doc.createElement( QStringLiteral( "Format" ) );
+        const QString dataUrlFormat = serverProperties->dataUrlFormat();
+        QDomText dataUrlFormatText = doc.createTextNode( dataUrlFormat );
+        dataUrlFormatElem.appendChild( dataUrlFormatText );
+        dataUrlElem.appendChild( dataUrlFormatElem );
+        QDomElement dataORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
+        dataORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
+        dataORElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
+        dataORElem.setAttribute( QStringLiteral( "xlink:href" ), dataUrl );
+        dataUrlElem.appendChild( dataORElem );
+        layerElem.appendChild( dataUrlElem );
+      }
+
+      // layer attribution
+      const QString attribution = serverProperties->attribution();
+      if ( !attribution.isEmpty() )
+      {
+        QDomElement attribElem = doc.createElement( QStringLiteral( "Attribution" ) );
+        QDomElement attribTitleElem = doc.createElement( QStringLiteral( "Title" ) );
+        QDomText attribText = doc.createTextNode( attribution );
+        attribTitleElem.appendChild( attribText );
+        attribElem.appendChild( attribTitleElem );
+        const QString attributionUrl = serverProperties->attributionUrl();
+        if ( !attributionUrl.isEmpty() )
+        {
+          QDomElement attribORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
+          attribORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
+          attribORElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
+          attribORElem.setAttribute( QStringLiteral( "xlink:href" ), attributionUrl );
+          attribElem.appendChild( attribORElem );
+        }
+        layerElem.appendChild( attribElem );
+      }
+
+      // layer metadata URL
+      const QList<QgsServerMetadataUrlProperties::MetadataUrl> metadataUrls = serverProperties->metadataUrls();
+      for ( const QgsMapLayerServerProperties::MetadataUrl &metadataUrl : std::as_const( metadataUrls ) )
+      {
+        QDomElement metaUrlElem = doc.createElement( QStringLiteral( "MetadataURL" ) );
+        const QString metadataUrlType = metadataUrl.type;
+        if ( version == QLatin1String( "1.1.1" ) )
+        {
+          metaUrlElem.setAttribute( QStringLiteral( "type" ), metadataUrlType );
+        }
+        else if ( metadataUrlType == QLatin1String( "FGDC" ) )
+        {
+          metaUrlElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "FGDC:1998" ) );
+        }
+        else if ( metadataUrlType == QLatin1String( "TC211" ) )
+        {
+          metaUrlElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ISO19115:2003" ) );
+        }
+        else
+        {
+          metaUrlElem.setAttribute( QStringLiteral( "type" ), metadataUrlType );
+        }
+        const QString metadataUrlFormat = metadataUrl.format;
+        if ( !metadataUrlFormat.isEmpty() )
+        {
+          QDomElement metaUrlFormatElem = doc.createElement( QStringLiteral( "Format" ) );
+          QDomText metaUrlFormatText = doc.createTextNode( metadataUrlFormat );
+          metaUrlFormatElem.appendChild( metaUrlFormatText );
+          metaUrlElem.appendChild( metaUrlFormatElem );
+        }
+        QDomElement metaUrlORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
+        metaUrlORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
+        metaUrlORElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
+        metaUrlORElem.setAttribute( QStringLiteral( "xlink:href" ), metadataUrl.url );
+        metaUrlElem.appendChild( metaUrlORElem );
+        layerElem.appendChild( metaUrlElem );
+      }
+    }
+
+    void writeLegendUrl( QDomDocument &doc, QDomElement &styleElem, const QString &legendUrl, const QString &legendUrlFormat, const QString &name, const QString &styleName, const QgsProject *project, const QgsWmsRequest &request, const QgsServerSettings *settings )
+    {
+      // QString LegendURL for explicit layerbased GetLegendGraphic request
+      QDomElement getLayerLegendGraphicElem = doc.createElement( QStringLiteral( "LegendURL" ) );
+
+      QString customHrefString = legendUrl;
+
+      QStringList getLayerLegendGraphicFormats;
+      if ( !customHrefString.isEmpty() )
+      {
+        getLayerLegendGraphicFormats << legendUrlFormat;
+      }
+      else
+      {
+        getLayerLegendGraphicFormats << QStringLiteral( "image/png" ); // << "jpeg" << "image/jpeg"
+      }
+
+      for ( const QString &getLayerLegendGraphicFormat : std::as_const( getLayerLegendGraphicFormats ) )
+      {
+        QDomElement getLayerLegendGraphicFormatElem = doc.createElement( QStringLiteral( "Format" ) );
+        QDomText getLayerLegendGraphicFormatText = doc.createTextNode( getLayerLegendGraphicFormat );
+        getLayerLegendGraphicFormatElem.appendChild( getLayerLegendGraphicFormatText );
+        getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicFormatElem );
+      }
+
+      // no parameters on custom hrefUrl, because should link directly to graphic
+      if ( customHrefString.isEmpty() )
+      {
+        // href needs to be a prefix
+        QUrl href = serviceUrl( request, project, *settings );
+        const QString hrefString = href.toString() + ( href.hasQuery() ? "&" : "?" );
+
+        QUrl mapUrl( hrefString );
+        QUrlQuery mapUrlQuery( mapUrl.query() );
+        mapUrlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
+        mapUrlQuery.addQueryItem( QStringLiteral( "VERSION" ), request.wmsParameters().version() );
+        mapUrlQuery.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetLegendGraphic" ) );
+        mapUrlQuery.addQueryItem( QStringLiteral( "LAYER" ), name );
+        mapUrlQuery.addQueryItem( QStringLiteral( "FORMAT" ), QStringLiteral( "image/png" ) );
+        mapUrlQuery.addQueryItem( QStringLiteral( "STYLE" ), styleName );
+        if ( request.wmsParameters().version() == QLatin1String( "1.3.0" ) )
+        {
+          mapUrlQuery.addQueryItem( QStringLiteral( "SLD_VERSION" ), QStringLiteral( "1.1.0" ) );
+        }
+        mapUrl.setQuery( mapUrlQuery );
+        customHrefString = mapUrl.toString();
+      }
+
+      QDomElement getLayerLegendGraphicORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
+      getLayerLegendGraphicORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
+      getLayerLegendGraphicORElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
+      getLayerLegendGraphicORElem.setAttribute( QStringLiteral( "xlink:href" ), customHrefString );
+      getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicORElem );
+      styleElem.appendChild( getLayerLegendGraphicElem );
+    }
+
+    QDomElement createStyleElement( QDomDocument &doc, const QString &styleName )
+    {
+      QDomElement styleElem = doc.createElement( QStringLiteral( "Style" ) );
+      QDomElement styleNameElem = doc.createElement( QStringLiteral( "Name" ) );
+      QDomText styleNameText = doc.createTextNode( styleName );
+      styleNameElem.appendChild( styleNameText );
+      QDomElement styleTitleElem = doc.createElement( QStringLiteral( "Title" ) );
+      QDomText styleTitleText = doc.createTextNode( styleName );
+      styleTitleElem.appendChild( styleTitleText );
+      styleElem.appendChild( styleNameElem );
+      styleElem.appendChild( styleTitleElem );
+
+      return styleElem;
+    }
 
     void appendLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, bool projectSettings )
     {
       const QString version = request.wmsParameters().version();
 
-      bool siaFormat = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
       const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
       const bool skipNameForGroup = QgsServerProjectUtils::wmsSkipNameForGroup( *project );
 
@@ -930,8 +1117,7 @@ namespace QgsWms
             layerElem.setAttribute( QStringLiteral( "mutuallyExclusive" ), treeGroupChild->isMutuallyExclusive() );
           }
 
-          QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
-          QString title = treeGroupChild->customProperty( QStringLiteral( "wmsTitle" ) ).toString();
+          QString shortName = treeGroupChild->serverProperties()->shortName();
 
           if ( !skipNameForGroup )
           {
@@ -945,23 +1131,14 @@ namespace QgsWms
             layerElem.appendChild( nameElem );
           }
 
-          QDomElement titleElem = doc.createElement( QStringLiteral( "Title" ) );
-          QDomText titleText;
-          if ( !title.isEmpty() )
-            titleText = doc.createTextNode( title );
-          else
-            titleText = doc.createTextNode( name );
-          titleElem.appendChild( titleText );
-          layerElem.appendChild( titleElem );
+          writeServerProperties( doc, layerElem, project, treeGroupChild->serverProperties(), name, version );
 
-          QString abstract = treeGroupChild->customProperty( QStringLiteral( "wmsAbstract" ) ).toString();
-          if ( !abstract.isEmpty() )
-          {
-            QDomElement abstractElem = doc.createElement( QStringLiteral( "Abstract" ) );
-            QDomText abstractText = doc.createTextNode( abstract );
-            abstractElem.appendChild( abstractText );
-            layerElem.appendChild( abstractElem );
-          }
+          // There is no style assicated with layer tree group so just use a defaut one
+          const QString styleName = QStringLiteral( "default" );
+          QDomElement styleElem = createStyleElement( doc, styleName );
+          writeLegendUrl( doc, styleElem, treeGroupChild->serverProperties()->legendUrl(), treeGroupChild->serverProperties()->legendUrlFormat(), name, styleName, project, request, serverIface->serverSettings() );
+
+          layerElem.appendChild( styleElem );
 
           // Layer tree name
           if ( projectSettings )
@@ -1001,36 +1178,7 @@ namespace QgsWms
           nameElem.appendChild( nameText );
           layerElem.appendChild( nameElem );
 
-          QDomElement titleElem = doc.createElement( QStringLiteral( "Title" ) );
-          QDomText titleText = doc.createTextNode( layerInfos.title );
-          titleElem.appendChild( titleText );
-          layerElem.appendChild( titleElem );
-
-          if ( !layerInfos.abstract.isEmpty() )
-          {
-            QDomElement abstractElem = doc.createElement( QStringLiteral( "Abstract" ) );
-            QDomText abstractText = doc.createTextNode( layerInfos.abstract );
-            abstractElem.appendChild( abstractText );
-            layerElem.appendChild( abstractElem );
-          }
-
-          //keyword list
-          if ( !layerInfos.keywords.isEmpty() )
-          {
-            QDomElement keywordListElem = doc.createElement( QStringLiteral( "KeywordList" ) );
-            for ( const QString &keyword : std::as_const( layerInfos.keywords ) )
-            {
-              QDomElement keywordElem = doc.createElement( QStringLiteral( "Keyword" ) );
-              QDomText keywordText = doc.createTextNode( keyword.trimmed() );
-              keywordElem.appendChild( keywordText );
-              if ( siaFormat )
-              {
-                keywordElem.setAttribute( QStringLiteral( "vocabulary" ), QStringLiteral( "SIA_Geo405" ) );
-              }
-              keywordListElem.appendChild( keywordElem );
-            }
-            layerElem.appendChild( keywordListElem );
-          }
+          writeServerProperties( doc, layerElem, project, l->serverProperties(), l->name(), version );
 
           // Append not null Bounding rectangles
           if ( !layerInfos.wgs84BoundingRect.isNull() )
@@ -1077,79 +1225,6 @@ namespace QgsWms
               maxScaleElem.appendChild( maxScaleText );
               layerElem.appendChild( maxScaleElem );
             }
-          }
-
-          // layer data URL
-          if ( !layerInfos.dataUrl.isEmpty() )
-          {
-            QDomElement dataUrlElem = doc.createElement( QStringLiteral( "DataURL" ) );
-            QDomElement dataUrlFormatElem = doc.createElement( QStringLiteral( "Format" ) );
-            QString dataUrlFormat = l->serverProperties()->dataUrlFormat();
-            QDomText dataUrlFormatText = doc.createTextNode( dataUrlFormat );
-            dataUrlFormatElem.appendChild( dataUrlFormatText );
-            dataUrlElem.appendChild( dataUrlFormatElem );
-            QDomElement dataORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
-            dataORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
-            dataORElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
-            dataORElem.setAttribute( QStringLiteral( "xlink:href" ), layerInfos.dataUrl );
-            dataUrlElem.appendChild( dataORElem );
-            layerElem.appendChild( dataUrlElem );
-          }
-
-          // layer attribution
-          if ( !layerInfos.attribution.isEmpty() )
-          {
-            QDomElement attribElem = doc.createElement( QStringLiteral( "Attribution" ) );
-            QDomElement attribTitleElem = doc.createElement( QStringLiteral( "Title" ) );
-            QDomText attribText = doc.createTextNode( layerInfos.attribution );
-            attribTitleElem.appendChild( attribText );
-            attribElem.appendChild( attribTitleElem );
-            if ( !layerInfos.attributionUrl.isEmpty() )
-            {
-              QDomElement attribORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
-              attribORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
-              attribORElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
-              attribORElem.setAttribute( QStringLiteral( "xlink:href" ), layerInfos.attributionUrl );
-              attribElem.appendChild( attribORElem );
-            }
-            layerElem.appendChild( attribElem );
-          }
-
-          // layer metadata URL
-          for ( const QgsMapLayerServerProperties::MetadataUrl &metadataUrl : std::as_const( layerInfos.metadataUrls ) )
-          {
-            QDomElement metaUrlElem = doc.createElement( QStringLiteral( "MetadataURL" ) );
-            const QString metadataUrlType = metadataUrl.type;
-            if ( version == QLatin1String( "1.1.1" ) )
-            {
-              metaUrlElem.setAttribute( QStringLiteral( "type" ), metadataUrlType );
-            }
-            else if ( metadataUrlType == QLatin1String( "FGDC" ) )
-            {
-              metaUrlElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "FGDC:1998" ) );
-            }
-            else if ( metadataUrlType == QLatin1String( "TC211" ) )
-            {
-              metaUrlElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ISO19115:2003" ) );
-            }
-            else
-            {
-              metaUrlElem.setAttribute( QStringLiteral( "type" ), metadataUrlType );
-            }
-            const QString metadataUrlFormat = metadataUrl.format;
-            if ( !metadataUrlFormat.isEmpty() )
-            {
-              QDomElement metaUrlFormatElem = doc.createElement( QStringLiteral( "Format" ) );
-              QDomText metaUrlFormatText = doc.createTextNode( metadataUrlFormat );
-              metaUrlFormatElem.appendChild( metaUrlFormatText );
-              metaUrlElem.appendChild( metaUrlFormatElem );
-            }
-            QDomElement metaUrlORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
-            metaUrlORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
-            metaUrlORElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
-            metaUrlORElem.setAttribute( QStringLiteral( "xlink:href" ), metadataUrl.url );
-            metaUrlElem.appendChild( metaUrlORElem );
-            layerElem.appendChild( metaUrlElem );
           }
 
           bool timeDimensionAdded { false };
@@ -1324,72 +1399,11 @@ namespace QgsWms
 
     void appendLayerStyles( QDomDocument &doc, QDomElement &layerElem, const QgsWmsLayerInfos &layerInfos, const QgsProject *project, const QgsWmsRequest &request, const QgsServerSettings *settings )
     {
-      // Get service URL
-      QUrl href = serviceUrl( request, project, *settings );
-
-      //href needs to be a prefix
-      QString hrefString = href.toString();
-      hrefString.append( href.hasQuery() ? "&" : "?" );
       for ( const QString &styleName : std::as_const( layerInfos.styles ) )
       {
-        QDomElement styleElem = doc.createElement( QStringLiteral( "Style" ) );
-        QDomElement styleNameElem = doc.createElement( QStringLiteral( "Name" ) );
-        QDomText styleNameText = doc.createTextNode( styleName );
-        styleNameElem.appendChild( styleNameText );
-        QDomElement styleTitleElem = doc.createElement( QStringLiteral( "Title" ) );
-        QDomText styleTitleText = doc.createTextNode( styleName );
-        styleTitleElem.appendChild( styleTitleText );
-        styleElem.appendChild( styleNameElem );
-        styleElem.appendChild( styleTitleElem );
+        QDomElement styleElem = createStyleElement( doc, styleName );
 
-        // QString LegendURL for explicit layerbased GetLegendGraphic request
-        QDomElement getLayerLegendGraphicElem = doc.createElement( QStringLiteral( "LegendURL" ) );
-
-        QString customHrefString = layerInfos.legendUrl;
-
-        QStringList getLayerLegendGraphicFormats;
-        if ( !customHrefString.isEmpty() )
-        {
-          getLayerLegendGraphicFormats << layerInfos.legendUrlFormat;
-        }
-        else
-        {
-          getLayerLegendGraphicFormats << QStringLiteral( "image/png" ); // << "jpeg" << "image/jpeg"
-        }
-
-        for ( const QString &getLayerLegendGraphicFormat : std::as_const( getLayerLegendGraphicFormats ) )
-        {
-          QDomElement getLayerLegendGraphicFormatElem = doc.createElement( QStringLiteral( "Format" ) );
-          QDomText getLayerLegendGraphicFormatText = doc.createTextNode( getLayerLegendGraphicFormat );
-          getLayerLegendGraphicFormatElem.appendChild( getLayerLegendGraphicFormatText );
-          getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicFormatElem );
-        }
-
-        // no parameters on custom hrefUrl, because should link directly to graphic
-        if ( customHrefString.isEmpty() )
-        {
-          QUrl mapUrl( hrefString );
-          QUrlQuery mapUrlQuery( mapUrl.query() );
-          mapUrlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
-          mapUrlQuery.addQueryItem( QStringLiteral( "VERSION" ), request.wmsParameters().version() );
-          mapUrlQuery.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetLegendGraphic" ) );
-          mapUrlQuery.addQueryItem( QStringLiteral( "LAYER" ), layerInfos.name );
-          mapUrlQuery.addQueryItem( QStringLiteral( "FORMAT" ), QStringLiteral( "image/png" ) );
-          mapUrlQuery.addQueryItem( QStringLiteral( "STYLE" ), styleName );
-          if ( request.wmsParameters().version() == QLatin1String( "1.3.0" ) )
-          {
-            mapUrlQuery.addQueryItem( QStringLiteral( "SLD_VERSION" ), QStringLiteral( "1.1.0" ) );
-          }
-          mapUrl.setQuery( mapUrlQuery );
-          customHrefString = mapUrl.toString();
-        }
-
-        QDomElement getLayerLegendGraphicORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
-        getLayerLegendGraphicORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
-        getLayerLegendGraphicORElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
-        getLayerLegendGraphicORElem.setAttribute( QStringLiteral( "xlink:href" ), customHrefString );
-        getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicORElem );
-        styleElem.appendChild( getLayerLegendGraphicElem );
+        writeLegendUrl( doc, styleElem, layerInfos.legendUrl, layerInfos.legendUrlFormat, layerInfos.name, styleName, project, request, settings );
 
         layerElem.appendChild( styleElem );
       }
