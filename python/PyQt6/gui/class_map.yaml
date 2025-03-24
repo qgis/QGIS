@@ -5091,12 +5091,13 @@ QgsNewGeoPackageLayerDialog.setOverwriteBehavior: src/gui/qgsnewgeopackagelayerd
 QgsNewGeoPackageLayerDialog: src/gui/qgsnewgeopackagelayerdialog.h#L30
 QgsNewHttpConnection.accept: src/gui/qgsnewhttpconnection.h#L94
 QgsNewHttpConnection.name: src/gui/qgsnewhttpconnection.h#L85
+QgsNewHttpConnection.preferredHttpMethod: src/gui/qgsnewhttpconnection.h#L177
 QgsNewHttpConnection.testConnectButton: src/gui/qgsnewhttpconnection.h#L134
-QgsNewHttpConnection.updateServiceSpecificSettings: src/gui/qgsnewhttpconnection.h#L194
+QgsNewHttpConnection.updateServiceSpecificSettings: src/gui/qgsnewhttpconnection.h#L201
 QgsNewHttpConnection.url: src/gui/qgsnewhttpconnection.h#L90
 QgsNewHttpConnection.validate: src/gui/qgsnewhttpconnection.h#L129
-QgsNewHttpConnection.wfsSettingsKey: src/gui/qgsnewhttpconnection.h#L182
-QgsNewHttpConnection.wmsSettingsKey: src/gui/qgsnewhttpconnection.h#L188
+QgsNewHttpConnection.wfsSettingsKey: src/gui/qgsnewhttpconnection.h#L189
+QgsNewHttpConnection.wmsSettingsKey: src/gui/qgsnewhttpconnection.h#L195
 QgsNewHttpConnection: src/gui/qgsnewhttpconnection.h#L35
 QgsNewMemoryLayerDialog.accept: src/gui/qgsnewmemorylayerdialog.h#L75
 QgsNewMemoryLayerDialog.crs: src/gui/qgsnewmemorylayerdialog.h#L64
