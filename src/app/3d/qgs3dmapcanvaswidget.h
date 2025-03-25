@@ -17,6 +17,7 @@
 #define QGS3DMAPCANVASWIDGET_H
 
 #include "qgis_app.h"
+#include "qgscamerapose.h"
 #include "qobjectuniqueptr.h"
 #include "qgsrectangle.h"
 
@@ -94,7 +95,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
-    void setViewOnClippingPlanesChanged( const QgsVector3D &startPoint, const QgsVector3D &endPoint, double width );
+    void enableClippingPlanes( const QList<QVector4D> &clippingPlanes, const QgsCameraPose &cameraPose );
 
   private slots:
     void resetView();
@@ -173,6 +174,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionEffects = nullptr;
     QAction *mActionSetSceneExtent = nullptr;
     QAction *mActionSetClippingPlanes = nullptr;
+    QAction *mActionDisableClippingPlanes = nullptr;
     QAction *mActionToggleEditing = nullptr;
     QAction *mActionUndo = nullptr;
     QAction *mActionRedo = nullptr;

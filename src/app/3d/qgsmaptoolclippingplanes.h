@@ -28,7 +28,7 @@ class QgsMapCanvas;
 
 /**
  * \ingroup app
- * \brief A map tool that stores clipping planes from lines drawn onto map canvas.
+ * \brief A map tool that defines clipping planes from rectangle drawn onto map canvas.
  */
 class QgsMapToolClippingPlanes : public QgsMapTool
 {

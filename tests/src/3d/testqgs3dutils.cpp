@@ -587,7 +587,7 @@ void TestQgs3DUtils::testLineSegmentToCameraPose()
   QCOMPARE( camPose.headingAngle(), 45 );
   QGSCOMPARENEAR( camPose.distanceFromCenterPoint(), 46, 0.2 );
 
-  // test 1: the distance between start point and end point is smaller than elevation range
+  // test 2: the distance between start point and end point is smaller than elevation range
   elevationRange = QgsDoubleRange( 0, 100 );
   camPose = Qgs3DUtils::lineSegmentToCameraPose( startPoint, endPoint, elevationRange, fieldOfView, origin );
   QCOMPARE( camPose.centerPoint(), QgsVector3D( 51, 51, 50 ) );

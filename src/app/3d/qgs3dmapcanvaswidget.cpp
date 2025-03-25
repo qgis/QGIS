@@ -262,7 +262,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mActionSetClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCut.svg" ) ), tr( "Cross Section Tool" ), this, &Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas );
   mActionSetClippingPlanes->setCheckable( true );
-  mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCutDisabled.svg" ) ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableClippingPlanes );
+  mActionDisableClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCutDisabled.svg" ) ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableClippingPlanes );
+  mActionDisableClippingPlanes->setDisabled( true );
 
   // Effects Menu
   mEffectsMenu = new QMenu( this );
@@ -1188,35 +1189,16 @@ void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
   mMessageBar->pushInfo( QString(), tr( "Select a rectangle using 3 points on the main 2D map view to define the cross-section of this 3D scene" ) );
 }
 
-void Qgs3DMapCanvasWidget::setViewOnClippingPlanesChanged( const QgsVector3D &startPoint, const QgsVector3D &endPoint, const double width )
+void Qgs3DMapCanvasWidget::enableClippingPlanes( const QList<QVector4D> &clippingPlanes, const QgsCameraPose &cameraPose )
 {
   this->activateWindow();
   this->raise();
   mMessageBar->clearWidgets();
 
-  const QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes(
-    startPoint,
-    endPoint,
-    width,
-    mCanvas->mapSettings()->origin()
-  );
   mCanvas->scene()->enableClipping( clippingPlanes );
+  mCanvas->scene()->cameraController()->setCameraPose( cameraPose );
 
-  // calculate the middle of the front side defined by clipping planes
-  QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
-  linePerpVec = -linePerpVec.normalized().perpVector();
-  const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
-  const QgsVector3D frontStartPoint( startPoint + linePerpVec3D * width );
-  const QgsVector3D frontEndPoint( endPoint + linePerpVec3D * width );
-
-  mCanvas->scene()->cameraController()->setCameraPose( Qgs3DUtils::lineSegmentToCameraPose(
-    frontStartPoint,
-    frontEndPoint,
-    mCanvas->scene()->elevationRange( true ),
-    mCanvas->scene()->cameraController()->camera()->fieldOfView(),
-    mCanvas->mapSettings()->origin()
-  ) );
-
+  mActionDisableClippingPlanes->setDisabled( false );
   if ( mMapToolPrevious )
     mMainCanvas->setMapTool( mMapToolPrevious );
   else
@@ -1227,6 +1209,7 @@ void Qgs3DMapCanvasWidget::disableClippingPlanes() const
 {
   mCanvas->scene()->disableClipping();
   mMapToolClippingPlanes->clearHighLightedArea();
+  mActionDisableClippingPlanes->setDisabled( true );
 }
 
 ClassValidator::ClassValidator( QWidget *parent )

@@ -383,8 +383,8 @@ class _3D_EXPORT Qgs3DUtils
     static QList<QVector4D> lineSegmentToClippingPlanes( const QgsVector3D &startPoint, const QgsVector3D &endPoint, double distance, const QgsVector3D &origin );
 
     /**
-     * Returns camera pose of camera, which is looking at mid-point between \a startPoint and \a endPoint. The camera
-     * is tilted to look from profile and the heading angle is calculated to look from the right side of the line.
+     * Returns the camera pose for a camera looking at mid-point between \a startPoint and \a endPoint.
+     * The camera is angled to provide a profile view and the heading angle is calculated to look from the right side of the line.
      * The middle of \a elevationRange sets the z attribute of mid-point.
      * \since QGIS 3.44
      */
