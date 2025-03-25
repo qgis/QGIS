@@ -614,7 +614,7 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
   connect( pcLayer->undoStack(), &QUndoStack::canRedoChanged, mActionRedo, &QAction::setEnabled );
   mPointCloudEditingToolbar->setEnabled( pcLayer->isEditable() );
   mEditingToolsAction->setEnabled( pcLayer->isEditable() );
-  // Re-parse the class values when the renderer changes - renderer3DChanged() is not fired when only the renderer symbol is changed
+  // Reparse the class values when the renderer changes - renderer3DChanged() is not fired when only the renderer symbol is changed
   connect( pcLayer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged );
 }
 
@@ -1048,7 +1048,7 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     if ( layer )
     {
       QgsAbstract3DRenderer *r = layer->renderer3D();
-      // if there's a clsasification renderer, let's use the classes' labels
+      // if there's a classification renderer, let's use the classes labels
       if ( QgsPointCloudLayer3DRenderer *cr = dynamic_cast<QgsPointCloudLayer3DRenderer *>( r ) )
       {
         const QgsPointCloud3DSymbol *s = cr->symbol();
@@ -1087,13 +1087,21 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     mCboChangeAttributeValue->setCompleter( nullptr );
 
     // Try to reselect last selected value
-    for ( int i = 0; i < mCboChangeAttributeValue->count(); ++i )
+    if ( classes.contains( oldValue ) )
     {
-      if ( mCboChangeAttributeValue->itemText( i ).startsWith( QStringLiteral( "%1 " ).arg( oldValue ) ) )
+      for ( int i = 0; i < mCboChangeAttributeValue->count(); ++i )
       {
-        mCboChangeAttributeValue->setCurrentIndex( i );
-        break;
+        if ( mCboChangeAttributeValue->itemText( i ).startsWith( QStringLiteral( "%1 " ).arg( oldValue ) ) )
+        {
+          mCboChangeAttributeValue->setCurrentIndex( i );
+          break;
+        }
       }
+    }
+    else
+    {
+      whileBlocking( mCboChangeAttributeValue )->addItem( QStringLiteral( "%1 ()" ).arg( oldValue ), oldValue );
+      mCboChangeAttributeValue->setCurrentIndex( mCboChangeAttributeValue->count() - 1 );
     }
   }
   else if ( attributeName == QLatin1String( "UserData" ) )
