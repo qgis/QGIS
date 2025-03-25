@@ -972,8 +972,9 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         if ( OGR_L_CreateField( mLayer, fld.get(), true ) != OGRERR_NONE )
         {
           QgsDebugError( "error creating field " + attrField.name() );
-          mErrorMessage = QObject::tr( "Creation of field %1 failed (OGR error: %2)" )
+          mErrorMessage = QObject::tr( "Creation of field %1 (%2) failed (OGR error: %3)" )
                           .arg( attrField.name(),
+                                QVariant::typeToName( attrField.type() ),
                                 QString::fromUtf8( CPLGetLastErrorMsg() ) );
           mError = ErrAttributeCreationFailed;
           return;
