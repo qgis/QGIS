@@ -238,13 +238,13 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mView, &QgsModelGraphicsView::algorithmDropped, this, [=]( const QString &algorithmId, const QPointF &pos ) {
     addAlgorithm( algorithmId, pos );
   } );
+  connect( mView, &QgsModelGraphicsView::inputDropped, this, &QgsModelDesignerDialog::addInput );
+
   connect( mAlgorithmsTree, &QgsProcessingToolboxTreeView::doubleClicked, this, [=]( const QModelIndex & ) {
     if ( mAlgorithmsTree->selectedAlgorithm() )
       addAlgorithm( mAlgorithmsTree->selectedAlgorithm()->id(), QPointF() );
     if ( mAlgorithmsTree->selectedParameterType() )
-    {
       addInput( mAlgorithmsTree->selectedParameterType()->id(), QPointF() );
-    }
   } );
 
   // Ctrl+= should also trigger a zoom in action
