@@ -549,9 +549,9 @@ static void setRPCTransformerOptions( GDALDatasetH hSrcDS, char  ***opts )
 {
   if ( GDALGetMetadata( hSrcDS, "RPC" ) )
   {
-    // Some RPC may contain a HEIGHT_AVERAGE entry, that must be used as the
+    // Some RPC may contain a HEIGHT_DEFAULT entry, that must be used as the
     // best default for RPC_HEIGHT. See https://github.com/OSGeo/gdal/pull/11989
-    const char *heightStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_AVERAGE", "RPC" );
+    const char *heightStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_DEFAULT", "RPC" );
     if ( !heightStr )
     {
       // Otherwise well-behaved RPC should have height offset which is also

@@ -218,7 +218,7 @@ class CORE_EXPORT QgsGdalUtils
 
     /**
      * This is a copy of GDALAutoCreateWarpedVRT optimized for imagery using RPC georeferencing
-     * that also sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_AVERAGE (and fallbacks to HEIGHT_OFF).
+     * that also sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_DEFAULT (and fallbacks to HEIGHT_OFF).
      * By default GDAL would assume that the imagery has zero elevation - if that is not the case,
      * the image would not be shown in the correct location.
      *
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsGdalUtils
 
     /**
      * This is a wrapper around GDALCreateGenImgProjTransformer2() that takes into account RPC
-     * georeferencing. It sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_AVERAGE (and fallbacks to HEIGHT_OFF).
+     * georeferencing. It sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_DEFAULT (and fallbacks to HEIGHT_OFF).
      * By default GDAL would assume that the imagery has zero elevation - if that is not the case,
      * the image would not be shown in the correct location.
      *

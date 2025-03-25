@@ -1799,7 +1799,9 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     // continue;
     //
     OGRFieldDefnH fldDef = featureDefinition.GetFieldDefn( ogrAttributeId );
-    OGRFieldType type = OGR_Fld_GetType( fldDef );
+    const QString ogrFieldName = textEncoding()->toUnicode( OGR_Fld_GetNameRef( fldDef ) );
+    const OGRFieldType type = OGR_Fld_GetType( fldDef );
+    const OGRFieldSubType subType = OGR_Fld_GetSubType( fldDef );
 
     QVariant attrVal = attributes.at( qgisAttributeId );
     const QMetaType::Type qType = static_cast<QMetaType::Type>( attrVal.userType() );
@@ -1829,13 +1831,11 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     {
       bool errorEmitted = false;
       bool ok = false;
-      // Get an updated copy
-      const QgsFields fieldsCopy { f.fields() };
       switch ( type )
       {
         case OFTInteger:
         {
-          if ( OGR_Fld_GetSubType( fldDef ) == OFSTBoolean && qType == QMetaType::Type::QString )
+          if ( subType == OFSTBoolean && qType == QMetaType::Type::QString )
           {
             // compatibility with use case of https://github.com/qgis/QGIS/issues/55517
             const QString strVal = attrVal.toString();
@@ -1843,7 +1843,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
             if ( !ok )
             {
               pushError( tr( "wrong value for attribute %1 of feature %2: %3" )
-                         .arg( fieldsCopy.at( qgisAttributeId ).name() )
+                         .arg( ogrFieldName )
                          .arg( f.id() )
                          .arg( strVal ) );
               errorEmitted = true;
@@ -1922,7 +1922,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
           ok = true;
           QString stringValue;
 
-          if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
+          if ( subType == OFSTJSON )
           {
             stringValue = QString::fromStdString( QgsJsonUtils::jsonFromVariant( attrVal ).dump() );
           }
@@ -2060,10 +2060,14 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
       {
         if ( !errorEmitted )
         {
+          QMetaType::Type ogrVariantType = QMetaType::Type::UnknownType;
+          QMetaType::Type ogrVariantSubType = QMetaType::Type::UnknownType;
+          QgsOgrUtils::ogrFieldTypeToQVariantType( type, subType, ogrVariantType, ogrVariantSubType );
+
           pushError( tr( "wrong data type for attribute %1 of feature %2: Got %3, expected %4" )
-                     .arg( fieldsCopy.at( qgisAttributeId ).name() )
+                     .arg( ogrFieldName )
                      .arg( f.id() )
-                     .arg( attrVal.typeName(), QVariant::typeToName( fieldsCopy.at( qgisAttributeId ).type() ) ) );
+                     .arg( attrVal.typeName(), QVariant::typeToName( ogrVariantType ) ) );
         }
         returnValue = false;
       }

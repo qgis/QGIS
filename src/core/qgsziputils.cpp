@@ -87,6 +87,15 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
           const QString fileName( stat.name );
           const QFileInfo newFile( QDir( dir ), fileName );
 
+          if ( !QString( QDir::cleanPath( newFile.absolutePath() ) + QStringLiteral( "/" ) ).startsWith( QDir( dir ).absolutePath() + QStringLiteral( "/" ) ) )
+          {
+            QgsMessageLog::logMessage( QObject::tr( "Skipped file %1 outside of the directory %2" ).arg(
+                                         newFile.absoluteFilePath(),
+                                         QDir( dir ).absolutePath()
+                                       ) );
+            continue;
+          }
+
           // Create path for a new file if it does not exist.
           if ( !newFile.absoluteDir().exists() )
           {

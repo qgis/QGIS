@@ -59,16 +59,19 @@ void QgsServerMetadataUrlProperties::readXml( const QDomNode &layer_node )
 
 void QgsServerMetadataUrlProperties::writeXml( QDomNode &layer_node, QDomDocument &document ) const
 {
-  QDomElement urls = document.createElement( QStringLiteral( "metadataUrls" ) );
-  for ( const QgsMapLayerServerProperties::MetadataUrl &url : mMetadataUrls )
+  if ( !mMetadataUrls.empty() )
   {
-    QDomElement urlElement = document.createElement( QStringLiteral( "metadataUrl" ) );
-    urlElement.setAttribute( QStringLiteral( "type" ), url.type );
-    urlElement.setAttribute( QStringLiteral( "format" ), url.format );
-    urlElement.appendChild( document.createTextNode( url.url ) );
-    urls.appendChild( urlElement );
+    QDomElement urls = document.createElement( QStringLiteral( "metadataUrls" ) );
+    for ( const QgsMapLayerServerProperties::MetadataUrl &url : mMetadataUrls )
+    {
+      QDomElement urlElement = document.createElement( QStringLiteral( "metadataUrl" ) );
+      urlElement.setAttribute( QStringLiteral( "type" ), url.type );
+      urlElement.setAttribute( QStringLiteral( "format" ), url.format );
+      urlElement.appendChild( document.createTextNode( url.url ) );
+      urls.appendChild( urlElement );
+    }
+    layer_node.appendChild( urls );
   }
-  layer_node.appendChild( urls );
 }
 
 // QgsServerWmsDimensionProperties
@@ -286,7 +289,9 @@ void QgsMapLayerServerProperties::readXml( const QDomNode &layerNode ) // cppche
     QStringList kwdList;
     for ( QDomNode n = keywordListElem.firstChild(); !n.isNull(); n = n.nextSibling() )
     {
-      kwdList << n.toElement().text();
+      const QString keyword = n.toElement().text();
+      if ( !keyword.isEmpty() )
+        kwdList << keyword;
     }
     mKeywordList = kwdList.join( QLatin1String( ", " ) );
   }
@@ -355,7 +360,7 @@ void QgsMapLayerServerProperties::writeXml( QDomNode &layerNode, QDomDocument &d
   }
 
   // layer keyword list
-  const QStringList keywordStringList = mKeywordList.split( ',' );
+  const QStringList keywordStringList = mKeywordList.split( ',', Qt::SkipEmptyParts );
   if ( !keywordStringList.isEmpty() )
   {
     QDomElement layerKeywordList = document.createElement( QStringLiteral( "keywordList" ) );

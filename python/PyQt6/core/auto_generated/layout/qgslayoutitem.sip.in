@@ -268,6 +268,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoElevationProfileMaximumDistance,
       UndoElevationProfileMinimumElevation,
       UndoElevationProfileMaximumElevation,
+      UndoElevationProfileSubsectionLines,
 
       UndoCustomCommand,
     };
@@ -1371,9 +1372,6 @@ Applies any present data defined size overrides to the specified layout ``size``
 };
 
 QFlags<QgsLayoutItem::Flag> operator|(QgsLayoutItem::Flag f1, QFlags<QgsLayoutItem::Flag> f2);
-
-
-
 
 
 /************************************************************************
