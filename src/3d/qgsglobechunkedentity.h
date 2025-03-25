@@ -45,7 +45,6 @@ class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
   public:
     QgsGlobeEntity( Qgs3DMapSettings *mapSettings, float maximumScreenSpaceError );
     ~QgsGlobeEntity();
-
 };
 
 
