@@ -2610,11 +2610,11 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
 
   std::unique_ptr< QgsMarkerSymbol > marker;
 
-  QgsSymbolLayer *l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
+  std::unique_ptr< QgsSymbolLayer > l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
   if ( l )
   {
     QgsSymbolLayerList layers;
-    layers.append( l );
+    layers.append( l.release() );
     marker.reset( new QgsMarkerSymbol( layers ) );
   }
 

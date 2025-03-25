@@ -254,7 +254,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   }
 
   elem = element.firstChildElement( QStringLiteral( "colorramp" ) );
-  mDefaultColorRamp.reset( !elem.isNull() ? QgsSymbolLayerUtils::loadColorRamp( elem ) : nullptr );
+  mDefaultColorRamp = !elem.isNull() ? QgsSymbolLayerUtils::loadColorRamp( elem ) : nullptr;
 
   elem = element.firstChildElement( QStringLiteral( "text-style" ) );
   if ( !elem.isNull() )

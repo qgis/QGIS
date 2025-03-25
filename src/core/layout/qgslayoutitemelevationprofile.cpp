@@ -913,9 +913,10 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
   const QDomElement symbolsElement = subsectionsElement.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolsElement.isNull() )
   {
-    if ( QgsLineSymbol *subSectionsSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol >( symbolsElement, context ) )
+    std::unique_ptr< QgsLineSymbol > subSectionsSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol >( symbolsElement, context );
+    if ( subSectionsSymbol )
     {
-      setSubsectionsSymbol( subSectionsSymbol );
+      setSubsectionsSymbol( subSectionsSymbol.release() );
     }
   }
 
