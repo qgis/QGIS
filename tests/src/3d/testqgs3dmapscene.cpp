@@ -17,14 +17,20 @@
 
 #include "qgs3d.h"
 #include "qgs3dmapscene.h"
+
+#include <memory>
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsoffscreen3dengine.h"
+#include "qgspointcloud3dsymbol.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsvectorlayer.h"
 
 
+class QgsSingleColorPointCloud3DSymbol;
 class TestQgs3DMapScene : public QgsTest
 {
     Q_OBJECT
@@ -38,10 +44,12 @@ class TestQgs3DMapScene : public QgsTest
     void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testOriginShift();
+    void testElevationRange();
 
   private:
     std::unique_ptr<QgsProject> mProject;
     QgsVectorLayer *mLayerCountries = nullptr;
+    QgsPointCloudLayer *mPointCloudLayer = nullptr;
 };
 
 // runs before all tests
@@ -51,14 +59,18 @@ void TestQgs3DMapScene::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
 
   mLayerCountries = new QgsVectorLayer( fileName, QStringLiteral( "world" ), QStringLiteral( "ogr" ) );
   QVERIFY( mLayerCountries->isValid() );
+  const QString dataDir( TEST_DATA_DIR );
+  mPointCloudLayer = new QgsPointCloudLayer( dataDir + "/point_clouds/ept/sunshine-coast-laz/ept.json", "test", "ept" );
+  QVERIFY( mPointCloudLayer->isValid() );
 
   mProject->addMapLayer( mLayerCountries );
+  mProject->addMapLayer( mPointCloudLayer );
 
   mProject->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
 }
@@ -131,6 +143,37 @@ void TestQgs3DMapScene::testOriginShift()
   QCOMPARE( scene->cameraController()->camera()->position(), QVector3D( 0, 0, -500 ) );
 
   delete scene;
+}
+
+void TestQgs3DMapScene::testElevationRange()
+{
+  Qgs3DMapSettings map;
+  map.setCrs( mPointCloudLayer->crs() );
+  map.setExtent( mPointCloudLayer->extent() );
+  map.setLayers( QList<QgsMapLayer *>() << mPointCloudLayer );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map.crs(), map.transformContext() );
+  map.setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( map, &engine );
+  engine.setRootEntity( scene );
+
+  QgsSingleColorPointCloud3DSymbol *symbol = new QgsSingleColorPointCloud3DSymbol();
+  symbol->setSingleColor( QColor( 255, 0, 0 ) );
+  symbol->setPointSize( 10 );
+
+  QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
+  renderer->setSymbol( symbol );
+  mPointCloudLayer->setRenderer3D( renderer );
+
+  QgsDoubleRange elevationRange = scene->elevationRange( false );
+  QGSCOMPARENEAR( elevationRange.lower(), 0, 0.1 );
+  QGSCOMPARENEAR( elevationRange.upper(), 80, 0.1 );
+  elevationRange = scene->elevationRange( true );
+  QGSCOMPARENEAR( elevationRange.lower(), 74.3, 0.1 );
+  QGSCOMPARENEAR( elevationRange.upper(), 80, 0.1 );
 }
 
 

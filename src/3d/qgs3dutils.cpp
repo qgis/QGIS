@@ -1124,3 +1124,34 @@ QList<QVector4D> Qgs3DUtils::lineSegmentToClippingPlanes( const QgsVector3D &sta
 
   return clippingPlanes;
 }
+
+QgsCameraPose Qgs3DUtils::lineSegmentToCameraPose( const QgsVector3D &startPoint, const QgsVector3D &endPoint, const QgsDoubleRange &elevationRange, const float fieldOfView, const QgsVector3D &worldOrigin )
+{
+  QgsCameraPose cameraPose;
+  cameraPose.setPitchAngle( 90 );
+
+  // // calculate the middle of the front side defined by clipping planes
+  QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
+  linePerpVec = -linePerpVec.normalized().perpVector();
+  const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
+  QgsVector3D middle( startPoint + ( endPoint - startPoint ) / 2 );
+
+  const double side = std::max( middle.distance( startPoint ), ( elevationRange.upper() - elevationRange.lower() ) / 2 );
+  const double distance = ( side / std::tan( fieldOfView / 2 * M_PI / 180 ) ) * 1.05;
+  cameraPose.setDistanceFromCenterPoint( static_cast<float>( distance ) );
+
+  elevationRange.isInfinite() ? middle.setZ( 0 ) : middle.setZ( elevationRange.lower() + ( elevationRange.upper() - elevationRange.lower() ) / 2 );
+  cameraPose.setCenterPoint( mapToWorldCoordinates( middle, worldOrigin ) );
+
+  const QgsVector3D northDirectionVec( 0, -1, 0 );
+  // calculate the angle between vector pointing to the north and vector pointing from the front side of clipped area
+  float yawAngle = static_cast<float>( acos( QgsVector3D::dotProduct( linePerpVec3D, northDirectionVec ) ) * 180 / M_PI );
+  // check if the angle between the view point is to the left or right of the scene north, apply angle offset if necessary for camera
+  if ( QgsVector3D::crossProduct( linePerpVec3D, northDirectionVec ).z() > 0 )
+  {
+    yawAngle = 360 - yawAngle;
+  }
+  cameraPose.setHeadingAngle( yawAngle );
+
+  return cameraPose;
+}

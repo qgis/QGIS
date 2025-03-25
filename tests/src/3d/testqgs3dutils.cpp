@@ -44,6 +44,18 @@ static bool isPointInFrontOfPlane( const QgsVector3D &point, const QgsVector3D &
   return QgsVector3D::dotProduct( point - planePoint, planeNormal ) > 0;
 }
 
+static bool isPointOutsideClippingPlanes( const QgsVector3D &point, const QVector<QgsVector3D> &planePoints, const QList<QVector4D> &clippingPlanes )
+{
+  for ( int i = 0; i < clippingPlanes.size(); i++ )
+  {
+    if ( !isPointInFrontOfPlane( point, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
+    {
+      return true;
+    };
+  }
+  return false;
+}
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
@@ -68,8 +80,7 @@ class TestQgs3DUtils : public QgsTest
     void testDecomposeTransformMatrix();
     void testScreenPointToMapCoordinates();
     void testLineSegmentToClippingPlanes();
-
-  private:
+    void testLineSegmentToCameraPose();
 };
 
 //runs before all tests
@@ -534,35 +545,15 @@ void TestQgs3DUtils::testLineSegmentToClippingPlanes()
 
   QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point1, point2, 10, QgsVector3D( 0, 0, 0 ) );
   QVERIFY( clippingPlanes.size() == 4 );
-  int nrOutsidePlanes = 0;
-  for ( int i = 0; i < clippingPlanes.size(); i++ )
-  {
-    // verify all normals are pointing inside the rectangle
-    QVERIFY( isPointInFrontOfPlane( testPointInside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) );
-    // verify outside point is outside at least for one plane
-    if ( !isPointInFrontOfPlane( testPointOutside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
-    {
-      nrOutsidePlanes++;
-    };
-  }
-  QVERIFY( nrOutsidePlanes > 0 );
+  QVERIFY( !isPointOutsideClippingPlanes( testPointInside, planePoints, clippingPlanes ) );
+  QVERIFY( isPointOutsideClippingPlanes( testPointOutside, planePoints, clippingPlanes ) );
 
   //verify that it works in reverse order too
   clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point2, point1, 10, QgsVector3D( 0, 0, 0 ) );
   QVERIFY( clippingPlanes.size() == 4 );
   planePoints = { point2, QgsVector3D( 27, 13, 0 ), point1, QgsVector3D( 13, 27, 0 ) };
-  nrOutsidePlanes = 0;
-  for ( int i = 0; i < clippingPlanes.size(); i++ )
-  {
-    // verify all normals are pointing inside the rectangle
-    QVERIFY( isPointInFrontOfPlane( testPointInside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) );
-    // verify outside point is outside at least for one plane
-    if ( !isPointInFrontOfPlane( testPointOutside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
-    {
-      nrOutsidePlanes++;
-    };
-  }
-  QVERIFY( nrOutsidePlanes > 0 );
+  QVERIFY( !isPointOutsideClippingPlanes( testPointInside, planePoints, clippingPlanes ) );
+  QVERIFY( isPointOutsideClippingPlanes( testPointOutside, planePoints, clippingPlanes ) );
 
   // verify that it works for perpendicular line too
   const QgsVector3D point3( 50, 20, 0 );
@@ -570,36 +561,41 @@ void TestQgs3DUtils::testLineSegmentToClippingPlanes()
   clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point3, point4, 10, QgsVector3D( 0, 0, 0 ) );
   QVERIFY( clippingPlanes.size() == 4 );
   planePoints = { point3, QgsVector3D( 43, 13, 0 ), point4, QgsVector3D( 57, 27, 0 ) };
-  nrOutsidePlanes = 0;
-  for ( int i = 0; i < clippingPlanes.size(); i++ )
-  {
-    // verify all normals are pointing inside the rectangle
-    QVERIFY( isPointInFrontOfPlane( testPointInside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) );
-    // verify outside point is outside at least for one plane
-    if ( !isPointInFrontOfPlane( testPointOutside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
-    {
-      nrOutsidePlanes++;
-    };
-  }
-  QVERIFY( nrOutsidePlanes > 0 );
+  QVERIFY( !isPointOutsideClippingPlanes( testPointInside, planePoints, clippingPlanes ) );
+  QVERIFY( isPointOutsideClippingPlanes( testPointOutside, planePoints, clippingPlanes ) );
 
   // verify that it works for perpendicular line in reverse order too
   clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point4, point3, 10, QgsVector3D( 0, 0, 0 ) );
   QVERIFY( clippingPlanes.size() == 4 );
   planePoints = { point4, QgsVector3D( 57, 27, 0 ), point3, QgsVector3D( 43, 13, 0 ) };
-  nrOutsidePlanes = 0;
-  for ( int i = 0; i < clippingPlanes.size(); i++ )
-  {
-    // verify all normals are pointing inside the rectangle
-    QVERIFY( isPointInFrontOfPlane( testPointInside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) );
-    // verify outside point is outside at least for one plane
-    if ( !isPointInFrontOfPlane( testPointOutside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
-    {
-      nrOutsidePlanes++;
-    };
-  }
-  QVERIFY( nrOutsidePlanes > 0 );
+  QVERIFY( !isPointOutsideClippingPlanes( testPointInside, planePoints, clippingPlanes ) );
+  QVERIFY( isPointOutsideClippingPlanes( testPointOutside, planePoints, clippingPlanes ) );
 }
+
+void TestQgs3DUtils::testLineSegmentToCameraPose()
+{
+  const QgsVector3D origin( 0, 0, 0 );
+  const QgsVector3D startPoint( 20, 20, 0 );
+  const QgsVector3D endPoint( 82, 82, 0 );
+  QgsDoubleRange elevationRange( 0, 20 );
+  constexpr float fieldOfView = 90;
+
+  // test 1: the distance between start point and end point is longer than elevation range
+  QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose( startPoint, endPoint, elevationRange, fieldOfView, origin );
+  QCOMPARE( camPose.centerPoint(), QgsVector3D( 51, 51, 10 ) );
+  QCOMPARE( camPose.pitchAngle(), 90 );
+  QCOMPARE( camPose.headingAngle(), 45 );
+  QGSCOMPARENEAR( camPose.distanceFromCenterPoint(), 46, 0.2 );
+
+  // test 1: the distance between start point and end point is smaller than elevation range
+  elevationRange = QgsDoubleRange( 0, 100 );
+  camPose = Qgs3DUtils::lineSegmentToCameraPose( startPoint, endPoint, elevationRange, fieldOfView, origin );
+  QCOMPARE( camPose.centerPoint(), QgsVector3D( 51, 51, 50 ) );
+  QCOMPARE( camPose.pitchAngle(), 90 );
+  QCOMPARE( camPose.headingAngle(), 45 );
+  QGSCOMPARENEAR( camPose.distanceFromCenterPoint(), 52.5, 0.2 );
+}
+
 
 QGSTEST_MAIN( TestQgs3DUtils )
 #include "testqgs3dutils.moc"

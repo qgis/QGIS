@@ -94,6 +94,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
+    void setViewOnClippingPlanesChanged( const QgsVector3D &startPoint, const QgsVector3D &endPoint, double width );
 
   private slots:
     void resetView();
@@ -117,7 +118,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setSceneExtentOn2DCanvas();
     void setSceneExtent( const QgsRectangle &extent );
     void setClippingPlanesOn2DCanvas();
-    void setViewOnClippingPlanesChanged( const QList<QVector4D> &planes );
     void disableClippingPlanes() const;
 
     void onMainCanvasLayersChanged();
