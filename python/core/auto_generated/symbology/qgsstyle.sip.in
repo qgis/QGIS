@@ -634,7 +634,7 @@ Adds the symbol to the database with tags.
 :return: returns the success state of the save operation
 %End
 
-    bool saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favorite, const QStringList &tags );
+    bool saveColorRamp( const QString &name, const QgsColorRamp *ramp, bool favorite, const QStringList &tags );
 %Docstring
 Adds the colorramp to the database.
 

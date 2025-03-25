@@ -694,7 +694,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param tags is a list of tags that are associated with the color ramp as a QStringList.
      *  \returns returns the success state of the save operation
      */
-    bool saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favorite, const QStringList &tags );
+    bool saveColorRamp( const QString &name, const QgsColorRamp *ramp, bool favorite, const QStringList &tags );
 
     //! Removes color ramp from style (and delete it)
     bool removeColorRamp( const QString &name );

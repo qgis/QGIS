@@ -431,9 +431,20 @@ between symbols.
 Creates a symbol layer list from a DOM ``element``.
 %End
 
-    static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element ) /Factory/;
-    static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element ) /Factory/;
-    static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element ) /Factory/;
+    static std::unique_ptr< QgsSymbolLayer > createFillLayerFromSld( QDomElement &element );
+%Docstring
+Creates a new fill layer from a SLD DOM ``element``.
+%End
+
+    static std::unique_ptr< QgsSymbolLayer > createLineLayerFromSld( QDomElement &element );
+%Docstring
+Creates a new line layer from a SLD DOM ``element``.
+%End
+
+    static std::unique_ptr< QgsSymbolLayer > createMarkerLayerFromSld( QDomElement &element );
+%Docstring
+Creates a new marker layer from a SLD DOM ``element``.
+%End
 
     static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QList<QgsSymbolLayer *> &layerList );
 %Docstring
@@ -608,7 +619,7 @@ if the data was successfully converted to a symbol.
 .. seealso:: :py:func:`symbolToMimeData`
 %End
 
-    static QgsColorRamp *loadColorRamp( QDomElement &element ) /Factory/;
+    static std::unique_ptr< QgsColorRamp > loadColorRamp( QDomElement &element );
 %Docstring
 Creates a color ramp from the settings encoded in an XML element
 
@@ -619,7 +630,7 @@ Creates a color ramp from the settings encoded in an XML element
 .. seealso:: :py:func:`saveColorRamp`
 %End
 
-    static QDomElement saveColorRamp( const QString &name, QgsColorRamp *ramp, QDomDocument &doc );
+    static QDomElement saveColorRamp( const QString &name, const QgsColorRamp *ramp, QDomDocument &doc );
 %Docstring
 Encodes a color ramp's settings to an XML element
 
@@ -640,7 +651,7 @@ You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 .. seealso:: :py:func:`loadColorRamp`
 %End
 
-    static QgsColorRamp *loadColorRamp( const QVariant &value ) /Factory/;
+    static std::unique_ptr< QgsColorRamp > loadColorRamp( const QVariant &value );
 %Docstring
 Load a color ramp from a QVariantMap, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
@@ -891,7 +902,7 @@ Any duplicate points at the start ``line`` which match the end point from ``targ
 .. versionadded:: 3.16
 %End
 
-    static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) /Factory/;
+    static std::unique_ptr< QgsExpression > fieldOrExpressionToExpression( const QString &fieldOrExpression );
 %Docstring
 Returns a new valid expression instance for given field or expression string.
 If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
