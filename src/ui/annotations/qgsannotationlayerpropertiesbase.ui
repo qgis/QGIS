@@ -574,6 +574,7 @@
   <tabstop>scrollArea_19</tabstop>
   <tabstop>mScaleVisibilityGroupBox</tabstop>
   <tabstop>mScaleRangeWidget</tabstop>
+  <tabstop>mLayerComboBox</tabstop>
   <tabstop>mOpacityWidget</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
   <tabstop>mEffectWidget</tabstop>
