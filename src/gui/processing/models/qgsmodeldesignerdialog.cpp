@@ -115,10 +115,10 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mAlgorithmsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
   mVariablesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
 
-  mAlgorithmsTree->header()->setVisible( false );
-  mAlgorithmSearchEdit->setShowSearchIcon( true );
-  mAlgorithmSearchEdit->setPlaceholderText( tr( "Search…" ) );
-  connect( mAlgorithmSearchEdit, &QgsFilterLineEdit::textChanged, mAlgorithmsTree, &QgsProcessingToolboxTreeView::setFilterString );
+  mToolboxTree->header()->setVisible( false );
+  mToolboxSearchEdit->setShowSearchIcon( true );
+  mToolboxSearchEdit->setPlaceholderText( tr( "Search…" ) );
+  connect( mToolboxSearchEdit, &QgsFilterLineEdit::textChanged, mToolboxTree, &QgsProcessingToolboxTreeView::setFilterString );
 
   mNameEdit->setPlaceholderText( tr( "Enter model name here" ) );
   mGroupEdit->setPlaceholderText( tr( "Enter group name here" ) );
@@ -224,27 +224,27 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mMenuEdit->insertSeparator( mActionDeleteComponents );
 
   mAlgorithmsModel = new QgsModelerToolboxModel( this );
-  mAlgorithmsTree->setToolboxProxyModel( mAlgorithmsModel );
+  mToolboxTree->setToolboxProxyModel( mAlgorithmsModel );
 
   QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::Filter::Modeler;
   if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_ALGORITHMS_KNOWN_ISSUES" ), false ).toBool() )
   {
     filters |= QgsProcessingToolboxProxyModel::Filter::ShowKnownIssues;
   }
-  mAlgorithmsTree->setFilters( filters );
-  mAlgorithmsTree->setDragDropMode( QTreeWidget::DragOnly );
-  mAlgorithmsTree->setDropIndicatorShown( true );
+  mToolboxTree->setFilters( filters );
+  mToolboxTree->setDragDropMode( QTreeWidget::DragOnly );
+  mToolboxTree->setDropIndicatorShown( true );
 
   connect( mView, &QgsModelGraphicsView::algorithmDropped, this, [=]( const QString &algorithmId, const QPointF &pos ) {
     addAlgorithm( algorithmId, pos );
   } );
   connect( mView, &QgsModelGraphicsView::inputDropped, this, &QgsModelDesignerDialog::addInput );
 
-  connect( mAlgorithmsTree, &QgsProcessingToolboxTreeView::doubleClicked, this, [=]( const QModelIndex & ) {
-    if ( mAlgorithmsTree->selectedAlgorithm() )
-      addAlgorithm( mAlgorithmsTree->selectedAlgorithm()->id(), QPointF() );
-    if ( mAlgorithmsTree->selectedParameterType() )
-      addInput( mAlgorithmsTree->selectedParameterType()->id(), QPointF() );
+  connect( mToolboxTree, &QgsProcessingToolboxTreeView::doubleClicked, this, [=]( const QModelIndex & ) {
+    if ( mToolboxTree->selectedAlgorithm() )
+      addAlgorithm( mToolboxTree->selectedAlgorithm()->id(), QPointF() );
+    if ( mToolboxTree->selectedParameterType() )
+      addInput( mToolboxTree->selectedParameterType()->id(), QPointF() );
   } );
 
   // Ctrl+= should also trigger a zoom in action
