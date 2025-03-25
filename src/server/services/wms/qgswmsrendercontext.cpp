@@ -386,12 +386,13 @@ void QgsWmsRenderContext::initLayerGroupsRecursive( const QgsLayerTreeGroup *gro
   {
     if ( child->nodeType() == QgsLayerTreeNode::NodeGroup )
     {
-      QString name = child->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
+      auto group = static_cast<const QgsLayerTreeGroup *>( child );
+      QString name = group ? group->serverProperties()->shortName() : QString();
 
       if ( name.isEmpty() )
         name = child->name();
 
-      initLayerGroupsRecursive( static_cast<const QgsLayerTreeGroup *>( child ), name );
+      initLayerGroupsRecursive( group, name );
     }
   }
 }
