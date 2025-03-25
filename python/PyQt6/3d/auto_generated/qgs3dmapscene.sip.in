@@ -95,7 +95,7 @@ Returns the scene extent in the map's CRS
 .. versionadded:: 3.20
 %End
 
-    QgsDoubleRange elevationRange() const;
+    QgsDoubleRange elevationRange( bool ignoreTerrain = false ) const;
 %Docstring
 Returns the scene's elevation range
 
@@ -206,6 +206,12 @@ Disables OpenGL clipping.
 .. versionadded:: 3.40
 %End
 
+    QList<QVector4D> clipPlaneEquations() const;
+%Docstring
+Returns list of clipping planes if clipping is enabled, otherwise an empty list.
+
+.. versionadded:: 3.44
+%End
 
   signals:
     void terrainEntityChanged();

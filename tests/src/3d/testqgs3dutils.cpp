@@ -39,6 +39,11 @@ static bool qgsQuaternionNear( const QQuaternion &q1, const QQuaternion &q2, dou
   return qgsDoubleNear( q1.x(), q2.x(), eps ) && qgsDoubleNear( q1.y(), q2.y(), eps ) && qgsDoubleNear( q1.z(), q2.z(), eps ) && qgsDoubleNear( q1.scalar(), q2.scalar(), eps );
 }
 
+static bool isPointInFrontOfPlane( const QgsVector3D &point, const QgsVector3D &planePoint, const QgsVector3D &planeNormal )
+{
+  return QgsVector3D::dotProduct( point - planePoint, planeNormal ) > 0;
+}
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
@@ -62,6 +67,9 @@ class TestQgs3DUtils : public QgsTest
     void testDefinesToShaderCode();
     void testDecomposeTransformMatrix();
     void testScreenPointToMapCoordinates();
+    void testLineSegmentToClippingPlanes();
+
+  private:
 };
 
 //runs before all tests
@@ -516,6 +524,82 @@ void TestQgs3DUtils::testScreenPointToMapCoordinates()
   QGSCOMPARENEAR( mapPoint.z(), -252, 2 );
 }
 
+void TestQgs3DUtils::testLineSegmentToClippingPlanes()
+{
+  const QgsVector3D point1( 20, 20, 0 );
+  const QgsVector3D point2( 50, 50, 0 );
+  const QgsVector3D testPointInside( 35, 35, 0 );
+  const QgsVector3D testPointOutside( 0, 0, 0 );
+  QVector<QgsVector3D> planePoints( { point1, QgsVector3D( 13, 27, 0 ), point2, QgsVector3D( 27, 13, 0 ) } );
+
+  QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point1, point2, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  int nrOutsidePlanes = 0;
+  for ( int i = 0; i < clippingPlanes.size(); i++ )
+  {
+    // verify all normals are pointing inside the rectangle
+    QVERIFY( isPointInFrontOfPlane( testPointInside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) );
+    // verify outside point is outside at least for one plane
+    if ( !isPointInFrontOfPlane( testPointOutside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
+    {
+      nrOutsidePlanes++;
+    };
+  }
+  QVERIFY( nrOutsidePlanes > 0 );
+
+  //verify that it works in reverse order too
+  clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point2, point1, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  planePoints = { point2, QgsVector3D( 27, 13, 0 ), point1, QgsVector3D( 13, 27, 0 ) };
+  nrOutsidePlanes = 0;
+  for ( int i = 0; i < clippingPlanes.size(); i++ )
+  {
+    // verify all normals are pointing inside the rectangle
+    QVERIFY( isPointInFrontOfPlane( testPointInside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) );
+    // verify outside point is outside at least for one plane
+    if ( !isPointInFrontOfPlane( testPointOutside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
+    {
+      nrOutsidePlanes++;
+    };
+  }
+  QVERIFY( nrOutsidePlanes > 0 );
+
+  // verify that it works for perpendicular line too
+  const QgsVector3D point3( 50, 20, 0 );
+  const QgsVector3D point4( 20, 50, 0 );
+  clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point3, point4, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  planePoints = { point3, QgsVector3D( 43, 13, 0 ), point4, QgsVector3D( 57, 27, 0 ) };
+  nrOutsidePlanes = 0;
+  for ( int i = 0; i < clippingPlanes.size(); i++ )
+  {
+    // verify all normals are pointing inside the rectangle
+    QVERIFY( isPointInFrontOfPlane( testPointInside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) );
+    // verify outside point is outside at least for one plane
+    if ( !isPointInFrontOfPlane( testPointOutside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
+    {
+      nrOutsidePlanes++;
+    };
+  }
+  QVERIFY( nrOutsidePlanes > 0 );
+
+  // verify that it works for perpendicular line in reverse order too
+  clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point4, point3, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  planePoints = { point4, QgsVector3D( 57, 27, 0 ), point3, QgsVector3D( 43, 13, 0 ) };
+  nrOutsidePlanes = 0;
+  for ( int i = 0; i < clippingPlanes.size(); i++ )
+  {
+    // verify all normals are pointing inside the rectangle
+    QVERIFY( isPointInFrontOfPlane( testPointInside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) );
+    // verify outside point is outside at least for one plane
+    if ( !isPointInFrontOfPlane( testPointOutside, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
+    {
+      nrOutsidePlanes++;
+    };
+  }
+  QVERIFY( nrOutsidePlanes > 0 );
+}
 
 QGSTEST_MAIN( TestQgs3DUtils )
 #include "testqgs3dutils.moc"

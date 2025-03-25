@@ -300,6 +300,7 @@
         <file>themes/default/mActionEditCut.svg</file>
         <file>themes/default/mActionEditPaste.svg</file>
         <file>themes/default/mActionEditTable.svg</file>
+        <file>themes/default/mActionEditCutDisabled.svg</file>
         <file>themes/default/mActionExpandNewTree.svg</file>
         <file>themes/default/mActionExpandTree.svg</file>
         <file>themes/default/mActionFileExit.svg</file>
