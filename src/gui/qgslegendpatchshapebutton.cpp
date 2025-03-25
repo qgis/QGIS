@@ -65,15 +65,15 @@ void QgsLegendPatchShapeButton::setSymbolType( Qgis::SymbolType type )
     switch ( type )
     {
       case Qgis::SymbolType::Marker:
-        mPreviewSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ).release() );
+        mPreviewSymbol = QgsMarkerSymbol::createSimple( QVariantMap() );
         break;
 
       case Qgis::SymbolType::Line:
-        mPreviewSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ).release() );
+        mPreviewSymbol = QgsLineSymbol::createSimple( QVariantMap() );
         break;
 
       case Qgis::SymbolType::Fill:
-        mPreviewSymbol.reset( QgsFillSymbol::createSimple( QVariantMap() ).release() );
+        mPreviewSymbol = QgsFillSymbol::createSimple( QVariantMap() );
         break;
 
       case Qgis::SymbolType::Hybrid:

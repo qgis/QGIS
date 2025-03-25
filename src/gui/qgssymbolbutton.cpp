@@ -43,7 +43,7 @@ QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mDialogTitle( dialogTitle.isEmpty() ? tr( "Symbol Settings" ) : dialogTitle )
 {
-  mSymbol.reset( QgsFillSymbol::createSimple( QVariantMap() ).release() );
+  mSymbol = QgsFillSymbol::createSimple( QVariantMap() );
 
   setAcceptDrops( true );
   connect( this, &QAbstractButton::clicked, this, &QgsSymbolButton::showSettingsDialog );
@@ -110,15 +110,15 @@ void QgsSymbolButton::setSymbolType( Qgis::SymbolType type )
     switch ( type )
     {
       case Qgis::SymbolType::Marker:
-        mSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ).release() );
+        mSymbol = QgsMarkerSymbol::createSimple( QVariantMap() );
         break;
 
       case Qgis::SymbolType::Line:
-        mSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ).release() );
+        mSymbol = QgsLineSymbol::createSimple( QVariantMap() );
         break;
 
       case Qgis::SymbolType::Fill:
-        mSymbol.reset( QgsFillSymbol::createSimple( QVariantMap() ).release() );
+        mSymbol = QgsFillSymbol::createSimple( QVariantMap() );
         break;
 
       case Qgis::SymbolType::Hybrid:

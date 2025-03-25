@@ -992,7 +992,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
     {
       if ( geomCollection->addGeometry( outputGeom ? outputGeom->clone() : convertedGeometry->clone() ) )
       {
-        outputGeom.reset( collGeom.release() );
+        outputGeom = std::move( collGeom );
       }
     }
   }
