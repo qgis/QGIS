@@ -636,8 +636,9 @@
   <tabstop>mOffsetFromAnchorUnitWidget</tabstop>
   <tabstop>mOffsetFromAnchorDDBtn</tabstop>
   <tabstop>mAnchorPointComboBox</tabstop>
-  <tabstop>mMarkerSymbolButton</tabstop>
   <tabstop>mAnchorPointDDBtn</tabstop>
+  <tabstop>mMarkerSymbolButton</tabstop>
+  <tabstop>mCalloutBlendComboBox</tabstop>
   <tabstop>mCalloutBlendModeDDBtn</tabstop>
   <tabstop>mDestXDDBtn</tabstop>
   <tabstop>mDestYDDBtn</tabstop>
