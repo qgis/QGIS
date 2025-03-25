@@ -1128,15 +1128,18 @@ QList<QVector4D> Qgs3DUtils::lineSegmentToClippingPlanes( const QgsVector3D &sta
 QgsCameraPose Qgs3DUtils::lineSegmentToCameraPose( const QgsVector3D &startPoint, const QgsVector3D &endPoint, const QgsDoubleRange &elevationRange, const float fieldOfView, const QgsVector3D &worldOrigin )
 {
   QgsCameraPose cameraPose;
-  cameraPose.setPitchAngle( 90 );
+  // we tilt the view slightly to see flat layers if the elevationRange is infinite (scene has flat terrain, vector layers...)
+  elevationRange.isInfinite() ? cameraPose.setPitchAngle( 89 ) : cameraPose.setPitchAngle( 90 );
 
-  // // calculate the middle of the front side defined by clipping planes
+  // calculate the middle of the front side defined by clipping planes
   QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
   linePerpVec = -linePerpVec.normalized().perpVector();
   const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
   QgsVector3D middle( startPoint + ( endPoint - startPoint ) / 2 );
 
-  const double side = std::max( middle.distance( startPoint ), ( elevationRange.upper() - elevationRange.lower() ) / 2 );
+  double elevationRangeHalf;
+  elevationRange.isInfinite() ? elevationRangeHalf = 0 : elevationRangeHalf = ( elevationRange.upper() - elevationRange.lower() ) / 2;
+  const double side = std::max( middle.distance( startPoint ), elevationRangeHalf );
   const double distance = ( side / std::tan( fieldOfView / 2 * M_PI / 180 ) ) * 1.05;
   cameraPose.setDistanceFromCenterPoint( static_cast<float>( distance ) );
 

@@ -23,6 +23,8 @@
 #include "qgspolygon.h"
 #include "qgs3dmapcanvaswidget.h"
 #include "qgs3dmapscene.h"
+#include "qgsmessagebar.h"
+#include "qgisapp.h"
 
 #include <QVector4D>
 
@@ -109,15 +111,47 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
     const QgsPointXY point = toMapCoordinates( e->pos() );
     if ( mRubberBandPoints->numberOfVertices() == 2 )
     {
-      m3DCanvas->setViewOnClippingPlanesChanged(
-        QgsVector3D( mRubberBandPoints->getPoint( 0, 0 )->x(), mRubberBandPoints->getPoint( 0, 0 )->y(), 0 ),
-        QgsVector3D( mRubberBandPoints->getPoint( 0, 1 )->x(), mRubberBandPoints->getPoint( 0, 1 )->y(), 0 ),
-        mRectangleWidth
-      );
-      const QgsSettings settings;
-      QColor highlightColor = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-      highlightColor.setAlphaF( 0.5 );
-      mRubberBandPolygon->setColor( highlightColor );
+      //check if cross-section is in canvas extents
+      const QgsGeometry crossSectionPolygon = mRubberBandPolygon->asGeometry();
+      if ( !crossSectionPolygon.intersects( m3DCanvas->mapCanvas3D()->scene()->sceneExtent() ) )
+      {
+        clear();
+        QgsMessageBar *msgBar = QgisApp::instance()->messageBar();
+        msgBar->pushInfo( QString(), tr( "The cross section is outside of the scene extent, please select a new one!" ) );
+      }
+      else
+      {
+        const QgsVector3D startPoint = QgsVector3D( mRubberBandPoints->getPoint( 0, 0 )->x(), mRubberBandPoints->getPoint( 0, 0 )->y(), 0 );
+        const QgsVector3D endPoint = QgsVector3D( mRubberBandPoints->getPoint( 0, 1 )->x(), mRubberBandPoints->getPoint( 0, 1 )->y(), 0 );
+        const QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes(
+          QgsVector3D( startPoint.x(), startPoint.y(), 0 ),
+          QgsVector3D( endPoint.x(), endPoint.y(), 0 ),
+          mRectangleWidth,
+          m3DCanvas->mapCanvas3D()->mapSettings()->origin()
+        );
+
+        // calculate the middle of the front side defined by clipping planes
+        QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
+        linePerpVec = -linePerpVec.normalized().perpVector();
+        const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
+        const QgsVector3D frontStartPoint( startPoint + linePerpVec3D * mRectangleWidth );
+        const QgsVector3D frontEndPoint( endPoint + linePerpVec3D * mRectangleWidth );
+
+        const QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose(
+          frontStartPoint,
+          frontEndPoint,
+          m3DCanvas->mapCanvas3D()->scene()->elevationRange( true ),
+          m3DCanvas->mapCanvas3D()->scene()->cameraController()->camera()->fieldOfView(),
+          m3DCanvas->mapCanvas3D()->mapSettings()->origin()
+        );
+
+        m3DCanvas->enableClippingPlanes( clippingPlanes, camPose );
+
+        const QgsSettings settings;
+        QColor highlightColor = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+        highlightColor.setAlphaF( 0.5 );
+        mRubberBandPolygon->setColor( highlightColor );
+      }
     }
     else
     {
