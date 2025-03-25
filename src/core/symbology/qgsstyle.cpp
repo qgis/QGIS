@@ -2806,10 +2806,11 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
         std::unique_ptr< QgsSymbol > symbol = QgsSymbolLayerUtils::loadSymbol( e, QgsReadWriteContext() );
         if ( symbol )
         {
-          addSymbol( name, symbol->clone() );
+          QgsSymbol *symbolPtr = symbol.get();
+          addSymbol( name, symbol.release() );
           if ( mCurrentDB )
           {
-            saveSymbol( name, symbol.get(), favorite, tags );
+            saveSymbol( name, symbolPtr, favorite, tags );
           }
         }
       }
@@ -2860,10 +2861,11 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
       std::unique_ptr< QgsColorRamp > ramp = QgsSymbolLayerUtils::loadColorRamp( e );
       if ( ramp )
       {
-        addColorRamp( name, ramp->clone() );
+        QgsColorRamp *rampPtr = ramp.get();
+        addColorRamp( name, ramp.release() );
         if ( mCurrentDB )
         {
-          saveColorRamp( name, ramp.get(), favorite, tags );
+          saveColorRamp( name, rampPtr, favorite, tags );
         }
       }
     }
