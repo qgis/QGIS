@@ -708,7 +708,6 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 
   mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( mMainCanvas, this );
   mMapToolClippingPlanes->setAction( mActionSetClippingPlanes );
-  connect( mMapToolClippingPlanes.get(), &QgsMapToolClippingPlanes::clippingPlanesChanged, this, &Qgs3DMapCanvasWidget::setViewOnClippingPlanesChanged );
 
   connect( map, &Qgs3DMapSettings::viewFrustumVisualizationEnabledChanged, this, &Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged );
   connect( map, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapCanvasWidget::onExtentChanged );
@@ -1189,41 +1188,34 @@ void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
   mMessageBar->pushInfo( QString(), tr( "Select a rectangle using 3 points on the main 2D map view to define the cross-section of this 3D scene" ) );
 }
 
-void Qgs3DMapCanvasWidget::setViewOnClippingPlanesChanged( const QList<QVector4D> &planes )
+void Qgs3DMapCanvasWidget::setViewOnClippingPlanesChanged( const QgsVector3D &startPoint, const QgsVector3D &endPoint, const double width )
 {
   this->activateWindow();
   this->raise();
   mMessageBar->clearWidgets();
 
-  // calculate the middle of the front side defined by clipping planes with Cramer's rule
-  const QVector4D leftPlane = planes.at( 0 );
-  const QVector4D rightPlane = planes.at( 2 );
-  const QVector4D frontPlane = planes.at( 3 );
-  double det = leftPlane.x() * frontPlane.y() - frontPlane.x() * leftPlane.y();
-  const QgsVector3D startPoint(
-    ( leftPlane.w() * frontPlane.y() - frontPlane.w() * leftPlane.y() ) / -det,
-    ( frontPlane.w() * leftPlane.x() - leftPlane.w() * frontPlane.x() ) / -det,
-    0
+  const QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes(
+    startPoint,
+    endPoint,
+    width,
+    mCanvas->mapSettings()->origin()
   );
-  det = rightPlane.x() * frontPlane.y() - frontPlane.x() * rightPlane.y();
-  const QgsVector3D endPoint(
-    ( rightPlane.w() * frontPlane.y() - frontPlane.w() * rightPlane.y() ) / -det,
-    ( frontPlane.w() * rightPlane.x() - rightPlane.w() * frontPlane.x() ) / -det,
-    0
-  );
-  QgsVector3D middle( startPoint + ( endPoint - startPoint ) / 2 );
+  mCanvas->scene()->enableClipping( clippingPlanes );
 
-  const QgsDoubleRange sceneElevationRange = mCanvas->scene()->elevationRange( true );
-  const double side = std::max( middle.distance( startPoint ), ( sceneElevationRange.upper() - sceneElevationRange.lower() ) / 2 );
-  const double distance = side / std::tan( mCanvas->scene()->cameraController()->camera()->fieldOfView() / 2 * M_PI / 180 ) + 50;
-  float yawAngle = static_cast<float>( acos( QgsVector3D::dotProduct( planes.at( 1 ).toVector3D(), QgsVector3D( 0, -1, 0 ) ) ) * 180 / M_PI );
-  // check if the angle between the view point is to the left or right of the scene north, apply angle offset if necessary for camera
-  if ( QgsVector3D::crossProduct( planes.at( 1 ).toVector3D(), QgsVector3D( 0, -1, 0 ) ).z() > 0 )
-  {
-    yawAngle = 360 - yawAngle;
-  }
-  sceneElevationRange.isInfinite() ? middle.setZ( 0 ) : middle.setZ( sceneElevationRange.lower() + ( sceneElevationRange.upper() - sceneElevationRange.lower() ) / 2 );
-  mCanvas->scene()->cameraController()->setLookingAtPoint( middle, static_cast<float>( distance ), 90, yawAngle );
+  // calculate the middle of the front side defined by clipping planes
+  QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
+  linePerpVec = -linePerpVec.normalized().perpVector();
+  const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
+  const QgsVector3D frontStartPoint( startPoint + linePerpVec3D * width );
+  const QgsVector3D frontEndPoint( endPoint + linePerpVec3D * width );
+
+  mCanvas->scene()->cameraController()->setCameraPose( Qgs3DUtils::lineSegmentToCameraPose(
+    frontStartPoint,
+    frontEndPoint,
+    mCanvas->scene()->elevationRange( true ),
+    mCanvas->scene()->cameraController()->camera()->fieldOfView(),
+    mCanvas->mapSettings()->origin()
+  ) );
 
   if ( mMapToolPrevious )
     mMainCanvas->setMapTool( mMapToolPrevious );

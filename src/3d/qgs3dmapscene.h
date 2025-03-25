@@ -164,8 +164,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     /**
      * Returns the scene's elevation range
-     * \note Only some layer types are considered by this method (eg terrain, point cloud and mesh layers)
-     *
+     * \note Only some layer types are considered by this method (e.g. terrain, point cloud and mesh layers)
+     * \param ignoreTerrain indicates whether the calculation will ignore terrain
      * \since QGIS 3.30
      */
     QgsDoubleRange elevationRange( bool ignoreTerrain = false ) const;

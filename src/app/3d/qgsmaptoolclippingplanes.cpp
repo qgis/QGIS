@@ -109,14 +109,11 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
     const QgsPointXY point = toMapCoordinates( e->pos() );
     if ( mRubberBandPoints->numberOfVertices() == 2 )
     {
-      const QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes(
+      m3DCanvas->setViewOnClippingPlanesChanged(
         QgsVector3D( mRubberBandPoints->getPoint( 0, 0 )->x(), mRubberBandPoints->getPoint( 0, 0 )->y(), 0 ),
         QgsVector3D( mRubberBandPoints->getPoint( 0, 1 )->x(), mRubberBandPoints->getPoint( 0, 1 )->y(), 0 ),
-        mRectangleWidth,
-        m3DCanvas->mapCanvas3D()->mapSettings()->origin()
+        mRectangleWidth
       );
-      m3DCanvas->mapCanvas3D()->scene()->enableClipping( clippingPlanes );
-      emit clippingPlanesChanged( clippingPlanes );
       const QgsSettings settings;
       QColor highlightColor = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
       highlightColor.setAlphaF( 0.5 );
