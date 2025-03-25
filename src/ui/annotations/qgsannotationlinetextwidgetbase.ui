@@ -171,6 +171,12 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mInsertExpressionButton</tabstop>
+  <tabstop>mTextFormatButton</tabstop>
+  <tabstop>mOffsetUnitWidget</tabstop>
+  <tabstop>mSpinOffset</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

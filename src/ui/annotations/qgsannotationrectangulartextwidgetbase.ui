@@ -479,6 +479,25 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mSizeModeCombo</tabstop>
+  <tabstop>mWidthSpinBox</tabstop>
+  <tabstop>mHeightSpinBox</tabstop>
+  <tabstop>mSizeUnitWidget</tabstop>
+  <tabstop>mInsertExpressionButton</tabstop>
+  <tabstop>mTextFormatButton</tabstop>
+  <tabstop>mAlignmentComboBox</tabstop>
+  <tabstop>mVerticalAlignmentComboBox</tabstop>
+  <tabstop>mSpinTopMargin</tabstop>
+  <tabstop>mSpinLeftMargin</tabstop>
+  <tabstop>mSpinRightMargin</tabstop>
+  <tabstop>mSpinBottomMargin</tabstop>
+  <tabstop>mMarginUnitWidget</tabstop>
+  <tabstop>mFrameCheckbox</tabstop>
+  <tabstop>mFrameSymbolButton</tabstop>
+  <tabstop>mBackgroundCheckbox</tabstop>
+  <tabstop>mBackgroundSymbolButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
