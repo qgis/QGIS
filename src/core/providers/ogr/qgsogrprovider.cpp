@@ -1761,6 +1761,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     // continue;
     //
     OGRFieldDefnH fldDef = featureDefinition.GetFieldDefn( ogrAttributeId );
+    const QString ogrFieldName = textEncoding()->toUnicode( OGR_Fld_GetNameRef( fldDef ) );
     const OGRFieldType type = OGR_Fld_GetType( fldDef );
     const OGRFieldSubType subType = OGR_Fld_GetSubType( fldDef );
 
@@ -1804,7 +1805,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
             if ( !ok )
             {
               pushError( tr( "wrong value for attribute %1 of feature %2: %3" )
-                         .arg( mAttributeFields.at( qgisAttributeId ).name() )
+                         .arg( ogrFieldName )
                          .arg( f.id() )
                          .arg( strVal ) );
               errorEmitted = true;
@@ -2021,10 +2022,14 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
       {
         if ( !errorEmitted )
         {
+          QMetaType::Type ogrVariantType = QMetaType::Type::UnknownType;
+          QMetaType::Type ogrVariantSubType = QMetaType::Type::UnknownType;
+          QgsOgrUtils::ogrFieldTypeToQVariantType( type, subType, ogrVariantType, ogrVariantSubType );
+
           pushError( tr( "wrong data type for attribute %1 of feature %2: Got %3, expected %4" )
-                     .arg( mAttributeFields.at( qgisAttributeId ).name() )
+                     .arg( ogrFieldName )
                      .arg( f.id() )
-                     .arg( attrVal.typeName(), QVariant::typeToName( mAttributeFields.at( qgisAttributeId ).type() ) ) );
+                     .arg( attrVal.typeName(), QVariant::typeToName( ogrVariantType ) ) );
         }
         returnValue = false;
       }
