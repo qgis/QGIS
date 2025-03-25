@@ -142,7 +142,7 @@ QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProces
     connect( mFavoriteManager, &QgsProcessingFavoriteAlgorithmManager::changed, this, [=] { repopulateFavoriteAlgorithms(); } );
 
   connect( mRegistry, &QgsProcessingRegistry::providerAdded, this, &QgsProcessingToolboxModel::rebuild );
-  connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::providerRemoved );
+  connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::rebuild );
 
   connect( mRegistry, &QgsProcessingRegistry::parameterTypeAdded, this, &QgsProcessingToolboxModel::rebuild );
   connect( mRegistry, &QgsProcessingRegistry::parameterTypeRemoved, this, &QgsProcessingToolboxModel::rebuild );
@@ -321,39 +321,6 @@ void QgsProcessingToolboxModel::repopulateFavoriteAlgorithms( bool resetting )
     endInsertRows();
     emit favoriteAlgorithmAdded();
   }
-}
-
-void QgsProcessingToolboxModel::providerAdded( const QString &id )
-{
-  if ( !mRegistry )
-    return;
-
-  QgsProcessingProvider *provider = mRegistry->providerById( id );
-  if ( !provider )
-    return;
-
-  if ( !isTopLevelProvider( id ) )
-  {
-    int previousRowCount = rowCount();
-    beginInsertRows( QModelIndex(), previousRowCount, previousRowCount );
-    addProvider( provider );
-    endInsertRows();
-  }
-  else
-  {
-    // native providers use top level groups - that's too hard for us to
-    // work out exactly what's going to change, so just reset the model
-    beginResetModel();
-    addProvider( provider );
-    endResetModel();
-  }
-}
-
-void QgsProcessingToolboxModel::providerRemoved( const QString & )
-{
-  // native providers use top level groups - so we can't
-  // work out what to remove. Just rebuild the whole model instead.
-  rebuild();
 }
 
 QgsProcessingToolboxModelNode *QgsProcessingToolboxModel::index2node( const QModelIndex &index ) const

@@ -472,8 +472,6 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     void rebuild();
     void repopulateRecentAlgorithms( bool resetting = false );
     void repopulateFavoriteAlgorithms( bool resetting = false );
-    void providerAdded( const QString &id );
-    void providerRemoved( const QString &id );
 
   private:
     QPointer<QgsProcessingRegistry> mRegistry;
