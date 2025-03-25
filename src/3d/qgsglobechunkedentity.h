@@ -34,8 +34,6 @@
 
 #include "qgschunkedentity.h"
 
-class QgsTerrainTextureGenerator;
-
 
 /**
  * 3D chunked entity implementation to generate globe mesh with constant elevation
@@ -47,8 +45,6 @@ class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
   public:
     QgsGlobeEntity( Qgs3DMapSettings *mapSettings, float maximumScreenSpaceError );
     ~QgsGlobeEntity();
-
-    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
 
 };
 
