@@ -21,19 +21,22 @@
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QGeometry>
 
 typedef Qt3DRender::QAttribute Qt3DQAttribute;
 typedef Qt3DRender::QBuffer Qt3DQBuffer;
+typedef Qt3DRender::QGeometry Qt3DQGeometry;
 #else
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
 
 typedef Qt3DCore::QAttribute Qt3DQAttribute;
 typedef Qt3DCore::QBuffer Qt3DQBuffer;
+typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #endif
 
 #include <Qt3DCore/QEntity>
-#include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QTextureImage>
@@ -176,7 +179,7 @@ static Qt3DCore::QEntity *makeGlobeMesh( double lonMin, double lonMax, double la
   indexAttribute->setBuffer( indexBuffer );
   indexAttribute->setCount( faces * 3 );
 
-  Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry( entity );
+  Qt3DQGeometry *geometry = new Qt3DQGeometry( entity );
   geometry->addAttribute( positionAttribute );
   geometry->addAttribute( texCoordAttribute );
   geometry->addAttribute( normalAttribute );
