@@ -121,7 +121,6 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
 
     friend class QgsPointCloudLayerEditUtils;
     friend class QgsPointCloudEditingIndex;
-    friend class QgsPointCloudLayerUndoCommandChangeAttribute;
 };
 
 ///@endcond

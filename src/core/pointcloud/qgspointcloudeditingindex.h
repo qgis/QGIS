@@ -91,7 +91,6 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
     mutable QMutex mEditedNodeDataMutex;
 
     friend class QgsPointCloudLayerEditUtils;
-    friend class QgsPointCloudLayerUndoCommandChangeAttribute;
 };
 
 #endif // QGSPOINTCLOUDEDITINGINDEX_H
