@@ -3825,7 +3825,7 @@ QgsFilledLineSymbolLayer::QgsFilledLineSymbolLayer( double width, QgsFillSymbol 
   : QgsLineSymbolLayer()
 {
   mWidth = width;
-  mFill.reset( fillSymbol ? fillSymbol : QgsFillSymbol::createSimple( QVariantMap() ).release() );
+  mFill = fillSymbol ? std::unique_ptr< QgsFillSymbol >( fillSymbol ) : QgsFillSymbol::createSimple( QVariantMap() );
 }
 
 QgsFilledLineSymbolLayer::~QgsFilledLineSymbolLayer() = default;

@@ -402,11 +402,11 @@ QList<QgsSymbolLegendNode *> QgsPropertySizeAssistantWidget::generatePreviews( c
   {
     if ( mDefinition.standardTemplate() == QgsPropertyDefinition::Size )
     {
-      tempSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ).release() );
+      tempSymbol = QgsMarkerSymbol::createSimple( QVariantMap() );
     }
     else if ( mDefinition.standardTemplate() == QgsPropertyDefinition::StrokeWidth )
     {
-      tempSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ).release() );
+      tempSymbol = QgsLineSymbol::createSimple( QVariantMap() );
     }
     legendSymbol = tempSymbol.get();
   }
