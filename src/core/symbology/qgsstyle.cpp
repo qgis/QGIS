@@ -275,7 +275,7 @@ bool QgsStyle::saveSymbol( const QString &name, const QgsSymbol *symbol, bool fa
 
   tagSymbol( SymbolEntity, name, tags );
 
-  emit symbolSaved( name, const_cast< QgsSymbol * >( symbol ) );
+  emit symbolSaved( name, symbol );
   emit entityAdded( SymbolEntity, name );
 
   return true;

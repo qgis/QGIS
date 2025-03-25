@@ -1053,7 +1053,7 @@ class CORE_EXPORT QgsStyle : public QObject
      * \see rampAdded()
      * \see symbolChanged()
      */
-    void symbolSaved( const QString &name, QgsSymbol *symbol );
+    void symbolSaved( const QString &name, const QgsSymbol *symbol );
 
     /**
      * Emitted whenever a symbol's definition is changed. This does not include
