@@ -283,6 +283,7 @@ Stops a current editing operation and discards any uncommitted edits.
 %End
 
 
+
     QgsPointCloudIndex index() const;
 %Docstring
 Returns the point cloud index associated with the layer. If the layer is
