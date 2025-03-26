@@ -190,9 +190,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLocal8Bit().data() );
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
 
-  float outputNodataValue = -FLT_MAX;
-  GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
-
+  GDALSetRasterNoDataValue( outputRasterBand, mNoDataValue );
 
   // Take the fast route (process one line at a time) if we can
   if ( !requiresMatrix )
@@ -259,7 +257,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       }
 
       // 1 row X mNumOutputColumns matrix
-      QgsRasterMatrix resultMatrix( mNumOutputColumns, 1, nullptr, outputNodataValue );
+      QgsRasterMatrix resultMatrix( mNumOutputColumns, 1, nullptr, mNoDataValue );
 
       _rasterData.clear();
       for ( const auto &layerRef : inputBlocks )
@@ -326,7 +324,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     }
 
     QgsRasterMatrix resultMatrix;
-    resultMatrix.setNodataValue( outputNodataValue );
+    resultMatrix.setNodataValue( mNoDataValue );
 
     //read / write line by line
     for ( int i = 0; i < mNumOutputRows; ++i )
@@ -587,8 +585,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     if ( !outputRasterBand )
       return BandError;
 
-    const float outputNodataValue = -FLT_MAX;
-    GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
+    GDALSetRasterNoDataValue( outputRasterBand, mNoDataValue );
 
     // Input block (buffer)
     std::unique_ptr<QgsRasterBlock> block;
@@ -698,7 +695,7 @@ GDALDriverH QgsRasterCalculator::openOutputDriver()
 gdal::dataset_unique_ptr QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
 {
   //open output file
-  char **papszOptions = nullptr;
+  char **papszOptions = QgsGdalUtils::papszFromStringList( mCreateOptions );
   gdal::dataset_unique_ptr outputDataset( GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions ) );
   if ( !outputDataset )
   {

@@ -106,6 +106,13 @@
    <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mCalloutCheckBox</tabstop>
+  <tabstop>mCalloutPropertiesButton</tabstop>
+  <tabstop>mReferenceScaleGroup</tabstop>
+  <tabstop>mReferenceScaleWidget</tabstop>
+  <tabstop>mSpinZIndex</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
