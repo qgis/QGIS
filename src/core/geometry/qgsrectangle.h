@@ -517,6 +517,8 @@ class CORE_EXPORT QgsRectangle
     /**
      * Test if the rectangle is null (holding no spatial information).
      *
+     * A rectangle is considered null if all its coordinates are NaN,
+     * if it has not been defined yet, or if it has been explicitly initialized as null.
      * A null rectangle is also an empty rectangle.
      *
      * \see setNull()
