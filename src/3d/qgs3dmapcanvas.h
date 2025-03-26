@@ -83,7 +83,8 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 {
     Q_OBJECT
   public:
-    Qgs3DMapCanvas();
+    //! Default constructor with \a parent widget (can be null)
+    Qgs3DMapCanvas( QWidget *parent = nullptr );
     ~Qgs3DMapCanvas();
 
     //! Returns access to the 3D scene configuration
@@ -177,6 +178,11 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
      */
     void clearHighlights();
 
+    /**
+     * Returns the widget in which we are included (if any)
+     */
+    QWidget *parentWidget() const { return mParentWidget; }
+
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
     void savedAsImage( const QString &fileName );
@@ -255,6 +261,8 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     //! This holds and owns the rubber bands for highlighting identified features
     QMap<QgsMapLayer *, QgsRubberBand3D *> mHighlights;
+
+    QWidget *mParentWidget = nullptr;
 };
 
 #endif //QGS3DMAPCANVAS_H

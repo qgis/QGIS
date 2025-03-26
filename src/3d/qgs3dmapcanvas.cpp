@@ -37,7 +37,7 @@
 #include "moc_qgs3dmapcanvas.cpp"
 
 
-Qgs3DMapCanvas::Qgs3DMapCanvas()
+Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
   , m_renderAspect( new Qt3DRender::QRenderAspect )
   , m_inputAspect( new Qt3DInput::QInputAspect )
@@ -48,6 +48,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   , m_root( new Qt3DCore::QEntity )
   , m_userRoot( nullptr )
   , m_initialized( false )
+  , mParentWidget( parent )
 {
   setSurfaceType( QSurface::OpenGLSurface );
 
