@@ -73,7 +73,7 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
     /**
      * Returns the button's position.
      */
-    QPointF getPosition() { return mPosition; };
+    QPointF position() const { return mPosition; };
 
 
     /**

@@ -47,7 +47,7 @@ for the button. The button will be rendered at the specified ``position`` and ``
 
 
 
-    QPointF getPosition();
+    QPointF position() const;
 %Docstring
 Returns the button's position.
 %End

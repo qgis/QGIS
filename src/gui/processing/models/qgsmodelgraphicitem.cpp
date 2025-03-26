@@ -186,7 +186,7 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
   painter->setRenderHint( QPainter::Antialiasing );
 
   constexpr float DISPLAY_SIZE = 3.2;
-  painter->drawEllipse( getPosition(), DISPLAY_SIZE, DISPLAY_SIZE );
+  painter->drawEllipse( position(), DISPLAY_SIZE, DISPLAY_SIZE );
   /* Uncomment to display bounding box */
 #if 0
   painter->save();

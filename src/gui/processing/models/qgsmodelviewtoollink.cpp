@@ -50,7 +50,7 @@ void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
     {
       // snap
       socket->modelHoverEnterEvent( event );
-      QPointF rubberEndPos = socket->mapToScene( socket->getPosition() );
+      QPointF rubberEndPos = socket->mapToScene( socket->position() );
       mBezierRubberBand->update( rubberEndPos, Qt::KeyboardModifiers() );
 
       break;
@@ -177,7 +177,7 @@ void QgsModelViewToolLink::activate()
 {
   mPreviousViewTool = view()->tool();
 
-  QPointF rubberStartPos = mFromSocket->mapToScene( mFromSocket->getPosition() );
+  QPointF rubberStartPos = mFromSocket->mapToScene( mFromSocket->position() );
   mBezierRubberBand->start( rubberStartPos, Qt::KeyboardModifiers() );
 
   QgsModelViewTool::activate();
