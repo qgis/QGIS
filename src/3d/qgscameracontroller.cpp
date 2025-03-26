@@ -617,6 +617,25 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
 void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QMouseEvent *mouse )
 {
+  const bool hasShift = ( mouse->modifiers() & Qt::ShiftModifier );
+  const bool hasCtrl = ( mouse->modifiers() & Qt::ControlModifier );
+  const bool hasLeftButton = ( mouse->buttons() & Qt::LeftButton );
+  const bool hasMiddleButton = ( mouse->buttons() & Qt::MiddleButton );
+
+  if ( ( hasLeftButton && hasShift && !hasCtrl ) || ( hasMiddleButton && !hasShift && !hasCtrl ) )
+  {
+    setMouseParameters( MouseOperation::RotationCenter, mMousePos );
+
+    float scale = static_cast<float>( std::max( mScene->engine()->size().width(), mScene->engine()->size().height() ) );
+    float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
+    float yawDiff = -180.0f * static_cast<float>( mouse->x() - mClickPoint.x() ) / scale;
+
+    mCameraPose.setPitchAngle( mRotationPitch + pitchDiff );
+    mCameraPose.setHeadingAngle( mRotationYaw + yawDiff );
+    updateCameraFromPose();
+    return;
+  }
+
   if ( !( mouse->buttons() & Qt::LeftButton ) )
     return;
 
