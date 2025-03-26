@@ -13,6 +13,18 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAbstractProfileResults.__virtual_methods__ = ['asFeatures', 'snapPoint', 'identify', 'copyPropertiesFromGenerator']
+    QgsAbstractProfileResults.__abstract_methods__ = ['type', 'distanceToHeightMap', 'sampledPoints', 'asGeometries', 'renderResults', 'zRange']
+    QgsAbstractProfileResults.__group__ = ['elevation']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsAbstractProfileGenerator.__virtual_methods__ = ['flags']
+    QgsAbstractProfileGenerator.__abstract_methods__ = ['sourceId', 'generateProfile', 'feedback', 'takeResults']
+    QgsAbstractProfileGenerator.__group__ = ['elevation']
+except (NameError, AttributeError):
+    pass
+try:
     QgsProfileRenderContext.__group__ = ['elevation']
 except (NameError, AttributeError):
     pass
@@ -21,14 +33,6 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsAbstractProfileResults.__group__ = ['elevation']
-except (NameError, AttributeError):
-    pass
-try:
     QgsProfileGenerationContext.__group__ = ['elevation']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsAbstractProfileGenerator.__group__ = ['elevation']
 except (NameError, AttributeError):
     pass

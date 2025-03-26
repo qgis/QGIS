@@ -5,6 +5,8 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProjectStorage.__virtual_methods__ = ['isSupportedUri', 'renameProject', 'readProjectStorageMetadata', 'filePath', 'visibleName', 'showLoadGui', 'showSaveGui']
+    QgsProjectStorage.__abstract_methods__ = ['type', 'listProjects', 'readProject', 'writeProject', 'removeProject']
     QgsProjectStorage.__group__ = ['project']
 except (NameError, AttributeError):
     pass

@@ -4,3 +4,7 @@ try:
     QgsDbRelationWidget.__signal_arguments__ = {'validityChanged': ['isValid: bool']}
 except (NameError, AttributeError):
     pass
+try:
+    QgsDbRelationDialog.__overridden_methods__ = ['accept']
+except (NameError, AttributeError):
+    pass

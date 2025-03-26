@@ -5,3 +5,7 @@ try:
     QgsSublayersDialog.LayerDefinition.__doc__ = """A structure that defines layers for the purpose of this dialog"""
 except (NameError, AttributeError):
     pass
+try:
+    QgsSublayersDialog.__overridden_methods__ = ['exec']
+except (NameError, AttributeError):
+    pass

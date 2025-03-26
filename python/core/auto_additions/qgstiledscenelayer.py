@@ -6,6 +6,8 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsTiledSceneLayer.__virtual_methods__ = ['readStyle', 'writeStyle', 'loadDefaultStyle']
+    QgsTiledSceneLayer.__overridden_methods__ = ['clone', 'extent', 'dataProvider', 'readXml', 'writeXml', 'readSymbology', 'writeSymbology', 'setTransformContext', 'encodedSource', 'decodedSource', 'htmlMetadata', 'createMapRenderer', 'loadDefaultMetadata', 'elevationProperties']
     QgsTiledSceneLayer.__group__ = ['tiledscene']
 except (NameError, AttributeError):
     pass

@@ -94,10 +94,12 @@ QgsCoordinateReferenceSystemModel.CustomRole.baseClass = QgsCoordinateReferenceS
 QgsCoordinateReferenceSystemProxyModel.Filters.baseClass = QgsCoordinateReferenceSystemProxyModel
 Filters = QgsCoordinateReferenceSystemProxyModel  # dirty hack since SIP seems to introduce the flags in module
 try:
+    QgsCoordinateReferenceSystemModel.__overridden_methods__ = ['flags', 'data', 'headerData', 'rowCount', 'columnCount', 'index', 'parent']
     QgsCoordinateReferenceSystemModel.__group__ = ['proj']
 except (NameError, AttributeError):
     pass
 try:
+    QgsCoordinateReferenceSystemProxyModel.__overridden_methods__ = ['filterAcceptsRow', 'lessThan']
     QgsCoordinateReferenceSystemProxyModel.__group__ = ['proj']
 except (NameError, AttributeError):
     pass

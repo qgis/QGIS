@@ -7,6 +7,8 @@ except (NameError, AttributeError):
     pass
 try:
     QgsAbstractSensor.__attribute_docs__ = {'nameChanged': 'Emitted when the sensor name has changed.\n', 'statusChanged': 'Emitted when the sensor status has changed.\n', 'dataChanged': 'Emitted when the captured sensor data has changed.\n', 'errorOccurred': 'Emitted when an error has occurred. The ``errorString`` describes the error.\n'}
+    QgsAbstractSensor.__virtual_methods__ = ['type', 'writePropertiesToElement', 'readPropertiesFromElement']
+    QgsAbstractSensor.__abstract_methods__ = ['handleConnect', 'handleDisconnect']
     QgsAbstractSensor.__signal_arguments__ = {'errorOccurred': ['errorString: str']}
     QgsAbstractSensor.__group__ = ['sensor']
 except (NameError, AttributeError):

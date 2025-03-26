@@ -29,6 +29,8 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAbstractValidityCheck.__virtual_methods__ = ['prepareCheck']
+    QgsAbstractValidityCheck.__abstract_methods__ = ['create', 'id', 'checkType', 'runCheck']
     QgsAbstractValidityCheck.__group__ = ['validity']
 except (NameError, AttributeError):
     pass

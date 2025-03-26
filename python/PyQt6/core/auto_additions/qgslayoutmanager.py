@@ -43,10 +43,12 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsLayoutManagerModel.__overridden_methods__ = ['rowCount', 'data', 'setData', 'flags']
     QgsLayoutManagerModel.__group__ = ['layout']
 except (NameError, AttributeError):
     pass
 try:
+    QgsLayoutManagerProxyModel.__overridden_methods__ = ['lessThan', 'filterAcceptsRow']
     QgsLayoutManagerProxyModel.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

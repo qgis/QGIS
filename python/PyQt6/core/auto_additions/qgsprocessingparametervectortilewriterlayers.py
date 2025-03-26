@@ -4,6 +4,7 @@ try:
     QgsProcessingParameterVectorTileWriterLayers.parameterAsLayers = staticmethod(QgsProcessingParameterVectorTileWriterLayers.parameterAsLayers)
     QgsProcessingParameterVectorTileWriterLayers.variantMapAsLayer = staticmethod(QgsProcessingParameterVectorTileWriterLayers.variantMapAsLayer)
     QgsProcessingParameterVectorTileWriterLayers.layerAsVariantMap = staticmethod(QgsProcessingParameterVectorTileWriterLayers.layerAsVariantMap)
+    QgsProcessingParameterVectorTileWriterLayers.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asPythonString']
     QgsProcessingParameterVectorTileWriterLayers.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

@@ -129,26 +129,33 @@ try:
     QgsCallout.decodeAnchorPoint = staticmethod(QgsCallout.decodeAnchorPoint)
     QgsCallout.encodeLabelAnchorPoint = staticmethod(QgsCallout.encodeLabelAnchorPoint)
     QgsCallout.decodeLabelAnchorPoint = staticmethod(QgsCallout.decodeLabelAnchorPoint)
+    QgsCallout.__virtual_methods__ = ['properties', 'readProperties', 'saveProperties', 'restoreProperties', 'startRender', 'stopRender', 'referencedFields', 'drawOrder']
+    QgsCallout.__abstract_methods__ = ['type', 'clone', 'draw']
     QgsCallout.__group__ = ['callouts']
 except (NameError, AttributeError):
     pass
 try:
     QgsSimpleLineCallout.create = staticmethod(QgsSimpleLineCallout.create)
+    QgsSimpleLineCallout.__virtual_methods__ = ['createCalloutLine']
+    QgsSimpleLineCallout.__overridden_methods__ = ['type', 'clone', 'properties', 'readProperties', 'startRender', 'stopRender', 'referencedFields', 'draw']
     QgsSimpleLineCallout.__group__ = ['callouts']
 except (NameError, AttributeError):
     pass
 try:
     QgsManhattanLineCallout.create = staticmethod(QgsManhattanLineCallout.create)
+    QgsManhattanLineCallout.__overridden_methods__ = ['type', 'clone', 'createCalloutLine']
     QgsManhattanLineCallout.__group__ = ['callouts']
 except (NameError, AttributeError):
     pass
 try:
     QgsCurvedLineCallout.create = staticmethod(QgsCurvedLineCallout.create)
+    QgsCurvedLineCallout.__overridden_methods__ = ['type', 'clone', 'properties', 'createCalloutLine']
     QgsCurvedLineCallout.__group__ = ['callouts']
 except (NameError, AttributeError):
     pass
 try:
     QgsBalloonCallout.create = staticmethod(QgsBalloonCallout.create)
+    QgsBalloonCallout.__overridden_methods__ = ['type', 'clone', 'properties', 'readProperties', 'startRender', 'stopRender', 'referencedFields', 'draw']
     QgsBalloonCallout.__group__ = ['callouts']
 except (NameError, AttributeError):
     pass

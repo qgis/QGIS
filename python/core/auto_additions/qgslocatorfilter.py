@@ -11,6 +11,8 @@ try:
     QgsLocatorFilter.__attribute_docs__ = {'finished': 'Emitted when the filter finishes fetching results.\n', 'resultFetched': 'Should be emitted by filters whenever they encounter a matching result\nduring within their :py:func:`~QgsLocatorFilter.fetchResults` implementation.\n'}
     QgsLocatorFilter.stringMatches = staticmethod(QgsLocatorFilter.stringMatches)
     QgsLocatorFilter.fuzzyScore = staticmethod(QgsLocatorFilter.fuzzyScore)
+    QgsLocatorFilter.__virtual_methods__ = ['description', 'flags', 'priority', 'prefix', 'prepare', 'resultSelected', 'resultDeselected', 'triggerResultFromAction', 'clearPreviousResults', 'hasConfigWidget', 'openConfigWidget']
+    QgsLocatorFilter.__abstract_methods__ = ['clone', 'name', 'displayName', 'fetchResults', 'triggerResult']
     QgsLocatorFilter.__signal_arguments__ = {'resultFetched': ['result: QgsLocatorResult']}
     QgsLocatorFilter.__group__ = ['locator']
 except (NameError, AttributeError):

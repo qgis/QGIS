@@ -3,6 +3,7 @@ QgsSingleBandGrayRenderer.BlackToWhite = QgsSingleBandGrayRenderer.Gradient.Blac
 QgsSingleBandGrayRenderer.WhiteToBlack = QgsSingleBandGrayRenderer.Gradient.WhiteToBlack
 try:
     QgsSingleBandGrayRenderer.create = staticmethod(QgsSingleBandGrayRenderer.create)
+    QgsSingleBandGrayRenderer.__overridden_methods__ = ['clone', 'flags', 'block', 'inputBand', 'setInputBand', 'writeXml', 'legendSymbologyItems', 'createLegendNodes', 'usesBands', 'toSld']
     QgsSingleBandGrayRenderer.__group__ = ['raster']
 except (NameError, AttributeError):
     pass

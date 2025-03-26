@@ -63,11 +63,15 @@ try:
     QgsCodeEditor.setColor = staticmethod(QgsCodeEditor.setColor)
     QgsCodeEditor.getMonospaceFont = staticmethod(QgsCodeEditor.getMonospaceFont)
     QgsCodeEditor.isFixedPitch = staticmethod(QgsCodeEditor.isFixedPitch)
+    QgsCodeEditor.__virtual_methods__ = ['language', 'languageCapabilities', 'moveCursorToStart', 'moveCursorToEnd', 'checkSyntax', 'toggleComment', 'initializeLexer', 'populateContextMenu', 'reformatCodeString', 'showMessage']
+    QgsCodeEditor.__overridden_methods__ = ['callTip', 'setText', 'focusOutEvent', 'keyPressEvent', 'contextMenuEvent', 'eventFilter']
     QgsCodeEditor.__signal_arguments__ = {'helpRequested': ['word: str']}
     QgsCodeEditor.__group__ = ['codeeditors']
 except (NameError, AttributeError):
     pass
 try:
+    QgsCodeInterpreter.__virtual_methods__ = ['currentState']
+    QgsCodeInterpreter.__abstract_methods__ = ['promptForState', 'execCommandImpl']
     QgsCodeInterpreter.__group__ = ['codeeditors']
 except (NameError, AttributeError):
     pass

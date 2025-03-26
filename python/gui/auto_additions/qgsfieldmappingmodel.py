@@ -27,3 +27,7 @@ try:
     QgsFieldMappingModel.Field.__doc__ = """The Field struct holds information about a mapped field"""
 except (NameError, AttributeError):
     pass
+try:
+    QgsFieldMappingModel.__overridden_methods__ = ['rowCount', 'columnCount', 'data', 'headerData', 'flags', 'setData']
+except (NameError, AttributeError):
+    pass

@@ -6,3 +6,7 @@ try:
 .. versionadded:: 3.16"""
 except (NameError, AttributeError):
     pass
+try:
+    QgsGroupLayer.__overridden_methods__ = ['clone', 'createMapRenderer', 'extent', 'setTransformContext', 'readXml', 'writeXml', 'writeSymbology', 'readSymbology', 'dataProvider', 'htmlMetadata', 'resolveReferences']
+except (NameError, AttributeError):
+    pass

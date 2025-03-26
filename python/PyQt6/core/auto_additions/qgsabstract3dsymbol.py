@@ -22,6 +22,8 @@ QgsAbstract3DSymbol.Property.__doc__ = """Data definable properties.
 """
 # --
 try:
+    QgsAbstract3DSymbol.__virtual_methods__ = ['compatibleGeometryTypes', 'setDefaultPropertiesFromLayer', 'copyBaseSettings']
+    QgsAbstract3DSymbol.__abstract_methods__ = ['type', 'clone', 'writeXml', 'readXml']
     QgsAbstract3DSymbol.__group__ = ['3d']
 except (NameError, AttributeError):
     pass

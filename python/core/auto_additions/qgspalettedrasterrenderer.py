@@ -18,6 +18,7 @@ try:
     QgsPalettedRasterRenderer.classDataFromFile = staticmethod(QgsPalettedRasterRenderer.classDataFromFile)
     QgsPalettedRasterRenderer.classDataToString = staticmethod(QgsPalettedRasterRenderer.classDataToString)
     QgsPalettedRasterRenderer.classDataFromRaster = staticmethod(QgsPalettedRasterRenderer.classDataFromRaster)
+    QgsPalettedRasterRenderer.__overridden_methods__ = ['clone', 'flags', 'block', 'canCreateRasterAttributeTable', 'inputBand', 'setInputBand', 'writeXml', 'legendSymbologyItems', 'createLegendNodes', 'usesBands', 'toSld', 'accept']
     QgsPalettedRasterRenderer.__group__ = ['raster']
 except (NameError, AttributeError):
     pass

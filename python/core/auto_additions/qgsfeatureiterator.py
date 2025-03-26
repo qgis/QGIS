@@ -11,3 +11,8 @@ QgsAbstractFeatureIterator.RequestToSourceCrsResult.__doc__ = """Possible result
 
 """
 # --
+try:
+    QgsAbstractFeatureIterator.__virtual_methods__ = ['nextFeature', 'isValid', 'nextFeatureFilterExpression', 'nextFeatureFilterFids', 'prepareSimplification']
+    QgsAbstractFeatureIterator.__abstract_methods__ = ['rewind', 'close', 'fetchFeature']
+except (NameError, AttributeError):
+    pass

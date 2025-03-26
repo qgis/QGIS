@@ -128,6 +128,12 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAbstractDatabaseProviderConnection.__virtual_methods__ = ['geometryColumnCapabilities', 'sqlLayerDefinitionCapabilities', 'tableUri', 'createVectorTable', 'createVectorLayerExporterDestinationUri', 'tableExists', 'dropVectorTable', 'dropRasterTable', 'renameVectorTable', 'renameRasterTable', 'createSchema', 'dropSchema', 'deleteField', 'addField', 'renameField', 'renameSchema', 'executeSql', 'createSqlVectorLayer', 'validateSqlVectorLayer', 'sqlOptions', 'execSql', 'vacuum', 'createSpatialIndex', 'spatialIndexExists', 'deleteSpatialIndex', 'table', 'SIP_THROW', 'fields', 'sqlDictionary', 'illegalFieldNames', 'defaultPrimaryKeyColumnName', 'defaultGeometryColumnName', 'supportedFieldDomainTypes', 'fieldDomain', 'setFieldDomainName', 'addFieldDomain', 'setFieldAlias', 'setTableComment', 'setFieldComment', 'supportedRelationshipCapabilities', 'relatedTableTypes', 'relationships', 'addRelationship', 'updateRelationship', 'deleteRelationship', 'queryBuilder', 'searchLayerMetadata']
+    QgsAbstractDatabaseProviderConnection.__abstract_methods__ = ['tableImportCapabilities', 'nativeTypes']
+    QgsAbstractDatabaseProviderConnection.__group__ = ['providers']
+except (NameError, AttributeError):
+    pass
+try:
     QgsAbstractDatabaseProviderConnection.QueryResult.__doc__ = """The QueryResult class represents the result of a query executed by :py:func:`~QgsAbstractDatabaseProviderConnection.execSql`
 
 It encapsulates an iterator over the result rows and a list of the column names.
@@ -157,9 +163,5 @@ try:
     QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType.__doc__ = """The GeometryColumnType struct represents the combination
 of geometry type and CRS for the table geometry column."""
     QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType.__group__ = ['providers']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsAbstractDatabaseProviderConnection.__group__ = ['providers']
 except (NameError, AttributeError):
     pass

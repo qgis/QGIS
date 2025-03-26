@@ -42,14 +42,16 @@ QgsProviderSublayerModel.Column.__doc__ = """Model columns
 """
 # --
 try:
+    QgsProviderSublayerModel.__overridden_methods__ = ['index', 'parent', 'columnCount', 'rowCount', 'flags', 'data', 'headerData']
     QgsProviderSublayerModel.__group__ = ['providers']
 except (NameError, AttributeError):
     pass
 try:
-    QgsProviderSublayerModel.NonLayerItem.__group__ = ['providers']
+    QgsProviderSublayerProxyModel.__overridden_methods__ = ['filterAcceptsRow', 'lessThan']
+    QgsProviderSublayerProxyModel.__group__ = ['providers']
 except (NameError, AttributeError):
     pass
 try:
-    QgsProviderSublayerProxyModel.__group__ = ['providers']
+    QgsProviderSublayerModel.NonLayerItem.__group__ = ['providers']
 except (NameError, AttributeError):
     pass

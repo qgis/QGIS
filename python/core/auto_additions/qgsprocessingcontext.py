@@ -15,10 +15,11 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsProcessingContext.__group__ = ['processing']
+    QgsProcessingLayerPostProcessorInterface.__abstract_methods__ = ['postProcessLayer']
+    QgsProcessingLayerPostProcessorInterface.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
-    QgsProcessingLayerPostProcessorInterface.__group__ = ['processing']
+    QgsProcessingContext.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
