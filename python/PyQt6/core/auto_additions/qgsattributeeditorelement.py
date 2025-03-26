@@ -9,6 +9,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsAttributeEditorElement.create = staticmethod(QgsAttributeEditorElement.create)
+    QgsAttributeEditorElement.__abstract_methods__ = ['clone']
     QgsAttributeEditorElement.__group__ = ['editform']
 except (NameError, AttributeError):
     pass

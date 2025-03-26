@@ -1,9 +1,10 @@
 # The following has been generated automatically from src/core/vectortile/qgsvectortilebasiclabeling.h
 try:
-    QgsVectorTileBasicLabelingStyle.__group__ = ['vectortile']
+    QgsVectorTileBasicLabeling.__overridden_methods__ = ['type', 'clone', 'writeXml', 'readXml']
+    QgsVectorTileBasicLabeling.__group__ = ['vectortile']
 except (NameError, AttributeError):
     pass
 try:
-    QgsVectorTileBasicLabeling.__group__ = ['vectortile']
+    QgsVectorTileBasicLabelingStyle.__group__ = ['vectortile']
 except (NameError, AttributeError):
     pass

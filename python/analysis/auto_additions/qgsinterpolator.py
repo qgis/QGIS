@@ -12,6 +12,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsInterpolator.__abstract_methods__ = ['interpolatePoint']
     QgsInterpolator.__group__ = ['interpolation']
 except (NameError, AttributeError):
     pass

@@ -6,6 +6,8 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsPointDistanceRenderer.__abstract_methods__ = ['drawGroup']
+    QgsPointDistanceRenderer.__overridden_methods__ = ['toSld', 'renderFeature', 'usedAttributes', 'filterNeedsGeometry', 'capabilities', 'symbols', 'symbolForFeature', 'originalSymbolForFeature', 'symbolsForFeature', 'originalSymbolsForFeature', 'legendKeysForFeature', 'legendKeyToExpression', 'willRenderFeature', 'startRender', 'stopRender', 'legendSymbolItems', 'setEmbeddedRenderer', 'embeddedRenderer', 'setLegendSymbolItem', 'legendSymbolItemsCheckable', 'legendSymbolItemChecked', 'checkLegendSymbolItem', 'filter', 'accept']
     QgsPointDistanceRenderer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

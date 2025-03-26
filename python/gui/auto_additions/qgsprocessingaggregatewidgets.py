@@ -32,6 +32,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAggregateMappingModel.__overridden_methods__ = ['rowCount', 'columnCount', 'data', 'headerData', 'flags', 'setData']
     QgsAggregateMappingModel.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

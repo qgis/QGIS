@@ -5,6 +5,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsCreateAnnotationItemMapToolInterface.__abstract_methods__ = ['handler', 'mapTool']
     QgsCreateAnnotationItemMapToolInterface.__group__ = ['annotations']
 except (NameError, AttributeError):
     pass

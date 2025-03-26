@@ -138,6 +138,9 @@ except (NameError, AttributeError):
     pass
 try:
     QgsLayoutItem.__attribute_docs__ = {'frameChanged': "Emitted if the item's frame style changes.\n", 'lockChanged': "Emitted if the item's lock status changes.\n\n.. seealso:: :py:func:`isLocked`\n\n.. seealso:: :py:func:`setLocked`\n", 'rotationChanged': 'Emitted on item rotation change.\n', 'sizePositionChanged': "Emitted when the item's size or position changes.\n", 'backgroundTaskCountChanged': 'Emitted whenever the number of background tasks an item is executing changes.\n\n.. versionadded:: 3.10\n', 'clipPathChanged': "Emitted when the item's clipping path has changed.\n\n.. seealso:: :py:func:`clipPath`\n\n.. versionadded:: 3.16\n"}
+    QgsLayoutItem.__virtual_methods__ = ['cleanup', 'icon', 'uuid', 'itemFlags', 'setId', 'displayName', 'setSelected', 'setVisibility', 'exportLayerBehavior', 'numberExportLayers', 'startLayeredExport', 'stopLayeredExport', 'nextExportPart', 'exportLayerDetails', 'fixedSize', 'minimumSize', 'attemptResize', 'attemptMove', 'finalizeRestoreFromXml', 'setFrameEnabled', 'setFrameStrokeWidth', 'containsAdvancedEffects', 'requiresRasterization', 'estimatedFrameBleed', 'rectWithFrame', 'moveContent', 'setMoveContentPreviewOffset', 'zoomContent', 'accept', 'clipPath', 'isRefreshing', 'invalidateCache', 'redraw', 'refreshDataDefinedProperty', 'setItemRotation', 'rotateItem', 'drawDebugRect', 'framePath', 'drawFrame', 'drawBackground', 'setFixedSize', 'setMinimumSize', 'applyItemSizeConstraint', 'writePropertiesToElement', 'readPropertiesFromElement']
+    QgsLayoutItem.__abstract_methods__ = ['draw']
+    QgsLayoutItem.__overridden_methods__ = ['type', 'paint', 'createCommand', 'createExpressionContext', 'refresh']
     QgsLayoutItem.__signal_arguments__ = {'rotationChanged': ['newRotation: float'], 'backgroundTaskCountChanged': ['count: int']}
     QgsLayoutItem.__group__ = ['layout']
 except (NameError, AttributeError):

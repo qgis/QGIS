@@ -53,3 +53,7 @@ QgsBookmarkManagerModel.CustomRole.__doc__ = """Custom model roles.
 """
 # --
 QgsBookmarkManagerModel.CustomRole.baseClass = QgsBookmarkManagerModel
+try:
+    QgsBookmarkManagerModel.__overridden_methods__ = ['rowCount', 'columnCount', 'data', 'flags', 'setData', 'insertRows', 'removeRows', 'headerData']
+except (NameError, AttributeError):
+    pass

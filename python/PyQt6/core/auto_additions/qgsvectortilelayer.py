@@ -9,6 +9,8 @@ except (NameError, AttributeError):
     pass
 try:
     QgsVectorTileLayer.__attribute_docs__ = {'selectionChanged': 'Emitted whenever the selected features in the layer are changed.\n\n.. versionadded:: 3.28\n'}
+    QgsVectorTileLayer.__virtual_methods__ = ['encodedSource', 'decodedSource']
+    QgsVectorTileLayer.__overridden_methods__ = ['clone', 'dataProvider', 'createMapRenderer', 'readXml', 'writeXml', 'readSymbology', 'writeSymbology', 'setTransformContext', 'loadDefaultStyle', 'properties', 'loadDefaultMetadata', 'htmlMetadata']
     QgsVectorTileLayer.__group__ = ['vectortile']
 except (NameError, AttributeError):
     pass

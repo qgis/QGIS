@@ -11,6 +11,17 @@ QgsMeshDatasetGroup.Persistent = QgsMeshDatasetGroup.Type.Persistent
 QgsMeshDatasetGroup.Memory = QgsMeshDatasetGroup.Type.Memory
 QgsMeshDatasetGroup.Virtual = QgsMeshDatasetGroup.Type.Virtual
 try:
+    QgsMeshDatasetGroup.__virtual_methods__ = ['datasetGroupNamesDependentOn', 'description']
+    QgsMeshDatasetGroup.__abstract_methods__ = ['initialize', 'datasetMetadata', 'datasetCount', 'dataset', 'type', 'writeXml']
+    QgsMeshDatasetGroup.__group__ = ['mesh']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsMeshDataset.__abstract_methods__ = ['datasetValue', 'datasetValues', 'areFacesActive', 'isActive', 'metadata', 'valuesCount']
+    QgsMeshDataset.__group__ = ['mesh']
+except (NameError, AttributeError):
+    pass
+try:
     QgsMeshDatasetIndex.__group__ = ['mesh']
 except (NameError, AttributeError):
     pass
@@ -32,14 +43,6 @@ except (NameError, AttributeError):
     pass
 try:
     QgsMeshDatasetMetadata.__group__ = ['mesh']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsMeshDataset.__group__ = ['mesh']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsMeshDatasetGroup.__group__ = ['mesh']
 except (NameError, AttributeError):
     pass
 try:

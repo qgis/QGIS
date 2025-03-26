@@ -24,6 +24,7 @@ try:
     QgsRuleBasedRenderer.refineRuleScales = staticmethod(QgsRuleBasedRenderer.refineRuleScales)
     QgsRuleBasedRenderer.convertFromRenderer = staticmethod(QgsRuleBasedRenderer.convertFromRenderer)
     QgsRuleBasedRenderer.convertToDataDefinedSymbology = staticmethod(QgsRuleBasedRenderer.convertToDataDefinedSymbology)
+    QgsRuleBasedRenderer.__overridden_methods__ = ['symbolForFeature', 'flags', 'renderFeature', 'startRender', 'canSkipRender', 'stopRender', 'filter', 'usedAttributes', 'filterNeedsGeometry', 'clone', 'toSld', 'symbols', 'save', 'legendSymbolItemsCheckable', 'legendSymbolItemChecked', 'checkLegendSymbolItem', 'legendKeyToExpression', 'setLegendSymbolItem', 'legendSymbolItems', 'dump', 'willRenderFeature', 'symbolsForFeature', 'originalSymbolsForFeature', 'legendKeysForFeature', 'capabilities', 'accept']
     QgsRuleBasedRenderer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

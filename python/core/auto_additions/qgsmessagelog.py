@@ -5,3 +5,7 @@ try:
     QgsMessageLog.__signal_arguments__ = {'messageReceived': ['received: bool']}
 except (NameError, AttributeError):
     pass
+try:
+    QgsMessageLogConsole.__virtual_methods__ = ['logMessage']
+except (NameError, AttributeError):
+    pass

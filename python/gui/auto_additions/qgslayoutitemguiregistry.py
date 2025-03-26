@@ -11,6 +11,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsLayoutItemAbstractGuiMetadata.__virtual_methods__ = ['creationIcon', 'createItemWidget', 'createRubberBand', 'createNodeRubberBand', 'createItem', 'newItemAddedToLayout', 'handleDoubleClick']
     QgsLayoutItemAbstractGuiMetadata.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

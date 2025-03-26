@@ -5,6 +5,8 @@ try:
     QgsMapLayerLegend.defaultRasterLegend = staticmethod(QgsMapLayerLegend.defaultRasterLegend)
     QgsMapLayerLegend.defaultMeshLegend = staticmethod(QgsMapLayerLegend.defaultMeshLegend)
     QgsMapLayerLegend.defaultPointCloudLegend = staticmethod(QgsMapLayerLegend.defaultPointCloudLegend)
+    QgsMapLayerLegend.__virtual_methods__ = ['readXml', 'writeXml']
+    QgsMapLayerLegend.__abstract_methods__ = ['createLayerTreeModelLegendNodes']
 except (NameError, AttributeError):
     pass
 try:
@@ -25,5 +27,21 @@ try:
     QgsMapLayerLegendUtils.setLegendNodeColumnBreak = staticmethod(QgsMapLayerLegendUtils.setLegendNodeColumnBreak)
     QgsMapLayerLegendUtils.legendNodeColumnBreak = staticmethod(QgsMapLayerLegendUtils.legendNodeColumnBreak)
     QgsMapLayerLegendUtils.applyLayerNodeProperties = staticmethod(QgsMapLayerLegendUtils.applyLayerNodeProperties)
+except (NameError, AttributeError):
+    pass
+try:
+    QgsDefaultVectorLayerLegend.__overridden_methods__ = ['createLayerTreeModelLegendNodes', 'readXml', 'writeXml']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsDefaultRasterLayerLegend.__overridden_methods__ = ['createLayerTreeModelLegendNodes']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsDefaultMeshLayerLegend.__overridden_methods__ = ['createLayerTreeModelLegendNodes']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsDefaultPointCloudLayerLegend.__overridden_methods__ = ['createLayerTreeModelLegendNodes']
 except (NameError, AttributeError):
     pass

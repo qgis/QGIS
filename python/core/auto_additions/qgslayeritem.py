@@ -13,6 +13,8 @@ try:
     QgsLayerItem.iconMesh = staticmethod(QgsLayerItem.iconMesh)
     QgsLayerItem.iconVectorTile = staticmethod(QgsLayerItem.iconVectorTile)
     QgsLayerItem.iconPointCloud = staticmethod(QgsLayerItem.iconPointCloud)
+    QgsLayerItem.__virtual_methods__ = ['comments', 'deleteLayer', 'layerName']
+    QgsLayerItem.__overridden_methods__ = ['equal', 'hasDragEnabled', 'mimeUris', 'databaseConnection']
     QgsLayerItem.__group__ = ['browser']
 except (NameError, AttributeError):
     pass
