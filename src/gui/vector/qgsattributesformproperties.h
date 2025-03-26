@@ -422,6 +422,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QgsAttributesDnDTree *mFormLayoutTree = nullptr;
 
     QTreeView *mAvailableWidgetsTreeView = nullptr;
+    QTreeView *mFormLayoutTreeView = nullptr;
 
     QgsAttributeWidgetEdit *mAttributeWidgetEdit = nullptr;
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
@@ -467,6 +468,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree );
 
     QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel;
+    QgsAttributesFormLayoutModel *mFormLayoutModel;
 
     QgsMessageBar *mMessageBar = nullptr;
 
@@ -560,5 +562,58 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget, private QgsExpressio
     QgsExpressionContext createExpressionContext() const override;
 };
 
+
+class GUI_EXPORT QgsAttributesFormTreeView : public QTreeView, private QgsExpressionContextGenerator
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsAttributesFormTreeView( QgsVectorLayer *layer, QWidget *parent = nullptr );
+
+    /**
+     * Adds a new item to a \a parent. If \a index is -1, the item is added to the end of the parent's existing children.
+     * Otherwise it is inserted at the specified \a index.
+     */
+    //QTreeWidgetItem *addItem( QTreeWidgetItem *parent, const QgsAttributesFormProperties::DnDTreeItemData &data, int index = -1, const QIcon &icon = QIcon() );
+
+    enum Type
+    {
+      Drag,
+      Drop
+    };
+
+
+    Type type() const;
+    void setType( QgsAttributesDnDTree::Type value );
+
+  public slots:
+    void selectFirstMatchingItem( const QgsAttributeFormTreeData::DnDTreeItemData &data );
+
+    // protected:
+    //   void dragMoveEvent( QDragMoveEvent *event ) override;
+    //   void dropEvent( QDropEvent *event ) override;
+    //   bool dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action ) override;
+
+    // QTreeWidget interface
+    // protected:
+    //   QStringList mimeTypes() const override;
+
+    // #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+    //     QMimeData *mimeData( const QList<QTreeWidgetItem *> items ) const override;
+    // #else
+    //     QMimeData *mimeData( const QList<QTreeWidgetItem *> &items ) const override;
+    // #endif
+
+  private slots:
+    void onItemDoubleClicked( const QModelIndex &index );
+
+  private:
+    QgsVectorLayer *mLayer = nullptr;
+    //    Type mType = QgsAttributesDnDTree::Type::Drag;
+
+    // QgsExpressionContextGenerator interface
+  public:
+    QgsExpressionContext createExpressionContext() const override;
+};
 
 #endif // QGSATTRIBUTESFORMPROPERTIES_H

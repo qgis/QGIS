@@ -62,12 +62,11 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   // available widgets tree
   QGridLayout *availableWidgetsWidgetLayout = new QGridLayout;
   mAvailableWidgetsTree = new QgsAttributesDnDTree( mLayer );
-  mAvailableWidgetsTreeView = new QTreeView( this );
+  mAvailableWidgetsTreeView = new QgsAttributesFormTreeView( mLayer, this );
   availableWidgetsWidgetLayout->addWidget( mAvailableWidgetsTreeView );
   availableWidgetsWidgetLayout->setContentsMargins( 0, 0, 0, 0 );
   mAvailableWidgetsWidget->setLayout( availableWidgetsWidgetLayout );
   mAvailableWidgetsTreeView->setSelectionMode( QAbstractItemView::SelectionMode::ExtendedSelection );
-  //mAvailableWidgetsTree->setHeaderLabels( QStringList() << tr( "Available Widgets" ) );
   //mAvailableWidgetsTree->setType( QgsAttributesDnDTree::Type::Drag );
   //mAvailableWidgetsTree->setContextMenuPolicy( Qt::CustomContextMenu );
 
@@ -77,17 +76,21 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   // form layout tree
   QGridLayout *formLayoutWidgetLayout = new QGridLayout;
   mFormLayoutTree = new QgsAttributesDnDTree( mLayer );
+  mFormLayoutTreeView = new QgsAttributesFormTreeView( mLayer, this );
   mFormLayoutWidget->setLayout( formLayoutWidgetLayout );
-  formLayoutWidgetLayout->addWidget( mFormLayoutTree );
+  formLayoutWidgetLayout->addWidget( mFormLayoutTreeView );
   formLayoutWidgetLayout->setContentsMargins( 0, 0, 0, 0 );
-  mFormLayoutTree->setHeaderLabels( QStringList() << tr( "Form Layout" ) );
-  mFormLayoutTree->setType( QgsAttributesDnDTree::Type::Drop );
+  //mFormLayoutTree->setType( QgsAttributesDnDTree::Type::Drop );
+
+  mFormLayoutModel = new QgsAttributesFormLayoutModel( mLayer, this );
+  mFormLayoutTreeView->setModel( mFormLayoutModel );
 
   connect( mAvailableWidgetsTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
 
   //connect( mAvailableWidgetsTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
   //connect( mAvailableWidgetsTree, &QWidget::customContextMenuRequested, this, &QgsAttributesFormProperties::onContextMenuRequested );
   connect( mFormLayoutTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
+
   connect( mAddTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::addContainer );
   connect( mRemoveTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::removeTabOrGroupButton );
   connect( mInvertSelectionButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::onInvertSelectionButtonClicked );
@@ -119,7 +122,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
 void QgsAttributesFormProperties::init()
 {
   initAvailableWidgetsTree();
-  //initFormLayoutTree();
+  initFormLayoutTree();
 
   initLayoutConfig();
   initInitPython();
@@ -133,7 +136,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   mAvailableWidgetsTreeView->setAcceptDrops( false );
   mAvailableWidgetsTreeView->setDragDropMode( QAbstractItemView::DragOnly );
 
-  //mAvailableWidgetsModel->rebuild();
+  mAvailableWidgetsModel->populate();
 }
 
 void QgsAttributesFormProperties::initFormLayoutTree()
@@ -146,11 +149,7 @@ void QgsAttributesFormProperties::initFormLayoutTree()
   mFormLayoutTree->setAcceptDrops( true );
   mFormLayoutTree->setDragDropMode( QAbstractItemView::DragDrop );
 
-  const auto constTabs = mLayer->editFormConfig().tabs();
-  for ( QgsAttributeEditorElement *wdg : constTabs )
-  {
-    loadAttributeEditorTreeItem( wdg, mFormLayoutTree->invisibleRootItem(), mFormLayoutTree );
-  }
+  mFormLayoutModel->populate();
 }
 
 
@@ -223,7 +222,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   QModelIndex index = mAvailableWidgetsTreeView->selectionModel()->selectedRows().at( 0 );
 
   const QgsAttributeFormTreeData::FieldConfig cfg = mAvailableWidgetsModel->data( index, QgsAttributesAvailableWidgetsModel::FieldPropertiesRoles::FieldConfigRole ).value< QgsAttributeFormTreeData::FieldConfig >();
-  const QString fieldName = mAvailableWidgetsModel->data( index, QgsAttributesAvailableWidgetsModel::FieldPropertiesRoles::FieldNameRole ).toString();
+  const QString fieldName = mAvailableWidgetsModel->data( index, QgsAttributesAvailableWidgetsModel::FieldPropertiesRoles::TreeItemNameRole ).toString();
   const int fieldIndex = mLayer->fields().indexOf( fieldName );
 
   if ( fieldIndex < 0 )
@@ -347,7 +346,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   // for ( auto itemIt = QTreeWidgetItemIterator( mAvailableWidgetsTree ); *itemIt; ++itemIt )
   // {
   //   QTreeWidgetItem *item = *itemIt;
-  //   if ( item->data( 0, FieldNameRole ).toString() == fieldName )
+  //   if ( item->data( 0, TreeItemNameRole ).toString() == fieldName )
   //     item->setData( 0, FieldConfigRole, QVariant::fromValue<FieldConfig>( cfg ) );
   // }
 }
@@ -399,154 +398,6 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
   mAttributeTypeFrame->layout()->addWidget( mAttributeContainerEdit );
 }
 
-QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree )
-{
-  Q_UNUSED( widgetDef );
-  Q_UNUSED( parent );
-  Q_UNUSED( tree );
-  // auto setCommonProperties = [widgetDef]( DnDTreeItemData &itemData ) {
-  //   itemData.setShowLabel( widgetDef->showLabel() );
-  //   itemData.setLabelStyle( widgetDef->labelStyle() );
-  //   itemData.setHorizontalStretch( widgetDef->horizontalStretch() );
-  //   itemData.setVerticalStretch( widgetDef->verticalStretch() );
-  // };
-
-  // QTreeWidgetItem *newWidget = nullptr;
-  // switch ( widgetDef->type() )
-  // {
-  //   case Qgis::AttributeEditorType::Field:
-  //   {
-  //     DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, widgetDef->name(), widgetDef->name() );
-  //     setCommonProperties( itemData );
-  //     newWidget = tree->addItem( parent, itemData );
-  //     break;
-  //   }
-
-  //   case Qgis::AttributeEditorType::Action:
-  //   {
-  //     const QgsAttributeEditorAction *actionEditor = static_cast<const QgsAttributeEditorAction *>( widgetDef );
-  //     const QgsAction action { actionEditor->action( mLayer ) };
-  //     if ( action.isValid() )
-  //     {
-  //       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Action, action.id().toString(), action.shortTitle().isEmpty() ? action.name() : action.shortTitle() );
-  //       setCommonProperties( itemData );
-  //       newWidget = tree->addItem( parent, itemData );
-  //     }
-  //     else
-  //     {
-  //       QgsDebugError( QStringLiteral( "Invalid form action" ) );
-  //     }
-  //     break;
-  //   }
-
-  //   case Qgis::AttributeEditorType::Relation:
-  //   {
-  //     const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
-  //     DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relationEditor->relation().id(), relationEditor->relation().name() );
-  //     setCommonProperties( itemData );
-
-  //     RelationEditorConfiguration relEdConfig;
-  //     //      relEdConfig.buttons = relationEditor->visibleButtons();
-  //     relEdConfig.mRelationWidgetType = relationEditor->relationWidgetTypeId();
-  //     relEdConfig.mRelationWidgetConfig = relationEditor->relationEditorConfiguration();
-  //     relEdConfig.nmRelationId = relationEditor->nmRelationId();
-  //     relEdConfig.forceSuppressFormPopup = relationEditor->forceSuppressFormPopup();
-  //     relEdConfig.label = relationEditor->label();
-  //     itemData.setRelationEditorConfiguration( relEdConfig );
-  //     newWidget = tree->addItem( parent, itemData );
-  //     break;
-  //   }
-
-  //   case Qgis::AttributeEditorType::Container:
-  //   {
-  //     DnDTreeItemData itemData( DnDTreeItemData::Container, widgetDef->name(), widgetDef->name() );
-
-  //     const QgsAttributeEditorContainer *container = static_cast<const QgsAttributeEditorContainer *>( widgetDef );
-  //     if ( !container )
-  //       break;
-
-  //     itemData.setColumnCount( container->columnCount() );
-  //     itemData.setContainerType( container->type() );
-  //     itemData.setBackgroundColor( container->backgroundColor() );
-  //     itemData.setVisibilityExpression( container->visibilityExpression() );
-  //     itemData.setCollapsedExpression( container->collapsedExpression() );
-  //     itemData.setCollapsed( container->collapsed() );
-
-  //     setCommonProperties( itemData );
-
-  //     newWidget = tree->addItem( parent, itemData );
-
-  //     const QList<QgsAttributeEditorElement *> children = container->children();
-  //     for ( QgsAttributeEditorElement *wdg : children )
-  //     {
-  //       loadAttributeEditorTreeItem( wdg, newWidget, tree );
-  //     }
-  //     break;
-  //   }
-
-  //   case Qgis::AttributeEditorType::QmlElement:
-  //   {
-  //     const QgsAttributeEditorQmlElement *qmlElementEditor = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
-  //     DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, widgetDef->name(), widgetDef->name() );
-  //     QmlElementEditorConfiguration qmlEdConfig;
-  //     qmlEdConfig.qmlCode = qmlElementEditor->qmlCode();
-  //     itemData.setQmlElementEditorConfiguration( qmlEdConfig );
-  //     setCommonProperties( itemData );
-  //     newWidget = tree->addItem( parent, itemData );
-  //     break;
-  //   }
-
-  //   case Qgis::AttributeEditorType::HtmlElement:
-  //   {
-  //     const QgsAttributeEditorHtmlElement *htmlElementEditor = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
-  //     DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::HtmlWidget, widgetDef->name(), widgetDef->name() );
-  //     HtmlElementEditorConfiguration htmlEdConfig;
-  //     htmlEdConfig.htmlCode = htmlElementEditor->htmlCode();
-  //     itemData.setHtmlElementEditorConfiguration( htmlEdConfig );
-  //     setCommonProperties( itemData );
-  //     newWidget = tree->addItem( parent, itemData );
-  //     break;
-  //   }
-
-  //   case Qgis::AttributeEditorType::TextElement:
-  //   {
-  //     const QgsAttributeEditorTextElement *textElementEditor = static_cast<const QgsAttributeEditorTextElement *>( widgetDef );
-  //     DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::TextWidget, widgetDef->name(), widgetDef->name() );
-  //     TextElementEditorConfiguration textEdConfig;
-  //     textEdConfig.text = textElementEditor->text();
-  //     itemData.setTextElementEditorConfiguration( textEdConfig );
-  //     setCommonProperties( itemData );
-  //     newWidget = tree->addItem( parent, itemData );
-  //     break;
-  //   }
-
-  //   case Qgis::AttributeEditorType::SpacerElement:
-  //   {
-  //     const QgsAttributeEditorSpacerElement *spacerElementEditor = static_cast<const QgsAttributeEditorSpacerElement *>( widgetDef );
-  //     DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::SpacerWidget, widgetDef->name(), widgetDef->name() );
-  //     SpacerElementEditorConfiguration spacerEdConfig;
-  //     spacerEdConfig.drawLine = spacerElementEditor->drawLine();
-  //     itemData.setSpacerElementEditorConfiguration( spacerEdConfig );
-  //     setCommonProperties( itemData );
-  //     itemData.setShowLabel( false );
-  //     newWidget = tree->addItem( parent, itemData );
-  //     break;
-  //   }
-
-  //   case Qgis::AttributeEditorType::Invalid:
-  //   {
-  //     QgsDebugError( QStringLiteral( "Not loading invalid attribute editor type..." ) );
-  //     break;
-  //   }
-  // }
-
-  // if ( newWidget )
-  //   newWidget->setExpanded( true );
-
-  // return newWidget;
-}
-
-
 void QgsAttributesFormProperties::onAttributeSelectionChanged()
 {
   disconnect( mFormLayoutTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
@@ -583,9 +434,10 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QTreeView *emitte
   }
   else
   {
-    auto indexType = static_cast< QgsAttributeFormTreeData::AttributeFormTreeItemType >( emitter->selectionModel()->selectedRows().at( 0 ).data( QgsAttributesAvailableWidgetsModel::TreeItemTypeRole ).toInt() );
+    const QModelIndex index = emitter->selectionModel()->selectedRows().at( 0 );
+    auto indexType = static_cast< QgsAttributeFormTreeData::AttributeFormTreeItemType >( index.data( QgsAttributesAvailableWidgetsModel::TreeItemTypeRole ).toInt() );
     //emitter->selectionModel()->selectedIndexes().at( 0 )
-    //const DnDTreeItemData itemData = emitter->selectedItems().at( 0 )->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
+    //const QgsAttributeFormTreeData::DnDTreeItemData itemData = index.data( QgsAttributesAvailableWidgetsModel::DnDTreeRole ).value<QgsAttributeFormTreeData::DnDTreeItemData>();
     switch ( indexType )
     {
       // case DnDTreeItemData::Relation:
@@ -617,13 +469,13 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QTreeView *emitte
       //   loadAttributeContainerEdit();
       //   break;
       // }
-      // case DnDTreeItemData::Action:
-      // {
-      //   receiver->selectFirstMatchingItem( itemData );
-      //   const QgsAction action { mLayer->actions()->action( itemData.name() ) };
-      //   loadInfoWidget( action.html() );
-      //   break;
-      // }
+      case QgsAttributeFormTreeData::Action:
+      {
+        //receiver->selectFirstMatchingItem( itemData );
+        const QgsAction action { mLayer->actions()->action( index.data( QgsAttributesAvailableWidgetsModel::TreeItemIdRole ).toString() ) };
+        loadInfoWidget( action.html() );
+        break;
+      }
       case QgsAttributeFormTreeData::AttributeFormTreeItemType::QmlWidget:
       case QgsAttributeFormTreeData::AttributeFormTreeItemType::HtmlWidget:
       case QgsAttributeFormTreeData::AttributeFormTreeItemType::TextWidget:
@@ -927,7 +779,7 @@ void QgsAttributesFormProperties::apply()
     index = mAvailableWidgetsModel->index( i, 0, fieldContainer );
     const QgsAttributeFormTreeData::FieldConfig cfg = mAvailableWidgetsModel->data( index, QgsAttributesAvailableWidgetsModel::FieldPropertiesRoles::FieldConfigRole ).value<QgsAttributeFormTreeData::FieldConfig>();
 
-    const QString fieldName = mAvailableWidgetsModel->data( index, QgsAttributesAvailableWidgetsModel::FieldPropertiesRoles::FieldNameRole ).toString();
+    const QString fieldName = mAvailableWidgetsModel->data( index, QgsAttributesAvailableWidgetsModel::FieldPropertiesRoles::TreeItemNameRole ).toString();
     const int idx = mLayer->fields().indexOf( fieldName );
 
     //continue in case field does not exist anymore
@@ -1031,40 +883,6 @@ void QgsAttributesFormProperties::apply()
 
 
 /*
- * FieldConfig implementation
- */
-QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
-{
-  mAlias = layer->fields().at( idx ).alias();
-  mDataDefinedProperties = layer->editFormConfig().dataDefinedFieldProperties( layer->fields().at( idx ).name() );
-  mComment = layer->fields().at( idx ).comment();
-  mEditable = !layer->editFormConfig().readOnly( idx );
-  mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
-  mReuseLastValues = layer->editFormConfig().reuseLastValue( idx );
-  mFieldConstraints = layer->fields().at( idx ).constraints();
-  const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( layer, layer->fields().field( idx ).name() );
-  mEditorWidgetType = setup.type();
-  mEditorWidgetConfig = setup.config();
-  mSplitPolicy = layer->fields().at( idx ).splitPolicy();
-  mDuplicatePolicy = layer->fields().at( idx ).duplicatePolicy();
-  mMergePolicy = layer->fields().at( idx ).mergePolicy();
-}
-
-QgsAttributesFormProperties::FieldConfig::operator QVariant()
-{
-  return QVariant::fromValue<QgsAttributesFormProperties::FieldConfig>( *this );
-}
-
-/*
- * RelationEditorConfiguration implementation
- */
-
-QgsAttributesFormProperties::RelationEditorConfiguration::operator QVariant()
-{
-  return QVariant::fromValue<QgsAttributesFormProperties::RelationEditorConfiguration>( *this );
-}
-
-/*
  * DnDTree implementation
  */
 
@@ -1092,53 +910,6 @@ QgsAttributesDnDTree::QgsAttributesDnDTree( QgsVectorLayer *layer, QWidget *pare
 {
   connect( this, &QTreeWidget::itemDoubleClicked, this, &QgsAttributesDnDTree::onItemDoubleClicked );
 }
-
-// QTreeWidgetItem *QgsAttributesDnDTree::addItem( QTreeWidgetItem *parent, const QgsAttributesFormProperties::DnDTreeItemData &data, int index, const QIcon &icon )
-// {
-//   QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << data.name() );
-
-//   switch ( data.type() )
-//   {
-//     case QgsAttributesFormProperties::DnDTreeItemData::Action:
-//     case QgsAttributesFormProperties::DnDTreeItemData::Field:
-//     case QgsAttributesFormProperties::DnDTreeItemData::Relation:
-//     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
-//     case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
-//     case QgsAttributesFormProperties::DnDTreeItemData::TextWidget:
-//     case QgsAttributesFormProperties::DnDTreeItemData::SpacerWidget:
-//       newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
-//       break;
-
-//     case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
-//     case QgsAttributesFormProperties::DnDTreeItemData::Container:
-//     {
-//       newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
-//       newItem->setBackground( 0, QBrush( Qt::lightGray ) );
-//     }
-//     break;
-//   }
-
-//   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, QVariant::fromValue( data ) );
-//   newItem->setText( 0, data.displayName() );
-//   newItem->setIcon( 0, icon );
-
-//   if ( data.type() == QgsAttributesFormProperties::DnDTreeItemData::Relation )
-//   {
-//     const QgsRelation relation = QgsProject::instance()->relationManager()->relation( data.name() );
-//     if ( !relation.isValid() || relation.referencedLayer() != mLayer )
-//     {
-//       newItem->setText( 0, tr( "Invalid relation" ) );
-//       newItem->setForeground( 0, QColor( 255, 0, 0 ) );
-//     }
-//   }
-
-//   if ( index < 0 )
-//     parent->addChild( newItem );
-//   else
-//     parent->insertChild( index, newItem );
-
-//   return newItem;
-// }
 
 /**
  * Is called when mouse is moved over attributes tree before a
@@ -1828,7 +1599,6 @@ void QgsAttributesDnDTree::selectFirstMatchingItem( const QgsAttributeFormTreeDa
   // clearSelection();
 }
 
-
 /*
  * Serialization helpers for DesigerTreeItemData so we can stuff this easily into QMimeData
  */
@@ -1854,6 +1624,68 @@ void QgsAttributesDnDTree::selectFirstMatchingItem( const QgsAttributeFormTreeDa
 //   return stream;
 // }
 
+
+//
+// QgsAttributesFormTreeView implementation
+//
+
+QgsAttributesFormTreeView::QgsAttributesFormTreeView( QgsVectorLayer *layer, QWidget *parent )
+  : QTreeView( parent )
+  , mLayer( layer )
+{
+  connect( this, &QTreeView::doubleClicked, this, &QgsAttributesFormTreeView::onItemDoubleClicked );
+}
+
+void QgsAttributesFormTreeView::selectFirstMatchingItem( const QgsAttributeFormTreeData::DnDTreeItemData &data )
+{
+  Q_UNUSED( data )
+  // To be used with Relations, fields and actions
+  // QTreeWidgetItemIterator it( this );
+  // while ( *it )
+  // {
+  //   const QgsAttributeFormTreeData::DnDTreeItemData rowData = ( *it )->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributeFormTreeData::DnDTreeItemData>();
+  //   if ( data.type() == rowData.type() && data.name() == rowData.name() )
+  //   {
+  //     if ( selectedItems().count() == 1 && ( *it )->isSelected() == true )
+  //     {
+  //       // the selection is already good
+  //     }
+  //     else
+  //     {
+  //       clearSelection();
+  //       ( *it )->setSelected( true );
+  //     }
+  //     return;
+  //   }
+  //   ++it;
+  // }
+  // clearSelection();
+}
+
+void QgsAttributesFormTreeView::onItemDoubleClicked( const QModelIndex &index )
+{
+  Q_UNUSED( index )
+  // TODO
+}
+
+QgsExpressionContext QgsAttributesFormTreeView::createExpressionContext() const
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
+  if ( mLayer )
+    expContext << QgsExpressionContextUtils::layerScope( mLayer );
+
+  expContext.appendScope( QgsExpressionContextUtils::formScope() );
+  return expContext;
+}
+
+
+//
+// QgsAttributesFormProperties implementation
+//
+
 void QgsAttributesFormProperties::updatedFields()
 {
   // Store configuration to insure changes made are kept after refreshing the list
@@ -1862,7 +1694,7 @@ void QgsAttributesFormProperties::updatedFields()
   for ( int i = 0; i < fieldContainer->childCount(); i++ )
   {
     QTreeWidgetItem *fieldItem = fieldContainer->child( i );
-    const QString fieldName = fieldItem->data( 0, FieldNameRole ).toString();
+    const QString fieldName = fieldItem->data( 0, QgsAttributesAvailableWidgetsModel::TreeItemNameRole ).toString();
     const QgsAttributeFormTreeData::FieldConfig cfg = fieldItem->data( 0, FieldConfigRole ).value<QgsAttributeFormTreeData::FieldConfig>();
     fieldConfigs[fieldName] = cfg;
   }
@@ -1873,7 +1705,7 @@ void QgsAttributesFormProperties::updatedFields()
   for ( int i = 0; i < fieldContainer->childCount(); i++ )
   {
     QTreeWidgetItem *fieldItem = fieldContainer->child( i );
-    const QString fieldName = fieldItem->data( 0, FieldNameRole ).toString();
+    const QString fieldName = fieldItem->data( 0, QgsAttributesAvailableWidgetsModel::TreeItemNameRole ).toString();
     if ( fieldConfigs.contains( fieldName ) )
     {
       fieldItem->setData( 0, FieldConfigRole, fieldConfigs[fieldName] );
@@ -1905,63 +1737,78 @@ void QgsAttributesFormProperties::copyWidgetConfiguration()
   // if ( mAvailableWidgetsTree->selectedItems().count() != 1 )
   //   return;
 
-  const QTreeWidgetItem *item = mAvailableWidgetsTree->selectedItems().at( 0 );
-  const DnDTreeItemData itemData = item->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
-  if ( itemData.type() != DnDTreeItemData::Field )
-    return;
+  // const QTreeWidgetItem *item = mAvailableWidgetsTree->selectedItems().at( 0 );
+  // const DnDTreeItemData itemData = item->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
+  // if ( itemData.type() != DnDTreeItemData::Field )
+  //   return;
 
-  const QString fieldName = item->data( 0, FieldNameRole ).toString();
-  const int index = mLayer->fields().indexOf( fieldName );
+  // const QString fieldName = item->data( 0, TreeItemNameRole ).toString();
+  // const int index = mLayer->fields().indexOf( fieldName );
 
-  if ( index < 0 )
-    return;
+  // if ( index < 0 )
+  //   return;
 
-  const QgsField field = mLayer->fields().field( index );
+  // const QgsField field = mLayer->fields().field( index );
 
-  // We won't copy field aliases nor comments
-  QDomDocument doc;
-  QDomElement documentElement = doc.createElement( QStringLiteral( "FormWidgetClipboard" ) );
-  documentElement.setAttribute( QStringLiteral( "name" ), field.name() );
+  // // We won't copy field aliases nor comments
+  // QDomDocument doc;
+  // QDomElement documentElement = doc.createElement( QStringLiteral( "FormWidgetClipboard" ) );
+  // documentElement.setAttribute( QStringLiteral( "name" ), field.name() );
 
-  // Editor widget setup
-  QgsEditorWidgetSetup widgetSetup = field.editorWidgetSetup();
+  // // Editor widget setup
+  // QgsEditorWidgetSetup widgetSetup = field.editorWidgetSetup();
 
-  QDomElement editWidgetElement = doc.createElement( QStringLiteral( "editWidget" ) );
-  documentElement.appendChild( editWidgetElement );
-  editWidgetElement.setAttribute( QStringLiteral( "type" ), widgetSetup.type() );
-  QDomElement editWidgetConfigElement = doc.createElement( QStringLiteral( "config" ) );
+  // QDomElement editWidgetElement = doc.createElement( QStringLiteral( "editWidget" ) );
+  // documentElement.appendChild( editWidgetElement );
+  // editWidgetElement.setAttribute( QStringLiteral( "type" ), widgetSetup.type() );
+  // QDomElement editWidgetConfigElement = doc.createElement( QStringLiteral( "config" ) );
 
-  editWidgetConfigElement.appendChild( QgsXmlUtils::writeVariant( widgetSetup.config(), doc ) );
-  editWidgetElement.appendChild( editWidgetConfigElement );
+  // editWidgetConfigElement.appendChild( QgsXmlUtils::writeVariant( widgetSetup.config(), doc ) );
+  // editWidgetElement.appendChild( editWidgetConfigElement );
 
-  // Split policy
-  QDomElement splitPolicyElement = doc.createElement( QStringLiteral( "splitPolicy" ) );
-  splitPolicyElement.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.splitPolicy() ) );
-  documentElement.appendChild( splitPolicyElement );
+  // // Split policy
+  // QDomElement splitPolicyElement = doc.createElement( QStringLiteral( "splitPolicy" ) );
+  // splitPolicyElement.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.splitPolicy() ) );
+  // documentElement.appendChild( splitPolicyElement );
 
-  // Duplicate policy
-  QDomElement duplicatePolicyElement = doc.createElement( QStringLiteral( "duplicatePolicy" ) );
-  duplicatePolicyElement.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.duplicatePolicy() ) );
-  documentElement.appendChild( duplicatePolicyElement );
+  // // Duplicate policy
+  // QDomElement duplicatePolicyElement = doc.createElement( QStringLiteral( "duplicatePolicy" ) );
+  // duplicatePolicyElement.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.duplicatePolicy() ) );
+  // documentElement.appendChild( duplicatePolicyElement );
 
-  // Merge policy
-  QDomElement mergePolicyElement = doc.createElement( QStringLiteral( "mergePolicy" ) );
-  mergePolicyElement.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.mergePolicy() ) );
-  documentElement.appendChild( mergePolicyElement );
+  // // Default expressions
+  // QDomElement defaultElem = doc.createElement( QStringLiteral( "default" ) );
+  // defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValueDefinition().expression() );
+  // defaultElem.setAttribute( QStringLiteral( "applyOnUpdate" ), field.defaultValueDefinition().applyOnUpdate() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  // documentElement.appendChild( defaultElem );
 
-  // Default expressions
-  QDomElement defaultElem = doc.createElement( QStringLiteral( "default" ) );
-  defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValueDefinition().expression() );
-  defaultElem.setAttribute( QStringLiteral( "applyOnUpdate" ), field.defaultValueDefinition().applyOnUpdate() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  documentElement.appendChild( defaultElem );
+  // // Constraints
+  // QDomElement constraintElem = doc.createElement( QStringLiteral( "constraint" ) );
+  // constraintElem.setAttribute( QStringLiteral( "constraints" ), field.constraints().constraints() );
+  // constraintElem.setAttribute( QStringLiteral( "unique_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
+  // constraintElem.setAttribute( QStringLiteral( "notnull_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
+  // constraintElem.setAttribute( QStringLiteral( "exp_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
+  // documentElement.appendChild( constraintElem );
 
-  // Constraints
-  QDomElement constraintElem = doc.createElement( QStringLiteral( "constraint" ) );
-  constraintElem.setAttribute( QStringLiteral( "constraints" ), field.constraints().constraints() );
-  constraintElem.setAttribute( QStringLiteral( "unique_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
-  constraintElem.setAttribute( QStringLiteral( "notnull_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
-  constraintElem.setAttribute( QStringLiteral( "exp_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
-  documentElement.appendChild( constraintElem );
+  // // Constraint expressions
+  // QDomElement constraintExpressionElem = doc.createElement( QStringLiteral( "constraintExpression" ) );
+  // constraintExpressionElem.setAttribute( QStringLiteral( "exp" ), field.constraints().constraintExpression() );
+  // constraintExpressionElem.setAttribute( QStringLiteral( "desc" ), field.constraints().constraintDescription() );
+  // documentElement.appendChild( constraintExpressionElem );
+
+  // // Widget general settings
+  // QDomElement widgetGeneralSettingsElem = doc.createElement( QStringLiteral( "widgetGeneralSettings" ) );
+  // widgetGeneralSettingsElem.setAttribute( QStringLiteral( "editable" ), !mLayer->editFormConfig().readOnly( index ) );
+  // widgetGeneralSettingsElem.setAttribute( QStringLiteral( "reuse_last_values" ), mLayer->editFormConfig().labelOnTop( index ) );
+  // widgetGeneralSettingsElem.setAttribute( QStringLiteral( "label_on_top" ), mLayer->editFormConfig().reuseLastValue( index ) );
+  // documentElement.appendChild( widgetGeneralSettingsElem );
+
+  // // Widget display section
+  // if ( mAttributeWidgetEdit )
+  // {
+  //   // Go for the corresponding form layout item and extract its display settings
+  //   if ( mFormLayoutTree->selectedItems().count() != 1 )
+  //     return;
 
   // Constraint expressions
   QDomElement constraintExpressionElem = doc.createElement( QStringLiteral( "constraintExpression" ) );
