@@ -31,7 +31,6 @@ from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .FieldPyculator import FieldsPyculator
 from .FindProjection import FindProjection
-from .GeometryConvert import GeometryConvert
 from .Heatmap import Heatmap
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
@@ -92,7 +91,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             ExecuteSQL(),
             FieldsPyculator(),
             FindProjection(),
-            GeometryConvert(),
             Heatmap(),
             HubDistanceLines(),
             HubDistancePoints(),

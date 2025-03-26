@@ -80,6 +80,7 @@
 #include "qgsalgorithmconditionalbranch.h"
 #include "qgsalgorithmconstantraster.h"
 #include "qgsalgorithmconverttocurves.h"
+#include "qgsalgorithmconvertgeometrytype.h"
 #include "qgsalgorithmconvexhull.h"
 #include "qgsalgorithmcoveragesimplify.h"
 #include "qgsalgorithmcoverageunion.h"
@@ -389,6 +390,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsConditionalBranchAlgorithm() );
   addAlgorithm( new QgsConstantRasterAlgorithm() );
   addAlgorithm( new QgsConvertToCurvesAlgorithm() );
+  addAlgorithm( new QgsConvertGeometryTypeAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );
   addAlgorithm( new QgsCopyLayerMetadataAlgorithm() );
   addAlgorithm( new QgsCoverageSimplifyAlgorithm() );
