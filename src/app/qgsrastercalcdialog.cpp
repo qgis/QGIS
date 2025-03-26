@@ -25,8 +25,8 @@
 #include "qgsrasterlayer.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
-#include "cpl_string.h"
 #include "gdal.h"
 
 #include <QFileDialog>
@@ -187,7 +187,6 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalcDialog::rasterEntries() const
   return entries;
 }
 
-
 void QgsRasterCalcDialog::setExtentSize( QgsRasterLayer *layer )
 {
   mNColumnsSpinBox->setValue( layer->width() );
@@ -195,7 +194,6 @@ void QgsRasterCalcDialog::setExtentSize( QgsRasterLayer *layer )
   mExtentGroupBox->setOutputExtentFromLayer( layer );
   mExtentSizeSet = true;
 }
-
 
 void QgsRasterCalcDialog::insertAvailableRasterBands()
 {
@@ -270,6 +268,12 @@ int QgsRasterCalcDialog::numberOfColumns() const
 int QgsRasterCalcDialog::numberOfRows() const
 {
   return mNRowsSpinBox->value();
+}
+
+QStringList QgsRasterCalcDialog::createOptions() const
+{
+  QStringList options = mCreateOptionsGroupBox->isChecked() ? mCreateOptionsWidget->options() : QStringList();
+  return options;
 }
 
 //slots

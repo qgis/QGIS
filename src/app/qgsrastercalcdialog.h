@@ -20,7 +20,6 @@
 
 #include "ui_qgsrastercalcdialogbase.h"
 #include "qgsrastercalculator.h"
-#include "qgshelp.h"
 #include "qgis_app.h"
 
 class QgsMapCanvas;
@@ -54,6 +53,9 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
     int numberOfColumns() const;
     //! Number of pixels in y-direction
     int numberOfRows() const;
+
+    //! Raster creation options
+    QStringList createOptions() const;
 
     /**
      * Extract raster layer information from the current project
