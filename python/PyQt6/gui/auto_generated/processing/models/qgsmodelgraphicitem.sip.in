@@ -170,7 +170,7 @@ Return the component associated to the socket */
 %End
     QgsModelComponentGraphicItem *componentItem();
 %Docstring
-Return the parent GraphicItem (:py:class:`QgsModelComponentGraphicItem`) associated to the socket */
+Return the parent grapghic item associated to the socket */
 %End
   signals:
 
