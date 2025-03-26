@@ -695,7 +695,9 @@ void QgsSymbolSelectorWidget::addLayer()
   if ( ddWidth )
     static_cast<QgsLineSymbol *>( parentSymbol )->setDataDefinedWidth( ddWidth );
 
-  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayerPtr, parentSymbol->type(), mVectorLayer, screen() );
+  // TODO -- using newLayerPtr is not safe in some circumstances here. This needs reworking so that SymbolLayerItem does has
+  // its own owned QgsSymbolLayer clone, and isn't reliant on a pointer to the object owned by parentSymbol.
+  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayerPtr, parentSymbol->type(), mVectorLayer, screen() ); // cppcheck-suppress invalidLifetime
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
   item->updatePreview();
 
