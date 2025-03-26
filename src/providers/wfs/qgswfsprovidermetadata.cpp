@@ -225,8 +225,12 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
   if ( caps.version.isEmpty() )
     return res;
 
+  QgsDataSourceUri dsUri( uri );
+  dsUri.removeParam( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE );
+  dsUri.setParam( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE, QStringLiteral( "true" ) );
+
   QgsWFSProvider provider(
-    uri + " " + QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE + "='true'",
+    dsUri.uri( false ),
     QgsDataProvider::ProviderOptions(), caps
   );
   if ( provider.metadataRetrievalCanceled() )
