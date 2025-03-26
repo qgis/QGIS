@@ -10,13 +10,6 @@ qgis:boxplot: >
 qgis:concavehull: >
   This algorithm computes the concave hull of the features in an input layer.
 
-qgis:convertgeometrytype: >
-  This algorithm generates a new layer based on an existing one, with a different type of geometry.
-
-  Not all conversions are possible. For instance, a line layer can be converted to a point layer, but a point layer cannot be converted to a line layer.
-
-  See the "Polygonize" or "Lines to polygons" algorithm for alternative options.
-
 qgis:distancematrix: >
   This algorithm creates a table containing a distance matrix, with distances between all the points in a points layer.
 
