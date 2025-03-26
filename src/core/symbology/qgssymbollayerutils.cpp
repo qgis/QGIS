@@ -1297,7 +1297,7 @@ std::unique_ptr< QgsSymbol > QgsSymbolLayerUtils::loadSymbol( const QDomElement 
       else
       {
         std::unique_ptr< QgsSymbolLayer > layer = loadSymbolLayer( e, context );
-        if ( layer.get() )
+        if ( layer )
         {
           // Dealing with sub-symbols nested into a layer
           const QDomElement s = e.firstChildElement( QStringLiteral( "symbol" ) );

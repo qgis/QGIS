@@ -27,7 +27,7 @@ QgsReportSectionFieldGroup::QgsReportSectionFieldGroup( QgsAbstractReportSection
 
 QString QgsReportSectionFieldGroup::description() const
 {
-  if ( mCoverageLayer.get() )
+  if ( mCoverageLayer )
     return QObject::tr( "Group: %1 - %2" ).arg( mCoverageLayer->name(), mField );
   else
     return QObject::tr( "Group" );
@@ -60,7 +60,7 @@ QgsReportSectionFieldGroup *QgsReportSectionFieldGroup::clone() const
 
 bool QgsReportSectionFieldGroup::beginRender()
 {
-  if ( !mCoverageLayer.get() )
+  if ( !mCoverageLayer )
     return false;
 
   if ( !mField.isEmpty() )
