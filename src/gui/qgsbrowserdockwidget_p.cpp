@@ -271,6 +271,16 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       mTabWidget->removeTab( mTabWidget->indexOf( mAttributesTab ) );
       mAttributesTab = nullptr;
     }
+
+    // Remove Preview Tab if layer has no geometry
+    if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer.get() ) )
+    {
+      if ( vLayer->geometryType() == Qgis::GeometryType::Null )
+      {
+        mTabWidget->removeTab( mTabWidget->indexOf( mPreviewTab ) );
+        mPreviewTab = nullptr;
+      }
+    }
   }
 
   const QString myStyle = QgsApplication::reportStyleSheet();
