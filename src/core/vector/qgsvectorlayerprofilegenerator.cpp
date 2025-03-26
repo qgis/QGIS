@@ -1442,7 +1442,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
           shiftedPoly.reset( new QgsPolygon( new QgsLineString( newX, newY, newZ ) ) );
 
           intersection.reset( mProfileBufferedCurveEngine->intersection( shiftedPoly.get(), &error ) );
-          if ( intersection.get() )
+          if ( intersection )
             processTriangleLineIntersect( clampedPolygon.get(), intersection.get(), transformedParts, crossSectionParts );
 #ifdef QGISDEBUG
           else

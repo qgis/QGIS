@@ -90,7 +90,7 @@ struct StatsProcessor
         }
       }
 
-      if ( !block.get() )
+      if ( !block )
       {
         updateFeedback();
         return QgsPointCloudStatistics();
