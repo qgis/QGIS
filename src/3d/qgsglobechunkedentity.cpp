@@ -443,7 +443,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsGlobeEntity::rayIntersection( const QgsRa
 
     if ( node->entity() && ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
     {
-      QgsGeoTransform *nodeGeoTransform = node->entity()->findChild<QgsGeoTransform*>();
+      QgsGeoTransform *nodeGeoTransform = node->entity()->findChild<QgsGeoTransform *>();
       Q_ASSERT( nodeGeoTransform );
       const QList<Qt3DRender::QGeometryRenderer *> rendLst = node->entity()->findChildren<Qt3DRender::QGeometryRenderer *>();
       for ( Qt3DRender::QGeometryRenderer *rend : rendLst )

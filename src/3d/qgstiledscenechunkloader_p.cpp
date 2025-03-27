@@ -391,7 +391,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersec
       {
         QVector3D nodeIntPoint;
         int triangleIndex = -1;
-        QgsGeoTransform *nodeGeoTransform = node->entity()->findChild<QgsGeoTransform*>();
+        QgsGeoTransform *nodeGeoTransform = node->entity()->findChild<QgsGeoTransform *>();
         Q_ASSERT( nodeGeoTransform );
         bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, nodeGeoTransform->matrix(), nodeIntPoint, triangleIndex );
         if ( success )
