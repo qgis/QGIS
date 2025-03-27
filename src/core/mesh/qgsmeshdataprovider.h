@@ -26,27 +26,19 @@
 #include <limits>
 
 #include "qgis_core.h"
-#include "qgspoint.h"
 #include "qgsdataprovider.h"
 #include "qgsprovidermetadata.h"
 #include "qgsmeshdataset.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
+#include "qgsmeshutils.h"
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsmeshutils.h"
+% End
+#endif
 
 class QgsRectangle;
-
-//! xyz coords of vertex
-typedef QgsPoint QgsMeshVertex;
-
-//! List of vertex indexes
-typedef QVector<int> QgsMeshFace;
-
-/**
- * Edge is a straight line seqment between 2 points.
- * Stores the pair of vertex indexes
- * \since QGIS 3.14
- */
-typedef QPair<int, int> QgsMeshEdge;
 
 /**
  * \ingroup core
