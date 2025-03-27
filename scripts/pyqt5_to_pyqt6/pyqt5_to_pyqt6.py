@@ -335,6 +335,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
             elif (
                 len(_node.args) == 1
                 and isinstance(_node.args[0], ast.Call)
+                and hasattr(_node.args[0].func, "id")
                 and _node.args[0].func.id == "QDate"
             ):
                 # QDateTime(QDate(..)) doesn't work anymore,
