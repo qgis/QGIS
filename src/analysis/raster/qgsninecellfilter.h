@@ -159,9 +159,9 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     double mCellSizeX = -1.0;
     double mCellSizeY = -1.0;
     //! The nodata value of the input layer
-    float mInputNodataValue = -1.0;
+    double mInputNodataValue = -1.0;
     //! The nodata value of the output layer
-    float mOutputNodataValue = -1.0;
+    double mOutputNodataValue = -9999.0;
     //! Scale factor for z-value if x-/y- units are different to z-units (111120 for degree->meters and 370400 for degree->feet)
     double mZFactor = 1.0;
 };

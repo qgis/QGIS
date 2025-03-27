@@ -202,9 +202,8 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   {
     return 5;
   }
-  //try to set -9999 as nodata value
-  GDALSetRasterNoDataValue( outputRasterBand, -9999 );
-  mOutputNodataValue = GDALGetRasterNoDataValue( outputRasterBand, nullptr );
+  // set nodata value
+  GDALSetRasterNoDataValue( outputRasterBand, mOutputNodataValue );
 
   if ( ySize < 3 ) //we require at least three rows (should be true for most datasets)
   {
@@ -377,9 +376,8 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
   {
     return 5;
   }
-  //try to set -9999 as nodata value
-  GDALSetRasterNoDataValue( outputRasterBand, -9999 );
-  mOutputNodataValue = GDALGetRasterNoDataValue( outputRasterBand, nullptr );
+  // set nodata value
+  GDALSetRasterNoDataValue( outputRasterBand, mOutputNodataValue );
 
   if ( ySize < 3 ) //we require at least three rows (should be true for most datasets)
   {
