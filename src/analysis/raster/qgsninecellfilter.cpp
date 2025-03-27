@@ -33,7 +33,6 @@
 #include <QFileInfo>
 #include <iterator>
 
-
 QgsNineCellFilter::QgsNineCellFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
   : mInputFile( inputFile )
   , mOutputFile( outputFile )
@@ -129,7 +128,7 @@ gdal::dataset_unique_ptr QgsNineCellFilter::openOutputFile( GDALDatasetH inputDa
   const int ySize = GDALGetRasterYSize( inputDataset );
 
   //open output file
-  char **papszOptions = nullptr;
+  char **papszOptions = QgsGdalUtils::papszFromStringList( mCreateOptions );
   gdal::dataset_unique_ptr outputDataset( GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), xSize, ySize, 1, GDT_Float32, papszOptions ) );
   if ( !outputDataset )
   {
