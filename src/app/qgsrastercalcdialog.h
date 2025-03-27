@@ -66,6 +66,7 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
 
   private slots:
     void mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item );
+    void mOutputFormatComboBox_currentIndexChanged( const QString &text );
     void mButtonBox_accepted();
     void mExpressionTextEdit_textChanged();
     void extentLayerChanged( QgsMapLayer *layer );
@@ -120,6 +121,9 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
     bool filePathValid() const;
 
     static QString quoteBandEntry( const QString &layerName );
+
+    //! Returns true if the output layer already exists.
+    bool outputLayerExists() const;
 
     //! Stores relation between driver name and extension
     QMap<QString, QString> mDriverExtensionMap;
