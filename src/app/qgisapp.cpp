@@ -13235,7 +13235,7 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
       axis.setMode( Qgs3DAxisSettings::Mode::Off );
       map->set3DAxisSettings( axis );
     }
-    else  // local scene
+    else // local scene
     {
       if ( !prj->crs3D().isGeographic() )
       {
@@ -13303,7 +13303,7 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
       {
         centerLon = ( canvasExtentLatLon.xMinimum() + canvasExtentLatLon.xMaximum() ) / 2;
         centerLat = ( canvasExtentLatLon.yMinimum() + canvasExtentLatLon.yMaximum() ) / 2;
-        constexpr double METERS_PER_DEGREE = 111'000;  // rough approximation (2*pi*R / 360)
+        constexpr double METERS_PER_DEGREE = 111'000; // rough approximation (2*pi*R / 360)
         dist = std::max( canvasExtentLatLon.width(), canvasExtentLatLon.height() ) * METERS_PER_DEGREE;
       }
       canvasWidget->mapCanvas3D()->cameraController()->resetGlobe( static_cast<float>( dist ), centerLat, centerLon );

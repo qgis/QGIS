@@ -148,7 +148,7 @@ QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( cons
 {
   mSymbol.reset( symbol );
 
-  if ( context.crs().type() != Qgis::CrsType::Geocentric )  // extent is not used for globe
+  if ( context.crs().type() != Qgis::CrsType::Geocentric ) // extent is not used for globe
   {
     try
     {
