@@ -48,13 +48,6 @@ class APP_EXPORT QgsMeshTransformCoordinatesDockWidget : public QgsDockWidget, p
     //! Returns whether the calculation has been done
     bool isCalculated() const;
 
-    /**
-     * Updates Z values of selected vertices from QGIS project terrain provider
-     *
-     * \since QGIS 3.42
-     */
-    void updateZValuesFromTerrain();
-
   signals:
     //! Emitted when the calculation of the transform is done
     void calculationUpdated();

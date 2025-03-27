@@ -56,7 +56,16 @@ QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QW
   connect( mButtonPreview, &QToolButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::calculate );
   connect( mButtonApply, &QPushButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::apply );
   connect( mButtonImport, &QToolButton::toggled, this, &QgsMeshTransformCoordinatesDockWidget::onImportVertexClicked );
-  connect( mGetZValuesButton, &QPushButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::updateZValuesFromTerrain );
+
+  connect( mCheckBoxZ, &QCheckBox::toggled, this, [=]( const bool checked ) {
+    if ( checked )
+      mCheckBoxZFromProjectTerrain->setChecked( false );
+  } );
+  connect( mCheckBoxZFromProjectTerrain, &QCheckBox::toggled, this, [=]( const bool checked ) {
+    if ( checked )
+      mCheckBoxZ->setChecked( false );
+  } );
+  connect( mCheckBoxZFromProjectTerrain, &QCheckBox::toggled, this, &QgsMeshTransformCoordinatesDockWidget::updateButton );
 }
 
 QgsExpressionContext QgsMeshTransformCoordinatesDockWidget::createExpressionContext() const
@@ -104,8 +113,6 @@ void QgsMeshTransformCoordinatesDockWidget::setInput( QgsMeshLayer *layer, const
     }
   }
 
-  mGetZValuesButton->setDisabled( vertexIndexes.empty() );
-
   importVertexCoordinates();
   updateButton();
   emit calculationUpdated();
@@ -120,10 +127,10 @@ void QgsMeshTransformCoordinatesDockWidget::calculate()
   mTransformVertices.clear();
   mTransformVertices.setInputVertices( mInputVertices );
   mTransformVertices.setExpressions( mCheckBoxX->isChecked() ? mExpressionEditX->expression() : QString(), mCheckBoxY->isChecked() ? mExpressionEditY->expression() : QString(), mCheckBoxZ->isChecked() ? mExpressionEditZ->expression() : QString() );
-  QgsExpressionContext context;
-  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
 
-  mIsResultValid = mTransformVertices.calculate( mInputLayer );
+  mTransformVertices.setZFromTerrain( mCheckBoxZFromProjectTerrain->isChecked() );
+
+  mIsResultValid = mTransformVertices.calculate( mInputLayer, QgsProject::instance() );
 
   mIsCalculated = true;
   mButtonApply->setEnabled( mIsResultValid );
@@ -133,6 +140,7 @@ void QgsMeshTransformCoordinatesDockWidget::calculate()
 
 void QgsMeshTransformCoordinatesDockWidget::updateButton()
 {
+  bool modifyXYZSelected = false;
   mButtonApply->setEnabled( false );
   bool isCalculable = mInputLayer && !mInputVertices.isEmpty();
   if ( isCalculable )
@@ -143,11 +151,21 @@ void QgsMeshTransformCoordinatesDockWidget::updateButton()
 
     if ( isCalculable )
     {
+      modifyXYZSelected = true;
+    }
+
+    if ( isCalculable )
+    {
       for ( int i = 0; i < mCheckBoxes.count(); ++i )
       {
         bool checked = mCheckBoxes.at( i )->isChecked();
         isCalculable &= !checked || mExpressionLineEdits.at( i )->isValidExpression();
       }
+    }
+
+    if ( !modifyXYZSelected && mCheckBoxZFromProjectTerrain->isChecked() )
+    {
+      isCalculable = true;
     }
   }
 
@@ -160,56 +178,6 @@ void QgsMeshTransformCoordinatesDockWidget::apply()
   QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
   if ( mIsResultValid && mInputLayer && mInputLayer->meshEditor() )
     mInputLayer->meshEditor()->advancedEdit( &mTransformVertices );
-  emit applied();
-}
-
-void QgsMeshTransformCoordinatesDockWidget::updateZValuesFromTerrain()
-{
-  if ( mInputVertices.empty() )
-    return;
-
-  QList<int> modifiedVerticesIndexes;
-  QList<double> newZValues;
-
-  const QgsAbstractTerrainProvider *terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
-
-  if ( terrainProvider == nullptr )
-    return;
-
-  const QgsCoordinateTransform transformation = QgsCoordinateTransform( mInputLayer->crs(), terrainProvider->crs(), QgsProject::instance() );
-
-  QgsPointXY point;
-  bool vertexTransformed;
-  double elevation;
-
-  for ( int i = 0; i < mInputVertices.count(); i++ )
-  {
-    const int vertexIndex = mInputVertices.at( i );
-    const QgsPoint vertex = mInputLayer->nativeMesh()->vertex( vertexIndex );
-
-    try
-    {
-      point = transformation.transform( vertex.x(), vertex.y() );
-      vertexTransformed = true;
-    }
-    catch ( const QgsCsException & )
-    {
-      vertexTransformed = false;
-    }
-
-    if ( vertexTransformed )
-    {
-      elevation = terrainProvider->heightAt( point.x(), point.y() );
-      if ( !std::isnan( elevation ) )
-      {
-        modifiedVerticesIndexes.push_back( vertexIndex );
-        newZValues.push_back( elevation );
-      }
-    }
-  }
-
-  emit aboutToBeApplied();
-  mInputLayer->meshEditor()->changeZValues( modifiedVerticesIndexes, newZValues );
   emit applied();
 }
 
