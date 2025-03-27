@@ -359,7 +359,7 @@ QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::exportAtlas( QgsLayoutAtlas *a
     QgsLayoutExporter::ExportResult result;
     if ( atlas->filenameExpression().isEmpty() && filename.isEmpty() )
     {
-      atlas->setFilenameExpression( QStringLiteral( "'output_'||@atlas_featurenumber" ), error );
+      atlas->setFilenameExpression( QStringLiteral( "'output_'||@atlas_featurenumber_padded" ), error );
     }
     else if ( !filename.isEmpty() )
     {
