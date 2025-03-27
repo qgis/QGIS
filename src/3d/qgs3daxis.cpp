@@ -942,6 +942,12 @@ void Qgs3DAxis::onAxisViewportSizeUpdate()
 
 void Qgs3DAxis::onViewportScaleFactorChanged( double scaleFactor )
 {
+  // if the axis scene has not been created, don't do anything
+  if ( !mAxisRoot || !mCubeRoot )
+  {
+    return;
+  }
+
   if ( scaleFactor > 0.0 )
   {
     Qgs3DAxisSettings settings = mMapSettings->get3DAxisSettings();
