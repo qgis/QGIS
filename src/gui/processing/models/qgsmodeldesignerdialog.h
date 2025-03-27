@@ -232,7 +232,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     bool isDirty() const;
 
-    void fillInputsTree();
     void updateVariablesGui();
 
     struct PanelStatus
