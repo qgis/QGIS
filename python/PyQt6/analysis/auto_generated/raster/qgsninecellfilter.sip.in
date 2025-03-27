@@ -58,6 +58,24 @@ mOutputFile
     double outputNodataValue() const;
     void setOutputNodataValue( double value );
 
+    void setCreateOptions( const QStringList &list );
+%Docstring
+Sets a list of data source creation options to use when creating the output raster file.
+
+.. seealso:: :py:func:`createOptions`
+
+.. versionadded:: 3.44
+%End
+
+    QStringList createOptions() const;
+%Docstring
+Returns the list of data source creation options which will be used when creating the output raster file.
+
+.. seealso:: :py:func:`setCreateOptions`
+
+.. versionadded:: 3.44
+%End
+
     virtual float processNineCellWindow( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) = 0;
 %Docstring
 Calculates output value from nine input values. The input values and the

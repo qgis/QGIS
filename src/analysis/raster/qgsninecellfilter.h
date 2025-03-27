@@ -62,6 +62,22 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     void setOutputNodataValue( double value ) { mOutputNodataValue = value; }
 
     /**
+     * Sets a list of data source creation options to use when creating the output raster file.
+     *
+     * \see createOptions()
+     * \since QGIS 3.44
+     */
+    void setCreateOptions( const QStringList &list ) { mCreateOptions = list; }
+
+    /**
+     * Returns the list of data source creation options which will be used when creating the output raster file.
+     *
+     * \see setCreateOptions()
+     * \since QGIS 3.44
+     */
+    QStringList createOptions() const { return mCreateOptions; }
+
+    /**
      * Calculates output value from nine input values. The input values and the output
      * value can be equal to the nodata value if not present or outside of the border.
      * Must be implemented by subclasses.
@@ -138,6 +154,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     QString mInputFile;
     QString mOutputFile;
     QString mOutputFormat;
+    QStringList mCreateOptions;
 
     double mCellSizeX = -1.0;
     double mCellSizeY = -1.0;
