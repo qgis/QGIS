@@ -13,8 +13,7 @@
 class QgsProcessingGuiRegistry
 {
 %Docstring(signature="appended")
-The :py:class:`QgsProcessingGuiRegistry` is a home for widgets for processing
-configuration widgets.
+A registry for widgets for use with the Processing framework.
 
 :py:class:`QgsProcessingGuiRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.processingGuiRegistry()`.

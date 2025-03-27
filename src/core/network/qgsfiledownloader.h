@@ -30,7 +30,7 @@
 
 /**
  * \ingroup core
- * \brief QgsFileDownloader is a utility class for downloading files.
+ * \brief A utility class for downloading files.
  *
  * To use this class, it is necessary to pass the URL and an output file name as
  * arguments to the constructor, the download will start immediately.

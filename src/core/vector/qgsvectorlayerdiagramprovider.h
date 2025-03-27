@@ -47,8 +47,9 @@ class QgsAbstractFeatureSource;
 
 /**
  * \ingroup core
- * \brief The QgsVectorLayerDiagramProvider class implements support for diagrams within
- * the labeling engine. Parameters for the diagrams are taken from the layer settings.
+ * \brief Implements support for diagrams within the labeling engine.
+ *
+ * Parameters for the diagrams are taken from the layer settings.
  *
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * \note not available in Python bindings

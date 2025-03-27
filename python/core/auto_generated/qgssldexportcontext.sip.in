@@ -10,7 +10,7 @@
 class QgsSldExportContext
 {
 %Docstring(signature="appended")
-The :py:class:`QgsSldExportContext` class holds SLD export options and other information related to SLD export of a QGIS layer style.
+Holds SLD export options and other information related to SLD export of a QGIS layer style.
 
 .. versionadded:: 3.30
 %End

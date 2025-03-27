@@ -72,7 +72,7 @@ class CORE_EXPORT QgsLabelBlockingRegion
 
 /**
  * \ingroup core
- * \brief The QgsMapSettings class contains configuration for rendering of the map.
+ * \brief Contains configuration for rendering maps.
  *
  * The rendering itself is done by QgsMapRendererJob subclasses.
  *

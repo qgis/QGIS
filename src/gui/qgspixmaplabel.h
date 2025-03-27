@@ -22,7 +22,7 @@
 
 /**
  * \ingroup gui
- * \brief The QgsPixmapLabel class shows a pixmap and adjusts its size to the space given
+ * \brief Shows a pixmap and adjusts its size to the space given
  * to the widget by the layout and keeping its aspect ratio.
  */
 class GUI_EXPORT QgsPixmapLabel : public QLabel

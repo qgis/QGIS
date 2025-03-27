@@ -42,7 +42,7 @@ struct QgsMesh;
 /**
  * \ingroup core
  *
- * \brief QgsMeshDatasetIndex is index that identifies the dataset group (e.g. wind speed)
+ * \brief An index that identifies the dataset group (e.g. wind speed)
  * and a dataset in this group (e.g. magnitude of wind speed in particular time)
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsMeshDatasetIndex
 /**
  * \ingroup core
  *
- * \brief QgsMeshDatasetValue represents single dataset value.
+ * \brief Represents a single mesh dataset value.
  *
  * Values may be scalar or vector. Nodata values are represented by NaNs.
  *
@@ -122,13 +122,15 @@ class CORE_EXPORT QgsMeshDatasetValue
 /**
  * \ingroup core
  *
- * \brief QgsMeshDataBlock is a block of integers/doubles that can be used
- * to retrieve:
- * active flags (e.g. face's active integer flag)
- * scalars (e.g. scalar dataset double values)
- * vectors (e.g. vector dataset doubles x,y values)
+ * \brief A block of integers/doubles from a mesh dataset
  *
- * data are implicitly shared, so the class can be quickly copied
+ * QgsMeshDataBlock can be used to retrieve:
+ *
+ * - active flags (e.g. face's active integer flag)
+ * - scalars (e.g. scalar dataset double values)
+ * - vectors (e.g. vector dataset doubles x,y values)
+ *
+ * Data are implicitly shared, so the class can be quickly copied
  * std::numeric_limits<double>::quiet_NaN() represents NODATA value
  *
  * Data can be accessed all at once with values() (faster) or
@@ -235,7 +237,7 @@ class CORE_EXPORT QgsMeshDataBlock
 /**
  * \ingroup core
  *
- * \brief QgsMesh3DDataBlock is a block of 3d stacked mesh data related N
+ * \brief A block of 3d stacked mesh data related N
  * faces defined on base mesh frame.
  *
  * Data are implicitly shared, so the class can be quickly copied
@@ -344,7 +346,7 @@ class CORE_EXPORT QgsMesh3DDataBlock
 /**
  * \ingroup core
  *
- * \brief QgsMeshDatasetGroupMetadata is a collection of dataset group metadata
+ * \brief A collection of dataset group metadata
  * such as whether the data is vector or scalar, name
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
@@ -482,8 +484,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
 /**
  * \ingroup core
  *
- * \brief QgsMeshDatasetMetadata is a collection of mesh dataset metadata such
- * as whether the data is valid or associated time for the dataset
+ * \brief Represents mesh dataset metadata, as whether the data is valid or the associated time.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

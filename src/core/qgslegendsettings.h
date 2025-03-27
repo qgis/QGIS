@@ -29,7 +29,7 @@ class QgsExpressionContext;
 
 /**
  * \ingroup core
- * \brief The QgsLegendSettings class stores the appearance and layout settings
+ * \brief Stores the appearance and layout settings
  * for legend drawing with QgsLegendRenderer.
  *
  * The content of the legend is driven by the QgsLegendModel class.

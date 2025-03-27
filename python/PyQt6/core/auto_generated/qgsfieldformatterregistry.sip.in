@@ -13,7 +13,7 @@
 class QgsFieldFormatterRegistry : QObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsFieldFormatterRegistry` manages registered classes of :py:class:`QgsFieldFormatter`.
+A registry which manages classes of :py:class:`QgsFieldFormatter`.
 
 A reference to the :py:class:`QgsFieldFormatterRegistry` can be obtained from
 :py:func:`QgsApplication.fieldFormatterRegistry()`.

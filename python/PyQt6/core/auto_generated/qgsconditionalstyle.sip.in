@@ -14,8 +14,10 @@ typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 class QgsConditionalLayerStyles : QObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsConditionalLayerStyles` class holds conditional style information
-for a layer. This includes field styles and full row styles.
+Holds conditional style information
+for a layer.
+
+This includes field styles and full row styles.
 %End
 
 %TypeHeaderCode

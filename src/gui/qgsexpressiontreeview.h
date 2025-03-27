@@ -134,7 +134,7 @@ class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 /**
  * \ingroup gui
  * \class QgsExpressionTreeView
- * \brief QgsExpressionTreeView is a tree view to list all expressions
+ * \brief A tree view to list all expressions
  * functions, variables and fields that can be used in an expression.
  * \see QgsExpressionBuilderWidget
  * \since QGIS 3.14

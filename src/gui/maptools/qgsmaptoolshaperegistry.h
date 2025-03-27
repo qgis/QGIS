@@ -72,7 +72,7 @@ class GUI_EXPORT QgsMapToolShapeRegistry
 
 /**
  * \ingroup gui
- * \brief QgsMapToolShapeMetadata is a base class for shape map tools metadata to be used in QgsMapToolShapeRegistry
+ * \brief Base class for shape map tools metadata to be used in QgsMapToolShapeRegistry
  * \since QGIS 3.26
  */
 class GUI_EXPORT QgsMapToolShapeMetadata

@@ -46,9 +46,7 @@ SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 
 /**
  * \ingroup server
- * \brief QgsServerInterface
- * Class defining interfaces exposed by QGIS Server and
- * made available to plugins.
+ * \brief Defines interfaces exposed by QGIS Server and made available to plugins.
  *
  * This class provides methods to access the request handler and
  * the capabilities cache. A method to read the environment
