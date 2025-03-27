@@ -460,15 +460,15 @@ void TestQgsSymbol::symbolProperties()
 
 void TestQgsSymbol::regression24954()
 {
-  QString myFileName (TEST_DATA_DIR);
+  QString myFileName( TEST_DATA_DIR );
   myFileName = myFileName + QDir::separator() + "symbol_layer/QgsMarkerLineSymbolLayer.sld";
 
   bool defaultLoadedFlag = false;
   mpLinesLayer->loadSldStyle( myFileName, defaultLoadedFlag );
-  QgsFeatureRenderer* renderer = mpLinesLayer->renderer();
+  QgsFeatureRenderer *renderer = mpLinesLayer->renderer();
   QgsRenderContext renderContext;
-  QgsSymbol* symbol = renderer->symbols( renderContext ).at( 0 );
-  QgsMarkerLineSymbolLayer* symbolLayer = static_cast<QgsMarkerLineSymbolLayer*>(symbol->symbolLayer(0));
+  QgsSymbol *symbol = renderer->symbols( renderContext ).at( 0 );
+  QgsMarkerLineSymbolLayer *symbolLayer = static_cast<QgsMarkerLineSymbolLayer *>( symbol->symbolLayer( 0 ) );
 
   QVERIFY( symbolLayer->interval() == 3.3 );
 }
