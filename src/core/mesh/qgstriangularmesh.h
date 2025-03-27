@@ -384,53 +384,5 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
     friend class TestQgsTriangularMesh;
 };
 
-namespace QgsMeshUtils
-{
-  //! Returns face as polygon geometry
-  CORE_EXPORT QgsGeometry toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
-
-  //! Returns the centroid of the \a face
-  CORE_EXPORT QgsMeshVertex centroid( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
-
-  //! Returns face as polygon geometry, caller is responsible for delete
-  CORE_EXPORT std::unique_ptr< QgsPolygon > toPolygon( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
-
-  /**
-   * Returns unique native faces indexes from list of triangle indexes
-   * \since QGIS 3.4
-   */
-  CORE_EXPORT QSet<int> nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces );
-
-  /**
-   * Returns unique native faces indexes from list of triangle indexes
-   * \since QGIS 3.14
-   */
-  CORE_EXPORT QSet<int> nativeEdgesFromEdges( const QList<int> &edgesIndexes, const QVector<int> &edgesToNativeEdges );
-
-  /**
-   * Returns unique native vertex indexes from list of vertices of triangles
-   * \since QGIS 3.14
-   */
-  CORE_EXPORT QSet<int> nativeVerticesFromTriangles( const QList<int> &triangleIndexes, const QVector<QgsMeshFace> &triangles );
-
-  /**
-   * Returns unique native faces indexes from list of vertices of triangles
-   * \since QGIS 3.14
-   */
-  CORE_EXPORT QSet<int> nativeVerticesFromEdges( const QList<int> &edgesIndexes, const QVector<QgsMeshEdge> &edges );
-
-  /**
-   * Tests if point p is on the face defined with vertices
-   * \since QGIS 3.12
-  */
-  bool isInTriangleFace( const QgsPointXY point, const QgsMeshFace &face,  const QVector<QgsMeshVertex> &vertices );
-
-  /**
-   * Checks if the triangle is counter clockwise, if not sets it counter clockwise
-   * \since QGIS 3.22
-  */
-  void setCounterClockwise( QgsMeshFace &triangle, const QgsMeshVertex &v0, const QgsMeshVertex &v1, const QgsMeshVertex &v2 );
-
-};
 
 #endif // QGSTRIANGULARMESH_H

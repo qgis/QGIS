@@ -31,16 +31,8 @@ class QgsMeshDatasetIndex;
 #include "qgsmaplayerrenderer.h"
 #include "qgstriangularmesh.h"
 #include "qgsrasterinterface.h"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgsrastershader.h"
 
 class QgsRenderContext;
-
-#ifdef SIP_RUN
-% ModuleHeaderCode
-#include "qgsmeshlayerinterpolator.h"
-% End
-#endif
 
 ///@cond PRIVATE
 
@@ -88,62 +80,5 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface SIP_SKIP
 
 ///@endcond
 
-namespace QgsMeshUtils
-{
-
-  /**
-   * Exports mesh layer's dataset values as raster block
-   *
-   * The function always fetches native mesh and dataset data
-   * from data provider and calculates triangular mesh
-   *
-   * \param layer mesh layer
-   * \param datasetIndex index from layer defining group and dataset (time) to export
-   * \param destinationCrs destination/map CRS. Used to create triangular mesh from native mesh
-   * \param transformContext Transform context to transform layer CRS to destination CRS
-   * \param mapUnitsPerPixel map units per pixel for block
-   * \param extent extent of block in destination CRS
-   * \param feedback optional raster feedback object for cancellation/preview
-   * \returns raster block with Float::64 values. NULLPTR on error
-   *
-   * \since QGIS 3.6
-   */
-  CORE_EXPORT QgsRasterBlock *exportRasterBlock(
-    const QgsMeshLayer &layer,
-    const QgsMeshDatasetIndex &datasetIndex,
-    const QgsCoordinateReferenceSystem &destinationCrs,
-    const QgsCoordinateTransformContext &transformContext,
-    double mapUnitsPerPixel,
-    const QgsRectangle &extent,
-    QgsRasterBlockFeedback *feedback = nullptr
-  ) SIP_FACTORY;
-
-
-  /**
-   * Exports mesh layer's dataset values as raster block
-   *
-   * \param triangularMesh the triangular mesh of the mesh layer
-   * \param datasetValues dataset values used to build the raster block
-   * \param activeFlags active flag values
-   * \param dataType the data type iof the dataset values
-   * \param transform the coordinate transform used to export the raster block
-   * \param mapUnitsPerPixel map units per pixel for block
-   * \param extent extent of block in destination CRS
-   * \param feedback optional raster feedback object for cancellation/preview
-   * \returns raster block with Float::64 values. NULLPTR on error
-   *
-   * \since QGIS 3.18
-   */
-  CORE_EXPORT QgsRasterBlock *exportRasterBlock(
-    const QgsTriangularMesh &triangularMesh,
-    const QgsMeshDataBlock &datasetValues,
-    const QgsMeshDataBlock &activeFlags,
-    const QgsMeshDatasetGroupMetadata::DataType dataType,
-    const QgsCoordinateTransform &transform,
-    double mapUnitsPerPixel,
-    const QgsRectangle &extent,
-    QgsRasterBlockFeedback *feedback = nullptr
-  ) SIP_SKIP;
-};
 
 #endif // QGSMESHLAYERINTERPOLATOR_H

@@ -11,13 +11,10 @@
 
 
 
+%ModuleHeaderCode
+#include "qgsmeshutils.h"
+%End
 
-
-typedef QgsPoint QgsMeshVertex;
-
-typedef QVector<int> QgsMeshFace;
-
-typedef QPair<int, int> QgsMeshEdge;
 
 struct QgsMesh
 {
