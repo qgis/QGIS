@@ -8,14 +8,15 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAbstractLayerMetadataProvider.__abstract_methods__ = ['id', 'search']
+    QgsAbstractLayerMetadataProvider.__group__ = ['metadata']
+except (NameError, AttributeError):
+    pass
+try:
     QgsLayerMetadataProviderResult.__group__ = ['metadata']
 except (NameError, AttributeError):
     pass
 try:
     QgsLayerMetadataSearchResults.__group__ = ['metadata']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsAbstractLayerMetadataProvider.__group__ = ['metadata']
 except (NameError, AttributeError):
     pass

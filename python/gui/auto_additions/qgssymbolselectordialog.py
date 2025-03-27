@@ -6,6 +6,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsSymbolSelectorDialog.__attribute_docs__ = {'symbolModified': 'Emitted when the symbol defined in the dialog is modified.\n'}
+    QgsSymbolSelectorDialog.__overridden_methods__ = ['keyPressEvent']
     QgsSymbolSelectorDialog.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

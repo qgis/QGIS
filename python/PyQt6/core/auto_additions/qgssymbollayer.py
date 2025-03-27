@@ -614,18 +614,29 @@ QgsLineSymbolLayer.ExteriorRingOnly = QgsLineSymbolLayer.RenderRingFilter.Exteri
 QgsLineSymbolLayer.InteriorRingsOnly = QgsLineSymbolLayer.RenderRingFilter.InteriorRingsOnly
 try:
     QgsMarkerSymbolLayer._rotatedOffset = staticmethod(QgsMarkerSymbolLayer._rotatedOffset)
+    QgsMarkerSymbolLayer.__virtual_methods__ = ['setSize', 'writeSldMarker']
+    QgsMarkerSymbolLayer.__abstract_methods__ = ['renderPoint', 'bounds']
+    QgsMarkerSymbolLayer.__overridden_methods__ = ['startRender', 'stopRender', 'drawPreviewIcon', 'toSld', 'setOutputUnit', 'outputUnit', 'setMapUnitScale', 'mapUnitScale', 'dxfSize', 'dxfAngle']
     QgsMarkerSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
+    QgsSymbolLayer.__virtual_methods__ = ['flags', 'color', 'setColor', 'setStrokeColor', 'strokeColor', 'setFillColor', 'fillColor', 'startFeatureRender', 'stopFeatureRender', 'toSld', 'ogrFeatureStyle', 'subSymbol', 'setSubSymbol', 'isCompatibleWithSymbol', 'canCauseArtifactsBetweenAdjacentTiles', 'estimateMaxBleed', 'setOutputUnit', 'outputUnit', 'usesMapUnits', 'setMapUnitScale', 'mapUnitScale', 'usedAttributes', 'setDataDefinedProperty', 'writeDxf', 'dxfWidth', 'dxfSize', 'dxfOffset', 'dxfColor', 'dxfAngle', 'dxfCustomDashPattern', 'dxfPenStyle', 'dxfBrushColor', 'dxfBrushStyle', 'prepareExpressions', 'hasDataDefinedProperties', 'masks', 'prepareMasks']
+    QgsSymbolLayer.__abstract_methods__ = ['layerType', 'startRender', 'stopRender', 'clone', 'properties', 'drawPreviewIcon']
     QgsSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
+    QgsLineSymbolLayer.__virtual_methods__ = ['renderPolygonStroke', 'setWidth', 'width']
+    QgsLineSymbolLayer.__abstract_methods__ = ['renderPolyline']
+    QgsLineSymbolLayer.__overridden_methods__ = ['setOutputUnit', 'outputUnit', 'setMapUnitScale', 'mapUnitScale', 'drawPreviewIcon', 'dxfWidth']
     QgsLineSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
+    QgsFillSymbolLayer.__virtual_methods__ = ['toTiledPatternImage']
+    QgsFillSymbolLayer.__abstract_methods__ = ['renderPolygon']
+    QgsFillSymbolLayer.__overridden_methods__ = ['drawPreviewIcon']
     QgsFillSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

@@ -57,15 +57,17 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsMapBoxGlStyleConversionContext.__group__ = ['vectortile']
-except (NameError, AttributeError):
-    pass
-try:
+    QgsMapBoxGlStyleAbstractSource.__abstract_methods__ = ['type', 'setFromJson']
     QgsMapBoxGlStyleAbstractSource.__group__ = ['vectortile']
 except (NameError, AttributeError):
     pass
 try:
+    QgsMapBoxGlStyleRasterSource.__overridden_methods__ = ['type', 'setFromJson']
     QgsMapBoxGlStyleRasterSource.__group__ = ['vectortile']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsMapBoxGlStyleConversionContext.__group__ = ['vectortile']
 except (NameError, AttributeError):
     pass
 try:

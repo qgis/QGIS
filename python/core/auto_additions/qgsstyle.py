@@ -128,30 +128,37 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsStyleEntityInterface.__abstract_methods__ = ['type']
     QgsStyleEntityInterface.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
+    QgsStyleSymbolEntity.__overridden_methods__ = ['type']
     QgsStyleSymbolEntity.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
+    QgsStyleColorRampEntity.__overridden_methods__ = ['type']
     QgsStyleColorRampEntity.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
+    QgsStyleTextFormatEntity.__overridden_methods__ = ['type']
     QgsStyleTextFormatEntity.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
+    QgsStyleLabelSettingsEntity.__overridden_methods__ = ['type']
     QgsStyleLabelSettingsEntity.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
+    QgsStyleLegendPatchShapeEntity.__overridden_methods__ = ['type']
     QgsStyleLegendPatchShapeEntity.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
+    QgsStyleSymbol3DEntity.__overridden_methods__ = ['type']
     QgsStyleSymbol3DEntity.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

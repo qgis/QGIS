@@ -18,6 +18,8 @@ try:
     QgsFeatureRenderer._getPoint = staticmethod(QgsFeatureRenderer._getPoint)
     QgsFeatureRenderer.convertSymbolSizeScale = staticmethod(QgsFeatureRenderer.convertSymbolSizeScale)
     QgsFeatureRenderer.convertSymbolRotation = staticmethod(QgsFeatureRenderer.convertSymbolRotation)
+    QgsFeatureRenderer.__virtual_methods__ = ['originalSymbolForFeature', 'legendKeysForFeature', 'startRender', 'stopRender', 'canSkipRender', 'filter', 'usesEmbeddedSymbols', 'filterNeedsGeometry', 'renderFeature', 'dump', 'capabilities', 'flags', 'symbols', 'save', 'writeSld', 'toSld', 'legendSymbolItemsCheckable', 'legendSymbolItemChecked', 'checkLegendSymbolItem', 'setLegendSymbolItem', 'legendKeyToExpression', 'legendSymbolItems', 'createLegendNodes', 'legendClassificationAttribute', 'willRenderFeature', 'symbolsForFeature', 'originalSymbolsForFeature', 'modifyRequestExtent', 'setEmbeddedRenderer', 'accept']
+    QgsFeatureRenderer.__abstract_methods__ = ['symbolForFeature', 'usedAttributes', 'clone']
     QgsFeatureRenderer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

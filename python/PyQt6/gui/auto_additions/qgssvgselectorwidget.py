@@ -6,11 +6,12 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsSvgSelectorFilterModel.__group__ = ['symbology']
+    QgsSvgSelectorListModel.__overridden_methods__ = ['rowCount', 'data']
+    QgsSvgSelectorListModel.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
-    QgsSvgSelectorListModel.__group__ = ['symbology']
+    QgsSvgSelectorFilterModel.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:

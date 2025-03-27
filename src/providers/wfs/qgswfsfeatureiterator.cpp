@@ -440,7 +440,6 @@ std::pair<QUrl, QByteArray> QgsWFSFeatureDownloaderImpl::buildPostRequest( qint6
     {
       QDomDocument bboxDoc;
       QDomElement bboxElement = useVersion2 ? bboxDoc.createElement( QStringLiteral( "fes:BBOX" ) ) : bboxDoc.createElement( QStringLiteral( "ogc:BBOX" ) );
-      bboxDoc.appendChild( bboxElement );
 
       if ( useVersion2 )
       {
@@ -468,18 +467,29 @@ std::pair<QUrl, QByteArray> QgsWFSFeatureDownloaderImpl::buildPostRequest( qint6
         bboxElement.appendChild( envelopeElement );
       }
 
+      if ( !filters.empty() )
+      {
+        QDomElement filterElement = bboxDoc.createElement( useVersion2 ? QStringLiteral( "fes:Filter" ) : QStringLiteral( "ogc:Filter" ) );
+        filterElement.appendChild( bboxElement );
+        bboxDoc.appendChild( filterElement );
+      }
+      else
+      {
+        bboxDoc.appendChild( bboxElement );
+      }
+
       filters.push_back( bboxDoc.toString() );
     }
 
     if ( !filters.empty() )
     {
       QDomDocument filterDoc;
-      QDomElement filterElement = postDocument.createElement( useVersion2 ? QStringLiteral( "fes:Filter" ) : QStringLiteral( "ogc:Filter" ) );
-      if ( filterDoc.setContent( sanitizeFilter( mShared->combineWFSFilters( filters ) ) ) )
+      QString filter = sanitizeFilter( mShared->combineWFSFilters( filters ) );
+      filter = filter.replace( QLatin1String( "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">" ), QLatin1String( "<fes:Filter>" ) );
+      if ( filterDoc.setContent( filter ) )
       {
-        filterElement.appendChild( filterDoc.documentElement().firstChildElement() );
+        queryElement.appendChild( filterDoc.documentElement() );
       }
-      queryElement.appendChild( filterElement );
     }
 
     if ( !mShared->mSortBy.isEmpty() && !forHits )

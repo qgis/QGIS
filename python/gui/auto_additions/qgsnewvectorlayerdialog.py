@@ -2,5 +2,6 @@
 try:
     QgsNewVectorLayerDialog.runAndCreateLayer = staticmethod(QgsNewVectorLayerDialog.runAndCreateLayer)
     QgsNewVectorLayerDialog.execAndCreateLayer = staticmethod(QgsNewVectorLayerDialog.execAndCreateLayer)
+    QgsNewVectorLayerDialog.__overridden_methods__ = ['accept']
 except (NameError, AttributeError):
     pass

@@ -2,5 +2,6 @@
 try:
     QgsIdentifyMenu.findFeaturesOnCanvas = staticmethod(QgsIdentifyMenu.findFeaturesOnCanvas)
     QgsIdentifyMenu.styleHighlight = staticmethod(QgsIdentifyMenu.styleHighlight)
+    QgsIdentifyMenu.__overridden_methods__ = ['closeEvent']
 except (NameError, AttributeError):
     pass

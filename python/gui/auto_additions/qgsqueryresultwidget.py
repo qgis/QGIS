@@ -15,3 +15,11 @@ try:
     QgsQueryResultWidget.__signal_arguments__ = {'createSqlVectorLayer': ['providerKey: str', 'connectionUri: str', 'options: QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions']}
 except (NameError, AttributeError):
     pass
+try:
+    QgsQueryResultDialog.__overridden_methods__ = ['closeEvent']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsQueryResultMainWindow.__overridden_methods__ = ['closeEvent']
+except (NameError, AttributeError):
+    pass

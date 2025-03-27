@@ -14,6 +14,7 @@ try:
     QgsValueRelationFieldFormatter.expressionParentFormVariables = staticmethod(QgsValueRelationFieldFormatter.expressionParentFormVariables)
     QgsValueRelationFieldFormatter.expressionIsUsable = staticmethod(QgsValueRelationFieldFormatter.expressionIsUsable)
     QgsValueRelationFieldFormatter.resolveLayer = staticmethod(QgsValueRelationFieldFormatter.resolveLayer)
+    QgsValueRelationFieldFormatter.__overridden_methods__ = ['id', 'representValue', 'sortValue', 'createCache', 'availableValues']
     QgsValueRelationFieldFormatter.__group__ = ['fieldformatter']
 except (NameError, AttributeError):
     pass

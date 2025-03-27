@@ -30,6 +30,9 @@ try:
     QgsSearchWidgetWrapper.exclusiveFilterFlags = staticmethod(QgsSearchWidgetWrapper.exclusiveFilterFlags)
     QgsSearchWidgetWrapper.nonExclusiveFilterFlags = staticmethod(QgsSearchWidgetWrapper.nonExclusiveFilterFlags)
     QgsSearchWidgetWrapper.toString = staticmethod(QgsSearchWidgetWrapper.toString)
+    QgsSearchWidgetWrapper.__virtual_methods__ = ['supportedFlags', 'defaultFlags', 'createExpression', 'clearWidget']
+    QgsSearchWidgetWrapper.__abstract_methods__ = ['expression', 'applyDirectly', 'setExpression']
+    QgsSearchWidgetWrapper.__overridden_methods__ = ['setEnabled', 'setFeature']
     QgsSearchWidgetWrapper.__signal_arguments__ = {'expressionChanged': ['exp: str']}
     QgsSearchWidgetWrapper.__group__ = ['editorwidgets', 'core']
 except (NameError, AttributeError):

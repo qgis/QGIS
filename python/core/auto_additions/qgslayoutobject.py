@@ -435,6 +435,8 @@ QgsLayoutObject.DataDefinedProperty.__doc__ = """Data defined properties for dif
 try:
     QgsLayoutObject.__attribute_docs__ = {'changed': "Emitted when the object's properties change.\n"}
     QgsLayoutObject.propertyAssociatesWithParentMultiframe = staticmethod(QgsLayoutObject.propertyAssociatesWithParentMultiframe)
+    QgsLayoutObject.__virtual_methods__ = ['refresh']
+    QgsLayoutObject.__overridden_methods__ = ['createExpressionContext']
     QgsLayoutObject.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

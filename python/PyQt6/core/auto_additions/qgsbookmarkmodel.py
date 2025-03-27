@@ -62,3 +62,7 @@ QgsBookmarkManagerModel.ColumnYMax = QgsBookmarkManagerModel.Columns.ColumnYMax
 QgsBookmarkManagerModel.ColumnRotation = QgsBookmarkManagerModel.Columns.ColumnRotation
 QgsBookmarkManagerModel.ColumnCrs = QgsBookmarkManagerModel.Columns.ColumnCrs
 QgsBookmarkManagerModel.ColumnStore = QgsBookmarkManagerModel.Columns.ColumnStore
+try:
+    QgsBookmarkManagerModel.__overridden_methods__ = ['rowCount', 'columnCount', 'data', 'flags', 'setData', 'insertRows', 'removeRows', 'headerData']
+except (NameError, AttributeError):
+    pass

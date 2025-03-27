@@ -3,5 +3,6 @@ QgsTemporalProperty.FlagDontInvalidateCachedRendersWhenRangeChanges = QgsTempora
 QgsTemporalProperty.Flags = lambda flags=0: QgsTemporalProperty.Flag(flags)
 try:
     QgsTemporalProperty.__attribute_docs__ = {'changed': 'Emitted when the temporal properties have changed.\n'}
+    QgsTemporalProperty.__virtual_methods__ = ['flags']
 except (NameError, AttributeError):
     pass

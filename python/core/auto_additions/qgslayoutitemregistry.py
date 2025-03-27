@@ -6,10 +6,14 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsLayoutItemAbstractMetadata.__virtual_methods__ = ['resolvePaths']
+    QgsLayoutItemAbstractMetadata.__abstract_methods__ = ['createItem']
     QgsLayoutItemAbstractMetadata.__group__ = ['layout']
 except (NameError, AttributeError):
     pass
 try:
+    QgsLayoutMultiFrameAbstractMetadata.__virtual_methods__ = ['icon', 'resolvePaths']
+    QgsLayoutMultiFrameAbstractMetadata.__abstract_methods__ = ['createMultiFrame']
     QgsLayoutMultiFrameAbstractMetadata.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

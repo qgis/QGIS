@@ -8,6 +8,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAnnotationLayer.__overridden_methods__ = ['properties', 'clone', 'createMapRenderer', 'extent', 'setTransformContext', 'readXml', 'writeXml', 'writeSymbology', 'readSymbology', 'writeStyle', 'readStyle', 'isEditable', 'supportsEditing', 'dataProvider', 'htmlMetadata', 'resolveReferences']
     QgsAnnotationLayer.__group__ = ['annotations']
 except (NameError, AttributeError):
     pass

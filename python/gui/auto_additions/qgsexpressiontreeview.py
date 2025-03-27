@@ -8,3 +8,11 @@ try:
     QgsExpressionTreeView.__signal_arguments__ = {'expressionItemDoubleClicked': ['text: str'], 'currentExpressionItemChanged': ['item: QgsExpressionItem']}
 except (NameError, AttributeError):
     pass
+try:
+    QgsExpressionTreeView.MenuProvider.__virtual_methods__ = ['createContextMenu']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsExpressionItemSearchProxy.__overridden_methods__ = ['filterAcceptsRow', 'lessThan']
+except (NameError, AttributeError):
+    pass

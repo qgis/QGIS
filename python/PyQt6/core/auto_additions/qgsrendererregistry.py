@@ -15,10 +15,13 @@ QgsRendererAbstractMetadata.LayerType.__eq__ = lambda flag1, flag2: _force_int(f
 QgsRendererAbstractMetadata.LayerType.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsRendererAbstractMetadata.LayerType.__or__ = lambda flag1, flag2: QgsRendererAbstractMetadata.LayerType(_force_int(flag1) | _force_int(flag2))
 try:
+    QgsRendererAbstractMetadata.__virtual_methods__ = ['compatibleLayerTypes', 'createRendererWidget', 'createRendererFromSld']
+    QgsRendererAbstractMetadata.__abstract_methods__ = ['createRenderer']
     QgsRendererAbstractMetadata.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
+    QgsRendererMetadata.__overridden_methods__ = ['createRenderer', 'createRendererWidget', 'createRendererFromSld', 'compatibleLayerTypes']
     QgsRendererMetadata.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

@@ -8,3 +8,7 @@ QgsVertexMarker.ICON_DOUBLE_TRIANGLE = QgsVertexMarker.IconType.ICON_DOUBLE_TRIA
 QgsVertexMarker.ICON_TRIANGLE = QgsVertexMarker.IconType.ICON_TRIANGLE
 QgsVertexMarker.ICON_RHOMBUS = QgsVertexMarker.IconType.ICON_RHOMBUS
 QgsVertexMarker.ICON_INVERTED_TRIANGLE = QgsVertexMarker.IconType.ICON_INVERTED_TRIANGLE
+try:
+    QgsVertexMarker.__overridden_methods__ = ['paint', 'boundingRect', 'updatePosition']
+except (NameError, AttributeError):
+    pass

@@ -6,6 +6,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAnnotationItemAbstractMetadata.__abstract_methods__ = ['createItem']
     QgsAnnotationItemAbstractMetadata.__group__ = ['annotations']
 except (NameError, AttributeError):
     pass

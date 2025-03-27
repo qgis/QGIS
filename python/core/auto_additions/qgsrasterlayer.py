@@ -3,6 +3,8 @@ try:
     QgsRasterLayer.__attribute_docs__ = {'SAMPLE_SIZE': 'Default sample size (number of pixels) for estimated statistics/histogram calculation', 'SINGLE_BAND_ENHANCEMENT_ALGORITHM': 'Default enhancement algorithm for single band raster', 'MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM': 'Default enhancement algorithm for multiple band raster of type Byte', 'MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM': 'Default enhancement algorithm for multiple band raster of type different from Byte', 'SINGLE_BAND_MIN_MAX_LIMITS': 'Default enhancement limits for single band raster', 'MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS': 'Default enhancement limits for multiple band raster of type Byte', 'MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS': 'Default enhancement limits for multiple band raster of type different from Byte', 'subsetStringChanged': "Emitted when the layer's subset string has changed.\n\n.. versionadded:: 3.12\n"}
     QgsRasterLayer.isValidRasterFileName = staticmethod(QgsRasterLayer.isValidRasterFileName)
     QgsRasterLayer.lastModified = staticmethod(QgsRasterLayer.lastModified)
+    QgsRasterLayer.__virtual_methods__ = ['setOpacity', 'opacity', 'subsetString', 'setSubsetString']
+    QgsRasterLayer.__overridden_methods__ = ['clone', 'createProfileGenerator', 'dataProvider', 'reload', 'createMapRenderer', 'isSpatial', 'htmlMetadata', 'properties', 'subLayers', 'setLayerOrder', 'setSubLayerVisibility', 'timestamp', 'accept', 'temporalProperties', 'elevationProperties', 'setTransformContext', 'readSymbology', 'readStyle', 'readXml', 'writeSymbology', 'writeStyle', 'writeXml', 'encodedSource', 'decodedSource']
     QgsRasterLayer.__group__ = ['raster']
 except (NameError, AttributeError):
     pass

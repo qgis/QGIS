@@ -36,5 +36,10 @@ try:
     QgsVectorFileWriter.editionCapabilities = staticmethod(QgsVectorFileWriter.editionCapabilities)
     QgsVectorFileWriter.targetLayerExists = staticmethod(QgsVectorFileWriter.targetLayerExists)
     QgsVectorFileWriter.areThereNewFieldsToCreate = staticmethod(QgsVectorFileWriter.areThereNewFieldsToCreate)
+    QgsVectorFileWriter.__overridden_methods__ = ['addFeature', 'addFeatures', 'lastError']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsVectorFileWriter.FieldValueConverter.__virtual_methods__ = ['fieldDefinition', 'convert', 'clone']
 except (NameError, AttributeError):
     pass

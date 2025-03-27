@@ -8,6 +8,7 @@ try:
     QgsMapToolEdit.digitizingStrokeColor = staticmethod(QgsMapToolEdit.digitizingStrokeColor)
     QgsMapToolEdit.digitizingStrokeWidth = staticmethod(QgsMapToolEdit.digitizingStrokeWidth)
     QgsMapToolEdit.digitizingFillColor = staticmethod(QgsMapToolEdit.digitizingFillColor)
+    QgsMapToolEdit.__overridden_methods__ = ['flags']
     QgsMapToolEdit.__group__ = ['maptools']
 except (NameError, AttributeError):
     pass

@@ -30,6 +30,7 @@ try:
     QgsSymbol._getLineString = staticmethod(QgsSymbol._getLineString)
     QgsSymbol._getPolygonRing = staticmethod(QgsSymbol._getPolygonRing)
     QgsSymbol._getPolygon = staticmethod(QgsSymbol._getPolygon)
+    QgsSymbol.__abstract_methods__ = ['clone']
     QgsSymbol.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

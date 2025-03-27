@@ -15,10 +15,12 @@ QgsNumericFormatContext.Interpretation.__doc__ = """Interpretation of numeric va
 # --
 QgsNumericFormatContext.Interpretation.baseClass = QgsNumericFormatContext
 try:
-    QgsNumericFormatContext.__group__ = ['numericformats']
+    QgsNumericFormat.__virtual_methods__ = ['sortKey', 'suggestSampleValue']
+    QgsNumericFormat.__abstract_methods__ = ['id', 'visibleName', 'formatDouble', 'clone', 'create', 'configuration']
+    QgsNumericFormat.__group__ = ['numericformats']
 except (NameError, AttributeError):
     pass
 try:
-    QgsNumericFormat.__group__ = ['numericformats']
+    QgsNumericFormatContext.__group__ = ['numericformats']
 except (NameError, AttributeError):
     pass

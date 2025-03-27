@@ -43,6 +43,7 @@ being visited."""
 except (NameError, AttributeError):
     pass
 try:
+    QgsStyleEntityVisitorInterface.__virtual_methods__ = ['visit', 'visitEnter', 'visitExit']
     QgsStyleEntityVisitorInterface.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

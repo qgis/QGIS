@@ -4,3 +4,7 @@ try:
     QgsProviderSublayersDialog.__signal_arguments__ = {'layersAdded': ['layers: List[QgsProviderSublayerDetails]']}
 except (NameError, AttributeError):
     pass
+try:
+    QgsProviderSublayerDialogModel.__overridden_methods__ = ['data', 'flags']
+except (NameError, AttributeError):
+    pass

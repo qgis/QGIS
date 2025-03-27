@@ -96,10 +96,12 @@ QgsStyleModel.CustomRole.__doc__ = """Custom model roles.
 # --
 QgsStyleModel.CustomRole.baseClass = QgsStyleModel
 try:
+    QgsStyleModel.__overridden_methods__ = ['data', 'setData', 'flags', 'headerData', 'index', 'parent', 'rowCount', 'columnCount']
     QgsStyleModel.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
+    QgsStyleProxyModel.__overridden_methods__ = ['filterAcceptsRow', 'lessThan']
     QgsStyleProxyModel.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

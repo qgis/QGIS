@@ -6,6 +6,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsSensorAbstractGuiMetadata.__virtual_methods__ = ['creationIcon', 'createSensorWidget', 'createSensor']
     QgsSensorAbstractGuiMetadata.__group__ = ['sensor']
 except (NameError, AttributeError):
     pass

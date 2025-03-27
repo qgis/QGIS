@@ -275,6 +275,21 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      */
     void disableClipping();
 
+    /**
+     * Adds a 3D map scene entity to the scene. The 3D entity will get parented
+     * to the scene and the scene takes ownership of the entity.
+     * \see removeSceneEntity()
+     * \since QGIS 3.44
+     */
+    void addSceneEntity( Qgs3DMapSceneEntity *entity ) SIP_SKIP;
+
+    /**
+     * Removes a 3D scene entity for the scene. The 3D entity will get deleted.
+     * \see addSceneEntity()
+     * \since QGIS 3.44
+     */
+    void removeSceneEntity( Qgs3DMapSceneEntity *entity ) SIP_SKIP;
+
 #ifndef SIP_RUN
     //! Static function for returning open 3D map scenes
     static std::function<QMap<QString, Qgs3DMapScene *>()> sOpenScenesFunction;

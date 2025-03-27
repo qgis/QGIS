@@ -11,6 +11,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAnnotationItemAbstractGuiMetadata.__virtual_methods__ = ['creationIcon', 'createItemWidget', 'createMapTool', 'createItem', 'newItemAddedToLayer']
     QgsAnnotationItemAbstractGuiMetadata.__group__ = ['annotations']
 except (NameError, AttributeError):
     pass

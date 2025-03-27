@@ -6,6 +6,8 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsPaintEffectAbstractMetadata.__virtual_methods__ = ['createWidget']
+    QgsPaintEffectAbstractMetadata.__abstract_methods__ = ['createPaintEffect']
     QgsPaintEffectAbstractMetadata.__group__ = ['effects']
 except (NameError, AttributeError):
     pass

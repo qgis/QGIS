@@ -13,6 +13,7 @@ QgsGeographicCoordinateNumericFormat.AngleFormat.__doc__ = """Angle format optio
 # --
 QgsGeographicCoordinateNumericFormat.AngleFormat.baseClass = QgsGeographicCoordinateNumericFormat
 try:
+    QgsGeographicCoordinateNumericFormat.__overridden_methods__ = ['id', 'visibleName', 'sortKey', 'suggestSampleValue', 'formatDouble', 'clone', 'create', 'configuration', 'setConfiguration']
     QgsGeographicCoordinateNumericFormat.__group__ = ['numericformats']
 except (NameError, AttributeError):
     pass

@@ -4,6 +4,7 @@ QgsMapRendererTask.ImageSaveFail = QgsMapRendererTask.ErrorType.ImageSaveFail
 QgsMapRendererTask.ImageUnsupportedFormat = QgsMapRendererTask.ErrorType.ImageUnsupportedFormat
 try:
     QgsMapRendererTask.__attribute_docs__ = {'renderingComplete': 'Emitted when the map rendering is successfully completed.\n', 'errorOccurred': 'Emitted when map rendering failed.\n'}
+    QgsMapRendererTask.__overridden_methods__ = ['cancel', 'run', 'finished']
     QgsMapRendererTask.__signal_arguments__ = {'errorOccurred': ['error: int']}
     QgsMapRendererTask.__group__ = ['maprenderer']
 except (NameError, AttributeError):

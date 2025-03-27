@@ -155,34 +155,42 @@ QgsProcessingToolboxProxyModel.Filters.baseClass = QgsProcessingToolboxProxyMode
 Filters = QgsProcessingToolboxProxyModel  # dirty hack since SIP seems to introduce the flags in module
 try:
     QgsProcessingToolboxModel.__attribute_docs__ = {'recentAlgorithmAdded': 'Emitted whenever recent algorithms are added to the model.\n', 'favoriteAlgorithmAdded': 'Emitted whenever favorite algorithms are added to the model.\n'}
+    QgsProcessingToolboxModel.__overridden_methods__ = ['flags', 'data', 'rowCount', 'columnCount', 'index', 'parent', 'mimeData']
     QgsProcessingToolboxModel.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelNode.__abstract_methods__ = ['nodeType']
     QgsProcessingToolboxModelNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelRecentNode.__overridden_methods__ = ['nodeType']
     QgsProcessingToolboxModelRecentNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelFavoriteNode.__overridden_methods__ = ['nodeType']
     QgsProcessingToolboxModelFavoriteNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelProviderNode.__overridden_methods__ = ['nodeType']
     QgsProcessingToolboxModelProviderNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelGroupNode.__overridden_methods__ = ['nodeType']
     QgsProcessingToolboxModelGroupNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelAlgorithmNode.__overridden_methods__ = ['nodeType']
     QgsProcessingToolboxModelAlgorithmNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxProxyModel.__overridden_methods__ = ['filterAcceptsRow', 'lessThan', 'data']
     QgsProcessingToolboxProxyModel.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

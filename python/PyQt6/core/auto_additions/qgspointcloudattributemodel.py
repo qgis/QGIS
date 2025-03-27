@@ -84,10 +84,12 @@ QgsPointCloudAttributeProxyModel.Filter.__or__ = lambda flag1, flag2: QgsPointCl
 try:
     QgsPointCloudAttributeModel.attributeToolTip = staticmethod(QgsPointCloudAttributeModel.attributeToolTip)
     QgsPointCloudAttributeModel.iconForAttributeType = staticmethod(QgsPointCloudAttributeModel.iconForAttributeType)
+    QgsPointCloudAttributeModel.__overridden_methods__ = ['index', 'parent', 'rowCount', 'columnCount', 'data']
     QgsPointCloudAttributeModel.__group__ = ['pointcloud']
 except (NameError, AttributeError):
     pass
 try:
+    QgsPointCloudAttributeProxyModel.__overridden_methods__ = ['filterAcceptsRow', 'lessThan']
     QgsPointCloudAttributeProxyModel.__group__ = ['pointcloud']
 except (NameError, AttributeError):
     pass

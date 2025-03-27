@@ -176,6 +176,13 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mInsertExpressionButton</tabstop>
+  <tabstop>mTextFormatButton</tabstop>
+  <tabstop>mAlignmentComboBox</tabstop>
+  <tabstop>mRotationModeCombo</tabstop>
+  <tabstop>mSpinTextAngle</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -13,10 +13,11 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsProviderRegistry.ProviderCandidateDetails.__group__ = ['providers']
+    QgsProviderRegistry.UnusableUriHandlerInterface.__abstract_methods__ = ['matchesUri', 'details']
+    QgsProviderRegistry.UnusableUriHandlerInterface.__group__ = ['providers']
 except (NameError, AttributeError):
     pass
 try:
-    QgsProviderRegistry.UnusableUriHandlerInterface.__group__ = ['providers']
+    QgsProviderRegistry.ProviderCandidateDetails.__group__ = ['providers']
 except (NameError, AttributeError):
     pass

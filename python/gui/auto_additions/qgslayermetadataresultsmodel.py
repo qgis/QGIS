@@ -19,6 +19,7 @@ QgsLayerMetadataResultsModel.CustomRole.__doc__ = """The Roles enum represents t
 QgsLayerMetadataResultsModel.CustomRole.baseClass = QgsLayerMetadataResultsModel
 try:
     QgsLayerMetadataResultsModel.__attribute_docs__ = {'progressChanged': 'Emitted when the progress changed to ``progress``.\n'}
+    QgsLayerMetadataResultsModel.__overridden_methods__ = ['rowCount', 'columnCount', 'data', 'headerData']
     QgsLayerMetadataResultsModel.__signal_arguments__ = {'progressChanged': ['progress: int']}
 except (NameError, AttributeError):
     pass

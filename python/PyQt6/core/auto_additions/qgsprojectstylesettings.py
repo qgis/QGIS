@@ -47,10 +47,12 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProjectStyleDatabaseModel.__overridden_methods__ = ['rowCount', 'data']
     QgsProjectStyleDatabaseModel.__group__ = ['project']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProjectStyleDatabaseProxyModel.__overridden_methods__ = ['filterAcceptsRow']
     QgsProjectStyleDatabaseProxyModel.__group__ = ['project']
 except (NameError, AttributeError):
     pass
