@@ -79,6 +79,7 @@ class CORE_EXPORT QgsGmlFeatureClass
 /**
  * \ingroup core
  * \class QgsGmlSchema
+ * \brief Represents a GML schema.
  */
 class CORE_EXPORT QgsGmlSchema : public QObject
 {

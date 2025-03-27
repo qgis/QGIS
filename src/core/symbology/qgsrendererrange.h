@@ -32,6 +32,7 @@ class QgsClassificationRange;
 /**
  * \ingroup core
  * \class QgsRendererRange
+ * \brief Represents a value range for a QgsGraduatedSymbolRenderer.
  */
 class CORE_EXPORT QgsRendererRange
 {
@@ -204,6 +205,8 @@ typedef QList<QgsRendererRange> QgsRangeList;
 /**
  * \ingroup core
  * \class QgsRendererRangeLabelFormat
+ * \brief Encapsulates the formatting for a QgsRendererRange label.
+ *
  * \deprecated QGIS 3.10. Use QgsClassificationMethod instead.
  */
 class CORE_DEPRECATED_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED

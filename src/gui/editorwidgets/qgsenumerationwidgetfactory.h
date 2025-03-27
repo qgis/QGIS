@@ -24,9 +24,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsEnumerationWidgetFactory
+ * \brief Editor widget factory for enum widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsEnumerationWidgetFactory : public QgsEditorWidgetFactory
 {
   public:

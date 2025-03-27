@@ -16,6 +16,9 @@
 
 class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
 {
+%Docstring(signature="appended")
+A widget for configuring a :py:class:`QgsGraduatedSymbolRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgsgraduatedsymbolrendererwidget.h"

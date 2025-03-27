@@ -33,9 +33,7 @@ class QgsColorEffect;
  * \ingroup gui
  * \class QgsPaintEffectWidget
  * \brief Base class for effect properties widgets.
- *
  */
-
 class GUI_EXPORT QgsPaintEffectWidget : public QWidget
 {
     Q_OBJECT
@@ -65,6 +63,7 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
 /**
  * \ingroup gui
  * \class QgsDrawSourceWidget
+ * \brief A widget for configuring QgsDrawSourceEffect effects.
  */
 class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::WidgetDrawSource
 {
@@ -96,6 +95,7 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
 /**
  * \ingroup gui
  * \class QgsBlurWidget
+ * \brief A widget for configuring QgsBlurEffect effects.
  */
 class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::WidgetBlur
 {
@@ -130,6 +130,7 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
 /**
  * \ingroup gui
  * \class QgsShadowEffectWidget
+ * \brief A widget for configuring QgsShadowEffect effects.
  */
 class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui::WidgetShadowEffect
 {
@@ -167,6 +168,7 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
 /**
  * \ingroup gui
  * \class QgsGlowWidget
+ * \brief A widget for configuring QgsGlowEffect effects.
  */
 class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::WidgetGlow
 {
@@ -203,6 +205,7 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
 /**
  * \ingroup gui
  * \class QgsTransformWidget
+ * \brief A widget for configuring QgsTransformEffect effects.
  */
 class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::WidgetTransform
 {
@@ -242,6 +245,7 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
 /**
  * \ingroup gui
  * \class QgsColorEffectWidget
+ * \brief A widget for configuring QgsColorEffect effects.
  */
 class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui::WidgetColorEffect
 {

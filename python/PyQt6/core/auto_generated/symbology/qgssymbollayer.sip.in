@@ -14,6 +14,9 @@
 
 class QgsSymbolLayer
 {
+%Docstring(signature="appended")
+Abstract base class for symbol layers.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayer.h"

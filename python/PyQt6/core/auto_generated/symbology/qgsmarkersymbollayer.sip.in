@@ -537,6 +537,9 @@ Creates a new QgsFilledMarkerSymbolLayer.
 
 class QgsSvgMarkerSymbolLayer : QgsMarkerSymbolLayer
 {
+%Docstring(signature="appended")
+A marker symbol layer which renders an SVG graphic.
+%End
 
 %TypeHeaderCode
 #include "qgsmarkersymbollayer.h"
@@ -925,6 +928,9 @@ Copies common properties to another layer.
 
 class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 {
+%Docstring(signature="appended")
+A marker symbol layer which displays characters rendered using a font.
+%End
 
 %TypeHeaderCode
 #include "qgsmarkersymbollayer.h"

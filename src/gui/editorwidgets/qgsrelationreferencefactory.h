@@ -28,9 +28,9 @@ class QgsMessageBar;
 /**
  * \ingroup gui
  * \class QgsRelationReferenceFactory
+ * \brief Editor widget factory for relation reference widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 {
   public:

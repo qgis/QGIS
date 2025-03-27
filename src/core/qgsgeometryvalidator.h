@@ -27,6 +27,7 @@ class QgsCurvePolygon;
 /**
  * \ingroup core
  * \class QgsGeometryValidator
+ * \brief Validates geometries using the QGIS geometry validation model.
  */
 class CORE_EXPORT QgsGeometryValidator : public QThread
 {

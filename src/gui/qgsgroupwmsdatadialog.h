@@ -24,6 +24,7 @@
 /**
  * \ingroup gui
  * \class QgsGroupWmsDataDialog
+ * \brief A dialog for configuring a WMS group.
  */
 class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMSDataDialogBase
 {

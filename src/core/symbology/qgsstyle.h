@@ -82,6 +82,7 @@ typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 /**
  * \ingroup core
  * \class QgsStyle
+ * \brief A database of saved style entities, including symbols, color ramps, text formats and others.
  */
 class CORE_EXPORT QgsStyle : public QObject
 {

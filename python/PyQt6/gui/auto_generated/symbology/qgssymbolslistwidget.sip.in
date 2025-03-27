@@ -13,6 +13,9 @@
 
 class QgsSymbolsListWidget : QWidget
 {
+%Docstring(signature="appended")
+A widget which presents symbol-level properties (such as size), and allows selection of symbols from stored styles.
+%End
 
 %TypeHeaderCode
 #include "qgssymbolslistwidget.h"

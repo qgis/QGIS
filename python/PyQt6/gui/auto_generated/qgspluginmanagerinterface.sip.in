@@ -11,6 +11,9 @@
 
 class QgsPluginManagerInterface : QObject
 {
+%Docstring(signature="appended")
+Abstract interface class for the QGIS plugin manager.
+%End
 
 %TypeHeaderCode
 #include "qgspluginmanagerinterface.h"

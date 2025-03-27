@@ -14,6 +14,9 @@
 
 class QgsVectorLayerProperties : QgsLayerPropertiesDialog
 {
+%Docstring(signature="appended")
+Layer properties dialog for vector layers.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorlayerproperties.h"

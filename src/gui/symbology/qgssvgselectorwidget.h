@@ -470,6 +470,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
 /**
  * \ingroup gui
  * \class QgsSvgSelectorDialog
+ * \brief A dialog for selection of an SVG file.
  */
 class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
 {

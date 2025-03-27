@@ -14,6 +14,9 @@
 
 class QgsVectorLayerEditPassthrough : QgsVectorLayerEditBuffer
 {
+%Docstring(signature="appended")
+An edit buffer which directly passes commands through, used when a layer is within a transaction.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorlayereditpassthrough.h"

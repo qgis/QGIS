@@ -33,6 +33,7 @@ class QgsRasterLayer;
 /**
  * \ingroup gui
  * \class QgsRasterMinMaxWidget
+ * \brief A widget for configuring how the minimum and maximum value of a raster layer is determined.
  */
 class GUI_EXPORT QgsRasterMinMaxWidget : public QWidget, private Ui::QgsRasterMinMaxWidgetBase
 {

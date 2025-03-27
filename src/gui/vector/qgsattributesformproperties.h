@@ -53,6 +53,7 @@ class QgsAttributeWidgetEdit;
 /**
  * \ingroup gui
  * \class QgsAttributesFormProperties
+ * \brief A widget for configuring attribute forms.
  */
 class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpressionContextGenerator, private Ui_QgsAttributesFormProperties
 {
@@ -100,6 +101,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     /**
      * \ingroup gui
      * \class DnDTreeItemData
+     * \brief A tree widget item containing drag-and-drop form designer elements.
      */
     class DnDTreeItemData : public QTreeWidgetItem
     {

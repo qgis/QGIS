@@ -13,6 +13,9 @@
 
 class QgsRasterMinMaxWidget : QWidget
 {
+%Docstring(signature="appended")
+A widget for configuring how the minimum and maximum value of a raster layer is determined.
+%End
 
 %TypeHeaderCode
 #include "qgsrasterminmaxwidget.h"

@@ -29,6 +29,7 @@ class QgsRasterFormatOptionsWidget;
 /**
  * \ingroup gui
  * \class QgsRasterLayerSaveAsDialog
+ * \brief A dialog for configuring raster layer export parameters.
  */
 class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRasterLayerSaveAsDialogBase
 {

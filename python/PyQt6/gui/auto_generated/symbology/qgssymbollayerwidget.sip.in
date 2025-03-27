@@ -12,6 +12,9 @@
 
 class QgsSymbolLayerWidget : QWidget, protected QgsExpressionContextGenerator
 {
+%Docstring(signature="appended")
+Abstract base class for widgets used to configure :py:class:`QgsSymbolLayer` classes.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -86,6 +89,9 @@ Normally :py:func:`~QgsSymbolLayerWidget.changed` should be preferred.
 
 class QgsSimpleLineSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsSimpleLineSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -129,6 +135,9 @@ Creates a new QgsSimpleLineSymbolLayerWidget.
 
 class QgsSimpleMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsSimpleMarkerSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -169,6 +178,9 @@ Creates a new QgsSimpleMarkerSymbolLayerWidget.
 
 class QgsSimpleFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsSimpleFillSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -209,7 +221,7 @@ Creates a new QgsSimpleFillSymbolLayerWidget.
 class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
-Widget for configuring :py:class:`QgsFilledMarkerSymbolLayer` symbol layers.
+A widget for configuring :py:class:`QgsFilledMarkerSymbolLayer` symbol layers.
 %End
 
 %TypeHeaderCode
@@ -246,6 +258,9 @@ Creates a new QgsFilledMarkerSymbolLayerWidget.
 
 class QgsGradientFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsGradientFillSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -292,6 +307,9 @@ Applies the color ramp passed on by the color ramp button
 
 class QgsShapeburstFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsShapeburstFillSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -330,6 +348,9 @@ Creates a new QgsShapeburstFillSymbolLayerWidget.
 
 class QgsMarkerLineSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsMarkerLineSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -372,7 +393,7 @@ Creates a new QgsMarkerLineSymbolLayerWidget.
 class QgsHashedLineSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
-Widget for controlling the properties of a :py:class:`QgsHashedLineSymbolLayer`.
+A widget for controlling the properties of a :py:class:`QgsHashedLineSymbolLayer`.
 
 .. versionadded:: 3.8
 %End
@@ -410,6 +431,9 @@ Creates a new QgsHashedLineSymbolLayerWidget.
 
 class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsSvgMarkerSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -477,7 +501,7 @@ Updates the GUI to reflect the SVG marker symbol ``layer``.
 class QgsRasterMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
-Widget for configuring :py:class:`QgsRasterMarkerSymbolLayer` symbol layers.
+A widget for configuring :py:class:`QgsRasterMarkerSymbolLayer` symbol layers.
 
 .. versionadded:: 3.6
 %End
@@ -519,7 +543,7 @@ Creates a new QgsRasterMarkerSymbolLayerWidget.
 class QgsAnimatedMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
-Widget for configuring :py:class:`QgsAnimatedMarkerSymbolLayer` symbol layers.
+A widget for configuring :py:class:`QgsAnimatedMarkerSymbolLayer` symbol layers.
 
 .. versionadded:: 3.26
 %End
@@ -560,6 +584,9 @@ Creates a new QgsAnimatedMarkerSymbolLayerWidget.
 
 class QgsRasterFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsRasterFillSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -596,7 +623,7 @@ Creates a new QgsRasterFillSymbolLayerWidget.
 class QgsRasterLineSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
-Widget for configuring :py:class:`QgsRasterLineSymbolLayer` symbol layers.
+A widget for configuring :py:class:`QgsRasterLineSymbolLayer` symbol layers.
 
 .. versionadded:: 3.24
 %End
@@ -636,7 +663,7 @@ Creates a new QgsRasterLineSymbolLayerWidget.
 class QgsLineburstSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
-Widget for configuring :py:class:`QgsLineburstSymbolLayer` symbol layers.
+A widget for configuring :py:class:`QgsLineburstSymbolLayer` symbol layers.
 
 .. versionadded:: 3.24
 %End
@@ -714,6 +741,9 @@ Creates a new QgsFilledLineSymbolLayerWidget.
 
 class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsSVGFillSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -759,6 +789,9 @@ svg file supports custom parameters.
 
 class QgsLinePatternFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsLinePatternFillSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -793,6 +826,9 @@ Creates a new QgsLinePatternFillSymbolLayerWidget.
 
 class QgsPointPatternFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsPointPatternFillSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -829,8 +865,7 @@ Creates a new QgsPointPatternFillSymbolLayerWidget.
 class QgsRandomMarkerFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
-
-Widget for controlling the properties of a :py:class:`QgsRandomMarkerFillSymbolLayer`.
+A widget for controlling the properties of a :py:class:`QgsRandomMarkerFillSymbolLayer`.
 
 .. versionadded:: 3.12
 %End
@@ -866,6 +901,9 @@ Creates a new QgsRandomMarkerFillSymbolLayerWidget.
 
 class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsFontMarkerSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -929,6 +967,9 @@ Set the font marker character from a text string.
 
 class QgsCentroidFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsCentroidFillSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
@@ -965,7 +1006,7 @@ Creates a new QgsCentroidFillSymbolLayerWidget.
 class QgsLinearReferencingSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
-Widget for controlling the properties of a :py:class:`QgsLinearReferencingSymbolLayer`.
+A widget for controlling the properties of a :py:class:`QgsLinearReferencingSymbolLayer`.
 
 .. versionadded:: 3.40
 %End
@@ -1002,6 +1043,9 @@ Creates a new QgsLinearReferencingSymbolLayerWidget.
 
 class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for controlling the properties of a :py:class:`QgsGeometryGeneratorSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"

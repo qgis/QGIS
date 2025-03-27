@@ -53,6 +53,7 @@ class QgsWebView;
 /**
  * \ingroup gui
  * \class QgsVectorLayerProperties
+ * \brief Layer properties dialog for vector layers.
  */
 class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {

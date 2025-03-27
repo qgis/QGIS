@@ -26,9 +26,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsExternalResourceConfigDlg
+ * \brief Configuration widget for external resource widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, private Ui::QgsExternalResourceConfigDlg
 {
     Q_OBJECT

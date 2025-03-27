@@ -36,6 +36,7 @@ class QTemporaryFile;
 /**
  * \ingroup gui
  * \class QgsStyleExportImportDialog
+ * \brief A dialog allowing importing and exporting of entities from a QgsStyle.
  */
 class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsStyleExportImportDialogBase
 {

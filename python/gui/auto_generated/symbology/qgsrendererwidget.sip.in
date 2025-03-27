@@ -231,6 +231,9 @@ Returns the vector layer associated with the widget.
 
 class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring symbol-level data defined size.
+%End
 
 %TypeHeaderCode
 #include "qgsrendererwidget.h"
@@ -252,6 +255,9 @@ class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
 
 class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring symbol-level data defined rotation.
+%End
 
 %TypeHeaderCode
 #include "qgsrendererwidget.h"
@@ -272,6 +278,9 @@ class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
 
 class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring symbol-level data defined width.
+%End
 
 %TypeHeaderCode
 #include "qgsrendererwidget.h"

@@ -10,6 +10,9 @@
 
 class QgsPenStyleComboBox : QComboBox
 {
+%Docstring(signature="appended")
+A combobox widget for selection of Qt.PenStyle.
+%End
 
 %TypeHeaderCode
 #include "qgspenstylecombobox.h"
@@ -27,6 +30,9 @@ class QgsPenStyleComboBox : QComboBox
 
 class QgsPenJoinStyleComboBox : QComboBox
 {
+%Docstring(signature="appended")
+A combobox widget for selection of Qt.PenJoinStyle.
+%End
 
 %TypeHeaderCode
 #include "qgspenstylecombobox.h"
@@ -41,6 +47,9 @@ class QgsPenJoinStyleComboBox : QComboBox
 
 class QgsPenCapStyleComboBox : QComboBox
 {
+%Docstring(signature="appended")
+A combobox widget for selection of Qt.PenCapStyle.
+%End
 
 %TypeHeaderCode
 #include "qgspenstylecombobox.h"

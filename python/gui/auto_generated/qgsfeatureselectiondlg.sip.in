@@ -17,6 +17,9 @@
 
 class QgsFeatureSelectionDlg : QDialog
 {
+%Docstring(signature="appended")
+A dialog for selecting features from a vector layer.
+%End
 
 %TypeHeaderCode
 #include "qgsfeatureselectiondlg.h"

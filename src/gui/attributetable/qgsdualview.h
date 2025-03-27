@@ -453,6 +453,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 /**
  * \ingroup gui
  * \class QgsAttributeTableAction
+ * \brief A QAction subclass for map layer actions shown in an attribute table.
  */
 class GUI_EXPORT QgsAttributeTableAction : public QAction
 {
@@ -483,6 +484,7 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
 /**
  * \ingroup gui
  * \class QgsAttributeTableMapLayerAction
+ * \brief A QAction for attribute table map layer actions.
  */
 class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction
 {

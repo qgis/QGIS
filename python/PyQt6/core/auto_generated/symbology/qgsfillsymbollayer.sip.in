@@ -472,6 +472,9 @@ Returns the map unit scale for the fill's offset.
 
 class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 {
+%Docstring(signature="appended")
+A fill symbol layer which applies a gradient from the outer edges of a symbol to the inside.
+%End
 
 %TypeHeaderCode
 #include "qgsfillsymbollayer.h"

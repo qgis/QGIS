@@ -27,6 +27,7 @@
 /**
  * \ingroup gui
  * \class QgsPluginManagerInterface
+ * \brief Abstract interface class for the QGIS plugin manager.
  */
 class GUI_EXPORT QgsPluginManagerInterface : public QObject
 {

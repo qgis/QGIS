@@ -480,6 +480,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 /**
  * \ingroup core
  * \class QgsShapeburstFillSymbolLayer
+ * \brief A fill symbol layer which applies a gradient from the outer edges of a symbol to the inside.
  */
 class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 {

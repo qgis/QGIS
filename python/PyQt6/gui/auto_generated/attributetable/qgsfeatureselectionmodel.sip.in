@@ -11,6 +11,9 @@
 
 class QgsFeatureSelectionModel : QItemSelectionModel
 {
+%Docstring(signature="appended")
+Item selection model for selecting features.
+%End
 
 %TypeHeaderCode
 #include "qgsfeatureselectionmodel.h"

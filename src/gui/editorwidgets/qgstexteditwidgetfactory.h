@@ -24,9 +24,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsTextEditWidgetFactory
+ * \brief Editor widget factory for text editor widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsTextEditWidgetFactory : public QgsEditorWidgetFactory
 {
   public:

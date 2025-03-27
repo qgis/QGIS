@@ -32,6 +32,7 @@ class QgsRasterMinMaxWidget;
 /**
  * \ingroup gui
  * \class QgsMultiBandColorRendererWidget
+ * \brief A widget for configuring a QgsMultiBandColorRenderer.
  */
 class GUI_EXPORT QgsMultiBandColorRendererWidget : public QgsRasterRendererWidget, private Ui::QgsMultiBandColorRendererWidgetBase
 {

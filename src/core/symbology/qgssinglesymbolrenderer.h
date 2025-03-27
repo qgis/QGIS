@@ -25,6 +25,7 @@ class QgsSymbol;
 /**
  * \ingroup core
  * \class QgsSingleSymbolRenderer
+ * \brief A feature renderer which renders all features with the same symbol.
  */
 class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 {

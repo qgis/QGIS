@@ -50,6 +50,7 @@ typedef QMap<QString, QString> QgsStringMap;
 /**
  * \ingroup core
  * \class QgsSymbolLayer
+ * \brief Abstract base class for symbol layers.
  */
 class CORE_EXPORT QgsSymbolLayer
 {
