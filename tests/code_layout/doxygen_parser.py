@@ -293,9 +293,11 @@ class DoxygenParser:
         # test for brief description
         d = e.find("briefdescription")
         has_brief_description = False
+        brief_description = ""
         if d is not None:
             for para in d.iter("para"):
                 for text in para.itertext():
+                    brief_description += text
                     if text and re.search(r"\btodo\b", text.lower()) is not None:
                         noncompliant_members.append(
                             {
@@ -304,6 +306,14 @@ class DoxygenParser:
                         )
                         break
                     has_brief_description |= bool(text.strip())
+
+        class_name = e.find("compoundname").text
+        if re.match(rf"\s*(the )?{class_name}.*", brief_description, re.IGNORECASE):
+            noncompliant_members.append(
+                {
+                    "Brief description": f"Brief {brief_description} is non-compliant.\n\nDon't start a brief class descriptions with 'The MyClassName...' or 'MyClassName is responsible for...'. Use just 'Responsible for...'"
+                }
+            )
 
         # test for "added in QGIS xxx" string
         d = e.find("detaileddescription")
