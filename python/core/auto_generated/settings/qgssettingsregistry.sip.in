@@ -14,7 +14,7 @@
 class QgsSettingsRegistry
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsRegistry` is used for settings introspection and collects a
+Used for settings introspection and collects a
 list of child :py:class:`QgsSettingsRegistry` and a list of child :py:class:`QgsSettingsRegistry`
 
 .. versionadded:: 3.20

@@ -32,8 +32,7 @@ class QgsProcessingModelerParameterWidget;
 class QgsProcessingParameterWidgetContext;
 
 /**
- * The QgsProcessingGuiRegistry is a home for widgets for processing
- * configuration widgets.
+ * A registry for widgets for use with the Processing framework.
  *
  * QgsProcessingGuiRegistry is not usually directly created, but rather accessed through
  * QgsGui::processingGuiRegistry().

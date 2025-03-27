@@ -82,8 +82,7 @@ class Qgs3DMapCanvas;
 
 /**
  * \ingroup gui
- * \brief QgisInterface
- * Abstract base class defining interfaces exposed by QgisApp and
+ * \brief Abstract base class defining interfaces exposed by QgisApp and
  * made available to plugins.
  *
  * Only functionality exposed by QgisInterface can be used in plugins.

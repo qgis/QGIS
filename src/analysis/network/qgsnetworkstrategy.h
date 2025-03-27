@@ -31,8 +31,9 @@
 /**
  * \ingroup analysis
  * \class QgsNetworkStrategy
- * \brief QgsNetworkStrategy defines strategy used for calculation of the edge cost. For example it can
- * take into account travel distance, amount of time or money. Currently there are two strategies
+ * \brief Defines strategy used for calculation of the edge cost in networks.
+ *
+ * For example it can take into account travel distance, amount of time or money. Currently there are two strategies
  * implemented in the analysis library: QgsNetworkDistanceStrategy and QgsNetworkSpeedStrategy.
  * QgsNetworkStrategy implemented using "strategy" design pattern.
  */

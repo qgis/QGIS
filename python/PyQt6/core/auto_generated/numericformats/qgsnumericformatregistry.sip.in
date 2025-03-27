@@ -12,7 +12,7 @@
 class QgsNumericFormatRegistry
 {
 %Docstring(signature="appended")
-The :py:class:`QgsNumericFormatRegistry` manages registered classes of :py:class:`QgsNumericFormat`.
+A registry which manages classes of :py:class:`QgsNumericFormat`.
 
 A reference to the :py:class:`QgsFieldFormatterRegistry` can be obtained from
 :py:func:`QgsApplication.numericFormatRegistry()`.

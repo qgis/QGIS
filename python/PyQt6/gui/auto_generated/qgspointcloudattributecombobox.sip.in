@@ -14,7 +14,8 @@
 class QgsPointCloudAttributeComboBox : QComboBox
 {
 %Docstring(signature="appended")
-The :py:class:`QgsPointCloudAttributeComboBox` is a combo box which displays the list of attributes of a given point cloud layer.
+A combobox which displays the list of attributes of a given point cloud layer.
+
 It might be combined with a :py:class:`QgsMapLayerComboBox` to automatically update attributes according to a chosen layer.
 
 .. versionadded:: 3.18

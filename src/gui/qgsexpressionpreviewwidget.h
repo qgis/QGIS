@@ -32,8 +32,10 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * \brief QgsExpressionPreviewWidget is a widget to preview an expression result.
+ * \brief A widget for previewing an expression result.
+ *
  * If the layer is set, one can browse across features to see the different outputs.
+ *
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExpressionPreviewWidgetBase

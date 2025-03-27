@@ -10,8 +10,7 @@
 class QgsWeakRelation
 {
 %Docstring(signature="appended")
-The :py:class:`QgsWeakRelation` class represent a :py:class:`QgsRelation` with possibly
-unresolved layers or unmatched fields.
+Represent a :py:class:`QgsRelation` with possibly unresolved layers or unmatched fields.
 
 This class is used to store relation information attached to a
 layer style, a method to attempt relation resolution is also

@@ -38,7 +38,7 @@ Constructor for a label blocking region
 class QgsMapSettings : QgsTemporalRangeObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsMapSettings` class contains configuration for rendering of the map.
+Contains configuration for rendering maps.
 
 The rendering itself is done by :py:class:`QgsMapRendererJob` subclasses.
 

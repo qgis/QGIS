@@ -12,8 +12,7 @@
 class QgsDataSourceSelectWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDataSourceSelectWidget` class embeds the browser view to
-select an existing data source.
+Embeds the browser view to select an existing data source.
 
 By default any layer type can be chosen, the valid layer
 type can be restricted by setting a layer type filter with
@@ -129,8 +128,7 @@ Emitted when an item is triggered, e.g. via a double-click.
 class QgsDataSourceSelectDialog : QDialog
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDataSourceSelectDialog` class embeds the browser view to
-select an existing data source.
+A dialog which embeds the browser view to select an existing data source.
 
 By default any layer type can be chosen, the valid layer
 type can be restricted by setting a layer type filter with

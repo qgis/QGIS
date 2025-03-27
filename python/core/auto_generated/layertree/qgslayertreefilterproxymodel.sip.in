@@ -13,7 +13,7 @@
 class QgsLayerTreeFilterProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-:py:class:`QgsLayerTreeFilterProxyModel` is a sort filter proxy model to easily reproduce the legend/layer tree in a tree view.
+A sort filter proxy model to easily reproduce the legend/layer tree in a tree view.
 
 Layers are checkable by default.
 Symbology nodes will not be shown.

@@ -11,7 +11,7 @@
 class QgsRasterAttributeTableModel : QAbstractTableModel
 {
 %Docstring(signature="appended")
-The :py:class:`QgsRasterAttributeTableModel` class manages a :py:class:`QgsRasterAttributeTable`
+A model which represents a :py:class:`QgsRasterAttributeTable`.
 
 .. versionadded:: 3.30
 %End

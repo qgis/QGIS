@@ -12,7 +12,7 @@
 class QgsScaleBarRendererRegistry
 {
 %Docstring(signature="appended")
-The :py:class:`QgsScaleBarRendererRegistry` manages registered scalebar renderers.
+A registry which manages registered scalebar renderers.
 
 A reference to the :py:class:`QgsScaleBarRendererRegistry` can be obtained from
 :py:func:`QgsApplication.scalebarRendererRegistry()`.

@@ -13,7 +13,7 @@
 class QgsGui : QObject
 {
 %Docstring(signature="appended")
-:py:class:`QgsGui` is a singleton class containing various registry and other global members
+A singleton class containing various registry and other global members
 related to GUI classes.
 %End
 

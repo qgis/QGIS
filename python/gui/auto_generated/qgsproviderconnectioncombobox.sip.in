@@ -14,7 +14,7 @@
 class QgsProviderConnectionComboBox : QComboBox
 {
 %Docstring(signature="appended")
-The :py:class:`QgsProviderConnectionComboBox` class is a combo box which displays the list of connections registered for a given provider.
+A combo box which displays the list of connections registered for a given provider.
 
 .. warning::
 

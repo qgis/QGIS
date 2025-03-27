@@ -40,8 +40,7 @@ class QgsSymbol;
 
 /**
  * \ingroup core
- * \brief The QgsMapLayerLegend class is abstract interface for implementations
- * of legends for one map layer.
+ * \brief An abstract interface for implementations of legends for one map layer.
  *
  */
 class CORE_EXPORT QgsMapLayerLegend : public QObject

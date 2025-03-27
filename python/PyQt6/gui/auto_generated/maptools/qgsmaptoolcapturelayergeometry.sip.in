@@ -12,7 +12,8 @@
 class QgsMapToolCaptureLayerGeometry : QgsMapToolCapture
 {
 %Docstring(signature="appended")
-:py:class:`QgsMapToolCaptureLayerGeometry` is a base class for map tools digitizing layer geometries
+Base class for map tools digitizing layer geometries.
+
 This map tool subclass automatically handles intersection avoidance with other layers in the active project whenever a geometry is digitized by the user.
 
 .. versionadded:: 3.26
