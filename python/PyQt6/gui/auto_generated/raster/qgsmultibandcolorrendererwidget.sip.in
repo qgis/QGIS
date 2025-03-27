@@ -12,6 +12,9 @@
 
 class QgsMultiBandColorRendererWidget : QgsRasterRendererWidget
 {
+%Docstring(signature="appended")
+A widget for configuring a :py:class:`QgsMultiBandColorRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgsmultibandcolorrendererwidget.h"

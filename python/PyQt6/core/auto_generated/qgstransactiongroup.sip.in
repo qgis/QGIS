@@ -10,6 +10,9 @@
 
 class QgsTransactionGroup : QObject
 {
+%Docstring(signature="appended")
+Represents a transaction group.
+%End
 
 %TypeHeaderCode
 #include "qgstransactiongroup.h"

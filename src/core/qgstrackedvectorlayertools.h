@@ -23,6 +23,7 @@
 /**
  * \ingroup core
  * \class QgsTrackedVectorLayerTools
+ * \brief Vector layer tools subclass which "tracks" edits.
  */
 class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
 {

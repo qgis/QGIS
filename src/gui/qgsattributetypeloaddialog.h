@@ -31,6 +31,7 @@ class QgsVectorLayer;
 /**
  * \ingroup gui
  * \class QgsAttributeTypeLoadDialog
+ * \brief A dialog which allows populating value maps using features present in a vector layer.
  */
 class GUI_EXPORT QgsAttributeTypeLoadDialog : public QDialog, private Ui::QgsAttributeLoadValues
 {

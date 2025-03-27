@@ -110,6 +110,7 @@ class QgsCategorizedRendererViewItemDelegate : public QStyledItemDelegate
 /**
  * \ingroup gui
  * \class QgsCategorizedSymbolRendererWidget
+ * \brief A widget for configuring a QgsCategorizedSymbolRenderer.
  */
 class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsCategorizedSymbolRendererWidget
 {

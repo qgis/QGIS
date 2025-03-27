@@ -33,6 +33,7 @@ class QScrollArea;
 /**
  * \ingroup gui
  * \class QgsGroupBoxCollapseButton
+ * \brief A collapse buttonwidget for collapsible group boxes.
  */
 class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
 {

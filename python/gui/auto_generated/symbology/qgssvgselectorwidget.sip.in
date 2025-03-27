@@ -207,6 +207,9 @@ Emitted when the parameters have changed
 
 class QgsSvgSelectorDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for selection of an SVG file.
+%End
 
 %TypeHeaderCode
 #include "qgssvgselectorwidget.h"

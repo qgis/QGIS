@@ -11,6 +11,7 @@
 class QgsSublayersDialog : QDialog
 {
 %Docstring(signature="appended")
+Presents a choice of sublayers.
 
 .. deprecated:: 3.40
 

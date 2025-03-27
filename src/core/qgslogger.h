@@ -135,6 +135,7 @@ class CORE_EXPORT QgsLogger
 
 /**
  * \ingroup core
+ * \brief Logs the location of the call.
  */
 class CORE_EXPORT QgsScopeLogger // clazy:exclude=rule-of-three
 {

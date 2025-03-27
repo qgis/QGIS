@@ -35,6 +35,9 @@ There are two possibilities how to use this class:
 
     class Option
 {
+%Docstring(signature="appended")
+Describes an available option for configuring file writing for a particular output format.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorfilewriter.h"
@@ -48,6 +51,9 @@ There are two possibilities how to use this class:
 
     class SetOption : QgsVectorFileWriter::Option
 {
+%Docstring(signature="appended")
+An available option for configuring file writing for a particular output format, presenting a choice of preset values.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorfilewriter.h"
@@ -62,6 +68,9 @@ There are two possibilities how to use this class:
 
     class StringOption: QgsVectorFileWriter::Option
 {
+%Docstring(signature="appended")
+An available option for configuring file writing for a particular output format, presenting a freeform string option.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorfilewriter.h"
@@ -74,6 +83,9 @@ There are two possibilities how to use this class:
 
     class IntOption: QgsVectorFileWriter::Option
 {
+%Docstring(signature="appended")
+An available option for configuring file writing for a particular output format, presenting an integer option.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorfilewriter.h"
@@ -86,6 +98,9 @@ There are two possibilities how to use this class:
 
     class BoolOption : QgsVectorFileWriter::SetOption
 {
+%Docstring(signature="appended")
+An available option for configuring file writing for a particular output format, presenting an boolean option.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorfilewriter.h"
@@ -96,6 +111,9 @@ There are two possibilities how to use this class:
 
     class HiddenOption : QgsVectorFileWriter::Option
 {
+%Docstring(signature="appended")
+A hidden option for file writing for a particular output format.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorfilewriter.h"

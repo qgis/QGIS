@@ -26,9 +26,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsDummyConfigDlg
+ * \brief Configuration widget for dummy widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsDummyConfigDlg : public QgsEditorConfigWidget, private Ui::QgsDummyConfigDlgBase
 {
     Q_OBJECT

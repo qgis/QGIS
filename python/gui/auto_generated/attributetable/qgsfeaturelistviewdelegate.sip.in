@@ -10,6 +10,9 @@
 
 class QgsFeatureListViewDelegate : QItemDelegate
 {
+%Docstring(signature="appended")
+Custom item delegate for feature list views.
+%End
 
 %TypeHeaderCode
 #include "qgsfeaturelistviewdelegate.h"

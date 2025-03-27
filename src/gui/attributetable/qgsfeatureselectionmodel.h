@@ -27,6 +27,7 @@ class QgsIFeatureSelectionManager;
 /**
  * \ingroup gui
  * \class QgsFeatureSelectionModel
+ * \brief Item selection model for selecting features.
  */
 class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
 {

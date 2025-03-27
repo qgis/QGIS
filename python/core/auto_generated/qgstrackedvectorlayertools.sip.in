@@ -9,6 +9,9 @@
 
 class QgsTrackedVectorLayerTools : QgsVectorLayerTools
 {
+%Docstring(signature="appended")
+Vector layer tools subclass which "tracks" edits.
+%End
 
 %TypeHeaderCode
 #include "qgstrackedvectorlayertools.h"

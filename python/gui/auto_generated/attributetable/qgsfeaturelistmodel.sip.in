@@ -12,6 +12,9 @@
 
 class QgsFeatureListModel : QSortFilterProxyModel, QgsFeatureModel
 {
+%Docstring(signature="appended")
+A proxy model for feature lists.
+%End
 
 %TypeHeaderCode
 #include "qgsfeaturelistmodel.h"

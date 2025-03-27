@@ -12,6 +12,9 @@
 
 class QgsAttributeTableFilterModel : QSortFilterProxyModel, QgsFeatureModel
 {
+%Docstring(signature="appended")
+A proxy model for filtering an attribute table model.
+%End
 
 %TypeHeaderCode
 #include "qgsattributetablefiltermodel.h"

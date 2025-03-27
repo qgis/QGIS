@@ -27,8 +27,8 @@ class QgsAbstractRelationEditorWidget;
 /**
  * \ingroup gui
  * \class QgsRelationWidgetWrapper
+ * \brief A widget wrapper for relation widgets.
  */
-
 class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT

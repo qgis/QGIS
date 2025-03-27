@@ -11,6 +11,9 @@
 
 class QgsLongLongValidator : QValidator
 {
+%Docstring(signature="appended")
+A QValidator which allows validation of long long values.
+%End
 
 %TypeHeaderCode
 #include "qgslonglongvalidator.h"

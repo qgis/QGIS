@@ -12,6 +12,9 @@
 
 class QgsAttributeTypeLoadDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog which allows populating value maps using features present in a vector layer.
+%End
 
 %TypeHeaderCode
 #include "qgsattributetypeloaddialog.h"

@@ -40,6 +40,7 @@ class QgsAction;
 /**
  * \ingroup gui
  * \class QgsAttributeActionDialog
+ * \brief A dialog for configuring vector layer actions.
  */
 class GUI_EXPORT QgsAttributeActionDialog : public QWidget, private Ui::QgsAttributeActionDialogBase
 {

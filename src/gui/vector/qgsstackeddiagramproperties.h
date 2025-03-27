@@ -121,6 +121,7 @@ class QgsStackedDiagramsViewStyle : public QgsProxyStyle
 /**
  * \ingroup gui
  * \class QgsStackedDiagramProperties
+ * \brief A widget for editing sub diagrams.
  *
  * \since QGIS 3.40
  */

@@ -28,6 +28,7 @@
 /**
  * \ingroup gui
  * \class QgsNewVectorLayerDialog
+ * \brief A dialog for configuring the properties of a new vector layer.
  */
 class GUI_EXPORT QgsNewVectorLayerDialog : public QDialog, private Ui::QgsNewVectorLayerDialogBase
 {

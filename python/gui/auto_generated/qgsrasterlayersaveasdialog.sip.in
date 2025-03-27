@@ -10,6 +10,9 @@
 
 class QgsRasterLayerSaveAsDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring raster layer export parameters.
+%End
 
 %TypeHeaderCode
 #include "qgsrasterlayersaveasdialog.h"

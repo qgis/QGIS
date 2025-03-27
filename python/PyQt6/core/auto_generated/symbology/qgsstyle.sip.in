@@ -24,6 +24,9 @@ typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
 class QgsStyle : QObject
 {
+%Docstring(signature="appended")
+A database of saved style entities, including symbols, color ramps, text formats and others.
+%End
 
 %TypeHeaderCode
 #include "qgsstyle.h"

@@ -25,6 +25,7 @@ class QgsEllipseSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsEllipseSymbolLayerWidget
+ * \brief A widget for configuring a QgsEllipseSymbolLayer.
  */
 class GUI_EXPORT QgsEllipseSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetEllipseBase
 {
