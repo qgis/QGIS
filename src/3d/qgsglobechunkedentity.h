@@ -43,8 +43,10 @@
 class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
 {
   public:
-    QgsGlobeEntity( Qgs3DMapSettings *mapSettings, float maximumScreenSpaceError );
+    QgsGlobeEntity( Qgs3DMapSettings *mapSettings );
     ~QgsGlobeEntity();
+
+    QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
 };
 
 

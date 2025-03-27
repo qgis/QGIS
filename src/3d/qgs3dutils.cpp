@@ -25,6 +25,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
+#include "qgsglobechunkedentity.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgs3dmapscene.h"
 #include "qgsabstract3dengine.h"
@@ -863,6 +864,12 @@ QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> Qgs3DUtils::castRay( Q
   if ( QgsTerrainEntity *terrain = scene->terrainEntity() )
   {
     const QVector<QgsRayCastingUtils::RayHit> result = terrain->rayIntersection( r, context );
+    if ( !result.isEmpty() )
+      results[nullptr] = result; // Terrain hits are not tied to a layer so we use nullptr as their key here
+  }
+  if ( QgsGlobeEntity *globe = scene->globeEntity() )
+  {
+    const QVector<QgsRayCastingUtils::RayHit> result = globe->rayIntersection( r, context );
     if ( !result.isEmpty() )
       results[nullptr] = result; // Terrain hits are not tied to a layer so we use nullptr as their key here
   }

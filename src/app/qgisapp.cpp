@@ -2897,6 +2897,7 @@ void QgisApp::createActions()
   connect( mActionSaveMapAsPdf, &QAction::triggered, this, [=] { saveMapAsPdf(); } );
   connect( mActionNewMapCanvas, &QAction::triggered, this, &QgisApp::newMapCanvas );
   connect( mActionNew3DMapCanvas, &QAction::triggered, this, &QgisApp::new3DMapCanvas );
+  connect( mActionNew3DMapCanvasGlobe, &QAction::triggered, this, &QgisApp::new3DMapCanvasGlobe );
   connect( mActionNewPrintLayout, &QAction::triggered, this, &QgisApp::newPrintLayout );
   connect( mActionNewReport, &QAction::triggered, this, &QgisApp::newReport );
   connect( mActionShowLayoutManager, &QAction::triggered, this, &QgisApp::showLayoutManager );
@@ -9263,6 +9264,7 @@ void QgisApp::populate3DMapviewsMenu( QMenu *menu )
   menu->addActions( acts );
   menu->addSeparator();
   menu->addAction( mActionNew3DMapCanvas );
+  menu->addAction( mActionNew3DMapCanvasGlobe );
   menu->addAction( mActionManage3DMapViews );
 
 #else
@@ -13186,10 +13188,15 @@ QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
 
 void QgisApp::new3DMapCanvas()
 {
-  createNewMapCanvas3D( QString() );
+  createNewMapCanvas3D( QString(), Qgis::SceneMode::Local );
 }
 
-Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name )
+void QgisApp::new3DMapCanvasGlobe()
+{
+  createNewMapCanvas3D( QString(), Qgis::SceneMode::Globe );
+}
+
+Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneMode sceneMode )
 {
 #ifdef HAVE_3D
   // initialize from project
@@ -13218,23 +13225,36 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name )
     QgsSettings settings;
 
     Qgs3DMapSettings *map = new Qgs3DMapSettings;
-    if ( !prj->crs3D().isGeographic() )
+    if ( sceneMode == Qgis::SceneMode::Globe )
     {
-      map->setCrs( prj->crs3D() );
+      // Geocentric CRS based on WGS 84
+      map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ) );
+
+      // 3D axis is not very useful with geocentric CRS: disable it by default
+      Qgs3DAxisSettings axis;
+      axis.setMode( Qgs3DAxisSettings::Mode::Off );
+      map->set3DAxisSettings( axis );
     }
-    else
+    else  // local scene
     {
-      map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+      if ( !prj->crs3D().isGeographic() )
+      {
+        map->setCrs( prj->crs3D() );
+      }
+      else
+      {
+        map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+      }
     }
 
-    const QgsReferencedRectangle projectExtent = prj->viewSettings()->fullExtent();
-    const QgsRectangle fullExtent = Qgs3DUtils::tryReprojectExtent2D( projectExtent, projectExtent.crs(), map->crs(), prj->transformContext() );
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
     map->setLayers( mMapCanvas->layers( true ) );
     map->setTemporalRange( mMapCanvas->temporalRange() );
 
-    const Qgis::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), Qgis::NavigationMode::TerrainBased, QgsSettings::App );
+    Qgis::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), Qgis::NavigationMode::TerrainBased, QgsSettings::App );
+    if ( defaultNavMode == Qgis::NavigationMode::TerrainBased && sceneMode == Qgis::SceneMode::Globe )
+      defaultNavMode = Qgis::NavigationMode::GlobeTerrainBased;
     map->setCameraNavigationMode( defaultNavMode );
 
     map->setCameraMovementSpeed( settings.value( QStringLiteral( "map3d/defaultMovementSpeed" ), 5, QgsSettings::App ).toDouble() );
@@ -13246,7 +13266,16 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name )
     map->setPathResolver( QgsProject::instance()->pathResolver() );
     map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
 
-    map->configureTerrainFromProject( QgsProject::instance()->elevationProperties(), fullExtent );
+    if ( sceneMode == Qgis::SceneMode::Local )
+    {
+      const QgsReferencedRectangle projectExtent = prj->viewSettings()->fullExtent();
+      const QgsRectangle fullExtent = Qgs3DUtils::tryReprojectExtent2D( projectExtent, projectExtent.crs(), map->crs(), prj->transformContext() );
+      map->configureTerrainFromProject( QgsProject::instance()->elevationProperties(), fullExtent );
+    }
+    else
+    {
+      map->configureTerrainFromProject( QgsProject::instance()->elevationProperties(), QgsRectangle() );
+    }
 
     // new scenes default to a single directional light
     map->setLightSources( QList<QgsLightSource *>() << new QgsDirectionalLightSettings() );
@@ -13259,9 +13288,26 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name )
 
     canvasWidget->setMapSettings( map );
 
-    const QgsRectangle canvasExtent = Qgs3DUtils::tryReprojectExtent2D( mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(), map->crs(), prj->transformContext() );
-    float dist = static_cast<float>( std::max( canvasExtent.width(), canvasExtent.height() ) );
-    canvasWidget->mapCanvas3D()->setViewFromTop( canvasExtent.center(), dist, static_cast<float>( mMapCanvas->rotation() ) );
+    if ( sceneMode == Qgis::SceneMode::Local )
+    {
+      const QgsRectangle canvasExtent = Qgs3DUtils::tryReprojectExtent2D( mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(), map->crs(), prj->transformContext() );
+      float dist = static_cast<float>( std::max( canvasExtent.width(), canvasExtent.height() ) );
+      canvasWidget->mapCanvas3D()->setViewFromTop( canvasExtent.center(), dist, static_cast<float>( mMapCanvas->rotation() ) );
+    }
+    else
+    {
+      double centerLat = 0, centerLon = 0;
+      double dist = 10'000'000;
+      const QgsRectangle canvasExtentLatLon = Qgs3DUtils::tryReprojectExtent2D( mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(), map->crs().toGeographicCrs(), prj->transformContext() );
+      if ( QgsRectangle( -180, -90, 180, 90 ).contains( canvasExtentLatLon ) )
+      {
+        centerLon = ( canvasExtentLatLon.xMinimum() + canvasExtentLatLon.xMaximum() ) / 2;
+        centerLat = ( canvasExtentLatLon.yMinimum() + canvasExtentLatLon.yMaximum() ) / 2;
+        constexpr double METERS_PER_DEGREE = 111'000;  // rough approximation (2*pi*R / 360)
+        dist = std::max( canvasExtentLatLon.width(), canvasExtentLatLon.height() ) * METERS_PER_DEGREE;
+      }
+      canvasWidget->mapCanvas3D()->cameraController()->resetGlobe( static_cast<float>( dist ), centerLat, centerLon );
+    }
 
     const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( QStringLiteral( "map3d/axisInversion" ), Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
     if ( canvasWidget->mapCanvas3D()->cameraController() )
