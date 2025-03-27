@@ -43,11 +43,13 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DExtras/QTextureMaterial>
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 #include "qgschunkloader.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdistancearea.h"
 #include "qgsgeotransform.h"
+#include "qgsraycastingutils_p.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintexturegenerator_p.h"
 
@@ -417,8 +419,8 @@ class QgsGlobeChunkLoaderFactory : public QgsChunkLoaderFactory
 // ---------------
 
 
-QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings, float maximumScreenSpaceError )
-  : QgsChunkedEntity( mapSettings, maximumScreenSpaceError, new QgsGlobeChunkLoaderFactory( mapSettings ), true )
+QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings )
+  : QgsChunkedEntity( mapSettings, mapSettings->terrainSettings()->maximumScreenError(), new QgsGlobeChunkLoaderFactory( mapSettings ), true )
 {
 }
 
@@ -427,5 +429,48 @@ QgsGlobeEntity::~QgsGlobeEntity()
   // cancel / wait for jobs
   cancelActiveJobs();
 }
+
+QVector<QgsRayCastingUtils::RayHit> QgsGlobeEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+{
+  Q_UNUSED( context );
+
+  float minDist = -1;
+  QVector3D intersectionPoint;
+  const QList<QgsChunkNode *> active = activeNodes();
+  for ( QgsChunkNode *node : active )
+  {
+    QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), mMapSettings->origin() );
+
+    if ( node->entity() && ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
+    {
+      QgsGeoTransform *nodeGeoTransform = node->entity()->findChild<QgsGeoTransform*>();
+      Q_ASSERT( nodeGeoTransform );
+      const QList<Qt3DRender::QGeometryRenderer *> rendLst = node->entity()->findChildren<Qt3DRender::QGeometryRenderer *>();
+      for ( Qt3DRender::QGeometryRenderer *rend : rendLst )
+      {
+        QVector3D nodeIntPoint;
+        int triangleIndex = -1;
+        bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, nodeGeoTransform->matrix(), nodeIntPoint, triangleIndex );
+        if ( success )
+        {
+          float dist = ( ray.origin() - nodeIntPoint ).length();
+          if ( minDist < 0 || dist < minDist )
+          {
+            minDist = dist;
+            intersectionPoint = nodeIntPoint;
+          }
+        }
+      }
+    }
+  }
+
+  QVector<QgsRayCastingUtils::RayHit> result;
+  if ( minDist >= 0 )
+  {
+    result.append( QgsRayCastingUtils::RayHit( minDist, intersectionPoint ) );
+  }
+  return result;
+}
+
 
 /// @endcond

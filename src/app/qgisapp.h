@@ -460,7 +460,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *
      * \since QGIS 3.36
      */
-    Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name );
+    Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name, Qgis::SceneMode sceneMode );
 
     /**
      * Opens a 3D view canvas for a 3D map view called \a name.
@@ -1733,6 +1733,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Creates a new 3D map canvas view
     void new3DMapCanvas();
+
+    //! Creates a new 3D map canvas view in globe mode
+    void new3DMapCanvasGlobe();
 
     //! Create a new empty vector layer
     void newVectorLayer();

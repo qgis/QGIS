@@ -774,6 +774,7 @@
         <file>themes/default/mesh/SingleTop.svg</file>
         <file>themes/default/mesh/SingleBottom.svg</file>
         <file>themes/default/mActionNew3DMap.svg</file>
+        <file>themes/default/mActionNew3DMapGlobe.svg</file>
         <file>themes/default/mActionNewMap.svg</file>
         <file>themes/default/mActionNext.svg</file>
         <file>themes/default/mActionMapSettings.svg</file>

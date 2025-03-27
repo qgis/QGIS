@@ -158,10 +158,11 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Create a new 3D map canvas with the specified unique \a name.
+     * \note Scene mode (local or globe) can be selected since QGIS 3.44.
      * \see closeMapCanvas3D()
      * \since QGIS 3.36
      */
-    virtual Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name ) = 0;
+    virtual Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name, Qgis::SceneMode sceneMode = Qgis::SceneMode::Local ) = 0;
 
     /**
      * Closes the additional map canvas with matching \a name.
