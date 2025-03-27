@@ -626,9 +626,9 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
   {
     setMouseParameters( MouseOperation::RotationCenter, mMousePos );
 
-    float scale = static_cast<float>( std::max( mScene->engine()->size().width(), mScene->engine()->size().height() ) );
-    float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
-    float yawDiff = -180.0f * static_cast<float>( mouse->x() - mClickPoint.x() ) / scale;
+    const float scale = static_cast<float>( std::max( mScene->engine()->size().width(), mScene->engine()->size().height() ) );
+    const float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
+    const float yawDiff = -180.0f * static_cast<float>( mouse->x() - mClickPoint.x() ) / scale;
 
     mCameraPose.setPitchAngle( mRotationPitch + pitchDiff );
     mCameraPose.setHeadingAngle( mRotationYaw + yawDiff );
