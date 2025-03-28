@@ -112,8 +112,8 @@ Qgis::WkbType QgsSplitLinesByLengthAlgorithm::outputWkbType( Qgis::WkbType input
 
 QgsFields QgsSplitLinesByLengthAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields fields = QgsFields(inputFields);
-  fields.append(QgsField("order", QMetaType::Type::Int));
+  QgsFields fields = QgsFields( inputFields );
+  fields.append( QgsField( "order", QMetaType::Type::Int ) );
   return fields;
 }
 
@@ -145,7 +145,7 @@ QgsFeatureList QgsSplitLinesByLengthAlgorithm::processFeature( const QgsFeature 
       while ( start < length )
       {
         outputFeature.setGeometry( QgsGeometry( part->curveSubstring( start, end ) ) );
-        outputFeature.setAttributes( f.attributes() << order);
+        outputFeature.setAttributes( f.attributes() << order );
         order++;
         start += distance;
         end += distance;
