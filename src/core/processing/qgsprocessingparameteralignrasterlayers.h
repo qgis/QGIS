@@ -21,7 +21,9 @@
 #include "qgsalignrasterdata.h"
 
 /**
- * \brief A parameter for Processing algorithms that need a list of input raster
+ * \brief A parameter for Processing algorithms specifying how rasters should be aligned.
+ *
+ * A parameter for Processing algorithms that need a list of input raster
  * layers to align - this parameter provides Processing framework's adapter for
  * QList<QgsAlignRaster::Item>.
  *

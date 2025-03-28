@@ -4013,7 +4013,9 @@ class CORE_EXPORT QgsProcessingParameterColor : public QgsProcessingParameterDef
 /**
  * \class QgsProcessingParameterCoordinateOperation
  * \ingroup core
- * \brief A coordinate operation parameter for processing algorithms, for selection between available
+ * \brief A coordinate operation parameter for processing algorithms.
+ *
+ * This parameter allows selection between available
  * coordinate operations to use when projecting between a source and destination coordinate reference system.
  *
  * QgsProcessingParameterCoordinateOperation should be evaluated by calling QgsProcessingAlgorithm::parameterAsString().
@@ -4391,7 +4393,9 @@ class CORE_EXPORT QgsProcessingParameterDatabaseSchema : public QgsProcessingPar
 /**
  * \class QgsProcessingParameterDatabaseTable
  * \ingroup core
- * \brief A database table name parameter for processing algorithms, allowing users to select from existing database tables
+ * \brief A database table name parameter for processing algorithms.
+ *
+ * This parameter allows users to select from existing database tables
  * on a registered database connection (or optionally to enter a new table name).
  *
  * QgsProcessingParameterDatabaseTable should be evaluated by calling QgsProcessingAlgorithm::parameterAsDatabaseTableName().

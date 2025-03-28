@@ -73,8 +73,9 @@ QFlags<QgsProcessingParametersGenerator::Flag> operator|(QgsProcessingParameters
 class QgsProcessingParameterWidgetContext
 {
 %Docstring(signature="appended")
-Contains settings which reflect the context in which a Processing parameter widget is shown, e.g., the
-parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+Contains settings which reflect the context in which a Processing parameter widget is shown.
+
+For instance, the parent model algorithm, a linked map canvas, and other relevant information which allows the widget
 to fine-tune its behavior.
 
 .. versionadded:: 3.4
