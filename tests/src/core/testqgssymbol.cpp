@@ -450,3 +450,4 @@ void TestQgsSymbol::symbolProperties()
 
 QGSTEST_MAIN( TestQgsSymbol )
 #include "testqgssymbol.moc"
+//test
