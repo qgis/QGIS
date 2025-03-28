@@ -297,7 +297,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( configureAction, &QAction::triggered, this, &Qgs3DMapCanvasWidget::configure );
   toolBar->addAction( configureAction );
 
-  mCanvas = new Qgs3DMapCanvas;
+  mCanvas = new Qgs3DMapCanvas( this );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
 
   connect( mCanvas, &Qgs3DMapCanvas::savedAsImage, this, [=]( const QString &fileName ) {

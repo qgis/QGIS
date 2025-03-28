@@ -1209,7 +1209,15 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
   {
     if ( QgsWindow3DEngine *engine = dynamic_cast<QgsWindow3DEngine *>( mEngine ) )
     {
-      m3DAxis = new Qgs3DAxis( static_cast<Qgs3DMapCanvas *>( engine->window() ), engine->root(), this, mCameraController, &mMap );
+      Qgs3DMapCanvas *mapCanvas = dynamic_cast<Qgs3DMapCanvas *>( engine->parent() );
+      if ( !mapCanvas )
+      {
+        QgsLogger::warning( "Qgs3DMapScene: no canvas defined for 3DAxis!" );
+      }
+      else
+      {
+        m3DAxis = new Qgs3DAxis( mapCanvas, engine->root(), this, mCameraController, &mMap );
+      }
     }
   }
 }

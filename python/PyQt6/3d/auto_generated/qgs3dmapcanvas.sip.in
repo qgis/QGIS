@@ -37,7 +37,10 @@ Qgs3DMapCanvas is a convenience wrapper to simplify the creation of a 3D window 
 #include "qgs3dmapcanvas.h"
 %End
   public:
-    Qgs3DMapCanvas();
+    Qgs3DMapCanvas( QWidget *parent = 0 );
+%Docstring
+Default constructor with ``parent`` widget (can be null)
+%End
     ~Qgs3DMapCanvas();
 
     Qgs3DMapSettings *mapSettings();
