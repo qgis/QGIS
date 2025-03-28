@@ -58,7 +58,7 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
   // small print of the QCache docs. This is the hint that reality is different.
   //
   // https://bugreports.qt.io/browse/QTBUG-19794
-  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
+  /* DO NOT CHANGE */ QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write ); // DO NOT CHANGE!!!!!
 
   QgsFeature *cachedFeature = mFeatureCache.object( id );
   if ( cachedFeature )
