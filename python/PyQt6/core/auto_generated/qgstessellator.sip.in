@@ -13,7 +13,7 @@
 class QgsTessellator
 {
 %Docstring(signature="appended")
-Class that takes care of tessellation of polygons into triangles.
+Tessellates polygons into triangles.
 
 It is expected that client code will create the tessellator object, then repeatedly call
 :py:func:`~addPolygon` method that will generate triangles, and finally call :py:func:`~data` to get final vertex data.

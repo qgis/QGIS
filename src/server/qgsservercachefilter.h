@@ -36,7 +36,7 @@ class QgsServerInterface;
 /**
  * \ingroup server
  * \class QgsServerCacheFilter
- * \brief Class defining cache interface for QGIS Server plugins.
+ * \brief Defines cache interface for QGIS Server plugins.
  * \since QGIS 3.4
  */
 class SERVER_EXPORT QgsServerCacheFilter

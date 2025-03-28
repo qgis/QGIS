@@ -120,7 +120,7 @@ This is a low-level routine that does not resolve layer ID conflicts, dependenci
     class DependencySorter
 {
 %Docstring(signature="appended")
-Class used to work with layer dependencies stored in a XML project or layer definition file
+Handles sorting of dependencies stored in a XML project or layer definition file.
 %End
 
 %TypeHeaderCode

@@ -15,7 +15,7 @@ class QgsMeshTriangulation : QObject
 {
 %Docstring(signature="appended")
 
-Class that handles mesh creation with Delaunay constrained triangulation
+Handles mesh creation with Delaunay constrained triangulation.
 
 .. versionadded:: 3.16
 %End
@@ -117,7 +117,7 @@ class QgsMeshEditingDelaunayTriangulation : QgsMeshAdvancedEditing
 {
 %Docstring(signature="appended")
 
-Class that can be used with :py:func:`QgsMeshEditor.advancedEdit()` to add triangle faces to a mesh created by
+Can be used with :py:func:`QgsMeshEditor.advancedEdit()` to add triangle faces to a mesh created by
 a Delaunay triangulation on provided existing vertex.
 
 .. versionadded:: 3.22

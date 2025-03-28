@@ -884,7 +884,7 @@ Returns ``True`` if the image brush should be transformed using the render conte
 class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 {
 %Docstring(signature="appended")
-A class for filling symbols with a repeated raster image.
+A fill symbol layer which fills polygons with a repeated raster image.
 %End
 
 %TypeHeaderCode
@@ -1270,7 +1270,7 @@ Returns the map unit scale for the image's width and height.
 class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 {
 %Docstring(signature="appended")
-A class for filling symbols with a repeated SVG file.
+A fill symbol layer which fills polygons with a repeated SVG file.
 %End
 
 %TypeHeaderCode

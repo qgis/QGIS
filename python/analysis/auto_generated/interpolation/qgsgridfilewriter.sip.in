@@ -14,7 +14,7 @@
 class QgsGridFileWriter
 {
 %Docstring(signature="appended")
-A class that does interpolation to a grid and writes the results to an ascii grid.
+Handles interpolation to a grid and writes the results to a raster grid file.
 %End
 
 %TypeHeaderCode

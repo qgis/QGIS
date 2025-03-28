@@ -41,7 +41,7 @@ class QgsFeatureSource;
 
 /**
  * \ingroup analysis
- * \brief A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes.
+ * \brief Calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes.
 */
 class ANALYSIS_EXPORT QgsZonalStatistics
 {

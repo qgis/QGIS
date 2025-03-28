@@ -31,7 +31,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * \brief This is a container for configuration of the snapping of the project
+ * \brief Stores configuration of snapping settings for the project.
  */
 class CORE_EXPORT QgsSnappingConfig
 {
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsSnappingConfig
 
     /**
      * \ingroup core
-     * \brief This is a container of advanced configuration (per layer) of the snapping of the project
+     * \brief A container of advanced configuration (per layer) of the snapping of the project.
      */
     class CORE_EXPORT IndividualLayerSettings
     {

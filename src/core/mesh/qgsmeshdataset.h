@@ -708,7 +708,7 @@ class CORE_EXPORT QgsMeshDatasetGroup
 /**
  * \ingroup core
  *
- * \brief Class to store memory dataset.
+ * \brief Stores mesh memory datasets.
  *
  * The QgsMeshDatasetValue objects and whether the faces are active are stored in QVector containers that are exposed for efficiency
  *
@@ -741,7 +741,7 @@ class CORE_EXPORT QgsMeshMemoryDataset: public QgsMeshDataset
 /**
  * \ingroup core
  *
- * \brief Class that represents a dataset group stored in memory.
+ * \brief Represents a mesh dataset group stored in memory.
  *
  * The QgsMeshMemoryDataset objects stores in a QVector container that are exposed for efficiency
  *
@@ -782,7 +782,7 @@ class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
 /**
  * \ingroup core
  *
- * \brief Class that represents a dataset with elevation value of the vertices of a existing mesh that can be edited
+ * \brief Represents a dataset with elevation value of the vertices of a existing mesh that can be edited.
  *
  * \since QGIS 3.22
  */
@@ -805,8 +805,9 @@ class QgsMeshVerticesElevationDataset: public QgsMeshDataset
 /**
  * \ingroup core
  *
- * \brief Class that represents a dataset group with elevation value of the vertices of a existing mesh that can be edited
- *        This dataset group contains only one dataset.
+ * \brief Represents a dataset group with elevation value of the vertices of a existing mesh that can be edited.
+ *
+ * This dataset group contains only one dataset.
  *
  * \since QGIS 3.22
  */

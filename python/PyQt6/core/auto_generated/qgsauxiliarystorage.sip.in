@@ -15,7 +15,7 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 %Docstring(signature="appended")
 
 
-Class allowing to manage the auxiliary storage for a vector layer.
+Allows managing the auxiliary storage for a vector layer.
 
 Such auxiliary data are data used mostly for the needs of QGIS (symbology)
 and have no real interest in being stored with the native raw geospatial
@@ -244,7 +244,7 @@ class QgsAuxiliaryStorage
 %Docstring(signature="appended")
 
 
-Class providing some utility methods to manage auxiliary storage.
+Providing some utility methods to manage auxiliary storage.
 %End
 
 %TypeHeaderCode

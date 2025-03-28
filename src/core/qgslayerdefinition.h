@@ -132,7 +132,7 @@ class CORE_EXPORT QgsLayerDefinition
 
     /**
      * \ingroup core
-     * \brief Class used to work with layer dependencies stored in a XML project or layer definition file
+     * \brief Handles sorting of dependencies stored in a XML project or layer definition file.
      */
     class CORE_EXPORT DependencySorter
     {

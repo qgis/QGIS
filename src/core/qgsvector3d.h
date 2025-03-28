@@ -23,9 +23,8 @@
 
 /**
  * \ingroup core
- * \brief Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
+ * \brief A 3D vector (similar to QVector3D) with the difference that it uses double precision
  * instead of single precision floating point numbers.
- *
  */
 class CORE_EXPORT QgsVector3D
 {

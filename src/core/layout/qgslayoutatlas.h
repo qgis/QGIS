@@ -27,7 +27,7 @@ class QgsLayout;
 
 /**
  * \ingroup core
- * \brief Class used to render QgsLayout as an atlas, by iterating over the features from an associated vector layer.
+ * \brief Used to render QgsLayout as an atlas, by iterating over the features from an associated vector layer.
  *
  * QgsLayoutAtlas implement the QgsAbstractLayoutIterator interface, allowing them to be used
  * directly with QgsLayoutExporter to automatically output all pages from the atlas.

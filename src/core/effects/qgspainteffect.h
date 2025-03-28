@@ -384,7 +384,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 /**
  * \ingroup core
  * \class QgsEffectPainter
- * \brief A class to manager painter saving and restoring required for effect drawing
+ * \brief Manages painter saving and restoring required for effect drawing.
  *
  */
 class CORE_EXPORT QgsEffectPainter

@@ -28,7 +28,7 @@ class QgsLabelSearchTree;
 
 /**
  * \ingroup core
- * \brief Class that stores computed placement from labeling engine.
+ * \brief Stores computed placement from labeling engine.
  */
 class CORE_EXPORT QgsLabelingResults
 {

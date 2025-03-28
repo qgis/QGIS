@@ -98,7 +98,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
 /**
  * \ingroup core
  *
- * \brief Class used to register and access all the dataset groups related to a mesh layer
+ * \brief Registers and accesses all the dataset groups related to a mesh layer.
  *
  * The registered dataset group are :
  *

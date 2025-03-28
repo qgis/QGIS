@@ -15,7 +15,7 @@
 class QgsAccessControlFilter
 {
 %Docstring(signature="appended")
-Class defining access control interface for QGIS Server plugins.
+Defines access control interface for QGIS Server plugins.
 
 Security can define any (or none) of the following method:
 

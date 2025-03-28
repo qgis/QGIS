@@ -32,7 +32,7 @@ class QgsPointCloudLayer;
 
 /**
  * \ingroup gui
- * \brief Class to select destination file, type and CRS for ogr layers
+ * \brief A dialog for selecting destination file and parameters for point cloud exports.
  * \note not available in Python bindings
  * \since QGIS 3.28
  */

@@ -14,7 +14,7 @@
 class QgsSnappingConfig
 {
 %Docstring(signature="appended")
-This is a container for configuration of the snapping of the project
+Stores configuration of snapping settings for the project.
 %End
 
 %TypeHeaderCode
@@ -82,7 +82,7 @@ Convenient method to return an icon corresponding to the enum type
     class IndividualLayerSettings
 {
 %Docstring(signature="appended")
-This is a container of advanced configuration (per layer) of the snapping of the project
+A container of advanced configuration (per layer) of the snapping of the project.
 %End
 
 %TypeHeaderCode

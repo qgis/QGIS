@@ -851,7 +851,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer SIP_ABSTRAC
 /**
  * \ingroup core
  * \class QgsRasterFillSymbolLayer
- * \brief A class for filling symbols with a repeated raster image.
+ * \brief A fill symbol layer which fills polygons with a repeated raster image.
  */
 class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 {
@@ -1168,7 +1168,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
 /**
  * \ingroup core
- * \brief A class for filling symbols with a repeated SVG file.
+ * \brief A fill symbol layer which fills polygons with a repeated SVG file.
 */
 class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 {

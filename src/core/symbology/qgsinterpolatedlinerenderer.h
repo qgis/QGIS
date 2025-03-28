@@ -29,7 +29,9 @@ class QgsRenderContext;
 /**
  * \ingroup core
  *
- * \brief Class defining color to render mesh datasets. The color can vary depending on the dataset value.
+ * \brief Defines color interpolation for rendering mesh datasets.
+ *
+ * The color can vary depending on the dataset value.
  *
  * \since QGIS 3.14
  */
