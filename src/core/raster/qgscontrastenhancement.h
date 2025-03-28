@@ -35,7 +35,9 @@ class QString;
 
 /**
  * \ingroup core
- * \brief Manipulates raster or point cloud pixel values so that they enhanceContrast or clip into a
+ * \brief Handles contrast enhancement and clipping.
+ *
+ * Manipulates raster or point cloud pixel values so that they enhance contrast or clip into a
  * specified numerical range according to the specified
  * ContrastEnhancementAlgorithm.
  */

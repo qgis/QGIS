@@ -70,7 +70,9 @@ class QgsScopedProxyProgressTask
 {
 %Docstring(signature="appended")
 
-Scoped :py:class:`QgsScopedProxyProgressTask`, which automatically adds the proxy task
+A :py:class:`QgsProxyProgressTask` with automatic lifetime.
+
+:py:class:`QgsScopedProxyProgressTask` implements a :py:class:`QgsProxyProgressTask` which automatically adds the proxy task
 to the application task manager on construction and finalizes the task
 when it goes out of scope.
 

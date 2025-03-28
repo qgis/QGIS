@@ -525,8 +525,9 @@ reports or re-open a related dialog.
 class QgsTaskWithSerialSubTasks : QgsTask
 {
 %Docstring(signature="appended")
-Task that is composed of sub-tasks to be executed in a serial way,
-which may be useful for example to add several layers in a single target
+A task that is composed of sub-tasks to be executed in a serial way.
+
+This may be useful for example to add several layers in a single target
 dataset which does not support concurrent updates.
 
 .. versionadded:: 3.36

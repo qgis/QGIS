@@ -433,8 +433,9 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
 
 /**
- * \brief A sort/filter proxy model for providers and algorithms shown within the Processing toolbox,
- * which automatically sorts the toolbox in a logical fashion and supports filtering
+ * \brief A proxy model for providers and algorithms shown within the Processing toolbox.
+ *
+ * The model automatically sorts the toolbox in a logical fashion and supports filtering
  * the results.
  *
  * \ingroup gui

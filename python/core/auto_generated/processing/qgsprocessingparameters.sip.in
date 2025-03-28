@@ -4209,7 +4209,9 @@ Creates a new parameter using the definition from a script code.
 class QgsProcessingParameterCoordinateOperation : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
-A coordinate operation parameter for processing algorithms, for selection between available
+A coordinate operation parameter for processing algorithms.
+
+This parameter allows selection between available
 coordinate operations to use when projecting between a source and destination coordinate reference system.
 
 :py:class:`QgsProcessingParameterCoordinateOperation` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsString()`.
@@ -4639,7 +4641,9 @@ Creates a new parameter using the definition from a script code.
 class QgsProcessingParameterDatabaseTable : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
-A database table name parameter for processing algorithms, allowing users to select from existing database tables
+A database table name parameter for processing algorithms.
+
+This parameter allows users to select from existing database tables
 on a registered database connection (or optionally to enter a new table name).
 
 :py:class:`QgsProcessingParameterDatabaseTable` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsDatabaseTableName()`.
