@@ -3660,6 +3660,7 @@ void QgsFontMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContex
   double offsetY = 0;
   markerOffset( context, scaledSize, scaledSize, offsetX, offsetY );
   offset = QPointF( offsetX, offsetY );
+  hasDataDefinedRotation = false;
 
   //angle
   bool ok = true;
@@ -3667,14 +3668,16 @@ void QgsFontMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContex
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Angle ) )
   {
     context.setOriginalValueVariable( angle );
-    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::Angle, context.renderContext().expressionContext(), mAngle, &ok ) + mLineAngle;
+    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::Angle, context.renderContext().expressionContext(), 0, &ok ) + mLineAngle;
 
     // If the expression evaluation was not successful, fallback to static value
     if ( !ok )
       angle = mAngle + mLineAngle;
+
+    hasDataDefinedRotation = true;
   }
 
-  hasDataDefinedRotation = context.renderHints() & Qgis::SymbolRenderHint::DynamicRotation;
+  hasDataDefinedRotation = context.renderHints() & Qgis::SymbolRenderHint::DynamicRotation || hasDataDefinedRotation;
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the
