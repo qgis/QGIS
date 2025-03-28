@@ -38,7 +38,7 @@ class Qgs3DWiredMesh;
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Draws bounds of axis aligned bounding boxes
  * \note Not available in Python bindings
  */

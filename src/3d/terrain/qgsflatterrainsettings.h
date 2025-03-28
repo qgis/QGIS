@@ -26,7 +26,7 @@ class QgsReadWriteContext;
 class QgsProject;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Terrain settings for a simple flat area terrain.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is

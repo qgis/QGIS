@@ -25,7 +25,7 @@ class QgsDirectionalLightSettings;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief An entity that is responsible for applying post processing effect.
  *
  * \note Not available in Python bindings

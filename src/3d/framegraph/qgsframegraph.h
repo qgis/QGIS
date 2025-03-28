@@ -54,7 +54,7 @@ class QgsShadowSettings;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Container class that holds different objects related to frame graph of 3D scenes
  *
  * A frame graph captures configuration of rendering passes when 3D scene gets rendered.

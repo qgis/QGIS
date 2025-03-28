@@ -24,7 +24,7 @@
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Material component for QgsPreviewQuad object
  *
  * \note Not available in Python bindings
@@ -49,7 +49,7 @@ class QgsPreviewQuadMaterial : public Qt3DRender::QMaterial
 };
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Rectangular quad entity used for debugging depth maps
  *
  * \note Not available in Python bindings

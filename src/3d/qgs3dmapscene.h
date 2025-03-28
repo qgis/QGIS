@@ -61,7 +61,7 @@ class Qgs3DMapSceneEntity;
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
  */
 #ifndef SIP_RUN

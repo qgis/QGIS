@@ -40,7 +40,7 @@
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Util class to dump Qt3D framegraph or scenegraph.
  * \since QGIS 3.40
  */

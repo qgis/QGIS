@@ -27,7 +27,7 @@
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Axis-aligned bounding box - in world coords.
  * \note Not available in Python bindings
  */

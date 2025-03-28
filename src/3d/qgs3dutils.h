@@ -49,7 +49,7 @@ class QSurface;
 class Qgs3DRenderContext;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Miscellaneous utility functions used from 3D code.
  * \note Not available in Python bindings
  */

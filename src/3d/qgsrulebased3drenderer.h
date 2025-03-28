@@ -29,7 +29,7 @@ class QgsFeature3DHandler;
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Metadata for rule-based 3D renderer to allow creation of its instances from XML
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
@@ -48,7 +48,7 @@ class _3D_EXPORT QgsRuleBased3DRendererMetadata : public Qgs3DRendererAbstractMe
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Rule-based 3D renderer.
  *
  * Similar to rule-based 2D renderer and rule-based labeling, it allows specification of rules for 3D symbols.
@@ -66,7 +66,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
     typedef QHash<const QgsRuleBased3DRenderer::Rule *, QgsFeature3DHandler *> RuleToHandlerMap;
 
     /**
-     * \ingroup 3d
+     * \ingroup qgis_3d
      * \brief A child rule for a QgsRuleBased3DRenderer
      * \since QGIS 3.6
      */

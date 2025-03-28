@@ -30,7 +30,7 @@ namespace Qt3DRender
 } // namespace Qt3DRender
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for 3D render view
  *
  * An instance of QgsAbstractRenderView is a branch (ie. a render pass, ie. a render view) of the framegraph.

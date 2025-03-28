@@ -38,7 +38,7 @@ namespace Qt3DRender
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Container class that holds different objects related to forward rendering
  * \note Not available in Python bindings
  *

@@ -29,7 +29,7 @@ class QgsReadWriteContext;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Class that holds information about animation in 3D view. The animation is defined
  * as a series of keyframes
  * \note Not available in Python bindings

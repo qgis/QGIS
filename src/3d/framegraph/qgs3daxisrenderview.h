@@ -51,7 +51,7 @@ class Qgs3DAxis;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3d axis render view class
  *
  * \note Not available in Python bindings

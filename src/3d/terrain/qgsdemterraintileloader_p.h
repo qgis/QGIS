@@ -46,7 +46,7 @@ class QgsCoordinateTransformContext;
 class QgsTerrainGenerator;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Chunk loader for DEM terrain tiles.
  */
 class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
@@ -72,7 +72,7 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
 class QgsTerrainDownloader;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Utility class to asynchronously create heightmaps from DEM raster for given tiles of terrain.
  */
 class QgsDemHeightMapGenerator : public QObject
