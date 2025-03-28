@@ -13,7 +13,7 @@
 class QgsEditorWidgetRegistry : QObject
 {
 %Docstring(signature="appended")
-This class manages all known edit widget factories.
+A registry that manages all known edit widget factories.
 
 :py:class:`QgsEditorWidgetRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.editorWidgetRegistry()`.

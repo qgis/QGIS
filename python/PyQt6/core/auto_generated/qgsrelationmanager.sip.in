@@ -13,7 +13,7 @@
 class QgsRelationManager : QObject
 {
 %Docstring(signature="appended")
-This class manages a set of relations between layers.
+Manages a set of relations between layers.
 %End
 
 %TypeHeaderCode

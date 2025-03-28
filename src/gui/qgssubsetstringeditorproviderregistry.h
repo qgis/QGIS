@@ -30,7 +30,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * \brief This class keeps a list of subset string editor providers.
+ * \brief A registry for subset string editor providers.
  *
  * QgsSubsetStringEditorProviderRegistry is not usually directly created, but rather accessed through
  * QgsGui::subsetStringEditorProvideRegistry().

@@ -35,9 +35,8 @@ class QgsAbstractCacheIndex;
 
 /**
  * \ingroup core
- * \brief This class caches features of a given QgsVectorLayer.
+ * \brief Caches features for a given QgsVectorLayer.
  *
- * \brief
  * The cached features can be indexed by QgsAbstractCacheIndex.
  *
  * Proper indexing for a given use-case may speed up performance substantially.

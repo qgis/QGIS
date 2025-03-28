@@ -28,7 +28,7 @@ class QgsClassificationMethod;
 
 /**
  * \ingroup gui
- * \brief This class manages all known classification methods
+ * \brief Manages all known classification methods.
  *
  * QgsClassificationMethodRegistry is not usually directly created, but rather accessed through
  * QgsApplication::classificationMethodRegistry().

@@ -12,7 +12,7 @@
 class QgsVectorSimplifyMethod
 {
 %Docstring(signature="appended")
-This class contains information how to simplify geometries fetched from a vector layer
+Contains settings for simplifying geometries fetched from a vector layer.
 %End
 
 %TypeHeaderCode

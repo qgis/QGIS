@@ -30,7 +30,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * \brief This class manages a set of relations between layers.
+ * \brief Manages a set of relations between layers.
  */
 class CORE_EXPORT QgsRelationManager : public QObject
 {
