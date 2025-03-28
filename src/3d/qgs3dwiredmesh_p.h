@@ -41,7 +41,7 @@ class QgsAABB;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Geometry renderer for lines, draws a wired mesh
  *
  * \since QGIS 3.26

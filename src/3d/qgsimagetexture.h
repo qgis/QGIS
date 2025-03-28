@@ -30,7 +30,7 @@
  *
  * \note Not available in Python bindings
  *
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \since QGIS 3.16
  */
 class _3D_EXPORT QgsImageTexture : public Qt3DRender::QPaintedTextureImage

@@ -48,7 +48,7 @@
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief This loader factory is responsible for creation of loaders for individual tiles
  * of QgsQgsPointCloudLayerChunkedEntity whenever a new tile is requested by the entity.
  *
@@ -83,7 +83,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief This loader class is responsible for async loading of data for a single tile
  * of QgsPointCloudLayerChunkedEntity and creation of final 3D entity from the data
  * previously prepared in a worker thread.
@@ -114,7 +114,7 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3D entity used for rendering of point cloud layers with a single 3D symbol for all points.
  *
  * It is implemented using tiling approach with QgsChunkedEntity. Internally it uses

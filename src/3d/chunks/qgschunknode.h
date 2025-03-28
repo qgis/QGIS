@@ -105,7 +105,7 @@ struct QgsChunkNodeId
 };
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Data structure for keeping track of chunks of data for 3D entities that use "out of core" rendering,
  * i.e. not all of the data are available in the memory all the time.
  *

@@ -26,7 +26,7 @@
 class QgsAbstractMaterialSettings;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3D symbol that draws polygon geometries as planar polygons, optionally extruded (with added walls).
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is

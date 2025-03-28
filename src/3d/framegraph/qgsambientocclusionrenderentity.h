@@ -21,7 +21,7 @@
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief An entity that is responsible for producing an ambient occlusion factor map.
  *
  * \note Not available in Python bindings

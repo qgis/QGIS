@@ -28,7 +28,7 @@ class QDomElement;
 
 /**
  * \brief class containing the configuration of ambient occlusion rendering
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \note Not available in Python bindings
  * \since QGIS 3.28
  */

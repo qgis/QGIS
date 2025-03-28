@@ -30,7 +30,7 @@
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Geometry of the billboard rendering for points in 3D map view.
  *
  * \note Not available in Python bindings

@@ -45,7 +45,7 @@ class QgsProject;
 class QDomElement;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Definition of the world.
  *
  * \warning Qgs3DMapSettings are a QObject subclass, and accordingly are not

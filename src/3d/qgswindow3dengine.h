@@ -34,7 +34,7 @@ class QWindow;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief On-screen 3D engine: it creates OpenGL window (QWindow) and displays rendered 3D scene there.
  * The window can be embedded into a QWidget-based application with QWidget::createWindowContainer().
  *

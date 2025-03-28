@@ -50,7 +50,7 @@ class QgsWindow3DEngine;
 class Qgs3DMapScene;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Object that controls camera movement based on user input
  */
 #ifndef SIP_RUN

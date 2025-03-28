@@ -34,7 +34,7 @@
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for jobs that load chunks
  *
  * \note Not available in Python bindings
@@ -57,7 +57,7 @@ class QgsChunkLoader : public QgsChunkQueueJob
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Factory for chunk loaders for a particular type of entity
  */
 class QgsChunkLoaderFactory : public QObject
@@ -117,7 +117,7 @@ class QgsChunkLoaderFactory : public QObject
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for factories where the hierarchy is a quadtree where all leaves
  * are in the same depth.
  *
@@ -145,7 +145,7 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
 };
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * Factory that uses a chunk loader factory for in-place updates
  * of loaded nodes. Use it with QgsChunkedEntity::updateNodes()
  * to rebuild entity of an existing node.

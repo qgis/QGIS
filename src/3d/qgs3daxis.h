@@ -40,7 +40,7 @@ class Qgs3DMapScene;
 class Qgs3DAxisRenderView;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Display 3D ortho axis in the main 3D view.
  *
  * Axis are displayed in a dedicated viewport which can be placed all around the main viewport.

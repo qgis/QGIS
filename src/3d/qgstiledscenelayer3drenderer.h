@@ -27,7 +27,7 @@ class QgsTiledSceneLayer;
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Metadata for tiled scene layer 3D renderer to allow creation of its instances from XML
  *
  * \since QGIS 3.34
@@ -43,7 +43,7 @@ class _3D_EXPORT QgsTiledSceneLayer3DRendererMetadata : public Qgs3DRendererAbst
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3D renderer that renders content of a tiled scene layer
  *
  * \since QGIS 3.34

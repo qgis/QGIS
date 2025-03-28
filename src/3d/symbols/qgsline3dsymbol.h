@@ -24,7 +24,7 @@
 class QgsAbstractMaterialSettings;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3D symbol that draws linestring geometries as planar polygons (created from lines using a buffer with given thickness).
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
