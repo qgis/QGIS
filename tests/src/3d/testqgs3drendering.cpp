@@ -1937,12 +1937,11 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   map->setCrs( p.crs() );
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
+  map->setTerrainRenderingEnabled( false );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
   engine.setRootEntity( scene );
-
-  scene->setSceneOriginShiftEnabled( false );
 
   scene->cameraController()->setCameraNavigationMode( Qgis::NavigationMode::GlobeTerrainBased );
 
