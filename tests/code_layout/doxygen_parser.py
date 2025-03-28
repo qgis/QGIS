@@ -316,10 +316,14 @@ class DoxygenParser:
                     "Brief description": f"Brief {brief_description} is non-compliant.\n\nDon't start a brief class descriptions with 'The MyClassName...' or 'MyClassName is responsible for...'. Use just 'Responsible for...'"
                 }
             )
-        if re.match(rf"\s*this class.*", brief_description, re.IGNORECASE):
+        if re.match(
+            rf"\s*(?:this class|a class|it|this is|class)\b.*",
+            brief_description,
+            re.IGNORECASE,
+        ):
             noncompliant_members.append(
                 {
-                    "Brief description": f"Brief {brief_description} is non-compliant.\n\nDon't start a brief class descriptions with 'This class is responsible for...', use just 'Responsible for...'"
+                    "Brief description": f"Brief {brief_description} is non-compliant.\n\nDon't start a brief class descriptions with comments like 'This class is responsible for...', use just 'Responsible for...'"
                 }
             )
         if len(brief_description) > DoxygenParser.MAX_LEN_CLASS_BRIEF:
