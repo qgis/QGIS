@@ -68,6 +68,8 @@ class QgsElevationProfileToolMeasure : public QgsPlotTool
     void plotPressEvent( QgsPlotMouseEvent *event ) override;
     void plotReleaseEvent( QgsPlotMouseEvent *event ) override;
 
+    void clear();
+
   signals:
 
     void measureChanged( double totalDistance, double deltaCurveDistance, double deltaElevation );
