@@ -277,6 +277,12 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     void resetGlobe( float distance, double lat = 0, double lon = 0 );
 
+    /**
+     * Returns the origin of the scene in map coordinates
+     * \since QGIS 3.44
+     */
+    const QgsVector3D origin() const { return mOrigin; }
+
   public slots:
 
     /**
