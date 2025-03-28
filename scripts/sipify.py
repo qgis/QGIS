@@ -1934,6 +1934,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 exit_with_error(
                     f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is multi-sentence. Please split to separate paragraphs.\n\n{first_paragraph}"
                 )
+            if first_paragraph.strip()[-1] != ".":
+                exit_with_error(
+                    f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is not a complete sentence. Ensure it has a trailing '.':\n\n{first_paragraph}"
+                )
 
             remaining_parts = "\n".join(remaining_parts)
             docstring = first_paragraph
