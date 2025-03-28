@@ -2308,7 +2308,9 @@ Creates a new parameter using the definition from a script code.
 class QgsProcessingParameterDistance : QgsProcessingParameterNumber
 {
 %Docstring(signature="appended")
-A double numeric parameter for distance values. Linked to a source layer or CRS parameter
+A double numeric parameter for distance values.
+
+Linked to a source layer or CRS parameter
 to determine what units the distance values are in.
 
 The number of decimals places shown in a distance parameter's widget can be specified by
@@ -2398,7 +2400,9 @@ Sets the default distance ``unit`` for the parameter.
 class QgsProcessingParameterArea : QgsProcessingParameterNumber
 {
 %Docstring(signature="appended")
-A double numeric parameter for area values. Linked to a source layer or CRS parameter
+A double numeric parameter for area values.
+
+Linked to a source layer or CRS parameter
 to determine what units the area values are in.
 
 The number of decimals places shown in a area parameter's widget can be specified by
@@ -2484,7 +2488,9 @@ Sets the default area ``unit`` for the parameter.
 class QgsProcessingParameterVolume : QgsProcessingParameterNumber
 {
 %Docstring(signature="appended")
-A double numeric parameter for volume values. Linked to a source layer or CRS parameter
+A double numeric parameter for volume values.
+
+Linked to a source layer or CRS parameter
 to determine what units the volume values are in.
 
 The number of decimals places shown in a volume parameter's widget can be specified by
@@ -2570,8 +2576,9 @@ Sets the default volume ``unit`` for the parameter.
 class QgsProcessingParameterDuration : QgsProcessingParameterNumber
 {
 %Docstring(signature="appended")
-A double numeric parameter for duration values. The returned
-value will always be in milliseconds.
+A double numeric parameter for duration values.
+
+The returned value will always be in milliseconds.
 
 .. versionadded:: 3.22
 %End
@@ -3113,8 +3120,9 @@ Sets the geometry ``types`` for sources acceptable by the parameter.
 class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes, QgsFileFilterGenerator
 {
 %Docstring(signature="appended")
-A vector layer (with or without geometry) parameter for processing algorithms. Consider using
-the more versatile :py:class:`QgsProcessingParameterFeatureSource` wherever possible.
+A vector layer (with or without geometry) parameter for processing algorithms.
+
+Consider using the more versatile :py:class:`QgsProcessingParameterFeatureSource` wherever possible.
 %End
 
 %TypeHeaderCode

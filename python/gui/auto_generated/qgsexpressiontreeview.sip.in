@@ -71,8 +71,9 @@ class QgsExpressionItemSearchProxy : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 Search proxy used to filter the :py:class:`QgsExpressionBuilderWidget` tree.
+
 The default search for a tree model only searches top level this will handle one
-level down
+level down.
 %End
 
 %TypeHeaderCode

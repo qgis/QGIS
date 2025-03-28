@@ -39,6 +39,7 @@ class QgsLayoutItem;
 /**
  * \ingroup gui
  * \brief Abstract base class for all layout view tools.
+ *
  * Layout view tools are user interactive tools for manipulating and adding items
  * to QgsLayoutView widgets.
  */

@@ -26,8 +26,8 @@
  * \ingroup gui
  *
  * \brief Offers a toolbutton to choose between different aggregate functions.
- * Functions are filtered based on the type.
  *
+ * Functions are filtered based on the type.
  */
 class GUI_EXPORT QgsAggregateToolButton : public QToolButton
 {

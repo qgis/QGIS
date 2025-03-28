@@ -18,7 +18,8 @@ class QgsMapLayer : QObject
 {
 %Docstring(signature="appended")
 Base class for all map layer types.
-This is the base class for all map layer types (vector, raster).
+
+This is the base class for all map layer types (vector, raster, mesh, point cloud, annotations, etc).
 %End
 
 %TypeHeaderCode

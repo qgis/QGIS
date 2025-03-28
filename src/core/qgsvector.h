@@ -22,10 +22,10 @@
 
 /**
  * \ingroup core
- * \brief A class to represent a vector.
- * Currently no Z axis / 2.5D support is implemented.
+ * \brief Represent a 2-dimensional vector.
+ *
+ * No Z axis / 2.5D support is implemented. See QgsVector3D for a 3D equivalent.
  */
-
 class CORE_EXPORT QgsVector
 {
 

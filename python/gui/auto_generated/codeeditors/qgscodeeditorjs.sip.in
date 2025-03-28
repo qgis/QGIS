@@ -13,8 +13,9 @@
 class QgsCodeEditorJavascript : QgsCodeEditor
 {
 %Docstring(signature="appended")
-A Javascript editor based on QScintilla2. Adds syntax highlighting and
-code autocompletion.
+A Javascript editor based on QScintilla2.
+
+Adds syntax highlighting and code autocompletion.
 
 .. versionadded:: 3.14
 %End

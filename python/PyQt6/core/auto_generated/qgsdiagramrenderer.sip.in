@@ -956,8 +956,9 @@ Returns configuration of appearance of legend. Will return ``None`` if no config
 class QgsStackedDiagramRenderer : QgsDiagramRenderer
 {
 %Docstring(signature="appended")
-Renders diagrams using mixed diagram render types. The size of
-the rendered diagram is given by a combination of subrenderers.
+Renders diagrams using mixed diagram render types.
+
+The size of the rendered diagram is given by a combination of subrenderers.
 
 .. versionadded:: 3.40
 %End

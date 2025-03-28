@@ -149,6 +149,7 @@ class QgsReadWriteContextCategoryPopper
 %Docstring(signature="appended")
 Allows entering a context category and takes care of
 leaving this category on deletion of the class.
+
 This would happen when it gets out of scope.
 
 .. versionadded:: 3.2

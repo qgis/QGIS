@@ -834,7 +834,8 @@ class CORE_EXPORT QgsMeshVerticesElevationDatasetGroup : public QgsMeshDatasetGr
  * \ingroup core
  *
  * \brief Tree item for display of the mesh dataset groups.
- * Dataset group is set of datasets with the same name,
+ *
+ * Dataset groups are sets of datasets with the same name,
  * but different control variable (e.g. time)
  *
  * Support for multiple levels, because groups can have
