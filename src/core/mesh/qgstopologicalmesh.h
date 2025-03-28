@@ -34,7 +34,7 @@ class QgsMeshVertexCirculator;
 /**
  * \ingroup core
  *
- * \brief Class that wraps a QgsMesh to ensure the consistency of the mesh during editing and help to access to elements from other elements
+ * \brief Wraps a QgsMesh to ensure the consistency of the mesh during editing and help to access to elements from other elements.
  *
  *  A topological face need to:
  *
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsTopologicalMesh
     /**
      * \ingroup core
      *
-     * \brief Class that contains independent faces an topological information about this faces
+     * \brief Contains independent faces and topological information about these faces.
      *
      * This class supports unique shared vertex between faces
      *
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsTopologicalMesh
     /**
      * \ingroup core
      *
-     * \brief Class that contains topological differences between two states of a topological mesh, only accessible from the QgsTopologicalMesh class
+     * \brief Contains topological differences between two states of a topological mesh, only accessible from the QgsTopologicalMesh class.
      *
      * \since QGIS 3.22
      */

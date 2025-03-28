@@ -12,8 +12,7 @@
 class QgsSubsetStringEditorProvider
 {
 %Docstring(signature="appended")
-This is the interface for those who want to provide a dialog to edit a
-subset string.
+An interface for widgets which edit a subset string.
 
 .. versionadded:: 3.18
 %End

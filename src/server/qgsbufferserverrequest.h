@@ -25,7 +25,7 @@
 /**
  * \ingroup server
  * \class QgsBufferServerRequest
- * \brief Class defining request with data
+ * \brief Defines a request with data.
  */
 class SERVER_EXPORT QgsBufferServerRequest : public QgsServerRequest
 {

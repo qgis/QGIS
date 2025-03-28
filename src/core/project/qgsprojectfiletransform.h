@@ -29,7 +29,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * \brief Class to convert from older project file versions to newer.
+ * \brief Convert from older project file versions to newer.
  *
  * This class provides possibility to store a project file as a QDomDocument,
  * and provides the ability to specify version of the project file, and

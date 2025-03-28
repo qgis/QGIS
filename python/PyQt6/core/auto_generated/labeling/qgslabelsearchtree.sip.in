@@ -15,7 +15,9 @@
 class QgsLabelSearchTree
 {
 %Docstring(signature="appended")
-A class to query the labeling structure at a given point (small wrapper around pal RTree class)
+Queries the labeling structure at a given point.
+
+This class is a small wrapper around the pal RTree class.
 %End
 
 %TypeHeaderCode

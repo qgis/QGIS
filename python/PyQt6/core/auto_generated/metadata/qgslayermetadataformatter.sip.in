@@ -13,7 +13,7 @@
 class QgsLayerMetadataFormatter
 {
 %Docstring(signature="appended")
-Class for metadata formatter.
+Formats layer metadata into HTML.
 %End
 
 %TypeHeaderCode

@@ -41,7 +41,9 @@ namespace pal
 
 /**
  * \ingroup core
- * \brief A class to query the labeling structure at a given point (small wrapper around pal RTree class)
+ * \brief Queries the labeling structure at a given point.
+ *
+ * This class is a small wrapper around the pal RTree class.
  */
 class CORE_EXPORT QgsLabelSearchTree
 {

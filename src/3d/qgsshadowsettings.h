@@ -27,7 +27,7 @@ class QDomElement;
 #define SIP_NO_FILE
 
 /**
- * \brief class containing the configuration of shadows rendering
+ * \brief Contains configuration for rendering shadows.
  * \ingroup qgis_3d
  * \since QGIS 3.16
  */
