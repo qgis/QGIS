@@ -271,8 +271,8 @@ double QgsCameraController::sampleDepthBuffer( int px, int py )
   {
     // on high DPI screens, the mouse position is in device-independent pixels,
     // but the depth buffer is in physical pixels...
-    px *= win->devicePixelRatio();
-    py *= win->devicePixelRatio();
+    px = static_cast<int>( px * win->devicePixelRatio() );
+    py = static_cast<int>( py * win->devicePixelRatio() );
   }
 
   // Sample the neighbouring pixels for the closest point to the camera
