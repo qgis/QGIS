@@ -316,6 +316,18 @@ class DoxygenParser:
                     "Brief description": f"Brief {brief_description} is non-compliant.\n\nDon't start a brief class descriptions with 'The MyClassName...' or 'MyClassName is responsible for...'. Use just 'Responsible for...'"
                 }
             )
+        if re.match(rf"\s*this class.*", brief_description, re.IGNORECASE):
+            noncompliant_members.append(
+                {
+                    "Brief description": f"Brief {brief_description} is non-compliant.\n\nDon't start a brief class descriptions with 'This class is responsible for...', use just 'Responsible for...'"
+                }
+            )
+        if len(brief_description) > DoxygenParser.MAX_LEN_CLASS_BRIEF:
+            noncompliant_members.append(
+                {
+                    "Brief description": f"Brief is too long {len(brief_description)} vs {DoxygenParser.MAX_LEN_CLASS_BRIEF} maximum. Split into a shorter brief and longer detail paragraphs."
+                }
+            )
 
         # test for "added in QGIS xxx" string
         d = e.find("detaileddescription")
