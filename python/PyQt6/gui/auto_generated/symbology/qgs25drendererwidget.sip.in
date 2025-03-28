@@ -10,6 +10,9 @@
 
 class Qgs25DRendererWidget : QgsRendererWidget, protected Ui::Qgs25DRendererWidgetBase
 {
+%Docstring(signature="appended")
+A widget for configuring a Qgs25DRenderer.
+%End
 
 %TypeHeaderCode
 #include "qgs25drendererwidget.h"

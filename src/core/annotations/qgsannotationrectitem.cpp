@@ -728,14 +728,14 @@ bool QgsAnnotationRectItem::readCommonProperties( const QDomElement &element, co
   const QDomElement backgroundSymbolElem = element.firstChildElement( QStringLiteral( "backgroundSymbol" ) ).firstChildElement();
   if ( !backgroundSymbolElem.isNull() )
   {
-    setBackgroundSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( backgroundSymbolElem, context ) );
+    setBackgroundSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( backgroundSymbolElem, context ).release() );
   }
 
   mDrawFrame = element.attribute( QStringLiteral( "frameEnabled" ), QStringLiteral( "0" ) ).toInt();
   const QDomElement frameSymbolElem = element.firstChildElement( QStringLiteral( "frameSymbol" ) ).firstChildElement();
   if ( !frameSymbolElem.isNull() )
   {
-    setFrameSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( frameSymbolElem, context ) );
+    setFrameSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( frameSymbolElem, context ).release() );
   }
 
   return QgsAnnotationItem::readCommonProperties( element, context );

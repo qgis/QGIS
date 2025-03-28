@@ -1867,7 +1867,7 @@ void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  dynamic_cast<QgsSingleSymbolRenderer *>( lineLayer->renderer() )->setSymbol( QgsLineSymbol::createSimple( properties ) );
+  dynamic_cast<QgsSingleSymbolRenderer *>( lineLayer->renderer() )->setSymbol( QgsLineSymbol::createSimple( properties ).release() );
 
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:generateelevationprofileimage" ) ) );
   QVERIFY( alg != nullptr );

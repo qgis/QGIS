@@ -27,6 +27,7 @@ class QgsVectorLayer;
 /**
  * \ingroup gui
  * \class QgsVectorLayerSelectionManager
+ * \brief Manages vector layer selections.
  * \note not available in Python bindings
  */
 class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionManager

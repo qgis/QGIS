@@ -10,6 +10,9 @@
 
 class QgsArrowSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for configuring a :py:class:`QgsArrowSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgsarrowsymbollayerwidget.h"

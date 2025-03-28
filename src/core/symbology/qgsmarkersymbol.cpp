@@ -22,7 +22,7 @@
 #include "qgspainting.h"
 #include "qgsfillsymbol.h"
 
-QgsMarkerSymbol *QgsMarkerSymbol::createSimple( const QVariantMap &properties )
+std::unique_ptr< QgsMarkerSymbol > QgsMarkerSymbol::createSimple( const QVariantMap &properties )
 {
   QgsSymbolLayer *sl = QgsSimpleMarkerSymbolLayer::create( properties );
   if ( !sl )
@@ -30,7 +30,7 @@ QgsMarkerSymbol *QgsMarkerSymbol::createSimple( const QVariantMap &properties )
 
   QgsSymbolLayerList layers;
   layers.append( sl );
-  return new QgsMarkerSymbol( layers );
+  return std::make_unique< QgsMarkerSymbol >( layers );
 }
 
 QgsMarkerSymbol::QgsMarkerSymbol( const QgsSymbolLayerList &layers )

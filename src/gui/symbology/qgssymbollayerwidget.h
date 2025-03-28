@@ -32,6 +32,7 @@ class QgsLineSymbol;
 /**
  * \ingroup gui
  * \class QgsSymbolLayerWidget
+ * \brief Abstract base class for widgets used to configure QgsSymbolLayer classes.
  */
 class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionContextGenerator
 {
@@ -117,6 +118,7 @@ class QgsSimpleLineSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsSimpleLineSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsSimpleLineSymbolLayer.
  */
 class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetSimpleLine
 {
@@ -179,6 +181,7 @@ class QgsSimpleMarkerSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsSimpleMarkerSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsSimpleMarkerSymbolLayer.
  */
 class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetSimpleMarker
 {
@@ -240,6 +243,7 @@ class QgsSimpleFillSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsSimpleFillSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsSimpleFillSymbolLayer.
  */
 class GUI_EXPORT QgsSimpleFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetSimpleFill
 {
@@ -289,7 +293,7 @@ class QgsFilledMarkerSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsFilledMarkerSymbolLayerWidget
- * \brief Widget for configuring QgsFilledMarkerSymbolLayer symbol layers.
+ * \brief A widget for configuring QgsFilledMarkerSymbolLayer symbol layers.
  */
 class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetFilledMarker
 {
@@ -342,6 +346,7 @@ class QgsGradientFillSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsGradientFillSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsGradientFillSymbolLayer.
  */
 class GUI_EXPORT QgsGradientFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetGradientFill
 {
@@ -397,6 +402,7 @@ class QgsShapeburstFillSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsShapeburstFillSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsShapeburstFillSymbolLayer.
  */
 class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetShapeburstFill
 {
@@ -448,6 +454,7 @@ class QgsMarkerLineSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsMarkerLineSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsMarkerLineSymbolLayer.
  */
 class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetMarkerLine
 {
@@ -499,7 +506,7 @@ class QgsHashedLineSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsHashedLineSymbolLayerWidget
- * \brief Widget for controlling the properties of a QgsHashedLineSymbolLayer.
+ * \brief A widget for controlling the properties of a QgsHashedLineSymbolLayer.
  * \since QGIS 3.8
  */
 class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetHashedLine
@@ -555,6 +562,7 @@ class QgsSvgMarkerSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsSvgMarkerSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsSvgMarkerSymbolLayer.
  */
 class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetSvgMarker
 {
@@ -637,7 +645,7 @@ class QgsRasterMarkerSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsRasterMarkerSymbolLayerWidget
- * \brief Widget for configuring QgsRasterMarkerSymbolLayer symbol layers.
+ * \brief A widget for configuring QgsRasterMarkerSymbolLayer symbol layers.
  * \since QGIS 3.6
  */
 class GUI_EXPORT QgsRasterMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetRasterMarker
@@ -691,7 +699,7 @@ class QgsAnimatedMarkerSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsAnimatedMarkerSymbolLayerWidget
- * \brief Widget for configuring QgsAnimatedMarkerSymbolLayer symbol layers.
+ * \brief A widget for configuring QgsAnimatedMarkerSymbolLayer symbol layers.
  * \since QGIS 3.26
  */
 class GUI_EXPORT QgsAnimatedMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetAnimatedMarker
@@ -748,6 +756,7 @@ class QgsRasterFillSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsRasterFillSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsRasterFillSymbolLayer.
  */
 class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetRasterFill
 {
@@ -796,7 +805,7 @@ class QgsRasterLineSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsRasterLineSymbolLayerWidget
- * \brief Widget for configuring QgsRasterLineSymbolLayer symbol layers.
+ * \brief A widget for configuring QgsRasterLineSymbolLayer symbol layers.
  * \since QGIS 3.24
  */
 class GUI_EXPORT QgsRasterLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetRasterLine
@@ -839,7 +848,7 @@ class QgsLineburstSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsLineburstSymbolLayerWidget
- * \brief Widget for configuring QgsLineburstSymbolLayer symbol layers.
+ * \brief A widget for configuring QgsLineburstSymbolLayer symbol layers.
  * \since QGIS 3.24
  */
 class GUI_EXPORT QgsLineburstSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetGradientLine
@@ -878,7 +887,7 @@ class QgsFilledLineSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsFilledLineSymbolLayerWidget
- * A widget for configuring QgsFilledLineSymbolLayer.
+ * \brief A widget for configuring QgsFilledLineSymbolLayer.
  * \since QGIS 3.36
  */
 class GUI_EXPORT QgsFilledLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetFilledLine
@@ -918,6 +927,7 @@ class QgsSVGFillSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsSVGFillSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsSVGFillSymbolLayer.
  */
 class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetSVGFill
 {
@@ -975,6 +985,7 @@ class QgsLinePatternFillSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsLinePatternFillSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsLinePatternFillSymbolLayer.
  */
 class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetLinePatternFill
 {
@@ -1017,6 +1028,7 @@ class QgsPointPatternFillSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsPointPatternFillSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsPointPatternFillSymbolLayer.
  */
 class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetPointPatternFill
 {
@@ -1067,8 +1079,7 @@ class QgsRandomMarkerFillSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsRandomMarkerFillSymbolLayerWidget
- *
- * \brief Widget for controlling the properties of a QgsRandomMarkerFillSymbolLayer.
+ * \brief A widget for controlling the properties of a QgsRandomMarkerFillSymbolLayer.
  *
  * \since QGIS 3.12
  */
@@ -1115,6 +1126,7 @@ class CharacterWidget;
 /**
  * \ingroup gui
  * \class QgsFontMarkerSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsFontMarkerSymbolLayer.
  */
 class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetFontMarker
 {
@@ -1206,6 +1218,7 @@ class QgsCentroidFillSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsCentroidFillSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsCentroidFillSymbolLayer.
  */
 class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetCentroidFill
 {
@@ -1249,7 +1262,7 @@ class QgsLinearReferencingSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsLinearReferencingSymbolLayerWidget
- * \brief Widget for controlling the properties of a QgsLinearReferencingSymbolLayer.
+ * \brief A widget for controlling the properties of a QgsLinearReferencingSymbolLayer.
  * \since QGIS 3.40
  */
 class GUI_EXPORT QgsLinearReferencingSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::QgsLinearReferencingSymbolLayerWidgetBase
@@ -1291,6 +1304,7 @@ class QgsGeometryGeneratorSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsGeometryGeneratorSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsGeometryGeneratorSymbolLayer.
  */
 class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::GeometryGeneratorWidgetBase
 {

@@ -752,7 +752,7 @@ bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGeneration
 
       if ( !totalResults )
         // Use the first result set as a base
-        totalResults.reset( mResults.release() );
+        totalResults = std::move( mResults );
       else
       {
         // Merge the results, shifting them by distanceProcessed
@@ -781,7 +781,7 @@ bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGeneration
     }
 
     mProfileCurve = std::move( origCurve );
-    mResults.reset( totalResults.release() );
+    mResults = std::move( totalResults );
     return true;
   }
 
@@ -1442,7 +1442,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
           shiftedPoly.reset( new QgsPolygon( new QgsLineString( newX, newY, newZ ) ) );
 
           intersection.reset( mProfileBufferedCurveEngine->intersection( shiftedPoly.get(), &error ) );
-          if ( intersection.get() )
+          if ( intersection )
             processTriangleLineIntersect( clampedPolygon.get(), intersection.get(), transformedParts, crossSectionParts );
 #ifdef QGISDEBUG
           else

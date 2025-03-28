@@ -170,7 +170,7 @@ class CORE_EXPORT QgsMapLayerLegendUtils
      * \see setLegendNodeCustomSymbol()
      * \since QGIS 3.14
      */
-    static QgsSymbol *legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex ) SIP_FACTORY;
+    static std::unique_ptr< QgsSymbol > legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 
     /**
      * Sets a custom legend color ramp \a settings for the legend node belonging to \a nodeLayer at the specified \a originalIndex.

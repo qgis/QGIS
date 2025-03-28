@@ -2974,7 +2974,7 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
       std::unique_ptr<QgsMapLayer> ownedLayer( context->takeResultLayer( layer->id() ) );
       if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Vector )
       {
-        mParentLayer.reset( ownedLayer.release() );
+        mParentLayer = std::move( ownedLayer );
         layer = static_cast<QgsVectorLayer *>( mParentLayer.get() );
       }
       else
@@ -3006,7 +3006,7 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
       std::unique_ptr<QgsMapLayer> ownedLayer( context->takeResultLayer( layer->id() ) );
       if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::PointCloud )
       {
-        mParentLayer.reset( ownedLayer.release() );
+        mParentLayer = std::move( ownedLayer );
         layer = static_cast<QgsPointCloudLayer *>( mParentLayer.get() );
       }
       else

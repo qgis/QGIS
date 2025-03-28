@@ -489,6 +489,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 /**
  * \ingroup core
  * \class QgsSvgMarkerSymbolLayer
+ * \brief A marker symbol layer which renders an SVG graphic.
  */
 class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
@@ -851,6 +852,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
 /**
  * \ingroup core
  * \class QgsFontMarkerSymbolLayer
+ * \brief A marker symbol layer which displays characters rendered using a font.
  */
 class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {

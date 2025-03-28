@@ -91,6 +91,9 @@ otherwise returns a file name for writing log messages to.
 
 class QgsScopeLogger
 {
+%Docstring(signature="appended")
+Logs the location of the call.
+%End
 
 %TypeHeaderCode
 #include "qgslogger.h"

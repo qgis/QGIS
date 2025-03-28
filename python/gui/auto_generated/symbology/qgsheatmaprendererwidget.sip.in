@@ -10,6 +10,9 @@
 
 class QgsHeatmapRendererWidget : QgsRendererWidget
 {
+%Docstring(signature="appended")
+A widget for configuring a :py:class:`QgsHeatmapRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgsheatmaprendererwidget.h"

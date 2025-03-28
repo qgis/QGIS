@@ -10,6 +10,9 @@
 
 class QgsVectorFieldSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for configuring a :py:class:`QgsVectorFieldSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorfieldsymbollayerwidget.h"

@@ -1867,7 +1867,7 @@ QColor QgsSimpleMarkerSymbolLayer::color() const
 QgsFilledMarkerSymbolLayer::QgsFilledMarkerSymbolLayer( Qgis::MarkerShape shape, double size, double angle, Qgis::ScaleMethod scaleMethod )
   : QgsSimpleMarkerSymbolLayerBase( shape, size, angle, scaleMethod )
 {
-  mFill.reset( static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
+  mFill = QgsFillSymbol::createSimple( QVariantMap() );
 }
 
 QgsFilledMarkerSymbolLayer::~QgsFilledMarkerSymbolLayer() = default;
@@ -1908,7 +1908,7 @@ QgsSymbolLayer *QgsFilledMarkerSymbolLayer::create( const QVariantMap &props )
     m->setVerticalAnchorPoint( static_cast< Qgis::VerticalAnchorPoint >( props[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
   }
 
-  m->setSubSymbol( QgsFillSymbol::createSimple( props ) );
+  m->setSubSymbol( QgsFillSymbol::createSimple( props ).release() );
 
   m->restoreOldDataDefinedProperties( props );
 
@@ -3674,6 +3674,7 @@ void QgsFontMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContex
   double offsetY = 0;
   markerOffset( context, scaledSize, scaledSize, offsetX, offsetY );
   offset = QPointF( offsetX, offsetY );
+  hasDataDefinedRotation = false;
 
   //angle
   bool ok = true;
@@ -3681,14 +3682,16 @@ void QgsFontMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContex
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Angle ) )
   {
     context.setOriginalValueVariable( angle );
-    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::Angle, context.renderContext().expressionContext(), mAngle, &ok ) + mLineAngle;
+    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::Angle, context.renderContext().expressionContext(), 0, &ok ) + mLineAngle;
 
     // If the expression evaluation was not successful, fallback to static value
     if ( !ok )
       angle = mAngle + mLineAngle;
+
+    hasDataDefinedRotation = true;
   }
 
-  hasDataDefinedRotation = context.renderHints() & Qgis::SymbolRenderHint::DynamicRotation;
+  hasDataDefinedRotation = context.renderHints() & Qgis::SymbolRenderHint::DynamicRotation || hasDataDefinedRotation;
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the

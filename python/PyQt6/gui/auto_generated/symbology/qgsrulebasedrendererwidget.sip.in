@@ -90,6 +90,9 @@ transferred to the renderer.
 
 class QgsRuleBasedRendererWidget : QgsRendererWidget
 {
+%Docstring(signature="appended")
+A widget for configuring a :py:class:`QgsRuleBasedRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgsrulebasedrendererwidget.h"
@@ -169,6 +172,9 @@ Opens the dialog for refining a rule using ranges
 
 class QgsRendererRulePropsWidget : QgsPanelWidget
 {
+%Docstring(signature="appended")
+A widget for editing the details of a rule based renderer rule.
+%End
 
 %TypeHeaderCode
 #include "qgsrulebasedrendererwidget.h"
@@ -224,6 +230,9 @@ Set the widget in dock mode.
 
 class QgsRendererRulePropsDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for editing the details of a rule based renderer rule.
+%End
 
 %TypeHeaderCode
 #include "qgsrulebasedrendererwidget.h"

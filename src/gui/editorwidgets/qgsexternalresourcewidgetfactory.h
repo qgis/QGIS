@@ -27,9 +27,9 @@ class QgsMessageBar;
 /**
  * \ingroup gui
  * \class QgsExternalResourceWidgetFactory
+ * \brief Editor widget factory for external resource widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsExternalResourceWidgetFactory : public QgsEditorWidgetFactory
 {
   public:

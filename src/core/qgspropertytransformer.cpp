@@ -589,7 +589,7 @@ bool QgsColorRampTransformer::loadVariant( const QVariant &definition )
   mGradientRamp.reset( nullptr );
   if ( transformerMap.contains( QStringLiteral( "colorramp" ) ) )
   {
-    setColorRamp( QgsSymbolLayerUtils::loadColorRamp( transformerMap.value( QStringLiteral( "colorramp" ) ).toMap() ) );
+    setColorRamp( QgsSymbolLayerUtils::loadColorRamp( transformerMap.value( QStringLiteral( "colorramp" ) ).toMap() ).release() );
   }
 
   mNullColor = QgsColorUtils::colorFromString( transformerMap.value( QStringLiteral( "nullColor" ), QStringLiteral( "0,0,0,0" ) ).toString() );

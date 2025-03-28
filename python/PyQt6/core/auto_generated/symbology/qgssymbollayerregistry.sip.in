@@ -140,12 +140,12 @@ Removes a symbol layer type
 .. versionadded:: 3.22.2
 %End
 
-    QgsSymbolLayer *createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const /Factory/;
+    std::unique_ptr< QgsSymbolLayer > createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const;
 %Docstring
 create a new instance of symbol layer given symbol layer name and properties
 %End
 
-    QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const /Factory/;
+    std::unique_ptr< QgsSymbolLayer > createSymbolLayerFromSld( const QString &name, QDomElement &element ) const;
 %Docstring
 create a new instance of symbol layer given symbol layer name and SLD
 %End
@@ -172,7 +172,7 @@ warnings in the ``context`` if not.
 Returns a list of available symbol layers for a specified symbol type
 %End
 
-    static QgsSymbolLayer *defaultSymbolLayer( Qgis::SymbolType type ) /Factory/;
+    static std::unique_ptr< QgsSymbolLayer > defaultSymbolLayer( Qgis::SymbolType type );
 %Docstring
 create a new instance of symbol layer for specified symbol type with default settings
 %End

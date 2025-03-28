@@ -294,15 +294,16 @@ class DoxygenParser:
         d = e.find("briefdescription")
         has_brief_description = False
         if d is not None:
-            has_brief_description = True
             for para in d.iter("para"):
-                if para.text and re.search(r"\btodo\b", para.text.lower()) is not None:
-                    noncompliant_members.append(
-                        {
-                            "Brief description": "Don't add TODO comments to public doxygen documentation. Leave these as c++ code comments only."
-                        }
-                    )
-                    break
+                for text in para.itertext():
+                    if text and re.search(r"\btodo\b", text.lower()) is not None:
+                        noncompliant_members.append(
+                            {
+                                "Brief description": "Don't add TODO comments to public doxygen documentation. Leave these as c++ code comments only."
+                            }
+                        )
+                        break
+                    has_brief_description |= bool(text.strip())
 
         # test for "added in QGIS xxx" string
         d = e.find("detaileddescription")

@@ -139,6 +139,9 @@ typedef QList<QgsRendererCategory> QgsCategoryList;
 
 class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
 {
+%Docstring(signature="appended")
+A feature renderer which represents features using a list of renderer categories.
+%End
 
 %TypeHeaderCode
 #include "qgscategorizedsymbolrenderer.h"

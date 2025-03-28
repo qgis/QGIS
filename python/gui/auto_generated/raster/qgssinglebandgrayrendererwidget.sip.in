@@ -12,6 +12,9 @@
 
 class QgsSingleBandGrayRendererWidget : QgsRasterRendererWidget
 {
+%Docstring(signature="appended")
+A widget for configuring a :py:class:`QgsSingleBandGrayRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgssinglebandgrayrendererwidget.h"

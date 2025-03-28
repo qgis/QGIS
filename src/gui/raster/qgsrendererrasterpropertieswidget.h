@@ -32,6 +32,7 @@ class QgsRasterRendererWidget;
 /**
  * \ingroup gui
  * \class QgsRendererRasterPropertiesWidget
+ * \brief A widget for configuring properties of a raster layer renderer.
  */
 class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsRendererRasterPropsWidgetBase
 {

@@ -8,7 +8,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsVectorFileWriter.FilterFormatDetails.__attribute_docs__ = {'driverName': 'Unique driver name', 'filterString': 'Filter string for file picker dialogs', 'globs': 'Matching glob patterns for format, e.g. *.shp.\n\n.. versionadded:: 3.2'}
+    QgsVectorFileWriter.FilterFormatDetails.__attribute_docs__ = {'driverName': 'Unique driver name', 'filterString': 'Filter string for file picker dialogs', 'globs': 'Matching glob patterns for format, e.g. ``*.shp``.\n\n.. versionadded:: 3.2'}
     QgsVectorFileWriter.FilterFormatDetails.__doc__ = """Details of available filters and formats."""
 except (NameError, AttributeError):
     pass

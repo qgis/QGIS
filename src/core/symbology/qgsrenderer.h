@@ -58,6 +58,7 @@ typedef QMap<QString, QgsSymbol * > QgsSymbolMap SIP_SKIP;
 /**
  * \ingroup core
  * \class QgsSymbolLevelItem
+ * \brief Represents a symbol level during vector rendering operations.
  */
 class CORE_EXPORT QgsSymbolLevelItem
 {

@@ -26,6 +26,7 @@ class Qgs25DRenderer;
 /**
  * \ingroup gui
  * \class Qgs25DRendererWidget
+ * \brief A widget for configuring a Qgs25DRenderer.
  */
 class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, protected Ui::Qgs25DRendererWidgetBase
 {

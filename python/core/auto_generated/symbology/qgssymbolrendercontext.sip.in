@@ -11,6 +11,9 @@
 
 class QgsSymbolRenderContext
 {
+%Docstring(signature="appended")
+Encapsulates the context in which a symbol is being rendered.
+%End
 
 %TypeHeaderCode
 #include "qgssymbolrendercontext.h"

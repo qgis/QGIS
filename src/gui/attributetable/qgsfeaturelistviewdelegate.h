@@ -27,6 +27,7 @@ class QPosition;
 /**
  * \ingroup gui
  * \class QgsFeatureListViewDelegate
+ * \brief Custom item delegate for feature list views.
  */
 class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
 {

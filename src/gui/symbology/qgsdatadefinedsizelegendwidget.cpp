@@ -43,7 +43,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
 
   mLineSymbolButton->setSymbolType( Qgis::SymbolType::Line );
 
-  QgsMarkerSymbol *symbol = nullptr;
+  std::unique_ptr< QgsMarkerSymbol > symbol;
 
   if ( !ddsLegend )
   {
@@ -64,13 +64,13 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
     if ( ddsLegend->lineSymbol() )
       mLineSymbolButton->setSymbol( ddsLegend->lineSymbol()->clone() );
 
-    symbol = ddsLegend->symbol() ? ddsLegend->symbol()->clone() : nullptr; // may be null (undefined)
+    symbol.reset( ddsLegend->symbol() ? ddsLegend->symbol()->clone() : nullptr ); // may be null (undefined)
   }
   groupBoxOptions->setEnabled( radSeparated->isChecked() );
 
   if ( overrideSymbol )
   {
-    symbol = overrideSymbol; // takes ownership
+    symbol.reset( overrideSymbol ); // takes ownership
     mOverrideSymbol = true;
   }
 
@@ -78,7 +78,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   {
     symbol = QgsMarkerSymbol::createSimple( QVariantMap() );
   }
-  mSourceSymbol.reset( symbol );
+  mSourceSymbol = std::move( symbol );
 
   btnChangeSymbol->setEnabled( !mOverrideSymbol );
 

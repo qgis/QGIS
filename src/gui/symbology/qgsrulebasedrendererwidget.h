@@ -112,6 +112,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
 /**
  * \ingroup gui
  * \class QgsRuleBasedRendererWidget
+ * \brief A widget for configuring a QgsRuleBasedRenderer.
  */
 class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private Ui::QgsRuleBasedRendererWidget
 {
@@ -196,6 +197,7 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
 /**
  * \ingroup gui
  * \class QgsRendererRulePropsWidget
+ * \brief A widget for editing the details of a rule based renderer rule.
  */
 class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui::QgsRendererRulePropsWidget
 {
@@ -254,6 +256,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
 /**
  * \ingroup gui
  * \class QgsRendererRulePropsDialog
+ * \brief A dialog for editing the details of a rule based renderer rule.
  */
 class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
 {

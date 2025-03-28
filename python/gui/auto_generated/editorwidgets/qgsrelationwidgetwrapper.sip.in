@@ -10,9 +10,11 @@
 
 
 
-
 class QgsRelationWidgetWrapper : QgsWidgetWrapper
 {
+%Docstring(signature="appended")
+A widget wrapper for relation widgets.
+%End
 
 %TypeHeaderCode
 #include "qgsrelationwidgetwrapper.h"

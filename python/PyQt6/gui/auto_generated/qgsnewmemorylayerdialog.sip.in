@@ -11,6 +11,9 @@
 
 class QgsNewMemoryLayerDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring the properties of a new memory (scratch) layer.
+%End
 
 %TypeHeaderCode
 #include "qgsnewmemorylayerdialog.h"

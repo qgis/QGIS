@@ -35,7 +35,7 @@ QgsLayoutItemMarker::QgsLayoutItemMarker( QgsLayout *layout )
   setReferencePoint( QgsLayoutItem::Middle );
   QVariantMap properties;
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "4" ) );
-  mShapeStyleSymbol.reset( QgsMarkerSymbol::createSimple( properties ) );
+  mShapeStyleSymbol = QgsMarkerSymbol::createSimple( properties );
   refreshSymbol();
 
   connect( this, &QgsLayoutItemMarker::sizePositionChanged, this, [this]
@@ -221,7 +221,7 @@ bool QgsLayoutItemMarker::readPropertiesFromElement( const QDomElement &element,
   const QDomElement shapeStyleSymbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !shapeStyleSymbolElem.isNull() )
   {
-    mShapeStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( shapeStyleSymbolElem, context ) );
+    mShapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( shapeStyleSymbolElem, context );
   }
 
   //picture rotation

@@ -332,7 +332,7 @@ void QgsPostgresProvider::setListening( bool isListening )
 
   if ( isListening && !mListener )
   {
-    mListener.reset( QgsPostgresListener::create( mUri.connectionInfo( false ) ).release() );
+    mListener = QgsPostgresListener::create( mUri.connectionInfo( false ) );
     connect( mListener.get(), &QgsPostgresListener::notify, this, &QgsPostgresProvider::notify );
   }
   else if ( !isListening && mListener )

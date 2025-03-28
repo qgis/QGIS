@@ -10,6 +10,9 @@
 
 class QgsSingleSymbolRenderer : QgsFeatureRenderer
 {
+%Docstring(signature="appended")
+A feature renderer which renders all features with the same symbol.
+%End
 
 %TypeHeaderCode
 #include "qgssinglesymbolrenderer.h"

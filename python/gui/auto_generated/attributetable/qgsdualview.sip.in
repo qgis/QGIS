@@ -296,6 +296,9 @@ Emitted when selecting context menu on the feature list to create the context me
 
 class QgsAttributeTableAction : QAction
 {
+%Docstring(signature="appended")
+A QAction subclass for map layer actions shown in an attribute table.
+%End
 
 %TypeHeaderCode
 #include "qgsdualview.h"
@@ -314,6 +317,9 @@ Create a new attribute table action.
 
 class QgsAttributeTableMapLayerAction : QAction
 {
+%Docstring(signature="appended")
+A QAction for attribute table map layer actions.
+%End
 
 %TypeHeaderCode
 #include "qgsdualview.h"

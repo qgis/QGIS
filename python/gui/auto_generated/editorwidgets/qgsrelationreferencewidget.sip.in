@@ -19,6 +19,9 @@
 
 class QgsRelationReferenceWidget : QWidget
 {
+%Docstring(signature="appended")
+A widget which shows related features.
+%End
 
 %TypeHeaderCode
 #include "qgsrelationreferencewidget.h"

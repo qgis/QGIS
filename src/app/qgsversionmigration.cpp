@@ -152,11 +152,11 @@ QgsError Qgs2To3Migration::migrateStyles()
 
       const QDomElement symElement = doc.documentElement();
       QgsDebugMsgLevel( QStringLiteral( "MIGRATION: Importing %1" ).arg( name ), 2 );
-      QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsReadWriteContext() );
+      std::unique_ptr< QgsSymbol > symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsReadWriteContext() );
       tags << "QGIS 2";
       if ( style->symbolId( name ) == 0 )
       {
-        style->saveSymbol( name, symbol, false, tags );
+        style->saveSymbol( name, symbol.get(), false, tags );
       }
     }
   }

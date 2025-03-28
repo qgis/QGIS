@@ -148,7 +148,7 @@ bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsRead
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
-    setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
+    setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ).release() );
 
   readCommonProperties( element, context );
   return true;

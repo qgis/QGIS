@@ -3960,7 +3960,7 @@ void TestQgsCallout::balloonCallout()
 
   QgsBalloonCallout *callout = new QgsBalloonCallout();
   callout->setEnabled( true );
-  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ) );
+  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ).release() );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -4012,7 +4012,7 @@ void TestQgsCallout::balloonCalloutMargin()
 
   QgsBalloonCallout *callout = new QgsBalloonCallout();
   callout->setEnabled( true );
-  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ) );
+  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ).release() );
   callout->setMargins( QgsMargins( 1, 2, 3, 4 ) );
   settings.setCallout( callout );
 
@@ -4065,7 +4065,7 @@ void TestQgsCallout::balloonCalloutWedgeWidth()
 
   QgsBalloonCallout *callout = new QgsBalloonCallout();
   callout->setEnabled( true );
-  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ) );
+  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ).release() );
   callout->setWedgeWidth( 6 );
   settings.setCallout( callout );
 
@@ -4118,7 +4118,7 @@ void TestQgsCallout::balloonCalloutCornerRadius()
 
   QgsBalloonCallout *callout = new QgsBalloonCallout();
   callout->setEnabled( true );
-  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ) );
+  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ).release() );
   callout->setCornerRadius( 3 );
   settings.setCallout( callout );
 
@@ -4171,7 +4171,7 @@ void TestQgsCallout::balloonCalloutMarkerSymbol()
 
   QgsBalloonCallout *callout = new QgsBalloonCallout();
   callout->setEnabled( true );
-  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ) );
+  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ).release() );
   callout->setOffsetFromAnchor( 1 );
 
   QVariantMap props;
@@ -4180,7 +4180,7 @@ void TestQgsCallout::balloonCalloutMarkerSymbol()
   props[QStringLiteral( "color" )] = QStringLiteral( "200,255,200" );
   props[QStringLiteral( "outline_style" )] = QStringLiteral( "no" );
   callout->setMarkerSymbol(
-    QgsMarkerSymbol::createSimple( props )
+    QgsMarkerSymbol::createSimple( props ).release()
   );
   settings.setCallout( callout );
 

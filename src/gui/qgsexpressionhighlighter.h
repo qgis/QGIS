@@ -29,6 +29,7 @@ class QTextDocument;
 /**
  * \ingroup gui
  * \class QgsExpressionHighlighter
+ * \brief Syntax highlighter for QGIS expressions.
  */
 class GUI_EXPORT QgsExpressionHighlighter : public QSyntaxHighlighter
 {

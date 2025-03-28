@@ -417,7 +417,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   // show Subsections Indicator Action
   // create a default simple symbology
-  mSubsectionsSymbol.reset( QgsProfilePlotRenderer::defaultSubSectionsSymbol().release() );
+  mSubsectionsSymbol = QgsProfilePlotRenderer::defaultSubSectionsSymbol();
   mShowSubsectionsAction = new QAction( tr( "Show Subsections Indicator" ), this );
   mShowSubsectionsAction->setCheckable( true );
   mShowSubsectionsAction->setChecked( settingShowSubsections->value() );

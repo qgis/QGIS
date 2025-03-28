@@ -53,6 +53,7 @@ class QLabel;
 /**
  * \ingroup gui
  * \class QgsRelationReferenceWidget
+ * \brief A widget which shows related features.
  */
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 {

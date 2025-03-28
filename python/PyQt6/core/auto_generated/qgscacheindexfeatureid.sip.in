@@ -11,6 +11,9 @@
 
 class QgsCacheIndexFeatureId : QgsAbstractCacheIndex
 {
+%Docstring(signature="appended")
+Indexes cached features using feature IDs.
+%End
 
 %TypeHeaderCode
 #include "qgscacheindexfeatureid.h"

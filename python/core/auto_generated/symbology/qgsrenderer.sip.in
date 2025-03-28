@@ -19,6 +19,9 @@ typedef QList<QgsSymbol *> QgsSymbolList;
 
 class QgsSymbolLevelItem
 {
+%Docstring(signature="appended")
+Represents a symbol level during vector rendering operations.
+%End
 
 %TypeHeaderCode
 #include "qgsrenderer.h"

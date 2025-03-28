@@ -29,6 +29,7 @@ class QgsRasterMinMaxWidget;
 /**
  * \ingroup gui
  * \class QgsSingleBandGrayRendererWidget
+ * \brief A widget for configuring a QgsSingleBandGrayRenderer.
  */
 class GUI_EXPORT QgsSingleBandGrayRendererWidget : public QgsRasterRendererWidget, private Ui::QgsSingleBandGrayRendererWidgetBase
 {

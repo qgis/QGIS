@@ -26,9 +26,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsEnumerationWidgetWrapper
+ * \brief Widget wrapper for enumeration widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsEnumerationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT

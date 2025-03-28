@@ -31,6 +31,7 @@ class QgsTransaction;
 /**
  * \ingroup core
  * \class QgsVectorLayerEditPassthrough
+ * \brief An edit buffer which directly passes commands through, used when a layer is within a transaction.
  */
 class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffer
 {

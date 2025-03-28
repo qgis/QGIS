@@ -22,7 +22,7 @@
 
 QgsTiledSceneTextureRenderer::QgsTiledSceneTextureRenderer()
 {
-  mFillSymbol.reset( createDefaultFillSymbol() );
+  mFillSymbol = createDefaultFillSymbol();
 }
 
 QgsTiledSceneTextureRenderer::~QgsTiledSceneTextureRenderer() = default;
@@ -61,7 +61,7 @@ QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::create( QDomElement &elemen
   return r.release();
 }
 
-QgsFillSymbol *QgsTiledSceneTextureRenderer::createDefaultFillSymbol()
+std::unique_ptr<QgsFillSymbol> QgsTiledSceneTextureRenderer::createDefaultFillSymbol()
 {
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "224,224,224" ) );

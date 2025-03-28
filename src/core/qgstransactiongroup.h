@@ -27,6 +27,7 @@ class QgsVectorLayer;
 /**
  * \ingroup core
  * \class QgsTransactionGroup
+ * \brief Represents a transaction group.
  */
 class CORE_EXPORT QgsTransactionGroup : public QObject
 {

@@ -91,6 +91,7 @@ class QgsGraduatedSymbolRendererViewStyle : public QgsProxyStyle
 /**
  * \ingroup gui
  * \class QgsGraduatedSymbolRendererWidget
+ * \brief A widget for configuring a QgsGraduatedSymbolRenderer.
  */
 class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsGraduatedSymbolRendererWidget
 {

@@ -24,6 +24,7 @@ class QgsVectorLayerCache;
 /**
  * \ingroup core
  * \class QgsCacheIndexFeatureId
+ * \brief Indexes cached features using feature IDs.
  */
 class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
 {

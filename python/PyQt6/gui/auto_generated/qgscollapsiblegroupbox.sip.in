@@ -13,6 +13,9 @@
 
 class QgsGroupBoxCollapseButton : QToolButton
 {
+%Docstring(signature="appended")
+A collapse buttonwidget for collapsible group boxes.
+%End
 
 %TypeHeaderCode
 #include "qgscollapsiblegroupbox.h"

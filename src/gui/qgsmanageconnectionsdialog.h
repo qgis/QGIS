@@ -27,6 +27,7 @@
 /**
  * \ingroup gui
  * \class QgsManageConnectionsDialog
+ * \brief A dialog for importing or exporting stored connections.
  */
 class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsManageConnectionsDialogBase
 {

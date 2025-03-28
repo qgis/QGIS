@@ -30,9 +30,9 @@ QgsTiledSceneWireframeRendererWidget::QgsTiledSceneWireframeRendererWidget( QgsT
   setupUi( this );
 
   mFillSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
-  mFillSymbolButton->setSymbol( QgsTiledSceneWireframeRenderer::createDefaultFillSymbol() );
+  mFillSymbolButton->setSymbol( QgsTiledSceneWireframeRenderer::createDefaultFillSymbol().release() );
   mLineSymbolButton->setSymbolType( Qgis::SymbolType::Line );
-  mLineSymbolButton->setSymbol( QgsTiledSceneWireframeRenderer::createDefaultLineSymbol() );
+  mLineSymbolButton->setSymbol( QgsTiledSceneWireframeRenderer::createDefaultLineSymbol().release() );
 
   if ( layer )
   {

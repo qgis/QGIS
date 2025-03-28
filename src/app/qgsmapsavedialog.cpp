@@ -64,6 +64,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mDpi = ms.outputDpi();
   mSize = ms.outputSize();
   mDevicePixelRatio = ms.devicePixelRatio();
+  mLockAspectRatio->setLocked( true );
 
   mResolutionSpinBox->setValue( static_cast<int>( std::round( mDpi ) ) );
 
