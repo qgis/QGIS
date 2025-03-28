@@ -2813,6 +2813,11 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         r"^(\s*struct )\w+_EXPORT (.+)$", r"\1\2", CONTEXT.current_line
     )
 
+    if re.search(r"\bnamespace\b", CONTEXT.current_line):
+        exit_with_error(
+            "Use classes with public static methods instead of namespaces when methods are exposed to PyQGIS"
+        )
+
     # Skip comments
     if re.match(
         r"^\s*typedef\s+\w+\s*<\s*\w+\s*>\s+\w+\s+.*SIP_DOC_TEMPLATE",
