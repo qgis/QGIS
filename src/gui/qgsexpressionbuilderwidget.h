@@ -41,8 +41,9 @@ static const QString DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME = QStringLiteral( "[Pro
 /**
  * \ingroup gui
  * \brief A reusable widget that can be used to build a expression string.
-  * See QgsExpressionBuilderDialog for example of usage.
-  */
+ *
+ * \see QgsExpressionBuilderDialog for example of usage.
+ */
 class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase
 {
     Q_OBJECT

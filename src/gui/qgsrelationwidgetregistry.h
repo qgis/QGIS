@@ -22,7 +22,10 @@
 #include "qgis_gui.h"
 
 /**
- * Keeps track of the registered relations widgets. New widgets can be registered, old ones deleted.
+ * Keeps track of the registered relations widgets.
+ *
+ * New widgets can be registered, old ones deleted.
+ *
  * The default {\see QgsRelationEditorWidget} is protected from removing.
  * \ingroup gui
  * \class QgsRelationWidgetRegistry

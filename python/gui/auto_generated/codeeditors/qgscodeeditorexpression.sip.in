@@ -14,8 +14,9 @@ class QgsCodeEditorExpression : QgsCodeEditor
 {
 %Docstring(signature="appended")
 
-A QGIS expression editor based on QScintilla2. Adds syntax highlighting and
-code autocompletion.
+A QGIS expression editor based on QScintilla2.
+
+dds syntax highlighting and code autocompletion.
 
 .. versionadded:: 3.4
 %End

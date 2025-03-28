@@ -13,8 +13,9 @@
 class QgsVariableEditorWidget : QWidget
 {
 %Docstring(signature="appended")
-A tree based widget for editing expression context scope variables. The widget allows editing
-variables from a :py:class:`QgsExpressionContextScope`, and can optionally also show inherited
+A tree based widget for editing expression context scope variables.
+
+The widget allows editing variables from a :py:class:`QgsExpressionContextScope`, and can optionally also show inherited
 variables from a :py:class:`QgsExpressionContext`.
 %End
 

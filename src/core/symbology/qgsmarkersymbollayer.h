@@ -39,7 +39,9 @@ class QgsPathResolver;
 /**
  * \ingroup core
  * \class QgsSimpleMarkerSymbolLayerBase
- * \brief Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
+ * \brief Abstract base class for simple marker symbol layers.
+ *
+ * Handles creation of the symbol shapes but
  * leaves the actual drawing of the symbols to subclasses.
  */
 class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer

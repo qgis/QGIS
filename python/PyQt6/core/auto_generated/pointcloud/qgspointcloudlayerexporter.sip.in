@@ -232,7 +232,9 @@ class QgsPointCloudLayerExporterTask : QgsTask
 {
 %Docstring(signature="appended")
 :py:class:`QgsTask` task which performs a :py:class:`QgsPointCloudLayerExporter` layer export operation as a background
-task. This can be used to export a point cloud layer out to a provider without blocking the
+task.
+
+This can be used to export a point cloud layer out to a provider without blocking the
 QGIS interface.
 
 .. versionadded:: 3.28

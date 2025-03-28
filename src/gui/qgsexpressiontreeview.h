@@ -105,9 +105,10 @@ class GUI_EXPORT QgsExpressionItem : public QStandardItem
 /**
  * \ingroup gui
  * \brief Search proxy used to filter the QgsExpressionBuilderWidget tree.
-  * The default search for a tree model only searches top level this will handle one
-  * level down
-  */
+ *
+ * The default search for a tree model only searches top level this will handle one
+ * level down.
+ */
 class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 {
     Q_OBJECT

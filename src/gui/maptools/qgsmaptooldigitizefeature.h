@@ -23,7 +23,8 @@ class QgsFeature;
 
 /**
  * \ingroup gui
- * \brief This tool digitizes geometry of new point/line/polygon features on already existing vector layers
+ * \brief This tool digitizes geometry of new point/line/polygon features on already existing vector layers.
+ *
  * Once the map tool is enabled, user can digitize the feature geometry.
  * A signal will then be emitted.
  * \since QGIS 3.10
