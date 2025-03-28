@@ -1907,6 +1907,23 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
         CONTEXT.current_line += "\n{\n"
         if CONTEXT.comment.strip():
+            # find out how long the first paragraph in the class docstring is.
+            first_paragraph = []
+            for docstring_line in CONTEXT.comment.split("\n"):
+                if docstring_line:
+                    first_paragraph.append(docstring_line)
+                elif first_paragraph:
+                    break
+
+            first_paragraph = " ".join(first_paragraph)
+            if re.search(
+                r"(?<![a-z]\.[a-z])(?<!e\.g)(?<!i\.e)(?<!\w\.\w)(?<![A-Z][a-z]\.)(?<![A-Z]\.)(?<=\w)\.(?=\s+[A-Z])",
+                first_paragraph,
+            ):
+                exit_with_error(
+                    f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is multi-sentence. Please split to separate paragraphs.\n\n{first_paragraph}"
+                )
+
             CONTEXT.current_line += (
                 '%Docstring(signature="appended")\n' + CONTEXT.comment + "\n%End\n"
             )
