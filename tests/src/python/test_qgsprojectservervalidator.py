@@ -45,7 +45,7 @@ class TestQgsprojectServerValidator(QgisTestCase):
         )
 
         # Not valid, short name is invalid
-        layer_1.setShortName("layer_1_invalid_#")
+        layer_1.serverProperties().setShortName("layer_1_invalid_#")
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertFalse(valid)
         self.assertEqual(1, len(results))
@@ -54,7 +54,7 @@ class TestQgsprojectServerValidator(QgisTestCase):
         )
 
         # Not valid, same short name as the first layer name
-        layer_1.setShortName("layer_1")
+        layer_1.serverProperties().setShortName("layer_1")
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertFalse(valid)
         self.assertEqual(1, len(results))
@@ -63,7 +63,7 @@ class TestQgsprojectServerValidator(QgisTestCase):
         )
 
         # Valid
-        layer_1.setShortName("layer_1_bis")
+        layer_1.serverProperties().setShortName("layer_1_bis")
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertTrue(valid)
         self.assertEqual(0, len(results))
@@ -78,7 +78,7 @@ class TestQgsprojectServerValidator(QgisTestCase):
         )
 
         # Valid
-        group.setCustomProperty("wmsShortName", "my_group1")
+        group.serverProperties().setShortName("my_group1")
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertTrue(valid)
         self.assertEqual(0, len(results))

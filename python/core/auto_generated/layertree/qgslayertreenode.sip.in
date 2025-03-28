@@ -280,7 +280,7 @@ Constructor
     QgsLayerTreeNode( const QgsLayerTreeNode &other );
 
 
-    void readCommonXml( QDomElement &element );
+    void readCommonXml( const QDomElement &element );
 %Docstring
 Read common XML elements.
 %End
