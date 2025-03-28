@@ -87,9 +87,6 @@ Qgs3DAxisRenderView::Qgs3DAxisRenderView( const QString &viewName, Qgs3DMapCanva
   Qt3DRender::QClearBuffers *objectClearBuffers = new Qt3DRender::QClearBuffers( objectSortPolicy );
   objectClearBuffers->setBuffers( Qt3DRender::QClearBuffers::DepthBuffer );
 
-  // render pass for the axis label
-  // mTwoDLabelceneEntity->addComponent( twoDLayer );
-
   Qt3DRender::QLayerFilter *labelFilter = new Qt3DRender::QLayerFilter( mViewport );
   labelFilter->addLayer( mLabelLayer );
 
@@ -186,7 +183,6 @@ void Qgs3DAxisRenderView::onViewportSizeUpdate( int width, int height )
 
   if ( heightRatio > settings.maxViewportRatio() || widthRatio > settings.maxViewportRatio() )
   {
-    qDebug() << heightRatio << settings.maxViewportRatio() << widthRatio << settings.maxViewportRatio();
     QgsDebugMsgLevel( QString( "3DAxis viewport takes too much place into the 3d view, disabling it (maxViewportRatio: %1)." ).arg( settings.maxViewportRatio() ), 2 );
     // take too much place into the 3d view
     mViewport->setEnabled( false );
