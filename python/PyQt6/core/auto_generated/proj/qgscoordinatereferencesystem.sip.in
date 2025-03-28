@@ -18,7 +18,7 @@
 class QgsCoordinateReferenceSystem
 {
 %Docstring(signature="appended")
-This class represents a coordinate reference system (CRS).
+Represents a coordinate reference system (CRS).
 
 Coordinate reference system object defines a specific map projection, as well as transformations
 between different coordinate reference systems. There are various ways how a CRS can be defined:

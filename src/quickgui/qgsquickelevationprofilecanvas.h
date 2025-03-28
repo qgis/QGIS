@@ -32,7 +32,7 @@ class QgsElevationProfilePlotItem;
 /**
  * \ingroup quick
  *
- * \brief This class implements a visual Qt Quick Item that does elevation profile rendering
+ * \brief Implements a visual Qt Quick Item that does elevation profile rendering
  * according to the current project settings and a profile curve geometry.
  *
  * \since QGIS 3.30

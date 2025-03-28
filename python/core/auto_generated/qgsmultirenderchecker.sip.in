@@ -13,7 +13,7 @@
 class QgsMultiRenderChecker
 {
 %Docstring(signature="appended")
-This class allows checking rendered images against comparison images.
+Allows checking rendered images against comparison images.
 
 Its main purpose is for the unit testing framework.
 

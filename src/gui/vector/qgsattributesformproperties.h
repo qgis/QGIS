@@ -488,7 +488,7 @@ QDataStream &operator>>( QDataStream &stream, QgsAttributesFormProperties::DnDTr
  * \ingroup gui
  * \class QgsAttributesDnDTree
  *
- * \brief This class overrides mime type handling to be able to work with
+ * \brief Overrides mime type handling to be able to work with
  * the drag and drop attribute editor.
  *
  * The mime type is application/x-qgsattributetablefield

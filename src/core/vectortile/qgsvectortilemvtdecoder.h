@@ -33,7 +33,7 @@ class QgsVectorTileRawData;
 
 /**
  * \ingroup core
- * \brief This class is responsible for decoding raw tile data written with Mapbox Vector Tiles encoding.
+ * \brief Responsible for decoding raw tile data written with Mapbox Vector Tiles encoding.
  *
  * \since QGIS 3.14
  */

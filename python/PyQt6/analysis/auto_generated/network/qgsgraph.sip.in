@@ -15,7 +15,7 @@
 class QgsGraphEdge
 {
 %Docstring(signature="appended")
-This class implements a graph edge
+Represents an edge in a graph.
 %End
 
 %TypeHeaderCode
@@ -58,7 +58,7 @@ typedef QList<int> QgsGraphEdgeIds;
 class QgsGraphVertex
 {
 %Docstring(signature="appended")
-This class implements a graph vertex
+Represents vertex in a graph.
 %End
 
 %TypeHeaderCode

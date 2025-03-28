@@ -29,7 +29,7 @@ class QgsProviderGuiRegistry;
 
 /**
  * \ingroup gui
- * \brief This class keeps a list of provider source widget providers.
+ * \brief A registry that keeps a list of provider source widget providers.
  *
  * QgsProviderSourceWidgetProviderRegistry is not usually directly created, but rather accessed through
  * QgsGui::QgsProviderSourceWidgetProviderRegistry().
