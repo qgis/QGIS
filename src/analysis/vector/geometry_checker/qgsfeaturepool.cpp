@@ -40,14 +40,6 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )
 
 bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
 {
-  // Why is there a write lock acquired here? Weird, we only want to read a feature from the cache, right?
-  // A method like `QCache::object(const Key &key) const` certainly would not modify its internals.
-  // Mmmh. What if reality was different?
-  // If one reads the docs very, very carefully one will find the term "reentrant" in the
-  // small print of the QCache docs. This is the hint that reality is different.
-  //
-  // https://bugreports.qt.io/browse/QTBUG-19794
-
   // If the feature we want is amongst the features that have been updated,
   // then get it from the dedicated hash.
   // It would not be thread-safe to get it directly from the layer,
@@ -59,7 +51,15 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
     return true;
   }
 
-  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
+  // Why is there a write lock acquired here? Weird, we only want to read a feature from the cache, right?
+  // A method like `QCache::object(const Key &key) const` certainly would not modify its internals.
+  // Mmmh. What if reality was different?
+  // If one reads the docs very, very carefully one will find the term "reentrant" in the
+  // small print of the QCache docs. This is the hint that reality is different.
+  //
+  // https://bugreports.qt.io/browse/QTBUG-19794
+  /* DO NOT CHANGE */ QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write ); // DO NOT CHANGE!!!!!
+
   QgsFeature *cachedFeature = mFeatureCache.object( id );
   if ( cachedFeature )
   {
