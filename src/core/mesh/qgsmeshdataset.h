@@ -484,7 +484,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
 /**
  * \ingroup core
  *
- * \brief Represents mesh dataset metadata, as whether the data is valid or the associated time.
+ * \brief Represents mesh dataset metadata, such as whether the data is valid or the associated time.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

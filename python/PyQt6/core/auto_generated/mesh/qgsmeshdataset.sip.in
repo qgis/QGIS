@@ -503,7 +503,7 @@ Returns the reference time
 class QgsMeshDatasetMetadata
 {
 %Docstring(signature="appended")
-Represents mesh dataset metadata, as whether the data is valid or the associated time.
+Represents mesh dataset metadata, such as whether the data is valid or the associated time.
 
 .. note::
 
