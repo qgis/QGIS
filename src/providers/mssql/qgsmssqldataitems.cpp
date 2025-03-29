@@ -417,6 +417,8 @@ QString QgsMssqlLayerItem::createUri()
   }
 
   QgsDataSourceUri uri = QgsDataSourceUri( connItem->connectionUri() );
+  QString escapedSchemaName = mLayerProperty.schemaName;
+  escapedSchemaName.replace('\\', QLatin1String("\\\\"));
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
   uri.setSrid( mLayerProperty.srid );
   uri.setWkbType( QgsMssqlUtils::wkbTypeFromGeometryType( mLayerProperty.type ) );
