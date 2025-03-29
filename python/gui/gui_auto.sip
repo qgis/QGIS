@@ -376,6 +376,7 @@
 %Include auto_generated/layertree/qgslayertreeview.sip
 %Include auto_generated/layertree/qgslayertreeviewdefaultactions.sip
 %Include auto_generated/layertree/qgslayertreeviewindicator.sip
+%Include auto_generated/layertree/qgslayertreeviewitemdelegate.sip
 %Include auto_generated/layout/qgslayoutcombobox.sip
 %Include auto_generated/layout/qgslayoutcustomdrophandler.sip
 %Include auto_generated/layout/qgslayoutdesignerinterface.sip
