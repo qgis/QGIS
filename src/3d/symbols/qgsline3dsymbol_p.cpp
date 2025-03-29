@@ -104,10 +104,8 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
-  const float textureRotation = texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0;
-  const bool requiresTextureCoordinates = texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false;
-  mLineDataNormal.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, requiresTextureCoordinates, 3, textureRotation ) );
-  mLineDataSelected.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, requiresTextureCoordinates, 3, textureRotation ) );
+  mLineDataNormal.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false, 3, texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
+  mLineDataSelected.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false, 3, texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
 
   mLineDataNormal.tessellator->setOutputZUp( true );
   mLineDataSelected.tessellator->setOutputZUp( true );
@@ -155,7 +153,7 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &feature, 
   if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::Polygon )
   {
     QgsPolygon *polyBuffered = qgsgeometry_cast<QgsPolygon *>( buffered );
-    processPolygon( polyBuffered, f.id(), mSymbol->offset(), mSymbol->extrusionHeight(), context, out );
+    processPolygon( polyBuffered, feature.id(), mSymbol->offset(), mSymbol->extrusionHeight(), context, lineData );
   }
   else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::MultiPolygon )
   {
@@ -163,7 +161,7 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &feature, 
     for ( int i = 0; i < mpolyBuffered->numGeometries(); ++i )
     {
       QgsPolygon *polyBuffered = qgsgeometry_cast<QgsPolygon *>( mpolyBuffered->polygonN( i ) )->clone(); // need to clone individual geometry parts
-      processPolygon( polyBuffered, f.id(), mSymbol->offset(), mSymbol->extrusionHeight(), context, out );
+      processPolygon( polyBuffered, feature.id(), mSymbol->offset(), mSymbol->extrusionHeight(), context, lineData );
     }
     delete buffered;
   }
@@ -209,7 +207,7 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   QgsMaterial *material = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
   // extract vertex buffer data from tessellator
-  const QByteArray data( ( const char * ) lineData.tessellator->data().constData(), static_cast<int>( lineData.tessellator->data().count() * sizeof( float ) ) );
+  const QByteArray data( ( const char * ) lineData.tessellator->data().constData(), lineData.tessellator->data().count() * sizeof( float ) );
   const int nVerts = data.count() / lineData.tessellator->stride();
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
@@ -398,7 +396,7 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
 void QgsThickLine3DSymbolHandler::processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsLineVertexData &lineVertexData )
 {
   const QByteArray bytes = mSymbol->materialSettings()->dataDefinedVertexColorsAsByte( context );
-  lineVertexData.materialDataDefined.append( bytes.repeated( static_cast<int>( verticesCount ) ) );
+  lineVertexData.materialDataDefined.append( bytes.repeated( verticesCount ) );
 }
 
 
