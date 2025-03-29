@@ -49,7 +49,11 @@ class TestQgsMapLayerProxyModel(QgisTestCase):
         l2 = create_layer("l2")
         QgsProject.instance().addMapLayer(l2)
 
-        m.setFilters(Qgis.LayerFilter.LineLayer | Qgis.LayerFilter.WritableLayer)
+        m.setFilters(
+            Qgis.LayerFilters(
+                Qgis.LayerFilter.LineLayer | Qgis.LayerFilter.WritableLayer
+            )
+        )
         self.assertEqual(
             m.filters(),
             Qgis.LayerFilters(
@@ -363,6 +367,136 @@ class TestQgsMapLayerProxyModel(QgisTestCase):
         self.assertTrue(m.acceptsLayer(l2))
         self.assertTrue(m.acceptsLayer(l3))
         self.assertTrue(m.acceptsLayer(l4))
+
+    def testWritableLayer(self):
+        m = QgsMapLayerProxyModel()
+        l1 = create_mesh_layer("l1")
+        QgsProject.instance().addMapLayer(l1)
+        l2 = create_layer("l2")
+        QgsProject.instance().addMapLayer(l2)
+
+        # WritableLayer returns False if not combined with a layer or geometry type
+        m.setFilters(Qgis.LayerFilters(Qgis.LayerFilter.WritableLayer))
+        self.assertFalse(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+
+        m.setFilters(
+            Qgis.LayerFilters(
+                Qgis.LayerFilter.WritableLayer | Qgis.LayerFilter.VectorLayer
+            )
+        )
+        self.assertTrue(l2.setReadOnly(True))
+        self.assertFalse(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+
+        self.assertTrue(l2.setReadOnly(False))
+        self.assertFalse(m.acceptsLayer(l1))
+        self.assertTrue(m.acceptsLayer(l2))
+
+        m.setFilters(
+            Qgis.LayerFilters(
+                Qgis.LayerFilter.WritableLayer | Qgis.LayerFilter.MeshLayer
+            )
+        )
+        self.assertFalse(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+
+    def testLayerMatchesFiltersStatic(self):
+        m = QgsMapLayerProxyModel
+        l1 = create_layer("l1")
+
+        self.assertTrue(m.layerMatchesFilters(l1, Qgis.LayerFilter.All))
+
+        self.assertTrue(m.layerMatchesFilters(l1, Qgis.LayerFilter.SpatialLayer))
+
+        self.assertFalse(
+            m.layerMatchesFilters(
+                l1,
+                Qgis.LayerFilters(
+                    Qgis.LayerFilter.RasterLayer
+                    | Qgis.LayerFilter.MeshLayer
+                    | Qgis.LayerFilter.VectorTileLayer
+                    | Qgis.LayerFilter.PointCloudLayer
+                    | Qgis.LayerFilter.AnnotationLayer
+                    | Qgis.LayerFilter.TiledSceneLayer
+                    | Qgis.LayerFilter.PluginLayer
+                ),
+            )
+        )
+
+        self.assertTrue(
+            m.layerMatchesFilters(
+                l1,
+                Qgis.LayerFilters(
+                    Qgis.LayerFilter.NoGeometry | Qgis.LayerFilter.HasGeometry
+                ),
+            )
+        )
+
+        self.assertFalse(
+            m.layerMatchesFilters(
+                l1,
+                Qgis.LayerFilters(
+                    Qgis.LayerFilter.NoGeometry
+                    | Qgis.LayerFilter.LineLayer
+                    | Qgis.LayerFilter.PolygonLayer
+                ),
+            )
+        )
+
+        # WritableLayer returns False if not combined with a layer or geometry type
+        self.assertFalse(
+            m.layerMatchesFilters(l1, Qgis.LayerFilters(Qgis.LayerFilter.WritableLayer))
+        )
+
+        self.assertTrue(
+            m.layerMatchesFilters(
+                l1,
+                Qgis.LayerFilters(
+                    Qgis.LayerFilter.All | Qgis.LayerFilter.WritableLayer
+                ),
+            )
+        )
+
+        self.assertTrue(l1.setReadOnly(True))
+        self.assertFalse(
+            m.layerMatchesFilters(
+                l1,
+                Qgis.LayerFilters(
+                    Qgis.LayerFilter.All | Qgis.LayerFilter.WritableLayer
+                ),
+            )
+        )
+
+        self.assertTrue(
+            m.layerMatchesFilters(
+                l1,
+                Qgis.LayerFilters(
+                    Qgis.LayerFilter.VectorLayer
+                    | Qgis.LayerFilter.NoGeometry
+                    | Qgis.LayerFilter.LineLayer
+                    | Qgis.LayerFilter.PolygonLayer
+                ),
+            )
+        )
+
+        self.assertFalse(
+            m.layerMatchesFilters(
+                l1,
+                Qgis.LayerFilters(
+                    Qgis.LayerFilter.RasterLayer
+                    | Qgis.LayerFilter.MeshLayer
+                    | Qgis.LayerFilter.VectorTileLayer
+                    | Qgis.LayerFilter.PointCloudLayer
+                    | Qgis.LayerFilter.AnnotationLayer
+                    | Qgis.LayerFilter.TiledSceneLayer
+                    | Qgis.LayerFilter.PluginLayer
+                    | Qgis.LayerFilter.NoGeometry
+                    | Qgis.LayerFilter.LineLayer
+                    | Qgis.LayerFilter.PolygonLayer
+                ),
+            )
+        )
 
 
 if __name__ == "__main__":

@@ -41,6 +41,9 @@ QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Qgis::LayerFilters fil
 
 bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const Qgis::LayerFilters &filters )
 {
+  if ( filters.testFlag( Qgis::LayerFilter::WritableLayer ) && layer->readOnly() )
+    return false;
+
   if ( filters.testFlag( Qgis::LayerFilter::All ) )
     return true;
 
@@ -59,8 +62,7 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
   const bool detectGeometry = filters.testFlag( Qgis::LayerFilter::NoGeometry ) ||
                               filters.testFlag( Qgis::LayerFilter::PointLayer ) ||
                               filters.testFlag( Qgis::LayerFilter::LineLayer ) ||
-                              filters.testFlag( Qgis::LayerFilter::PolygonLayer ) ||
-                              filters.testFlag( Qgis::LayerFilter::HasGeometry );
+                              filters.testFlag( Qgis::LayerFilter::PolygonLayer );
   if ( detectGeometry && layer->type() == Qgis::LayerType::Vector )
   {
     if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
@@ -152,9 +154,6 @@ bool QgsMapLayerProxyModel::acceptsLayer( QgsMapLayer *layer ) const
     return false;
 
   if ( layer->dataProvider() && mExcludedProviders.contains( layer->providerType() ) )
-    return false;
-
-  if ( mFilters.testFlag( Qgis::LayerFilter::WritableLayer ) && layer->readOnly() )
     return false;
 
   if ( !layer->name().contains( mFilterString, Qt::CaseInsensitive ) )
