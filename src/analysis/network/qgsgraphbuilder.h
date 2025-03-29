@@ -29,7 +29,7 @@ class QgsGraph;
 /**
 * \ingroup analysis
 * \class QgsGraphBuilder
-* \brief This class used for making the QgsGraph object
+* \brief Used for making the QgsGraph object.
 */
 
 class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface SIP_NODEFAULTCTORS

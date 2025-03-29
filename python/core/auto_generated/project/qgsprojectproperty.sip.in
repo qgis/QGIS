@@ -142,7 +142,6 @@ Constructor for QgsProjectPropertyValue, initialized to a specified value.
 class QgsProjectPropertyKey : QgsProjectProperty
 {
 %Docstring(signature="appended")
-
 Project property key node.
 
 Can, itself, contain :py:class:`QgsProjectPropertyKey` and :py:class:`QgsProjectPropertyValues`.

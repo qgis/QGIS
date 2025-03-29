@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * \brief This is a container for attribute editors, used to group them visually in the
+ * \brief A container for attribute editors, used to group them visually in the
  * attribute form if it is set to the drag and drop designer.
  */
 class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement

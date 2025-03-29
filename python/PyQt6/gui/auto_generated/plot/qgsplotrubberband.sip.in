@@ -14,7 +14,7 @@
 class QgsPlotRubberBand : QObject
 {
 %Docstring(signature="appended")
-:py:class:`QgsPlotRubberBand` is an abstract base class for temporary rubber band items
+An abstract base class for temporary rubber band items
 in various shapes, for use within :py:class:`QgsPlotCanvas` widgets.
 
 .. versionadded:: 3.26
@@ -105,7 +105,7 @@ position will form the center point of the returned rectangle.
 class QgsPlotRectangularRubberBand : QgsPlotRubberBand
 {
 %Docstring(signature="appended")
-:py:class:`QgsPlotRectangularRubberBand` is rectangular rubber band for use within :py:class:`QgsPlotCanvas` widgets.
+A rectangular rubber band for use within :py:class:`QgsPlotCanvas` widgets.
 
 .. versionadded:: 3.26
 %End

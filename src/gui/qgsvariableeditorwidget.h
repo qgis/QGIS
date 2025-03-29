@@ -33,8 +33,9 @@ class VariableEditorDelegate;
 /**
  * \ingroup gui
  * \class QgsVariableEditorWidget
- * \brief A tree based widget for editing expression context scope variables. The widget allows editing
- * variables from a QgsExpressionContextScope, and can optionally also show inherited
+ * \brief A tree based widget for editing expression context scope variables.
+ *
+ * The widget allows editing variables from a QgsExpressionContextScope, and can optionally also show inherited
  * variables from a QgsExpressionContext.
  */
 

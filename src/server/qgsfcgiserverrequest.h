@@ -26,7 +26,7 @@
 /**
  * \ingroup server
  * \class QgsFcgiServerRequest
- * \brief Class defining fcgi request
+ * \brief Defines fcgi requests.
  */
 class SERVER_EXPORT QgsFcgiServerRequest : public QgsServerRequest
 {

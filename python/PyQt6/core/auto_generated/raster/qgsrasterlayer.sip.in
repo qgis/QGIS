@@ -15,7 +15,6 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 class QgsRasterLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
-
 Represents a raster layer.
 
 A :py:class:`QgsRasterLayer` is instantiated by specifying the name of a data provider,

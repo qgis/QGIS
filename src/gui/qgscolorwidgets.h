@@ -29,8 +29,12 @@ class QgsDoubleSpinBox;
 /**
  * \ingroup gui
  * \class QgsColorWidget
- * \brief A base class for interactive color widgets. Widgets can either allow setting a single component of
- * a color (e.g., the red or green components), or an entire color. The QgsColorWidget also keeps track of
+ * \brief A base class for interactive color widgets.
+ *
+ * Widgets can either allow setting a single component of
+ * a color (e.g., the red or green components), or an entire color.
+ *
+ * The QgsColorWidget also keeps track of
  * any explicitly set hue for the color, so that this information is not lost when the widget is
  * set to a color with an ambiguous hue (e.g., black or white shades).
  */
@@ -363,7 +367,9 @@ class GUI_EXPORT QgsColorWidgetAction : public QWidgetAction
 /**
  * \ingroup gui
  * \class QgsColorWheel
- * \brief A color wheel widget. This widget consists of an outer ring which allows for hue selection, and an
+ * \brief A color wheel widget.
+ *
+ * This widget consists of an outer ring which allows for hue selection, and an
  * inner rotating triangle which allows for saturation and value selection.
  */
 
@@ -453,7 +459,9 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
 /**
  * \ingroup gui
  * \class QgsColorBox
- * \brief A color box widget. This widget consists of a two dimensional rectangle filled with color
+ * \brief A color box widget.
+ *
+ * This widget consists of a two dimensional rectangle filled with color
  * variations, where a different color component varies along both the horizontal and vertical
  * axis.
  */
@@ -548,7 +556,9 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
 /**
  * \ingroup gui
  * \class QgsColorRampWidget
- * \brief A color ramp widget. This widget consists of an interactive box filled with a color which varies along
+ * \brief A color ramp widget.
+ *
+ * This widget consists of an interactive box filled with a color which varies along
  * its length by a single color component (e.g., varying saturation from 0 to 100%).
  */
 

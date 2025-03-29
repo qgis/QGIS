@@ -29,7 +29,7 @@ class QgsPointCloudBlock;
 
 /**
  * \ingroup core
- * \brief Class for handling a QgsPointCloudBlockRequest using existing cached QgsPointCloudBlock
+ * \brief Handles a QgsPointCloudBlockRequest using existing cached QgsPointCloudBlock.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

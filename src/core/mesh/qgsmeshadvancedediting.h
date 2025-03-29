@@ -82,7 +82,7 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
 /**
  * \ingroup core
  *
- * \brief Class that can do a refinement of faces of a mesh.
+ * \brief Performs refinement of faces of a mesh.
  *
  * This refinement is operated only on faces with 3 or 4 vertices (triangles or quads) by adding a vertex on the middle of each refined face.
  * For quad faces, a vertex is added on the centroid of the original face.
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsMeshEditRefineFaces : public QgsMeshAdvancedEditing
 /**
  * \ingroup core
  *
- * \brief Class that can transform vertices of a mesh by expression
+ * \brief Transforms vertices of a mesh by expression.
  *
  * Each coordinates are associated with an expression that can be defined with function
  * returning the current coordinates (see setExpressions()):

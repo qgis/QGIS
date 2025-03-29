@@ -12,7 +12,6 @@
 class QgsBookmark
 {
 %Docstring(signature="appended")
-
 Represents a spatial bookmark, with a name, CRS and extent.
 
 :py:class:`QgsBookmark` objects are typically used alongside the :py:class:`QgsBookmarkManager` class,
@@ -145,7 +144,6 @@ Returns a DOM element representing the bookmark's properties.
 class QgsBookmarkManager : QObject
 {
 %Docstring(signature="appended")
-
 Manages storage of a set of bookmarks.
 
 :py:class:`QgsBookmarkManager` handles the storage, serializing and deserializing

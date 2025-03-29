@@ -29,7 +29,8 @@ class QgsLayerMetadataResultsModel;
 
 /**
  * \ingroup gui
- * \brief The QgsLayerMetadataSearchWidget class offers layer metadata search and filtering.
+ * \brief Offers layer metadata search and filtering.
+ *
  * It is designed to be embedded in the data source manager dialog.
  * \since QGIS 3.28
  */

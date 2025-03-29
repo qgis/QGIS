@@ -32,9 +32,8 @@ class QgsMapLayerActionContextGenerator;
 
 /**
  * \ingroup gui
- * \brief This class is a menu that is populated automatically with the actions defined for a given layer.
+ * \brief A menu that is populated automatically with the actions defined for a given layer.
  */
-
 class GUI_EXPORT QgsActionMenu : public QMenu
 {
     Q_OBJECT

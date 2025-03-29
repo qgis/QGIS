@@ -403,7 +403,7 @@ Returns the blend mode for the effect
 class QgsEffectPainter
 {
 %Docstring(signature="appended")
-A class to manager painter saving and restoring required for effect drawing
+Manages painter saving and restoring required for effect drawing.
 %End
 
 %TypeHeaderCode

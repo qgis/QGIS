@@ -160,6 +160,7 @@ class CORE_EXPORT QgsCurveTransform
  * \ingroup core
  * \class QgsPropertyTransformer
  * \brief Abstract base class for objects which transform the calculated value of a property.
+ *
  * Possible uses include transformers which map a value into a scaled size or color from a gradient.
  */
 class CORE_EXPORT QgsPropertyTransformer

@@ -13,7 +13,6 @@
 class QgsMapClippingUtils
 {
 %Docstring(signature="appended")
-
 Utility functions for use when clipping map renders.
 
 .. versionadded:: 3.16

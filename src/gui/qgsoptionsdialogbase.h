@@ -67,6 +67,7 @@ class GUI_EXPORT QgsOptionsProxyModel : public QSortFilterProxyModel
  * \ingroup gui
  * \class QgsOptionsDialogBase
  * \brief A base dialog for options and properties dialogs that offers vertical tabs.
+ *
  * It handles saving/restoring of geometry, splitter and current tab states,
  * switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
  * and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots

@@ -43,8 +43,8 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * \brief The QgsOgcUtils class provides various utility functions for conversion between
- *   OGC (Open Geospatial Consortium) standards and QGIS internal representations.
+ * \brief Provides various utility functions for conversion between
+ * OGC (Open Geospatial Consortium) standards and QGIS internal representations.
  *
  * Currently supported standards:
  *

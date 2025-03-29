@@ -15,7 +15,7 @@
 class QgsHttpHeaders
 {
 %Docstring(signature="appended")
-This class implements simple http header management.
+Implements simple HTTP header management.
 
 .. versionadded:: 3.24
 %End

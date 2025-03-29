@@ -13,7 +13,6 @@
 class QgsTextDocument
 {
 %Docstring(signature="appended")
-
 Represents a document consisting of one or more :py:class:`QgsTextBlock` objects.
 
 .. warning::

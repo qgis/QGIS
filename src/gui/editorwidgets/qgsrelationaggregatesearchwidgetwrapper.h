@@ -27,6 +27,7 @@ class QgsRelationWidgetWrapper;
  * \ingroup gui
  *
  * \brief Search widget for the children of a relation.
+ *
  * For each attribute of the child, an additional QgsAggregateToolButton will be shown
  * to determine how the values should be aggregated for searching.
  *

@@ -48,7 +48,7 @@ class QgsLayoutAtlas;
 class QgsProject;
 
 /**
- * \brief QgsCompositionConverter class converts a QGIS 2.x composition to a QGIS 3.x layout
+ * \brief Converts a QGIS 2.x composition to a QGIS 3.x layout
  * \note Not available in Python bindings.
  * \ingroup core
  */

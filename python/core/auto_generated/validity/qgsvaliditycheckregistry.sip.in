@@ -10,7 +10,7 @@
 class QgsValidityCheckRegistry
 {
 %Docstring(signature="appended")
-This class keeps a list of :py:class:`QgsAbstractValidityCheck` checks which can be used when
+A registry that keeps a list of :py:class:`QgsAbstractValidityCheck` checks which can be used when
 performing validity checks.
 
 :py:class:`QgsValidityCheckRegistry` is not usually directly created, but rather accessed through

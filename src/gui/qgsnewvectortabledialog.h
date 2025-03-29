@@ -31,6 +31,8 @@
 class QgsNewVectorTableFieldModel;
 
 /**
+ * \brief A dialog for customising new tables created on a database.
+ *
  * The QgsNewVectorTableDialog class is a provider-agnostic database vector
  * and aspatial table designer dialog based on the connections API.
  *

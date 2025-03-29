@@ -12,7 +12,6 @@
 class QgsLabelObstacleSettings
 {
 %Docstring(signature="appended")
-
 Contains settings related to how the label engine treats features as obstacles
 
 .. versionadded:: 3.10.2

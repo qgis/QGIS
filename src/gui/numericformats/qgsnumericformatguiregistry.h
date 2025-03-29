@@ -44,7 +44,7 @@ class GUI_EXPORT QgsNumericFormatConfigurationWidgetFactory
 };
 
 /**
- * The QgsNumericFormatGuiRegistry is a home for widgets for configuring QgsNumericFormat objects.
+ * A registry for widgets which configure QgsNumericFormat objects.
  *
  * QgsNumericFormatGuiRegistry is not usually directly created, but rather accessed through
  * QgsGui::numericFormatGuiRegistry().

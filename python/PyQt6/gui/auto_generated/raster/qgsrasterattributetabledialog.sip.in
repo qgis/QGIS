@@ -11,7 +11,7 @@
 class QgsRasterAttributeTableDialog : QDialog
 {
 %Docstring(signature="appended")
-The :py:class:`QgsRasterAttributeTableDialog` class embeds an attribute table widget.
+A dialog which embeds a raster attribute table widget.
 
 .. versionadded:: 3.30
 %End

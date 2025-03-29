@@ -33,7 +33,7 @@ class QgsAbstractHistoryProvider;
 class QgsHistoryEntry;
 
 /**
- * The QgsHistoryProviderRegistry is a registry for objects which track user history (i.e. operations performed through the GUI).
+ * A registry for objects which track user history (i.e. operations performed through the GUI).
  *
  * QgsHistoryProviderRegistry is not usually directly created, but rather accessed through
  * QgsGui::historyProviderRegistry().

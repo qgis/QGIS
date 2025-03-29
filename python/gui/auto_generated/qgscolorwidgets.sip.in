@@ -13,8 +13,12 @@
 class QgsColorWidget : QWidget
 {
 %Docstring(signature="appended")
-A base class for interactive color widgets. Widgets can either allow setting a single component of
-a color (e.g., the red or green components), or an entire color. The :py:class:`QgsColorWidget` also keeps track of
+A base class for interactive color widgets.
+
+Widgets can either allow setting a single component of
+a color (e.g., the red or green components), or an entire color.
+
+The :py:class:`QgsColorWidget` also keeps track of
 any explicitly set hue for the color, so that this information is not lost when the widget is
 set to a color with an ambiguous hue (e.g., black or white shades).
 %End
@@ -383,7 +387,9 @@ Emitted when a color has been selected from the widget
 class QgsColorWheel : QgsColorWidget
 {
 %Docstring(signature="appended")
-A color wheel widget. This widget consists of an outer ring which allows for hue selection, and an
+A color wheel widget.
+
+This widget consists of an outer ring which allows for hue selection, and an
 inner rotating triangle which allows for saturation and value selection.
 %End
 
@@ -427,7 +433,9 @@ Constructs a new color wheel widget.
 class QgsColorBox : QgsColorWidget
 {
 %Docstring(signature="appended")
-A color box widget. This widget consists of a two dimensional rectangle filled with color
+A color box widget.
+
+This widget consists of a two dimensional rectangle filled with color
 variations, where a different color component varies along both the horizontal and vertical
 axis.
 %End
@@ -477,7 +485,9 @@ Construct a new color box widget.
 class QgsColorRampWidget : QgsColorWidget
 {
 %Docstring(signature="appended")
-A color ramp widget. This widget consists of an interactive box filled with a color which varies along
+A color ramp widget.
+
+This widget consists of an interactive box filled with a color which varies along
 its length by a single color component (e.g., varying saturation from 0 to 100%).
 %End
 

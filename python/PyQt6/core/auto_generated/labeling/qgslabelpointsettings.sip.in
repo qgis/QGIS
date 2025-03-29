@@ -12,9 +12,10 @@
 class QgsLabelPointSettings
 {
 %Docstring(signature="appended")
-
 Contains settings related to how the label engine places and formats
-labels for point features, or polygon features which are labeled in
+labels for point-like features.
+
+:py:class:`QgsLabelPointSettings` can be used for point features, or polygon features which are labeled in
 the "around" or "over" centroid placement modes.
 
 .. versionadded:: 3.38

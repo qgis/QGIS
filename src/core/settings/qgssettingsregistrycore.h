@@ -34,7 +34,7 @@ template<class T> class QgsSettingsEntryEnumFlag;
 /**
  * \ingroup core
  * \class QgsSettingsRegistryCore
- * \brief QgsSettingsRegistryCore is used for settings introspection and collects all
+ * \brief Used for settings introspection and collects all
  * QgsSettingsEntry instances of core.
  *
  * \since QGIS 3.20

@@ -34,7 +34,7 @@ class QgsVector3D;
 
 /**
  * \ingroup core
-* \brief Class for doing transforms between two map coordinate systems.
+* \brief Handles coordinate transforms between two coordinate systems.
 *
 * This class can convert map coordinates to a different coordinate reference system.
 * It is normally associated with a map layer and is used to transform between the

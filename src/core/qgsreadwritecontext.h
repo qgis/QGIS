@@ -171,6 +171,7 @@ class CORE_EXPORT QgsReadWriteContext
  * \ingroup core
  * \brief Allows entering a context category and takes care of
  * leaving this category on deletion of the class.
+ *
  * This would happen when it gets out of scope.
  * \since QGIS 3.2
  */

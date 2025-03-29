@@ -17,8 +17,8 @@
 class QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
+Represents a settings entry and provides methods for reading and writing settings values.
 
-Represent settings entry and provides methods for reading and writing settings values.
 Different subclasses are provided for different settings types with metainformations
 to validate set values and provide more accurate settings description for the gui.
 
@@ -366,7 +366,6 @@ template<T>
 class QgsSettingsEntryBaseTemplate : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
-
 Base abstract class for settings entries with typed get and set methods
 
 .. seealso:: :py:class:`QgsSettingsEntryBase`

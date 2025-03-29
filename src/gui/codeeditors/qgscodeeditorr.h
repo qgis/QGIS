@@ -62,8 +62,9 @@ class GUI_EXPORT QgsQsciLexerR : public QsciLexer
 
 /**
  * \ingroup gui
- * \brief A R stats code editor based on QScintilla2. Adds syntax highlighting and
- * code autocompletion.
+ * \brief A R stats code editor based on QScintilla2.
+ *
+ * Adds syntax highlighting and code autocompletion.
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsCodeEditorR : public QgsCodeEditor

@@ -36,8 +36,10 @@ typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
 /**
  * \ingroup core
- * \brief The QgsConditionalLayerStyles class holds conditional style information
- * for a layer. This includes field styles and full row styles.
+ * \brief Holds conditional style information
+ * for a layer.
+ *
+ * This includes field styles and full row styles.
  */
 class CORE_EXPORT QgsConditionalLayerStyles : public QObject
 {

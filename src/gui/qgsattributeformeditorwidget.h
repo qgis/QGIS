@@ -34,7 +34,9 @@ class QgsAggregateToolButton;
  * \ingroup gui
  * \class QgsAttributeFormEditorWidget
  * \brief A widget consisting of both an editor widget and additional widgets for controlling the behavior
- * of the editor widget depending on a number of possible modes. For instance, if the parent attribute
+ * of the editor widget depending on a number of possible modes.
+ *
+ * For instance, if the parent attribute
  * form is in the multi edit mode, this widget will show both the editor widget and a tool button for
  * controlling the multi edit results.
  */

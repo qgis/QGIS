@@ -11,7 +11,7 @@
 class QgsBufferServerRequest : QgsServerRequest
 {
 %Docstring(signature="appended")
-Class defining request with data
+Defines a request with data.
 %End
 
 %TypeHeaderCode

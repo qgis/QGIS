@@ -13,7 +13,6 @@
 class QgsTiledSceneRequest
 {
 %Docstring(signature="appended")
-
 Tiled scene data request.
 
 .. versionadded:: 3.34

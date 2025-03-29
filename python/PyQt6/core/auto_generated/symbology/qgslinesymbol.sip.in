@@ -11,7 +11,6 @@
 class QgsLineSymbol : QgsSymbol
 {
 %Docstring(signature="appended")
-
 A line symbol type, for rendering LineString and MultiLineString geometries.
 %End
 

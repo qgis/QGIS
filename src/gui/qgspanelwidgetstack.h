@@ -27,8 +27,10 @@ class QgsPanelWidget;
 
 /**
  * \ingroup gui
- * \brief A stack widget to manage panels in the interface. Handles the open and close events
- * for added panels.
+ * \brief A stack widget to manage multiple overlapping stacked panels.
+ *
+ * Handles the open and close events for added panels.
+ *
  * Any widgets that want to have a non blocking panel based interface should use this
  * class to manage the panels.
  */

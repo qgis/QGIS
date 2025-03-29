@@ -29,7 +29,7 @@
 
 /**
  * \ingroup quick
- * \brief The QgsQuickMapSettings class encapsulates QgsMapSettings class to offer
+ * \brief Encapsulates QgsMapSettings class to offer
  * settings of configuration of map rendering via QML properties.
  *
  * On top of QgsMapSettings functionality, when QgsProject is attached,

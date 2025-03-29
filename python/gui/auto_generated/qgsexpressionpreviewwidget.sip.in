@@ -15,7 +15,8 @@
 class QgsExpressionPreviewWidget : QWidget
 {
 %Docstring(signature="appended")
-:py:class:`QgsExpressionPreviewWidget` is a widget to preview an expression result.
+A widget for previewing an expression result.
+
 If the layer is set, one can browse across features to see the different outputs.
 
 .. versionadded:: 3.14

@@ -31,7 +31,7 @@
 
 /**
  * \ingroup core
- * \brief The QWebFrame class is a collection of stubs to mimic the API of a QWebFrame on systems
+ * \brief A collection of stubs to mimic the API of a QWebFrame on systems
  * where QtWebkit is not available.
  */
 class CORE_EXPORT QWebFrame : public QObject

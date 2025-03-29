@@ -31,7 +31,7 @@ class QgsCodeEditorExpression;
 /**
  * \ingroup gui
  * \class QgsExpressionLineEdit
- * \brief The QgsExpressionLineEdit widget includes a line edit for entering expressions
+ * \brief A widget which includes a line edit for entering expressions
  * together with a button to open the expression creation dialog.
  *
  * This widget is designed for use in contexts where no layer fields are available for

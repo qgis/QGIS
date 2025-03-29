@@ -13,8 +13,7 @@
 class QgsMeshEditingError
 {
 %Docstring(signature="appended")
-
-Class that represents an error during mesh editing
+Represents an error which occurred during mesh editing.
 
 .. versionadded:: 3.22
 %End
@@ -45,8 +44,7 @@ Constructor with eht error ``type`` and the index of the element ``elementIndex`
 class QgsMeshEditor : QObject
 {
 %Docstring(signature="appended")
-
-Class that makes edit operation on a mesh
+Handles edit operations on a mesh layer.
 
 .. versionadded:: 3.22
 %End

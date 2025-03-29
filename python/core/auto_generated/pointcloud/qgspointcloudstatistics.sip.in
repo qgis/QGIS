@@ -30,8 +30,7 @@ Returns the count of points in given class or -1 on error
 class QgsPointCloudStatistics
 {
 %Docstring(signature="appended")
-
-Class used to store statistics of a point cloud dataset.
+Used to store statistics of a point cloud dataset.
 
 .. versionadded:: 3.26
 %End

@@ -12,7 +12,7 @@
 class QgsFileUtils
 {
 %Docstring(signature="appended")
-Class for file utilities.
+Contains utilities for working with files.
 %End
 
 %TypeHeaderCode

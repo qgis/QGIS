@@ -12,7 +12,7 @@
 class QgsBufferServerResponse : QgsServerResponse
 {
 %Docstring(signature="appended")
-Class defining buffered response
+Defines a buffered server response.
 %End
 
 %TypeHeaderCode

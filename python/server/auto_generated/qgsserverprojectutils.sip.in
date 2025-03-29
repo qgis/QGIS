@@ -14,8 +14,9 @@
 class QgsServerProjectUtils
 {
 %Docstring(signature="appended")
-The :py:class:`QgsServerProjectUtils` namespace provides a way to retrieve specific
-entries from a :py:class:`QgsProject`.
+Contains utility functions to retrieve specific entries from a :py:class:`QgsProject`.
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

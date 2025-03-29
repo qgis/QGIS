@@ -12,7 +12,7 @@
 class QgsServerOgcApiHandler
 {
 %Docstring(signature="appended")
-The :py:class:`QgsServerOgcApiHandler` abstract class represents a OGC API handler to be registered
+An abstract class which represents an OGC API handler to be registered
 in :py:class:`QgsServerOgcApi` class.
 
 Subclasses must override operational and informative methods and define

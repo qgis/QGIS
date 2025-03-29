@@ -29,8 +29,8 @@ typedef QList<QgsRasterRange> QgsRasterRangeList;
 
 /**
  * \ingroup core
- * \brief Raster values range container. Represents range of values between min and max
- * including min and max value.
+ * \brief Represents a range of raster values between min and max, optionally
+ * including the min and max value.
  */
 class CORE_EXPORT QgsRasterRange
 {

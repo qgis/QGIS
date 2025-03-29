@@ -26,8 +26,10 @@
 /**
  * \ingroup core
  * \class QgsLayoutPoint
- * \brief This class provides a method of storing points, consisting of an x and y coordinate,
- * for use in QGIS layouts. Measurement units are stored alongside the position.
+ * \brief Provides a method of storing points, consisting of an x and y coordinate,
+ * for use in QGIS layouts.
+ *
+ * Measurement units are stored alongside the position.
  *
  * \see QgsLayoutMeasurementConverter
  * \note This class does not inherit from QPointF since QPointF includes methods which should not apply

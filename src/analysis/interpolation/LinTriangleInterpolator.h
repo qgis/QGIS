@@ -25,7 +25,7 @@
 
 /**
  * \ingroup analysis
- * \brief LinTriangleInterpolator is a class which interpolates linearly on a triangulation.
+ * \brief Interpolates linearly on a triangulation.
  * \note Not available in Python bindings.
 */
 class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator

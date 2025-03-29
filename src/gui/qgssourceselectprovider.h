@@ -28,8 +28,7 @@ class QWidget;
 
 /**
  * \ingroup gui
- * \brief This is the interface for those who want to add entries to the QgsDataSourceManagerDialog
- *
+ * \brief An interface for pages shown in a QgsDataSourceManagerDialog.
  */
 class GUI_EXPORT QgsSourceSelectProvider
 {

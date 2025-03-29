@@ -14,7 +14,9 @@
 class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayer
 {
 %Docstring(signature="appended")
-Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
+Abstract base class for simple marker symbol layers.
+
+Handles creation of the symbol shapes but
 leaves the actual drawing of the symbols to subclasses.
 %End
 

@@ -13,7 +13,7 @@
 class QgsErrorMessage
 {
 %Docstring(signature="appended")
-:py:class:`QgsErrorMessage` represents single error message.
+Represents a single error message.
 %End
 
 %TypeHeaderCode

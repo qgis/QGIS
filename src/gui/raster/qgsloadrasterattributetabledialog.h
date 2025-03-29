@@ -30,8 +30,8 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * \brief The QgsLoadRasterAttributeTableDialog dialog let the user select a VAT.DBF file
- * and associate the resulting raster attribute table with a raster band.
+ * \brief A dialog allowing selection of a VAT.DBF file
+ * and associating the resulting raster attribute table with a raster band.
  *
  * \note Not available in Python bindings
  * \since QGIS 3.30

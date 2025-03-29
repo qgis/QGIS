@@ -34,7 +34,7 @@ class QImage;
 
 /**
  * \ingroup core
- * \brief This is a helper class for unit tests that need to
+ * \brief Helper class for unit tests that need to
  * write an image and compare it to an expected result
  * or render time.
  */

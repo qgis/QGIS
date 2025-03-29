@@ -27,7 +27,7 @@
 
 /**
  * \ingroup core
- * \brief QgsErrorMessage represents single error message.
+ * \brief Represents a single error message.
 */
 class CORE_EXPORT QgsErrorMessage
 {

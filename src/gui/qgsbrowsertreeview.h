@@ -32,7 +32,7 @@ class QgsDataItem;
 
 /**
  * \ingroup gui
- * \brief The QgsBrowserTreeView class extends QTreeView with save/restore tree state functionality.
+ * \brief Extends QTreeView with save/restore tree state and other browser-specific functionality.
  *
  * \see QgsBrowserModel
  */

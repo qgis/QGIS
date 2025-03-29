@@ -40,6 +40,7 @@ class QgsVectorLayer3DRenderer : QgsAbstractVectorLayer3DRenderer
 {
 %Docstring(signature="appended")
 3D renderer that renders all features of a vector layer with the same 3D symbol.
+
 The appearance is completely defined by the symbol.
 %End
 

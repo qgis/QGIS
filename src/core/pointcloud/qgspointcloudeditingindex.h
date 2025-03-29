@@ -26,8 +26,7 @@ class QgsPointCloudLayer;
 /**
  * \ingroup core
  *
- * \brief The QgsPointCloudEditingIndex class is a QgsPointCloudIndex that is used as an editing
- * buffer when editing point cloud data.
+ * \brief A QgsPointCloudIndex that is used as an editing buffer when editing point cloud data.
  *
  * \note Not available in Python bindings
  *

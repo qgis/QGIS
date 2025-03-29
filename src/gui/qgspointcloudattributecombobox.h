@@ -28,7 +28,8 @@ class QgsPointCloudLayer;
 
 /**
  * \ingroup gui
- * \brief The QgsPointCloudAttributeComboBox is a combo box which displays the list of attributes of a given point cloud layer.
+ * \brief A combobox which displays the list of attributes of a given point cloud layer.
+ *
  * It might be combined with a QgsMapLayerComboBox to automatically update attributes according to a chosen layer.
  * \since QGIS 3.18
  */

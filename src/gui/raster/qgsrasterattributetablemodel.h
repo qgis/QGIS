@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * \brief The QgsRasterAttributeTableModel class manages a QgsRasterAttributeTable
+ * \brief A model which represents a QgsRasterAttributeTable.
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel

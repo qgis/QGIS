@@ -21,8 +21,7 @@
 #include "qgsvectorlayerref.h"
 
 /**
- * The QgsWeakRelation class represent a QgsRelation with possibly
- * unresolved layers or unmatched fields.
+ * Represent a QgsRelation with possibly unresolved layers or unmatched fields.
  *
  * This class is used to store relation information attached to a
  * layer style, a method to attempt relation resolution is also

@@ -13,7 +13,6 @@
 class QgsProviderSublayerTask : QgsTask
 {
 %Docstring(signature="appended")
-
 A :py:class:`QgsTask` which retrieves sublayer details for a URI.
 
 This task executes a call to :py:func:`QgsProviderRegistry.querySublayers()` in a background

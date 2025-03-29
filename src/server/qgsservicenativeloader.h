@@ -35,7 +35,7 @@ class QgsServerInterface;
 /**
  * \ingroup server
  * \class QgsServiceNativeLoader
- * \brief Class defining the native service module loader for QGIS server services
+ * \brief Defines the native service module loader for QGIS server services.
  *
  * This class provides methods for loading and managing hook for native (C++) modules
  *

@@ -14,7 +14,7 @@
 class QgsDatabaseSchemaComboBox : QWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDatabaseSchemaComboBox` class is a combo box which displays the list of schemas for a specific database connection.
+A combo box which displays the list of schemas for a specific database connection.
 
 .. warning::
 

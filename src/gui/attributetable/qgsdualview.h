@@ -37,7 +37,9 @@ class QgsSettingsEntryVariant;
 /**
  * \ingroup gui
  * \brief This widget is used to show the attributes of a set of features of a QgsVectorLayer.
+ *
  * The attributes can be edited.
+ *
  * It supports two different layouts: the table layout, in which the attributes for the features
  * are shown in a table and the editor layout, where the features are shown as a selectable list
  * and the attributes for the currently selected feature are shown in a form.

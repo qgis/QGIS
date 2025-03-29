@@ -29,8 +29,9 @@ class QgsMeshLayer;
 
 /**
  * \ingroup core
- * \brief The QgsMeshLayerLabelProvider class implements a label provider
- * for mesh layers. Parameters for the labeling are taken from the layer's
+ * \brief Implements a label provider for mesh layers.
+ *
+ * Parameters for the labeling are taken from the layer's
  * custom properties or from the given settings.
  *
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine

@@ -33,7 +33,8 @@ class QgsBrowserModel;
 
 /**
  * \ingroup gui
- * \brief  Abstract base Data Source Widget to create connections and add layers
+ * \brief Abstract base class for Data Source widgets to create connections and add layers.
+ *
  * This class provides common functionality and the interface for all
  * source select dialogs used by data providers to configure data sources
  * and add layers.

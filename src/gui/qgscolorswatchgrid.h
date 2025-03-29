@@ -24,8 +24,9 @@
 /**
  * \ingroup gui
  * \class QgsColorSwatchGrid
- * \brief A grid of color swatches, which allows for user selection. Colors are taken from an
- * associated QgsColorScheme.
+ * \brief A grid of color swatches, which allows for user selection.
+ *
+ * Colors are taken from an associated QgsColorScheme.
  * \see QgsColorGridAction
  */
 class GUI_EXPORT QgsColorSwatchGrid : public QWidget

@@ -13,7 +13,6 @@
 class QgsProcessingGui
 {
 %Docstring(signature="appended")
-
 Contains general functions and values related to Processing GUI components.
 
 .. versionadded:: 3.4

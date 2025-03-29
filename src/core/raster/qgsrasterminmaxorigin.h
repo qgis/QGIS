@@ -27,8 +27,9 @@
 
 /**
  * \ingroup core
- * \brief This class describes the origin of min/max values. It does not store by
- * itself the min/max values.
+ * \brief Describes the origin of minimum and maximum values in a raster.
+ *
+ * It does not store by itself the min/max values.
  */
 class CORE_EXPORT QgsRasterMinMaxOrigin
 {

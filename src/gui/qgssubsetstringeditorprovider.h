@@ -29,8 +29,7 @@ class QgsSubsetStringEditorInterface;
 /**
  * \ingroup gui
  * \class QgsSubsetStringEditorProvider
- * \brief This is the interface for those who want to provide a dialog to edit a
- * subset string.
+ * \brief An interface for widgets which edit a subset string.
  *
  * \since QGIS 3.18
  */

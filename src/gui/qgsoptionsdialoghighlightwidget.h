@@ -54,8 +54,10 @@ class QgsOptionsDialogHighlightWidgetEventFilter : public QObject
 /**
  * \ingroup gui
  * \class QgsOptionsDialogHighlightWidget
- * \brief Container for a widget to be used to search text in the option dialog
+ * \brief Container for a widget to be used to search text in the option dialog.
+ *
  * If the widget type is handled, it is valid.
+ *
  * It can perform a text search in the widget and highlight it in case of success.
  * This uses stylesheets.
  */

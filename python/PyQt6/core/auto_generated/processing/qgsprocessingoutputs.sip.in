@@ -15,7 +15,6 @@
 class QgsProcessingOutputDefinition
 {
 %Docstring(signature="appended")
-
 Base class for the definition of processing outputs.
 
 Output definitions encapsulate the properties regarding the outputs from algorithms, such

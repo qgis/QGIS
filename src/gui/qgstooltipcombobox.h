@@ -30,6 +30,7 @@ class QEvent;
  * \class QgsToolTipComboBox
  * \ingroup gui
  * \brief QComboBox subclass which features a tooltip when mouse hovering the combobox.
+ *
  * The tooltip string is taken from the current item's Qt.ToolTipRole data.
  * \since QGIS 3.32
  */

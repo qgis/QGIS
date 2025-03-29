@@ -14,7 +14,6 @@
 class QgsTiledSceneRenderContext
 {
 %Docstring(signature="appended")
-
 Encapsulates the render context for a 2D tiled scene rendering operation.
 
 .. versionadded:: 3.34
@@ -83,7 +82,6 @@ Returns the current texture coordinates.
 class QgsTiledSceneRenderer
 {
 %Docstring(signature="appended")
-
 Abstract base class for 2d tiled scene renderers.
 
 .. versionadded:: 3.34

@@ -10,7 +10,6 @@
 class QgsEmbeddedSymbolRenderer : QgsFeatureRenderer
 {
 %Docstring(signature="appended")
-
 A vector feature renderer which uses embedded feature symbology to render per-feature
 symbols.
 

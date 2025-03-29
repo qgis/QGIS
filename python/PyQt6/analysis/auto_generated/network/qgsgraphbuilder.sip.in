@@ -14,7 +14,7 @@
 class QgsGraphBuilder : QgsGraphBuilderInterface /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-This class used for making the :py:class:`QgsGraph` object
+Used for making the :py:class:`QgsGraph` object.
 %End
 
 %TypeHeaderCode

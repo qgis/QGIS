@@ -12,7 +12,6 @@
 class QgsBookmarkManagerModel: QAbstractTableModel
 {
 %Docstring(signature="appended")
-
 Implements a model for the contents of :py:class:`QgsBookmarkManager` objects.
 
 :py:class:`QgsBookmarkModel` provides a Qt table model for displaying and manipulating
@@ -81,7 +80,6 @@ and a secondary ``projectManager`` (a project based bookmark manager).
 class QgsBookmarkManagerProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-
 A QSortFilterProxyModel subclass for sorting the entries in a :py:class:`QgsBookmarkManagerModel`.
 
 .. versionadded:: 3.10

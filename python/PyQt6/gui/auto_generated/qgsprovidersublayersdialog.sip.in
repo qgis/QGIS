@@ -13,7 +13,6 @@
 class QgsProviderSublayerDialogModel : QgsProviderSublayerModel
 {
 %Docstring(signature="appended")
-
 A model for representing the sublayers present in a URI for the :py:class:`QgsProviderSublayersDialog`.
 
 .. versionadded:: 3.30
@@ -43,7 +42,6 @@ Sets whether geometry types are resolved.
 class QgsProviderSublayersDialog : QDialog
 {
 %Docstring(signature="appended")
-
 Dialog for selecting provider sublayers.
 
 .. versionadded:: 3.30

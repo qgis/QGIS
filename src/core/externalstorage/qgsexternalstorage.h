@@ -101,7 +101,7 @@ class CORE_EXPORT QgsExternalStorage
 
 /**
  * \ingroup core
- * \brief Base class for QgsExternalStorage stored and fetched content
+ * \brief Base class for QgsExternalStorage stored and fetched content.
  *
  * \since QGIS 3.22
  */
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsExternalStorageContent : public QObject
 
 /**
  * \ingroup core
- * \brief Class for QgsExternalStorage fetched content
+ * \brief Abstract base class for QgsExternalStorage fetched content.
  *
  * \since QGIS 3.22
  */
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsExternalStorageFetchedContent : public QgsExternalStorageCo
 
 /**
  * \ingroup core
- * \brief Class for QgsExternalStorage stored content
+ * \brief Abstract base class for QgsExternalStorage stored content.
  *
  * \since QGIS 3.22
  */

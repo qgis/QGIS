@@ -22,8 +22,9 @@
 
 /**
  * \brief A parameter for Processing algorithms that need a list of input vector
- * layers to export as DXF file - this parameter provides Processing
- * framework's adapter for QList<QgsDxfExport::DxfLayer>.
+ * layers to export as DXF file.
+ *
+ * This parameter provides Processing framework's adapter for QList<QgsDxfExport::DxfLayer>.
  *
  * A valid value for this parameter is a list (QVariantList), where each
  * item is a map (QVariantMap) in this form:

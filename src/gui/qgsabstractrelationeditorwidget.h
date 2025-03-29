@@ -330,7 +330,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
 /**
  * \ingroup gui
- * \brief This class should be subclassed for every configurable relation widget type.
+ * \brief Abstract base bclass for configurable relation widget types.
  *
  * It implements the GUI configuration widget and transforms this to/from a configuration.
  *

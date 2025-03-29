@@ -31,7 +31,7 @@
 /**
  * \ingroup server
  * \class QgsBufferServerResponse
- * \brief Class defining buffered response
+ * \brief Defines a buffered server response.
  */
 class SERVER_EXPORT QgsBufferServerResponse : public QgsServerResponse
 {

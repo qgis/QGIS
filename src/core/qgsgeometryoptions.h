@@ -28,7 +28,7 @@ class QgsSettingsEntryString;
 /**
  * \ingroup core
  *
- * \brief The QgsGeometryOptions class contains options to automatically adjust geometries to
+ * \brief Contains options to automatically adjust geometries to
  * constraints on a layer.
  *
  * \since QGIS 3.4

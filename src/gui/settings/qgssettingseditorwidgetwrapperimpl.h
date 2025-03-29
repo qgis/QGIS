@@ -38,7 +38,7 @@ class QgsColorButton;
 
 /**
  * \ingroup gui
- * \brief This class is a base factory of editor for settings
+ * \brief Base factory for editors for settings.
  *
  * \since QGIS 3.32
  */
@@ -118,7 +118,7 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for string settings with a line edit
+ * \brief A factory for editors for string settings with a line edit.
  *
  * \since QGIS 3.32
  */
@@ -151,7 +151,7 @@ class GUI_EXPORT QgsSettingsStringLineEditWrapper : public QgsSettingsEditorWidg
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for string settings with a combo box
+ * \brief A factory for editors of string settings with a combo box.
  *
  * \since QGIS 3.40
  */
@@ -197,7 +197,7 @@ class GUI_EXPORT QgsSettingsStringComboBoxWrapper : public QgsSettingsEditorWidg
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for boolean settings with a checkbox
+ * \brief A factory for editors of boolean settings with a checkbox.
  *
  * \since QGIS 3.32
  */
@@ -228,7 +228,7 @@ class GUI_EXPORT QgsSettingsBoolCheckBoxWrapper : public QgsSettingsEditorWidget
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for integer settings with a spin box
+ * \brief A factory for editors for integer settings with a spin box.
  *
  * \since QGIS 3.32
  */
@@ -260,7 +260,7 @@ class GUI_EXPORT QgsSettingsIntegerSpinBoxWrapper : public QgsSettingsEditorWidg
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for double settings with a double spin box
+ * \brief A factory for editors for double settings with a double spin box.
  *
  * \since QGIS 3.32
  */
@@ -292,7 +292,7 @@ class GUI_EXPORT QgsSettingsDoubleSpinBoxWrapper : public QgsSettingsEditorWidge
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for color settings with a color button
+ * \brief A factory for editors of color settings with a color button.
  *
  * \since QGIS 3.32
  */

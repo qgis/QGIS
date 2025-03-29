@@ -35,9 +35,10 @@ class QgsLayerTreeFilterSettings;
 
 /**
  * \ingroup core
- * \brief Class that runs a hit test with given map settings. Based on the hit test it returns which symbols
- * will be visible on the map - this is useful for content based legend.
+ * \brief Runs a hit test with given map settings.
  *
+ * Based on the hit test it returns which symbols will be visible
+ * on the map - this is useful for content based legend.
  */
 class CORE_EXPORT QgsMapHitTest
 {

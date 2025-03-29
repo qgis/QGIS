@@ -11,7 +11,6 @@
 class QgsProviderUtils
 {
 %Docstring(signature="appended")
-
 Contains utility functions for working with data providers.
 
 .. versionadded:: 3.22

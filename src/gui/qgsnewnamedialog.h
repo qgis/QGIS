@@ -26,8 +26,9 @@ class QLineEdit;
 
 /**
  * \ingroup gui
- * \brief New name, for example new layer name dialog. If existing names are provided,
- * the dialog warns users if an entered name already exists.
+ * \brief A dialog for prompting users for a new name, for example new layer name dialog.
+ *
+ * If existing names are provided, the dialog warns users if an entered name already exists.
  */
 class GUI_EXPORT QgsNewNameDialog : public QgsDialog
 {

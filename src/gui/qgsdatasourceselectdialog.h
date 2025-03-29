@@ -30,8 +30,7 @@
 
 /**
  * \ingroup gui
- * \brief The QgsDataSourceSelectWidget class embeds the browser view to
- * select an existing data source.
+ * \brief Embeds the browser view to select an existing data source.
  *
  * By default any layer type can be chosen, the valid layer
  * type can be restricted by setting a layer type filter with
@@ -148,8 +147,7 @@ class GUI_EXPORT QgsDataSourceSelectWidget : public QgsPanelWidget, private Ui::
 
 /**
  * \ingroup gui
- * \brief The QgsDataSourceSelectDialog class embeds the browser view to
- * select an existing data source.
+ * \brief A dialog which embeds the browser view to select an existing data source.
  *
  * By default any layer type can be chosen, the valid layer
  * type can be restricted by setting a layer type filter with

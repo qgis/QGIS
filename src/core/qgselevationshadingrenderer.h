@@ -30,7 +30,7 @@ class QDomElement;
 
 /**
  * \ingroup core
- * \brief This class can render elevation shading on an image with different methods (eye dome lighting, hillshading, ...).
+ * \brief Renders elevation shading on an image with different methods (eye dome lighting, hillshading, ...).
  *
  * An instance of this class supports the following settings:
  *

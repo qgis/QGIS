@@ -14,7 +14,6 @@ typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 class QgsSymbolAnimationSettings
 {
 %Docstring(signature="appended")
-
 Contains settings relating to symbol animation.
 
 .. versionadded:: 3.26
@@ -67,7 +66,6 @@ Returns the symbol animation frame rate (in frames per second).
 class QgsSymbolBufferSettings
 {
 %Docstring(signature="appended")
-
 Contains settings relating to symbol buffers, which draw a "halo" effect around the symbol.
 
 .. versionadded:: 3.40
@@ -208,7 +206,6 @@ Reads the buffer settings from an XML ``element``.
 class QgsSymbol
 {
 %Docstring(signature="appended")
-
 Abstract base class for all rendered symbols.
 %End
 

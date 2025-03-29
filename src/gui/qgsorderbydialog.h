@@ -29,10 +29,8 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * \brief This is a dialog to build and manage a list of order by clauses.
- *
+ * \brief A dialog to build and manage a list of order by clauses.
  */
-
 class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBase
 {
     Q_OBJECT

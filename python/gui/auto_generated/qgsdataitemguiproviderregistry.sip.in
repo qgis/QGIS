@@ -12,7 +12,7 @@
 class QgsDataItemGuiProviderRegistry
 {
 %Docstring(signature="appended")
-This class keeps a list of data item GUI providers that may affect how :py:class:`QgsDataItems`
+A registry for data item GUI providers that may affect how :py:class:`QgsDataItems`
 behave within the application GUI.
 
 :py:class:`QgsDataItemGuiProviderRegistry` is not usually directly created, but rather accessed through

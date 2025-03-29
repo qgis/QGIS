@@ -13,8 +13,7 @@
 class QgsExternalStorageFileWidget : QgsFileWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsExternalStorageFileWidget` class creates a widget for selecting a file or a folder
-and stores it to a given external storage backend if defined
+A widget for selecting a file or a folder and optionally storing it to an external storage backend.
 
 .. versionadded:: 3.22
 %End

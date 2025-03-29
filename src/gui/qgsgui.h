@@ -58,7 +58,7 @@ class QgsStoredQueryManager;
 
 /**
  * \ingroup gui
- * \brief QgsGui is a singleton class containing various registry and other global members
+ * \brief A singleton class containing various registry and other global members
  * related to GUI classes.
  */
 class GUI_EXPORT QgsGui : public QObject

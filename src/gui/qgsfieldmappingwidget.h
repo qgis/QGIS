@@ -32,8 +32,7 @@ class QgsFieldMappingTypeDelegate;
 
 /**
  * \ingroup gui
- * \brief The QgsFieldMappingWidget class creates a mapping from one set of QgsFields to another,
- * for each set of "destination" fields an expression defines how to obtain the values of the
+ * \brief Creates a mapping from one set of QgsFields to another, for each set of "destination" fields an expression defines how to obtain the values of the
  * "destination" fields.
  * \since QGIS 3.14
  */

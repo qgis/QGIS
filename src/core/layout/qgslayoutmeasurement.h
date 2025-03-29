@@ -25,7 +25,7 @@
 /**
  * \ingroup core
  * \class QgsLayoutMeasurement
- * \brief This class provides a method of storing measurements for use in QGIS layouts
+ * \brief Provides a method of storing measurements for use in QGIS layouts
  * using a variety of different measurement units.
  * \see QgsLayoutMeasurementConverter
  */

@@ -34,9 +34,10 @@ class QgsLabelingResults;
 /**
  * \ingroup quick
  *
- * \brief This class implements a visual Qt Quick Item that does map rendering
- * according to the current map settings. Client code is expected to use
- * MapCanvas item rather than using this class directly.
+ * \brief Implements a visual Qt Quick Item that does map rendering
+ * according to the current map settings.
+ *
+ * Client code is expected to use MapCanvas item rather than using this class directly.
  *
  * QgsQuickMapCanvasMap instance internally creates QgsQuickMapSettings in
  * constructor. The QgsProject should be attached to the QgsQuickMapSettings.

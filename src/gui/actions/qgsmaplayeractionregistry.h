@@ -32,7 +32,7 @@ class QgsMapLayerAction;
 
 /**
  * \ingroup gui
-* \brief This class tracks map layer actions.
+* \brief A registry which tracks map layer actions.
 *
 * QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
 * QgsGui::mapLayerActionRegistry().

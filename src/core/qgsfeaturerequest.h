@@ -33,7 +33,7 @@
 
 /**
  * \ingroup core
- * \brief This class wraps a request for features to a vector layer (or directly its vector data provider).
+ * \brief Wraps a request for features to a vector layer (or directly its vector data provider).
  *
  * The request may apply an attribute/ID filter to fetch only a particular subset of features. Currently supported filters:
  *

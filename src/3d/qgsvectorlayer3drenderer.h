@@ -49,6 +49,7 @@ class _3D_EXPORT QgsVectorLayer3DRendererMetadata : public Qgs3DRendererAbstract
 /**
  * \ingroup core
  * \brief 3D renderer that renders all features of a vector layer with the same 3D symbol.
+ *
  * The appearance is completely defined by the symbol.
  */
 class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstractVectorLayer3DRenderer

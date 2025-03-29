@@ -14,8 +14,7 @@
 class QgsServiceRegistry
 {
 %Docstring(signature="appended")
-:py:class:`QgsServiceRegistry`
-Class defining the registry manager for QGIS server services
+A registry manager for QGIS server services.
 
 This class provides methods for registering and retrieving
 services.

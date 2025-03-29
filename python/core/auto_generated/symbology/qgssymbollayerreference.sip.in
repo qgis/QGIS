@@ -92,7 +92,6 @@ Returns the symbol layer index path inside the symbol
 class QgsSymbolLayerReference
 {
 %Docstring(signature="appended")
-
 Type used to refer to a specific symbol layer in a symbol of a layer.
 
 .. versionadded:: 3.12

@@ -13,7 +13,7 @@
 class QgsLayoutMeasurementConverter
 {
 %Docstring(signature="appended")
-This class provides a method of converting :py:class:`QgsLayoutMeasurements` from
+Provides a method of converting :py:class:`QgsLayoutMeasurements` from
 one unit to another.
 
 Conversion to or from pixel units utilizes a specified

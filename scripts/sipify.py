@@ -1907,8 +1907,41 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
         CONTEXT.current_line += "\n{\n"
         if CONTEXT.comment.strip():
+            # find out how long the first paragraph in the class docstring is.
+            first_paragraph = []
+            finished_first_paragraph = False
+            remaining_parts = []
+            docstring_parts = []
+            # discard empty parts from start of docstring
+            for part in CONTEXT.comment.split("\n"):
+                if docstring_parts:
+                    docstring_parts.append(part)
+                elif part.strip():
+                    docstring_parts.append(part)
+
+            for docstring_line in docstring_parts:
+                if docstring_line and not finished_first_paragraph:
+                    first_paragraph.append(docstring_line)
+                else:
+                    finished_first_paragraph = True
+                    remaining_parts.append(docstring_line)
+
+            first_paragraph = "\n".join(first_paragraph).strip()
+            if re.search(
+                r"(?<![a-z]\.[a-z])(?<!e\.g)(?<!i\.e)(?<!\w\.\w)(?<![A-Z][a-z]\.)(?<![A-Z]\.)(?<=\w)\.(?=\s+[A-Z])",
+                first_paragraph,
+            ):
+                exit_with_error(
+                    f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is multi-sentence. Please split to separate paragraphs.\n\n{first_paragraph}"
+                )
+
+            remaining_parts = "\n".join(remaining_parts)
+            docstring = first_paragraph
+            if remaining_parts.strip():
+                docstring += "\n" + remaining_parts
+
             CONTEXT.current_line += (
-                '%Docstring(signature="appended")\n' + CONTEXT.comment + "\n%End\n"
+                '%Docstring(signature="appended")\n' + docstring + "\n%End\n"
             )
 
         CONTEXT.current_line += (

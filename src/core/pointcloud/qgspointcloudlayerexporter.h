@@ -346,7 +346,9 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
  * \class QgsPointCloudLayerExporterTask
  * \ingroup core
  * \brief QgsTask task which performs a QgsPointCloudLayerExporter layer export operation as a background
- * task. This can be used to export a point cloud layer out to a provider without blocking the
+ * task.
+ *
+ * This can be used to export a point cloud layer out to a provider without blocking the
  * QGIS interface.
  * \since QGIS 3.28
  */

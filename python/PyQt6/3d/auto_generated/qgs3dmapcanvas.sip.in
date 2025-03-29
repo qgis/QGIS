@@ -16,7 +16,7 @@
 class Qgs3DMapCanvas : QWindow
 {
 %Docstring(signature="appended")
-Qgs3DMapCanvas is a convenience wrapper to simplify the creation of a 3D window ready to be used with QGIS.
+Convenience wrapper to simplify the creation of a 3D window ready to be used with QGIS.
 
 .. note::
 

@@ -10,11 +10,10 @@
 
 
 
-
 class QgsActionMenu : QMenu
 {
 %Docstring(signature="appended")
-This class is a menu that is populated automatically with the actions defined for a given layer.
+A menu that is populated automatically with the actions defined for a given layer.
 %End
 
 %TypeHeaderCode

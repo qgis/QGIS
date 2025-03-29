@@ -66,7 +66,7 @@ class QgsSocketMonitoringThread
 /**
  * \ingroup server
  * \class QgsFcgiServerResponse
- * \brief Class defining fcgi response
+ * \brief Defines fcgi responses.
  */
 class SERVER_EXPORT QgsFcgiServerResponse : public QgsServerResponse
 {

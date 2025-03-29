@@ -11,7 +11,7 @@
 class QgsDateTimeEdit : QDateTimeEdit
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDateTimeEdit` class is a QDateTimeEdit with the capability of setting/reading null date/times.
+A QDateTimeEdit with the capability of setting/reading null date/times.
 
 .. warning::
 
@@ -181,7 +181,7 @@ Returns ``True`` if the widget is currently set to a null value
 class QgsTimeEdit : QgsDateTimeEdit
 {
 %Docstring(signature="appended")
-The :py:class:`QgsTimeEdit` class is a QTimeEdit widget with the capability of setting/reading null date/times.
+A QTimeEdit widget with the capability of setting/reading null date/times.
 
 .. warning::
 
@@ -233,7 +233,7 @@ Signal emitted whenever the time changes.
 class QgsDateEdit : QgsDateTimeEdit
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDateEdit` class is a QDateEdit widget with the capability of setting/reading null dates.
+A QDateEdit widget with the capability of setting/reading null dates.
 
 .. warning::
 

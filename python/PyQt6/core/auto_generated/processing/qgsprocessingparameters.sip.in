@@ -14,7 +14,6 @@
 class QgsProcessingFeatureSourceDefinition
 {
 %Docstring(signature="appended")
-
 Encapsulates settings relating to a feature source input to a processing algorithm.
 %End
 
@@ -106,7 +105,6 @@ You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 class QgsProcessingOutputLayerDefinition
 {
 %Docstring(signature="appended")
-
 Encapsulates settings relating to a feature sink or output raster layer for a processing algorithm.
 %End
 
@@ -206,7 +204,6 @@ You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 class QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
-
 Base class for the definition of processing parameters.
 
 Parameter definitions encapsulate properties regarding the behavior of parameters,
@@ -798,7 +795,6 @@ typedef QList< const QgsProcessingParameterDefinition * > QgsProcessingParameter
 class QgsProcessingParameters
 {
 %Docstring(signature="appended")
-
 A collection of utilities for working with parameters when running a processing algorithm.
 
 Parameters are stored in a QVariantMap and referenced by a unique string key.
@@ -2308,7 +2304,9 @@ Creates a new parameter using the definition from a script code.
 class QgsProcessingParameterDistance : QgsProcessingParameterNumber
 {
 %Docstring(signature="appended")
-A double numeric parameter for distance values. Linked to a source layer or CRS parameter
+A double numeric parameter for distance values.
+
+Linked to a source layer or CRS parameter
 to determine what units the distance values are in.
 
 The number of decimals places shown in a distance parameter's widget can be specified by
@@ -2398,7 +2396,9 @@ Sets the default distance ``unit`` for the parameter.
 class QgsProcessingParameterArea : QgsProcessingParameterNumber
 {
 %Docstring(signature="appended")
-A double numeric parameter for area values. Linked to a source layer or CRS parameter
+A double numeric parameter for area values.
+
+Linked to a source layer or CRS parameter
 to determine what units the area values are in.
 
 The number of decimals places shown in a area parameter's widget can be specified by
@@ -2484,7 +2484,9 @@ Sets the default area ``unit`` for the parameter.
 class QgsProcessingParameterVolume : QgsProcessingParameterNumber
 {
 %Docstring(signature="appended")
-A double numeric parameter for volume values. Linked to a source layer or CRS parameter
+A double numeric parameter for volume values.
+
+Linked to a source layer or CRS parameter
 to determine what units the volume values are in.
 
 The number of decimals places shown in a volume parameter's widget can be specified by
@@ -2570,8 +2572,9 @@ Sets the default volume ``unit`` for the parameter.
 class QgsProcessingParameterDuration : QgsProcessingParameterNumber
 {
 %Docstring(signature="appended")
-A double numeric parameter for duration values. The returned
-value will always be in milliseconds.
+A double numeric parameter for duration values.
+
+The returned value will always be in milliseconds.
 
 .. versionadded:: 3.22
 %End
@@ -3113,8 +3116,9 @@ Sets the geometry ``types`` for sources acceptable by the parameter.
 class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes, QgsFileFilterGenerator
 {
 %Docstring(signature="appended")
-A vector layer (with or without geometry) parameter for processing algorithms. Consider using
-the more versatile :py:class:`QgsProcessingParameterFeatureSource` wherever possible.
+A vector layer (with or without geometry) parameter for processing algorithms.
+
+Consider using the more versatile :py:class:`QgsProcessingParameterFeatureSource` wherever possible.
 %End
 
 %TypeHeaderCode
@@ -4209,7 +4213,9 @@ Creates a new parameter using the definition from a script code.
 class QgsProcessingParameterCoordinateOperation : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
-A coordinate operation parameter for processing algorithms, for selection between available
+A coordinate operation parameter for processing algorithms.
+
+This parameter allows selection between available
 coordinate operations to use when projecting between a source and destination coordinate reference system.
 
 :py:class:`QgsProcessingParameterCoordinateOperation` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsString()`.
@@ -4639,7 +4645,9 @@ Creates a new parameter using the definition from a script code.
 class QgsProcessingParameterDatabaseTable : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
-A database table name parameter for processing algorithms, allowing users to select from existing database tables
+A database table name parameter for processing algorithms.
+
+This parameter allows users to select from existing database tables
 on a registered database connection (or optionally to enter a new table name).
 
 :py:class:`QgsProcessingParameterDatabaseTable` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsDatabaseTableName()`.

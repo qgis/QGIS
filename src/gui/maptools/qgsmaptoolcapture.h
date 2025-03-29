@@ -40,7 +40,8 @@ class QgsMapToolShapeMetadata;
 
 /**
  * \ingroup gui
- * QgsMapToolCapture is a base class capable of capturing point, lines and polygons.
+ * Base class for map tools capable of capturing point, lines and polygons.
+ *
  * The tool supports different techniques: straight segments, curves, streaming and shapes
  * Once the the geometry is captured the virtual private handler geometryCaptured is called
  * as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptured)

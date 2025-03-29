@@ -26,7 +26,7 @@ class QgsFieldModel;
 
 /**
  * \ingroup core
- * \brief The QgsFieldProxyModel class provides an easy to use model to display the list of fields of a layer.
+ * \brief A proxy model to filter the list of fields of a layer.
  */
 class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
 {

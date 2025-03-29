@@ -344,7 +344,9 @@ class QgsVectorLayerExporterTask : QgsTask
 {
 %Docstring(signature="appended")
 :py:class:`QgsTask` task which performs a :py:class:`QgsVectorLayerExporter` layer export operation as a background
-task. This can be used to export a vector layer out to a provider without blocking the
+task.
+
+This can be used to export a vector layer out to a provider without blocking the
 QGIS interface.
 
 .. seealso:: :py:class:`QgsVectorFileWriterTask`

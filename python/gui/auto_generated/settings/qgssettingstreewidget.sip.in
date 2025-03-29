@@ -15,7 +15,7 @@
 class QgsSettingsTreeWidget : QWidget, QgsOptionsDialogHighlightWidget
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeWidget` is a widget with the settings tree to visualize, search and edit settings
+A widget with the settings tree to visualize, search and edit settings.
 
 .. versionadded:: 3.32
 %End

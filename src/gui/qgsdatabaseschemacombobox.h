@@ -41,7 +41,7 @@ class GUI_EXPORT QgsDatabaseSchemaComboBoxSortModel : public QSortFilterProxyMod
 
 /**
  * \ingroup gui
- * \brief The QgsDatabaseSchemaComboBox class is a combo box which displays the list of schemas for a specific database connection.
+ * \brief A combo box which displays the list of schemas for a specific database connection.
  *
  * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation
  * in order for the combobox to work correctly.

@@ -12,7 +12,7 @@
 class QgsHtmlUtils
 {
 %Docstring(signature="appended")
-Class for HTML utilities.
+Contains utilities for working with HTML.
 %End
 
 %TypeHeaderCode

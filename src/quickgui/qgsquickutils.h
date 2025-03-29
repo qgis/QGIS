@@ -26,8 +26,7 @@
 /**
  * \ingroup quick
  *
- * \brief The QgsQuickUtils class serves as a utility class for common operations
- * needed either from QML or cpp.
+ * \brief Utility class for common operations needed either from QML or cpp.
  *
  * \note use in qml as a singleton, registered as "Utils", e.g. QgsQuick.Utils.toQgsPoint
  *

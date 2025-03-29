@@ -21,7 +21,7 @@
 /**
  * \ingroup core
  * \class QgsSettingsTree
- * \brief QgsSettingsTree holds the tree structure for the settings in QGIS core
+ * \brief Holds the tree structure for the settings in QGIS core.
  *
  * \see QgsSettingsEntryBase
  *

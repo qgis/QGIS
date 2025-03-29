@@ -12,6 +12,8 @@
 class QgsSourceSelectProviderRegistry : QObject
 {
 %Docstring(signature="appended")
+A registry for :py:class:`QgsSourceSelectProvider` source select providers.
+
 This class keeps a list of source select providers that may add items to the :py:class:`QgsDataSourceManagerDialog`
 When created, it automatically adds providers from data provider plugins (e.g. PostGIS, WMS, ...)
 

@@ -31,8 +31,11 @@ class QgsMapLayerStyleCategoriesModel;
  * \ingroup gui
  * \class QgsMapLayerSaveStyleDialog
  *
- * \brief The QgsMapLayerSaveStyleDialog class provides the UI to save the current style
+ * \brief A dialog which allows saving map layer styles.
+ *
+ * This dialog provides the UI to save the current style
  * or multiple styles into different storage containers (QML, SLD and DB).
+ *
  * The user can select what categories must be saved.
  *
  * \since QGIS 3.34

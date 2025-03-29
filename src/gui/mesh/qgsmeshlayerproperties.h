@@ -34,7 +34,8 @@ class QgsMetadataWidget;
  * \ingroup gui
  * \class QgsMeshLayerProperties
  *
- * \brief Property sheet for a mesh map layer.
+ * \brief A dialog for configuring mesh layer properties.
+ *
  * Contains information, source and style tabs
  *
  * \since QGIS 3.16 in the GUI API

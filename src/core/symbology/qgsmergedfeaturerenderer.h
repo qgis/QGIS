@@ -26,7 +26,7 @@
 
 /**
  * \ingroup core
- * \brief QgsMergedFeatureRenderer is a polygon or line-only feature renderer used to
+ * \brief A polygon or line-only feature renderer used to
  * renderer a set of features merged (or dissolved) into a single geometry.
  *
  * It is designed on top of another feature renderer, which is called "embedded"

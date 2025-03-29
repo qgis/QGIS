@@ -34,8 +34,9 @@ class LoadLayerFunction;
 /**
  * \ingroup core
  * \class QgsScopedExpressionFunction
- * \brief Expression function for use within a QgsExpressionContextScope. This differs from a
- * standard QgsExpression::Function in that it requires an implemented
+ * \brief Expression function for use within a QgsExpressionContextScope.
+ *
+ * This differs from a standard QgsExpression::Function in that it requires an implemented
  * clone() method.
  */
 

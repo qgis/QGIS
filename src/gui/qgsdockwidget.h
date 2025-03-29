@@ -24,7 +24,7 @@
 /**
  * \ingroup gui
  * \class QgsDockWidget
- * \brief QgsDockWidget subclass with more fine-grained control over how the widget is closed or opened.
+ * \brief A QDockWidget subclass with more fine-grained control over how the widget is closed or opened.
  */
 
 class GUI_EXPORT QgsDockWidget : public QDockWidget

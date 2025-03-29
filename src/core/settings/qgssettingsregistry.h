@@ -29,7 +29,7 @@ class QgsSettingsEntryGroup;
 /**
  * \ingroup core
  * \class QgsSettingsRegistry
- * \brief QgsSettingsRegistry is used for settings introspection and collects a
+ * \brief Used for settings introspection and collects a
  * list of child QgsSettingsRegistry and a list of child QgsSettingsRegistry
  *
  * \since QGIS 3.20

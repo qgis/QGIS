@@ -992,8 +992,9 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 /**
  * \ingroup core
  * \class QgsStackedDiagramRenderer
- * Renders diagrams using mixed diagram render types. The size of
- * the rendered diagram is given by a combination of subrenderers.
+ * Renders diagrams using mixed diagram render types.
+ *
+ * The size of the rendered diagram is given by a combination of subrenderers.
  *
  * \since QGIS 3.40
  */

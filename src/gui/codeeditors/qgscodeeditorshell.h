@@ -84,8 +84,9 @@ class GUI_EXPORT QgsQsciLexerBatch : public QsciLexer
 
 /**
  * \ingroup gui
- * \brief A shell script code editor based on QScintilla2. Adds syntax highlighting and
- * code autocompletion.
+ * \brief A shell script code editor based on QScintilla2.
+ *
+ * Adds syntax highlighting and code autocompletion.
  *
  * QgsCodeEditorShell supports either Bash (Linux) or Batch (Windows) code interpreters.
  * By default the Batch interpreter will be used on Windows platforms and the Bash interpreter

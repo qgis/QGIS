@@ -32,7 +32,7 @@ class QDomElement;
 
 /**
  * \ingroup qgis_3d
- * \brief Class that encapsulates camera pose in a 3D scene.
+ * \brief Encapsulates camera pose in a 3D scene.
  *
  * The pose is defined with the following parameters:
  *

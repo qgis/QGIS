@@ -13,7 +13,7 @@
 class QgsArchive
 {
 %Docstring(signature="appended")
-Class allowing to manage the zip/unzip actions
+Manages zip/unzip operations for an archive.
 %End
 
 %TypeHeaderCode
@@ -92,7 +92,7 @@ Returns ``True`` if the archive exists on the filesystem, ``False`` otherwise.
 class QgsProjectArchive : QgsArchive
 {
 %Docstring(signature="appended")
-Class allowing to manage the zip/unzip actions on project file
+Allows managing the zip/unzip actions on project file.
 %End
 
 %TypeHeaderCode

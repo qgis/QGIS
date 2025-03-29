@@ -2323,7 +2323,9 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
 /**
  * \class QgsProcessingParameterDistance
  * \ingroup core
- * \brief A double numeric parameter for distance values. Linked to a source layer or CRS parameter
+ * \brief A double numeric parameter for distance values.
+ *
+ * Linked to a source layer or CRS parameter
  * to determine what units the distance values are in.
  *
  * The number of decimals places shown in a distance parameter's widget can be specified by
@@ -2406,7 +2408,9 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
 /**
  * \class QgsProcessingParameterArea
  * \ingroup core
- * \brief A double numeric parameter for area values. Linked to a source layer or CRS parameter
+ * \brief A double numeric parameter for area values.
+ *
+ * Linked to a source layer or CRS parameter
  * to determine what units the area values are in.
  *
  * The number of decimals places shown in a area parameter's widget can be specified by
@@ -2487,7 +2491,9 @@ class CORE_EXPORT QgsProcessingParameterArea : public QgsProcessingParameterNumb
 /**
  * \class QgsProcessingParameterVolume
  * \ingroup core
- * \brief A double numeric parameter for volume values. Linked to a source layer or CRS parameter
+ * \brief A double numeric parameter for volume values.
+ *
+ * Linked to a source layer or CRS parameter
  * to determine what units the volume values are in.
  *
  * The number of decimals places shown in a volume parameter's widget can be specified by
@@ -2568,8 +2574,9 @@ class CORE_EXPORT QgsProcessingParameterVolume : public QgsProcessingParameterNu
 /**
  * \class QgsProcessingParameterDuration
  * \ingroup core
- * \brief A double numeric parameter for duration values. The returned
- * value will always be in milliseconds.
+ * \brief A double numeric parameter for duration values.
+ *
+ * The returned value will always be in milliseconds.
  * \since QGIS 3.22
  */
 class CORE_EXPORT QgsProcessingParameterDuration : public QgsProcessingParameterNumber
@@ -3055,8 +3062,9 @@ class CORE_EXPORT QgsProcessingParameterLimitedDataTypes
 /**
  * \class QgsProcessingParameterVectorLayer
  * \ingroup core
- * \brief A vector layer (with or without geometry) parameter for processing algorithms. Consider using
- * the more versatile QgsProcessingParameterFeatureSource wherever possible.
+ * \brief A vector layer (with or without geometry) parameter for processing algorithms.
+ *
+ * Consider using the more versatile QgsProcessingParameterFeatureSource wherever possible.
  */
 class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParameterDefinition, public QgsProcessingParameterLimitedDataTypes, public QgsFileFilterGenerator
 {
@@ -4013,7 +4021,9 @@ class CORE_EXPORT QgsProcessingParameterColor : public QgsProcessingParameterDef
 /**
  * \class QgsProcessingParameterCoordinateOperation
  * \ingroup core
- * \brief A coordinate operation parameter for processing algorithms, for selection between available
+ * \brief A coordinate operation parameter for processing algorithms.
+ *
+ * This parameter allows selection between available
  * coordinate operations to use when projecting between a source and destination coordinate reference system.
  *
  * QgsProcessingParameterCoordinateOperation should be evaluated by calling QgsProcessingAlgorithm::parameterAsString().
@@ -4391,7 +4401,9 @@ class CORE_EXPORT QgsProcessingParameterDatabaseSchema : public QgsProcessingPar
 /**
  * \class QgsProcessingParameterDatabaseTable
  * \ingroup core
- * \brief A database table name parameter for processing algorithms, allowing users to select from existing database tables
+ * \brief A database table name parameter for processing algorithms.
+ *
+ * This parameter allows users to select from existing database tables
  * on a registered database connection (or optionally to enter a new table name).
  *
  * QgsProcessingParameterDatabaseTable should be evaluated by calling QgsProcessingAlgorithm::parameterAsDatabaseTableName().

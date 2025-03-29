@@ -10,8 +10,9 @@
 class QgsColorSwatchGrid : QWidget
 {
 %Docstring(signature="appended")
-A grid of color swatches, which allows for user selection. Colors are taken from an
-associated :py:class:`QgsColorScheme`.
+A grid of color swatches, which allows for user selection.
+
+Colors are taken from an associated :py:class:`QgsColorScheme`.
 
 .. seealso:: :py:class:`QgsColorGridAction`
 %End

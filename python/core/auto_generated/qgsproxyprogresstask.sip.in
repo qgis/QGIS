@@ -13,7 +13,6 @@
 class QgsProxyProgressTask : QgsTask
 {
 %Docstring(signature="appended")
-
 A :py:class:`QgsTask` shell which proxies progress reports.
 
 Simple task shell which runs until finalized and reports progress only.
@@ -69,8 +68,9 @@ Emitted when the task is canceled.
 class QgsScopedProxyProgressTask
 {
 %Docstring(signature="appended")
+A :py:class:`QgsProxyProgressTask` with automatic lifetime.
 
-Scoped :py:class:`QgsScopedProxyProgressTask`, which automatically adds the proxy task
+:py:class:`QgsScopedProxyProgressTask` implements a :py:class:`QgsProxyProgressTask` which automatically adds the proxy task
 to the application task manager on construction and finalizes the task
 when it goes out of scope.
 

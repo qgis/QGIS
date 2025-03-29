@@ -99,8 +99,8 @@ class CORE_EXPORT QgsLayoutTableStyle
 };
 
 /**
- * \brief A class to display a table in the print layout, and allow
- * the table to span over multiple frames
+ * \brief Displays a table in the print layout, and allow
+ * the table to span over multiple frames.
  * \ingroup core
  */
 class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame

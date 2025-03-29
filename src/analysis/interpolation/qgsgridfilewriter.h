@@ -30,7 +30,7 @@ class QgsFeedback;
 
 /**
  * \ingroup analysis
- * \brief A class that does interpolation to a grid and writes the results to an ascii grid.
+ * \brief Handles interpolation to a grid and writes the results to a raster grid file.
 */
 class ANALYSIS_EXPORT QgsGridFileWriter
 {

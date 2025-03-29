@@ -40,7 +40,7 @@ class GUI_EXPORT QgsProviderConnectionComboBoxSortModel : public QSortFilterProx
 
 /**
  * \ingroup gui
- * \brief The QgsProviderConnectionComboBox class is a combo box which displays the list of connections registered for a given provider.
+ * \brief A combo box which displays the list of connections registered for a given provider.
  *
  * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation
  * in order for the model to work correctly.

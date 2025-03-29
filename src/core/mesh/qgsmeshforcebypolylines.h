@@ -26,7 +26,7 @@
 /**
  * \ingroup core
  *
- * \brief Class derived from QgsMeshAdvancedEditing that forces mesh based on a line
+ * \brief Forces mesh editing based on a line.
  *
  * Forcing lines consist of line that the faces are forced to follow, that is edges of encountered faces have to be on theses lines.
  *
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsMeshEditForceByLine : public QgsMeshAdvancedEditing
 /**
  * \ingroup core
  *
- * \brief Class derived from QgsMeshEditForceByLine that forces mesh based on polyline.
+ * \brief Derived from QgsMeshEditForceByLine that forces mesh based on polyline.
  *
  * Forcing lines consist of line that the faces are forced to follow, that is edges of encountered faces have to be on theses lines.
  *

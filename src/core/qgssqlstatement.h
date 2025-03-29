@@ -29,7 +29,7 @@
 
 /**
  * \ingroup core
- * \brief Class for parsing SQL statements.
+ * \brief Parses SQL statements.
  */
 class CORE_EXPORT QgsSQLStatement
 {
@@ -864,7 +864,7 @@ Q_DECLARE_METATYPE( QgsSQLStatement::Node * )
 
 /**
  * \ingroup core
- * \brief Class for parsing fragments of SQL statements, such as an expression or where clause.
+ * \brief Parses fragments of SQL statements, such as an expression or where clause.
  * \since QGIS 3.16
 */
 class CORE_EXPORT QgsSQLStatementFragment : public QgsSQLStatement

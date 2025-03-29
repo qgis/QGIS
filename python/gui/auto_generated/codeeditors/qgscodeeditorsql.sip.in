@@ -12,8 +12,9 @@
 class QgsCodeEditorSQL : QgsCodeEditor
 {
 %Docstring(signature="appended")
-A SQL editor based on QScintilla2. Adds syntax highlighting and
-code autocompletion.
+A SQL editor based on QScintilla2.
+
+Adds syntax highlighting and code autocompletion.
 
 .. note::
 

@@ -132,7 +132,8 @@ typedef QHash<QString, Help> HelpTextHash;
 
 /**
  * \ingroup core
- * \brief Class for parsing and evaluation of expressions (formerly called "search strings").
+ * \brief Handles parsing and evaluation of expressions (formerly called "search strings").
+ *
  * The expressions try to follow both syntax and semantics of SQL expressions.
  *
  * Usage:

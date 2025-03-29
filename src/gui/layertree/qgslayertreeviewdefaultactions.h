@@ -30,8 +30,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup gui
- * \brief The QgsLayerTreeViewDefaultActions class serves as a factory of actions
- * that can be used together with a layer tree view.
+ * \brief Serves as a factory of actions that can be used together with a layer tree view.
  *
  * \see QgsLayerTreeView
  */

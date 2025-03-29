@@ -35,7 +35,7 @@ template CORE_EXPORT QVector<QVector<int>> SIP_SKIP;
 /**
  * \ingroup core
  *
- * \brief Class that represents an error during mesh editing
+ * \brief Represents an error which occurred during mesh editing.
  *
  * \since QGIS 3.22
  */
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsMeshEditingError
 /**
  * \ingroup core
  *
- * \brief Class that makes edit operation on a mesh
+ * \brief Handles edit operations on a mesh layer.
  *
  * \since QGIS 3.22
  */
@@ -381,7 +381,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 /**
  * \ingroup core
  *
- * \brief Base class for undo/redo command for mesh editing
+ * \brief Base class for undo/redo command for mesh editing.
  *
  * \since QGIS 3.22
  */
@@ -403,7 +403,7 @@ class QgsMeshLayerUndoCommandMeshEdit : public QUndoCommand
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for adding vertices in mesh
+ * \brief Mesh layer undo/redo command for adding vertices in mesh.
  *
  * \since QGIS 3.22
  */
@@ -423,7 +423,7 @@ class QgsMeshLayerUndoCommandAddVertices : public QgsMeshLayerUndoCommandMeshEdi
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for removing vertices in mesh without filling holes created by removed faces
+ * \brief Mesh layer undo/redo command for removing vertices in mesh without filling holes created by removed faces.
  *
  * \since QGIS 3.22
  */
@@ -444,7 +444,7 @@ class QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles : public QgsMeshLaye
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for removing vertices in mesh filling holes created by removed faces
+ * \brief Mesh layer undo/redo command for removing vertices in mesh filling holes created by removed faces.
  *
  * \since QGIS 3.22
  */
@@ -471,7 +471,7 @@ class QgsMeshLayerUndoCommandRemoveVerticesFillHoles : public QgsMeshLayerUndoCo
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for adding faces in mesh
+ * \brief Mesh layer undo/redo command for adding faces in mesh.
  *
  * \since QGIS 3.22
  */
@@ -490,7 +490,7 @@ class QgsMeshLayerUndoCommandAddFaces : public QgsMeshLayerUndoCommandMeshEdit
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for removing faces in mesh
+ * \brief Mesh layer undo/redo command for removing faces in mesh.
  *
  * \since QGIS 3.22
  */
@@ -509,7 +509,7 @@ class QgsMeshLayerUndoCommandRemoveFaces : public QgsMeshLayerUndoCommandMeshEdi
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for changing Z value of vertices
+ * \brief Mesh layer undo/redo command for changing Z value of vertices.
  *
  * \since QGIS 3.22
  */
@@ -532,7 +532,7 @@ class QgsMeshLayerUndoCommandChangeZValue : public QgsMeshLayerUndoCommandMeshEd
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for changing (X,Y) value of vertices
+ * \brief Mesh layer undo/redo command for changing (X,Y) value of vertices.
  *
  * \since QGIS 3.22
  */
@@ -555,7 +555,7 @@ class QgsMeshLayerUndoCommandChangeXYValue : public QgsMeshLayerUndoCommandMeshE
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for changing coordinate (X,Y,Z) values of vertices
+ * \brief Mesh layer undo/redo command for changing coordinate (X,Y,Z) values of vertices.
  *
  * \since QGIS 3.22
  */
@@ -578,7 +578,7 @@ class QgsMeshLayerUndoCommandChangeCoordinates : public QgsMeshLayerUndoCommandM
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for flipping edge
+ * \brief Mesh layer undo/redo command for flipping edges.
  *
  * \since QGIS 3.22
  */
@@ -600,7 +600,7 @@ class QgsMeshLayerUndoCommandFlipEdge : public QgsMeshLayerUndoCommandMeshEdit
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for merging face
+ * \brief Mesh layer undo/redo command for merging faces.
  *
  * \since QGIS 3.22
  */
@@ -623,7 +623,7 @@ class QgsMeshLayerUndoCommandMerge : public QgsMeshLayerUndoCommandMeshEdit
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for splitting faces
+ * \brief Mesh layer undo/redo command for splitting faces.
  *
  * \since QGIS 3.22
  */
@@ -645,7 +645,7 @@ class QgsMeshLayerUndoCommandSplitFaces : public QgsMeshLayerUndoCommandMeshEdit
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for applying advanced editing
+ * \brief Mesh layer undo/redo command for applying advanced editing.
  * \since QGIS 3.22
  */
 class QgsMeshLayerUndoCommandAdvancedEditing : public QgsMeshLayerUndoCommandMeshEdit
@@ -664,7 +664,7 @@ class QgsMeshLayerUndoCommandAdvancedEditing : public QgsMeshLayerUndoCommandMes
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for adding vertex to face with Delaunay Refiment of faces surrounding
+ * \brief Mesh layer undo/redo command for adding vertex to face with Delaunay refinement of faces surrounding.
  *
  * \since QGIS 3.42
  */

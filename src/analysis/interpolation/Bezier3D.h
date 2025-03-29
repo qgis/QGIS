@@ -25,7 +25,7 @@
 
 /**
  * \ingroup analysis
- * \brief Class Bezier3D represents a bezier curve, represented by control points.
+ * \brief Represents a bezier curve, represented by control points.
  *
  * Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to it.
  * \note Not available in Python bindings

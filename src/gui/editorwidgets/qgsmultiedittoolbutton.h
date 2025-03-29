@@ -24,8 +24,10 @@
 /**
  * \ingroup gui
  * \class QgsMultiEditToolButton
- * \brief A tool button widget which is displayed next to editor widgets in attribute forms, and
- * allows for controlling how the widget behaves and interacts with the form while in multi
+ * \brief A tool button for controlling how edits to multiple features are applied.
+ *
+ * The button is displayed next to editor widgets in attribute forms. It allows for
+ * controlling how the widget behaves and interacts with the form while in multi
  * edit mode.
  */
 class GUI_EXPORT QgsMultiEditToolButton : public QToolButton

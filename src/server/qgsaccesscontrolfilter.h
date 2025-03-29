@@ -36,7 +36,7 @@ class QgsFeature;
 /**
  * \ingroup server
  * \class QgsAccessControlFilter
- * \brief Class defining access control interface for QGIS Server plugins.
+ * \brief Defines access control interface for QGIS Server plugins.
  *
  * Security can define any (or none) of the following method:
  *

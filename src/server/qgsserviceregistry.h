@@ -35,8 +35,7 @@ class QgsServerInterface;
 
 /**
  * \ingroup server
- * \brief QgsServiceRegistry
- * Class defining the registry manager for QGIS server services
+ * \brief A registry manager for QGIS server services.
  *
  * This class provides methods for registering and retrieving
  * services.

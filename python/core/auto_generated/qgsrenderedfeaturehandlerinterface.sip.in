@@ -12,7 +12,6 @@
 class QgsRenderedFeatureHandlerInterface
 {
 %Docstring(signature="appended")
-
 An interface for classes which provider custom handlers for features rendered
 as part of a map render job.
 

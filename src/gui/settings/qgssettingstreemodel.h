@@ -159,7 +159,7 @@ class GUI_EXPORT QgsSettingsTreeItemDelegate : public QItemDelegate
 /**
  * \ingroup gui
  * \class QgsSettingsTreeModel
- * \brief QgsSettingsTreeModel is a tree model for the settings tree.
+ * \brief A tree model for the settings tree.
  *
  * \since QGIS 3.32
  */
@@ -214,7 +214,7 @@ class GUI_EXPORT QgsSettingsTreeModel : public QAbstractItemModel
 /**
  * \ingroup gui
  * \class QgsSettingsTreeProxyModel
- * \brief QgsSettingsTreeProxyModel allows filtering the settings tree
+ * \brief A proxy model which allows filtering the settings tree.
  *
  * \since QGIS 3.32
  */

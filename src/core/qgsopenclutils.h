@@ -47,7 +47,9 @@
 /**
  * \ingroup core
  * \class QgsOpenClUtils
- * \brief The QgsOpenClUtils class is responsible for common OpenCL operations such as
+ * \brief Utilities responsible for common OpenCL operations.
+ *
+ * These operations include:
  *
  * - enable/disable opencl
  * - store and retrieve preferences for the default device

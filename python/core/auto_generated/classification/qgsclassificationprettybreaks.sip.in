@@ -11,8 +11,7 @@
 class QgsClassificationPrettyBreaks : QgsClassificationMethod
 {
 %Docstring(signature="appended")
-:py:class:`QgsClassificationPrettyBreaks` is an implementation of :py:class:`QgsClassificationMethod`
-for pretty breaks
+A classification method which applies pretty breaks to data.
 
 .. versionadded:: 3.10
 %End

@@ -91,7 +91,7 @@ Fetches file from ``url`` using ``authCfg`` for this project external storage.
 class QgsExternalStorageContent : QObject
 {
 %Docstring(signature="appended")
-Base class for :py:class:`QgsExternalStorage` stored and fetched content
+Base class for :py:class:`QgsExternalStorage` stored and fetched content.
 
 .. versionadded:: 3.22
 %End
@@ -155,7 +155,7 @@ Sets the external storage ``status``
 class QgsExternalStorageFetchedContent : QgsExternalStorageContent
 {
 %Docstring(signature="appended")
-Class for :py:class:`QgsExternalStorage` fetched content
+Abstract base class for :py:class:`QgsExternalStorage` fetched content.
 
 .. versionadded:: 3.22
 %End
@@ -186,7 +186,7 @@ The signal is emitted when the resource has successfully been fetched
 class QgsExternalStorageStoredContent : QgsExternalStorageContent
 {
 %Docstring(signature="appended")
-Class for :py:class:`QgsExternalStorage` stored content
+Abstract base class for :py:class:`QgsExternalStorage` stored content.
 
 .. versionadded:: 3.22
 %End

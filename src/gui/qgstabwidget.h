@@ -24,9 +24,7 @@
 
 /**
  * \ingroup gui
- * \brief The QgsTabWidget class is the same as the QTabWidget but with additional methods to
- * temporarily hide/show tabs.
- *
+ * \brief A QTabWidget with additional methods to temporarily hide/show tabs.
  */
 class GUI_EXPORT QgsTabWidget : public QTabWidget
 {

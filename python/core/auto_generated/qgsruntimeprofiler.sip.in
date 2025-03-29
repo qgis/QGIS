@@ -11,7 +11,6 @@
 class QgsRuntimeProfiler : QAbstractItemModel
 {
 %Docstring(signature="appended")
-
 Provides a method of recording run time profiles of operations, allowing
 easy recording of their overall run time.
 
@@ -163,7 +162,6 @@ Emitted when a new group has started being profiled.
 class QgsScopedRuntimeProfile
 {
 %Docstring(signature="appended")
-
 Scoped object for logging of the runtime for a single operation or group of operations.
 
 This class automatically takes care of registering an operation in the :py:func:`QgsApplication.profiler()`

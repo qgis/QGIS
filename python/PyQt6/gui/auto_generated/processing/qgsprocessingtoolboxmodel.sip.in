@@ -387,8 +387,9 @@ Emitted whenever favorite algorithms are added to the model.
 class QgsProcessingToolboxProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-A sort/filter proxy model for providers and algorithms shown within the Processing toolbox,
-which automatically sorts the toolbox in a logical fashion and supports filtering
+A proxy model for providers and algorithms shown within the Processing toolbox.
+
+The model automatically sorts the toolbox in a logical fashion and supports filtering
 the results.
 
 .. versionadded:: 3.4

@@ -11,7 +11,6 @@
 class QgsAnnotationItemBaseWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-
 A base class for property widgets for annotation items.
 
 All annotation item widgets should inherit from this base class.

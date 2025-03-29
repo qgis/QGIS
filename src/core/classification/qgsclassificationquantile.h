@@ -22,8 +22,7 @@
 
 /**
  * \ingroup core
- * \brief QgsClassificationQuantile is an implementation of QgsClassificationMethod
- * based on quantiles
+ * \brief A classification method which creates classes based on quantiles.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsClassificationQuantile : public QgsClassificationMethod

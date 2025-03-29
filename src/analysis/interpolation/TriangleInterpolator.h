@@ -28,7 +28,7 @@ class QgsPoint;
 
 /**
  * \ingroup analysis
- * \brief This is an interface for interpolator classes for triangulations.
+ * \brief An interface for interpolator classes for triangulations.
  * \note Not available in Python bindings.
 */
 class ANALYSIS_EXPORT TriangleInterpolator

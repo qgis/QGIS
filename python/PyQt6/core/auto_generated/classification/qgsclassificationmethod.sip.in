@@ -27,7 +27,7 @@
 class QgsClassificationRange
 {
 %Docstring(signature="appended")
-:py:class:`QgsClassificationRange` contains the information about a classification range
+Contains the information about a classification range
 
 .. versionadded:: 3.10
 %End
@@ -67,7 +67,7 @@ Returns the lower bound
 class QgsClassificationMethod /Abstract/
 {
 %Docstring(signature="appended")
-:py:class:`QgsClassificationMethod` is an abstract class for implementations of classification methods
+An abstract class for implementations of classification methods.
 
 .. seealso:: :py:class:`QgsClassificationMethodRegistry`
 

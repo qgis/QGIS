@@ -32,7 +32,7 @@ class QgsPointCloudNodeId;
  * \ingroup core
  * \class QgsPointCloudAttributeStatistics
  *
- * \brief Class used to store statistics of one attribute of a point cloud dataset.
+ * \brief Stores statistics of one attribute of a point cloud dataset.
  *
  * \since QGIS 3.26
  */
@@ -60,7 +60,7 @@ struct CORE_EXPORT QgsPointCloudAttributeStatistics
  * \ingroup core
  * \class QgsPointCloudStatistics
  *
- * \brief Class used to store statistics of a point cloud dataset.
+ * \brief Used to store statistics of a point cloud dataset.
  *
  * \since QGIS 3.26
  */

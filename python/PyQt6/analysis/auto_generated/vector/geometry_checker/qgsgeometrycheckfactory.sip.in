@@ -15,7 +15,6 @@
 class QgsGeometryCheckFactory /Abstract/
 {
 %Docstring(signature="appended")
-
 A factory for geometry checks.
 
 .. note::

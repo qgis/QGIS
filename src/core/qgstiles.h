@@ -88,8 +88,9 @@ CORE_EXPORT inline uint qHash( QgsTileXYZ id ) SIP_SKIP
 
 /**
  * \ingroup core
- * \brief Range of tiles in a tile matrix to be rendered. The selection is rectangular,
- * given by start/end row and column numbers.
+ * \brief A range of tiles in a tile matrix.
+ *
+ * The selection is rectangular, given by start/end row and column numbers.
  *
  * \since QGIS 3.14
  */

@@ -10,8 +10,7 @@
 class QgsLayerMetadataResultsProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLayerMetadataResultsProxyModel` class is a proxy model for :py:class:`QgsLayerMetadataResultsModel`,
-it handles text and extent filtering.
+A proxy model for :py:class:`QgsLayerMetadataResultsModel`, handling text and extent filtering.
 
 .. versionadded:: 3.28
 %End

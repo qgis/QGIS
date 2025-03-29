@@ -33,7 +33,7 @@ Create a new configuration widget for a format.
 class QgsNumericFormatGuiRegistry
 {
 %Docstring(signature="appended")
-The :py:class:`QgsNumericFormatGuiRegistry` is a home for widgets for configuring :py:class:`QgsNumericFormat` objects.
+A registry for widgets which configure :py:class:`QgsNumericFormat` objects.
 
 :py:class:`QgsNumericFormatGuiRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.numericFormatGuiRegistry()`.

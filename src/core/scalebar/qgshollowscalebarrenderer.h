@@ -25,7 +25,9 @@
  * \class QgsHollowScaleBarRenderer
  * \ingroup core
  * \brief Scalebar style that draws a single box with alternating color for the segments, with horizontal lines through
- * alternating segments. AKA "South African" style.
+ * alternating segments.
+ *
+ * AKA "South African" style.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsHollowScaleBarRenderer: public QgsScaleBarRenderer

@@ -34,7 +34,7 @@ class QgsPoint;
 
 /**
  * \ingroup core
- * \brief A class to represent a 2D point.
+ * \brief Represents a 2D point.
  *
  * A QgsPointXY represents a strictly 2-dimensional position, with only X and Y coordinates.
  * This is a very lightweight class, designed to minimize the memory requirements of storing

@@ -12,7 +12,6 @@
 class QgsMapViewsManager : QObject
 {
 %Docstring(signature="appended")
-
 Manages storage of a set of views.
 
 :py:class:`QgsMapViewsManager` handles the storage, serializing and deserializing

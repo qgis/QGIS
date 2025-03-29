@@ -27,6 +27,7 @@
 
 /**
  * \ingroup core
+ * \brief Handles update operations to a COPC file.
  *
  * This class takes an existing COPC file and a list of chunks that should be modified,
  * and outputs an updated COPC file where the modified chunks replace the original chunks.

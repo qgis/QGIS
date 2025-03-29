@@ -22,8 +22,7 @@
 #include "qgsrectangle.h"
 
 /**
- * The QgsLayerMetadataResultsProxyModel class is a proxy model for QgsLayerMetadataResultsModel,
- * it handles text and extent filtering.
+ * \brief A proxy model for QgsLayerMetadataResultsModel, handling text and extent filtering.
  * \ingroup gui
  * \since QGIS 3.28
  */

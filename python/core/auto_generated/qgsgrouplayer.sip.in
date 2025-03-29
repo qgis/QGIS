@@ -13,7 +13,6 @@
 class QgsGroupLayer : QgsMapLayer
 {
 %Docstring(signature="appended")
-
 A map layer which consists of a set of child layers, where all component layers are rendered as a single
 flattened object during map renders.
 

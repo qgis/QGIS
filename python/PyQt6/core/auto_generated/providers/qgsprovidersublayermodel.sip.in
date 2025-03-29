@@ -16,7 +16,6 @@
 class QgsProviderSublayerModel: QAbstractItemModel
 {
 %Docstring(signature="appended")
-
 A model for representing the sublayers present in a URI.
 
 :py:class:`QgsProviderSublayerModel` is designed to present a tree view of the sublayers
@@ -61,7 +60,6 @@ embedded project items. The non-sublayer items can be added by calling
     class NonLayerItem
 {
 %Docstring(signature="appended")
-
 Contains details for a non-sublayer item to include in a QgsProviderSublayerModel.
 
 .. versionadded:: 3.22
@@ -215,7 +213,6 @@ Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
 class QgsProviderSublayerProxyModel: QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-
 A QSortFilterProxyModel for filtering and sorting a :py:class:`QgsProviderSublayerModel`.
 
 .. versionadded:: 3.22

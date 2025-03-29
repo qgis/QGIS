@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * \brief The QgsSldExportContext class holds SLD export options and other information related to SLD export of a QGIS layer style.
+ * \brief Holds SLD export options and other information related to SLD export of a QGIS layer style.
  *
  * \since QGIS 3.30
  */

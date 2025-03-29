@@ -662,8 +662,9 @@ class CORE_EXPORT QgsTaskManager : public QObject
 /**
  * \ingroup core
  * \class QgsTaskWithSerialSubTasks
- * \brief Task that is composed of sub-tasks to be executed in a serial way,
- * which may be useful for example to add several layers in a single target
+ * \brief A task that is composed of sub-tasks to be executed in a serial way.
+ *
+ * This may be useful for example to add several layers in a single target
  * dataset which does not support concurrent updates.
  * \since QGIS 3.36
  */

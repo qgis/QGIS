@@ -16,7 +16,7 @@
 class QgsSettingsTreeModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeModel` is a tree model for the settings tree.
+A tree model for the settings tree.
 
 .. versionadded:: 3.32
 %End
@@ -69,7 +69,7 @@ Apply pending changes in the model to the corresponding settings
 class QgsSettingsTreeProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeProxyModel` allows filtering the settings tree
+A proxy model which allows filtering the settings tree.
 
 .. versionadded:: 3.32
 %End

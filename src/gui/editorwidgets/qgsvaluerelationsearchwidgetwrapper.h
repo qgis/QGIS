@@ -28,8 +28,11 @@ class QgsValueRelationWidgetFactory;
 
 /**
  * \ingroup gui
- * \brief Wraps a value relation search  widget. This widget will offer a combobox with values from another layer
+ * \brief Wraps a value relation search widget.
+ *
+ * This widget will offer a combobox with values from another layer
  * referenced by a foreign key (a constraint may be set but is not required on data level).
+ *
  * It will be used as a search widget and produces expression to look for in the layer.
  */
 

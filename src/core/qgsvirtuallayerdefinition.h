@@ -23,7 +23,7 @@ email                : hugo dot mercier at oslandia dot com
 
 /**
  * \ingroup core
- * \brief Class to manipulate the definition of a virtual layer
+ * \brief Manipulates the definition of a virtual layer.
  *
  * It is used to extract parameters from an initial virtual layer definition as well as
  * to store the complete, expanded definition once types have been detected.

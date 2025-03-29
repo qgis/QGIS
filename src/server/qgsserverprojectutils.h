@@ -32,8 +32,8 @@ class QgsRectangle;
 
 /**
  * \ingroup server
- * \brief The QgsServerProjectUtils namespace provides a way to retrieve specific
- * entries from a QgsProject.
+ * \brief Contains utility functions to retrieve specific entries from a QgsProject.
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsServerProjectUtils
 {

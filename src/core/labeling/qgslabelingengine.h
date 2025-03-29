@@ -54,8 +54,9 @@ class CORE_EXPORT QgsLabelCandidate
 
 /**
  * \ingroup core
- * \brief The QgsAbstractLabelProvider class is an interface class. Implementations
- * return list of labels and their associated geometries - these are used by
+ * \brief An abstract interface class for label providers.
+ *
+ * Implementations return list of labels and their associated geometries - these are used by
  * QgsLabelingEngine to compute the final layout of labels.
  *
  * Implementations also take care of drawing the returned final label positions.
@@ -327,7 +328,8 @@ class CORE_EXPORT QgsLabelingEngineFeedback : public QgsFeedback
 
 /**
  * \ingroup core
- * \brief The QgsLabelingEngine class provides map labeling functionality.
+ * \brief Provides map labeling functionality.
+ *
  * The input for the engine is a list of label provider objects and map settings.
  * Based on the input, the engine computes layout of labels for the given map view
  * with no collisions between the labels. Drawing of resulting labels is done

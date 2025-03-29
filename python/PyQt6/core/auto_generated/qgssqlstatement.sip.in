@@ -12,7 +12,7 @@
 class QgsSQLStatement
 {
 %Docstring(signature="appended")
-Class for parsing SQL statements.
+Parses SQL statements.
 %End
 
 %TypeHeaderCode
@@ -1029,7 +1029,7 @@ such as a expression or filter where clause alone.
 class QgsSQLStatementFragment : QgsSQLStatement
 {
 %Docstring(signature="appended")
-Class for parsing fragments of SQL statements, such as an expression or where clause.
+Parses fragments of SQL statements, such as an expression or where clause.
 
 .. versionadded:: 3.16
 %End

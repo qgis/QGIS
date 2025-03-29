@@ -22,8 +22,9 @@
 
 
 /**
- * \brief A parameter for processing algorithms that need a list of input vector layers for writing
- * of vector tiles - this parameter provides processing framework's adapter for QList<QgsVectorTileWriter::Layer>.
+ * \brief A parameter for Processing algorithms that need a list of input vector layers for writing of vector tiles.
+ *
+ * This parameter provides Processing framework's adapter for QList<QgsVectorTileWriter::Layer>.
  *
  * A valid value for this parameter is a list (QVariantList), where each item is a map (QVariantMap) in this form:
  * {

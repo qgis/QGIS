@@ -13,7 +13,6 @@
 class QgsStyleEntityVisitorInterface
 {
 %Docstring(signature="appended")
-
 An interface for classes which can visit style entity (e.g. symbol) nodes (using the visitor pattern).
 
 .. versionadded:: 3.10

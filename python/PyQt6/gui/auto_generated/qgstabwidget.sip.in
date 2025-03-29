@@ -11,8 +11,7 @@
 class QgsTabWidget : QTabWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsTabWidget` class is the same as the QTabWidget but with additional methods to
-temporarily hide/show tabs.
+A QTabWidget with additional methods to temporarily hide/show tabs.
 %End
 
 %TypeHeaderCode

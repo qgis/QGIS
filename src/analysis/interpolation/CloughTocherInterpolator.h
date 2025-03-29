@@ -27,7 +27,7 @@ class NormVecDecorator;
 
 /**
  * \ingroup analysis
- * \brief This is an implementation of a Clough-Tocher interpolator based on a triangular tessellation.
+ * \brief An implementation of a Clough-Tocher interpolator based on a triangular tessellation.
  *
  * The derivatives orthogonal to the boundary curves are interpolated linearly along a triangle edge.
  * \note Not available in Python bindings

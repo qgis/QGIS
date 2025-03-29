@@ -28,6 +28,7 @@ class QgsMapLayer;
  * \ingroup gui
  * \class QgsLayerTreeEmbeddedWidgetProvider
  * \brief Provider interface to be implemented in order to introduce new kinds of embedded widgets for use in layer tree.
+ *
  * Embedded widgets are assigned per individual map layers and they are shown before any legend entries.
  * \see QgsLayerTreeEmbeddedWidgetRegistry
  */
@@ -57,6 +58,7 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
  * \ingroup gui
  * \class QgsLayerTreeEmbeddedWidgetRegistry
  * \brief Registry of widgets that may be embedded into layer tree view.
+ *
  * Embedded widgets are assigned per individual map layers and they are shown before any legend entries.
  * Layer tree must have UseEmbeddedWidgets flag enabled in order to show assigned widgets.
  *

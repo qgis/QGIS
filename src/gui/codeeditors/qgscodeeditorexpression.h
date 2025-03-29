@@ -28,8 +28,9 @@ SIP_IF_MODULE( HAVE_QSCI_SIP )
 /**
  * \ingroup gui
  *
- * \brief A QGIS expression editor based on QScintilla2. Adds syntax highlighting and
- * code autocompletion.
+ * \brief A QGIS expression editor based on QScintilla2.
+ *
+ * dds syntax highlighting and code autocompletion.
  *
  * \since QGIS 3.4
  */

@@ -13,7 +13,6 @@
 class QgsGeometryCheckerUtils
 {
 %Docstring(signature="appended")
-
 Contains utilities required for geometry checks.
 
 .. note::
@@ -30,7 +29,6 @@ Contains utilities required for geometry checks.
     class LayerFeature
 {
 %Docstring(signature="appended")
-
 A layer feature combination to uniquely identify and access a feature in
 a set of layers.
 
@@ -86,7 +84,6 @@ Returns if the geometry is reprojected to the map CRS or not.
     class LayerFeatures
 {
 %Docstring(signature="appended")
-
 Contains a set of layers and feature ids in those layers to pass to a geometry check.
 
 .. versionadded:: 3.4

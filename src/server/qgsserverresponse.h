@@ -31,9 +31,7 @@ class QgsServerException;
 
 /**
  * \ingroup server
- * \brief QgsServerResponse
- * Class defining response interface passed to services QgsService::executeRequest() method
- *
+ * \brief Defines the response interface passed to QgsService.
  */
 
 // Note:
