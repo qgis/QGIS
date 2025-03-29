@@ -365,6 +365,13 @@ void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, do
   }
 }
 
+std::unique_ptr<QgsLineSymbol> QgsProfilePlotRenderer::defaultSubSectionsSymbol()
+{
+  auto subSections = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 255, 0, 0, 255 ), 0.5 );
+  subSections->setPenCapStyle( Qt::FlatCap );
+  return std::make_unique<QgsLineSymbol>( QgsSymbolLayerList() << subSections.release() );
+}
+
 void QgsProfilePlotRenderer::setSubsectionsSymbol( QgsLineSymbol *symbol )
 {
   mSubsectionsSymbol.reset( symbol );

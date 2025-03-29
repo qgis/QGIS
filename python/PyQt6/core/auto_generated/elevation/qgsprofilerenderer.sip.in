@@ -153,6 +153,9 @@ If ``sourceId`` is empty then all sources will be rendered, otherwise only the m
 %End
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9eb3c37400 (qgsprofilerenderer: Introduce a default symbol for subsections)
     static std::unique_ptr<QgsLineSymbol> defaultSubSectionsSymbol() /Factory/;
 %Docstring
 Returns the default line symbol to use for subsections lines.
@@ -162,8 +165,11 @@ Returns the default line symbol to use for subsections lines.
 .. versionadded:: 3.44
 %End
 
+<<<<<<< HEAD
 =======
 >>>>>>> 030c04c9ea (qgsprofilerenderer: Add support for subsections indicator)
+=======
+>>>>>>> 9eb3c37400 (qgsprofilerenderer: Introduce a default symbol for subsections)
     QgsLineSymbol *subsectionsSymbol();
 %Docstring
 Returns the line symbol used to draw the subsections.
