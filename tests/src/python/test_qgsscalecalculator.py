@@ -22,6 +22,10 @@ class TestQgsScaleCalculator(QgisTestCase):
 
     def testCalculate(self):
         calculator = QgsScaleCalculator()
+        # should default to horizontal center
+        self.assertEqual(
+            calculator.method(), Qgis.ScaleCalculationMethod.HorizontalMiddle
+        )
 
         calculator.setDpi(96)
         extent = QgsRectangle(336609, 1162304, 354942, 1168151)
@@ -57,6 +61,87 @@ class TestQgsScaleCalculator(QgisTestCase):
         calculator.setMapUnits(Qgis.DistanceUnit.Centimeters)
         scale = calculator.calculate(extent, 65000)
         self.assertAlmostEqual(scale, 10.66001211, 3)
+
+    def testCalculateAtHorizontalCenter(self):
+        calculator = QgsScaleCalculator()
+        # should default to horizontal center
+        self.assertEqual(
+            calculator.method(), Qgis.ScaleCalculationMethod.HorizontalMiddle
+        )
+
+        calculator.setDpi(96)
+        extent = QgsRectangle(-49.42, 102.1, -4.44, 161.56)
+
+        calculator.setMapUnits(Qgis.DistanceUnit.Degrees)
+        self.assertAlmostEqual(
+            calculator.calculateGeographicDistance(extent), 2324578, -3
+        )
+        scale = calculator.calculate(extent, 2000)
+        self.assertAlmostEqual(scale, 4392904, -3)
+
+    def testCalculateAtHorizontalTop(self):
+        calculator = QgsScaleCalculator()
+        calculator.setMethod(Qgis.ScaleCalculationMethod.HorizontalTop)
+        self.assertEqual(calculator.method(), Qgis.ScaleCalculationMethod.HorizontalTop)
+
+        calculator.setDpi(96)
+        extent = QgsRectangle(-49.42, 102.1, -4.44, 161.56)
+
+        calculator.setMapUnits(Qgis.DistanceUnit.Degrees)
+        self.assertAlmostEqual(
+            calculator.calculateGeographicDistance(extent), 3958887, -3
+        )
+        scale = calculator.calculate(extent, 2000)
+        self.assertAlmostEqual(scale, 7481362, -3)
+
+    def testCalculateAtHorizontalBottom(self):
+        calculator = QgsScaleCalculator()
+        calculator.setMethod(Qgis.ScaleCalculationMethod.HorizontalBottom)
+        self.assertEqual(
+            calculator.method(), Qgis.ScaleCalculationMethod.HorizontalBottom
+        )
+
+        calculator.setDpi(96)
+        extent = QgsRectangle(-49.42, 102.1, -4.44, 161.56)
+
+        calculator.setMapUnits(Qgis.DistanceUnit.Degrees)
+        self.assertAlmostEqual(
+            calculator.calculateGeographicDistance(extent), 675098, -3
+        )
+        scale = calculator.calculate(extent, 2000)
+        self.assertAlmostEqual(scale, 1275776, -3)
+
+    def testCalculateAtHorizontalAverage(self):
+        calculator = QgsScaleCalculator()
+        calculator.setMethod(Qgis.ScaleCalculationMethod.HorizontalAverage)
+        self.assertEqual(
+            calculator.method(), Qgis.ScaleCalculationMethod.HorizontalAverage
+        )
+
+        calculator.setDpi(96)
+        extent = QgsRectangle(-49.42, 102.1, -4.44, 161.56)
+
+        calculator.setMapUnits(Qgis.DistanceUnit.Degrees)
+        self.assertAlmostEqual(
+            calculator.calculateGeographicDistance(extent), 2319521, -3
+        )
+        scale = calculator.calculate(extent, 2000)
+        self.assertAlmostEqual(scale, 4383348, -3)
+
+    def testCalculateAtEquator(self):
+        calculator = QgsScaleCalculator()
+        calculator.setMethod(Qgis.ScaleCalculationMethod.AtEquator)
+        self.assertEqual(calculator.method(), Qgis.ScaleCalculationMethod.AtEquator)
+
+        calculator.setDpi(96)
+        extent = QgsRectangle(-49.42, 102.1, -4.44, 161.56)
+
+        calculator.setMapUnits(Qgis.DistanceUnit.Degrees)
+        self.assertAlmostEqual(
+            calculator.calculateGeographicDistance(extent), 4974125, -3
+        )
+        scale = calculator.calculate(extent, 2000)
+        self.assertAlmostEqual(scale, 9399921, -3)
 
     def testCalculateImageSize(self):
         calculator = QgsScaleCalculator()

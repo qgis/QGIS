@@ -1470,6 +1470,8 @@ namespace QgsWms
     // add labeling engine settings
     mapSettings.setLabelingEngineSettings( mProject->labelingEngineSettings() );
 
+    mapSettings.setScaleMethod( mProject->scaleMethod() );
+
     // enable rendering optimization
     mapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
 

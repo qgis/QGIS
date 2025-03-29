@@ -56,7 +56,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mMinWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMinWidthSpinBox_valueChanged );
   connect( mMaxWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
   connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsLayoutScaleBarWidget::changeNumberFormat );
-  connect( mMethodCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mScaleMethodWidget, &QgsScaleMethodWidget::methodChanged, this, [=] {
     if ( !mScalebar )
     {
       return;
@@ -64,7 +64,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
 
     disconnectUpdateSignal();
     mScalebar->beginCommand( tr( "Set Scalebar Method" ) );
-    mScalebar->setMethod( mMethodCombo->currentData().value<Qgis::ScaleCalculationMethod>() );
+    mScalebar->setMethod( mScaleMethodWidget->scaleMethod() );
     mScalebar->update();
     connectUpdateSignal();
     mScalebar->endCommand();
@@ -128,11 +128,6 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mUnitsComboBox->addItem( tr( "Centimeters" ), static_cast<int>( Qgis::DistanceUnit::Centimeters ) );
   mUnitsComboBox->addItem( tr( "Millimeters" ), static_cast<int>( Qgis::DistanceUnit::Millimeters ) );
   mUnitsComboBox->addItem( tr( "Inches" ), static_cast<int>( Qgis::DistanceUnit::Inches ) );
-
-  mMethodCombo->addItem( tr( "Average Top, Middle and Bottom Scales" ), QVariant::fromValue( Qgis::ScaleCalculationMethod::HorizontalAverage ) );
-  mMethodCombo->addItem( tr( "Calculate along Top of Map" ), QVariant::fromValue( Qgis::ScaleCalculationMethod::HorizontalTop ) );
-  mMethodCombo->addItem( tr( "Calculate along Middle of Map" ), QVariant::fromValue( Qgis::ScaleCalculationMethod::HorizontalMiddle ) );
-  mMethodCombo->addItem( tr( "Calculate along Bottom of Map" ), QVariant::fromValue( Qgis::ScaleCalculationMethod::HorizontalBottom ) );
 
   mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::lineSymbolChanged );
@@ -369,7 +364,7 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   mMinWidthSpinBox->setValue( mScalebar->minimumBarWidth() );
   mMaxWidthSpinBox->setValue( mScalebar->maximumBarWidth() );
 
-  mMethodCombo->setCurrentIndex( mMethodCombo->findData( QVariant::fromValue( mScalebar->method() ) ) );
+  mScaleMethodWidget->setScaleMethod( mScalebar->method() );
 
   populateDataDefinedButtons();
 
@@ -766,7 +761,7 @@ void QgsLayoutScaleBarWidget::blockMemberSignals( bool block )
   mFontButton->blockSignals( block );
   mMinWidthSpinBox->blockSignals( block );
   mMaxWidthSpinBox->blockSignals( block );
-  mMethodCombo->blockSignals( block );
+  mScaleMethodWidget->blockSignals( block );
 }
 
 void QgsLayoutScaleBarWidget::connectUpdateSignal()

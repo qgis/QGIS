@@ -2879,6 +2879,7 @@ The development version
       HorizontalMiddle,
       HorizontalBottom,
       HorizontalAverage,
+      AtEquator,
     };
 
     enum class ScaleBarAlignment /BaseType=IntEnum/

@@ -389,6 +389,41 @@ class TestQgsProject(QgisTestCase):
         prj.setAreaUnits(QgsUnitTypes.AreaUnit.AreaSquareFeet)
         self.assertEqual(prj.areaUnits(), QgsUnitTypes.AreaUnit.AreaSquareFeet)
 
+    def test_scale_method(self):
+        p = QgsProject()
+        # default should be horizontal middle, to match old project method
+        self.assertEqual(p.scaleMethod(), Qgis.ScaleCalculationMethod.HorizontalMiddle)
+
+        spy = QSignalSpy(p.scaleMethodChanged)
+        p.setScaleMethod(Qgis.ScaleCalculationMethod.HorizontalMiddle)
+        self.assertEqual(len(spy), 0)
+        self.assertEqual(p.scaleMethod(), Qgis.ScaleCalculationMethod.HorizontalMiddle)
+
+        p.setScaleMethod(Qgis.ScaleCalculationMethod.HorizontalTop)
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(p.scaleMethod(), Qgis.ScaleCalculationMethod.HorizontalTop)
+        p.setScaleMethod(Qgis.ScaleCalculationMethod.HorizontalTop)
+        self.assertEqual(len(spy), 1)
+
+        p.clear()
+        p.setScaleMethod(Qgis.ScaleCalculationMethod.HorizontalMiddle)
+        self.assertEqual(len(spy), 2)
+        p.clear()
+        p.setScaleMethod(Qgis.ScaleCalculationMethod.HorizontalMiddle)
+        # no extra signal, has not changed
+        self.assertEqual(len(spy), 2)
+
+        p.setScaleMethod(Qgis.ScaleCalculationMethod.HorizontalTop)
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, "scale_method.qgs")
+            self.assertTrue(p.write(path))
+            # Verify
+            p2 = QgsProject()
+            self.assertTrue(p2.read(path))
+            self.assertEqual(
+                p2.scaleMethod(), Qgis.ScaleCalculationMethod.HorizontalTop
+            )
+
     def testReadEntry(self):
         prj = QgsProject.instance()
         prj.read(os.path.join(TEST_DATA_DIR, "labeling/test-labeling.qgs"))

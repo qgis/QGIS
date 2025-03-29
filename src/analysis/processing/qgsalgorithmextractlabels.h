@@ -52,6 +52,7 @@ class QgsExtractLabelsAlgorithm : public QgsProcessingAlgorithm
     QMap<QString, QString> mMapThemeStyleOverrides;
     QgsLabelingEngineSettings mLabelSettings;
     QgsCoordinateReferenceSystem mCrs;
+    Qgis::ScaleCalculationMethod mScaleMethod = Qgis::ScaleCalculationMethod::HorizontalMiddle;
 };
 
 ///@endcond PRIVATE
