@@ -13,7 +13,6 @@
 class QgsLayoutConfigObject : QObject
 {
 %Docstring(signature="appended")
-
 An object for property widgets for layout items.
 
 All layout config type widgets should contain this object.
@@ -58,7 +57,6 @@ Returns the atlas for the layout, if available
 class QgsLayoutItemBaseWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-
 A base class for property widgets for layout items.
 
 All layout item widgets should inherit from

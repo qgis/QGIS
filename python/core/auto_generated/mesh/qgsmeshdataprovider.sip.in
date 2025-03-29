@@ -86,7 +86,6 @@ Compare two faces, return ``True`` if they are equivalent : same indexes and sam
 class QgsMeshDataSourceInterface /Abstract/
 {
 %Docstring(signature="appended")
-
 Interface for mesh data sources
 
 Mesh is a collection of vertices, edges and faces in 2D or 3D space

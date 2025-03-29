@@ -11,7 +11,6 @@
 class QgsMeshEditForceByLine : QgsMeshAdvancedEditing
 {
 %Docstring(signature="appended")
-
 Forces mesh editing based on a line.
 
 Forcing lines consist of line that the faces are forced to follow, that is edges of encountered faces have to be on theses lines.
@@ -64,7 +63,6 @@ in case these line are not 3D, the default value will be used (:py:func:`setDefa
 class QgsMeshEditForceByPolylines : QgsMeshEditForceByLine
 {
 %Docstring(signature="appended")
-
 Derived from :py:class:`QgsMeshEditForceByLine` that forces mesh based on polyline.
 
 Forcing lines consist of line that the faces are forced to follow, that is edges of encountered faces have to be on theses lines.

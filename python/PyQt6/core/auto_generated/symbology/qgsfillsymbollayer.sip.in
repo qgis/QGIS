@@ -2532,7 +2532,6 @@ in different locations with every map refresh).
 class QgsRandomMarkerFillSymbolLayer : QgsFillSymbolLayer
 {
 %Docstring(signature="appended")
-
 A fill symbol layer which places markers at random locations within polygons.
 
 .. versionadded:: 3.12
@@ -2732,7 +2731,6 @@ Returns the map scale for the density area.
 class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 {
 %Docstring(signature="appended")
-
 A fill symbol layer which renders a marker symbol at the centroid of a polygon geometry.
 %End
 

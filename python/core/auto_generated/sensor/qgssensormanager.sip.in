@@ -13,7 +13,6 @@
 class QgsSensorManager : QObject
 {
 %Docstring(signature="appended")
-
 Manages sensors.
 
 :py:class:`QgsSensorManager` handles the storage, serializing and deserializing

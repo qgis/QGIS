@@ -13,8 +13,6 @@
 class QgsAuxiliaryLayer : QgsVectorLayer
 {
 %Docstring(signature="appended")
-
-
 Allows managing the auxiliary storage for a vector layer.
 
 Such auxiliary data are data used mostly for the needs of QGIS (symbology)
@@ -242,8 +240,6 @@ Returns the property definition from an auxiliary field.
 class QgsAuxiliaryStorage
 {
 %Docstring(signature="appended")
-
-
 Providing some utility methods to manage auxiliary storage.
 %End
 

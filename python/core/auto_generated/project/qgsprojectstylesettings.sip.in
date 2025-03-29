@@ -306,7 +306,6 @@ Emitted whenever the set of style databases associated with the project is chang
 class QgsProjectStyleDatabaseModel : QAbstractListModel
 {
 %Docstring(signature="appended")
-
 List model representing the style databases associated with a :py:class:`QgsProject`.
 
 .. versionadded:: 3.26
@@ -367,7 +366,6 @@ Returns ``True`` if the model includes the default style.
 class QgsProjectStyleDatabaseProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-
 A proxy model for filtering :py:class:`QgsProjectStyleDatabaseModel`.
 
 .. versionadded:: 3.26

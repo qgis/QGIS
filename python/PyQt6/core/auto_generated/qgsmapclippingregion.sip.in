@@ -12,7 +12,6 @@
 class QgsMapClippingRegion
 {
 %Docstring(signature="appended")
-
 A map clipping region (in map coordinates and CRS).
 
 .. versionadded:: 3.16

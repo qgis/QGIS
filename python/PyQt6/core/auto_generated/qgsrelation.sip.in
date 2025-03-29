@@ -14,7 +14,6 @@
 class QgsRelation
 {
 %Docstring(signature="appended")
-
 Represents a relationship between two vector layers.
 %End
 

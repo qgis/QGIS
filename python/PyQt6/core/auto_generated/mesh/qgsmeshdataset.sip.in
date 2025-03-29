@@ -16,7 +16,6 @@
 class QgsMeshDatasetIndex
 {
 %Docstring(signature="appended")
-
 An index that identifies the dataset group (e.g. wind speed)
 and a dataset in this group (e.g. magnitude of wind speed in particular time)
 
@@ -55,7 +54,6 @@ Returns whether index is valid, ie at least groups is set
 class QgsMeshDatasetValue
 {
 %Docstring(signature="appended")
-
 Represents a single mesh dataset value.
 
 Values may be scalar or vector. Nodata values are represented by NaNs.
@@ -126,7 +124,6 @@ Returns y value
 class QgsMeshDataBlock
 {
 %Docstring(signature="appended")
-
 A block of integers/doubles from a mesh dataset
 
 :py:class:`QgsMeshDataBlock` can be used to retrieve:
@@ -249,7 +246,6 @@ Sets block validity
 class QgsMesh3DDataBlock
 {
 %Docstring(signature="appended")
-
 A block of 3d stacked mesh data related N
 faces defined on base mesh frame.
 
@@ -376,7 +372,6 @@ For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
 class QgsMeshDatasetGroupMetadata
 {
 %Docstring(signature="appended")
-
 A collection of dataset group metadata
 such as whether the data is vector or scalar, name
 
@@ -508,7 +503,6 @@ Returns the reference time
 class QgsMeshDatasetMetadata
 {
 %Docstring(signature="appended")
-
 Represents mesh dataset metadata, as whether the data is valid or the associated time.
 
 .. note::
@@ -576,7 +570,6 @@ Returns maximum number of vertical levels for 3d stacked meshes
 class QgsMeshDataset
 {
 %Docstring(signature="appended")
-
 Abstract class that represents a dataset
 
 .. versionadded:: 3.16
@@ -625,7 +618,6 @@ Returns the values count
 class QgsMeshDatasetGroup
 {
 %Docstring(signature="appended")
-
 Abstract class that represents a dataset group
 
 .. versionadded:: 3.16
@@ -786,7 +778,6 @@ Sets the reference time of the dataset group
 class QgsMeshDatasetGroupTreeItem
 {
 %Docstring(signature="appended")
-
 Tree item for display of the mesh dataset groups.
 
 Dataset groups are sets of datasets with the same name,

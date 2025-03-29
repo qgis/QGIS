@@ -14,7 +14,6 @@ typedef QgsSettingsEntryBaseTemplate<QVariant> QgsSettingsEntryBaseTemplateQVari
 class QgsSettingsEntryVariant : QgsSettingsEntryBaseTemplateQVariantBase
 {
 %Docstring(signature="appended")
-
 A variant settings entry.
 
 .. versionadded:: 3.20
@@ -115,7 +114,6 @@ typedef QgsSettingsEntryBaseTemplate<QString> QgsSettingsEntryBaseTemplateQStrin
 class QgsSettingsEntryString : QgsSettingsEntryBaseTemplateQStringBase
 {
 %Docstring(signature="appended")
-
 A string settings entry.
 
 .. versionadded:: 3.20
@@ -216,7 +214,6 @@ typedef QgsSettingsEntryBaseTemplate<QStringList> QgsSettingsEntryBaseTemplateQS
 class QgsSettingsEntryStringList : QgsSettingsEntryBaseTemplateQStringListBase
 {
 %Docstring(signature="appended")
-
 A string list settings entry.
 
 .. versionadded:: 3.20
@@ -294,7 +291,6 @@ typedef QgsSettingsEntryBaseTemplate<bool> QgsSettingsEntryBaseTemplateboolBase 
 class QgsSettingsEntryBool : QgsSettingsEntryBaseTemplateboolBase
 {
 %Docstring(signature="appended")
-
 A boolean settings entry.
 
 .. versionadded:: 3.20
@@ -372,7 +368,6 @@ typedef QgsSettingsEntryBaseTemplate<int> QgsSettingsEntryBaseTemplateintBase /N
 class QgsSettingsEntryInteger : QgsSettingsEntryBaseTemplateintBase
 {
 %Docstring(signature="appended")
-
 An integer settings entry.
 
 .. versionadded:: 3.20
@@ -475,7 +470,6 @@ typedef QgsSettingsEntryBaseTemplate<double> QgsSettingsEntryBaseTemplatedoubleB
 class QgsSettingsEntryDouble : QgsSettingsEntryBaseTemplatedoubleBase
 {
 %Docstring(signature="appended")
-
 A double settings entry.
 
 .. versionadded:: 3.20
@@ -600,7 +594,6 @@ typedef QgsSettingsEntryBaseTemplate<QColor> QgsSettingsEntryBaseTemplateQColorB
 class QgsSettingsEntryColor : QgsSettingsEntryBaseTemplateQColorBase
 {
 %Docstring(signature="appended")
-
 A color settings entry.
 
 .. versionadded:: 3.20
@@ -694,7 +687,6 @@ typedef QgsSettingsEntryBaseTemplate<QVariantMap> QgsSettingsEntryBaseTemplateQV
 class QgsSettingsEntryVariantMap : QgsSettingsEntryBaseTemplateQVariantMapBase
 {
 %Docstring(signature="appended")
-
 A string list settings entry.
 
 .. versionadded:: 3.30

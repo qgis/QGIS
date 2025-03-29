@@ -12,7 +12,6 @@
 class QgsLabelPlacementSettings
 {
 %Docstring(signature="appended")
-
 Contains general settings related to how labels are placed.
 
 .. versionadded:: 3.26

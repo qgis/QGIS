@@ -14,7 +14,6 @@
 class QgsPointCloudLayerExporter /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-
 Handles exporting point cloud layers to memory layers, OGR supported files and PDAL supported files.
 
 .. versionadded:: 3.28

@@ -1108,7 +1108,6 @@ Adjusts a marker offset to account for rotation.
 class QgsLineSymbolLayer : QgsSymbolLayer
 {
 %Docstring(signature="appended")
-
 Abstract base class for line symbol layers.
 %End
 

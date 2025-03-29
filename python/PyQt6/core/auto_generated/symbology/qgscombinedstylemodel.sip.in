@@ -12,7 +12,6 @@
 class QgsCombinedStyleModel: QConcatenateTablesProxyModel
 {
 %Docstring(signature="appended")
-
 A model which contains entities from multiple :py:class:`QgsStyle` databases.
 
 .. note::

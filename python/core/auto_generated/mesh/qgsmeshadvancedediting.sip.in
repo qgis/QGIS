@@ -12,7 +12,6 @@
 class QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes /Abstract/
 {
 %Docstring(signature="appended")
-
 Abstract class that can be derived to implement advanced editing on mesh
 
 To apply the advanced editing, a pointer to an instance of a derived class is passed
@@ -67,7 +66,6 @@ Returns a short text string describing what this advanced edit does. Default imp
 class QgsMeshEditRefineFaces : QgsMeshAdvancedEditing
 {
 %Docstring(signature="appended")
-
 Performs refinement of faces of a mesh.
 
 This refinement is operated only on faces with 3 or 4 vertices (triangles or quads) by adding a vertex on the middle of each refined face.
@@ -97,7 +95,6 @@ Neighboring faces are triangulated to take account of the new vertex in the shar
 class QgsMeshTransformVerticesByExpression : QgsMeshAdvancedEditing
 {
 %Docstring(signature="appended")
-
 Transforms vertices of a mesh by expression.
 
 Each coordinates are associated with an expression that can be defined with function

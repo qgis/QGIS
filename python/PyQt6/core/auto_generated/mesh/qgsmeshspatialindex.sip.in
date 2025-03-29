@@ -14,7 +14,6 @@
 class QgsMeshSpatialIndex
 {
 %Docstring(signature="appended")
-
 A spatial index for :py:class:`QgsMeshFace` or :py:class:`QgsMeshEdge` objects.
 
 :py:class:`QgsMeshSpatialIndex` objects are implicitly shared and can be inexpensively copied.

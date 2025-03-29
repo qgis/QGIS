@@ -18,7 +18,6 @@ typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase /NoTypeName/;
 class QgsOptionalExpression : QgsOptionalQgsExpressionBase
 {
 %Docstring(signature="appended")
-
 An expression with an additional enabled flag.
 
 This can be used for configuration options where an expression can be enabled

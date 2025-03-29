@@ -13,7 +13,6 @@
 class QgsTableEditorWidget : QTableWidget
 {
 %Docstring(signature="appended")
-
 A reusable widget for editing simple spreadsheet-style tables.
 
 Table content is retrieved and set using the :py:class:`QgsTableContents` class. The editor
