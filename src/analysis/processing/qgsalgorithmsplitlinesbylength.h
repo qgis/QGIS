@@ -52,6 +52,8 @@ class QgsSplitLinesByLengthAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     QgsFeatureSink::SinkFlags sinkFlags() const override;
+    QgsFields outputFields( const QgsFields &inputFields ) const override;
+
 
   private:
     double mLength = 0.0;
