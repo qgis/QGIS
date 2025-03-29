@@ -99,11 +99,10 @@ void QgsMeshRendererScalarSettingsWidget::setActiveDatasetGroup( int groupIndex 
 QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() const
 {
   QgsMeshRendererScalarSettings settings;
+  settings.setClassificationMinimumMaximum( spinBoxValue( mScalarMinSpinBox ), spinBoxValue( mScalarMaxSpinBox ) );
   settings.setColorRampShader( mScalarColorRampShaderWidget->shader() );
   settings.setOpacity( mOpacityWidget->opacity() );
   settings.setDataResamplingMethod( dataIntepolationMethod() );
-
-  settings.setClassificationMinimumMaximum( spinBoxValue( mScalarMinSpinBox ), spinBoxValue( mScalarMaxSpinBox ) );
 
   settings.setExtent( mMinMaxValueTypeComboBox->currentData().value<Qgis::MeshRangeExtent>() );
 
