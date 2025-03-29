@@ -54,6 +54,9 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
     std::unique_ptr< QgsPointCloudBlock> nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
 
+    //! Returns the raw, encoded, compressed data for a node or empty if missing
+    const QByteArray rawNodeData( QgsPointCloudNodeId n ) const;
+
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
@@ -109,6 +112,8 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
     mutable lazperf::copc_info_vlr mCopcInfoVlr;
     mutable QHash<QgsPointCloudNodeId, QPair<uint64_t, int32_t>> mHierarchyNodePos; //!< Additional data hierarchy for COPC
 
+    mutable QMutex mFileMutex;
+
     QVariantMap mOriginalMetadata;
     mutable std::optional<QgsPointCloudStatistics> mStatistics;
 
@@ -116,7 +121,6 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
 
     friend class QgsPointCloudLayerEditUtils;
     friend class QgsPointCloudEditingIndex;
-    friend class QgsPointCloudLayerUndoCommandChangeAttribute;
 };
 
 ///@endcond

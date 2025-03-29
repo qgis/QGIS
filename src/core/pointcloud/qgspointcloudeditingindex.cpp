@@ -23,6 +23,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QMutex>
 
 
 QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer )
@@ -99,6 +100,7 @@ QString QgsPointCloudEditingIndex::subsetString() const
 
 std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
 {
+  mEditedNodeDataMutex.lock(); // Unlocked in both branches!
   if ( mEditedNodeData.contains( n ) )
   {
     // we need to create a copy of the expression to pass to the decoder
@@ -111,6 +113,7 @@ std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const
     QgsRectangle filterRect = request.filterRect();
 
     QByteArray rawBlockData = mEditedNodeData[n];
+    mEditedNodeDataMutex.unlock();
 
     QgsCopcPointCloudIndex *copcIndex = static_cast<QgsCopcPointCloudIndex *>( mIndex.get() );
 
@@ -120,6 +123,7 @@ std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const
   }
   else
   {
+    mEditedNodeDataMutex.unlock();
     return mIndex.nodeData( n, request );
   }
 }
@@ -130,9 +134,30 @@ QgsPointCloudBlockRequest *QgsPointCloudEditingIndex::asyncNodeData( const QgsPo
   return nullptr;
 }
 
+QgsPointCloudIndex QgsPointCloudEditingIndex::backingIndex() const
+{
+  return mIndex;
+}
+
+const QByteArray QgsPointCloudEditingIndex::rawEditedNodeData( QgsPointCloudNodeId n ) const
+{
+  QMutexLocker locker( &mEditedNodeDataMutex );
+
+  return mEditedNodeData.value( n );
+}
+
+void QgsPointCloudEditingIndex::resetNodeEdits( QgsPointCloudNodeId n )
+{
+  QMutexLocker locker( &mEditedNodeDataMutex );
+
+  mEditedNodeData.remove( n );
+}
+
 bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
 {
-  if ( !isModified() )
+  QMutexLocker locker( &mEditedNodeDataMutex );
+
+  if ( mEditedNodeData.isEmpty() )
     return true;
 
   QHash<QgsPointCloudNodeId, QgsCopcUpdate::UpdatedChunk> updatedChunks;
@@ -192,16 +217,29 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
 
 bool QgsPointCloudEditingIndex::isModified() const
 {
+  QMutexLocker locker( &mEditedNodeDataMutex );
+
   return !mEditedNodeData.isEmpty();
+}
+
+bool QgsPointCloudEditingIndex::isNodeModified( QgsPointCloudNodeId n ) const
+{
+  QMutexLocker locker( &mEditedNodeDataMutex );
+
+  return mEditedNodeData.contains( n );
 }
 
 QList<QgsPointCloudNodeId> QgsPointCloudEditingIndex::updatedNodes() const
 {
+  QMutexLocker locker( &mEditedNodeDataMutex );
+
   return mEditedNodeData.keys();
 }
 
 bool QgsPointCloudEditingIndex::updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data )
 {
+  QMutexLocker locker( &mEditedNodeDataMutex );
+
   for ( auto it = data.constBegin(); it != data.constEnd(); ++it )
   {
     mEditedNodeData[it.key()] = it.value();

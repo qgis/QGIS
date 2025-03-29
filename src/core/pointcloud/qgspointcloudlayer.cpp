@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgseventtracing.h"
 #include "qgspointcloudlayer.h"
 #include "moc_qgspointcloudlayer.cpp"
 #include "qgspointcloudeditingindex.h"
@@ -44,10 +45,6 @@
 #include "qgsthreadingutils.h"
 #include "qgspointcloudlayerprofilegenerator.h"
 #include "qgspointcloudlayerundocommand.h"
-#ifdef HAVE_COPC
-#include "qgscopcpointcloudindex.h"
-#endif
-
 #include "qgsvirtualpointcloudprovider.h"
 
 
@@ -1083,7 +1080,15 @@ bool QgsPointCloudLayer::isModified() const
 
 bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value )
 {
+  return this->changeAttributeValue( { { n, points } }, attribute, value );
+}
+
+bool QgsPointCloudLayer::changeAttributeValue( const QHash<QgsPointCloudNodeId, QVector<int>> &nodesAndPoints, const QgsPointCloudAttribute &attribute, double value )
+{
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QgsEventTracing::ScopedEvent _trace( QStringLiteral( "PointCloud" ), QStringLiteral( "QgsPointCloudLayer::changeAttributeValue" ) );
+
   if ( !mEditIndex )
     return false;
 
@@ -1091,12 +1096,6 @@ bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, con
   if ( attribute.name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 ||
        attribute.name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 ||
        attribute.name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
-    return false;
-
-  if ( !n.isValid() || !mEditIndex.hasNode( n ) ) // todo: should not have to check if n.isValid
-    return false;
-
-  if ( points.isEmpty() )
     return false;
 
   const QgsPointCloudAttributeCollection attributeCollection = mEditIndex.attributes();
@@ -1116,15 +1115,33 @@ bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, con
     return false;
   }
 
-  QVector<int> sortedPoints( points.constBegin(), points.constEnd() );
-  std::sort( sortedPoints.begin(), sortedPoints.end() );
-  sortedPoints.erase( std::unique( sortedPoints.begin(), sortedPoints.end() ), sortedPoints.end() );
+  for ( auto it = nodesAndPoints.constBegin(); it != nodesAndPoints.constEnd(); it++ )
+  {
+    QgsPointCloudNodeId n = it.key();
+    QVector<int> points = it.value();
 
-  if ( sortedPoints.constFirst() < 0 ||
-       sortedPoints.constLast() >= mEditIndex.getNode( n ).pointCount() )
-    return false;
+    if ( !n.isValid() || !mEditIndex.hasNode( n ) ) // todo: should not have to check if n.isValid
+      return false;
 
-  undoStack()->push( new QgsPointCloudLayerUndoCommandChangeAttribute( this, n, sortedPoints, attribute, value ) );
+    if ( points.isEmpty() )
+      continue;
+
+    int pointsMin = std::numeric_limits<int>::max();
+    int pointsMax = std::numeric_limits<int>::min();
+    for ( int pt : std::as_const( points ) )
+    {
+      if ( pt < pointsMin )
+        pointsMin = pt;
+      if ( pt > pointsMax )
+        pointsMax = pt;
+    }
+
+    if ( pointsMin < 0 || pointsMax >= mEditIndex.getNode( n ).pointCount() )
+      return false;
+
+  }
+
+  undoStack()->push( new QgsPointCloudLayerUndoCommandChangeAttribute( this, nodesAndPoints, attribute, value ) );
 
   return true;
 }

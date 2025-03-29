@@ -19,6 +19,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgscoordinatetransform.h"
+#include "qgseventtracing.h"
 #include "qgsgeos.h"
 #include "qgsmultipoint.h"
 #include "qgspointcloud3dsymbol.h"
@@ -30,6 +31,7 @@
 
 #include <QCamera>
 #include <QQueue>
+#include <QtConcurrentMap>
 
 class QgsPointCloudAttribute;
 class QgsMapLayer;
@@ -66,6 +68,7 @@ void Qgs3DMapToolPointCloudChangeAttribute::restart()
 
 void Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue( const QgsGeometry &geometry, const QString &attributeName, const double newValue, Qgs3DMapCanvas &canvas, QgsMapLayer *mapLayer )
 {
+  QgsEventTracing::ScopedEvent _trace( QStringLiteral( "PointCloud" ), QStringLiteral( "Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue" ) );
   QgsGeos preparedPolygon = QgsGeos( geometry.constGet() );
   preparedPolygon.prepareGeometry();
 
@@ -77,17 +80,12 @@ void Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue( const QgsGeome
   const QgsPointCloudAttribute *attribute = pcLayer->attributes().find( attributeName, offset );
 
   pcLayer->undoStack()->beginMacro( QObject::tr( "Change attribute values" ) );
-  for ( auto it = sel.begin(); it != sel.end(); ++it )
-  {
-    pcLayer->changeAttributeValue( it.key(), it.value(), *attribute, newValue );
-  }
+  pcLayer->changeAttributeValue( sel, *attribute, newValue );
   pcLayer->undoStack()->endMacro();
 }
 
 SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointCloudLayer *layer, const QgsGeos &searchPolygon, Qgs3DMapCanvas &canvas )
 {
-  SelectedPoints result;
-
   MapToPixel3D mapToPixel3D;
   mapToPixel3D.VP = canvas.camera()->projectionMatrix() * canvas.camera()->viewMatrix();
   mapToPixel3D.origin = canvas.mapSettings()->origin();
@@ -98,64 +96,82 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
   const double zValueScale = layer->elevationProperties()->zScale();
   const double zValueOffset = layer->elevationProperties()->zOffset();
 
-  QgsPointCloudIndex index = layer->index();
   QVector<QgsPointCloudNodeId> nodes;
-  QQueue<QgsPointCloudNodeId> queue;
-  queue.append( index.root() );
-  while ( !queue.empty() )
   {
-    const QgsPointCloudNode node = index.getNode( queue.constFirst() );
-    queue.removeFirst();
+    QgsEventTracing::ScopedEvent _trace( QStringLiteral( "PointCloud" ), QStringLiteral( "Qgs3DMapToolPointCloudChangeAttribute::searchPoints, looking for affected nodes" ) );
+    QgsPointCloudIndex index = layer->index();
+    QQueue<QgsPointCloudNodeId> queue;
+    queue.append( index.root() );
+    while ( !queue.empty() )
+    {
+      const QgsPointCloudNode node = index.getNode( queue.constFirst() );
+      queue.removeFirst();
 
-    const QgsBox3D bounds = node.bounds();
-    QgsVector3D extentMin3D( bounds.xMinimum(), bounds.yMinimum(), bounds.zMinimum() * zValueScale + zValueOffset );
-    QgsVector3D extentMax3D( bounds.xMaximum(), bounds.yMaximum(), bounds.zMaximum() * zValueScale + zValueOffset );
-    try
-    {
-      extentMin3D = ct.transform( extentMin3D );
-      extentMax3D = ct.transform( extentMax3D );
-    }
-    catch ( QgsCsException & )
-    {
-      QgsDebugError( QStringLiteral( "Error transforming node bounds coordinate" ) );
-      continue;
-    }
-
-    const QgsBox3D box( extentMin3D.x(), extentMin3D.y(), extentMin3D.z(), extentMax3D.x(), extentMax3D.y(), extentMax3D.z() );
-    // check whether the hull intersects the search polygon
-    const QgsGeometry hull = box3DToPolygonInScreenSpace( box, mapToPixel3D );
-    if ( searchPolygon.intersects( hull.constGet() ) )
-    {
-      nodes.append( node.id() );
-      for ( const QgsPointCloudNodeId &child : node.children() )
+      const QgsBox3D bounds = node.bounds();
+      QgsVector3D extentMin3D( bounds.xMinimum(), bounds.yMinimum(), bounds.zMinimum() * zValueScale + zValueOffset );
+      QgsVector3D extentMax3D( bounds.xMaximum(), bounds.yMaximum(), bounds.zMaximum() * zValueScale + zValueOffset );
+      try
       {
-        queue.append( child );
+        extentMin3D = ct.transform( extentMin3D );
+        extentMax3D = ct.transform( extentMax3D );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsDebugError( QStringLiteral( "Error transforming node bounds coordinate" ) );
+        continue;
+      }
+
+      const QgsBox3D box( extentMin3D.x(), extentMin3D.y(), extentMin3D.z(), extentMax3D.x(), extentMax3D.y(), extentMax3D.z() );
+      // check whether the hull intersects the search polygon
+      const QgsGeometry hull = box3DToPolygonInScreenSpace( box, mapToPixel3D );
+      if ( searchPolygon.intersects( hull.constGet() ) )
+      {
+        nodes.append( node.id() );
+        for ( const QgsPointCloudNodeId &child : node.children() )
+        {
+          queue.append( child );
+        }
       }
     }
   }
 
-  for ( const QgsPointCloudNodeId &n : nodes )
-  {
-    const QVector<int> pts = selectedPointsInNode( searchPolygon, n, mapToPixel3D, layer, canvas );
-    if ( !pts.isEmpty() )
-    {
-      result.insert( n, pts );
-    }
-  }
-  return result;
-}
-
-QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const QgsGeos &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudLayer *layer, Qgs3DMapCanvas &canvas )
-{
-  QVector<int> selected;
+  QgsEventTracing::ScopedEvent _trace2( QStringLiteral( "PointCloud" ), QStringLiteral( "Qgs3DMapToolPointCloudChangeAttribute::searchPoints, selecting points" ) );
 
   // Get the map's clipping extent in layer crs and skip if empty. We only need points within this extent.
   const Qgs3DMapSettings *map = canvas.mapSettings();
   const QgsRectangle mapExtent = Qgs3DUtils::tryReprojectExtent2D( map->extent(), map->crs(), layer->crs(), map->transformContext() );
   if ( mapExtent.isEmpty() )
-    return selected;
+    return {};
 
-  QgsPointCloudIndex pcIndex = layer->index();
+  // The bulk of the time of this method is spent here, parallelise it.
+  QgsPointCloudIndex index = layer->index();
+  QgsPointCloudLayerElevationProperties elevationProperties = layer->elevationProperties();
+  QgsAbstract3DRenderer *renderer3D = layer->renderer3D();
+
+  // QtConcurrent requires std::function, bare lambdas lead to compile errors.
+  std::function mapFn =
+    [this, &searchPolygon, &mapToPixel3D, index, &elevationProperties, renderer3D, mapExtent](
+      const QgsPointCloudNodeId &n
+    ) {
+      const QVector<int> pts = selectedPointsInNode( searchPolygon, n, mapToPixel3D, index, mapExtent, elevationProperties, renderer3D );
+      if ( pts.isEmpty() )
+        return SelectedPoints {};
+      else
+        return SelectedPoints { { n, pts } };
+    };
+
+  std::function reduceFn = []( SelectedPoints &result, const SelectedPoints &pts ) {
+    result.insert( pts );
+  };
+
+  SelectedPoints result = QtConcurrent::blockingMappedReduced<SelectedPoints>( nodes, mapFn, reduceFn );
+  return result;
+}
+
+QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const QgsGeos &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudIndex pcIndex, QgsRectangle mapExtent, QgsPointCloudLayerElevationProperties &elevationProperties, QgsAbstract3DRenderer *renderer3D )
+{
+  QVector<int> selected;
+
   QgsPointCloudAttributeCollection attributes;
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
@@ -163,7 +179,7 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
 
   QString categoryAttributeName;
   QSet<int> categoryValues;
-  if ( QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
+  if ( QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( renderer3D ) )
   {
     if ( const QgsClassificationPointCloud3DSymbol *symbol = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( renderer->symbol() ) )
     {
@@ -224,8 +240,8 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
   const QgsPointCloudAttribute *categoryAttribute = const_cast<QgsPointCloudAttribute *>( blockAttributes.find( categoryAttributeName, categoryAttributeOffset ) );
 
   // we should adjust the Z based on the layer's elevation properties scale and offset
-  const double layerZScale = static_cast<const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->zScale();
-  const double layerZOffset = static_cast<const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->zOffset();
+  const double layerZScale = elevationProperties.zScale();
+  const double layerZOffset = elevationProperties.zOffset();
 
   QgsPoint pt;
 
