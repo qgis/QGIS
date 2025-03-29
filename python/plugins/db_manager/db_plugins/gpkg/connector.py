@@ -165,13 +165,20 @@ class GPKGDBConnector(DBConnector):
             if f is None:
                 break
             else:
-                field_vals = [f.GetFID()]
-                if lyr.GetLayerDefn().GetGeomType() != ogr.wkbNone:
-                    geom = f.GetGeometryRef()
-                    if geom is not None:
-                        geom = geom.ExportToWkt()
-                    field_vals += [geom]
-                field_vals += [f.GetField(i) for i in range(f.GetFieldCount())]
+                geom_name = lyr.GetGeometryColumn()
+                fid_name = lyr.GetFIDColumn()
+
+                field_vals = []
+                field_names = [x.name for x in table.fields()]
+                for field_name in field_names:
+                    if fid_name and fid_name == field_name:
+                        field_vals.append(f.GetFID())
+                    elif geom_name and geom_name == field_name:
+                        geom = f.GetGeometryRef()
+                        field_vals.append(geom.ExportToWkt())
+                    else:
+                        field_index = f.GetFieldIndex(field_name)
+                        field_vals.append(f.GetField(field_index))
                 ret.append(field_vals)
         return ret
 
