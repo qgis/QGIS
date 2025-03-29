@@ -169,6 +169,15 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
   , mSymbol( symbol->clone() )
   , mLeafLevel( leafLevel )
 {
+  if ( context.crs().type() == Qgis::CrsType::Geocentric )
+  {
+    // TODO: add support for handling of vector layers
+    // (we're using dummy quadtree here to make sure the empty extent does not break the scene completely)
+    QgsDebugError( QStringLiteral( "Vector layers in globe scenes are not supported yet!" ) );
+    setupQuadtree( QgsBox3D( -1e7, -1e7, -1e7, 1e7, 1e7, 1e7 ), -1, leafLevel );
+    return;
+  }
+
   QgsBox3D rootBox3D( context.extent(), zMin, zMax );
   // add small padding to avoid clipping of point features located at the edge of the bounding box
   rootBox3D.grow( 1.0 );
@@ -308,6 +317,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
         QVector3D nodeIntPoint;
         int triangleIndex = -1;
 
+        // TODO: use also geo transform matrix here???
         if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, transformMatrix, nodeIntPoint, triangleIndex ) )
         {
 #ifdef QGISDEBUG

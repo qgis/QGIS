@@ -41,7 +41,7 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
   QSize size = QSize( mTextureSize );
 
   QgsRectangle clippedExtent = extent;
-  if ( mMap.terrainGenerator()->type() == QgsTerrainGenerator::Flat )
+  if ( mMap.sceneMode() == Qgis::SceneMode::Local && mMap.terrainGenerator()->type() == QgsTerrainGenerator::Flat )
   {
     // The flat terrain generator might have non-square tiles, clipped at the scene's extent.
     // We need to produce non-square textures for those cases.

@@ -50,6 +50,7 @@ class QgsAbstract3DRenderer;
 class QgsMapLayer;
 class Qgs3DMapSettings;
 class QgsTerrainEntity;
+class QgsGlobeEntity;
 class QgsChunkedEntity;
 class QgsSkyboxEntity;
 class QgsSkyboxSettings;
@@ -81,10 +82,19 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     QgsCameraController *cameraController() const { return mCameraController; }
 
     /**
-     * Returns terrain entity (may be temporarily NULLPTR)
+     * Returns terrain entity (may be NULLPTR if using globe scene,
+     * terrain rendering is disabled or when terrain is being rebuilt)
      * \note Not available in Python bindings
      */
     QgsTerrainEntity *terrainEntity() SIP_SKIP { return mTerrain; }
+
+    /**
+     * Returns globe entity (may be NULLPTR if not using globe scene,
+     * terrain rendering is disabled or when globe is being rebuilt)
+     * \note Not available in Python bindings
+     * \since QGIS 3.44
+     */
+    QgsGlobeEntity *globeEntity() SIP_SKIP { return mGlobe; }
 
     //! Resets camera view to show the whole scene (top view)
     void viewZoomFull();
@@ -102,9 +112,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * \since QGIS 3.26
      */
     QVector<QgsPointXY> viewFrustum2DExtent() const;
-
-    //! Returns number of pending jobs of the terrain entity
-    int terrainPendingJobsCount() const;
 
     /**
      * Returns number of pending jobs for all chunked entities
@@ -298,8 +305,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
-    //! Emitted when the number of terrain's pending jobs changes
-    void terrainPendingJobsCountChanged();
 
     /**
      * Emitted when the total number of pending jobs changes
@@ -384,6 +389,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     Qt3DLogic::QFrameAction *mFrameAction = nullptr;
     QgsCameraController *mCameraController = nullptr;
     QgsTerrainEntity *mTerrain = nullptr;
+    QgsGlobeEntity *mGlobe = nullptr;
     QList<Qgs3DMapSceneEntity *> mSceneEntities;
     //! Entity that shows view center - useful for debugging camera issues
     Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;

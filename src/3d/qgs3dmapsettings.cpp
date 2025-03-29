@@ -518,6 +518,16 @@ void Qgs3DMapSettings::setCrs( const QgsCoordinateReferenceSystem &crs )
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   mCrs = crs;
+
+  // for convenience, make sure the navigation mode is consistent with the scene mode
+  if ( sceneMode() == Qgis::SceneMode::Globe && mCameraNavigationMode == Qgis::NavigationMode::TerrainBased )
+  {
+    setCameraNavigationMode( Qgis::NavigationMode::GlobeTerrainBased );
+  }
+  else if ( sceneMode() == Qgis::SceneMode::Local && mCameraNavigationMode == Qgis::NavigationMode::GlobeTerrainBased )
+  {
+    setCameraNavigationMode( Qgis::NavigationMode::TerrainBased );
+  }
 }
 
 QgsCoordinateReferenceSystem Qgs3DMapSettings::crs() const

@@ -103,6 +103,7 @@
       <string>&amp;3D Map Views</string>
      </property>
      <addaction name="mActionNew3DMapCanvas"/>
+     <addaction name="mActionNew3DMapCanvasGlobe"/>
      <addaction name="mActionManage3DMapViews"/>
     </widget>
     <widget class="QMenu" name="mMenuMeasure">
@@ -3379,6 +3380,15 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="text">
     <string>Add Layer from STAC Catalog…</string>
+   </property>
+  </action>
+  <action name="mActionNew3DMapCanvasGlobe">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNew3DMapGlobe.svg</normaloff>:/images/themes/default/mActionNew3DMapGlobe.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New 3D Map View (&amp;Globe)</string>
    </property>
   </action>
  </widget>

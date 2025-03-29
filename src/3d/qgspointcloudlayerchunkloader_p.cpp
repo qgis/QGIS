@@ -148,14 +148,17 @@ QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( cons
 {
   mSymbol.reset( symbol );
 
-  try
+  if ( context.crs().type() != Qgis::CrsType::Geocentric ) // extent is not used for globe
   {
-    mExtent = mCoordinateTransform.transformBoundingBox( mRenderContext.extent(), Qgis::TransformDirection::Reverse );
-  }
-  catch ( const QgsCsException & )
-  {
-    // bad luck, can't reproject for some reason
-    QgsDebugError( QStringLiteral( "Transformation of extent failed." ) );
+    try
+    {
+      mExtent = mCoordinateTransform.transformBoundingBox( mRenderContext.extent(), Qgis::TransformDirection::Reverse );
+    }
+    catch ( const QgsCsException & )
+    {
+      // bad luck, can't reproject for some reason
+      QgsDebugError( QStringLiteral( "Transformation of extent failed." ) );
+    }
   }
 }
 
