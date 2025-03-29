@@ -55,8 +55,8 @@ class QgsLayerTreeViewProxyStyle : public QgsProxyStyle
  * class as their base class (rather than QStyledItemDelegate); this ensures
  * that the status icons are displayed.
  *
- * (Note that to add status icons to a legend layer one should use not subclass
- * this class but rather use QgsLayerTreeView.addIndicator.)
+ * (Note that to add status icons to a legend layer one should not subclass this
+ * class but rather use QgsLayerTreeView.addIndicator.)
  *
  * This class was not exported in earlier versions of QGIS.  To ensure backwards
  * compatibility, plug-in code should test whether QgsLayerTreeViewItemDelegate
