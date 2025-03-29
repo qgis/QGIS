@@ -23,14 +23,17 @@ import os
 from grassprovider.grass_utils import GrassUtils
 from processing.tools.system import getTempFilename
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """Verify if we have the right parameters"""
     if alg.parameterAsString(
         parameters, "inline_points", context
     ) and alg.parameterAsString(parameters, "points", context):
-        return False, alg.tr(
-            "You need to set either an input control point file or inline control points!"
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            "You need to set either an input control point file or inline control points!",
         )
 
     return True, None

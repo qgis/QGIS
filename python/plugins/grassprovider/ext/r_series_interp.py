@@ -21,6 +21,7 @@ __copyright__ = "(C) 2016, Médéric Ribreux"
 
 import os
 from grassprovider.grass_utils import GrassUtils
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
@@ -31,16 +32,18 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     outfile = alg.parameterAsString(parameters, "outfile", context)
 
     if datapos and infile:
-        return False, alg.tr(
-            "You need to set either inline data positions or an input data positions file!"
+        return False, QCoreApplication.translate(
+            "GrassUtils",
+            "You need to set either inline data positions or an input data positions file!",
         )
     if output and outfile:
-        return False, alg.tr(
-            "You need to set either sampling data positions or an output sampling data positions file!"
+        return False, QCoreApplication.translate(
+            "GrassUtils",
+            "You need to set either sampling data positions or an output sampling data positions file!",
         )
     if not (datapos or infile or output or outfile):
-        return False, alg.tr(
-            "You need to set input and output data positions parameters!"
+        return False, QCoreApplication.translate(
+            "GrassUtils", "You need to set input and output data positions parameters!"
         )
     return True, None
 

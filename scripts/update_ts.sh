@@ -60,9 +60,13 @@ else
 	QMAKE=qmake
 fi
 
-if ! type pylupdate5 >/dev/null 2>&1; then
-      echo "pylupdate5 not found"
-      exit 1
+if type pylupdate6 >/dev/null 2>&1; then
+	pylupdate() { pylupdate6 "$@"; }
+elif type pylupdate5 >/dev/null 2>&1; then
+	pylupdate() { pylupdate5 "$@"; }
+elif ! type pylupdate >/dev/null 2>&1; then
+	echo "pylupdate not found"
+	exit 1
 fi
 
 if type lupdate-qt5 >/dev/null 2>&1; then
@@ -160,26 +164,16 @@ if [ -d "$builddir" ]; then
 	(
 		cd python
 		mkdir -p tmp
-		pylupdate5 user.py utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
+		pylupdate user.py utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
 		perl ../scripts/ts2ui.pl python-i18n.ts tmp
 		rm python-i18n.ts
 	)
 	for i in python/plugins/*/CMakeLists.txt; do
 		cd ${i%/*}
-		cat <<EOF >python-i18n.pro
-SOURCES = $(find . -type f -name "*.py" -print | sed -e 's/^/  /' -e 's/$/ \\/')
-
-
-FORMS = $(find . -type f -name "*.ui" -print | sed -e 's/^/  /' -e 's/$/ \\/')
-
-
-TRANSLATIONS = python-i18n.ts
-EOF
-
-		pylupdate5 -tr-function trAlgorithm python-i18n.pro
+		pylupdate $(find . -type f \( -name "*.py" -o -name "*.ui" \) -print) -ts python-i18n.ts
 		mkdir -p tmp
 		perl ../../../scripts/ts2ui.pl python-i18n.ts tmp
-		rm python-i18n.ts python-i18n.pro
+		rm python-i18n.ts
 		cd ../../..
 	done
 
