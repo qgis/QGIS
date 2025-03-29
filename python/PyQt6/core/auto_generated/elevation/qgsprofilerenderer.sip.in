@@ -151,11 +151,6 @@ Renders a portion of the profile using the specified render ``context``.
 
 If ``sourceId`` is empty then all sources will be rendered, otherwise only the matching source will be rendered.
 %End
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 9eb3c37400 (qgsprofilerenderer: Introduce a default symbol for subsections)
     static std::unique_ptr<QgsLineSymbol> defaultSubSectionsSymbol() /Factory/;
 %Docstring
 Returns the default line symbol to use for subsections lines.
