@@ -16,6 +16,7 @@
 #ifndef QGSMAPLAYERLEGEND_H
 #define QGSMAPLAYERLEGEND_H
 
+#include <memory>
 #include <QObject>
 #include "qgis_sip.h"
 
