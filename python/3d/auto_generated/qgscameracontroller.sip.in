@@ -277,6 +277,13 @@ and longitude (in degrees) and distance from that point on ellipsoid
 .. versionadded:: 3.44
 %End
 
+    const QgsVector3D origin() const;
+%Docstring
+Returns the origin of the scene in map coordinates
+
+.. versionadded:: 3.44
+%End
+
   public slots:
 
     void setCameraNavigationMode( Qgis::NavigationMode navigationMode );

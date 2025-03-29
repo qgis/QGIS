@@ -1107,11 +1107,11 @@ QgsRectangle Qgs3DMapScene::sceneExtent() const
   return mMap.extent();
 }
 
-QgsDoubleRange Qgs3DMapScene::elevationRange() const
+QgsDoubleRange Qgs3DMapScene::elevationRange( const bool ignoreTerrain ) const
 {
   double zMin = std::numeric_limits<double>::max();
   double zMax = std::numeric_limits<double>::lowest();
-  if ( mMap.terrainRenderingEnabled() && mTerrain )
+  if ( mMap.terrainRenderingEnabled() && mTerrain && !ignoreTerrain )
   {
     const QgsBox3D box3D = mTerrain->rootNode()->box3D();
     zMin = std::min( zMin, box3D.zMinimum() );
@@ -1222,7 +1222,27 @@ void Qgs3DMapScene::onOriginChanged()
     transform->setOrigin( mMap.origin() );
   }
 
+  const QgsVector3D oldOrigin = mCameraController->origin();
   mCameraController->setOrigin( mMap.origin() );
+
+  if ( !mClipPlanesEquations.isEmpty() )
+  {
+    // how the math works - for a plane defined as (a,b,c,d), only "d" changes when
+    // moving the origin - the plane normal vector (a,b,c) stays the same.
+    // - line equation for old shift: a * (x - x0) + b * (y - y0) + c * (z - z0) + d0 = 0
+    // - line equation for new shift: a * (x - x1) + b * (y - y1) + c * (z - z1) + d1 = 0
+    // - we solve for d1:
+    //     d1 = a * (x1 - x0) + b * (y1 - y0) + c * (z1 - z0) + d0
+
+    QList<QVector4D> newPlanes;
+    QgsVector3D originShift = mMap.origin() - oldOrigin;
+    for ( QVector4D plane : std::as_const( mClipPlanesEquations ) )
+    {
+      plane.setW( originShift.x() * plane.x() + originShift.y() * plane.y() + originShift.z() * plane.z() + plane.w() );
+      newPlanes.append( plane );
+    }
+    enableClipping( newPlanes );
+  }
 }
 
 void Qgs3DMapScene::handleClippingOnEntity( QEntity *entity ) const

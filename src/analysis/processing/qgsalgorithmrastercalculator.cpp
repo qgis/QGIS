@@ -74,6 +74,12 @@ void QgsRasterCalculatorAlgorithm::initAlgorithm( const QVariantMap & )
   auto crsParam = std::make_unique<QgsProcessingParameterCrs>( QStringLiteral( "CRS" ), QObject::tr( "Output CRS" ), QVariant(), true );
   crsParam->setHelp( QObject::tr( "CRS of the output layer. If not specified, the CRS of the first input layer will be used" ) );
   addParameter( crsParam.release() );
+
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( createOptsParam.release() );
+
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Calculated" ) ) );
 }
 
@@ -96,7 +102,6 @@ bool QgsRasterCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
   return true;
 }
-
 
 QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
@@ -166,6 +171,7 @@ QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &p
     cellSize = minCellSize;
   }
 
+  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
   const QString expression = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   const QFileInfo fi( outputFile );
@@ -175,6 +181,7 @@ QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &p
   double height = std::round( ( bbox.yMaximum() - bbox.yMinimum() ) / cellSize );
 
   QgsRasterCalculator calc( expression, outputFile, outputFormat, bbox, crs, width, height, entries, context.transformContext() );
+  calc.setCreateOptions( createOptions.split( '|', Qt::SplitBehaviorFlags::SkipEmptyParts ) );
   QgsRasterCalculator::Result result = calc.processCalculation( feedback );
   qDeleteAll( mLayers );
   mLayers.clear();

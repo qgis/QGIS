@@ -6160,6 +6160,7 @@ void QgisApp::showRasterCalculator()
   {
     //invoke analysis library
     QgsRasterCalculator rc( d.formulaString(), d.outputFile(), d.outputFormat(), d.outputRectangle(), d.outputCrs(), d.numberOfColumns(), d.numberOfRows(), QgsRasterCalculatorEntry::rasterEntries(), QgsProject::instance()->transformContext() );
+    rc.setCreateOptions( d.createOptions() );
 
     QProgressDialog p( tr( "Calculating raster expression…" ), tr( "Abort" ), 0, 0 );
     p.setWindowTitle( tr( "Raster calculator" ) );

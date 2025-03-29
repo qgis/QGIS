@@ -25,9 +25,10 @@
 #include "qgsrasterlayer.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
-#include "cpl_string.h"
 #include "gdal.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
 #include <QFontDatabase>
@@ -43,6 +44,7 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QgsMapCan
   mNRowsSpinBox->setShowClearButton( false );
 
   connect( mRasterBandsListWidget, &QListWidget::itemDoubleClicked, this, &QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked );
+  connect( mOutputFormatComboBox, &QComboBox::currentTextChanged, this, &QgsRasterCalcDialog::mOutputFormatComboBox_currentIndexChanged );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentLayerChanged, this, &QgsRasterCalcDialog::extentLayerChanged );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRasterCalcDialog::mButtonBox_accepted );
   connect( mExpressionTextEdit, &QTextEdit::textChanged, this, &QgsRasterCalcDialog::mExpressionTextEdit_textChanged );
@@ -187,7 +189,6 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalcDialog::rasterEntries() const
   return entries;
 }
 
-
 void QgsRasterCalcDialog::setExtentSize( QgsRasterLayer *layer )
 {
   mNColumnsSpinBox->setValue( layer->width() );
@@ -195,7 +196,6 @@ void QgsRasterCalcDialog::setExtentSize( QgsRasterLayer *layer )
   mExtentGroupBox->setOutputExtentFromLayer( layer );
   mExtentSizeSet = true;
 }
-
 
 void QgsRasterCalcDialog::insertAvailableRasterBands()
 {
@@ -272,6 +272,69 @@ int QgsRasterCalcDialog::numberOfRows() const
   return mNRowsSpinBox->value();
 }
 
+bool QgsRasterCalcDialog::outputLayerExists() const
+{
+  const QString layerName = QFileInfo( mOutputLayer->filePath() ).baseName();
+
+  QString vectorUri;
+  QString rasterUri;
+  if ( outputFormat() == QLatin1String( "GPKG" ) )
+  {
+    rasterUri = QStringLiteral( "GPKG:%1:%2" ).arg( outputFile(), layerName );
+    vectorUri = QStringLiteral( "%1|layername=%2" ).arg( outputFile(), layerName );
+  }
+  else
+  {
+    rasterUri = outputFile();
+  }
+
+  QgsRasterLayer rasterLayer( rasterUri, QString(), QStringLiteral( "gdal" ) );
+  if ( !vectorUri.isEmpty() )
+  {
+    QgsVectorLayer vectorLayer( vectorUri, QString(), QStringLiteral( "ogr" ) );
+    return rasterLayer.isValid() || vectorLayer.isValid();
+  }
+  else
+  {
+    return rasterLayer.isValid();
+  }
+}
+
+QStringList QgsRasterCalcDialog::createOptions() const
+{
+  const QString layerName = QFileInfo( mOutputLayer->filePath() ).baseName();
+
+  QStringList options = mCreateOptionsGroupBox->isChecked() ? mCreateOptionsWidget->options() : QStringList();
+  if ( outputFormat() == QLatin1String( "GPKG" ) )
+  {
+    // Overwrite the GPKG table options
+    int indx = options.indexOf( QRegularExpression( "^RASTER_TABLE=.*", QRegularExpression::CaseInsensitiveOption | QRegularExpression::MultilineOption ) );
+    if ( indx > -1 )
+    {
+      options.replace( indx, QStringLiteral( "RASTER_TABLE=%1" ).arg( layerName ) );
+    }
+    else
+    {
+      options.append( QStringLiteral( "RASTER_TABLE=%1" ).arg( layerName ) );
+    }
+
+    // Only enable the append mode if the layer doesn't exist yet. For existing layers a 'confirm overwrite' dialog will be shown.
+    if ( !outputLayerExists() )
+    {
+      indx = options.indexOf( QRegularExpression( "^APPEND_SUBDATASET=.*", QRegularExpression::CaseInsensitiveOption | QRegularExpression::MultilineOption ) );
+      if ( indx > -1 )
+      {
+        options.replace( indx, QStringLiteral( "APPEND_SUBDATASET=YES" ) );
+      }
+      else
+      {
+        options.append( QStringLiteral( "APPEND_SUBDATASET=YES" ) );
+      }
+    }
+  }
+  return options;
+}
+
 //slots
 
 void QgsRasterCalcDialog::mButtonBox_accepted()
@@ -315,6 +378,12 @@ void QgsRasterCalcDialog::mExpressionTextEdit_textChanged()
     mExpressionValidLabel->setText( tr( "Expression invalid" ) );
   }
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+}
+
+void QgsRasterCalcDialog::mOutputFormatComboBox_currentIndexChanged( const QString & )
+{
+  mCreateOptionsWidget->setFormat( outputFormat() );
+  mCreateOptionsWidget->update();
 }
 
 void QgsRasterCalcDialog::setAcceptButtonState()
