@@ -15,7 +15,6 @@
 class QgsAnnotation : QObject
 {
 %Docstring(signature="appended")
-
 Abstract base class for annotation items which are drawn over a map.
 
 :py:class:`QgsAnnotation` is an abstract base class for map annotation items. These annotations can be

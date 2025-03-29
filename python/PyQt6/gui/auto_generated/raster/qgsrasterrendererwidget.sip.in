@@ -14,7 +14,6 @@
 class QgsRasterRendererWidget : QWidget
 {
 %Docstring(signature="appended")
-
 Abstract base class for widgets which configure a :py:class:`QgsRasterRenderer`.
 %End
 

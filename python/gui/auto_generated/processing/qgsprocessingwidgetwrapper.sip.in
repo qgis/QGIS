@@ -37,7 +37,6 @@ return a pointer to a context which they have already created and own.
 class QgsProcessingParametersGenerator
 {
 %Docstring(signature="appended")
-
 An interface for objects which can create sets of parameter values for processing algorithms.
 
 .. versionadded:: 3.14
@@ -217,7 +216,6 @@ Sets the current active ``layer``.
 class QgsAbstractProcessingParameterWidgetWrapper : QObject, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
-
 A widget wrapper for Processing parameter value widgets.
 
 Widget wrappers are used to create widgets for individual Processing parameters, and
@@ -446,7 +444,6 @@ buttons and property override buttons to correctly show the appropriate vector l
 class QgsProcessingParameterWidgetFactoryInterface
 {
 %Docstring(signature="appended")
-
 An interface for Processing widget wrapper factories.
 
 Widget wrapper factories allow creation of :py:class:`QgsAbstractProcessingParameterWidgetWrapper` objects.
@@ -599,7 +596,6 @@ Returns the default source type to use for the widget for the specified ``parame
 class QgsProcessingHiddenWidgetWrapper : QgsAbstractProcessingParameterWidgetWrapper
 {
 %Docstring(signature="appended")
-
 An widget wrapper for hidden widgets.
 
 The hidden widget wrapper allows for creation of a widget wrapper which does not provide

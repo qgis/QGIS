@@ -14,7 +14,6 @@
 class QgsSingleGeometryCheckError
 {
 %Docstring(signature="appended")
-
 An error from a :py:class:`QgsSingleGeometryCheck`.
 
 .. note::
@@ -81,7 +80,6 @@ The vertex id of the error. May be invalid depending on the check.
 class QgsGeometryCheckErrorSingle : QgsGeometryCheckError
 {
 %Docstring(signature="appended")
-
 Wraps a :py:class:`QgsSingleGeometryError` into a standard :py:class:`QgsGeometryCheckError`.
 The single error can be obtained via singleError.
 
@@ -114,7 +112,6 @@ The underlying single error.
 class QgsSingleGeometryCheck : QgsGeometryCheck
 {
 %Docstring(signature="appended")
-
 Base class for geometry checks for a single geometry without any context of the layer or other layers in the project.
 
 Classic examples are validity checks like self-intersection.

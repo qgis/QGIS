@@ -14,7 +14,6 @@
 class QgsExpressionNode /Abstract/
 {
 %Docstring(signature="appended")
-
 Abstract base class for all nodes that can appear in an expression.
 %End
 

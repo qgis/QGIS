@@ -14,7 +14,6 @@
 class QgsMeshTriangulation : QObject
 {
 %Docstring(signature="appended")
-
 Handles mesh creation with Delaunay constrained triangulation.
 
 .. versionadded:: 3.16
@@ -78,7 +77,6 @@ Sets the coordinate reference system used for the triangulation
 class QgsMeshZValueDatasetGroup : QgsMeshDatasetGroup
 {
 %Docstring(signature="appended")
-
 Convenient class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices
 
 .. versionadded:: 3.16
@@ -116,7 +114,6 @@ Constructor
 class QgsMeshEditingDelaunayTriangulation : QgsMeshAdvancedEditing
 {
 %Docstring(signature="appended")
-
 Can be used with :py:func:`QgsMeshEditor.advancedEdit()` to add triangle faces to a mesh created by
 a Delaunay triangulation on provided existing vertex.
 

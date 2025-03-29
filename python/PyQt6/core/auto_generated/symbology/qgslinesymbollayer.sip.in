@@ -578,7 +578,6 @@ that a double-length dash is drawn running into and out of the corner.
 class QgsTemplatedLineSymbolLayerBase : QgsLineSymbolLayer
 {
 %Docstring(signature="appended")
-
 Base class for templated line symbols, e.g. line symbols which draw markers or hash
 lines at intervals along the line feature.
 
@@ -1084,7 +1083,6 @@ Shall the marker be rotated.
 class QgsHashedLineSymbolLayer : QgsTemplatedLineSymbolLayerBase
 {
 %Docstring(signature="appended")
-
 Line symbol layer type which draws repeating line sections along a line feature.
 
 .. versionadded:: 3.8
@@ -1245,7 +1243,6 @@ Returns the map unit scale for the hash length.
 class QgsAbstractBrushedLineSymbolLayer : QgsLineSymbolLayer
 {
 %Docstring(signature="appended")
-
 Base class for line symbol layer types which draws line sections using a QBrush.
 
 .. versionadded:: 3.24
@@ -1300,7 +1297,6 @@ Renders a polyline of ``points`` using the specified ``brush``.
 class QgsRasterLineSymbolLayer : QgsAbstractBrushedLineSymbolLayer
 {
 %Docstring(signature="appended")
-
 Line symbol layer type which draws line sections using a raster image file.
 
 .. versionadded:: 3.24
@@ -1399,7 +1395,6 @@ Set the line opacity.
 class QgsLineburstSymbolLayer : QgsAbstractBrushedLineSymbolLayer
 {
 %Docstring(signature="appended")
-
 Line symbol layer type which draws a gradient pattern perpendicularly along a line.
 
 See :py:class:`QgsInterpolatedLineSymbolLayer` for a line symbol layer which draws gradients along the length
@@ -1512,7 +1507,6 @@ Sets the color for endpoint of gradient, only used if the gradient color type is
 class QgsFilledLineSymbolLayer : QgsLineSymbolLayer
 {
 %Docstring(signature="appended")
-
 A line symbol layer type which fills a stroked line with a :py:class:`QgsFillSymbol`.
 
 .. versionadded:: 3.36

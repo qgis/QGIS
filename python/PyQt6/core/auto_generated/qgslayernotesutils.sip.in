@@ -12,7 +12,6 @@
 class QgsLayerNotesUtils
 {
 %Docstring(signature="appended")
-
 Contains utility functions for working with layer notes.
 
 .. versionadded:: 3.20

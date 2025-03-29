@@ -10,7 +10,6 @@
 class QgsDirectionalLightWidget : QWidget
 {
 %Docstring(signature="appended")
-
 Widget for direction light settings
 
 The user can choose azimuth and altitude values.

@@ -14,7 +14,6 @@
 class QgsLayerTreeProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-
 A proxy model for :py:class:`QgsLayerTreeModel`, supporting
 private layers and text filtering.
 

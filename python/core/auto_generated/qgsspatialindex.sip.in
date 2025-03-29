@@ -17,7 +17,6 @@
 class QgsSpatialIndex : QgsFeatureSink
 {
 %Docstring(signature="appended")
-
 A spatial index for :py:class:`QgsFeature` objects.
 
 :py:class:`QgsSpatialIndex` objects are implicitly shared and can be inexpensively copied.

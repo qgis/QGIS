@@ -14,7 +14,6 @@
 class QgsPointCloudRenderContext
 {
 %Docstring(signature="appended")
-
 Encapsulates the render context for a 2D point cloud rendering operation.
 
 .. versionadded:: 3.18
@@ -166,7 +165,6 @@ Returns the feedback object used to cancel rendering
 class QgsPointCloudRenderer
 {
 %Docstring(signature="appended")
-
 Abstract base class for 2d point cloud renderers.
 
 .. versionadded:: 3.18

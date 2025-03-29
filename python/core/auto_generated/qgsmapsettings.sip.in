@@ -14,7 +14,6 @@
 class QgsLabelBlockingRegion
 {
 %Docstring(signature="appended")
-
 Label blocking region (in map coordinates and CRS).
 
 .. versionadded:: 3.6

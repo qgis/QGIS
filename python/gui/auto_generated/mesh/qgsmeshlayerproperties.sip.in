@@ -12,7 +12,6 @@
 class QgsMeshLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")
-
 A dialog for configuring mesh layer properties.
 
 Contains information, source and style tabs

@@ -13,7 +13,6 @@
 class QgsRelationAggregateSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring(signature="appended")
-
 Search widget for the children of a relation.
 
 For each attribute of the child, an additional :py:class:`QgsAggregateToolButton` will be shown

@@ -11,7 +11,6 @@
 class QgsFontDownloadDetails
 {
 %Docstring(signature="appended")
-
 Encapsulates details required for downloading a font.
 
 .. versionadded:: 3.38
@@ -74,7 +73,6 @@ Returns the optional URL for downloading the font license details.
 class QgsFontManager : QObject
 {
 %Docstring(signature="appended")
-
 Manages available fonts and font installation for a QGIS instance.
 
 .. note::

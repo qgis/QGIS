@@ -14,7 +14,6 @@
 class QgsProcessingFeatureSourceDefinition
 {
 %Docstring(signature="appended")
-
 Encapsulates settings relating to a feature source input to a processing algorithm.
 %End
 
@@ -106,7 +105,6 @@ You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 class QgsProcessingOutputLayerDefinition
 {
 %Docstring(signature="appended")
-
 Encapsulates settings relating to a feature sink or output raster layer for a processing algorithm.
 %End
 
@@ -206,7 +204,6 @@ You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 class QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
-
 Base class for the definition of processing parameters.
 
 Parameter definitions encapsulate properties regarding the behavior of parameters,
@@ -798,7 +795,6 @@ typedef QList< const QgsProcessingParameterDefinition * > QgsProcessingParameter
 class QgsProcessingParameters
 {
 %Docstring(signature="appended")
-
 A collection of utilities for working with parameters when running a processing algorithm.
 
 Parameters are stored in a QVariantMap and referenced by a unique string key.

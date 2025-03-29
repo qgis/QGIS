@@ -584,7 +584,6 @@ but is still in a perfectly valid state.
 class QgsLayoutViewMenuProvider
 {
 %Docstring(signature="appended")
-
 Interface for a :py:class:`QgsLayoutView` context menu.
 
 Implementations of this interface can be made to allow :py:class:`QgsLayoutView`

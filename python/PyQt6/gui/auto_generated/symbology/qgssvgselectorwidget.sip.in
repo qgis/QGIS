@@ -103,7 +103,6 @@ not block the GUI.
 class QgsSvgSelectorWidget : QWidget
 {
 %Docstring(signature="appended")
-
 A widget allowing selection of an SVG file, and configuration of SVG related parameters.
 %End
 
