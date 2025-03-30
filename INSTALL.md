@@ -1049,7 +1049,7 @@ Install and initialize vcpkg
 Install build tools using [homebrew](https://brew.sh/)
 
 ```sh
-brew install git cmake flex bison automake autoconf libtool nasm ninja
+brew install git cmake flex bison automake autoconf autoconf-archive libtool nasm ninja
 ```
 
 Get the QGIS source code
