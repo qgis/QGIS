@@ -310,14 +310,16 @@ class DoxygenParser:
                     has_brief_description |= bool(text.strip())
 
         class_name = e.find("compoundname").text
-        if re.match(rf"\s*(the )?{class_name}.*", brief_description, re.IGNORECASE):
+        if re.match(
+            rf"\s*((?:the|a) )?{class_name}.*", brief_description, re.IGNORECASE
+        ):
             noncompliant_members.append(
                 {
                     "Brief description": f"Brief {brief_description} is non-compliant.\n\nDon't start a brief class descriptions with 'The MyClassName...' or 'MyClassName is responsible for...'. Use just 'Responsible for...'"
                 }
             )
         if re.match(
-            rf"\s*(?:this class|a class|it|this is|class)\b.*",
+            rf"\s*(?:this class|the class|a class|it|this is|class)\b.*",
             brief_description,
             re.IGNORECASE,
         ):
