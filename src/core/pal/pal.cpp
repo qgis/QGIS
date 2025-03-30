@@ -30,7 +30,6 @@
 #include "qgsgeometry.h"
 #include "pal.h"
 #include "layer.h"
-#include "palexception.h"
 #include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"
