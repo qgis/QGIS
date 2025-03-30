@@ -1,8 +1,4 @@
-
-/**
- * \brief The qgsrasterlayerproperties class is used to set up how raster layers are displayed.
- */
-/* **************************************************************************
+/***************************************************************************
                           qgsrasterlayerproperties.h  -  description
                              -------------------
     begin                : Sun Aug 11 2002
