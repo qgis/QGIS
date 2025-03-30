@@ -59,7 +59,7 @@ namespace QgsRayCastingUtils
 }
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Stores attributes and vertex/index buffers for one terrain tile based on DEM.
  */
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )

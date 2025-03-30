@@ -3,3 +3,7 @@ try:
     QgsFeatureRequest.__attribute_docs__ = {'ALL_ATTRIBUTES': 'A special attribute that if set matches all attributes'}
 except (NameError, AttributeError):
     pass
+try:
+    QgsAbstractFeatureSource.__abstract_methods__ = ['getFeatures']
+except (NameError, AttributeError):
+    pass

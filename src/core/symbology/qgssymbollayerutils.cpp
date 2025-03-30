@@ -1277,7 +1277,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, Qgis::GeometryType
 /////
 
 
-QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr< QgsSymbol > QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const QgsReadWriteContext &context )
 {
   if ( element.isNull() )
     return nullptr;
@@ -1296,7 +1296,8 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
       }
       else
       {
-        if ( QgsSymbolLayer *layer = loadSymbolLayer( e, context ) )
+        std::unique_ptr< QgsSymbolLayer > layer = loadSymbolLayer( e, context );
+        if ( layer )
         {
           // Dealing with sub-symbols nested into a layer
           const QDomElement s = e.firstChildElement( QStringLiteral( "symbol" ) );
@@ -1306,10 +1307,10 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
             // special handling for SVG fill symbol layer -- upgrade the subsymbol which
             // was historically used for the fill stroke to be dedicated symbol layer instead
             // in order to match the behavior of all other fill symbol layer types
-            if ( dynamic_cast< QgsSVGFillSymbolLayer * >( layer ) )
+            if ( dynamic_cast< QgsSVGFillSymbolLayer * >( layer.get() ) )
             {
               // add the SVG fill first
-              layers.append( layer );
+              layers.append( layer.release() );
               // then add the layers from the subsymbol stroke outline on top
               for ( int i = 0; i < subSymbol->symbolLayerCount(); ++i )
               {
@@ -1323,12 +1324,12 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
               {
                 QgsDebugError( QStringLiteral( "symbol layer refused subsymbol: " ) + s.attribute( "name" ) );
               }
-              layers.append( layer );
+              layers.append( layer.release() );
             }
           }
           else
           {
-            layers.append( layer );
+            layers.append( layer.release() );
           }
         }
       }
@@ -1344,13 +1345,13 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
 
   const QString symbolType = element.attribute( QStringLiteral( "type" ) );
 
-  QgsSymbol *symbol = nullptr;
+  std::unique_ptr< QgsSymbol > symbol;
   if ( symbolType == QLatin1String( "line" ) )
-    symbol = new QgsLineSymbol( layers );
+    symbol = std::make_unique< QgsLineSymbol >( layers );
   else if ( symbolType == QLatin1String( "fill" ) )
-    symbol = new QgsFillSymbol( layers );
+    symbol = std::make_unique< QgsFillSymbol >( layers );
   else if ( symbolType == QLatin1String( "marker" ) )
-    symbol = new QgsMarkerSymbol( layers );
+    symbol = std::make_unique< QgsMarkerSymbol >( layers );
   else
   {
     QgsDebugError( "unknown symbol type " + symbolType );
@@ -1403,7 +1404,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
   return symbol;
 }
 
-QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString layerClass = element.attribute( QStringLiteral( "class" ) );
   const bool locked = element.attribute( QStringLiteral( "locked" ) ).toInt();
@@ -1420,8 +1421,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
 
   QgsApplication::symbolLayerRegistry()->resolveFonts( layerClass, props, context );
 
-  QgsSymbolLayer *layer = nullptr;
-  layer = QgsApplication::symbolLayerRegistry()->createSymbolLayer( layerClass, props );
+  std::unique_ptr< QgsSymbolLayer > layer = QgsApplication::symbolLayerRegistry()->createSymbolLayer( layerClass, props );
   if ( layer )
   {
     layer->setLocked( locked );
@@ -1570,8 +1570,6 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
   if ( element.isNull() )
     return false;
 
-  QgsSymbolLayer *l = nullptr;
-
   const QString symbolizerName = element.localName();
 
   if ( symbolizerName == QLatin1String( "PointSymbolizer" ) )
@@ -1587,30 +1585,37 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
       switch ( geomType )
       {
         case Qgis::GeometryType::Polygon:
+        {
           // polygon layer and point symbolizer: draw polygon centroid
-          l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "CentroidFill" ), element );
+          std::unique_ptr< QgsSymbolLayer> l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "CentroidFill" ), element );
           if ( l )
-            layers.append( l );
+            layers.append( l.release() );
 
           break;
+        }
 
         case Qgis::GeometryType::Point:
+        {
           // point layer and point symbolizer: use markers
-          l = createMarkerLayerFromSld( element );
+          std::unique_ptr< QgsSymbolLayer> l( createMarkerLayerFromSld( element ) );
           if ( l )
-            layers.append( l );
+            layers.append( l.release() );
 
           break;
+        }
 
         case Qgis::GeometryType::Line:
+        {
           // line layer and point symbolizer: draw central point
-          l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SimpleMarker" ), element );
+          std::unique_ptr< QgsSymbolLayer> l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SimpleMarker" ), element );
           if ( l )
-            layers.append( l );
+            layers.append( l.release() );
 
           break;
+        }
 
-        default:
+        case Qgis::GeometryType::Unknown:
+        case Qgis::GeometryType::Null:
           break;
       }
     }
@@ -1630,23 +1635,28 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
       {
         case Qgis::GeometryType::Polygon:
         case Qgis::GeometryType::Line:
+        {
           // polygon layer and line symbolizer: draw polygon stroke
           // line layer and line symbolizer: draw line
-          l = createLineLayerFromSld( element );
+          std::unique_ptr< QgsSymbolLayer> l = createLineLayerFromSld( element );
           if ( l )
-            layers.append( l );
+            layers.append( l.release() );
 
           break;
+        }
 
         case Qgis::GeometryType::Point:
+        {
           // point layer and line symbolizer: draw a little line marker
-          l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "MarkerLine" ), element );
+          std::unique_ptr< QgsSymbolLayer> l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "MarkerLine" ), element );
           if ( l )
-            layers.append( l );
+            layers.append( l.release() );
 
           break;
+        }
 
-        default:
+        case Qgis::GeometryType::Unknown:
+        case Qgis::GeometryType::Null:
           break;
       }
     }
@@ -1663,21 +1673,21 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     }
     else
     {
-      QgsSymbolLayer *l = nullptr;
-
       switch ( geomType )
       {
         case Qgis::GeometryType::Polygon:
+        {
           // polygon layer and polygon symbolizer: draw fill
 
-          l = createFillLayerFromSld( element );
+          std::unique_ptr< QgsSymbolLayer > l = createFillLayerFromSld( element );
           if ( l )
           {
-            layers.append( l );
+            QgsSymbolLayer *lastLayer = l.get();
+            layers.append( l.release() );
 
             // SVGFill and SimpleFill symbolLayerV2 supports stroke internally,
             // so don't go forward to create a different symbolLayerV2 for stroke
-            if ( l->layerType() == QLatin1String( "SimpleFill" ) || l->layerType() == QLatin1String( "SVGFill" ) )
+            if ( lastLayer->layerType() == QLatin1String( "SimpleFill" ) || lastLayer->layerType() == QLatin1String( "SVGFill" ) )
               break;
           }
 
@@ -1685,24 +1695,29 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
           // polygon layer and polygon symbolizer: draw polygon stroke
           l = createLineLayerFromSld( element );
           if ( l )
-            layers.append( l );
+            layers.append( l.release() );
 
           break;
+        }
 
         case Qgis::GeometryType::Line:
+        {
           // line layer and polygon symbolizer: draw line
-          l = createLineLayerFromSld( element );
+          std::unique_ptr< QgsSymbolLayer > l = createLineLayerFromSld( element );
           if ( l )
-            layers.append( l );
+            layers.append( l.release() );
 
           break;
+        }
 
         case Qgis::GeometryType::Point:
+        {
           // point layer and polygon symbolizer: draw a square marker
           convertPolygonSymbolizerToPointMarker( element, layers );
           break;
-
-        default:
+        }
+        case Qgis::GeometryType::Unknown:
+        case Qgis::GeometryType::Null:
           break;
       }
     }
@@ -1711,7 +1726,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
   return true;
 }
 
-QgsSymbolLayer *QgsSymbolLayerUtils::createFillLayerFromSld( QDomElement &element )
+std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerUtils::createFillLayerFromSld( QDomElement &element )
 {
   const QDomElement fillElem = element.firstChildElement( QStringLiteral( "Fill" ) );
   if ( fillElem.isNull() )
@@ -1720,7 +1735,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createFillLayerFromSld( QDomElement &elemen
     return nullptr;
   }
 
-  QgsSymbolLayer *l = nullptr;
+  std::unique_ptr< QgsSymbolLayer > l;
 
   if ( needLinePatternFill( element ) )
     l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "LinePatternFill" ), element );
@@ -1736,7 +1751,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createFillLayerFromSld( QDomElement &elemen
   return l;
 }
 
-QgsSymbolLayer *QgsSymbolLayerUtils::createLineLayerFromSld( QDomElement &element )
+std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerUtils::createLineLayerFromSld( QDomElement &element )
 {
   const QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( strokeElem.isNull() )
@@ -1745,7 +1760,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createLineLayerFromSld( QDomElement &elemen
     return nullptr;
   }
 
-  QgsSymbolLayer *l = nullptr;
+  std::unique_ptr< QgsSymbolLayer > l;
 
   if ( needMarkerLine( element ) )
     l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "MarkerLine" ), element );
@@ -1755,7 +1770,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createLineLayerFromSld( QDomElement &elemen
   return l;
 }
 
-QgsSymbolLayer *QgsSymbolLayerUtils::createMarkerLayerFromSld( QDomElement &element )
+std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerUtils::createMarkerLayerFromSld( QDomElement &element )
 {
   const QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )
@@ -1764,7 +1779,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createMarkerLayerFromSld( QDomElement &elem
     return nullptr;
   }
 
-  QgsSymbolLayer *l = nullptr;
+  std::unique_ptr< QgsSymbolLayer > l;
 
   if ( needFontMarker( element ) )
     l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "FontMarker" ), element );
@@ -2046,7 +2061,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
       map[QStringLiteral( "size" )] = QString::number( 6 );
       map[QStringLiteral( "angle" )] = QString::number( 0 );
       map[QStringLiteral( "offset" )] = encodePoint( QPointF( 0, 0 ) );
-      layers.append( QgsApplication::symbolLayerRegistry()->createSymbolLayer( QStringLiteral( "SimpleMarker" ), map ) );
+      layers.append( QgsApplication::symbolLayerRegistry()->createSymbolLayer( QStringLiteral( "SimpleMarker" ), map ).release() );
     }
   }
 
@@ -2227,7 +2242,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
           map[QStringLiteral( "angle" )] = QString::number( angle );
         if ( !offset.isNull() )
           map[QStringLiteral( "offset" )] = encodePoint( offset );
-        layers.append( QgsApplication::symbolLayerRegistry()->createSymbolLayer( QStringLiteral( "SvgMarker" ), map ) );
+        layers.append( QgsApplication::symbolLayerRegistry()->createSymbolLayer( QStringLiteral( "SvgMarker" ), map ).release() );
       }
       else if ( format == QLatin1String( "ttf" ) )
       {
@@ -2241,7 +2256,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
           map[QStringLiteral( "angle" )] = QString::number( angle );
         if ( !offset.isNull() )
           map[QStringLiteral( "offset" )] = encodePoint( offset );
-        layers.append( QgsApplication::symbolLayerRegistry()->createSymbolLayer( QStringLiteral( "FontMarker" ), map ) );
+        layers.append( QgsApplication::symbolLayerRegistry()->createSymbolLayer( QStringLiteral( "FontMarker" ), map ).release() );
       }
     }
   }
@@ -3329,9 +3344,9 @@ QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsRe
   {
     if ( e.tagName() == QLatin1String( "symbol" ) )
     {
-      QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( e, context );
+      std::unique_ptr< QgsSymbol > symbol = QgsSymbolLayerUtils::loadSymbol( e, context );
       if ( symbol )
-        symbols.insert( e.attribute( QStringLiteral( "name" ) ), symbol );
+        symbols.insert( e.attribute( QStringLiteral( "name" ) ), symbol.release() );
     }
     else
     {
@@ -3434,7 +3449,7 @@ QMimeData *QgsSymbolLayerUtils::symbolToMimeData( const QgsSymbol *symbol )
   return mimeData.release();
 }
 
-QgsSymbol *QgsSymbolLayerUtils::symbolFromMimeData( const QMimeData *data )
+std::unique_ptr< QgsSymbol > QgsSymbolLayerUtils::symbolFromMimeData( const QMimeData *data )
 {
   if ( !data )
     return nullptr;
@@ -3459,7 +3474,7 @@ QgsSymbol *QgsSymbolLayerUtils::symbolFromMimeData( const QMimeData *data )
 }
 
 
-QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( QDomElement &element )
+std::unique_ptr< QgsColorRamp > QgsSymbolLayerUtils::loadColorRamp( QDomElement &element )
 {
   const QString rampType = element.attribute( QStringLiteral( "type" ) );
 
@@ -3467,15 +3482,15 @@ QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( QDomElement &element )
   const QVariantMap props = QgsSymbolLayerUtils::parseProperties( element );
 
   if ( rampType == QgsGradientColorRamp::typeString() )
-    return QgsGradientColorRamp::create( props );
+    return std::unique_ptr< QgsColorRamp >( QgsGradientColorRamp::create( props ) );
   else if ( rampType == QgsLimitedRandomColorRamp::typeString() )
-    return QgsLimitedRandomColorRamp::create( props );
+    return std::unique_ptr< QgsColorRamp >( QgsLimitedRandomColorRamp::create( props ) );
   else if ( rampType == QgsColorBrewerColorRamp::typeString() )
-    return QgsColorBrewerColorRamp::create( props );
+    return std::unique_ptr< QgsColorRamp >( QgsColorBrewerColorRamp::create( props ) );
   else if ( rampType == QgsCptCityColorRamp::typeString() )
-    return QgsCptCityColorRamp::create( props );
+    return std::unique_ptr< QgsColorRamp >( QgsCptCityColorRamp::create( props ) );
   else if ( rampType == QgsPresetSchemeColorRamp::typeString() )
-    return QgsPresetSchemeColorRamp::create( props );
+    return std::unique_ptr< QgsColorRamp >( QgsPresetSchemeColorRamp::create( props ) );
   else
   {
     QgsDebugError( "unknown colorramp type " + rampType );
@@ -3484,7 +3499,7 @@ QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( QDomElement &element )
 }
 
 
-QDomElement QgsSymbolLayerUtils::saveColorRamp( const QString &name, QgsColorRamp *ramp, QDomDocument &doc )
+QDomElement QgsSymbolLayerUtils::saveColorRamp( const QString &name, const QgsColorRamp *ramp, QDomDocument &doc )
 {
   QDomElement rampEl = doc.createElement( QStringLiteral( "colorramp" ) );
   rampEl.setAttribute( QStringLiteral( "type" ), ramp->type() );
@@ -3513,7 +3528,7 @@ QVariant QgsSymbolLayerUtils::colorRampToVariant( const QString &name, QgsColorR
   return rampMap;
 }
 
-QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( const QVariant &value )
+std::unique_ptr< QgsColorRamp > QgsSymbolLayerUtils::loadColorRamp( const QVariant &value )
 {
   const QVariantMap rampMap = value.toMap();
 
@@ -3529,15 +3544,15 @@ QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( const QVariant &value )
   }
 
   if ( rampType == QgsGradientColorRamp::typeString() )
-    return QgsGradientColorRamp::create( props );
+    return std::unique_ptr< QgsColorRamp >( QgsGradientColorRamp::create( props ) );
   else if ( rampType == QgsLimitedRandomColorRamp::typeString() )
-    return QgsLimitedRandomColorRamp::create( props );
+    return std::unique_ptr< QgsColorRamp >( QgsLimitedRandomColorRamp::create( props ) );
   else if ( rampType == QgsColorBrewerColorRamp::typeString() )
-    return QgsColorBrewerColorRamp::create( props );
+    return std::unique_ptr< QgsColorRamp >( QgsColorBrewerColorRamp::create( props ) );
   else if ( rampType == QgsCptCityColorRamp::typeString() )
-    return QgsCptCityColorRamp::create( props );
+    return std::unique_ptr< QgsColorRamp >( QgsCptCityColorRamp::create( props ) );
   else if ( rampType == QgsPresetSchemeColorRamp::typeString() )
-    return QgsPresetSchemeColorRamp::create( props );
+    return std::unique_ptr< QgsColorRamp >( QgsPresetSchemeColorRamp::create( props ) );
   else
   {
     QgsDebugError( "unknown colorramp type " + rampType );
@@ -4828,20 +4843,19 @@ void QgsSymbolLayerUtils::appendPolyline( QPolygonF &target, const QPolygonF &li
   }
 }
 
-QgsExpression *QgsSymbolLayerUtils::fieldOrExpressionToExpression( const QString &fieldOrExpression )
+std::unique_ptr< QgsExpression > QgsSymbolLayerUtils::fieldOrExpressionToExpression( const QString &fieldOrExpression )
 {
   if ( fieldOrExpression.isEmpty() )
     return nullptr;
 
-  QgsExpression *expr = new QgsExpression( fieldOrExpression );
+  auto expr = std::make_unique< QgsExpression >( fieldOrExpression );
   if ( !expr->hasParserError() )
     return expr;
 
   // now try with quoted field name
-  delete expr;
-  QgsExpression *expr2 = new QgsExpression( QgsExpression::quotedColumnRef( fieldOrExpression ) );
-  Q_ASSERT( !expr2->hasParserError() );
-  return expr2;
+  expr = std::make_unique< QgsExpression >( QgsExpression::quotedColumnRef( fieldOrExpression ) );
+  Q_ASSERT( !expr->hasParserError() );
+  return expr;
 }
 
 QString QgsSymbolLayerUtils::fieldOrExpressionFromExpression( QgsExpression *expression )

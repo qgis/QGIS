@@ -24,6 +24,7 @@ class QgsFeature;
 /**
  * \ingroup gui
  * \class QgsAttributeFormInterface
+ * \brief Interface class for custom attribute forms.
  */
 class GUI_EXPORT QgsAttributeFormInterface
 {

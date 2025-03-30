@@ -19,6 +19,7 @@ QgsPointCloudLayerExporter.ExportFormat.__doc__ = """Supported export formats fo
 # --
 try:
     QgsPointCloudLayerExporterTask.__attribute_docs__ = {'exportComplete': 'Emitted when exporting the layer is successfully completed.\n'}
+    QgsPointCloudLayerExporterTask.__overridden_methods__ = ['cancel', 'run', 'finished']
     QgsPointCloudLayerExporterTask.__group__ = ['pointcloud']
 except (NameError, AttributeError):
     pass

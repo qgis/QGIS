@@ -677,11 +677,15 @@ void QgsSymbolSelectorWidget::addLayer()
   const QgsProperty ddAngle( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle() : QgsProperty() );
   const QgsProperty ddWidth( parentSymbol->type() == Qgis::SymbolType::Line ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth() : QgsProperty() );
 
-  QgsSymbolLayer *newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() );
-  if ( insertIdx == -1 )
-    parentSymbol->appendSymbolLayer( newLayer );
-  else
-    parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer );
+  QgsSymbolLayer *newLayerPtr = nullptr;
+  {
+    std::unique_ptr< QgsSymbolLayer > newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() );
+    newLayerPtr = newLayer.get();
+    if ( insertIdx == -1 )
+      parentSymbol->appendSymbolLayer( newLayer.release() );
+    else
+      parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer.release() );
+  }
 
   // restore data-defined values at marker level
   if ( ddSize )
@@ -691,7 +695,9 @@ void QgsSymbolSelectorWidget::addLayer()
   if ( ddWidth )
     static_cast<QgsLineSymbol *>( parentSymbol )->setDataDefinedWidth( ddWidth );
 
-  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type(), mVectorLayer, screen() );
+  // TODO -- using newLayerPtr is not safe in some circumstances here. This needs reworking so that SymbolLayerItem does has
+  // its own owned QgsSymbolLayer clone, and isn't reliant on a pointer to the object owned by parentSymbol.
+  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayerPtr, parentSymbol->type(), mVectorLayer, screen() ); // cppcheck-suppress invalidLifetime
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
   item->updatePreview();
 

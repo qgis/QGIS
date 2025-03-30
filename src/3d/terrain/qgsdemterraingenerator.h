@@ -28,7 +28,7 @@ class QgsDemHeightMapGenerator;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Implementation of terrain generator that uses a raster layer with DEM to build terrain.
  *
  * \note Not available in Python bindings

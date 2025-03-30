@@ -108,10 +108,12 @@ QgsCoordinateReferenceSystemProxyModel.Filter.__eq__ = lambda flag1, flag2: _for
 QgsCoordinateReferenceSystemProxyModel.Filter.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsCoordinateReferenceSystemProxyModel.Filter.__or__ = lambda flag1, flag2: QgsCoordinateReferenceSystemProxyModel.Filter(_force_int(flag1) | _force_int(flag2))
 try:
+    QgsCoordinateReferenceSystemModel.__overridden_methods__ = ['flags', 'data', 'headerData', 'rowCount', 'columnCount', 'index', 'parent']
     QgsCoordinateReferenceSystemModel.__group__ = ['proj']
 except (NameError, AttributeError):
     pass
 try:
+    QgsCoordinateReferenceSystemProxyModel.__overridden_methods__ = ['filterAcceptsRow', 'lessThan']
     QgsCoordinateReferenceSystemProxyModel.__group__ = ['proj']
 except (NameError, AttributeError):
     pass

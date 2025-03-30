@@ -41,7 +41,7 @@ QgsAnnotation::QgsAnnotation( QObject *parent )
   props.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
   props.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
   props.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
-  mFillSymbol.reset( QgsFillSymbol::createSimple( props ) );
+  mFillSymbol = QgsFillSymbol::createSimple( props );
 }
 
 QgsAnnotation::~QgsAnnotation() = default;
@@ -360,10 +360,10 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
     const QDomElement symbolElem = annotationElem.firstChildElement( QStringLiteral( "symbol" ) );
     if ( !symbolElem.isNull() )
     {
-      QgsMarkerSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context );
+      std::unique_ptr< QgsMarkerSymbol > symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context );
       if ( symbol )
       {
-        mMarkerSymbol.reset( symbol );
+        mMarkerSymbol = std::move( symbol );
       }
     }
   }
@@ -375,10 +375,10 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
     const QDomElement symbolElem = fillElem.firstChildElement( QStringLiteral( "symbol" ) );
     if ( !symbolElem.isNull() )
     {
-      QgsFillSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context );
+      std::unique_ptr< QgsFillSymbol  >symbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context );
       if ( symbol )
       {
-        mFillSymbol.reset( symbol );
+        mFillSymbol = std::move( symbol );
       }
     }
   }
@@ -400,7 +400,7 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
     props.insert( QStringLiteral( "color_border" ), frameColor.name() );
     props.insert( QStringLiteral( "width_border" ), QString::number( frameBorderWidth ) );
     props.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
-    mFillSymbol.reset( QgsFillSymbol::createSimple( props ) );
+    mFillSymbol = QgsFillSymbol::createSimple( props );
   }
 
   emit mapLayerChanged();

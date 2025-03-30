@@ -27,6 +27,8 @@ import os
 from qgis.core import QgsProcessingException
 from processing.tools.system import getTempFilename
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 def incorporatePoints(
     alg,
@@ -54,7 +56,9 @@ def incorporatePoints(
             lineLayer = alg.exportedLayers[networkLayerName]
         else:
             raise QgsProcessingException(
-                alg.tr("GRASS GIS v.net requires a lines layer!")
+                QCoreApplication.translate(
+                    "GrassAlgorithmExt", "GRASS GIS v.net requires a lines layer!"
+                )
             )
 
         threshold = alg.parameterAsDouble(parameters, "threshold", context)

@@ -4,3 +4,7 @@ QgsTracer.ErrTooManyFeatures = QgsTracer.PathError.ErrTooManyFeatures
 QgsTracer.ErrPoint1 = QgsTracer.PathError.ErrPoint1
 QgsTracer.ErrPoint2 = QgsTracer.PathError.ErrPoint2
 QgsTracer.ErrNoPath = QgsTracer.PathError.ErrNoPath
+try:
+    QgsTracer.__virtual_methods__ = ['configure']
+except (NameError, AttributeError):
+    pass

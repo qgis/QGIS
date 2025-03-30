@@ -28,7 +28,7 @@ class QgsMultiPolygon;
 
 /**
  * \ingroup core
- * \brief Class that takes care of tessellation of polygons into triangles.
+ * \brief Tessellates polygons into triangles.
  *
  * It is expected that client code will create the tessellator object, then repeatedly call
  * addPolygon() method that will generate triangles, and finally call data() to get final vertex data.

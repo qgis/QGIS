@@ -63,5 +63,19 @@ except (NameError, AttributeError):
     pass
 try:
     QgsDiagramRenderer.dpiPaintDevice = staticmethod(QgsDiagramRenderer.dpiPaintDevice)
+    QgsDiagramRenderer.__virtual_methods__ = ['sizeMapUnits', 'referencedFields', 'renderDiagram', 'legendItems']
+    QgsDiagramRenderer.__abstract_methods__ = ['clone', 'rendererName', 'diagramAttributes', 'diagramSettings', 'readXml', 'writeXml', 'diagramSize']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsSingleCategoryDiagramRenderer.__overridden_methods__ = ['clone', 'rendererName', 'diagramAttributes', 'diagramSettings', 'readXml', 'writeXml', 'legendItems', 'diagramSize']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsLinearlyInterpolatedDiagramRenderer.__overridden_methods__ = ['clone', 'diagramSettings', 'diagramAttributes', 'referencedFields', 'rendererName', 'readXml', 'writeXml', 'legendItems', 'diagramSize']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsStackedDiagramRenderer.__overridden_methods__ = ['clone', 'sizeMapUnits', 'renderDiagram', 'diagramSettings', 'diagramAttributes', 'rendererName', 'readXml', 'writeXml', 'legendItems', 'diagramSize']
 except (NameError, AttributeError):
     pass

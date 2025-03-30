@@ -11,3 +11,7 @@ QgsSpatialIndex.Flag.__bool__ = lambda flag: bool(_force_int(flag))
 QgsSpatialIndex.Flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsSpatialIndex.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsSpatialIndex.Flag.__or__ = lambda flag1, flag2: QgsSpatialIndex.Flag(_force_int(flag1) | _force_int(flag2))
+try:
+    QgsSpatialIndex.__overridden_methods__ = ['addFeature', 'addFeatures']
+except (NameError, AttributeError):
+    pass

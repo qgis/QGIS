@@ -10,6 +10,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsSnappingUtils.__attribute_docs__ = {'configChanged': 'Emitted when the snapping settings object changes.\n'}
+    QgsSnappingUtils.__virtual_methods__ = ['prepareIndexStarting', 'prepareIndexProgress']
     QgsSnappingUtils.__signal_arguments__ = {'configChanged': ['snappingConfig: QgsSnappingConfig']}
 except (NameError, AttributeError):
     pass

@@ -13,7 +13,6 @@
 class QgsTextDocumentRenderContext
 {
 %Docstring(signature="appended")
-
 Encapsulates the context in which a text document is to be rendered.
 
 .. warning::
@@ -65,7 +64,6 @@ This is used to control text wrapping, when the :py:class:`Qgis`.TextRendererFla
 class QgsTextDocumentMetrics
 {
 %Docstring(signature="appended")
-
 Contains pre-calculated metrics of a :py:class:`QgsTextDocument`.
 
 .. warning::

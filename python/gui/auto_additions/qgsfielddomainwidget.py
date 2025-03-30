@@ -4,3 +4,7 @@ try:
     QgsFieldDomainWidget.__signal_arguments__ = {'validityChanged': ['isValid: bool']}
 except (NameError, AttributeError):
     pass
+try:
+    QgsFieldDomainDialog.__overridden_methods__ = ['accept']
+except (NameError, AttributeError):
+    pass

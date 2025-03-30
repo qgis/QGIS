@@ -13,7 +13,7 @@
 class QgsSnapIndicator
 {
 %Docstring(signature="appended")
-Class that shows snapping marker on map canvas for the current snapping match.
+Shows a snapping marker on map canvas for the current snapping match.
 %End
 
 %TypeHeaderCode

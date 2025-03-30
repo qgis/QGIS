@@ -11,7 +11,6 @@
 class QgsFillSymbol : QgsSymbol
 {
 %Docstring(signature="appended")
-
 A fill symbol type, for rendering Polygon and MultiPolygon geometries.
 %End
 
@@ -20,7 +19,7 @@ A fill symbol type, for rendering Polygon and MultiPolygon geometries.
 %End
   public:
 
-    static QgsFillSymbol *createSimple( const QVariantMap &properties ) /Factory/;
+    static std::unique_ptr< QgsFillSymbol > createSimple( const QVariantMap &properties );
 %Docstring
 Create a fill symbol with one symbol layer: SimpleFill with specified properties.
 This is a convenience method for easier creation of fill symbols.

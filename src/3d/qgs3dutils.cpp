@@ -1026,3 +1026,135 @@ QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, con
   const QgsPoint mapPoint( mapTransform.x(), mapTransform.y(), mapTransform.z() );
   return mapPoint;
 }
+
+// computes the portion of the Y=y plane the camera is looking at
+void Qgs3DUtils::calculateViewExtent( const Qt3DRender::QCamera *camera, float maxRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ )
+{
+  const QVector3D cameraPos = camera->position();
+  const QMatrix4x4 projectionMatrix = camera->projectionMatrix();
+  const QMatrix4x4 viewMatrix = camera->viewMatrix();
+  float depth = 1.0f;
+  QVector4D viewCenter = viewMatrix * QVector4D( camera->viewCenter(), 1.0f );
+  viewCenter /= viewCenter.w();
+  viewCenter = projectionMatrix * viewCenter;
+  viewCenter /= viewCenter.w();
+  depth = viewCenter.z();
+  QVector<QVector3D> viewFrustumPoints = {
+    QVector3D( 0.0f, 0.0f, depth ),
+    QVector3D( 0.0f, 1.0f, depth ),
+    QVector3D( 1.0f, 0.0f, depth ),
+    QVector3D( 1.0f, 1.0f, depth ),
+    QVector3D( 0.0f, 0.0f, 0 ),
+    QVector3D( 0.0f, 1.0f, 0 ),
+    QVector3D( 1.0f, 0.0f, 0 ),
+    QVector3D( 1.0f, 1.0f, 0 )
+  };
+  maxX = std::numeric_limits<float>::lowest();
+  maxY = std::numeric_limits<float>::lowest();
+  maxZ = std::numeric_limits<float>::lowest();
+  minX = std::numeric_limits<float>::max();
+  minY = std::numeric_limits<float>::max();
+  minZ = std::numeric_limits<float>::max();
+  for ( int i = 0; i < viewFrustumPoints.size(); ++i )
+  {
+    // convert from view port space to world space
+    viewFrustumPoints[i] = viewFrustumPoints[i].unproject( viewMatrix, projectionMatrix, QRect( 0, 0, 1, 1 ) );
+    minX = std::min( minX, viewFrustumPoints[i].x() );
+    maxX = std::max( maxX, viewFrustumPoints[i].x() );
+    minY = std::min( minY, viewFrustumPoints[i].y() );
+    maxY = std::max( maxY, viewFrustumPoints[i].y() );
+    minZ = std::min( minZ, viewFrustumPoints[i].z() );
+    maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
+    // find the intersection between the line going from cameraPos to the frustum quad point
+    // and the horizontal plane Z=z
+    // if the intersection is on the back side of the viewing panel we get a point that is
+    // maxRenderingDistance units in front of the camera
+    const QVector3D pt = cameraPos;
+    const QVector3D vect = ( viewFrustumPoints[i] - pt ).normalized();
+    float t = ( z - pt.z() ) / vect.z();
+    if ( t < 0 )
+      t = maxRenderingDistance;
+    else
+      t = std::min( t, maxRenderingDistance );
+    viewFrustumPoints[i] = pt + t * vect;
+    minX = std::min( minX, viewFrustumPoints[i].x() );
+    maxX = std::max( maxX, viewFrustumPoints[i].x() );
+    minY = std::min( minY, viewFrustumPoints[i].y() );
+    maxY = std::max( maxY, viewFrustumPoints[i].y() );
+    minZ = std::min( minZ, viewFrustumPoints[i].z() );
+    maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
+  }
+}
+
+QList<QVector4D> Qgs3DUtils::lineSegmentToClippingPlanes( const QgsVector3D &startPoint, const QgsVector3D &endPoint, const double distance, const QgsVector3D &origin )
+{
+  // return empty vector if distance is negative
+  if ( distance < 0 )
+    return QList<QVector4D>();
+
+  QgsVector3D lineDirection( endPoint - startPoint );
+  lineDirection.normalize();
+  const QgsVector lineDirection2DPerp = QgsVector( lineDirection.x(), lineDirection.y() ).perpVector();
+  const QgsVector3D linePerp( lineDirection2DPerp.x(), lineDirection2DPerp.y(), 0 );
+
+  QList<QVector4D> clippingPlanes;
+  QgsVector3D planePoint;
+  double originDistance;
+
+  // the naming is assigned according to line direction
+  //! back clip plane
+  planePoint = startPoint;
+  originDistance = QgsVector3D::dotProduct( planePoint - origin, lineDirection );
+  clippingPlanes << QVector4D( static_cast<float>( lineDirection.x() ), static_cast<float>( lineDirection.y() ), 0, static_cast<float>( -originDistance ) );
+
+  //! left clip plane
+  planePoint = startPoint + linePerp * distance;
+  originDistance = QgsVector3D::dotProduct( planePoint - origin, -linePerp );
+  clippingPlanes << QVector4D( static_cast<float>( -linePerp.x() ), static_cast<float>( -linePerp.y() ), 0, static_cast<float>( -originDistance ) );
+
+  //! front clip plane
+  planePoint = endPoint;
+  originDistance = QgsVector3D::dotProduct( planePoint - origin, -lineDirection );
+  clippingPlanes << QVector4D( static_cast<float>( -lineDirection.x() ), static_cast<float>( -lineDirection.y() ), 0, static_cast<float>( -originDistance ) );
+
+  //! right clip plane
+  planePoint = startPoint - linePerp * distance;
+  originDistance = QgsVector3D::dotProduct( planePoint - origin, linePerp );
+  clippingPlanes << QVector4D( static_cast<float>( linePerp.x() ), static_cast<float>( linePerp.y() ), 0, static_cast<float>( -originDistance ) );
+
+  return clippingPlanes;
+}
+
+QgsCameraPose Qgs3DUtils::lineSegmentToCameraPose( const QgsVector3D &startPoint, const QgsVector3D &endPoint, const QgsDoubleRange &elevationRange, const float fieldOfView, const QgsVector3D &worldOrigin )
+{
+  QgsCameraPose cameraPose;
+  // we tilt the view slightly to see flat layers if the elevationRange is infinite (scene has flat terrain, vector layers...)
+  elevationRange.isInfinite() ? cameraPose.setPitchAngle( 89 ) : cameraPose.setPitchAngle( 90 );
+
+  // calculate the middle of the front side defined by clipping planes
+  QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
+  linePerpVec = -linePerpVec.normalized().perpVector();
+  const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
+  QgsVector3D middle( startPoint + ( endPoint - startPoint ) / 2 );
+
+  double elevationRangeHalf;
+  elevationRange.isInfinite() ? elevationRangeHalf = 0 : elevationRangeHalf = ( elevationRange.upper() - elevationRange.lower() ) / 2;
+  const double side = std::max( middle.distance( startPoint ), elevationRangeHalf );
+  const double distance = ( side / std::tan( fieldOfView / 2 * M_PI / 180 ) ) * 1.05;
+  cameraPose.setDistanceFromCenterPoint( static_cast<float>( distance ) );
+
+  elevationRange.isInfinite() ? middle.setZ( 0 ) : middle.setZ( elevationRange.lower() + ( elevationRange.upper() - elevationRange.lower() ) / 2 );
+  cameraPose.setCenterPoint( mapToWorldCoordinates( middle, worldOrigin ) );
+
+  const QgsVector3D northDirectionVec( 0, -1, 0 );
+  // calculate the angle between vector pointing to the north and vector pointing from the front side of clipped area
+  float yawAngle = static_cast<float>( acos( QgsVector3D::dotProduct( linePerpVec3D, northDirectionVec ) ) * 180 / M_PI );
+  // check if the angle between the view point is to the left or right of the scene north, apply angle offset if necessary for camera
+  if ( QgsVector3D::crossProduct( linePerpVec3D, northDirectionVec ).z() > 0 )
+  {
+    yawAngle = 360 - yawAngle;
+  }
+  cameraPose.setHeadingAngle( yawAngle );
+
+  return cameraPose;
+}

@@ -12,11 +12,12 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayerMetadata.Extent.__doc__ = """Metadata extent structure."""
-    QgsLayerMetadata.Extent.__group__ = ['metadata']
+    QgsLayerMetadata.__overridden_methods__ = ['clone', 'readMetadataXml', 'writeMetadataXml', 'combine']
+    QgsLayerMetadata.__group__ = ['metadata']
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayerMetadata.__group__ = ['metadata']
+    QgsLayerMetadata.Extent.__doc__ = """Metadata extent structure."""
+    QgsLayerMetadata.Extent.__group__ = ['metadata']
 except (NameError, AttributeError):
     pass

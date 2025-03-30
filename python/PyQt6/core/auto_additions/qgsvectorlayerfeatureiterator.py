@@ -7,14 +7,17 @@ Created in the :py:func:`~QgsVectorLayerFeatureIterator.select` method of :py:cl
 except (NameError, AttributeError):
     pass
 try:
+    QgsVectorLayerFeatureSource.__overridden_methods__ = ['getFeatures']
     QgsVectorLayerFeatureSource.__group__ = ['vector']
 except (NameError, AttributeError):
     pass
 try:
+    QgsVectorLayerFeatureIterator.__overridden_methods__ = ['rewind', 'close', 'isValid', 'fetchFeature', 'nextFeatureFilterExpression', 'prepareSimplification']
     QgsVectorLayerFeatureIterator.__group__ = ['vector']
 except (NameError, AttributeError):
     pass
 try:
+    QgsVectorLayerSelectedFeatureSource.__overridden_methods__ = ['getFeatures', 'sourceCrs', 'fields', 'wkbType', 'featureCount', 'sourceName', 'createExpressionContextScope', 'hasSpatialIndex']
     QgsVectorLayerSelectedFeatureSource.__group__ = ['vector']
 except (NameError, AttributeError):
     pass

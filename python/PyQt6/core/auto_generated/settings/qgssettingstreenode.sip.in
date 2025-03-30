@@ -13,7 +13,7 @@
 class QgsSettingsTreeNode
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeNode` is a tree node for the settings tree
+A tree node for the settings tree
 to help organizing and introspecting the tree.
 
 It is either a root node, a normal node or
@@ -171,9 +171,10 @@ Registers a child nodes
 class QgsSettingsTreeNamedListNode : QgsSettingsTreeNode
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeNamedListNode` is a named list tree node for the settings tree
+A named list tree node for the settings tree
 to help organizing and introspecting the tree.
-the named list node is used to store a group of settings under a dynamically named key.
+
+The named list node is used to store a group of settings under a dynamically named key.
 
 .. seealso:: :py:class:`QgsSettingsTree`
 

@@ -10,6 +10,9 @@
 
 class QgsSmartGroupCondition : QWidget
 {
+%Docstring(signature="appended")
+A widget for configuring the conditions attached to a style smart group.
+%End
 
 %TypeHeaderCode
 #include "qgssmartgroupeditordialog.h"
@@ -61,6 +64,9 @@ Emitted when the group with the specified ``id`` is removed.
 
 class QgsSmartGroupEditorDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring a style smart group.
+%End
 
 %TypeHeaderCode
 #include "qgssmartgroupeditordialog.h"

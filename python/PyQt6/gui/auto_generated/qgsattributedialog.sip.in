@@ -12,6 +12,9 @@
 
 class QgsAttributeDialog : QDialog, QgsMapLayerActionContextGenerator
 {
+%Docstring(signature="appended")
+An attribute table dialog for a vector layer.
+%End
 
 %TypeHeaderCode
 #include "qgsattributedialog.h"

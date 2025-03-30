@@ -22,8 +22,9 @@
 /**
  * \ingroup analysis
  * \class QgsNetworkSpeedStrategy
- * \brief Strategy for calculating edge cost based on travel time. Should be
- * used for finding fastest path between two points.
+ * \brief Strategy for calculating edge cost based on travel time.
+ *
+ * Should be used for finding fastest path between two points.
  */
 class ANALYSIS_EXPORT QgsNetworkSpeedStrategy : public QgsNetworkStrategy
 {

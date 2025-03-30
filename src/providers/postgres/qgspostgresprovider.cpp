@@ -332,7 +332,7 @@ void QgsPostgresProvider::setListening( bool isListening )
 
   if ( isListening && !mListener )
   {
-    mListener.reset( QgsPostgresListener::create( mUri.connectionInfo( false ) ).release() );
+    mListener = QgsPostgresListener::create( mUri.connectionInfo( false ) );
     connect( mListener.get(), &QgsPostgresListener::notify, this, &QgsPostgresProvider::notify );
   }
   else if ( !isListening && mListener )
@@ -1906,7 +1906,7 @@ bool QgsPostgresProvider::parseEnumRange( QStringList &enumValues, const QString
 {
   enumValues.clear();
 
-  QString enumRangeSql = QStringLiteral( "SELECT enumlabel FROM pg_catalog.pg_enum WHERE enumtypid=(SELECT atttypid::regclass FROM pg_attribute WHERE attrelid=%1::regclass AND attname=%2)" )
+  QString enumRangeSql = QStringLiteral( "SELECT enumlabel FROM pg_catalog.pg_enum WHERE enumtypid=(SELECT atttypid::regclass FROM pg_attribute WHERE attrelid=%1::regclass AND attname=%2) ORDER BY enumsortorder" )
                            .arg( quotedValue( mQuery ), quotedValue( attributeName ) );
   QgsPostgresResult enumRangeRes( connectionRO()->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), enumRangeSql ) );
   if ( enumRangeRes.PQresultStatus() != PGRES_TUPLES_OK )

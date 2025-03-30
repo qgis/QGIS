@@ -11,6 +11,9 @@
 
 class QgsAttributeFormInterface
 {
+%Docstring(signature="appended")
+Interface class for custom attribute forms.
+%End
 
 %TypeHeaderCode
 #include "qgsattributeforminterface.h"

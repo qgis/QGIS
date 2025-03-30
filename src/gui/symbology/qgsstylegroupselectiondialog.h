@@ -28,6 +28,7 @@ class QgsStyle;
 /**
  * \ingroup gui
  * \class QgsStyleGroupSelectionDialog
+ * \brief A dialog which presents available groups from a QgsStyle.
  */
 class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::SymbolsGroupSelectionDialogBase
 {

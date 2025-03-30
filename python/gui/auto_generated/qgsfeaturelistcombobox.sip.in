@@ -56,12 +56,6 @@ The display expression will be used to display features as well as
 the value to match the typed text against.
 %End
 
-    QString filterExpression() const;
-%Docstring
-An additional expression to further restrict the available features.
-This can be used to integrate additional spatial or other constraints.
-%End
-
     int nullIndex() const;
 %Docstring
 Returns the current index of the NULL value, or -1 if NULL values are
@@ -70,10 +64,44 @@ not allowed.
 .. versionadded:: 3.2
 %End
 
+    QString filterExpression() const;
+%Docstring
+An additional expression to further restrict the available features.
+This can be used to integrate additional spatial or other constraints.
+%End
+
     void setFilterExpression( const QString &filterExpression );
 %Docstring
 An additional expression to further restrict the available features.
 This can be used to integrate additional spatial or other constraints.
+%End
+
+    QgsFeature formFeature() const;
+%Docstring
+Returns an attribute form feature to be used with the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    void setFormFeature( const QgsFeature &feature );
+%Docstring
+Sets an attribute form ``feature`` to be used with the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    QgsFeature parentFormFeature() const;
+%Docstring
+Returns a parent attribute form feature to be used with the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    void setParentFormFeature( const QgsFeature &feature );
+%Docstring
+Sets a parent attribute form ``feature`` to be used with the filter expression.
+
+.. versionadded:: 3.42.2
 %End
 
  QVariant identifierValue() const /Deprecated="Since 3.10. "/;
@@ -216,6 +244,20 @@ the the value to match the typed text against.
 %Docstring
 An additional expression to further restrict the available features.
 This can be used to integrate additional spatial or other constraints.
+%End
+
+    void formFeatureChanged();
+%Docstring
+An attribute form feature to be used alongside the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    void parentFormFeatureChanged();
+%Docstring
+A parent attribute form feature to be used alongside the filter expression.
+
+.. versionadded:: 3.42.2
 %End
 
     void identifierValueChanged();

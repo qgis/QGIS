@@ -126,6 +126,11 @@ void Qgs3DMapToolPointCloudChangeAttributePolygon::mouseReleaseEvent( QMouseEven
         mPolygonRubberBand->addPoint( screenEdgePoint );
         mPolygonRubberBand->addPoint( newPoint );
       }
+      else if ( mScreenPoints.size() == 2 )
+      {
+        run();
+        restart();
+      }
     }
   }
   else if ( event->button() == Qt::RightButton )
@@ -169,6 +174,8 @@ void Qgs3DMapToolPointCloudChangeAttributePolygon::run()
 
   if ( mToolType == AboveLine || mToolType == BelowLine )
   {
+    if ( mScreenPoints.size() != 2 )
+      return;
     const double y = mToolType == AboveLine ? 0 : mCanvas->height();
     mScreenPoints.append( { QgsPointXY( mScreenPoints[1].x(), y ), QgsPointXY( mScreenPoints[0].x(), y ) } );
   }

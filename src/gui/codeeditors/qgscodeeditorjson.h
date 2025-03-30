@@ -25,8 +25,9 @@ SIP_IF_MODULE( HAVE_QSCI_SIP )
 
 /**
  * \ingroup gui
- * \brief A JSON editor based on QScintilla2. Adds syntax highlighting and
- * code autocompletion.
+ * \brief A JSON editor based on QScintilla2.
+ *
+ * Adds syntax highlighting and code autocompletion.
  * \since QGIS 3.20
  */
 class GUI_EXPORT QgsCodeEditorJson : public QgsCodeEditor

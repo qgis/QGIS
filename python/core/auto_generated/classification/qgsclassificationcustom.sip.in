@@ -12,8 +12,7 @@
 class QgsClassificationCustom : QgsClassificationMethod
 {
 %Docstring(signature="appended")
-:py:class:`QgsClassificationCustom` is a dummy implementation of :py:class:`QgsClassification`
-which does not compute any break.
+A dummy implementation class method which does not compute any breaks.
 
 .. versionadded:: 3.10
 %End

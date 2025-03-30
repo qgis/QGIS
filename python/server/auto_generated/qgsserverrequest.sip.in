@@ -12,8 +12,7 @@
 class QgsServerRequest
 {
 %Docstring(signature="appended")
-:py:class:`QgsServerRequest`
-Class defining request interface passed to services :py:func:`QgsService.executeRequest()` method
+Defines requests passed to :py:class:`QgsService` classes.
 %End
 
 %TypeHeaderCode

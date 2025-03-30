@@ -17,7 +17,7 @@
 #include "qgsfillsymbollayer.h"
 #include "qgspainteffect.h"
 
-QgsFillSymbol *QgsFillSymbol::createSimple( const QVariantMap &properties )
+std::unique_ptr< QgsFillSymbol > QgsFillSymbol::createSimple( const QVariantMap &properties )
 {
   QgsSymbolLayer *sl = QgsSimpleFillSymbolLayer::create( properties );
   if ( !sl )
@@ -25,7 +25,7 @@ QgsFillSymbol *QgsFillSymbol::createSimple( const QVariantMap &properties )
 
   QgsSymbolLayerList layers;
   layers.append( sl );
-  return new QgsFillSymbol( layers );
+  return std::make_unique< QgsFillSymbol >( layers );
 }
 
 

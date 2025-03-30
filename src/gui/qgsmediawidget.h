@@ -31,7 +31,7 @@ class QSlider;
 
 /**
  * \ingroup gui
- * \brief The QgsMediaWidget class creates a widget for playing back audio and video media files.
+ * \brief A widget for playing back audio and video media files.
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsMediaWidget : public QWidget

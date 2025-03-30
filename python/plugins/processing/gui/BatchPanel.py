@@ -221,16 +221,27 @@ class BatchPanelFillWidget(QToolButton):
         """
         context = dataobjects.createContext()
 
+        isBatchOutputSelection = False
+        temporaryOutput = False
+
         wrapper = self.panel.wrappers[0][self.column]
         if wrapper is None:
             # e.g. double clicking on a destination header
             widget = self.panel.tblParameters.cellWidget(1, self.column)
             value = widget.getValue()
+
+            if isinstance(widget, BatchOutputSelectionPanel):
+                temporaryOutput = widget.isTemporaryOutput()
+                isBatchOutputSelection = True
         else:
             value = wrapper.parameterValue()
 
         for row in range(1, self.panel.batchRowCount()):
             self.setRowValue(row, value, context)
+            if isBatchOutputSelection:
+                widget = self.panel.tblParameters.cellWidget(
+                    row + 1, self.column
+                ).setTemporaryOutput(temporaryOutput)
 
     def setRowValue(self, row, value, context):
         """
@@ -981,7 +992,10 @@ class BatchPanel(QgsPanelWidget, WIDGET):
 
             count_visible_outputs += 1
             widget = self.tblParameters.cellWidget(row + 1, col)
-            text = widget.getValue()
+            if widget.isTemporaryOutput():
+                text = QgsProcessing.TEMPORARY_OUTPUT
+            else:
+                text = widget.getValue()
             if warnOnInvalid:
                 if not out.checkValueIsAcceptable(text):
                     msg = self.tr(
@@ -1007,10 +1021,18 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                     QgsProcessingParameterFeatureSink,
                 ),
             ):
-                # load rasters and sinks on completion
-                parameters[out.name()] = QgsProcessingOutputLayerDefinition(
+                # create output layer definition
+                processing_output_layer_definition = QgsProcessingOutputLayerDefinition(
                     text, destinationProject
                 )
+                # if widget is temporary output set output layer definition name
+                if widget.isTemporaryOutput():
+                    processing_output_layer_definition.destinationName = (
+                        widget.getValue()
+                    )
+
+                # load rasters and sinks on completion
+                parameters[out.name()] = processing_output_layer_definition
             else:
                 parameters[out.name()] = text
 

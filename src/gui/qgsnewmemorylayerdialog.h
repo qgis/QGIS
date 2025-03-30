@@ -29,6 +29,7 @@ class QgsVectorLayer;
 /**
  * \ingroup gui
  * \class QgsNewMemoryLayerDialog
+ * \brief A dialog for configuring the properties of a new memory (scratch) layer.
  */
 class GUI_EXPORT QgsNewMemoryLayerDialog : public QDialog, private Ui::QgsNewMemoryLayerDialogBase
 {

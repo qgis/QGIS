@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/analysis/raster/qgsalignraster.h
 try:
     QgsAlignRaster.suggestedWarpOutput = staticmethod(QgsAlignRaster.suggestedWarpOutput)
+    QgsAlignRaster.__abstract_methods__ = ['progress']
     QgsAlignRaster.__group__ = ['raster']
 except (NameError, AttributeError):
     pass

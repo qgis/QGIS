@@ -1478,7 +1478,7 @@ namespace QgsWms
        * \since QGIS 3.32
        * \deprecated QGIS 3.42. Will always return false starting with 3.42. Only ISO 32000 georeferencing is handled.
        */
-      bool pdfUseOgcBestPracticeFormatGeoreferencing() const;
+      Q_DECL_DEPRECATED bool pdfUseOgcBestPracticeFormatGeoreferencing() const;
 
       /**
        * Returns map themes for geospatial PDF export

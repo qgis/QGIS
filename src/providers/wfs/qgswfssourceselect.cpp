@@ -37,6 +37,7 @@
 #include "qgswfsguiutils.h"
 #include "qgswfssubsetstringeditor.h"
 #include "qgsguiutils.h"
+#include "qgshelp.h"
 
 #include <QDomDocument>
 #include <QListWidgetItem>
@@ -483,8 +484,8 @@ void QgsWFSSourceSelect::connectToServer()
   }
   else
   {
-    mCapabilities.reset( new QgsWfsCapabilities( uri ) );
-    connect( mCapabilities.get(), &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
+    mCapabilities.reset( new QgsWfsGetCapabilitiesRequest( uri ) );
+    connect( mCapabilities.get(), &QgsWfsGetCapabilitiesRequest::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
     const bool synchronous = false;
     const bool forceRefresh = true;
     if ( mVersion == QgsWFSConstants::VERSION_AUTO )

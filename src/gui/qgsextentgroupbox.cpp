@@ -16,6 +16,7 @@
 #include "qgsextentgroupbox.h"
 #include "moc_qgsextentgroupbox.cpp"
 #include "qgsextentwidget.h"
+#include "qgsmaplayer.h"
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
@@ -29,6 +30,7 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   connect( this, &QGroupBox::toggled, this, &QgsExtentGroupBox::groupBoxClicked );
   connect( mWidget, &QgsExtentWidget::extentChanged, this, &QgsExtentGroupBox::widgetExtentChanged );
   connect( mWidget, &QgsExtentWidget::validationChanged, this, &QgsExtentGroupBox::validationChanged );
+  connect( mWidget, &QgsExtentWidget::extentLayerChanged, this, &QgsExtentGroupBox::extentLayerChanged );
 
   connect( mWidget, &QgsExtentWidget::toggleDialogVisibility, this, [=]( bool visible ) {
     QWidget *w = window();

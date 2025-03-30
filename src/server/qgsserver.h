@@ -43,7 +43,7 @@ class QgsProject;
 
 /**
  * \ingroup server
- * \brief The QgsServer class provides OGC web services.
+ * \brief A server which provides OGC web services.
  */
 class SERVER_EXPORT QgsServer
 {

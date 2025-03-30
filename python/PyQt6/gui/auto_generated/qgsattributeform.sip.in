@@ -14,6 +14,9 @@
 
 class QgsAttributeForm : QWidget
 {
+%Docstring(signature="appended")
+The attribute form widget for vector layer features.
+%End
 
 %TypeHeaderCode
 #include "qgsattributeform.h"

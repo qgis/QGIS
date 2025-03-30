@@ -13,6 +13,7 @@ try:
     QgsCircle.calculateSegmentsAdaptive = staticmethod(QgsCircle.calculateSegmentsAdaptive)
     QgsCircle.calculateSegmentsByAreaError = staticmethod(QgsCircle.calculateSegmentsByAreaError)
     QgsCircle.calculateSegmentsByConstant = staticmethod(QgsCircle.calculateSegmentsByConstant)
+    QgsCircle.__overridden_methods__ = ['area', 'perimeter', 'setSemiMajorAxis', 'setSemiMinorAxis', 'boundingBox', 'toString']
     QgsCircle.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

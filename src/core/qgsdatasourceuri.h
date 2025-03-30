@@ -29,7 +29,7 @@
 
 /**
  * \ingroup core
- * \brief Class for storing the component parts of a RDBMS data source URI (e.g. a Postgres data source).
+ * \brief Stores the component parts of a data source URI (e.g. a Postgres data source).
  *
  * This structure stores the database connection information, including host, database,
  * user name, password, schema, password, and SQL where clause.

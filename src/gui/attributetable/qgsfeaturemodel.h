@@ -22,6 +22,7 @@
 /**
  * \ingroup gui
  * \class QgsFeatureModel
+ * \brief Base class for feature models.
  */
 class GUI_EXPORT QgsFeatureModel
 {

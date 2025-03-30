@@ -10,6 +10,9 @@
 
 class QgsBrushStyleComboBox : QComboBox
 {
+%Docstring(signature="appended")
+A combobox which presents choices of Qt.BrushStyle.
+%End
 
 %TypeHeaderCode
 #include "qgsbrushstylecombobox.h"

@@ -88,7 +88,7 @@ class TestQgsDiagram : public QgsTest
       QVariantMap symbolProps;
       symbolProps.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,0" ) );
       symbolProps.insert( QStringLiteral( "outline_style" ), QStringLiteral( "no" ) );
-      QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( symbolProps );
+      QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( symbolProps ).release();
       QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( symbol );
       mPointsLayer->setRenderer( symbolRenderer );
 
@@ -424,7 +424,7 @@ class TestQgsDiagram : public QgsTest
       QVariantMap props;
       props.insert( QStringLiteral( "width" ), QStringLiteral( "2" ) );
       props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) );
-      ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ) );
+      ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ).release() );
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
       dr->setLowerValue( 0.0 );
@@ -621,7 +621,7 @@ class TestQgsDiagram : public QgsTest
       QVariantMap props;
       props.insert( QStringLiteral( "width" ), QStringLiteral( "2" ) );
       props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) );
-      ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ) );
+      ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ).release() );
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
       dr->setLowerValue( 0.0 );
@@ -677,7 +677,7 @@ class TestQgsDiagram : public QgsTest
       QVariantMap props;
       props.insert( QStringLiteral( "width" ), QStringLiteral( "2" ) );
       props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) );
-      ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ) );
+      ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ).release() );
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
       dr->setLowerValue( 0.0 );

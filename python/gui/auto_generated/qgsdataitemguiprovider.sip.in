@@ -12,7 +12,6 @@
 class QgsDataItemGuiContext
 {
 %Docstring(signature="appended")
-
 Encapsulates the context in which a :py:class:`QgsDataItem` is shown within the application GUI.
 
 .. versionadded:: 3.6
@@ -86,7 +85,6 @@ Sets the associated ``view``.
 class QgsDataItemGuiProvider
 {
 %Docstring(signature="appended")
-
 Abstract base class for providers which affect how :py:class:`QgsDataItem` items behave
 within the application GUI.
 

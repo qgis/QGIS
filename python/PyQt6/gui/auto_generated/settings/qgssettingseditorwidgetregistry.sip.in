@@ -13,7 +13,7 @@
 class QgsSettingsEditorWidgetRegistry
 {
 %Docstring(signature="appended")
-This class manages editor widgets for settings
+A registry that manages editor widgets for settings.
 
 .. versionadded:: 3.32
 %End

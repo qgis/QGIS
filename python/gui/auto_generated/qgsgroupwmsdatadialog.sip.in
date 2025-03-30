@@ -10,6 +10,9 @@
 
 class QgsGroupWmsDataDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring a WMS group.
+%End
 
 %TypeHeaderCode
 #include "qgsgroupwmsdatadialog.h"

@@ -14,6 +14,7 @@
 class QgsSettings : QObject
 {
 %Docstring(signature="appended")
+Stores settings for use within QGIS.
 
 This class is a composition of two QSettings instances:
 

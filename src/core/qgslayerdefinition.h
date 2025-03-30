@@ -36,7 +36,7 @@ class QgsProject;
 
 /**
  * \ingroup core
- * \brief The QgsLayerDefinition class holds generic methods for loading/exporting QLR files.
+ * \brief Holds generic methods for loading/exporting QLR files.
  *
  * QLR files are an export of the layer xml including the style and datasource location.  There is no link
  * to the QLR file once loaded.  Consider the QLR file a mini project file for layers and styles.  QLR
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsLayerDefinition
 
     /**
      * \ingroup core
-     * \brief Class used to work with layer dependencies stored in a XML project or layer definition file
+     * \brief Handles sorting of dependencies stored in a XML project or layer definition file.
      */
     class CORE_EXPORT DependencySorter
     {

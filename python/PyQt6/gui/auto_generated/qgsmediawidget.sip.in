@@ -13,7 +13,7 @@
 class QgsMediaWidget : QWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsMediaWidget` class creates a widget for playing back audio and video media files.
+A widget for playing back audio and video media files.
 
 .. versionadded:: 3.30
 %End

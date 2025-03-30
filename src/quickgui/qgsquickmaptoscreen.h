@@ -25,8 +25,9 @@
 /**
  * \ingroup quick
  *
- * \brief The QgsQuickMapToScreen class transform map points to screen coordinates as
- * well as distances from map to screen units. Screen points and/or distances will be
+ * \brief Transform map points to screen coordinates as well as distances from map to screen units.
+ *
+ * Screen points and/or distances will be
  * automatically updated on map extent changes.
  *
  * \since QGIS 3.32

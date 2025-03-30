@@ -16,7 +16,7 @@
 class QgsGpsDetector : QObject
 {
 %Docstring(signature="appended")
-Class to detect the GPS port
+Detect connected GPS device ports.
 %End
 
 %TypeHeaderCode

@@ -1,5 +1,7 @@
 # The following has been generated automatically from src/core/auth/qgsauthconfigurationstoragedb.h
 try:
+    QgsAuthConfigurationStorageDb.__virtual_methods__ = ['methodConfigTableName', 'authSettingsTableName', 'certIdentityTableName', 'certAuthorityTableName', 'sslCertCustomConfigTableName', 'certTrustPolicyTableName', 'masterPasswordTableName', 'tableExists', 'quotedQualifiedIdentifier', 'checkCapabilities']
+    QgsAuthConfigurationStorageDb.__overridden_methods__ = ['name', 'type', 'description', 'id', 'authMethodConfigs', 'authMethodConfigsWithPayload', 'loadMethodConfig', 'storeMethodConfig', 'removeMethodConfig', 'methodConfigExists', 'storeAuthSetting', 'loadAuthSetting', 'removeAuthSetting', 'authSettingExists', 'clearMethodConfigs', 'erase', 'isReady', 'initialize', 'settingsParameters', 'storeCertIdentity', 'removeCertIdentity', 'loadCertIdentity', 'loadCertIdentityBundle', 'certIdentities', 'certIdentityIds', 'certIdentityExists', 'storeSslCertCustomConfig', 'sslCertCustomConfigIds', 'loadSslCertCustomConfig', 'loadSslCertCustomConfigByHost', 'sslCertCustomConfigs', 'sslCertCustomConfigExists', 'removeSslCertCustomConfig', 'storeCertAuthority', 'certAuthorityIds', 'loadCertAuthority', 'certAuthorityExists', 'removeCertAuthority', 'caCertsPolicy', 'caCerts', 'storeCertTrustPolicy', 'loadCertTrustPolicy', 'removeCertTrustPolicy', 'certTrustPolicyExists', 'masterPasswords', 'storeMasterPassword', 'clearMasterPasswords']
     QgsAuthConfigurationStorageDb.__group__ = ['auth']
 except (NameError, AttributeError):
     pass

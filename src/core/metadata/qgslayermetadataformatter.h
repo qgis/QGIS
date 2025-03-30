@@ -27,7 +27,7 @@
 /**
  * \ingroup core
  * \class QgsLayerMetadataFormatter
- * \brief Class for metadata formatter.
+ * \brief Formats layer metadata into HTML.
  */
 class CORE_EXPORT QgsLayerMetadataFormatter
 {

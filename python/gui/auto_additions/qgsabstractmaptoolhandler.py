@@ -6,3 +6,8 @@ try:
 .. versionadded:: 3.16"""
 except (NameError, AttributeError):
     pass
+try:
+    QgsAbstractMapToolHandler.__virtual_methods__ = ['setLayerForTool']
+    QgsAbstractMapToolHandler.__abstract_methods__ = ['isCompatibleWithLayer']
+except (NameError, AttributeError):
+    pass

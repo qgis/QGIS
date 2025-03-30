@@ -51,6 +51,16 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   // Unsure :/
   // mSqlEditor->setLineNumbersVisible( true );
 
+  splitter->setCollapsible( 0, false );
+  splitter->setCollapsible( 1, false );
+  QgsSettings settings;
+  splitter->restoreState( settings.value( QStringLiteral( "Windows/QueryResult/SplitState" ) ).toByteArray() );
+
+  connect( splitter, &QSplitter::splitterMoved, this, [this] {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "Windows/QueryResult/SplitState" ), splitter->saveState() );
+  } );
+
   mToolBar->setIconSize( QgsGuiUtils::iconSize( false ) );
 
   mPresetQueryMenu = new QMenu( this );

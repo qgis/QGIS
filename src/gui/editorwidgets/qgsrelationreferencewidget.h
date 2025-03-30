@@ -53,6 +53,7 @@ class QLabel;
 /**
  * \ingroup gui
  * \class QgsRelationReferenceWidget
+ * \brief A widget which shows related features.
  */
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 {
@@ -199,6 +200,13 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setFormFeature( const QgsFeature &formFeature );
 
     /**
+     * Set the current parent form feature
+     *
+     * \since QGIS 3.42.2
+     */
+    void setParentFormFeature( const QgsFeature &parentFormFeature );
+
+    /**
      * Returns the public data source of the referenced layer
      * \since QGIS 3.12
      */
@@ -315,7 +323,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsMessageBar *mMessageBar = nullptr;
     QVariantList mForeignKeys;
     QgsFeature mFeature;
-    QgsFeature mFormFeature;
     // Index of the referenced layer key
     QStringList mReferencedFields;
     bool mAllowNull = true;

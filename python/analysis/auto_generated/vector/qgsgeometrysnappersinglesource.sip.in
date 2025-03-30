@@ -12,7 +12,6 @@
 class QgsGeometrySnapperSingleSource
 {
 %Docstring(signature="appended")
-
 Makes sure that any two vertices of the vector layer are at least at distance given by the threshold value.
 
 The algorithm moves nearby vertices to one location and adds vertices to segments that are passing around other

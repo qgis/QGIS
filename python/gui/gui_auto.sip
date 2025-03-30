@@ -192,6 +192,7 @@
 %Include auto_generated/qgsrichtexteditor.sip
 %Include auto_generated/qgsrubberband.sip
 %Include auto_generated/qgsscalecombobox.sip
+%Include auto_generated/qgsscalemethodwidget.sip
 %Include auto_generated/qgsscalerangewidget.sip
 %Include auto_generated/qgsscalevisibilitydialog.sip
 %Include auto_generated/qgsscalewidget.sip

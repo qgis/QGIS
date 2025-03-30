@@ -24,7 +24,7 @@
 class QgsRasterLayer;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Terrain settings for a terrain generator that uses a raster DEM layer to build terrain.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is

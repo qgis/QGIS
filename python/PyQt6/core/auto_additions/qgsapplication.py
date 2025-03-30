@@ -148,6 +148,7 @@ try:
     QgsApplication.setCustomVariable = staticmethod(QgsApplication.setCustomVariable)
     QgsApplication.scaleIconSize = staticmethod(QgsApplication.scaleIconSize)
     QgsApplication.setTranslation = staticmethod(QgsApplication.setTranslation)
+    QgsApplication.__overridden_methods__ = ['event', 'notify']
     QgsApplication.__signal_arguments__ = {'requestForTranslatableObjects': ['translationContext: QgsTranslationContext']}
 except (NameError, AttributeError):
     pass

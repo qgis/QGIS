@@ -390,7 +390,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param context object to transform relative to absolute paths
      * \returns decoded symbol, if possible
      */
-    static QgsSymbol *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr< QgsSymbol > loadSymbol( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Attempts to load a symbol from a DOM element and cast it to a particular symbol
@@ -400,25 +400,26 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns decoded symbol cast to specified type, if possible
      * \note not available in Python bindings
      */
-    template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_SKIP
+    template <class SymbolType> static std::unique_ptr< SymbolType > loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_SKIP
     {
-      QgsSymbol *tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element, context );
-      SymbolType *symbolCastToType = dynamic_cast<SymbolType *>( tmpSymbol );
+      std::unique_ptr< QgsSymbol > tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element, context );
+      const bool canCast = dynamic_cast<SymbolType *>( tmpSymbol.get() );
 
-      if ( symbolCastToType )
+      if ( canCast )
       {
-        return symbolCastToType;
+        std::unique_ptr< SymbolType > castRes( static_cast<SymbolType *>( tmpSymbol.release() ) );
+        return castRes;
       }
       else
       {
         //could not cast
-        delete tmpSymbol;
         return nullptr;
       }
     }
 
     //! Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
-    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr< QgsSymbolLayer > loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context );
+
     //! Writes a symbol definition to XML
     static QDomElement saveSymbol( const QString &symbolName, const QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 
@@ -433,9 +434,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static bool createSymbolLayerListFromSld( QDomElement &element, Qgis::GeometryType geomType, QList<QgsSymbolLayer *> &layers );
 
-    static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element ) SIP_FACTORY;
-    static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element ) SIP_FACTORY;
-    static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element ) SIP_FACTORY;
+    /**
+     * Creates a new fill layer from a SLD DOM \a element.
+     */
+    static std::unique_ptr< QgsSymbolLayer > createFillLayerFromSld( QDomElement &element );
+
+    /**
+     * Creates a new line layer from a SLD DOM \a element.
+     */
+    static std::unique_ptr< QgsSymbolLayer > createLineLayerFromSld( QDomElement &element );
+
+    /**
+     * Creates a new marker layer from a SLD DOM \a element.
+     */
+    static std::unique_ptr< QgsSymbolLayer > createMarkerLayerFromSld( QDomElement &element );
 
     /**
      * Converts a polygon symbolizer \a element to a list of marker symbol layers.
@@ -594,7 +606,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * if the data was successfully converted to a symbol.
      * \see symbolToMimeData()
      */
-    static QgsSymbol *symbolFromMimeData( const QMimeData *data ) SIP_FACTORY;
+    static std::unique_ptr< QgsSymbol > symbolFromMimeData( const QMimeData *data );
 
     /**
      * Creates a color ramp from the settings encoded in an XML element
@@ -602,7 +614,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns new color ramp. Caller takes responsibility for deleting the returned value.
      * \see saveColorRamp()
      */
-    static QgsColorRamp *loadColorRamp( QDomElement &element ) SIP_FACTORY;
+    static std::unique_ptr< QgsColorRamp > loadColorRamp( QDomElement &element );
 
     /**
      * Encodes a color ramp's settings to an XML element
@@ -612,7 +624,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns DOM element representing state of color ramp
      * \see loadColorRamp()
      */
-    static QDomElement saveColorRamp( const QString &name, QgsColorRamp *ramp, QDomDocument &doc );
+    static QDomElement saveColorRamp( const QString &name, const QgsColorRamp *ramp, QDomDocument &doc );
 
     /**
      * Saves a color ramp to a QVariantMap, wrapped in a QVariant.
@@ -628,7 +640,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *
      * \see colorRampToVariant()
      */
-    static QgsColorRamp *loadColorRamp( const QVariant &value ) SIP_FACTORY;
+    static std::unique_ptr< QgsColorRamp > loadColorRamp( const QVariant &value );
 
     /**
      * Returns a friendly display name for a color
@@ -840,7 +852,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * If the string is empty, returns NULLPTR.
      * This is useful when accepting input which could be either a non-quoted field name or expression.
      */
-    static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) SIP_FACTORY;
+    static std::unique_ptr< QgsExpression > fieldOrExpressionToExpression( const QString &fieldOrExpression );
 
     /**
      * Returns a field name if the whole expression is just a name of the field .

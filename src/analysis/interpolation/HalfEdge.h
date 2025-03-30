@@ -24,7 +24,7 @@
 /**
  * \ingroup analysis
  * \class HalfEdge
- * \brief HalfEdge
+ * \brief Represents a half edge in a triangulation.
  * \note Not available in Python bindings.
  */
 class ANALYSIS_EXPORT HalfEdge

@@ -21,6 +21,8 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsmapcanvas.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsdatabaseschemacombobox.h"
+#include "qgsproviderregistry.h"
 #include <QPushButton>
 #include <QItemSelectionModel>
 
@@ -43,8 +45,6 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
 
   Q_ASSERT( connection );
 
-  mEditSchema->setReadOnly( true );
-
   mFieldsView->setDestinationEditable( true );
   try
   {
@@ -61,13 +61,21 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
   connect( mDownButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsDown );
 
   const bool supportsSchemas = mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Schemas );
-  if ( !supportsSchemas )
+  if ( supportsSchemas )
+  {
+    std::unique_ptr<QgsAbstractDatabaseProviderConnection> schemeComboConn;
+    QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( mConnection->providerKey() );
+    mSchemaCombo = new QgsDatabaseSchemaComboBox( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnection->uri(), QVariantMap() ) ) );
+    mLayoutSchemeCombo->addWidget( mSchemaCombo );
+  }
+  else
   {
     delete mLabelSchemas;
     mLabelSchemas = nullptr;
-    delete mEditSchema;
-    mEditSchema = nullptr;
+    delete mLayoutSchemeCombo;
+    mLayoutSchemeCombo = nullptr;
   }
+
   const bool supportsPrimaryKeyName = mConnection->tableImportCapabilities().testFlag( Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName );
   if ( !supportsPrimaryKeyName )
   {
@@ -101,14 +109,27 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
   mExtentGroupBox->setCollapsed( true );
 
   mFilterExpressionWidget->registerExpressionContextGenerator( this );
+
+  // populate initial layer
+  sourceLayerComboChanged();
 }
 
-QgsDbImportVectorLayerDialog::~QgsDbImportVectorLayerDialog() = default;
+QgsDbImportVectorLayerDialog::~QgsDbImportVectorLayerDialog()
+{
+  // these widgets all potentially access mOwnedSource, so we need to force
+  // them to be deleted BEFORE the layer
+  delete mSourceLayerComboBox;
+  mSourceLayerComboBox = nullptr;
+  delete mFilterExpressionWidget;
+  mFilterExpressionWidget = nullptr;
+  delete mFieldsView;
+  mFieldsView = nullptr;
+}
 
 void QgsDbImportVectorLayerDialog::setDestinationSchema( const QString &schema )
 {
-  if ( mEditSchema )
-    mEditSchema->setText( schema );
+  if ( mSchemaCombo )
+    mSchemaCombo->setSchema( schema );
 }
 
 void QgsDbImportVectorLayerDialog::setSourceUri( const QgsMimeDataUtils::Uri &uri )
@@ -227,7 +248,7 @@ void QgsDbImportVectorLayerDialog::loadFieldsFromLayer()
 void QgsDbImportVectorLayerDialog::addField()
 {
   const int rowCount = mFieldsView->model()->rowCount();
-  mFieldsView->appendField( QgsField( QStringLiteral( "new_field" ) ) );
+  mFieldsView->appendField( QgsField( QStringLiteral( "new_field" ) ), QStringLiteral( "NULL" ) );
   const QModelIndex index = mFieldsView->model()->index( rowCount, 0 );
   mFieldsView->selectionModel()->select(
     index,
@@ -240,7 +261,7 @@ void QgsDbImportVectorLayerDialog::addField()
 
 QString QgsDbImportVectorLayerDialog::schema() const
 {
-  return mEditSchema ? mEditSchema->text() : QString();
+  return mSchemaCombo ? mSchemaCombo->currentSchema() : QString();
 }
 
 QString QgsDbImportVectorLayerDialog::tableName() const
@@ -279,8 +300,8 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
 
   QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions exporterOptions;
   exporterOptions.layerName = mEditTable->text();
-  if ( mEditSchema )
-    exporterOptions.schema = mEditSchema->text();
+  if ( mSchemaCombo )
+    exporterOptions.schema = mSchemaCombo->currentSchema();
   exporterOptions.wkbType = mSourceLayer->wkbType();
   if ( mEditPrimaryKey && !mEditPrimaryKey->text().trimmed().isEmpty() )
     exporterOptions.primaryKeyColumns << mEditPrimaryKey->text();
@@ -308,6 +329,11 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
   {
     allProviderOptions.insert( QStringLiteral( "overwrite" ), true );
   }
+
+  // This flag tells to the provider that field types do not need conversion -- we have already
+  // explicitly set all fields to provider-specific field types and we do not need to treat
+  // them as generic/different provider fields
+  allProviderOptions.insert( QStringLiteral( "skipConvertFields" ), true );
 
   QgsVectorLayerExporter::ExportOptions exportOptions;
   if ( mCrsSelector )

@@ -13,7 +13,6 @@
 class QgsLayoutEffect : QGraphicsEffect
 {
 %Docstring(signature="appended")
-
 A QGraphicsEffect subclass used for rendering layout items
 onto a scene with custom composition modes.
 

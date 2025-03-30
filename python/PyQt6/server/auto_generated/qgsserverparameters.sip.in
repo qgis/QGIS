@@ -282,7 +282,7 @@ invalid string).
 class QgsServerParameters
 {
 %Docstring(signature="appended")
-:py:class:`QgsServerParameters` provides an interface to retrieve and manipulate global parameters received from the client.
+Provides an interface to retrieve and manipulate global parameters received from the client.
 
 .. versionadded:: 3.4
 %End

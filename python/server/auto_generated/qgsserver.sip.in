@@ -14,7 +14,7 @@
 class QgsServer
 {
 %Docstring(signature="appended")
-The :py:class:`QgsServer` class provides OGC web services.
+A server which provides OGC web services.
 %End
 
 %TypeHeaderCode

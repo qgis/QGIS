@@ -33,6 +33,7 @@ try:
     QgsLayoutExporter.exportToPdfs = staticmethod(QgsLayoutExporter.exportToPdfs)
     QgsLayoutExporter.requiresRasterization = staticmethod(QgsLayoutExporter.requiresRasterization)
     QgsLayoutExporter.containsAdvancedEffects = staticmethod(QgsLayoutExporter.containsAdvancedEffects)
+    QgsLayoutExporter.__virtual_methods__ = ['generateFileName']
     QgsLayoutExporter.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

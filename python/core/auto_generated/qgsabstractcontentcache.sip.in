@@ -74,7 +74,6 @@ properties, such as image size.
 class QgsAbstractContentCacheBase: QObject
 {
 %Docstring(signature="appended")
-
 A QObject derived base class for :py:class:`QgsAbstractContentCache`.
 
 Required because template based class (such as :py:class:`QgsAbstractContentCache`) cannot use the Q_OBJECT macro.

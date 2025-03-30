@@ -480,7 +480,9 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
 /**
  * \ingroup core
  * \class QgsRandomColorRamp
- * \brief Totally random color ramp. Returns colors generated at random, but constrained
+ * \brief A color ramp consisting of random colors, constrained within component ranges.
+ *
+ * Returns colors generated at random, but constrained
  * to some hardcoded saturation and value ranges to prevent ugly color generation.
  */
 class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp

@@ -28,6 +28,8 @@ class QgsMeshLayer;
 /**
  * \ingroup gui
  * \class QgsMeshDatasetGroupTreeWidget
+ *
+ * \brief A widget for configuring dataset groups attached to a QgsMeshLayer.
  */
 class GUI_EXPORT QgsMeshDatasetGroupTreeWidget : public QWidget, private Ui::QgsMeshDatasetGroupTreeWidgetBase
 {

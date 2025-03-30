@@ -411,7 +411,7 @@ bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument 
   QDomElement pageStyleSymbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !pageStyleSymbolElem.isNull() )
   {
-    mPageStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( pageStyleSymbolElem, context ) );
+    mPageStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( pageStyleSymbolElem, context );
   }
 
   QDomNodeList pageList = element.elementsByTagName( QStringLiteral( "LayoutItem" ) );
@@ -764,6 +764,6 @@ void QgsLayoutPageCollection::createDefaultPageStyleSymbol()
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
-  mPageStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+  mPageStyleSymbol = QgsFillSymbol::createSimple( properties );
 }
 

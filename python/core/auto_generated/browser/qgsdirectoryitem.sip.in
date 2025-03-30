@@ -201,7 +201,6 @@ This is a persistent setting, which is saved in QSettings.
 class QgsDirectoryParamWidget : QTreeWidget
 {
 %Docstring(signature="appended")
-
 Browser parameter widget implementation for directory items.
 %End
 

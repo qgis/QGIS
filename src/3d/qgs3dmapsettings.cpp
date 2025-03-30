@@ -155,6 +155,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
       mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     else if ( cameraNavigationMode == QLatin1String( "walk-navigation" ) )
       mCameraNavigationMode = Qgis::NavigationMode::Walk;
+    else if ( cameraNavigationMode == QLatin1String( "globe-terrain-based-navigation" ) )
+      mCameraNavigationMode = Qgis::NavigationMode::GlobeTerrainBased;
     mCameraMovementSpeed = elemCamera.attribute( QStringLiteral( "camera-movement-speed" ), QStringLiteral( "5.0" ) ).toDouble();
   }
 
@@ -324,6 +326,9 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
       break;
     case Qgis::NavigationMode::Walk:
       elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "walk-navigation" ) );
+      break;
+    case Qgis::NavigationMode::GlobeTerrainBased:
+      elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "globe-terrain-based-navigation" ) );
       break;
   }
   elemCamera.setAttribute( QStringLiteral( "camera-movement-speed" ), mCameraMovementSpeed );
@@ -520,6 +525,13 @@ QgsCoordinateReferenceSystem Qgs3DMapSettings::crs() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mCrs;
+}
+
+Qgis::SceneMode Qgs3DMapSettings::sceneMode() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mCrs.type() == Qgis::CrsType::Geocentric ? Qgis::SceneMode::Globe : Qgis::SceneMode::Local;
 }
 
 QgsCoordinateTransformContext Qgs3DMapSettings::transformContext() const

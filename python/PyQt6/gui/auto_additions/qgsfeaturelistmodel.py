@@ -8,6 +8,8 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsFeatureListModel.__virtual_methods__ = ['setSourceModel', 'mapToMaster', 'mapFromMaster', 'mapSelectionFromMaster', 'mapSelectionToMaster']
+    QgsFeatureListModel.__overridden_methods__ = ['data', 'flags', 'mapToSource', 'mapFromSource', 'parent', 'columnCount', 'rowCount', 'fidToIndex']
     QgsFeatureListModel.__group__ = ['attributetable']
 except (NameError, AttributeError):
     pass

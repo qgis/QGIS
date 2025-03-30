@@ -11,6 +11,9 @@
 
 class QgsNewVectorLayerDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring the properties of a new vector layer.
+%End
 
 %TypeHeaderCode
 #include "qgsnewvectorlayerdialog.h"

@@ -131,8 +131,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsRasterLayerProperties::mCrsSelector_crsChanged );
   connect( mRenderTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterLayerProperties::mRenderTypeComboBox_currentIndexChanged );
   connect( mResetColorRenderingBtn, &QToolButton::clicked, this, &QgsRasterLayerProperties::mResetColorRenderingBtn_clicked );
-  connect( buttonRemoveMetadataUrl, &QPushButton::clicked, this, &QgsRasterLayerProperties::removeSelectedMetadataUrl );
-  connect( buttonAddMetadataUrl, &QPushButton::clicked, this, &QgsRasterLayerProperties::addMetadataUrl );
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
@@ -189,26 +187,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   connect( lbxPyramidResolutions, &QListWidget::itemSelectionChanged, this, &QgsRasterLayerProperties::toggleBuildPyramidsButton );
 
   mRefreshSettingsWidget->setLayer( mRasterLayer );
+  mMapLayerServerPropertiesWidget->setHasWfsTitle( false );
+  mMapLayerServerPropertiesWidget->setServerProperties( mRasterLayer->serverProperties() );
 
   // set up the scale based layer visibility stuff....
   mScaleRangeWidget->setMapCanvas( mCanvas );
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
   mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
-
-  // Setup the layer metadata URL
-  tableViewMetadataUrl->setSelectionMode( QAbstractItemView::SingleSelection );
-  tableViewMetadataUrl->setSelectionBehavior( QAbstractItemView::SelectRows );
-  tableViewMetadataUrl->horizontalHeader()->setStretchLastSection( true );
-  tableViewMetadataUrl->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
-
-  mMetadataUrlModel = new QStandardItemModel( tableViewMetadataUrl );
-  mMetadataUrlModel->clear();
-  mMetadataUrlModel->setColumnCount( 3 );
-  QStringList metadataUrlHeaders;
-  metadataUrlHeaders << tr( "URL" ) << tr( "Type" ) << tr( "Format" );
-  mMetadataUrlModel->setHorizontalHeaderLabels( metadataUrlHeaders );
-  tableViewMetadataUrl->setModel( mMetadataUrlModel );
-  tableViewMetadataUrl->setItemDelegate( new MetadataUrlItemDelegate( this ) );
 
   // build GUI components
   QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.svg" ) );
@@ -820,6 +805,7 @@ void QgsRasterLayerProperties::sync()
   mResamplingUtils.refreshWidgetsFromLayer();
 
   mRefreshSettingsWidget->syncToLayer();
+  mMapLayerServerPropertiesWidget->sync();
 
   QgsDebugMsgLevel( QStringLiteral( "populate general tab" ), 3 );
   /*
@@ -834,41 +820,6 @@ void QgsRasterLayerProperties::sync()
    */
   //populate the metadata tab's text browser widget with gdal metadata info
   updateInformationContent();
-
-  // WMS Name as layer short name
-  mLayerShortNameLineEdit->setText( mRasterLayer->serverProperties()->shortName() );
-  // WMS Name validator
-  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
-  mLayerShortNameLineEdit->setValidator( shortNameValidator );
-
-  //layer title and abstract
-  mLayerTitleLineEdit->setText( mRasterLayer->serverProperties()->title() );
-  mLayerAbstractTextEdit->setPlainText( mRasterLayer->serverProperties()->abstract() );
-  mLayerKeywordListLineEdit->setText( mRasterLayer->serverProperties()->keywordList() );
-  mLayerDataUrlLineEdit->setText( mRasterLayer->serverProperties()->dataUrl() );
-  mLayerDataUrlFormatComboBox->setCurrentIndex(
-    mLayerDataUrlFormatComboBox->findText(
-      mRasterLayer->serverProperties()->dataUrlFormat()
-    )
-  );
-
-  //layer attribution
-  mLayerAttributionLineEdit->setText( mRasterLayer->serverProperties()->attribution() );
-  mLayerAttributionUrlLineEdit->setText( mRasterLayer->serverProperties()->attributionUrl() );
-
-  // layer metadata url
-  const QList<QgsMapLayerServerProperties::MetadataUrl> &metaUrls = mRasterLayer->serverProperties()->metadataUrls();
-  for ( const QgsMapLayerServerProperties::MetadataUrl &metaUrl : metaUrls )
-  {
-    const int row = mMetadataUrlModel->rowCount();
-    mMetadataUrlModel->setItem( row, 0, new QStandardItem( metaUrl.url ) );
-    mMetadataUrlModel->setItem( row, 1, new QStandardItem( metaUrl.type ) );
-    mMetadataUrlModel->setItem( row, 2, new QStandardItem( metaUrl.format ) );
-  }
-
-  // layer legend url
-  mLayerLegendUrlLineEdit->setText( mRasterLayer->serverProperties()->legendUrl() );
-  mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->serverProperties()->legendUrlFormat() ) );
 
   mEnableMapTips->setChecked( mRasterLayer->mapTipsEnabled() );
   mMapTipWidget->setText( mRasterLayer->mapTipTemplate() );
@@ -985,6 +936,8 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 
   mRefreshSettingsWidget->saveToLayer();
+  if ( mMapLayerServerPropertiesWidget->save() )
+    mMetadataFilled = true;
 
   //update the legend pixmap
   // pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
@@ -1012,60 +965,6 @@ void QgsRasterLayerProperties::apply()
   mTemporalWidget->saveTemporalProperties();
 
   mRasterLayer->setCrs( mCrsSelector->crs() );
-
-  if ( mRasterLayer->serverProperties()->shortName() != mLayerShortNameLineEdit->text() )
-    mMetadataFilled = false;
-  mRasterLayer->serverProperties()->setShortName( mLayerShortNameLineEdit->text() );
-
-  if ( mRasterLayer->serverProperties()->title() != mLayerTitleLineEdit->text() )
-    mMetadataFilled = false;
-  mRasterLayer->serverProperties()->setTitle( mLayerTitleLineEdit->text() );
-
-  if ( mRasterLayer->serverProperties()->abstract() != mLayerAbstractTextEdit->toPlainText() )
-    mMetadataFilled = false;
-  mRasterLayer->serverProperties()->setAbstract( mLayerAbstractTextEdit->toPlainText() );
-
-  if ( mRasterLayer->serverProperties()->keywordList() != mLayerKeywordListLineEdit->text() )
-    mMetadataFilled = false;
-  mRasterLayer->serverProperties()->setKeywordList( mLayerKeywordListLineEdit->text() );
-
-  if ( mRasterLayer->serverProperties()->dataUrl() != mLayerDataUrlLineEdit->text() )
-    mMetadataFilled = false;
-  mRasterLayer->serverProperties()->setDataUrl( mLayerDataUrlLineEdit->text() );
-
-  if ( mRasterLayer->serverProperties()->dataUrlFormat() != mLayerDataUrlFormatComboBox->currentText() )
-    mMetadataFilled = false;
-  mRasterLayer->serverProperties()->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
-
-  //layer attribution
-  if ( mRasterLayer->serverProperties()->attribution() != mLayerAttributionLineEdit->text() )
-    mMetadataFilled = false;
-  mRasterLayer->serverProperties()->setAttribution( mLayerAttributionLineEdit->text() );
-
-  if ( mRasterLayer->serverProperties()->attributionUrl() != mLayerAttributionUrlLineEdit->text() )
-    mMetadataFilled = false;
-  mRasterLayer->serverProperties()->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
-
-  // Metadata URL
-  QList<QgsMapLayerServerProperties::MetadataUrl> metaUrls;
-  for ( int row = 0; row < mMetadataUrlModel->rowCount(); row++ )
-  {
-    QgsMapLayerServerProperties::MetadataUrl metaUrl;
-    metaUrl.url = mMetadataUrlModel->item( row, 0 )->text();
-    metaUrl.type = mMetadataUrlModel->item( row, 1 )->text();
-    metaUrl.format = mMetadataUrlModel->item( row, 2 )->text();
-    metaUrls.append( metaUrl );
-    mMetadataFilled = false;
-  }
-  mRasterLayer->serverProperties()->setMetadataUrls( metaUrls );
-
-  if ( mRasterLayer->serverProperties()->legendUrl() != mLayerLegendUrlLineEdit->text() )
-    mMetadataFilled = false;
-  mRasterLayer->serverProperties()->setLegendUrl( mLayerLegendUrlLineEdit->text() );
-
-  if ( mRasterLayer->serverProperties()->legendUrlFormat() != mLayerLegendUrlFormatComboBox->currentText() )
-    mMetadataFilled = false;
-  mRasterLayer->serverProperties()->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   if ( !mWMSPrintLayerLineEdit->text().isEmpty() )
   {
@@ -1364,23 +1263,6 @@ QLinearGradient QgsRasterLayerProperties::highlightGradient()
   myGradient.setColorAt( 0.0, QColor( 255, 255, 255, 150 ) );
   return myGradient;
 }
-
-void QgsRasterLayerProperties::addMetadataUrl()
-{
-  const int row = mMetadataUrlModel->rowCount();
-  mMetadataUrlModel->setItem( row, 0, new QStandardItem( QLatin1String() ) );
-  mMetadataUrlModel->setItem( row, 1, new QStandardItem( QLatin1String() ) );
-  mMetadataUrlModel->setItem( row, 2, new QStandardItem( QLatin1String() ) );
-}
-
-void QgsRasterLayerProperties::removeSelectedMetadataUrl()
-{
-  const QModelIndexList selectedRows = tableViewMetadataUrl->selectionModel()->selectedRows();
-  if ( selectedRows.empty() )
-    return;
-  mMetadataUrlModel->removeRow( selectedRows[0].row() );
-}
-
 
 //
 //

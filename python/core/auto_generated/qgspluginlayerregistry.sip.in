@@ -14,7 +14,7 @@
 class QgsPluginLayerType
 {
 %Docstring(signature="appended")
-Class for creating plugin specific layers
+Responsible for creating plugin specific map layers.
 %End
 
 %TypeHeaderCode

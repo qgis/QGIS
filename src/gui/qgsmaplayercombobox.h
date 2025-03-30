@@ -28,7 +28,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * \brief The QgsMapLayerComboBox class is a combo box which displays the list of layers
+ * \brief A combobox which displays a list of layers.
  */
 class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 {

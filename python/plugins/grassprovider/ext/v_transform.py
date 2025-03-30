@@ -19,6 +19,8 @@ __author__ = "Andrea Giudiceandrea"
 __date__ = "February 2024"
 __copyright__ = "(C) 2024, Andrea Giudiceandrea"
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """Verify if we have the right parameters"""
@@ -27,8 +29,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     x = alg.parameterAsBoolean(parameters, "-x", context)
     y = alg.parameterAsBoolean(parameters, "-y", context)
     if sum([w, x, y]) > 1:
-        return False, alg.tr(
-            "The 'Swap coordinates' parameters -w, -x and -y are mutually exclusive. You need to set either none or only one of them!"
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            "The 'Swap coordinates' parameters -w, -x and -y are mutually exclusive. You need to set either none or only one of them!",
         )
 
     return True, None

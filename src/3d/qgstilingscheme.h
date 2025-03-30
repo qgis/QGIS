@@ -27,7 +27,7 @@ struct QgsChunkNodeId;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief The class encapsulates tiling scheme (just like with WMTS / TMS / XYZ layers).
  *
  * The origin (tile [0,0]) is in bottom-left corner.

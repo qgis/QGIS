@@ -79,7 +79,7 @@ Constructor for a render job, with the specified feature to render and symbol.
     class Rule
 {
 %Docstring(signature="appended")
-This class keeps data about a rules for rule-based renderer.
+Represents an individual rule for a rule-based renderer.
 
 A rule consists of a symbol, filter expression and range of scales.
 If filter is empty, it matches all features.

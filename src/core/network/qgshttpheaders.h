@@ -35,7 +35,7 @@ class QgsSettings;
 
 /**
  * \ingroup core
- * \brief This class implements simple http header management.
+ * \brief Implements simple HTTP header management.
  * \since QGIS 3.24
  */
 class CORE_EXPORT QgsHttpHeaders

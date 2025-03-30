@@ -95,13 +95,15 @@ Returns the scene extent in the map's CRS
 .. versionadded:: 3.20
 %End
 
-    QgsDoubleRange elevationRange() const;
+    QgsDoubleRange elevationRange( bool ignoreTerrain = false ) const;
 %Docstring
 Returns the scene's elevation range
 
 .. note::
 
-   Only some layer types are considered by this method (eg terrain, point cloud and mesh layers)
+   Only some layer types are considered by this method (e.g. terrain, point cloud and mesh layers)
+
+:param ignoreTerrain: indicates whether the calculation will ignore terrain
 
 .. versionadded:: 3.30
 %End
@@ -205,6 +207,8 @@ Disables OpenGL clipping.
 
 .. versionadded:: 3.40
 %End
+
+
 
 
   signals:

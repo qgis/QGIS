@@ -27,7 +27,7 @@
 #include "qgspointcloudclassifiedrenderer.h"
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3D symbol that draws point cloud geometries as 3D objects.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
@@ -186,7 +186,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
 };
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3D symbol that draws point cloud geometries as 3D objects.using one color
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
@@ -226,7 +226,7 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
 };
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3D symbol that draws point cloud geometries as 3D objects.using color ramp shader
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
@@ -299,7 +299,7 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
 };
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3D symbol that draws point cloud geometries as 3D objects using RGB colors in the dataset
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
@@ -456,7 +456,7 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
 };
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3D symbol that draws point cloud geometries as 3D objects using classification of the dataset
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is

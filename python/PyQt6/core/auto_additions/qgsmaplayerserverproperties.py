@@ -18,6 +18,10 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsMapLayerServerProperties.__overridden_methods__ = ['layer']
+except (NameError, AttributeError):
+    pass
+try:
     QgsServerWmsDimensionProperties.WmsDimensionInfo.__doc__ = """Setting to define QGIS Server WMS Dimension.
 
 .. versionadded:: 3.10"""

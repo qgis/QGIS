@@ -251,7 +251,7 @@ class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
 /**
  * \ingroup server
  * \class QgsServerParameters
- * \brief QgsServerParameters provides an interface to retrieve and manipulate global parameters received from the client.
+ * \brief Provides an interface to retrieve and manipulate global parameters received from the client.
  * \since QGIS 3.4
  */
 class SERVER_EXPORT QgsServerParameters

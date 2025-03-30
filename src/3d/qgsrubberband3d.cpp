@@ -169,12 +169,13 @@ void QgsRubberBand3D::removePoint( int index )
 QgsRubberBand3D::~QgsRubberBand3D()
 {
   if ( mPolygonEntity )
-    mPolygonEntity->deleteLater();
+    delete mPolygonEntity;
   if ( mLineEntity )
-    mLineEntity->deleteLater();
+    delete mLineEntity;
   if ( mMarkerEntity )
-    mMarkerEntity->deleteLater();
+    delete mMarkerEntity;
 }
+
 
 float QgsRubberBand3D::width() const
 {
@@ -276,7 +277,7 @@ void QgsRubberBand3D::setMarkerType( const MarkerType marker )
     { QStringLiteral( "name" ), mMarkerType == Square ? QStringLiteral( "square" ) : QStringLiteral( "circle" ) }
   };
 
-  mMarkerSymbol.reset( QgsMarkerSymbol::createSimple( props ) );
+  mMarkerSymbol = QgsMarkerSymbol::createSimple( props );
   updateMarkerMaterial();
 }
 

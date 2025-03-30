@@ -682,30 +682,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   }
   rebuildCrs3D();
 
-  //legendUrl
-  const QDomElement legendUrlElem = layerElement.firstChildElement( QStringLiteral( "legendUrl" ) );
-  if ( !legendUrlElem.isNull() )
-  {
-    mServerProperties->setLegendUrl( legendUrlElem.text() );
-    mServerProperties->setLegendUrlFormat( legendUrlElem.attribute( QStringLiteral( "format" ), QString() ) );
-  }
-
   serverProperties()->readXml( layerElement );
-
-  if ( serverProperties()->metadataUrls().isEmpty() )
-  {
-    // metadataUrl is still empty, maybe it's a QGIS Project < 3.22
-    // keep for legacy
-    const QDomElement metaUrlElem = layerElement.firstChildElement( QStringLiteral( "metadataUrl" ) );
-    if ( !metaUrlElem.isNull() )
-    {
-      const QString url = metaUrlElem.text();
-      const QString type = metaUrlElem.attribute( QStringLiteral( "type" ), QString() );
-      const QString format = metaUrlElem.attribute( QStringLiteral( "format" ), QString() );
-      const QgsMapLayerServerProperties::MetadataUrl newItem( url, type, format );
-      mServerProperties->setMetadataUrls( QList<QgsMapLayerServerProperties::MetadataUrl>() << newItem );
-    }
-  }
 
   // mMetadata.readFromLayer( this );
   const QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
@@ -818,90 +795,6 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   layerName.appendChild( layerNameText );
   layerElement.appendChild( layerName );
 
-  // layer short name
-
-  // TODO -- ideally this would be in QgsMapLayerServerProperties::writeXml, but that's currently
-  // only called for SOME map layer subclasses!
-  if ( !mServerProperties->shortName().isEmpty() )
-  {
-    QDomElement layerShortName = document.createElement( QStringLiteral( "shortname" ) );
-    const QDomText layerShortNameText = document.createTextNode( mServerProperties->shortName() );
-    layerShortName.appendChild( layerShortNameText );
-    layerElement.appendChild( layerShortName );
-  }
-
-  // layer title
-  if ( !mServerProperties->title().isEmpty() )
-  {
-    QDomElement layerTitle = document.createElement( QStringLiteral( "title" ) );
-    const QDomText layerTitleText = document.createTextNode( mServerProperties->title() );
-    layerTitle.appendChild( layerTitleText );
-
-    if ( mServerProperties->title() != mServerProperties->wfsTitle() )
-    {
-      layerTitle.setAttribute( "wfs",  mServerProperties->wfsTitle() );
-    }
-
-    layerElement.appendChild( layerTitle );
-  }
-
-  // layer abstract
-  if ( !mServerProperties->abstract().isEmpty() )
-  {
-    QDomElement layerAbstract = document.createElement( QStringLiteral( "abstract" ) );
-    const QDomText layerAbstractText = document.createTextNode( mServerProperties->abstract() );
-    layerAbstract.appendChild( layerAbstractText );
-    layerElement.appendChild( layerAbstract );
-  }
-
-  // layer keyword list
-  const QStringList keywordStringList = mServerProperties->keywordList().split( ',' );
-  if ( !keywordStringList.isEmpty() )
-  {
-    QDomElement layerKeywordList = document.createElement( QStringLiteral( "keywordList" ) );
-    for ( int i = 0; i < keywordStringList.size(); ++i )
-    {
-      QDomElement layerKeywordValue = document.createElement( QStringLiteral( "value" ) );
-      const QDomText layerKeywordText = document.createTextNode( keywordStringList.at( i ).trimmed() );
-      layerKeywordValue.appendChild( layerKeywordText );
-      layerKeywordList.appendChild( layerKeywordValue );
-    }
-    layerElement.appendChild( layerKeywordList );
-  }
-
-  // layer dataUrl
-  const QString aDataUrl = mServerProperties->dataUrl();
-  if ( !aDataUrl.isEmpty() )
-  {
-    QDomElement layerDataUrl = document.createElement( QStringLiteral( "dataUrl" ) );
-    const QDomText layerDataUrlText = document.createTextNode( aDataUrl );
-    layerDataUrl.appendChild( layerDataUrlText );
-    layerDataUrl.setAttribute( QStringLiteral( "format" ), mServerProperties->dataUrlFormat() );
-    layerElement.appendChild( layerDataUrl );
-  }
-
-  // layer legendUrl
-  const QString aLegendUrl = mServerProperties->legendUrl();
-  if ( !aLegendUrl.isEmpty() )
-  {
-    QDomElement layerLegendUrl = document.createElement( QStringLiteral( "legendUrl" ) );
-    const QDomText layerLegendUrlText = document.createTextNode( aLegendUrl );
-    layerLegendUrl.appendChild( layerLegendUrlText );
-    layerLegendUrl.setAttribute( QStringLiteral( "format" ), mServerProperties->legendUrlFormat() );
-    layerElement.appendChild( layerLegendUrl );
-  }
-
-  // layer attribution
-  const QString aAttribution = mServerProperties->attribution();
-  if ( !aAttribution.isEmpty() )
-  {
-    QDomElement layerAttribution = document.createElement( QStringLiteral( "attribution" ) );
-    const QDomText layerAttributionText = document.createTextNode( aAttribution );
-    layerAttribution.appendChild( layerAttributionText );
-    layerAttribution.setAttribute( QStringLiteral( "href" ), mServerProperties->attributionUrl() );
-    layerElement.appendChild( layerAttribution );
-  }
-
   // timestamp if supported
   if ( timestamp() > QDateTime() )
   {
@@ -928,6 +821,8 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   layerElement.appendChild( myMetadataElem );
 
   layerElement.setAttribute( QStringLiteral( "legendPlaceholderImage" ), mLegendPlaceholderImage );
+
+  serverProperties()->writeXml( layerElement, document );
 
   // now append layer node to map layer node
   return writeXml( layerElement, document, context );

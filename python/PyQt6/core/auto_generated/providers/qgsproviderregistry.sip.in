@@ -385,7 +385,6 @@ layer ``type``.
     class ProviderCandidateDetails
 {
 %Docstring(signature="appended")
-
 Contains information pertaining to a candidate provider.
 
 .. versionadded:: 3.18
@@ -442,7 +441,6 @@ all of these providers will be returned.
     class UnusableUriDetails
 {
 %Docstring(signature="appended")
-
 Contains information about unusable URIs which aren't handled by any registered providers.
 
 For example, if a QGIS install is built without the PDAL library then las/laz files are unusable.
@@ -484,7 +482,6 @@ options for opening the URI.
     class UnusableUriHandlerInterface
 {
 %Docstring(signature="appended")
-
 An interface used to handle unusable URIs which aren't handled by any registered providers, and construct
 user-friendly warnings as to why the URI is unusable.
 

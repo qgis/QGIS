@@ -19,6 +19,9 @@
 
 class QgsRelationReferenceWidget : QWidget
 {
+%Docstring(signature="appended")
+A widget which shows related features.
+%End
 
 %TypeHeaderCode
 #include "qgsrelationreferencewidget.h"
@@ -173,6 +176,13 @@ Returns the current relation, which might be invalid
 Set the current form feature (from the referencing layer)
 
 .. versionadded:: 3.10
+%End
+
+    void setParentFormFeature( const QgsFeature &parentFormFeature );
+%Docstring
+Set the current parent form feature
+
+.. versionadded:: 3.42.2
 %End
 
     QString referencedLayerDataSource() const;

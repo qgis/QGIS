@@ -13,7 +13,7 @@
 class QgsMeshDataProviderTemporalCapabilities: QgsDataProviderTemporalCapabilities
 {
 %Docstring(signature="appended")
-Class for handling properties relating to a mesh data provider's temporal capabilities.
+Handles properties relating to a mesh data provider's temporal capabilities.
 
 .. versionadded:: 3.14
 %End

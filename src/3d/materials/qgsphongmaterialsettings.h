@@ -25,7 +25,7 @@
 class QDomElement;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Basic shading material used for rendering based on the Phong shading model
  * with three color components: ambient, diffuse and specular.
  *

@@ -6,6 +6,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAuthSslConfigDialog.__overridden_methods__ = ['accept']
     QgsAuthSslConfigDialog.__group__ = ['auth']
 except (NameError, AttributeError):
     pass

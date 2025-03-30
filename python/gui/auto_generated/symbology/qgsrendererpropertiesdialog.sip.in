@@ -14,6 +14,9 @@
 
 class QgsRendererPropertiesDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring vector layer renderers.
+%End
 
 %TypeHeaderCode
 #include "qgsrendererpropertiesdialog.h"

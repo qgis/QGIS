@@ -1,5 +1,6 @@
 # The following has been generated automatically from src/3d/terrain/qgs3dterrainregistry.h
 try:
+    Qgs3DTerrainAbstractMetadata.__abstract_methods__ = ['createTerrainSettings']
     Qgs3DTerrainAbstractMetadata.__group__ = ['terrain']
 except (NameError, AttributeError):
     pass

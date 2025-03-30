@@ -17,7 +17,7 @@
 class QgsVertexMarker : QgsMapCanvasItem
 {
 %Docstring(signature="appended")
-A class for marking vertices of features using e.g. circles or 'x'.
+A map canvas item for marking vertices of features using e.g. circles or 'x'.
 %End
 
 %TypeHeaderCode

@@ -29,7 +29,7 @@ class QgsProject;
 
 /**
  * \ingroup core
- * \brief The QgsMapLayerProxyModel class provides an easy to use model to display the list of layers in widgets.
+ * \brief A proxy model which provides an easy to use model to display the list of layers in widgets.
  */
 class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 {

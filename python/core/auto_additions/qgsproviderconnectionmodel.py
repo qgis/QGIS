@@ -45,3 +45,7 @@ QgsProviderConnectionModel.CustomRole.__doc__ = """Custom model roles.
 """
 # --
 QgsProviderConnectionModel.CustomRole.baseClass = QgsProviderConnectionModel
+try:
+    QgsProviderConnectionModel.__overridden_methods__ = ['parent', 'rowCount', 'columnCount', 'data', 'index']
+except (NameError, AttributeError):
+    pass

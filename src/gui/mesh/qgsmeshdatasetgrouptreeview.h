@@ -38,6 +38,7 @@ class QgsMeshLayer;
 /**
  * \ingroup gui
  * \class QgsMeshDatasetGroupSaveMenu
+ * \brief Responsible for creating menus for saving mesh dataset groups.
  */
 class QgsMeshDatasetGroupSaveMenu : public QObject
 {
@@ -62,7 +63,7 @@ class QgsMeshDatasetGroupSaveMenu : public QObject
  * \ingroup gui
  * \class QgsMeshDatasetGroupTreeModel
  *
- * \brief Item Model for QgsMeshDatasetGroupTreeItem
+ * \brief Item model for QgsMeshDatasetGroupTreeItem
  */
 class QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
 {
@@ -121,6 +122,8 @@ class QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
 /**
  * \ingroup gui
  * \class QgsMeshAvailableDatasetGroupTreeModel
+ *
+ * \brief Item model for available mesh dataset groups.
  */
 class QgsMeshAvailableDatasetGroupTreeModel : public QgsMeshDatasetGroupTreeModel
 {
@@ -142,6 +145,7 @@ class QgsMeshAvailableDatasetGroupTreeModel : public QgsMeshDatasetGroupTreeMode
 /**
  * \ingroup gui
  * \class QgsMeshDatasetGroupProxyModel
+ * \brief A proxy model for filtering mesh dataset groups.
  */
 class QgsMeshDatasetGroupProxyModel : public QSortFilterProxyModel
 {
@@ -296,6 +300,7 @@ class GUI_EXPORT QgsMeshActiveDatasetGroupTreeView : public QTreeView
 /**
  * \ingroup gui
  * \class QgsMeshDatasetGroupListModel
+ * \brief A model representing mesh dataset groups.
  */
 class GUI_EXPORT QgsMeshDatasetGroupListModel : public QAbstractListModel
 {

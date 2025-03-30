@@ -17,7 +17,7 @@
 class QgsBrowserTreeView : QTreeView
 {
 %Docstring(signature="appended")
-The :py:class:`QgsBrowserTreeView` class extends QTreeView with save/restore tree state functionality.
+Extends QTreeView with save/restore tree state and other browser-specific functionality.
 
 .. seealso:: :py:class:`QgsBrowserModel`
 %End

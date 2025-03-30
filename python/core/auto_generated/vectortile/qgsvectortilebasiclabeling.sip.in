@@ -159,7 +159,9 @@ Reads object content from given DOM element
 class QgsVectorTileBasicLabeling : QgsVectorTileLabeling
 {
 %Docstring(signature="appended")
-Basic labeling configuration for vector tile layers. It contains a definition
+Basic labeling configuration for vector tile layers.
+
+It contains a definition
 of a list of labeling styles, where each labeling style is a combination of
 sub-layer name, geometry type, filter expression, zoom range and label settings.
 

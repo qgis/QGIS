@@ -184,7 +184,6 @@ Returns the plain text contents of the log, which contains all messages pushed t
 class QgsProcessingMultiStepFeedback : QgsProcessingFeedback
 {
 %Docstring(signature="appended")
-
 Processing feedback object for multi-step operations.
 
 A processing feedback object which proxies its calls to an underlying

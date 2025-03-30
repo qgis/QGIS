@@ -27,8 +27,10 @@
 /**
  * \ingroup core
  * \class QgsLayoutSize
- * \brief This class provides a method of storing sizes, consisting of a width and height,
- * for use in QGIS layouts. Measurement units are stored alongside the size.
+ * \brief Provides a method of storing sizes, consisting of a width and height,
+ * for use in QGIS layouts.
+ *
+ * Measurement units are stored alongside the size.
  *
  * \see QgsLayoutMeasurementConverter
  * \note This class does not inherit from QSizeF since QSizeF includes methods which should not apply to sizes

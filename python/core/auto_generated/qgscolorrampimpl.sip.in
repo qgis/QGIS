@@ -483,7 +483,9 @@ Sets the maximum value for generated colors
 class QgsRandomColorRamp: QgsColorRamp
 {
 %Docstring(signature="appended")
-Totally random color ramp. Returns colors generated at random, but constrained
+A color ramp consisting of random colors, constrained within component ranges.
+
+Returns colors generated at random, but constrained
 to some hardcoded saturation and value ranges to prevent ugly color generation.
 %End
 
@@ -736,7 +738,6 @@ Generates the scheme using the current name and number of colors
 class QgsCptCityColorRamp : QgsGradientColorRamp
 {
 %Docstring(signature="appended")
-
 A color ramp from the CPT City collection.
 %End
 

@@ -13,6 +13,9 @@
 
 class QgsRendererRasterPropertiesWidget : QgsMapLayerConfigWidget
 {
+%Docstring(signature="appended")
+A widget for configuring properties of a raster layer renderer.
+%End
 
 %TypeHeaderCode
 #include "qgsrendererrasterpropertieswidget.h"

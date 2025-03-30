@@ -48,7 +48,7 @@ int QgisEvent = QEvent::User + 1;
 
 /**
  * \ingroup core
- * \brief The Qgis class provides global constants for use throughout the application.
+ * \brief Provides global constants and enumerations for use throughout the application.
  */
 class CORE_EXPORT Qgis
 {
@@ -4000,9 +4000,22 @@ class CORE_EXPORT Qgis
     enum class NavigationMode : int
     {
       TerrainBased, //!< The default navigation based on the terrain
-      Walk //!< Uses WASD keys or arrows to navigate in walking (first person) manner
+      Walk, //!< Uses WASD keys or arrows to navigate in walking (first person) manner
+      GlobeTerrainBased  //!< Navigation similar to TerrainBased, but for use with globe  \since QGIS 3.44
     };
     Q_ENUM( NavigationMode )
+
+    /**
+     * The 3D scene mode used in 3D map views.
+     *
+     * \since QGIS 3.44
+     */
+    enum class SceneMode : int
+    {
+      Local,   //!< Local scene based on a projected CRS
+      Globe    //!< Scene is represented as a globe using a geocentric CRS
+    };
+    Q_ENUM( SceneMode )
 
     /**
      * Vertical axis inversion options for 3D views.
@@ -5064,6 +5077,7 @@ class CORE_EXPORT Qgis
       HorizontalMiddle, //!< Calculate horizontally, across midle of map
       HorizontalBottom, //!< Calculate horizontally, across bottom of map
       HorizontalAverage, //!< Calculate horizontally, using the average of the top, middle and bottom scales
+      AtEquator, //!< Always calculate the scale at the equator, regardless of the actual visible map extent. This method can be used to provide a consistent, static scale for maps in geographic reference systems, regardless of the latitudes actually visible in the map (permitting consistent appearance of these maps when rendering relies on scale based visibility or calculations). This method is only applicable when calculating scales with a degree based reference system. \since QGIS 3.44
     };
     Q_ENUM( ScaleCalculationMethod )
 

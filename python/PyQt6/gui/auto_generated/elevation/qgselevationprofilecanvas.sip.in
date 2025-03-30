@@ -251,6 +251,25 @@ readability with the new background color.
 .. versionadded:: 3.34
 %End
 
+    QgsLineSymbol *subsectionsSymbol();
+%Docstring
+Returns the symbol used to draw the subsections.
+
+.. seealso:: :py:func:`setSubsectionsSymbol`
+
+.. versionadded:: 3.44
+%End
+
+    void setSubsectionsSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to draw the subsections. If ``symbol`` is ``None``, the subsections are not drawn.
+Ownership of ``symbol`` is transferred.
+
+.. seealso:: :py:func:`subsectionsSymbol`
+
+.. versionadded:: 3.44
+%End
+
   signals:
 
     void activeJobCountChanged( int count );

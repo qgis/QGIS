@@ -11,7 +11,6 @@
 class QgsMaskRenderSettings
 {
 %Docstring(signature="appended")
-
 Contains settings regarding how masks are calculated and handled during a map render.
 
 .. versionadded:: 3.38

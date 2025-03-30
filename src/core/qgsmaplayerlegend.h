@@ -16,6 +16,7 @@
 #ifndef QGSMAPLAYERLEGEND_H
 #define QGSMAPLAYERLEGEND_H
 
+#include <memory>
 #include <QObject>
 #include "qgis_sip.h"
 
@@ -39,8 +40,7 @@ class QgsSymbol;
 
 /**
  * \ingroup core
- * \brief The QgsMapLayerLegend class is abstract interface for implementations
- * of legends for one map layer.
+ * \brief An abstract interface for implementations of legends for one map layer.
  *
  */
 class CORE_EXPORT QgsMapLayerLegend : public QObject
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsMapLayerLegendUtils
      * \see setLegendNodeCustomSymbol()
      * \since QGIS 3.14
      */
-    static QgsSymbol *legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex ) SIP_FACTORY;
+    static std::unique_ptr< QgsSymbol > legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 
     /**
      * Sets a custom legend color ramp \a settings for the legend node belonging to \a nodeLayer at the specified \a originalIndex.

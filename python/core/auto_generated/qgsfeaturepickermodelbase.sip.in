@@ -101,6 +101,34 @@ An additional filter expression to apply, next to the filterValue.
 Can be used for spatial filtering etc.
 %End
 
+    QgsFeature formFeature() const;
+%Docstring
+Returns an attribute form feature to be used with the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    void setFormFeature( const QgsFeature &feature );
+%Docstring
+Sets an attribute form ``feature`` to be used with the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    QgsFeature parentFormFeature() const;
+%Docstring
+Returns a parent attribute form feature to be used with the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    void setParentFormFeature( const QgsFeature &feature );
+%Docstring
+Sets a parent attribute form ``feature`` to be used with the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
     bool isLoading() const;
 %Docstring
 Indicator if the model is currently performing any feature iteration in the background.
@@ -188,6 +216,20 @@ matches the filter value, it will be accessible by this model.
 %Docstring
 An additional filter expression to apply, next to the filterValue.
 Can be used for spatial filtering etc.
+%End
+
+    void formFeatureChanged();
+%Docstring
+An attribute form feature to be used alongside the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    void parentFormFeatureChanged();
+%Docstring
+A parent attribute form feature to be used alongside the filter expression.
+
+.. versionadded:: 3.42.2
 %End
 
     void isLoadingChanged();

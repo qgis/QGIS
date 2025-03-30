@@ -44,7 +44,7 @@ class QgsSymbol;
 
 /**
  * \ingroup gui
- * \brief A class for drawing transient features (e.g. digitizing lines) on the map.
+ * \brief Responsible for drawing transient features (e.g. digitizing lines) on the map.
  *
  * The QgsRubberBand class provides a transparent overlay widget
  * for tracking the mouse while drawing polylines or polygons.

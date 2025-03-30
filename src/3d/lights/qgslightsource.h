@@ -38,7 +38,7 @@ namespace Qt3DCore
 #endif
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for light sources in 3d scenes.
  *
  * \since QGIS 3.26

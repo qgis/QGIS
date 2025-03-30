@@ -27,7 +27,7 @@ class QgsRasterAttributeTable;
 
 /**
  * \ingroup gui
- * \brief The QgsRasterAttributeTableAddColumnDialog class collects options to add a new column to a raster attribute table.
+ * \brief A dialog which collects options to add a new column to a raster attribute table.
  *
  * \note Not available in Python bindings
  * \since QGIS 3.30

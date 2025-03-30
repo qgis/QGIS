@@ -12,6 +12,9 @@
 
 class QgsGeometryValidator : QThread
 {
+%Docstring(signature="appended")
+Validates geometries using the QGIS geometry validation model.
+%End
 
 %TypeHeaderCode
 #include "qgsgeometryvalidator.h"

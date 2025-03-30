@@ -179,6 +179,13 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
       refresh();
     } );
 
+    mSettings.setScaleMethod( QgsProject::instance()->scaleMethod() );
+    connect( QgsProject::instance(), &QgsProject::scaleMethodChanged, this, [=] {
+      mSettings.setScaleMethod( QgsProject::instance()->scaleMethod() );
+      updateScale();
+      refresh();
+    } );
+
     connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [=] {
       QgsCoordinateReferenceSystem crs = mSettings.destinationCrs();
       crs.updateDefinition();
@@ -1006,7 +1013,7 @@ void QgsMapCanvas::previewJobFinished()
 
   if ( mMap )
   {
-    mMap->addPreviewImage( job->renderedImage(), job->mapSettings().visibleExtent() );
+    mMap->addPreviewImage( job->renderedImage(), job->mapSettings().visiblePolygon() );
     mPreviewJobs.removeAll( job );
 
     int number = job->property( "number" ).toInt();

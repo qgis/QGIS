@@ -24,6 +24,9 @@ typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
 class QgsStyle : QObject
 {
+%Docstring(signature="appended")
+A database of saved style entities, including symbols, color ramps, text formats and others.
+%End
 
 %TypeHeaderCode
 #include "qgsstyle.h"
@@ -622,7 +625,7 @@ Removes the entry of the specified ``type`` with matching ``name`` from the data
 .. versionadded:: 3.14
 %End
 
-    bool saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags );
+    bool saveSymbol( const QString &name, const QgsSymbol *symbol, bool favorite, const QStringList &tags );
 %Docstring
 Adds the symbol to the database with tags.
 
@@ -634,7 +637,7 @@ Adds the symbol to the database with tags.
 :return: returns the success state of the save operation
 %End
 
-    bool saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favorite, const QStringList &tags );
+    bool saveColorRamp( const QString &name, const QgsColorRamp *ramp, bool favorite, const QStringList &tags );
 %Docstring
 Adds the colorramp to the database.
 
@@ -1022,7 +1025,7 @@ other pieces of code for some cleanup if they use the style.
 .. versionadded:: 3.26
 %End
 
-    void symbolSaved( const QString &name, QgsSymbol *symbol );
+    void symbolSaved( const QString &name, const QgsSymbol *symbol );
 %Docstring
 Emitted every time a new symbol has been added to the database.
 Emitted whenever a symbol has been added to the style and the database

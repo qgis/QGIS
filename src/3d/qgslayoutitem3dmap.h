@@ -35,7 +35,7 @@ class Qgs3DMapSettings;
 class QgsOffscreen3DEngine;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  *
  * \brief Implements support of 3D map views in print layouts
  *

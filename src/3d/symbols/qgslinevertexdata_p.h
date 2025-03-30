@@ -55,7 +55,7 @@ class QgsLineString;
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Helper class to store vertex buffer and index buffer data that will be used to render
  * lines (either using "line strip" or "line strip with adjacency" primitive.
  *

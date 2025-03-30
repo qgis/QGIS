@@ -14,8 +14,9 @@ class QgsMapUnitScaleWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
 A widget which allows the user to choose the minimum and maximum scale of an object in map units
-and millimeters. This widget is designed to allow users to edit the properties of a
-:py:class:`QgsMapUnitScale` object.
+and millimeters.
+
+This widget is designed to allow users to edit the properties of a :py:class:`QgsMapUnitScale` object.
 
 .. seealso:: :py:class:`QgsMapUnitScaleDialog`
 
@@ -78,8 +79,9 @@ class QgsMapUnitScaleDialog : QDialog
 {
 %Docstring(signature="appended")
 A dialog which allows the user to choose the minimum and maximum scale of an object in map units
-and millimeters. This dialog is designed to allow users to edit the properties of a
-:py:class:`QgsMapUnitScale` object.
+and millimeters.
+
+This dialog is designed to allow users to edit the properties of a :py:class:`QgsMapUnitScale` object.
 
 .. seealso:: :py:class:`QgsMapUnitScaleWidget`
 

@@ -472,6 +472,9 @@ Returns the map unit scale for the fill's offset.
 
 class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 {
+%Docstring(signature="appended")
+A fill symbol layer which applies a gradient from the outer edges of a symbol to the inside.
+%End
 
 %TypeHeaderCode
 #include "qgsfillsymbollayer.h"
@@ -881,7 +884,7 @@ Returns ``True`` if the image brush should be transformed using the render conte
 class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 {
 %Docstring(signature="appended")
-A class for filling symbols with a repeated raster image.
+A fill symbol layer which fills polygons with a repeated raster image.
 %End
 
 %TypeHeaderCode
@@ -1267,7 +1270,7 @@ Returns the map unit scale for the image's width and height.
 class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 {
 %Docstring(signature="appended")
-A class for filling symbols with a repeated SVG file.
+A fill symbol layer which fills polygons with a repeated SVG file.
 %End
 
 %TypeHeaderCode
@@ -2529,7 +2532,6 @@ in different locations with every map refresh).
 class QgsRandomMarkerFillSymbolLayer : QgsFillSymbolLayer
 {
 %Docstring(signature="appended")
-
 A fill symbol layer which places markers at random locations within polygons.
 
 .. versionadded:: 3.12
@@ -2729,7 +2731,6 @@ Returns the map scale for the density area.
 class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 {
 %Docstring(signature="appended")
-
 A fill symbol layer which renders a marker symbol at the centroid of a polygon geometry.
 %End
 

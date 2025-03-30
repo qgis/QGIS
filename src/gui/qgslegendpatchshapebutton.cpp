@@ -30,7 +30,7 @@ QgsLegendPatchShapeButton::QgsLegendPatchShapeButton( QWidget *parent, const QSt
   , mShape( QgsStyle::defaultStyle()->defaultPatch( Qgis::SymbolType::Fill, QSizeF( 10, 5 ) ) )
   , mDialogTitle( dialogTitle.isEmpty() ? tr( "Legend Patch Shape" ) : dialogTitle )
 {
-  mPreviewSymbol.reset( QgsFillSymbol::createSimple( QVariantMap() ) );
+  mPreviewSymbol = QgsFillSymbol::createSimple( QVariantMap() );
 
   connect( this, &QAbstractButton::clicked, this, &QgsLegendPatchShapeButton::showSettingsDialog );
 
@@ -65,15 +65,15 @@ void QgsLegendPatchShapeButton::setSymbolType( Qgis::SymbolType type )
     switch ( type )
     {
       case Qgis::SymbolType::Marker:
-        mPreviewSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+        mPreviewSymbol = QgsMarkerSymbol::createSimple( QVariantMap() );
         break;
 
       case Qgis::SymbolType::Line:
-        mPreviewSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ) );
+        mPreviewSymbol = QgsLineSymbol::createSimple( QVariantMap() );
         break;
 
       case Qgis::SymbolType::Fill:
-        mPreviewSymbol.reset( QgsFillSymbol::createSimple( QVariantMap() ) );
+        mPreviewSymbol = QgsFillSymbol::createSimple( QVariantMap() );
         break;
 
       case Qgis::SymbolType::Hybrid:

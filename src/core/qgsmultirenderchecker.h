@@ -23,7 +23,7 @@ class QgsLayout;
 
 /**
  * \ingroup core
- * \brief This class allows checking rendered images against comparison images.
+ * \brief Allows checking rendered images against comparison images.
  *
  * Its main purpose is for the unit testing framework.
  *

@@ -13,8 +13,9 @@
 class QgsScopedExpressionFunction : QgsExpressionFunction
 {
 %Docstring(signature="appended")
-Expression function for use within a :py:class:`QgsExpressionContextScope`. This differs from a
-standard :py:class:`QgsExpression`.Function in that it requires an implemented
+Expression function for use within a :py:class:`QgsExpressionContextScope`.
+
+This differs from a standard :py:class:`QgsExpression`.Function in that it requires an implemented
 :py:func:`~clone` method.
 %End
 

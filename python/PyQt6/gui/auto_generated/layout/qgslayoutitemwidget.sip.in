@@ -13,9 +13,9 @@
 class QgsLayoutConfigObject : QObject
 {
 %Docstring(signature="appended")
+An object for property widgets for layout items.
 
-An object for property widgets for layout items. All layout config type widgets should contain
-this object.
+All layout config type widgets should contain this object.
 
 If you are creating a new :py:class:`QgsLayoutItem` configuration widget, you should instead
 inherit from :py:class:`QgsLayoutItemBaseWidget` (rather then directly working with :py:class:`QgsLayoutConfigObject`).
@@ -57,8 +57,9 @@ Returns the atlas for the layout, if available
 class QgsLayoutItemBaseWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
+A base class for property widgets for layout items.
 
-A base class for property widgets for layout items. All layout item widgets should inherit from
+All layout item widgets should inherit from
 this base class.
 %End
 

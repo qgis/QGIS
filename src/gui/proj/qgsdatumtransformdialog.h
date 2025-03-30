@@ -29,6 +29,7 @@
 /**
  * \ingroup gui
  * \class QgsDatumTransformDialog
+ * \brief A dialog for configuring transform operations between coordinate reference systems.
  * \note not available in Python bindings
  */
 class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumTransformDialogBase

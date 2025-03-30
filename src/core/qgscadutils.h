@@ -27,7 +27,7 @@ class QgsSnappingUtils;
 
 /**
  * \ingroup core
- * \brief The QgsCadUtils class provides routines for CAD editing.
+ * \brief Provides routines for CAD editing.
  *
  */
 class CORE_EXPORT QgsCadUtils

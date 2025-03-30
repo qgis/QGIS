@@ -61,7 +61,7 @@ class Qgs3DMapSceneEntity;
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
  */
 #ifndef SIP_RUN
@@ -164,11 +164,11 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     /**
      * Returns the scene's elevation range
-     * \note Only some layer types are considered by this method (eg terrain, point cloud and mesh layers)
-     *
+     * \note Only some layer types are considered by this method (e.g. terrain, point cloud and mesh layers)
+     * \param ignoreTerrain indicates whether the calculation will ignore terrain
      * \since QGIS 3.30
      */
-    QgsDoubleRange elevationRange() const;
+    QgsDoubleRange elevationRange( bool ignoreTerrain = false ) const;
 
     /**
      * Returns the 3D axis object
@@ -274,6 +274,21 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * \since QGIS 3.40
      */
     void disableClipping();
+
+    /**
+     * Adds a 3D map scene entity to the scene. The 3D entity will get parented
+     * to the scene and the scene takes ownership of the entity.
+     * \see removeSceneEntity()
+     * \since QGIS 3.44
+     */
+    void addSceneEntity( Qgs3DMapSceneEntity *entity ) SIP_SKIP;
+
+    /**
+     * Removes a 3D scene entity for the scene. The 3D entity will get deleted.
+     * \see addSceneEntity()
+     * \since QGIS 3.44
+     */
+    void removeSceneEntity( Qgs3DMapSceneEntity *entity ) SIP_SKIP;
 
 #ifndef SIP_RUN
     //! Static function for returning open 3D map scenes

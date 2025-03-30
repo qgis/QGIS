@@ -269,8 +269,8 @@ class GridDataMetrics(GdalAlgorithm):
             if GdalUtils.version() < 3070000:
                 raise QgsProcessingException(
                     self.tr(
-                        f"Open options are not supported by gdal_grid version {GdalUtils.readableVersion()} (requires GDAL version 3.7 or later)"
-                    )
+                        "Open options are not supported by gdal_grid version {} (requires GDAL version 3.7 or later)"
+                    ).format(GdalUtils.readableVersion())
                 )
 
             arguments.extend(input_details.open_options_as_arguments())
