@@ -1711,7 +1711,6 @@ set(QGIS_CORE_HDRS
   pal/internalexception.h
   pal/labelposition.h
   pal/layer.h
-  pal/palexception.h
   pal/pal.h
   pal/palrtree.h
   pal/pointset.h
