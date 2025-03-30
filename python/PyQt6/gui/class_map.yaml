@@ -6638,6 +6638,10 @@ QgsScaleComboBox.toDouble: src/gui/qgsscalecombobox.h#L93
 QgsScaleComboBox.toString: src/gui/qgsscalecombobox.h#L85
 QgsScaleComboBox.updateScales: src/gui/qgsscalecombobox.h#L137
 QgsScaleComboBox: src/gui/qgsscalecombobox.h#L30
+QgsScaleMethodWidget.methodChanged: src/gui/qgsscalemethodwidget.h#L61
+QgsScaleMethodWidget.scaleMethod: src/gui/qgsscalemethodwidget.h#L47
+QgsScaleMethodWidget.setScaleMethod: src/gui/qgsscalemethodwidget.h#L54
+QgsScaleMethodWidget: src/gui/qgsscalemethodwidget.h#L33
 QgsScaleRangeWidget.QgsScaleRangeWidget: src/gui/qgsscalerangewidget.h#L42
 QgsScaleRangeWidget.maximumScale: src/gui/qgsscalerangewidget.h#L64
 QgsScaleRangeWidget.minimumScale: src/gui/qgsscalerangewidget.h#L56
