@@ -171,6 +171,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void filterFeatures( const QgsExpression &filterExpression, const QgsExpressionContext &context );
 
     /**
+     * Bodge to take selected feature categories into account in the applied
+     * filter when the "Reload the table" icon is clicked.
+     */
+    void refreshFilteredFeatures( ) { mFilterModel->refreshFilteredFeatures(); }
+
+    /**
      * Gets a list of currently visible feature ids.
      */
     QgsFeatureIds filteredFeatures() { return mFilterModel->filteredFeatures(); }
