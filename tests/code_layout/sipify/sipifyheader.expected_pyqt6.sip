@@ -61,7 +61,7 @@ typedef QtClass<QVariant> QtClassQVariantBase /NoTypeName/;
 class QgsSipifyHeader : QtClassQVariantBase
 {
 %Docstring(signature="appended")
-Documentation goes here
+Documentation goes here.
 
 Here's some comment mentioning another class :py:class:`QgsAutoAwesomemater`.makeAwesome.
 
@@ -371,7 +371,7 @@ remove argument
 class ClassWithPrivateInheritanceOnly /Abstract/
 {
 %Docstring(signature="appended")
-Documentation goes here
+Documentation goes here.
 %End
 
 %TypeHeaderCode
@@ -388,7 +388,7 @@ A constructor with definition in header on several lines
 class AbstractClass /Abstract/
 {
 %Docstring(signature="appended")
-Documentation goes here
+Documentation goes here.
 %End
 
 %TypeHeaderCode
