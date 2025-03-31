@@ -24,6 +24,7 @@ class CodeSnippetType(Enum):
     NotCodeSnippet = auto()
     NotSpecified = auto()
     Cpp = auto()
+    Literal = auto()
 
 
 class PrependType(Enum):
@@ -787,6 +788,17 @@ def process_doxygen_line(line: str) -> str:
             else f"\n.. code-block::{codelang}\n\n"
         )
 
+    literal_block_match = re.match(r"\s*~~~.*", line)
+    if literal_block_match:
+        if CONTEXT.comment_code_snippet == CodeSnippetType.Literal:
+            # end of literal block
+            CONTEXT.comment_code_snippet = CodeSnippetType.NotCodeSnippet
+            return "\n"
+        else:
+            # start of literal block
+            CONTEXT.comment_code_snippet = CodeSnippetType.Literal
+            return f"\n::\n\n"
+
     if re.search(r"\\endcode", line):
         CONTEXT.comment_code_snippet = CodeSnippetType.NotCodeSnippet
         return "\n"
@@ -1022,6 +1034,155 @@ def detect_and_remove_following_body_or_initializerlist():
         CONTEXT.current_line = newline
 
     return signature
+
+
+def split_to_paragraphs(text: str) -> list[list[str]]:
+    """
+    Splits docstring text to paragraphs, return a list of lines
+    for each paragraph.
+    """
+    if not text:
+        return []
+
+    # discard empty lines from start
+    comment_lines = text.split("\n")
+    while not comment_lines[0].strip():
+        del comment_lines[0]
+        if not comment_lines:
+            return []
+
+    current_paragraph = []
+    paragraphs = []
+    for line in comment_lines:
+        if line:
+            current_paragraph.append(line)
+        else:
+            paragraphs.append(current_paragraph[:])
+            current_paragraph = []
+    if current_paragraph:
+        paragraphs.append(current_paragraph[:])
+
+    return paragraphs
+
+
+def wrap_docstring_list_paragraph(
+    paragraph: list[str], prefix: str = "-", max_width: int = 72
+) -> str:
+    # list
+    list_entries = []
+    current_entry = []
+    for line in paragraph:
+        if line.strip().startswith(prefix):
+            if current_entry:
+                list_entries.append(current_entry[:])
+            current_entry = [re.match(rf"\s*{prefix}\s*(.*)$", line).group(1)]
+        else:
+            current_entry.append(re.match(r"\s*(.*?)$", line).group(1))
+    if current_entry:
+        list_entries.append(current_entry)
+
+    res = ""
+    for entry in list_entries:
+        this_entry_prefix = prefix
+        if prefix.startswith(":"):
+            suffix = re.match(rf"^\s*(.*?:).*", entry[0]).group(1)
+            if suffix != ":":
+                this_entry_prefix = prefix + " " + suffix
+            else:
+                this_entry_prefix = prefix + ":"
+            indentation = len(this_entry_prefix) + 1
+            entry[0] = entry[0][len(suffix) + 1 :]
+            if entry[0] and entry[0][0] == "-":
+                current_entry = wrap_docstring_list_paragraph(
+                    entry, max_width=max_width - indentation
+                )
+            else:
+                current_entry = wrap_text(
+                    " ".join(entry), width=max_width - indentation
+                )
+        else:
+            indentation = len(this_entry_prefix) + 1
+            current_entry = wrap_text(" ".join(entry), width=max_width - indentation)
+
+        for line_idx, line in enumerate(current_entry.split("\n")):
+            if res:
+                res += "\n"
+            res += (
+                f"{this_entry_prefix} " if line_idx == 0 else " " * indentation
+            ) + line
+    return res
+
+
+def wrap_docstring_paragraph(paragraph: list[str]) -> str:
+    """
+    Wraps a docstring paragraph, correctly handling lists and
+    other complex formatting
+    """
+    if not paragraph:
+        return ""
+
+    if len(paragraph) == 2 and paragraph[1][0] in ("-", "=", "^"):
+        # headings, no wrapping
+        return "\n".join(paragraph)
+    elif paragraph[0].startswith("-"):
+        # list
+        return wrap_docstring_list_paragraph(paragraph)
+    elif paragraph[0].startswith(":param"):
+        return wrap_docstring_list_paragraph(paragraph, prefix=":param")
+    elif paragraph[0].startswith(":return"):
+        return wrap_docstring_list_paragraph(paragraph, prefix=":return")
+    elif paragraph[0].startswith(":raises"):
+        return wrap_docstring_list_paragraph(paragraph, prefix=":raises")
+    elif (
+        paragraph[0].startswith(".")
+        or (paragraph[0].startswith(":") and not paragraph[0].startswith(":py:"))
+        or paragraph[0].startswith("  ")
+        or paragraph[0].startswith("1.")
+    ):
+        # don't try to wrap complex paragraphs (for now)
+        return "\n".join(paragraph)
+    else:
+        return wrap_text(" ".join(paragraph)).strip()
+
+
+def wrap_text(text: str, width=72):
+    """
+    Reformat a paragraph of text so that lines are wrapped at a specified width.
+
+    Args:
+        text (str): The input text to be reformatted
+        width (int, optional): The maximum line width. Defaults to 80.
+
+    Returns:
+        str: The reformatted text with lines wrapped at the specified width
+    """
+    # Remove any existing line breaks and extra spaces
+    text = " ".join(text.split())
+
+    result = []
+    current_line = []
+    current_length = 0
+
+    for word in text.split():
+        # If adding this word would exceed the width
+        if current_length + len(word) + (1 if current_length > 0 else 0) > width:
+            # Add the current line to the result
+            result.append(" ".join(current_line))
+            # Start a new line with the current word
+            current_line = [word]
+            current_length = len(word)
+        else:
+            # Add the word to the current line
+            if current_length > 0:
+                current_length += 1  # Account for the space
+            current_line.append(word)
+            current_length += len(word)
+
+    # Add the last line
+    if current_line:
+        result.append(" ".join(current_line))
+
+    return "\n".join(result)
 
 
 def remove_following_body_or_initializerlist():
@@ -1908,25 +2069,9 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.current_line += "\n{\n"
         if CONTEXT.comment.strip():
             # find out how long the first paragraph in the class docstring is.
-            first_paragraph = []
-            finished_first_paragraph = False
-            remaining_parts = []
-            docstring_parts = []
-            # discard empty parts from start of docstring
-            for part in CONTEXT.comment.split("\n"):
-                if docstring_parts:
-                    docstring_parts.append(part)
-                elif part.strip():
-                    docstring_parts.append(part)
+            paragraphs = split_to_paragraphs(CONTEXT.comment)
 
-            for docstring_line in docstring_parts:
-                if docstring_line and not finished_first_paragraph:
-                    first_paragraph.append(docstring_line)
-                else:
-                    finished_first_paragraph = True
-                    remaining_parts.append(docstring_line)
-
-            first_paragraph = "\n".join(first_paragraph).strip()
+            first_paragraph = wrap_docstring_paragraph(paragraphs[0])
             if re.search(
                 r"(?<![a-z]\.[a-z])(?<!e\.g)(?<!i\.e)(?<!\w\.\w)(?<![A-Z][a-z]\.)(?<![A-Z]\.)(?<=\w)\.(?=\s+[A-Z])",
                 first_paragraph,
@@ -1939,10 +2084,9 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is not a complete sentence. Ensure it has a trailing '.':\n\n{first_paragraph}"
                 )
 
-            remaining_parts = "\n".join(remaining_parts)
             docstring = first_paragraph
-            if remaining_parts.strip():
-                docstring += "\n" + remaining_parts
+            for paragraph in paragraphs[1:]:
+                docstring += "\n\n" + wrap_docstring_paragraph(paragraph)
 
             CONTEXT.current_line += (
                 '%Docstring(signature="appended")\n' + docstring + "\n%End\n"
@@ -3171,6 +3315,15 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                                 doc_string += f"{doc_prepend}         - {out_param}\n"
 
                 dbg_info(f"doc_string is {doc_string}")
+
+                doc_string_paragraphs = split_to_paragraphs(doc_string)
+                doc_string = ""
+                for paragraph in doc_string_paragraphs:
+                    doc_string += (
+                        "\n\n" if doc_string else ""
+                    ) + wrap_docstring_paragraph(paragraph)
+                doc_string += "\n"
+
                 write_output("DS", doc_string)
                 if CONTEXT.access[-1] == Visibility.Signals and doc_string:
                     dbg_info("storing signal docstring")
