@@ -27,12 +27,15 @@
  *
  * A valid value for this parameter is a list (QVariantList), where each
  * item is a map (QVariantMap) in this form:
+ *
+ * \code{.py}
  * {
  *   'inputFile':  string,
  *   'outputFile': string,
  *   'resampleMethod': int,
  *   'rescale': bool,
  * }
+ * \endcode
  *
  * Also it can accept lists (either string lists or QgsMapLayer list)
  * as well as individual layer object or string representing layer source.
