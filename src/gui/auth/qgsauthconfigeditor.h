@@ -29,7 +29,7 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * \brief Widget for editing authentication configuration database
+ * \brief Widget for editing authentication configuration database.
  */
 class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfigEditor
 {

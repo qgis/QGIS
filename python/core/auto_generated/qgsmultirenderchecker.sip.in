@@ -162,7 +162,7 @@ without requiring a transparent background for the image
 class QgsLayoutChecker : QgsMultiRenderChecker
 {
 %Docstring(signature="appended")
-Renders a layout to an image and compares with an expected output
+Renders a layout to an image and compares with an expected output.
 %End
 
 %TypeHeaderCode

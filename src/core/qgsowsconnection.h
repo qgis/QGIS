@@ -85,7 +85,7 @@ class CORE_EXPORT QgsArcGisConnectionSettings SIP_SKIP
 
 /**
  * \ingroup core
- * \brief Connections management
+ * \brief Connections management for OWS connections.
  */
 class CORE_EXPORT QgsOwsConnection : public QObject
 {

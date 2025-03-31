@@ -273,7 +273,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 /**
  * \ingroup gui
  * \class QgsRelationEditorConfigWidget
- * \brief Creates a new configuration widget for the relation editor widget
+ * \brief Creates a new configuration widget for the relation editor widget.
  * \since QGIS 3.18
  */
 class GUI_EXPORT QgsRelationEditorConfigWidget : public QgsAbstractRelationEditorConfigWidget, private Ui::QgsRelationEditorConfigWidgetBase

@@ -66,9 +66,8 @@ typedef QVector<QgsLayoutTableColumn> QgsLayoutTableSortColumns;
 /**
  * \ingroup core
  *  \class QgsLayoutTableStyle
- *  \brief Styling option for a layout table cell
+ *  \brief Styling option for a layout table cell.
  */
-
 class CORE_EXPORT QgsLayoutTableStyle
 {
   public:

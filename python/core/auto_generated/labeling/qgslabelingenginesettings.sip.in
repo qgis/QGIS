@@ -11,7 +11,7 @@
 class QgsLabelingEngineSettings
 {
 %Docstring(signature="appended")
-Stores global configuration for labeling engine
+Stores global configuration for labeling engine.
 %End
 
 %TypeHeaderCode

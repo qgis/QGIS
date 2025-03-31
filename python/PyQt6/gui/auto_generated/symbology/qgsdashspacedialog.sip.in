@@ -13,7 +13,7 @@
 class QgsDashSpaceWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A widget to enter a custom dash space pattern for lines
+A widget for entering a custom dash space pattern for lines.
 
 .. versionadded:: 3.8
 %End
@@ -44,7 +44,7 @@ Sets the unit type used for the dash space pattern (used to update interface lab
 class QgsDashSpaceDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog to enter a custom dash space pattern for lines
+A dialog for entering a custom dash space pattern for lines.
 %End
 
 %TypeHeaderCode

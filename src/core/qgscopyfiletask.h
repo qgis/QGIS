@@ -20,7 +20,7 @@
 
 /**
  * \ingroup core
- * \brief Task to copy a file on disk
+ * \brief Task to copy a file on disk.
  *
  * \since QGIS 3.22
  */

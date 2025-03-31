@@ -24,7 +24,7 @@ class QgsPalLayerSettings;
 
 /**
  * \ingroup core
- * \brief Configuration of a single style within QgsVectorTileBasicLabeling
+ * \brief Configuration of a single style within QgsVectorTileBasicLabeling.
  *
  * \since QGIS 3.14
  */

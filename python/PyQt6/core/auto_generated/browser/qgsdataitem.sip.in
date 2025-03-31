@@ -530,7 +530,7 @@ Will request a repaint of this icon.
 class QgsErrorItem : QgsDataItem
 {
 %Docstring(signature="appended")
-Data item that can be used to report problems (e.g. network error)
+A browser item that can be used to report problems (e.g. network error).
 %End
 
 %TypeHeaderCode

@@ -157,7 +157,7 @@ Defines the current configuration
 class QgsRelationEditorConfigWidget : QgsAbstractRelationEditorConfigWidget
 {
 %Docstring(signature="appended")
-Creates a new configuration widget for the relation editor widget
+Creates a new configuration widget for the relation editor widget.
 
 .. versionadded:: 3.18
 %End

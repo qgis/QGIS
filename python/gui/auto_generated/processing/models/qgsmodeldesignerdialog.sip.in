@@ -15,7 +15,7 @@
 class QgsModelDesignerDialog : QMainWindow
 {
 %Docstring(signature="appended")
-Model designer dialog base class
+Model designer dialog base class.
 
 .. warning::
 

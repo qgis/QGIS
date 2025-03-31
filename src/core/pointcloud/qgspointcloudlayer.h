@@ -36,7 +36,7 @@ class QgsAbstractPointCloud3DRenderer;
 /**
  * \ingroup core
  *
- * \brief Represents a map layer supporting display of point clouds
+ * \brief Represents a map layer supporting display of point clouds.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

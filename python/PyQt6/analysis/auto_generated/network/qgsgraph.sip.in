@@ -98,7 +98,7 @@ Returns point associated with graph vertex.
 class QgsGraph
 {
 %Docstring(signature="appended")
-Mathematical graph representation
+Mathematical graph representation.
 %End
 
 %TypeHeaderCode

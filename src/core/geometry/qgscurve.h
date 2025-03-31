@@ -29,7 +29,7 @@ class QgsLineString;
 /**
  * \ingroup core
  * \class QgsCurve
- * \brief Abstract base class for curved geometry type
+ * \brief Abstract base class for curved geometry type.
  */
 class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 {

@@ -24,7 +24,7 @@ class QgsFeatureIterator;
 
 /**
  * \ingroup core
- * \brief Abstract base class for cache indices
+ * \brief Abstract base class for cache indices.
  */
 class CORE_EXPORT QgsAbstractCacheIndex
 {

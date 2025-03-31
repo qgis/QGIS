@@ -12,7 +12,7 @@
 class QgsColorSchemeRegistry
 {
 %Docstring(signature="appended")
-Registry of color schemes
+Registry of color schemes.
 
 A registry of :py:class:`QgsColorScheme` color schemes. This class can be created directly, or
 accessed via a :py:func:`QgsApplication.colorSchemeRegistry()`.

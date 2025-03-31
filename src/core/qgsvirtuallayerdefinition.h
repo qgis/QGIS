@@ -34,8 +34,8 @@ class CORE_EXPORT QgsVirtualLayerDefinition
 
     /**
      * \ingroup core
-     * \brief A SourceLayer is either a reference to a live layer in the registry
-     * or all the parameters needed to load it (provider key, source, etc.)
+     * \brief Either a reference to a live layer in the registry
+     * or all the parameters needed to load it (provider key, source, etc.).
      */
     class CORE_EXPORT SourceLayer
     {

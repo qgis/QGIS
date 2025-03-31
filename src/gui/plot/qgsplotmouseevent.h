@@ -27,7 +27,7 @@ class QgsPlotCanvas;
 
 /**
  * \ingroup gui
- * \brief A QgsPlotMouseEvent is the result of a user interaction with the mouse on a QgsPlotCanvas.
+ * \brief A mouse event which is the result of a user interaction with a QgsPlotCanvas.
  *
  * The event is sent whenever the user moves, clicks, releases or double clicks the mouse.
  *

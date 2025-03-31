@@ -19,7 +19,7 @@
 class QgsLayoutItem3DMap : QgsLayoutItem, QgsTemporalRangeObject
 {
 %Docstring(signature="appended")
-Implements support of 3D map views in print layouts
+Implements support of 3D map views in print layouts.
 
 .. versionadded:: 3.4
 %End

@@ -12,7 +12,7 @@
 class QgsAnnotationItemCommonPropertiesWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget for configuring common properties for :py:class:`QgsAnnotationItems`
+A widget for configuring common properties for :py:class:`QgsAnnotationItems`.
 
 .. versionadded:: 3.22
 %End

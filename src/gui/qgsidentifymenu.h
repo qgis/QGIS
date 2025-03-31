@@ -41,7 +41,7 @@ class CustomActionRegistry : public QgsMapLayerActionRegistry
 
 /**
  * \ingroup gui
- * \brief Builds a menu to be used with identify results
+ * \brief Builds a menu to be used with identify results.
  *
  * It is customizable and can display attribute actions (\see QgsAction) as well as map layer actions (\see QgsMapLayerAction).
  * It can also embed custom map layer actions, defined for this menu exclusively.

@@ -15,7 +15,7 @@
 class QgsGeometryCollection: QgsAbstractGeometry
 {
 %Docstring(signature="appended")
-Geometry collection
+Geometry collection.
 %End
 
 %TypeHeaderCode

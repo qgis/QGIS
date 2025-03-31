@@ -24,7 +24,7 @@
 /**
  * \ingroup core
  * \class QgsEffectStack
- * \brief A paint effect which consists of a stack of other chained paint effects
+ * \brief A paint effect which consists of a stack of other chained paint effects.
  *
  * Effect stacks can be used to apply multiple paint effects to a QPicture. For
  * instance, an effect stack may blur then apply a drop shadow.

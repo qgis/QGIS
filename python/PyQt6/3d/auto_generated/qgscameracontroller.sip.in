@@ -15,7 +15,7 @@
 class QgsCameraController : QObject
 {
 %Docstring(signature="appended")
-Object that controls camera movement based on user input
+Object that controls camera movement based on user input.
 %End
 
 %TypeHeaderCode

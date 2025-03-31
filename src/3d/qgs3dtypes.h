@@ -20,7 +20,7 @@
 
 /**
  * \ingroup qgis_3d
- * \brief Defines enumerations and other auxiliary types for QGIS 3D
+ * \brief Defines enumerations and other auxiliary types for QGIS 3D.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.

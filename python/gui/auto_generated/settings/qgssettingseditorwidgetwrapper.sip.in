@@ -14,7 +14,7 @@
 class QgsSettingsEditorWidgetWrapper : QObject
 {
 %Docstring(signature="appended")
-Base class for settings editor wrappers
+Base class for settings editor wrappers.
 
 .. versionadded:: 3.32
 %End

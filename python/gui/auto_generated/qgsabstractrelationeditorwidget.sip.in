@@ -406,7 +406,7 @@ Returns the nm relation for which this configuration widget applies
 class QgsAbstractRelationEditorWidgetFactory
 {
 %Docstring(signature="appended")
-Factory class for creating relation widgets and their corresponding config widgets
+Factory class for creating relation widgets and their corresponding config widgets.
 
 .. versionadded:: 3.18
 %End

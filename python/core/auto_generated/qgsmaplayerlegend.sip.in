@@ -83,7 +83,7 @@ Emitted when existing items/nodes got invalid and should be replaced by new ones
 class QgsMapLayerLegendUtils
 {
 %Docstring(signature="appended")
-Miscellaneous utility functions for handling of map layer legend
+Miscellaneous utility functions for handling of map layer legend.
 %End
 
 %TypeHeaderCode
@@ -227,7 +227,7 @@ update according to layer node's custom properties (order of items, user labels 
 class QgsDefaultVectorLayerLegend : QgsMapLayerLegend
 {
 %Docstring(signature="appended")
-Default legend implementation for vector layers
+Default legend implementation for vector layers.
 %End
 
 %TypeHeaderCode
@@ -313,7 +313,7 @@ the keys are rule keys of legend items, the values are labels to be shown.
 class QgsDefaultRasterLayerLegend : QgsMapLayerLegend
 {
 %Docstring(signature="appended")
-Default legend implementation for raster layers
+Default legend implementation for raster layers.
 %End
 
 %TypeHeaderCode
@@ -331,7 +331,7 @@ Default legend implementation for raster layers
 class QgsDefaultMeshLayerLegend : QgsMapLayerLegend
 {
 %Docstring(signature="appended")
-Default legend implementation for mesh layers
+Default legend implementation for mesh layers.
 
 .. versionadded:: 3.4
 %End
@@ -353,7 +353,7 @@ Creates an instance for the given mesh layer
 class QgsDefaultPointCloudLayerLegend : QgsMapLayerLegend
 {
 %Docstring(signature="appended")
-Default legend implementation for point cloud layers
+Default legend implementation for point cloud layers.
 
 .. versionadded:: 3.18
 %End

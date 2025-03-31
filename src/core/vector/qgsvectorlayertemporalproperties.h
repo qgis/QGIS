@@ -32,7 +32,7 @@ class QgsFields;
  * \class QgsVectorLayerTemporalContext
  * \ingroup core
  * \brief Encapsulates the context in which a QgsVectorLayer's temporal capabilities
- * will be applied
+ * will be applied.
  *
  * \since QGIS 3.14
  */

@@ -432,7 +432,7 @@ Sets the ``margins`` of the plot area (in millimeters)
 class QgsPlotDefaultSettings
 {
 %Docstring(signature="appended")
-Manages default settings for plot objects
+Manages default settings for plot objects.
 
 .. warning::
 

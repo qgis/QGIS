@@ -110,7 +110,7 @@ Returns the break values, graduated colors and the associated gradients between 
 class QgsInterpolatedLineWidth
 {
 %Docstring(signature="appended")
-Represents a width than can vary depending on values
+Represents a width that can vary depending on values.
 
 .. versionadded:: 3.14
 %End
@@ -296,8 +296,9 @@ Sets if the rendering must be done as the element is selected
 class QgsInterpolatedLineSymbolLayer : QgsLineSymbolLayer
 {
 %Docstring(signature="appended")
-A symbol layer that represents vector layer line feature as interpolated line
-The interpolation is done between two values defined at the extremities
+A symbol layer that represents vector layer line features as interpolated lines.
+
+The interpolation is done between two values defined at the extremities.
 
 .. versionadded:: 3.20
 %End

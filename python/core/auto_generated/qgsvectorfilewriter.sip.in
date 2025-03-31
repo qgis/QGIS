@@ -349,7 +349,7 @@ Writes a layer out to a vector file.
     class SaveVectorOptions
 {
 %Docstring(signature="appended")
-Options to pass to :py:func:`~QgsVectorFileWriter.writeAsVectorFormat`
+Options to pass to :py:func:`QgsVectorFileWriter.writeAsVectorFormat()`.
 %End
 
 %TypeHeaderCode

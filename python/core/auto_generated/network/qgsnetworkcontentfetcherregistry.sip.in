@@ -13,7 +13,7 @@
 class QgsFetchedContent : QObject
 {
 %Docstring(signature="appended")
-FetchedContent holds useful information about a network content being fetched
+Holds information about fetched network content.
 
 .. seealso:: :py:class:`QgsNetworkContentFetcherRegistry`
 
@@ -95,7 +95,7 @@ Emitted when an error with ``code`` error occurred while processing the request
 class QgsNetworkContentFetcherRegistry : QObject
 {
 %Docstring(signature="appended")
-Registry for temporary fetched files
+Registry for temporary fetched files.
 
 This provides a simple way of downloading and accessing
 remote files during QGIS application running.

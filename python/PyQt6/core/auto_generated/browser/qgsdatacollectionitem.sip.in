@@ -11,7 +11,9 @@
 class QgsDataCollectionItem : QgsDataItem
 {
 %Docstring(signature="appended")
-A Collection: logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
+A browser item for collections of data.
+
+These represent logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
 %End
 
 %TypeHeaderCode

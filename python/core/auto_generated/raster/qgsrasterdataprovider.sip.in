@@ -17,7 +17,7 @@
 class QgsImageFetcher : QObject
 {
 %Docstring(signature="appended")
-Handles asynchronous download of images
+Handles asynchronous download of images.
 %End
 
 %TypeHeaderCode

@@ -221,7 +221,7 @@ Returns ``True`` if the model allows the empty layout ("not set") choice.
 class QgsLayoutManagerProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-QSortFilterProxyModel subclass for :py:class:`QgsLayoutManagerModel`
+QSortFilterProxyModel subclass for :py:class:`QgsLayoutManagerModel`.
 
 .. versionadded:: 3.8
 %End

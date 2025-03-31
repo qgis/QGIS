@@ -13,7 +13,7 @@
 class QgsTinInterpolator : QgsInterpolator
 {
 %Docstring(signature="appended")
-Interpolation in a triangular irregular network
+Interpolation in a triangular irregular network.
 %End
 
 %TypeHeaderCode

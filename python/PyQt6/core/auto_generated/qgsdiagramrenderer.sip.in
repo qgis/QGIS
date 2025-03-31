@@ -820,7 +820,7 @@ Writes internal QgsDiagramRenderer diagram state to a DOM element.
 class QgsSingleCategoryDiagramRenderer : QgsDiagramRenderer
 {
 %Docstring(signature="appended")
-Renders the diagrams for all features with the same settings
+Renders the diagrams for all features with the same settings.
 %End
 
 %TypeHeaderCode

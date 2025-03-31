@@ -11,7 +11,7 @@
 class QgsEmbeddedSymbolRendererWidget : QgsRendererWidget
 {
 %Docstring(signature="appended")
-A widget used represent options of a :py:class:`QgsEmbeddedSymbolRenderer`
+A widget for configuring options for a :py:class:`QgsEmbeddedSymbolRenderer`.
 
 .. versionadded:: 3.20
 %End

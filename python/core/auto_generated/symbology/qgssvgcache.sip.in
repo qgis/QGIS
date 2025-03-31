@@ -15,7 +15,7 @@
 class QgsSvgCache : QgsAbstractContentCacheBase
 {
 %Docstring(signature="appended")
-A cache for images / pictures derived from SVG files
+A cache for images / pictures derived from SVG files.
 
 This class supports parameter replacement in SVG files according to the SVG params specification
 (http://www.w3.org/TR/2009/WD-SVGParamPrimer-20090616/).

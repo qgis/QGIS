@@ -65,7 +65,7 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 /**
  * \ingroup core
  * \class QgsAbstractGeometry
- * \brief Abstract base class for all geometries
+ * \brief Abstract base class for all geometries.
  *
  * \note QgsAbstractGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
  * of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilize
@@ -1208,7 +1208,7 @@ inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 
 /**
  * \ingroup core
- * \brief Java-style iterator for traversal of vertices of a geometry
+ * \brief Java-style iterator for traversal of vertices of a geometry.
  */
 class CORE_EXPORT QgsVertexIterator
 {
@@ -1256,7 +1256,7 @@ class CORE_EXPORT QgsVertexIterator
 
 /**
  * \ingroup core
- * \brief Java-style iterator for traversal of parts of a geometry
+ * \brief Java-style iterator for traversal of parts of a geometry.
  * \since QGIS 3.6
  */
 class CORE_EXPORT QgsGeometryPartIterator
@@ -1306,7 +1306,7 @@ class CORE_EXPORT QgsGeometryPartIterator
 
 /**
  * \ingroup core
- * \brief Java-style iterator for const traversal of parts of a geometry
+ * \brief Java-style iterator for const traversal of parts of a geometry.
  * \since QGIS 3.6
  */
 class CORE_EXPORT QgsGeometryConstPartIterator

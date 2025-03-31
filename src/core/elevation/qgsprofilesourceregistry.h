@@ -26,7 +26,7 @@ class QgsAbstractProfileSource;
 
 /**
  * \ingroup core
- * \brief Registry of profile sources used by QgsProfilePlotRenderer
+ * \brief Registry of profile sources used by QgsProfilePlotRenderer.
  *
  * QgsProfileSourceRegistry is not usually directly created, but rather accessed through
  * QgsApplication::profileSourceRegistry().

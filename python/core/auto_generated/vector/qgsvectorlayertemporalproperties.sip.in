@@ -15,7 +15,7 @@ class QgsVectorLayerTemporalContext
 {
 %Docstring(signature="appended")
 Encapsulates the context in which a :py:class:`QgsVectorLayer`'s temporal capabilities
-will be applied
+will be applied.
 
 .. versionadded:: 3.14
 %End

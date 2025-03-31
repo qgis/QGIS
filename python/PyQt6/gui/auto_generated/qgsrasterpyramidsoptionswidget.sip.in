@@ -13,7 +13,7 @@
 class QgsRasterPyramidsOptionsWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget to select format-specific raster saving options
+A widget to select format-specific raster saving options.
 %End
 
 %TypeHeaderCode

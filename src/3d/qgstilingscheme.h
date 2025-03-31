@@ -28,7 +28,7 @@ struct QgsChunkNodeId;
 
 /**
  * \ingroup qgis_3d
- * \brief The class encapsulates tiling scheme (just like with WMTS / TMS / XYZ layers).
+ * \brief Encapsulates tiling schemes (just like with WMTS / TMS / XYZ layers).
  *
  * The origin (tile [0,0]) is in bottom-left corner.
  * \note Not available in Python bindings

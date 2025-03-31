@@ -15,7 +15,7 @@
 class QgsPointCloudNodeId
 {
 %Docstring(signature="appended")
-Represents a indexed point cloud node's position in octree
+Represents a indexed point cloud node's position in octree.
 
 .. note::
 
@@ -94,7 +94,7 @@ Hash function for indexed nodes
 class QgsPointCloudNode
 {
 %Docstring(signature="appended")
-Keeps metadata for indexed point cloud node
+Keeps metadata for indexed point cloud node.
 
 .. note::
 
@@ -151,7 +151,7 @@ Returns bounding box of specific node
 class QgsPointCloudIndex /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-Smart pointer for :py:class:`QgsAbstractPointCloudIndex`
+Smart pointer for :py:class:`QgsAbstractPointCloudIndex`.
 
 This is a wrapper for :py:class:`QgsAbstractPointCloudIndex`, an index for point cloud
 layers. It contains a shared_pointer, ensuring that concurrent access to the

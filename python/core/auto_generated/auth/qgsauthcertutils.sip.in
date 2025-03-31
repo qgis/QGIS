@@ -16,7 +16,7 @@
 class QgsAuthCertUtils
 {
 %Docstring(signature="appended")
-Utilities for working with certificates and keys
+Utilities for working with certificates and keys.
 %End
 
 %TypeHeaderCode

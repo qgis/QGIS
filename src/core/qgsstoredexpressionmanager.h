@@ -86,7 +86,7 @@ class CORE_EXPORT QgsStoredExpression
 
 /**
  * \ingroup core
- * \brief Manages stored expressions regarding creation, modification and storing in the project
+ * \brief Manages stored expressions regarding creation, modification and storing in the project.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStoredExpressionManager : public QObject

@@ -14,7 +14,7 @@
 class QgsBilinearRasterResampler: QgsRasterResamplerV2
 {
 %Docstring(signature="appended")
-Bilinear Raster Resampler
+Bilinear raster resampler.
 %End
 
 %TypeHeaderCode

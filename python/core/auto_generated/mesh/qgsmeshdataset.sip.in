@@ -17,7 +17,7 @@ class QgsMeshDatasetIndex
 {
 %Docstring(signature="appended")
 An index that identifies the dataset group (e.g. wind speed)
-and a dataset in this group (e.g. magnitude of wind speed in particular time)
+and a dataset in this group (e.g. magnitude of wind speed in particular time).
 
 .. note::
 
@@ -124,7 +124,7 @@ Returns y value
 class QgsMeshDataBlock
 {
 %Docstring(signature="appended")
-A block of integers/doubles from a mesh dataset
+A block of integers/doubles from a mesh dataset.
 
 :py:class:`QgsMeshDataBlock` can be used to retrieve:
 
@@ -373,7 +373,7 @@ class QgsMeshDatasetGroupMetadata
 {
 %Docstring(signature="appended")
 A collection of dataset group metadata
-such as whether the data is vector or scalar, name
+such as whether the data is vector or scalar, name.
 
 .. note::
 
@@ -570,7 +570,7 @@ Returns maximum number of vertical levels for 3d stacked meshes
 class QgsMeshDataset
 {
 %Docstring(signature="appended")
-Abstract class that represents a dataset
+Abstract class that represents a mesh dataset.
 
 .. versionadded:: 3.16
 %End
@@ -618,7 +618,7 @@ Returns the values count
 class QgsMeshDatasetGroup
 {
 %Docstring(signature="appended")
-Abstract class that represents a dataset group
+Abstract class that represents a dataset group.
 
 .. versionadded:: 3.16
 %End

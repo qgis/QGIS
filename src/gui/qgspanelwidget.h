@@ -24,7 +24,7 @@ class QMenu;
 
 /**
  * \ingroup gui
- * \brief Base class for any widget that can be shown as a inline panel
+ * \brief Base class for any widget that can be shown as a inline panel.
  */
 class GUI_EXPORT QgsPanelWidget : public QWidget
 {

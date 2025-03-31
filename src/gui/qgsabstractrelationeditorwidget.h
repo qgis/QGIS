@@ -411,7 +411,7 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 
 
 /**
- * Factory class for creating relation widgets and their corresponding config widgets
+ * Factory class for creating relation widgets and their corresponding config widgets.
  * \ingroup gui
  * \class QgsAbstractRelationEditorWidgetFactory
  * \since QGIS 3.18

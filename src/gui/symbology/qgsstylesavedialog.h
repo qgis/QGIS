@@ -27,7 +27,7 @@
 
 /**
  * \ingroup gui
- * \brief a dialog for setting properties of a newly saved style.
+ * \brief A dialog for setting properties of a newly saved style.
 */
 class GUI_EXPORT QgsStyleSaveDialog : public QDialog, private Ui::QgsStyleSaveDialog
 {

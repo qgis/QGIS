@@ -47,7 +47,7 @@ class QgsVectorLayerFeatureIterator;
 
 /**
  * \ingroup core
- * \brief Partial snapshot of vector layer's state (only the members necessary for access to features)
+ * \brief Partial snapshot of vector layer's state (only the members necessary for access to features).
 */
 class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {

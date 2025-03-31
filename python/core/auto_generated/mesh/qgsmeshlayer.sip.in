@@ -14,7 +14,7 @@
 class QgsMeshLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
-Represents a mesh layer supporting display of data on structured or unstructured meshes
+Represents a mesh layer supporting display of data on structured or unstructured meshes.
 
 The :py:class:`QgsMeshLayer` is instantiated by specifying the name of a data provider,
 such as mdal, and url defining the specific data set to connect to.

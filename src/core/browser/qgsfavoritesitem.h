@@ -26,7 +26,7 @@
 
 /**
  * \ingroup core
- * \brief Contains various Favorites directories
+ * \brief A browser item which contains various Favorites directories.
 */
 class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 {

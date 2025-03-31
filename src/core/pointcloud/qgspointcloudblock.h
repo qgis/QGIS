@@ -29,7 +29,7 @@
 
 /**
  * \ingroup core
- * \brief Base class for storing raw data from point cloud nodes
+ * \brief Base class for storing raw data from point cloud nodes.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

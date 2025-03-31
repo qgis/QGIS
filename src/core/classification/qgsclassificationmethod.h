@@ -43,7 +43,7 @@ class QgsRendererRange;
 
 /**
  * \ingroup core
- * \brief Contains the information about a classification range
+ * \brief Contains the information about a classification range.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsClassificationRange

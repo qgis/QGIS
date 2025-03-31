@@ -13,7 +13,7 @@
 class QgsMeshRendererMeshSettings
 {
 %Docstring(signature="appended")
-Represents a mesh renderer settings for mesh object
+Represents a mesh renderer settings for mesh object.
 
 .. note::
 
@@ -81,7 +81,7 @@ Reads configuration from the given DOM element
 class QgsMeshRendererScalarSettings
 {
 %Docstring(signature="appended")
-Represents a mesh renderer settings for scalar datasets
+Represents a mesh renderer settings for scalar datasets.
 
 .. note::
 
@@ -220,7 +220,7 @@ Reads configuration from the given DOM element
 class QgsMeshRendererVectorArrowSettings
 {
 %Docstring(signature="appended")
-Represents a mesh renderer settings for vector datasets displayed with arrows
+Represents a mesh renderer settings for vector datasets displayed with arrows.
 
 .. note::
 
@@ -341,7 +341,7 @@ Reads configuration from the given DOM element
 class QgsMeshRendererVectorStreamlineSettings
 {
 %Docstring(signature="appended")
-Represents a streamline renderer settings for vector datasets displayed by streamlines
+Represents a streamline renderer settings for vector datasets displayed by streamlines.
 
 .. note::
 
@@ -392,7 +392,7 @@ Writes configuration to a new DOM element
 class QgsMeshRendererVectorTracesSettings
 {
 %Docstring(signature="appended")
-Represents a trace renderer settings for vector datasets displayed by particle traces
+Represents a trace renderer settings for vector datasets displayed by particle traces.
 
 .. note::
 
@@ -445,7 +445,7 @@ Writes configuration to a new DOM element
 class QgsMeshRendererVectorWindBarbSettings
 {
 %Docstring(signature="appended")
-Represents a mesh renderer settings for vector datasets displayed with wind barbs
+Represents a mesh renderer settings for vector datasets displayed with wind barbs.
 
 .. note::
 
@@ -527,7 +527,7 @@ Reads configuration from the given DOM element
 class QgsMeshRendererVectorSettings
 {
 %Docstring(signature="appended")
-Represents a renderer settings for vector datasets
+Represents a renderer settings for vector datasets.
 
 .. note::
 
@@ -745,7 +745,7 @@ Reads configuration from the given DOM element
 class QgsMeshRendererSettings
 {
 %Docstring(signature="appended")
-Represents all mesh renderer settings
+Represents all mesh renderer settings.
 
 .. note::
 

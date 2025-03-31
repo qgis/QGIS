@@ -27,7 +27,7 @@ class QgsFeatureSource;
 /**
 * \ingroup analysis
 * \class QgsVectorLayerDirector
-* \brief Determine making the graph from vector line layer
+* \brief Determines creating a graph from a vector line layer.
 */
 class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
 {

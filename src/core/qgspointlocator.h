@@ -88,7 +88,9 @@ namespace SpatialIndex SIP_SKIP
 
 /**
  * \ingroup core
- * \brief The class defines interface for querying point location:
+ * \brief Defines the interface for querying point locations.
+ *
+ * This class offers:
  *
  * - query nearest vertices / edges to a point
  * - query vertices / edges in rectangle

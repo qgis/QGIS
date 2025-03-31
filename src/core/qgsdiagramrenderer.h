@@ -869,7 +869,7 @@ class CORE_EXPORT QgsDiagramRenderer
 
 /**
  * \ingroup core
- * \brief Renders the diagrams for all features with the same settings
+ * \brief Renders the diagrams for all features with the same settings.
 */
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {

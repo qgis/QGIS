@@ -38,7 +38,7 @@ struct QgsRuleBasedRendererCount SIP_SKIP
 
 /**
  * \ingroup gui
- * \brief Tree model for the rules:
+ * \brief Tree model for a rule-based renderer's rules.
  *
  * (invalid)  == root node
  * +--- top level rule

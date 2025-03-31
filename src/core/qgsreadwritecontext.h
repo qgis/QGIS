@@ -28,7 +28,7 @@ class QgsReadWriteContextCategoryPopper;
 /**
  * \class QgsReadWriteContext
  * \ingroup core
- * \brief The class is used as a container of context for various read/write operations on other objects.
+ * \brief A container for the context for various read/write operations on objects.
  */
 class CORE_EXPORT QgsReadWriteContext
 {

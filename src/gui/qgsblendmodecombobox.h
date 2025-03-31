@@ -25,7 +25,7 @@
 
 /**
  * \ingroup gui
- * \brief A combobox which lets the user select blend modes from a predefined list
+ * \brief A combobox which lets the user select blend modes from a predefined list.
  */
 class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
 {

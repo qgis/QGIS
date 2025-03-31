@@ -47,7 +47,7 @@ class QgsAbstractPointCloudIndex;
 /**
  * \ingroup core
  *
- * \brief Represents a indexed point cloud node's position in octree
+ * \brief Represents a indexed point cloud node's position in octree.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -150,7 +150,7 @@ uint qHash( const QgsPointCloudCacheKey &key );
 /**
  * \ingroup core
  *
- * \brief Keeps metadata for indexed point cloud node
+ * \brief Keeps metadata for indexed point cloud node.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
 
 /**
  * \ingroup core
- * \brief Smart pointer for QgsAbstractPointCloudIndex
+ * \brief Smart pointer for QgsAbstractPointCloudIndex.
  *
  * This is a wrapper for QgsAbstractPointCloudIndex, an index for point cloud
  * layers. It contains a shared_pointer, ensuring that concurrent access to the

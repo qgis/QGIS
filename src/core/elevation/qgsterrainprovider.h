@@ -32,7 +32,7 @@ class QgsReadWriteContext;
 class QDomDocument;
 
 /**
- * \brief Abstract base class for terrain providers
+ * \brief Abstract base class for terrain providers.
  *
  * \ingroup core
  * \since QGIS 3.26

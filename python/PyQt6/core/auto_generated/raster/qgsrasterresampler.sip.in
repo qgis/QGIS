@@ -13,7 +13,7 @@
 class QgsRasterResampler
 {
 %Docstring(signature="appended")
-Interface for resampling rasters (e.g. to have a smoother appearance)
+Interface for resampling rasters (e.g. to have a smoother appearance).
 %End
 
 %TypeHeaderCode

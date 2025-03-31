@@ -28,7 +28,7 @@ class QgsExpressionBasedNumericFormat;
 /**
  * \ingroup gui
  * \class QgsNumericFormatWidget
- * \brief Base class for widgets which allow control over the properties of QgsNumericFormat subclasses
+ * \brief Base class for widgets which allow control over the properties of QgsNumericFormat subclasses.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget, public QgsExpressionContextGenerator

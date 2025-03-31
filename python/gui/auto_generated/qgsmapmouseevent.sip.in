@@ -13,7 +13,7 @@
 class QgsMapMouseEvent : QMouseEvent
 {
 %Docstring(signature="appended")
-A :py:class:`QgsMapMouseEvent` is the result of a user interaction with the mouse on a :py:class:`QgsMapCanvas`.
+A mouse event which is the result of a user interaction with a :py:class:`QgsMapCanvas`.
 
 It is sent whenever the user moves, clicks, releases or double clicks the mouse.
 

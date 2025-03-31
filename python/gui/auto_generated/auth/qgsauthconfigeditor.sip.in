@@ -13,7 +13,7 @@
 class QgsAuthConfigEditor : QWidget
 {
 %Docstring(signature="appended")
-Widget for editing authentication configuration database
+Widget for editing authentication configuration database.
 %End
 
 %TypeHeaderCode

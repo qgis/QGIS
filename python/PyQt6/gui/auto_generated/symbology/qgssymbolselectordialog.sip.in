@@ -20,7 +20,7 @@
 class QgsSymbolSelectorWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-Symbol selector widget that can be used to select and build a symbol
+Symbol selector widget that can be used to select and build a symbol.
 %End
 
 %TypeHeaderCode

@@ -27,7 +27,7 @@ class QgsMapToolAdvancedDigitizing;
 
 /**
  * \ingroup gui
- * \brief A QgsMapMouseEvent is the result of a user interaction with the mouse on a QgsMapCanvas.
+ * \brief A mouse event which is the result of a user interaction with a QgsMapCanvas.
  *
  * It is sent whenever the user moves, clicks, releases or double clicks the mouse.
  *

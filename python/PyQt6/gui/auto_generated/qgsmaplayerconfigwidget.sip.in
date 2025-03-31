@@ -91,7 +91,7 @@ Returns the layer tree group associated with the widget.
 class QgsMapLayerConfigWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A panel widget that can be shown in the map style dock
+A panel widget that can be shown in the map style dock.
 %End
 
 %TypeHeaderCode

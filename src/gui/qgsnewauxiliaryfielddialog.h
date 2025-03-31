@@ -25,9 +25,7 @@
 
 /**
  * \ingroup gui
- *
- * \brief A dialog to create a new auxiliary field
- *
+ * \brief A dialog to create a new auxiliary field.
  */
 class GUI_EXPORT QgsNewAuxiliaryFieldDialog : public QDialog, private Ui::QgsNewAuxiliaryFieldDialogBase
 {

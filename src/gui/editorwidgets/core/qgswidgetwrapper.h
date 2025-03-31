@@ -39,8 +39,9 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * \brief Manages an editor widget
- * Widget and wrapper share the same parent
+ * \brief Manages an editor widget.
+ *
+ * Widget and wrapper share the same parent.
  *
  * A wrapper controls one attribute editor widget and is able to create a default
  * widget or use a pre-existent widget. It is able to set the widget to the value implied

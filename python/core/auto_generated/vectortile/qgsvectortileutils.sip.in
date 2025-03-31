@@ -17,7 +17,7 @@
 class QgsVectorTileUtils
 {
 %Docstring(signature="appended")
-Random utility functions for working with vector tiles
+Utility functions for working with vector tiles.
 
 .. versionadded:: 3.14
 %End

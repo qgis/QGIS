@@ -10,7 +10,7 @@
 class QgsHtmlWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring(signature="appended")
-Wraps a QQuickWidget to display HTML code
+Wraps a QQuickWidget to display HTML code.
 
 .. versionadded:: 3.4
 %End

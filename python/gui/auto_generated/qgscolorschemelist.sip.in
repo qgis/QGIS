@@ -11,7 +11,7 @@
 class QgsColorSwatchDelegate : QAbstractItemDelegate
 {
 %Docstring(signature="appended")
-A delegate for showing a color swatch in a list
+A delegate for showing a color swatch in a list.
 
 .. seealso:: :py:class:`QgsColorSchemeList`
 %End
@@ -34,7 +34,7 @@ A delegate for showing a color swatch in a list
 class QgsColorSchemeModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
-A model for colors in a color scheme
+A model for colors in a color scheme.
 
 .. seealso:: :py:class:`QgsColorSchemeList`
 %End

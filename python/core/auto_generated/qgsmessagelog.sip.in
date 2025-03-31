@@ -96,7 +96,7 @@ This will block the log from emitting the messageReceived( bool ) signal for the
 class QgsMessageLogConsole : QObject
 {
 %Docstring(signature="appended")
-Default implementation of message logging interface
+Default implementation of message logging interface.
 
 This class outputs log messages to the standard error. Therefore it might
 be the right choice for applications without GUI.

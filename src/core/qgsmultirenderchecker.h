@@ -192,7 +192,7 @@ class CORE_EXPORT QgsMultiRenderChecker
 /**
  * \ingroup core
  * \class QgsLayoutChecker
- * \brief Renders a layout to an image and compares with an expected output
+ * \brief Renders a layout to an image and compares with an expected output.
  */
 class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
 {

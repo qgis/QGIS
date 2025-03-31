@@ -29,7 +29,7 @@ class QgsRenderContext;
 /**
  * \ingroup core
  * \class QgsPaintEffect
- * \brief Base class for visual effects which can be applied to QPicture drawings
+ * \brief Base class for visual effects which can be applied to QPicture drawings.
  *
  * QgsPaintEffect objects can be used to modify QPicture drawings prior to rendering
  * them with a QPainter operation. There are two methods for drawing using an effect,
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
 /**
  * \ingroup core
  * \class QgsDrawSourceEffect
- * \brief A paint effect which draws the source picture with minor or no alterations
+ * \brief A paint effect which draws the source picture with minor or no alterations.
  *
  * The draw source effect can be used to draw an unaltered copy of the original source
  * picture. Minor changes like lowering the opacity and applying a blend mode are
