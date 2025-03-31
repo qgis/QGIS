@@ -45,7 +45,7 @@ Stored expression containing name, content (expression text) and a category tag.
 class QgsStoredExpressionManager : QObject
 {
 %Docstring(signature="appended")
-Manages stored expressions regarding creation, modification and storing in the project
+Manages stored expressions regarding creation, modification and storing in the project.
 
 .. versionadded:: 3.10
 %End

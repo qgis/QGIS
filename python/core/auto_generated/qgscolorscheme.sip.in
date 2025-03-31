@@ -15,7 +15,7 @@ typedef QList< QPair< QColor, QString > > QgsNamedColorList;
 class QgsColorScheme
 {
 %Docstring(signature="appended")
-Abstract base class for color schemes
+Abstract base class for color schemes.
 
 A color scheme for display in :py:class:`QgsColorButton`. Color schemes return lists
 of colors with an optional associated color name. The colors returned

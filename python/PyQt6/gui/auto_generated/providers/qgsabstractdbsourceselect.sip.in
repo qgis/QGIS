@@ -13,7 +13,7 @@
 class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
 {
 %Docstring(signature="appended")
-The :py:class:`QgsAbstractDbSourceSelect` class is a base class for database source widget selector
+Base class for database source widget selectors.
 
 .. versionadded:: 3.24
 %End

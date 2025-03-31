@@ -29,7 +29,7 @@ class QgsPanelWidget;
 /**
  * \ingroup gui
  * \class QgsColorSwatchDelegate
- * \brief A delegate for showing a color swatch in a list
+ * \brief A delegate for showing a color swatch in a list.
  * \see QgsColorSchemeList
  */
 class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
 /**
  * \ingroup gui
  * \class QgsColorSchemeModel
- * \brief A model for colors in a color scheme
+ * \brief A model for colors in a color scheme.
  * \see QgsColorSchemeList
  */
 class GUI_EXPORT QgsColorSchemeModel : public QAbstractItemModel

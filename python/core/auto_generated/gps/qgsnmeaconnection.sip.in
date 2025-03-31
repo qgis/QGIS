@@ -12,7 +12,7 @@
 class QgsNmeaConnection: QgsGpsConnection
 {
 %Docstring(signature="appended")
-Evaluates NMEA sentences coming from a GPS device
+Evaluates NMEA sentences coming from a GPS device.
 %End
 
 %TypeHeaderCode

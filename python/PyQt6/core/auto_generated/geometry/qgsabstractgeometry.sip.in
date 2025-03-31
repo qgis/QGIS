@@ -20,7 +20,7 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 class QgsAbstractGeometry
 {
 %Docstring(signature="appended")
-Abstract base class for all geometries
+Abstract base class for all geometries.
 
 .. note::
 
@@ -976,7 +976,7 @@ Clears any cached parameters associated with the geometry, e.g., bounding boxes
 class QgsVertexIterator
 {
 %Docstring(signature="appended")
-Java-style iterator for traversal of vertices of a geometry
+Java-style iterator for traversal of vertices of a geometry.
 %End
 
 %TypeHeaderCode
@@ -1019,7 +1019,7 @@ Returns next vertex of the geometry (undefined behavior if :py:func:`~QgsVertexI
 class QgsGeometryPartIterator
 {
 %Docstring(signature="appended")
-Java-style iterator for traversal of parts of a geometry
+Java-style iterator for traversal of parts of a geometry.
 
 .. versionadded:: 3.6
 %End
@@ -1065,7 +1065,7 @@ Returns next part of the geometry (undefined behavior if :py:func:`~QgsGeometryP
 class QgsGeometryConstPartIterator
 {
 %Docstring(signature="appended")
-Java-style iterator for const traversal of parts of a geometry
+Java-style iterator for const traversal of parts of a geometry.
 
 .. versionadded:: 3.6
 %End

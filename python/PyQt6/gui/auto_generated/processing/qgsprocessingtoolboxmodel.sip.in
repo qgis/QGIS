@@ -102,7 +102,7 @@ Deletes all child nodes from this node.
 class QgsProcessingToolboxModelRecentNode : QgsProcessingToolboxModelNode
 {
 %Docstring(signature="appended")
-Processing toolbox model node corresponding to the recent algorithms group
+Processing toolbox model node corresponding to the recent algorithms group.
 
 .. warning::
 
@@ -123,7 +123,7 @@ Processing toolbox model node corresponding to the recent algorithms group
 class QgsProcessingToolboxModelFavoriteNode : QgsProcessingToolboxModelNode
 {
 %Docstring(signature="appended")
-Processing toolbox model node corresponding to the favorite algorithms group
+Processing toolbox model node corresponding to the favorite algorithms group.
 
 .. warning::
 

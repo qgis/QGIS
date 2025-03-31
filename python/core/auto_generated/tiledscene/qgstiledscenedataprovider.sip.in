@@ -13,7 +13,7 @@
 class QgsTiledSceneDataProvider: QgsDataProvider
 {
 %Docstring(signature="appended")
-Base class for data providers for :py:class:`QgsTiledSceneLayer`
+Base class for data providers for :py:class:`QgsTiledSceneLayer`.
 
 .. versionadded:: 3.34
 %End

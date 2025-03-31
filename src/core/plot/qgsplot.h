@@ -486,7 +486,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
 };
 
 /**
- * \brief Manages default settings for plot objects
+ * \brief Manages default settings for plot objects.
  *
  * \warning This class is not considered stable API, and may change in future!
  *

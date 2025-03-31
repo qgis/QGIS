@@ -89,7 +89,7 @@ class CORE_EXPORT QgsMessageOutput
 
 /**
  * \ingroup core
- * \brief Default implementation of message output interface
+ * \brief Default implementation of message output interface.
  *
  * This class outputs messages to the standard output. Therefore it might
  * be the right choice for apps without GUI.

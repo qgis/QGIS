@@ -32,7 +32,7 @@ class QgsProviderSourceWidget;
 /**
  * \ingroup gui
  * \class QgsVectorTileLayerProperties
- * \brief Vectortile layer properties dialog
+ * \brief Layer properties dialog for vector tile layers.
  * \since QGIS 3.28
  */
 class GUI_EXPORT QgsVectorTileLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsVectorTileLayerPropertiesBase

@@ -135,7 +135,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
 };
 
 /**
- * \brief Processing toolbox model node corresponding to the recent algorithms group
+ * \brief Processing toolbox model node corresponding to the recent algorithms group.
  * \ingroup gui
  * \warning Not part of stable API and may change in future QGIS releases.
  * \since QGIS 3.4
@@ -151,7 +151,7 @@ class GUI_EXPORT QgsProcessingToolboxModelRecentNode : public QgsProcessingToolb
 };
 
 /**
- * \brief Processing toolbox model node corresponding to the favorite algorithms group
+ * \brief Processing toolbox model node corresponding to the favorite algorithms group.
  * \ingroup gui
  * \warning Not part of stable API and may change in future QGIS releases.
  * \since QGIS 3.40

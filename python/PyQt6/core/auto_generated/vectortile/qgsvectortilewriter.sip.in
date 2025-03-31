@@ -65,7 +65,7 @@ and "maxzoom".
     class Layer
 {
 %Docstring(signature="appended")
-Configuration of a single input vector layer to be included in the output
+Configuration of a single input vector layer to be included in the output.
 
 .. versionadded:: 3.14
 %End

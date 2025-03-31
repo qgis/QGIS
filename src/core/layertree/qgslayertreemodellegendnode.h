@@ -623,8 +623,7 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
 
 /**
  * \ingroup core
- * \brief Implementation of legend node interface for displaying arbitrary raster image
- *
+ * \brief Implementation of legend node interface for displaying arbitrary raster image.
  */
 class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -660,7 +659,7 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 
 /**
  * \ingroup core
- * \brief Implementation of legend node interface for displaying raster legend entries
+ * \brief Implementation of legend node interface for displaying raster legend entries.
  *
  */
 class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
@@ -722,7 +721,7 @@ class QgsImageFetcher;
 
 /**
  * \ingroup core
- * \brief Implementation of legend node interface for displaying WMS legend entries
+ * \brief Implementation of legend node interface for displaying WMS legend entries.
  *
  */
 class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
@@ -786,7 +785,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
 /**
  * \ingroup core
- * \brief Produces legend node with a marker symbol
+ * \brief Produces legend node with a marker symbol.
  */
 class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -817,7 +816,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
 
 /**
  * \ingroup core
- * \brief Produces legend node for a labeling text symbol
+ * \brief Produces legend node for a labeling text symbol.
  * \since QGIS 3.20
  */
 class CORE_EXPORT QgsVectorLabelLegendNode : public QgsLayerTreeModelLegendNode

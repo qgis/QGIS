@@ -329,7 +329,7 @@ class CORE_EXPORT QgsExpressionFunction
 
 /**
  * \ingroup core
-  * \brief c++ helper class for defining QgsExpression functions.
+  * \brief Helper class for defining QgsExpression functions.
   * \note not available in Python bindings
   */
 #ifndef SIP_RUN

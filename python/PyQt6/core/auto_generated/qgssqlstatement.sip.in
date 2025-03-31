@@ -185,7 +185,7 @@ Returns a quoted version of a string (in single quotes)
     class Node
 {
 %Docstring(signature="appended")
-Abstract node class
+Abstract node class for SQL statement nodes.
 %End
 
 %TypeHeaderCode
@@ -301,7 +301,7 @@ Dump list
     class NodeUnaryOperator : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Unary logicial/arithmetical operator ( NOT, - )
+Unary logicial/arithmetical operator ( NOT, - ).
 %End
 
 %TypeHeaderCode
@@ -338,7 +338,7 @@ Operand
     class NodeBinaryOperator : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Binary logical/arithmetical operator (AND, OR, =, +, ...)
+Binary logical/arithmetical operator (AND, OR, =, +, ...).
 %End
 
 %TypeHeaderCode
@@ -391,7 +391,7 @@ Is left associative ?
     class NodeInOperator : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-'x IN (y, z)' operator
+An 'x IN (y, z)' operator.
 %End
 
 %TypeHeaderCode
@@ -433,7 +433,7 @@ Values list
     class NodeBetweenOperator : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-'X BETWEEN y and z' operator
+An 'X BETWEEN y and z' operator.
 %End
 
 %TypeHeaderCode
@@ -479,7 +479,7 @@ Maximum bound
     class NodeFunction : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Function with a name and arguments node
+Function with a name and arguments node.
 %End
 
 %TypeHeaderCode
@@ -517,7 +517,7 @@ Returns arguments
     class NodeLiteral : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Literal value (integer, integer64, double, string)
+Literal value (integer, integer64, double, string).
 %End
 
 %TypeHeaderCode
@@ -548,7 +548,7 @@ The value of the literal.
     class NodeColumnRef : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Reference to a column
+Reference to a column.
 %End
 
 %TypeHeaderCode
@@ -607,7 +607,7 @@ Clone with same type return
     class NodeSelectedColumn : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Selected column
+Selected column.
 %End
 
 %TypeHeaderCode
@@ -653,7 +653,7 @@ Clone with same type return
     class NodeCast : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-CAST operator
+CAST operator.
 %End
 
 %TypeHeaderCode
@@ -690,7 +690,7 @@ Type
     class NodeTableDef : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Table definition
+Table definition.
 %End
 
 %TypeHeaderCode
@@ -748,7 +748,7 @@ Clone with same type return
     class NodeJoin : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Join definition
+Join definition.
 %End
 
 %TypeHeaderCode
@@ -803,7 +803,7 @@ Clone with same type return
     class NodeColumnSorted : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Column in a ORDER BY
+Column in a ORDER BY.
 %End
 
 %TypeHeaderCode
@@ -844,7 +844,7 @@ Clone with same type return
     class NodeSelect : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-SELECT node
+SELECT node.
 %End
 
 %TypeHeaderCode
@@ -915,7 +915,7 @@ Returns the list of order by columns
 {
 %Docstring(signature="appended")
 Support for visitor pattern - algorithms dealing with the statement
-may be implemented without modifying the Node classes
+may be implemented without modifying the Node classes.
 %End
 
 %TypeHeaderCode
@@ -980,7 +980,7 @@ Visit NodeCast
     class RecursiveVisitor: QgsSQLStatement::Visitor
 {
 %Docstring(signature="appended")
-A visitor that recursively explores all children
+A visitor that recursively explores all children.
 %End
 
 %TypeHeaderCode

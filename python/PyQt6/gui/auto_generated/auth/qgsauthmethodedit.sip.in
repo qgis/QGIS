@@ -12,7 +12,7 @@
 class QgsAuthMethodEdit : QWidget
 {
 %Docstring(signature="appended")
-Abstract base class for the edit widget of authentication method plugins
+Abstract base class for the edit widget of authentication method plugins.
 %End
 
 %TypeHeaderCode

@@ -13,7 +13,7 @@
 class QgsAuthImportCertDialog : QDialog
 {
 %Docstring(signature="appended")
-Widget for importing a certificate into the authentication database
+Widget for importing a certificate into the authentication database.
 %End
 
 %TypeHeaderCode

@@ -15,7 +15,7 @@ class QgsMaskPaintDevice: QPaintDevice
 {
 %Docstring(signature="appended")
 Mask painter device that can be used to register everything painted into a QPainterPath
-used later as clip path
+used later as clip path.
 
 .. deprecated:: 3.38
 

@@ -11,7 +11,7 @@
 class QgsNumericFormatWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
-Base class for widgets which allow control over the properties of :py:class:`QgsNumericFormat` subclasses
+Base class for widgets which allow control over the properties of :py:class:`QgsNumericFormat` subclasses.
 
 .. versionadded:: 3.12
 %End

@@ -371,7 +371,7 @@ class CORE_EXPORT QgsSettingsEntryBase
  * \ingroup core
  * \class QgsSettingsEntryBaseTemplate
  *
- * \brief Base abstract class for settings entries with typed get and set methods
+ * \brief Base abstract class for settings entries with typed get and set methods.
  * \see QgsSettingsEntryBase
  *
  * \since QGIS 3.32

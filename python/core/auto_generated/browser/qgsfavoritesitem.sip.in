@@ -12,7 +12,7 @@
 class QgsFavoritesItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")
-Contains various Favorites directories
+A browser item which contains various Favorites directories.
 %End
 
 %TypeHeaderCode

@@ -11,7 +11,7 @@
 class QgsLayerItem : QgsDataItem
 {
 %Docstring(signature="appended")
-Item that represents a layer that can be opened with one of the providers
+A browser item that represents a layer that can be opened with one of the providers.
 %End
 
 %TypeHeaderCode

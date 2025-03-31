@@ -14,7 +14,7 @@
 class QgsServerMetadataUrlProperties
 {
 %Docstring(signature="appended")
-Manages QGIS Server properties for a map layer
+Manages QGIS Server properties for a map layer.
 
 .. versionadded:: 3.22
 %End
@@ -85,7 +85,7 @@ Gets the parent layer
 class QgsServerWmsDimensionProperties
 {
 %Docstring(signature="appended")
-Manages QGIS Server properties for Wms dimensions
+Manages QGIS Server properties for WMS dimensions.
 
 .. versionadded:: 3.22
 %End
@@ -195,7 +195,7 @@ Gets the parent layer
 class QgsMapLayerServerProperties: QgsServerMetadataUrlProperties, QgsServerWmsDimensionProperties
 {
 %Docstring(signature="appended")
-Manages QGIS Server properties for a map layer
+Manages QGIS Server properties for a map layer.
 
 .. versionadded:: 3.10
 %End

@@ -14,7 +14,7 @@
 class QgsRasterTransparencyWidget : QgsMapLayerConfigWidget
 {
 %Docstring(signature="appended")
-Widget to control a layers transparency and related options
+A widget for controlling a raster layer's transparency and related options.
 %End
 
 %TypeHeaderCode

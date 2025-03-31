@@ -120,7 +120,7 @@ class CORE_EXPORT QgsInterpolatedLineColor
  * \ingroup core
  *
  * \class QgsInterpolatedLineWidth
- * \brief Represents a width than can vary depending on values
+ * \brief Represents a width that can vary depending on values.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsInterpolatedLineWidth
@@ -278,8 +278,9 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
 /**
  * \ingroup core
  * \class QgsInterpolatedLineSymbolLayer
- * \brief A symbol layer that represents vector layer line feature as interpolated line
- * The interpolation is done between two values defined at the extremities
+ * \brief A symbol layer that represents vector layer line features as interpolated lines.
+ *
+ * The interpolation is done between two values defined at the extremities.
  * \since QGIS 3.20
  */
 class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer

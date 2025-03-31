@@ -26,9 +26,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- *
- * \brief A dialog to create a new auxiliary layer
- *
+ * \brief A dialog to create a new auxiliary layer.
  */
 class GUI_EXPORT QgsNewAuxiliaryLayerDialog : public QDialog, private Ui::QgsNewAuxiliaryLayerDialogBase
 {

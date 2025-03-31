@@ -11,7 +11,7 @@
 class QgsGmlFeatureClass
 {
 %Docstring(signature="appended")
-Description of feature class in GML
+Description of feature class in GML.
 %End
 
 %TypeHeaderCode

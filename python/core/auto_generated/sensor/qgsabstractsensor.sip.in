@@ -11,7 +11,7 @@
 class QgsAbstractSensor : QObject
 {
 %Docstring(signature="appended")
-An abstract base class for sensor classes
+An abstract base class for sensors.
 
 .. versionadded:: 3.32
 %End

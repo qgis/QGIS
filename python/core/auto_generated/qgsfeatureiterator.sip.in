@@ -11,7 +11,7 @@
 class QgsAbstractFeatureIterator
 {
 %Docstring(signature="appended")
-Internal feature iterator to be implemented within data providers
+Internal feature iterator to be implemented within data providers.
 %End
 
 %TypeHeaderCode
@@ -207,7 +207,7 @@ to be called by from subclass in :py:func:`~QgsAbstractFeatureIteratorFromSource
 class QgsFeatureIterator
 {
 %Docstring(signature="appended")
-Wrapper for iterator of features from vector data provider or vector layer
+Wrapper for iterator of features from vector data provider or vector layer.
 %End
 
 %TypeHeaderCode

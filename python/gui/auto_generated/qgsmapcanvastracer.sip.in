@@ -11,7 +11,9 @@
 class QgsMapCanvasTracer : QgsTracer
 {
 %Docstring(signature="appended")
-Extension of :py:class:`QgsTracer` that provides extra functionality:
+Extension of :py:class:`QgsTracer` that provides extra functionality.
+
+This tracer subclass adds:
 
 - automatic updates of own configuration based on canvas settings
 - reporting of issues to the user via message bar

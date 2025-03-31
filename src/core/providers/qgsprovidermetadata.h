@@ -49,7 +49,7 @@ struct QgsMesh;
 
 /**
  * \ingroup core
- * \brief Holds metadata about mesh driver
+ * \brief Holds metadata about mesh drivers.
  *
  * \since QGIS 3.12
  */

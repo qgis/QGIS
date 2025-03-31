@@ -30,7 +30,7 @@ class QgsPointCloudStatistics;
 
 /**
  * \ingroup core
- * \brief Base class for providing data for QgsPointCloudLayer
+ * \brief Base class for providing data for QgsPointCloudLayer.
  *
  * Responsible for reading native point cloud data and returning the indexed data.
  *

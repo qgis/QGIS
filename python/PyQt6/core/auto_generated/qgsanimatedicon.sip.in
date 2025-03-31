@@ -11,7 +11,7 @@
 class QgsAnimatedIcon : QObject
 {
 %Docstring(signature="appended")
-Animated icon is keeping an animation running if there are listeners connected to frameChanged
+Animated icon is keeping an animation running if there are listeners connected to frameChanged.
 %End
 
 %TypeHeaderCode

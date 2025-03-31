@@ -27,7 +27,7 @@ class QDialog;
 
 /**
  * \ingroup gui
- * \brief Base class for settings editor wrappers
+ * \brief Base class for settings editor wrappers.
  *
  * \since QGIS 3.32
  */

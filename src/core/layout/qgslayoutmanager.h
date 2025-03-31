@@ -239,7 +239,7 @@ class CORE_EXPORT QgsLayoutManagerModel : public QAbstractListModel
  * \ingroup core
  * \class QgsLayoutManagerProxyModel
  *
- * \brief QSortFilterProxyModel subclass for QgsLayoutManagerModel
+ * \brief QSortFilterProxyModel subclass for QgsLayoutManagerModel.
  *
  * \since QGIS 3.8
  */

@@ -21,11 +21,10 @@ typedef QVector<QgsLayoutTableColumn> QgsLayoutTableSortColumns;
 
 
 
-
 class QgsLayoutTableStyle
 {
 %Docstring(signature="appended")
-Styling option for a layout table cell
+Styling option for a layout table cell.
 %End
 
 %TypeHeaderCode

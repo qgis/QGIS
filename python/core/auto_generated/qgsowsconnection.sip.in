@@ -20,7 +20,7 @@
 class QgsOwsConnection : QObject
 {
 %Docstring(signature="appended")
-Connections management
+Connections management for OWS connections.
 %End
 
 %TypeHeaderCode

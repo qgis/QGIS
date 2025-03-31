@@ -57,7 +57,7 @@ Sets the render ``context`` associated with the edit operation.
 class QgsAbstractAnnotationItemEditOperation
 {
 %Docstring(signature="appended")
-Abstract base class for annotation item edit operations
+Abstract base class for annotation item edit operations.
 
 .. versionadded:: 3.22
 %End
@@ -100,7 +100,7 @@ Returns the associated item ID.
 class QgsAnnotationItemEditOperationMoveNode : QgsAbstractAnnotationItemEditOperation
 {
 %Docstring(signature="appended")
-Annotation item edit operation consisting of moving a node
+Annotation item edit operation consisting of moving a node.
 
 .. versionadded:: 3.22
 %End
@@ -165,7 +165,7 @@ Returns the y-axis translation, in pixels.
 class QgsAnnotationItemEditOperationDeleteNode : QgsAbstractAnnotationItemEditOperation
 {
 %Docstring(signature="appended")
-Annotation item edit operation consisting of deleting a node
+Annotation item edit operation consisting of deleting a node.
 
 .. versionadded:: 3.22
 %End
@@ -199,7 +199,7 @@ Returns the node position before the delete occurred (in layer coordinates).
 class QgsAnnotationItemEditOperationAddNode : QgsAbstractAnnotationItemEditOperation
 {
 %Docstring(signature="appended")
-Annotation item edit operation consisting of adding a node
+Annotation item edit operation consisting of adding a node.
 
 .. versionadded:: 3.22
 %End
@@ -228,7 +228,7 @@ Returns the node position (in layer coordinates).
 class QgsAnnotationItemEditOperationTranslateItem : QgsAbstractAnnotationItemEditOperation
 {
 %Docstring(signature="appended")
-Annotation item edit operation consisting of translating (moving) an item
+Annotation item edit operation consisting of translating (moving) an item.
 
 .. versionadded:: 3.22
 %End

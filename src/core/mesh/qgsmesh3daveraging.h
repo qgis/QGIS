@@ -31,7 +31,7 @@ class QgsFeedback;
 
 /**
  * \ingroup core
- * \brief Abstract class to interpolate 3d stacked mesh data to 2d data
+ * \brief Abstract class for interpolating 3d stacked mesh data to 2d data.
  *
  * \note In QGIS 3.34 this class was renamed from QgsMesh3dAveragingMethod to QgsMesh3DAveragingMethod. The old QgsMesh3dAveragingMethod name
  * remains available in PyQGIS for compatibility.
@@ -287,15 +287,15 @@ class CORE_EXPORT QgsMeshSigmaAveragingMethod: public QgsMesh3DAveragingMethod
 /**
  * \ingroup core
  *
- * \brief Relative height averaging method averages the values based on range defined relative to bed elevation or surface (when countedFromTop())
+ * \brief Relative height averaging method which averages the values based on range defined relative to bed elevation or surface.
  *
  * The range is defined in the same length units as defined by model (e.g. meters)
  *
- * if countedFromTop(), the method represents averaging based on depth below surface.
+ * If countedFromTop(), the method represents averaging based on depth below surface.
  * For example one can pull out results for between 6 to 12 meters below the water surface - depth from 6m to 12m.
  * The depth will be truncated at the bed level.
  *
- * if not countedFromTop(), the method represents averaging based on height above bed level.
+ * If not countedFromTop(), the method represents averaging based on height above bed level.
  * For example one can pull out results for between 6 to 12 meters above the bed - height from 6m to 12m.
  * The height will be truncated at the bed level.
  *
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsMeshRelativeHeightAveragingMethod: public QgsMesh3DAveragin
 /**
  * \ingroup core
  *
- * \brief Elevation averaging method averages the values based on range defined absolute value to the model's datum
+ * \brief Elevation averaging method averages the values based on range defined absolute value to the model's datum.
  *
  * The range is defined in the same length units as defined by model (e.g. meters)
  *

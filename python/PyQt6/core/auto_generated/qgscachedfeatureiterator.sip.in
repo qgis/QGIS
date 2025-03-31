@@ -12,7 +12,7 @@
 class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
 {
 %Docstring(signature="appended")
-Delivers features from the cache
+Delivers features from the cache.
 %End
 
 %TypeHeaderCode
@@ -74,7 +74,7 @@ We have a local special iterator for FilterFids, no need to run the generic.
 class QgsCachedFeatureWriterIterator : QgsAbstractFeatureIterator
 {
 %Docstring(signature="appended")
-Uses another iterator as backend and writes features to the cache
+Uses another iterator as backend and writes features to the cache.
 %End
 
 %TypeHeaderCode

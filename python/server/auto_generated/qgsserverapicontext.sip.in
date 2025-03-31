@@ -11,7 +11,7 @@
 class QgsServerApiContext
 {
 %Docstring(signature="appended")
-Encapsulates the resources for a particular client request
+Encapsulates the resources for a particular client request.
 
 This includes the request and response objects, the project (might be ``None``) and
 the server interface, the API root path that matched the request is also added.

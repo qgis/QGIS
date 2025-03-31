@@ -16,7 +16,7 @@
 class QgsQueryResultModel : QAbstractTableModel
 {
 %Docstring(signature="appended")
-The :py:class:`QgsQueryResultModel` class is a model for :py:class:`QgsAbstractDatabaseProviderConnection`.QueryResult
+A model for :py:class:`QgsAbstractDatabaseProviderConnection`.QueryResult.
 
 .. versionadded:: 3.18
 %End

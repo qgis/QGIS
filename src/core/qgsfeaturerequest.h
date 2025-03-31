@@ -1031,7 +1031,7 @@ class QgsAbstractFeatureIterator;
 
 /**
  * \ingroup core
- * \brief Base class that can be used for any class that is capable of returning features
+ * \brief Base class that can be used for any class that is capable of returning features.
  */
 class CORE_EXPORT QgsAbstractFeatureSource
 {

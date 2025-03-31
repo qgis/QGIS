@@ -12,7 +12,7 @@
 class QgsDirectoryItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")
-A directory: contains subdirectories and layers
+A browser item for directories: contains subdirectories and layers.
 %End
 
 %TypeHeaderCode

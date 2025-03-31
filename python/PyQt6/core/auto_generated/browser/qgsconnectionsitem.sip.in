@@ -11,7 +11,7 @@
 class QgsConnectionsRootItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")
-A Collection that represents a root group of connections from a single data provider
+A browser item that represents a root group of connections from a single data provider.
 
 .. versionadded:: 3.16
 %End

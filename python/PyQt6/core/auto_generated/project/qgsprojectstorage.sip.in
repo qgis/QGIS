@@ -28,7 +28,7 @@ and registered in :py:class:`QgsProjectStorageRegistry`.
     class Metadata
 {
 %Docstring(signature="appended")
-Metadata associated with a project
+Metadata associated with a project.
 
 .. versionadded:: 3.2
 %End

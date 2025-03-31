@@ -26,7 +26,7 @@ class QgsExternalStorage;
 
 /**
  * \ingroup core
- * \brief Registry of external storage backends used by QgsExternalResourceWidget
+ * \brief Registry of external storage backends used by QgsExternalResourceWidget.
  *
  * QgsExternalStorageRegistry is not usually directly created, but rather accessed through
  * QgsApplication::projectStorageRegistry().

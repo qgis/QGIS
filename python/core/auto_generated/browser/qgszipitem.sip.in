@@ -11,7 +11,7 @@
 class QgsZipItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")
-A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
+A browser item for zip (archive) files.
 %End
 
 %TypeHeaderCode

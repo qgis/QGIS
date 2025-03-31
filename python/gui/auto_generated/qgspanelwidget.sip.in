@@ -11,7 +11,7 @@
 class QgsPanelWidget : QWidget
 {
 %Docstring(signature="appended")
-Base class for any widget that can be shown as a inline panel
+Base class for any widget that can be shown as a inline panel.
 %End
 
 %TypeHeaderCode

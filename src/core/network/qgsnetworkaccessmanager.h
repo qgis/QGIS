@@ -240,7 +240,7 @@ class CORE_EXPORT QgsNetworkAuthenticationHandler
 
 /**
  * \class QgsNetworkAccessManager
- * \brief network access manager for QGIS
+ * \brief QNetworkAccessManager with additional QGIS specific logic.
  * \ingroup core
  *
  * \brief This class implements the QGIS network access manager.  It's a singleton

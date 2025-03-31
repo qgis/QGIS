@@ -11,7 +11,7 @@
 class QgsQmlWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring(signature="appended")
-Wraps a QQuickWidget to display QML code
+Wraps a QQuickWidget to display QML code.
 
 .. versionadded:: 3.4
 %End

@@ -10,7 +10,7 @@
 class QgsTextWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring(signature="appended")
-Wraps a label widget to display text
+Wraps a label widget to display text.
 
 .. versionadded:: 3.30
 %End

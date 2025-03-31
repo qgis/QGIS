@@ -13,7 +13,7 @@
 class QgsCurvePolygon: QgsSurface
 {
 %Docstring(signature="appended")
-Curve polygon geometry type
+Curve polygon geometry type.
 %End
 
 %TypeHeaderCode

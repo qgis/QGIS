@@ -17,7 +17,7 @@
 class QgsMeshDriverMetadata
 {
 %Docstring(signature="appended")
-Holds metadata about mesh driver
+Holds metadata about mesh drivers.
 
 .. versionadded:: 3.12
 %End

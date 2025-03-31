@@ -12,7 +12,7 @@
 class QgsServerParameterDefinition
 {
 %Docstring(signature="appended")
-Definition of a parameter with basic conversion methods
+Definition of a parameter with basic conversion methods.
 
 .. versionadded:: 3.4
 %End
@@ -214,7 +214,7 @@ Raises an exception in case of an invalid parameters.
 class QgsServerParameter : QgsServerParameterDefinition
 {
 %Docstring(signature="appended")
-Parameter common to all services (WMS, WFS, ...)
+Parameter common to all services (WMS, WFS, ...).
 
 .. versionadded:: 3.4
 %End

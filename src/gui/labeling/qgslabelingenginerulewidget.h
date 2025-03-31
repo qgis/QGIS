@@ -31,7 +31,7 @@ class QDialogButtonBox;
 /**
  * \ingroup gui
  * \class QgsLabelingEngineRuleWidget
- * \brief Base class for widgets which allow control over the properties of QgsAbstractLabelingEngineRule subclasses
+ * \brief Base class for widgets which allow control over the properties of QgsAbstractLabelingEngineRule subclasses.
  *
  * \see QgsLabelingEngineRulesWidget for a widget for configuring multiple rules
  * \see QgsLabelingEngineRuleDialog

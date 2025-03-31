@@ -13,7 +13,7 @@
 class QgsVectorTileLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")
-Vectortile layer properties dialog
+Layer properties dialog for vector tile layers.
 
 .. versionadded:: 3.28
 %End

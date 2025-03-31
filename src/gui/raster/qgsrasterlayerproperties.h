@@ -47,10 +47,9 @@ class QgsRasterLabelingWidget;
 /**
  * \ingroup gui
  * \class QgsRasterLayerProperties
- * \brief Property sheet for a raster map layer
+ * \brief A dialog for raster layer properties.
  * \since QGIS 3.12 (in the GUI API)
  */
-
 class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsRasterLayerPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT

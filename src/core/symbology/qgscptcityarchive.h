@@ -93,7 +93,7 @@ class CORE_EXPORT QgsCptCityArchive
 };
 
 /**
- * Base class for all items in the model
+ * Base class for all items in a QgsCptCityBrowserModel model.
  * \ingroup core
 */
 class CORE_EXPORT QgsCptCityDataItem : public QObject
@@ -272,7 +272,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 };
 
 /**
- * Item that represents a layer that can be opened with one of the providers
+ * An item that represents a layer that can be opened with one of the providers for a QgsCptCityBrowserModel.
  * \ingroup core
 */
 class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
 
 
 /**
- * A Collection: logical collection of subcollections and color ramps
+ * A logical collection of subcollections and color ramps for use in QgsCptCityBrowserModel.
  * \ingroup core
 */
 class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
 };
 
 /**
- * A directory: contains subdirectories and color ramps
+ * A directory which contains subdirectories and color ramps for use in QgsCptCityBrowserModel.
  * \ingroup core
 */
 class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
 /**
  * \ingroup core
  * \class QgsCptCitySelectionItem
- * \brief A selection: contains subdirectories and color ramps
+ * \brief A selection which contains subdirectories and color ramps for use in QgsCptCityBrowserModel.
 */
 class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
 {
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
 
 /**
  * \ingroup core
- * \brief An "All ramps item", which contains all items in a flat hierarchy
+ * \brief An "All ramps item", which contains all items in a flat hierarchy.
 */
 class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
 {

@@ -26,10 +26,8 @@ class QgsPaintEffect;
 /**
  * \ingroup gui
  * \class QgsPaintEffectPropertiesWidget
- * \brief A widget which modifies the properties of a QgsPaintEffect
- *
+ * \brief A widget which modifies the properties of a QgsPaintEffect.
  */
-
 class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::EffectPropertiesWidget
 {
     Q_OBJECT

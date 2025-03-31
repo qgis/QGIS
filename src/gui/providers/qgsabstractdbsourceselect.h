@@ -27,7 +27,7 @@ class QItemDelegate;
 
 /**
  * \ingroup gui
- * \brief The QgsAbstractDbSourceSelect class is a base class for database source widget selector
+ * \brief Base class for database source widget selectors.
  * \since QGIS 3.24
  */
 class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase

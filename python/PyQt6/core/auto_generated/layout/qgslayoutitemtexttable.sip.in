@@ -12,7 +12,7 @@
 class QgsLayoutItemTextTable : QgsLayoutTable
 {
 %Docstring(signature="appended")
-A text table item that reads text from string lists
+A text table item that reads text from string lists.
 %End
 
 %TypeHeaderCode

@@ -12,7 +12,7 @@
 class QgsExpressionBuilderDialog : QDialog
 {
 %Docstring(signature="appended")
-A generic dialog for building expression strings
+A generic dialog for building expression strings.
 %End
 
 %TypeHeaderCode

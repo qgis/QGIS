@@ -30,7 +30,7 @@ class QgsSettingsEntryGroup;
  * \ingroup core
  * \class QgsSettingsRegistry
  * \brief Used for settings introspection and collects a
- * list of child QgsSettingsRegistry and a list of child QgsSettingsRegistry
+ * list of child QgsSettingsRegistry and a list of child QgsSettingsRegistry.
  *
  * \since QGIS 3.20
  * \deprecated QGIS 3.30. Use QgsSettings::treeRoot() instead.

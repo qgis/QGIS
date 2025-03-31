@@ -11,11 +11,10 @@
 
 
 
-
 class QgsRasterHistogramWidget : QgsMapLayerConfigWidget
 {
 %Docstring(signature="appended")
-Histogram widget
+A widget for display and configuring a raster layer histogram.
 %End
 
 %TypeHeaderCode

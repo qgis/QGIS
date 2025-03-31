@@ -13,7 +13,7 @@
 class QgsReadWriteContext
 {
 %Docstring(signature="appended")
-The class is used as a container of context for various read/write operations on other objects.
+A container for the context for various read/write operations on objects.
 %End
 
 %TypeHeaderCode

@@ -35,9 +35,8 @@ typedef QPointF QwtDoublePoint SIP_SKIP;
 
 /**
  * \ingroup gui
- * \brief Histogram widget
+ * \brief A widget for display and configuring a raster layer histogram.
   */
-
 class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterHistogramWidgetBase
 {
     Q_OBJECT

@@ -27,7 +27,7 @@
 class QgsClassificationRange
 {
 %Docstring(signature="appended")
-Contains the information about a classification range
+Contains the information about a classification range.
 
 .. versionadded:: 3.10
 %End

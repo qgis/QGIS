@@ -25,7 +25,7 @@ Provides routines for CAD editing.
     class AlignMapPointConstraint
 {
 %Docstring(signature="appended")
-Structure with details of one constraint
+Structure with details of one constraint.
 %End
 
 %TypeHeaderCode
@@ -46,7 +46,7 @@ Constructor for AlignMapPointConstraint.
     class AlignMapPointOutput
 {
 %Docstring(signature="appended")
-Structure returned from :py:func:`~QgsCadUtils.alignMapPoint` method
+Structure returned from :py:func:`~QgsCadUtils.alignMapPoint` method.
 %End
 
 %TypeHeaderCode

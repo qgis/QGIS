@@ -445,7 +445,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * \ingroup core
-     * \brief Options to pass to writeAsVectorFormat()
+     * \brief Options to pass to QgsVectorFileWriter::writeAsVectorFormat().
      */
     class CORE_EXPORT SaveVectorOptions
     {

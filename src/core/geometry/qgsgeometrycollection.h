@@ -31,7 +31,7 @@ class QgsPoint;
 /**
  * \ingroup core
  * \class QgsGeometryCollection
- * \brief Geometry collection
+ * \brief Geometry collection.
  */
 class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 {

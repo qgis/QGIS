@@ -13,7 +13,7 @@
 class QgsHttpHeaderWidget : QWidget
 {
 %Docstring(signature="appended")
-Display referer http header field and collapsible table of key/value pairs
+Displays referer HTTP header field and collapsible table of key/value pairs.
 
 .. versionadded:: 3.24
 %End

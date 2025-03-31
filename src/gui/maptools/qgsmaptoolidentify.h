@@ -42,9 +42,9 @@ class QgsCoordinateReferenceSystem;
 
 /**
  * \ingroup gui
- * \brief Map tool for identifying features in layers
+ * \brief Map tool for identifying features in layers.
  *
- * after selecting a point, performs the identification:
+ * After the tool is used to select a point, this map tool performs the identification:
  *
  * - for raster layers shows value of underlying pixel
  * - for vector layers shows feature attributes within search radius

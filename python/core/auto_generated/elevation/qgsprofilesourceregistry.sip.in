@@ -14,7 +14,7 @@
 class QgsProfileSourceRegistry
 {
 %Docstring(signature="appended")
-Registry of profile sources used by :py:class:`QgsProfilePlotRenderer`
+Registry of profile sources used by :py:class:`QgsProfilePlotRenderer`.
 
 :py:class:`QgsProfileSourceRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.profileSourceRegistry()`.

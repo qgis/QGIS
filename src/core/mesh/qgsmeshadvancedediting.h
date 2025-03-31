@@ -28,7 +28,7 @@ class QgsExpressionContext;
 /**
  * \ingroup core
  *
- * \brief Abstract class that can be derived to implement advanced editing on mesh
+ * \brief Abstract class that can be derived to implement advanced editing on mesh.
  *
  * To apply the advanced editing, a pointer to an instance of a derived class is passed
  * in the method QgsMeshEditor::advancedEdit().

@@ -30,7 +30,7 @@ class QgsFeature3DHandler;
 
 /**
  * \ingroup qgis_3d
- * \brief Metadata for rule-based 3D renderer to allow creation of its instances from XML
+ * \brief Metadata for rule-based 3D renderer to allow creation of its instances from XML.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.
@@ -67,7 +67,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
 
     /**
      * \ingroup qgis_3d
-     * \brief A child rule for a QgsRuleBased3DRenderer
+     * \brief A child rule for a QgsRuleBased3DRenderer.
      * \since QGIS 3.6
      */
     class _3D_EXPORT Rule

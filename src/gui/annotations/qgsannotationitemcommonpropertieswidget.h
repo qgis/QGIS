@@ -27,9 +27,7 @@ class QgsCallout;
 /**
  * \class QgsAnnotationItemCommonPropertiesWidget
  * \ingroup gui
- *
- * \brief A widget for configuring common properties for QgsAnnotationItems
- *
+ * \brief A widget for configuring common properties for QgsAnnotationItems.
  * \since QGIS 3.22
 */
 class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget : public QWidget, private Ui::QgsAnnotationCommonPropertiesWidgetBase

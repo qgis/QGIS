@@ -23,8 +23,7 @@
 /**
  * \ingroup gui
  * \class QgsEffectDrawModeComboBox
- * \brief A combo box allowing selection of paint effect draw modes
- *
+ * \brief A combobox allowing selection of paint effect draw modes.
  */
 
 class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox

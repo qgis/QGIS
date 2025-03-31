@@ -24,7 +24,7 @@
 /**
  * \class QgsProjectionFactors
  * \ingroup core
- * \brief contains various cartographic properties, such as scale factors, angular distortion and meridian convergence.
+ * \brief Contains various cartographic properties, such as scale factors, angular distortion and meridian convergence.
  * \since QGIS 3.20
  */
 class CORE_EXPORT QgsProjectionFactors

@@ -11,7 +11,7 @@
 class QgsCopyFileTask : QgsTask
 {
 %Docstring(signature="appended")
-Task to copy a file on disk
+Task to copy a file on disk.
 
 .. versionadded:: 3.22
 %End

@@ -52,7 +52,7 @@ class Qgs3DAxis;
 
 /**
  * \ingroup qgis_3d
- * \brief 3d axis render view class
+ * \brief 3D axis render view.
  *
  * \note Not available in Python bindings
  * \since QGIS 3.44

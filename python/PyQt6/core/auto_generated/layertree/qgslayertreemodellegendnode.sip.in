@@ -537,7 +537,7 @@ Constructor for QgsSimpleLegendNode.
 class QgsImageLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Implementation of legend node interface for displaying arbitrary raster image
+Implementation of legend node interface for displaying arbitrary raster image.
 %End
 
 %TypeHeaderCode
@@ -574,7 +574,7 @@ Constructor for QgsImageLegendNode.
 class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Implementation of legend node interface for displaying raster legend entries
+Implementation of legend node interface for displaying raster legend entries.
 %End
 
 %TypeHeaderCode
@@ -633,7 +633,7 @@ Returns whether the item is user-checkable - whether renderer supports enabling/
 class QgsWmsLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Implementation of legend node interface for displaying WMS legend entries
+Implementation of legend node interface for displaying WMS legend entries.
 %End
 
 %TypeHeaderCode
@@ -683,7 +683,7 @@ Fetches the image from the server and returns it.
 class QgsDataDefinedSizeLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Produces legend node with a marker symbol
+Produces legend node with a marker symbol.
 %End
 
 %TypeHeaderCode
@@ -713,7 +713,7 @@ Construct the node using :py:class:`QgsDataDefinedSizeLegend` as definition of t
 class QgsVectorLabelLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Produces legend node for a labeling text symbol
+Produces legend node for a labeling text symbol.
 
 .. versionadded:: 3.20
 %End

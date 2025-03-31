@@ -11,7 +11,7 @@
 class QgsDatabaseSchemaItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")
-A Collection that represents a database schema item
+A browser item that represents a database schema item.
 
 .. versionadded:: 3.16
 %End

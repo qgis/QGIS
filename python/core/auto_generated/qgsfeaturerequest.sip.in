@@ -990,7 +990,7 @@ if it should be canceled, if set.
 class QgsAbstractFeatureSource
 {
 %Docstring(signature="appended")
-Base class that can be used for any class that is capable of returning features
+Base class that can be used for any class that is capable of returning features.
 %End
 
 %TypeHeaderCode
