@@ -33,8 +33,6 @@ QgsModelViewToolLink::QgsModelViewToolLink( QgsModelGraphicsView *view )
 
   mBezierRubberBand->setBrush( QBrush( QColor( 0, 0, 0, 63 ) ) );
   mBezierRubberBand->setPen( QPen( QBrush( QColor( 0, 0, 0, 100 ) ), 0, Qt::SolidLine ) );
-
-  connect( this, &QgsModelViewToolLink::requestRebuildRequired, scene(), &QgsModelGraphicsScene::rebuildRequired );
 }
 
 void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
@@ -167,7 +165,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
   view()->endCommand();
   // Redraw
-  emit requestRebuildRequired();
+  scene()->requestRebuildRequired();
 }
 
 bool QgsModelViewToolLink::allowItemInteraction()
@@ -253,7 +251,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
           //We need to pass the update child algorithm to the model
           scene()->model()->setChildAlgorithm( *childFrom );
           // Redraw
-          emit requestRebuildRequired();
+          scene()->requestRebuildRequired();
 
           //Get Socket from Source alg / source parameter
           QgsModelComponentGraphicItem *item = nullptr;

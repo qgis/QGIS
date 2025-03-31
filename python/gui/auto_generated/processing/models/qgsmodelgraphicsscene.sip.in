@@ -157,6 +157,11 @@ Sets the message ``bar`` associated with the scene.
 Shows a warning message, allowing users to click a button to see the full details (``longMessage``).
 %End
 
+    void requestRebuildRequired();
+%Docstring
+Requests a complete rebuild of a model by emitting the according signal
+%End
+
   signals:
 
     void rebuildRequired();

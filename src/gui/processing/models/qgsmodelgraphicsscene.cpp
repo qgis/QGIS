@@ -524,4 +524,9 @@ void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QStr
   mMessageBar->pushWidget( messageWidget, level, 0 );
 }
 
+void QgsModelGraphicsScene::requestRebuildRequired()
+{
+  emit rebuildRequired();
+}
+
 ///@endcond

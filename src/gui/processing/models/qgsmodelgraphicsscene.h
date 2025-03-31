@@ -170,6 +170,11 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::MessageLevel::Warning ) const;
 
+    /**
+     * Requests a complete rebuild of a model by emitting the according signal
+     */
+    void requestRebuildRequired();
+
   signals:
 
     /**
