@@ -174,7 +174,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Bodge to take selected feature categories into account in the applied
      * filter when the "Reload the table" icon is clicked.
      */
-    void refreshFilteredFeatures( ) { mFilterModel->refreshFilteredFeatures(); }
+    void refreshFilteredFeatures() { mFilterModel->refreshFilteredFeatures(); }
 
     /**
      * Gets a list of currently visible feature ids.
