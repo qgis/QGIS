@@ -21,6 +21,7 @@
 
 #include "qgscoordinatereferencesystem_legacy_p.h"
 #include "qgscoordinatereferencesystemregistry.h"
+#include "qgsellipsoidutils.h"
 #include "qgsreadwritelocker.h"
 
 #include <cmath>
@@ -264,6 +265,29 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::createCompoundCrs( co
     error = formattedErrorList.join( '\n' );
   }
   return QgsCoordinateReferenceSystem();
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::createGeocentricCrs( const QString &ellipsoid )
+{
+  const QgsEllipsoidUtils::EllipsoidParameters ellipsoidParams = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
+  if ( !ellipsoidParams.valid )
+    return QgsCoordinateReferenceSystem();
+
+  QgsProjUtils::proj_pj_unique_ptr crs( proj_create_geocentric_crs(
+                                          QgsProjContext::get(),
+                                          /*crs_name*/ nullptr,
+                                          /*datum_name*/ nullptr,
+                                          /*ellps_name*/ nullptr,
+                                          /*semi_major_metre*/ ellipsoidParams.semiMajor,
+                                          /*inv_flattening*/ ellipsoidParams.inverseFlattening,
+                                          /*prime_meridian_name*/ nullptr,
+                                          /*prime_meridian_offset*/ 0,
+                                          /*angular_units*/ nullptr, // "NULL for degrees"
+                                          /*angular_units_conv*/ 0, // "0 for degrees if angular_units == NULL"
+                                          /*linear_units*/ nullptr, // "NULL for meter"
+                                          /*linear_units_conv*/ 0 // "0 for Metre if linear_units == NULL"
+                                        ) );
+  return QgsCoordinateReferenceSystem::fromProjObject( crs.get() );
 }
 
 QgsCoordinateReferenceSystem::~QgsCoordinateReferenceSystem() //NOLINT
@@ -3111,6 +3135,36 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toGeographicCrs() con
   {
     return QgsCoordinateReferenceSystem();
   }
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toGeocentricCrs() const
+{
+  if ( type() == Qgis::CrsType::Geocentric )
+  {
+    return *this;
+  }
+
+  if ( PJ *obj = d->threadLocalProjObject() )
+  {
+    PJ_CONTEXT *pjContext = QgsProjContext::get();
+
+    QgsProjUtils::proj_pj_unique_ptr datum( proj_crs_get_datum( pjContext, obj ) );
+    QgsProjUtils::proj_pj_unique_ptr datumEnsemble( proj_crs_get_datum_ensemble( pjContext, obj ) );
+    if ( !datum && !datumEnsemble )
+      return QgsCoordinateReferenceSystem();
+
+    QgsProjUtils::proj_pj_unique_ptr crs( proj_create_geocentric_crs_from_datum(
+                                            pjContext,
+                                            /*crs_name*/ nullptr,
+                                            /*datum_or_datum_ensemble*/ datumEnsemble ? datumEnsemble.get() : datum.get(),
+                                            /*linear_units*/ nullptr, // "NULL for meter"
+                                            /*linear_units_conv*/ 0 // "0 for meter if linear_units == NULL"
+                                          ) );
+    if ( crs )
+      return QgsCoordinateReferenceSystem::fromProjObject( crs.get() );
+  }
+
+  return QgsCoordinateReferenceSystem();
 }
 
 QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::horizontalCrs() const

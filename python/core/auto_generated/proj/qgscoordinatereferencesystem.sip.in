@@ -357,6 +357,17 @@ or the compound CRS could not be created for the combination.
 .. versionadded:: 3.38
 %End
 
+    static QgsCoordinateReferenceSystem createGeocentricCrs( const QString &ellipsoid );
+%Docstring
+Creates a geocentric CRS given an ``ellipsoid`` definition.
+
+Returns an invalid CRS if the ellipsoid definition is not valid.
+
+.. seealso:: :py:func:`toGeocentricCrs`
+
+.. versionadded:: 3.44
+%End
+
 
 
  bool createFromId( long id, CrsType type = PostgisCrsId ) /Deprecated="Since 3.10. We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format."/;
@@ -1119,6 +1130,20 @@ May return an invalid CRS if the geographic CRS could not be determined.
    This method will always return a longitude, latitude ordered CRS.
 
 .. versionadded:: 3.24
+%End
+
+    QgsCoordinateReferenceSystem toGeocentricCrs() const;
+%Docstring
+Returns a new geocentric CRS based on this CRS object.
+
+If possible, the returned geocentric CRS will have the same datum (or
+datum ensemble) as this object.
+
+May return an invalid CRS if the geocentric CRS could not be determined.
+
+.. seealso:: :py:func:`createGeocentricCrs`
+
+.. versionadded:: 3.44
 %End
 
     QgsCoordinateReferenceSystem horizontalCrs() const;
