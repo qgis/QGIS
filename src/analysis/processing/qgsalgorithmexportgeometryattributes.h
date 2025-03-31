@@ -46,6 +46,7 @@ class QgsExportGeometryAttributesAlgorithm : public QgsProcessingAlgorithm
     QgsExportGeometryAttributesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
@@ -54,6 +55,7 @@ class QgsExportGeometryAttributesAlgorithm : public QgsProcessingAlgorithm
     QgsAttributes lineAttributes( const QgsGeometry &geom );
 
     QgsDistanceArea mDa;
+    QgsCoordinateReferenceSystem mProjectCrs;
     double mDistanceConversionFactor = 1;
     double mAreaConversionFactor = 1;
 };

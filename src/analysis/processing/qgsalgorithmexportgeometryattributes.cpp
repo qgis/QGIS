@@ -73,6 +73,14 @@ void QgsExportGeometryAttributesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Added geometry info" ) ) );
 }
 
+bool QgsExportGeometryAttributesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  Q_UNUSED( parameters );
+
+  mProjectCrs = context.project()->crs();
+  return true;
+}
+
 QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
@@ -149,7 +157,7 @@ QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVaria
     {
       throw QgsProcessingException( QObject::tr( "No project is available in this context" ) );
     }
-    transform = QgsCoordinateTransform( source->sourceCrs(), context.project()->crs(), context.project() );
+    transform = QgsCoordinateTransform( source->sourceCrs(), mProjectCrs, context.transformContext() );
   }
 
   QgsFeatureIterator it = source->getFeatures();
@@ -172,7 +180,14 @@ QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVaria
     {
       if ( transform.isValid() )
       {
-        geom.transform( transform );
+        try
+        {
+          geom.transform( transform );
+        }
+        catch ( QgsCsException &e )
+        {
+          throw QgsProcessingException( QObject::tr( "Could not transform feature to project's CRS: %1" ).arg( e.what() ) );
+        }
       }
 
       if ( geom.type() == Qgis::GeometryType::Point )
