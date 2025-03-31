@@ -308,19 +308,22 @@ class QgsAttributeFormTreeData
     };
 };
 
-class AttributeFormTreeItem
+
+class AttributesFormTreeNode
 {
   public:
-    AttributeFormTreeItem() = default;
-    explicit AttributeFormTreeItem( QgsAttributeFormTreeData::AttributeFormTreeItemType itemType, const QString &name, const QString &displayName = QString(), AttributeFormTreeItem *parent = nullptr );
-    explicit AttributeFormTreeItem( QgsAttributeFormTreeData::AttributeFormTreeItemType itemType, const QgsAttributeFormTreeData::DnDTreeItemData &data, const QString &name, const QString &displayName = QString(), AttributeFormTreeItem *parent = nullptr );
+    AttributesFormTreeNode() = default;
+    explicit AttributesFormTreeNode( QgsAttributeFormTreeData::AttributeFormTreeItemType itemType, const QString &name, const QString &displayName = QString(), AttributesFormTreeNode *parent = nullptr );
+    explicit AttributesFormTreeNode( QgsAttributeFormTreeData::AttributeFormTreeItemType itemType, const QgsAttributeFormTreeData::DnDTreeItemData &data, const QString &name, const QString &displayName = QString(), AttributesFormTreeNode *parent = nullptr );
 
-    AttributeFormTreeItem *child( int number );
-    AttributeFormTreeItem *firstChild( const QString &name ) const;
+    AttributesFormTreeNode *child( int number );
+    AttributesFormTreeNode *firstChild( const QString &name ) const;
+    AttributesFormTreeNode *firstChildRecursive( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const;
+
     int childCount() const;
     //bool insertChildren(int position, int count, int columns);
     //bool insertColumns(int position, int columns);
-    AttributeFormTreeItem *parent() { return mParent; }
+    AttributesFormTreeNode *parent() { return mParent; }
     //bool removeChildren(int position, int count);
     //bool removeColumns(int position, int columns);
     int row() const;
@@ -330,20 +333,17 @@ class AttributeFormTreeItem
     /**
      * Adds a \a child to this item. Takes ownership of the child.
      */
-    void addChildItem( std::unique_ptr< AttributeFormTreeItem > &&child );
+    void addChildItem( std::unique_ptr< AttributesFormTreeNode > &&child );
 
     /**
      * Deletes all child items from this item.
      */
     void deleteChildren();
 
-    QgsAttributeFormTreeData::AttributeFormTreeItemType type() const { return mItemType; }
+    QgsAttributeFormTreeData::AttributeFormTreeItemType type() const { return mNodeType; }
 
-    QString id() const { return mItemId; }
-    void setId( const QString &itemId ) { mItemId = itemId; }
-
+    QString id() const { return mNodeId; }
     QString name() const { return mName; }
-    void setName( const QString &name ) { mName = name; }
 
     QString displayName() const { return mDisplayName; }
     void setDisplayName( const QString &displayName ) { mDisplayName = displayName; }
@@ -355,38 +355,38 @@ class AttributeFormTreeItem
     QString mName;
     QString mDisplayName;
     QIcon mIcon;
-
-    std::vector< std::unique_ptr< AttributeFormTreeItem > > mChildren;
-    QgsAttributeFormTreeData::AttributeFormTreeItemType mItemType;
-    QString mItemId;
-
-    QgsAttributeFormTreeData::DnDTreeItemData mItemData;
+    QgsAttributeFormTreeData::AttributeFormTreeItemType mNodeType;
+    QString mNodeId;
+    QgsAttributeFormTreeData::DnDTreeItemData mNodeData;
     QgsAttributeFormTreeData::FieldConfig mFieldConfigData;
 
-    AttributeFormTreeItem *mParent;
+    std::vector< std::unique_ptr< AttributesFormTreeNode > > mChildren;
+    AttributesFormTreeNode *mParent;
 };
 
 
-class QgsAttributesAvailableWidgetsModel : public QAbstractItemModel
+class QgsAttributesFormModel : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
-    enum FieldPropertiesRoles
+    enum NodeRoles
     {
-      DnDTreeRole = Qt::UserRole,
-      FieldConfigRole,
-      TreeItemNameRole,
-      TreeItemTypeRole,
-      TreeItemIdRole, // Useful for elements like actions
+      NodeDataRole = Qt::UserRole,
+      NodeFieldConfigRole,
+      NodeNameRole,
+      NodeIdRole, // Items may have ids, to ease comparison. Used by Relations, fields and actions.
+      NodeTypeRole,
     };
 
-    explicit QgsAttributesAvailableWidgetsModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent = nullptr );
+    explicit QgsAttributesFormModel( QgsVectorLayer *layer, QObject *parent = nullptr );
 
-    ~QgsAttributesAvailableWidgetsModel() override;
+    //explicit QgsAttributesFormLayoutModel( QgsVectorLayer *layer, QObject *parent = nullptr );
+
+    ~QgsAttributesFormModel() override;
 
     // Header:
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    //QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     // Basic functionality:
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -394,6 +394,52 @@ class QgsAttributesAvailableWidgetsModel : public QAbstractItemModel
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+
+    //QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    //bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+
+    // Add data:
+    //bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    //bool insertColumns( int column, int count, const QModelIndex &parent = QModelIndex() ) override;
+
+    // Remove data:
+    //bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    //bool removeColumns( int column, int count, const QModelIndex &parent = QModelIndex() ) override;
+
+    // Other methods
+    QModelIndex getFirstMatchingModelIndex( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const;
+    //QModelIndex getFieldModelIndex( const QString &fieldName ) const;
+
+    //void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, AttributeFormLayoutTreeItem *parent );
+
+  public slots:
+    virtual void populate() = 0;
+
+  protected:
+    AttributesFormTreeNode *getItem( const QModelIndex &index ) const;
+    std::unique_ptr< AttributesFormTreeNode > mRootItem;
+    QgsVectorLayer *mLayer;
+};
+
+
+class QgsAttributesAvailableWidgetsModel : public QgsAttributesFormModel
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsAttributesAvailableWidgetsModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent = nullptr );
+
+    //~QgsAttributesAvailableWidgetsModel() override;
+
+    // Header:
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+
+    // Basic functionality:
+    // QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    // QModelIndex parent( const QModelIndex &index ) const override;
+
+    // int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    // int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
@@ -410,136 +456,30 @@ class QgsAttributesAvailableWidgetsModel : public QAbstractItemModel
     QModelIndex getFieldModelIndex( const QString &fieldName ) const;
 
   public slots:
-    void populate();
+    void populate() override;
 
   private:
-    AttributeFormTreeItem *getItem( const QModelIndex &index ) const;
-
-    QgsVectorLayer *mLayer;
     QgsProject *mProject;
-    std::unique_ptr< AttributeFormTreeItem > mRootItem;
 };
 
-
-// class QgsAttributesFormLayoutModel : public QAbstractItemModel
-// {
-//     Q_OBJECT
-
-//   public:
-//     explicit QgsAttributesFormLayoutModel( QObject *parent = nullptr );
-
-//     // Header:
-//     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-
-//     // Basic functionality:
-//     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-//     QModelIndex parent( const QModelIndex &index ) const override;
-
-//     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-//     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-
-//     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-
-//     Qt::ItemFlags flags(const QModelIndex &index) const override;
-
-//     // Add data:
-//     bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-//     bool insertColumns( int column, int count, const QModelIndex &parent = QModelIndex() ) override;
-
-//     // Remove data:
-//     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-//     bool removeColumns( int column, int count, const QModelIndex &parent = QModelIndex() ) override;
-
-//   private:
-// };
-
-
-class AttributeFormLayoutTreeItem
-{
-  public:
-    AttributeFormLayoutTreeItem() = default;
-    explicit AttributeFormLayoutTreeItem( QgsAttributeFormTreeData::AttributeFormTreeItemType itemType, const QString &name, const QString &displayName = QString(), AttributeFormLayoutTreeItem *parent = nullptr );
-    explicit AttributeFormLayoutTreeItem( QgsAttributeFormTreeData::AttributeFormTreeItemType itemType, const QgsAttributeFormTreeData::DnDTreeItemData &data, const QString &name, const QString &displayName = QString(), AttributeFormLayoutTreeItem *parent = nullptr );
-
-    AttributeFormLayoutTreeItem *child( int number );
-    AttributeFormLayoutTreeItem *firstChild( const QString &name ) const;
-    int childCount() const;
-    //bool insertChildren(int position, int count, int columns);
-    //bool insertColumns(int position, int columns);
-    AttributeFormLayoutTreeItem *parent() { return mParent; }
-    //bool removeChildren(int position, int count);
-    //bool removeColumns(int position, int columns);
-    int row() const;
-    QVariant data( int role ) const;
-    bool setData( int role, const QVariant &value );
-
-    /**
-     * Adds a \a child to this item. Takes ownership of the child.
-     */
-    void addChildItem( std::unique_ptr< AttributeFormLayoutTreeItem > &&child );
-
-    /**
-     * Deletes all child items from this item.
-     */
-    void deleteChildren();
-
-    QgsAttributeFormTreeData::AttributeFormTreeItemType type() const { return mItemType; }
-
-    QString id() const { return mItemId; }
-    void setId( const QString &itemId ) { mItemId = itemId; }
-
-    QString name() const { return mName; }
-    void setName( const QString &name ) { mName = name; }
-
-    QString displayName() const { return mDisplayName; }
-    void setDisplayName( const QString &displayName ) { mDisplayName = displayName; }
-
-    QIcon icon() const { return mIcon; }
-    void setIcon( const QIcon &icon ) { mIcon = icon; }
-
-  private:
-    QString mItemId;
-    QString mName;
-    QString mDisplayName;
-    QIcon mIcon;
-
-    std::vector< std::unique_ptr< AttributeFormLayoutTreeItem > > mChildren;
-    QgsAttributeFormTreeData::AttributeFormTreeItemType mItemType;
-
-    QgsAttributeFormTreeData::DnDTreeItemData mItemData;
-    QgsAttributeFormTreeData::FieldConfig mFieldConfigData;
-
-    AttributeFormLayoutTreeItem *mParent;
-};
-
-
-class QgsAttributesFormLayoutModel : public QAbstractItemModel
+class QgsAttributesFormLayoutModel : public QgsAttributesFormModel
 {
     Q_OBJECT
 
   public:
-    enum FieldPropertiesRoles
-    {
-      DnDTreeRole = Qt::UserRole,
-      //FieldConfigRole,
-      TreeItemNameRole,
-      TreeItemIdRole, // Items may have ids, to ease comparison. Used by Relations, fields and actions.
-      TreeItemTypeRole,
-    };
-
     explicit QgsAttributesFormLayoutModel( QgsVectorLayer *layer, QObject *parent = nullptr );
 
-    ~QgsAttributesFormLayoutModel() override;
+    //~QgsAttributesFormLayoutModel() override;
 
     // Header:
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     // Basic functionality:
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
+    // QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    // QModelIndex parent( const QModelIndex &index ) const override;
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    // int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    // int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
@@ -555,17 +495,17 @@ class QgsAttributesFormLayoutModel : public QAbstractItemModel
     // Other methods
     //QModelIndex getFieldModelIndex( const QString &fieldName ) const;
 
-    void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, AttributeFormLayoutTreeItem *parent );
+    void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, AttributesFormTreeNode *parent );
 
   public slots:
-    void populate();
+    void populate() override;
 
   private:
-    AttributeFormLayoutTreeItem *getItem( const QModelIndex &index ) const;
+    //AttributeFormLayoutTreeItem *getItem( const QModelIndex &index ) const;
 
-    QgsVectorLayer *mLayer;
-    QgsProject *mProject;
-    std::unique_ptr< AttributeFormLayoutTreeItem > mRootItem;
+    //QgsVectorLayer *mLayer;
+    //QgsProject *mProject;
+    //std::unique_ptr< AttributeFormLayoutTreeItem > mRootItem;
 };
 
 

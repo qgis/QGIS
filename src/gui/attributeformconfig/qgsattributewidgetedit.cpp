@@ -19,16 +19,12 @@
 #include "qgsgui.h"
 #include "qgsrelationwidgetregistry.h"
 
-QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *parent )
+QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( const QgsAttributeFormTreeData::DnDTreeItemData &itemData, QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
-  , mTreeItem( item )
-
 {
   setupUi( this );
   mHozStretchSpin->setClearValue( 0, tr( "Default" ) );
   mVertStretchSpin->setClearValue( 0, tr( "Default" ) );
-
-  const QgsAttributeFormTreeData::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributeFormTreeData::DnDTreeItemData>();
 
   // common configs
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
@@ -37,70 +33,39 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
   mHozStretchSpin->setValue( itemData.horizontalStretch() );
   mVertStretchSpin->setValue( itemData.verticalStretch() );
 
-  // switch ( itemData.type() )
-  // {
-  //   case QgsAttributesFormProperties::DnDTreeItemData::Relation:
-  //   {
-  //     QGridLayout *layout = new QGridLayout;
-  //     QgsAttributeWidgetRelationEditWidget *editWidget = new QgsAttributeWidgetRelationEditWidget( this );
-  //     editWidget->setRelationEditorConfiguration( itemData.relationEditorConfiguration(), itemData.name() );
-  //     mSpecificEditWidget = editWidget;
-  //     layout->addWidget( mSpecificEditWidget );
-  //     mWidgetSpecificConfigGroupBox->setLayout( layout );
-  //     mWidgetSpecificConfigGroupBox->setTitle( QgsAttributeWidgetRelationEditWidget::title() );
-  //   }
-  //   break;
-
-  //   case QgsAttributesFormProperties::DnDTreeItemData::Field:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::Action:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::Container:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::TextWidget:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::SpacerWidget:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
-  //     mWidgetSpecificConfigGroupBox->hide();
-  //     break;
-  // }
+  mWidgetSpecificConfigGroupBox->hide();
 }
 
-void QgsAttributeWidgetEdit::updateItemData()
+void QgsAttributeWidgetEdit::setRelationSpecificWidget( const QgsAttributeFormTreeData::RelationEditorConfiguration &config, const QString &relationId )
 {
-  // QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
-
-  // // common configs
-  // itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
-  // itemData.setLabelStyle( mFormLabelFormatWidget->labelStyle() );
-  // itemData.setHorizontalStretch( mHozStretchSpin->value() );
-  // itemData.setVerticalStretch( mVertStretchSpin->value() );
-
-  // // specific configs
-  // switch ( itemData.type() )
-  // {
-  //   case QgsAttributesFormProperties::DnDTreeItemData::Relation:
-  //   {
-  //     QgsAttributeWidgetRelationEditWidget *editWidget = qobject_cast<QgsAttributeWidgetRelationEditWidget *>( mSpecificEditWidget );
-  //     if ( editWidget )
-  //     {
-  //       itemData.setRelationEditorConfiguration( editWidget->relationEditorConfiguration() );
-  //     }
-  //   }
-  //   break;
-
-  //   case QgsAttributesFormProperties::DnDTreeItemData::Action:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::Field:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::Container:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::TextWidget:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::SpacerWidget:
-  //   case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
-  //     break;
-  // }
-
-  // mTreeItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+  QGridLayout *layout = new QGridLayout;
+  QgsAttributeWidgetRelationEditWidget *editWidget = new QgsAttributeWidgetRelationEditWidget( this );
+  editWidget->setRelationEditorConfiguration( config, relationId );
+  mSpecificEditWidget = editWidget;
+  layout->addWidget( mSpecificEditWidget );
+  mWidgetSpecificConfigGroupBox->setLayout( layout );
+  mWidgetSpecificConfigGroupBox->setTitle( QgsAttributeWidgetRelationEditWidget::title() );
+  mWidgetSpecificConfigGroupBox->show();
 }
 
+void QgsAttributeWidgetEdit::updateItemData( QgsAttributeFormTreeData::DnDTreeItemData &itemData ) const
+{
+  // common configs
+  itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
+  itemData.setLabelStyle( mFormLabelFormatWidget->labelStyle() );
+  itemData.setHorizontalStretch( mHozStretchSpin->value() );
+  itemData.setVerticalStretch( mVertStretchSpin->value() );
+}
+
+QgsAttributeFormTreeData::RelationEditorConfiguration QgsAttributeWidgetEdit::updatedRelationConfiguration() const
+{
+  QgsAttributeWidgetRelationEditWidget *editWidget = qobject_cast<QgsAttributeWidgetRelationEditWidget *>( mSpecificEditWidget );
+  if ( editWidget )
+  {
+    return editWidget->relationEditorConfiguration();
+  }
+  return QVariant().value< QgsAttributeFormTreeData::RelationEditorConfiguration >();
+}
 
 void QgsAttributeWidgetEdit::setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle )
 {

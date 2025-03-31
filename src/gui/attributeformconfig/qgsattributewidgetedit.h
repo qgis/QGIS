@@ -28,7 +28,6 @@
 
 #include "qgis_gui.h"
 
-class QTreeWidgetItem;
 class QgsAbstractRelationEditorConfigWidget;
 
 /**
@@ -40,10 +39,10 @@ class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private
     Q_OBJECT
 
   public:
-    explicit QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *parent = nullptr );
+    explicit QgsAttributeWidgetEdit( const QgsAttributeFormTreeData::DnDTreeItemData &itemData, QWidget *parent = nullptr );
 
-
-    void updateItemData();
+    void updateItemData( QgsAttributeFormTreeData::DnDTreeItemData &itemData ) const;
+    QgsAttributeFormTreeData::RelationEditorConfiguration updatedRelationConfiguration() const;
 
     // Methods to update widget status
     void setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle );
@@ -51,10 +50,11 @@ class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private
     void setHorizontalStretch( const int horizontalStretch );
     void setVerticalStretch( const int verticalStretch );
 
+    void setRelationSpecificWidget( const QgsAttributeFormTreeData::RelationEditorConfiguration &config, const QString &relationId );
+
   private:
     void showRelationButtons( bool show );
 
-    QTreeWidgetItem *mTreeItem = nullptr;
     QWidget *mSpecificEditWidget = nullptr;
 };
 

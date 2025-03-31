@@ -49,6 +49,7 @@ class QgsAttributesDnDTree;
 class QgsAttributeFormContainerEdit;
 class QgsAttributeTypeDialog;
 class QgsAttributeWidgetEdit;
+class QgsAttributesFormTreeView;
 
 /**
  * \ingroup gui
@@ -421,8 +422,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QgsAttributesDnDTree *mAvailableWidgetsTree = nullptr;
     QgsAttributesDnDTree *mFormLayoutTree = nullptr;
 
-    QTreeView *mAvailableWidgetsTreeView = nullptr;
-    QTreeView *mFormLayoutTreeView = nullptr;
+    QgsAttributesFormTreeView *mAvailableWidgetsTreeView = nullptr;
+    QgsAttributesFormTreeView *mFormLayoutTreeView = nullptr;
 
     QgsAttributeWidgetEdit *mAttributeWidgetEdit = nullptr;
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
@@ -437,9 +438,9 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void mTbInitCode_clicked();
 
     void onInvertSelectionButtonClicked( bool checked );
-    void loadAttributeSpecificEditor( QTreeView *emitter, QgsAttributesDnDTree *receiver );
-    void onAttributeSelectionChanged();
-    void onFormLayoutSelectionChanged();
+    void loadAttributeSpecificEditor( QgsAttributesFormTreeView *emitter, QgsAttributesFormTreeView *receiver, QModelIndex &deselectedFormLayoutIndex );
+    void onAttributeSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+    void onFormLayoutSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
     //! Context menu for Fields to enable Copy&Paste
     void onContextMenuRequested( QPoint );
@@ -447,11 +448,17 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void updatedFields();
 
   private:
+    QModelIndex getPreviousIndex( const QgsAttributesFormTreeView *treeView, const QItemSelection &deselected ) const;
+
     //! this will clean the right panel
     void clearAttributeTypeFrame();
 
     void loadAttributeWidgetEdit();
     void storeAttributeWidgetEdit();
+
+    // index should come from mFormLayoutTreeView because it's there that attribute widget config is stored!
+    void storeAttributeWidgetEdit( const QModelIndex &index );
+    void storeAttributeContainerEdit( const QModelIndex &index );
 
     void loadAttributeTypeDialog();
     void loadAttributeTypeDialogFromConfiguration( const QgsAttributeFormTreeData::FieldConfig &cfg );
@@ -587,7 +594,7 @@ class GUI_EXPORT QgsAttributesFormTreeView : public QTreeView, private QgsExpres
     void setType( QgsAttributesDnDTree::Type value );
 
   public slots:
-    void selectFirstMatchingItem( const QgsAttributeFormTreeData::DnDTreeItemData &data );
+    void selectFirstMatchingItem( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId );
 
     // protected:
     //   void dragMoveEvent( QDragMoveEvent *event ) override;
