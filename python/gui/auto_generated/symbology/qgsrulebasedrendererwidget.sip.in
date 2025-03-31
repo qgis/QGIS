@@ -17,9 +17,13 @@ class QgsRuleBasedRendererModel : QAbstractItemModel
 %Docstring(signature="appended")
 Tree model for the rules:
 
-(invalid)  == root node
-+--- top level rule
-+--- top level rule
+The model represents rules as a tree:
+
+::
+
+     (invalid) == root node
+     +--- top level rule
+     +--- top level rule
 %End
 
 %TypeHeaderCode
