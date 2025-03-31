@@ -12162,7 +12162,9 @@ void QgisApp::loadPythonSupport()
   mPythonUtils = pythonlib_inst();
   if ( mPythonUtils )
   {
+#ifndef Q_OS_MACOS
     QgsCrashHandler::sPythonCrashLogFile = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 ) + "/qgis-python-crash-info-" + QString::number( QCoreApplication::applicationPid() );
+#endif
     mPythonUtils->initPython( mQgisInterface, true, QgsCrashHandler::sPythonCrashLogFile );
   }
 
