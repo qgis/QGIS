@@ -655,8 +655,10 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
   mSubsectionsSymbolButton->setEnabled( subSectionsEnabled );
   mSubsectionsActivateCheck->setChecked( subSectionsEnabled );
   if ( subSectionsSymbol )
+  {
     mSubsectionsSymbolButton->setSymbol( subSectionsSymbol->clone() );
-  mProfile->setSubsectionsSymbol( subSectionsSymbol->clone() );
+    mProfile->setSubsectionsSymbol( subSectionsSymbol->clone() );
+  }
 
   QList<QgsMapLayer *> canvasLayers = canvas->layers();
   // canvas layers are in opposite direction to what the layout item requires
