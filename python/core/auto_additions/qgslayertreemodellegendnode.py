@@ -51,7 +51,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayerTreeModelLegendNode.__attribute_docs__ = {'dataChanged': 'Emitted on internal data change so the layer tree model can forward the signal to views\n', 'sizeChanged': 'Emitted when the size of this node changes.\n\n.. versionadded:: 3.16\n'}
+    QgsLayerTreeModelLegendNode.__attribute_docs__ = {'dataChanged': 'Emitted on internal data change so the layer tree model can forward the\nsignal to views\n', 'sizeChanged': 'Emitted when the size of this node changes.\n\n.. versionadded:: 3.16\n'}
     QgsLayerTreeModelLegendNode.__virtual_methods__ = ['flags', 'setData', 'isEmbeddedInParent', 'setEmbeddedInParent', 'userLabel', 'setUserLabel', 'userPatchSize', 'setUserPatchSize', 'setColumnBreak', 'columnBreak', 'isScaleOK', 'invalidateMapBasedData', 'draw', 'drawSymbol', 'exportSymbolToJson', 'drawSymbolText']
     QgsLayerTreeModelLegendNode.__abstract_methods__ = ['data']
     QgsLayerTreeModelLegendNode.__group__ = ['layertree']

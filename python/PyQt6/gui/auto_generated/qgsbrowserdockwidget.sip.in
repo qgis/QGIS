@@ -11,7 +11,8 @@
 class QgsBrowserDockWidget : QgsDockWidget
 {
 %Docstring(signature="appended")
-A dock widget containing a :py:class:`QgsBrowserWidget` for navigating and managing data sources.
+A dock widget containing a :py:class:`QgsBrowserWidget` for navigating
+and managing data sources.
 %End
 
 %TypeHeaderCode
@@ -30,7 +31,8 @@ Constructor for QgsBrowserDockWidget
 
     QgsBrowserWidget *browserWidget();
 %Docstring
-Returns a pointer to the :py:class:`QgsBrowserWidget` used by the dock widget.
+Returns a pointer to the :py:class:`QgsBrowserWidget` used by the dock
+widget.
 
 .. versionadded:: 3.22
 %End
@@ -46,9 +48,9 @@ Add directory to favorites.
 
     void setMessageBar( QgsMessageBar *bar );
 %Docstring
-Sets a message ``bar`` to use alongside the dock widget. Setting this allows items
-to utilize the message bar to provide non-blocking feedback to users, e.g.
-success or failure of actions.
+Sets a message ``bar`` to use alongside the dock widget. Setting this
+allows items to utilize the message bar to provide non-blocking feedback
+to users, e.g. success or failure of actions.
 
 .. seealso:: :py:func:`messageBar`
 
@@ -88,10 +90,11 @@ Returns the map canvas associated with the dock.
 %Docstring
 Sets the customization for data items based on item's data provider key
 
-By default browser model shows all items from all available data items provider and few special
-items (e.g. Favorites). To customize the behavior, set the filter to not load certain data items.
-The items that are not based on data item providers (e.g. Favorites, Home) have
-prefix "special:"
+By default browser model shows all items from all available data items
+provider and few special items (e.g. Favorites). To customize the
+behavior, set the filter to not load certain data items. The items that
+are not based on data item providers (e.g. Favorites, Home) have prefix
+"special:"
 
 Used in the proxy browser model to hide items
 
@@ -104,8 +107,9 @@ Used in the proxy browser model to hide items
 %Docstring
 Adds the layer corresponding to the specified model ``index``.
 
-Returns ``True`` if the index was successfully intrepreted as a map layer and loaded, or
-``False`` if the index is not a map layer or could not be loaded.
+Returns ``True`` if the index was successfully intrepreted as a map
+layer and loaded, or ``False`` if the index is not a map layer or could
+not be loaded.
 
 .. deprecated:: 3.40
 

@@ -11,22 +11,27 @@
 class QgsFeatureRequest
 {
 %Docstring(signature="appended")
-Wraps a request for features to a vector layer (or directly its vector data provider).
+Wraps a request for features to a vector layer (or directly its vector
+data provider).
 
-The request may apply an attribute/ID filter to fetch only a particular subset of features. Currently supported filters:
+The request may apply an attribute/ID filter to fetch only a particular
+subset of features. Currently supported filters:
 
 - no filter - all features are returned
 - feature id - only feature that matches given feature id is returned
-- feature ids - only features that match any of the given feature ids are returned
-- filter expression - only features that match the given filter expression are returned
+- feature ids - only features that match any of the given feature ids
+  are returned
+- filter expression - only features that match the given filter
+  expression are returned
 
-Additionally a spatial filter can be set in combination with the attribute/ID filter. Supported
-spatial filters are:
+Additionally a spatial filter can be set in combination with the
+attribute/ID filter. Supported spatial filters are:
 
 - :py:class:`Qgis`.SpatialFilterType.BoundingBox: Only features that intersect a given rectangle will be fetched. For the sake of speed, the intersection is often done only using feature's bounding box. There is a flag ExactIntersect that makes sure that only intersecting features will be returned.
 - :py:class:`Qgis`.SpatialFilterType.DistanceWithin: Only features within a specified distance of a reference geometry will be fetched.
 
-For efficiency, it is also possible to tell provider that some data is not required:
+For efficiency, it is also possible to tell provider that some data is
+not required:
 
 - NoGeometry flag
 - SubsetOfAttributes flag
@@ -66,24 +71,28 @@ Examples:
     class OrderByClause
 {
 %Docstring(signature="appended")
-The OrderByClause class represents an order by clause for a QgsFeatureRequest.
+The OrderByClause class represents an order by clause for a
+QgsFeatureRequest.
 
-It can be a simple field or an expression. Multiple order by clauses can be added to
-a QgsFeatureRequest to fine tune the behavior if a single field or expression is not
-enough to completely specify the required behavior.
+It can be a simple field or an expression. Multiple order by clauses can
+be added to a QgsFeatureRequest to fine tune the behavior if a single
+field or expression is not enough to completely specify the required
+behavior.
 
-If expression compilation is activated in the settings and the expression can be
-translated for the provider in question, it will be evaluated on provider side.
-If one of these two premises does not apply, the ordering will take place locally
-which results in increased memory and CPU usage.
+If expression compilation is activated in the settings and the
+expression can be translated for the provider in question, it will be
+evaluated on provider side. If one of these two premises does not apply,
+the ordering will take place locally which results in increased memory
+and CPU usage.
 
-If the ordering is done on strings, the order depends on the system's locale if the
-local fallback implementation is used. The order depends on the server system's locale
-and implementation if ordering is done on the server.
+If the ordering is done on strings, the order depends on the system's
+locale if the local fallback implementation is used. The order depends
+on the server system's locale and implementation if ordering is done on
+the server.
 
-In case the fallback code needs to be used, a limit set on the request will be respected
-for the features returned by the iterator but internally all features will be requested
-from the provider.
+In case the fallback code needs to be used, a limit set on the request
+will be respected for the features returned by the iterator but
+internally all features will be requested from the provider.
 %End
 
 %TypeHeaderCode
@@ -96,9 +105,10 @@ from the provider.
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
-:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
-                  If the order is ascending, by default nulls are last
-                  If the order is descending, by default nulls are first
+:param ascending: If the order should be ascending (1,2,3) or descending
+                  (3,2,1) If the order is ascending, by default nulls
+                  are last If the order is descending, by default nulls
+                  are first
 %End
 
         OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
@@ -106,8 +116,10 @@ Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
-:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
-:param nullsfirst: If ``True``, NULLS are at the beginning, if ``False``, NULLS are at the end
+:param ascending: If the order should be ascending (1,2,3) or descending
+                  (3,2,1)
+:param nullsfirst: If ``True``, NULLS are at the beginning, if
+                   ``False``, NULLS are at the end
 %End
 
         OrderByClause( const QgsExpression &expression, bool ascending = true );
@@ -115,9 +127,10 @@ Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
-:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
-                  If the order is ascending, by default nulls are last
-                  If the order is descending, by default nulls are first
+:param ascending: If the order should be ascending (1,2,3) or descending
+                  (3,2,1) If the order is ascending, by default nulls
+                  are last If the order is descending, by default nulls
+                  are first
 %End
 
         OrderByClause( const QgsExpression &expression, bool ascending, bool nullsfirst );
@@ -125,8 +138,10 @@ Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
-:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
-:param nullsfirst: If ``True``, NULLS are at the beginning, if ``False``, NULLS are at the end
+:param ascending: If the order should be ascending (1,2,3) or descending
+                  (3,2,1)
+:param nullsfirst: If ``True``, NULLS are at the beginning, if
+                   ``False``, NULLS are at the end
 %End
 
         QgsExpression expression() const;
@@ -183,8 +198,8 @@ Dumps the content to an SQL equivalent
     class OrderBy
 {
 %Docstring(signature="appended")
-Represents a list of OrderByClauses, with the most important first and the least
-important last.
+Represents a list of OrderByClauses, with the most important first and
+the least important last.
 %End
 
 %TypeHeaderCode
@@ -210,8 +225,8 @@ Create a new order by from a list of clauses
 %Docstring
 Gets a copy as a list of OrderByClauses
 
-This is only required in Python where the inheritance
-is not properly propagated and this makes it usable.
+This is only required in Python where the inheritance is not properly
+propagated and this makes it usable.
 %End
 
         void save( QDomElement &elem ) const;
@@ -250,7 +265,8 @@ Dumps the content to an SQL equivalent syntax
 
     QgsFeatureRequest();
 %Docstring
-construct a default request: for all features get attributes and geometries
+construct a default request: for all features get attributes and
+geometries
 %End
     explicit QgsFeatureRequest( QgsFeatureId fid );
 %Docstring
@@ -265,8 +281,10 @@ construct a request with feature ID filter
 %Docstring
 Construct a request with ``rectangle`` bounding box filter.
 
-When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, ``rectangle``
-is expected to be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, ``rectangle``
+When a destination CRS is set using
+:py:func:`~QgsFeatureRequest.setDestinationCrs`, ``rectangle`` is
+expected to be in the same CRS as the
+:py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, ``rectangle``
 should use the same CRS as the source layer/provider.
 %End
 
@@ -278,11 +296,14 @@ construct a request with a filter expression
 
     bool compare( const QgsFeatureRequest &other ) const;
 %Docstring
-Compare two requests for equality, ignoring Expression Context, Transform Error Callback, Feedback and Invalid Geometry Callback
+Compare two requests for equality, ignoring Expression Context,
+Transform Error Callback, Feedback and Invalid Geometry Callback
 
 :param other: the other request
 
-:return: ``True`` if the requests are equal in all respects but without checking for Expression Context, Transform Error, Feedback and Invalid Geometry Callback
+:return: ``True`` if the requests are equal in all respects but without
+         checking for Expression Context, Transform Error, Feedback and
+         Invalid Geometry Callback
 
 .. versionadded:: 3.38
 %End
@@ -291,10 +312,14 @@ Compare two requests for equality, ignoring Expression Context, Transform Error 
 
     Qgis::FeatureRequestFilterType filterType() const;
 %Docstring
-Returns the attribute/ID filter type which is currently set on this request.
+Returns the attribute/ID filter type which is currently set on this
+request.
 
-This type will automatically be set to the appropriate value whenever :py:func:`~QgsFeatureRequest.setFilterFid`,
-:py:func:`~QgsFeatureRequest.setFilterFids`, :py:func:`~QgsFeatureRequest.setFilterExpression` or :py:func:`~QgsFeatureRequest.disableFilter` are called.
+This type will automatically be set to the appropriate value whenever
+:py:func:`~QgsFeatureRequest.setFilterFid`,
+:py:func:`~QgsFeatureRequest.setFilterFids`,
+:py:func:`~QgsFeatureRequest.setFilterExpression` or
+:py:func:`~QgsFeatureRequest.disableFilter` are called.
 
 .. note::
 
@@ -308,8 +333,9 @@ This type will automatically be set to the appropriate value whenever :py:func:`
 %Docstring
 Returns the spatial filter type which is currently set on this request.
 
-This type will automatically be set to the appropriate value whenever :py:func:`~QgsFeatureRequest.setFilterRect`,
-or :py:func:`~QgsFeatureRequest.setDistanceWithin` are called.
+This type will automatically be set to the appropriate value whenever
+:py:func:`~QgsFeatureRequest.setFilterRect`, or
+:py:func:`~QgsFeatureRequest.setDistanceWithin` are called.
 
 .. note::
 
@@ -323,14 +349,20 @@ or :py:func:`~QgsFeatureRequest.setDistanceWithin` are called.
 
     QgsFeatureRequest &setFilterRect( const QgsRectangle &rectangle );
 %Docstring
-Sets the ``rectangle`` from which features will be taken. An empty rectangle removes the filter.
+Sets the ``rectangle`` from which features will be taken. An empty
+rectangle removes the filter.
 
-When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, ``rectangle``
-is expected to be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, ``rectangle``
+When a destination CRS is set using
+:py:func:`~QgsFeatureRequest.setDestinationCrs`, ``rectangle`` is
+expected to be in the same CRS as the
+:py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, ``rectangle``
 should use the same CRS as the source layer/provider.
 
-Calling this method will automatically set :py:func:`~QgsFeatureRequest.spatialFilterType` to :py:class:`Qgis`.SpatialFilterType.BoundingBox.
-If ``rectangle`` is a null rectangle then :py:func:`~QgsFeatureRequest.spatialFilterType` will be reset to :py:class:`Qgis`.SpatialFilterType.NoFilter.
+Calling this method will automatically set
+:py:func:`~QgsFeatureRequest.spatialFilterType` to
+:py:class:`Qgis`.SpatialFilterType.BoundingBox. If ``rectangle`` is a
+null rectangle then :py:func:`~QgsFeatureRequest.spatialFilterType` will
+be reset to :py:class:`Qgis`.SpatialFilterType.NoFilter.
 
 .. seealso:: :py:func:`filterRect`
 %End
@@ -340,30 +372,41 @@ If ``rectangle`` is a null rectangle then :py:func:`~QgsFeatureRequest.spatialFi
 Returns the rectangle from which features will be taken. If the returned
 rectangle is null, then no filter rectangle is set.
 
-If :py:func:`~QgsFeatureRequest.spatialFilterType` is :py:class:`Qgis`.SpatialFilterType.BoundingBox then only
-features from within this bounding box will be fetched. If :py:func:`~QgsFeatureRequest.spatialFilterType`
-is :py:class:`Qgis`.SpatialFilterType.DistanceWithin then the returned rectangle
-represents the bounding box of the :py:func:`~QgsFeatureRequest.referenceGeometry` extended by :py:func:`~QgsFeatureRequest.distanceWithin`.
+If :py:func:`~QgsFeatureRequest.spatialFilterType` is
+:py:class:`Qgis`.SpatialFilterType.BoundingBox then only features from
+within this bounding box will be fetched. If
+:py:func:`~QgsFeatureRequest.spatialFilterType` is
+:py:class:`Qgis`.SpatialFilterType.DistanceWithin then the returned
+rectangle represents the bounding box of the
+:py:func:`~QgsFeatureRequest.referenceGeometry` extended by
+:py:func:`~QgsFeatureRequest.distanceWithin`.
 
-When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, the rectangle
-will be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, the rectangle
-will use the same CRS as the source layer/provider.
+When a destination CRS is set using
+:py:func:`~QgsFeatureRequest.setDestinationCrs`, the rectangle will be
+in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`.
+Otherwise, the rectangle will use the same CRS as the source
+layer/provider.
 
 .. seealso:: :py:func:`setFilterRect`
 %End
 
     QgsFeatureRequest &setDistanceWithin( const QgsGeometry &geometry, double distance );
 %Docstring
-Sets a reference ``geometry`` and a maximum ``distance`` from this geometry to retrieve
-features within.
+Sets a reference ``geometry`` and a maximum ``distance`` from this
+geometry to retrieve features within.
 
-When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, ``geometry``
-is expected to be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs` and ``distance`` is in
-the spatial units of the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, ``geometry``
-should use the same CRS as the source layer/provider and ``distance``
-should use the spatial units as this same CRS.
+When a destination CRS is set using
+:py:func:`~QgsFeatureRequest.setDestinationCrs`, ``geometry`` is
+expected to be in the same CRS as the
+:py:func:`~QgsFeatureRequest.destinationCrs` and ``distance`` is in the
+spatial units of the :py:func:`~QgsFeatureRequest.destinationCrs`.
+Otherwise, ``geometry`` should use the same CRS as the source
+layer/provider and ``distance`` should use the spatial units as this
+same CRS.
 
-Calling this method will automatically set :py:func:`~QgsFeatureRequest.spatialFilterType` to :py:class:`Qgis`.SpatialFilterType.DistanceWithin.
+Calling this method will automatically set
+:py:func:`~QgsFeatureRequest.spatialFilterType` to
+:py:class:`Qgis`.SpatialFilterType.DistanceWithin.
 
 .. seealso:: :py:func:`filterRect`
 
@@ -374,13 +417,16 @@ Calling this method will automatically set :py:func:`~QgsFeatureRequest.spatialF
 %Docstring
 Returns the reference geometry used for spatial filtering of features.
 
-When :py:func:`~QgsFeatureRequest.spatialFilterType` is :py:class:`Qgis`.SpatialFilterType.DistanceWithin then only
-features within :py:func:`~QgsFeatureRequest.distanceWithin` units of the reference geometry will be
-fetched.
+When :py:func:`~QgsFeatureRequest.spatialFilterType` is
+:py:class:`Qgis`.SpatialFilterType.DistanceWithin then only features
+within :py:func:`~QgsFeatureRequest.distanceWithin` units of the
+reference geometry will be fetched.
 
-When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, the geometry
-will be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, the geometry
-will use the same CRS as the source layer/provider.
+When a destination CRS is set using
+:py:func:`~QgsFeatureRequest.setDestinationCrs`, the geometry will be in
+the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`.
+Otherwise, the geometry will use the same CRS as the source
+layer/provider.
 
 .. seealso:: :py:func:`setDistanceWithin`
 
@@ -390,12 +436,16 @@ will use the same CRS as the source layer/provider.
 
     double distanceWithin() const;
 %Docstring
-Returns the maximum distance from the :py:func:`~QgsFeatureRequest.referenceGeometry` of fetched
-features, if :py:func:`~QgsFeatureRequest.spatialFilterType` is :py:class:`Qgis`.SpatialFilterType.DistanceWithin.
+Returns the maximum distance from the
+:py:func:`~QgsFeatureRequest.referenceGeometry` of fetched features, if
+:py:func:`~QgsFeatureRequest.spatialFilterType` is
+:py:class:`Qgis`.SpatialFilterType.DistanceWithin.
 
-When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, the distance
-will be in the spatial units of :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, the distance
-will use the same units as the CRS of the source layer/provider.
+When a destination CRS is set using
+:py:func:`~QgsFeatureRequest.setDestinationCrs`, the distance will be in
+the spatial units of :py:func:`~QgsFeatureRequest.destinationCrs`.
+Otherwise, the distance will use the same units as the CRS of the source
+layer/provider.
 
 .. seealso:: :py:func:`setDistanceWithin`
 
@@ -406,7 +456,8 @@ will use the same units as the CRS of the source layer/provider.
 %Docstring
 Sets the feature ID that should be fetched.
 
-Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterType` to QgsFeatureRequest.FilterFid.
+Calling this method will automatically set
+:py:func:`~QgsFeatureRequest.filterType` to QgsFeatureRequest.FilterFid.
 
 .. seealso:: :py:func:`filterFid`
 
@@ -426,7 +477,9 @@ Returns the feature ID that should be fetched.
 %Docstring
 Sets the feature IDs that should be fetched.
 
-Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterType` to QgsFeatureRequest.FilterFids.
+Calling this method will automatically set
+:py:func:`~QgsFeatureRequest.filterType` to
+QgsFeatureRequest.FilterFids.
 
 .. seealso:: :py:func:`filterFids`
 
@@ -463,8 +516,9 @@ Returns the invalid geometry checking behavior.
 
     QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
 %Docstring
-Sets a callback function to use when encountering an invalid geometry and
-:py:func:`~QgsFeatureRequest.invalidGeometryCheck` is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
+Sets a callback function to use when encountering an invalid geometry
+and :py:func:`~QgsFeatureRequest.invalidGeometryCheck` is set to
+GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
 called using the feature with invalid geometry as a parameter.
 
 .. seealso:: :py:func:`invalidGeometryCallback`
@@ -491,7 +545,9 @@ Set the filter ``expression``. {:py:class:`QgsExpression`}
 
 :param expression: expression string
 
-Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterType` to QgsFeatureRequest.FilterExpression.
+Calling this method will automatically set
+:py:func:`~QgsFeatureRequest.filterType` to
+QgsFeatureRequest.FilterExpression.
 
 .. seealso:: :py:func:`filterExpression`
 
@@ -509,11 +565,14 @@ Returns the filter expression (if set).
 
     QgsFeatureRequest &combineFilterExpression( const QString &expression );
 %Docstring
-Modifies the existing filter expression to add an additional expression filter. The
-filter expressions are combined using AND, so only features matching both
-the existing expression and the additional expression will be returned.
+Modifies the existing filter expression to add an additional expression
+filter. The filter expressions are combined using AND, so only features
+matching both the existing expression and the additional expression will
+be returned.
 
-Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterType` to QgsFeatureRequest.FilterExpression.
+Calling this method will automatically set
+:py:func:`~QgsFeatureRequest.filterType` to
+QgsFeatureRequest.FilterExpression.
 %End
 
     QgsExpressionContext *expressionContext();
@@ -538,7 +597,9 @@ Sets the expression context used to evaluate filter expressions.
 %Docstring
 Disables any attribute/ID filtering.
 
-Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterType` to QgsFeatureRequest.FilterNone.
+Calling this method will automatically set
+:py:func:`~QgsFeatureRequest.filterType` to
+QgsFeatureRequest.FilterNone.
 
 .. note::
 
@@ -553,9 +614,10 @@ Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterTy
 Adds a new OrderByClause, appending it as the least important one.
 
 :param expression: The expression to use for ordering
-:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
-                  If the order is ascending, by default nulls are last
-                  If the order is descending, by default nulls are first
+:param ascending: If the order should be ascending (1,2,3) or descending
+                  (3,2,1) If the order is ascending, by default nulls
+                  are last If the order is descending, by default nulls
+                  are first
 %End
 
     QgsFeatureRequest &addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
@@ -563,8 +625,10 @@ Adds a new OrderByClause, appending it as the least important one.
 Adds a new OrderByClause, appending it as the least important one.
 
 :param expression: The expression to use for ordering
-:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
-:param nullsfirst: If ``True``, NULLS are at the beginning, if ``False``, NULLS are at the end
+:param ascending: If the order should be ascending (1,2,3) or descending
+                  (3,2,1)
+:param nullsfirst: If ``True``, NULLS are at the beginning, if
+                   ``False``, NULLS are at the end
 %End
 
     OrderBy orderBy() const;
@@ -588,7 +652,8 @@ Set the maximum number of features to request.
 
     long long limit() const;
 %Docstring
-Returns the maximum number of features to request, or -1 if no limit set.
+Returns the maximum number of features to request, or -1 if no limit
+set.
 
 .. seealso:: :py:func:`setLimit`
 %End
@@ -612,8 +677,9 @@ Returns the flags which affect how features are fetched.
 Set a subset of attributes that will be fetched.
 
 An empty attributes list indicates that no attributes will be fetched.
-To revert a call to setSubsetOfAttributes and fetch all available attributes,
-the SubsetOfAttributes flag should be removed from the request.
+To revert a call to setSubsetOfAttributes and fetch all available
+attributes, the SubsetOfAttributes flag should be removed from the
+request.
 
 .. note::
 
@@ -632,8 +698,9 @@ the SubsetOfAttributes flag should be removed from the request.
 %Docstring
 Set that no attributes will be fetched.
 
-To revert a call to setNoAttributes and fetch all or some available attributes,
-the SubsetOfAttributes flag should be removed from the request.
+To revert a call to setNoAttributes and fetch all or some available
+attributes, the SubsetOfAttributes flag should be removed from the
+request.
 
 .. note::
 
@@ -712,12 +779,12 @@ Returns the simplification method for geometries that will be fetched.
 
     QgsCoordinateTransform coordinateTransform() const;
 %Docstring
-Returns the coordinate transform which will be used to transform
-the feature's geometries.
+Returns the coordinate transform which will be used to transform the
+feature's geometries.
 
-If this transform is valid  then it will always be used to transform
-features, regardless of the :py:func:`~QgsFeatureRequest.destinationCrs` setting or the underlying
-feature source's actual CRS.
+If this transform is valid then it will always be used to transform
+features, regardless of the :py:func:`~QgsFeatureRequest.destinationCrs`
+setting or the underlying feature source's actual CRS.
 
 .. seealso:: :py:func:`setCoordinateTransform`
 
@@ -726,9 +793,10 @@ feature source's actual CRS.
 
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
-Returns the destination coordinate reference system for feature's geometries,
-or an invalid :py:class:`QgsCoordinateReferenceSystem` if no reprojection will be done
-and all features will be left with their original geometry.
+Returns the destination coordinate reference system for feature's
+geometries, or an invalid :py:class:`QgsCoordinateReferenceSystem` if no
+reprojection will be done and all features will be left with their
+original geometry.
 
 .. warning::
 
@@ -745,8 +813,9 @@ and all features will be left with their original geometry.
 
     QgsCoordinateTransformContext transformContext() const;
 %Docstring
-Returns the transform context, for use when a :py:func:`~QgsFeatureRequest.destinationCrs` has been set
-and reprojection is required
+Returns the transform context, for use when a
+:py:func:`~QgsFeatureRequest.destinationCrs` has been set and
+reprojection is required
 
 .. seealso:: :py:func:`setDestinationCrs`
 
@@ -755,36 +824,42 @@ and reprojection is required
 
     QgsCoordinateTransform calculateTransform( const QgsCoordinateReferenceSystem &sourceCrs ) const;
 %Docstring
-Calculates the coordinate transform to use to transform geometries
-when they are originally in ``sourceCrs``.
+Calculates the coordinate transform to use to transform geometries when
+they are originally in ``sourceCrs``.
 
-This method will return :py:func:`~QgsFeatureRequest.coordinateTransform` if it is set (ignoring ``sourceCrs``), otherwise
-it will calculate an appriopriate transform from ``sourceCrs`` to :py:func:`~QgsFeatureRequest.destinationCrs`.
+This method will return
+:py:func:`~QgsFeatureRequest.coordinateTransform` if it is set (ignoring
+``sourceCrs``), otherwise it will calculate an appriopriate transform
+from ``sourceCrs`` to :py:func:`~QgsFeatureRequest.destinationCrs`.
 
 .. versionadded:: 3.40
 %End
 
     QgsFeatureRequest &setCoordinateTransform( const QgsCoordinateTransform &transform );
 %Docstring
-Sets the coordinate ``transform`` which will be used to transform
-the feature's geometries.
+Sets the coordinate ``transform`` which will be used to transform the
+feature's geometries.
 
 If this transform is valid then it will always be used to transform
-features, regardless of the :py:func:`~QgsFeatureRequest.destinationCrs` setting or the underlying
-feature source's actual CRS.
+features, regardless of the :py:func:`~QgsFeatureRequest.destinationCrs`
+setting or the underlying feature source's actual CRS.
 
-When a ``transform`` is set using :py:func:`~QgsFeatureRequest.setCoordinateTransform`, then any :py:func:`~QgsFeatureRequest.filterRect`
-or :py:func:`~QgsFeatureRequest.referenceGeometry` set on the request is expected to be in the
-same CRS as the destination CRS for the ``transform``.
+When a ``transform`` is set using
+:py:func:`~QgsFeatureRequest.setCoordinateTransform`, then any
+:py:func:`~QgsFeatureRequest.filterRect` or
+:py:func:`~QgsFeatureRequest.referenceGeometry` set on the request is
+expected to be in the same CRS as the destination CRS for the
+``transform``.
 
-The feature geometry transformation is performed
-after all filter expressions are tested and any virtual fields are
-calculated. Accordingly, any geometric expressions used in
-:py:func:`~QgsFeatureRequest.filterExpression` will be performed in the original
-source CRS. This ensures consistent results are returned regardless of the
-destination CRS. Similarly, virtual field values will be calculated using the
-original geometry in the source CRS, so these values are not affected by
-any destination CRS transform present in the feature request.
+The feature geometry transformation is performed after all filter
+expressions are tested and any virtual fields are calculated.
+Accordingly, any geometric expressions used in
+:py:func:`~QgsFeatureRequest.filterExpression` will be performed in the
+original source CRS. This ensures consistent results are returned
+regardless of the destination CRS. Similarly, virtual field values will
+be calculated using the original geometry in the source CRS, so these
+values are not affected by any destination CRS transform present in the
+feature request.
 
 .. warning::
 
@@ -803,21 +878,24 @@ any destination CRS transform present in the feature request.
 Sets the destination ``crs`` for feature's geometries. If set, all
 geometries will be reprojected from their original coordinate reference
 system to this desired reference system. If ``crs`` is an invalid
-:py:class:`QgsCoordinateReferenceSystem` then no reprojection will be done
-and all features will be left with their original geometry.
+:py:class:`QgsCoordinateReferenceSystem` then no reprojection will be
+done and all features will be left with their original geometry.
 
-When a ``crs`` is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, then any :py:func:`~QgsFeatureRequest.filterRect`
-or :py:func:`~QgsFeatureRequest.referenceGeometry` set on the request is expected to be in the
-same CRS as the destination CRS.
+When a ``crs`` is set using
+:py:func:`~QgsFeatureRequest.setDestinationCrs`, then any
+:py:func:`~QgsFeatureRequest.filterRect` or
+:py:func:`~QgsFeatureRequest.referenceGeometry` set on the request is
+expected to be in the same CRS as the destination CRS.
 
 The feature geometry transformation to the destination CRS is performed
 after all filter expressions are tested and any virtual fields are
 calculated. Accordingly, any geometric expressions used in
-:py:func:`~QgsFeatureRequest.filterExpression` will be performed in the original
-source CRS. This ensures consistent results are returned regardless of the
-destination CRS. Similarly, virtual field values will be calculated using the
-original geometry in the source CRS, so these values are not affected by
-any destination CRS transform present in the feature request.
+:py:func:`~QgsFeatureRequest.filterExpression` will be performed in the
+original source CRS. This ensures consistent results are returned
+regardless of the destination CRS. Similarly, virtual field values will
+be calculated using the original geometry in the source CRS, so these
+values are not affected by any destination CRS transform present in the
+feature request.
 
 .. warning::
 
@@ -830,9 +908,10 @@ any destination CRS transform present in the feature request.
 
     QgsFeatureRequest &setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
 %Docstring
-Sets a callback function to use when encountering a transform error when iterating
-features and a :py:func:`~QgsFeatureRequest.destinationCrs` is set. This function will be
-called using the feature which encountered the transform error as a parameter.
+Sets a callback function to use when encountering a transform error when
+iterating features and a :py:func:`~QgsFeatureRequest.destinationCrs` is
+set. This function will be called using the feature which encountered
+the transform error as a parameter.
 
 .. seealso:: :py:func:`transformErrorCallback`
 
@@ -866,8 +945,9 @@ Check if a feature is accepted by this requests filter
 
  int connectionTimeout() const /Deprecated="Since 3.40. Use timeout() instead."/;
 %Docstring
-Returns the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
-at this moment. A negative value (which is set by default) will wait forever.
+Returns the timeout (in milliseconds) for how long we should wait for a
+connection if none is available from the pool at this moment. A negative
+value (which is set by default) will wait forever.
 
 .. note::
 
@@ -880,8 +960,9 @@ at this moment. A negative value (which is set by default) will wait forever.
 
  QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) /Deprecated="Since 3.40. Use setTimeout() instead."/;
 %Docstring
-Sets the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
-at this moment. A negative value (which is set by default) will wait forever.
+Sets the timeout (in milliseconds) for how long we should wait for a
+connection if none is available from the pool at this moment. A negative
+value (which is set by default) will wait forever.
 
 .. note::
 
@@ -894,8 +975,9 @@ at this moment. A negative value (which is set by default) will wait forever.
 
     int timeout() const;
 %Docstring
-Returns the timeout (in milliseconds) for the maximum time we should wait during feature requests before a
-feature is returned. A negative value (which is set by default) will wait forever.
+Returns the timeout (in milliseconds) for the maximum time we should
+wait during feature requests before a feature is returned. A negative
+value (which is set by default) will wait forever.
 
 .. note::
 
@@ -908,8 +990,9 @@ feature is returned. A negative value (which is set by default) will wait foreve
 
     QgsFeatureRequest &setTimeout( int timeout );
 %Docstring
-Sets the ``timeout`` (in milliseconds) for the maximum time we should wait during feature requests before a
-feature is returned. A negative value (which is set by default) will wait forever.
+Sets the ``timeout`` (in milliseconds) for the maximum time we should
+wait during feature requests before a feature is returned. A negative
+value (which is set by default) will wait forever.
 
 .. note::
 
@@ -925,8 +1008,8 @@ feature is returned. A negative value (which is set by default) will wait foreve
 In case this request may be run nested within another already running
 iteration on the same connection, set this to ``True``.
 
-If this flag is ``True``, this request will be able to make use of "spare"
-connections to avoid deadlocks.
+If this flag is ``True``, this request will be able to make use of
+"spare" connections to avoid deadlocks.
 
 For example, this should be set on requests that are issued from an
 expression function.
@@ -941,8 +1024,8 @@ expression function.
 In case this request may be run nested within another already running
 iteration on the same connection, set this to ``True``.
 
-If this flag is ``True``, this request will be able to make use of "spare"
-connections to avoid deadlocks.
+If this flag is ``True``, this request will be able to make use of
+"spare" connections to avoid deadlocks.
 
 For example, this should be set on requests that are issued from an
 expression function.
@@ -954,11 +1037,12 @@ expression function.
 
     void setFeedback( QgsFeedback *feedback );
 %Docstring
-Attach a ``feedback`` object that can be queried regularly by the iterator to check
-if it should be canceled.
+Attach a ``feedback`` object that can be queried regularly by the
+iterator to check if it should be canceled.
 
-Ownership of ``feedback`` is NOT transferred, and the caller must take care that it exists
-for the lifetime of the feature request and feature iterators.
+Ownership of ``feedback`` is NOT transferred, and the caller must take
+care that it exists for the lifetime of the feature request and feature
+iterators.
 
 .. seealso:: :py:func:`feedback`
 
@@ -967,8 +1051,8 @@ for the lifetime of the feature request and feature iterators.
 
     QgsFeedback *feedback() const;
 %Docstring
-Returns the feedback object that can be queried regularly by the iterator to check
-if it should be canceled, if set.
+Returns the feedback object that can be queried regularly by the
+iterator to check if it should be canceled, if set.
 
 .. seealso:: :py:func:`setFeedback`
 
@@ -990,7 +1074,8 @@ if it should be canceled, if set.
 class QgsAbstractFeatureSource
 {
 %Docstring(signature="appended")
-Base class that can be used for any class that is capable of returning features.
+Base class that can be used for any class that is capable of returning
+features.
 %End
 
 %TypeHeaderCode

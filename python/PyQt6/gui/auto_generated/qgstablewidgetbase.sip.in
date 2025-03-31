@@ -13,8 +13,8 @@ class QgsTableWidgetBase : QWidget, protected Ui::QgsTableWidgetUiBase
 %Docstring(signature="appended")
 Base widget allowing editing a collection, using a table.
 
-This widget includes buttons to add and remove rows.
-Child classes must call init(QAbstractTableModel*) from their constructor.
+This widget includes buttons to add and remove rows. Child classes must
+call init(QAbstractTableModel*) from their constructor.
 %End
 
 %TypeHeaderCode
@@ -49,8 +49,8 @@ Sets whether the widget should be shown in a read-only state.
   protected:
     void init( QAbstractTableModel *model );
 %Docstring
-Initialize the table with the given model.
-Must be called once in the child class' constructor.
+Initialize the table with the given model. Must be called once in the
+child class' constructor.
 %End
 
   signals:

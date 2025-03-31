@@ -13,12 +13,13 @@ class QgsExpressionContextGenerator
 %Docstring(signature="appended")
 Abstract interface for generating an expression context.
 
-You need to implement this interface in a class and register this class with
-:py:func:`QgsFieldExpressionWidget.registerExpressionGenerator()`.
+You need to implement this interface in a class and register this class
+with :py:func:`QgsFieldExpressionWidget.registerExpressionGenerator()`.
 
-This is used for example in :py:class:`QgsPropertyOverrideButton` or :py:class:`QgsFieldExpressionWidget`
-classes which will ask for a new :py:class:`QgsExpressionContext` every time the expression
-editor is opened. This way they are able to provide an up-to-date expression
+This is used for example in :py:class:`QgsPropertyOverrideButton` or
+:py:class:`QgsFieldExpressionWidget` classes which will ask for a new
+:py:class:`QgsExpressionContext` every time the expression editor is
+opened. This way they are able to provide an up-to-date expression
 editor even when the environment changes.
 %End
 
@@ -29,8 +30,8 @@ editor even when the environment changes.
 
     virtual QgsExpressionContext createExpressionContext() const = 0;
 %Docstring
-This method needs to be reimplemented in all classes which implement this interface
-and return an expression context.
+This method needs to be reimplemented in all classes which implement
+this interface and return an expression context.
 %End
 
     virtual ~QgsExpressionContextGenerator();

@@ -35,12 +35,14 @@ Constructor for a null oriented box.
 
     QgsOrientedBox3D( const QList<double> &center, const QList< double > &halfAxes );
 %Docstring
-Constructor for a oriented box, with a specified center and half axes matrix.
+Constructor for a oriented box, with a specified center and half axes
+matrix.
 %End
 
     QgsOrientedBox3D( const QgsVector3D &center, const QList< QgsVector3D > &halfAxes );
 %Docstring
-Constructor for a oriented box, with a specified center and half axes matrix.
+Constructor for a oriented box, with a specified center and half axes
+matrix.
 %End
 
     static QgsOrientedBox3D fromBox3D( const QgsBox3D &box );

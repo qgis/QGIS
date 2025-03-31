@@ -11,14 +11,18 @@
 class QgsLayoutAtlas : QObject, QgsAbstractLayoutIterator, QgsLayoutSerializableObject, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
-Used to render :py:class:`QgsLayout` as an atlas, by iterating over the features from an associated vector layer.
+Used to render :py:class:`QgsLayout` as an atlas, by iterating over the
+features from an associated vector layer.
 
-:py:class:`QgsLayoutAtlas` implement the :py:class:`QgsAbstractLayoutIterator` interface, allowing them to be used
-directly with :py:class:`QgsLayoutExporter` to automatically output all pages from the atlas.
+:py:class:`QgsLayoutAtlas` implement the
+:py:class:`QgsAbstractLayoutIterator` interface, allowing them to be
+used directly with :py:class:`QgsLayoutExporter` to automatically output
+all pages from the atlas.
 
-For :py:class:`QgsPrintLayout` layouts, it is not necessary to manually construct a
-:py:class:`QgsLayoutAtlas` object. Instead, the atlas attached to the print layout
-should be used. This can be retrieved by calling :py:func:`QgsPrintLayout.atlas()`.
+For :py:class:`QgsPrintLayout` layouts, it is not necessary to manually
+construct a :py:class:`QgsLayoutAtlas` object. Instead, the atlas
+attached to the print layout should be used. This can be retrieved by
+calling :py:func:`QgsPrintLayout.atlas()`.
 %End
 
 %TypeHeaderCode
@@ -65,15 +69,16 @@ Returns ``True`` if the atlas is set to hide the coverage layer.
 
     void setHideCoverage( bool hide );
 %Docstring
-Sets whether the coverage layer should be hidden in map items in the layouts.
+Sets whether the coverage layer should be hidden in map items in the
+layouts.
 
 .. seealso:: :py:func:`hideCoverage`
 %End
 
     QString filenameExpression() const;
 %Docstring
-Returns the filename expression used for generating output filenames for each
-atlas page.
+Returns the filename expression used for generating output filenames for
+each atlas page.
 
 .. seealso:: :py:func:`setFilenameExpression`
 
@@ -82,10 +87,9 @@ atlas page.
 
     bool setFilenameExpression( const QString &expression, QString &errorString /Out/ );
 %Docstring
-Sets the filename ``expression`` used for generating output filenames for each
-atlas page.
-If an invalid expression is passed, ``False`` will be returned and ``errorString``
-will be set to the expression error.
+Sets the filename ``expression`` used for generating output filenames
+for each atlas page. If an invalid expression is passed, ``False`` will
+be returned and ``errorString`` will be set to the expression error.
 
 .. seealso:: :py:func:`filenameExpression`
 
@@ -117,7 +121,8 @@ Sets the coverage ``layer`` to use for the atlas features.
 
     QString pageNameExpression() const;
 %Docstring
-Returns the expression (or field name) used for calculating the page name.
+Returns the expression (or field name) used for calculating the page
+name.
 
 .. seealso:: :py:func:`setPageNameExpression`
 
@@ -126,14 +131,16 @@ Returns the expression (or field name) used for calculating the page name.
 
     void setPageNameExpression( const QString &expression );
 %Docstring
-Sets the ``expression`` (or field name) used for calculating the page name.
+Sets the ``expression`` (or field name) used for calculating the page
+name.
 
 .. seealso:: :py:func:`pageNameExpression`
 %End
 
     QString nameForPage( int page ) const;
 %Docstring
-Returns the calculated name for a specified atlas ``page`` number. Page numbers start at 0.
+Returns the calculated name for a specified atlas ``page`` number. Page
+numbers start at 0.
 
 .. seealso:: :py:func:`pageNameExpression`
 %End
@@ -164,7 +171,8 @@ Sets whether features should be sorted in the atlas.
 %Docstring
 Returns ``True`` if features should be sorted in an ascending order.
 
-This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures` is ``False``.
+This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures`
+is ``False``.
 
 .. seealso:: :py:func:`sortFeatures`
 
@@ -177,7 +185,8 @@ This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures` is ``Fals
 %Docstring
 Sets whether features should be sorted in an ascending order.
 
-This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures` is ``False``.
+This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures`
+is ``False``.
 
 .. seealso:: :py:func:`setSortFeatures`
 
@@ -190,7 +199,8 @@ This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures` is ``Fals
 %Docstring
 Returns the expression (or field name) to use for sorting features.
 
-This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures` is ``False``.
+This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures`
+is ``False``.
 
 .. seealso:: :py:func:`sortFeatures`
 
@@ -203,7 +213,8 @@ This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures` is ``Fals
 %Docstring
 Sets the ``expression`` (or field name) to use for sorting features.
 
-This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures` is ``False``.
+This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures`
+is ``False``.
 
 .. seealso:: :py:func:`setSortFeatures`
 
@@ -232,9 +243,11 @@ Sets whether features should be ``filtered`` in the coverage layer.
 
     QString filterExpression() const;
 %Docstring
-Returns the expression used for filtering features in the coverage layer.
+Returns the expression used for filtering features in the coverage
+layer.
 
-This property has no effect is :py:func:`~QgsLayoutAtlas.filterFeatures` is ``False``.
+This property has no effect is :py:func:`~QgsLayoutAtlas.filterFeatures`
+is ``False``.
 
 .. seealso:: :py:func:`setFilterExpression`
 
@@ -243,12 +256,14 @@ This property has no effect is :py:func:`~QgsLayoutAtlas.filterFeatures` is ``Fa
 
     bool setFilterExpression( const QString &expression, QString &errorString /Out/ );
 %Docstring
-Sets the ``expression`` used for filtering features in the coverage layer.
+Sets the ``expression`` used for filtering features in the coverage
+layer.
 
-This property has no effect is :py:func:`~QgsLayoutAtlas.filterFeatures` is ``False``.
+This property has no effect is :py:func:`~QgsLayoutAtlas.filterFeatures`
+is ``False``.
 
-If an invalid expression is passed, ``False`` will be returned and ``errorString``
-will be set to the expression error.
+If an invalid expression is passed, ``False`` will be returned and
+``errorString`` will be set to the expression error.
 
 .. seealso:: :py:func:`filterExpression`
 
@@ -257,8 +272,8 @@ will be set to the expression error.
 
     int updateFeatures();
 %Docstring
-Requeries the current atlas coverage layer and applies filtering and sorting. Returns
-number of matching features.
+Requeries the current atlas coverage layer and applies filtering and
+sorting. Returns number of matching features.
 %End
 
     virtual bool beginRender();
@@ -272,7 +287,8 @@ number of matching features.
 
     int currentFeatureNumber() const;
 %Docstring
-Returns the current feature number, where a value of 0 corresponds to the first feature.
+Returns the current feature number, where a value of 0 corresponds to
+the first feature.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -285,7 +301,8 @@ Returns the current feature number, where a value of 0 corresponds to the first 
 
     bool previous();
 %Docstring
-Iterates to the previous feature, returning ``False`` if no previous feature exists.
+Iterates to the previous feature, returning ``False`` if no previous
+feature exists.
 
 .. seealso:: :py:func:`next`
 
@@ -350,7 +367,8 @@ Seeks to the specified ``feature``.
 
     void refreshCurrentFeature();
 %Docstring
-Refreshes the current atlas feature, by refetching its attributes from the vector layer provider
+Refreshes the current atlas feature, by refetching its attributes from
+the vector layer provider
 %End
 
   signals:

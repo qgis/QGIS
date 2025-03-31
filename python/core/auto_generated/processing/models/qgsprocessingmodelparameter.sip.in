@@ -24,8 +24,8 @@ Represents an input parameter used by the model.
 
     QgsProcessingModelParameter( const QString &parameterName = QString() );
 %Docstring
-Constructor for QgsProcessingModelParameter. The parameter name should match one of the
-parameters from the parent model.
+Constructor for QgsProcessingModelParameter. The parameter name should
+match one of the parameters from the parent model.
 %End
 
     virtual QgsProcessingModelParameter *clone() const /Factory/;
@@ -33,16 +33,16 @@ parameters from the parent model.
 
     QString parameterName() const;
 %Docstring
-Returns the associated parameter name. The parameter name should match one of the
-parameters from the parent model.
+Returns the associated parameter name. The parameter name should match
+one of the parameters from the parent model.
 
 .. seealso:: :py:func:`parameterName`
 %End
 
     void setParameterName( const QString &name );
 %Docstring
-Sets the associated parameter name. The parameter name should match one of the
-parameters from the parent model.
+Sets the associated parameter name. The parameter name should match one
+of the parameters from the parent model.
 
 .. seealso:: :py:func:`parameterName`
 %End

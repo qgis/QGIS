@@ -32,7 +32,8 @@ The model represents rules as a tree:
   public:
     QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent, QScreen *screen = 0 );
 %Docstring
-Constructor for QgsRuleBasedRendererModel, for the specified ``renderer``.
+Constructor for QgsRuleBasedRendererModel, for the specified
+``renderer``.
 %End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -75,8 +76,8 @@ Constructor for QgsRuleBasedRendererModel, for the specified ``renderer``.
 
     void setSymbol( const QModelIndex &index, QgsSymbol *symbol /Transfer/ );
 %Docstring
-Sets the ``symbol`` for the rule at the specified ``index``. Ownership of the symbols is
-transferred to the renderer.
+Sets the ``symbol`` for the rule at the specified ``index``. Ownership
+of the symbols is transferred to the renderer.
 
 .. versionadded:: 3.10
 %End

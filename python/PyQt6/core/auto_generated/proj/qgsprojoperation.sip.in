@@ -23,8 +23,8 @@ Contains information about a PROJ operation.
 
     bool isValid() const;
 %Docstring
-Returns ``True`` if the body is a valid object, or ``False`` if it is a null/invalid
-object.
+Returns ``True`` if the body is a valid object, or ``False`` if it is a
+null/invalid object.
 %End
 
     QString id() const;

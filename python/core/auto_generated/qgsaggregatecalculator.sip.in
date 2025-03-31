@@ -14,7 +14,8 @@
 class QgsAggregateCalculator
 {
 %Docstring(signature="appended")
-Utility class for calculating aggregates for a field (or expression) over the features from a vector layer.
+Utility class for calculating aggregates for a field (or expression)
+over the features from a vector layer.
 
 .. note::
 
@@ -73,33 +74,39 @@ Sets all aggregate parameters from a parameter bundle.
 
     void setFilter( const QString &filterExpression );
 %Docstring
-Sets a filter to limit the features used during the aggregate calculation.
+Sets a filter to limit the features used during the aggregate
+calculation.
 
-:param filterExpression: expression for filtering features, or empty string to remove filter
+:param filterExpression: expression for filtering features, or empty
+                         string to remove filter
 
 .. seealso:: :py:func:`filter`
 %End
 
     void setFidsFilter( const QgsFeatureIds &fids );
 %Docstring
-Sets a filter to limit the features used during the aggregate calculation.
-If an expression filter is set, it will override this filter.
+Sets a filter to limit the features used during the aggregate
+calculation. If an expression filter is set, it will override this
+filter.
 
-:param fids: feature ids for feature filtering, and empty list will return no features.
+:param fids: feature ids for feature filtering, and empty list will
+             return no features.
 
 .. seealso:: :py:func:`filter`
 %End
 
     QString filter() const;
 %Docstring
-Returns the filter which limits the features used during the aggregate calculation.
+Returns the filter which limits the features used during the aggregate
+calculation.
 
 .. seealso:: :py:func:`setFilter`
 %End
 
     void setDelimiter( const QString &delimiter );
 %Docstring
-Sets the delimiter to use for joining values with the StringConcatenate aggregate.
+Sets the delimiter to use for joining values with the StringConcatenate
+aggregate.
 
 :param delimiter: string delimiter
 
@@ -108,7 +115,8 @@ Sets the delimiter to use for joining values with the StringConcatenate aggregat
 
     QString delimiter() const;
 %Docstring
-Returns the delimiter used for joining values with the StringConcatenate aggregate.
+Returns the delimiter used for joining values with the StringConcatenate
+aggregate.
 
 .. seealso:: :py:func:`setDelimiter`
 %End
@@ -119,12 +127,18 @@ Returns the delimiter used for joining values with the StringConcatenate aggrega
 Calculates the value of an aggregate.
 
 :param aggregate: aggregate to calculate
-:param fieldOrExpression: source field or expression to use as basis for aggregated values.
-                          If an expression is used, then the context parameter must be set.
+:param fieldOrExpression: source field or expression to use as basis for
+                          aggregated values. If an expression is used,
+                          then the context parameter must be set.
 :param context: expression context for evaluating expressions
-:param ok: if specified, will be set to ``True`` if aggregate calculation was successful. If ``ok`` is ``False`` then :py:func:`~QgsAggregateCalculator.lastError` can be used to retrieve a descriptive error message.
-:param feedback: optional feedback argument for early cancellation (since QGIS 3.22). If set, this will take precedence over any feedback object
-                 set on the expression ``context``.
+:param ok: if specified, will be set to ``True`` if aggregate
+           calculation was successful. If ``ok`` is ``False`` then
+           :py:func:`~QgsAggregateCalculator.lastError` can be used to
+           retrieve a descriptive error message.
+:param feedback: optional feedback argument for early cancellation
+                 (since QGIS 3.22). If set, this will take precedence
+                 over any feedback object set on the expression
+                 ``context``.
 
 :return: calculated aggregate value
 %End
@@ -134,7 +148,8 @@ Calculates the value of an aggregate.
 Converts a string to a aggregate type.
 
 :param string: string to convert
-:param ok: if specified, will be set to ``True`` if conversion was successful
+:param ok: if specified, will be set to ``True`` if conversion was
+           successful
 
 :return: aggregate type
 %End

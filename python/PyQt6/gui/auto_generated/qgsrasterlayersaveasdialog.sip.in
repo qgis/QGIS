@@ -58,7 +58,7 @@ Returns ``True`` if the "add to canvas" checkbox is checked.
 
     void setAddToCanvas( bool checked );
 %Docstring
-Sets whether the  "add to canvas" checkbox should be ``checked``.
+Sets whether the "add to canvas" checkbox should be ``checked``.
 
 .. seealso:: :py:func:`addToCanvas`
 

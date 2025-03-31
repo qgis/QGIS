@@ -12,8 +12,8 @@ class QgsDateTimeFieldFormatter : QgsFieldFormatter
 %Docstring(signature="appended")
 Field formatter for a date time field.
 
-This represents a date, time or datetime value based on
-the field configuration.
+This represents a date, time or datetime value based on the field
+configuration.
 %End
 
 %TypeHeaderCode
@@ -38,8 +38,8 @@ the field configuration.
 
     static QString defaultFormat( QMetaType::Type type );
 %Docstring
-Gets the default format in function of the type.
-The type is expected to be one of
+Gets the default format in function of the type. The type is expected to
+be one of
 
 - QVariant.DateTime
 - QVariant.Date
@@ -48,8 +48,8 @@ The type is expected to be one of
 
  static QString defaultFormat( QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
-Gets the default format in function of the type.
-The type is expected to be one of
+Gets the default format in function of the type. The type is expected to
+be one of
 
 - QVariant.DateTime
 - QVariant.Date
@@ -62,8 +62,8 @@ The type is expected to be one of
 
     static QString defaultDisplayFormat( QMetaType::Type type );
 %Docstring
-Gets the default display format in function of the type.
-The type is expected to be one of
+Gets the default display format in function of the type. The type is
+expected to be one of
 
 - QVariant.DateTime
 - QVariant.Date
@@ -74,8 +74,8 @@ The type is expected to be one of
 
  static QString defaultDisplayFormat( QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
-Gets the default display format in function of the type.
-The type is expected to be one of
+Gets the default display format in function of the type. The type is
+expected to be one of
 
 - QVariant.DateTime
 - QVariant.Date

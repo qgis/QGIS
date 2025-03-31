@@ -8,7 +8,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsVectorLayerExporterTask.__attribute_docs__ = {'exportComplete': 'Emitted when exporting the layer is successfully completed.\n', 'errorOccurred': 'Emitted when an error occurs which prevented the layer being exported (or if\nthe task is canceled). The export ``error`` and ``errorMessage`` will be reported.\n'}
+    QgsVectorLayerExporterTask.__attribute_docs__ = {'exportComplete': 'Emitted when exporting the layer is successfully completed.\n', 'errorOccurred': 'Emitted when an error occurs which prevented the layer being exported\n(or if the task is canceled). The export ``error`` and ``errorMessage``\nwill be reported.\n'}
     QgsVectorLayerExporterTask.withLayerOwnership = staticmethod(QgsVectorLayerExporterTask.withLayerOwnership)
     QgsVectorLayerExporterTask.__overridden_methods__ = ['cancel', 'run', 'finished']
     QgsVectorLayerExporterTask.__signal_arguments__ = {'errorOccurred': ['error: Qgis.VectorExportResult', 'errorMessage: str']}

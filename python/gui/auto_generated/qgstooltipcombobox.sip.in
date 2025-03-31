@@ -14,7 +14,8 @@
 class QgsToolTipComboBox : QComboBox
 {
 %Docstring(signature="appended")
-QComboBox subclass which features a tooltip when mouse hovering the combobox.
+QComboBox subclass which features a tooltip when mouse hovering the
+combobox.
 
 The tooltip string is taken from the current item's Qt.ToolTipRole data.
 

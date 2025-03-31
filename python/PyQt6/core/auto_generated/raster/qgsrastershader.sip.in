@@ -74,10 +74,14 @@ Generates a new RGBA value based on one input ``value``.
 %Docstring
 Generates a new RGBA value based on an original RGBA value.
 
-:param redValue: The red component of the original value to base a new RGBA value on
-:param greenValue: The green component of the original value to base a new RGBA value on
-:param blueValue: The blue component of the original value to base a new RGBA value on
-:param alphaValue: The alpha component of the original value to base a new RGBA value on
+:param redValue: The red component of the original value to base a new
+                 RGBA value on
+:param greenValue: The green component of the original value to base a
+                   new RGBA value on
+:param blueValue: The blue component of the original value to base a new
+                  RGBA value on
+:param alphaValue: The alpha component of the original value to base a
+                   new RGBA value on
 
 :return: - ``True`` if the return values are valid otherwise ``False``
          - returnRedValue: The red component of the new RGBA value
@@ -88,7 +92,8 @@ Generates a new RGBA value based on an original RGBA value.
 
     void setRasterShaderFunction( QgsRasterShaderFunction *function /Transfer/ );
 %Docstring
-A public method that allows the user to set their own shader ``function``.
+A public method that allows the user to set their own shader
+``function``.
 
 .. note::
 

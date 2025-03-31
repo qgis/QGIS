@@ -12,7 +12,8 @@
 class QgsRendererCategory
 {
 %Docstring(signature="appended")
-Represents an individual category (class) from a :py:class:`QgsCategorizedSymbolRenderer`.
+Represents an individual category (class) from a
+:py:class:`QgsCategorizedSymbolRenderer`.
 %End
 
 %TypeHeaderCode
@@ -24,17 +25,22 @@ Represents an individual category (class) from a :py:class:`QgsCategorizedSymbol
 
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true, const QString &uuid = QString() );
 %Docstring
-Constructor for a new QgsRendererCategory, with the specified ``value`` and ``symbol``.
+Constructor for a new QgsRendererCategory, with the specified ``value``
+and ``symbol``.
 
-If ``value`` is a list, then the category will match any of the values from this list.
+If ``value`` is a list, then the category will match any of the values
+from this list.
 
 The ownership of ``symbol`` is transferred to the category.
 
-The ``label`` argument specifies the label used for this category in legends and the layer tree.
+The ``label`` argument specifies the label used for this category in
+legends and the layer tree.
 
-The ``render`` argument indicates whether the category should initially be rendered and appear checked in the layer tree.
+The ``render`` argument indicates whether the category should initially
+be rendered and appear checked in the layer tree.
 
-The optional ``uuid`` argument manually set the UUID key identifier for the category (since QGIS 3.34).
+The optional ``uuid`` argument manually set the UUID key identifier for
+the category (since QGIS 3.34).
 %End
 
     QgsRendererCategory( const QgsRendererCategory &cat );
@@ -51,7 +57,8 @@ Returns the unique identifier for this category.
 %Docstring
 Returns the value corresponding to this category.
 
-If the returned value is a list, then the category will match any of the values from this list.
+If the returned value is a list, then the category will match any of the
+values from this list.
 
 .. seealso:: :py:func:`setValue`
 %End
@@ -65,8 +72,8 @@ Returns the symbol which will be used to render this category.
 
     QString label() const;
 %Docstring
-Returns the label for this category, which is used to represent the category within
-legends and the layer tree.
+Returns the label for this category, which is used to represent the
+category within legends and the layer tree.
 
 .. seealso:: :py:func:`setLabel`
 %End
@@ -75,7 +82,8 @@ legends and the layer tree.
 %Docstring
 Sets the ``value`` corresponding to this category.
 
-If ``value`` is a list, then the category will match any of the values from this list.
+If ``value`` is a list, then the category will match any of the values
+from this list.
 
 .. seealso:: :py:func:`value`
 %End
@@ -91,15 +99,16 @@ Ownership of the symbol is transferred to the category.
 
     void setLabel( const QString &label );
 %Docstring
-Sets the ``label`` for this category, which is used to represent the category within
-legends and the layer tree.
+Sets the ``label`` for this category, which is used to represent the
+category within legends and the layer tree.
 
 .. seealso:: :py:func:`label`
 %End
 
     bool renderState() const;
 %Docstring
-Returns ``True`` if the category is currently enabled and should be rendered.
+Returns ``True`` if the category is currently enabled and should be
+rendered.
 
 .. seealso:: :py:func:`setRenderState`
 %End
@@ -114,12 +123,14 @@ Sets whether the category is currently enabled and should be rendered.
 
     QString dump() const;
 %Docstring
-Returns a string representing the categories settings, used for debugging purposes only.
+Returns a string representing the categories settings, used for
+debugging purposes only.
 %End
 
     void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
 %Docstring
-Converts the category to a matching SLD rule, within the specified DOM document and ``element``.
+Converts the category to a matching SLD rule, within the specified DOM
+document and ``element``.
 %End
 
     SIP_PYOBJECT __repr__();
@@ -140,7 +151,8 @@ typedef QList<QgsRendererCategory> QgsCategoryList;
 class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
 {
 %Docstring(signature="appended")
-A feature renderer which represents features using a list of renderer categories.
+A feature renderer which represents features using a list of renderer
+categories.
 %End
 
 %TypeHeaderCode
@@ -152,10 +164,12 @@ A feature renderer which represents features using a list of renderer categories
 %Docstring
 Constructor for QgsCategorizedSymbolRenderer.
 
-The ``attrName`` argument specifies the layer's field name, or expression, which the categories will be matched against.
+The ``attrName`` argument specifies the layer's field name, or
+expression, which the categories will be matched against.
 
-A list of renderer ``categories`` can optionally be specified. If no categories are specified in the constructor, they
-can be added later by calling :py:func:`~QgsCategorizedSymbolRenderer.addCategory`.
+A list of renderer ``categories`` can optionally be specified. If no
+categories are specified in the constructor, they can be added later by
+calling :py:func:`~QgsCategorizedSymbolRenderer.addCategory`.
 %End
     ~QgsCategorizedSymbolRenderer();
 
@@ -189,10 +203,11 @@ can be added later by calling :py:func:`~QgsCategorizedSymbolRenderer.addCategor
 
     void updateSymbols( QgsSymbol *sym );
 %Docstring
-Update all the symbols but leave categories and colors. This method also sets the source
-symbol for the renderer.
+Update all the symbols but leave categories and colors. This method also
+sets the source symbol for the renderer.
 
-:param sym: source symbol to use for categories. Ownership is not transferred.
+:param sym: source symbol to use for categories. Ownership is not
+            transferred.
 
 .. seealso:: :py:func:`setSourceSymbol`
 %End
@@ -204,19 +219,22 @@ Returns a list of all categories recognized by the renderer.
 
     int categoryIndexForValue( const QVariant &val );
 %Docstring
-Returns the index for the category with the specified value (or -1 if not found).
+Returns the index for the category with the specified value (or -1 if
+not found).
 %End
 
     int categoryIndexForLabel( const QString &val );
 %Docstring
-Returns the index of the category with the specified label (or -1 if the label was not found, or is not unique).
+Returns the index of the category with the specified label (or -1 if the
+label was not found, or is not unique).
 %End
 
     bool updateCategoryValue( int catIndex, const QVariant &value );
 %Docstring
 Changes the value for the category with the specified index.
 
-If ``value`` is a list, then the category will match any of the values from this list.
+If ``value`` is a list, then the category will match any of the values
+from this list.
 
 .. seealso:: :py:func:`updateCategorySymbol`
 
@@ -242,8 +260,8 @@ Ownership of ``symbol`` is transferred to the renderer.
 %Docstring
 Changes the ``label`` for the category with the specified index.
 
-A category's label is used to represent the category within
-legends and the layer tree.
+A category's label is used to represent the category within legends and
+the layer tree.
 
 .. seealso:: :py:func:`updateCategoryValue`
 
@@ -257,7 +275,8 @@ legends and the layer tree.
 Changes the render state for the category with the specified index.
 
 The render state indicates whether or not the category will be rendered,
-and is reflected in whether the category is checked with the project's layer tree.
+and is reflected in whether the category is checked with the project's
+layer tree.
 
 .. seealso:: :py:func:`updateCategoryValue`
 
@@ -308,8 +327,8 @@ Sorts the existing categories by their label.
 
     QString classAttribute() const;
 %Docstring
-Returns the class attribute for the renderer, which is the field name
-or expression string from the layer which will be matched against the
+Returns the class attribute for the renderer, which is the field name or
+expression string from the layer which will be matched against the
 renderer categories.
 
 .. seealso:: :py:func:`setClassAttribute`
@@ -317,8 +336,8 @@ renderer categories.
 
     void setClassAttribute( const QString &attr );
 %Docstring
-Sets the class attribute for the renderer, which is the field name
-or expression string from the layer which will be matched against the
+Sets the class attribute for the renderer, which is the field name or
+expression string from the layer which will be matched against the
 renderer categories.
 
 .. seealso:: :py:func:`classAttribute`
@@ -340,8 +359,8 @@ Creates a categorized renderer from an XML ``element``.
 
     QgsSymbol *sourceSymbol();
 %Docstring
-Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
-the categories' color.
+Returns the renderer's source symbol, which is the base symbol used for
+the each categories' symbol before applying the categories' color.
 
 .. seealso:: :py:func:`setSourceSymbol`
 
@@ -351,8 +370,8 @@ the categories' color.
 
     void setSourceSymbol( QgsSymbol *sym /Transfer/ );
 %Docstring
-Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
-the categories' color.
+Sets the source symbol for the renderer, which is the base symbol used
+for the each categories' symbol before applying the categories' color.
 
 :param sym: source symbol, ownership is transferred to the renderer
 
@@ -363,7 +382,8 @@ the categories' color.
 
     QgsColorRamp *sourceColorRamp();
 %Docstring
-Returns the source color ramp, from which each categories' color is derived.
+Returns the source color ramp, from which each categories' color is
+derived.
 
 .. seealso:: :py:func:`setSourceColorRamp`
 
@@ -401,44 +421,52 @@ Update the color ramp used and all symbols colors.
 
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = 0 ) /Factory/;
 %Docstring
-Creates a new QgsCategorizedSymbolRenderer from an existing ``renderer``.
+Creates a new QgsCategorizedSymbolRenderer from an existing
+``renderer``.
 
-Since QGIS 3.20, the optional ``layer`` parameter is required for conversions of some renderer types.
+Since QGIS 3.20, the optional ``layer`` parameter is required for
+conversions of some renderer types.
 
-:return: a new renderer if the conversion was possible, otherwise ``None``.
+:return: a new renderer if the conversion was possible, otherwise
+         ``None``.
 %End
 
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
 %Docstring
-Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
-This allows configuring for which values (symbol sizes) should be shown in the legend, whether to display
-different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
+Configures appearance of legend when renderer is configured to use
+data-defined size for marker symbols. This allows configuring for which
+values (symbol sizes) should be shown in the legend, whether to display
+different symbol sizes collapsed in one legend node or separated across
+multiple legend nodes etc.
 
-When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
-Takes ownership of the passed settings objects. ``None`` is a valid input that disables data-defined
+When renderer does not use data-defined size or does not use marker
+symbols, these settings will be ignored. Takes ownership of the passed
+settings objects. ``None`` is a valid input that disables data-defined
 size legend.
 %End
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 %Docstring
-Returns configuration of appearance of legend when using data-defined size for marker symbols.
-Will return ``None`` if the functionality is disabled.
+Returns configuration of appearance of legend when using data-defined
+size for marker symbols. Will return ``None`` if the functionality is
+disabled.
 %End
 
     int matchToSymbols( QgsStyle *style, Qgis::SymbolType type,
                         QVariantList &unmatchedCategories /Out/, QStringList &unmatchedSymbols /Out/, bool caseSensitive = true, bool useTolerantMatch = false );
 %Docstring
-Replaces category symbols with the symbols from a ``style`` that have a matching
-name and symbol ``type``.
+Replaces category symbols with the symbols from a ``style`` that have a
+matching name and symbol ``type``.
 
-The ``unmatchedCategories`` list will be filled with all existing categories which could not be matched
-to a symbol in ``style``.
+The ``unmatchedCategories`` list will be filled with all existing
+categories which could not be matched to a symbol in ``style``.
 
-The ``unmatchedSymbols`` list will be filled with all symbol names from ``style`` which were not matched
-to an existing category.
+The ``unmatchedSymbols`` list will be filled with all symbol names from
+``style`` which were not matched to an existing category.
 
-If ``caseSensitive`` is ``False``, then a case-insensitive match will be performed. If ``useTolerantMatch``
-is ``True``, then non-alphanumeric characters in style and category names will be ignored during the match.
+If ``caseSensitive`` is ``False``, then a case-insensitive match will be
+performed. If ``useTolerantMatch`` is ``True``, then non-alphanumeric
+characters in style and category names will be ignored during the match.
 
 Returns the count of symbols matched.
 
@@ -448,21 +476,21 @@ Returns the count of symbols matched.
 
     static QgsCategoryList createCategories( const QVariantList &values, const QgsSymbol *symbol, QgsVectorLayer *layer = 0, const QString &fieldName = QString() );
 %Docstring
-Create categories for a list of ``values``.
-The returned symbols in the category list will be a modification of ``symbol``.
+Create categories for a list of ``values``. The returned symbols in the
+category list will be a modification of ``symbol``.
 
-If ``layer`` and ``fieldName`` are specified it will try to find nicer values
-to represent the description for the categories based on the respective field
-configuration.
+If ``layer`` and ``fieldName`` are specified it will try to find nicer
+values to represent the description for the categories based on the
+respective field configuration.
 
 .. versionadded:: 3.6
 %End
 
     static QString displayString( const QVariant &value, int precision = -1 );
 %Docstring
-Returns a localized representation of ``value`` with the given ``precision``,
-if precision is -1 then precision is guessed from the default QVariant.toString
-output.
+Returns a localized representation of ``value`` with the given
+``precision``, if precision is -1 then precision is guessed from the
+default QVariant.toString output.
 
 .. note::
 
@@ -484,7 +512,6 @@ hashtable for faster access to symbols
 
  QgsSymbol *skipRender() /Deprecated="Since 3.40. No longer used, will be removed in QGIS 4.0."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    No longer used, will be removed in QGIS 4.0.
@@ -505,12 +532,14 @@ Returns the matching symbol corresponding to an attribute ``value``.
 Returns the matching symbol corresponding to an attribute ``value``.
 
 Will return ``None`` if no matching symbol was found for ``value``, or
-if the category corresponding to ``value`` is currently disabled (see :py:func:`QgsRendererCategory.renderState()`).
+if the category corresponding to ``value`` is currently disabled (see
+:py:func:`QgsRendererCategory.renderState()`).
 
-If ``foundMatchingSymbol`` is specified then it will be set to ``True`` if
-a matching category was found. This can be used to differentiate between
-``None`` returned as a result of no matching category vs ``None`` as a result
-of disabled categories.
+If ``foundMatchingSymbol`` is specified then it will be set to ``True``
+if a matching category was found. This can be used to differentiate
+between ``None`` returned as a result of no matching category vs
+``None`` as a result of disabled categories.
+
 
 %End
 

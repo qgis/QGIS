@@ -12,7 +12,8 @@
 class QgsTaskManagerWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget which displays tasks from a :py:class:`QgsTaskManager` and allows for interaction with the manager.
+A widget which displays tasks from a :py:class:`QgsTaskManager` and
+allows for interaction with the manager.
 
 .. seealso:: :py:class:`QgsTaskManager`
 %End

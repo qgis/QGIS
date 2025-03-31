@@ -24,8 +24,8 @@ An annotation item which renders a picture.
 
     QgsAnnotationPictureItem( Qgis::PictureFormat format, const QString &path, const QgsRectangle &bounds );
 %Docstring
-Constructor for QgsAnnotationPictureItem, rendering the specified image ``path``
-within the specified ``bounds`` geometry.
+Constructor for QgsAnnotationPictureItem, rendering the specified image
+``path`` within the specified ``bounds`` geometry.
 %End
     ~QgsAnnotationPictureItem();
 

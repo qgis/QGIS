@@ -32,23 +32,27 @@ Stores metadata about one callout renderer class.
 %Docstring
 Constructor for QgsCalloutAbstractMetadata, with the specified ``name``.
 
-The ``visibleName`` argument gives a translated, user friendly string identifying the callout type.
+The ``visibleName`` argument gives a translated, user friendly string
+identifying the callout type.
 
-The ``icon`` argument can be used to specify an icon representing the callout.
+The ``icon`` argument can be used to specify an icon representing the
+callout.
 %End
 
     virtual ~QgsCalloutAbstractMetadata();
 
     QString name() const;
 %Docstring
-Returns the unique name of the callout type. This value is not translated.
+Returns the unique name of the callout type. This value is not
+translated.
 
 .. seealso:: :py:func:`visibleName`
 %End
 
     QString visibleName() const;
 %Docstring
-Returns a friendly display name of the callout type. This value is translated.
+Returns a friendly display name of the callout type. This value is
+translated.
 
 .. seealso:: :py:func:`name`
 %End
@@ -76,7 +80,8 @@ Ownership of the callout is transferred to the caller.
 
     virtual QgsCalloutWidget *createCalloutWidget( QgsMapLayer * );
 %Docstring
-Creates a widget for configuring callouts of this type. Can return ``None`` if there's no GUI required.
+Creates a widget for configuring callouts of this type. Can return
+``None`` if there's no GUI required.
 
 Ownership of the widget is transferred to the caller.
 %End
@@ -88,7 +93,8 @@ Ownership of the widget is transferred to the caller.
 class QgsCalloutMetadata : QgsCalloutAbstractMetadata
 {
 %Docstring(signature="appended")
-Convenience metadata class that uses static functions to create callouts and their widgets.
+Convenience metadata class that uses static functions to create callouts
+and their widgets.
 
 .. versionadded:: 3.10
 %End
@@ -118,8 +124,8 @@ class QgsCalloutRegistry
 %Docstring(signature="appended")
 Registry of available callout classes.
 
-:py:class:`QgsCalloutRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.calloutRegistry()`.
+:py:class:`QgsCalloutRegistry` is not usually directly created, but
+rather accessed through :py:func:`QgsApplication.calloutRegistry()`.
 
 .. versionadded:: 3.10
 %End
@@ -135,7 +141,8 @@ Registry of available callout classes.
 
     QgsCalloutAbstractMetadata *calloutMetadata( const QString &type ) const;
 %Docstring
-Returns the metadata for specified the specified callout ``type``. Returns ``None`` if no matching callout style was found.
+Returns the metadata for specified the specified callout ``type``.
+Returns ``None`` if no matching callout style was found.
 %End
 
     bool addCalloutType( QgsCalloutAbstractMetadata *metadata /Transfer/ );
@@ -147,14 +154,16 @@ Ownership of ``metadata`` is transferred to the registry.
 
     QgsCallout *createCallout( const QString &type, const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) const /Factory/;
 %Docstring
-Creates a new instance of a callout, given the callout ``type`` and ``properties``.
+Creates a new instance of a callout, given the callout ``type`` and
+``properties``.
 
 The caller takes ownership of the callout.
 %End
 
     QgsCallout *createCallout( const QString &type, const QDomElement &element, const QgsReadWriteContext &context ) const /Factory/;
 %Docstring
-Creates a new instance of a callout of the specified ``type``, using the properties from a DOM ``element``.
+Creates a new instance of a callout of the specified ``type``, using the
+properties from a DOM ``element``.
 
 The caller takes ownership of the callout.
 %End

@@ -11,9 +11,11 @@
 class QgsAbstractHistoryProvider : QObject
 {
 %Docstring(signature="appended")
-Abstract base class for objects which track user history (i.e. operations performed through the GUI).
+Abstract base class for objects which track user history (i.e.
+operations performed through the GUI).
 
-:py:class:`QgsAbstractHistoryProvider` subclasses are accessible through the :py:class:`QgsHistoryProviderRegistry` class.
+:py:class:`QgsAbstractHistoryProvider` subclasses are accessible through
+the :py:class:`QgsHistoryProviderRegistry` class.
 
 .. versionadded:: 3.24
 %End
@@ -33,7 +35,8 @@ Abstract base class for objects which track user history (i.e. operations perfor
 
     virtual QString id() const = 0;
 %Docstring
-Returns the provider's unique id, which is used to associate existing history entries with the provider.
+Returns the provider's unique id, which is used to associate existing
+history entries with the provider.
 %End
 
     virtual QgsHistoryEntryNode *createNodeForEntry( const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) /Factory/;

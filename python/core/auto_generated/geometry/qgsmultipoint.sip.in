@@ -27,9 +27,11 @@ Constructor for an empty multipoint geometry.
 
     QgsMultiPoint( SIP_PYOBJECT points /TypeHint="Sequence[Union[QgsPoint, QgsPointXY, Sequence[float]]]"/ ) /HoldGIL/ [( const QVector<QgsPoint> &points )];
 %Docstring
-Construct a multipoint from a sequence of points (:py:class:`QgsPoint` objects, :py:class:`QgsPointXY` objects, or sequences of float values).
+Construct a multipoint from a sequence of points (:py:class:`QgsPoint`
+objects, :py:class:`QgsPointXY` objects, or sequences of float values).
 
-The multipoint Z and M type will be set based on the type of the first point in the sequence.
+The multipoint Z and M type will be set based on the type of the first
+point in the sequence.
 
 .. versionadded:: 3.34
 %End
@@ -232,13 +234,13 @@ The multipoint Z and M type will be set based on the type of the first point in 
                    const QVector<double> &z = QVector<double>(),
                    const QVector<double> &m = QVector<double>() ) /HoldGIL/;
 %Docstring
-Construct a multipoint from arrays of coordinates. If the z or m
-arrays are non-empty then the resultant multipoint will have
-z and m types accordingly.
-This constructor is more efficient then calling :py:func:`~QgsMultiPoint.addGeometry` repeatedly.
+Construct a multipoint from arrays of coordinates. If the z or m arrays
+are non-empty then the resultant multipoint will have z and m types
+accordingly. This constructor is more efficient then calling
+:py:func:`~QgsMultiPoint.addGeometry` repeatedly.
 
-If the sizes of ``x`` and ``y`` are non-equal then the resultant multipoint
-will be created using the minimum size of these arrays.
+If the sizes of ``x`` and ``y`` are non-equal then the resultant
+multipoint will be created using the minimum size of these arrays.
 
 .. versionadded:: 3.34
 %End

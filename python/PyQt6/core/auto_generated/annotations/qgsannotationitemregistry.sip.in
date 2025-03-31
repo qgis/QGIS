@@ -13,8 +13,8 @@ class QgsAnnotationItemAbstractMetadata
 %Docstring(signature="appended")
 Stores metadata about one annotation item class.
 
-A companion class, :py:class:`QgsAnnotationItemAbstractGuiMetadata`, handles the
-GUI behavior of :py:class:`QgsAnnotationItems`.
+A companion class, :py:class:`QgsAnnotationItemAbstractGuiMetadata`,
+handles the GUI behavior of :py:class:`QgsAnnotationItems`.
 
 .. note::
 
@@ -30,10 +30,11 @@ GUI behavior of :py:class:`QgsAnnotationItems`.
 
     QgsAnnotationItemAbstractMetadata( const QString &type, const QString &visibleName, const QString &visiblePluralName = QString() );
 %Docstring
-Constructor for QgsAnnotationItemAbstractMetadata with the specified class ``type``
-and ``visibleName``.
+Constructor for QgsAnnotationItemAbstractMetadata with the specified
+class ``type`` and ``visibleName``.
 
-The optional ``visiblePluralName`` argument can be used to specify a plural variant of the item type.
+The optional ``visiblePluralName`` argument can be used to specify a
+plural variant of the item type.
 %End
 
     virtual ~QgsAnnotationItemAbstractMetadata();
@@ -52,7 +53,8 @@ Returns a translated, user visible name for the annotation item class.
 
     QString visiblePluralName() const;
 %Docstring
-Returns a translated, user visible name for plurals of the annotation item class (e.g. "Labels" for a "Label" item).
+Returns a translated, user visible name for plurals of the annotation
+item class (e.g. "Labels" for a "Label" item).
 %End
 
     virtual QgsAnnotationItem *createItem() = 0 /Factory/;
@@ -70,11 +72,12 @@ class QgsAnnotationItemRegistry : QObject
 %Docstring(signature="appended")
 Registry of available annotation item types.
 
-:py:class:`QgsAnnotationItemRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsAnnotationItemRegistry` is not usually directly created,
+but rather accessed through
 :py:func:`QgsApplication.annotationItemRegistry()`.
 
-A companion class, :py:class:`QgsAnnotationItemGuiRegistry`, handles the GUI behavior
-of annotation items.
+A companion class, :py:class:`QgsAnnotationItemGuiRegistry`, handles the
+GUI behavior of annotation items.
 
 .. versionadded:: 3.16
 %End
@@ -88,8 +91,8 @@ of annotation items.
 %Docstring
 Creates a new empty item registry.
 
-QgsAnnotationItemRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.annotationItemRegistry()`.
+QgsAnnotationItemRegistry is not usually directly created, but rather
+accessed through :py:func:`QgsApplication.annotationItemRegistry()`.
 
 .. seealso:: :py:func:`populate`
 %End
@@ -98,20 +101,22 @@ QgsAnnotationItemRegistry is not usually directly created, but rather accessed t
 
     bool populate();
 %Docstring
-Populates the registry with standard item types. If called on a non-empty registry
-then this will have no effect and will return ``False``.
+Populates the registry with standard item types. If called on a
+non-empty registry then this will have no effect and will return
+``False``.
 %End
 
 
     QgsAnnotationItemAbstractMetadata *itemMetadata( const QString &type ) const;
 %Docstring
-Returns the metadata for the specified item ``type``. Returns ``None`` if
-a corresponding type was not found in the registry.
+Returns the metadata for the specified item ``type``. Returns ``None``
+if a corresponding type was not found in the registry.
 %End
 
     bool addItemType( QgsAnnotationItemAbstractMetadata *metadata /Transfer/ );
 %Docstring
-Registers a new annotation item type. Takes ownership of the metadata instance.
+Registers a new annotation item type. Takes ownership of the metadata
+instance.
 %End
 
     QgsAnnotationItem *createItem( const QString &type ) const /Factory/;
@@ -128,8 +133,8 @@ Returns a map of available item types to translated name.
 
     void typeAdded( const QString &type, const QString &name );
 %Docstring
-Emitted whenever a new item type is added to the registry, with the specified
-``type`` and visible ``name``.
+Emitted whenever a new item type is added to the registry, with the
+specified ``type`` and visible ``name``.
 %End
 
   private:

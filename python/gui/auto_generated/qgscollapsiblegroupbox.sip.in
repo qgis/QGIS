@@ -41,11 +41,16 @@ class QgsCollapsibleGroupBoxBasic : QGroupBox
 %Docstring(signature="appended")
 A groupbox that collapses/expands when toggled.
 
-The basic class :py:class:`QgsCollapsibleGroupBoxBasic` does not auto-save collapsed or checked states.
+The basic class :py:class:`QgsCollapsibleGroupBoxBasic` does not
+auto-save collapsed or checked states.
 
-Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value.
+Holding Alt modifier key when toggling collapsed state will synchronize
+the toggling across other collapsible group boxes with the same
+syncGroup QString value.
 
-Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value.
+Holding Shift modifier key when attempting to toggle collapsed state
+will expand current group box, then collapse any others with the same
+syncGroup QString value.
 
 .. note::
 
@@ -74,28 +79,33 @@ Collapse or uncollapse this groupbox
 
     QString syncGroup() const;
 %Docstring
-Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
+Named group which synchronizes collapsing action when triangle is
+clicked while holding alt modifier key
 %End
 
     void setSyncGroup( const QString &grp );
 %Docstring
-Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
+Named group which synchronizes collapsing action when triangle is
+clicked while holding alt modifier key
 %End
 
     void setScrollOnExpand( bool scroll );
 %Docstring
-Sets this to ``False`` to not automatically scroll parent QScrollArea to this widget's contents when expanded
+Sets this to ``False`` to not automatically scroll parent QScrollArea to
+this widget's contents when expanded
 %End
 
     bool scrollOnExpand();
 %Docstring
-If this is set to ``False`` the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
+If this is set to ``False`` the parent QScrollArea will not be
+automatically scrolled to this widget's contents when expanded
 %End
 
   signals:
     void collapsedStateChanged( bool collapsed );
 %Docstring
-Signal emitted when groupbox collapsed/expanded state is changed, and when first shown
+Signal emitted when groupbox collapsed/expanded state is changed, and
+when first shown
 %End
 
   public slots:
@@ -105,7 +115,8 @@ Signal emitted when groupbox collapsed/expanded state is changed, and when first
 
     void setStyleSheet( const QString &style );
 %Docstring
-Overridden to prepare base call and avoid crash due to specific QT versions
+Overridden to prepare base call and avoid crash due to specific QT
+versions
 
 .. versionadded:: 3.16
 %End
@@ -137,13 +148,19 @@ Visual fixes for when group box is collapsed/expanded
 class QgsCollapsibleGroupBox : QgsCollapsibleGroupBoxBasic
 {
 %Docstring(signature="appended")
-A groupbox that collapses/expands when toggled and can save its collapsed and checked states.
+A groupbox that collapses/expands when toggled and can save its
+collapsed and checked states.
 
-By default, it auto-saves only its collapsed state to the global settings based on the widget and its parent names.
+By default, it auto-saves only its collapsed state to the global
+settings based on the widget and its parent names.
 
-Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
+Holding Alt modifier key when toggling collapsed state will synchronize
+the toggling across other collapsible group boxes with the same
+syncGroup QString value
 
-Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
+Holding Shift modifier key when attempting to toggle collapsed state
+will expand current group box, then collapse any others with the same
+syncGroup QString value
 
 .. seealso:: :py:class:`QgsCollapsibleGroupBoxBasic` which does not auto-save states
 
@@ -182,11 +199,13 @@ Set this to ``True`` to save/restore checked state
 
     void setSettingGroup( const QString &group );
 %Docstring
-Sets this to a defined string to share save/restore states across different parent dialogs
+Sets this to a defined string to share save/restore states across
+different parent dialogs
 %End
     QString settingGroup() const;
 %Docstring
-Returns the name of the setting group in which the collapsed state will be saved
+Returns the name of the setting group in which the collapsed state will
+be saved
 %End
 
   protected slots:

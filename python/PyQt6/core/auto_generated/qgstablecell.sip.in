@@ -47,7 +47,8 @@ Sets the cell's ``content``.
 
     QColor backgroundColor() const;
 %Docstring
-Returns the cell's background color, or an invalid color if a default color should be used for the background.
+Returns the cell's background color, or an invalid color if a default
+color should be used for the background.
 
 .. seealso:: :py:func:`setBackgroundColor`
 %End
@@ -56,14 +57,16 @@ Returns the cell's background color, or an invalid color if a default color shou
 %Docstring
 Sets the cell's background ``color``.
 
-Set an invalid ``color`` if a default color should be used for the background.
+Set an invalid ``color`` if a default color should be used for the
+background.
 
 .. seealso:: :py:func:`backgroundColor`
 %End
 
     QColor foregroundColor() const;
 %Docstring
-Returns the cell's foreground color, or an invalid color if a default color should be used for the foreground.
+Returns the cell's foreground color, or an invalid color if a default
+color should be used for the foreground.
 
 .. seealso:: :py:func:`setForegroundColor`
 %End
@@ -72,7 +75,8 @@ Returns the cell's foreground color, or an invalid color if a default color shou
 %Docstring
 Sets the cell's foreground ``color``.
 
-Set an invalid ``color`` if a default color should be used for the foreground.
+Set an invalid ``color`` if a default color should be used for the
+foreground.
 
 .. seealso:: :py:func:`foregroundColor`
 %End
@@ -105,14 +109,16 @@ Sets the cell's text ``format``.
 
     const QgsNumericFormat *numericFormat() const;
 %Docstring
-Returns the numeric format used for numbers in the cell, or ``None`` if no format is set.
+Returns the numeric format used for numbers in the cell, or ``None`` if
+no format is set.
 
 .. seealso:: :py:func:`setNumericFormat`
 %End
 
     void setNumericFormat( QgsNumericFormat *format /Transfer/ );
 %Docstring
-Sets the numeric ``format`` used for numbers in the cell, or ``None`` if no specific format is set.
+Sets the numeric ``format`` used for numbers in the cell, or ``None`` if
+no specific format is set.
 
 Ownership of ``format`` is transferred to the cell.
 

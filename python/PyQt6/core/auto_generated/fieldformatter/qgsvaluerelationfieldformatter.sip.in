@@ -14,8 +14,8 @@ class QgsValueRelationFieldFormatter : QgsFieldFormatter
 %Docstring(signature="appended")
 Field formatter for a value relation field.
 
-A value relation field formatter looks up the values from
-features on another layer.
+A value relation field formatter looks up the values from features on
+another layer.
 %End
 
 %TypeHeaderCode
@@ -57,28 +57,31 @@ Constructor for QgsValueRelationFieldFormatter.
 
     static QStringList valueToStringList( const QVariant &value );
 %Docstring
-Utility to convert a list or a string representation of an (hstore style: {1,2...}) list in ``value`` to a string list
+Utility to convert a list or a string representation of an (hstore
+style: {1,2...}) list in ``value`` to a string list
 
 .. versionadded:: 3.2
 %End
 
     static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QVariantMap &config, const QgsFeature &formFeature = QgsFeature(), const QgsFeature &parentFormFeature = QgsFeature() );
 %Docstring
-Create a cache for a value relation field.
-This can be used to keep the value map in the local memory
-if doing multiple lookups in a loop.
+Create a cache for a value relation field. This can be used to keep the
+value map in the local memory if doing multiple lookups in a loop.
 
 :param config: The widget configuration
-:param formFeature: The feature currently being edited with current attribute values
-:param parentFormFeature: For embedded forms only, the feature currently being edited in the parent form with current attribute values
+:param formFeature: The feature currently being edited with current
+                    attribute values
+:param parentFormFeature: For embedded forms only, the feature currently
+                          being edited in the parent form with current
+                          attribute values
 
 :return: A kvp list of values for the widget
 %End
 
     static bool expressionRequiresFormScope( const QString &expression );
 %Docstring
-Check if the ``expression`` requires a form scope (i.e. if it uses fields
-or geometry of the currently edited feature).
+Check if the ``expression`` requires a form scope (i.e. if it uses
+fields or geometry of the currently edited feature).
 
 :param expression: The widget's filter expression
 
@@ -111,8 +114,8 @@ Returns a list of variables required by the form context ``expression``
 
     static bool expressionRequiresParentFormScope( const QString &expression );
 %Docstring
-Check if the ``expression`` requires a parent form scope (i.e. if it uses fields
-or geometry of the parent form's currently edited feature).
+Check if the ``expression`` requires a parent form scope (i.e. if it
+uses fields or geometry of the parent form's currently edited feature).
 
 :param expression: The widget's filter expression
 
@@ -123,7 +126,8 @@ or geometry of the parent form's currently edited feature).
 
     static QSet<QString> expressionParentFormAttributes( const QString &expression );
 %Docstring
-Returns a list of attributes required by the parent form's form context ``expression``
+Returns a list of attributes required by the parent form's form context
+``expression``
 
 :param expression: Form filter expression
 
@@ -134,7 +138,8 @@ Returns a list of attributes required by the parent form's form context ``expres
 
     static QSet<QString> expressionParentFormVariables( const QString &expression );
 %Docstring
-Returns a list of variables required by the parent form's form context ``expression``
+Returns a list of variables required by the parent form's form context
+``expression``
 
 :param expression: Form filter expression
 
@@ -146,8 +151,8 @@ Returns a list of variables required by the parent form's form context ``express
 
     static bool expressionIsUsable( const QString &expression, const QgsFeature &feature, const QgsFeature &parentFeature = QgsFeature() );
 %Docstring
-Check whether the ``feature`` has all values required by the ``expression``,
-optionally checks for ``parentFeature``
+Check whether the ``feature`` has all values required by the
+``expression``, optionally checks for ``parentFeature``
 
 :return: ``True`` if the expression can be used
 
@@ -156,7 +161,8 @@ optionally checks for ``parentFeature``
 
     static QgsVectorLayer *resolveLayer( const QVariantMap &config, const QgsProject *project );
 %Docstring
-Returns the (possibly ``None``) layer from the widget's ``config`` and ``project``
+Returns the (possibly ``None``) layer from the widget's ``config`` and
+``project``
 
 .. versionadded:: 3.8
 %End

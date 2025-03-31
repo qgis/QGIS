@@ -26,16 +26,19 @@ Contains computed statistics for a layer render.
 
     QgsRenderedLayerStatistics( const QString &layerId, const QList<double> &minimum, const QList<double> &maximum );
 %Docstring
-Constructor for QgsRenderedLayerStatistics from a list of ``minimum`` and ``maximum``.
+Constructor for QgsRenderedLayerStatistics from a list of ``minimum``
+and ``maximum``.
 
-This is used to store the minimum and maximum values of a layer. Many values may be stored.
-For example, a raster layer may have multiple bands. In that case, ``minimum`` will contain the minimum
-value of each band and ``maximum`` will contain the maximum value of each band.
+This is used to store the minimum and maximum values of a layer. Many
+values may be stored. For example, a raster layer may have multiple
+bands. In that case, ``minimum`` will contain the minimum value of each
+band and ``maximum`` will contain the maximum value of each band.
 %End
 
     QgsRenderedLayerStatistics( const QString &layerId, SIP_PYOBJECT minimum /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT maximum /TypeHint="Optional[float]"/ = Py_None ) [( const QString & layerId, double minimum = 0.0, double maximum = 0.0 )];
 %Docstring
-Constructor for QgsRenderedLayerStatistics with only one value for ``minimum`` and ``maximum``.
+Constructor for QgsRenderedLayerStatistics with only one value for
+``minimum`` and ``maximum``.
 %End
 %MethodCode
     double minP = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );

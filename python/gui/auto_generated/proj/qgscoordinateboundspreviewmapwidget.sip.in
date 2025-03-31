@@ -12,7 +12,8 @@
 class QgsCoordinateBoundsPreviewMapWidget : QgsMapCanvas
 {
 %Docstring(signature="appended")
-A widget for showing the bounds of a rectangular region on an interactive map.
+A widget for showing the bounds of a rectangular region on an
+interactive map.
 
 .. versionadded:: 3.8.1
 %End
@@ -46,8 +47,8 @@ Returns the current canvas bounds rectangle shown in the map.
 
     void setPreviewRect( const QgsRectangle &rect );
 %Docstring
-Sets the "preview" rectangle for the bounds overview map.
-Must be in EPSG:4326 coordinate reference system.
+Sets the "preview" rectangle for the bounds overview map. Must be in
+EPSG:4326 coordinate reference system.
 %End
 
 };

@@ -13,13 +13,14 @@
 class QgsMatrix4x4
 {
 %Docstring(signature="appended")
-A simple 4x4 matrix implementation useful for transformation in 3D space.
+A simple 4x4 matrix implementation useful for transformation in 3D
+space.
 
 It is similar to QMatrix4x4, but working with double precision values.
-Most of the time, doing transform using QMatrix4x4 is fine, however :py:class:`QgsMatrix4x4`
-is useful in situations where single precision floats are not enough.
-For example, when using transform matrix where translation component has
-values in order of millions.
+Most of the time, doing transform using QMatrix4x4 is fine, however
+:py:class:`QgsMatrix4x4` is useful in situations where single precision
+floats are not enough. For example, when using transform matrix where
+translation component has values in order of millions.
 
 .. warning::
 
@@ -55,12 +56,14 @@ Returns matrix data (in column-major order)
 
     void translate( const QgsVector3D &vector );
 %Docstring
-Multiplies this matrix by another that translates coordinates by the components of a ``vector``.
+Multiplies this matrix by another that translates coordinates by the
+components of a ``vector``.
 %End
 
     QgsVector3D map( const QgsVector3D &vector ) const /HoldGIL/;
 %Docstring
-Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
+Matrix-vector multiplication (vector is converted to homogeneous
+coordinates [X,Y,Z,1] and back)
 %End
 
     bool isIdentity() const /HoldGIL/;

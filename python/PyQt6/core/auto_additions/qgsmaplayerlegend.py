@@ -1,6 +1,6 @@
 # The following has been generated automatically from src/core/qgsmaplayerlegend.h
 try:
-    QgsMapLayerLegend.__attribute_docs__ = {'itemsChanged': 'Emitted when existing items/nodes got invalid and should be replaced by new ones\n'}
+    QgsMapLayerLegend.__attribute_docs__ = {'itemsChanged': 'Emitted when existing items/nodes got invalid and should be replaced by\nnew ones\n'}
     QgsMapLayerLegend.defaultVectorLegend = staticmethod(QgsMapLayerLegend.defaultVectorLegend)
     QgsMapLayerLegend.defaultRasterLegend = staticmethod(QgsMapLayerLegend.defaultRasterLegend)
     QgsMapLayerLegend.defaultMeshLegend = staticmethod(QgsMapLayerLegend.defaultMeshLegend)

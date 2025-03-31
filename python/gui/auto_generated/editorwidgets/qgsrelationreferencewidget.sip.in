@@ -103,7 +103,8 @@ determines if the drop-down is enabled
 
     bool allowMapIdentification();
 %Docstring
-determines if the widget offers the possibility to select the related feature on the map (using a dedicated map tool)
+determines if the widget offers the possibility to select the related
+feature on the map (using a dedicated map tool)
 %End
     void setAllowMapIdentification( bool allowMapIdentification );
 
@@ -127,8 +128,8 @@ Determines if the filters are chained
 
     void setChainFilters( bool chainFilters );
 %Docstring
-Set if filters are chained.
-Chained filters restrict the option of subsequent filters based on the selection of a previous filter.
+Set if filters are chained. Chained filters restrict the option of
+subsequent filters based on the selection of a previous filter.
 
 :param chainFilters: If chaining should be enabled
 %End
@@ -139,14 +140,14 @@ Returns the currently set filter expression.
 %End
     void setFilterExpression( const QString &filterExpression );
 %Docstring
-If not empty, will be used as filter expression.
-Only if this evaluates to ``True``, the value will be shown.
+If not empty, will be used as filter expression. Only if this evaluates
+to ``True``, the value will be shown.
 %End
 
     QgsFeature referencedFeature() const;
 %Docstring
-Returns the related feature (from the referenced layer)
-if no feature is related, it returns an invalid feature
+Returns the related feature (from the referenced layer) if no feature is
+related, it returns an invalid feature
 %End
 
     void showIndeterminateState();
@@ -194,7 +195,8 @@ Returns the public data source of the referenced layer
 
     void setReferencedLayerDataSource( const QString &referencedLayerDataSource );
 %Docstring
-Set the public data source of the referenced layer to ``referencedLayerDataSource``
+Set the public data source of the referenced layer to
+``referencedLayerDataSource``
 
 .. versionadded:: 3.12
 %End
@@ -208,7 +210,8 @@ Returns the data provider key of the referenced layer
 
     void setReferencedLayerProviderKey( const QString &referencedLayerProviderKey );
 %Docstring
-Set the data provider key of the referenced layer to ``referencedLayerProviderKey``
+Set the data provider key of the referenced layer to
+``referencedLayerProviderKey``
 
 .. versionadded:: 3.12
 %End

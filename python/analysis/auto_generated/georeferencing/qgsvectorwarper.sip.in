@@ -12,7 +12,8 @@
 class QgsVectorWarper
 {
 %Docstring(signature="appended")
-Vector layer warper which warps vector layers based on a list of source and destination GCPs.
+Vector layer warper which warps vector layers based on a list of source
+and destination GCPs.
 
 .. versionadded:: 3.26
 %End
@@ -32,9 +33,11 @@ Constructor for QgsVectorWarper.
 
     bool transformFeatures( QgsFeatureIterator &iterator, QgsFeatureSink *sink, const QgsCoordinateTransformContext &context, QgsFeedback *feedback = 0 ) const;
 %Docstring
-Transforms the features from ``iterator`` and adds the results to the specified ``sink``.
+Transforms the features from ``iterator`` and adds the results to the
+specified ``sink``.
 
-The optional ``feedback`` argument can be used for progress reporting and cancellation.
+The optional ``feedback`` argument can be used for progress reporting
+and cancellation.
 
 :return: ``True`` if all features were successfully transformed
 %End

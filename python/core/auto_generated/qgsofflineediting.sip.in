@@ -13,7 +13,8 @@
 class QgsOfflineEditing : QObject
 {
 %Docstring(signature="appended")
-Handles logic relating to synchronizing online and offline copies of layer data.
+Handles logic relating to synchronizing online and offline copies of
+layer data.
 %End
 
 %TypeHeaderCode
@@ -46,8 +47,10 @@ Convert current project for offline editing
 :param offlineDataPath: Path to offline db file
 :param offlineDbFile: Offline db file name
 :param layerIds: List of layer names to convert
-:param onlySelected: Only copy selected features from layers where a selection is present
-:param containerType: defines the SQLite file container type like SpatiaLite or GPKG
+:param onlySelected: Only copy selected features from layers where a
+                     selection is present
+:param containerType: defines the SQLite file container type like
+                      SpatiaLite or GPKG
 :param layerNameSuffix: Suffix string added to the offline layer name
 %End
 
@@ -61,7 +64,8 @@ Returns ``True`` if current project is offline
 %Docstring
 Synchronize to remote layers
 
-:param useTransaction: enforce the remote layer modifications with the same source to be in a transaction group
+:param useTransaction: enforce the remote layer modifications with the
+                       same source to be in a transaction group
 %End
 
   signals:
@@ -73,19 +77,18 @@ Emitted when the process has started.
 
     void layerProgressUpdated( int layer, int numLayers );
 %Docstring
-Emitted whenever a new layer is being processed.
-It is possible to estimate the progress of the complete operation by
-comparing the index of the current ``layer`` to the total amount
-``numLayers``.
+Emitted whenever a new layer is being processed. It is possible to
+estimate the progress of the complete operation by comparing the index
+of the current ``layer`` to the total amount ``numLayers``.
 %End
 
     void progressModeSet( QgsOfflineEditing::ProgressMode mode, long long maximum );
 %Docstring
-Emitted when the mode for the progress of the current operation is
-set.
+Emitted when the mode for the progress of the current operation is set.
 
 :param mode: progress mode
-:param maximum: total number of entities to process in the current operation
+:param maximum: total number of entities to process in the current
+                operation
 %End
 
     void progressUpdated( long long progress );
