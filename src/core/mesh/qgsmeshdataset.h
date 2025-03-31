@@ -841,16 +841,18 @@ class CORE_EXPORT QgsMeshVerticesElevationDatasetGroup : public QgsMeshDatasetGr
  * Support for multiple levels, because groups can have
  * subgroups, for example
  *
- * Groups:
- *   Depth
- *     Minimum
- *     Maximum
- *   Velocity
- *   Wind speed
- *     Minimum
- *     Maximum
+ * ~~~
+ * + Groups:
+ *   + Depth
+ *     + Minimum
+ *     + Maximum
+ *   + Velocity
+ *   + Wind speed
+ *      + Minimum
+ *      + Maximum
+ * ~~~
  *
- * Tree items handle also the dependencies between dataset groups represented by these items
+ * Tree items handle also the dependencies between dataset groups represented by these items.
  *
  * \since QGIS 3.14 in core API
  */
