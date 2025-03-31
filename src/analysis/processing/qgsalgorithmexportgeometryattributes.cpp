@@ -66,11 +66,11 @@ void QgsExportGeometryAttributesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
   const QStringList options = QStringList()
-                              << QObject::tr( "Layer CRS" )
-                              << QObject::tr( "Project CRS" )
-                              << QObject::tr( "Ellipsoidal" );
+                              << QObject::tr( "Cartesian Calculations in Layer's CRS" )
+                              << QObject::tr( "Cartesian Calculations in Project's CRS" )
+                              << QObject::tr( "Ellipsoidal Calculations" );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Calculate using" ), options, false, 0 ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Added geom info" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Added geometry info" ) ) );
 }
 
 QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
