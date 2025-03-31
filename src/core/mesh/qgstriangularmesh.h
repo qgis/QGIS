@@ -39,7 +39,7 @@ class QgsRectangle;
 /**
  * \ingroup core
  *
- * \brief Triangular/Derived Mesh is mesh with vertices in map coordinates.
+ * \brief A triangular/derived mesh with vertices in map coordinates.
  *
  * It creates spatial index for identification of a triangle that contains a particular point
  * on the map.

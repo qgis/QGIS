@@ -26,7 +26,7 @@ class QgsSpatialIndex;
 
 
 /**
- * Base class for labeling engine rules which prevents labels being placed too close or to far from features from a different layer.
+ * Base class for labeling engine rules which prevent labels being placed too close or too far from features from a different layer.
  *
  * \ingroup core
  * \since QGIS 3.40

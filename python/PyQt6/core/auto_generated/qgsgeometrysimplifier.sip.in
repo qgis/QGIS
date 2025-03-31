@@ -13,7 +13,7 @@
 class QgsAbstractGeometrySimplifier
 {
 %Docstring(signature="appended")
-Abstract base class for simplify geometries using a specific algorithm.
+Abstract base class for simplifying geometries using a specific algorithm.
 %End
 
 %TypeHeaderCode

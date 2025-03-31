@@ -28,7 +28,7 @@ class QgsTiledSceneLayer;
 
 /**
  * \ingroup qgis_3d
- * \brief Terrain settings for a terrain generator that uses uses a quantized mesh tile layer to build a terrain.
+ * \brief Terrain settings for a terrain generator that uses a quantized mesh tile layer to build a terrain.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.

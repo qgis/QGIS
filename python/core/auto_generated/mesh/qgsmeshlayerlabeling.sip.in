@@ -111,7 +111,7 @@ Returns the default layer settings to use for the specified mesh ``layer``.
 class QgsMeshLayerSimpleLabeling : QgsAbstractMeshLayerLabeling
 {
 %Docstring(signature="appended")
-Basic implementation of the labeling interface for mesh layer.
+Basic implementation of the labeling interface for mesh layers.
 
 .. versionadded:: 3.36
 %End

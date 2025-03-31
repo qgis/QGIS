@@ -50,7 +50,7 @@ namespace pal
 
   /**
    * \ingroup core
-   * \brief Main class to handle feature
+   * \brief Represents a part of a label feature.
    * \class pal::FeaturePart
    * \note not available in Python bindings
    */

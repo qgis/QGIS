@@ -172,7 +172,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 /**
  * \ingroup core
  * \class QgsSimpleMarkerSymbolLayer
- * \brief Simple marker symbol layer, consisting of a rendered shape with solid fill color and an stroke.
+ * \brief Simple marker symbol layer, consisting of a rendered shape with solid fill color and a stroke.
  */
 class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayerBase
 {

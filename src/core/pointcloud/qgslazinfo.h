@@ -30,7 +30,7 @@
 /**
  * \ingroup core
  *
- * \brief Extracts information contained in LAZ file, such as the public header block
+ * \brief Extracts information contained in a LAZ file, such as the public header block
  * and variable length records.
  *
  * \since QGIS 3.26

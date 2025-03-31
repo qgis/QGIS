@@ -211,7 +211,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * \ingroup core
-     * \brief Interface to convert raw field values to their user-friendly value.
+     * \brief Interface to convert raw field values to their user-friendly values.
      */
     class CORE_EXPORT FieldValueConverter
     {

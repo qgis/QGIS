@@ -15,7 +15,7 @@
 class QgsProcessingModelerParameterWidget : QWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
-A widget for customising the value of Processing algorithm parameter inside
+A widget for customising the value of Processing algorithm parameters inside
 a Processing model.
 
 The widget provides choice of the linked source for values for the parameter

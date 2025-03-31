@@ -329,7 +329,7 @@ Check :py:class:`QgsRealationEditorWidget` as an example.
 class QgsAbstractRelationEditorConfigWidget : QWidget
 {
 %Docstring(signature="appended")
-Abstract base bclass for configurable relation widget types.
+Abstract base class for configurable relation widget types.
 
 It implements the GUI configuration widget and transforms this to/from a configuration.
 

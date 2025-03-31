@@ -13,7 +13,7 @@ class QgsVirtualLayerTask : QgsTask
 {
 %Docstring(signature="appended")
 Initializes a virtual layer with postpone mode activated and reloads the
-data in a separated thread.
+data in a separate thread.
 
 .. versionadded:: 3.2
 %End

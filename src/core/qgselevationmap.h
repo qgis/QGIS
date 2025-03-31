@@ -26,8 +26,8 @@ class QgsRasterBlock;
 
 /**
  * \ingroup core
- * \brief Stores digital elevation model in a raster image which may get updated
- * as a part of map layer rendering process.
+ * \brief Stores a digital elevation model in a raster image which may get updated
+ * as a part of the map layer rendering process.
  *
  * Afterwards the elevations can be used for post-processing effects of the
  * rendered color map image.

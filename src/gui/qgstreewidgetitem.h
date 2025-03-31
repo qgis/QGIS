@@ -152,7 +152,7 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
 /**
  * \ingroup gui
  * \class QgsTreeWidgetItemObject
- * \brief Custom QgsTreeWidgetItem with extra signals when item is edited.
+ * \brief Custom QgsTreeWidgetItem with extra signals when the item is edited.
  */
 class GUI_EXPORT QgsTreeWidgetItemObject : public QObject, public QgsTreeWidgetItem
 {

@@ -92,7 +92,7 @@ a Processing context for the widget when required.
 class QgsProcessingParameterDefinitionWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget which allow users to specify the properties of a Processing parameter.
+A widget which allows users to specify the properties of a Processing parameter.
 
 .. versionadded:: 3.10
 %End
@@ -138,7 +138,7 @@ a Processing context for the widget when required.
 class QgsProcessingParameterDefinitionDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allow users to specify the properties of a Processing parameter.
+A dialog which allows users to specify the properties of a Processing parameter.
 
 .. versionadded:: 3.10
 %End

@@ -67,7 +67,7 @@ Emitted whenever the configuration of the numeric format is changed.
 class QgsBasicNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsBasicNumericFormat`.
+A widget which allows control over the properties of a :py:class:`QgsBasicNumericFormat`.
 
 .. versionadded:: 3.12
 %End
@@ -93,7 +93,7 @@ Constructor for QgsBasicNumericFormatWidget, initially showing the specified ``f
 class QgsBearingNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsBearingNumericFormat`.
+A widget which allows control over the properties of a :py:class:`QgsBearingNumericFormat`.
 
 .. versionadded:: 3.12
 %End
@@ -118,7 +118,7 @@ Constructor for QgsBearingNumericFormatWidget, initially showing the specified `
 class QgsBearingNumericFormatDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allow control over the properties of a :py:class:`QgsBearingNumericFormat`.
+A dialog which allows control over the properties of a :py:class:`QgsBearingNumericFormat`.
 
 .. versionadded:: 3.12
 %End
@@ -147,7 +147,7 @@ Ownership of the returned object is transferred to the caller
 class QgsGeographicCoordinateNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsGeographicCoordinateNumericFormat`.
+A widget which allows control over the properties of a :py:class:`QgsGeographicCoordinateNumericFormat`.
 
 .. versionadded:: 3.26
 %End
@@ -172,7 +172,7 @@ Constructor for QgsGeographicCoordinateNumericFormatWidget, initially showing th
 class QgsGeographicCoordinateNumericFormatDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allow control over the properties of a :py:class:`QgsGeographicCoordinateNumericFormat`.
+A dialog which allows control over the properties of a :py:class:`QgsGeographicCoordinateNumericFormat`.
 
 .. versionadded:: 3.26
 %End
@@ -201,7 +201,7 @@ Ownership of the returned object is transferred to the caller
 class QgsCurrencyNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsCurrencyNumericFormat`.
+A widget which allows control over the properties of a :py:class:`QgsCurrencyNumericFormat`.
 
 .. versionadded:: 3.12
 %End
@@ -228,7 +228,7 @@ Constructor for QgsCurrencyNumericFormatWidget, initially showing the specified 
 class QgsPercentageNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsPercentageNumericFormat`.
+A widget which allows control over the properties of a :py:class:`QgsPercentageNumericFormat`.
 
 .. versionadded:: 3.12
 %End
@@ -255,7 +255,7 @@ Constructor for QgsPercentageNumericFormatWidget, initially showing the specifie
 class QgsScientificNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsScientificNumericFormat`.
+A widget which allows control over the properties of a :py:class:`QgsScientificNumericFormat`.
 
 .. versionadded:: 3.12
 %End
@@ -281,7 +281,7 @@ Constructor for QgsScientificNumericFormatWidget, initially showing the specifie
 class QgsFractionNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsFractionNumericFormat`.
+A widget which allows control over the properties of a :py:class:`QgsFractionNumericFormat`.
 
 .. versionadded:: 3.14
 %End
@@ -307,7 +307,7 @@ Constructor for QgsFractionNumericFormatWidget, initially showing the specified 
 class QgsExpressionBasedNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsExpressionBasedNumericFormat`.
+A widget which allows control over the properties of a :py:class:`QgsExpressionBasedNumericFormat`.
 
 .. versionadded:: 3.40
 %End

@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * \brief A classification method which uses for equal width intervals.
+ * \brief A classification method which uses equal width intervals.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsClassificationEqualInterval : public QgsClassificationMethod

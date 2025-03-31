@@ -15,7 +15,7 @@
 class QgsPointCloudNodeId
 {
 %Docstring(signature="appended")
-Represents a indexed point cloud node's position in octree.
+Represents an indexed point cloud node's position in octree.
 
 .. note::
 
@@ -94,7 +94,7 @@ Hash function for indexed nodes
 class QgsPointCloudNode
 {
 %Docstring(signature="appended")
-Keeps metadata for indexed point cloud node.
+Keeps metadata for an indexed point cloud node.
 
 .. note::
 

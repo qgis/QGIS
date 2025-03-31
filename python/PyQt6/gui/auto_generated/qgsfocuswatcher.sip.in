@@ -12,7 +12,7 @@
 class QgsFocusWatcher : QObject
 {
 %Docstring(signature="appended")
-A event filter for watching for focus events on a parent object.
+An event filter for watching for focus events on a parent object.
 
 Usually QObjects must
 subclass and override methods like focusOutEvent to handle focus events. Using this class

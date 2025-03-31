@@ -346,7 +346,7 @@ You can use :py:class:`QgsXmlUtils`.readVariant to save it to an XML document.
 class QgsPropertyCollection : QgsAbstractPropertyCollection
 {
 %Docstring(signature="appended")
-A grouped map of multiple :py:class:`QgsProperty` objects, each referenced by a integer key value.
+A grouped map of multiple :py:class:`QgsProperty` objects, each referenced by an integer key value.
 
 Properties within a collection are referenced by an integer key. This is done to avoid the cost of
 string creation and comparisons which would be required by a string key. The intended use case is that

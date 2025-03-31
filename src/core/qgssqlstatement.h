@@ -320,7 +320,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief Unary logicial/arithmetical operator ( NOT, - ).
+     * \brief Unary logical/arithmetical operator ( NOT, - ).
     */
     class CORE_EXPORT NodeUnaryOperator : public QgsSQLStatement::Node
     {

@@ -13,7 +13,7 @@
 class QgsScaleMethodWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget which which lets the user select from scale calculation methods.
+A widget which lets the user select from scale calculation methods.
 
 .. versionadded:: 3.44
 %End

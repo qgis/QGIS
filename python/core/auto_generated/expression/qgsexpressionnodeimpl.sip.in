@@ -196,7 +196,7 @@ I.e. "AND", "OR", ...
 class QgsExpressionNodeIndexOperator : QgsExpressionNode
 {
 %Docstring(signature="appended")
-A indexing expression operator, which allows use of square brackets [] to reference map and array items.
+An indexing expression operator, which allows use of square brackets [] to reference map and array items.
 
 .. versionadded:: 3.6
 %End
@@ -500,7 +500,7 @@ Returns a string representation of the node's literal value.
 class QgsExpressionNodeColumnRef : QgsExpressionNode
 {
 %Docstring(signature="appended")
-An expression node which takes it value from a feature's field.
+An expression node which takes its value from a feature's field.
 %End
 
 %TypeHeaderCode

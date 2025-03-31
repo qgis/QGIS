@@ -81,7 +81,7 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererModel : public QAbstractItemMode
 
 /**
  * \ingroup gui
- * \brief View style which shows drop indicator line between items
+ * \brief View style which shows a drop indicator line between items
  */
 class QgsPointCloudClassifiedRendererViewStyle : public QgsProxyStyle
 {

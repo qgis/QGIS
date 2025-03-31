@@ -16,7 +16,7 @@
 class QgsProjectProperty
 {
 %Docstring(signature="appended")
-An Abstract Base Class for QGIS project property hierarchys.
+An abstract base class for QGIS project property hierarchys.
 
 Each sub-class is either a :py:class:`QgsProjectPropertyKey` or :py:class:`QgsProjectPropertyValue`.  :py:class:`QgsProjectPropertyKey` can
 contain either :py:class:`QgsProjectPropertyKey` or :py:class:`QgsProjectPropertyValues`, thus describing an

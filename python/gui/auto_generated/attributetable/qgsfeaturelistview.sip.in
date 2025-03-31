@@ -13,7 +13,7 @@
 class QgsFeatureListView : QListView
 {
 %Docstring(signature="appended")
-Shows a list of features and renders a edit button next to each feature.
+Shows a list of features and renders an edit button next to each feature.
 
 Accepts a display expression to define the way, features are rendered.
 Uses a :py:class:`QgsFeatureListModel` as source model.

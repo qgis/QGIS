@@ -60,7 +60,7 @@ class GUI_EXPORT QgsListModel : public QAbstractTableModel
 
 /**
  * \ingroup gui
- * \brief Widget allowing to edit a QVariantList, using a table.
+ * \brief Widget allowing editing a QVariantList, using a table.
  */
 class GUI_EXPORT QgsListWidget : public QgsTableWidgetBase
 {

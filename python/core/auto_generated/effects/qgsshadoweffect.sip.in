@@ -12,7 +12,7 @@
 class QgsShadowEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-Base class for paint effects which offset, blurred shadows.
+Base class for paint effects which render offset, blurred shadows.
 %End
 
 %TypeHeaderCode

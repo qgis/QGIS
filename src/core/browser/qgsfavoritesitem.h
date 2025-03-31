@@ -83,7 +83,7 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 
 /**
  * \ingroup core
- * \brief A directory item showing the a single favorite directory.
+ * \brief A directory item showing a single favorite directory.
  * \note Not available in Python bindings
 */
 Q_NOWARN_DEPRECATED_PUSH  // rename is deprecated

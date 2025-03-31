@@ -43,7 +43,7 @@ class ExpirableNetworkDiskCache : public QNetworkDiskCache
 /**
  * \ingroup core
  * \brief Wrapper implementation of QNetworkDiskCache with all methods guarded by a
- * mutex soly for internal use of QgsNetworkAccessManagers
+ * mutex solely for internal use of QgsNetworkAccessManagers
  *
  * \note not available in Python bindings
  */

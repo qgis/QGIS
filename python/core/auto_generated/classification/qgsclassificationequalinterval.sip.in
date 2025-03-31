@@ -11,7 +11,7 @@
 class QgsClassificationEqualInterval : QgsClassificationMethod
 {
 %Docstring(signature="appended")
-A classification method which uses for equal width intervals.
+A classification method which uses equal width intervals.
 
 .. versionadded:: 3.10
 %End

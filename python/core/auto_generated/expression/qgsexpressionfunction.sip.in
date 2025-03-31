@@ -14,7 +14,7 @@
 class QgsExpressionFunction
 {
 %Docstring(signature="appended")
-A abstract base class for defining :py:class:`QgsExpression` functions.
+An abstract base class for defining :py:class:`QgsExpression` functions.
 %End
 
 %TypeHeaderCode

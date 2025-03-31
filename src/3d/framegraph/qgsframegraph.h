@@ -55,7 +55,7 @@ class QgsShadowSettings;
 
 /**
  * \ingroup qgis_3d
- * \brief Container class that holds different objects related to frame graph of 3D scenes
+ * \brief Container class that holds different objects related to frame graphs of 3D scenes.
  *
  * A frame graph captures configuration of rendering passes when 3D scene gets rendered.
  *

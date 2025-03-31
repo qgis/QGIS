@@ -13,7 +13,7 @@
 class QgsMeshRendererMeshSettings
 {
 %Docstring(signature="appended")
-Represents a mesh renderer settings for mesh object.
+Represents a mesh renderer settings for mesh objects.
 
 .. note::
 

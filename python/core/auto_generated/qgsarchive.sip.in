@@ -92,7 +92,7 @@ Returns ``True`` if the archive exists on the filesystem, ``False`` otherwise.
 class QgsProjectArchive : QgsArchive
 {
 %Docstring(signature="appended")
-Allows managing the zip/unzip actions on project file.
+Allows managing the zip/unzip actions on project files.
 %End
 
 %TypeHeaderCode

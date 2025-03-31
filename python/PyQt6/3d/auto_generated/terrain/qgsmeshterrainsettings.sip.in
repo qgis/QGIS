@@ -12,7 +12,7 @@
 class QgsMeshTerrainSettings : QgsAbstractTerrainSettings
 {
 %Docstring(signature="appended")
-Terrain settings for a terrain generator that uses uses the Z values of a mesh layer to build a terrain.
+Terrain settings for a terrain generator that uses the Z values of a mesh layer to build a terrain.
 
 .. warning::
 

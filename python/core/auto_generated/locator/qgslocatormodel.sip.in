@@ -85,7 +85,7 @@ Adds a new ``result`` to the model.
 class QgsLocatorAutomaticModel : QgsLocatorModel
 {
 %Docstring(signature="appended")
-A :py:class:`QgsLocatorModel` which has is associated directly with a
+A :py:class:`QgsLocatorModel` which is associated directly with a
 :py:class:`QgsLocator`, and is automatically populated with results
 from locator searches.
 

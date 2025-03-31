@@ -47,7 +47,7 @@ class TestQgs3DRendering;
 #define SIP_NO_FILE
 
 /**
- * \brief Entity that handles the exporting of 3D scene
+ * \brief Entity that handles the exporting of 3D scenes.
  *
  * \note Not available in Python bindings
  *

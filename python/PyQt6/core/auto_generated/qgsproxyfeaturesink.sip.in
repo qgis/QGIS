@@ -13,7 +13,7 @@
 class QgsProxyFeatureSink : QgsFeatureSink
 {
 %Docstring(signature="appended")
-A simple feature sink which proxies feature addition on to another feature sink.
+A simple feature sink which proxies feature addition onto another feature sink.
 
 This class is designed to allow factory methods which always return new :py:class:`QgsFeatureSink`
 objects. Since it is not always possible to create an entirely new :py:class:`QgsFeatureSink`

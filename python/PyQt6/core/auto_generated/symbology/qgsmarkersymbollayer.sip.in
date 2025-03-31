@@ -165,7 +165,7 @@ Derived classes must implement :py:func:`~QgsSimpleMarkerSymbolLayerBase.draw` t
 class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
 %Docstring(signature="appended")
-Simple marker symbol layer, consisting of a rendered shape with solid fill color and an stroke.
+Simple marker symbol layer, consisting of a rendered shape with solid fill color and a stroke.
 %End
 
 %TypeHeaderCode

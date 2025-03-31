@@ -62,7 +62,7 @@ Reads the style's properties from XML.
 class QgsLayoutTable: QgsLayoutMultiFrame
 {
 %Docstring(signature="appended")
-Displays a table in the print layout, and allow
+Displays a table in the print layout, and allows
 the table to span over multiple frames.
 %End
 
