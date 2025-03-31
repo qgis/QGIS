@@ -18,10 +18,13 @@ This parameter provides Processing framework's adapter for QList<:py:class:`QgsD
 
 A valid value for this parameter is a list (QVariantList), where each
 item is a map (QVariantMap) in this form:
-{
-'layer':  string or :py:class:`QgsMapLayer`,
-'attributeIndex': int
-}
+
+.. code-block:: python
+
+     {
+       'layer':  string or QgsMapLayer,
+       'attributeIndex': int
+     }
 
 Also it can accept lists (either string lists or :py:class:`QgsVectorLayer` list)
 as well as individual layer object or string representing layer source.
