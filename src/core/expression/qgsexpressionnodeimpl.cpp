@@ -250,13 +250,45 @@ QVariant QgsExpressionNodeBinaryOperator::compareNonNullValues( QgsExpression *p
 
   else if ( vL.userType() == QMetaType::Type::Bool || vR.userType() == QMetaType::Type::Bool )
   {
-    // if one of value is boolean, then the other must also be boolean,
-    // in order to avoid confusion between different expression evaluations
-    // amongst providers and QVariant, that can consider or not the string
-    // 'false' as boolean or text
-    if ( vL.userType() == QMetaType::Type::Bool && vR.userType() == QMetaType::Type::Bool )
-      return vL.toBool() == vR.toBool() ? TVL_True : TVL_False;
-    return TVL_False;
+    // Documented behavior of QVariant::toBool() for each userType:
+    //
+    // For variant with userType():
+    //
+    //   QMetaType::Bool:
+    //     true if value is true
+    //     false otherwise
+    //
+    //   QMetaType::QChar, QMetaType::Double, QMetaType::Int,
+    //   QMetaType::LongLong, QMetaType::UInt, and QMetaType::ULongLong:
+    //     true if the value is non-zero
+    //     false otherwise
+    //
+    //   QMetaType::QString and QMetaType::QByteArray:
+    //     false if its lower-case content is empty, "0" or "false"
+    //     true otherwise
+    //
+    // All other variants always return false.
+
+    // Note: Boolean logical operators behave the same in C++ and SQL.
+    switch ( mOp )
+    {
+      case boEQ:
+        return vL.toBool() == vR.toBool() ? TVL_True : TVL_False;
+      case boNE:
+        return vL.toBool() != vR.toBool() ? TVL_True : TVL_False;
+      case boLT:
+        return vL.toBool() <  vR.toBool() ? TVL_True : TVL_False;
+      case boLE:
+        return vL.toBool() <= vR.toBool() ? TVL_True : TVL_False;
+      case boGT:
+        return vL.toBool() >  vR.toBool() ? TVL_True : TVL_False;
+      case boGE:
+        return vL.toBool() >= vR.toBool() ? TVL_True : TVL_False;
+      default:
+        // Can't happen [cosmic ray hits excepted]
+        Q_ASSERT( false );
+        return TVL_Unknown;
+    }
   }
 
   // warning - QgsExpression::isIntervalSafe is VERY expensive and should not be used here
