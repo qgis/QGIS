@@ -364,6 +364,16 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static QgsCoordinateReferenceSystem createCompoundCrs( const QgsCoordinateReferenceSystem &horizontalCrs, const QgsCoordinateReferenceSystem &verticalCrs, QString &error SIP_OUT );
 
+    /**
+     * Creates a geocentric CRS given an \a ellipsoid definition.
+     *
+     * Returns an invalid CRS if the ellipsoid definition is not valid.
+     *
+     * \see toGeocentricCrs()
+     * \since QGIS 3.44
+     */
+    static QgsCoordinateReferenceSystem createGeocentricCrs( const QString &ellipsoid );
+
     // Misc helper functions -----------------------
 
     // TODO QGIS 4: remove type and always use EPSG code, rename to createFromEpsg
@@ -1018,6 +1028,19 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.24
      */
     QgsCoordinateReferenceSystem toGeographicCrs() const;
+
+    /**
+     * Returns a new geocentric CRS based on this CRS object.
+     *
+     * If possible, the returned geocentric CRS will have the same datum (or
+     * datum ensemble) as this object.
+     *
+     * May return an invalid CRS if the geocentric CRS could not be determined.
+     *
+     * \see createGeocentricCrs()
+     * \since QGIS 3.44
+     */
+    QgsCoordinateReferenceSystem toGeocentricCrs() const;
 
     /**
      * Returns the horizontal CRS associated with this CRS object.
