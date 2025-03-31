@@ -12,7 +12,8 @@
 class QgsEllipsoidUtils
 {
 %Docstring(signature="appended")
-Contains utility functions for working with ellipsoids and querying the ellipsoid database.
+Contains utility functions for working with ellipsoids and querying the
+ellipsoid database.
 %End
 
 %TypeHeaderCode
@@ -46,8 +47,8 @@ Contains utility functions for working with ellipsoids and querying the ellipsoi
 
     static EllipsoidParameters ellipsoidParameters( const QString &ellipsoid );
 %Docstring
-Returns the parameters for the specified ``ellipsoid``.
-Results are cached to allow for fast retrieval of parameters.
+Returns the parameters for the specified ``ellipsoid``. Results are
+cached to allow for fast retrieval of parameters.
 %End
 
     static QList< QgsEllipsoidUtils::EllipsoidDefinition > definitions();
@@ -78,7 +79,8 @@ Returns a list of all known celestial bodies.
 
    This method requires PROJ 8.1 or later
 
-:raises QgsNotSupportedException: on QGIS builds based on PROJ 8.0 or earlier.
+:raises QgsNotSupportedException: on QGIS builds based on PROJ 8.0 or
+                                  earlier.
 
 .. versionadded:: 3.20
 %End

@@ -14,12 +14,15 @@
 class QgsColorRampLegendNodeWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A widget for properties relating to a :py:class:`QgsColorRampLegendNode` (:py:class:`QgsColorRampLegendNodeSettings`).
+A widget for properties relating to a :py:class:`QgsColorRampLegendNode`
+(:py:class:`QgsColorRampLegendNodeSettings`).
 
-The current settings are set by a call to :py:func:`~setSettings`, and the settings defined by the
-widget are retrieved by calling :py:func:`~settings`.
+The current settings are set by a call to :py:func:`~setSettings`, and
+the settings defined by the widget are retrieved by calling
+:py:func:`~settings`.
 
-When changes are made the to settings by a user the :py:func:`~widgetChanged` signal is emitted.
+When changes are made the to settings by a user the
+:py:func:`~widgetChanged` signal is emitted.
 
 .. versionadded:: 3.18
 %End
@@ -43,9 +46,11 @@ When changes are made the to settings by a user the :py:func:`~widgetChanged` si
 
     QgsColorRampLegendNodeWidget( QWidget *parent = 0, QgsColorRampLegendNodeWidget::Capabilities capabilities = QgsColorRampLegendNodeWidget::Capability::AllCapabilities );
 %Docstring
-Constructor for QgsColorRampLegendNodeWidget, with the specified ``parent`` widget.
+Constructor for QgsColorRampLegendNodeWidget, with the specified
+``parent`` widget.
 
-Since QGIS 3.38, the ``capabilities`` argument can be used to fine-tune settings exposed in the widget.
+Since QGIS 3.38, the ``capabilities`` argument can be used to fine-tune
+settings exposed in the widget.
 %End
 
     QgsColorRampLegendNodeSettings settings() const;
@@ -66,9 +71,9 @@ Sets the settings to show in the widget.
 %Docstring
 Sets visibility for the "Use Continuous Legend" checkbox to ``visible``.
 
-This widget is visible and checked by default but in a few cases it does not
-need to be visible because disabling it would not make sense (for instance
-when using single band gray renderer).
+This widget is visible and checked by default but in a few cases it does
+not need to be visible because disabling it would not make sense (for
+instance when using single band gray renderer).
 %End
 
 };
@@ -78,7 +83,8 @@ QFlags<QgsColorRampLegendNodeWidget::Capability> operator|(QgsColorRampLegendNod
 class QgsColorRampLegendNodeDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog for configuring a :py:class:`QgsColorRampLegendNode` (:py:class:`QgsColorRampLegendNodeSettings`).
+A dialog for configuring a :py:class:`QgsColorRampLegendNode`
+(:py:class:`QgsColorRampLegendNodeSettings`).
 
 .. versionadded:: 3.18
 %End
@@ -89,9 +95,11 @@ A dialog for configuring a :py:class:`QgsColorRampLegendNode` (:py:class:`QgsCol
   public:
     QgsColorRampLegendNodeDialog( const QgsColorRampLegendNodeSettings &settings, QWidget *parent /TransferThis/ = 0, QgsColorRampLegendNodeWidget::Capabilities capabilities = QgsColorRampLegendNodeWidget::Capability::AllCapabilities );
 %Docstring
-Constructor for QgsColorRampLegendNodeDialog, initially showing the specified ``settings``.
+Constructor for QgsColorRampLegendNodeDialog, initially showing the
+specified ``settings``.
 
-Since QGIS 3.38, the ``capabilities`` argument can be used to fine-tune settings exposed in the dialog.
+Since QGIS 3.38, the ``capabilities`` argument can be used to fine-tune
+settings exposed in the dialog.
 %End
 
     QgsColorRampLegendNodeSettings settings() const;
@@ -106,11 +114,12 @@ Returns a reference to the dialog's button box.
 
     void setUseContinuousRampCheckBoxVisibility( bool visible );
 %Docstring
-Sets visibility for the "Use Continuous Legend" checkbox in the legend settings dialog to ``visible``.
+Sets visibility for the "Use Continuous Legend" checkbox in the legend
+settings dialog to ``visible``.
 
-This widget is visible and checked by default but in a few cases it does not
-need to be visible because disabling it would not make sense (for instance
-when using single band gray renderer).
+This widget is visible and checked by default but in a few cases it does
+not need to be visible because disabling it would not make sense (for
+instance when using single band gray renderer).
 %End
 
 };

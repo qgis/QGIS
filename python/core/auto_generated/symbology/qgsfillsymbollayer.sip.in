@@ -35,7 +35,9 @@ Renders polygons using a single fill and stroke color.
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates a new QgsSimpleFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsSimpleFillSymbolLayer.properties`).
+Creates a new QgsSimpleFillSymbolLayer using the specified
+``properties`` map containing symbol properties (see
+:py:func:`~QgsSimpleFillSymbolLayer.properties`).
 
 Caller takes ownership of the returned symbol layer.
 %End
@@ -80,7 +82,8 @@ Caller takes ownership of the returned symbol layer.
 
     void setOffset( QPointF offset );
 %Docstring
-Sets an ``offset`` by which polygons will be translated during rendering.
+Sets an ``offset`` by which polygons will be translated during
+rendering.
 
 Units are specified by :py:func:`~QgsSimpleFillSymbolLayer.offsetUnit`.
 
@@ -91,7 +94,8 @@ Units are specified by :py:func:`~QgsSimpleFillSymbolLayer.offsetUnit`.
 
     QPointF offset() const;
 %Docstring
-Returns the offset by which polygons will be translated during rendering.
+Returns the offset by which polygons will be translated during
+rendering.
 
 Units are specified by :py:func:`~QgsSimpleFillSymbolLayer.offsetUnit`.
 
@@ -219,7 +223,9 @@ Constructor for QgsGradientFillSymbolLayer.
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates a new QgsGradientFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsGradientFillSymbolLayer.properties`).
+Creates a new QgsGradientFillSymbolLayer using the specified
+``properties`` map containing symbol properties (see
+:py:func:`~QgsGradientFillSymbolLayer.properties`).
 
 Caller takes ownership of the returned symbol layer.
 %End
@@ -260,22 +266,24 @@ Sets the type of gradient, e.g., linear or radial.
 
     Qgis::GradientColorSource gradientColorType() const;
 %Docstring
-Returns the gradient color mode, which controls how gradient color stops are created.
+Returns the gradient color mode, which controls how gradient color stops
+are created.
 
 .. seealso:: :py:func:`setGradientColorType`
 %End
 
     void setGradientColorType( Qgis::GradientColorSource gradientColorType );
 %Docstring
-Sets the gradient color mode, which controls how gradient color stops are created.
+Sets the gradient color mode, which controls how gradient color stops
+are created.
 
 .. seealso:: :py:func:`gradientColorType`
 %End
 
     QgsColorRamp *colorRamp();
 %Docstring
-Returns the color ramp used for the gradient fill. This is only
-used if the gradient color type is set to ColorRamp.
+Returns the color ramp used for the gradient fill. This is only used if
+the gradient color type is set to ColorRamp.
 
 .. seealso:: :py:func:`setColorRamp`
 
@@ -284,8 +292,8 @@ used if the gradient color type is set to ColorRamp.
 
     void setColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
-Sets the color ramp used for the gradient fill. This is only
-used if the gradient color type is set to ColorRamp.
+Sets the color ramp used for the gradient fill. This is only used if the
+gradient color type is set to ColorRamp.
 
 :param ramp: color ramp. Ownership is transferred.
 
@@ -296,42 +304,48 @@ used if the gradient color type is set to ColorRamp.
 
     QColor color2() const;
 %Docstring
-Returns the color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor.
+Returns the color for endpoint of gradient, only used if the gradient
+color type is set to SimpleTwoColor.
 
 .. seealso:: :py:func:`setColor2`
 %End
 
     void setColor2( const QColor &color2 );
 %Docstring
-Sets the color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor.
+Sets the color for endpoint of gradient, only used if the gradient color
+type is set to SimpleTwoColor.
 
 .. seealso:: :py:func:`color2`
 %End
 
     Qgis::SymbolCoordinateReference coordinateMode() const;
 %Docstring
-Returns the coordinate mode for gradient, which controls how the gradient stops are positioned.
+Returns the coordinate mode for gradient, which controls how the
+gradient stops are positioned.
 
 .. seealso:: :py:func:`setCoordinateMode`
 %End
 
     void setCoordinateMode( Qgis::SymbolCoordinateReference coordinateMode );
 %Docstring
-Sets the coordinate mode for gradient, which controls how the gradient stops are positioned.
+Sets the coordinate mode for gradient, which controls how the gradient
+stops are positioned.
 
 .. seealso:: :py:func:`coordinateMode`
 %End
 
     Qgis::GradientSpread gradientSpread() const;
 %Docstring
-Returns the gradient spread mode, which controls how the gradient behaves outside of the predefined stops.
+Returns the gradient spread mode, which controls how the gradient
+behaves outside of the predefined stops.
 
 .. seealso:: :py:func:`setGradientSpread`
 %End
 
     void setGradientSpread( Qgis::GradientSpread gradientSpread );
 %Docstring
-Sets the gradient spread mode, which controls how the gradient behaves outside of the predefined stops.
+Sets the gradient spread mode, which controls how the gradient behaves
+outside of the predefined stops.
 
 .. seealso:: :py:func:`gradientSpread`
 %End
@@ -352,14 +366,16 @@ Returns the starting point of gradient fill, in the range [0,0] - [1,1].
 
     void setReferencePoint1IsCentroid( bool isCentroid );
 %Docstring
-Sets whether the starting point for the gradient is taken from the feature centroid.
+Sets whether the starting point for the gradient is taken from the
+feature centroid.
 
 .. seealso:: :py:func:`referencePoint1IsCentroid`
 %End
 
     bool referencePoint1IsCentroid() const;
 %Docstring
-Returns whether the starting point for the gradient is taken from the feature centroid.
+Returns whether the starting point for the gradient is taken from the
+feature centroid.
 
 .. seealso:: :py:func:`setReferencePoint1IsCentroid`
 %End
@@ -380,7 +396,8 @@ Returns the end point of gradient fill, in the range [0,0] - [1,1].
 
     void setReferencePoint2IsCentroid( bool isCentroid );
 %Docstring
-Sets whether the end point for the gradient is taken from the feature centroid.
+Sets whether the end point for the gradient is taken from the feature
+centroid.
 
 .. seealso:: :py:func:`referencePoint2IsCentroid`
 %End
@@ -388,16 +405,19 @@ Sets whether the end point for the gradient is taken from the feature centroid.
 
     bool referencePoint2IsCentroid() const;
 %Docstring
-Returns whether the end point for the gradient is taken from the feature centroid.
+Returns whether the end point for the gradient is taken from the feature
+centroid.
 
 .. seealso:: :py:func:`setReferencePoint2IsCentroid`
 %End
 
     void setOffset( QPointF offset );
 %Docstring
-Sets an ``offset`` by which polygons will be translated during rendering.
+Sets an ``offset`` by which polygons will be translated during
+rendering.
 
-Units are specified by :py:func:`~QgsGradientFillSymbolLayer.offsetUnit`.
+Units are specified by
+:py:func:`~QgsGradientFillSymbolLayer.offsetUnit`.
 
 .. seealso:: :py:func:`offset`
 
@@ -406,9 +426,11 @@ Units are specified by :py:func:`~QgsGradientFillSymbolLayer.offsetUnit`.
 
     QPointF offset() const;
 %Docstring
-Returns the offset by which polygons will be translated during rendering.
+Returns the offset by which polygons will be translated during
+rendering.
 
-Units are specified by :py:func:`~QgsGradientFillSymbolLayer.offsetUnit`.
+Units are specified by
+:py:func:`~QgsGradientFillSymbolLayer.offsetUnit`.
 
 .. seealso:: :py:func:`setOffset`
 
@@ -473,7 +495,8 @@ Returns the map unit scale for the fill's offset.
 class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 {
 %Docstring(signature="appended")
-A fill symbol layer which applies a gradient from the outer edges of a symbol to the inside.
+A fill symbol layer which applies a gradient from the outer edges of a
+symbol to the inside.
 %End
 
 %TypeHeaderCode
@@ -495,7 +518,9 @@ Constructor for QgsShapeburstFillSymbolLayer.
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates a new QgsShapeburstFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsShapeburstFillSymbolLayer.properties`).
+Creates a new QgsShapeburstFillSymbolLayer using the specified
+``properties`` map containing symbol properties (see
+:py:func:`~QgsShapeburstFillSymbolLayer.properties`).
 
 Caller takes ownership of the returned symbol layer.
 %End
@@ -522,18 +547,24 @@ Caller takes ownership of the returned symbol layer.
 
     void setBlurRadius( int blurRadius );
 %Docstring
-Sets the blur radius, which controls the amount of blurring applied to the fill.
+Sets the blur radius, which controls the amount of blurring applied to
+the fill.
 
-:param blurRadius: Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
+:param blurRadius: Radius for fill blur. Values between 0 - 17 are
+                   valid, where higher values results in a stronger
+                   blur. Set to 0 to disable blur.
 
 .. seealso:: :py:func:`blurRadius`
 %End
 
     int blurRadius() const;
 %Docstring
-Returns the blur radius, which controls the amount of blurring applied to the fill.
+Returns the blur radius, which controls the amount of blurring applied
+to the fill.
 
-:return: Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
+:return: Integer representing the radius for fill blur. Higher values
+         indicate a stronger blur. A 0 value indicates that blurring is
+         disabled.
 
 .. seealso:: :py:func:`setBlurRadius`
 %End
@@ -542,8 +573,10 @@ Returns the blur radius, which controls the amount of blurring applied to the fi
 %Docstring
 Sets whether the shapeburst fill should be drawn using the entire shape.
 
-:param useWholeShape: Set to ``True`` if shapeburst should cover entire shape. If ``False``, setMaxDistance is used to calculate how far from the boundary of the shape should
-                      be shaded
+:param useWholeShape: Set to ``True`` if shapeburst should cover entire
+                      shape. If ``False``, setMaxDistance is used to
+                      calculate how far from the boundary of the shape
+                      should be shaded
 
 .. seealso:: :py:func:`useWholeShape`
 
@@ -554,7 +587,9 @@ Sets whether the shapeburst fill should be drawn using the entire shape.
 %Docstring
 Returns whether the shapeburst fill is set to cover the entire shape.
 
-:return: ``True`` if shapeburst fill will cover the entire shape. If ``False``, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
+:return: ``True`` if shapeburst fill will cover the entire shape. If
+         ``False``, shapeburst is drawn to a distance of maxDistance
+         from the polygon's boundary.
 
 .. seealso:: :py:func:`setUseWholeShape`
 
@@ -563,9 +598,13 @@ Returns whether the shapeburst fill is set to cover the entire shape.
 
     void setMaxDistance( double maxDistance );
 %Docstring
-Sets the maximum distance to shape inside of the shape from the polygon's boundary.
+Sets the maximum distance to shape inside of the shape from the
+polygon's boundary.
 
-:param maxDistance: distance from boundary to shade. setUseWholeShape must be set to ``False`` for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
+:param maxDistance: distance from boundary to shade. setUseWholeShape
+                    must be set to ``False`` for this parameter to take
+                    effect. Distance unit is controlled by
+                    setDistanceUnit.
 
 .. seealso:: :py:func:`maxDistance`
 
@@ -576,9 +615,11 @@ Sets the maximum distance to shape inside of the shape from the polygon's bounda
 
     double maxDistance() const;
 %Docstring
-Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is ``False``.
+Returns the maximum distance from the shape's boundary which is shaded.
+This parameter is only effective if useWholeShape is ``False``.
 
-:return: the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
+:return: the maximum distance from the polygon's boundary which is
+         shaded. Distance units are indicated by distanceUnit.
 
 .. seealso:: :py:func:`useWholeShape`
 
@@ -589,7 +630,8 @@ Returns the maximum distance from the shape's boundary which is shaded. This par
 
     void setDistanceUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
+Sets the unit for the maximum distance to shade inside of the shape from
+the polygon's boundary.
 
 :param unit: distance unit for the maximum distance
 
@@ -600,7 +642,8 @@ Sets the unit for the maximum distance to shade inside of the shape from the pol
 
     Qgis::RenderUnit distanceUnit() const;
 %Docstring
-Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
+Returns the unit for the maximum distance to shade inside of the shape
+from the polygon's boundary.
 
 :return: distance unit for the maximum distance
 
@@ -614,8 +657,10 @@ Returns the unit for the maximum distance to shade inside of the shape from the 
 
     void setColorType( Qgis::GradientColorSource colorType );
 %Docstring
-Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a :py:class:`QgsColorRamp` color ramp
-or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
+Sets the color mode to use for the shapeburst fill. Shapeburst can
+either be drawn using a :py:class:`QgsColorRamp` color ramp or by simply
+specificing a start and end color. setColorType is used to specify which
+mode to use for the fill.
 
 :param colorType: color type to use for shapeburst fill
 
@@ -630,8 +675,9 @@ or by simply specificing a start and end color. setColorType is used to specify 
 
     Qgis::GradientColorSource colorType() const;
 %Docstring
-Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a :py:class:`QgsColorRamp` color ramp
-or by simply specificing a start and end color.
+Returns the color mode used for the shapeburst fill. Shapeburst can
+either be drawn using a :py:class:`QgsColorRamp` color ramp or by simply
+specificing a start and end color.
 
 :return: current color mode used for the shapeburst fill
 
@@ -646,7 +692,8 @@ or by simply specificing a start and end color.
 
     void setColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
-Sets the color ``ramp`` used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType.ColorRamp.
+Sets the color ``ramp`` used to draw the shapeburst fill. Color ramps
+are only used if setColorType is set ShapeburstColorType.ColorRamp.
 
 Ownership of ``ramp`` is transferred to the fill.
 
@@ -657,7 +704,8 @@ Ownership of ``ramp`` is transferred to the fill.
 
     QgsColorRamp *colorRamp();
 %Docstring
-Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType.ColorRamp
+Returns the color ramp used for the shapeburst fill. The color ramp is
+only used if the colorType is set to ShapeburstColorType.ColorRamp
 
 :return: a :py:class:`QgsColorRamp` color ramp
 
@@ -668,7 +716,8 @@ Returns the color ramp used for the shapeburst fill. The color ramp is only used
 
     void setColor2( const QColor &color2 );
 %Docstring
-Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType.SimpleTwoColor.
+Sets the color for the endpoint of the shapeburst fill. This color is
+only used if setColorType is set ShapeburstColorType.SimpleTwoColor.
 
 :param color2: QColor to use for endpoint of gradient
 
@@ -679,7 +728,9 @@ Sets the color for the endpoint of the shapeburst fill. This color is only used 
 
     QColor color2() const;
 %Docstring
-Returns the color used for the endpoint of the shapeburst fill. This color is only used if the colorType is set to ShapeburstColorType.SimpleTwoColor
+Returns the color used for the endpoint of the shapeburst fill. This
+color is only used if the colorType is set to
+ShapeburstColorType.SimpleTwoColor
 
 :return: a QColor indicating the color of the endpoint of the gradient
 
@@ -690,19 +741,22 @@ Returns the color used for the endpoint of the shapeburst fill. This color is on
 
     void setIgnoreRings( bool ignoreRings );
 %Docstring
-Sets whether the shapeburst fill should ignore polygon rings when calculating
-the buffered shading.
+Sets whether the shapeburst fill should ignore polygon rings when
+calculating the buffered shading.
 
-:param ignoreRings: Set to ``True`` if buffers should ignore interior rings for polygons.
+:param ignoreRings: Set to ``True`` if buffers should ignore interior
+                    rings for polygons.
 
 .. seealso:: :py:func:`ignoreRings`
 %End
 
     bool ignoreRings() const;
 %Docstring
-Returns whether the shapeburst fill is set to ignore polygon interior rings.
+Returns whether the shapeburst fill is set to ignore polygon interior
+rings.
 
-:return: ``True`` if the shapeburst fill will ignore interior rings when calculating buffered shading.
+:return: ``True`` if the shapeburst fill will ignore interior rings when
+         calculating buffered shading.
 
 .. seealso:: :py:func:`setIgnoreRings`
 %End
@@ -773,7 +827,8 @@ Returns the units used for the offset of the shapeburst fill.
 class QgsImageFillSymbolLayer: QgsFillSymbolLayer /Abstract/
 {
 %Docstring(signature="appended")
-Base class for fill symbol layers which fill polygons with a repeated image.
+Base class for fill symbol layers which fill polygons with a repeated
+image.
 %End
 
 %TypeHeaderCode
@@ -825,8 +880,8 @@ Returns the stroke width map unit scale.
 
     void setCoordinateReference( Qgis::SymbolCoordinateReference coordinateReference );
 %Docstring
-Sets the coordinate reference mode for fill which controls how the top left corner of the image
-fill is positioned relative to the feature.
+Sets the coordinate reference mode for fill which controls how the top
+left corner of the image fill is positioned relative to the feature.
 
 :param coordinateReference: coordinate reference mode
 
@@ -837,8 +892,8 @@ fill is positioned relative to the feature.
 
     Qgis::SymbolCoordinateReference coordinateReference() const;
 %Docstring
-Returns the coordinate reference mode for fill which controls how the top left corner of the image
-fill is positioned relative to the feature.
+Returns the coordinate reference mode for fill which controls how the
+top left corner of the image fill is positioned relative to the feature.
 
 :return: coordinate reference mode
 
@@ -872,7 +927,8 @@ Applies data defined settings prior to generating the fill symbol brush.
 
     virtual bool applyBrushTransformFromContext( QgsSymbolRenderContext *context = 0 ) const;
 %Docstring
-Returns ``True`` if the image brush should be transformed using the render context's texture origin.
+Returns ``True`` if the image brush should be transformed using the
+render context's texture origin.
 
 .. versionadded:: 3.16
 %End
@@ -902,22 +958,22 @@ specified ``imageFilePath``.
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates a new QgsRasterFillSymbolLayer from a ``properties`` map. The caller takes
-ownership of the returned object.
+Creates a new QgsRasterFillSymbolLayer from a ``properties`` map. The
+caller takes ownership of the returned object.
 %End
 
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 %Docstring
-Creates a new QgsRasterFillSymbolLayer from a SLD ``element``. The caller takes
-ownership of the returned object.
+Creates a new QgsRasterFillSymbolLayer from a SLD ``element``. The
+caller takes ownership of the returned object.
 
 .. versionadded:: 3.30
 %End
 
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
-Turns relative paths in properties map to absolute when reading and vice versa when writing.
-Used internally when reading/writing symbols.
+Turns relative paths in properties map to absolute when reading and vice
+versa when writing. Used internally when reading/writing symbols.
 %End
 
     virtual QString layerType() const;
@@ -967,8 +1023,8 @@ The path to the raster image used for the fill.
 
     void setCoordinateMode( Qgis::SymbolCoordinateReference mode );
 %Docstring
-Set the coordinate mode for fill. Controls how the top left corner of the image
-fill is positioned relative to the feature.
+Set the coordinate mode for fill. Controls how the top left corner of
+the image fill is positioned relative to the feature.
 
 :param mode: coordinate mode
 
@@ -989,7 +1045,8 @@ fill is positioned relative to the feature.
 %Docstring
 Sets the ``opacity`` for the raster image used in the fill.
 
-:param opacity: opacity value between 0 (fully transparent) and 1 (fully opaque)
+:param opacity: opacity value between 0 (fully transparent) and 1 (fully
+                opaque)
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -998,7 +1055,8 @@ Sets the ``opacity`` for the raster image used in the fill.
 %Docstring
 Returns the opacity for the raster image used in the fill.
 
-:return: opacity value between 0 (fully transparent) and 1 (fully opaque)
+:return: opacity value between 0 (fully transparent) and 1 (fully
+         opaque)
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -1085,7 +1143,8 @@ Returns the map unit scale for the fill's offset.
 %Docstring
 Sets the ``width`` for scaling the image used in the fill.
 
-If ``width`` is 0 then the width will be calculated automatically based on the image's :py:func:`~QgsRasterFillSymbolLayer.height`.
+If ``width`` is 0 then the width will be calculated automatically based
+on the image's :py:func:`~QgsRasterFillSymbolLayer.height`.
 
 .. seealso:: :py:func:`width`
 
@@ -1102,7 +1161,8 @@ If ``width`` is 0 then the width will be calculated automatically based on the i
 %Docstring
 Returns the width used for scaling the image used in the fill.
 
-If the width is 0 then the width will be calculated automatically based on the image's :py:func:`~QgsRasterFillSymbolLayer.height`.
+If the width is 0 then the width will be calculated automatically based
+on the image's :py:func:`~QgsRasterFillSymbolLayer.height`.
 
 .. seealso:: :py:func:`height`
 
@@ -1117,7 +1177,8 @@ If the width is 0 then the width will be calculated automatically based on the i
 %Docstring
 Sets the ``height`` for scaling the image.
 
-If ``height`` is 0 then the height will be calculated automatically based on the image's :py:func:`~QgsRasterFillSymbolLayer.width`.
+If ``height`` is 0 then the height will be calculated automatically
+based on the image's :py:func:`~QgsRasterFillSymbolLayer.width`.
 
 .. seealso:: :py:func:`setWidth`
 
@@ -1132,7 +1193,8 @@ If ``height`` is 0 then the height will be calculated automatically based on the
 %Docstring
 Returns the height used for scaling the image used in the fill.
 
-If the height is 0 then the height will be calculated automatically based on the image's :py:func:`~QgsRasterFillSymbolLayer.width`.
+If the height is 0 then the height will be calculated automatically
+based on the image's :py:func:`~QgsRasterFillSymbolLayer.width`.
 
 .. seealso:: :py:func:`width`
 
@@ -1280,32 +1342,34 @@ A fill symbol layer which fills polygons with a repeated SVG file.
 
     QgsSVGFillSymbolLayer( const QString &svgFilePath, double width = 20, double rotation = 0.0 );
 %Docstring
-Constructor for QgsSVGFillSymbolLayer, using the SVG picture at the specified absolute file path.
+Constructor for QgsSVGFillSymbolLayer, using the SVG picture at the
+specified absolute file path.
 %End
 
     QgsSVGFillSymbolLayer( const QByteArray &svgData, double width = 20, double rotation = 0.0 );
 %Docstring
-Constructor for QgsSVGFillSymbolLayer, using the specified SVG picture data.
+Constructor for QgsSVGFillSymbolLayer, using the specified SVG picture
+data.
 %End
 
     ~QgsSVGFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates a new QgsSVGFillSymbolLayer from a ``properties`` map. The caller takes
-ownership of the returned object.
+Creates a new QgsSVGFillSymbolLayer from a ``properties`` map. The
+caller takes ownership of the returned object.
 %End
 
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 %Docstring
-Creates a new QgsSVGFillSymbolLayer from a SLD ``element``. The caller takes
-ownership of the returned object.
+Creates a new QgsSVGFillSymbolLayer from a SLD ``element``. The caller
+takes ownership of the returned object.
 %End
 
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
-Turns relative paths in properties map to absolute when reading and vice versa when writing.
-Used internally when reading/writing symbols.
+Turns relative paths in properties map to absolute when reading and vice
+versa when writing. Used internally when reading/writing symbols.
 %End
 
 
@@ -1360,9 +1424,11 @@ Returns the path to the SVG file used to render the fill.
 
     void setPatternWidth( double width );
 %Docstring
-Sets the ``width`` to render the SVG content as within the fill (i.e. the pattern repeat/tile size).
+Sets the ``width`` to render the SVG content as within the fill (i.e.
+the pattern repeat/tile size).
 
-Units are specified by :py:func:`~QgsSVGFillSymbolLayer.setPatternWidthUnit`
+Units are specified by
+:py:func:`~QgsSVGFillSymbolLayer.setPatternWidthUnit`
 
 .. seealso:: :py:func:`patternWidth`
 
@@ -1373,9 +1439,11 @@ Units are specified by :py:func:`~QgsSVGFillSymbolLayer.setPatternWidthUnit`
 
     double patternWidth() const;
 %Docstring
-Returns the width of the rendered SVG content within the fill (i.e. the pattern repeat/tile size).
+Returns the width of the rendered SVG content within the fill (i.e. the
+pattern repeat/tile size).
 
-Units are retrieved by :py:func:`~QgsSVGFillSymbolLayer.patternWidthUnit`
+Units are retrieved by
+:py:func:`~QgsSVGFillSymbolLayer.patternWidthUnit`
 
 .. seealso:: :py:func:`setPatternWidth`
 
@@ -1388,8 +1456,8 @@ Units are retrieved by :py:func:`~QgsSVGFillSymbolLayer.patternWidthUnit`
 %Docstring
 Sets the fill color used for rendering the SVG content.
 
-Fill color is only supported for parametrized SVG files. Color opacity is
-ignored if the SVG file does not support parametrized fill opacity.
+Fill color is only supported for parametrized SVG files. Color opacity
+is ignored if the SVG file does not support parametrized fill opacity.
 
 .. seealso:: :py:func:`svgFillColor`
 
@@ -1411,8 +1479,9 @@ Fill color is only supported for parametrized SVG files.
 %Docstring
 Sets the stroke color used for rendering the SVG content.
 
-Stroke color is only supported for parametrized SVG files. Color opacity is
-ignored if the SVG file does not support parametrized outline opacity.
+Stroke color is only supported for parametrized SVG files. Color opacity
+is ignored if the SVG file does not support parametrized outline
+opacity.
 
 .. seealso:: :py:func:`svgStrokeColor`
 
@@ -1592,14 +1661,14 @@ A symbol fill consisting of repeated parallel lines.
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates a new QgsLinePatternFillSymbolLayer from a ``properties`` map. The caller takes
-ownership of the returned object.
+Creates a new QgsLinePatternFillSymbolLayer from a ``properties`` map.
+The caller takes ownership of the returned object.
 %End
 
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 %Docstring
-Creates a new QgsLinePatternFillSymbolLayer from a SLD ``element``. The caller takes
-ownership of the returned object.
+Creates a new QgsLinePatternFillSymbolLayer from a SLD ``element``. The
+caller takes ownership of the returned object.
 %End
 
     virtual QString layerType() const;
@@ -1645,7 +1714,8 @@ Angles are in degrees, clockwise from North.
 %Docstring
 Sets the distance between lines in the fill pattern.
 
-:param d: distance. Units are specified by :py:func:`~QgsLinePatternFillSymbolLayer.setDistanceUnit`
+:param d: distance. Units are specified by
+          :py:func:`~QgsLinePatternFillSymbolLayer.setDistanceUnit`
 
 .. seealso:: :py:func:`distance`
 
@@ -1654,7 +1724,8 @@ Sets the distance between lines in the fill pattern.
 
     double distance() const;
 %Docstring
-Returns the distance between lines in the fill pattern. Units are retrieved by :py:func:`~QgsLinePatternFillSymbolLayer.distanceUnit`.
+Returns the distance between lines in the fill pattern. Units are
+retrieved by :py:func:`~QgsLinePatternFillSymbolLayer.distanceUnit`.
 
 .. seealso:: :py:func:`setDistance`
 
@@ -1671,8 +1742,8 @@ in the fill.
 
     double lineWidth() const;
 %Docstring
-Returns the width of the line subsymbol used to render the parallel lines
-in the fill.
+Returns the width of the line subsymbol used to render the parallel
+lines in the fill.
 
 .. seealso:: :py:func:`setLineWidth`
 %End
@@ -1684,11 +1755,11 @@ in the fill.
 
     void setOffset( double offset );
 %Docstring
-Sets the ``offset`` distance for lines within the fill, which is
-the distance to offset the parallel lines from their normal
-position.
+Sets the ``offset`` distance for lines within the fill, which is the
+distance to offset the parallel lines from their normal position.
 
-Units are specified via :py:func:`~QgsLinePatternFillSymbolLayer.setOffsetUnit`.
+Units are specified via
+:py:func:`~QgsLinePatternFillSymbolLayer.setOffsetUnit`.
 
 .. seealso:: :py:func:`offset`
 
@@ -1699,11 +1770,11 @@ Units are specified via :py:func:`~QgsLinePatternFillSymbolLayer.setOffsetUnit`.
 
     double offset() const;
 %Docstring
-Returns the offset distance for lines within the fill, which is
-the distance to offset the parallel lines from their normal
-position.
+Returns the offset distance for lines within the fill, which is the
+distance to offset the parallel lines from their normal position.
 
-Units are retrieved via :py:func:`~QgsLinePatternFillSymbolLayer.offsetUnit`.
+Units are retrieved via
+:py:func:`~QgsLinePatternFillSymbolLayer.offsetUnit`.
 
 .. seealso:: :py:func:`setOffset`
 
@@ -1826,7 +1897,8 @@ Returns the map unit scale for the pattern's line offset.
 
     Qgis::LineClipMode clipMode() const;
 %Docstring
-Returns the line clipping mode, which defines how lines are clipped at the edges of shapes.
+Returns the line clipping mode, which defines how lines are clipped at
+the edges of shapes.
 
 .. seealso:: :py:func:`setClipMode`
 
@@ -1835,7 +1907,8 @@ Returns the line clipping mode, which defines how lines are clipped at the edges
 
     void setClipMode( Qgis::LineClipMode mode );
 %Docstring
-Sets the line clipping ``mode``, which defines how lines are clipped at the edges of shapes.
+Sets the line clipping ``mode``, which defines how lines are clipped at
+the edges of shapes.
 
 .. seealso:: :py:func:`clipMode`
 
@@ -1877,7 +1950,8 @@ Sets the line clipping ``mode``, which defines how lines are clipped at the edge
 class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
 {
 %Docstring(signature="appended")
-A fill symbol layer which fills polygon shapes with repeating marker symbols.
+A fill symbol layer which fills polygon shapes with repeating marker
+symbols.
 %End
 
 %TypeHeaderCode
@@ -1889,7 +1963,9 @@ A fill symbol layer which fills polygon shapes with repeating marker symbols.
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates a new QgsPointPatternFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsPointPatternFillSymbolLayer.properties`).
+Creates a new QgsPointPatternFillSymbolLayer using the specified
+``properties`` map containing symbol properties (see
+:py:func:`~QgsPointPatternFillSymbolLayer.properties`).
 
 Caller takes ownership of the returned symbol layer.
 %End
@@ -1944,7 +2020,8 @@ Caller takes ownership of the returned symbol layer.
 %Docstring
 Returns the horizontal distance between rendered markers in the fill.
 
-Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.distanceXUnit`.
+Units are retrieved via
+:py:func:`~QgsPointPatternFillSymbolLayer.distanceXUnit`.
 
 .. seealso:: :py:func:`setDistanceX`
 
@@ -1957,7 +2034,8 @@ Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.distanceXUnit`
 %Docstring
 Sets the horizontal distance between rendered markers in the fill.
 
-Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDistanceXUnit`.
+Units are set via
+:py:func:`~QgsPointPatternFillSymbolLayer.setDistanceXUnit`.
 
 .. seealso:: :py:func:`distanceX`
 
@@ -1968,7 +2046,8 @@ Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDistanceXUnit`.
 
     void setDistanceXUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``unit`` for the horizontal distance between points in the pattern.
+Sets the ``unit`` for the horizontal distance between points in the
+pattern.
 
 :param unit: distance units
 
@@ -1979,7 +2058,8 @@ Sets the ``unit`` for the horizontal distance between points in the pattern.
 
     Qgis::RenderUnit distanceXUnit() const;
 %Docstring
-Returns the units for the horizontal distance between points in the pattern.
+Returns the units for the horizontal distance between points in the
+pattern.
 
 .. seealso:: :py:func:`setDistanceXUnit`
 
@@ -1988,7 +2068,8 @@ Returns the units for the horizontal distance between points in the pattern.
 
     void setDistanceXMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit ``scale`` for the horizontal distance between points in the pattern.
+Sets the map unit ``scale`` for the horizontal distance between points
+in the pattern.
 
 .. seealso:: :py:func:`distanceXMapUnitScale`
 
@@ -1997,7 +2078,8 @@ Sets the map unit ``scale`` for the horizontal distance between points in the pa
 
     const QgsMapUnitScale &distanceXMapUnitScale() const;
 %Docstring
-Returns the map unit scale for the horizontal distance between points in the pattern.
+Returns the map unit scale for the horizontal distance between points in
+the pattern.
 
 .. seealso:: :py:func:`setDistanceXMapUnitScale`
 
@@ -2008,7 +2090,8 @@ Returns the map unit scale for the horizontal distance between points in the pat
 %Docstring
 Returns the vertical distance between rendered markers in the fill.
 
-Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.distanceYUnit`.
+Units are retrieved via
+:py:func:`~QgsPointPatternFillSymbolLayer.distanceYUnit`.
 
 .. seealso:: :py:func:`setDistanceY`
 
@@ -2021,7 +2104,8 @@ Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.distanceYUnit`
 %Docstring
 Sets the vertical distance between rendered markers in the fill.
 
-Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDistanceYUnit`.
+Units are set via
+:py:func:`~QgsPointPatternFillSymbolLayer.setDistanceYUnit`.
 
 .. seealso:: :py:func:`distanceY`
 
@@ -2032,7 +2116,8 @@ Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDistanceYUnit`.
 
     void setDistanceYUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``unit`` for the vertical distance between points in the pattern.
+Sets the ``unit`` for the vertical distance between points in the
+pattern.
 
 :param unit: distance units
 
@@ -2043,7 +2128,8 @@ Sets the ``unit`` for the vertical distance between points in the pattern.
 
     Qgis::RenderUnit distanceYUnit() const;
 %Docstring
-Returns the units for the vertical distance between points in the pattern.
+Returns the units for the vertical distance between points in the
+pattern.
 
 .. seealso:: :py:func:`setDistanceYUnit`
 
@@ -2052,7 +2138,8 @@ Returns the units for the vertical distance between points in the pattern.
 
     void setDistanceYMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit ``scale`` for the vertical distance between points in the pattern.
+Sets the map unit ``scale`` for the vertical distance between points in
+the pattern.
 
 .. seealso:: :py:func:`distanceYMapUnitScale`
 
@@ -2061,7 +2148,8 @@ Sets the map unit ``scale`` for the vertical distance between points in the patt
 
     const QgsMapUnitScale &distanceYMapUnitScale() const;
 %Docstring
-Returns the map unit scale for the vertical distance between points in the pattern.
+Returns the map unit scale for the vertical distance between points in
+the pattern.
 
 .. seealso:: :py:func:`setDistanceYMapUnitScale`
 
@@ -2070,9 +2158,11 @@ Returns the map unit scale for the vertical distance between points in the patte
 
     double displacementX() const;
 %Docstring
-Returns the horizontal displacement for odd numbered rows in the pattern.
+Returns the horizontal displacement for odd numbered rows in the
+pattern.
 
-Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.displacementXUnit`.
+Units are retrieved via
+:py:func:`~QgsPointPatternFillSymbolLayer.displacementXUnit`.
 
 .. seealso:: :py:func:`setDisplacementX`
 
@@ -2085,7 +2175,8 @@ Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.displacementXU
 %Docstring
 Sets the horizontal displacement for odd numbered rows in the pattern.
 
-Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDisplacementXUnit`.
+Units are set via
+:py:func:`~QgsPointPatternFillSymbolLayer.setDisplacementXUnit`.
 
 .. seealso:: :py:func:`displacementX`
 
@@ -2096,7 +2187,8 @@ Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDisplacementXUnit
 
     void setDisplacementXUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the units for the horizontal displacement between rows in the pattern.
+Sets the units for the horizontal displacement between rows in the
+pattern.
 
 :param unit: displacement units
 
@@ -2107,7 +2199,8 @@ Sets the units for the horizontal displacement between rows in the pattern.
 
     Qgis::RenderUnit displacementXUnit() const;
 %Docstring
-Returns the units for the horizontal displacement between rows in the pattern.
+Returns the units for the horizontal displacement between rows in the
+pattern.
 
 .. seealso:: :py:func:`setDisplacementXUnit`
 
@@ -2116,7 +2209,8 @@ Returns the units for the horizontal displacement between rows in the pattern.
 
     void setDisplacementXMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit ``scale`` for the horizontal displacement between odd numbered rows in the pattern.
+Sets the map unit ``scale`` for the horizontal displacement between odd
+numbered rows in the pattern.
 
 .. seealso:: :py:func:`displacementXMapUnitScale`
 
@@ -2125,7 +2219,8 @@ Sets the map unit ``scale`` for the horizontal displacement between odd numbered
 
     const QgsMapUnitScale &displacementXMapUnitScale() const;
 %Docstring
-Returns the map unit scale for the horizontal displacement between odd numbered rows in the pattern.
+Returns the map unit scale for the horizontal displacement between odd
+numbered rows in the pattern.
 
 .. seealso:: :py:func:`setDisplacementXMapUnitScale`
 
@@ -2134,9 +2229,11 @@ Returns the map unit scale for the horizontal displacement between odd numbered 
 
     double displacementY() const;
 %Docstring
-Returns the vertical displacement for odd numbered columns in the pattern.
+Returns the vertical displacement for odd numbered columns in the
+pattern.
 
-Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.displacementYUnit`.
+Units are retrieved via
+:py:func:`~QgsPointPatternFillSymbolLayer.displacementYUnit`.
 
 .. seealso:: :py:func:`setDisplacementY`
 
@@ -2149,7 +2246,8 @@ Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.displacementYU
 %Docstring
 Sets the vertical displacement for odd numbered columns in the pattern.
 
-Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDisplacementYUnit`.
+Units are set via
+:py:func:`~QgsPointPatternFillSymbolLayer.setDisplacementYUnit`.
 
 .. seealso:: :py:func:`displacementY`
 
@@ -2160,7 +2258,8 @@ Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDisplacementYUnit
 
     void setDisplacementYUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the units for the vertical displacement between rows in the pattern.
+Sets the units for the vertical displacement between rows in the
+pattern.
 
 :param unit: displacement units
 
@@ -2171,7 +2270,8 @@ Sets the units for the vertical displacement between rows in the pattern.
 
     Qgis::RenderUnit displacementYUnit() const;
 %Docstring
-Returns the units for the vertical displacement between rows in the pattern.
+Returns the units for the vertical displacement between rows in the
+pattern.
 
 .. seealso:: :py:func:`setDisplacementYUnit`
 
@@ -2180,7 +2280,8 @@ Returns the units for the vertical displacement between rows in the pattern.
 
     void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit ``scale`` for the vertical displacement between odd numbered columns in the pattern.
+Sets the map unit ``scale`` for the vertical displacement between odd
+numbered columns in the pattern.
 
 .. seealso:: :py:func:`displacementYMapUnitScale`
 
@@ -2189,7 +2290,8 @@ Sets the map unit ``scale`` for the vertical displacement between odd numbered c
 
     const QgsMapUnitScale &displacementYMapUnitScale() const;
 %Docstring
-Returns the map unit scale for the vertical displacement between odd numbered columns in the pattern.
+Returns the map unit scale for the vertical displacement between odd
+numbered columns in the pattern.
 
 .. seealso:: :py:func:`setDisplacementYMapUnitScale`
 
@@ -2283,7 +2385,8 @@ Sets the unit scale for the horizontal offset for rows in the pattern.
 
     const QgsMapUnitScale &offsetXMapUnitScale() const;
 %Docstring
-Returns the unit scale for the horizontal offset for rows in the pattern.
+Returns the unit scale for the horizontal offset for rows in the
+pattern.
 
 .. seealso:: :py:func:`setOffsetXMapUnitScale`
 
@@ -2331,7 +2434,8 @@ Sets the unit scale for the vertical offset for rows in the pattern.
 
     const QgsMapUnitScale &offsetYMapUnitScale() const;
 %Docstring
-Returns the unit scale for the vertical offset between rows in the pattern.
+Returns the unit scale for the vertical offset between rows in the
+pattern.
 
 .. seealso:: :py:func:`setOffsetYMapUnitScale`
 
@@ -2342,7 +2446,8 @@ Returns the unit scale for the vertical offset between rows in the pattern.
 
     Qgis::MarkerClipMode clipMode() const;
 %Docstring
-Returns the marker clipping mode, which defines how markers are clipped at the edges of shapes.
+Returns the marker clipping mode, which defines how markers are clipped
+at the edges of shapes.
 
 .. seealso:: :py:func:`setClipMode`
 
@@ -2351,7 +2456,8 @@ Returns the marker clipping mode, which defines how markers are clipped at the e
 
     void setClipMode( Qgis::MarkerClipMode mode );
 %Docstring
-Sets the marker clipping ``mode``, which defines how markers are clipped at the edges of shapes.
+Sets the marker clipping ``mode``, which defines how markers are clipped
+at the edges of shapes.
 
 .. seealso:: :py:func:`clipMode`
 
@@ -2360,9 +2466,11 @@ Sets the marker clipping ``mode``, which defines how markers are clipped at the 
 
     void setMaximumRandomDeviationX( double deviation );
 %Docstring
-Sets the maximum horizontal random ``deviation`` of points in the pattern.
+Sets the maximum horizontal random ``deviation`` of points in the
+pattern.
 
-Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setMaximumRandomDeviationXUnit`.
+Units are set via
+:py:func:`~QgsPointPatternFillSymbolLayer.setMaximumRandomDeviationXUnit`.
 
 .. seealso:: :py:func:`maximumRandomDeviationX`
 
@@ -2373,9 +2481,11 @@ Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setMaximumRandomDevi
 
     double maximumRandomDeviationX() const;
 %Docstring
-Returns the maximum horizontal random deviation of points in the pattern.
+Returns the maximum horizontal random deviation of points in the
+pattern.
 
-Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.maximumRandomDeviationXUnit`.
+Units are retrieved via
+:py:func:`~QgsPointPatternFillSymbolLayer.maximumRandomDeviationXUnit`.
 
 .. seealso:: :py:func:`setMaximumRandomDeviationX`
 
@@ -2388,7 +2498,8 @@ Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.maximumRandomD
 %Docstring
 Sets the maximum vertical random ``deviation`` of points in the pattern.
 
-Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setMaximumRandomDeviationYUnit`.
+Units are set via
+:py:func:`~QgsPointPatternFillSymbolLayer.setMaximumRandomDeviationYUnit`.
 
 .. seealso:: :py:func:`maximumRandomDeviationY`
 
@@ -2401,7 +2512,8 @@ Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setMaximumRandomDevi
 %Docstring
 Returns the maximum vertical random deviation of points in the pattern.
 
-Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.maximumRandomDeviationYUnit`.
+Units are retrieved via
+:py:func:`~QgsPointPatternFillSymbolLayer.maximumRandomDeviationYUnit`.
 
 .. seealso:: :py:func:`setMaximumRandomDeviationY`
 
@@ -2412,7 +2524,8 @@ Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.maximumRandomD
 
     void setRandomDeviationXUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``unit`` for the horizontal random deviation of points in the pattern.
+Sets the ``unit`` for the horizontal random deviation of points in the
+pattern.
 
 .. seealso:: :py:func:`randomDeviationXUnit`
 
@@ -2423,7 +2536,8 @@ Sets the ``unit`` for the horizontal random deviation of points in the pattern.
 
     Qgis::RenderUnit randomDeviationXUnit() const;
 %Docstring
-Returns the units for the horizontal random deviation of points in the pattern.
+Returns the units for the horizontal random deviation of points in the
+pattern.
 
 .. seealso:: :py:func:`setRandomDeviationXUnit`
 
@@ -2434,7 +2548,8 @@ Returns the units for the horizontal random deviation of points in the pattern.
 
     void setRandomDeviationYUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``unit`` for the vertical random deviation of points in the pattern.
+Sets the ``unit`` for the vertical random deviation of points in the
+pattern.
 
 .. seealso:: :py:func:`randomDeviationYUnit`
 
@@ -2445,7 +2560,8 @@ Sets the ``unit`` for the vertical random deviation of points in the pattern.
 
     Qgis::RenderUnit randomDeviationYUnit() const;
 %Docstring
-Returns the units for the vertical random deviation of points in the pattern.
+Returns the units for the vertical random deviation of points in the
+pattern.
 
 .. seealso:: :py:func:`setRandomDeviationYUnit`
 
@@ -2456,7 +2572,8 @@ Returns the units for the vertical random deviation of points in the pattern.
 
     const QgsMapUnitScale &randomDeviationXMapUnitScale() const;
 %Docstring
-Returns the unit scale for the horizontal random deviation of points in the pattern.
+Returns the unit scale for the horizontal random deviation of points in
+the pattern.
 
 .. seealso:: :py:func:`setRandomDeviationXMapUnitScale`
 
@@ -2467,7 +2584,8 @@ Returns the unit scale for the horizontal random deviation of points in the patt
 
     const QgsMapUnitScale &randomDeviationYMapUnitScale() const;
 %Docstring
-Returns the unit scale for the vertical random deviation of points in the pattern.
+Returns the unit scale for the vertical random deviation of points in
+the pattern.
 
 .. seealso:: :py:func:`setRandomDeviationXMapUnitScale`
 
@@ -2478,7 +2596,8 @@ Returns the unit scale for the vertical random deviation of points in the patter
 
     void setRandomDeviationXMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the unit ``scale`` for the horizontal random deviation of points in the pattern.
+Sets the unit ``scale`` for the horizontal random deviation of points in
+the pattern.
 
 .. seealso:: :py:func:`randomDeviationXMapUnitScale`
 
@@ -2489,7 +2608,8 @@ Sets the unit ``scale`` for the horizontal random deviation of points in the pat
 
     void setRandomDeviationYMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the unit ``scale`` for the vertical random deviation of points in the pattern.
+Sets the unit ``scale`` for the vertical random deviation of points in
+the pattern.
 
 .. seealso:: :py:func:`randomDeviationYMapUnitScale`
 
@@ -2500,8 +2620,9 @@ Sets the unit ``scale`` for the vertical random deviation of points in the patte
 
     unsigned long seed() const;
 %Docstring
-Returns the random number seed to use when randomly shifting points, or 0 if
-a truly random sequence will be used (causing points to appear in different locations with every map refresh).
+Returns the random number seed to use when randomly shifting points, or
+0 if a truly random sequence will be used (causing points to appear in
+different locations with every map refresh).
 
 .. seealso:: :py:func:`setSeed`
 
@@ -2510,9 +2631,9 @@ a truly random sequence will be used (causing points to appear in different loca
 
     void setSeed( unsigned long seed );
 %Docstring
-Sets the random number ``seed`` to use when randomly shifting points, or 0 if
-a truly random sequence will be used on every rendering (causing points to appear
-in different locations with every map refresh).
+Sets the random number ``seed`` to use when randomly shifting points, or
+0 if a truly random sequence will be used on every rendering (causing
+points to appear in different locations with every map refresh).
 
 .. seealso:: :py:func:`seed`
 
@@ -2532,7 +2653,8 @@ in different locations with every map refresh).
 class QgsRandomMarkerFillSymbolLayer : QgsFillSymbolLayer
 {
 %Docstring(signature="appended")
-A fill symbol layer which places markers at random locations within polygons.
+A fill symbol layer which places markers at random locations within
+polygons.
 
 .. versionadded:: 3.12
 %End
@@ -2544,17 +2666,22 @@ A fill symbol layer which places markers at random locations within polygons.
 
     QgsRandomMarkerFillSymbolLayer( int pointCount = 10, Qgis::PointCountMethod method = Qgis::PointCountMethod::Absolute, double densityArea = 250.0, unsigned long seed = 0 );
 %Docstring
-Constructor for QgsRandomMarkerFillSymbolLayer, with the specified ``pointCount``.
+Constructor for QgsRandomMarkerFillSymbolLayer, with the specified
+``pointCount``.
 
-Optionally a specific random number ``seed`` can be used when generating points. A ``seed`` of 0 indicates that
-a truly random sequence will be used on every rendering, causing points to appear in different locations with every map refresh.
+Optionally a specific random number ``seed`` can be used when generating
+points. A ``seed`` of 0 indicates that a truly random sequence will be
+used on every rendering, causing points to appear in different locations
+with every map refresh.
 %End
 
     ~QgsRandomMarkerFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates a new QgsRandomMarkerFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsRandomMarkerFillSymbolLayer.properties`).
+Creates a new QgsRandomMarkerFillSymbolLayer using the specified
+``properties`` map containing symbol properties (see
+:py:func:`~QgsRandomMarkerFillSymbolLayer.properties`).
 
 Caller takes ownership of the returned symbol layer.
 %End
@@ -2617,31 +2744,34 @@ Sets the ``count`` of random points to render in the fill.
 
     unsigned long seed() const;
 %Docstring
-Returns the random number seed to use when generating points, or 0 if
-a truly random sequence will be used (causing points to appear in different locations with every map refresh).
+Returns the random number seed to use when generating points, or 0 if a
+truly random sequence will be used (causing points to appear in
+different locations with every map refresh).
 
 .. seealso:: :py:func:`setSeed`
 %End
 
     void setSeed( unsigned long seed );
 %Docstring
-Sets the random number ``seed`` to use when generating points, or 0 if
-a truly random sequence will be used on every rendering (causing points to appear
-in different locations with every map refresh).
+Sets the random number ``seed`` to use when generating points, or 0 if a
+truly random sequence will be used on every rendering (causing points to
+appear in different locations with every map refresh).
 
 .. seealso:: :py:func:`seed`
 %End
 
     bool clipPoints() const;
 %Docstring
-Returns ``True`` if point markers should be clipped to the polygon boundary.
+Returns ``True`` if point markers should be clipped to the polygon
+boundary.
 
 .. seealso:: :py:func:`setClipPoints`
 %End
 
     void setClipPoints( bool clipped );
 %Docstring
-Sets whether point markers should be ``clipped`` to the polygon boundary.
+Sets whether point markers should be ``clipped`` to the polygon
+boundary.
 
 .. seealso:: :py:func:`clipPoints`
 %End
@@ -2662,18 +2792,22 @@ Sets the count ``method`` used to randomly fill the polygon.
 
     double densityArea() const;
 %Docstring
-Returns the density area used to count the number of points to randomly fill the polygon.
+Returns the density area used to count the number of points to randomly
+fill the polygon.
 
-Only used when the count method is set to QgsRandomMarkerFillSymbolLayer.DensityBasedCount.
+Only used when the count method is set to
+QgsRandomMarkerFillSymbolLayer.DensityBasedCount.
 
-Units are specified by :py:func:`~QgsRandomMarkerFillSymbolLayer.setDensityAreaUnit`.
+Units are specified by
+:py:func:`~QgsRandomMarkerFillSymbolLayer.setDensityAreaUnit`.
 
 .. seealso:: :py:func:`setDensityArea`
 %End
 
     void setDensityArea( double area );
 %Docstring
-Sets the density ``area`` used to count the number of points to randomly fill the polygon.
+Sets the density ``area`` used to count the number of points to randomly
+fill the polygon.
 
 .. seealso:: :py:func:`densityArea`
 %End
@@ -2731,7 +2865,8 @@ Returns the map scale for the density area.
 class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 {
 %Docstring(signature="appended")
-A fill symbol layer which renders a marker symbol at the centroid of a polygon geometry.
+A fill symbol layer which renders a marker symbol at the centroid of a
+polygon geometry.
 %End
 
 %TypeHeaderCode
@@ -2744,7 +2879,9 @@ A fill symbol layer which renders a marker symbol at the centroid of a polygon g
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates a new QgsCentroidFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsCentroidFillSymbolLayer.properties`).
+Creates a new QgsCentroidFillSymbolLayer using the specified
+``properties`` map containing symbol properties (see
+:py:func:`~QgsCentroidFillSymbolLayer.properties`).
 
 Caller takes ownership of the returned symbol layer.
 %End
@@ -2795,21 +2932,24 @@ Caller takes ownership of the returned symbol layer.
 
     void setPointOnAllParts( bool pointOnAllParts );
 %Docstring
-Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
+Sets whether a point is drawn for all parts or only on the biggest part
+of multi-part features.
 
 .. seealso:: :py:func:`pointOnAllParts`
 %End
 
     bool pointOnAllParts() const;
 %Docstring
-Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
+Returns whether a point is drawn for all parts or only on the biggest
+part of multi-part features.
 
 .. seealso:: :py:func:`setPointOnAllParts`
 %End
 
     bool clipPoints() const;
 %Docstring
-Returns ``True`` if point markers should be clipped to the polygon boundary.
+Returns ``True`` if point markers should be clipped to the polygon
+boundary.
 
 .. seealso:: :py:func:`setClipPoints`
 
@@ -2818,7 +2958,8 @@ Returns ``True`` if point markers should be clipped to the polygon boundary.
 
     void setClipPoints( bool clipPoints );
 %Docstring
-Sets whether point markers should be ``clipped`` to the polygon boundary.
+Sets whether point markers should be ``clipped`` to the polygon
+boundary.
 
 .. seealso:: :py:func:`clipPoints`
 
@@ -2827,7 +2968,8 @@ Sets whether point markers should be ``clipped`` to the polygon boundary.
 
     bool clipOnCurrentPartOnly() const;
 %Docstring
-Returns ``True`` if point markers should be clipped to the current part boundary only.
+Returns ``True`` if point markers should be clipped to the current part
+boundary only.
 
 .. seealso:: :py:func:`setClipPoints`
 
@@ -2836,7 +2978,8 @@ Returns ``True`` if point markers should be clipped to the current part boundary
 
     void setClipOnCurrentPartOnly( bool clipOnCurrentPartOnly );
 %Docstring
-Sets whether point markers should be ``clipped`` to the current part boundary only.
+Sets whether point markers should be ``clipped`` to the current part
+boundary only.
 
 .. seealso:: :py:func:`clipOnCurrentPartOnly`
 

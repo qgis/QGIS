@@ -23,7 +23,8 @@ int QgisEvent = QEvent::User + 1;
 class Qgis
 {
 %Docstring(signature="appended")
-Provides global constants and enumerations for use throughout the application.
+Provides global constants and enumerations for use throughout the
+application.
 %End
 
 %TypeHeaderCode
@@ -43,7 +44,8 @@ Version string.
 
     static int versionInt();
 %Docstring
-Version number used for comparing versions using the "Check QGIS Version" function
+Version number used for comparing versions using the "Check QGIS
+Version" function
 
 .. versionadded:: 3.12
 %End
@@ -3617,7 +3619,8 @@ Compare two doubles using specified number of significant digits
 
 double qgsRound( double number, int places );
 %Docstring
-Returns a double ``number``, rounded (as close as possible) to the specified number of ``places``.
+Returns a double ``number``, rounded (as close as possible) to the
+specified number of ``places``.
 %End
 
 
@@ -3630,8 +3633,8 @@ Returns a double ``number``, rounded (as close as possible) to the specified num
 
 double qgsPermissiveToDouble( QString string, bool &ok );
 %Docstring
-Converts a string to a double in a permissive way, e.g., allowing for incorrect
-numbers of digits between thousand separators
+Converts a string to a double in a permissive way, e.g., allowing for
+incorrect numbers of digits between thousand separators
 
 :param string: string to convert
 :param ok: will be set to ``True`` if conversion was successful
@@ -3643,8 +3646,8 @@ numbers of digits between thousand separators
 
 int qgsPermissiveToInt( QString string, bool &ok );
 %Docstring
-Converts a string to an integer in a permissive way, e.g., allowing for incorrect
-numbers of digits between thousand separators
+Converts a string to an integer in a permissive way, e.g., allowing for
+incorrect numbers of digits between thousand separators
 
 :param string: string to convert
 :param ok: will be set to ``True`` if conversion was successful
@@ -3656,8 +3659,8 @@ numbers of digits between thousand separators
 
 qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
 %Docstring
-Converts a string to an qlonglong in a permissive way, e.g., allowing for incorrect
-numbers of digits between thousand separators
+Converts a string to an qlonglong in a permissive way, e.g., allowing
+for incorrect numbers of digits between thousand separators
 
 :param string: string to convert
 :param ok: will be set to ``True`` if conversion was successful
@@ -3671,9 +3674,10 @@ numbers of digits between thousand separators
 
 bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 %Docstring
-Compares two QVariant values and returns whether the first is less than the second.
-Useful for sorting lists of variants, correctly handling sorting of the various
-QVariant data types (such as strings, numeric values, dates and times)
+Compares two QVariant values and returns whether the first is less than
+the second. Useful for sorting lists of variants, correctly handling
+sorting of the various QVariant data types (such as strings, numeric
+values, dates and times)
 
 Invalid < NULL < Values
 
@@ -3682,8 +3686,9 @@ Invalid < NULL < Values
 
 bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
 %Docstring
-Compares two QVariant values and returns whether they are equal, two NULL values are
-always treated as equal and 0 is not treated as equal with NULL
+Compares two QVariant values and returns whether they are equal, two
+NULL values are always treated as equal and 0 is not treated as equal
+with NULL
 
 :param lhs: first value
 :param rhs: second value
@@ -3693,9 +3698,10 @@ always treated as equal and 0 is not treated as equal with NULL
 
 bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 %Docstring
-Compares two QVariant values and returns whether the first is greater than the second.
-Useful for sorting lists of variants, correctly handling sorting of the various
-QVariant data types (such as strings, numeric values, dates and times)
+Compares two QVariant values and returns whether the first is greater
+than the second. Useful for sorting lists of variants, correctly
+handling sorting of the various QVariant data types (such as strings,
+numeric values, dates and times)
 
 .. seealso:: :py:func:`qgsVariantLessThan`
 %End
@@ -3739,8 +3745,7 @@ typedef unsigned long long qgssize;
 
 QString geoWkt();
 %Docstring
-Wkt string that represents a geographic coord sys
-\since QGIS GEOWkt
+Wkt string that represents a geographic coord sys \since QGIS GEOWkt
 %End
 
 //! PROJ4 string that represents a geographic coord sys

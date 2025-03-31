@@ -48,7 +48,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsColorRampWidget.__attribute_docs__ = {'valueChanged': "Emitted when the widget's color component value changes\n\n:param value: new value of color component in the range between 0 and the value returned by :py:func:`~QgsColorRampWidget.componentRange`\n\n.. deprecated:: 3.40\n\n   Use :py:func:`~QgsColorRampWidget.valueChangedF` instead.\n", 'valueChangedF': "Emitted when the widget's color component value changes\n\n:param value: new value of color component in the range 0.0-1.0\n\n.. versionadded:: 3.40\n"}
+    QgsColorRampWidget.__attribute_docs__ = {'valueChanged': "Emitted when the widget's color component value changes\n\n:param value: new value of color component in the range between 0 and\n              the value returned by\n              :py:func:`~QgsColorRampWidget.componentRange`\n\n.. deprecated:: 3.40\n\n   Use :py:func:`~QgsColorRampWidget.valueChangedF` instead.\n", 'valueChangedF': "Emitted when the widget's color component value changes\n\n:param value: new value of color component in the range 0.0-1.0\n\n.. versionadded:: 3.40\n"}
     QgsColorRampWidget.__overridden_methods__ = ['sizeHint', 'paintEvent', 'mouseMoveEvent', 'wheelEvent', 'mousePressEvent', 'mouseReleaseEvent', 'keyPressEvent']
     QgsColorRampWidget.__signal_arguments__ = {'valueChangedF': ['value: float']}
 except (NameError, AttributeError):

@@ -20,7 +20,8 @@ The time in a mesh layer is defined by :
 
 - a reference time provided by the data, the project or the user
 - each dataset is associated with a relative times
-- time extent is defined by the first time and the last time of all dataset
+- time extent is defined by the first time and the last time of all
+  dataset
 
 .. code-block:: text
 
@@ -46,7 +47,9 @@ The time in a mesh layer is defined by :
 Constructor for QgsMeshLayerTemporalProperties
 
 :param parent: pointer to the parent object
-:param enabled: argument specifies whether the temporal properties are initially enabled or not (see :py:func:`~QgsMeshLayerTemporalProperties.isActive`).
+:param enabled: argument specifies whether the temporal properties are
+                initially enabled or not (see
+                :py:func:`~QgsMeshLayerTemporalProperties.isActive`).
 %End
 
   public:
@@ -70,8 +73,9 @@ Returns the reference time
 
     void setReferenceTime( const QDateTime &referenceTime, const QgsDataProviderTemporalCapabilities *capabilities );
 %Docstring
-Sets the reference time and update the time extent from the temporal capabilities,
-if the temporal capabilities is null, set a void time extent (reference time to reference time)
+Sets the reference time and update the time extent from the temporal
+capabilities, if the temporal capabilities is null, set a void time
+extent (reference time to reference time)
 
 :param referenceTime: the reference time
 :param capabilities: the temporal capabilities of the data provider
@@ -107,16 +111,19 @@ Sets whether the instance is valid
 
     bool alwaysLoadReferenceTimeFromSource() const;
 %Docstring
-Returns whether the time proporties are automatically reloaded from provider when project is opened or layer is reloaded
+Returns whether the time proporties are automatically reloaded from
+provider when project is opened or layer is reloaded
 
 .. versionadded:: 3.28
 %End
 
     void setAlwaysLoadReferenceTimeFromSource( bool autoReloadFromProvider );
 %Docstring
-Sets whether the time proporties are automatically reloaded from provider when project is opened or layer is reloaded
+Sets whether the time proporties are automatically reloaded from
+provider when project is opened or layer is reloaded
 
-:param autoReloadFromProvider: whether the time proporties is automatically reloaded
+:param autoReloadFromProvider: whether the time proporties is
+                               automatically reloaded
 
 .. versionadded:: 3.28
 %End

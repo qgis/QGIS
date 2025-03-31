@@ -15,8 +15,8 @@ class QgsNewsFeedParser : QObject
 %Docstring(signature="appended")
 Parser for published QGIS news feeds.
 
-This class is designed to work with the specialized QGIS news feed API. See
-https://github.com/elpaso/qgis-feed.
+This class is designed to work with the specialized QGIS news feed API.
+See https://github.com/elpaso/qgis-feed.
 
 .. versionadded:: 3.10
 %End
@@ -61,8 +61,8 @@ Represents a single entry from a news feed.
 %Docstring
 Constructor for QgsNewsFeedParser, parsing the specified ``feedUrl``.
 
-The optional ``authcfg`` argument can be used to specify an authentication
-configuration to use when connecting to the feed.
+The optional ``authcfg`` argument can be used to specify an
+authentication configuration to use when connecting to the feed.
 %End
 
     QList< QgsNewsFeedParser::Entry > entries() const;
@@ -74,7 +74,8 @@ Returns a list of existing entries in the feed.
 %Docstring
 Dismisses an entry with matching ``key``.
 
-This removes the entry from the local store, ensuring it will never be present again.
+This removes the entry from the local store, ensuring it will never be
+present again.
 
 .. seealso:: :py:func:`dismissAll`
 %End
@@ -124,8 +125,8 @@ of a call to :py:func:`~QgsNewsFeedParser.fetch`).
 
     void entryUpdated( const QgsNewsFeedParser::Entry &entry );
 %Docstring
-Emitted whenever an existing ``entry`` is available from the feed (as a result
-of a call to :py:func:`~QgsNewsFeedParser.fetch`).
+Emitted whenever an existing ``entry`` is available from the feed (as a
+result of a call to :py:func:`~QgsNewsFeedParser.fetch`).
 
 .. seealso:: :py:func:`fetch`
 
@@ -134,16 +135,16 @@ of a call to :py:func:`~QgsNewsFeedParser.fetch`).
 
     void entryDismissed( const QgsNewsFeedParser::Entry &entry );
 %Docstring
-Emitted whenever an ``entry`` is dismissed (as a result of a call
-to :py:func:`~QgsNewsFeedParser.dismissEntry`).
+Emitted whenever an ``entry`` is dismissed (as a result of a call to
+:py:func:`~QgsNewsFeedParser.dismissEntry`).
 
 .. seealso:: :py:func:`dismissEntry`
 %End
 
     void imageFetched( int key, const QPixmap &pixmap );
 %Docstring
-Emitted when the image attached to the entry with the specified ``key`` has been fetched
-and is now available.
+Emitted when the image attached to the entry with the specified ``key``
+has been fetched and is now available.
 %End
 
 };

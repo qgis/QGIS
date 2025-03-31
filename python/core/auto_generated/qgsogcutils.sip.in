@@ -14,8 +14,8 @@
 class QgsOgcUtils
 {
 %Docstring(signature="appended")
-Provides various utility functions for conversion between
-OGC (Open Geospatial Consortium) standards and QGIS internal representations.
+Provides various utility functions for conversion between OGC (Open
+Geospatial Consortium) standards and QGIS internal representations.
 
 Currently supported standards:
 
@@ -49,9 +49,11 @@ Constructs a Context from ``layer`` and ``transformContext``
 %Docstring
 Static method that creates geometry from GML
 
-:param xmlString: xml representation of the geometry. GML elements are expected to be
-                  in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
-                  "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
+:param xmlString: xml representation of the geometry. GML elements are
+                  expected to be in default namespace (\verbatim
+                  {<Point>...</Point> \endverbatim) or in "gml"
+                  namespace (\verbatim <gml:Point>...</gml:Point>
+                  \endverbatim)
 :param context: QgsOgcUtils context
 %End
 
@@ -172,11 +174,13 @@ Returns an expression from a WFS filter embedded in a document.
     static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = 0,
         bool requiresFilterElement = false );
 %Docstring
-Creates an OGC expression XML element from the ``exp`` expression
-with default values for the geometry name, srs name, honourAsisOrientation and invertAxisOrientation.
+Creates an OGC expression XML element from the ``exp`` expression with
+default values for the geometry name, srs name, honourAsisOrientation
+and invertAxisOrientation.
 
-:return: valid OGC expression QDomElement on success or a valid \verbatim <Filter> \endverbatim QDomElement when ``requiresFilterElement`` is set.
-         otherwise null QDomElement
+:return: valid OGC expression QDomElement on success or a valid
+         \verbatim <Filter> \endverbatim QDomElement when
+         ``requiresFilterElement`` is set. otherwise null QDomElement
 %End
 
     static QDomElement elseFilterExpression( QDomDocument &doc );
@@ -203,8 +207,9 @@ Creates an ElseFilter from ``doc``
 %Docstring
 Creates an OGC expression XML element from the ``exp`` expression.
 
-:return: valid OGC expression QDomElement on success or a valid \verbatim <Filter> \endverbatim QDomElement when ``requiresFilterElement`` is set.
-         otherwise null QDomElement
+:return: valid OGC expression QDomElement on success or a valid
+         \verbatim <Filter> \endverbatim QDomElement when
+         ``requiresFilterElement`` is set. otherwise null QDomElement
 %End
 
 

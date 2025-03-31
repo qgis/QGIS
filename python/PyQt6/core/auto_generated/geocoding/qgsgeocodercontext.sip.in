@@ -24,36 +24,38 @@ Encapsulates the context of a geocoding operation.
 
     QgsGeocoderContext( const QgsCoordinateTransformContext &transformContext );
 %Docstring
-Constructor for QgsGeocoderContext, with the specified ``transformContext``.
+Constructor for QgsGeocoderContext, with the specified
+``transformContext``.
 %End
 
     QgsCoordinateTransformContext transformContext() const;
 %Docstring
-Returns the coordinate transform context, which should be used whenever the
-geocoder constructs a coordinate transform.
+Returns the coordinate transform context, which should be used whenever
+the geocoder constructs a coordinate transform.
 
 .. seealso:: :py:func:`setTransformContext`
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
 %Docstring
-Sets the coordinate transform ``context``, which should be used whenever the
-geocoder constructs a coordinate transform.
+Sets the coordinate transform ``context``, which should be used whenever
+the geocoder constructs a coordinate transform.
 
 .. seealso:: :py:func:`transformContext`
 %End
 
     QgsGeometry areaOfInterest() const;
 %Docstring
-Returns the optional area of interest, which can be used to indicate the desired
-geographic area where geocoding results are desired.
+Returns the optional area of interest, which can be used to indicate the
+desired geographic area where geocoding results are desired.
 
-The area of interest can be a polygon geometry, in which case it represents the extent
-to use for filtering candidate results, or a point geometry, in which case it represents
-a "target point" for prioritizing closer results.
+The area of interest can be a polygon geometry, in which case it
+represents the extent to use for filtering candidate results, or a point
+geometry, in which case it represents a "target point" for prioritizing
+closer results.
 
-The coordinate reference system for the area of interest can be retrieved via
-:py:func:`~QgsGeocoderContext.areaOfInterestCrs`.
+The coordinate reference system for the area of interest can be
+retrieved via :py:func:`~QgsGeocoderContext.areaOfInterestCrs`.
 
 .. seealso:: :py:func:`setAreaOfInterest`
 
@@ -62,12 +64,13 @@ The coordinate reference system for the area of interest can be retrieved via
 
     void setAreaOfInterest( const QgsGeometry &area );
 %Docstring
-Sets the optional ``area`` of interest, which can be used to indicate the desired
-geographic area where geocoding results are desired.
+Sets the optional ``area`` of interest, which can be used to indicate
+the desired geographic area where geocoding results are desired.
 
-The area of interest can be a polygon geometry, in which case it represents the extent
-to use for filtering candidate results, or a point geometry, in which case it represents
-a "target point" for prioritizing closer results.
+The area of interest can be a polygon geometry, in which case it
+represents the extent to use for filtering candidate results, or a point
+geometry, in which case it represents a "target point" for prioritizing
+closer results.
 
 The coordinate reference system for the area of interest can be set via
 :py:func:`~QgsGeocoderContext.setAreaOfInterestCrs`.
@@ -79,8 +82,9 @@ The coordinate reference system for the area of interest can be set via
 
     QgsCoordinateReferenceSystem areaOfInterestCrs() const;
 %Docstring
-Returns the coordinate reference system for the area of interest, which can be used to indicate the desired
-geographic area where geocoding results are desired.
+Returns the coordinate reference system for the area of interest, which
+can be used to indicate the desired geographic area where geocoding
+results are desired.
 
 .. seealso:: :py:func:`areaOfInterest`
 
@@ -89,8 +93,8 @@ geographic area where geocoding results are desired.
 
     void setAreaOfInterestCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Sets the ``crs`` for the area of interest, which can be used to indicate the desired
-geographic area where geocoding results are desired.
+Sets the ``crs`` for the area of interest, which can be used to indicate
+the desired geographic area where geocoding results are desired.
 
 .. seealso:: :py:func:`areaOfInterestCrs`
 

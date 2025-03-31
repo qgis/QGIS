@@ -153,9 +153,11 @@ Ownership of ``renderer`` is transferred to the layer.
 %Docstring
 Sets the string used to define a subset of the layer
 
-:param subset: The subset string to be used in a ``:py:class:`QgsPointCloudExpression```
+:param subset: The subset string to be used in a
+               ``:py:class:`QgsPointCloudExpression```
 
-:return: ``True``, when setting the subset string was successful, ``False`` otherwise
+:return: ``True``, when setting the subset string was successful,
+         ``False`` otherwise
 
 .. versionadded:: 3.26
 %End
@@ -164,7 +166,8 @@ Sets the string used to define a subset of the layer
 %Docstring
 Returns the string used to define a subset of the layer.
 
-:return: The subset string or null QString if not implemented by the provider
+:return: The subset string or null QString if not implemented by the
+         provider
 
 .. versionadded:: 3.26
 %End
@@ -187,7 +190,8 @@ with changes applied to the layer's 2D renderer
 
     bool convertRenderer3DFromRenderer2D();
 %Docstring
-Updates the layer's 3D renderer's symbol to match that of the layer's 2D renderer
+Updates the layer's 3D renderer's symbol to match that of the layer's 2D
+renderer
 
 :return: ``True`` on success, ``False`` otherwise
 
@@ -212,13 +216,15 @@ Returns the status of point cloud statistics calculation
 %Docstring
 Makes the layer editable.
 
-This starts an edit session on this layer. Changes made in this edit session will not
-be made persistent until :py:func:`~QgsPointCloudLayer.commitChanges` is called, and can be reverted by calling
-:py:func:`~QgsPointCloudLayer.rollBack`.
+This starts an edit session on this layer. Changes made in this edit
+session will not be made persistent until
+:py:func:`~QgsPointCloudLayer.commitChanges` is called, and can be
+reverted by calling :py:func:`~QgsPointCloudLayer.rollBack`.
 
-:return: ``True`` if the layer was successfully made editable, or ``False`` if the operation
-         failed (e.g. due to an underlying read-only data source, or lack of edit support
-         by the backend data provider).
+:return: ``True`` if the layer was successfully made editable, or
+         ``False`` if the operation failed (e.g. due to an underlying
+         read-only data source, or lack of edit support by the backend
+         data provider).
 
 .. seealso:: :py:func:`commitChanges`
 
@@ -229,18 +235,22 @@ be made persistent until :py:func:`~QgsPointCloudLayer.commitChanges` is called,
 
     bool commitChanges( bool stopEditing = true );
 %Docstring
-Attempts to commit to the underlying data provider any buffered changes made since the
-last to call to :py:func:`~QgsPointCloudLayer.startEditing`.
+Attempts to commit to the underlying data provider any buffered changes
+made since the last to call to
+:py:func:`~QgsPointCloudLayer.startEditing`.
 
-Returns the result of the attempt. If a commit fails (i.e. ``False`` is returned), the
-in-memory changes are left untouched and are not discarded. This allows editing to
-continue if the commit failed on e.g. a disallowed value for an attribute - the user
-can re-edit and try again.
+Returns the result of the attempt. If a commit fails (i.e. ``False`` is
+returned), the in-memory changes are left untouched and are not
+discarded. This allows editing to continue if the commit failed on e.g.
+a disallowed value for an attribute - the user can re-edit and try
+again.
 
-If the commit failed, an error message may returned by :py:func:`~QgsPointCloudLayer.commitError`.
+If the commit failed, an error message may returned by
+:py:func:`~QgsPointCloudLayer.commitError`.
 
-By setting ``stopEditing`` to ``False``, the layer will stay in editing mode.
-Otherwise the layer editing mode will be disabled if the commit is successful.
+By setting ``stopEditing`` to ``False``, the layer will stay in editing
+mode. Otherwise the layer editing mode will be disabled if the commit is
+successful.
 
 .. seealso:: :py:func:`startEditing`
 
@@ -253,8 +263,8 @@ Otherwise the layer editing mode will be disabled if the commit is successful.
 
     QString commitError() const;
 %Docstring
-Returns the last error message generated when attempting
-to commit changes to the layer.
+Returns the last error message generated when attempting to commit
+changes to the layer.
 
 .. seealso:: :py:func:`commitChanges`
 
@@ -275,8 +285,8 @@ Stops a current editing operation and discards any uncommitted edits.
 
     QgsPointCloudIndex index() const;
 %Docstring
-Returns the point cloud index associated with the layer.
-If the layer is editable, its :py:class:`QgsPointCloudEditingIndex` is returned,
+Returns the point cloud index associated with the layer. If the layer is
+editable, its :py:class:`QgsPointCloudEditingIndex` is returned,
 otherwise the index is fetched from the data provider.
 
 .. versionadded:: 3.42

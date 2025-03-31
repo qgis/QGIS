@@ -14,7 +14,8 @@
 class QgsMapLayerStyle
 {
 %Docstring(signature="appended")
-Stores style information (renderer, opacity, labeling, diagrams etc.) applicable to a map layer.
+Stores style information (renderer, opacity, labeling, diagrams etc.)
+applicable to a map layer.
 
 Stored data are considered as opaque:
 
@@ -87,16 +88,16 @@ Restore overridden layer style on destruction.
 
     QgsMapLayerStyleOverride( QgsMapLayer *layer );
 %Docstring
-Construct a style override object associated with a map layer.
-The overridden style will be restored upon object destruction.
+Construct a style override object associated with a map layer. The
+overridden style will be restored upon object destruction.
 %End
 
     ~QgsMapLayerStyleOverride();
 
     void setOverrideStyle( const QString &style );
 %Docstring
-Temporarily apply a different style to the layer. The argument
-can be either a style name or a full QML style definition.
+Temporarily apply a different style to the layer. The argument can be
+either a style name or a full QML style definition.
 %End
 
 };

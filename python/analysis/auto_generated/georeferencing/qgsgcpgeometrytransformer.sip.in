@@ -13,7 +13,8 @@
 class QgsGcpGeometryTransformer : QgsAbstractGeometryTransformer
 {
 %Docstring(signature="appended")
-A geometry transformer which uses an underlying Ground Control Points (GCP) based transformation to modify geometries.
+A geometry transformer which uses an underlying Ground Control Points
+(GCP) based transformation to modify geometries.
 
 .. versionadded:: 3.18
 %End
@@ -24,16 +25,18 @@ A geometry transformer which uses an underlying Ground Control Points (GCP) base
   public:
     QgsGcpGeometryTransformer( QgsGcpTransformerInterface *gcpTransformer /Transfer/ );
 %Docstring
-Constructor for QgsGcpGeometryTransformer, which uses the specified ``gcpTransformer`` to
-modify geometries.
+Constructor for QgsGcpGeometryTransformer, which uses the specified
+``gcpTransformer`` to modify geometries.
 
-Ownership of ``gcpTransformer`` is transferred to the geometry transformer.
+Ownership of ``gcpTransformer`` is transferred to the geometry
+transformer.
 %End
 
     QgsGcpGeometryTransformer( QgsGcpTransformerInterface::TransformMethod method, const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates );
 %Docstring
-Constructor for QgsGcpGeometryTransformer, which uses the specified transform ``method`` and
-list of source and destination coordinates to transform geometries.
+Constructor for QgsGcpGeometryTransformer, which uses the specified
+transform ``method`` and list of source and destination coordinates to
+transform geometries.
 %End
 
     ~QgsGcpGeometryTransformer();
@@ -44,14 +47,17 @@ list of source and destination coordinates to transform geometries.
 
     QgsGeometry transform( const QgsGeometry &geometry, bool &ok /Out/, QgsFeedback *feedback = 0 );
 %Docstring
-Transforms the specified input ``geometry`` using the GCP based transform.
+Transforms the specified input ``geometry`` using the GCP based
+transform.
 
 :param geometry: Input geometry to transform
-:param feedback: This optional argument can be used to cancel the transformation before it completes.
-                 If this is done, the geometry will be left in a semi-transformed state.
+:param feedback: This optional argument can be used to cancel the
+                 transformation before it completes. If this is done,
+                 the geometry will be left in a semi-transformed state.
 
 :return: - transformed geometry
-         - ok: ``True`` if geometry was successfully transformed, or ``False`` if an error occurred
+         - ok: ``True`` if geometry was successfully transformed, or
+           ``False`` if an error occurred
 %End
 
     QgsGcpTransformerInterface *gcpTransformer() const;

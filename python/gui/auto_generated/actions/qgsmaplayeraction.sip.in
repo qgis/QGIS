@@ -131,7 +131,8 @@ Returns availibity of action
 
     bool isEnabledOnlyWhenEditable() const;
 %Docstring
-Returns ``True`` if the action is only enabled for layers in editable mode.
+Returns ``True`` if the action is only enabled for layers in editable
+mode.
 %End
 
   signals:

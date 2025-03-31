@@ -11,7 +11,7 @@ QgsProcessingParametersGenerator.Flag.__doc__ = """Flags controlling parameter g
 # --
 QgsProcessingParametersGenerator.Flags = lambda flags=0: QgsProcessingParametersGenerator.Flag(flags)
 try:
-    QgsAbstractProcessingParameterWidgetWrapper.__attribute_docs__ = {'widgetValueHasChanged': 'Emitted whenever the parameter value (as defined by the wrapped widget) is changed.\n'}
+    QgsAbstractProcessingParameterWidgetWrapper.__attribute_docs__ = {'widgetValueHasChanged': 'Emitted whenever the parameter value (as defined by the wrapped widget)\nis changed.\n'}
     QgsAbstractProcessingParameterWidgetWrapper.__virtual_methods__ = ['setWidgetContext', 'customProperties', 'registerProcessingContextGenerator', 'postInitialize', 'stretch', 'setDialog', 'createLabel']
     QgsAbstractProcessingParameterWidgetWrapper.__abstract_methods__ = ['createWidget', 'setWidgetValue', 'widgetValue']
     QgsAbstractProcessingParameterWidgetWrapper.__overridden_methods__ = ['createExpressionContext']

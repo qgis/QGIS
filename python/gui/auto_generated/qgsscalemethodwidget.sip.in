@@ -25,7 +25,8 @@ A widget which lets the user select from scale calculation methods.
 
     QgsScaleMethodWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsScaleMethodWidget, with the specified ``parent`` widget
+Constructor for QgsScaleMethodWidget, with the specified ``parent``
+widget
 %End
 
     Qgis::ScaleCalculationMethod scaleMethod() const;

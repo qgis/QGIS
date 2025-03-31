@@ -17,8 +17,8 @@ class QgsActionManager: QObject
 %Docstring(signature="appended")
 Storage and management of actions associated with a layer.
 
-Actions can trigger custom code or applications to be executed
-based on attributes of a given feature.
+Actions can trigger custom code or applications to be executed based on
+attributes of a given feature.
 %End
 
 %TypeHeaderCode
@@ -32,20 +32,18 @@ Constructor
 
     QUuid addAction( Qgis::AttributeActionType type, const QString &name, const QString &command, bool capture = false );
 %Docstring
-Add an action with the given name and action details.
-Will happily have duplicate names and actions. If
-capture is ``True``, when running the action using :py:func:`~QgsActionManager.doAction`,
-any stdout from the process will be captured and displayed in a
-dialog box.
+Add an action with the given name and action details. Will happily have
+duplicate names and actions. If capture is ``True``, when running the
+action using :py:func:`~QgsActionManager.doAction`, any stdout from the
+process will be captured and displayed in a dialog box.
 %End
 
     QUuid addAction( Qgis::AttributeActionType type, const QString &name, const QString &command, const QString &icon, bool capture = false );
 %Docstring
-Add an action with the given name and action details.
-Will happily have duplicate names and actions. If
-capture is ``True``, when running the action using :py:func:`~QgsActionManager.doAction`,
-any stdout from the process will be captured and displayed in a
-dialog box.
+Add an action with the given name and action details. Will happily have
+duplicate names and actions. If capture is ``True``, when running the
+action using :py:func:`~QgsActionManager.doAction`, any stdout from the
+process will be captured and displayed in a dialog box.
 %End
 
     void addAction( const QgsAction &action );
@@ -64,15 +62,18 @@ Does the given action.
 
 :param actionId: action id
 :param feature: feature to run action for
-:param defaultValueIndex: index of the field to be used if the action has a $currfield placeholder.
-:param scope: expression context scope to add during expression evaluation
+:param defaultValueIndex: index of the field to be used if the action
+                          has a $currfield placeholder.
+:param scope: expression context scope to add during expression
+              evaluation
+
 
 %End
 
     void doAction( QUuid actionId, const QgsFeature &feature, const QgsExpressionContext &context );
 %Docstring
-Does the action using the expression engine to replace any embedded expressions
-in the action definition.
+Does the action using the expression engine to replace any embedded
+expressions in the action definition.
 
 :param actionId: action id
 :param feature: feature to run action for

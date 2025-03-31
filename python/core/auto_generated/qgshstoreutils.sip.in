@@ -23,7 +23,8 @@ Provides utility functions for handling hstore-formatted strings.
 
     static QVariantMap parse( const QString &string );
 %Docstring
-Returns a QVariantMap object containing the key and values from a hstore-formatted string.
+Returns a QVariantMap object containing the key and values from a
+hstore-formatted string.
 
 :param string: The hstored-formatted string
 

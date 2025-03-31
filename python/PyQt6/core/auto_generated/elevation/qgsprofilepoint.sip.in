@@ -63,7 +63,8 @@ Returns the elevation of the point.
 %Docstring
 Returns ``True`` if the point is empty.
 
-A QgsProfilePoint is considered empty when the coordinates have not been explicitly filled in.
+A QgsProfilePoint is considered empty when the coordinates have not been
+explicitly filled in.
 %End
 
     bool operator==( const QgsProfilePoint &other ) /HoldGIL/;

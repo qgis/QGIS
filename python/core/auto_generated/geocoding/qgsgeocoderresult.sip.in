@@ -15,14 +15,16 @@ class QgsGeocoderResult
 %Docstring(signature="appended")
 Represents a matching result from a geocoder search.
 
-:py:class:`QgsGeocoderResult` objects may represent valid matches, or an invalid
-error result. This can be checked by testing :py:func:`~isValid`. An invalid
-result represents that an error was encountered while geocoding, in which case the
-error message can be retrieved by calling :py:func:`~error`.
+:py:class:`QgsGeocoderResult` objects may represent valid matches, or an
+invalid error result. This can be checked by testing
+:py:func:`~isValid`. An invalid result represents that an error was
+encountered while geocoding, in which case the error message can be
+retrieved by calling :py:func:`~error`.
 
-Valid geocoding results will have a :py:func:`~geometry` and :py:func:`~crs`, along with a set
-of optional :py:func:`~additionalAttributes` which may contain information such as the
-accuracy of the geocoding result.
+Valid geocoding results will have a :py:func:`~geometry` and
+:py:func:`~crs`, along with a set of optional
+:py:func:`~additionalAttributes` which may contain information such as
+the accuracy of the geocoding result.
 
 .. versionadded:: 3.18
 %End
@@ -34,19 +36,22 @@ accuracy of the geocoding result.
 
     static QgsGeocoderResult errorResult( const QString &errorMessage );
 %Docstring
-Creates an invalid error result, with the specified ``errorMessage`` string.
+Creates an invalid error result, with the specified ``errorMessage``
+string.
 %End
 
     QgsGeocoderResult( const QString &identifier, const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Constructor for a valid QgsGeocoderResult, with the specified ``geometry`` and ``crs``.
+Constructor for a valid QgsGeocoderResult, with the specified
+``geometry`` and ``crs``.
 %End
 
     bool isValid() const;
 %Docstring
 Returns ``True`` if the result is a valid result.
 
-If the result is invalid, the error message can be retrieved by calling :py:func:`~QgsGeocoderResult.error`.
+If the result is invalid, the error message can be retrieved by calling
+:py:func:`~QgsGeocoderResult.error`.
 %End
 
     QString error() const;
@@ -63,8 +68,8 @@ Returns the identifier string for the result.
 %Docstring
 Returns the resultant geometry resulting from the geocoding operation.
 
-The coordinate reference system for the geometry can be retrieved
-via :py:func:`~QgsGeocoderResult.crs`.
+The coordinate reference system for the geometry can be retrieved via
+:py:func:`~QgsGeocoderResult.crs`.
 
 .. seealso:: :py:func:`setGeometry`
 
@@ -75,8 +80,8 @@ via :py:func:`~QgsGeocoderResult.crs`.
 %Docstring
 Sets the resultant ``geometry`` resulting from the geocoding operation.
 
-The coordinate reference system for the geometry should also be set
-via :py:func:`~QgsGeocoderResult.setCrs`.
+The coordinate reference system for the geometry should also be set via
+:py:func:`~QgsGeocoderResult.setCrs`.
 
 .. seealso:: :py:func:`geometry`
 
@@ -85,7 +90,8 @@ via :py:func:`~QgsGeocoderResult.setCrs`.
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
-Returns the coordinate reference system for the calculated :py:func:`~QgsGeocoderResult.geometry`.
+Returns the coordinate reference system for the calculated
+:py:func:`~QgsGeocoderResult.geometry`.
 
 .. seealso:: :py:func:`setCrs`
 
@@ -94,7 +100,8 @@ Returns the coordinate reference system for the calculated :py:func:`~QgsGeocode
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Sets the coordinate reference system for the calculated :py:func:`~QgsGeocoderResult.geometry`.
+Sets the coordinate reference system for the calculated
+:py:func:`~QgsGeocoderResult.geometry`.
 
 .. seealso:: :py:func:`crs`
 
@@ -103,24 +110,26 @@ Sets the coordinate reference system for the calculated :py:func:`~QgsGeocoderRe
 
     QgsRectangle viewport() const;
 %Docstring
-Returns the suggested viewport for the result, which reflects a recommended
-map extent for displaying the result.
+Returns the suggested viewport for the result, which reflects a
+recommended map extent for displaying the result.
 
-This is an optional property, and will return a null rectangle if a recommended viewport
-is not available (or not appropriate).
+This is an optional property, and will return a null rectangle if a
+recommended viewport is not available (or not appropriate).
 
-The viewport CRS will match the CRS of :py:func:`~QgsGeocoderResult.geometry`, and can be retrieved via the :py:func:`~QgsGeocoderResult.crs` method.
+The viewport CRS will match the CRS of
+:py:func:`~QgsGeocoderResult.geometry`, and can be retrieved via the
+:py:func:`~QgsGeocoderResult.crs` method.
 
 .. seealso:: :py:func:`setViewport`
 %End
 
     void setViewport( const QgsRectangle &viewport );
 %Docstring
-Sets the suggested ``viewport`` for the result, which reflects a recommended
-map extent for displaying the result.
+Sets the suggested ``viewport`` for the result, which reflects a
+recommended map extent for displaying the result.
 
-This is an optional property, and can be set to a null rectangle if a recommended viewport
-is not available (or not appropriate).
+This is an optional property, and can be set to a null rectangle if a
+recommended viewport is not available (or not appropriate).
 
 The viewport CRS must match the CRS of geometry()d.
 
@@ -129,16 +138,16 @@ The viewport CRS must match the CRS of geometry()d.
 
     QVariantMap additionalAttributes() const;
 %Docstring
-Contains additional attributes generated during the geocode,
-which may be added to features being geocoded.
+Contains additional attributes generated during the geocode, which may
+be added to features being geocoded.
 
 .. seealso:: :py:func:`setAdditionalAttributes`
 %End
 
     void setAdditionalAttributes( const QVariantMap &attributes );
 %Docstring
-Setss additional attributes generated during the geocode,
-which may be added to features being geocoded.
+Setss additional attributes generated during the geocode, which may be
+added to features being geocoded.
 
 .. seealso:: :py:func:`additionalAttributes`
 %End
@@ -147,7 +156,8 @@ which may be added to features being geocoded.
 %Docstring
 Returns the optional group value for the result.
 
-The group can be used to categorize results into different groups, e.g. by appropriate administrative region.
+The group can be used to categorize results into different groups, e.g.
+by appropriate administrative region.
 
 .. seealso:: :py:func:`setGroup`
 %End
@@ -156,7 +166,8 @@ The group can be used to categorize results into different groups, e.g. by appro
 %Docstring
 Sets the optional ``group`` value for the result.
 
-The ``group`` can be used to categorize results into different groups, e.g. by appropriate administrative region.
+The ``group`` can be used to categorize results into different groups,
+e.g. by appropriate administrative region.
 
 .. seealso:: :py:func:`group`
 %End

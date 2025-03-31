@@ -16,7 +16,8 @@ Keeps track of the registered relations widgets.
 
 New widgets can be registered, old ones deleted.
 
-The default {:py:class:`QgsRelationEditorWidget`} is protected from removing.
+The default {:py:class:`QgsRelationEditorWidget`} is protected from
+removing.
 
 .. versionadded:: 3.18
 %End
@@ -58,7 +59,7 @@ Create a relation widget of a given type for a given field.
 
 :param widgetType: The widget type to create a relation editor for
 :param config: The configuration of the widget
-:param parent:
+:param parent: 
 %End
 
     QgsAbstractRelationEditorConfigWidget *createConfigWidget( const QString &widgetType, const QgsRelation &relation, QWidget *parent = 0 ) const /TransferBack/;
@@ -73,7 +74,8 @@ Creates a configuration widget
 
     void setDefaultWidgetType( const QString &widgetType );
 %Docstring
-Sets the default editor widget type. Does nothing if the provided widget type is not present.
+Sets the default editor widget type. Does nothing if the provided widget
+type is not present.
 
 :param widgetType: The widget type to be used by default.
 

@@ -17,9 +17,9 @@ class QgsPdfRenderer
 %Docstring(signature="appended")
 Utility class for rendering PDF documents.
 
-This functionality is not available on all platforms -- it requires a build
-with the PDF4Qt library support enabled. On other platforms calling these
-methods will raise a :py:class:`QgsNotSupportedException`.
+This functionality is not available on all platforms -- it requires a
+build with the PDF4Qt library support enabled. On other platforms
+calling these methods will raise a :py:class:`QgsNotSupportedException`.
 
 .. versionadded:: 3.36
 %End
@@ -45,24 +45,27 @@ Returns the file path of the associated PDF file.
 %Docstring
 Returns the number of pages in the PDF.
 
-:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library support.
+:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library
+                                  support.
 %End
 
     QRectF pageMediaBox( int pageNumber ) const throw( QgsNotSupportedException );
 %Docstring
 Returns the media box for the specified page. Units are in PDF points.
 
-:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library support.
+:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library
+                                  support.
 %End
 
     bool render( QPainter *painter, const QRectF &painterRect, int pageIndex ) throw( QgsNotSupportedException );
 %Docstring
 Renders the PDF from the specified ``path`` to a ``painter``.
 
-The ``painterRect`` argument specifies the target rectangle for the PDF page in
-``painter`` coordinates.
+The ``painterRect`` argument specifies the target rectangle for the PDF
+page in ``painter`` coordinates.
 
-:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library support.
+:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library
+                                  support.
 %End
 
   private:

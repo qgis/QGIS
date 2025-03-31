@@ -13,11 +13,12 @@
 class QgsRasterFileWriterTask : QgsTask
 {
 %Docstring(signature="appended")
-:py:class:`QgsTask` task which performs a :py:class:`QgsRasterFileWriter` layer saving operation as a background
+:py:class:`QgsTask` task which performs a
+:py:class:`QgsRasterFileWriter` layer saving operation as a background
 task.
 
-This can be used to save a raster layer out to a file without blocking the
-QGIS interface.
+This can be used to save a raster layer out to a file without blocking
+the QGIS interface.
 
 .. seealso:: :py:class:`QgsVectorFileWriterTask`
 
@@ -36,8 +37,8 @@ QGIS interface.
 %Docstring
 Constructor for QgsRasterFileWriterTask. Takes a source ``writer``,
 ``columns``, ``rows``, ``outputExtent`` and destination ``crs``.
-Ownership of the ``pipe`` is transferred to the writer task, and will
-be deleted when the task completes.
+Ownership of the ``pipe`` is transferred to the writer task, and will be
+deleted when the task completes.
 
 .. deprecated:: 3.8
 
@@ -54,9 +55,9 @@ be deleted when the task completes.
 %Docstring
 Constructor for QgsRasterFileWriterTask. Takes a source ``writer``,
 ``columns``, ``rows``, ``outputExtent``, destination ``crs`` and
-coordinate ``transformContext`` .
-Ownership of the ``pipe`` is transferred to the writer task, and will
-be deleted when the task completes.
+coordinate ``transformContext`` . Ownership of the ``pipe`` is
+transferred to the writer task, and will be deleted when the task
+completes.
 %End
 
     ~QgsRasterFileWriterTask();
@@ -68,14 +69,14 @@ be deleted when the task completes.
 
     void writeComplete( const QString &outputUrl );
 %Docstring
-Emitted when writing the layer is successfully completed. The ``outputUrl``
-parameter indicates the file path for the written file(s).
+Emitted when writing the layer is successfully completed. The
+``outputUrl`` parameter indicates the file path for the written file(s).
 %End
 
     void errorOccurred( int error );
 %Docstring
-Emitted when an error occurs which prevented the file being written (or if
-the task is canceled). The writing ``error`` will be reported.
+Emitted when an error occurs which prevented the file being written (or
+if the task is canceled). The writing ``error`` will be reported.
 
 .. deprecated:: 3.10
 
@@ -84,8 +85,8 @@ the task is canceled). The writing ``error`` will be reported.
 
     void errorOccurred( int error, const QString &errorMessage );
 %Docstring
-Emitted when an error occurs which prevented the file being written (or if
-the task is canceled). The writing ``error`` will be reported and a
+Emitted when an error occurs which prevented the file being written (or
+if the task is canceled). The writing ``error`` will be reported and a
 ``errorMessage`` will be potentially set.
 
 .. versionadded:: 3.10

@@ -11,7 +11,8 @@
 class QgsClassificationStandardDeviation : QgsClassificationMethod
 {
 %Docstring(signature="appended")
-A classification method which classifies based on standard deviation of values.
+A classification method which classifies based on standard deviation of
+values.
 
 .. versionadded:: 3.10
 %End

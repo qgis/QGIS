@@ -136,9 +136,8 @@ Sets opacity
 
     DataResamplingMethod dataResamplingMethod() const;
 %Docstring
-Returns the type of interpolation to use to
-convert face defined datasets to
-values on vertices
+Returns the type of interpolation to use to convert face defined
+datasets to values on vertices
 
 .. versionadded:: 3.12
 %End
@@ -220,7 +219,8 @@ Reads configuration from the given DOM element
 class QgsMeshRendererVectorArrowSettings
 {
 %Docstring(signature="appended")
-Represents a mesh renderer settings for vector datasets displayed with arrows.
+Represents a mesh renderer settings for vector datasets displayed with
+arrows.
 
 .. note::
 
@@ -257,56 +257,64 @@ Sets method used for drawing arrows
 %Docstring
 Returns mininimum shaft length (in millimeters)
 
-Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.MinMax
+Only for
+:py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.MinMax
 %End
 
     void setMinShaftLength( double minShaftLength );
 %Docstring
 Sets mininimum shaft length (in millimeters)
 
-Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.MinMax
+Only for
+:py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.MinMax
 %End
 
     double maxShaftLength() const;
 %Docstring
 Returns maximum shaft length (in millimeters)
 
-Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.MinMax
+Only for
+:py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.MinMax
 %End
 
     void setMaxShaftLength( double maxShaftLength );
 %Docstring
 Sets maximum shaft length (in millimeters)
 
-Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.MinMax
+Only for
+:py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.MinMax
 %End
 
     double scaleFactor() const;
 %Docstring
 Returns scale factor
 
-Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.Scaled
+Only for
+:py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.Scaled
 %End
 
     void setScaleFactor( double scaleFactor );
 %Docstring
 Sets scale factor
 
-Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.Scaled
+Only for
+:py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.Scaled
 %End
 
     double fixedShaftLength() const;
 %Docstring
 Returns fixed arrow length (in millimeters)
 
-Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.Fixed
+Only for
+:py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.Fixed
 %End
 
     void setFixedShaftLength( double fixedShaftLength );
 %Docstring
-Sets fixed length  (in millimeters)
+Sets fixed length (in millimeters)
 
-Only for :py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.Fixed
+Only for
+:py:class:`QgsMeshRendererVectorSettings`.ArrowScalingMethod.Fixed
 %End
 
     double arrowHeadWidthRatio() const;
@@ -341,7 +349,8 @@ Reads configuration from the given DOM element
 class QgsMeshRendererVectorStreamlineSettings
 {
 %Docstring(signature="appended")
-Represents a streamline renderer settings for vector datasets displayed by streamlines.
+Represents a streamline renderer settings for vector datasets displayed
+by streamlines.
 
 .. note::
 
@@ -392,7 +401,8 @@ Writes configuration to a new DOM element
 class QgsMeshRendererVectorTracesSettings
 {
 %Docstring(signature="appended")
-Represents a trace renderer settings for vector datasets displayed by particle traces.
+Represents a trace renderer settings for vector datasets displayed by
+particle traces.
 
 .. note::
 
@@ -445,7 +455,8 @@ Writes configuration to a new DOM element
 class QgsMeshRendererVectorWindBarbSettings
 {
 %Docstring(signature="appended")
-Represents a mesh renderer settings for vector datasets displayed with wind barbs.
+Represents a mesh renderer settings for vector datasets displayed with
+wind barbs.
 
 .. note::
 
@@ -470,8 +481,12 @@ Represents a mesh renderer settings for vector datasets displayed with wind barb
 
     double magnitudeMultiplier() const;
 %Docstring
-Returns the multiplier for the magnitude to convert it to knots, according to the units set with :py:func:`~QgsMeshRendererVectorWindBarbSettings.setMagnitudeUnits`
-A custom multiplier can be set with :py:func:`~QgsMeshRendererVectorWindBarbSettings.setMagnitudeMultiplier` for the case when units are set to OtherUnit
+Returns the multiplier for the magnitude to convert it to knots,
+according to the units set with
+:py:func:`~QgsMeshRendererVectorWindBarbSettings.setMagnitudeUnits` A
+custom multiplier can be set with
+:py:func:`~QgsMeshRendererVectorWindBarbSettings.setMagnitudeMultiplier`
+for the case when units are set to OtherUnit
 %End
 
     void setMagnitudeMultiplier( double magnitudeMultiplier );
@@ -486,7 +501,7 @@ Returns the shaft length (in millimeters)
 
     void setShaftLength( double shaftLength );
 %Docstring
-Sets the shaft length  (in millimeters)
+Sets the shaft length (in millimeters)
 %End
 
     Qgis::RenderUnit shaftLengthUnits() const;
@@ -771,7 +786,7 @@ Returns native mesh renderer settings
 %End
     void setNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
 %Docstring
-Sets new native mesh  renderer settings, triggers repaint
+Sets new native mesh renderer settings, triggers repaint
 %End
 
     QgsMeshRendererMeshSettings triangularMeshSettings() const;
@@ -846,7 +861,8 @@ Removes vector settings for ``groupIndex``
 
     QgsMesh3DAveragingMethod *averagingMethod() const;
 %Docstring
-Returns averaging method for conversion of 3d stacked mesh data to 2d data
+Returns averaging method for conversion of 3d stacked mesh data to 2d
+data
 
 Caller does not own the resulting pointer
 %End
@@ -897,7 +913,8 @@ Sets the active vector dataset group
 
     bool hasSettings( int datasetGroupIndex ) const;
 %Docstring
-Returns whether the group with ``index`` has render settings (scalar or vector)
+Returns whether the group with ``index`` has render settings (scalar or
+vector)
 
 .. versionadded:: 3.22
 %End

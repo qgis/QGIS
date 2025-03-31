@@ -17,10 +17,13 @@ class QgsExtentWidget : QWidget
 %Docstring(signature="appended")
 A widget for configuration of a map extent.
 
-Besides allowing the user to enter the extent manually, it comes with options to use
-original extent or extent defined by the current view in map canvas.
+Besides allowing the user to enter the extent manually, it comes with
+options to use original extent or extent defined by the current view in
+map canvas.
 
-When using the widget, make sure to call :py:func:`~setOriginalExtent`, :py:func:`~setCurrentExtent` and :py:func:`~setOutputCrs` during initialization.
+When using the widget, make sure to call :py:func:`~setOriginalExtent`,
+:py:func:`~setCurrentExtent` and :py:func:`~setOutputCrs` during
+initialization.
 
 .. seealso:: :py:class:`QgsExtentGroupBox`
 
@@ -55,7 +58,8 @@ Constructor for QgsExtentWidget.
 
     void setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs );
 %Docstring
-Sets the original extent and coordinate reference system for the widget. This should be called as part of initialization.
+Sets the original extent and coordinate reference system for the widget.
+This should be called as part of initialization.
 
 .. seealso:: :py:func:`originalExtent`
 
@@ -82,8 +86,9 @@ Returns the original coordinate reference system set for the widget.
 
     void setCurrentExtent( const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &currentCrs );
 %Docstring
-Sets the current extent to show in the widget - should be called as part of initialization (or whenever current extent changes).
-The current extent is usually set to match the current map canvas extent.
+Sets the current extent to show in the widget - should be called as part
+of initialization (or whenever current extent changes). The current
+extent is usually set to match the current map canvas extent.
 
 .. seealso:: :py:func:`currentExtent`
 
@@ -92,8 +97,8 @@ The current extent is usually set to match the current map canvas extent.
 
     QgsRectangle currentExtent() const;
 %Docstring
-Returns the current extent set for the widget. The current extent is usually set to match the
-current map canvas extent.
+Returns the current extent set for the widget. The current extent is
+usually set to match the current map canvas extent.
 
 .. seealso:: :py:func:`setCurrentExtent`
 
@@ -102,8 +107,9 @@ current map canvas extent.
 
     QgsCoordinateReferenceSystem currentCrs() const;
 %Docstring
-Returns the coordinate reference system for the current extent set for the widget. The current
-extent and CRS usually reflects the map canvas extent and CRS.
+Returns the coordinate reference system for the current extent set for
+the widget. The current extent and CRS usually reflects the map canvas
+extent and CRS.
 
 .. seealso:: :py:func:`setCurrentExtent`
 
@@ -112,9 +118,10 @@ extent and CRS usually reflects the map canvas extent and CRS.
 
     void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs );
 %Docstring
-Sets the output CRS - may need to be used for transformation from original/current extent.
-Should be called as part of initialization and whenever the the output CRS is changed.
-The current extent will be reprojected into the new output CRS.
+Sets the output CRS - may need to be used for transformation from
+original/current extent. Should be called as part of initialization and
+whenever the the output CRS is changed. The current extent will be
+reprojected into the new output CRS.
 %End
 
     QgsRectangle outputExtent() const;
@@ -141,13 +148,15 @@ Returns the currently selected state for the widget's extent.
 Sets the map canvas to enable dragging of extent on a canvas.
 
 :param canvas: the map canvas
-:param drawOnCanvasOption: set to false to disable to draw on canvas option
+:param drawOnCanvasOption: set to false to disable to draw on canvas
+                           option
 %End
 
     QSize ratio() const;
 %Docstring
-Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
-If the aspect ratio isn't fixed, the width and height will be set to zero.
+Returns the current fixed aspect ratio to be used when dragging extent
+onto the canvas. If the aspect ratio isn't fixed, the width and height
+will be set to zero.
 %End
 
     QString extentLayerName() const;
@@ -157,7 +166,8 @@ Returns the name of the extent layer.
 
     bool isValid() const;
 %Docstring
-Returns ``True`` if the widget is in a valid state, i.e. has an extent set.
+Returns ``True`` if the widget is in a valid state, i.e. has an extent
+set.
 %End
 
     void setNullValueAllowed( bool allowed, const QString &notSetText = QString() );
@@ -175,22 +185,26 @@ The specified ``notSetText`` will be used for showing null values.
 
     void setOutputExtentFromOriginal();
 %Docstring
-Sets the output extent to be the same as original extent (may be transformed to output CRS).
+Sets the output extent to be the same as original extent (may be
+transformed to output CRS).
 %End
 
     void setOutputExtentFromCurrent();
 %Docstring
-Sets the output extent to be the same as current extent (may be transformed to output CRS).
+Sets the output extent to be the same as current extent (may be
+transformed to output CRS).
 %End
 
     void setOutputExtentFromUser( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Sets the output extent to a custom extent (may be transformed to output CRS).
+Sets the output extent to a custom extent (may be transformed to output
+CRS).
 %End
 
     void setOutputExtentFromLayer( const QgsMapLayer *layer );
 %Docstring
-Sets the output extent to match a ``layer``'s extent (may be transformed to output CRS).
+Sets the output extent to match a ``layer``'s extent (may be transformed
+to output CRS).
 %End
 
     void setOutputExtentFromDrawOnCanvas();
@@ -200,8 +214,8 @@ Sets the output extent by dragging on the canvas.
 
     void setRatio( QSize ratio );
 %Docstring
-Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
-To unset a fixed aspect ratio, set the width and height to zero.
+Sets a fixed aspect ratio to be used when dragging extent onto the
+canvas. To unset a fixed aspect ratio, set the width and height to zero.
 
 :param ratio: aspect ratio's width and height
 %End
@@ -225,8 +239,8 @@ Emitted when the widget's validation state changes.
 
     void toggleDialogVisibility( bool visible );
 %Docstring
-Emitted when the parent dialog visibility must be changed (e.g.
-to permit access to the map canvas)
+Emitted when the parent dialog visibility must be changed (e.g. to
+permit access to the map canvas)
 %End
 
     void extentLayerChanged( QgsMapLayer *layer );

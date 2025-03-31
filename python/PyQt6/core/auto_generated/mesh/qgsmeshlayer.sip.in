@@ -14,16 +14,18 @@
 class QgsMeshLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
-Represents a mesh layer supporting display of data on structured or unstructured meshes.
+Represents a mesh layer supporting display of data on structured or
+unstructured meshes.
 
-The :py:class:`QgsMeshLayer` is instantiated by specifying the name of a data provider,
-such as mdal, and url defining the specific data set to connect to.
-The vector layer constructor in turn instantiates a :py:class:`QgsMeshDataProvider` subclass
-corresponding to the provider type, and passes it the url. The data provider
-connects to the data source.
+The :py:class:`QgsMeshLayer` is instantiated by specifying the name of a
+data provider, such as mdal, and url defining the specific data set to
+connect to. The vector layer constructor in turn instantiates a
+:py:class:`QgsMeshDataProvider` subclass corresponding to the provider
+type, and passes it the url. The data provider connects to the data
+source.
 
-The :py:class:`QgsMeshLayer` provides a common interface to the different data types. It does not
-yet support editing transactions.
+The :py:class:`QgsMeshLayer` provides a common interface to the
+different data types. It does not yet support editing transactions.
 
 The main data providers supported by QGIS are listed below.
 
@@ -33,11 +35,12 @@ Mesh data providers
 Memory data providerType (mesh_memory)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The memory data provider is used to construct in memory data, for example scratch
-data. There is no inherent persistent storage of the data. The data source uri is constructed.
-Data can be populated by setMesh(const QString &vertices, const QString &faces), where
-vertices and faces is comma separated coordinates and connections for mesh.
-E.g. to create mesh with one quad and one triangle
+The memory data provider is used to construct in memory data, for
+example scratch data. There is no inherent persistent storage of the
+data. The data source uri is constructed. Data can be populated by
+setMesh(const QString &vertices, const QString &faces), where vertices
+and faces is comma separated coordinates and connections for mesh. E.g.
+to create mesh with one quad and one triangle
 
 .. code-block:: python
 
@@ -55,8 +58,10 @@ E.g. to create mesh with one quad and one triangle
 MDAL data provider (mdal)
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Accesses data using the MDAL drivers (https://github.com/lutraconsulting/MDAL). The url
-is the MDAL connection string. QGIS must be built with MDAL support to allow this provider.
+Accesses data using the MDAL drivers
+(https://github.com/lutraconsulting/MDAL). The url is the MDAL
+connection string. QGIS must be built with MDAL support to allow this
+provider.
 
 .. code-block:: python
 
@@ -99,14 +104,15 @@ Constructor for LayerOptions with optional ``transformContext``.
 %Docstring
 Constructor - creates a mesh layer
 
-The QgsMeshLayer is constructed by instantiating a data provider.  The provider
-interprets the supplied path (url) of the data source to connect to and access the
-data.
+The QgsMeshLayer is constructed by instantiating a data provider. The
+provider interprets the supplied path (url) of the data source to
+connect to and access the data.
 
-:param path: The path or url of the parameter.  Typically this encodes
+:param path: The path or url of the parameter. Typically this encodes
              parameters used by the data provider as url query items.
 :param baseName: The name used to represent the layer in the legend
-:param providerLib: The name of the data provider, e.g., "mesh_memory", "mdal"
+:param providerLib: The name of the data provider, e.g., "mesh_memory",
+                    "mdal"
 :param options: general mesh layer options
 %End
 
@@ -164,10 +170,12 @@ data.
 
     bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
 %Docstring
-Adds datasets to the mesh from file with ``path``. Use the the time ``defaultReferenceTime`` as reference time is not provided in the file
+Adds datasets to the mesh from file with ``path``. Use the the time
+``defaultReferenceTime`` as reference time is not provided in the file
 
 :param path: the path to the datasets file
-:param defaultReferenceTime: reference time used if not provided in the file
+:param defaultReferenceTime: reference time used if not provided in the
+                             file
 
 :return: whether the dataset is added
 
@@ -216,9 +224,12 @@ Saves datasets group on file with the specified ``driver``
 
     void updateTriangularMesh( const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
 %Docstring
-Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
+Gets native mesh and updates (creates if it doesn't exist) the base
+triangular mesh
 
-:param transform: Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
+:param transform: Transformation from layer CRS to destination (e.g.
+                  map) CRS. With invalid transform, it keeps the native
+                  mesh CRS
 
 .. versionadded:: 3.14
 %End
@@ -233,8 +244,9 @@ Returns renderer settings
 %Docstring
 Sets new renderer settings
 
-:param settings:
-:param repaint: should the update of renderer settings trigger repaint and emit rendererChanged signal
+:param settings: 
+:param repaint: should the update of renderer settings trigger repaint
+                and emit rendererChanged signal
 %End
 
     QgsMeshTimeSettings timeSettings() const;
@@ -292,7 +304,8 @@ Returns the list of indexes of dataset groups handled by the layer
 
     QList<int> enabledDatasetGroupsIndexes() const;
 %Docstring
-Returns the list of indexes of enables dataset groups handled by the layer
+Returns the list of indexes of enables dataset groups handled by the
+layer
 
 .. note::
 
@@ -344,11 +357,13 @@ Returns the dataset metadata
 
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, int valueIndex ) const;
 %Docstring
-Returns  vector/scalar value associated with the index from the dataset
-To read multiple continuous values, use :py:func:`~QgsMeshLayer.datasetValues`
+Returns vector/scalar value associated with the index from the dataset
+To read multiple continuous values, use
+:py:func:`~QgsMeshLayer.datasetValues`
 
-See :py:func:`QgsMeshDatasetMetadata.isVector()` or :py:func:`QgsMeshDataBlock.type()`
-to check if the returned value is vector or scalar
+See :py:func:`QgsMeshDatasetMetadata.isVector()` or
+:py:func:`QgsMeshDataBlock.type()` to check if the returned value is
+vector or scalar
 
 Returns invalid value for DataOnVolumes
 
@@ -367,11 +382,13 @@ Returns invalid value for DataOnVolumes
 %Docstring
 Returns N vector/scalar values from the index from the dataset
 
-See :py:func:`QgsMeshDatasetMetadata.isVector()` or :py:func:`QgsMeshDataBlock.type()`
-to check if the returned value is vector or scalar
+See :py:func:`QgsMeshDatasetMetadata.isVector()` or
+:py:func:`QgsMeshDataBlock.type()` to check if the returned value is
+vector or scalar
 
-Returns invalid block for DataOnVolumes. Use :py:func:`QgsMeshLayerUtils.datasetValues()` if you
-need block for any type of data type
+Returns invalid block for DataOnVolumes. Use
+:py:func:`QgsMeshLayerUtils.datasetValues()` if you need block for any
+type of data type
 
 :param index: index of the dataset
 :param valueIndex: index of the value
@@ -387,9 +404,11 @@ need block for any type of data type
 
     QgsMesh3DDataBlock dataset3dValues( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const;
 %Docstring
-Returns N vector/scalar values from the face index from the dataset for 3d stacked meshes
+Returns N vector/scalar values from the face index from the dataset for
+3d stacked meshes
 
-See :py:func:`QgsMeshDatasetMetadata.isVector()` to check if the returned value is vector or scalar
+See :py:func:`QgsMeshDatasetMetadata.isVector()` to check if the
+returned value is vector or scalar
 
 returns invalid block for DataOnFaces and DataOnVertices.
 
@@ -407,9 +426,11 @@ returns invalid block for DataOnFaces and DataOnVertices.
 
     bool isFaceActive( const QgsMeshDatasetIndex &index, int faceIndex ) const;
 %Docstring
-Returns N vector/scalar values from the face index from the dataset for 3d stacked meshes
+Returns N vector/scalar values from the face index from the dataset for
+3d stacked meshes
 
-See :py:func:`QgsMeshDatasetMetadata.isVector()` to check if the returned value is vector or scalar
+See :py:func:`QgsMeshDatasetMetadata.isVector()` to check if the
+returned value is vector or scalar
 
 returns invalid block for DataOnFaces and DataOnVertices.
 %End
@@ -432,9 +453,10 @@ Returns whether the faces are active for particular dataset
 
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
 %Docstring
-Interpolates the value on the given point from given dataset.
-For 3D datasets, it uses :py:func:`~QgsMeshLayer.dataset3dValue`, \n
-For 1D datasets, it uses :py:func:`~QgsMeshLayer.dataset1dValue` with ``searchRadius``
+Interpolates the value on the given point from given dataset. For 3D
+datasets, it uses :py:func:`~QgsMeshLayer.dataset3dValue`, \n For 1D
+datasets, it uses :py:func:`~QgsMeshLayer.dataset1dValue` with
+``searchRadius``
 
 .. note::
 
@@ -444,13 +466,14 @@ For 1D datasets, it uses :py:func:`~QgsMeshLayer.dataset1dValue` with ``searchRa
 
 .. seealso:: :py:func:`updateTriangularMesh`
 
-:param index: dataset index specifying group and dataset to extract value from
+:param index: dataset index specifying group and dataset to extract
+              value from
 :param point: point to query in map coordinates
 :param searchRadius: the radius of the search area in map unit
 
 :return: interpolated value at the point. Returns NaN values for values
-         outside the mesh layer, nodata values and in case triangular mesh was not
-         previously used for rendering
+         outside the mesh layer, nodata values and in case triangular
+         mesh was not previously used for rendering
 
 .. note::
 
@@ -472,12 +495,14 @@ Returns the 3d values of stacked 3d mesh defined by the given point
 
 .. seealso:: :py:func:`updateTriangularMesh`
 
-:param index: dataset index specifying group and dataset to extract value from
+:param index: dataset index specifying group and dataset to extract
+              value from
 :param point: point to query in map coordinates
 
-:return: all 3d stacked values that belong to face defined by given point. Returns invalid block
-         for point outside the mesh layer or in case triangular mesh was not
-         previously used for rendering or for datasets that do not have type DataOnVolumes
+:return: all 3d stacked values that belong to face defined by given
+         point. Returns invalid block for point outside the mesh layer
+         or in case triangular mesh was not previously used for
+         rendering or for datasets that do not have type DataOnVolumes
 
 .. note::
 
@@ -489,7 +514,8 @@ Returns the 3d values of stacked 3d mesh defined by the given point
 
     QgsMeshDatasetValue dataset1dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const;
 %Docstring
-Returns the value of 1D mesh dataset defined on edge that are in the search area defined by point ans searchRadius
+Returns the value of 1D mesh dataset defined on edge that are in the
+search area defined by point ans searchRadius
 
 .. note::
 
@@ -499,12 +525,14 @@ Returns the value of 1D mesh dataset defined on edge that are in the search area
 
 .. seealso:: :py:func:`updateTriangularMesh`
 
-:param index: dataset index specifying group and dataset to extract value from
+:param index: dataset index specifying group and dataset to extract
+              value from
 :param point: the center point of the search area
 :param searchRadius: the radius of the searc area in map unit
 
-:return: interpolated value at the projected point. Returns NaN values for values
-         outside the mesh layer and in case triangular mesh was not previously used for rendering
+:return: interpolated value at the projected point. Returns NaN values
+         for values outside the mesh layer and in case triangular mesh
+         was not previously used for rendering
 
 .. note::
 
@@ -517,7 +545,8 @@ Returns the value of 1D mesh dataset defined on edge that are in the search area
     QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
 %Docstring
 Returns dataset index from datasets group depending on the time range.
-If the temporal properties is not active, returns invalid dataset index. This method is used for rendering mesh layer.
+If the temporal properties is not active, returns invalid dataset index.
+This method is used for rendering mesh layer.
 
 :param timeRange: the time range
 :param datasetGroupIndex: the index of the dataset group
@@ -538,8 +567,10 @@ If the temporal properties is not active, returns invalid dataset index. This me
 
     QgsMeshDatasetIndex datasetIndexAtRelativeTime( const QgsInterval &relativeTime, int datasetGroupIndex ) const;
 %Docstring
-Returns dataset index from datasets group depending on the relative time from the layer reference time.
-Dataset index is valid even the temporal properties is inactive. This method is used for calculation on mesh layer.
+Returns dataset index from datasets group depending on the relative time
+from the layer reference time. Dataset index is valid even the temporal
+properties is inactive. This method is used for calculation on mesh
+layer.
 
 :param relativeTime: the relative from the mesh layer reference time
 :param datasetGroupIndex: the index of the dataset group
@@ -560,11 +591,15 @@ Dataset index is valid even the temporal properties is inactive. This method is 
 
     QList<QgsMeshDatasetIndex> datasetIndexInRelativeTimeInterval( const QgsInterval &startRelativeTime, const QgsInterval &endRelativeTime, int datasetGroupIndex ) const;
 %Docstring
-Returns a list of dataset indexes from datasets group that are in a interval time from the layer reference time.
-Dataset index is valid even the temporal properties is inactive. This method is used for calculation on mesh layer.
+Returns a list of dataset indexes from datasets group that are in a
+interval time from the layer reference time. Dataset index is valid even
+the temporal properties is inactive. This method is used for calculation
+on mesh layer.
 
-:param startRelativeTime: the start time of the relative interval from the reference time.
-:param endRelativeTime: the end time of the relative interval from the reference time.
+:param startRelativeTime: the start time of the relative interval from
+                          the reference time.
+:param endRelativeTime: the end time of the relative interval from the
+                        reference time.
 :param datasetGroupIndex: the index of the dataset group
 
 :return: dataset index
@@ -579,11 +614,13 @@ Dataset index is valid even the temporal properties is inactive. This method is 
 
     QgsMeshDatasetIndex activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange, int group = -1 ) const;
 %Docstring
-Returns dataset index from active scalar group depending on the time range.
-If the temporal properties is not active, return the static dataset
+Returns dataset index from active scalar group depending on the time
+range. If the temporal properties is not active, return the static
+dataset
 
-Since QGIS 3.38, the ``group`` argument can be used to specify a fixed group
-to use. If this is not specified, then the active group from the layer's renderer will be used.
+Since QGIS 3.38, the ``group`` argument can be used to specify a fixed
+group to use. If this is not specified, then the active group from the
+layer's renderer will be used.
 
 .. note::
 
@@ -594,11 +631,13 @@ to use. If this is not specified, then the active group from the layer's rendere
 
     QgsMeshDatasetIndex activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange, int group = -1 ) const;
 %Docstring
-Returns dataset index from active vector group depending on the time range
-If the temporal properties is not active, return the static dataset
+Returns dataset index from active vector group depending on the time
+range If the temporal properties is not active, return the static
+dataset
 
-Since QGIS 3.38, the ``group`` argument can be used to specify a fixed group
-to use. If this is not specified, then the active group from the layer's renderer will be used.
+Since QGIS 3.38, the ``group`` argument can be used to specify a fixed
+group to use. If this is not specified, then the active group from the
+layer's renderer will be used.
 
 .. note::
 
@@ -611,20 +650,24 @@ to use. If this is not specified, then the active group from the layer's rendere
 
     QgsMeshDatasetIndex staticScalarDatasetIndex( int group = -1 ) const;
 %Docstring
-Returns the static scalar dataset index that is rendered if the temporal properties is not active.
+Returns the static scalar dataset index that is rendered if the temporal
+properties is not active.
 
-Since QGIS 3.38, the ``group`` argument can be used to specify a fixed group
-to use. If this is not specified, then the active group from the layer's renderer will be used.
+Since QGIS 3.38, the ``group`` argument can be used to specify a fixed
+group to use. If this is not specified, then the active group from the
+layer's renderer will be used.
 
 .. versionadded:: 3.14
 %End
 
     QgsMeshDatasetIndex staticVectorDatasetIndex( int group = -1 ) const;
 %Docstring
-Returns the static vector dataset index that is rendered if the temporal properties is not active.
+Returns the static vector dataset index that is rendered if the temporal
+properties is not active.
 
-Since QGIS 3.38, the ``group`` argument can be used to specify a fixed group
-to use. If this is not specified, then the active group from the layer's renderer will be used.
+Since QGIS 3.38, the ``group`` argument can be used to specify a fixed
+group to use. If this is not specified, then the active group from the
+layer's renderer will be used.
 
 .. versionadded:: 3.14
 %End
@@ -640,7 +683,8 @@ Sets the reference time of the layer
 
     void setTemporalMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod );
 %Docstring
-Sets the method used to match the temporal dataset from a requested time, see :py:func:`~QgsMeshLayer.activeVectorDatasetAtTime`
+Sets the method used to match the temporal dataset from a requested
+time, see :py:func:`~QgsMeshLayer.activeVectorDatasetAtTime`
 
 :param matchingMethod: the matching method
 
@@ -649,13 +693,14 @@ Sets the method used to match the temporal dataset from a requested time, see :p
 
     QgsPointXY snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius );
 %Docstring
-Returns the position of the snapped point on the mesh element closest to ``point`` intersecting with
-the searching area defined by ``point`` and ``searchRadius``
+Returns the position of the snapped point on the mesh element closest to
+``point`` intersecting with the searching area defined by ``point`` and
+``searchRadius``
 
-For vertex, the snapped position is the vertex position
-For edge, the snapped position is the projected point on the edge, extremity of edge if outside the edge
-For face, the snapped position is the centroid of the face
-The returned position is in map coordinates.
+For vertex, the snapped position is the vertex position For edge, the
+snapped position is the projected point on the edge, extremity of edge
+if outside the edge For face, the snapped position is the centroid of
+the face The returned position is in map coordinates.
 
 .. note::
 
@@ -669,27 +714,31 @@ The returned position is in map coordinates.
 :param point: the center of the search area in map coordinates
 :param searchRadius: the radius of the search area in map units
 
-:return: the position of the snapped point on the closest element, empty :py:class:`QgsPointXY` if no element of type ``elementType``
+:return: the position of the snapped point on the closest element, empty
+         :py:class:`QgsPointXY` if no element of type ``elementType``
 
 .. versionadded:: 3.14
 %End
 
     QList<int> selectVerticesByExpression( QgsExpression expression );
 %Docstring
-Returns a list of vertex indexes that meet the condition defined by ``expression`` with the context ``expressionContext``
+Returns a list of vertex indexes that meet the condition defined by
+``expression`` with the context ``expressionContext``
 
-To express the relation with a vertex, the expression can be defined with function returning value
-linked to the current vertex, like " $vertex_z ", "$vertex_as_point"
+To express the relation with a vertex, the expression can be defined
+with function returning value linked to the current vertex, like "
+$vertex_z ", "$vertex_as_point"
 
 .. versionadded:: 3.22
 %End
 
     QList<int> selectFacesByExpression( QgsExpression expression );
 %Docstring
-Returns a list of faces indexes that meet the condition defined by ``expression`` with the context ``expressionContext``
+Returns a list of faces indexes that meet the condition defined by
+``expression`` with the context ``expressionContext``
 
-To express the relation with a face, the expression can be defined with function returning value
-linked to the current face, like " $face_area "
+To express the relation with a face, the expression can be defined with
+function returning value linked to the current face, like " $face_area "
 
 .. versionadded:: 3.22
 %End
@@ -705,8 +754,8 @@ Returns the root items of the dataset group tree item
 
     void setDatasetGroupTreeRootItem( QgsMeshDatasetGroupTreeItem *rootItem );
 %Docstring
-Sets the root items of the dataset group tree item.
-Changes active dataset groups if those one are not enabled anymore :
+Sets the root items of the dataset group tree item. Changes active
+dataset groups if those one are not enabled anymore :
 
 - new active scalar dataset group is the first root item enabled child
 - new active vector dataset group is none
@@ -727,29 +776,34 @@ Reset the dataset group tree item to default from provider
 
     QgsInterval firstValidTimeStep() const;
 %Docstring
-Returns the first valid time step of the dataset groups, invalid QgInterval if no time step is present
+Returns the first valid time step of the dataset groups, invalid
+QgInterval if no time step is present
 
 .. versionadded:: 3.14
 %End
 
     QgsInterval datasetRelativeTime( const QgsMeshDatasetIndex &index );
 %Docstring
-Returns the relative time of the dataset from the reference time of its group
+Returns the relative time of the dataset from the reference time of its
+group
 
 .. versionadded:: 3.16
 %End
 
     qint64 datasetRelativeTimeInMilliseconds( const QgsMeshDatasetIndex &index );
 %Docstring
-Returns the relative time (in milliseconds) of the dataset from the reference time of its group
+Returns the relative time (in milliseconds) of the dataset from the
+reference time of its group
 
 .. versionadded:: 3.16
 %End
 
  bool startFrameEditing( const QgsCoordinateTransform &transform );
 %Docstring
-Starts editing of the mesh frame. Coordinate ``transform`` used to initialize the triangular mesh if needed.
-This operation will disconnect the mesh layer from the data provider and removes all existing dataset group
+Starts editing of the mesh frame. Coordinate ``transform`` used to
+initialize the triangular mesh if needed. This operation will disconnect
+the mesh layer from the data provider and removes all existing dataset
+group
 
 .. versionadded:: 3.22
 
@@ -760,12 +814,15 @@ This operation will disconnect the mesh layer from the data provider and removes
 
     bool startFrameEditing( const QgsCoordinateTransform &transform, QgsMeshEditingError &error /Out/, bool fixErrors );
 %Docstring
-Starts editing of the mesh frame. Coordinate ``transform`` used to initialize the triangular mesh if needed.
-This operation will disconnect the mesh layer from the data provider and removes all existing dataset group.
-Returns ``False`` if starting fails and the ``error`` that is the reason (No error, if the mesh is not editable or already in edit mode).
+Starts editing of the mesh frame. Coordinate ``transform`` used to
+initialize the triangular mesh if needed. This operation will disconnect
+the mesh layer from the data provider and removes all existing dataset
+group. Returns ``False`` if starting fails and the ``error`` that is the
+reason (No error, if the mesh is not editable or already in edit mode).
 
-If ``fixErrors`` is set to ``True``, errors will be attempted to be fixed.
-In that case returns ``False`` if there is an error that could not be fixed and the remaining ``error``.
+If ``fixErrors`` is set to ``True``, errors will be attempted to be
+fixed. In that case returns ``False`` if there is an error that could
+not be fixed and the remaining ``error``.
 
 .. versionadded:: 3.28
 %End
@@ -773,9 +830,9 @@ In that case returns ``False`` if there is an error that could not be fixed and 
 
     bool commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
 %Docstring
-Commits editing of the mesh frame,
-Rebuilds the triangular mesh and its spatial index with ``transform``,
-Continue editing with the same mesh editor if ``continueEditing`` is True
+Commits editing of the mesh frame, Rebuilds the triangular mesh and its
+spatial index with ``transform``, Continue editing with the same mesh
+editor if ``continueEditing`` is True
 
 :return: ``True`` if the commit succeeds
 
@@ -784,9 +841,9 @@ Continue editing with the same mesh editor if ``continueEditing`` is True
 
     bool rollBackFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
 %Docstring
-Rolls Back editing of the mesh frame.
-Reload mesh from file, rebuilds the triangular mesh and its spatial index with ``transform``,
-Continue editing with the same mesh editor if ``continueEditing`` is ``True``
+Rolls Back editing of the mesh frame. Reload mesh from file, rebuilds
+the triangular mesh and its spatial index with ``transform``, Continue
+editing with the same mesh editor if ``continueEditing`` is ``True``
 
 :return: ``True`` if the rollback succeeds
 
@@ -795,18 +852,18 @@ Continue editing with the same mesh editor if ``continueEditing`` is ``True``
 
     void stopFrameEditing( const QgsCoordinateTransform &transform );
 %Docstring
-Stops editing of the mesh, re-indexes the faces and vertices,
-rebuilds the triangular mesh and its spatial index with ``transform``,
-clean the undostack
+Stops editing of the mesh, re-indexes the faces and vertices, rebuilds
+the triangular mesh and its spatial index with ``transform``, clean the
+undostack
 
 .. versionadded:: 3.22
 %End
 
     bool reindex( const QgsCoordinateTransform &transform, bool renumber );
 %Docstring
-Re-indexes the faces and vertices, and renumber the indexes if ``renumber`` is ``True``.
-rebuilds the triangular mesh and its spatial index with ``transform``,
-clean the undostack
+Re-indexes the faces and vertices, and renumber the indexes if
+``renumber`` is ``True``. rebuilds the triangular mesh and its spatial
+index with ``transform``, clean the undostack
 
 Returns ``False`` if the operation fails
 
@@ -866,7 +923,8 @@ Returns the edges count of the mesh frame
 
     bool labelsEnabled() const;
 %Docstring
-Returns whether the layer contains labels which are enabled and should be drawn.
+Returns whether the layer contains labels which are enabled and should
+be drawn.
 
 :return: ``True`` if layer contains enabled labels
 
@@ -896,7 +954,8 @@ Sets whether labels should be ``enabled`` for the layer.
 
     QgsAbstractMeshLayerLabeling *labeling();
 %Docstring
-Access to labeling configuration. May be ``None`` if labeling is not used.
+Access to labeling configuration. May be ``None`` if labeling is not
+used.
 
 .. note::
 
@@ -916,10 +975,12 @@ Sets labeling configuration. Takes ownership of the object.
 
     bool minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex, double &min /Out/, double &max /Out/ );
 %Docstring
-Extracts minimum and maximum value for active scalar dataset on mesh faces.
+Extracts minimum and maximum value for active scalar dataset on mesh
+faces.
 
 :param extent: extent in which intersecting faces are searched for
-:param datasetIndex: index for which dataset the values should be extracted
+:param datasetIndex: index for which dataset the values should be
+                     extracted
 
 :return: - ``True`` if values were extracted
          - min: minimal value
@@ -930,15 +991,16 @@ Extracts minimum and maximum value for active scalar dataset on mesh faces.
 
     QgsMeshDatasetIndex activeScalarDatasetIndex( QgsRenderContext &rendererContext );
 %Docstring
-Returns current active scalar dataset index for current renderer context.
+Returns current active scalar dataset index for current renderer
+context.
 
 .. versionadded:: 3.42
 %End
 
     bool datasetsPathUnique( const QString &path );
 %Docstring
-Checks whether that datasets path is already added to this mesh layer. Return ``True`` if the
-dataset path is not already added.
+Checks whether that datasets path is already added to this mesh layer.
+Return ``True`` if the dataset path is not already added.
 
 :param path: the path to the datasets file
 
@@ -982,7 +1044,8 @@ Emitted when time format is changed
 
     void reloaded();
 %Docstring
-Emitted when the mesh layer is reloaded, see :py:func:`~QgsMeshLayer.reload`
+Emitted when the mesh layer is reloaded, see
+:py:func:`~QgsMeshLayer.reload`
 
 .. versionadded:: 3.28
 %End

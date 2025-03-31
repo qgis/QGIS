@@ -69,7 +69,8 @@ Returns the setting
 
     virtual void configureEditorPrivateImplementation();
 %Docstring
-To be re-implemented to implemeent type specific configuration (e.g. opacity for colors)
+To be re-implemented to implemeent type specific configuration (e.g.
+opacity for colors)
 %End
 
 };
@@ -98,7 +99,8 @@ Constructor of the factory
 
     QgsSettingsStringLineEditWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
 
@@ -150,12 +152,14 @@ Constructor of the factory
 
     QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -201,7 +205,8 @@ Constructor of the factory
 
     QgsSettingsBoolCheckBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -245,7 +250,8 @@ Constructor of the factory
 
     QgsSettingsIntegerSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -290,7 +296,8 @@ Constructor of the factory
 
     QgsSettingsDoubleSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -335,7 +342,8 @@ Constructor of the factory
 
     QgsSettingsColorButtonWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;

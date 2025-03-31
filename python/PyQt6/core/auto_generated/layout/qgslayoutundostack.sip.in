@@ -32,22 +32,29 @@ Constructor for QgsLayoutUndoStack, for the specified parent ``layout``.
 Starts a macro command, with the given descriptive ``commandText``.
 
 Any commands added to the stack (either via direct manipulation of
-:py:func:`~QgsLayoutUndoStack.stack` or via :py:func:`~QgsLayoutUndoStack.beginCommand`/:py:func:`~QgsLayoutUndoStack.endCommand` calls) between a
-:py:func:`~QgsLayoutUndoStack.beginMacro` and :py:func:`~QgsLayoutUndoStack.endMacro` block are collapsed into a single
-undo command, which will be applied or rolled back in a single step.
+:py:func:`~QgsLayoutUndoStack.stack` or via
+:py:func:`~QgsLayoutUndoStack.beginCommand`/:py:func:`~QgsLayoutUndoStack.endCommand`
+calls) between a :py:func:`~QgsLayoutUndoStack.beginMacro` and
+:py:func:`~QgsLayoutUndoStack.endMacro` block are collapsed into a
+single undo command, which will be applied or rolled back in a single
+step.
 
 .. seealso:: :py:func:`endMacro`
 %End
 
     void endMacro();
 %Docstring
-Ends a macro command. This must be called after :py:func:`~QgsLayoutUndoStack.beginMacro`, when
-all child undo commands which form part of the macro have been completed.
+Ends a macro command. This must be called after
+:py:func:`~QgsLayoutUndoStack.beginMacro`, when all child undo commands
+which form part of the macro have been completed.
 
 Any commands added to the stack (either via direct manipulation of
-:py:func:`~QgsLayoutUndoStack.stack` or via :py:func:`~QgsLayoutUndoStack.beginCommand`/:py:func:`~QgsLayoutUndoStack.endCommand` calls) between a
-:py:func:`~QgsLayoutUndoStack.beginMacro` and :py:func:`~QgsLayoutUndoStack.endMacro` block are collapsed into a single
-undo command, which will be applied or rolled back in a single step.
+:py:func:`~QgsLayoutUndoStack.stack` or via
+:py:func:`~QgsLayoutUndoStack.beginCommand`/:py:func:`~QgsLayoutUndoStack.endCommand`
+calls) between a :py:func:`~QgsLayoutUndoStack.beginMacro` and
+:py:func:`~QgsLayoutUndoStack.endMacro` block are collapsed into a
+single undo command, which will be applied or rolled back in a single
+step.
 
 .. seealso:: :py:func:`beginMacro`
 %End
@@ -56,11 +63,14 @@ undo command, which will be applied or rolled back in a single step.
 %Docstring
 Begins a new undo command for the specified ``object``.
 
-This must be followed by a call to :py:func:`~QgsLayoutUndoStack.endCommand` or :py:func:`~QgsLayoutUndoStack.cancelCommand` after the desired changes
+This must be followed by a call to
+:py:func:`~QgsLayoutUndoStack.endCommand` or
+:py:func:`~QgsLayoutUndoStack.cancelCommand` after the desired changes
 have been made to ``object``.
 
-The ``id`` argument can be used to specify an id number for the source event - this is used to determine whether QUndoCommand
-command compression can apply to the command.
+The ``id`` argument can be used to specify an id number for the source
+event - this is used to determine whether QUndoCommand command
+compression can apply to the command.
 
 .. seealso:: :py:func:`endCommand`
 
@@ -69,7 +79,8 @@ command compression can apply to the command.
 
     void endCommand();
 %Docstring
-Saves final state of an object and pushes the active command to the undo history.
+Saves final state of an object and pushes the active command to the undo
+history.
 
 .. seealso:: :py:func:`beginCommand`
 
@@ -78,7 +89,8 @@ Saves final state of an object and pushes the active command to the undo history
 
     void cancelCommand();
 %Docstring
-Cancels the active command, discarding it without pushing to the undo history.
+Cancels the active command, discarding it without pushing to the undo
+history.
 
 .. seealso:: :py:func:`endCommand`
 
@@ -92,18 +104,20 @@ Returns a pointer to the internal QUndoStack.
 
     void notifyUndoRedoOccurred( QgsLayoutItem *item );
 %Docstring
-Notifies the stack that an undo or redo action occurred for a specified ``item``.
+Notifies the stack that an undo or redo action occurred for a specified
+``item``.
 %End
 
     void blockCommands( bool blocked );
 %Docstring
 Sets whether undo commands for the layout should be temporarily blocked.
 
-If ``blocked`` is ``True``, subsequent undo commands will be blocked until a follow-up
-call to blockCommands( ``False`` ) is made.
+If ``blocked`` is ``True``, subsequent undo commands will be blocked
+until a follow-up call to blockCommands( ``False`` ) is made.
 
-Note that calls to blockCommands are stacked, so two calls blocking the commands
-will take two calls unblocking commands in order to release the block.
+Note that calls to blockCommands are stacked, so two calls blocking the
+commands will take two calls unblocking commands in order to release the
+block.
 
 .. seealso:: :py:func:`isBlocked`
 %End
@@ -117,15 +131,16 @@ Returns ``True`` if undo commands are currently blocked.
 
     void push( QUndoCommand *command /Transfer/ );
 %Docstring
-Manually pushes a ``command`` to the stack, and takes ownership of the command.
+Manually pushes a ``command`` to the stack, and takes ownership of the
+command.
 %End
 
   signals:
 
     void undoRedoOccurredForItems( QSet< QString > itemUuids );
 %Docstring
-Emitted when an undo or redo action has occurred, which affected a
-set of layout ``itemUuids``.
+Emitted when an undo or redo action has occurred, which affected a set
+of layout ``itemUuids``.
 %End
 
   private:

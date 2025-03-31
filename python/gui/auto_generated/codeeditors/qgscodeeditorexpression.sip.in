@@ -35,8 +35,7 @@ Constructor for QgsCodeEditorExpression
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
 Variables and functions from this expression context will be added to
-the API.
-Will also reload all globally registered functions.
+the API. Will also reload all globally registered functions.
 %End
 
     void setFields( const QgsFields &fields );

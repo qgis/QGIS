@@ -17,8 +17,8 @@ class QgsConnectionRegistry : QObject
 A registry for saved data provider connections, allowing retrieval of
 saved connections by name and provider type.
 
-:py:class:`QgsConnectionRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.connectionRegistry()`.
+:py:class:`QgsConnectionRegistry` is not usually directly created, but
+rather accessed through :py:func:`QgsApplication.connectionRegistry()`.
 
 .. versionadded:: 3.14
 %End
@@ -36,10 +36,12 @@ Constructor for QgsConnectionRegistry.
 
     QgsAbstractProviderConnection *createConnection( const QString &name ) throw( QgsProviderConnectionException ) /Factory/;
 %Docstring
-Creates a new connection by loading the connection with the given ``id`` from the settings.
+Creates a new connection by loading the connection with the given ``id``
+from the settings.
 
-The ``id`` string must be of the format "provider://connection_name", e.g. "postgres://my_connection" for
-the PostgreSQL connection saved as "my_connection".
+The ``id`` string must be of the format "provider://connection_name",
+e.g. "postgres://my_connection" for the PostgreSQL connection saved as
+"my_connection".
 
 Ownership is transferred to the caller.
 

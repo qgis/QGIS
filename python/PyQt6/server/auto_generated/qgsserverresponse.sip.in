@@ -24,15 +24,14 @@ class QgsServerResponse
 
     virtual void setHeader( const QString &key, const QString &value ) = 0;
 %Docstring
-Set Header entry
-Add Header entry to the response
-Note that it is usually an error to set Header after data have been sent through the wire
+Set Header entry Add Header entry to the response Note that it is
+usually an error to set Header after data have been sent through the
+wire
 %End
 
     virtual void removeHeader( const QString &key ) = 0;
 %Docstring
-Clear header
-Undo a previous 'setHeader' call
+Clear header Undo a previous 'setHeader' call
 %End
 
     virtual QString header( const QString &key ) const = 0;
@@ -65,11 +64,12 @@ Returns the http status code
 
     virtual void sendError( int code, const QString &message ) = 0;
 %Docstring
-Send error
-This method delegates error handling at the server level. This is different
-from calling :py:func:`~QgsServerResponse.setReturnCode` which let you return a specific response body.
-Calling :py:func:`~QgsServerResponse.sendError` will end the transaction and any attempt to write data
-or set headers will be an error.
+Send error This method delegates error handling at the server level.
+This is different from calling
+:py:func:`~QgsServerResponse.setReturnCode` which let you return a
+specific response body. Calling :py:func:`~QgsServerResponse.sendError`
+will end the transaction and any attempt to write data or set headers
+will be an error.
 
 :param code: HHTP return code value
 :param message: An informative error message
@@ -77,15 +77,13 @@ or set headers will be an error.
 
     virtual void write( const QString &data );
 %Docstring
-Write string
-This is a convenient method that will write directly
-to the underlying I/O device
+Write string This is a convenient method that will write directly to the
+underlying I/O device
 %End
 
     virtual qint64 write( const QByteArray &byteArray );
 %Docstring
-Write chunk of data
-This is a convenient method that will write directly
+Write chunk of data This is a convenient method that will write directly
 to the underlying I/O device
 
 :return: the number of bytes that were actually written
@@ -106,16 +104,18 @@ Returns the underlying QIODevice
 
     virtual void finish()  /VirtualErrorHandler=server_exception_handler/;
 %Docstring
-Finish the response, ending the transaction. The default implementation does nothing.
+Finish the response, ending the transaction. The default implementation
+does nothing.
 %End
 
     virtual void flush()  /VirtualErrorHandler=server_exception_handler/;
 %Docstring
 Flushes the current output buffer to the network
 
-':py:func:`~QgsServerResponse.flush`' may be called multiple times. For HTTP transactions
-headers will be written on the first call to ':py:func:`~QgsServerResponse.flush`'.
-The default implementation does nothing.
+':py:func:`~QgsServerResponse.flush`' may be called multiple times. For
+HTTP transactions headers will be written on the first call to
+':py:func:`~QgsServerResponse.flush`'. The default implementation does
+nothing.
 %End
 
     virtual void clear() = 0;
@@ -127,11 +127,11 @@ Reset all headers and content for this response
 %Docstring
 Gets the data written so far
 
-This is implementation dependent: some implementations may not
-give access to the underlying and return an empty array.
+This is implementation dependent: some implementations may not give
+access to the underlying and return an empty array.
 
-Note that each call to 'flush' may empty the buffer and in case
-of streaming process you may get partial content
+Note that each call to 'flush' may empty the buffer and in case of
+streaming process you may get partial content
 %End
 
     virtual void truncate() = 0;

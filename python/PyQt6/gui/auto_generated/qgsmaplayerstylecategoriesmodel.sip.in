@@ -28,7 +28,8 @@ Model for layer style categories.
 
     explicit QgsMapLayerStyleCategoriesModel( Qgis::LayerType type, QObject *parent = 0 );
 %Docstring
-Constructor for QgsMapLayerStyleCategoriesModel, for the specified layer ``type``.
+Constructor for QgsMapLayerStyleCategoriesModel, for the specified layer
+``type``.
 %End
 
     void setCategories( QgsMapLayer::StyleCategories categories );

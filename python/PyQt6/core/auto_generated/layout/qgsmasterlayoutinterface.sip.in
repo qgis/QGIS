@@ -16,7 +16,8 @@
 class QgsMasterLayoutInterface
 {
 %Docstring(signature="appended")
-Interface for master layout type objects, such as print layouts and reports.
+Interface for master layout type objects, such as print layouts and
+reports.
 %End
 
 %TypeHeaderCode
@@ -49,8 +50,8 @@ Interface for master layout type objects, such as print layouts and reports.
 
     virtual QgsMasterLayoutInterface *clone() const = 0 /Factory/;
 %Docstring
-Creates a clone of the layout. Ownership of the returned layout
-is transferred to the caller.
+Creates a clone of the layout. Ownership of the returned layout is
+transferred to the caller.
 %End
 
     virtual QgsMasterLayoutInterface::Type layoutType() const = 0;
@@ -79,8 +80,8 @@ Sets the layout's name.
 
     virtual QgsProject *layoutProject() const = 0;
 %Docstring
-The project associated with the layout. Used to get access to layers, map themes,
-relations and various other bits. It is never ``None``.
+The project associated with the layout. Used to get access to layers,
+map themes, relations and various other bits. It is never ``None``.
 %End
 
     virtual QDomElement writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
@@ -92,7 +93,8 @@ Returns the layout's state encapsulated in a DOM element.
 
     virtual bool readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context ) = 0;
 %Docstring
-Sets the layout's state from a DOM element. ``layoutElement`` is the DOM node corresponding to the layout.
+Sets the layout's state from a DOM element. ``layoutElement`` is the DOM
+node corresponding to the layout.
 
 .. seealso:: :py:func:`writeLayoutXml`
 %End
@@ -104,11 +106,11 @@ Refreshes the layout when global layout related options change.
 
     virtual bool layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
-with the layout.
+Accepts the specified style entity ``visitor``, causing it to visit all
+style entities associated with the layout.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
 %End

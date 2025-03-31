@@ -15,8 +15,8 @@
 class QgsVectorTileRendererData
 {
 %Docstring(signature="appended")
-Contains decoded features of a single vector tile and any other data necessary
-for rendering of it.
+Contains decoded features of a single vector tile and any other data
+necessary for rendering of it.
 
 .. versionadded:: 3.14
 %End
@@ -41,15 +41,17 @@ Sets polygon of the tile
 %End
     QPolygon tilePolygon() const;
 %Docstring
-Returns polygon (made out of four corners of the tile) in screen coordinates calculated from render context
+Returns polygon (made out of four corners of the tile) in screen
+coordinates calculated from render context
 %End
 
     void setRenderZoomLevel( int level );
 %Docstring
 Sets the zoom level corresponding to the target render.
 
-This may differ from the tile's actual zoom leve when indexed tiles cause replacement of
-higher zoom level tiles with data from lower zoom level tiles.
+This may differ from the tile's actual zoom leve when indexed tiles
+cause replacement of higher zoom level tiles with data from lower zoom
+level tiles.
 
 .. seealso:: :py:func:`renderZoomLevel`
 
@@ -60,8 +62,9 @@ higher zoom level tiles with data from lower zoom level tiles.
 %Docstring
 Returns the zoom level corresponding to the target render.
 
-This may differ from the tile's actual zoom leve when indexed tiles cause replacement of
-higher zoom level tiles with data from lower zoom level tiles.
+This may differ from the tile's actual zoom leve when indexed tiles
+cause replacement of higher zoom level tiles with data from lower zoom
+level tiles.
 
 .. seealso:: :py:func:`setRenderZoomLevel`
 
@@ -129,7 +132,8 @@ Returns a clone of the renderer
 
     virtual void startRender( QgsRenderContext &context, int tileZoom, const QgsTileRange &tileRange ) = 0;
 %Docstring
-Initializes rendering. It should be paired with a :py:func:`~QgsVectorTileRenderer.stopRender` call.
+Initializes rendering. It should be paired with a
+:py:func:`~QgsVectorTileRenderer.stopRender` call.
 %End
 
 
@@ -138,9 +142,11 @@ Initializes rendering. It should be paired with a :py:func:`~QgsVectorTileRender
 %Docstring
 Returns a list of the layers required for rendering.
 
-Only layers which are visible at the specified ``tileZoom`` should be included in this list.
+Only layers which are visible at the specified ``tileZoom`` should be
+included in this list.
 
-An empty string present in the list indicates that all layer in the tiles are required.
+An empty string present in the list indicates that all layer in the
+tiles are required.
 
 .. versionadded:: 3.16
 %End
@@ -157,12 +163,14 @@ Renders the background if defined
 
     virtual void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) = 0;
 %Docstring
-Renders given vector tile. Must be called between startRender/stopRender.
+Renders given vector tile. Must be called between
+startRender/stopRender.
 %End
 
     virtual bool willRenderFeature( const QgsFeature &feature, int tileZoom, const QString &layerName, QgsRenderContext &context ) = 0;
 %Docstring
-Returns ``True`` if the specified ``feature`` will be rendered in the given render ``context``.
+Returns ``True`` if the specified ``feature`` will be rendered in the
+given render ``context``.
 
 .. versionadded:: 3.28
 %End
@@ -171,7 +179,8 @@ Returns ``True`` if the specified ``feature`` will be rendered in the given rend
 %Docstring
 Renders the specified features in a selected state.
 
-This will be called after rendering the tiles, so that the selected features are always visible on the top of the layer.
+This will be called after rendering the tiles, so that the selected
+features are always visible on the top of the layer.
 
 .. versionadded:: 3.28
 %End
@@ -186,7 +195,8 @@ Reads renderer's properties from given XML element
 %End
     virtual void resolveReferences( const QgsProject &project );
 %Docstring
-Resolves references to other objects - second phase of loading - after :py:func:`~QgsVectorTileRenderer.readXml`
+Resolves references to other objects - second phase of loading - after
+:py:func:`~QgsVectorTileRenderer.readXml`
 %End
 
 };

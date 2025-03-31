@@ -13,7 +13,8 @@
 class QgsMapLayerActionContext
 {
 %Docstring(signature="appended")
-Encapsulates the context in which a :py:class:`QgsMapLayerAction` action is executed.
+Encapsulates the context in which a :py:class:`QgsMapLayerAction` action
+is executed.
 
 .. versionadded:: 3.30
 %End
@@ -28,7 +29,8 @@ Encapsulates the context in which a :py:class:`QgsMapLayerAction` action is exec
 %Docstring
 Returns the attribute dialog associated with the action's execution.
 
-May be ``None`` if the action is not being executed from an attribute dialog.
+May be ``None`` if the action is not being executed from an attribute
+dialog.
 
 .. seealso:: :py:func:`setAttributeDialog`
 %End
