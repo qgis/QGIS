@@ -64,6 +64,7 @@ Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, 
                                                          QgsFrameGraph::AXIS3D_RENDERVIEW );
 
   mRenderView = dynamic_cast<Qgs3DAxisRenderView *>( mMapScene->engine()->frameGraph()->renderView( QgsFrameGraph::AXIS3D_RENDERVIEW ) );
+  Q_ASSERT( mRenderView );
   constructAxisScene( parent3DScene );
   constructLabelsScene( parent3DScene );
 

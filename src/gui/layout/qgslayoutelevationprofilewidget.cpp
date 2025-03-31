@@ -650,11 +650,12 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
   mProfile->plot()->yAxis().setLabelInterval( canvas->plot().yAxis().labelInterval() );
 
   const QgsLineSymbol *subSectionsSymbol = canvas->subsectionsSymbol() ? canvas->subsectionsSymbol() : nullptr;
-  const bool subSectionsEnabled = subSectionsSymbol != nullptr;
+  const bool subSectionsEnabled = static_cast< bool >( subSectionsSymbol );
   mSubsectionsSymbolLabel->setEnabled( subSectionsEnabled );
   mSubsectionsSymbolButton->setEnabled( subSectionsEnabled );
   mSubsectionsActivateCheck->setChecked( subSectionsEnabled );
-  mSubsectionsSymbolButton->setSymbol( subSectionsSymbol->clone() );
+  if ( subSectionsSymbol )
+    mSubsectionsSymbolButton->setSymbol( subSectionsSymbol->clone() );
   mProfile->setSubsectionsSymbol( subSectionsSymbol->clone() );
 
   QList<QgsMapLayer *> canvasLayers = canvas->layers();
