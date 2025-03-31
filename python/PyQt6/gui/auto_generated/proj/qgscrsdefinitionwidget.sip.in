@@ -12,7 +12,7 @@
 class QgsCrsDefinitionWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget for definition a custom coordinate reference system.
+A widget for defining a custom coordinate reference system.
 
 .. versionadded:: 3.24
 %End

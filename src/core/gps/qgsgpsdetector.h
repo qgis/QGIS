@@ -42,7 +42,7 @@ class QTimer;
 
 /**
  * \ingroup core
- * \brief Detect connected GPS device ports.
+ * \brief Detects connected GPS device ports.
  */
 class CORE_EXPORT QgsGpsDetector : public QObject
 {

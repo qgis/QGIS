@@ -15,7 +15,7 @@
 class QgsAuthManager : QObject
 {
 %Docstring(signature="appended")
-Singleton offering an interface to manage the authentication configuration database
+Singleton which offers an interface to manage the authentication configuration database
 and to utilize configurations through various authentication method plugins.
 
 :py:class:`QgsAuthManager` should not usually be directly created, but rather accessed through

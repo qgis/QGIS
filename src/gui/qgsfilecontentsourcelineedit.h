@@ -29,7 +29,7 @@ class QgsPropertyOverrideButton;
 /**
  * \ingroup gui
  * \class QgsAbstractFileContentSourceLineEdit
- * \brief Abstract base class for a widgets which allows users to select content from a file, embedding a file, etc.
+ * \brief Abstract base class for widgets which allow users to select content from a file, embedding a file, etc.
  *
  * This class is designed to be used by content which is managed by a QgsAbstractContentCache,
  * i.e. it can handle either direct file paths, base64 encoded contents, or remote HTTP

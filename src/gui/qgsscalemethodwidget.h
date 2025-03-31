@@ -27,7 +27,7 @@ class QComboBox;
 
 /**
  * \ingroup gui
- * \brief A widget which which lets the user select from scale calculation methods.
+ * \brief A widget which lets the user select from scale calculation methods.
  * \since QGIS 3.44
  */
 class GUI_EXPORT QgsScaleMethodWidget : public QWidget

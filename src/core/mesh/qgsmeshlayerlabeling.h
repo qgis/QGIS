@@ -137,7 +137,7 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
 
 /**
  * \ingroup core
- * \brief Basic implementation of the labeling interface for mesh layer.
+ * \brief Basic implementation of the labeling interface for mesh layers.
  *
  * \since QGIS 3.36
  */

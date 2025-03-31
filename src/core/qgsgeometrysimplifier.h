@@ -29,7 +29,7 @@ class QgsAbstractGeometry;
 
 /**
  * \ingroup core
- * \brief Abstract base class for simplify geometries using a specific algorithm.
+ * \brief Abstract base class for simplifying geometries using a specific algorithm.
  */
 class CORE_EXPORT QgsAbstractGeometrySimplifier
 {

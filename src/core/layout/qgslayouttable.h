@@ -98,7 +98,7 @@ class CORE_EXPORT QgsLayoutTableStyle
 };
 
 /**
- * \brief Displays a table in the print layout, and allow
+ * \brief Displays a table in the print layout, and allows
  * the table to span over multiple frames.
  * \ingroup core
  */

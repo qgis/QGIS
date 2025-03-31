@@ -99,7 +99,7 @@ class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
 };
 
 /**
- * \brief A skybox constructed from a 6 cube faces.
+ * \brief A skybox constructed from 6 cube faces.
  *
  * \ingroup qgis_3d
  * \since QGIS 3.16

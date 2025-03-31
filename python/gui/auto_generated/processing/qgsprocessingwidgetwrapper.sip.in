@@ -596,7 +596,7 @@ Returns the default source type to use for the widget for the specified ``parame
 class QgsProcessingHiddenWidgetWrapper : QgsAbstractProcessingParameterWidgetWrapper
 {
 %Docstring(signature="appended")
-An widget wrapper for hidden widgets.
+A widget wrapper for hidden widgets.
 
 The hidden widget wrapper allows for creation of a widget wrapper which does not provide
 a graphical widget, yet still implements the :py:class:`QgsAbstractProcessingParameterWidgetWrapper`

@@ -12,7 +12,7 @@
 class QgsQuantizedMeshTerrainSettings : QgsAbstractTerrainSettings
 {
 %Docstring(signature="appended")
-Terrain settings for a terrain generator that uses uses a quantized mesh tile layer to build a terrain.
+Terrain settings for a terrain generator that uses a quantized mesh tile layer to build a terrain.
 
 .. warning::
 

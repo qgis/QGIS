@@ -301,7 +301,7 @@ Dump list
     class NodeUnaryOperator : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Unary logicial/arithmetical operator ( NOT, - ).
+Unary logical/arithmetical operator ( NOT, - ).
 %End
 
 %TypeHeaderCode

@@ -14,7 +14,7 @@
 class QgsGlowEffect : QgsPaintEffect
 {
 %Docstring(signature="appended")
-Base class for paint effect which draw a glow inside or outside a
+Base class for paint effects which draw a glow inside or outside a
 picture.
 %End
 

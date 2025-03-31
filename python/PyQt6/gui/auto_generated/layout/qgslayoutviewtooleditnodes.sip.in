@@ -12,7 +12,7 @@
 class QgsLayoutViewToolEditNodes : QgsLayoutViewTool
 {
 %Docstring(signature="appended")
-Layout view tool for edit node based items in the layout.
+Layout view tool for editing node based items in the layout.
 %End
 
 %TypeHeaderCode

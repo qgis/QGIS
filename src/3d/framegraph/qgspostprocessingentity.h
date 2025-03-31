@@ -26,7 +26,7 @@ class QgsDirectionalLightSettings;
 
 /**
  * \ingroup qgis_3d
- * \brief An entity that is responsible for applying post processing effect.
+ * \brief An entity that is responsible for applying post processing effects.
  *
  * \note Not available in Python bindings
  *

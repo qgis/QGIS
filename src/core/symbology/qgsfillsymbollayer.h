@@ -752,7 +752,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
 /**
  * \ingroup core
- * \brief Base class for fill symbol layers which fill polygons with a repeated images.
+ * \brief Base class for fill symbol layers which fill polygons with a repeated image.
 */
 class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer SIP_ABSTRACT
 {

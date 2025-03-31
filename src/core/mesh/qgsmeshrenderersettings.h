@@ -30,7 +30,7 @@
 /**
  * \ingroup core
  *
- * \brief Represents a mesh renderer settings for mesh object.
+ * \brief Represents a mesh renderer settings for mesh objects.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

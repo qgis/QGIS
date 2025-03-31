@@ -53,7 +53,7 @@ class QgsPointLocator_VisitorNearestCentroid;
 
 /**
  * \ingroup core
- * \brief Helper class used when traversing the index looking for middle segment - builds a list of matches.
+ * \brief Helper class used when traversing the index looking for the middle segment - builds a list of matches.
  * \note not available in Python bindings
  * \since QGIS 3.12
 */

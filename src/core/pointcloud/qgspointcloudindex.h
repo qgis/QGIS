@@ -47,7 +47,7 @@ class QgsAbstractPointCloudIndex;
 /**
  * \ingroup core
  *
- * \brief Represents a indexed point cloud node's position in octree.
+ * \brief Represents an indexed point cloud node's position in octree.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -150,7 +150,7 @@ uint qHash( const QgsPointCloudCacheKey &key );
 /**
  * \ingroup core
  *
- * \brief Keeps metadata for indexed point cloud node.
+ * \brief Keeps metadata for an indexed point cloud node.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsPointCloudNode
 /**
  * \ingroup core
  *
- * \brief Represents a indexed point clouds data in octree
+ * \brief Represents an indexed point clouds data in octree
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

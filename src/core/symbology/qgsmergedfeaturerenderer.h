@@ -27,7 +27,7 @@
 /**
  * \ingroup core
  * \brief A polygon or line-only feature renderer used to
- * renderer a set of features merged (or dissolved) into a single geometry.
+ * render a set of features merged (or dissolved) into a single geometry.
  *
  * It is designed on top of another feature renderer, which is called "embedded"
  * Most of the methods are then only proxies to the embedded renderer. E.g. if

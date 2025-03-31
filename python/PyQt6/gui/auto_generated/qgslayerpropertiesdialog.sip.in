@@ -13,7 +13,7 @@
 class QgsLayerPropertiesDialog : QgsOptionsDialogBase /Abstract/
 {
 %Docstring(signature="appended")
-Base class for "layer properties" dialogs, containing common utilities for handling functionality in these dialog.
+Base class for "layer properties" dialogs, containing common utilities for handling functionality in these dialogs.
 
 .. warning::
 

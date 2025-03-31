@@ -28,7 +28,7 @@ class QgsSymbol;
 /**
  * \ingroup core
  * \brief Stores information about one class/rule of a vector layer renderer in a unified way
- * that can be used by legend model for rendering of legend.
+ * that can be used by the legend model for rendering of legend.
  *
  * \see QgsSymbolLegendNode
  */

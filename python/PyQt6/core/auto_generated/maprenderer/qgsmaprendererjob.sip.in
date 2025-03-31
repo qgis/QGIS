@@ -242,7 +242,7 @@ emitted when asynchronous rendering is finished (or canceled).
 class QgsMapRendererQImageJob : QgsMapRendererJob /Abstract/
 {
 %Docstring(signature="appended")
-Intermediate base class adding functionality that allows client to query the rendered image.
+Intermediate base class adding functionality that allows a client to query the rendered image.
 
 The image can be queried even while the rendering is still in progress to get intermediate result
 %End

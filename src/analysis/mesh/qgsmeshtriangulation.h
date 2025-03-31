@@ -129,7 +129,7 @@ class QgsMeshZValueDataset : public QgsMeshDataset
  * \ingroup analysis
  * \class QgsMeshZValueDatasetGroup
  *
- * \brief Convenience class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices.
+ * \brief Convenience class that can be used to obtain a dataset group on vertices that represents the Z value of the mesh vertices.
  *
  * \since QGIS 3.16
  */
@@ -164,7 +164,7 @@ class ANALYSIS_EXPORT QgsMeshZValueDatasetGroup : public QgsMeshDatasetGroup
  * \class QgsMeshEditingDelaunayTriangulation
  *
  * \brief Can be used with QgsMeshEditor::advancedEdit() to add triangle faces to a mesh created by
- * a Delaunay triangulation on provided existing vertex.
+ * a Delaunay triangulation on existing vertices.
  *
  * \since QGIS 3.22
  */

@@ -77,7 +77,7 @@ Sets the coordinate reference system used for the triangulation
 class QgsMeshZValueDatasetGroup : QgsMeshDatasetGroup
 {
 %Docstring(signature="appended")
-Convenience class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices.
+Convenience class that can be used to obtain a dataset group on vertices that represents the Z value of the mesh vertices.
 
 .. versionadded:: 3.16
 %End
@@ -115,7 +115,7 @@ class QgsMeshEditingDelaunayTriangulation : QgsMeshAdvancedEditing
 {
 %Docstring(signature="appended")
 Can be used with :py:func:`QgsMeshEditor.advancedEdit()` to add triangle faces to a mesh created by
-a Delaunay triangulation on provided existing vertex.
+a Delaunay triangulation on existing vertices.
 
 .. versionadded:: 3.22
 %End

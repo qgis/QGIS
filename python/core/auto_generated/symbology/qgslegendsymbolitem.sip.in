@@ -14,7 +14,7 @@ class QgsLegendSymbolItem
 {
 %Docstring(signature="appended")
 Stores information about one class/rule of a vector layer renderer in a unified way
-that can be used by legend model for rendering of legend.
+that can be used by the legend model for rendering of legend.
 
 .. seealso:: :py:class:`QgsSymbolLegendNode`
 %End

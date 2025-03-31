@@ -34,7 +34,7 @@ class QgsMeshVertexCirculator;
 /**
  * \ingroup core
  *
- * \brief Wraps a QgsMesh to ensure the consistency of the mesh during editing and help to access to elements from other elements.
+ * \brief Wraps a QgsMesh to ensure the consistency of the mesh during editing and helps to access elements from other elements.
  *
  *  A topological face need to:
  *
@@ -397,7 +397,7 @@ class CORE_EXPORT QgsTopologicalMesh
 /**
  * \ingroup core
  *
- * \brief  Convenient class that turn around a vertex and provide information about faces and vertices
+ * \brief Convenience class that turns around a vertex and provides information about faces and vertices.
  *
  * \since QGIS 3.22
  */

@@ -13,7 +13,7 @@ class QgsVectorLayerToolsContext
 {
 %Docstring(signature="appended")
 Contains settings which reflect the context in which vector layer tool operations should
-consider.
+be considered.
 
 .. versionadded:: 3.38
 %End

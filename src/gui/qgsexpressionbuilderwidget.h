@@ -40,7 +40,7 @@ static const QString DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME = QStringLiteral( "[Pro
 
 /**
  * \ingroup gui
- * \brief A reusable widget that can be used to build a expression string.
+ * \brief A reusable widget that can be used to build an expression string.
  *
  * \see QgsExpressionBuilderDialog for example of usage.
  */

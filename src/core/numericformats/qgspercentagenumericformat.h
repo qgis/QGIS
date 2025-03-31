@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * \brief A numeric formatter which returns a text representation of a percentage value.
+ * \brief A numeric formater which returns a text representation of a percentage value.
  *
  * \since QGIS 3.12
  */

@@ -12,7 +12,7 @@
 class QgsRenderedFeatureHandlerInterface
 {
 %Docstring(signature="appended")
-An interface for classes which provider custom handlers for features rendered
+An interface for classes which provide custom handlers for features rendered
 as part of a map render job.
 
 :py:class:`QgsRenderedFeatureHandlerInterface` objects are registered in the :py:class:`QgsMapSettings`

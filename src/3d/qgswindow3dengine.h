@@ -35,7 +35,7 @@ class QWindow;
 
 /**
  * \ingroup qgis_3d
- * \brief On-screen 3D engine: it creates OpenGL window (QWindow) and displays rendered 3D scene there.
+ * \brief On-screen 3D engine: it creates an OpenGL window (QWindow) and displays rendered 3D scenes there.
  * The window can be embedded into a QWidget-based application with QWidget::createWindowContainer().
  *
  * \note Not available in Python bindings

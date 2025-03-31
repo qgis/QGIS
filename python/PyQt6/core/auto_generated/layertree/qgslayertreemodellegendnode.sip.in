@@ -14,7 +14,7 @@
 class QgsLayerTreeModelLegendNode : QObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLegendRendererItem` class is abstract interface for legend items
+An abstract interface for legend items
 returned from :py:class:`QgsMapLayerLegend` implementation.
 
 The objects are used in :py:class:`QgsLayerTreeModel`. Custom implementations may offer additional interactivity
@@ -503,7 +503,7 @@ The caller takes ownership of the returned object.
 class QgsSimpleLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Implementation of legend node interface for displaying arbitrary label with icon.
+Implementation of legend node interface for displaying arbitrary labels with icons.
 %End
 
 %TypeHeaderCode
@@ -537,7 +537,7 @@ Constructor for QgsSimpleLegendNode.
 class QgsImageLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Implementation of legend node interface for displaying arbitrary raster image.
+Implementation of legend node interface for displaying arbitrary raster images.
 %End
 
 %TypeHeaderCode
@@ -683,7 +683,7 @@ Fetches the image from the server and returns it.
 class QgsDataDefinedSizeLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Produces legend node with a marker symbol.
+A legend node with a marker symbol.
 %End
 
 %TypeHeaderCode
@@ -713,7 +713,7 @@ Construct the node using :py:class:`QgsDataDefinedSizeLegend` as definition of t
 class QgsVectorLabelLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Produces legend node for a labeling text symbol.
+A legend node for a labeling text symbol.
 
 .. versionadded:: 3.20
 %End

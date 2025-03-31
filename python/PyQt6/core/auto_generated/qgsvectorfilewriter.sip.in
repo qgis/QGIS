@@ -173,7 +173,7 @@ A hidden option for file writing for a particular output format.
     class FieldValueConverter
 {
 %Docstring(signature="appended")
-Interface to convert raw field values to their user-friendly value.
+Interface to convert raw field values to their user-friendly values.
 %End
 
 %TypeHeaderCode

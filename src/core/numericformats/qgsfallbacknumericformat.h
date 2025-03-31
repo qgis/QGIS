@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * \brief A basic numeric formatter which returns a simple text representation of a value.
+ * \brief A basic numeric formater which returns a simple text representation of a value.
  *
  * \since QGIS 3.12
  */

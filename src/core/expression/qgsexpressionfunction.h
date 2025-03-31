@@ -35,7 +35,7 @@ class QgsExpressionContextScope;
 
 /**
  * \ingroup core
- * \brief A abstract base class for defining QgsExpression functions.
+ * \brief An abstract base class for defining QgsExpression functions.
  */
 class CORE_EXPORT QgsExpressionFunction
 {

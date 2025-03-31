@@ -11,8 +11,7 @@
 class QgsMapTip : QWidget
 {
 %Docstring(signature="appended")
-A maptip is a class to display a tip on a map canvas
-when a mouse is hovered over a feature.
+Displays a tool tip on a map canvas when the mouse is hovered over a feature.
 
 Since QGIS 2.16 a maptip can show full html.
 :py:class:`QgsMapTip` is a :py:class:`QgsWebView`, so you can load full HTML/JS/CSS in it.

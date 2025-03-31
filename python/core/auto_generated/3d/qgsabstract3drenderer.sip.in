@@ -14,7 +14,7 @@
 class QgsAbstract3DRenderer /Abstract/
 {
 %Docstring(signature="appended")
-Base class for all renderers that may to participate in 3D view.
+Base class for all renderers that participate in 3D views.
 
 3D renderers implement the method :py:func:`~createEntity` that returns a new 3D entity - that entity
 will be added to the 3D scene to represent data in renderer's display style.

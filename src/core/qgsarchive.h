@@ -105,7 +105,7 @@ class CORE_EXPORT QgsArchive
 /**
  * \class QgsProjectArchive
  * \ingroup core
- * \brief Allows managing the zip/unzip actions on project file.
+ * \brief Allows managing the zip/unzip actions on project files.
  */
 class  CORE_EXPORT QgsProjectArchive : public QgsArchive
 {

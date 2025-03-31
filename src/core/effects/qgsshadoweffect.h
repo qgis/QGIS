@@ -28,7 +28,7 @@
 /**
  * \ingroup core
  * \class QgsShadowEffect
- * \brief Base class for paint effects which offset, blurred shadows.
+ * \brief Base class for paint effects which render offset, blurred shadows.
  */
 class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 {

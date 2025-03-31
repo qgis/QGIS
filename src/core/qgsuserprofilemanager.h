@@ -29,7 +29,7 @@
 
 /**
  * \ingroup core
- * \brief User profile manager is used to manager list, and manage user profiles on the users machine.
+ * \brief A manager for QGIS user profiles.
  *
  * In QGIS 3 all settings, plugins, etc were moved into a %APPDATA%/profiles folder for each platform.
  * This allows for manage different user profiles per machine vs the single default one that was allowed in the

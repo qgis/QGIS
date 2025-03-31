@@ -16,7 +16,7 @@
 class QgsExpressionBuilderWidget : QWidget
 {
 %Docstring(signature="appended")
-A reusable widget that can be used to build a expression string.
+A reusable widget that can be used to build an expression string.
 
 .. seealso:: :py:class:`QgsExpressionBuilderDialog` for example of usage.
 %End

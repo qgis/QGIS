@@ -32,7 +32,7 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * \class QgsLayerPropertiesDialog
- * \brief Base class for "layer properties" dialogs, containing common utilities for handling functionality in these dialog.
+ * \brief Base class for "layer properties" dialogs, containing common utilities for handling functionality in these dialogs.
  * \warning This is exposed to SIP bindings for legacy reasons only, and is NOT to be considered as stable API.
  * \since QGIS 3.34
  */
