@@ -111,6 +111,8 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     void updateMetadata();
     void setMetadataFields();
 
+    void mergeVectors();
+
     void nativeAlgsRasterSize();
 
     void defineProjection();
@@ -2156,6 +2158,71 @@ void TestQgsProcessingAlgsPt2::setMetadataFields()
   QCOMPARE( layer->metadata().fees(), QStringLiteral( "Enormous fee" ) );
   QVERIFY( layer->metadata().crs().isValid() );
   QCOMPARE( layer->metadata().crs().authid(), QStringLiteral( "EPSG:4326" ) );
+}
+
+void TestQgsProcessingAlgsPt2::mergeVectors()
+{
+  auto baseLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:int(10)&field=test_precision:double(10,2)&field=test_length:string(8)" ), QStringLiteral( "base" ), QStringLiteral( "memory" ) );
+  QVERIFY( baseLayer->isValid() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << 1.25 << QStringLiteral( "01234567" ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 0)" ) ) );
+  baseLayer->dataProvider()->addFeature( f );
+
+  auto mergeLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:int(10)&field=test_precision:double(10,4)&field=test_length:string(10)" ), QStringLiteral( "to_merge" ), QStringLiteral( "memory" ) );
+  QVERIFY( mergeLayer->isValid() );
+
+  f.setAttributes( QgsAttributes() << 1 << 1.2515 << QStringLiteral( "0123456789" ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (1 1)" ) ) );
+  mergeLayer->dataProvider()->addFeature( f );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:mergevectorlayers" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYERS" ), QVariantList() << QVariant::fromValue( baseLayer.get() ) << QVariant::fromValue( mergeLayer.get() ) );
+  parameters.insert( QStringLiteral( "ADD_SOURCE_FIELDS" ), false );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  auto context = std::make_unique<QgsProcessingContext>();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+
+  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( resultLayer );
+  QVERIFY( resultLayer->isValid() );
+  QVERIFY( resultLayer->geometryType() == Qgis::GeometryType::Point );
+  QCOMPARE( resultLayer->featureCount(), 2 );
+  QCOMPARE( resultLayer->fields().count(), 3 );
+  QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "id" ) );
+  QCOMPARE( resultLayer->fields().at( 0 ).length(), 10 );
+  QCOMPARE( resultLayer->fields().at( 0 ).precision(), 0 );
+  QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "test_precision" ) );
+  QCOMPARE( resultLayer->fields().at( 1 ).length(), 10 );
+  QCOMPARE( resultLayer->fields().at( 1 ).precision(), 4 );
+  QCOMPARE( resultLayer->fields().at( 2 ).name(), QStringLiteral( "test_length" ) );
+  QCOMPARE( resultLayer->fields().at( 2 ).length(), 10 );
+  QCOMPARE( resultLayer->fields().at( 2 ).precision(), 0 );
+
+  QgsFeatureIterator featIt = resultLayer->getFeatures();
+  QgsFeature feat;
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "Point (0 0)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toInt(), 1 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 1.2500 );
+  QCOMPARE( feat.attributes().at( 2 ).toString(), QStringLiteral( "01234567" ) );
+
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "Point (1 1)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toInt(), 1 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 1.2515 );
+  QCOMPARE( feat.attributes().at( 2 ).toString(), QStringLiteral( "0123456789" ) );
 }
 
 void TestQgsProcessingAlgsPt2::nativeAlgsRasterSize()
