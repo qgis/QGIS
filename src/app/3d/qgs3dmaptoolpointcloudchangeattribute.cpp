@@ -16,6 +16,7 @@
 #include "qgs3dmaptoolpointcloudchangeattribute.h"
 #include "moc_qgs3dmaptoolpointcloudchangeattribute.cpp"
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgscoordinatetransform.h"
@@ -244,6 +245,7 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
   const double layerZOffset = elevationProperties.zOffset();
 
   QgsPoint pt;
+  const QList<QVector4D> clipPlanes = mCanvas->scene()->clipPlaneEquations();
 
   for ( int i = 0; i < block->pointCount(); ++i )
   {
@@ -273,6 +275,28 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
     // check if inside map extent
     if ( !mapExtent.contains( x, y ) )
       continue;
+
+    // check if clipped
+    if ( clipPlanes.size() > 0 )
+    {
+      bool isClipped = false;
+      const QgsVector3D pointInWorldCoords = Qgs3DUtils::mapToWorldCoordinates( QgsVector3D( x, y, z ), mCanvas->mapSettings()->origin() );
+      for ( const QVector4D &clipPlane : clipPlanes )
+      {
+        // we manually calculate the dot product here so we save resources on some transformation
+        const double distance = clipPlane.x() * pointInWorldCoords.x() + clipPlane.y() * pointInWorldCoords.y() + clipPlane.z() * pointInWorldCoords.z() + clipPlane.w();
+        if ( distance < 0 )
+        {
+          isClipped = true;
+          break;
+        }
+      }
+      if ( isClipped )
+      {
+        continue;
+      }
+    }
+
 
     // project to screen (map coords -> world coords -> clip coords -> NDC -> screen coords)
     bool isInFrustum;
