@@ -453,7 +453,7 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelect
   {
     const auto nodeType = static_cast< QgsAttributeFormTreeData::AttributeFormTreeItemType >( index.data( QgsAttributesFormLayoutModel::NodeTypeRole ).toInt() );
     const QString nodeId = index.data( QgsAttributesFormLayoutModel::NodeIdRole ).toString();
-    index = mFormLayoutModel->getFirstMatchingModelIndex( nodeType, nodeId );
+    index = mFormLayoutModel->getFirstRecursiveMatchingModelIndex( nodeType, nodeId );
   }
 
   loadAttributeSpecificEditor( mAvailableWidgetsTreeView, mFormLayoutTreeView, index );
@@ -647,120 +647,120 @@ void QgsAttributesFormProperties::removeTabOrGroupButton()
   }
 }
 
-QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool isTopLevel )
+QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWidget( const QModelIndex &index, QgsAttributeEditorElement *parent, bool isTopLevel )
 {
-  Q_UNUSED( item );
-  Q_UNUSED( parent );
-  Q_UNUSED( isTopLevel );
-  // QgsAttributeEditorElement *widgetDef = nullptr;
+  QgsAttributeEditorElement *widgetDef = nullptr;
 
-  // const DnDTreeItemData itemData = item->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
+  const QgsAttributeFormTreeData::DnDTreeItemData itemData = index.data( QgsAttributesFormModel::NodeDataRole ).value<QgsAttributeFormTreeData::DnDTreeItemData>();
+  const int indexType = static_cast< QgsAttributeFormTreeData::AttributeFormTreeItemType >( index.data( QgsAttributesFormModel::NodeTypeRole ).toInt() );
+  const QString indexName = index.data( QgsAttributesFormModel::NodeNameRole ).toString();
+  const QString indexId = index.data( QgsAttributesFormModel::NodeIdRole ).toString();
 
-  // switch ( itemData.type() )
-  // {
-  //   //indexed here?
-  //   case DnDTreeItemData::Field:
-  //   {
-  //     const int idx = mLayer->fields().lookupField( itemData.name() );
-  //     widgetDef = new QgsAttributeEditorField( itemData.name(), idx, parent );
-  //     break;
-  //   }
+  switch ( indexType )
+  {
+    case QgsAttributeFormTreeData::Field:
+    {
+      const int fieldIndex = mLayer->fields().lookupField( indexName );
+      widgetDef = new QgsAttributeEditorField( indexName, fieldIndex, parent );
+      break;
+    }
 
-  //   case DnDTreeItemData::Action:
-  //   {
-  //     const QgsAction action { mLayer->actions()->action( itemData.name() ) };
-  //     widgetDef = new QgsAttributeEditorAction( action, parent );
-  //     break;
-  //   }
+    case QgsAttributeFormTreeData::Action:
+    {
+      const QgsAction action { mLayer->actions()->action( indexId ) };
+      widgetDef = new QgsAttributeEditorAction( action, parent );
+      break;
+    }
 
-  //   case DnDTreeItemData::Relation:
-  //   {
-  //     const QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
+    case QgsAttributeFormTreeData::Relation:
+    {
+      const QgsRelation relation = QgsProject::instance()->relationManager()->relation( indexId );
 
-  //     QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
-  //     const QgsAttributesFormProperties::RelationEditorConfiguration relationEditorConfig = itemData.relationEditorConfiguration();
-  //     relDef->setRelationWidgetTypeId( relationEditorConfig.mRelationWidgetType );
-  //     relDef->setRelationEditorConfiguration( relationEditorConfig.mRelationWidgetConfig );
-  //     relDef->setNmRelationId( relationEditorConfig.nmRelationId );
-  //     relDef->setForceSuppressFormPopup( relationEditorConfig.forceSuppressFormPopup );
-  //     relDef->setLabel( relationEditorConfig.label );
-  //     widgetDef = relDef;
-  //     break;
-  //   }
+      QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
+      const QgsAttributeFormTreeData::RelationEditorConfiguration relationEditorConfig = itemData.relationEditorConfiguration();
+      relDef->setRelationWidgetTypeId( relationEditorConfig.mRelationWidgetType );
+      relDef->setRelationEditorConfiguration( relationEditorConfig.mRelationWidgetConfig );
+      relDef->setNmRelationId( relationEditorConfig.nmRelationId );
+      relDef->setForceSuppressFormPopup( relationEditorConfig.forceSuppressFormPopup );
+      relDef->setLabel( relationEditorConfig.label );
+      widgetDef = relDef;
+      break;
+    }
 
-  //   case DnDTreeItemData::Container:
-  //   {
-  //     QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( item->text( 0 ), parent, itemData.backgroundColor() );
-  //     container->setColumnCount( itemData.columnCount() );
-  //     // only top-level containers can be tabs
-  //     Qgis::AttributeEditorContainerType type = itemData.containerType();
-  //     if ( type == Qgis::AttributeEditorContainerType::Tab && !isTopLevel )
-  //     {
-  //       // a top container found which isn't at the top level -- reset it to a group box instead
-  //       type = Qgis::AttributeEditorContainerType::GroupBox;
-  //     }
-  //     container->setType( type );
-  //     container->setCollapsed( itemData.collapsed() );
-  //     container->setCollapsedExpression( itemData.collapsedExpression() );
-  //     container->setVisibilityExpression( itemData.visibilityExpression() );
-  //     container->setBackgroundColor( itemData.backgroundColor() );
+    case QgsAttributeFormTreeData::Container:
+    {
+      QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( indexName, parent, itemData.backgroundColor() );
+      container->setColumnCount( itemData.columnCount() );
+      // only top-level containers can be tabs
+      Qgis::AttributeEditorContainerType type = itemData.containerType();
+      if ( type == Qgis::AttributeEditorContainerType::Tab && !isTopLevel )
+      {
+        // a tab container found which isn't at the top level -- reset it to a group box instead
+        type = Qgis::AttributeEditorContainerType::GroupBox;
+      }
+      container->setType( type );
+      container->setCollapsed( itemData.collapsed() );
+      container->setCollapsedExpression( itemData.collapsedExpression() );
+      container->setVisibilityExpression( itemData.visibilityExpression() );
+      container->setBackgroundColor( itemData.backgroundColor() );
 
-  //     for ( int t = 0; t < item->childCount(); t++ )
-  //     {
-  //       QgsAttributeEditorElement *element { createAttributeEditorWidget( item->child( t ), container, false ) };
-  //       if ( element )
-  //         container->addChildElement( element );
-  //     }
+      QModelIndex childIndex;
+      for ( int t = 0; t < mFormLayoutModel->rowCount( index ); t++ )
+      {
+        childIndex = mFormLayoutModel->index( t, 0, index );
+        QgsAttributeEditorElement *element { createAttributeEditorWidget( childIndex, container, false ) };
+        if ( element )
+          container->addChildElement( element );
+      }
+      widgetDef = container;
+      break;
+    }
 
-  //     widgetDef = container;
-  //     break;
-  //   }
+    case QgsAttributeFormTreeData::QmlWidget:
+    {
+      QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( indexName, parent );
+      element->setQmlCode( itemData.qmlElementEditorConfiguration().qmlCode );
+      widgetDef = element;
+      break;
+    }
 
-  //   case DnDTreeItemData::QmlWidget:
-  //   {
-  //     QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( item->text( 0 ), parent );
-  //     element->setQmlCode( itemData.qmlElementEditorConfiguration().qmlCode );
-  //     widgetDef = element;
-  //     break;
-  //   }
+    case QgsAttributeFormTreeData::HtmlWidget:
+    {
+      QgsAttributeEditorHtmlElement *element = new QgsAttributeEditorHtmlElement( indexName, parent );
+      element->setHtmlCode( itemData.htmlElementEditorConfiguration().htmlCode );
+      widgetDef = element;
+      break;
+    }
 
-  //   case DnDTreeItemData::HtmlWidget:
-  //   {
-  //     QgsAttributeEditorHtmlElement *element = new QgsAttributeEditorHtmlElement( item->text( 0 ), parent );
-  //     element->setHtmlCode( itemData.htmlElementEditorConfiguration().htmlCode );
-  //     widgetDef = element;
-  //     break;
-  //   }
+    case QgsAttributeFormTreeData::TextWidget:
+    {
+      QgsAttributeEditorTextElement *element = new QgsAttributeEditorTextElement( indexName, parent );
+      element->setText( itemData.textElementEditorConfiguration().text );
+      widgetDef = element;
+      break;
+    }
 
-  //   case DnDTreeItemData::TextWidget:
-  //   {
-  //     QgsAttributeEditorTextElement *element = new QgsAttributeEditorTextElement( item->text( 0 ), parent );
-  //     element->setText( itemData.textElementEditorConfiguration().text );
-  //     widgetDef = element;
-  //     break;
-  //   }
+    case QgsAttributeFormTreeData::SpacerWidget:
+    {
+      QgsAttributeEditorSpacerElement *element = new QgsAttributeEditorSpacerElement( indexName, parent );
+      element->setDrawLine( itemData.spacerElementEditorConfiguration().drawLine );
+      widgetDef = element;
+      break;
+    }
 
-  //   case DnDTreeItemData::SpacerWidget:
-  //   {
-  //     QgsAttributeEditorSpacerElement *element = new QgsAttributeEditorSpacerElement( item->text( 0 ), parent );
-  //     element->setDrawLine( itemData.spacerElementEditorConfiguration().drawLine );
-  //     widgetDef = element;
-  //     break;
-  //   }
+    case QgsAttributeFormTreeData::WidgetType:
+      break;
+  }
 
-  //   case DnDTreeItemData::WidgetType:
-  //     break;
-  // }
+  if ( widgetDef )
+  {
+    widgetDef->setShowLabel( itemData.showLabel() );
+    widgetDef->setLabelStyle( itemData.labelStyle() );
+    widgetDef->setHorizontalStretch( itemData.horizontalStretch() );
+    widgetDef->setVerticalStretch( itemData.verticalStretch() );
+  }
 
-  // if ( widgetDef )
-  // {
-  //   widgetDef->setShowLabel( itemData.showLabel() );
-  //   widgetDef->setLabelStyle( itemData.labelStyle() );
-  //   widgetDef->setHorizontalStretch( itemData.horizontalStretch() );
-  //   widgetDef->setVerticalStretch( itemData.verticalStretch() );
-  // }
-
-  // return widgetDef;
+  return widgetDef;
 }
 
 void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int )
@@ -841,15 +841,15 @@ void QgsAttributesFormProperties::apply()
 
   QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
 
-  const QModelIndex fieldContainer = mAvailableWidgetsModel->index( 0, 0 );
+  const QModelIndex fieldContainer = mAvailableWidgetsModel->getFieldContainer();
   QModelIndex index;
 
   for ( int i = 0; i < mAvailableWidgetsModel->rowCount( fieldContainer ); i++ )
   {
     index = mAvailableWidgetsModel->index( i, 0, fieldContainer );
-    const QgsAttributeFormTreeData::FieldConfig cfg = mAvailableWidgetsModel->data( index, QgsAttributesFormModel::NodeFieldConfigRole ).value<QgsAttributeFormTreeData::FieldConfig>();
+    const QgsAttributeFormTreeData::FieldConfig cfg = index.data( QgsAttributesFormModel::NodeFieldConfigRole ).value<QgsAttributeFormTreeData::FieldConfig>();
 
-    const QString fieldName = mAvailableWidgetsModel->data( index, QgsAttributesFormModel::NodeNameRole ).toString();
+    const QString fieldName = index.data( QgsAttributesFormModel::NodeNameRole ).toString();
     const int idx = mLayer->fields().indexOf( fieldName );
 
     //continue in case field does not exist anymore
@@ -901,51 +901,72 @@ void QgsAttributesFormProperties::apply()
   }
 
   // // tabs and groups
-  // editFormConfig.clearTabs();
-  // for ( int t = 0; t < mFormLayoutTree->invisibleRootItem()->childCount(); t++ )
-  // {
-  //   QTreeWidgetItem *tabItem = mFormLayoutTree->invisibleRootItem()->child( t );
-  //   QgsAttributeEditorElement *editorElement { createAttributeEditorWidget( tabItem, nullptr, true ) };
-  //   if ( editorElement )
-  //     editFormConfig.addTab( editorElement );
-  // }
+  editFormConfig.clearTabs();
 
-  // editFormConfig.setUiForm( mEditFormLineEdit->text() );
+  for ( int t = 0; t < mFormLayoutModel->rowCount(); t++ )
+  {
+    QModelIndex index = mFormLayoutModel->index( t, 0 );
+    QgsAttributeEditorElement *editorElement { createAttributeEditorWidget( index, nullptr, true ) };
+    if ( editorElement )
+      editFormConfig.addTab( editorElement );
+  }
 
-  // editFormConfig.setLayout( mEditorLayoutComboBox->currentData().value<Qgis::AttributeFormLayout>() );
+  editFormConfig.setUiForm( mEditFormLineEdit->text() );
 
-  // editFormConfig.setInitCodeSource( mInitCodeSource );
-  // editFormConfig.setInitFunction( mInitFunction );
-  // editFormConfig.setInitFilePath( mInitFilePath );
-  // editFormConfig.setInitCode( mInitCode );
+  editFormConfig.setLayout( mEditorLayoutComboBox->currentData().value<Qgis::AttributeFormLayout>() );
 
-  // editFormConfig.setSuppress( mFormSuppressCmbBx->currentData().value<Qgis::AttributeFormSuppression>() );
+  editFormConfig.setInitCodeSource( mInitCodeSource );
+  editFormConfig.setInitFunction( mInitFunction );
+  editFormConfig.setInitFilePath( mInitFilePath );
+  editFormConfig.setInitCode( mInitCode );
 
-  // // write the legacy config of relation widgets to support settings read by the API
-  // QTreeWidgetItem *relationContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 1 );
+  editFormConfig.setSuppress( mFormSuppressCmbBx->currentData().value<Qgis::AttributeFormSuppression>() );
 
-  // for ( int i = 0; i < relationContainer->childCount(); i++ )
-  // {
-  //   QTreeWidgetItem *relationItem = relationContainer->child( i );
-  //   const DnDTreeItemData itemData = relationItem->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
+  // write the legacy config of relation widgets to support settings read by the API
+  const QModelIndex relationContainer = mAvailableWidgetsModel->getRelationContainer();
 
-  //   for ( int t = 0; t < mFormLayoutTree->invisibleRootItem()->childCount(); t++ )
-  //   {
-  //     QTreeWidgetItem *tabItem = mFormLayoutTree->invisibleRootItem()->child( t );
-  //     const DnDTreeItemData tabItemData = tabItem->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
+  for ( int i = 0; i < mAvailableWidgetsModel->rowCount( relationContainer ); i++ )
+  {
+    const QModelIndex relationIndex = mAvailableWidgetsModel->index( i, 0, relationContainer );
 
-  //     if ( tabItemData.type() == itemData.type() && tabItemData.name() == itemData.name() )
-  //     {
-  //       QVariantMap cfg;
+    const QgsAttributeFormTreeData::DnDTreeItemData itemData = relationIndex.data( QgsAttributesFormModel::NodeDataRole ).value<QgsAttributeFormTreeData::DnDTreeItemData>();
+    const auto indexType = static_cast< QgsAttributeFormTreeData::AttributeFormTreeItemType >( relationIndex.data( QgsAttributesFormModel::NodeTypeRole ).toInt() );
+    const QString indexId = relationIndex.data( QgsAttributesFormModel::NodeIdRole ).toString();
 
-  //       cfg[QStringLiteral( "nm-rel" )] = tabItemData.relationEditorConfiguration().nmRelationId;
-  //       cfg[QStringLiteral( "force-suppress-popup" )] = tabItemData.relationEditorConfiguration().forceSuppressFormPopup;
+    const QModelIndex layoutIndex = mFormLayoutModel->getFirstTopMatchingModelIndex( indexType, indexId ); // TODO: why this was not recursive in the original code?
+    if ( layoutIndex.isValid() )
+    {
+      QVariantMap config;
 
-  //       editFormConfig.setWidgetConfig( tabItemData.name(), cfg );
-  //       break;
-  //     }
-  //   }
-  // }
+      const QgsAttributeFormTreeData::DnDTreeItemData tabIndexData = layoutIndex.data( QgsAttributesFormModel::NodeDataRole ).value<QgsAttributeFormTreeData::DnDTreeItemData>();
+      config[QStringLiteral( "nm-rel" )] = tabIndexData.relationEditorConfiguration().nmRelationId;
+      config[QStringLiteral( "force-suppress-popup" )] = tabIndexData.relationEditorConfiguration().forceSuppressFormPopup;
+
+      editFormConfig.setWidgetConfig( indexId, config );
+      break;
+    }
+
+    // Keeping this as backup until we test the code above :)
+    // for ( int t = 0; t < mFormLayoutModel->rowCount(); t++ )
+    // {
+    //   const QModelIndex tabIndex = mFormLayoutModel->index( t, 0 );
+
+    //   const QgsAttributeFormTreeData::DnDTreeItemData tabIndexData = tabIndex.data( QgsAttributesFormModel::NodeDataRole ).value<QgsAttributeFormTreeData::DnDTreeItemData>();
+    //   const auto tabIndexType = static_cast< QgsAttributeFormTreeData::AttributeFormTreeItemType >( tabIndex.data( QgsAttributesFormModel::NodeTypeRole ).toInt() );
+    //   const QString tabIndexName = tabIndex.data( QgsAttributesFormModel::NodeNameRole ).toString();
+
+    //   if ( tabIndexType == indexType && tabIndexName == indexName )
+    //   {
+    //     QVariantMap cfg;
+
+    //     cfg[QStringLiteral( "nm-rel" )] = tabIndexData.relationEditorConfiguration().nmRelationId;
+    //     cfg[QStringLiteral( "force-suppress-popup" )] = tabIndexData.relationEditorConfiguration().forceSuppressFormPopup;
+
+    //     editFormConfig.setWidgetConfig( tabIndexName, cfg );
+    //     break;
+    //   }
+    // }
+  }
 
   mLayer->setEditFormConfig( editFormConfig );
   mBlockUpdates--;
@@ -1690,7 +1711,7 @@ void QgsAttributesFormTreeView::selectFirstMatchingItem( const QgsAttributeFormT
 {
   // To be used with Relations, fields and actions
   const auto *model = static_cast< QgsAttributesFormModel * >( this->model() );
-  QModelIndex index = model->getFirstMatchingModelIndex( nodeType, nodeId );
+  QModelIndex index = model->getFirstRecursiveMatchingModelIndex( nodeType, nodeId );
 
   if ( index.isValid() )
   {
@@ -1731,25 +1752,30 @@ void QgsAttributesFormProperties::updatedFields()
 {
   // Store configuration to insure changes made are kept after refreshing the list
   QMap<QString, QgsAttributeFormTreeData::FieldConfig> fieldConfigs;
-  QTreeWidgetItem *fieldContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 0 );
-  for ( int i = 0; i < fieldContainer->childCount(); i++ )
+
+  const QModelIndex fieldContainerBefore = mAvailableWidgetsModel->getFieldContainer();
+  QModelIndex index;
+
+  for ( int i = 0; i < mAvailableWidgetsModel->rowCount( fieldContainerBefore ); i++ )
   {
-    QTreeWidgetItem *fieldItem = fieldContainer->child( i );
-    const QString fieldName = fieldItem->data( 0, QgsAttributesFormModel::NodeNameRole ).toString();
-    const QgsAttributeFormTreeData::FieldConfig cfg = fieldItem->data( 0, FieldConfigRole ).value<QgsAttributeFormTreeData::FieldConfig>();
-    fieldConfigs[fieldName] = cfg;
+    index = mAvailableWidgetsModel->index( i, 0, fieldContainerBefore );
+    const QString fieldName = index.data( QgsAttributesFormModel::NodeNameRole ).toString();
+    const QgsAttributeFormTreeData::FieldConfig config = index.data( QgsAttributesFormModel::NodeFieldConfigRole ).value< QgsAttributeFormTreeData::FieldConfig >();
+    fieldConfigs[fieldName] = config;
   }
 
   initAvailableWidgetsTree();
 
-  fieldContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 0 );
-  for ( int i = 0; i < fieldContainer->childCount(); i++ )
+  const QModelIndex fieldContainerAfter = mAvailableWidgetsModel->getFieldContainer();
+
+  for ( int i = 0; i < mAvailableWidgetsModel->rowCount( fieldContainerAfter ); i++ )
   {
-    QTreeWidgetItem *fieldItem = fieldContainer->child( i );
-    const QString fieldName = fieldItem->data( 0, QgsAttributesFormModel::NodeNameRole ).toString();
+    index = mAvailableWidgetsModel->index( i, 0, fieldContainerAfter );
+    const QString fieldName = index.data( QgsAttributesFormModel::NodeNameRole ).toString();
+
     if ( fieldConfigs.contains( fieldName ) )
     {
-      fieldItem->setData( 0, FieldConfigRole, fieldConfigs[fieldName] );
+      mAvailableWidgetsModel->setData( index, fieldConfigs[fieldName], QgsAttributesFormModel::NodeFieldConfigRole );
     }
   }
 }

@@ -317,7 +317,7 @@ class AttributesFormTreeNode
     explicit AttributesFormTreeNode( QgsAttributeFormTreeData::AttributeFormTreeItemType itemType, const QgsAttributeFormTreeData::DnDTreeItemData &data, const QString &name, const QString &displayName = QString(), AttributesFormTreeNode *parent = nullptr );
 
     AttributesFormTreeNode *child( int number );
-    AttributesFormTreeNode *firstChild( const QString &name ) const;
+    AttributesFormTreeNode *firstTopChild( const QgsAttributeFormTreeData::AttributeFormTreeItemType nodeType, const QString &nodeId ) const;
     AttributesFormTreeNode *firstChildRecursive( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const;
 
     int childCount() const;
@@ -365,6 +365,9 @@ class AttributesFormTreeNode
 };
 
 
+/**
+ * Abstract class
+ */
 class QgsAttributesFormModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -407,7 +410,8 @@ class QgsAttributesFormModel : public QAbstractItemModel
     //bool removeColumns( int column, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     // Other methods
-    QModelIndex getFirstMatchingModelIndex( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const;
+    QModelIndex getFirstTopMatchingModelIndex( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const;
+    QModelIndex getFirstRecursiveMatchingModelIndex( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const;
     //QModelIndex getFieldModelIndex( const QString &fieldName ) const;
 
     //void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, AttributeFormLayoutTreeItem *parent );
@@ -453,6 +457,8 @@ class QgsAttributesAvailableWidgetsModel : public QgsAttributesFormModel
     //bool removeColumns( int column, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     // Other methods
+    QModelIndex getFieldContainer() const;
+    QModelIndex getRelationContainer() const;
     QModelIndex getFieldModelIndex( const QString &fieldName ) const;
 
   public slots:
@@ -495,12 +501,11 @@ class QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     // Other methods
     //QModelIndex getFieldModelIndex( const QString &fieldName ) const;
 
-    void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, AttributesFormTreeNode *parent );
-
   public slots:
     void populate() override;
 
   private:
+    void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, AttributesFormTreeNode *parent );
     //AttributeFormLayoutTreeItem *getItem( const QModelIndex &index ) const;
 
     //QgsVectorLayer *mLayer;

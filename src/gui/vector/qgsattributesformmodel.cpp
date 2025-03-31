@@ -6,7 +6,10 @@
 #include "qgsattributeeditoraction.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorrelation.h"
-
+#include "qgsattributeeditorqmlelement.h"
+#include "qgsattributeeditorhtmlelement.h"
+#include "qgsattributeeditortextelement.h"
+#include "qgsattributeeditorspacerelement.h"
 
 /*
  * FieldConfig implementation
@@ -177,14 +180,14 @@ AttributesFormTreeNode *AttributesFormTreeNode::child( int number )
   return nullptr;
 }
 
-AttributesFormTreeNode *AttributesFormTreeNode::firstChild( const QString &name ) const
+AttributesFormTreeNode *AttributesFormTreeNode::firstTopChild( const QgsAttributeFormTreeData::AttributeFormTreeItemType nodeType, const QString &nodeId ) const
 {
-  if ( !mChildren.empty() && name.trimmed().isEmpty() )
+  if ( !mChildren.empty() && nodeId.trimmed().isEmpty() )
     return nullptr;
 
   // Search for first matching item by name
-  const auto it = std::find_if( mChildren.cbegin(), mChildren.cend(), [name]( const std::unique_ptr< AttributesFormTreeNode > &treeItem ) {
-    return treeItem->name() == name;
+  const auto it = std::find_if( mChildren.cbegin(), mChildren.cend(), [nodeType, nodeId]( const std::unique_ptr< AttributesFormTreeNode > &treeNode ) {
+    return treeNode->type() == nodeType && treeNode->name() == nodeId;
   } );
 
   if ( it != mChildren.cend() )
@@ -288,8 +291,6 @@ bool AttributesFormTreeNode::setData( int role, const QVariant &value )
     case QgsAttributesFormModel::NodeNameRole:
     {
       mName = value.toString();
-      if ( mNodeId.isEmpty() )
-        mNodeId = value.toString(); // Some nodes don't have an explicit id, take name as id (e.g. fields)
       return true;
     }
     case QgsAttributesFormModel::NodeTypeRole:
@@ -376,7 +377,13 @@ QModelIndex QgsAttributesFormModel::parent( const QModelIndex &index ) const
            : QModelIndex();
 }
 
-QModelIndex QgsAttributesFormModel::getFirstMatchingModelIndex( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const
+QModelIndex QgsAttributesFormModel::getFirstTopMatchingModelIndex( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const
+{
+  AttributesFormTreeNode *node = mRootItem->firstTopChild( nodeType, nodeId );
+  return node ? createIndex( node->row(), 0, node ) : QModelIndex();
+}
+
+QModelIndex QgsAttributesFormModel::getFirstRecursiveMatchingModelIndex( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const
 {
   AttributesFormTreeNode *node = mRootItem->firstChildRecursive( nodeType, nodeId );
   return node ? createIndex( node->row(), 0, node ) : QModelIndex();
@@ -422,6 +429,7 @@ void QgsAttributesAvailableWidgetsModel::populate()
     auto item = std::make_unique< AttributesFormTreeNode >();
     item->setData( NodeFieldConfigRole, cfg );
     item->setData( NodeNameRole, field.name() );
+    item->setData( NodeIdRole, field.name() ); // Field names act as ids
     item->setData( NodeTypeRole, QgsAttributeFormTreeData::Field );
     item->setData( NodeDataRole, itemData );
     item->setIcon( fields.iconForField( i, true ) );
@@ -492,23 +500,25 @@ void QgsAttributesAvailableWidgetsModel::populate()
 
   auto itemOtherWidgets = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::WidgetType, QStringLiteral( "Other" ), tr( "Other Widgets" ) );
 
-  auto itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+  QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
   itemData.setShowLabel( true );
   auto itemQml = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::QmlWidget, itemData, QStringLiteral( "QML Widget" ), tr( "QML Widget" ) );
   itemOtherWidgets->addChildItem( std::move( itemQml ) );
 
-  auto itemHtmlData = QgsAttributeFormTreeData::DnDTreeItemData();
+  QgsAttributeFormTreeData::DnDTreeItemData itemHtmlData = QgsAttributeFormTreeData::DnDTreeItemData();
   itemHtmlData.setShowLabel( true );
   auto itemHtml = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::HtmlWidget, itemHtmlData, QStringLiteral( "HTML Widget" ), tr( "HTML Widget" ) );
   itemOtherWidgets->addChildItem( std::move( itemHtml ) );
 
-  // auto itemDataText { DnDTreeItemData( DnDTreeItemData::TextWidget, QStringLiteral( "Text Widget" ), tr( "Text Widget" ) ) };
-  // itemDataText.setShowLabel( true );
-  // mAvailableWidgetsTree->addItem( catitem, itemDataText );
+  QgsAttributeFormTreeData::DnDTreeItemData itemTextData = QgsAttributeFormTreeData::DnDTreeItemData();
+  itemTextData.setShowLabel( true );
+  auto itemText = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::TextWidget, itemTextData, QStringLiteral( "Text Widget" ), tr( "Text Widget" ) );
+  itemOtherWidgets->addChildItem( std::move( itemText ) );
 
-  // auto itemDataSpacer { DnDTreeItemData( DnDTreeItemData::SpacerWidget, QStringLiteral( "Spacer Widget" ), tr( "Spacer Widget" ) ) };
-  // itemDataSpacer.setShowLabel( false );
-  // mAvailableWidgetsTree->addItem( catitem, itemDataSpacer );
+  QgsAttributeFormTreeData::DnDTreeItemData itemSpacerData = QgsAttributeFormTreeData::DnDTreeItemData();
+  itemTextData.setShowLabel( false );
+  auto itemSpacer = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::SpacerWidget, QStringLiteral( "Spacer Widget" ), tr( "Spacer Widget" ) );
+  itemOtherWidgets->addChildItem( std::move( itemSpacer ) );
 
   mRootItem->addChildItem( std::move( itemOtherWidgets ) );
 
@@ -520,9 +530,6 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
   if ( !index.isValid() )
     return QVariant();
 
-  // if ( role != Qt::DisplayRole && role != Qt::EditRole )
-  //   return QVariant();
-
   const AttributesFormTreeNode *item = getItem( index );
   if ( !item )
     return QVariant();
@@ -531,7 +538,7 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
   {
     case Qt::DisplayRole:
     {
-      return item->displayName().isEmpty() ? ( item->name().isEmpty() ? item->id() : item->name() ) : item->displayName();
+      return item->displayName().isEmpty() ? item->name() : item->displayName();
     }
 
     case Qt::ToolTipRole:
@@ -584,15 +591,43 @@ bool QgsAttributesAvailableWidgetsModel::setData( const QModelIndex &index, cons
   return result;
 }
 
+QModelIndex QgsAttributesAvailableWidgetsModel::getFieldContainer() const
+{
+  if ( mRootItem->childCount() > 0 )
+  {
+    const int row = 0;
+    AttributesFormTreeNode *node = mRootItem->child( row );
+    if ( node && node->name() == QLatin1String( "Fields" ) )
+      return createIndex( row, 0, node );
+  }
+  return QModelIndex();
+}
+
+QModelIndex QgsAttributesAvailableWidgetsModel::getRelationContainer() const
+{
+  if ( mRootItem->childCount() > 1 )
+  {
+    const int row = 1;
+    AttributesFormTreeNode *node = mRootItem->child( row );
+    if ( node && node->name() == QLatin1String( "Relations" ) )
+      return createIndex( row, 0, node );
+  }
+  return QModelIndex();
+}
+
 QModelIndex QgsAttributesAvailableWidgetsModel::getFieldModelIndex( const QString &fieldName ) const
 {
+  if ( mRootItem->childCount() == 0 )
+    return QModelIndex();
+
   AttributesFormTreeNode *fieldsItems = mRootItem->child( 0 );
   if ( !fieldsItems || fieldsItems->name() != QLatin1String( "Fields" ) )
     return QModelIndex();
 
-  AttributesFormTreeNode *item = fieldsItems->firstChild( fieldName );
+  AttributesFormTreeNode *item = fieldsItems->firstTopChild( QgsAttributeFormTreeData::Field, fieldName );
   return item ? createIndex( item->row(), 0, item ) : QModelIndex();
 }
+
 
 //
 // QgsAttributesFormLayoutModel
@@ -642,6 +677,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       setCommonProperties( itemData );
 
       editorItem->setData( NodeNameRole, editorElement->name() );
+      editorItem->setData( NodeIdRole, editorElement->name() ); // Field names act as ids
       editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::Field );
       editorItem->setData( NodeDataRole, itemData );
 
@@ -720,77 +756,85 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       break;
     }
 
-      // case Qgis::AttributeEditorType::QmlElement:
-      // {
-      //   const QgsAttributeEditorQmlElement *qmlElementEditor = static_cast<const QgsAttributeEditorQmlElement *>( editorElement );
-      //   DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, editorElement->name(), editorElement->name() );
-      //   QmlElementEditorConfiguration qmlEdConfig;
-      //   qmlEdConfig.qmlCode = qmlElementEditor->qmlCode();
-      //   itemData.setQmlElementEditorConfiguration( qmlEdConfig );
-      //   setCommonProperties( itemData );
-      //   newWidget = tree->addItem( parent, itemData );
-      //   break;
-      // }
+    case Qgis::AttributeEditorType::QmlElement:
+    {
+      const QgsAttributeEditorQmlElement *qmlElementEditor = static_cast<const QgsAttributeEditorQmlElement *>( editorElement );
+      QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+      setCommonProperties( itemData );
 
-      // case Qgis::AttributeEditorType::HtmlElement:
-      // {
-      //   const QgsAttributeEditorHtmlElement *htmlElementEditor = static_cast<const QgsAttributeEditorHtmlElement *>( editorElement );
-      //   DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::HtmlWidget, editorElement->name(), editorElement->name() );
-      //   HtmlElementEditorConfiguration htmlEdConfig;
-      //   htmlEdConfig.htmlCode = htmlElementEditor->htmlCode();
-      //   itemData.setHtmlElementEditorConfiguration( htmlEdConfig );
-      //   setCommonProperties( itemData );
-      //   newWidget = tree->addItem( parent, itemData );
-      //   break;
-      // }
+      QgsAttributeFormTreeData::QmlElementEditorConfiguration qmlEdConfig;
+      qmlEdConfig.qmlCode = qmlElementEditor->qmlCode();
+      itemData.setQmlElementEditorConfiguration( qmlEdConfig );
 
-      // case Qgis::AttributeEditorType::TextElement:
-      // {
-      //   const QgsAttributeEditorTextElement *textElementEditor = static_cast<const QgsAttributeEditorTextElement *>( editorElement );
-      //   DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::TextWidget, editorElement->name(), editorElement->name() );
-      //   TextElementEditorConfiguration textEdConfig;
-      //   textEdConfig.text = textElementEditor->text();
-      //   itemData.setTextElementEditorConfiguration( textEdConfig );
-      //   setCommonProperties( itemData );
-      //   newWidget = tree->addItem( parent, itemData );
-      //   break;
-      // }
+      editorItem->setData( NodeNameRole, editorElement->name() );
+      editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::QmlWidget );
+      editorItem->setData( NodeDataRole, itemData );
+      break;
+    }
 
-      // case Qgis::AttributeEditorType::SpacerElement:
-      // {
-      //   const QgsAttributeEditorSpacerElement *spacerElementEditor = static_cast<const QgsAttributeEditorSpacerElement *>( editorElement );
-      //   DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::SpacerWidget, editorElement->name(), editorElement->name() );
-      //   SpacerElementEditorConfiguration spacerEdConfig;
-      //   spacerEdConfig.drawLine = spacerElementEditor->drawLine();
-      //   itemData.setSpacerElementEditorConfiguration( spacerEdConfig );
-      //   setCommonProperties( itemData );
-      //   itemData.setShowLabel( false );
-      //   newWidget = tree->addItem( parent, itemData );
-      //   break;
-      // }
+    case Qgis::AttributeEditorType::HtmlElement:
+    {
+      const QgsAttributeEditorHtmlElement *htmlElementEditor = static_cast<const QgsAttributeEditorHtmlElement *>( editorElement );
+      QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+      setCommonProperties( itemData );
 
-      // case Qgis::AttributeEditorType::Invalid:
-      // {
-      //   QgsDebugError( QStringLiteral( "Not loading invalid attribute editor type..." ) );
-      //   break;
-      // }
+      QgsAttributeFormTreeData::HtmlElementEditorConfiguration htmlEdConfig;
+      htmlEdConfig.htmlCode = htmlElementEditor->htmlCode();
+      itemData.setHtmlElementEditorConfiguration( htmlEdConfig );
+
+      editorItem->setData( NodeNameRole, editorElement->name() );
+      editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::HtmlWidget );
+      editorItem->setData( NodeDataRole, itemData );
+      break;
+    }
+
+    case Qgis::AttributeEditorType::TextElement:
+    {
+      const QgsAttributeEditorTextElement *textElementEditor = static_cast<const QgsAttributeEditorTextElement *>( editorElement );
+      QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+      setCommonProperties( itemData );
+
+      QgsAttributeFormTreeData::TextElementEditorConfiguration textEdConfig;
+      textEdConfig.text = textElementEditor->text();
+      itemData.setTextElementEditorConfiguration( textEdConfig );
+
+      editorItem->setData( NodeNameRole, editorElement->name() );
+      editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::TextWidget );
+      editorItem->setData( NodeDataRole, itemData );
+      break;
+    }
+
+    case Qgis::AttributeEditorType::SpacerElement:
+    {
+      const QgsAttributeEditorSpacerElement *spacerElementEditor = static_cast<const QgsAttributeEditorSpacerElement *>( editorElement );
+      QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+      setCommonProperties( itemData );
+      itemData.setShowLabel( false );
+
+      QgsAttributeFormTreeData::SpacerElementEditorConfiguration spacerEdConfig;
+      spacerEdConfig.drawLine = spacerElementEditor->drawLine();
+      itemData.setSpacerElementEditorConfiguration( spacerEdConfig );
+
+      editorItem->setData( NodeNameRole, editorElement->name() );
+      editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::SpacerWidget );
+      editorItem->setData( NodeDataRole, itemData );
+      break;
+    }
+
+    case Qgis::AttributeEditorType::Invalid:
+    {
+      QgsDebugError( QStringLiteral( "Not loading invalid attribute editor type..." ) );
+      break;
+    }
   }
 
   parent->addChildItem( std::move( editorItem ) );
-
-  // if ( newWidget )
-  //   newWidget->setExpanded( true );
-
-  // return newWidget;
 }
 
 QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() )
     return QVariant();
-
-  // if ( role != Qt::DisplayRole && role != Qt::EditRole )
-  //   return QVariant();
 
   const AttributesFormTreeNode *item = getItem( index );
   if ( !item )
@@ -800,7 +844,7 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
   {
     case Qt::DisplayRole:
     {
-      return item->displayName().isEmpty() ? ( item->name().isEmpty() ? item->id() : item->name() ) : item->displayName();
+      return item->displayName().isEmpty() ? item->name() : item->displayName();
     }
 
     case Qt::ToolTipRole:
