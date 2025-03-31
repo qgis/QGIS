@@ -27,14 +27,17 @@
  * This parameter provides Processing framework's adapter for QList<QgsVectorTileWriter::Layer>.
  *
  * A valid value for this parameter is a list (QVariantList), where each item is a map (QVariantMap) in this form:
+ *
+ * \code{.py}
  * {
  *   'layer':  string or QgsMapLayer,
- *   // key-value pairs below are optional
+ *   # key-value pairs below are optional
  *   'layerName': string,
  *   'filterExpression': string,
  *   'minZoom': int,
  *   'maxZoom': int
  * }
+ * \endcode
  *
  * Static functions parametersAsLayers(), variantMapAsLayer(), layerAsVariantMap() provide conversion between
  * QgsVectorTileWriter::Layer representation and QVariant representation.
