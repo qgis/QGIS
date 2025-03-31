@@ -3388,7 +3388,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
      <normaloff>:/images/themes/default/mActionNew3DMapGlobe.svg</normaloff>:/images/themes/default/mActionNew3DMapGlobe.svg</iconset>
    </property>
    <property name="text">
-    <string>New 3D Map View (&amp;Globe)</string>
+    <string>New 3D &amp;Globe View</string>
    </property>
   </action>
  </widget>
