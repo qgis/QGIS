@@ -10316,10 +10316,11 @@ QgsMeshTimeSettings.setAbsoluteTimeFormat: src/core/mesh/qgsmeshtimesettings.h#L
 QgsMeshTimeSettings.setRelativeTimeFormat: src/core/mesh/qgsmeshtimesettings.h#L65
 QgsMeshTimeSettings.writeXml: src/core/mesh/qgsmeshtimesettings.h#L58
 QgsMeshTimeSettings: src/core/mesh/qgsmeshtimesettings.h#L35
-QgsMeshTransformVerticesByExpression.calculate: src/core/mesh/qgsmeshadvancedediting.h#L184
+QgsMeshTransformVerticesByExpression.calculate: src/core/mesh/qgsmeshadvancedediting.h#L187
 QgsMeshTransformVerticesByExpression.setExpressions: src/core/mesh/qgsmeshadvancedediting.h#L175
+QgsMeshTransformVerticesByExpression.setZFromTerrain: src/core/mesh/qgsmeshadvancedediting.h#L206
 QgsMeshTransformVerticesByExpression.text: src/core/mesh/qgsmeshadvancedediting.h#L168
-QgsMeshTransformVerticesByExpression.transformedVertex: src/core/mesh/qgsmeshadvancedediting.h#L191
+QgsMeshTransformVerticesByExpression.transformedVertex: src/core/mesh/qgsmeshadvancedediting.h#L194
 QgsMeshTransformVerticesByExpression: src/core/mesh/qgsmeshadvancedediting.h#L162
 QgsMeshUtils.exportRasterBlock: src/core/mesh/qgsmeshutils.h#L106
 QgsMeshUtils.exportRasterBlock: src/core/mesh/qgsmeshutils.h#L80
