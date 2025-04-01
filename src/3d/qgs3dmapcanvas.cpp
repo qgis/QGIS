@@ -24,6 +24,7 @@
 #include <Qt3DLogic/QLogicAspect>
 #include <Qt3DLogic/QFrameAction>
 
+#include "qgs3daxis.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgswindow3dengine.h"
@@ -269,6 +270,12 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
 {
   if ( watched != this )
     return false;
+
+  if ( mScene && mScene->get3DAxis() && mScene->get3DAxis()->handleEvent( event ) )
+  {
+    event->accept();
+    return true;
+  }
 
   if ( event->type() == QEvent::ShortcutOverride )
   {
