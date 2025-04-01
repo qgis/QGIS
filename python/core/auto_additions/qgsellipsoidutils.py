@@ -1,7 +1,7 @@
 # The following has been generated automatically from src/core/proj/qgsellipsoidutils.h
 try:
     QgsEllipsoidUtils.EllipsoidParameters.__attribute_docs__ = {'valid': 'Whether ellipsoid parameters are valid', 'semiMajor': 'Semi-major axis, in meters', 'semiMinor': 'Semi-minor axis, in meters', 'useCustomParameters': 'Whether custom parameters alone should be used (semiMajor/semiMinor only)', 'inverseFlattening': 'Inverse flattening', 'crs': 'Associated coordinate reference system'}
-    QgsEllipsoidUtils.EllipsoidParameters.__annotations__ = {'valid': 'bool', 'semiMajor': float, 'semiMinor': float, 'useCustomParameters': 'bool', 'inverseFlattening': float, 'crs': 'QgsCoordinateReferenceSystem'}
+    QgsEllipsoidUtils.EllipsoidParameters.__annotations__ = {'valid': bool, 'semiMajor': float, 'semiMinor': float, 'useCustomParameters': bool, 'inverseFlattening': float, 'crs': 'QgsCoordinateReferenceSystem'}
     QgsEllipsoidUtils.EllipsoidParameters.__doc__ = """Contains parameters for an ellipsoid."""
     QgsEllipsoidUtils.EllipsoidParameters.__group__ = ['proj']
 except (NameError, AttributeError):

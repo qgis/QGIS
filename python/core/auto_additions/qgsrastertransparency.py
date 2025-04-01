@@ -8,7 +8,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsRasterTransparency.TransparentSingleValuePixel.__attribute_docs__ = {'min': 'Minimum pixel value to include in range.', 'max': 'Maximum pixel value to include in range.', 'opacity': 'Opacity for pixel, between 0 and 1.0.\n\n.. versionadded:: 3.38', 'includeMinimum': '``True`` if pixels matching the min value should be considered transparent,\nor ``False`` if only pixels greater than the min value should be transparent.\n\n.. versionadded:: 3.38', 'includeMaximum': '``True`` if pixels matching the max value should be considered transparent,\nor ``False`` if only pixels less than the max value should be transparent.\n\n.. versionadded:: 3.38'}
-    QgsRasterTransparency.TransparentSingleValuePixel.__annotations__ = {'min': float, 'max': float, 'opacity': float, 'includeMinimum': 'bool', 'includeMaximum': 'bool'}
+    QgsRasterTransparency.TransparentSingleValuePixel.__annotations__ = {'min': float, 'max': float, 'opacity': float, 'includeMinimum': bool, 'includeMaximum': bool}
     QgsRasterTransparency.TransparentSingleValuePixel.__doc__ = """Defines the transparency for a range of single-band pixel values."""
     QgsRasterTransparency.TransparentSingleValuePixel.__group__ = ['raster']
 except (NameError, AttributeError):

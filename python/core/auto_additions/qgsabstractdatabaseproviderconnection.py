@@ -50,7 +50,7 @@ QgsAbstractDatabaseProviderConnection.GeometryColumnCapabilities.baseClass = Qgs
 GeometryColumnCapabilities = QgsAbstractDatabaseProviderConnection  # dirty hack since SIP seems to introduce the flags in module
 try:
     QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__attribute_docs__ = {'sql': 'The SQL expression that defines the SQL (query) layer', 'filter': 'Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability.Filters capability', 'layerName': 'Optional name for the new layer', 'primaryKeyColumns': 'List of primary key column names', 'geometryColumn': 'Name of the geometry column', 'disableSelectAtId': 'If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability.SelectAtId capability'}
-    QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__annotations__ = {'sql': str, 'filter': str, 'layerName': str, 'primaryKeyColumns': 'List[str]', 'geometryColumn': str, 'disableSelectAtId': 'bool'}
+    QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__annotations__ = {'sql': str, 'filter': str, 'layerName': str, 'primaryKeyColumns': 'List[str]', 'geometryColumn': str, 'disableSelectAtId': bool}
     QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__doc__ = """The SqlVectorLayerOptions stores all information required to create a SQL (query) layer.
 
 .. seealso:: :py:func:`createSqlVectorLayer`
