@@ -51,6 +51,7 @@
 #include <QClipboard>
 #include <QPointer>
 #include <QScreen>
+#include <QUuid>
 
 ///@cond PRIVATE
 
@@ -1331,9 +1332,10 @@ void QgsCategorizedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
   }
   else if ( event->key() == Qt::Key_V && event->modifiers() == Qt::ControlModifier )
   {
-    QgsCategoryList::const_iterator rIt = mCopyBuffer.constBegin();
-    for ( ; rIt != mCopyBuffer.constEnd(); ++rIt )
+    QgsCategoryList::iterator rIt = mCopyBuffer.begin();
+    for ( ; rIt != mCopyBuffer.end(); ++rIt )
     {
+      rIt->mUuid = QUuid::createUuid().toString();
       mModel->addCategory( *rIt );
     }
   }
