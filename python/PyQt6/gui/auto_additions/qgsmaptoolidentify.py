@@ -26,7 +26,7 @@ QgsMapToolIdentify.Type.__and__ = lambda flag1, flag2: _force_int(flag1) & _forc
 QgsMapToolIdentify.Type.__or__ = lambda flag1, flag2: QgsMapToolIdentify.Type(_force_int(flag1) | _force_int(flag2))
 try:
     QgsMapToolIdentify.IdentifyProperties.__attribute_docs__ = {'searchRadiusMapUnits': 'Identify search radius is map units. Use negative value to ignore', 'skip3DLayers': 'Skip identify results from layers that have a 3d renderer set'}
-    QgsMapToolIdentify.IdentifyProperties.__annotations__ = {'searchRadiusMapUnits': float, 'skip3DLayers': 'bool'}
+    QgsMapToolIdentify.IdentifyProperties.__annotations__ = {'searchRadiusMapUnits': float, 'skip3DLayers': bool}
     QgsMapToolIdentify.IdentifyProperties.__group__ = ['maptools']
 except (NameError, AttributeError):
     pass

@@ -3393,9 +3393,12 @@ for class_name, attribute_typehints in CONTEXT.attribute_typehints.items():
     annotations_str = "{"
     for attribute_name, typehint in attribute_typehints.items():
         annotations_str += f"'{attribute_name}': "
-        annotations_str += {"int": "int", "float": "float", "str": "str"}.get(
-            typehint, f"'{typehint}'"
-        )
+        annotations_str += {
+            "int": "int",
+            "float": "float",
+            "str": "str",
+            "bool": "bool",
+        }.get(typehint, f"'{typehint}'")
         annotations_str += ", "
     annotations_str = annotations_str[:-2] + "}"
 

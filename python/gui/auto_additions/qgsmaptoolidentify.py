@@ -4,7 +4,7 @@ QgsMapToolIdentify.LayerType.baseClass = QgsMapToolIdentify
 LayerType = QgsMapToolIdentify  # dirty hack since SIP seems to introduce the flags in module
 try:
     QgsMapToolIdentify.IdentifyProperties.__attribute_docs__ = {'searchRadiusMapUnits': 'Identify search radius is map units. Use negative value to ignore', 'skip3DLayers': 'Skip identify results from layers that have a 3d renderer set'}
-    QgsMapToolIdentify.IdentifyProperties.__annotations__ = {'searchRadiusMapUnits': float, 'skip3DLayers': 'bool'}
+    QgsMapToolIdentify.IdentifyProperties.__annotations__ = {'searchRadiusMapUnits': float, 'skip3DLayers': bool}
     QgsMapToolIdentify.IdentifyProperties.__group__ = ['maptools']
 except (NameError, AttributeError):
     pass

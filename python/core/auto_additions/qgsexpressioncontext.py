@@ -1,7 +1,7 @@
 # The following has been generated automatically from src/core/qgsexpressioncontext.h
 try:
     QgsExpressionContextScope.StaticVariable.__attribute_docs__ = {'name': 'Variable name', 'value': 'Variable value', 'readOnly': 'True if variable should not be editable by users', 'isStatic': 'A static variable can be cached for the lifetime of a context', 'description': 'Translated description of variable, for use within expression builder widgets.'}
-    QgsExpressionContextScope.StaticVariable.__annotations__ = {'name': str, 'value': 'object', 'readOnly': 'bool', 'isStatic': 'bool', 'description': str}
+    QgsExpressionContextScope.StaticVariable.__annotations__ = {'name': str, 'value': 'object', 'readOnly': bool, 'isStatic': bool, 'description': str}
     QgsExpressionContextScope.StaticVariable.__doc__ = """Single variable definition for use within a QgsExpressionContextScope."""
 except (NameError, AttributeError):
     pass
