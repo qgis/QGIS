@@ -122,6 +122,7 @@ class Context:
         self.doxy_inside_sip_run: int = 0
         self.has_pushed_force_int: bool = False
         self.attribute_docstrings = defaultdict(dict)
+        self.attribute_typehints = defaultdict(dict)
         self.struct_docstrings = defaultdict(dict)
         self.current_method_name: str = ""
         self.static_methods = defaultdict(dict)
@@ -1496,15 +1497,21 @@ def convert_type(cpp_type: str) -> str:
         "QString": "str",
         "void": "None",
         "qint64": "int",
+        "quint64": "int",
+        "qreal": "float",
         "unsigned long long": "int",
         "long long": "int",
         "qlonglong": "int",
+        "qgssize": "int",
         "long": "int",
         "QStringList": "List[str]",
         "QVariantList": "List[object]",
         "QVariantMap": "Dict[str, object]",
         "QVariant": "object",
     }
+
+    cpp_type = cpp_type.replace("static ", "")
+    cpp_type = cpp_type.replace("const ", "")
 
     # Handle templates
     template_match = re.match(r"(\w+)\s*<\s*(.+)\s*>", cpp_type)
@@ -3027,15 +3034,31 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             and CONTEXT.comment
         ):
             attribute_name_match = re.match(
-                r"^.*?\s[*&]*(\w+);.*$", CONTEXT.current_line
+                r"^\s*(.*?)\s[*&]*(\w+);.*$", CONTEXT.current_line
+            )
+            dbg_info(
+                f"got member {attribute_name_match.group(2)} of type {attribute_name_match.group(1)}"
             )
             class_name = CONTEXT.current_fully_qualified_struct_name()
             dbg_info(
-                f"storing attribute docstring for {class_name} : {attribute_name_match.group(1)}"
+                f"storing attribute docstring for {class_name} : {attribute_name_match.group(2)}"
             )
             CONTEXT.attribute_docstrings[class_name][
-                attribute_name_match.group(1)
+                attribute_name_match.group(2)
             ] = CONTEXT.comment
+
+            try:
+                typehint = convert_type(attribute_name_match.group(1))
+            except AssertionError:
+                exit_with_error(
+                    f"Cannot convert c++ type {attribute_name_match.group(1)} to Python type for member {attribute_name_match.group(2)}. Ensure fully qualified class name is used"
+                )
+            dbg_info(
+                f"storing attribute typehint {typehint} for {class_name} (was {attribute_name_match.group(1)})"
+            )
+            CONTEXT.attribute_typehints[class_name][
+                attribute_name_match.group(2)
+            ] = typehint
         elif (
             CONTEXT.current_fully_qualified_struct_name()
             and re.search(r"\s*struct ", CONTEXT.current_line)
@@ -3361,6 +3384,23 @@ class_additions = defaultdict(list)
 for class_name, attribute_docstrings in CONTEXT.attribute_docstrings.items():
     class_additions[class_name].append(
         f"{class_name}.__attribute_docs__ = {str(attribute_docstrings)}"
+    )
+
+for class_name, attribute_typehints in CONTEXT.attribute_typehints.items():
+    if not attribute_typehints:
+        continue
+
+    annotations_str = "{"
+    for attribute_name, typehint in attribute_typehints.items():
+        annotations_str += f"'{attribute_name}': "
+        annotations_str += {"int": "int", "float": "float", "str": "str"}.get(
+            typehint, f"'{typehint}'"
+        )
+        annotations_str += ", "
+    annotations_str = annotations_str[:-2] + "}"
+
+    class_additions[class_name].append(
+        f"{class_name}.__annotations__ = {annotations_str}"
     )
 
 for class_name, static_methods in CONTEXT.static_methods.items():
