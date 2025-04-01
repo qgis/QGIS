@@ -177,11 +177,11 @@ class CORE_EXPORT QgsInterpolatedLineWidth
   private:
     bool mIsWidthVariable = false;
 
-    double mFixedWidth = DEFAULT_LINE_WIDTH;
+    double mFixedWidth = Qgis::DEFAULT_LINE_WIDTH;
 
     double mMinimumValue = 0;
     double mMaximumValue = 10;
-    double mMinimumWidth = DEFAULT_LINE_WIDTH;
+    double mMinimumWidth = Qgis::DEFAULT_LINE_WIDTH;
     double mMaximumWidth = 3;
     bool mIgnoreOutOfRange = false;
     bool mUseAbsoluteValue = false;

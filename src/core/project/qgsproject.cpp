@@ -985,9 +985,9 @@ QString QgsProject::ellipsoid() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( !crs().isValid() )
-    return geoNone();
+    return Qgis::geoNone();
 
-  return readEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), geoNone() );
+  return readEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), Qgis::geoNone() );
 }
 
 void QgsProject::setEllipsoid( const QString &ellipsoid )
@@ -4956,7 +4956,7 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
   else
   {
     // global crs
-    const QString layerDefaultCrs = mSettings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString();
+    const QString layerDefaultCrs = mSettings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), QStringLiteral( "EPSG:4326" ) ).toString();
     defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( layerDefaultCrs );
   }
 

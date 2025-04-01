@@ -578,7 +578,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       double lastRenderingTimeMs = -1;
 
       //! Default maximum allowable render time, in ms
-      double maxRenderingTimeMs = MAXIMUM_LAYER_PREVIEW_TIME_MS;
+      double maxRenderingTimeMs = Qgis::MAXIMUM_LAYER_PREVIEW_TIME_MS;
     };
 #endif
 

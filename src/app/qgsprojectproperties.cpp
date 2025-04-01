@@ -2421,7 +2421,7 @@ void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
   {
     // calculate top, left and scale based on CRS bounds
     QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr );
-    QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), crs, QgsProject::instance() );
+    QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() ), crs, QgsProject::instance() );
     crsTransform.setBallparkTransformsAreAppropriate( true );
     try
     {
@@ -2490,7 +2490,7 @@ void QgsProjectProperties::populateEllipsoidList()
   //
   EllipsoidDefs myItem;
 
-  myItem.acronym = geoNone();
+  myItem.acronym = Qgis::geoNone();
   myItem.description = tr( GEO_NONE_DESC );
   myItem.semiMajor = 0.0;
   myItem.semiMinor = 0.0;
@@ -2563,7 +2563,7 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
     leSemiMajor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Custom" ) ) );
     leSemiMinor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Custom" ) ) );
   }
-  if ( mEllipsoidList[mEllipsoidIndex].acronym != geoNone() )
+  if ( mEllipsoidList[mEllipsoidIndex].acronym != Qgis::geoNone() )
   {
     leSemiMajor->setText( QLocale().toString( myMajor, 'f', 3 ) );
     leSemiMinor->setText( QLocale().toString( myMinor, 'f', 3 ) );

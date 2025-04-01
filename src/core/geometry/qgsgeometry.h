@@ -904,7 +904,7 @@ class CORE_EXPORT QgsGeometry
      * \param epsilon epsilon for segment snapping
      * \returns The squared Cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint SIP_OUT, int &nextVertexIndex SIP_OUT, int *leftOrRightOfSegment SIP_OUT = nullptr, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint SIP_OUT, int &nextVertexIndex SIP_OUT, int *leftOrRightOfSegment SIP_OUT = nullptr, double epsilon = Qgis::DEFAULT_SEGMENT_EPSILON ) const;
 
     /**
      * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.

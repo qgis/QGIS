@@ -140,7 +140,7 @@ void TestQgsVectorFileWriter::initTestCase()
   mEncoding = QStringLiteral( "UTF-8" );
   const QgsField myField1( QStringLiteral( "Field1" ), QMetaType::Type::QString, QStringLiteral( "String" ), 10, 0, QStringLiteral( "Field 1 comment" ) );
   mFields.append( myField1 );
-  mCRS = QgsCoordinateReferenceSystem( geoWkt() );
+  mCRS = QgsCoordinateReferenceSystem( R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )""" );
   mPoint1 = QgsPointXY( 10.0, 10.0 );
   mPoint2 = QgsPointXY( 15.0, 10.0 );
   mPoint3 = QgsPointXY( 15.0, 12.0 );
@@ -425,7 +425,7 @@ void TestQgsVectorFileWriter::regression1141()
   QgsFields fields;
   fields.append( myField );
   QgsCoordinateReferenceSystem crs;
-  crs = QgsCoordinateReferenceSystem( geoWkt() );
+  crs = QgsCoordinateReferenceSystem( R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )""" );
   const QString tmpDir = QDir::tempPath() + '/';
   const QString fileName = tmpDir + "ąęćń.shp";
 

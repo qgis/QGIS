@@ -3015,7 +3015,7 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
   }
   else if ( ! mExtent2D.isNull() || ! mExtent3D.isNull() )
   {
-    QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), transformContext() };
+    QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), transformContext() };
     transformer.setBallparkTransformsAreAppropriate( true );
     try
     {

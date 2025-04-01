@@ -1529,7 +1529,7 @@ namespace QgsWms
     context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
     QgsDistanceArea distanceArea = QgsDistanceArea();
     distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
-    distanceArea.setEllipsoid( geoNone() );
+    distanceArea.setEllipsoid( Qgis::geoNone() );
     context.setDistanceArea( distanceArea );
     return context;
   }

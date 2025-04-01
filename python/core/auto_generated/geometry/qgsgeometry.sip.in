@@ -870,7 +870,7 @@ Searches for the closest vertex in this geometry to the given point.
          - atVertex: Receives index of the closest vertex
 %End
 
-    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &nextVertexIndex /Out/, int *leftOrRightOfSegment /Out/ = 0, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &nextVertexIndex /Out/, int *leftOrRightOfSegment /Out/ = 0, double epsilon = Qgis::DEFAULT_SEGMENT_EPSILON ) const;
 %Docstring
 Searches for the closest segment of geometry to the given point
 

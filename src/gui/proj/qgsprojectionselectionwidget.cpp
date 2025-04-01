@@ -41,7 +41,7 @@ StandardCoordinateReferenceSystemsModel::StandardCoordinateReferenceSystemsModel
 #endif
 
   const QgsSettings settings;
-  mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), geoEpsgCrsAuthId(), QgsSettings::App ).toString() );
+  mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), Qgis::geographicCrsAuthId(), QgsSettings::App ).toString() );
 
   connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [=] {
     mCurrentCrs.updateDefinition();

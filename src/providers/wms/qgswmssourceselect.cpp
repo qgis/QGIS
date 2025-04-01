@@ -57,7 +57,7 @@
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mDefaultCRS( geoEpsgCrsAuthId() )
+  , mDefaultCRS( Qgis::geographicCrsAuthId() )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
