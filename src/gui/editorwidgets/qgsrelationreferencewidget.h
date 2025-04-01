@@ -270,6 +270,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     /**
       * Trigger save of the embedded referenced attribute form.
+      * Returns TRUE on success or if no embedded form is present.
       *
       * \since QGIS 3.42
       */
