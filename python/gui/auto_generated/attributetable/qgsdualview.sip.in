@@ -138,6 +138,12 @@ It is called when the filter expression changed.
 .. versionadded:: 3.10.3
 %End
 
+    void refreshFilteredFeatures();
+%Docstring
+Bodge to take selected feature categories into account in the applied
+filter when the "Reload the table" icon is clicked.
+%End
+
     QgsFeatureIds filteredFeatures();
 %Docstring
 Gets a list of currently visible feature ids.
