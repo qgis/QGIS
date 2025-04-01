@@ -148,7 +148,8 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
   if ( mAccessType == Qgis::PointCloudAccessType::Local )
   {
     QByteArray rawBlockData = rawNodeData( n );
-    if ( rawBlockData.isEmpty() ) return nullptr; // Error fetching block
+    if ( rawBlockData.isEmpty() )
+      return nullptr; // Error fetching block
 
     mHierarchyMutex.lock();
     auto pointCount = mHierarchy.value( n );
