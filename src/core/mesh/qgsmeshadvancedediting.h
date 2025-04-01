@@ -178,10 +178,13 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
      * Calculates the transformed vertices of the mesh \a layer, returns FALSE if this leads to topological or geometrical errors.
      * The mesh layer must be in edit mode.
      *
-     * \note this method not apply new vertices to the mesh layer but only store the calculated transformation
-     *       that can be apply later with QgsMeshEditor::advancedEdit()
+     * \note This method does not apply new vertices to the mesh layer but only stores the calculated transformation
+     * that can be applied later with QgsMeshEditor.advancedEdit()
+     *
+     * \param layer
+     * \param project QgsProject if it is necessary for the calculation ( for example with \see setZFromTerrain() ) \since QGIS 3.44
      */
-    bool calculate( QgsMeshLayer *layer );
+    bool calculate( QgsMeshLayer *layer, QgsProject *project = nullptr );
 
     /**
      * Returns the transformed vertex from its index \a vertexIndex for the mesh \a layer
@@ -190,11 +193,24 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
      */
     QgsMeshVertex transformedVertex( QgsMeshLayer *layer, int vertexIndex ) const;
 
+    /**
+     * Sets if Z values for vertices should be obtained from project terrain, instead of expression.
+     *
+     * \note If \a enable is True, the Z value of the vertex will be obtained from the terrain of the project.
+     * The optional parameter \a project is necessary for function calculate ( \see calculate() ).
+     *
+     * \param enable
+     *
+     * \since QGIS 3.44
+     */
+    void setZFromTerrain( bool enable );
+
   private:
     QString mExpressionX;
     QString mExpressionY;
     QString mExpressionZ;
     QHash<int, int> mChangingVertexMap;
+    bool mZFromTerrain = false;
 
     QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
 
