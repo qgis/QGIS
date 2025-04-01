@@ -363,6 +363,15 @@ Creates a geocentric CRS given an ``ellipsoid`` definition.
 
 Returns an invalid CRS if the ellipsoid definition is not valid.
 
+.. warning::
+
+   The returned CRS will be based on the ellipsoid parameters only,
+   and will not have any datum associated with it. This prevents accurate
+   datum shifts from occurring when transforming coordinates to
+   or from the returned CRS. Any transformations involving this CRS
+   will result in a ballpark (null) datum shift. The returned object should
+   NOT be used when high accuracy transformations are required.
+
 .. seealso:: :py:func:`toGeocentricCrs`
 
 .. versionadded:: 3.44
