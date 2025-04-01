@@ -126,6 +126,12 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceWidgetWrapper::foreignKeysChanged );
 }
 
+void QgsRelationReferenceWidgetWrapper::aboutToSave()
+{
+  // Save changes in the embedded form
+  mWidget->saveReferencedAttributeForm();
+}
+
 QVariant QgsRelationReferenceWidgetWrapper::value() const
 {
   if ( !mWidget )
