@@ -110,13 +110,13 @@ void TestQgsVectorTileLayer::initTestCase()
   QColor polygonFillColor = Qt::blue;
   const QColor polygonStrokeColor = polygonFillColor;
   polygonFillColor.setAlpha( 100 );
-  const double polygonStrokeWidth = DEFAULT_LINE_WIDTH * 2;
+  const double polygonStrokeWidth = Qgis::DEFAULT_LINE_WIDTH * 2;
   const QColor lineStrokeColor = Qt::blue;
-  const double lineStrokeWidth = DEFAULT_LINE_WIDTH * 2;
+  const double lineStrokeWidth = Qgis::DEFAULT_LINE_WIDTH * 2;
   QColor pointFillColor = Qt::red;
   const QColor pointStrokeColor = pointFillColor;
   pointFillColor.setAlpha( 100 );
-  const double pointSize = DEFAULT_POINT_SIZE;
+  const double pointSize = Qgis::DEFAULT_POINT_SIZE;
 
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
   rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle(
@@ -201,7 +201,7 @@ void TestQgsVectorTileLayer::test_labeling()
   // use a different renderer to make the labels stand out more
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
   rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle(
-    Qt::transparent, Qt::white, DEFAULT_LINE_WIDTH * 2,
+    Qt::transparent, Qt::white, Qgis::DEFAULT_LINE_WIDTH * 2,
     Qt::transparent, 0,
     Qt::transparent, Qt::transparent, 0
   ) );
@@ -552,7 +552,7 @@ void TestQgsVectorTileLayer::test_polygonWithLineStyle()
   mMapSettings->setLayers( QList<QgsMapLayer *>() << layer.get() );
 
   const QColor lineStrokeColor = Qt::blue;
-  const double lineStrokeWidth = DEFAULT_LINE_WIDTH * 2;
+  const double lineStrokeWidth = Qgis::DEFAULT_LINE_WIDTH * 2;
 
   QgsSimpleLineSymbolLayer *lineSymbolLayer = new QgsSimpleLineSymbolLayer;
   lineSymbolLayer->setColor( lineStrokeColor );
@@ -630,7 +630,7 @@ void TestQgsVectorTileLayer::test_styleMinZoomBeyondTileMaxZoom()
   mMapSettings->setLayers( QList<QgsMapLayer *>() << layer.get() );
 
   const QColor lineStrokeColor = Qt::blue;
-  const double lineStrokeWidth = DEFAULT_LINE_WIDTH * 2;
+  const double lineStrokeWidth = Qgis::DEFAULT_LINE_WIDTH * 2;
 
   QgsSimpleLineSymbolLayer *lineSymbolLayer = new QgsSimpleLineSymbolLayer;
   lineSymbolLayer->setColor( lineStrokeColor );
@@ -670,7 +670,7 @@ void TestQgsVectorTileLayer::test_filterRuleAllLayers()
   mMapSettings->setLayers( QList<QgsMapLayer *>() << layer.get() );
 
   const QColor lineStrokeColor = Qt::blue;
-  const double lineStrokeWidth = DEFAULT_LINE_WIDTH * 4;
+  const double lineStrokeWidth = Qgis::DEFAULT_LINE_WIDTH * 4;
 
   QgsSimpleLineSymbolLayer *lineSymbolLayer = new QgsSimpleLineSymbolLayer;
   lineSymbolLayer->setColor( lineStrokeColor );

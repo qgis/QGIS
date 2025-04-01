@@ -73,7 +73,7 @@ namespace QgsWcs
 
     //lonLatEnvelope
     const QgsCoordinateReferenceSystem layerCrs = layer->crs();
-    const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+    const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() );
     const int wgs84precision = 6;
     const QgsCoordinateTransform t( layerCrs, wgs84, project );
     //transform

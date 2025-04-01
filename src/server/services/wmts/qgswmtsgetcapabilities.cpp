@@ -322,7 +322,7 @@ namespace QgsWmts
   {
     void appendLayerElements( QDomDocument &doc, QDomElement &contentsElement, QList<layerDef> wmtsLayers, QList<tileMatrixSetDef> tmsList, const QgsProject *project )
     {
-      const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+      const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() );
       // Define InfoFormat helper
       const std::function<void( QDomElement &, const QString & )> appendInfoFormat = [&doc]( QDomElement &elem, const QString &format ) {
         QDomElement formatElem = doc.createElement( QStringLiteral( "InfoFormat" ) /*wmts:InfoFormat*/ );

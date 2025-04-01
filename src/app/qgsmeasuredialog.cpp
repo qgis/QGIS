@@ -116,7 +116,7 @@ void QgsMeasureDialog::projChanged()
 {
   if ( mCartesian->isChecked() )
   {
-    mDa.setEllipsoid( geoNone() );
+    mDa.setEllipsoid( Qgis::geoNone() );
   }
   else
   {
@@ -169,7 +169,7 @@ void QgsMeasureDialog::updateSettings()
 
   if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() || ( mCanvas->mapSettings().destinationCrs().mapUnits() == Qgis::DistanceUnit::Degrees && mDistanceUnits == Qgis::DistanceUnit::Degrees ) )
   {
-    mDa.setEllipsoid( geoNone() );
+    mDa.setEllipsoid( Qgis::geoNone() );
   }
   else
   {
@@ -507,14 +507,14 @@ void QgsMeasureDialog::updateUi()
         toolTip += "<br> * " + tr( "Units are unknown." );
         mConvertToDisplayUnits = false;
       }
-      mDa.setEllipsoid( geoNone() );
+      mDa.setEllipsoid( Qgis::geoNone() );
     }
     else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == Qgis::DistanceUnit::Degrees
               && ( mAreaUnits == Qgis::AreaUnit::SquareDegrees || mAreaUnits == Qgis::AreaUnit::Unknown ) )
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using Cartesian calculations in square degrees." ).arg( mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
-      mDa.setEllipsoid( geoNone() );
+      mDa.setEllipsoid( Qgis::geoNone() );
       mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
     else
@@ -578,14 +578,14 @@ void QgsMeasureDialog::updateUi()
         toolTip += "<br> * " + tr( "Units are unknown." );
         mConvertToDisplayUnits = false;
       }
-      mDa.setEllipsoid( geoNone() );
+      mDa.setEllipsoid( Qgis::geoNone() );
     }
     else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == Qgis::DistanceUnit::Degrees
               && mDistanceUnits == Qgis::DistanceUnit::Degrees )
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using Cartesian calculations in degrees." ).arg( mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
-      mDa.setEllipsoid( geoNone() );
+      mDa.setEllipsoid( Qgis::geoNone() );
       mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
     else

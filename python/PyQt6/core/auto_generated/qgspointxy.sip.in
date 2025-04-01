@@ -174,7 +174,7 @@ Returns the distance between this point and another point.
 .. seealso:: :py:func:`sqrDist`
 %End
 
-    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint /Out/, double epsilon = DEFAULT_SEGMENT_EPSILON ) const /HoldGIL/;
+    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint /Out/, double epsilon = Qgis::DEFAULT_SEGMENT_EPSILON ) const /HoldGIL/;
 %Docstring
 Returns the minimum distance between this point and a segment
 %End

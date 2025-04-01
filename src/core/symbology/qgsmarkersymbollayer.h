@@ -24,7 +24,7 @@
 #define DEFAULT_SIMPLEMARKER_COLOR        QColor(255,0,0)
 #define DEFAULT_SIMPLEMARKER_BORDERCOLOR  QColor( 35, 35, 35 )
 #define DEFAULT_SIMPLEMARKER_JOINSTYLE    Qt::BevelJoin
-#define DEFAULT_SIMPLEMARKER_SIZE         DEFAULT_POINT_SIZE
+#define DEFAULT_SIMPLEMARKER_SIZE         Qgis::DEFAULT_POINT_SIZE
 #define DEFAULT_SIMPLEMARKER_ANGLE        0
 
 #include <QPen>
@@ -485,7 +485,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
 //////////
 
-#define DEFAULT_SVGMARKER_SIZE         2*DEFAULT_POINT_SIZE
+#define DEFAULT_SVGMARKER_SIZE         2*Qgis::DEFAULT_POINT_SIZE
 #define DEFAULT_SVGMARKER_ANGLE        0
 
 /**
@@ -672,7 +672,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
 //////////
 
-#define DEFAULT_RASTERMARKER_SIZE         2*DEFAULT_POINT_SIZE
+#define DEFAULT_RASTERMARKER_SIZE         2*Qgis::DEFAULT_POINT_SIZE
 #define DEFAULT_RASTERMARKER_ANGLE        0
 
 /**

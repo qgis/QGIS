@@ -3362,6 +3362,16 @@ The development version
 
     static const Qgis::MapToolUnit DEFAULT_SNAP_UNITS;
 
+    static const int USER_CRS_START_ID;
+
+    static const double DEFAULT_POINT_SIZE;
+
+    static const double DEFAULT_LINE_WIDTH;
+
+    static const double DEFAULT_SEGMENT_EPSILON;
+
+
+
     static QString defaultProjectScales();
 %Docstring
 A string with default project scales.
@@ -3403,6 +3413,40 @@ GEOS string version linked
 
 .. versionadded:: 3.20
 %End
+
+    static QString geoNone();
+%Docstring
+Constant that holds the string representation for "No ellipse/No CRS".
+
+.. versionadded:: 3.44
+%End
+
+    static QString geographicCrsAuthId();
+%Docstring
+Geographic coordinate system auth:id string for a default geographic CRS
+(EPSG:4326).
+
+.. versionadded:: 3.44
+%End
+
+ static QString geoWkt();
+%Docstring
+WKT string that represents a geographic coord system
+
+.. deprecated:: 3.44
+
+   Will be removed in QGIS 4.0.
+%End
+
+ static QString geoProj4();
+%Docstring
+PROJ4 string that represents a geographic coord system.
+
+.. deprecated:: 3.44
+
+   Will be removed in QGIS 4.0.
+%End
+
 };
 
 
@@ -3719,24 +3763,24 @@ bool operator< ( const QVariant &v1, const QVariant &v2 );
 
 
 
-QString qgsVsiPrefix( const QString &path );
+ QString qgsVsiPrefix( const QString &path ) /Deprecated="Since 3.44. Use QgsGdalUtils.vsiPrefixForPath() instead."/;
+%Docstring
+Returns a the vsi prefix which corresponds to a file ``path``, or an
+empty string if the path is not associated with a vsi prefix.
+
+.. deprecated:: 3.44
+
+   Use :py:func:`QgsGdalUtils.vsiPrefixForPath()` instead.
+%End
 
 
 
 
-const long GEOSRID;
+ const long GEOSRID;
 
-const long GEOCRS_ID;
+ const long GEOCRS_ID;
 
-const long GEO_EPSG_CRS_ID;
-
-const int USER_CRS_START_ID;
-
-
-const double DEFAULT_POINT_SIZE;
-const double DEFAULT_LINE_WIDTH;
-
-const double DEFAULT_SEGMENT_EPSILON;
+ const long GEO_EPSG_CRS_ID;
 
 
 typedef unsigned long long qgssize;
@@ -3745,22 +3789,6 @@ typedef unsigned long long qgssize;
 
 
 
-
-
-
-QString geoWkt();
-%Docstring
-Wkt string that represents a geographic coord sys \since QGIS GEOWkt
-%End
-
-//! PROJ4 string that represents a geographic coord sys
-QString geoProj4();
-
-//! Geographic coord sys from EPSG authority
-QString geoEpsgCrsAuthId();
-
-//! Constant that holds the string representation for "No ellips/No CRS"
-QString geoNone();
 
 /************************************************************************
  * This file has been generated automatically from                      *

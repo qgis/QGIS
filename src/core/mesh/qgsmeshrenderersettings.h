@@ -75,7 +75,7 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 
   private:
     bool mEnabled = false;
-    double mLineWidth = DEFAULT_LINE_WIDTH;
+    double mLineWidth = Qgis::DEFAULT_LINE_WIDTH;
     Qgis::RenderUnit mLineWidthUnit = Qgis::RenderUnit::Millimeters;
     QColor mColor = Qt::black;
 };
@@ -686,7 +686,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 
     Symbology mDisplayingMethod = Arrows;
 
-    double mLineWidth = DEFAULT_LINE_WIDTH; //in millimeters
+    double mLineWidth = Qgis::DEFAULT_LINE_WIDTH; //in millimeters
     QgsColorRampShader mColorRampShader;
     QColor mColor = Qt::black;
     QgsInterpolatedLineColor::ColoringMethod mColoringMethod = QgsInterpolatedLineColor::SingleColor;

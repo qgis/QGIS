@@ -64,6 +64,14 @@ const double Qgis::DEFAULT_SNAP_TOLERANCE = 12.0;
 
 const Qgis::MapToolUnit Qgis::DEFAULT_SNAP_UNITS = Qgis::MapToolUnit::Pixels;
 
+const int Qgis::USER_CRS_START_ID = 100000;
+const double Qgis::DEFAULT_POINT_SIZE = 2.0;
+const double Qgis::DEFAULT_LINE_WIDTH = 0.26;
+const double Qgis::DEFAULT_SEGMENT_EPSILON = 1e-8;
+
+const int Qgis::PREVIEW_JOB_DELAY_MS = 250;
+const int Qgis::MAXIMUM_LAYER_PREVIEW_TIME_MS = 250;
+
 #ifdef Q_OS_WIN
 const double Qgis::UI_SCALE_FACTOR = 1.5;
 #else

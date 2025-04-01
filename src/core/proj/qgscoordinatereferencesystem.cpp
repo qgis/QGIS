@@ -640,7 +640,7 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( const long id )
     }
   }
 
-  bool result = loadFromDatabase( id < USER_CRS_START_ID ? QgsApplication::srsDatabaseFilePath() :
+  bool result = loadFromDatabase( id < Qgis::USER_CRS_START_ID ? QgsApplication::srsDatabaseFilePath() :
                                   QgsApplication::qgisUserDatabaseFilePath(),
                                   QStringLiteral( "srs_id" ), QString::number( id ) );
 
@@ -707,7 +707,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     wkt = statement.columnAsText( 8 );
     d->mAxisInvertedDirty = true;
 
-    if ( d->mSrsId >= USER_CRS_START_ID && ( d->mAuthId.isEmpty() || d->mAuthId == QChar( ':' ) ) )
+    if ( d->mSrsId >= Qgis::USER_CRS_START_ID && ( d->mAuthId.isEmpty() || d->mAuthId == QChar( ':' ) ) )
     {
       d->mAuthId = QStringLiteral( "USER:%1" ).arg( d->mSrsId );
     }
@@ -1017,7 +1017,7 @@ bool QgsCoordinateReferenceSystem::createFromWktInternal( const QString &wkt, co
     {
       // lastly, try a tolerant match of the created proj object against all user CRSes (allowing differences in parameter order during the comparison)
       long id = matchToUserCrs();
-      if ( id >= USER_CRS_START_ID )
+      if ( id >= Qgis::USER_CRS_START_ID )
       {
         createFromSrsId( id );
       }
@@ -1113,19 +1113,19 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
     if ( !myRecord.empty() )
     {
       id = myRecord[QStringLiteral( "srs_id" )].toLong();
-      if ( id >= USER_CRS_START_ID )
+      if ( id >= Qgis::USER_CRS_START_ID )
       {
         createFromSrsId( id );
       }
     }
-    if ( id < USER_CRS_START_ID )
+    if ( id < Qgis::USER_CRS_START_ID )
     {
       // no direct matches, so go ahead and create a new proj object based on the proj string alone.
       setProjString( myProj4String );
 
       // lastly, try a tolerant match of the created proj object against all user CRSes (allowing differences in parameter order during the comparison)
       id = matchToUserCrs();
-      if ( id >= USER_CRS_START_ID )
+      if ( id >= Qgis::USER_CRS_START_ID )
       {
         createFromSrsId( id );
       }
@@ -1673,7 +1673,7 @@ void QgsCoordinateReferenceSystem::updateDefinition()
   if ( !d->mIsValid )
     return;
 
-  if ( d->mSrsId >= USER_CRS_START_ID )
+  if ( d->mSrsId >= Qgis::USER_CRS_START_ID )
   {
     // user CRS, so update to new definition
     createFromSrsId( d->mSrsId );
@@ -2053,8 +2053,8 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
   if ( !qgsNanCompatibleEquals( d->mCoordinateEpoch, srs.d->mCoordinateEpoch ) )
     return false;
 
-  const bool isUser = d->mSrsId >= USER_CRS_START_ID;
-  const bool otherIsUser = srs.d->mSrsId >= USER_CRS_START_ID;
+  const bool isUser = d->mSrsId >= Qgis::USER_CRS_START_ID;
+  const bool otherIsUser = srs.d->mSrsId >= Qgis::USER_CRS_START_ID;
   if ( isUser != otherIsUser )
     return false;
 
@@ -2135,7 +2135,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 
     QDomNode node;
 
-    if ( ok && srsid > 0 && srsid < USER_CRS_START_ID )
+    if ( ok && srsid > 0 && srsid < Qgis::USER_CRS_START_ID )
     {
       node = srsNode.namedItem( QStringLiteral( "authid" ) );
       if ( !node.isNull() )
@@ -2316,7 +2316,7 @@ QString QgsCoordinateReferenceSystem::projFromSrsId( const int srsId )
   // Determine if this is a user projection or a system on
   // user projection defs all have srs_id >= 100000
   //
-  if ( srsId >= USER_CRS_START_ID )
+  if ( srsId >= Qgis::USER_CRS_START_ID )
   {
     myDatabaseFileName = QgsApplication::qgisUserDatabaseFilePath();
     QFileInfo myFileInfo;
@@ -2603,7 +2603,7 @@ QList<long> QgsCoordinateReferenceSystem::userSrsIds()
     return results;
   }
 
-  QString sql = QStringLiteral( "select srs_id from tbl_srs where srs_id >= %1" ).arg( USER_CRS_START_ID );
+  QString sql = QStringLiteral( "select srs_id from tbl_srs where srs_id >= %1" ).arg( Qgis::USER_CRS_START_ID );
   int rc;
   statement = database.prepare( sql, rc );
   while ( true )
@@ -3442,8 +3442,8 @@ bool operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateRefe
   if ( c1.d->mIsValid && !c2.d->mIsValid )
     return true;
 
-  const bool c1IsUser = c1.d->mSrsId >= USER_CRS_START_ID;
-  const bool c2IsUser = c2.d->mSrsId >= USER_CRS_START_ID;
+  const bool c1IsUser = c1.d->mSrsId >= Qgis::USER_CRS_START_ID;
+  const bool c2IsUser = c2.d->mSrsId >= Qgis::USER_CRS_START_ID;
 
   if ( c1IsUser && !c2IsUser )
     return true;
@@ -3491,8 +3491,8 @@ bool operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateRefe
   if ( !c1.d->mIsValid && c2.d->mIsValid )
     return true;
 
-  const bool c1IsUser = c1.d->mSrsId >= USER_CRS_START_ID;
-  const bool c2IsUser = c2.d->mSrsId >= USER_CRS_START_ID;
+  const bool c1IsUser = c1.d->mSrsId >= Qgis::USER_CRS_START_ID;
+  const bool c2IsUser = c2.d->mSrsId >= Qgis::USER_CRS_START_ID;
 
   if ( !c1IsUser && c2IsUser )
     return true;
