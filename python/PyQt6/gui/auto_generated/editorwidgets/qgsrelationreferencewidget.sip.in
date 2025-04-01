@@ -264,6 +264,7 @@ unset the currently related feature
     bool saveReferencedAttributeForm();
 %Docstring
 Trigger save of the embedded referenced attribute form.
+Returns ``True`` on success or if no embedded form is present.
 
 .. versionadded:: 3.42
 %End
