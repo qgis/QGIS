@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/processing/qgsprocessingregistry.h
 try:
     QgsProcessingAlgorithmInformation.__attribute_docs__ = {'displayName': 'Algorithm display name', 'icon': 'Algorithm icon'}
+    QgsProcessingAlgorithmInformation.__annotations__ = {'displayName': str, 'icon': 'QIcon'}
     QgsProcessingAlgorithmInformation.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

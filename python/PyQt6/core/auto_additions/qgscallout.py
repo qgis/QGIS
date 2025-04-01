@@ -120,6 +120,7 @@ QgsCurvedLineCallout.Clockwise = QgsCurvedLineCallout.Orientation.Clockwise
 QgsCurvedLineCallout.CounterClockwise = QgsCurvedLineCallout.Orientation.CounterClockwise
 try:
     QgsCallout.QgsCalloutContext.__attribute_docs__ = {'allFeaturePartsLabeled': '``True`` if all parts of associated feature were labeled', 'originalFeatureCrs': 'Contains the CRS of the original feature associated with this callout.\n\n.. versionadded:: 3.20'}
+    QgsCallout.QgsCalloutContext.__annotations__ = {'allFeaturePartsLabeled': 'bool', 'originalFeatureCrs': 'QgsCoordinateReferenceSystem'}
     QgsCallout.QgsCalloutContext.__group__ = ['callouts']
 except (NameError, AttributeError):
     pass

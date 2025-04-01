@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/processing/qgsprocessingalgorithm.h
 try:
     QgsProcessingAlgorithm.VectorProperties.__attribute_docs__ = {'fields': 'Fields', 'wkbType': 'Geometry (WKB) type', 'crs': 'Coordinate Reference System', 'availability': 'Availability of the properties. By default properties are not available.'}
+    QgsProcessingAlgorithm.VectorProperties.__annotations__ = {'fields': 'QgsFields', 'wkbType': 'Qgis.WkbType', 'crs': 'QgsCoordinateReferenceSystem', 'availability': 'Qgis.ProcessingPropertyAvailability'}
     QgsProcessingAlgorithm.VectorProperties.__doc__ = """Properties of a vector source or sink used in an algorithm.
 
 .. versionadded:: 3.14"""

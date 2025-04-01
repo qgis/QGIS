@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/raster/qgsrasterfilewriter.h
 try:
     QgsRasterFileWriter.FilterFormatDetails.__attribute_docs__ = {'driverName': 'Unique driver name', 'filterString': 'Filter string for file picker dialogs'}
+    QgsRasterFileWriter.FilterFormatDetails.__annotations__ = {'driverName': str, 'filterString': str}
     QgsRasterFileWriter.FilterFormatDetails.__doc__ = """Details of available filters and formats."""
     QgsRasterFileWriter.FilterFormatDetails.__group__ = ['raster']
 except (NameError, AttributeError):

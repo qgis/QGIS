@@ -208,7 +208,7 @@ class CORE_EXPORT QgsExpression
       /**
        * The type of parser error that was found.
        */
-      ParserErrorType errorType = ParserErrorType::Unknown;
+      QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::ParserErrorType::Unknown;
 
       /**
        * The message for the error at this location.

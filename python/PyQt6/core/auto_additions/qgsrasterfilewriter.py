@@ -3,6 +3,7 @@ QgsRasterFileWriter.SortRecommended = QgsRasterFileWriter.RasterFormatOption.Sor
 QgsRasterFileWriter.RasterFormatOptions = lambda flags=0: QgsRasterFileWriter.RasterFormatOption(flags)
 try:
     QgsRasterFileWriter.FilterFormatDetails.__attribute_docs__ = {'driverName': 'Unique driver name', 'filterString': 'Filter string for file picker dialogs'}
+    QgsRasterFileWriter.FilterFormatDetails.__annotations__ = {'driverName': str, 'filterString': str}
     QgsRasterFileWriter.FilterFormatDetails.__doc__ = """Details of available filters and formats."""
     QgsRasterFileWriter.FilterFormatDetails.__group__ = ['raster']
 except (NameError, AttributeError):

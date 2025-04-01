@@ -53,7 +53,7 @@ possibility to implement custom labeling.
 
       double scale;
 
-      Flags flags;
+      QgsScaleBarRenderer::Flags flags;
 
       bool isValid() const;
 %Docstring

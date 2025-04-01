@@ -33,7 +33,7 @@ communicated to users, but not prevent them from proceeding.
       Critical,
     };
 
-    Type type;
+    QgsValidityCheckResult::Type type;
 
     QString title;
 

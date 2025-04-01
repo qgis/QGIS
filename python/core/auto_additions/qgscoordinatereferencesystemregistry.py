@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/proj/qgscoordinatereferencesystemregistry.h
 try:
     QgsCoordinateReferenceSystemRegistry.UserCrsDetails.__attribute_docs__ = {'id': 'CRS ID', 'name': 'CRS name (or description)', 'proj': 'PROJ string definition of CRS', 'wkt': 'WKT definition of CRS. This will be empty for custom CRSes\nwhich were defined using a PROJ string only.', 'crs': ':py:class:`QgsCoordinateReferenceSystem` object representing the user-defined CRS.'}
+    QgsCoordinateReferenceSystemRegistry.UserCrsDetails.__annotations__ = {'id': int, 'name': str, 'proj': str, 'wkt': str, 'crs': 'QgsCoordinateReferenceSystem'}
     QgsCoordinateReferenceSystemRegistry.UserCrsDetails.__group__ = ['proj']
 except (NameError, AttributeError):
     pass

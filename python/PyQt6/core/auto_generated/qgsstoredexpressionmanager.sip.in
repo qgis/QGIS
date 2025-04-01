@@ -40,7 +40,7 @@ category tag.
     QString id;
     QString name;
     QString expression;
-    Category tag;
+    QgsStoredExpression::Category tag;
 };
 
 class QgsStoredExpressionManager : QObject

@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/layout/qgsabstractreportsection.h
 try:
     QgsReportSectionContext.__attribute_docs__ = {'feature': 'Current feature', 'currentLayer': 'Current coverage layer', 'fieldFilters': 'Current field filters'}
+    QgsReportSectionContext.__annotations__ = {'feature': 'QgsFeature', 'currentLayer': 'QgsVectorLayer', 'fieldFilters': 'Dict[str, object]'}
     QgsReportSectionContext.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

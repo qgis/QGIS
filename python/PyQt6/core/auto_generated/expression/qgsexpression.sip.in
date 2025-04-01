@@ -97,7 +97,10 @@ Implicit sharing was added in 2.14
         FunctionNamedArgsError
       };
 
-      ParserErrorType errorType;
+      QgsExpression::ParserError::ParserErrorType errorType;
+%Docstring
+The type of parser error that was found.
+%End
 
       QString errorMsg;
 

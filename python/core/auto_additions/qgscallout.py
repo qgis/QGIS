@@ -101,6 +101,7 @@ QgsCallout.Property.__doc__ = """Data definable properties.
 # --
 try:
     QgsCallout.QgsCalloutContext.__attribute_docs__ = {'allFeaturePartsLabeled': '``True`` if all parts of associated feature were labeled', 'originalFeatureCrs': 'Contains the CRS of the original feature associated with this callout.\n\n.. versionadded:: 3.20'}
+    QgsCallout.QgsCalloutContext.__annotations__ = {'allFeaturePartsLabeled': 'bool', 'originalFeatureCrs': 'QgsCoordinateReferenceSystem'}
     QgsCallout.QgsCalloutContext.__group__ = ['callouts']
 except (NameError, AttributeError):
     pass

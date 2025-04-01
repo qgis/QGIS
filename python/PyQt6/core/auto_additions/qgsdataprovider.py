@@ -3,6 +3,7 @@ QgsDataProvider.EvaluateDefaultValues = QgsDataProvider.ProviderProperty.Evaluat
 QgsDataProvider.CustomData = QgsDataProvider.ProviderProperty.CustomData
 try:
     QgsDataProvider.ProviderOptions.__attribute_docs__ = {'transformContext': 'Coordinate transform context'}
+    QgsDataProvider.ProviderOptions.__annotations__ = {'transformContext': 'QgsCoordinateTransformContext'}
     QgsDataProvider.ProviderOptions.__doc__ = """Setting options for creating vector data providers.
 
 .. note::

@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/vectortile/qgsvectortilelayer.h
 try:
     QgsVectorTileLayer.LayerOptions.__attribute_docs__ = {'transformContext': 'Coordinate transform context'}
+    QgsVectorTileLayer.LayerOptions.__annotations__ = {'transformContext': 'QgsCoordinateTransformContext'}
     QgsVectorTileLayer.LayerOptions.__doc__ = """Setting options for loading vector tile layers.
 
 .. versionadded:: 3.22"""

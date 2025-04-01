@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/gui/layout/qgslayoutitemguiregistry.h
 try:
     QgsLayoutItemGuiGroup.__attribute_docs__ = {'id': 'Unique (untranslated) group ID string.', 'name': 'Translated group name.', 'icon': 'Icon for group.'}
+    QgsLayoutItemGuiGroup.__annotations__ = {'id': str, 'name': str, 'icon': 'QIcon'}
     QgsLayoutItemGuiGroup.__group__ = ['layout']
 except (NameError, AttributeError):
     pass
