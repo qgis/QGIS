@@ -300,11 +300,11 @@ bool QgsRasterCalcDialog::outputLayerExists() const
   }
 }
 
-QStringList QgsRasterCalcDialog::createOptions() const
+QStringList QgsRasterCalcDialog::creationOptions() const
 {
   const QString layerName = QFileInfo( mOutputLayer->filePath() ).baseName();
 
-  QStringList options = mCreateOptionsGroupBox->isChecked() ? mCreateOptionsWidget->options() : QStringList();
+  QStringList options = mCreationOptionsGroupBox->isChecked() ? mCreationOptionsWidget->options() : QStringList();
   if ( outputFormat() == QLatin1String( "GPKG" ) )
   {
     // Overwrite the GPKG table options
@@ -382,8 +382,8 @@ void QgsRasterCalcDialog::mExpressionTextEdit_textChanged()
 
 void QgsRasterCalcDialog::mOutputFormatComboBox_currentIndexChanged( const QString & )
 {
-  mCreateOptionsWidget->setFormat( outputFormat() );
-  mCreateOptionsWidget->update();
+  mCreationOptionsWidget->setFormat( outputFormat() );
+  mCreationOptionsWidget->update();
 }
 
 void QgsRasterCalcDialog::setAcceptButtonState()

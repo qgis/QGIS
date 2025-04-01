@@ -446,7 +446,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
                                           Qgis::DataType type,
                                           int width, int height, double *geoTransform,
                                           const QgsCoordinateReferenceSystem &crs,
-                                          const QStringList &createOptions = QStringList() );
+                                          const QStringList &creationOptions = QStringList() );
 
     /**
      * Set no data value on created dataset
@@ -511,8 +511,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \note used by GDAL provider only
      * \note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only
      */
-    virtual QString validateCreationOptions( const QStringList &createOptions, const QString &format )
-    { Q_UNUSED( createOptions ) Q_UNUSED( format ); return QString(); }
+    virtual QString validateCreationOptions( const QStringList &creationOptions, const QString &format )
+    { Q_UNUSED( creationOptions ) Q_UNUSED( format ); return QString(); }
 
     /**
      * Validates pyramid creation options for a specific dataset and destination format
