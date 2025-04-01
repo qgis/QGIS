@@ -130,6 +130,7 @@ gdal::dataset_unique_ptr QgsNineCellFilter::openOutputFile( GDALDatasetH inputDa
   //open output file
   char **papszOptions = QgsGdalUtils::papszFromStringList( mCreateOptions );
   gdal::dataset_unique_ptr outputDataset( GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), xSize, ySize, 1, GDT_Float32, papszOptions ) );
+  CSLDestroy( papszOptions );
   if ( !outputDataset )
   {
     return outputDataset;
