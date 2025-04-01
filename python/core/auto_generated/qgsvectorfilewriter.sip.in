@@ -428,7 +428,7 @@ Options to pass to :py:func:`QgsVectorFileWriter.writeAsVectorFormat()`.
 
         QgsFeedback *feedback;
 
-        FieldNameSource fieldNameSource;
+        QgsVectorFileWriter::FieldNameSource fieldNameSource;
 
         bool saveMetadata;
 

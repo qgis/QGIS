@@ -3,6 +3,7 @@ QgsGeometryCheck.Flags.baseClass = QgsGeometryCheck
 Flags = QgsGeometryCheck  # dirty hack since SIP seems to introduce the flags in module
 try:
     QgsGeometryCheck.Change.__attribute_docs__ = {'what': 'What level this change affects.', 'type': 'What action this change performs.', 'vidx': 'The index of the part / ring / vertex, depending on :py:func:`what`.'}
+    QgsGeometryCheck.Change.__annotations__ = {'what': 'QgsGeometryCheck.ChangeWhat', 'type': 'QgsGeometryCheck.ChangeType', 'vidx': 'QgsVertexId'}
     QgsGeometryCheck.Change.__doc__ = """Descripts a change to fix a geometry.
 
 .. versionadded:: 3.4"""

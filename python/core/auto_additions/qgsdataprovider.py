@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/providers/qgsdataprovider.h
 try:
     QgsDataProvider.ProviderOptions.__attribute_docs__ = {'transformContext': 'Coordinate transform context'}
+    QgsDataProvider.ProviderOptions.__annotations__ = {'transformContext': 'QgsCoordinateTransformContext'}
     QgsDataProvider.ProviderOptions.__doc__ = """Setting options for creating vector data providers.
 
 .. note::

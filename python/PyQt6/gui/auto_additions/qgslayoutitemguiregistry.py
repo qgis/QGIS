@@ -3,6 +3,7 @@ QgsLayoutItemAbstractGuiMetadata.FlagNoCreationTools = QgsLayoutItemAbstractGuiM
 QgsLayoutItemAbstractGuiMetadata.Flags = lambda flags=0: QgsLayoutItemAbstractGuiMetadata.Flag(flags)
 try:
     QgsLayoutItemGuiGroup.__attribute_docs__ = {'id': 'Unique (untranslated) group ID string.', 'name': 'Translated group name.', 'icon': 'Icon for group.'}
+    QgsLayoutItemGuiGroup.__annotations__ = {'id': str, 'name': str, 'icon': 'QIcon'}
     QgsLayoutItemGuiGroup.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

@@ -528,7 +528,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
          *
          * \since QGIS 3.18
          */
-        FieldNameSource fieldNameSource = Original;
+        QgsVectorFileWriter::FieldNameSource fieldNameSource = QgsVectorFileWriter::Original;
 
         /**
          * Set to TRUE to save layer metadata for the exported vector file.

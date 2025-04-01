@@ -1,12 +1,14 @@
 # The following has been generated automatically from src/core/symbology/qgsrulebasedrenderer.h
 try:
     QgsRuleBasedRenderer.RenderJob.__attribute_docs__ = {'ftr': 'Feature to render', 'symbol': 'Symbol to render feature with (not owned by this object).'}
+    QgsRuleBasedRenderer.RenderJob.__annotations__ = {'ftr': 'QgsRuleBasedRenderer.FeatureToRender', 'symbol': 'QgsSymbol'}
     QgsRuleBasedRenderer.RenderJob.__doc__ = """A QgsRuleBasedRenderer rendering job, consisting of a feature to be rendered with a particular symbol."""
     QgsRuleBasedRenderer.RenderJob.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
     QgsRuleBasedRenderer.RenderLevel.__attribute_docs__ = {'jobs': 'List of jobs to render, owned by this object.'}
+    QgsRuleBasedRenderer.RenderLevel.__annotations__ = {'jobs': 'List[QgsRuleBasedRenderer.RenderJob *]'}
     QgsRuleBasedRenderer.RenderLevel.__doc__ = """Render level: a list of jobs to be drawn at particular level for a QgsRuleBasedRenderer."""
     QgsRuleBasedRenderer.RenderLevel.__group__ = ['symbology']
 except (NameError, AttributeError):

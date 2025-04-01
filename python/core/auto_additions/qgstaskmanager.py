@@ -9,6 +9,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsTaskManager.TaskDefinition.__attribute_docs__ = {'task': 'Task', 'dependentTasks': 'List of dependent tasks which must be completed before task can run. If any dependent tasks are\ncanceled this task will also be canceled. Dependent tasks must also be added\nto the task manager for proper handling of dependencies.'}
+    QgsTaskManager.TaskDefinition.__annotations__ = {'task': 'QgsTask', 'dependentTasks': 'QgsTaskList'}
     QgsTaskManager.TaskDefinition.__doc__ = """Definition of a task for inclusion in the manager."""
 except (NameError, AttributeError):
     pass

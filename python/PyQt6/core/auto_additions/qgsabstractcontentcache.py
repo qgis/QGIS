@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/qgsabstractcontentcache.h
 try:
     QgsAbstractContentCacheEntry.__attribute_docs__ = {'path': 'Represents the absolute path to a file, a remote URL, or a base64 encoded string.', 'fileModified': 'Timestamp when file was last modified', 'fileModifiedLastCheckTimer': 'Time since last check of file modified date', 'mFileModifiedCheckTimeout': 'Timeout before re-checking whether the file modified date has changed.', 'nextEntry': 'Entries are kept on a linked list, sorted by last access. This point refers\nto the next entry in the cache.', 'previousEntry': 'Entries are kept on a linked list, sorted by last access. This point refers\nto the previous entry in the cache.'}
+    QgsAbstractContentCacheEntry.__annotations__ = {'path': str, 'fileModified': 'QDateTime', 'fileModifiedLastCheckTimer': 'QElapsedTimer', 'mFileModifiedCheckTimeout': int, 'nextEntry': 'QgsAbstractContentCacheEntry', 'previousEntry': 'QgsAbstractContentCacheEntry'}
     QgsAbstractContentCacheEntry.__abstract_methods__ = ['dataSize', 'dump', 'isEqual']
 except (NameError, AttributeError):
     pass

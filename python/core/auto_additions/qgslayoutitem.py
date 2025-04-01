@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/layout/qgslayoutitem.h
 try:
     QgsLayoutItem.ExportLayerDetail.__attribute_docs__ = {'name': 'User-friendly name for the export layer', 'mapLayerId': 'Associated map layer ID, or an empty string if this export layer is not associated with a map layer', 'compositionMode': 'Associated composition mode if this layer is associated with a map layer\n\n.. versionadded:: 3.14', 'opacity': 'Associated opacity, if this layer is associated with a map layer\n\n.. versionadded:: 3.14', 'mapTheme': 'Associated map theme, or an empty string if this export layer does not need to be associated with a map theme', 'groupName': 'Associated group name, if this layer is associated with an export group.\n\n.. versionadded:: 3.40'}
+    QgsLayoutItem.ExportLayerDetail.__annotations__ = {'name': str, 'mapLayerId': str, 'compositionMode': 'QPainter.CompositionMode', 'opacity': float, 'mapTheme': str, 'groupName': str}
     QgsLayoutItem.ExportLayerDetail.__doc__ = """Contains details of a particular export layer relating to a layout item.
 
 .. versionadded:: 3.10"""

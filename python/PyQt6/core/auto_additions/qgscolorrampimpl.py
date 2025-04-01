@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/qgscolorrampimpl.h
 try:
     QgsGradientStop.__attribute_docs__ = {'offset': 'Relative positional offset, between 0 and 1', 'color': 'Gradient color at stop'}
+    QgsGradientStop.__annotations__ = {'offset': float, 'color': 'QColor'}
 except (NameError, AttributeError):
     pass
 try:

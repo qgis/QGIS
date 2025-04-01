@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/gui/history/qgshistoryproviderregistry.h
 try:
     QgsHistoryProviderRegistry.HistoryEntryOptions.__attribute_docs__ = {'storageBackends': 'Target storage backends'}
+    QgsHistoryProviderRegistry.HistoryEntryOptions.__annotations__ = {'storageBackends': 'Qgis.HistoryProviderBackends'}
     QgsHistoryProviderRegistry.HistoryEntryOptions.__group__ = ['history']
 except (NameError, AttributeError):
     pass

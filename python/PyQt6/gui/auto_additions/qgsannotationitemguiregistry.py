@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/gui/annotations/qgsannotationitemguiregistry.h
 try:
     QgsAnnotationItemGuiGroup.__attribute_docs__ = {'id': 'Unique (untranslated) group ID string.', 'name': 'Translated group name.', 'icon': 'Icon for group.'}
+    QgsAnnotationItemGuiGroup.__annotations__ = {'id': str, 'name': str, 'icon': 'QIcon'}
     QgsAnnotationItemGuiGroup.__group__ = ['annotations']
 except (NameError, AttributeError):
     pass

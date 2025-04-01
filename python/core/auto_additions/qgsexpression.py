@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/expression/qgsexpression.h
 try:
-    QgsExpression.ParserError.__attribute_docs__ = {'errorType': 'The type of parser error that was found.', 'errorMsg': 'The message for the error at this location.', 'firstLine': "The first line that contained the error in the parser.\nDepending on the error sometimes this doesn't mean anything.", 'firstColumn': "The first column that contained the error in the parser.\nDepending on the error sometimes this doesn't mean anything.", 'lastLine': 'The last line that contained the error in the parser.', 'lastColumn': 'The last column that contained the error in the parser.'}
+    QgsExpression.ParserError.__attribute_docs__ = {'errorMsg': 'The message for the error at this location.', 'firstLine': "The first line that contained the error in the parser.\nDepending on the error sometimes this doesn't mean anything.", 'firstColumn': "The first column that contained the error in the parser.\nDepending on the error sometimes this doesn't mean anything.", 'lastLine': 'The last line that contained the error in the parser.', 'lastColumn': 'The last column that contained the error in the parser.'}
+    QgsExpression.ParserError.__annotations__ = {'errorMsg': str, 'firstLine': int, 'firstColumn': int, 'lastLine': int, 'lastColumn': int}
     QgsExpression.ParserError.__doc__ = """Details about any parser errors that were found when parsing the expression."""
     QgsExpression.ParserError.__group__ = ['expression']
 except (NameError, AttributeError):

@@ -1,11 +1,13 @@
 # The following has been generated automatically from src/core/processing/qgsprocessingparameters.h
 try:
     QgsProcessingFeatureSourceDefinition.__attribute_docs__ = {'source': "Source definition. Usually a static property set to a source layer's ID or file name.", 'selectedFeaturesOnly': '``True`` if only selected features in the source should be used by algorithms.', 'featureLimit': 'If set to a value > 0, places a limit on the maximum number of features which will be\nread from the source.\n\n.. versionadded:: 3.14', 'filterExpression': 'Optional expression filter to use for filtering features which will be read from the source.\n\n.. versionadded:: 3.32', 'flags': 'Flags which dictate source behavior.\n\n.. versionadded:: 3.14', 'geometryCheck': 'Geometry check method to apply to this source. This setting is only\nutilized if the :py:class:`Qgis`.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck is\nset in QgsProcessingFeatureSourceDefinition.flags.\n\n.. versionadded:: 3.14'}
+    QgsProcessingFeatureSourceDefinition.__annotations__ = {'source': 'QgsProperty', 'selectedFeaturesOnly': 'bool', 'featureLimit': int, 'filterExpression': str, 'flags': 'Qgis.ProcessingFeatureSourceDefinitionFlags', 'geometryCheck': 'Qgis.InvalidGeometryCheck'}
     QgsProcessingFeatureSourceDefinition.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputLayerDefinition.__attribute_docs__ = {'sink': "Sink/layer definition. Usually a static property set to the destination file name for the sink's layer.", 'destinationProject': 'Destination project. Can be set to a :py:class:`QgsProject` instance in which\nto automatically load the resulting sink/layer after completing processing.\nThe default behavior is not to load the result into any project (``None``).', 'destinationName': "Name to use for sink if it's to be loaded into a destination project.", 'createOptions': "Map of optional sink/layer creation options, which\nare passed to the underlying provider when creating new layers. Known options also\ninclude 'fileEncoding', which is used to specify a file encoding to use for created\nfiles."}
+    QgsProcessingOutputLayerDefinition.__annotations__ = {'sink': 'QgsProperty', 'destinationProject': 'QgsProject', 'destinationName': str, 'createOptions': 'Dict[str, object]'}
     QgsProcessingOutputLayerDefinition.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

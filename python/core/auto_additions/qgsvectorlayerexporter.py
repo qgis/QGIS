@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/vector/qgsvectorlayerexporter.h
 try:
     QgsVectorLayerExporter.OutputField.__attribute_docs__ = {'field': 'Destination field definition', 'expression': 'The expression for the exported field from the source fields'}
+    QgsVectorLayerExporter.OutputField.__annotations__ = {'field': 'QgsField', 'expression': str}
     QgsVectorLayerExporter.OutputField.__doc__ = """Encapsulates output field definition.
 
 .. versionadded:: 3.44"""

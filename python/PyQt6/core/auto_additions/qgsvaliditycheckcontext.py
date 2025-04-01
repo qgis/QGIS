@@ -3,6 +3,7 @@ QgsValidityCheckContext.TypeLayoutContext = QgsValidityCheckContext.ContextType.
 QgsValidityCheckContext.TypeUserContext = QgsValidityCheckContext.ContextType.TypeUserContext
 try:
     QgsLayoutValidityCheckContext.__attribute_docs__ = {'layout': 'Pointer to the layout which the check is being run against.'}
+    QgsLayoutValidityCheckContext.__annotations__ = {'layout': 'QgsLayout'}
     QgsLayoutValidityCheckContext.__overridden_methods__ = ['type']
     QgsLayoutValidityCheckContext.__group__ = ['validity']
 except (NameError, AttributeError):

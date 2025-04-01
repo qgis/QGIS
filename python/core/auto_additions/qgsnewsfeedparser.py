@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/network/qgsnewsfeedparser.h
 try:
     QgsNewsFeedParser.Entry.__attribute_docs__ = {'key': 'Unique entry identifier', 'title': 'Entry title', 'imageUrl': 'Optional URL for image associated with entry', 'image': 'Optional image data', 'content': 'HTML content of news entry', 'link': 'Optional URL link for entry', 'sticky': '``True`` if entry is "sticky" and should always be shown at the top', 'expiry': 'Optional auto-expiry time for entry'}
+    QgsNewsFeedParser.Entry.__annotations__ = {'key': int, 'title': str, 'imageUrl': str, 'image': 'QPixmap', 'content': str, 'link': 'QUrl', 'sticky': 'bool', 'expiry': 'QDateTime'}
     QgsNewsFeedParser.Entry.__group__ = ['network']
 except (NameError, AttributeError):
     pass

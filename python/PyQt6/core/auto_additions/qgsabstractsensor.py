@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/sensor/qgsabstractsensor.h
 try:
     QgsAbstractSensor.SensorData.__attribute_docs__ = {'lastValue': 'Last captured sensor value stored as a QVariant.\n\n.. note::\n\n   The member can store multiple values if the sensor passes on a QVariantMap.', 'lastTimestamp': 'Timestamp of last captured sensor value'}
+    QgsAbstractSensor.SensorData.__annotations__ = {'lastValue': 'object', 'lastTimestamp': 'QDateTime'}
     QgsAbstractSensor.SensorData.__doc__ = """Contains details of a sensor data capture"""
     QgsAbstractSensor.SensorData.__group__ = ['sensor']
 except (NameError, AttributeError):

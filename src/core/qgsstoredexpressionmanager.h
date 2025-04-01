@@ -81,7 +81,7 @@ class CORE_EXPORT QgsStoredExpression
     //! expression text
     QString expression;
     //! category of the expression use case
-    Category tag = Category::FilterExpression;
+    QgsStoredExpression::Category tag = QgsStoredExpression::Category::FilterExpression;
 };
 
 /**
