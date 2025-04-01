@@ -13267,9 +13267,15 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
       }
 
       case Qgis::SceneMode::Globe:
-        // Geocentric CRS based on WGS 84
-        // TODO: dynamically build geocentric CRS based on project's ellipsoid to permit non-earth globes
-        map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ) );
+        // if project ellipsoid setting matches that of the project's crs, then create a geocentric
+        // crs based on the project's crs. This ensures that the geocentric CRS uses the same datum
+        // as the project's crs, ensuring accurate transformations. Otherwise we just create a datum-less
+        // crs based on the actual project ellipsoid setting. See warnings in QgsCoordinateReferenceSystem::createGeocentricCrs()
+        // documentation.
+        if ( prj->crs().ellipsoidAcronym() == prj->ellipsoid() )
+          map->setCrs( prj->crs().toGeocentricCrs() );
+        else
+          map->setCrs( QgsCoordinateReferenceSystem::createGeocentricCrs( prj->ellipsoid() ) );
 
         map->configureTerrainFromProject( QgsProject::instance()->elevationProperties(), QgsRectangle() );
 
@@ -13304,18 +13310,31 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
 
       case Qgis::SceneMode::Globe:
       {
-        // TODO -- generalise for non-earth values when we permit non-earth globes
         double centerLat = 0, centerLon = 0;
-        double dist = 10'000'000;
+
+        // base initial view distance on 10,000km from the Earth, but scale to the actual project ellipsoid
+        // so that the initial view distance makes sense for non-Earth bodies
+        constexpr double INITIAL_VIEW_DIST_WGS84 = 10'000'000;
+        constexpr double WGS_84_SEMI_MAJOR = 6378137.0;
+        constexpr double WGS_84_SEMI_MINOR = 6356752.0;
+        constexpr double WGS_84_AVERAGE_RADIUS = ( WGS_84_SEMI_MAJOR + WGS_84_SEMI_MINOR ) / 2;
+
+        const QgsEllipsoidUtils::EllipsoidParameters ellipsoid = QgsEllipsoidUtils::ellipsoidParameters( map->crs().ellipsoidAcronym() );
+        const double projectEllipsoidAverageRadius = 0.5 * ( ellipsoid.semiMajor + ellipsoid.semiMinor );
+        double initialViewDistance = INITIAL_VIEW_DIST_WGS84 * projectEllipsoidAverageRadius / WGS_84_AVERAGE_RADIUS;
+
         const QgsRectangle canvasExtentLatLon = Qgs3DUtils::tryReprojectExtent2D( mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(), map->crs().toGeographicCrs(), prj->transformContext() );
         if ( QgsRectangle( -180, -90, 180, 90 ).contains( canvasExtentLatLon ) )
         {
           centerLon = ( canvasExtentLatLon.xMinimum() + canvasExtentLatLon.xMaximum() ) / 2;
           centerLat = ( canvasExtentLatLon.yMinimum() + canvasExtentLatLon.yMaximum() ) / 2;
-          constexpr double METERS_PER_DEGREE = 111'000; // rough approximation (2*pi*R / 360)
-          dist = std::max( canvasExtentLatLon.width(), canvasExtentLatLon.height() ) * METERS_PER_DEGREE;
+
+          // rough approximation (2*pi*R / 360)
+          const double metersPerDegree = 2 * M_PI * projectEllipsoidAverageRadius / 360;
+
+          initialViewDistance = std::max( canvasExtentLatLon.width(), canvasExtentLatLon.height() ) * metersPerDegree;
         }
-        canvasWidget->mapCanvas3D()->cameraController()->resetGlobe( static_cast<float>( dist ), centerLat, centerLon );
+        canvasWidget->mapCanvas3D()->cameraController()->resetGlobe( static_cast<float>( initialViewDistance ), centerLat, centerLon );
         break;
       }
     }
