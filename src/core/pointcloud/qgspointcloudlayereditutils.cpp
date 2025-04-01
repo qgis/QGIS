@@ -17,7 +17,7 @@
 #include "qgspointcloudlayereditutils.h"
 #include "qgslazdecoder.h"
 #include "qgscopcpointcloudindex.h"
-#include <qmutex.h>
+#include <QMutex>
 
 #include <lazperf/readers.hpp>
 #include <lazperf/writers.hpp>
