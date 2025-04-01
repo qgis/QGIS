@@ -3148,8 +3148,15 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toGeocentricCrs() con
   {
     PJ_CONTEXT *pjContext = QgsProjContext::get();
 
-    QgsProjUtils::proj_pj_unique_ptr datum( proj_crs_get_datum( pjContext, obj ) );
-    QgsProjUtils::proj_pj_unique_ptr datumEnsemble( proj_crs_get_datum_ensemble( pjContext, obj ) );
+    // we need the horizontal, unbound crs in order to extract the datum:
+    QgsProjUtils::proj_pj_unique_ptr horizontalCrs = QgsProjUtils::crsToHorizontalCrs( obj );
+    if ( !horizontalCrs )
+    {
+      return QgsCoordinateReferenceSystem();
+    }
+
+    QgsProjUtils::proj_pj_unique_ptr datum( proj_crs_get_datum( pjContext, horizontalCrs.get() ) );
+    QgsProjUtils::proj_pj_unique_ptr datumEnsemble( proj_crs_get_datum_ensemble( pjContext, horizontalCrs.get() ) );
     if ( !datum && !datumEnsemble )
       return QgsCoordinateReferenceSystem();
 
