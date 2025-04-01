@@ -133,6 +133,7 @@ Converts the category to a matching SLD rule, within the specified DOM document 
 %End
 
   protected:
+
 };
 
 typedef QList<QgsRendererCategory> QgsCategoryList;
