@@ -538,14 +538,15 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
     QString mLegendUrlFormat;
 };
 
+// XXX How to make a proper SIP type alias ?
+//using QgsVectorLayerServerProperties = QgsMapLayerServerProperties;
+
 /**
  * \ingroup core
  * \brief Convenient class for API compatibility.
  * \deprecated QGIS 3.22
  * \since QGIS 3.10
  */
-// XXX How to make a proper SIP type alias ?
-//using QgsVectorLayerServerProperties = QgsMapLayerServerProperties;
 class CORE_EXPORT QgsVectorLayerServerProperties: public QgsMapLayerServerProperties
 {
     Q_GADGET

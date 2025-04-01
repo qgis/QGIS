@@ -480,8 +480,15 @@ Gets the parent layer
 %End
 };
 
+
 class QgsVectorLayerServerProperties: QgsMapLayerServerProperties
 {
+%Docstring(signature="appended")
+Convenient class for API compatibility.
+
+.. deprecated:: 3.22
+.. versionadded:: 3.10
+%End
 
 %TypeHeaderCode
 #include "qgsmaplayerserverproperties.h"
