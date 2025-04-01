@@ -24,12 +24,9 @@
 #include <Qt3DExtras/QText2DEntity>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QViewport>
-#include <Qt3DRender/QPickEvent>
+#include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QScreenRayCaster>
 #include <QVector3D>
-
-#include <Qt3DRender/QLayer>
-#include <Qt3DRender/QRenderSettings>
 
 #include <QtWidgets/QMenu>
 #include "qgs3dmapsettings.h"
@@ -78,6 +75,20 @@ class _3D_EXPORT Qgs3DAxis : public QObject
      */
     QVector3D from3DTo2DLabelPosition( const QVector3D &sourcePos, Qt3DRender::QCamera *sourceCamera, Qt3DRender::QCamera *destCamera );
 
+    /**
+     * Used as callback from renderview when viewport scale factor changes
+     * \since QGIS 3.44
+     */
+    void onViewportScaleFactorChanged( double scaleFactor );
+
+    /**
+     * Returns if the 3D axis controller will handle the specified \a event.
+     *
+     * - TRUE when event is key within Ctrl+[2345689] to handle view orientation
+     * - FALSE when event is mouse click within the 3Daxis space to handle menu and orientation by clicking on cube faces
+     */
+    bool handleEvent( QEvent *event );
+
   public slots:
 
     //! Force update of the axis and the viewport when a setting has changed
@@ -121,8 +132,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 
     // axis picking and menu
     void init3DObjectPicking();
-    bool eventFilter( QObject *watched, QEvent *event ) override;
-    void createKeyboardShortCut();
+    bool handleKeyEvent( QKeyEvent *keyEvent );
     void createMenu();
     void hideMenu();
     void displayMenuAt( const QPoint &position );
