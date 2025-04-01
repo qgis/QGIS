@@ -60,7 +60,7 @@ class TestNineCellFilters : public QgsTest
     void testRuggednessCl();
 #endif
 
-    void testCreationOptinos();
+    void testCreationOptions();
     void testNoDataValue();
 
   private:
@@ -226,7 +226,7 @@ void TestNineCellFilters::testTotalCurvature()
   _testAlg<QgsTotalCurvatureFilter>( QStringLiteral( "totalcurvature" ) );
 }
 
-void TestNineCellFilters::testCreationOptinos()
+void TestNineCellFilters::testCreationOptions()
 {
   QString tmpFile( tempFile( QStringLiteral( "createopts" ) ) );
 
@@ -235,7 +235,7 @@ void TestNineCellFilters::testCreationOptinos()
   QVERIFY( !worldFile.exists() );
 
   QgsAspectFilter ninecellFilter( SRC_FILE, tmpFile, "GTiff" );
-  ninecellFilter.setCreateOptions( QStringList() << "TFW=YES" );
+  ninecellFilter.setCreationOptions( QStringList() << "TFW=YES" );
   const int res = ninecellFilter.processRaster();
   QVERIFY( res == 0 );
 

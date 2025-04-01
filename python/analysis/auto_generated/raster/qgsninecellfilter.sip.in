@@ -52,20 +52,20 @@ Starts the calculation, reads from mInputFile and stores the result in mOutputFi
     double outputNodataValue() const;
     void setOutputNodataValue( double value );
 
-    void setCreateOptions( const QStringList &list );
+    void setCreationOptions( const QStringList &list );
 %Docstring
 Sets a list of data source creation options to use when creating the output raster file.
 
-.. seealso:: :py:func:`createOptions`
+.. seealso:: :py:func:`creationOptions`
 
 .. versionadded:: 3.44
 %End
 
-    QStringList createOptions() const;
+    QStringList creationOptions() const;
 %Docstring
 Returns the list of data source creation options which will be used when creating the output raster file.
 
-.. seealso:: :py:func:`setCreateOptions`
+.. seealso:: :py:func:`setCreationOptions`
 
 .. versionadded:: 3.44
 %End

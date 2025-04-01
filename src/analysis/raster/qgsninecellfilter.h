@@ -64,18 +64,18 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     /**
      * Sets a list of data source creation options to use when creating the output raster file.
      *
-     * \see createOptions()
+     * \see creationOptions()
      * \since QGIS 3.44
      */
-    void setCreateOptions( const QStringList &list ) { mCreateOptions = list; }
+    void setCreationOptions( const QStringList &list ) { mCreationOptions = list; }
 
     /**
      * Returns the list of data source creation options which will be used when creating the output raster file.
      *
-     * \see setCreateOptions()
+     * \see setCreationOptions()
      * \since QGIS 3.44
      */
-    QStringList createOptions() const { return mCreateOptions; }
+    QStringList creationOptions() const { return mCreationOptions; }
 
     /**
      * Calculates output value from nine input values. The input values and the output
@@ -154,7 +154,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     QString mInputFile;
     QString mOutputFile;
     QString mOutputFormat;
-    QStringList mCreateOptions;
+    QStringList mCreationOptions;
 
     double mCellSizeX = -1.0;
     double mCellSizeY = -1.0;
