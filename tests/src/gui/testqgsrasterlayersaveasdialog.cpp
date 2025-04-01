@@ -85,7 +85,7 @@ void TestQgsRasterLayerSaveAsDialog::outputLayerExists()
   const auto pipe { *rl.pipe() };
   const auto rasterUri { QStringLiteral( "GPKG:%1:%2" ).arg( d.outputFileName() ).arg( d.outputLayerName() ) };
   auto fileWriter { QgsRasterFileWriter( d.outputFileName() ) };
-  fileWriter.setCreateOptions( d.createOptions() );
+  fileWriter.setCreationOptions( d.creationOptions() );
   fileWriter.setOutputFormat( d.outputFormat() );
   fileWriter.setBuildPyramidsFlag( d.buildPyramidsFlag() );
   fileWriter.setPyramidsList( d.pyramidsList() );

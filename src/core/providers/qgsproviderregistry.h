@@ -175,7 +175,7 @@ class CORE_EXPORT QgsProviderRegistry
       int width, int height,
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
-      const QStringList &createOptions = QStringList() ) SIP_FACTORY;
+      const QStringList &creationOptions = QStringList() ) SIP_FACTORY;
 
     /**
      * Returns list of raster pyramid resampling methods

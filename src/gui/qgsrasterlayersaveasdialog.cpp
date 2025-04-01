@@ -100,13 +100,13 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
     }
 
     // setup creation option widget
-    mCreateOptionsWidget->setProvider( mDataProvider->name() );
+    mCreationOptionsWidget->setProvider( mDataProvider->name() );
     if ( mDataProvider->name() == QLatin1String( "gdal" ) )
     {
-      mCreateOptionsWidget->setFormat( mFormatComboBox->currentData().toString() );
+      mCreationOptionsWidget->setFormat( mFormatComboBox->currentData().toString() );
     }
-    mCreateOptionsWidget->setRasterLayer( mRasterLayer );
-    mCreateOptionsWidget->update();
+    mCreationOptionsWidget->setRasterLayer( mRasterLayer );
+    mCreationOptionsWidget->update();
   }
 
   // Only do pyramids if dealing directly with GDAL.
@@ -317,8 +317,8 @@ void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QStr
   //gdal-specific
   if ( mDataProvider && mDataProvider->name() == QLatin1String( "gdal" ) )
   {
-    mCreateOptionsWidget->setFormat( outputFormat() );
-    mCreateOptionsWidget->update();
+    mCreationOptionsWidget->setFormat( outputFormat() );
+    mCreationOptionsWidget->update();
   }
 
   QStringList extensions = QgsRasterFileWriter::extensionsForFormat( outputFormat() );
@@ -436,7 +436,12 @@ QString QgsRasterLayerSaveAsDialog::outputFormat() const
 
 QStringList QgsRasterLayerSaveAsDialog::createOptions() const
 {
-  QStringList options = mCreateOptionsGroupBox->isChecked() ? mCreateOptionsWidget->options() : QStringList();
+  return creationOptions();
+}
+
+QStringList QgsRasterLayerSaveAsDialog::creationOptions() const
+{
+  QStringList options = mCreateOptionsGroupBox->isChecked() ? mCreationOptionsWidget->options() : QStringList();
   if ( outputFormat() == QLatin1String( "GPKG" ) )
   {
     // Overwrite the GPKG table options
@@ -913,7 +918,7 @@ bool QgsRasterLayerSaveAsDialog::validate() const
 {
   if ( mCreateOptionsGroupBox->isChecked() )
   {
-    QString message = mCreateOptionsWidget->validateOptions( true, false );
+    QString message = mCreationOptionsWidget->validateOptions( true, false );
     if ( !message.isNull() )
       return false;
   }

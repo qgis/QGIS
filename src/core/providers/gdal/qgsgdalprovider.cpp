@@ -3988,7 +3988,7 @@ QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
   int width, int height,
   double *geoTransform,
   const QgsCoordinateReferenceSystem &crs,
-  const QStringList &createOptions )
+  const QStringList &creationOptions )
 {
   //get driver
   GDALDriverH driver = GDALGetDriverByName( format.toLocal8Bit().data() );
@@ -3998,11 +3998,11 @@ QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
     return new QgsGdalProvider( uri, error );
   }
 
-  QgsDebugMsgLevel( "create options: " + createOptions.join( " " ), 2 );
+  QgsDebugMsgLevel( "creation options: " + creationOptions.join( " " ), 2 );
 
   //create dataset
   CPLErrorReset();
-  char **papszOptions = QgsGdalUtils::papszFromStringList( createOptions );
+  char **papszOptions = QgsGdalUtils::papszFromStringList( creationOptions );
   gdal::dataset_unique_ptr dataset( GDALCreate( driver, uri.toUtf8().constData(), width, height, nBands, ( GDALDataType )type, papszOptions ) );
   CSLDestroy( papszOptions );
   if ( !dataset )
@@ -4151,12 +4151,12 @@ QString QgsGdalProviderMetadata::filters( Qgis::FileFilterType type )
   return QString();
 }
 
-QString QgsGdalProvider::validateCreationOptions( const QStringList &createOptions, const QString &format )
+QString QgsGdalProvider::validateCreationOptions( const QStringList &creationOptions, const QString &format )
 {
   QString message;
 
   // first validate basic syntax with GDALValidateCreationOptions
-  message = QgsGdalUtils::validateCreationOptionsFormat( createOptions, format );
+  message = QgsGdalUtils::validateCreationOptionsFormat( creationOptions, format );
   if ( !message.isNull() )
     return message;
 
@@ -4169,8 +4169,8 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList &createOptio
 
   // prepare a map for easier lookup
   QMap< QString, QString > optionsMap;
-  const auto constCreateOptions = createOptions;
-  for ( const QString &option : constCreateOptions )
+  const auto constCreationOptions = creationOptions;
+  for ( const QString &option : constCreationOptions )
   {
     QStringList opt = option.split( '=' );
     optionsMap[ opt[0].toUpper()] = opt[1];

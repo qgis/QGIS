@@ -171,7 +171,7 @@ class CORE_EXPORT QgsGdalUtils
      * Validates creation options for a given format, regardless of layer.
      * \since QGIS 3.10
      */
-    static QString validateCreationOptionsFormat( const QStringList &createOptions, const QString &format );
+    static QString validateCreationOptionsFormat( const QStringList &creationOptions, const QString &format );
 
     /**
      * Helper function

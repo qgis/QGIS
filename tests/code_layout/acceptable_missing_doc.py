@@ -588,7 +588,7 @@ ACCEPTABLE_MISSING_DOCS = {
         "maximumTileSizeX() const",
         "maximumTileSizeY() const",
         "outputFileName() const",
-        "createOptions() const",
+        "creationOptions() const",
         "CrsState",
         "pyramidsList() const",
     ],
