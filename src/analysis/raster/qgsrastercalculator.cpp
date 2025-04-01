@@ -697,6 +697,7 @@ gdal::dataset_unique_ptr QgsRasterCalculator::openOutputFile( GDALDriverH output
   //open output file
   char **papszOptions = QgsGdalUtils::papszFromStringList( mCreateOptions );
   gdal::dataset_unique_ptr outputDataset( GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions ) );
+  CSLDestroy( papszOptions );
   if ( !outputDataset )
   {
     return nullptr;
