@@ -16,16 +16,16 @@
 class QgsProviderSublayerModel: QAbstractItemModel
 {
 %Docstring(signature="appended")
-
 A model for representing the sublayers present in a URI.
 
-:py:class:`QgsProviderSublayerModel` is designed to present a tree view of the sublayers
-available for a URI, including any vector, raster or mesh sublayers present.
+:py:class:`QgsProviderSublayerModel` is designed to present a tree view
+of the sublayers available for a URI, including any vector, raster or
+mesh sublayers present.
 
-Additionally, :py:class:`QgsProviderSublayerModel` can include some non-sublayer items,
-e.g. in order to represent other content available for a URI, such as
-embedded project items. The non-sublayer items can be added by calling
-:py:func:`~addNonLayerItem`.
+Additionally, :py:class:`QgsProviderSublayerModel` can include some
+non-sublayer items, e.g. in order to represent other content available
+for a URI, such as embedded project items. The non-sublayer items can be
+added by calling :py:func:`~addNonLayerItem`.
 
 .. versionadded:: 3.22
 %End
@@ -61,8 +61,8 @@ embedded project items. The non-sublayer items can be added by calling
     class NonLayerItem
 {
 %Docstring(signature="appended")
-
-Contains details for a non-sublayer item to include in a QgsProviderSublayerModel.
+Contains details for a non-sublayer item to include in a
+QgsProviderSublayerModel.
 
 .. versionadded:: 3.22
 %End
@@ -155,7 +155,8 @@ Sets the item's ``icon``.
 
     QgsProviderSublayerModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsProviderSublayerModel, with the specified ``parent`` object.
+Constructor for QgsProviderSublayerModel, with the specified ``parent``
+object.
 %End
 
     void setSublayerDetails( const QList< QgsProviderSublayerDetails > &details );
@@ -215,8 +216,8 @@ Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
 class QgsProviderSublayerProxyModel: QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-
-A QSortFilterProxyModel for filtering and sorting a :py:class:`QgsProviderSublayerModel`.
+A QSortFilterProxyModel for filtering and sorting a
+:py:class:`QgsProviderSublayerModel`.
 
 .. versionadded:: 3.22
 %End
@@ -228,7 +229,8 @@ A QSortFilterProxyModel for filtering and sorting a :py:class:`QgsProviderSublay
 
     QgsProviderSublayerProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsProviderSublayerProxyModel, with the specified ``parent`` object.
+Constructor for QgsProviderSublayerProxyModel, with the specified
+``parent`` object.
 %End
 
     QString filterString() const;
@@ -247,7 +249,8 @@ Sets the ``filter`` string used for filtering items in the model.
 
     bool includeSystemTables() const;
 %Docstring
-Returns ``True`` if system and internal tables will be shown in the model.
+Returns ``True`` if system and internal tables will be shown in the
+model.
 
 .. seealso:: :py:func:`setIncludeSystemTables`
 %End

@@ -24,7 +24,8 @@ Contains elevation properties for a :py:class:`QgsProject`.
 
     QgsProjectElevationProperties( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsProjectElevationProperties with the specified ``parent`` object.
+Constructor for QgsProjectElevationProperties with the specified
+``parent`` object.
 %End
 
     ~QgsProjectElevationProperties();
@@ -71,8 +72,8 @@ Ownership of ``provider`` is transferred to this object.
 
     QgsDoubleRange elevationRange() const;
 %Docstring
-Returns the project's elevation range, which indicates the upper and lower
-elevation limits associated with the project.
+Returns the project's elevation range, which indicates the upper and
+lower elevation limits associated with the project.
 
 .. note::
 
@@ -88,12 +89,13 @@ elevation limits associated with the project.
 
     double elevationFilterRangeSize() const;
 %Docstring
-Returns the fixed size for elevation range filtering in the project, used when interactively filtering by elevation.
+Returns the fixed size for elevation range filtering in the project,
+used when interactively filtering by elevation.
 
 Returns -1 if no fixed elevation range size is desired.
 
-A fixed size forces the selected elevation range to have a matching difference between
-the upper and lower elevation.
+A fixed size forces the selected elevation range to have a matching
+difference between the upper and lower elevation.
 
 .. seealso:: :py:func:`setElevationFilterRangeSize`
 
@@ -102,7 +104,8 @@ the upper and lower elevation.
 
     bool invertElevationFilter() const;
 %Docstring
-Returns ``True`` if the elevation range filter slider should be inverted for this project.
+Returns ``True`` if the elevation range filter slider should be inverted
+for this project.
 
 .. seealso:: :py:func:`setInvertElevationFilter`
 
@@ -113,8 +116,8 @@ Returns ``True`` if the elevation range filter slider should be inverted for thi
 
     void setElevationRange( const QgsDoubleRange &range );
 %Docstring
-Sets the project's elevation ``range``, which indicates the upper and lower
-elevation limits associated with the project.
+Sets the project's elevation ``range``, which indicates the upper and
+lower elevation limits associated with the project.
 
 .. note::
 
@@ -130,12 +133,13 @@ elevation limits associated with the project.
 
     void setElevationFilterRangeSize( double size );
 %Docstring
-Sets the fixed size for elevation range filtering in the project, used when interactively filtering by elevation.
+Sets the fixed size for elevation range filtering in the project, used
+when interactively filtering by elevation.
 
 Set to -1 if no fixed elevation range size is desired.
 
-A fixed size forces the selected elevation range to have a matching difference between
-the upper and lower elevation.
+A fixed size forces the selected elevation range to have a matching
+difference between the upper and lower elevation.
 
 .. seealso:: :py:func:`elevationFilterRangeSize`
 
@@ -144,7 +148,8 @@ the upper and lower elevation.
 
     void setInvertElevationFilter( bool invert );
 %Docstring
-Sets whether the elevation range filter slider should be inverted for this project.
+Sets whether the elevation range filter slider should be inverted for
+this project.
 
 .. seealso:: :py:func:`invertElevationFilter`
 

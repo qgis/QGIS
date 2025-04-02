@@ -11,18 +11,21 @@
 class QgsBlockingNetworkRequest : QObject
 {
 %Docstring(signature="appended")
-A thread safe class for performing blocking (sync) network requests, with full support for QGIS proxy
-and authentication settings.
+A thread safe class for performing blocking (sync) network requests,
+with full support for QGIS proxy and authentication settings.
 
-This class should be used whenever a blocking network request is required. Unlike implementations
-which rely on QApplication.processEvents() or creation of a QEventLoop, this class is completely
-thread safe and can be used on either the main thread or background threads without issue.
+This class should be used whenever a blocking network request is
+required. Unlike implementations which rely on
+QApplication.processEvents() or creation of a QEventLoop, this class is
+completely thread safe and can be used on either the main thread or
+background threads without issue.
 
 Redirects are automatically handled by the class.
 
-After completion of a request, the reply content should be retrieved by calling :py:func:`~getReplyContent`.
-This method returns a :py:class:`QgsNetworkReplyContent` container, which is safe and cheap to copy and pass
-between threads without issue.
+After completion of a request, the reply content should be retrieved by
+calling :py:func:`~getReplyContent`. This method returns a
+:py:class:`QgsNetworkReplyContent` container, which is safe and cheap to
+copy and pass between threads without issue.
 
 .. versionadded:: 3.6
 %End
@@ -58,44 +61,56 @@ Constructor for QgsBlockingNetworkRequest
 %Docstring
 Performs a "get" operation on the specified ``request``.
 
-If ``forceRefresh`` is ``False`` then previously cached replies may be used for the request. If
-it is set to ``True`` then a new query is always performed.
+If ``forceRefresh`` is ``False`` then previously cached replies may be
+used for the request. If it is set to ``True`` then a new query is
+always performed.
 
-If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then any authentication configuration required will automatically be applied to
-``request``. There is no need to manually apply the authentication to the request prior to calling
-this method.
+If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then
+any authentication configuration required will automatically be applied
+to ``request``. There is no need to manually apply the authentication to
+the request prior to calling this method.
 
-The optional ``feedback`` argument can be used to abort ongoing requests.
+The optional ``feedback`` argument can be used to abort ongoing
+requests.
 
-The optional ``requestFlags`` argument can be used to modify the behavior (added in QGIS 3.40).
+The optional ``requestFlags`` argument can be used to modify the
+behavior (added in QGIS 3.40).
 
-The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
-by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
+The method will return NoError if the get operation was successful. The
+contents of the reply can be retrieved by calling
+:py:func:`~QgsBlockingNetworkRequest.reply`.
 
-If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
-can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
+If an error was encountered then a specific ErrorCode will be returned,
+and a detailed error message can be retrieved by calling
+:py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 
 .. seealso:: :py:func:`post`
 %End
 
     ErrorCode post( QNetworkRequest &request, QIODevice *data, bool forceRefresh = false, QgsFeedback *feedback = 0 );
 %Docstring
-Performs a "post" operation on the specified ``request``, using the given ``data``.
+Performs a "post" operation on the specified ``request``, using the
+given ``data``.
 
-If ``forceRefresh`` is ``False`` then previously cached replies may be used for the request. If
-it is set to ``True`` then a new query is always performed.
+If ``forceRefresh`` is ``False`` then previously cached replies may be
+used for the request. If it is set to ``True`` then a new query is
+always performed.
 
-If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then any authentication configuration required will automatically be applied to
-``request``. There is no need to manually apply the authentication to the request prior to calling
-this method.
+If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then
+any authentication configuration required will automatically be applied
+to ``request``. There is no need to manually apply the authentication to
+the request prior to calling this method.
 
-The optional ``feedback`` argument can be used to abort ongoing requests.
+The optional ``feedback`` argument can be used to abort ongoing
+requests.
 
-The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
-by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
+The method will return NoError if the get operation was successful. The
+contents of the reply can be retrieved by calling
+:py:func:`~QgsBlockingNetworkRequest.reply`.
 
-If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
-can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
+If an error was encountered then a specific ErrorCode will be returned,
+and a detailed error message can be retrieved by calling
+:py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 
 .. seealso:: :py:func:`get`
 
@@ -106,46 +121,57 @@ can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 %Docstring
 This is an overloaded function.
 
-Performs a "post" operation on the specified ``request``, using the given ``data``.
+Performs a "post" operation on the specified ``request``, using the
+given ``data``.
 %End
 
     ErrorCode head( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = 0 );
 %Docstring
 Performs a "head" operation on the specified ``request``.
 
-If ``forceRefresh`` is ``False`` then previously cached replies may be used for the request. If
-it is set to ``True`` then a new query is always performed.
+If ``forceRefresh`` is ``False`` then previously cached replies may be
+used for the request. If it is set to ``True`` then a new query is
+always performed.
 
-If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then any authentication configuration required will automatically be applied to
-``request``. There is no need to manually apply the authentication to the request prior to calling
-this method.
+If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then
+any authentication configuration required will automatically be applied
+to ``request``. There is no need to manually apply the authentication to
+the request prior to calling this method.
 
-The optional ``feedback`` argument can be used to abort ongoing requests.
+The optional ``feedback`` argument can be used to abort ongoing
+requests.
 
-The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
-by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
+The method will return NoError if the get operation was successful. The
+contents of the reply can be retrieved by calling
+:py:func:`~QgsBlockingNetworkRequest.reply`.
 
-If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
-can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
+If an error was encountered then a specific ErrorCode will be returned,
+and a detailed error message can be retrieved by calling
+:py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 
 .. versionadded:: 3.18
 %End
 
     ErrorCode put( QNetworkRequest &request, QIODevice *data, QgsFeedback *feedback = 0 );
 %Docstring
-Performs a "put" operation on the specified ``request``, using the given ``data``.
+Performs a "put" operation on the specified ``request``, using the given
+``data``.
 
-If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then any authentication configuration required will automatically be applied to
-``request``. There is no need to manually apply the authentication to the request prior to calling
-this method.
+If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then
+any authentication configuration required will automatically be applied
+to ``request``. There is no need to manually apply the authentication to
+the request prior to calling this method.
 
-The optional ``feedback`` argument can be used to abort ongoing requests.
+The optional ``feedback`` argument can be used to abort ongoing
+requests.
 
-The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
-by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
+The method will return NoError if the get operation was successful. The
+contents of the reply can be retrieved by calling
+:py:func:`~QgsBlockingNetworkRequest.reply`.
 
-If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
-can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
+If an error was encountered then a specific ErrorCode will be returned,
+and a detailed error message can be retrieved by calling
+:py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 
 .. versionadded:: 3.22
 %End
@@ -154,7 +180,8 @@ can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 %Docstring
 This is an overloaded function.
 
-Performs a "put" operation on the specified ``request``, using the given ``data``.
+Performs a "put" operation on the specified ``request``, using the given
+``data``.
 
 .. versionadded:: 3.18
 %End
@@ -163,41 +190,55 @@ Performs a "put" operation on the specified ``request``, using the given ``data`
 %Docstring
 Performs a "delete" operation on the specified ``request``.
 
-If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then any authentication configuration required will automatically be applied to
-``request``. There is no need to manually apply the authentication to the request prior to calling
-this method.
+If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then
+any authentication configuration required will automatically be applied
+to ``request``. There is no need to manually apply the authentication to
+the request prior to calling this method.
 
-The optional ``feedback`` argument can be used to abort ongoing requests.
+The optional ``feedback`` argument can be used to abort ongoing
+requests.
 
-The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
-by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
+The method will return NoError if the get operation was successful. The
+contents of the reply can be retrieved by calling
+:py:func:`~QgsBlockingNetworkRequest.reply`.
 
-If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
-can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
+If an error was encountered then a specific ErrorCode will be returned,
+and a detailed error message can be retrieved by calling
+:py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 
 .. versionadded:: 3.18
 %End
 
     QString errorMessage() const;
 %Docstring
-Returns the error message string, after a :py:func:`~QgsBlockingNetworkRequest.get`, :py:func:`~QgsBlockingNetworkRequest.post`, :py:func:`~QgsBlockingNetworkRequest.head` or :py:func:`~QgsBlockingNetworkRequest.put` request has been made.
+Returns the error message string, after a
+:py:func:`~QgsBlockingNetworkRequest.get`,
+:py:func:`~QgsBlockingNetworkRequest.post`,
+:py:func:`~QgsBlockingNetworkRequest.head` or
+:py:func:`~QgsBlockingNetworkRequest.put` request has been made.
 %End
 
     QgsNetworkReplyContent reply() const;
 %Docstring
-Returns the content of the network reply, after a :py:func:`~QgsBlockingNetworkRequest.get`, :py:func:`~QgsBlockingNetworkRequest.post`, :py:func:`~QgsBlockingNetworkRequest.head` or :py:func:`~QgsBlockingNetworkRequest.put` request has been made.
+Returns the content of the network reply, after a
+:py:func:`~QgsBlockingNetworkRequest.get`,
+:py:func:`~QgsBlockingNetworkRequest.post`,
+:py:func:`~QgsBlockingNetworkRequest.head` or
+:py:func:`~QgsBlockingNetworkRequest.put` request has been made.
 %End
 
     QString authCfg() const;
 %Docstring
-Returns the authentication config id which will be used during the request.
+Returns the authentication config id which will be used during the
+request.
 
 .. seealso:: :py:func:`setAuthCfg`
 %End
 
     void setAuthCfg( const QString &authCfg );
 %Docstring
-Sets the authentication config id which should be used during the request.
+Sets the authentication config id which should be used during the
+request.
 
 .. seealso:: :py:func:`authCfg`
 %End

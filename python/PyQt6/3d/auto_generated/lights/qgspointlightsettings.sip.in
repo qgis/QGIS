@@ -15,10 +15,10 @@ class QgsPointLightSettings : QgsLightSource
 %Docstring(signature="appended")
 Definition of a point light in a 3D map scene
 
-Total light at the distance D from a point light with intensity I
-is (I / TA) where TA is total attenuation which is calculated as
-(A_0 + A_1 * D + A_2 * D^2). The terms A_0, A_1 and A_2 stand for
-constant, linear and quadratic attenuation.
+Total light at the distance D from a point light with intensity I is (I
+/ TA) where TA is total attenuation which is calculated as (A_0 + A_1 *
+D + A_2 * D^2). The terms A_0, A_1 and A_2 stand for constant, linear
+and quadratic attenuation.
 
 .. versionadded:: 3.6
 %End

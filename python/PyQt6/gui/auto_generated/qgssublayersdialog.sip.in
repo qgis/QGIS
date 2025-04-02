@@ -11,7 +11,6 @@
 class QgsSublayersDialog : QDialog
 {
 %Docstring(signature="appended")
-
 .. deprecated:: 3.40
 
    Will be removed in QGIS 4.0.
@@ -59,7 +58,9 @@ class QgsSublayersDialog : QDialog
 
  QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), const QString &dataSourceUri = QString() ) /Deprecated/;
 %Docstring
-Construct a new QgsSublayersDialog object - a dialog to select which sub layers to be imported from a data source (e.g. from geopackage or zipfile)
+Construct a new QgsSublayersDialog object - a dialog to select which sub
+layers to be imported from a data source (e.g. from geopackage or
+zipfile)
 
 :param providerType: provider type
 :param name: provider type name

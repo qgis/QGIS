@@ -25,12 +25,14 @@ item is a map (QVariantMap) in this form:
        'attributeIndex': int
      }
 
-Also it can accept lists (either string lists or :py:class:`QgsVectorLayer` list)
-as well as individual layer object or string representing layer source.
+Also it can accept lists (either string lists or
+:py:class:`QgsVectorLayer` list) as well as individual layer object or
+string representing layer source.
 
-Static functions :py:func:`~parametersAsLayers`, :py:func:`~variantMapAsLayer`,
-:py:func:`~layerAsVariantMap` provide conversion between :py:class:`QgsDxfExport`.DxfLayer
-representation and QVariant representation.
+Static functions :py:func:`~parametersAsLayers`,
+:py:func:`~variantMapAsLayer`, :py:func:`~layerAsVariantMap` provide
+conversion between :py:class:`QgsDxfExport`.DxfLayer representation and
+QVariant representation.
 
 .. versionadded:: 3.18
 %End

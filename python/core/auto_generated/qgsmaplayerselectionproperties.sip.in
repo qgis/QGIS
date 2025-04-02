@@ -15,8 +15,9 @@ class QgsMapLayerSelectionProperties : QObject
 %Docstring(signature="appended")
 Base class for storage of map layer selection properties.
 
-:py:class:`QgsMapLayerSelectionProperties` exposes settings for controlling
-how an individual :py:class:`QgsMapLayer` behaves with respect to feature selection.
+:py:class:`QgsMapLayerSelectionProperties` exposes settings for
+controlling how an individual :py:class:`QgsMapLayer` behaves with
+respect to feature selection.
 
 .. versionadded:: 3.34
 %End
@@ -39,19 +40,22 @@ how an individual :py:class:`QgsMapLayer` behaves with respect to feature select
 
     QgsMapLayerSelectionProperties( QObject *parent /TransferThis/ );
 %Docstring
-Constructor for QgsMapLayerSelectionProperties, with the specified ``parent`` object.
+Constructor for QgsMapLayerSelectionProperties, with the specified
+``parent`` object.
 %End
 
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 %Docstring
-Writes the properties to a DOM ``element``, to be used later with :py:func:`~QgsMapLayerSelectionProperties.readXml`.
+Writes the properties to a DOM ``element``, to be used later with
+:py:func:`~QgsMapLayerSelectionProperties.readXml`.
 
 .. seealso:: :py:func:`readXml`
 %End
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 %Docstring
-Reads temporal properties from a DOM ``element`` previously written by :py:func:`~QgsMapLayerSelectionProperties.writeXml`.
+Reads temporal properties from a DOM ``element`` previously written by
+:py:func:`~QgsMapLayerSelectionProperties.writeXml`.
 
 .. seealso:: :py:func:`writeXml`
 %End

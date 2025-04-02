@@ -36,8 +36,8 @@ Constructor for QgsLayoutItemPolyline for the specified ``layout``.
 
     QgsLayoutItemPolyline( const QPolygonF &polyline, QgsLayout *layout );
 %Docstring
-Constructor for QgsLayoutItemPolyline for the specified ``polyline``
-and ``layout``.
+Constructor for QgsLayoutItemPolyline for the specified ``polyline`` and
+``layout``.
 %End
 
     static QgsLayoutItemPolyline *create( QgsLayout *layout ) /Factory/;
@@ -65,15 +65,16 @@ Returns the line symbol used to draw the shape.
 
     void setSymbol( QgsLineSymbol *symbol );
 %Docstring
-Sets the ``symbol`` used to draw the shape.
-Ownership of ``symbol`` is not transferred.
+Sets the ``symbol`` used to draw the shape. Ownership of ``symbol`` is
+not transferred.
 
 .. seealso:: :py:func:`symbol`
 %End
 
     MarkerMode startMarker() const;
 %Docstring
-Returns the start marker mode, which controls what marker is drawn at the start of the line.
+Returns the start marker mode, which controls what marker is drawn at
+the start of the line.
 
 .. seealso:: :py:func:`setStartMarker`
 
@@ -82,7 +83,8 @@ Returns the start marker mode, which controls what marker is drawn at the start 
 
     void setStartMarker( MarkerMode mode );
 %Docstring
-Sets the start marker ``mode``, which controls what marker is drawn at the start of the line.
+Sets the start marker ``mode``, which controls what marker is drawn at
+the start of the line.
 
 .. seealso:: :py:func:`startMarker`
 
@@ -91,7 +93,8 @@ Sets the start marker ``mode``, which controls what marker is drawn at the start
 
     MarkerMode endMarker() const;
 %Docstring
-Returns the end marker mode, which controls what marker is drawn at the end of the line.
+Returns the end marker mode, which controls what marker is drawn at the
+end of the line.
 
 .. seealso:: :py:func:`setEndMarker`
 
@@ -100,7 +103,8 @@ Returns the end marker mode, which controls what marker is drawn at the end of t
 
     void setEndMarker( MarkerMode mode );
 %Docstring
-Sets the end marker ``mode``, which controls what marker is drawn at the end of the line.
+Sets the end marker ``mode``, which controls what marker is drawn at the
+end of the line.
 
 .. seealso:: :py:func:`endMarker`
 

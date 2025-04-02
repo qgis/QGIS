@@ -13,8 +13,9 @@
 class QgsRasterHistogram
 {
 %Docstring(signature="appended")
-The :py:class:`QgsRasterHistogram` is a container for histogram of a single raster band.
-It is used to cache computed histograms in raster providers.
+The :py:class:`QgsRasterHistogram` is a container for histogram of a
+single raster band. It is used to cache computed histograms in raster
+providers.
 %End
 
 %TypeHeaderCode

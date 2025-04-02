@@ -11,8 +11,8 @@
 class QgsFeaturePickerModel : QgsFeaturePickerModelBase
 {
 %Docstring(signature="appended")
-Provides a list of features based on filter conditions.
-Features are fetched asynchronously.
+Provides a list of features based on filter conditions. Features are
+fetched asynchronously.
 %End
 
 %TypeHeaderCode
@@ -28,8 +28,8 @@ Create a new QgsFeaturePickerModel, optionally specifying a ``parent``.
     virtual void setExtraIdentifierValueToNull();
 
 %Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model as NULL value(s).
+Allows specifying one value that does not need to match the filter
+criteria but will still be available in the model as NULL value(s).
 
 .. versionadded:: 3.10
 %End

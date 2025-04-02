@@ -11,7 +11,6 @@
 class QgsProviderUtils
 {
 %Docstring(signature="appended")
-
 Contains utility functions for working with data providers.
 
 .. versionadded:: 3.22
@@ -32,13 +31,15 @@ Contains utility functions for working with data providers.
 
     static bool sublayerDetailsAreIncomplete( const QList< QgsProviderSublayerDetails > &details, QgsProviderUtils::SublayerCompletenessFlags flags = QgsProviderUtils::SublayerCompletenessFlags() );
 %Docstring
-Returns ``True`` if the sublayer ``details`` are incomplete, and require a more in-depth
-scan.
+Returns ``True`` if the sublayer ``details`` are incomplete, and require
+a more in-depth scan.
 
-For instance, if the details contain any vector sublayers with unknown geometry types
-then a query with the :py:class:`Qgis`.SublayerQueryFlag.ResolveGeometryType flag is required.
+For instance, if the details contain any vector sublayers with unknown
+geometry types then a query with the
+:py:class:`Qgis`.SublayerQueryFlag.ResolveGeometryType flag is required.
 
-The ``flags`` argument can be used to control the level of completeness required during the test.
+The ``flags`` argument can be used to control the level of completeness
+required during the test.
 %End
 
     static QString suggestLayerNameFromFilePath( const QString &path );
@@ -46,10 +47,10 @@ The ``flags`` argument can be used to control the level of completeness required
 Suggests a suitable layer name given only a file ``path``.
 
 Usually this corresponds to the base file name of ``path`` (e.g.
-"rivers" for a path of "c:/my data/water/rivers.shp"). However
-some data formats which use fixed file paths (such as aigrid files)
-will instead return the parent directory name (e.g. "rivers" for
-a path of "c:/my data/water/rivers/hdr.adf").
+"rivers" for a path of "c:/my data/water/rivers.shp"). However some data
+formats which use fixed file paths (such as aigrid files) will instead
+return the parent directory name (e.g. "rivers" for a path of "c:/my
+data/water/rivers/hdr.adf").
 %End
 
 };

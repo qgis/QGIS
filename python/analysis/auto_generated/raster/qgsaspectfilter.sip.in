@@ -12,7 +12,8 @@
 class QgsAspectFilter : QgsDerivativeFilter
 {
 %Docstring(signature="appended")
-Calculates aspect values in a window of 3x3 cells based on first order derivatives in x- and y- directions.
+Calculates aspect values in a window of 3x3 cells based on first order
+derivatives in x- and y- directions.
 
 Direction is clockwise starting from north.
 %End

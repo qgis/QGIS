@@ -16,11 +16,13 @@
 class QgsRasterProjector : QgsRasterInterface
 {
 %Docstring(signature="appended")
-Implements approximate projection support for optimised raster transformation.
+Implements approximate projection support for optimised raster
+transformation.
 
-:py:class:`QgsRasterProjector` calculates a grid of points in the source CRS for a specific target CRS and extent.
-These are used to calculate affine transformation matrices, which can be used instead of raw
-PROJ transformations for optimised bulk reprojection of points.
+:py:class:`QgsRasterProjector` calculates a grid of points in the source
+CRS for a specific target CRS and extent. These are used to calculate
+affine transformation matrices, which can be used instead of raw PROJ
+transformations for optimised bulk reprojection of points.
 %End
 
 %TypeHeaderCode
@@ -61,7 +63,8 @@ Sets the source and destination CRS
     void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
                  QgsCoordinateTransformContext transformContext );
 %Docstring
-Sets source CRS to ``srcCRS`` and destination CRS to ``destCRS`` and the transformation context to ``transformContext``
+Sets source CRS to ``srcCRS`` and destination CRS to ``destCRS`` and the
+transformation context to ``transformContext``
 
 .. versionadded:: 3.8
 %End

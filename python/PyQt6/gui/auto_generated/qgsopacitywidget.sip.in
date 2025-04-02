@@ -26,8 +26,8 @@ Constructor for QgsOpacityWidget.
 
     double opacity() const;
 %Docstring
-Returns the current opacity selected in the widget, where opacity ranges from 0.0 (transparent)
-to 1.0 (opaque).
+Returns the current opacity selected in the widget, where opacity ranges
+from 0.0 (transparent) to 1.0 (opaque).
 
 .. seealso:: :py:func:`setOpacity`
 
@@ -38,8 +38,8 @@ to 1.0 (opaque).
 
     void setOpacity( double opacity );
 %Docstring
-Sets the current ``opacity`` to show in the widget, where ``opacity`` ranges from 0.0 (transparent)
-to 1.0 (opaque).
+Sets the current ``opacity`` to show in the widget, where ``opacity``
+ranges from 0.0 (transparent) to 1.0 (opaque).
 
 .. seealso:: :py:func:`opacity`
 
@@ -50,8 +50,8 @@ to 1.0 (opaque).
 
     void opacityChanged( double opacity );
 %Docstring
-Emitted when the ``opacity`` is changed in the widget, where ``opacity`` ranges from 0.0 (transparent)
-to 1.0 (opaque).
+Emitted when the ``opacity`` is changed in the widget, where ``opacity``
+ranges from 0.0 (transparent) to 1.0 (opaque).
 
 .. seealso:: :py:func:`setOpacity`
 
