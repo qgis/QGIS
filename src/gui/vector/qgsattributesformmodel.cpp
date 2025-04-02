@@ -493,13 +493,7 @@ Qt::ItemFlags QgsAttributesAvailableWidgetsModel::flags( const QModelIndex &inde
   if ( !index.isValid() )
     return Qt::NoItemFlags;
 
-  Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
-
-  AttributesFormTreeNode *node = getItem( index );
-  if ( node->type() == QgsAttributeFormTreeData::WidgetType )
-    flags |= Qt::ItemIsDropEnabled;
-
-  return flags;
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
 
 QVariant QgsAttributesAvailableWidgetsModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -691,6 +685,11 @@ bool QgsAttributesAvailableWidgetsModel::setData( const QModelIndex &index, cons
   return result;
 }
 
+Qt::DropActions QgsAttributesAvailableWidgetsModel::supportedDragActions() const
+{
+  return Qt::CopyAction;
+}
+
 QModelIndex QgsAttributesAvailableWidgetsModel::getFieldContainer() const
 {
   if ( mRootItem->childCount() > 0 )
@@ -747,7 +746,7 @@ QVariant QgsAttributesFormLayoutModel::headerData( int section, Qt::Orientation 
 Qt::ItemFlags QgsAttributesFormLayoutModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
-    return Qt::NoItemFlags;
+    return Qt::ItemIsDropEnabled;
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 
@@ -1021,16 +1020,11 @@ bool QgsAttributesFormLayoutModel::removeRows( int row, int count, const QModelI
 
   AttributesFormTreeNode *node = getItem( parent );
 
-  if ( row >= node->childCount() )
+  if ( row > node->childCount() - count )
     return false;
 
   beginRemoveRows( parent, row, row + count - 1 );
-
-  // for (int i=row+count-1; i==row; i-- )
-  // {
-  //   node->deleteChildAtIndex( i );
-  // }
-  while ( count-- )
+  for ( int r = 0; r < count; ++r )
     node->deleteChildAtIndex( row );
   endRemoveRows();
   return true;
@@ -1043,6 +1037,11 @@ bool QgsAttributesFormLayoutModel::removeRow( int row, const QModelIndex &parent
   node->deleteChildAtIndex( row );
   endRemoveRows();
   return true;
+}
+
+Qt::DropActions QgsAttributesFormLayoutModel::supportedDragActions() const
+{
+  return Qt::MoveAction;
 }
 
 Qt::DropActions QgsAttributesFormLayoutModel::supportedDropActions() const

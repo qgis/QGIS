@@ -65,7 +65,6 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   availableWidgetsWidgetLayout->addWidget( mAvailableWidgetsTreeView );
   availableWidgetsWidgetLayout->setContentsMargins( 0, 0, 0, 0 );
   mAvailableWidgetsWidget->setLayout( availableWidgetsWidgetLayout );
-  mAvailableWidgetsTreeView->setSelectionMode( QAbstractItemView::SelectionMode::ExtendedSelection );
   mAvailableWidgetsTreeView->setContextMenuPolicy( Qt::CustomContextMenu );
 
   mAvailableWidgetsModel = new QgsAttributesAvailableWidgetsModel( mLayer, QgsProject().instance(), this );
@@ -128,8 +127,10 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
 {
   mAvailableWidgetsTreeView->setSortingEnabled( false );
   mAvailableWidgetsTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mAvailableWidgetsTreeView->setSelectionMode( QAbstractItemView::SelectionMode::ExtendedSelection );
   mAvailableWidgetsTreeView->setAcceptDrops( false );
   mAvailableWidgetsTreeView->setDragDropMode( QAbstractItemView::DragDropMode::DragOnly );
+  //mAvailableWidgetsTreeView->setDefaultDropAction( Qt::CopyAction );  // probably not needed for AW
 
   mAvailableWidgetsModel->populate();
   mAvailableWidgetsTreeView->expandAll();
@@ -142,7 +143,8 @@ void QgsAttributesFormProperties::initFormLayoutTree()
   mFormLayoutTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mFormLayoutTreeView->setSelectionMode( QAbstractItemView::SelectionMode::ExtendedSelection );
   mFormLayoutTreeView->setAcceptDrops( true );
-  mFormLayoutTreeView->setDragDropMode( QAbstractItemView::DragDropMode::InternalMove );
+  mFormLayoutTreeView->setDragDropMode( QAbstractItemView::DragDropMode::DragDrop );
+  mFormLayoutTreeView->setDefaultDropAction( Qt::MoveAction );
 
   mFormLayoutTreeView->selectionModel()->clear();
   mFormLayoutModel->populate();

@@ -16,6 +16,8 @@
 #ifndef QGSATTRIBUTESFORMMODEL_H
 #define QGSATTRIBUTESFORMMODEL_H
 
+#define SIP_NO_FILE
+
 #include "qgsaddtaborgroup.h"
 #include "qgsattributeeditorelement.h"
 #include "qgsoptionalexpression.h"
@@ -472,6 +474,7 @@ class QgsAttributesAvailableWidgetsModel : public QgsAttributesFormModel
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     // Drag and drop support
+    Qt::DropActions supportedDragActions() const override;
     //Qt::DropActions supportedDropActions() const override;
     //QStringList mimeTypes() const override;
     //QMimeData *mimeData( const QModelIndexList &indexes ) const override;
@@ -521,14 +524,15 @@ class QgsAttributesFormLayoutModel : public QgsAttributesFormModel
 
     // Add/remove data:
     //bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     bool removeRow( int row, const QModelIndex &parent = QModelIndex() );
 
     // Drag and drop support
+    Qt::DropActions supportedDragActions() const override;
     Qt::DropActions supportedDropActions() const override;
     //QStringList mimeTypes() const override;
     //QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     // Other methods
     QList< QgsAddAttributeFormContainerDialog::ContainerPair > getListOfContainers() const;
