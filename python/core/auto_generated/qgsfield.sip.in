@@ -553,8 +553,8 @@ should be handled during a duplicate operation.
 
     Qgis::FieldDomainMergePolicy mergePolicy() const /HoldGIL/;
 %Docstring
-Returns the field's merge policy, which indicates how field values should
-be handled during a merge operation.
+Returns the field's merge policy, which indicates how field values
+should be handled during a merge operation.
 
 .. seealso:: :py:func:`setMergePolicy`
 
@@ -563,8 +563,8 @@ be handled during a merge operation.
 
     void setMergePolicy( Qgis::FieldDomainMergePolicy policy ) /HoldGIL/;
 %Docstring
-Sets the field's merge ``policy``, which indicates how field values should
-be handled during a merge operation.
+Sets the field's merge ``policy``, which indicates how field values
+should be handled during a merge operation.
 
 .. seealso:: :py:func:`mergePolicy`
 
