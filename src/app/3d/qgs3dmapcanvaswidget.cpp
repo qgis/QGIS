@@ -1185,7 +1185,7 @@ void Qgs3DMapCanvasWidget::setSceneExtent( const QgsRectangle &extent )
     if ( !mMapToolClippingPlanes->clippedPolygon().intersects( extent ) )
     {
       disableClippingPlanes();
-      mMessageBar->pushInfo( QString(), tr( "Cross-section has been disabled, because it's outside current extent" ) );
+      mMessageBar->pushInfo( QString(), tr( "Cross-section has been disabled, because it is outside the current extent" ) );
     }
   }
 

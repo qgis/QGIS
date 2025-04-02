@@ -298,7 +298,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void removeSceneEntity( Qgs3DMapSceneEntity *entity ) SIP_SKIP;
 
     /**
-     * Returns list of clipping planes if clipping is enabled, otherwise an empty list.
+     * Returns list of clipping planes if clipping is enabled, otherwise an
+     * empty list.
      *
      * \since QGIS 3.44
      */
