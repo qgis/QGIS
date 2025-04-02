@@ -813,6 +813,7 @@ def process_doxygen_line(line: str) -> str:
     # Remove prepending spaces and apply various replacements
     line = re.sub(r"^\s+", "", line)
     line = re.sub(r"\\a (.+?)\b", r"``\1``", line)
+    line = re.sub(r" \\ref\b", "", line)
     line = line.replace("::", ".")
     line = re.sub(r"\bnullptr\b", "None", line)
 
