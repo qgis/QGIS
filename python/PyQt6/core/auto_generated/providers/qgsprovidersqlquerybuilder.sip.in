@@ -14,8 +14,9 @@ class QgsProviderSqlQueryBuilder
 %Docstring(signature="appended")
 Provides an interface for provider-specific creation of SQL queries.
 
-The :py:class:`QgsProviderSqlQueryBuilder` provides an interface for creation of SQL queries, which
-can be overridden for backend provider specific SQL syntax.
+The :py:class:`QgsProviderSqlQueryBuilder` provides an interface for
+creation of SQL queries, which can be overridden for backend provider
+specific SQL syntax.
 
 .. versionadded:: 3.28
 %End
@@ -29,9 +30,12 @@ can be overridden for backend provider specific SQL syntax.
 
     virtual QString createLimitQueryForTable( const QString &schema, const QString &name, int limit = 10 ) const;
 %Docstring
-Returns a result size limited SQL query string generated for the given ``schema`` and table ``name``, retrieving all columns for the first ``limit`` rows.
+Returns a result size limited SQL query string generated for the given
+``schema`` and table ``name``, retrieving all columns for the first
+``limit`` rows.
 
-The base class method returns the SQL query "SELECT * FROM table LIMIT 10". Subclasses may return database specific equivalents to this query.
+The base class method returns the SQL query "SELECT * FROM table LIMIT
+10". Subclasses may return database specific equivalents to this query.
 %End
 
     virtual QString quoteIdentifier( const QString &identifier ) const;

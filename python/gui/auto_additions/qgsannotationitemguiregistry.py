@@ -5,7 +5,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsAnnotationItemGuiRegistry.__attribute_docs__ = {'typeAdded': 'Emitted whenever a new item type is added to the registry, with the specified\n``metadataId``.\n'}
+    QgsAnnotationItemGuiRegistry.__attribute_docs__ = {'typeAdded': 'Emitted whenever a new item type is added to the registry, with the\nspecified ``metadataId``.\n'}
     QgsAnnotationItemGuiRegistry.__signal_arguments__ = {'typeAdded': ['metadataId: int']}
     QgsAnnotationItemGuiRegistry.__group__ = ['annotations']
 except (NameError, AttributeError):

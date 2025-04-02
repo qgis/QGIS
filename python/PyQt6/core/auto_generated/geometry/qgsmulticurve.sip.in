@@ -68,7 +68,8 @@ Returns the curve with the specified ``index``.
 
     QgsMultiCurve *reversed() const /Factory/;
 %Docstring
-Returns a copy of the multi curve, where each component curve has had its line direction reversed.
+Returns a copy of the multi curve, where each component curve has had
+its line direction reversed.
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;

@@ -12,11 +12,14 @@
 class QgsVectorDataProviderTemporalCapabilities : QgsDataProviderTemporalCapabilities
 {
 %Docstring(signature="appended")
-Implementation of data provider temporal properties for :py:class:`QgsVectorDataProviders`.
+Implementation of data provider temporal properties for
+:py:class:`QgsVectorDataProviders`.
 
-Data provider temporal capabilities reflect the temporal capabilities of a :py:class:`QgsDataProvider`.
-Unlike :py:class:`QgsMapLayerTemporalProperties`, these settings are not user-configurable,
-and should only be set by the :py:class:`QgsDataProvider` itself.
+Data provider temporal capabilities reflect the temporal capabilities of
+a :py:class:`QgsDataProvider`. Unlike
+:py:class:`QgsMapLayerTemporalProperties`, these settings are not
+user-configurable, and should only be set by the
+:py:class:`QgsDataProvider` itself.
 
 .. versionadded:: 3.14
 %End
@@ -30,7 +33,8 @@ and should only be set by the :py:class:`QgsDataProvider` itself.
 %Docstring
 Constructor for QgsVectorDataProviderTemporalCapabilities.
 
-The ``enabled`` argument specifies whether the data provider has temporal capabilities.
+The ``enabled`` argument specifies whether the data provider has
+temporal capabilities.
 %End
 
     Qgis::VectorDataProviderTemporalMode mode() const;
@@ -49,23 +53,28 @@ Sets the temporal properties ``mode``.
 
     void setAvailableTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Sets the datetime ``range`` extent from which temporal data is available from the provider.
+Sets the datetime ``range`` extent from which temporal data is available
+from the provider.
 
 .. seealso:: :py:func:`availableTemporalRange`
 %End
 
     const QgsDateTimeRange &availableTemporalRange() const;
 %Docstring
-Returns the datetime range extent from which temporal data is available from the provider.
+Returns the datetime range extent from which temporal data is available
+from the provider.
 
 .. seealso:: :py:func:`setAvailableTemporalRange`
 %End
 
     QString startField() const;
 %Docstring
-Returns the name of the start datetime field, which contains the start time for the feature's time spans.
+Returns the name of the start datetime field, which contains the start
+time for the feature's time spans.
 
-If :py:func:`~QgsVectorDataProviderTemporalCapabilities.mode` is ProviderStoresFeatureDateTimeInstantInField, then this field stores both the start AND end times.
+If :py:func:`~QgsVectorDataProviderTemporalCapabilities.mode` is
+ProviderStoresFeatureDateTimeInstantInField, then this field stores both
+the start AND end times.
 
 .. seealso:: :py:func:`setStartField`
 
@@ -74,9 +83,12 @@ If :py:func:`~QgsVectorDataProviderTemporalCapabilities.mode` is ProviderStoresF
 
     void setStartField( const QString &field );
 %Docstring
-Sets the name of the start datetime ``field``, which stores the start time for the feature's time spans.
+Sets the name of the start datetime ``field``, which stores the start
+time for the feature's time spans.
 
-If :py:func:`~QgsVectorDataProviderTemporalCapabilities.mode` is ModeFeatureDateTimeInstantFromField, then this field stores both the start AND end times.
+If :py:func:`~QgsVectorDataProviderTemporalCapabilities.mode` is
+ModeFeatureDateTimeInstantFromField, then this field stores both the
+start AND end times.
 
 .. seealso:: :py:func:`startField`
 
@@ -85,7 +97,8 @@ If :py:func:`~QgsVectorDataProviderTemporalCapabilities.mode` is ModeFeatureDate
 
     QString endField() const;
 %Docstring
-Returns the name of the end datetime field, which stores the end time for the feature's time spans.
+Returns the name of the end datetime field, which stores the end time
+for the feature's time spans.
 
 .. seealso:: :py:func:`setEndField`
 
@@ -94,7 +107,8 @@ Returns the name of the end datetime field, which stores the end time for the fe
 
     void setEndField( const QString &field );
 %Docstring
-Sets the name of the end datetime ``field``, which stores the end time for the feature's time spans.
+Sets the name of the end datetime ``field``, which stores the end time
+for the feature's time spans.
 
 .. seealso:: :py:func:`endField`
 

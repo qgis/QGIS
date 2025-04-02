@@ -24,9 +24,10 @@ Contains the configuration for a single snap guide used by a layout.
 Constructor for a new guide with the specified ``orientation`` and
 initial ``position``.
 
-A layout must be set by calling :py:func:`~QgsLayoutGuide.setLayout` before the guide can be used.
-Adding the guide to a :py:class:`QgsLayoutGuideCollection` will automatically set
-the corresponding layout for you.
+A layout must be set by calling :py:func:`~QgsLayoutGuide.setLayout`
+before the guide can be used. Adding the guide to a
+:py:class:`QgsLayoutGuideCollection` will automatically set the
+corresponding layout for you.
 %End
 
     ~QgsLayoutGuide();
@@ -59,8 +60,8 @@ Returns the guide's orientation.
 %Docstring
 Returns the guide's position within the page.
 
-The position indicates either the horizontal or vertical position
-of the guide, depending on the guide's :py:func:`~QgsLayoutGuide.orientation`.
+The position indicates either the horizontal or vertical position of the
+guide, depending on the guide's :py:func:`~QgsLayoutGuide.orientation`.
 
 .. seealso:: :py:func:`setPosition`
 %End
@@ -69,8 +70,9 @@ of the guide, depending on the guide's :py:func:`~QgsLayoutGuide.orientation`.
 %Docstring
 Sets the guide's ``position`` within the page.
 
-The ``position`` argument indicates either the horizontal or vertical position
-of the guide, depending on the guide's :py:func:`~QgsLayoutGuide.orientation`.
+The ``position`` argument indicates either the horizontal or vertical
+position of the guide, depending on the guide's
+:py:func:`~QgsLayoutGuide.orientation`.
 
 .. seealso:: :py:func:`position`
 %End
@@ -146,8 +148,8 @@ Stores and manages the snap guides used by a layout.
 
     QgsLayoutGuideCollection( QgsLayout *layout, QgsLayoutPageCollection *pageCollection );
 %Docstring
-Constructor for QgsLayoutGuideCollection belonging to the specified layout,
-and linked to the specified ``pageCollection``.
+Constructor for QgsLayoutGuideCollection belonging to the specified
+layout, and linked to the specified ``pageCollection``.
 %End
     ~QgsLayoutGuideCollection();
 
@@ -172,9 +174,9 @@ and linked to the specified ``pageCollection``.
 
     void addGuide( QgsLayoutGuide *guide /Transfer/ );
 %Docstring
-Adds a ``guide`` to the collection. Ownership of the guide is transferred to the
-collection, and the guide will automatically have the correct layout
-set.
+Adds a ``guide`` to the collection. Ownership of the guide is
+transferred to the collection, and the guide will automatically have the
+correct layout set.
 %End
 
     void removeGuide( QgsLayoutGuide *guide );
@@ -186,7 +188,8 @@ Removes the specified ``guide``, and deletes it.
 
     void setGuideLayoutPosition( QgsLayoutGuide *guide, double position );
 %Docstring
-Sets the absolute ``position`` (in layout coordinates) for ``guide`` within the layout.
+Sets the absolute ``position`` (in layout coordinates) for ``guide``
+within the layout.
 %End
 
     void clear();
@@ -198,7 +201,8 @@ Removes all guides from the collection.
 
     void applyGuidesToAllOtherPages( int sourcePage );
 %Docstring
-Resets all other pages' guides to match the guides from the specified ``sourcePage``.
+Resets all other pages' guides to match the guides from the specified
+``sourcePage``.
 %End
 
     void update();
@@ -213,9 +217,9 @@ Returns a list of all guides contained in the collection.
 
     QList< QgsLayoutGuide * > guides( Qt::Orientation orientation, int page = -1 );
 %Docstring
-Returns the list of guides contained in the collection with the specified
-``orientation`` and on a matching ``page``.
-If ``page`` is -1, guides from all pages will be returned.
+Returns the list of guides contained in the collection with the
+specified ``orientation`` and on a matching ``page``. If ``page`` is -1,
+guides from all pages will be returned.
 
 .. seealso:: :py:func:`guidesOnPage`
 %End
@@ -244,7 +248,8 @@ Sets whether the guide lines should be ``visible``.
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
 %Docstring
-Stores the collection's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
+Stores the collection's state in a DOM element. The ``parentElement``
+should refer to the parent layout's DOM element.
 
 .. seealso:: :py:func:`readXml`
 %End
@@ -252,7 +257,8 @@ Stores the collection's state in a DOM element. The ``parentElement`` should ref
     virtual bool readXml( const QDomElement &collectionElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
 %Docstring
-Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
+Sets the collection's state from a DOM element. collectionElement is the
+DOM node corresponding to the collection.
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -263,7 +269,8 @@ Sets the collection's state from a DOM element. collectionElement is the DOM nod
 class QgsLayoutGuideProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-Filters :py:class:`QgsLayoutGuideCollection` models to guides of a single orientation (horizontal or vertical).
+Filters :py:class:`QgsLayoutGuideCollection` models to guides of a
+single orientation (horizontal or vertical).
 %End
 
 %TypeHeaderCode
@@ -273,14 +280,16 @@ Filters :py:class:`QgsLayoutGuideCollection` models to guides of a single orient
 
     explicit QgsLayoutGuideProxyModel( QObject *parent /TransferThis/, Qt::Orientation orientation, int page );
 %Docstring
-Constructor for QgsLayoutGuideProxyModel, filtered to guides of the specified ``orientation`` and ``page`` only.
+Constructor for QgsLayoutGuideProxyModel, filtered to guides of the
+specified ``orientation`` and ``page`` only.
 
 Page numbers begin at 0.
 %End
 
     void setPage( int page );
 %Docstring
-Sets the current ``page`` for filtering matching guides. Page numbers begin at 0.
+Sets the current ``page`` for filtering matching guides. Page numbers
+begin at 0.
 %End
 
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;

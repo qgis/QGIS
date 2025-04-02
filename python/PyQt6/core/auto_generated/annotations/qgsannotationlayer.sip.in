@@ -15,12 +15,11 @@
 class QgsAnnotationLayer : QgsMapLayer
 {
 %Docstring(signature="appended")
+Represents a map layer containing a set of georeferenced annotations,
+e.g. markers, lines, polygons or text items.
 
-Represents a map layer containing a set of georeferenced annotations, e.g. markers, lines, polygons or
-text items.
-
-Annotation layers store a set of :py:class:`QgsAnnotationItem` items, which are rendered according to the item's
-z-order.
+Annotation layers store a set of :py:class:`QgsAnnotationItem` items,
+which are rendered according to the item's z-order.
 
 .. versionadded:: 3.16
 %End
@@ -45,7 +44,8 @@ Constructor for LayerOptions.
 
     QgsAnnotationLayer( const QString &name, const QgsAnnotationLayer::LayerOptions &options );
 %Docstring
-Constructor for a new QgsAnnotationLayer with the specified layer ``name``.
+Constructor for a new QgsAnnotationLayer with the specified layer
+``name``.
 
 The ``options`` argument specifies load-time layer options.
 %End
@@ -59,7 +59,8 @@ The ``options`` argument specifies load-time layer options.
 
     void reset();
 %Docstring
-Resets the annotation layer to a default state, and clears all items from it.
+Resets the annotation layer to a default state, and clears all items
+from it.
 %End
 
     QString addItem( QgsAnnotationItem *item /Transfer/ );
@@ -92,30 +93,34 @@ Removes all items from the layer.
 
     bool isEmpty() const;
 %Docstring
-Returns ``True`` if the annotation layer is empty and contains no annotations.
+Returns ``True`` if the annotation layer is empty and contains no
+annotations.
 %End
 
     QMap<QString, QgsAnnotationItem *> items() const;
 %Docstring
 Returns a map of items contained in the layer, by unique item ID.
 
-This map contains references to items owned by the layer, and ownership of these remains
-with the layer.
+This map contains references to items owned by the layer, and ownership
+of these remains with the layer.
 %End
 
     QgsAnnotationItem *item( const QString &id ) const;
 %Docstring
-Returns the item with the specified ``id``, or ``None`` if no matching item was found.
+Returns the item with the specified ``id``, or ``None`` if no matching
+item was found.
 
 .. versionadded:: 3.22
 %End
 
     QStringList itemsInBounds( const QgsRectangle &bounds, QgsRenderContext &context, QgsFeedback *feedback = 0 ) const;
 %Docstring
-Returns a list of the IDs of all annotation items within the specified ``bounds`` (in layer CRS), when
-rendered using the given render ``context``.
+Returns a list of the IDs of all annotation items within the specified
+``bounds`` (in layer CRS), when rendered using the given render
+``context``.
 
-The optional ``feedback`` argument can be used to cancel the search early.
+The optional ``feedback`` argument can be used to cancel the search
+early.
 
 .. versionadded:: 3.22
 %End
@@ -195,8 +200,8 @@ Ownership is transferred to the renderer.
 
     QgsMapLayer *linkedVisibilityLayer();
 %Docstring
-Returns a linked layer, where the items in this annotation layer
-will only be visible when the linked layer is also visible.
+Returns a linked layer, where the items in this annotation layer will
+only be visible when the linked layer is also visible.
 
 .. seealso:: :py:func:`setLinkedVisibilityLayer`
 
@@ -205,8 +210,8 @@ will only be visible when the linked layer is also visible.
 
     void setLinkedVisibilityLayer( QgsMapLayer *layer );
 %Docstring
-Sets a linked ``layer``, where the items in this annotation layer
-will only be visible when the linked layer is also visible.
+Sets a linked ``layer``, where the items in this annotation layer will
+only be visible when the linked layer is also visible.
 
 .. seealso:: :py:func:`linkedVisibilityLayer`
 

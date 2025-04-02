@@ -25,21 +25,26 @@ Utility functions for working with OGC SensorThings API services.
 %Docstring
 Converts a string value to a :py:class:`Qgis`.SensorThingsEntity type.
 
-Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could not be converted to a known entity type.
+Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could
+not be converted to a known entity type.
 %End
 
     static QString displayString( Qgis::SensorThingsEntity type, bool plural = false );
 %Docstring
-Converts a :py:class:`Qgis`.SensorThingsEntity ``type`` to a user-friendly translated string.
+Converts a :py:class:`Qgis`.SensorThingsEntity ``type`` to a
+user-friendly translated string.
 
-If ``plural`` is ``True`` then a plural string is returned (ie "Things" instead of "Thing").
+If ``plural`` is ``True`` then a plural string is returned (ie "Things"
+instead of "Thing").
 %End
 
     static Qgis::SensorThingsEntity entitySetStringToEntity( const QString &type );
 %Docstring
-Converts a string value corresponding to a SensorThings entity set to a :py:class:`Qgis`.SensorThingsEntity type.
+Converts a string value corresponding to a SensorThings entity set to a
+:py:class:`Qgis`.SensorThingsEntity type.
 
-Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could not be converted to a known entity set type.
+Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could
+not be converted to a known entity set type.
 %End
 
     static QString entityToSetString( Qgis::SensorThingsEntity type );
@@ -51,7 +56,8 @@ Converts a SensorThings entity set to a SensorThings entity set string.
 
     static QStringList propertiesForEntityType( Qgis::SensorThingsEntity type );
 %Docstring
-Returns the SensorThings properties which correspond to a specified entity ``type``.
+Returns the SensorThings properties which correspond to a specified
+entity ``type``.
 
 .. versionadded:: 3.38
 %End
@@ -60,14 +66,15 @@ Returns the SensorThings properties which correspond to a specified entity ``typ
 %Docstring
 Returns the fields which correspond to a specified entity ``type``.
 
-Since QGIS 3.42 the ``includeRangeFieldProxies`` argument can be used to hide the "start"/"end" fields
-which are proxies for the date time range field types which are not natively supported in QGIS.
+Since QGIS 3.42 the ``includeRangeFieldProxies`` argument can be used to
+hide the "start"/"end" fields which are proxies for the date time range
+field types which are not natively supported in QGIS.
 %End
 
     static QgsFields fieldsForExpandedEntityType( Qgis::SensorThingsEntity baseType, const QList< Qgis::SensorThingsEntity > &expandedTypes );
 %Docstring
-Returns the fields which correspond to a specified entity ``baseType``, expanded
-using the specified list of ``expandedTypes``.
+Returns the fields which correspond to a specified entity ``baseType``,
+expanded using the specified list of ``expandedTypes``.
 
 .. versionadded:: 3.38
 %End
@@ -79,28 +86,30 @@ Returns the geometry field for a specified entity ``type``.
 
     static bool entityTypeHasGeometry( Qgis::SensorThingsEntity type );
 %Docstring
-Returns ``True`` if the specified entity ``type`` can have geometry attached.
+Returns ``True`` if the specified entity ``type`` can have geometry
+attached.
 %End
 
     static Qgis::GeometryType geometryTypeForEntity( Qgis::SensorThingsEntity type );
 %Docstring
 Returns the geometry type for if the specified entity ``type``.
 
-If there are no restrictions on the geometry type an ntity can have :py:class:`Qgis`.GeometryType.Unknown will be returned.
+If there are no restrictions on the geometry type an ntity can have
+:py:class:`Qgis`.GeometryType.Unknown will be returned.
 
 .. versionadded:: 3.38
 %End
 
     static QString filterForWkbType( Qgis::SensorThingsEntity entityType, Qgis::WkbType wkbType );
 %Docstring
-Returns a filter string which restricts results to those matching the specified
-``entityType`` and ``wkbType``.
+Returns a filter string which restricts results to those matching the
+specified ``entityType`` and ``wkbType``.
 %End
 
     static QString filterForExtent( const QString &geometryField, const QgsRectangle &extent );
 %Docstring
-Returns a filter string which restricts results to those within the specified
-``extent``.
+Returns a filter string which restricts results to those within the
+specified ``extent``.
 
 The ``extent`` should always be specified in EPSG:4326.
 
@@ -111,42 +120,48 @@ The ``extent`` should always be specified in EPSG:4326.
 %Docstring
 Combines a set of SensorThings API filter operators.
 
-See https://docs.ogc.org/is/18-088/18-088.html#requirement-request-data-filter
+See
+https://docs.ogc.org/is/18-088/18-088.html#requirement-request-data-filter
 
 .. versionadded:: 3.38
 %End
 
     static QList< Qgis::GeometryType > availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback = 0, const QString &authCfg = QString() );
 %Docstring
-Returns a list of available geometry types for the server at the specified ``uri``
-and entity ``type``.
+Returns a list of available geometry types for the server at the
+specified ``uri`` and entity ``type``.
 
 This method will block while network requests are made to the server.
 %End
 
     static QList< Qgis::SensorThingsEntity > expandableTargets( Qgis::SensorThingsEntity type );
 %Docstring
-Returns a list of permissible expand targets for a given base entity ``type``.
+Returns a list of permissible expand targets for a given base entity
+``type``.
 
 .. versionadded:: 3.38
 %End
 
     static Qgis::RelationshipCardinality relationshipCardinality( Qgis::SensorThingsEntity baseType, Qgis::SensorThingsEntity relatedType, bool &valid /Out/ );
 %Docstring
-Returns the cardinality of the relationship between a base entity type and a related entity type.
+Returns the cardinality of the relationship between a base entity type
+and a related entity type.
 
 :param baseType: base entity type
 :param relatedType: related entity type
 
 :return: - relationship cardinality
-         - valid: ``True`` if a relationship exists between the entity types, or ``False`` if no relationship exists
+         - valid: ``True`` if a relationship exists between the entity
+           types, or ``False`` if no relationship exists
 
 .. versionadded:: 3.38
 %End
 
     static QString asQueryString( Qgis::SensorThingsEntity baseType, const QList< QgsSensorThingsExpansionDefinition > &expansions );
 %Docstring
-Returns a list of ``expansions`` as a valid SensorThings API query string, eg "$expand=Locations($orderby=id desc;$top=3;$expand=Datastreams($top=101))".
+Returns a list of ``expansions`` as a valid SensorThings API query
+string, eg "$expand=Locations($orderby=id
+desc;$top=3;$expand=Datastreams($top=101))".
 
 The base entity type for the query must be specified.
 
@@ -159,7 +174,8 @@ The base entity type for the query must be specified.
 class QgsSensorThingsExpansionDefinition
 {
 %Docstring(signature="appended")
-Encapsulates information about how relationships in a SensorThings API service should be expanded.
+Encapsulates information about how relationships in a SensorThings API
+service should be expanded.
 
 .. versionadded:: 3.38
 %End
@@ -175,13 +191,15 @@ Encapsulates information about how relationships in a SensorThings API service s
                                         int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
                                         const QString &filter = QString() );
 %Docstring
-Constructor for QgsSensorThingsExpansionDefinition, targeting the specified child entity type.
+Constructor for QgsSensorThingsExpansionDefinition, targeting the
+specified child entity type.
 %End
 
     static QgsSensorThingsExpansionDefinition defaultDefinitionForEntity( Qgis::SensorThingsEntity entity );
 %Docstring
-Returns an expansion definition for the specified ``entity`` type, populated with reasonable
-defaults which make sense for that entity type.
+Returns an expansion definition for the specified ``entity`` type,
+populated with reasonable defaults which make sense for that entity
+type.
 %End
 
     bool isValid() const;
@@ -280,18 +298,21 @@ Returns a string encapsulation of the expansion definition.
 
     static QgsSensorThingsExpansionDefinition fromString( const QString &string );
 %Docstring
-Returns a QgsSensorThingsExpansionDefinition from a string representation.
+Returns a QgsSensorThingsExpansionDefinition from a string
+representation.
 
 .. seealso:: :py:func:`toString`
 %End
 
     QString asQueryString( Qgis::SensorThingsEntity parentEntityType, const QStringList &additionalOptions = QStringList() ) const;
 %Docstring
-Returns the expansion as a valid SensorThings API query string, eg "$expand=Observations($orderby=phenomenonTime desc;$top=10)".
+Returns the expansion as a valid SensorThings API query string, eg
+"$expand=Observations($orderby=phenomenonTime desc;$top=10)".
 
 The parent entity type for the expansion must be specified.
 
-Optionally a list of additional query options can be specified for the expansion.
+Optionally a list of additional query options can be specified for the
+expansion.
 %End
 
     bool operator==( const QgsSensorThingsExpansionDefinition &other ) const;

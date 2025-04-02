@@ -12,7 +12,8 @@
 class QgsLayoutCustomDropHandler : QObject
 {
 %Docstring(signature="appended")
-Abstract base class that may be implemented to handle new types of data to be dropped or pasted in QGIS layouts.
+Abstract base class that may be implemented to handle new types of data
+to be dropped or pasted in QGIS layouts.
 %End
 
 %TypeHeaderCode
@@ -26,9 +27,10 @@ Constructor for QgsLayoutCustomDropHandler.
 
  virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file ) /Deprecated="Since 3.40. Use the version which specifies a drop location instead."/;
 %Docstring
-Called when the specified ``file`` has been dropped onto a QGIS layout. If ``True``
-is returned, then the handler has accepted this file and it should not
-be further processed (e.g. by other QgsLayoutCustomDropHandler).
+Called when the specified ``file`` has been dropped onto a QGIS layout.
+If ``True`` is returned, then the handler has accepted this file and it
+should not be further processed (e.g. by other
+QgsLayoutCustomDropHandler).
 
 The base class implementation does nothing.
 
@@ -39,12 +41,13 @@ The base class implementation does nothing.
 
     virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF dropPoint, const QString &file );
 %Docstring
-Called when the specified ``file`` has been dropped onto a QGIS layout. If ``True``
-is returned, then the handler has accepted this file and it should not
-be further processed (e.g. by other QgsLayoutCustomDropHandler).
+Called when the specified ``file`` has been dropped onto a QGIS layout.
+If ``True`` is returned, then the handler has accepted this file and it
+should not be further processed (e.g. by other
+QgsLayoutCustomDropHandler).
 
-The ``dropPoint`` point specifies the location (in layout coordinates) at which
-the drop occurred.
+The ``dropPoint`` point specifies the location (in layout coordinates)
+at which the drop occurred.
 
 The base class implementation does nothing.
 
@@ -53,12 +56,13 @@ The base class implementation does nothing.
 
     virtual bool handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList<QgsLayoutItem *> &pastedItems /Out/ );
 %Docstring
-Called when the specified MIME ``data`` has been pasted onto a QGIS layout. If ``True``
-is returned, then the handler has accepted this data and it should not
-be further processed (e.g. by other QgsLayoutCustomDropHandler).
+Called when the specified MIME ``data`` has been pasted onto a QGIS
+layout. If ``True`` is returned, then the handler has accepted this data
+and it should not be further processed (e.g. by other
+QgsLayoutCustomDropHandler).
 
-The ``pastePoint`` point specifies the location (in layout coordinates) at which
-the paste occurred.
+The ``pastePoint`` point specifies the location (in layout coordinates)
+at which the paste occurred.
 
 The base class implementation does nothing.
 
@@ -66,8 +70,10 @@ The base class implementation does nothing.
 :param pastePoint: layout point at which the paste should occur
 :param data: MIME data to paste
 
-:return: - ``True`` if the handler accepted and processed the paste operation
-         - pastedItems: should be filled with any newly created items as a result of the paste
+:return: - ``True`` if the handler accepted and processed the paste
+           operation
+         - pastedItems: should be filled with any newly created items as
+           a result of the paste
 
 .. versionadded:: 3.14
 %End

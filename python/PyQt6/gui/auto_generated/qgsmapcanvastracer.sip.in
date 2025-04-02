@@ -29,30 +29,33 @@ functionality).
   public:
     explicit QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *messageBar = 0 );
 %Docstring
-Create tracer associated with a particular map canvas, optionally message bar for reporting
+Create tracer associated with a particular map canvas, optionally
+message bar for reporting
 %End
     ~QgsMapCanvasTracer();
 
     QAction *actionEnableTracing() const;
 %Docstring
-Access to action that user may use to toggle tracing on/off. May be ``None`` if no action was associated
+Access to action that user may use to toggle tracing on/off. May be
+``None`` if no action was associated
 %End
 
     void setActionEnableTracing( QAction *action );
 %Docstring
-Assign "enable tracing" checkable action to the tracer.
-The action is used to determine whether tracing is currently enabled by the user
+Assign "enable tracing" checkable action to the tracer. The action is
+used to determine whether tracing is currently enabled by the user
 %End
 
     QAction *actionEnableSnapping() const;
 %Docstring
-Access to action that user may use to toggle snapping on/off. May be ``None`` if no action was associated.
+Access to action that user may use to toggle snapping on/off. May be
+``None`` if no action was associated.
 %End
 
     void setActionEnableSnapping( QAction *action );
 %Docstring
-Assign "enable snapping" checkable action to the tracer.
-The action is used to determine whether snapping is currently enabled by the user.
+Assign "enable snapping" checkable action to the tracer. The action is
+used to determine whether snapping is currently enabled by the user.
 %End
 
     static QgsMapCanvasTracer *tracerForCanvas( QgsMapCanvas *canvas );

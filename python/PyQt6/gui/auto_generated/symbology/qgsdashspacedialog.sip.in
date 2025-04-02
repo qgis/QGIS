@@ -34,7 +34,8 @@ Returns the dash pattern as a list of numbers
 
     void setUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the unit type used for the dash space pattern (used to update interface labels)
+Sets the unit type used for the dash space pattern (used to update
+interface labels)
 
 :param unit: the unit type
 %End
@@ -63,7 +64,8 @@ Returns the dash pattern as a list of numbers
 
     void setUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the unit type used for the dash space pattern (used to update interface labels)
+Sets the unit type used for the dash space pattern (used to update
+interface labels)
 
 :param unit: the unit type
 

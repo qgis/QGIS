@@ -12,16 +12,17 @@
 class QgsBrowserModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
+A model for showing available data sources and other items in a
+structured tree.
 
-A model for showing available data sources and other items in a structured
-tree.
+:py:class:`QgsBrowserModel` is the foundation for the QGIS browser
+panel, and includes items for the different data providers and folders
+accessible to users.
 
-:py:class:`QgsBrowserModel` is the foundation for the QGIS browser panel, and includes
-items for the different data providers and folders accessible to users.
-
-:py:class:`QgsBrowserModel` models are not initially populated and use a deferred initialization
-approach. After constructing a :py:class:`QgsBrowserModel`, a call must be made
-to :py:func:`~initialize` in order to populate the model.
+:py:class:`QgsBrowserModel` models are not initially populated and use a
+deferred initialization approach. After constructing a
+:py:class:`QgsBrowserModel`, a call must be made to
+:py:func:`~initialize` in order to populate the model.
 
 .. note::
 
@@ -92,12 +93,12 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
 
     QModelIndex findItem( QgsDataItem *item, QgsDataItem *parent = 0 ) const;
 %Docstring
-Returns the model index corresponding to the specified data ``item``.
-If the item was not found, an invalid QModelIndex is returned.
+Returns the model index corresponding to the specified data ``item``. If
+the item was not found, an invalid QModelIndex is returned.
 
-If the ``parent`` item is argument is specified, then only items which are children
-of ``parent`` are searched. If no ``parent`` is specified, then all items within
-the model are searched.
+If the ``parent`` item is argument is specified, then only items which
+are children of ``parent`` are searched. If no ``parent`` is specified,
+then all items within the model are searched.
 %End
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
@@ -118,12 +119,14 @@ Refresh item children
 
     QModelIndex findPath( const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 %Docstring
-Returns index of item with given path. It only searches in currently fetched
-items, i.e. it does not fetch children.
+Returns index of item with given path. It only searches in currently
+fetched items, i.e. it does not fetch children.
 
 :param path: item path
-:param matchFlag: supported is Qt.MatchExactly and Qt.MatchStartsWith which has reverse meaning, i.e. find
-                  item with the longest match from start with path (to get as close/deep as possible to deleted item).
+:param matchFlag: supported is Qt.MatchExactly and Qt.MatchStartsWith
+                  which has reverse meaning, i.e. find item with the
+                  longest match from start with path (to get as
+                  close/deep as possible to deleted item).
 
 :return: model index, invalid if item not found
 %End
@@ -131,8 +134,8 @@ items, i.e. it does not fetch children.
 
     QModelIndex findUri( const QString &uri, QModelIndex index = QModelIndex() );
 %Docstring
-Returns index of layer item with given uri. It only searches in currently fetched
-items, i.e. it does not fetch children.
+Returns index of layer item with given uri. It only searches in
+currently fetched items, i.e. it does not fetch children.
 
 :param uri: item uri
 :param index: the current index of the parent (to search for children)
@@ -144,7 +147,6 @@ items, i.e. it does not fetch children.
 
  void connectItem( QgsDataItem *item ) /Deprecated="Since 3.4. This method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!)."/;
 %Docstring
-
 .. deprecated:: 3.4
 
    This method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
@@ -161,8 +163,8 @@ Returns ``True`` if the model has been initialized.
 %Docstring
 Returns a map of the root drive items shown in the browser.
 
-These correspond to the top-level directory items shown, e.g. on Windows the C:\, D:\, etc,
-and on Linux the "/" root directory.
+These correspond to the top-level directory items shown, e.g. on Windows
+the C:\, D:\, etc, and on Linux the "/" root directory.
 
 .. versionadded:: 3.6
 %End
@@ -183,9 +185,11 @@ Emitted when item children fetch was finished
 
     void connectionsChanged( const QString &providerKey );
 %Docstring
-Emitted when connections for the specified ``providerKey`` have changed in the browser.
+Emitted when connections for the specified ``providerKey`` have changed
+in the browser.
 
-Forwarded to the widget and used to notify the provider dialogs of a changed connection.
+Forwarded to the widget and used to notify the provider dialogs of a
+changed connection.
 %End
 
   public slots:
@@ -217,8 +221,8 @@ Emitted when an ``item``'s state is changed.
 %Docstring
 Adds a ``directory`` to the favorites group.
 
-If ``name`` is specified, it will be used as the favorite's name. Otherwise
-the name will be set to match ``directory``.
+If ``name`` is specified, it will be used as the favorite's name.
+Otherwise the name will be set to match ``directory``.
 
 .. seealso:: :py:func:`removeFavorite`
 %End
@@ -240,7 +244,8 @@ Hide the given path in the browser model
 
     void initialize();
 %Docstring
-Delayed initialization, needed because the provider registry must be already populated.
+Delayed initialization, needed because the provider registry must be
+already populated.
 
 .. seealso:: :py:func:`initialized`
 %End

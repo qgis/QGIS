@@ -11,14 +11,16 @@
 class QgsApplicationExitBlockerInterface
 {
 %Docstring(signature="appended")
-An interface that may be implemented to allow plugins or scripts to temporarily block
-the QGIS application from exiting.
+An interface that may be implemented to allow plugins or scripts to
+temporarily block the QGIS application from exiting.
 
-This interface allows plugins to implement custom logic to determine whether it is safe
-for the application to exit, e.g. by checking whether the plugin or script has any
-unsaved changes which should be saved or discarded before allowing QGIS to exit.
+This interface allows plugins to implement custom logic to determine
+whether it is safe for the application to exit, e.g. by checking whether
+the plugin or script has any unsaved changes which should be saved or
+discarded before allowing QGIS to exit.
 
-:py:class:`QgsApplicationExitBlockerInterface` are registered via the iface object:
+:py:class:`QgsApplicationExitBlockerInterface` are registered via the
+iface object:
 
 Example
 -------------------------------------
@@ -53,12 +55,13 @@ Example
 %Docstring
 Called whenever the QGIS application has been asked to exit by a user.
 
-The subclass can use this method to implement custom logic handling whether it is safe
-for the application to exit, e.g. by checking whether the plugin or script has any unsaved
-changes which should be saved or discarded before allowing QGIS to exit.
+The subclass can use this method to implement custom logic handling
+whether it is safe for the application to exit, e.g. by checking whether
+the plugin or script has any unsaved changes which should be saved or
+discarded before allowing QGIS to exit.
 
-The implementation should return ``True`` if it is safe for QGIS to exit, or ``False`` if it
-wishes to prevent the application from exiting.
+The implementation should return ``True`` if it is safe for QGIS to
+exit, or ``False`` if it wishes to prevent the application from exiting.
 
 .. note::
 

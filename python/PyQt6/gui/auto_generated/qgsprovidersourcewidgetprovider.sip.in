@@ -12,8 +12,8 @@
 class QgsProviderSourceWidgetProvider
 {
 %Docstring(signature="appended")
-
-An interface for providers of widgets designed to configure a data provider's source.
+An interface for providers of widgets designed to configure a data
+provider's source.
 
 .. versionadded:: 3.18
 %End
@@ -31,11 +31,12 @@ Provider key
 
     virtual QString name() const;
 %Docstring
-Source widget provider name, this is useful to retrieve
-a particular source widget provider in case the provider has more
-than one, it should be unique among all providers.
+Source widget provider name, this is useful to retrieve a particular
+source widget provider in case the provider has more than one, it should
+be unique among all providers.
 
-The default implementation returns the :py:func:`~QgsProviderSourceWidgetProvider.providerKey`
+The default implementation returns the
+:py:func:`~QgsProviderSourceWidgetProvider.providerKey`
 %End
 
     virtual bool canHandleLayer( QgsMapLayer *layer ) const = 0;
@@ -46,8 +47,8 @@ Returns ``True`` if the provider can handle the specified ``layer``.
     virtual QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent /TransferThis/ = 0 ) = 0 /Factory/;
 %Docstring
 Creates a new widget to configure the source of the specified ``layer``.
-It may return ``None`` if it cannot handle the layer.
-The returned object must be destroyed by the caller.
+It may return ``None`` if it cannot handle the layer. The returned
+object must be destroyed by the caller.
 %End
 };
 

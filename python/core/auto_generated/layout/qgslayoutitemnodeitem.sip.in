@@ -42,8 +42,9 @@ Add a node in current shape.
 :param point: is the location of the new node (in scene coordinates)
 :param checkArea: is a flag to indicate if there's a space constraint.
 :param radius: is the space constraint and is used only if checkArea is
-               ``True``. Typically, if this flag is ``True``, the new node has to be nearer
-               than radius to the shape to be added.
+               ``True``. Typically, if this flag is ``True``, the new
+               node has to be nearer than radius to the shape to be
+               added.
 %End
 
     void setDisplayNodes( bool display = true );
@@ -61,10 +62,11 @@ Moves a node to a new position.
 
     int nodeAtPosition( QPointF point, bool searchInRadius = true, double radius = 10 ) const;
 %Docstring
-Search for the nearest node in the shape within a maximal area. Returns the
-index of the nearest node or -1 if no node was found.
+Search for the nearest node in the shape within a maximal area. Returns
+the index of the nearest node or -1 if no node was found.
 
-:param point: is the location to search for nodes from (in scene coordinates)
+:param point: is the location to search for nodes from (in scene
+              coordinates)
 :param searchInRadius: is a flag to indicate if the area of research is
                        limited in space.
 :param radius: is only used if searchInRadius is ``True``
@@ -77,7 +79,8 @@ Gets the position of a node in scene coordinates.
 :param index: of the node
 :param position: the position of the node
 
-:return: ``True`` if the index is valid and the position is set, ``False`` otherwise
+:return: ``True`` if the index is valid and the position is set,
+         ``False`` otherwise
 %End
 
     bool removeNode( int index );
@@ -113,9 +116,9 @@ Deselects any selected nodes.
 
     virtual bool isValid() const = 0;
 %Docstring
-Must be reimplemented in subclasses.
-Typically a polyline is valid if it has at least 2 distinct nodes,
-while a polygon is valid if it has at least 3 distinct nodes.
+Must be reimplemented in subclasses. Typically a polyline is valid if it
+has at least 2 distinct nodes, while a polygon is valid if it has at
+least 3 distinct nodes.
 
 .. versionadded:: 3.40
 %End
@@ -124,12 +127,14 @@ while a polygon is valid if it has at least 3 distinct nodes.
 
     QgsLayoutNodesItem( QgsLayout *layout );
 %Docstring
-Constructor for QgsLayoutNodesItem, attached to the specified ``layout``.
+Constructor for QgsLayoutNodesItem, attached to the specified
+``layout``.
 %End
 
     QgsLayoutNodesItem( const QPolygonF &polygon, QgsLayout *layout );
 %Docstring
-Constructor for a QgsLayoutNodesItem with the given ``polygon`` nodes, attached to the specified ``layout``.
+Constructor for a QgsLayoutNodesItem with the given ``polygon`` nodes,
+attached to the specified ``layout``.
 %End
 
     virtual void draw( QgsLayoutItemRenderContext &context );
@@ -170,8 +175,8 @@ Method called in writeXml.
 
     void rescaleToFitBoundingBox();
 %Docstring
-Rescale the current shape according to the item's bounding box. Useful when
-the shape is resized thanks to the rubber band.
+Rescale the current shape according to the item's bounding box. Useful
+when the shape is resized thanks to the rubber band.
 %End
 
     double computeDistance( QPointF pt1, QPointF pt2 ) const;
@@ -189,8 +194,8 @@ Update the current scene rectangle for this item.
 
     virtual void updateBoundingRect();
 %Docstring
-Called when the bounding rect of the item should recalculated. Subclasses should update
-currentRectangle in their implementations.
+Called when the bounding rect of the item should recalculated.
+Subclasses should update currentRectangle in their implementations.
 %End
 
 };

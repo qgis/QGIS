@@ -12,8 +12,8 @@
 class QgsProjectStyleSettings : QObject
 {
 %Docstring(signature="appended")
-Contains settings and properties relating to how a :py:class:`QgsProject` should handle
-styling.
+Contains settings and properties relating to how a
+:py:class:`QgsProject` should handle styling.
 
 .. versionadded:: 3.26
 %End
@@ -92,7 +92,8 @@ Returns the project default text format.
 %Docstring
 Sets the project default text format.
 
-:param textFormat: the text format, an invalid format is interpreted as no default
+:param textFormat: the text format, an invalid format is interpreted as
+                   no default
 %End
 
     bool randomizeDefaultSymbolColor() const;
@@ -145,13 +146,15 @@ Returns the style database to use for project specific styles.
 %Docstring
 Set the project's color model to ``colorModel``
 
-This sets the default color model used when selecting a color in the whole application.
-Any color defined in a different color model than the one specified here will be converted to
-this color model when exporting a layout.
+This sets the default color model used when selecting a color in the
+whole application. Any color defined in a different color model than the
+one specified here will be converted to this color model when exporting
+a layout.
 
-If a color space has already been set and its color model differs from ``colorModel``, the project
-color space will be reset to invalid one (This is only true if QGIS is built against
-Qt 6.8.0 or greater). :py:func:`setColorSpace` colorSpace()
+If a color space has already been set and its color model differs from
+``colorModel``, the project color space will be reset to invalid one
+(This is only true if QGIS is built against Qt 6.8.0 or greater).
+:py:func:`setColorSpace` colorSpace()
 
 The color model defaults to :py:class:`Qgis`.ColorModel.Rgb
 
@@ -164,9 +167,10 @@ The color model defaults to :py:class:`Qgis`.ColorModel.Rgb
 %Docstring
 Returns the project's color model
 
-This model is used as the default color model when selecting a color in the whole application.
-Any color defined in a different color model than the returned model will be converted to
-this color model when exporting a layout.
+This model is used as the default color model when selecting a color in
+the whole application. Any color defined in a different color model than
+the returned model will be converted to this color model when exporting
+a layout.
 
 The color model defaults to :py:class:`Qgis`.ColorModel.Rgb
 
@@ -177,15 +181,17 @@ The color model defaults to :py:class:`Qgis`.ColorModel.Rgb
 
     void setColorSpace( const QColorSpace &colorSpace );
 %Docstring
-Set the project's current color space to ``colorSpace``. ``colorSpace`` must be a valid RGB or CMYK color space.
-The color space's ICC profile will be added as a project attached file.
+Set the project's current color space to ``colorSpace``. ``colorSpace``
+must be a valid RGB or CMYK color space. The color space's ICC profile
+will be added as a project attached file.
 
-The project color's space will be added to PDF layout exports when it is defined (i.e. it is different from
-the default invalid QColorSpace).
+The project color's space will be added to PDF layout exports when it is
+defined (i.e. it is different from the default invalid QColorSpace).
 
-If a color model has already been set and it differs from ``colorSpace``'s color model, the project's
-color model is set to match the color space's color model (This is only true if QGIS is built against
-Qt 6.8.0 or greater). :py:func:`setColorModel` colorModel()
+If a color model has already been set and it differs from
+``colorSpace``'s color model, the project's color model is set to match
+the color space's color model (This is only true if QGIS is built
+against Qt 6.8.0 or greater). :py:func:`setColorModel` colorModel()
 
 The color space defaults to an invalid color space.
 
@@ -198,8 +204,8 @@ The color space defaults to an invalid color space.
 %Docstring
 Returns the project's color space.
 
-The project color's space will be added to PDF layout exports when it is defined (i.e. it is different from
-the default invalid QColorSpace).
+The project color's space will be added to PDF layout exports when it is
+defined (i.e. it is different from the default invalid QColorSpace).
 
 The color space defaults to an invalid color space.
 
@@ -224,10 +230,12 @@ Returns a DOM element representing the settings.
 
     QStringList styleDatabasePaths() const;
 %Docstring
-Returns a list of all style databases (file paths) associated with the project.
+Returns a list of all style databases (file paths) associated with the
+project.
 
-The file paths returned by this method will always be absolute paths. Depending on the
-project settings, they may be converted to relative paths when the project is saved.
+The file paths returned by this method will always be absolute paths.
+Depending on the project settings, they may be converted to relative
+paths when the project is saved.
 
 .. seealso:: :py:func:`styles`
 
@@ -245,17 +253,20 @@ Returns a list of all the styles associated with the project.
 
     QgsStyle *styleAtPath( const QString &path );
 %Docstring
-Returns a reference to the style database associated with the project with matching file ``path``.
+Returns a reference to the style database associated with the project
+with matching file ``path``.
 %End
 
     void addStyleDatabasePath( const QString &path );
 %Docstring
 Adds a style database ``path`` to the project.
 
-Paths can be either style .db databases, or .xml exports of style databases.
+Paths can be either style .db databases, or .xml exports of style
+databases.
 
-The file path added by this method must always be absolute paths. Depending on the
-project settings, they may be converted to relative paths when the project is saved.
+The file path added by this method must always be absolute paths.
+Depending on the project settings, they may be converted to relative
+paths when the project is saved.
 
 .. seealso:: :py:func:`styleDatabasePaths`
 
@@ -268,10 +279,12 @@ project settings, they may be converted to relative paths when the project is sa
 %Docstring
 Sets the ``paths`` to all style databases associated with the project.
 
-Paths can be either style .db databases, or .xml exports of style databases.
+Paths can be either style .db databases, or .xml exports of style
+databases.
 
-The file paths set by this method must always be absolute paths. Depending on the
-project settings, they may be converted to relative paths when the project is saved.
+The file paths set by this method must always be absolute paths.
+Depending on the project settings, they may be converted to relative
+paths when the project is saved.
 
 .. seealso:: :py:func:`addStyleDatabasePath`
 
@@ -298,7 +311,8 @@ This model also includes :py:func:`QgsStyle.defaultStyle()`.
 
     void styleDatabasesChanged();
 %Docstring
-Emitted whenever the set of style databases associated with the project is changed.
+Emitted whenever the set of style databases associated with the project
+is changed.
 %End
 
 };
@@ -306,8 +320,8 @@ Emitted whenever the set of style databases associated with the project is chang
 class QgsProjectStyleDatabaseModel : QAbstractListModel
 {
 %Docstring(signature="appended")
-
-List model representing the style databases associated with a :py:class:`QgsProject`.
+List model representing the style databases associated with a
+:py:class:`QgsProject`.
 
 .. versionadded:: 3.26
 %End
@@ -326,7 +340,8 @@ List model representing the style databases associated with a :py:class:`QgsProj
 
     explicit QgsProjectStyleDatabaseModel( QgsProjectStyleSettings *settings, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsProjectStyleDatabaseModel, showing the styles from the specified ``settings``.
+Constructor for QgsProjectStyleDatabaseModel, showing the styles from
+the specified ``settings``.
 %End
 
     virtual int rowCount( const QModelIndex &parent ) const;
@@ -367,7 +382,6 @@ Returns ``True`` if the model includes the default style.
 class QgsProjectStyleDatabaseProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-
 A proxy model for filtering :py:class:`QgsProjectStyleDatabaseModel`.
 
 .. versionadded:: 3.26
@@ -387,7 +401,8 @@ A proxy model for filtering :py:class:`QgsProjectStyleDatabaseModel`.
 
     QgsProjectStyleDatabaseProxyModel( QgsProjectStyleDatabaseModel *model, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsProjectStyleDatabaseProxyModel, for the specified style database ``model``.
+Constructor for QgsProjectStyleDatabaseProxyModel, for the specified
+style database ``model``.
 %End
 
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;

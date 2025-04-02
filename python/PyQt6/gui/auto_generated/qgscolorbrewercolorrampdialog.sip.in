@@ -12,7 +12,8 @@
 class QgsColorBrewerColorRampWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A widget which allows users to modify the properties of a :py:class:`QgsColorBrewerColorRamp`.
+A widget which allows users to modify the properties of a
+:py:class:`QgsColorBrewerColorRamp`.
 %End
 
 %TypeHeaderCode
@@ -55,7 +56,8 @@ Emitted when the dialog settings change
 class QgsColorBrewerColorRampDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allows users to modify the properties of a :py:class:`QgsColorBrewerColorRamp`.
+A dialog which allows users to modify the properties of a
+:py:class:`QgsColorBrewerColorRamp`.
 %End
 
 %TypeHeaderCode

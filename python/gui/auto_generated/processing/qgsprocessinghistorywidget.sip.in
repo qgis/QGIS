@@ -24,7 +24,8 @@ A widget for showing Processing algorithm execution history.
   public:
     QgsProcessingHistoryWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsProcessingHistoryWidget, with the specified ``parent`` widget.
+Constructor for QgsProcessingHistoryWidget, with the specified
+``parent`` widget.
 %End
 
   public slots:

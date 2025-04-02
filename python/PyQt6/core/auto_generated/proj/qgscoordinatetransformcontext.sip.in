@@ -15,11 +15,12 @@
 class QgsCoordinateTransformContext
 {
 %Docstring(signature="appended")
-Contains information about the context in which a coordinate transform is executed.
+Contains information about the context in which a coordinate transform
+is executed.
 
-The context stores various information regarding which coordinate operations should
-be used when transforming points from a source to destination coordinate reference
-system.
+The context stores various information regarding which coordinate
+operations should be used when transforming points from a source to
+destination coordinate reference system.
 
 .. note::
 
@@ -58,11 +59,13 @@ Clears all stored transform information from the context.
 
  QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const /Deprecated="Since 3.40. Has no effect on builds based on Proj 6.0 or later, use coordinateOperations() instead."/;
 %Docstring
-Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.
-The map keys will be :py:class:`QgsCoordinateReferenceSystems`.authid()s.
+Returns the stored mapping for source to destination CRS pairs to
+associated datum transforms to use. The map keys will be
+:py:class:`QgsCoordinateReferenceSystems`.authid()s.
 
-If either the source transform ID or destination transform ID is -1, then no datum transform is
-required for transformations for that source or destination.
+If either the source transform ID or destination transform ID is -1,
+then no datum transform is required for transformations for that source
+or destination.
 
 .. warning::
 
@@ -79,8 +82,9 @@ required for transformations for that source or destination.
 
     QMap< QPair< QString, QString>, QString > coordinateOperations() const;
 %Docstring
-Returns the stored mapping for source to destination CRS pairs to associated coordinate operation to use
-(as a proj string). The map keys will be :py:class:`QgsCoordinateReferenceSystems`.authid()s.
+Returns the stored mapping for source to destination CRS pairs to
+associated coordinate operation to use (as a proj string). The map keys
+will be :py:class:`QgsCoordinateReferenceSystems`.authid()s.
 
 .. warning::
 
@@ -100,11 +104,13 @@ Returns the stored mapping for source to destination CRS pairs to associated coo
 
  bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransformId, int destinationTransformId ) /Deprecated="Since 3.40. Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead."/;
 %Docstring
-Adds a new ``sourceTransform`` and ``destinationTransform`` to use when projecting coordinates
-from the specified ``sourceCrs`` to the specified ``destinationCrs``.
+Adds a new ``sourceTransform`` and ``destinationTransform`` to use when
+projecting coordinates from the specified ``sourceCrs`` to the specified
+``destinationCrs``.
 
-If either ``sourceTransformId`` or ``destinationTransformId`` is -1, then no datum transform is
-required for transformations for that source or destination.
+If either ``sourceTransformId`` or ``destinationTransformId`` is -1,
+then no datum transform is required for transformations for that source
+or destination.
 
 Returns ``True`` if the new transform pair was added successfully.
 
@@ -119,20 +125,24 @@ Returns ``True`` if the new transform pair was added successfully.
 
     bool addCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString, bool allowFallback = true );
 %Docstring
-Adds a new ``coordinateOperationProjString`` to use when projecting coordinates
-from the specified ``sourceCrs`` to the specified ``destinationCrs``.
+Adds a new ``coordinateOperationProjString`` to use when projecting
+coordinates from the specified ``sourceCrs`` to the specified
+``destinationCrs``.
 
-``coordinateOperationProjString`` should be set to a valid Proj coordinate operation
-string. If ``coordinateOperationProjString`` is empty, then the default Proj operation
-will be used when transforming between the coordinate reference systems.
+``coordinateOperationProjString`` should be set to a valid Proj
+coordinate operation string. If ``coordinateOperationProjString`` is
+empty, then the default Proj operation will be used when transforming
+between the coordinate reference systems.
 
-If ``allowFallback`` is ``True`` (since QGIS 3.12), then "ballpark" fallback transformations
-will be used in the case that the specified coordinate operation fails (such as when
-coordinates from outside a required grid shift file are transformed). See
-:py:func:`QgsCoordinateTransform.fallbackOperationOccurred()` for further details. Note that if an
-existing ``sourceCrs`` and ``destinationCrs`` pair are added with a different ``allowFallback``
-value, that value will replace the existing one (i.e. each combination of ``sourceCrs`` and
-``destinationCrs`` must be unique).
+If ``allowFallback`` is ``True`` (since QGIS 3.12), then "ballpark"
+fallback transformations will be used in the case that the specified
+coordinate operation fails (such as when coordinates from outside a
+required grid shift file are transformed). See
+:py:func:`QgsCoordinateTransform.fallbackOperationOccurred()` for
+further details. Note that if an existing ``sourceCrs`` and
+``destinationCrs`` pair are added with a different ``allowFallback``
+value, that value will replace the existing one (i.e. each combination
+of ``sourceCrs`` and ``destinationCrs`` must be unique).
 
 .. warning::
 
@@ -157,8 +167,8 @@ Returns ``True`` if the new coordinate operation was added successfully.
 
  void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) /Deprecated="Since 3.40. Use removeCoordinateOperation() instead."/;
 %Docstring
-Removes the source to destination datum transform pair for the specified ``sourceCrs`` and
-``destinationCrs``.
+Removes the source to destination datum transform pair for the specified
+``sourceCrs`` and ``destinationCrs``.
 
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
 
@@ -169,7 +179,8 @@ Removes the source to destination datum transform pair for the specified ``sourc
 
     void removeCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
 %Docstring
-Removes the coordinate operation for the specified ``sourceCrs`` and ``destinationCrs``.
+Removes the coordinate operation for the specified ``sourceCrs`` and
+``destinationCrs``.
 
 .. versionadded:: 3.8
 %End
@@ -178,7 +189,8 @@ Removes the coordinate operation for the specified ``sourceCrs`` and ``destinati
                        const QgsCoordinateReferenceSystem &destination ) const;
 %Docstring
 Returns ``True`` if the context has a valid coordinate operation to use
-when transforming from the specified ``source`` CRS to ``destination`` CRS.
+when transforming from the specified ``source`` CRS to ``destination``
+CRS.
 
 .. note::
 
@@ -187,11 +199,11 @@ when transforming from the specified ``source`` CRS to ``destination`` CRS.
 
  QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const /Deprecated="Since 3.40. Has no effect on builds based on Proj 6.0 or later. Use calculateCoordinateOperation() instead."/;
 %Docstring
-Returns the pair of source and destination datum transforms to use
-for a transform from the specified ``source`` CRS to ``destination`` CRS.
+Returns the pair of source and destination datum transforms to use for a
+transform from the specified ``source`` CRS to ``destination`` CRS.
 
-Returns an ID of -1 if a datum transform should not be used for the source or
-destination.
+Returns an ID of -1 if a datum transform should not be used for the
+source or destination.
 
 .. note::
 
@@ -207,9 +219,9 @@ destination.
 Returns the Proj coordinate operation string to use when transforming
 from the specified ``source`` CRS to ``destination`` CRS.
 
-Returns an empty string if no specific coordinate operation is set for the source to
-destination pair, in which case the default Proj coordinate operation should
-be used.
+Returns an empty string if no specific coordinate operation is set for
+the source to destination pair, in which case the default Proj
+coordinate operation should be used.
 
 .. note::
 
@@ -231,19 +243,21 @@ be used.
 
     bool allowFallbackTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 %Docstring
-Returns ``True`` if approximate "ballpark" transforms may be used when transforming
-between a ``source`` and ``destination`` CRS pair, in the case that the preferred
-coordinate operation fails (such as when
-coordinates from outside a required grid shift file are transformed). See
-:py:func:`QgsCoordinateTransform.fallbackOperationOccurred()` for further details.
+Returns ``True`` if approximate "ballpark" transforms may be used when
+transforming between a ``source`` and ``destination`` CRS pair, in the
+case that the preferred coordinate operation fails (such as when
+coordinates from outside a required grid shift file are transformed).
+See :py:func:`QgsCoordinateTransform.fallbackOperationOccurred()` for
+further details.
 
 .. versionadded:: 3.12
 %End
 
     bool mustReverseCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 %Docstring
-Returns ``True`` if the coordinate operation returned by :py:func:`~QgsCoordinateTransformContext.calculateCoordinateOperation` for the ``source`` to ``destination`` pair
-must be inverted.
+Returns ``True`` if the coordinate operation returned by
+:py:func:`~QgsCoordinateTransformContext.calculateCoordinateOperation`
+for the ``source`` to ``destination`` pair must be inverted.
 
 .. versionadded:: 3.10.2
 %End
@@ -253,8 +267,9 @@ must be inverted.
 %Docstring
 Reads the context's state from a DOM ``element``.
 
-Returns ``False`` if transforms stored in the XML are not available. In this case ``missingTransforms`` will be
-filled with missing datum transform strings.
+Returns ``False`` if transforms stored in the XML are not available. In
+this case ``missingTransforms`` will be filled with missing datum
+transform strings.
 
 .. seealso:: :py:func:`writeXml`
 %End

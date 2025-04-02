@@ -22,7 +22,8 @@ A manager for a collection of pages in a layout.
 
     explicit QgsLayoutPageCollection( QgsLayout *layout /TransferThis/ );
 %Docstring
-Constructor for :py:class:`QgsLayoutItemPage`, with the specified parent ``layout``.
+Constructor for :py:class:`QgsLayoutItemPage`, with the specified parent
+``layout``.
 %End
 
     ~QgsLayoutPageCollection();
@@ -51,8 +52,8 @@ Returns the number of pages in the collection.
 %Docstring
 Returns a specific page (by ``pageNumber``) from the collection.
 Internal page numbering starts at 0 - so a ``pageNumber`` of 0
-corresponds to the first page in the collection.
-A ``None`` is returned if an invalid page number is specified.
+corresponds to the first page in the collection. A ``None`` is returned
+if an invalid page number is specified.
 
 .. seealso:: :py:func:`pages`
 %End
@@ -60,8 +61,8 @@ A ``None`` is returned if an invalid page number is specified.
 
     int pageNumber( QgsLayoutItemPage *page ) const;
 %Docstring
-Returns the page number for the specified ``page``, or -1 if the page
-is not contained in the collection.
+Returns the page number for the specified ``page``, or -1 if the page is
+not contained in the collection.
 %End
 
     QList< QgsLayoutItemPage * > visiblePages( const QRectF &region ) const;
@@ -74,16 +75,16 @@ Returns a list of the pages which are visible within the specified
 
     QList< int > visiblePageNumbers( const QRectF &region ) const;
 %Docstring
-Returns a list of the page numbers which are visible within the specified
-``region`` (in layout coordinates).
+Returns a list of the page numbers which are visible within the
+specified ``region`` (in layout coordinates).
 
 .. seealso:: :py:func:`visiblePages`
 %End
 
     bool pageIsEmpty( int page ) const;
 %Docstring
-Returns whether a given ``page`` index is empty, ie, it contains no items except for the background
-paper item.
+Returns whether a given ``page`` index is empty, ie, it contains no
+items except for the background paper item.
 
 .. seealso:: :py:func:`shouldExportPage`
 %End
@@ -96,7 +97,8 @@ Returns a list of layout items on the specified ``page`` index.
 
     bool shouldExportPage( int page ) const;
 %Docstring
-Returns whether the specified ``page`` number should be included in exports of the layouts.
+Returns whether the specified ``page`` number should be included in
+exports of the layouts.
 
 .. warning::
 
@@ -108,12 +110,14 @@ Returns whether the specified ``page`` number should be included in exports of t
 
     void addPage( QgsLayoutItemPage *page /Transfer/ );
 %Docstring
-Adds a ``page`` to the collection. Ownership of the ``page`` is transferred
-to the collection, and the page will automatically be added to the collection's
-:py:func:`~QgsLayoutPageCollection.layout` (there is no need to manually add the page item to the layout).
-The page will be added after all pages currently contained in the collection.
+Adds a ``page`` to the collection. Ownership of the ``page`` is
+transferred to the collection, and the page will automatically be added
+to the collection's :py:func:`~QgsLayoutPageCollection.layout` (there is
+no need to manually add the page item to the layout). The page will be
+added after all pages currently contained in the collection.
 
-Calling :py:func:`~QgsLayoutPageCollection.addPage` automatically triggers a :py:func:`~QgsLayoutPageCollection.reflow` of pages.
+Calling :py:func:`~QgsLayoutPageCollection.addPage` automatically
+triggers a :py:func:`~QgsLayoutPageCollection.reflow` of pages.
 
 .. seealso:: :py:func:`extendByNewPage`
 
@@ -136,38 +140,44 @@ The newly created page will be returned.
 %Docstring
 Inserts a ``page`` into a specific position in the collection.
 
-Ownership of the ``page`` is transferred
-to the collection, and the page will automatically be added to the collection's
-:py:func:`~QgsLayoutPageCollection.layout` (there is no need to manually add the page item to the layout).
+Ownership of the ``page`` is transferred to the collection, and the page
+will automatically be added to the collection's
+:py:func:`~QgsLayoutPageCollection.layout` (there is no need to manually
+add the page item to the layout).
 
-The page will be added after before the page number specified by ``beforePage``.
-(Page numbers in collections begin at 0 - so a ``beforePage`` of 0 will insert
-the page before all existing pages).
+The page will be added after before the page number specified by
+``beforePage``. (Page numbers in collections begin at 0 - so a
+``beforePage`` of 0 will insert the page before all existing pages).
 
-Calling :py:func:`~QgsLayoutPageCollection.insertPage` automatically triggers a :py:func:`~QgsLayoutPageCollection.reflow` of pages.
+Calling :py:func:`~QgsLayoutPageCollection.insertPage` automatically
+triggers a :py:func:`~QgsLayoutPageCollection.reflow` of pages.
 
 .. seealso:: :py:func:`addPage`
 %End
 
     void deletePage( int pageNumber );
 %Docstring
-Deletes a page from the collection. The page will automatically be removed
-from the collection's :py:func:`~QgsLayoutPageCollection.layout`.
+Deletes a page from the collection. The page will automatically be
+removed from the collection's
+:py:func:`~QgsLayoutPageCollection.layout`.
 
-Page numbers in collections begin at 0 - so a ``pageNumber`` of 0 will delete
-the first page in the collection.
+Page numbers in collections begin at 0 - so a ``pageNumber`` of 0 will
+delete the first page in the collection.
 
-Calling :py:func:`~QgsLayoutPageCollection.deletePage` automatically triggers a :py:func:`~QgsLayoutPageCollection.reflow` of pages.
+Calling :py:func:`~QgsLayoutPageCollection.deletePage` automatically
+triggers a :py:func:`~QgsLayoutPageCollection.reflow` of pages.
 
 .. seealso:: :py:func:`clear`
 %End
 
     void deletePage( QgsLayoutItemPage *page );
 %Docstring
-Deletes a page from the collection. The page will automatically be removed
-from the collection's :py:func:`~QgsLayoutPageCollection.layout`.
+Deletes a page from the collection. The page will automatically be
+removed from the collection's
+:py:func:`~QgsLayoutPageCollection.layout`.
 
-Calling :py:func:`~QgsLayoutPageCollection.deletePage` automatically triggers a :py:func:`~QgsLayoutPageCollection.reflow` of pages.
+Calling :py:func:`~QgsLayoutPageCollection.deletePage` automatically
+triggers a :py:func:`~QgsLayoutPageCollection.reflow` of pages.
 
 .. seealso:: :py:func:`clear`
 %End
@@ -181,14 +191,16 @@ Removes all pages from the collection.
 
     QgsLayoutItemPage *takePage( QgsLayoutItemPage *page ) /TransferBack/;
 %Docstring
-Takes a ``page`` from the collection, returning ownership of the page to the caller.
+Takes a ``page`` from the collection, returning ownership of the page to
+the caller.
 %End
 
     void setPageStyleSymbol( QgsFillSymbol *symbol );
 %Docstring
 Sets the ``symbol`` to use for drawing pages in the collection.
 
-Ownership is not transferred, and a copy of the symbol is created internally.
+Ownership is not transferred, and a copy of the symbol is created
+internally.
 
 .. seealso:: :py:func:`pageStyleSymbol`
 %End
@@ -206,58 +218,62 @@ Returns the symbol to use for drawing pages in the collection.
 
     void beginPageSizeChange();
 %Docstring
-Should be called before changing any page item sizes, and followed by a call to
-:py:func:`~QgsLayoutPageCollection.endPageSizeChange`. If page size changes are wrapped in these calls, then items
-will maintain their same relative position on pages after the page sizes are updated.
+Should be called before changing any page item sizes, and followed by a
+call to :py:func:`~QgsLayoutPageCollection.endPageSizeChange`. If page
+size changes are wrapped in these calls, then items will maintain their
+same relative position on pages after the page sizes are updated.
 
 .. seealso:: :py:func:`endPageSizeChange`
 %End
 
     void endPageSizeChange();
 %Docstring
-Should be called after changing any page item sizes, and preceded by a call to
-:py:func:`~QgsLayoutPageCollection.beginPageSizeChange`. If page size changes are wrapped in these calls, then items
-will maintain their same relative position on pages after the page sizes are updated.
+Should be called after changing any page item sizes, and preceded by a
+call to :py:func:`~QgsLayoutPageCollection.beginPageSizeChange`. If page
+size changes are wrapped in these calls, then items will maintain their
+same relative position on pages after the page sizes are updated.
 
 .. seealso:: :py:func:`beginPageSizeChange`
 %End
 
     void reflow();
 %Docstring
-Forces the page collection to reflow the arrangement of pages, e.g. to account
-for page size/orientation change.
+Forces the page collection to reflow the arrangement of pages, e.g. to
+account for page size/orientation change.
 %End
 
     double maximumPageWidth() const;
 %Docstring
-Returns the maximum width of pages in the collection. The returned value is
-in layout units.
+Returns the maximum width of pages in the collection. The returned value
+is in layout units.
 
 .. seealso:: :py:func:`maximumPageSize`
 %End
 
     QSizeF maximumPageSize() const;
 %Docstring
-Returns the maximum size of any page in the collection, by area. The returned value
-is in layout units.
+Returns the maximum size of any page in the collection, by area. The
+returned value is in layout units.
 
 .. seealso:: :py:func:`maximumPageWidth`
 %End
 
     bool hasUniformPageSizes() const;
 %Docstring
-Returns ``True`` if the layout has uniform page sizes, e.g. all pages are the same size.
+Returns ``True`` if the layout has uniform page sizes, e.g. all pages
+are the same size.
 
-This method does not consider differing units as non-uniform sizes, only the actual
-physical size of the pages.
+This method does not consider differing units as non-uniform sizes, only
+the actual physical size of the pages.
 %End
 
     int pageNumberForPoint( QPointF point ) const;
 %Docstring
-Returns the page number corresponding to a ``point`` in the layout (in layout units).
+Returns the page number corresponding to a ``point`` in the layout (in
+layout units).
 
-Page numbers in collections begin at 0 - so a page number of 0 indicates the
-first page.
+Page numbers in collections begin at 0 - so a page number of 0 indicates
+the first page.
 
 .. note::
 
@@ -274,15 +290,17 @@ first page.
 
     int predictPageNumberForPoint( QPointF point ) const;
 %Docstring
-Returns the theoretical page number corresponding to a ``point`` in the layout (in layout units),
-assuming that enough pages exist in the layout to cover that point.
+Returns the theoretical page number corresponding to a ``point`` in the
+layout (in layout units), assuming that enough pages exist in the layout
+to cover that point.
 
-If there are insufficient pages currently in the layout, this method will assume that extra
-"imaginary" pages have been added at the end of the layout until that point is reached. These
-imaginary pages will inherit the size of the existing final page in the layout.
+If there are insufficient pages currently in the layout, this method
+will assume that extra "imaginary" pages have been added at the end of
+the layout until that point is reached. These imaginary pages will
+inherit the size of the existing final page in the layout.
 
-Page numbers in collections begin at 0 - so a page number of 0 indicates the
-first page.
+Page numbers in collections begin at 0 - so a page number of 0 indicates
+the first page.
 
 .. seealso:: :py:func:`pageNumberForPoint`
 
@@ -307,21 +325,24 @@ If no page exists at ``point``, ``None`` will be returned.
 
     QPointF pagePositionToLayoutPosition( int page, const QgsLayoutPoint &position ) const;
 %Docstring
-Converts a ``position`` on a ``page`` to an absolute position in layout coordinates.\
+Converts a ``position`` on a ``page`` to an absolute position in layout
+coordinates.\
 
 .. seealso:: :py:func:`pagePositionToAbsolute`
 %End
 
     QgsLayoutPoint pagePositionToAbsolute( int page, const QgsLayoutPoint &position ) const;
 %Docstring
-Converts a ``position`` on a ``page`` to an absolute position in (maintaining the units from the input ``position``).
+Converts a ``position`` on a ``page`` to an absolute position in
+(maintaining the units from the input ``position``).
 
 .. seealso:: :py:func:`pagePositionToLayoutPosition`
 %End
 
     QPointF positionOnPage( QPointF point ) const;
 %Docstring
-Returns the position within a page of a ``point`` in the layout (in layout units).
+Returns the position within a page of a ``point`` in the layout (in
+layout units).
 
 .. seealso:: :py:func:`pageNumberForPoint`
 %End
@@ -338,18 +359,21 @@ Returns the size of the page shadow, in layout units.
 
     void resizeToContents( const QgsMargins &margins, Qgis::LayoutUnit marginUnits );
 %Docstring
-Resizes the layout to a single page which fits the current contents of the layout.
+Resizes the layout to a single page which fits the current contents of
+the layout.
 
-Calling this method resets the number of pages to 1, with the size set to the
-minimum size required to fit all existing layout items. Items will also be
-repositioned so that the new top-left bounds of the layout is at the point
-(marginLeft, marginTop). An optional margin can be specified.
+Calling this method resets the number of pages to 1, with the size set
+to the minimum size required to fit all existing layout items. Items
+will also be repositioned so that the new top-left bounds of the layout
+is at the point (marginLeft, marginTop). An optional margin can be
+specified.
 %End
 
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
 %Docstring
-Stores the collection's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
+Stores the collection's state in a DOM element. The ``parentElement``
+should refer to the parent layout's DOM element.
 
 .. seealso:: :py:func:`readXml`
 %End
@@ -357,20 +381,23 @@ Stores the collection's state in a DOM element. The ``parentElement`` should ref
     virtual bool readXml( const QDomElement &collectionElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
 %Docstring
-Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
+Sets the collection's state from a DOM element. collectionElement is the
+DOM node corresponding to the collection.
 
 .. seealso:: :py:func:`writeXml`
 %End
 
     QgsLayoutGuideCollection &guides();
 %Docstring
-Returns a reference to the collection's guide collection, which manages page snap guides.
+Returns a reference to the collection's guide collection, which manages
+page snap guides.
 %End
 
 
     void applyPropertiesToAllOtherPages( int sourcePage );
 %Docstring
-Apply the source page properties (size & background color) to all other pages
+Apply the source page properties (size & background color) to all other
+pages
 
 .. versionadded:: 3.42
 %End
@@ -393,8 +420,8 @@ Emitted when pages are added or removed from the collection.
 %Docstring
 Emitted just before a page is removed from the collection.
 
-Page numbers in collections begin at 0 - so a page number of 0 indicates the
-first page.
+Page numbers in collections begin at 0 - so a page number of 0 indicates
+the first page.
 %End
 
 };

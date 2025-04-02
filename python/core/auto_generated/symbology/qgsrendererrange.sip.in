@@ -30,7 +30,8 @@ Creates a renderer symbol range
 :param range: The classification range
 :param symbol: The symbol for this renderer range
 :param render: If ``True``, it will be renderered
-:param uuid: Optional parameter to manually set the UUID key identifier for the this range (since QGIS 3.34).
+:param uuid: Optional parameter to manually set the UUID key identifier
+             for the this range (since QGIS 3.34).
 %End
 
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true, const QString &uuid = QString() );
@@ -42,7 +43,8 @@ Creates a renderer symbol range
 :param symbol: The symbol for this renderer range
 :param label: The label used for the range
 :param render: If ``True``, it will be renderered
-:param uuid: Optional parameter to manually set the UUID key identifier for the this range (since QGIS 3.34).
+:param uuid: Optional parameter to manually set the UUID key identifier
+             for the this range (since QGIS 3.34).
 %End
     QgsRendererRange( const QgsRendererRange &range );
 
@@ -148,8 +150,9 @@ Creates a DOM element representing the range in SLD format.
 :param doc: DOM document
 :param element: destination DOM element
 :param props: graduated renderer properties
-:param firstRange: set to ``True`` if the range is the first range, where the lower value uses a <= test
-                   rather than a < test.
+:param firstRange: set to ``True`` if the range is the first range,
+                   where the lower value uses a <= test rather than a <
+                   test.
 %End
 
     SIP_PYOBJECT __repr__();
@@ -187,7 +190,6 @@ typedef QList<QgsRendererRange> QgsRangeList;
 class QgsRendererRangeLabelFormat /Deprecated="Since 3.10. Use QgsClassificationMethod instead."/
 {
 %Docstring(signature="appended")
-
 .. deprecated:: 3.10
 
    Use :py:class:`QgsClassificationMethod` instead.
