@@ -485,7 +485,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
 //////////
 
-#define DEFAULT_SVGMARKER_SIZE         2*Qgis::DEFAULT_POINT_SIZE
+#define DEFAULT_SVGMARKER_SIZE         ( 2 * Qgis::DEFAULT_POINT_SIZE )
 #define DEFAULT_SVGMARKER_ANGLE        0
 
 /**
@@ -672,7 +672,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
 //////////
 
-#define DEFAULT_RASTERMARKER_SIZE         2*Qgis::DEFAULT_POINT_SIZE
+#define DEFAULT_RASTERMARKER_SIZE         ( 2 * Qgis::DEFAULT_POINT_SIZE )
 #define DEFAULT_RASTERMARKER_ANGLE        0
 
 /**

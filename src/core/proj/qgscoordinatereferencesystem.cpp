@@ -1673,6 +1673,8 @@ void QgsCoordinateReferenceSystem::updateDefinition()
   if ( !d->mIsValid )
     return;
 
+  // clang tidy false positive
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( d->mSrsId >= Qgis::USER_CRS_START_ID )
   {
     // user CRS, so update to new definition
@@ -1682,6 +1684,7 @@ void QgsCoordinateReferenceSystem::updateDefinition()
   {
     // nothing to do -- only user CRS definitions can be changed
   }
+  // NOLINTEND(bugprone-branch-clone)
 }
 
 void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
