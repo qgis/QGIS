@@ -520,7 +520,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
       if ( !ensemble.code().isEmpty() )
         id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
       else
-        id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+        id = QStringLiteral( "<i>%1</i>”" ).arg( ensemble.name() );
       if ( ensemble.accuracy() > 0 )
       {
         properties << tr( "Based on %1, which has a limited accuracy of <b>at best %2 meters</b>." ).arg( id ).arg( ensemble.accuracy() );

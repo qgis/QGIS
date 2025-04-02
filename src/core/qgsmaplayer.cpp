@@ -3403,7 +3403,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
           if ( !ensemble.code().isEmpty() )
             id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
           else
-            id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+            id = QStringLiteral( "<i>%1</i>”" ).arg( ensemble.name() );
 
           if ( ensemble.accuracy() > 0 )
           {
