@@ -1321,8 +1321,7 @@ void Qgs3DMapScene::enableClipping( const QList<QVector4D> &clipPlaneEquations )
   mClipPlanesEquations = clipPlaneEquations.mid( 0, mMaxClipPlanes );
 
   // enable the clip planes on the framegraph
-  QgsForwardRenderView &forwardRenderView = mEngine->frameGraph()->forwardRenderView();
-  forwardRenderView.addClipPlanes( clipPlaneEquations.size() );
+  mEngine->frameGraph()->addClipPlanes( clipPlaneEquations.size() );
 
   // Enable the clip planes for the material of each entity.
   handleClippingOnAllEntities();
@@ -1333,8 +1332,7 @@ void Qgs3DMapScene::disableClipping()
   mClipPlanesEquations.clear();
 
   // disable the clip planes on the framegraph
-  QgsForwardRenderView &forwardRenderView = mEngine->frameGraph()->forwardRenderView();
-  forwardRenderView.removeClipPlanes();
+  mEngine->frameGraph()->removeClipPlanes();
 
   // Disable the clip planes for the material of each entity.
   handleClippingOnAllEntities();
