@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>435</width>
-    <height>359</height>
+    <width>430</width>
+    <height>452</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -66,19 +66,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="0" column="0">
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
@@ -95,7 +82,7 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="0" colspan="3">
+      <item row="2" column="0" colspan="4">
        <widget class="QgsScrollArea" name="scrollArea">
         <property name="focusPolicy">
          <enum>Qt::WheelFocus</enum>
@@ -111,14 +98,35 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>417</width>
-           <height>354</height>
+           <width>426</width>
+           <height>420</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="mainLayout">
           <property name="bottomMargin">
            <number>0</number>
           </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="mAtlasCoverageLayerLabel">
+              <property name="text">
+               <string>Coverage layer</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsMapLayerComboBox" name="mAtlasCoverageLayerComboBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
           <item>
            <widget class="QgsCollapsibleGroupBoxBasic" name="mConfigurationGroup">
             <property name="enabled">
@@ -181,13 +189,6 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="mHorizontalAlignementLabel">
-               <property name="text">
-                <string>Coverage layer</string>
-               </property>
-              </widget>
-             </item>
              <item row="2" column="0">
               <widget class="QLabel" name="label">
                <property name="text">
@@ -197,16 +198,6 @@
              </item>
              <item row="3" column="1">
               <widget class="QLineEdit" name="mAtlasFeatureFilterEdit"/>
-             </item>
-             <item row="0" column="1" colspan="2">
-              <widget class="QgsMapLayerComboBox" name="mAtlasCoverageLayerComboBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-              </widget>
              </item>
              <item row="2" column="1" colspan="2">
               <widget class="QgsFieldExpressionWidget" name="mPageNameWidget" native="true">
@@ -319,6 +310,19 @@
         </widget>
        </widget>
       </item>
+      <item row="0" column="2" colspan="2">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </widget>
    </item>
@@ -353,7 +357,6 @@
   <tabstop>mUseAtlasCheckBox</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mConfigurationGroup</tabstop>
-  <tabstop>mAtlasCoverageLayerComboBox</tabstop>
   <tabstop>mAtlasHideCoverageCheckBox</tabstop>
   <tabstop>mAtlasFeatureFilterCheckBox</tabstop>
   <tabstop>mAtlasFeatureFilterEdit</tabstop>
