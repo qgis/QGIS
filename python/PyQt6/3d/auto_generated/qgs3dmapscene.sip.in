@@ -210,6 +210,12 @@ Disables OpenGL clipping.
 
 
 
+    QList<QVector4D> clipPlaneEquations() const;
+%Docstring
+Returns list of clipping planes if clipping is enabled, otherwise an empty list.
+
+.. versionadded:: 3.44
+%End
 
   signals:
     void terrainEntityChanged();

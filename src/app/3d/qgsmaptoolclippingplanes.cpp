@@ -186,3 +186,8 @@ void QgsMapToolClippingPlanes::clearHighLightedArea() const
 {
   mRubberBandPolygon->reset( Qgis::GeometryType::Polygon );
 }
+
+QgsGeometry QgsMapToolClippingPlanes::clippedPolygon() const
+{
+  return mRubberBandPolygon->asGeometry();
+}

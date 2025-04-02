@@ -290,6 +290,13 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      */
     void removeSceneEntity( Qgs3DMapSceneEntity *entity ) SIP_SKIP;
 
+    /**
+     * Returns list of clipping planes if clipping is enabled, otherwise an empty list.
+     *
+     * \since QGIS 3.44
+     */
+    QList<QVector4D> clipPlaneEquations() const { return mClipPlanesEquations; };
+
 #ifndef SIP_RUN
     //! Static function for returning open 3D map scenes
     static std::function<QMap<QString, Qgs3DMapScene *>()> sOpenScenesFunction;
