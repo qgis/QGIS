@@ -16,7 +16,8 @@ class QgsTriangulatedSurface: QgsPolyhedralSurface
 %Docstring(signature="appended")
 Triangulated surface geometry type.
 
-A TIN (triangulated irregular network) is a PolyhedralSurface consisting only of triangle patches.
+A TIN (triangulated irregular network) is a PolyhedralSurface consisting
+only of triangle patches.
 
 .. versionadded:: 3.40
 %End
@@ -76,12 +77,14 @@ Sets all triangles, transferring ownership to the polyhedral surface.
     virtual void addPatch( QgsPolygon *patch /Transfer/ );
 
 %Docstring
-Adds a patch to the geometry, transferring ownership to the polyhedral surface.
+Adds a patch to the geometry, transferring ownership to the polyhedral
+surface.
 %End
 
     void addTriangle( QgsTriangle *triangle /Transfer/ );
 %Docstring
-Adds a triangle to the geometry, transferring ownership to the polyhedral surface.
+Adds a triangle to the geometry, transferring ownership to the
+polyhedral surface.
 %End
 
 

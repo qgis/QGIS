@@ -11,11 +11,11 @@
 class QgsTableEditorDialog : QMainWindow
 {
 %Docstring(signature="appended")
-
 A reusable window for editing simple spreadsheet-style tables.
 
-Table content is retrieved and set using the :py:class:`QgsTableContents` class. The editor
-has support for table foreground and background colors, and numeric formats.
+Table content is retrieved and set using the
+:py:class:`QgsTableContents` class. The editor has support for table
+foreground and background colors, and numeric formats.
 
 .. versionadded:: 3.12
 %End
@@ -26,7 +26,8 @@ has support for table foreground and background colors, and numeric formats.
   public:
     QgsTableEditorDialog( QWidget *parent = 0 );
 %Docstring
-Constructor for QgsTableEditorDialog with the specified ``parent`` widget.
+Constructor for QgsTableEditorDialog with the specified ``parent``
+widget.
 %End
 
     void setTableContents( const QgsTableContents &contents );
@@ -55,36 +56,38 @@ Returns the current contents of the editor widget table.
 
     double tableRowHeight( int row );
 %Docstring
-Returns the configured row height for the specified ``row``, or 0 if an automatic height
-should be used for the row.
+Returns the configured row height for the specified ``row``, or 0 if an
+automatic height should be used for the row.
 
 .. seealso:: :py:func:`setTableRowHeight`
 %End
 
     double tableColumnWidth( int column );
 %Docstring
-Returns the configured column width for the specified ``column``, or 0 if an automatic width
-should be used for the column.
+Returns the configured column width for the specified ``column``, or 0
+if an automatic width should be used for the column.
 
 .. seealso:: :py:func:`setTableColumnWidth`
 %End
 
     void setTableRowHeight( int row, double height );
 %Docstring
-Sets the configured row ``height`` for the specified ``row``. Set ``height`` to 0
-if an automatic height should be used for the row.
+Sets the configured row ``height`` for the specified ``row``. Set
+``height`` to 0 if an automatic height should be used for the row.
 
-This should be called after a call to :py:func:`~QgsTableEditorDialog.setTableContents`.
+This should be called after a call to
+:py:func:`~QgsTableEditorDialog.setTableContents`.
 
 .. seealso:: :py:func:`tableRowHeight`
 %End
 
     void setTableColumnWidth( int column, double width );
 %Docstring
-Sets the configured column ``width`` for the specified ``column``. Set ``width`` to 0
-if an automatic width should be used for the column.
+Sets the configured column ``width`` for the specified ``column``. Set
+``width`` to 0 if an automatic width should be used for the column.
 
-This should be called after a call to :py:func:`~QgsTableEditorDialog.setTableContents`.
+This should be called after a call to
+:py:func:`~QgsTableEditorDialog.setTableContents`.
 
 .. seealso:: :py:func:`tableColumnWidth`
 %End
@@ -119,22 +122,24 @@ Sets the table ``headers``.
 
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 %Docstring
-Register an expression context generator class that will be used to retrieve
-an expression context for the editor when required.
+Register an expression context generator class that will be used to
+retrieve an expression context for the editor when required.
 
 .. versionadded:: 3.16
 %End
 
     QgsMapLayer *layer() const;
 %Docstring
-Returns the (possibly ``None``) layer associated with the expression editor context.
+Returns the (possibly ``None``) layer associated with the expression
+editor context.
 
 .. versionadded:: 3.40
 %End
 
     void setLayer( QgsMapLayer *layer );
 %Docstring
-Sets the ``layer`` to be used associated with the expression editor context.
+Sets the ``layer`` to be used associated with the expression editor
+context.
 
 .. versionadded:: 3.40
 %End

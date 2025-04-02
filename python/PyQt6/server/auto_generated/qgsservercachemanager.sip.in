@@ -15,7 +15,8 @@
 class QgsServerCacheManager
 {
 %Docstring(signature="appended")
-A helper class that centralizes caches accesses given by all the server cache filter plugins.
+A helper class that centralizes caches accesses given by all the server
+cache filter plugins.
 
 .. versionadded:: 3.4
 %End
@@ -35,14 +36,19 @@ Constructor
 
     bool getCachedDocument( QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
 %Docstring
-Returns cached document (or 0 if document not in cache) like capabilities
+Returns cached document (or 0 if document not in cache) like
+capabilities
 
 :param doc: the document to update by content found in cache
-:param project: the project used to generate the document to provide path
-:param request: the request used to generate the document to provider parameters or data
-:param accessControl: the access control to identify different documents for the same request provided by server interface
+:param project: the project used to generate the document to provide
+                path
+:param request: the request used to generate the document to provider
+                parameters or data
+:param accessControl: the access control to identify different documents
+                      for the same request provided by server interface
 
-:return: ``True`` if the document has been found in cache and the document's content set
+:return: ``True`` if the document has been found in cache and the
+         document's content set
 %End
 
     bool setCachedDocument( const QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
@@ -50,9 +56,12 @@ Returns cached document (or 0 if document not in cache) like capabilities
 Updates or inserts the document in cache like capabilities
 
 :param doc: the document to cache
-:param project: the project used to generate the document to provide path
-:param request: the request used to generate the document to provider parameters or data
-:param accessControl: the access control to identify different documents for the same request provided by server interface
+:param project: the project used to generate the document to provide
+                path
+:param request: the request used to generate the document to provider
+                parameters or data
+:param accessControl: the access control to identify different documents
+                      for the same request provided by server interface
 
 :return: ``True`` if the document has been cached
 %End
@@ -61,9 +70,12 @@ Updates or inserts the document in cache like capabilities
 %Docstring
 Deletes the cached document
 
-:param project: the project used to generate the document to provide path
-:param request: the request used to generate the document to provider parameters or data
-:param accessControl: the access control to identify different documents for the same request provided by server interface
+:param project: the project used to generate the document to provide
+                path
+:param request: the request used to generate the document to provider
+                parameters or data
+:param accessControl: the access control to identify different documents
+                      for the same request provided by server interface
 
 :return: ``True`` if the document has been deleted
 %End
@@ -72,7 +84,8 @@ Deletes the cached document
 %Docstring
 Deletes all cached documents for a QGIS project
 
-:param project: the project used to generate the document to provide path
+:param project: the project used to generate the document to provide
+                path
 
 :return: ``True`` if the document has been deleted
 %End
@@ -82,8 +95,10 @@ Deletes all cached documents for a QGIS project
 Returns cached image (or 0 if image not in cache) like tiles
 
 :param project: the project used to generate the image to provide path
-:param request: the request used to generate the image to provider parameters or data
-:param accessControl: the access control to identify different documents for the same request provided by server interface
+:param request: the request used to generate the image to provider
+                parameters or data
+:param accessControl: the access control to identify different documents
+                      for the same request provided by server interface
 
 :return: the cached image or 0 if no corresponding image found
 %End
@@ -94,8 +109,10 @@ Updates or inserts the image in cache like tiles
 
 :param img: the image to cache
 :param project: the project used to generate the image to provide path
-:param request: the request used to generate the image to provider parameters or data
-:param accessControl: the access control to identify different documents for the same request provided by server interface
+:param request: the request used to generate the image to provider
+                parameters or data
+:param accessControl: the access control to identify different documents
+                      for the same request provided by server interface
 
 :return: ``True`` if the image has been cached
 %End
@@ -105,8 +122,10 @@ Updates or inserts the image in cache like tiles
 Deletes the cached image
 
 :param project: the project used to generate the image to provide path
-:param request: the request used to generate the image to provider parameters or data
-:param accessControl: the access control to identify different documents for the same request provided by server interface
+:param request: the request used to generate the image to provider
+                parameters or data
+:param accessControl: the access control to identify different documents
+                      for the same request provided by server interface
 
 :return: ``True`` if the image has been deleted
 %End

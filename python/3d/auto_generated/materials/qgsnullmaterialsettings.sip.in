@@ -14,7 +14,8 @@
 class QgsNullMaterialSettings : QgsAbstractMaterialSettings
 {
 %Docstring(signature="appended")
-Null shading material used for rendering models and scenes with native textures.
+Null shading material used for rendering models and scenes with native
+textures.
 
 .. warning::
 
@@ -35,7 +36,8 @@ Null shading material used for rendering models and scenes with native textures.
 
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 %Docstring
-Returns ``True`` if the specified ``technique`` is supported by the material.
+Returns ``True`` if the specified ``technique`` is supported by the
+material.
 %End
 
     static QgsAbstractMaterialSettings *create() /Factory/;

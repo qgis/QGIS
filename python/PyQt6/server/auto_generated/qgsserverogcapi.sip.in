@@ -12,8 +12,9 @@
 class QgsServerOgcApi : QgsServerApi
 {
 %Docstring(signature="appended")
-QGIS Server OGC API endpoint. :py:class:`QgsServerOgcApi` provides the foundation for
-the new generation of REST-API based OGC services (e.g. WFS3).
+QGIS Server OGC API endpoint. :py:class:`QgsServerOgcApi` provides the
+foundation for the new generation of REST-API based OGC services (e.g.
+WFS3).
 
 This class can be used directly and configured by registering handlers
 as instances of :py:class:`QgsServerOgcApiHandler`.
@@ -72,7 +73,8 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
 QgsServerOgcApi constructor
 
 :param serverIface: pointer to the server interface
-:param rootPath: root path for this API (usually starts with a "/", e.g. "/wfs3")
+:param rootPath: root path for this API (usually starts with a "/", e.g.
+                 "/wfs3")
 :param name: API name
 :param description: API description
 :param version: API version
@@ -95,13 +97,14 @@ Executes a request by passing the given ``context`` to the API handlers.
 
     void registerHandler( QgsServerOgcApiHandler *handler /Transfer/ );
 %Docstring
-Registers an OGC API ``handler``, ownership of the handler is transferred to the API
+Registers an OGC API ``handler``, ownership of the handler is
+transferred to the API
 %End
 
     static QUrl sanitizeUrl( const QUrl &url );
 %Docstring
-Returns a sanitized ``url`` with extra slashes removed and the path URL component that
-always starts with a slash.
+Returns a sanitized ``url`` with extra slashes removed and the path URL
+component that always starts with a slash.
 %End
 
     static std::string relToString( const QgsServerOgcApi::Rel &rel );
@@ -142,7 +145,8 @@ Returns the Content-Type value corresponding to ``extension``.
 
     static std::string mimeType( const QgsServerOgcApi::ContentType &contentType );
 %Docstring
-Returns the mime-type for the ``contentType`` or an empty string if not found
+Returns the mime-type for the ``contentType`` or an empty string if not
+found
 %End
 
 

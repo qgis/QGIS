@@ -12,9 +12,11 @@
 class QgsAnnotationRectItem : QgsAnnotationItem
 {
 %Docstring(signature="appended")
-Abstract base class for annotation items which render annotations in a rectangular shape.
+Abstract base class for annotation items which render annotations in a
+rectangular shape.
 
-Subclasses should implement the pure virtual :py:func:`~render` method which takes a painter bounds argument.
+Subclasses should implement the pure virtual :py:func:`~render` method
+which takes a painter bounds argument.
 
 .. versionadded:: 3.40
 %End
@@ -26,8 +28,8 @@ Subclasses should implement the pure virtual :py:func:`~render` method which tak
 
     QgsAnnotationRectItem( const QgsRectangle &bounds );
 %Docstring
-Constructor for QgsAnnotationRectItem, rendering the annotation
-within the specified ``bounds`` geometry.
+Constructor for QgsAnnotationRectItem, rendering the annotation within
+the specified ``bounds`` geometry.
 %End
     ~QgsAnnotationRectItem();
 
@@ -50,10 +52,12 @@ within the specified ``bounds`` geometry.
 %Docstring
 Returns the bounds of the item.
 
-The coordinate reference system for the item will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+The coordinate reference system for the item will be the parent layer's
+:py:func:`QgsAnnotationLayer.crs()`.
 
-When the :py:func:`~QgsAnnotationRectItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize then the item will be placed
-at the center of the bounds.
+When the :py:func:`~QgsAnnotationRectItem.placementMode` is
+:py:class:`Qgis`.AnnotationPlacementMode.FixedSize then the item will be
+placed at the center of the bounds.
 
 .. seealso:: :py:func:`setBounds`
 %End
@@ -62,10 +66,12 @@ at the center of the bounds.
 %Docstring
 Sets the ``bounds`` of the item.
 
-The coordinate reference system for the bounds will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+The coordinate reference system for the bounds will be the parent
+layer's :py:func:`QgsAnnotationLayer.crs()`.
 
-When the :py:func:`~QgsAnnotationRectItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize then the item will be placed
-at the center of the bounds.
+When the :py:func:`~QgsAnnotationRectItem.placementMode` is
+:py:class:`Qgis`.AnnotationPlacementMode.FixedSize then the item will be
+placed at the center of the bounds.
 
 .. seealso:: :py:func:`bounds`
 %End
@@ -86,7 +92,9 @@ Sets the placement ``mode`` for the item.
 
     QSizeF fixedSize() const;
 %Docstring
-Returns the fixed size to use for the item, when the :py:func:`~QgsAnnotationRectItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
+Returns the fixed size to use for the item, when the
+:py:func:`~QgsAnnotationRectItem.placementMode` is
+:py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
 
 Units are retrieved via :py:func:`~QgsAnnotationRectItem.fixedSizeUnit`
 
@@ -97,7 +105,9 @@ Units are retrieved via :py:func:`~QgsAnnotationRectItem.fixedSizeUnit`
 
     void setFixedSize( const QSizeF &size );
 %Docstring
-Sets the fixed ``size`` to use for the item, when the :py:func:`~QgsAnnotationRectItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
+Sets the fixed ``size`` to use for the item, when the
+:py:func:`~QgsAnnotationRectItem.placementMode` is
+:py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
 
 Units are set via :py:func:`~QgsAnnotationRectItem.setFixedSizeUnit`
 
@@ -108,7 +118,9 @@ Units are set via :py:func:`~QgsAnnotationRectItem.setFixedSizeUnit`
 
     Qgis::RenderUnit fixedSizeUnit() const;
 %Docstring
-Returns the units to use for fixed item sizes, when the :py:func:`~QgsAnnotationRectItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
+Returns the units to use for fixed item sizes, when the
+:py:func:`~QgsAnnotationRectItem.placementMode` is
+:py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
 
 .. seealso:: :py:func:`setFixedSizeUnit`
 
@@ -117,7 +129,9 @@ Returns the units to use for fixed item sizes, when the :py:func:`~QgsAnnotation
 
     void setFixedSizeUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``unit`` to use for fixed item sizes, when the :py:func:`~QgsAnnotationRectItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
+Sets the ``unit`` to use for fixed item sizes, when the
+:py:func:`~QgsAnnotationRectItem.placementMode` is
+:py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
 
 .. seealso:: :py:func:`fixedSizeUnit`
 
@@ -212,11 +226,11 @@ The item takes ownership of the symbol.
 %Docstring
 Renders the item to the specified render ``context``.
 
-The ``painterRect`` argument specifies the bounds in painter units where the rectangular
-item should be rendered within.
+The ``painterRect`` argument specifies the bounds in painter units where
+the rectangular item should be rendered within.
 
-The ``feedback`` argument can be used to detect render cancellations during expensive
-render operations.
+The ``feedback`` argument can be used to detect render cancellations
+during expensive render operations.
 %End
 
   private:

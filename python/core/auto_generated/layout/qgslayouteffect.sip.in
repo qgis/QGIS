@@ -13,9 +13,8 @@
 class QgsLayoutEffect : QGraphicsEffect
 {
 %Docstring(signature="appended")
-
-A QGraphicsEffect subclass used for rendering layout items
-onto a scene with custom composition modes.
+A QGraphicsEffect subclass used for rendering layout items onto a scene
+with custom composition modes.
 
 .. deprecated:: 3.34
 
@@ -31,8 +30,7 @@ onto a scene with custom composition modes.
 
  void setCompositionMode( QPainter::CompositionMode mode ) /Deprecated/;
 %Docstring
-Sets the composition (blending) ``mode`` used for rendering
-the item.
+Sets the composition (blending) ``mode`` used for rendering the item.
 
 .. seealso:: :py:func:`compositionMode`
 
@@ -43,8 +41,7 @@ the item.
 
  QPainter::CompositionMode compositionMode() const /Deprecated/;
 %Docstring
-Returns the composition (blending) mode used for rendering
-the item.
+Returns the composition (blending) mode used for rendering the item.
 
 .. seealso:: :py:func:`setCompositionMode`
 

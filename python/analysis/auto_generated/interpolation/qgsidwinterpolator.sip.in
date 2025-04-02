@@ -21,7 +21,8 @@ Inverse distance weight interpolator.
   public:
     QgsIDWInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 %Docstring
-Constructor for QgsIDWInterpolator, with the specified ``layerData`` sources.
+Constructor for QgsIDWInterpolator, with the specified ``layerData``
+sources.
 %End
 
     virtual int interpolatePoint( double x, double y, double &result /Out/, QgsFeedback *feedback = 0 );
@@ -29,8 +30,9 @@ Constructor for QgsIDWInterpolator, with the specified ``layerData`` sources.
 
     void setDistanceCoefficient( double coefficient );
 %Docstring
-Sets the distance ``coefficient``, the parameter that sets how the values are
-weighted with distance. Smaller values mean sharper peaks at the data points.
+Sets the distance ``coefficient``, the parameter that sets how the
+values are weighted with distance. Smaller values mean sharper peaks at
+the data points.
 
 Point values are weighted by 1 / ( distance ^ coefficient ).
 
@@ -39,9 +41,9 @@ Point values are weighted by 1 / ( distance ^ coefficient ).
 
     double distanceCoefficient() const;
 %Docstring
-Returns the distance coefficient, the parameter that sets how the values are
-weighted with distance. Smaller values mean sharper peaks at the data points.
-The default is a coefficient of 2.
+Returns the distance coefficient, the parameter that sets how the values
+are weighted with distance. Smaller values mean sharper peaks at the
+data points. The default is a coefficient of 2.
 
 Point values are weighted by 1 / ( distance ^ coefficient ).
 

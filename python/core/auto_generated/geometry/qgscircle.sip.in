@@ -19,8 +19,9 @@ class QgsCircle : QgsEllipse
 %Docstring(signature="appended")
 Circle geometry type.
 
-A circle is defined by a center point with a radius and an azimuth.
-The azimuth is the north angle to the semi-major axis, in degrees. By default, the semi-major axis is oriented to the north (0 degrees).
+A circle is defined by a center point with a radius and an azimuth. The
+azimuth is the north angle to the semi-major axis, in degrees. By
+default, the semi-major axis is oriented to the north (0 degrees).
 %End
 
 %TypeHeaderCode
@@ -35,17 +36,18 @@ Constructs a circle by defining all the members.
 
 :param center: The center of the circle.
 :param radius: The radius of the circle.
-:param azimuth: Angle in degrees started from the North to the first quadrant.
+:param azimuth: Angle in degrees started from the North to the first
+                quadrant.
 %End
 
     static QgsCircle from2Points( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
 %Docstring
-Constructs a circle by 2 points on the circle.
-The center point can have m value which is the result from the midpoint
-operation between ``pt1`` and ``pt2``. Z dimension is also supported and
-is retrieved from the first 3D point amongst ``pt1`` and ``pt2``.
-The radius is calculated from the 2D distance between ``pt1`` and ``pt2``.
-The azimuth is the angle between ``pt1`` and ``pt2``.
+Constructs a circle by 2 points on the circle. The center point can have
+m value which is the result from the midpoint operation between ``pt1``
+and ``pt2``. Z dimension is also supported and is retrieved from the
+first 3D point amongst ``pt1`` and ``pt2``. The radius is calculated
+from the 2D distance between ``pt1`` and ``pt2``. The azimuth is the
+angle between ``pt1`` and ``pt2``.
 
 :param pt1: First point.
 :param pt2: Second point.
@@ -53,12 +55,11 @@ The azimuth is the angle between ``pt1`` and ``pt2``.
 
     static QgsCircle from3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 ) /HoldGIL/;
 %Docstring
-Constructs a circle by 3 points on the circle.
-M value is dropped for the center point.
-Z dimension is supported and is retrieved from the first 3D point
-amongst ``pt1``, ``pt2`` and ``pt3``.
-The azimuth always takes the default value.
-If the points are colinear an empty circle is returned.
+Constructs a circle by 3 points on the circle. M value is dropped for
+the center point. Z dimension is supported and is retrieved from the
+first 3D point amongst ``pt1``, ``pt2`` and ``pt3``. The azimuth always
+takes the default value. If the points are colinear an empty circle is
+returned.
 
 :param pt1: First point.
 :param pt2: Second point.
@@ -68,8 +69,8 @@ If the points are colinear an empty circle is returned.
 
     static QgsCircle fromCenterDiameter( const QgsPoint &center, double diameter, double azimuth = 0 ) /HoldGIL/;
 %Docstring
-Constructs a circle by a center point and a diameter.
-The center point keeps z and m values from ``center``.
+Constructs a circle by a center point and a diameter. The center point
+keeps z and m values from ``center``.
 
 :param center: Center point.
 :param diameter: Diameter of the circle.
@@ -79,10 +80,10 @@ The center point keeps z and m values from ``center``.
 
     static QgsCircle fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 ) /HoldGIL/;
 %Docstring
-Constructs a circle by a center point and another point.
-The center point keeps z and m values from ``center``.
-Axes are calculated from the 2D distance between ``center`` and ``pt1``.
-The azimuth is the angle between ``center`` and ``pt1``.
+Constructs a circle by a center point and another point. The center
+point keeps z and m values from ``center``. Axes are calculated from the
+2D distance between ``center`` and ``pt1``. The azimuth is the angle
+between ``center`` and ``pt1``.
 
 :param center: Center point.
 :param pt1: A point on the circle.
@@ -95,9 +96,9 @@ The azimuth is the angle between ``center`` and ``pt1``.
                                     double epsilon = 1E-8,
                                     const QgsPoint &pos = QgsPoint() ) /HoldGIL/;
 %Docstring
-Constructs a circle by 3 tangents on the circle (aka inscribed circle of a triangle).
-Z and m values are dropped for the center point.
-The azimuth always takes the default value.
+Constructs a circle by 3 tangents on the circle (aka inscribed circle of
+a triangle). Z and m values are dropped for the center point. The
+azimuth always takes the default value.
 
 :param pt1_tg1: First point of the first tangent.
 :param pt2_tg1: Second point of the first tangent.
@@ -107,7 +108,9 @@ The azimuth always takes the default value.
 :param pt2_tg3: Second point of the third tangent.
 :param epsilon: Value used to compare point.
 :param pos: Point to determine which circle use in case of multi return.
-            If the solution is not unique and pos is an empty point, an empty circle is returned. -- This case happens only when two tangents are parallels. (since QGIS 3.18)
+            If the solution is not unique and pos is an empty point, an
+            empty circle is returned. -- This case happens only when two
+            tangents are parallels. (since QGIS 3.18)
 
 .. seealso:: :py:func:`from3TangentsMulti`
 
@@ -131,18 +134,24 @@ Example
         double epsilon = 1E-8,
         const QgsPoint &pos = QgsPoint() ) /HoldGIL/;
 %Docstring
-Returns an array of circle constructed by 3 tangents on the circle (aka inscribed circle of a triangle).
+Returns an array of circle constructed by 3 tangents on the circle (aka
+inscribed circle of a triangle).
 
 The vector can contain 0, 1 or 2 circles:
 
-- 0: Impossible to construct a circle from 3 tangents (three parallel tangents)
-- 1: The three tangents make a triangle or when two tangents are parallel there are two possible circles (see examples).
-  If pos is not an empty point, we use its coordinates to determine which circle will be returned.
-  More precisely the circle that will be returned will be the one whose center is on the same side as pos relative to the third tangent.
-- 2: Returns both solutions when two tangents are parallel (this implies that pos is an empty point).
+- 0: Impossible to construct a circle from 3 tangents (three parallel
+  tangents)
+- 1: The three tangents make a triangle or when two tangents are
+  parallel there are two possible circles (see examples). If pos is not
+  an empty point, we use its coordinates to determine which circle will
+  be returned. More precisely the circle that will be returned will be
+  the one whose center is on the same side as pos relative to the third
+  tangent.
+- 2: Returns both solutions when two tangents are parallel (this implies
+  that pos is an empty point).
 
-Z and m values are dropped for the center point.
-The azimuth always takes the default value.
+Z and m values are dropped for the center point. The azimuth always
+takes the default value.
 
 :param pt1_tg1: First point of the first tangent.
 :param pt2_tg1: Second point of the first tangent.
@@ -151,7 +160,8 @@ The azimuth always takes the default value.
 :param pt1_tg3: First point of the third tangent.
 :param pt2_tg3: Second point of the third tangent.
 :param epsilon: Value used to compare point.
-:param pos: (optional) Point to determine which circle use in case of multi return.
+:param pos: (optional) Point to determine which circle use in case of
+            multi return.
 
 .. seealso:: :py:func:`from3Tangents`
 
@@ -174,12 +184,12 @@ Example
 
     static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
 %Docstring
-Constructs a circle by an extent (aka bounding box / :py:class:`QgsRectangle`).
-The center point can have m value which is the result from the midpoint
-operation between ``pt1`` and ``pt2``. Z dimension is also supported and
-is retrieved from the first 3D point amongst ``pt1`` and ``pt2``.
-Axes are calculated from the 2D distance between ``pt1`` and ``pt2``.
-The azimuth always takes the default value.
+Constructs a circle by an extent (aka bounding box /
+:py:class:`QgsRectangle`). The center point can have m value which is
+the result from the midpoint operation between ``pt1`` and ``pt2``. Z
+dimension is also supported and is retrieved from the first 3D point
+amongst ``pt1`` and ``pt2``. Axes are calculated from the 2D distance
+between ``pt1`` and ``pt2``. The azimuth always takes the default value.
 
 :param pt1: First corner.
 :param pt2: Second corner.
@@ -187,10 +197,9 @@ The azimuth always takes the default value.
 
     static QgsCircle minimalCircleFrom3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 ) /HoldGIL/;
 %Docstring
-Constructs the smallest circle from 3 points.
-Z and m values are dropped for the center point.
-The azimuth always takes the default value.
-If the points are colinear an empty circle is returned.
+Constructs the smallest circle from 3 points. Z and m values are dropped
+for the center point. The azimuth always takes the default value. If the
+points are colinear an empty circle is returned.
 
 :param pt1: First point.
 :param pt2: Second point.
@@ -200,14 +209,17 @@ If the points are colinear an empty circle is returned.
 
     int intersections( const QgsCircle &other, QgsPoint &intersection1 /Out/, QgsPoint &intersection2 /Out/, bool useZ = false ) const;
 %Docstring
-Calculates the intersections points between this circle and an ``other`` circle.
+Calculates the intersections points between this circle and an ``other``
+circle.
 
-If found, the intersection points will be stored in ``intersection1`` and ``intersection2``.
+If found, the intersection points will be stored in ``intersection1``
+and ``intersection2``.
 
-By default this method does not consider any z values and instead treats the circles as 2-dimensional.
-If ``useZ`` is set to ``True``, then an intersection will only occur if the z values of both circles are
-equal. In this case the points returned for ``intersection1`` and ``intersection2`` will contain
-the z value of the circle intersections.
+By default this method does not consider any z values and instead treats
+the circles as 2-dimensional. If ``useZ`` is set to ``True``, then an
+intersection will only occur if the z values of both circles are equal.
+In this case the points returned for ``intersection1`` and
+``intersection2`` will contain the z value of the circle intersections.
 
 :return: number of intersection points found.
 
@@ -237,17 +249,16 @@ If found, the tangent points will be stored in ``pt1`` and ``pt2``.
                        QgsPointXY &line1P1 /Out/, QgsPointXY &line1P2 /Out/,
                        QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ ) const;
 %Docstring
-Calculates the outer tangent points between this circle
-and an ``other`` circle.
+Calculates the outer tangent points between this circle and an ``other``
+circle.
 
 The outer tangent points correspond to the points at which the two lines
-which are drawn so that they are tangential to both circles touch
-the circles.
+which are drawn so that they are tangential to both circles touch the
+circles.
 
-The first tangent line is described by the points
-stored in ``line1P1`` and ``line1P2``,
-and the second line is described by the points stored in ``line2P1``
-and ``line2P2``.
+The first tangent line is described by the points stored in ``line1P1``
+and ``line1P2``, and the second line is described by the points stored
+in ``line2P1`` and ``line2P2``.
 
 Returns the number of tangents (either 0 or 2).
 
@@ -266,17 +277,16 @@ Returns the number of tangents (either 0 or 2).
                        QgsPointXY &line1P1 /Out/, QgsPointXY &line1P2 /Out/,
                        QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ ) const;
 %Docstring
-Calculates the inner tangent points between this circle
-and an ``other`` circle.
+Calculates the inner tangent points between this circle and an ``other``
+circle.
 
 The inner tangent points correspond to the points at which the two lines
 which are drawn so that they are tangential to both circles but on
 different sides, touching the circles and crossing each other.
 
-The first tangent line is described by the points
-stored in ``line1P1`` and ``line1P2``,
-and the second line is described by the points stored in ``line2P1``
-and ``line2P2``.
+The first tangent line is described by the points stored in ``line1P1``
+and ``line1P2``, and the second line is described by the points stored
+in ``line2P1`` and ``line2P2``.
 
 Returns the number of tangents (either 0 or 2).
 
@@ -329,8 +339,8 @@ Sets the radius of the circle
 
     QVector<QgsPoint> northQuadrant() const /Factory/;
 %Docstring
-The four quadrants of the ellipse.
-They are oriented and started from North.
+The four quadrants of the ellipse. They are oriented and started from
+North.
 
 :return: quadrants defined by four points.
 
@@ -341,7 +351,8 @@ They are oriented and started from North.
 %Docstring
 Returns a circular string from the circle.
 
-:param oriented: If oriented is ``True`` the start point is from azimuth instead from north.
+:param oriented: If oriented is ``True`` the start point is from azimuth
+                 instead from north.
 %End
 
     bool contains( const QgsPoint &point, double epsilon = 1E-8 ) const;
@@ -357,8 +368,8 @@ Returns ``True`` if the circle contains the ``point``.
 
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 %Docstring
-Returns a GML2 representation of the geometry.
-Since GML2 does not supports curve, it will be converted to a LineString.
+Returns a GML2 representation of the geometry. Since GML2 does not
+supports curve, it will be converted to a LineString.
 
 :param doc: DOM document
 :param precision: number of decimal places for coordinates
@@ -372,11 +383,11 @@ Since GML2 does not supports curve, it will be converted to a LineString.
 %Docstring
 Returns a GML3 representation of the geometry.
 
-From the GML3 description:
-A Circle is an arc whose ends coincide to form a simple closed loop.
-The three control points shall be distinct non-co-linear points for
-the circle to be unambiguously defined. The arc is simply extended
-past the third control point until the first control point is encountered.
+From the GML3 description: A Circle is an arc whose ends coincide to
+form a simple closed loop. The three control points shall be distinct
+non-co-linear points for the circle to be unambiguously defined. The arc
+is simply extended past the third control point until the first control
+point is encountered.
 
 Coordinates are taken from quadrant North, East and South.
 

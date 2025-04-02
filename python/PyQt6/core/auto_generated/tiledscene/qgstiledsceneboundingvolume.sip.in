@@ -25,25 +25,29 @@ Represents a bounding volume for a tiled scene.
 
     QgsTiledSceneBoundingVolume( const QgsOrientedBox3D &box = QgsOrientedBox3D() );
 %Docstring
-Constructor for QgsTiledSceneBoundingVolume, with the specified oriented ``box``.
+Constructor for QgsTiledSceneBoundingVolume, with the specified oriented
+``box``.
 %End
 
     QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 %Docstring
 Returns the axis aligned bounding box of the volume.
 
-The optional ``transform`` and ``direction`` arguments should be used whenever the volume needs
-to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
+The optional ``transform`` and ``direction`` arguments should be used
+whenever the volume needs to be transformed into a specific destination
+CRS, in order to correctly handle 3D coordinate transforms.
 %End
 
     QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const /Factory/;
 %Docstring
-Returns a new geometry representing the 2-dimensional X/Y center slice of the volume.
+Returns a new geometry representing the 2-dimensional X/Y center slice
+of the volume.
 
 Caller takes ownership of the returned geometry.
 
-The optional ``transform`` and ``direction`` arguments should be used whenever the volume needs
-to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
+The optional ``transform`` and ``direction`` arguments should be used
+whenever the volume needs to be transformed into a specific destination
+CRS, in order to correctly handle 3D coordinate transforms.
 %End
 
     void transform( const QgsMatrix4x4 &transform );

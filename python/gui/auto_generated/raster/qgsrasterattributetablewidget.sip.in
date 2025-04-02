@@ -15,7 +15,8 @@
 class QgsRasterAttributeTableWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsRasterAttributeTableWidget` class provides an attribute table for rasters and methods to edit the table.
+The :py:class:`QgsRasterAttributeTableWidget` class provides an
+attribute table for rasters and methods to edit the table.
 
 .. versionadded:: 3.30
 %End
@@ -30,7 +31,9 @@ Creates a new QgsRasterAttributeTableWidget
 
 :param parent: parent widget
 :param rasterLayer: raster layer
-:param bandNumber: optional initial selected band number (default to 0, which makes the widget use the first available RAT, if any)
+:param bandNumber: optional initial selected band number (default to 0,
+                   which makes the widget use the first available RAT,
+                   if any)
 %End
 
     void setRasterLayer( QgsRasterLayer *rasterLayer, const int bandNumber = 0 );
@@ -38,7 +41,9 @@ Creates a new QgsRasterAttributeTableWidget
 Sets the raster layer and an optional band number.
 
 :param rasterLayer: raster layer
-:param bandNumber: optional initial selected band number (default to 0, which makes the widget use the first available RAT, if any)
+:param bandNumber: optional initial selected band number (default to 0,
+                   which makes the widget use the first available RAT,
+                   if any)
 %End
 
     bool isDirty() const;
@@ -48,15 +53,16 @@ Returns ``True`` if the associated raster attribute table is dirty
 
     void setMessageBar( QgsMessageBar *bar );
 %Docstring
-Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
-to the appropriate message bar.
+Sets the message ``bar`` associated with the widget. This allows the
+widget to push feedback messages to the appropriate message bar.
 %End
 
   signals:
 
     void rendererChanged();
 %Docstring
-This signal is emitted after a successful classify operation which changed the raster renderer.
+This signal is emitted after a successful classify operation which
+changed the raster renderer.
 %End
 
   public slots:
@@ -68,10 +74,12 @@ Save the changes in the raster attribute table.
 
     bool setEditable( bool editable, bool allowCancel = true );
 %Docstring
-Set the editable state, it may trigger save changes if the attribute table has unsave changes.
+Set the editable state, it may trigger save changes if the attribute
+table has unsave changes.
 
 :param editable: editable state
-:param allowCancel: optional (default ``True``) flag to show cancel option in confirm save dialog.
+:param allowCancel: optional (default ``True``) flag to show cancel
+                    option in confirm save dialog.
 %End
 
   public:

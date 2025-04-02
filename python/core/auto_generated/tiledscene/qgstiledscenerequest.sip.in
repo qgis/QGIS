@@ -13,7 +13,6 @@
 class QgsTiledSceneRequest
 {
 %Docstring(signature="appended")
-
 Tiled scene data request.
 
 .. versionadded:: 3.34
@@ -80,26 +79,27 @@ If the ``error`` is 0 then no geometric error filtering will be applied.
 
     void setFeedback( QgsFeedback *feedback );
 %Docstring
-Attach a ``feedback`` object that can be queried regularly by the request to check
-if it should be canceled.
+Attach a ``feedback`` object that can be queried regularly by the
+request to check if it should be canceled.
 
-Ownership of ``feedback`` is NOT transferred, and the caller must take care that it exists
-for the lifetime of the request.
+Ownership of ``feedback`` is NOT transferred, and the caller must take
+care that it exists for the lifetime of the request.
 
 .. seealso:: :py:func:`feedback`
 %End
 
     QgsFeedback *feedback() const;
 %Docstring
-Returns the feedback object that can be queried regularly by the request to check
-if it should be canceled, if set.
+Returns the feedback object that can be queried regularly by the request
+to check if it should be canceled, if set.
 
 .. seealso:: :py:func:`setFeedback`
 %End
 
     long long parentTileId() const;
 %Docstring
-Returns the parent tile ID, if filtering is limited to children of a specific tile.
+Returns the parent tile ID, if filtering is limited to children of a
+specific tile.
 
 Returns -1 if no parent tile ID filtering is to be made.
 
@@ -108,7 +108,8 @@ Returns -1 if no parent tile ID filtering is to be made.
 
     void setParentTileId( long long id );
 %Docstring
-Sets the parent tile ``id``, if filtering is to be limited to children of a specific tile.
+Sets the parent tile ``id``, if filtering is to be limited to children
+of a specific tile.
 
 Set to -1 if no parent tile ID filtering is to be made.
 

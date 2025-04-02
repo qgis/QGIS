@@ -17,7 +17,8 @@
 class Qgs3DMapScene : QObject
 {
 %Docstring(signature="appended")
-Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
+Entity that encapsulates our 3D scene - contains all other entities
+(such as terrain) as children.
 %End
 
 %TypeHeaderCode
@@ -45,7 +46,8 @@ Resets camera view to show the extent ``extent`` (top view)
 
     QVector<QgsPointXY> viewFrustum2DExtent() const;
 %Docstring
-Calculates the 2D extent viewed by the 3D camera as the vertices of the viewed trapezoid
+Calculates the 2D extent viewed by the 3D camera as the vertices of the
+viewed trapezoid
 
 .. versionadded:: 3.26
 %End
@@ -75,8 +77,9 @@ Returns the current state of the scene
 
     float worldSpaceError( float epsilon, float distance ) const;
 %Docstring
-Given screen error (in pixels) and distance from camera (in 3D world coordinates), this function
-estimates the error in world space. Takes into account camera's field of view and the screen (3D view) size.
+Given screen error (in pixels) and distance from camera (in 3D world
+coordinates), this function estimates the error in world space. Takes
+into account camera's field of view and the screen (3D view) size.
 %End
 
     void exportScene( const Qgs3DMapExportSettings &exportSettings );
@@ -117,17 +120,17 @@ Returns the 3D map settings.
     bool hasSceneUpdatesEnabled() const;
 %Docstring
 Returns whether updates of the 3D scene's entities are allowed.
-Normally, scene updates are enabled. But for debugging purposes,
-it may be useful to temporarily disable scene updates.
+Normally, scene updates are enabled. But for debugging purposes, it may
+be useful to temporarily disable scene updates.
 
 .. versionadded:: 3.40
 %End
 
     void setSceneUpdatesEnabled( bool enabled );
 %Docstring
-Sets whether updates of the 3D scene's entities are allowed.
-Normally, scene updates are enabled. But for debugging purposes,
-it may be useful to temporarily disable scene updates.
+Sets whether updates of the 3D scene's entities are allowed. Normally,
+scene updates are enabled. But for debugging purposes, it may be useful
+to temporarily disable scene updates.
 
 .. versionadded:: 3.40
 %End
@@ -148,21 +151,21 @@ Returns a map of 3D map scenes (by name) open in the QGIS application.
 
     void enableClipping( const QList<QVector4D> &clipPlaneEquations );
 %Docstring
-Enables OpenGL clipping based on the planes equations defined in ``clipPlaneEquations``.
-The number of planes is equal to the size of ``clipPlaneEquations``.
-A plane equation contains 4 elements.
-A simple way to define a clip plane equation is to define a normalized normal to
-the plane and its distance from the origin of the scene.
-In that case, the first 3 elements are the coordinates of the normal of the plane as ``(X, Y, Z)``.
-They need to be normalized.
-The last element is the distance of the plane from the origin of the scene.
-In mathematical terms, a 3d plane can be defined with the equation ``ax+by+cz+d=0``
-The normal is ``(a, b, c)`` with ``|a, b, c| = 1``
-The distance is ``-d``.
+Enables OpenGL clipping based on the planes equations defined in
+``clipPlaneEquations``. The number of planes is equal to the size of
+``clipPlaneEquations``. A plane equation contains 4 elements. A simple
+way to define a clip plane equation is to define a normalized normal to
+the plane and its distance from the origin of the scene. In that case,
+the first 3 elements are the coordinates of the normal of the plane as
+``(X, Y, Z)``. They need to be normalized. The last element is the
+distance of the plane from the origin of the scene. In mathematical
+terms, a 3d plane can be defined with the equation ``ax+by+cz+d=0`` The
+normal is ``(a, b, c)`` with ``|a, b, c| = 1`` The distance is ``-d``.
 
-By default, OpenGL supports up to 8 additional clipping planes. If ``clipPlaneEquations``
-contains more than 8 planes, only the first 8 ones will be used.
-If ``clipPlaneEquations`` is empty, the clipping is disabled.
+By default, OpenGL supports up to 8 additional clipping planes. If
+``clipPlaneEquations`` contains more than 8 planes, only the first 8
+ones will be used. If ``clipPlaneEquations`` is empty, the clipping is
+disabled.
 
 .. seealso:: :py:func:`disableClipping`
 
@@ -218,9 +221,9 @@ Emitted when the viewed 2D extent seen by the 3D camera has changed
 
     void gpuMemoryLimitReached();
 %Docstring
-Emitted when one of the entities reaches its GPU memory limit
-and it is not possible to lower the GPU memory use by unloading
-data that's not currently needed.
+Emitted when one of the entities reaches its GPU memory limit and it is
+not possible to lower the GPU memory use by unloading data that's not
+currently needed.
 %End
 
   public slots:

@@ -59,7 +59,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayerTreeModelLegendNode.__attribute_docs__ = {'dataChanged': 'Emitted on internal data change so the layer tree model can forward the signal to views\n', 'sizeChanged': 'Emitted when the size of this node changes.\n\n.. versionadded:: 3.16\n'}
+    QgsLayerTreeModelLegendNode.__attribute_docs__ = {'dataChanged': 'Emitted on internal data change so the layer tree model can forward the\nsignal to views\n', 'sizeChanged': 'Emitted when the size of this node changes.\n\n.. versionadded:: 3.16\n'}
     QgsLayerTreeModelLegendNode.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass

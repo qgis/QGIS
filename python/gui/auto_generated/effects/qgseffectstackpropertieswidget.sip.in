@@ -14,8 +14,8 @@
 class QgsEffectStackPropertiesWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A widget for modifying the properties of a :py:class:`QgsEffectStack`, including adding
-and reordering effects within the stack.
+A widget for modifying the properties of a :py:class:`QgsEffectStack`,
+including adding and reordering effects within the stack.
 
 .. seealso:: :py:class:`QgsEffectStack`
 
@@ -86,9 +86,11 @@ Updates the effect preview icon.
 
     void changeEffect( QgsPaintEffect *newEffect );
 %Docstring
-Updates the effect stack when the currently selected effect changes properties.
+Updates the effect stack when the currently selected effect changes
+properties.
 
-:param newEffect: new effect to replace existing effect at selected position within the stack.
+:param newEffect: new effect to replace existing effect at selected
+                  position within the stack.
 %End
 
   protected:
@@ -107,13 +109,15 @@ Refreshes the widget to reflect the current state of a specified stack.
 
     void updateUi();
 %Docstring
-Enables or disables widgets depending on the selected effect within the stack.
+Enables or disables widgets depending on the selected effect within the
+stack.
 %End
 
 
     void moveEffectByOffset( int offset );
 %Docstring
-Moves the currently selected effect within the stack by a specified offset
+Moves the currently selected effect within the stack by a specified
+offset
 %End
 
     void setWidget( QWidget *widget );
@@ -127,8 +131,8 @@ Sets the effect properties widget
 class QgsEffectStackPropertiesDialog : QgsDialog
 {
 %Docstring(signature="appended")
-A dialog for modifying the properties of a :py:class:`QgsEffectStack`, including adding
-and reordering effects within the stack.
+A dialog for modifying the properties of a :py:class:`QgsEffectStack`,
+including adding and reordering effects within the stack.
 
 .. seealso:: :py:class:`QgsEffectStack`
 
@@ -173,8 +177,8 @@ Sets the picture to use for effect previews for the dialog
 class QgsEffectStackCompactWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A small widget consisting of a checkbox for enabling/disabling an effect stack
-and a button for opening an effect stack customization dialog.
+A small widget consisting of a checkbox for enabling/disabling an effect
+stack and a button for opening an effect stack customization dialog.
 
 .. seealso:: :py:class:`QgsEffectStack`
 
@@ -192,9 +196,11 @@ and a button for opening an effect stack customization dialog.
 QgsEffectStackCompactWidget constructor
 
 :param parent: parent widget
-:param effect: :py:class:`QgsPaintEffect` for modification by the widget. If the effect
-               is not a :py:class:`QgsEffectStack`, it will be automatically converted to an effect
-               stack consisting of the original effect
+:param effect: :py:class:`QgsPaintEffect` for modification by the
+               widget. If the effect is not a
+               :py:class:`QgsEffectStack`, it will be automatically
+               converted to an effect stack consisting of the original
+               effect
 %End
     ~QgsEffectStackCompactWidget();
 
@@ -202,9 +208,11 @@ QgsEffectStackCompactWidget constructor
 %Docstring
 Sets paint effect attached to the widget,
 
-:param effect: :py:class:`QgsPaintEffect` for modification by the widget. If the effect
-               is not a :py:class:`QgsEffectStack`, it will be automatically converted to an effect
-               stack consisting of the original effect
+:param effect: :py:class:`QgsPaintEffect` for modification by the
+               widget. If the effect is not a
+               :py:class:`QgsEffectStack`, it will be automatically
+               converted to an effect stack consisting of the original
+               effect
 
 .. seealso:: :py:func:`paintEffect`
 %End

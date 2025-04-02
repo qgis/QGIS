@@ -25,22 +25,25 @@ Contains utility functions for working with QGIS projects.
 
     static QList< QgsMapLayer * > layersMatchingPath( const QgsProject *project, const QString &path );
 %Docstring
-Returns a list of all layers in the specified ``project`` which match the given ``path``.
+Returns a list of all layers in the specified ``project`` which match
+the given ``path``.
 
-This method can be used to retrieve a list of layers in a project associated with a file path.
+This method can be used to retrieve a list of layers in a project
+associated with a file path.
 %End
 
     static bool updateLayerPath( QgsProject *project, const QString &oldPath, const QString &newPath );
 %Docstring
-Updates a ``project``, replacing the data source for all layers which match the given ``oldPath``
-with sources which point to ``newPath``.
+Updates a ``project``, replacing the data source for all layers which
+match the given ``oldPath`` with sources which point to ``newPath``.
 
 Returns ``True`` if any layers were updated as a result.
 %End
 
     static bool layerIsContainedInGroupLayer( QgsProject *project, QgsMapLayer *layer );
 %Docstring
-Returns ``True`` if the specified ``layer`` is a child layer from any :py:class:`QgsGroupLayer` in the given ``project``.
+Returns ``True`` if the specified ``layer`` is a child layer from any
+:py:class:`QgsGroupLayer` in the given ``project``.
 
 .. versionadded:: 3.24
 %End

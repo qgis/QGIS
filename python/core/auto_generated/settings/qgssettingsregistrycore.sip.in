@@ -14,8 +14,8 @@
 class QgsSettingsRegistryCore : QgsSettingsRegistry
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsRegistryCore` is used for settings introspection and collects all
-:py:class:`QgsSettingsEntry` instances of core.
+:py:class:`QgsSettingsRegistryCore` is used for settings introspection
+and collects all :py:class:`QgsSettingsEntry` instances of core.
 
 .. versionadded:: 3.20
 %End

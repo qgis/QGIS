@@ -29,19 +29,21 @@ Contains utility methods for working with temporal layers and projects.
 %Docstring
 Calculates the temporal range for a ``project``.
 
-This method considers the temporal range available from layers contained within the project and
-returns the maximal combined temporal extent of these layers.
+This method considers the temporal range available from layers contained
+within the project and returns the maximal combined temporal extent of
+these layers.
 %End
 
     static QList< QgsDateTimeRange > usedTemporalRangesForProject( QgsProject *project );
 %Docstring
 Calculates all temporal ranges which are in use for a ``project``.
 
-This method considers the temporal range available from layers contained within the project and
-returns a list of ranges which cover only the temporal ranges which are actually in use by layers
-in the project.
+This method considers the temporal range available from layers contained
+within the project and returns a list of ranges which cover only the
+temporal ranges which are actually in use by layers in the project.
 
-The returned list may be non-contiguous and have gaps in the ranges. The ranges are sorted in ascending order.
+The returned list may be non-contiguous and have gaps in the ranges. The
+ranges are sorted in ascending order.
 
 .. versionadded:: 3.20
 %End
@@ -66,18 +68,20 @@ The returned list may be non-contiguous and have gaps in the ranges. The ranges 
 
     static bool exportAnimation( const QgsMapSettings &mapSettings, const AnimationExportSettings &settings, QString &error /Out/, QgsFeedback *feedback = 0 );
 %Docstring
-Exports animation frames by rendering the map to multiple destination images.
+Exports animation frames by rendering the map to multiple destination
+images.
 
-The ``mapSettings`` argument dictates the overall map settings such as extent
-and size, while animation and export specific settings are specified via the ``settings``
-argument.
+The ``mapSettings`` argument dictates the overall map settings such as
+extent and size, while animation and export specific settings are
+specified via the ``settings`` argument.
 
-An optional ``feedback`` argument can be used to provide progress reports and cancellation
-support.
+An optional ``feedback`` argument can be used to provide progress
+reports and cancellation support.
 
 :param mapSettings: settings controlling the map render
 :param settings: animation and export settings
-:param feedback: optional feedback object for progress reports and cancellation checks
+:param feedback: optional feedback object for progress reports and
+                 cancellation checks
 
 :return: - ``True`` if the export was successful.
          - error: a descriptive error message if the export fails
@@ -87,15 +91,16 @@ support.
 %Docstring
 Calculates the frame time for an animation.
 
-If the interval original duration is fractional or interval original unit is
-unknown (:py:class:`QgsUnitTypes`.TemporalUnit.TemporalUnknownUnit), then :py:class:`QgsInterval` is used
-to determine the duration of the frame. This uses average durations for months and years.
+If the interval original duration is fractional or interval original
+unit is unknown
+(:py:class:`QgsUnitTypes`.TemporalUnit.TemporalUnknownUnit), then
+:py:class:`QgsInterval` is used to determine the duration of the frame.
+This uses average durations for months and years.
 
-Otherwise, we use QDateTime to advance by the exact duration of the current
-month or year.
-So a time step of 1.5 months will result in a duration of 45
-days, but a time step of 1 month will result in a duration that depends upon
-the number of days in the current month.
+Otherwise, we use QDateTime to advance by the exact duration of the
+current month or year. So a time step of 1.5 months will result in a
+duration of 45 days, but a time step of 1 month will result in a
+duration that depends upon the number of days in the current month.
 
 :param start: time of the animation
 :param frame: number
@@ -108,16 +113,20 @@ the number of days in the current month.
 
     static QList< QDateTime > calculateDateTimesUsingDuration( const QDateTime &start, const QDateTime &end, const QString &duration, bool &ok /Out/, bool &maxValuesExceeded /Out/, int maxValues = -1 );
 %Docstring
-Calculates a complete list of datetimes between ``start`` and ``end``, using the specified ISO8601 ``duration`` string (eg "PT12H").
+Calculates a complete list of datetimes between ``start`` and ``end``,
+using the specified ISO8601 ``duration`` string (eg "PT12H").
 
 :param start: start date time
 :param end: end date time
 :param duration: ISO8601 duration string
-:param maxValues: maximum number of values to return, or -1 to return all values
+:param maxValues: maximum number of values to return, or -1 to return
+                  all values
 
 :return: - calculated list of date times
-         - ok: ``True`` if ``duration`` was successfully parsed and date times could be calculated
-         - maxValuesExceeded: ``True`` if the maximum number of values to return was exceeded
+         - ok: ``True`` if ``duration`` was successfully parsed and date
+           times could be calculated
+         - maxValuesExceeded: ``True`` if the maximum number of values
+           to return was exceeded
 
 .. versionadded:: 3.20
 %End
@@ -125,14 +134,19 @@ Calculates a complete list of datetimes between ``start`` and ``end``, using the
 
     static QList< QDateTime > calculateDateTimesFromISO8601( const QString &string, bool &ok /Out/, bool &maxValuesExceeded /Out/, int maxValues = -1 );
 %Docstring
-Calculates a complete list of datetimes from a ISO8601 ``string`` containing a duration (eg "2021-03-23T00:00:00Z/2021-03-24T12:00:00Z/PT12H").
+Calculates a complete list of datetimes from a ISO8601 ``string``
+containing a duration (eg
+"2021-03-23T00:00:00Z/2021-03-24T12:00:00Z/PT12H").
 
 :param string: ISO8601 compatible string
-:param maxValues: maximum number of values to return, or -1 to return all values
+:param maxValues: maximum number of values to return, or -1 to return
+                  all values
 
 :return: - calculated list of date times
-         - ok: ``True`` if ``string`` was successfully parsed and date times could be calculated
-         - maxValuesExceeded: ``True`` if the maximum number of values to return was exceeded
+         - ok: ``True`` if ``string`` was successfully parsed and date
+           times could be calculated
+         - maxValuesExceeded: ``True`` if the maximum number of values
+           to return was exceeded
 
 .. versionadded:: 3.20
 %End

@@ -14,7 +14,8 @@
 class QgsPoint3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
+3D symbol that draws point geometries as 3D objects using one of the
+predefined shapes.
 
 .. warning::
 
@@ -28,7 +29,8 @@ class QgsPoint3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
   public:
     QgsPoint3DSymbol();
 %Docstring
-Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSymbol
+Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the
+billboardSymbol
 %End
 
     QgsPoint3DSymbol( const QgsPoint3DSymbol &other );
@@ -57,11 +59,13 @@ Caller takes ownership of the returned symbol.
 
     Qgis::AltitudeClamping altitudeClamping() const;
 %Docstring
-Returns method that determines altitude (whether to clamp to feature to terrain)
+Returns method that determines altitude (whether to clamp to feature to
+terrain)
 %End
     void setAltitudeClamping( Qgis::AltitudeClamping altClamping );
 %Docstring
-Sets method that determines altitude (whether to clamp to feature to terrain)
+Sets method that determines altitude (whether to clamp to feature to
+terrain)
 %End
 
     QgsAbstractMaterialSettings *materialSettings() const;
@@ -98,9 +102,9 @@ Sets 3D shape for points
 %Docstring
 Returns a key-value dictionary of point shape properties.
 
-In most cases callers should use :py:func:`~QgsPoint3DSymbol.shapeProperty` instead, to
-correctly handle default values when a property has not been
-explicitly set.
+In most cases callers should use
+:py:func:`~QgsPoint3DSymbol.shapeProperty` instead, to correctly handle
+default values when a property has not been explicitly set.
 
 .. seealso:: :py:func:`setShapeProperties` for a description of available properties.
 
@@ -111,8 +115,9 @@ explicitly set.
 %Docstring
 Returns the value for a specific shape ``property``.
 
-This method accounts for default property values for the symbol's :py:func:`~QgsPoint3DSymbol.shape`,
-used when the property has not been explicitly set.
+This method accounts for default property values for the symbol's
+:py:func:`~QgsPoint3DSymbol.shape`, used when the property has not been
+explicitly set.
 
 .. seealso:: :py:func:`setShapeProperties` for a description of available properties.
 
@@ -123,7 +128,8 @@ used when the property has not been explicitly set.
 %Docstring
 Sets a key-value dictionary of point shape ``properties``.
 
-The available properties depend on the point :py:func:`~QgsPoint3DSymbol.shape`.
+The available properties depend on the point
+:py:func:`~QgsPoint3DSymbol.shape`.
 
 Cylinders (:py:class:`Qgis`.Point3DShape.Cylinder)
 --------------------------------------------------------------------

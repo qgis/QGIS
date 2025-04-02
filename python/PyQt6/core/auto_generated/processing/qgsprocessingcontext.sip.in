@@ -15,10 +15,11 @@
 class QgsProcessingContext
 {
 %Docstring(signature="appended")
-Contains information about the context in which a processing algorithm is executed.
+Contains information about the context in which a processing algorithm
+is executed.
 
-Contextual information includes settings such as the associated project, and
-expression context.
+Contextual information includes settings such as the associated project,
+and expression context.
 %End
 
 %TypeHeaderCode
@@ -70,8 +71,12 @@ Returns the project in which the algorithm is being executed.
 %Docstring
 Sets the ``project`` in which the algorithm will be executed.
 
-This also automatically sets the :py:func:`~QgsProcessingContext.transformContext`, :py:func:`~QgsProcessingContext.ellipsoid`, :py:func:`~QgsProcessingContext.distanceUnit` and
-:py:func:`~QgsProcessingContext.areaUnit` to match the project's settings.
+This also automatically sets the
+:py:func:`~QgsProcessingContext.transformContext`,
+:py:func:`~QgsProcessingContext.ellipsoid`,
+:py:func:`~QgsProcessingContext.distanceUnit` and
+:py:func:`~QgsProcessingContext.areaUnit` to match the project's
+settings.
 
 .. seealso:: :py:func:`project`
 %End
@@ -98,8 +103,8 @@ Returns the coordinate transform context.
 %Docstring
 Sets the coordinate transform ``context``.
 
-Note that setting a project for the context will automatically set the coordinate transform
-context.
+Note that setting a project for the context will automatically set the
+coordinate transform context.
 
 .. seealso:: :py:func:`transformContext`
 %End
@@ -115,9 +120,11 @@ Returns the ellipsoid to use for distance and area calculations.
 
     void setEllipsoid( const QString &ellipsoid ) /HoldGIL/;
 %Docstring
-Sets a specified ``ellipsoid`` to use for distance and area calculations.
+Sets a specified ``ellipsoid`` to use for distance and area
+calculations.
 
-If not explicitly set, the ellipsoid will default to the :py:func:`~QgsProcessingContext.project`'s ellipsoid setting.
+If not explicitly set, the ellipsoid will default to the
+:py:func:`~QgsProcessingContext.project`'s ellipsoid setting.
 
 .. seealso:: :py:func:`ellipsoid`
 
@@ -139,7 +146,8 @@ Returns the distance unit to use for distance calculations.
 %Docstring
 Sets the ``unit`` to use for distance calculations.
 
-If not explicitly set, the unit will default to the :py:func:`~QgsProcessingContext.project`'s distance unit setting.
+If not explicitly set, the unit will default to the
+:py:func:`~QgsProcessingContext.project`'s distance unit setting.
 
 .. seealso:: :py:func:`distanceUnit`
 
@@ -163,7 +171,8 @@ Returns the area unit to use for area calculations.
 %Docstring
 Sets the ``unit`` to use for area calculations.
 
-If not explicitly set, the unit will default to the :py:func:`~QgsProcessingContext.project`'s area unit setting.
+If not explicitly set, the unit will default to the
+:py:func:`~QgsProcessingContext.project`'s area unit setting.
 
 .. seealso:: :py:func:`areaUnit`
 
@@ -192,8 +201,8 @@ Sets the ``current`` time range to use for temporal operations.
 
     QgsMapLayerStore *temporaryLayerStore() /HoldGIL/;
 %Docstring
-Returns a reference to the layer store used for storing temporary layers during
-algorithm execution.
+Returns a reference to the layer store used for storing temporary layers
+during algorithm execution.
 %End
 
     class LayerDetails
@@ -237,7 +246,8 @@ Layer post-processor. May be ``None`` if no post-processing is required.
 
         void setPostProcessor( QgsProcessingLayerPostProcessorInterface *processor /Transfer/ );
 %Docstring
-Sets the layer post-processor. May be ``None`` if no post-processing is required.
+Sets the layer post-processor. May be ``None`` if no post-processing is
+required.
 
 Ownership of ``processor`` is transferred.
 
@@ -248,7 +258,8 @@ Ownership of ``processor`` is transferred.
 
         void setOutputLayerName( QgsMapLayer *layer ) const;
 %Docstring
-Sets a ``layer`` name to match this output, respecting any local user settings which affect this name.
+Sets a ``layer`` name to match this output, respecting any local user
+settings which affect this name.
 
 .. versionadded:: 3.10.1
 %End
@@ -259,7 +270,8 @@ Sets a ``layer`` name to match this output, respecting any local user settings w
 
     QMap< QString, QgsProcessingContext::LayerDetails > layersToLoadOnCompletion() const /HoldGIL/;
 %Docstring
-Returns a map of layers (by ID or datasource) to LayerDetails, to load into the canvas upon completion of the algorithm or model.
+Returns a map of layers (by ID or datasource) to LayerDetails, to load
+into the canvas upon completion of the algorithm or model.
 
 .. seealso:: :py:func:`setLayersToLoadOnCompletion`
 
@@ -272,8 +284,9 @@ Returns a map of layers (by ID or datasource) to LayerDetails, to load into the 
 
     bool willLoadLayerOnCompletion( const QString &layer ) const /HoldGIL/;
 %Docstring
-Returns ``True`` if the given ``layer`` (by ID or datasource) will be loaded into the current project
-upon completion of the algorithm or model.
+Returns ``True`` if the given ``layer`` (by ID or datasource) will be
+loaded into the current project upon completion of the algorithm or
+model.
 
 .. seealso:: :py:func:`layersToLoadOnCompletion`
 
@@ -288,7 +301,8 @@ upon completion of the algorithm or model.
 
     void setLayersToLoadOnCompletion( const QMap< QString, QgsProcessingContext::LayerDetails > &layers ) /HoldGIL/;
 %Docstring
-Sets the map of ``layers`` (by ID or datasource) to LayerDetails, to load into the canvas upon completion of the algorithm or model.
+Sets the map of ``layers`` (by ID or datasource) to LayerDetails, to
+load into the canvas upon completion of the algorithm or model.
 
 .. seealso:: :py:func:`addLayerToLoadOnCompletion`
 
@@ -301,8 +315,9 @@ Sets the map of ``layers`` (by ID or datasource) to LayerDetails, to load into t
 
     void addLayerToLoadOnCompletion( const QString &layer, const QgsProcessingContext::LayerDetails &details ) /HoldGIL/;
 %Docstring
-Adds a ``layer`` to load (by ID or datasource) into the canvas upon completion of the algorithm or model.
-The ``details`` parameter dictates the LayerDetails.
+Adds a ``layer`` to load (by ID or datasource) into the canvas upon
+completion of the algorithm or model. The ``details`` parameter dictates
+the LayerDetails.
 
 .. seealso:: :py:func:`setLayersToLoadOnCompletion`
 
@@ -315,8 +330,8 @@ The ``details`` parameter dictates the LayerDetails.
 
     QgsProcessingContext::LayerDetails &layerToLoadOnCompletionDetails( const QString &layer ) /HoldGIL/;
 %Docstring
-Returns a reference to the details for a given ``layer`` which is loaded on completion of the
-algorithm or model.
+Returns a reference to the details for a given ``layer`` which is loaded
+on completion of the algorithm or model.
 
 .. warning::
 
@@ -336,7 +351,8 @@ algorithm or model.
 
     Qgis::InvalidGeometryCheck invalidGeometryCheck() const /HoldGIL/;
 %Docstring
-Returns the behavior used for checking invalid geometries in input layers.
+Returns the behavior used for checking invalid geometries in input
+layers.
 
 .. seealso:: :py:func:`setInvalidGeometryCheck`
 %End
@@ -344,17 +360,20 @@ Returns the behavior used for checking invalid geometries in input layers.
     void setInvalidGeometryCheck( Qgis::InvalidGeometryCheck check );
 %Docstring
 Sets the behavior used for checking invalid geometries in input layers.
-Settings this to anything but :py:class:`QgsFeatureRequest`.GeometryNoCheck will also
-reset the :py:func:`~QgsProcessingContext.invalidGeometryCallback` to a default implementation.
+Settings this to anything but
+:py:class:`QgsFeatureRequest`.GeometryNoCheck will also reset the
+:py:func:`~QgsProcessingContext.invalidGeometryCallback` to a default
+implementation.
 
 .. seealso:: :py:func:`invalidGeometryCheck`
 %End
 
     void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
 %Docstring
-Sets a callback function to use when encountering an invalid geometry and
-:py:func:`~QgsProcessingContext.invalidGeometryCheck` is set to GeometryAbortOnInvalid. This function will be
-called using the feature with invalid geometry as a parameter.
+Sets a callback function to use when encountering an invalid geometry
+and :py:func:`~QgsProcessingContext.invalidGeometryCheck` is set to
+GeometryAbortOnInvalid. This function will be called using the feature
+with invalid geometry as a parameter.
 
 .. seealso:: :py:func:`invalidGeometryCallback`
 %End
@@ -375,9 +394,9 @@ called using the feature with invalid geometry as a parameter.
 
     void setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
 %Docstring
-Sets a callback function to use when encountering a transform error when iterating
-features. This function will be
-called using the feature which encountered the transform error as a parameter.
+Sets a callback function to use when encountering a transform error when
+iterating features. This function will be called using the feature which
+encountered the transform error as a parameter.
 
 .. seealso:: :py:func:`transformErrorCallback`
 %End
@@ -418,11 +437,12 @@ Returns the associated feedback object.
 
     void setFeedback( QgsProcessingFeedback *feedback ) /HoldGIL/;
 %Docstring
-Sets an associated ``feedback`` object. This allows context related functions
-to report feedback and errors to users and processing logs. While ideally this feedback
-object should outlive the context, only a weak pointer to ``feedback`` is stored
-and no errors will occur if feedback is deleted before the context.
-Ownership of ``feedback`` is not transferred.
+Sets an associated ``feedback`` object. This allows context related
+functions to report feedback and errors to users and processing logs.
+While ideally this feedback object should outlive the context, only a
+weak pointer to ``feedback`` is stored and no errors will occur if
+feedback is deleted before the context. Ownership of ``feedback`` is not
+transferred.
 
 .. seealso:: :py:func:`setFeedback`
 %End
@@ -436,27 +456,32 @@ Returns the thread in which the context lives.
 
     void pushToThread( QThread *thread );
 %Docstring
-Pushes the thread affinity for the context (including all layers contained in the :py:func:`~QgsProcessingContext.temporaryLayerStore`) into
-another ``thread``. This method is only safe to call when the current thread matches the existing thread
-affinity for the context (see :py:func:`~QgsProcessingContext.thread`).
+Pushes the thread affinity for the context (including all layers
+contained in the :py:func:`~QgsProcessingContext.temporaryLayerStore`)
+into another ``thread``. This method is only safe to call when the
+current thread matches the existing thread affinity for the context (see
+:py:func:`~QgsProcessingContext.thread`).
 
 .. seealso:: :py:func:`thread`
 %End
 
     void takeResultsFrom( QgsProcessingContext &context );
 %Docstring
-Takes the results from another ``context`` and merges them with the results currently
-stored in this context. This includes settings like any layers loaded in the :py:func:`~QgsProcessingContext.temporaryLayerStore`
-and :py:func:`~QgsProcessingContext.layersToLoadOnCompletion`.
-This is only safe to call when both this context and the other ``context`` share the same
-:py:func:`~QgsProcessingContext.thread` affinity, and that thread is the current thread.
+Takes the results from another ``context`` and merges them with the
+results currently stored in this context. This includes settings like
+any layers loaded in the
+:py:func:`~QgsProcessingContext.temporaryLayerStore` and
+:py:func:`~QgsProcessingContext.layersToLoadOnCompletion`. This is only
+safe to call when both this context and the other ``context`` share the
+same :py:func:`~QgsProcessingContext.thread` affinity, and that thread
+is the current thread.
 %End
 
     QgsMapLayer *getMapLayer( const QString &identifier );
 %Docstring
 Returns a map layer from the context with a matching ``identifier``.
-This method considers layer IDs, names and sources when matching
-the ``identifier`` (see :py:func:`QgsProcessingUtils.mapLayerFromString()`
+This method considers layer IDs, names and sources when matching the
+``identifier`` (see :py:func:`QgsProcessingUtils.mapLayerFromString()`
 for details).
 
 Ownership is not transferred and remains with the context.
@@ -467,8 +492,8 @@ Ownership is not transferred and remains with the context.
     QgsMapLayer *takeResultLayer( const QString &id ) /TransferBack/;
 %Docstring
 Takes the result map layer with matching ``id`` from the context and
-transfers ownership of it back to the caller. This method can be used
-to remove temporary layers which are not required for further processing
+transfers ownership of it back to the caller. This method can be used to
+remove temporary layers which are not required for further processing
 from a context.
 
 .. seealso:: :py:func:`getMapLayer`
@@ -478,15 +503,19 @@ from a context.
 %Docstring
 Returns the preferred vector format to use for vector outputs.
 
-This method returns a file extension to use when creating vector outputs (e.g. "shp"). Generally,
-it is preferable to use the extension associated with a particular parameter, which can be retrieved through
-:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`. However, in some cases, a specific parameter
-may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
-and which creates multiple output layers in that folder). In this case, the format returned by this
-function should be used when creating these outputs.
+This method returns a file extension to use when creating vector outputs
+(e.g. "shp"). Generally, it is preferable to use the extension
+associated with a particular parameter, which can be retrieved through
+:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`.
+However, in some cases, a specific parameter may not be available to
+call this method on (e.g. for an algorithm which has only an output
+folder parameter and which creates multiple output layers in that
+folder). In this case, the format returned by this function should be
+used when creating these outputs.
 
-It is the algorithm's responsibility to check whether the returned format is acceptable for the algorithm,
-and to provide an appropriate fallback when the returned format is not usable.
+It is the algorithm's responsibility to check whether the returned
+format is acceptable for the algorithm, and to provide an appropriate
+fallback when the returned format is not usable.
 
 .. seealso:: :py:func:`setPreferredVectorFormat`
 
@@ -499,12 +528,15 @@ and to provide an appropriate fallback when the returned format is not usable.
 %Docstring
 Sets the preferred vector ``format`` to use for vector outputs.
 
-This method sets a file extension to use when creating vector outputs (e.g. "shp"). Generally,
-it is preferable to use the extension associated with a particular parameter, which can be retrieved through
-:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`. However, in some cases, a specific parameter
-may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
-and which creates multiple output layers in that folder). In this case, the format set by this
-function will be used when creating these outputs.
+This method sets a file extension to use when creating vector outputs
+(e.g. "shp"). Generally, it is preferable to use the extension
+associated with a particular parameter, which can be retrieved through
+:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`.
+However, in some cases, a specific parameter may not be available to
+call this method on (e.g. for an algorithm which has only an output
+folder parameter and which creates multiple output layers in that
+folder). In this case, the format set by this function will be used when
+creating these outputs.
 
 .. seealso:: :py:func:`preferredVectorFormat`
 
@@ -517,15 +549,19 @@ function will be used when creating these outputs.
 %Docstring
 Returns the preferred raster format to use for raster outputs.
 
-This method returns a file extension to use when creating raster outputs (e.g. "tif"). Generally,
-it is preferable to use the extension associated with a particular parameter, which can be retrieved through
-:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`. However, in some cases, a specific parameter
-may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
-and which creates multiple output layers in that folder). In this case, the format returned by this
-function should be used when creating these outputs.
+This method returns a file extension to use when creating raster outputs
+(e.g. "tif"). Generally, it is preferable to use the extension
+associated with a particular parameter, which can be retrieved through
+:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`.
+However, in some cases, a specific parameter may not be available to
+call this method on (e.g. for an algorithm which has only an output
+folder parameter and which creates multiple output layers in that
+folder). In this case, the format returned by this function should be
+used when creating these outputs.
 
-It is the algorithm's responsibility to check whether the returned format is acceptable for the algorithm,
-and to provide an appropriate fallback when the returned format is not usable.
+It is the algorithm's responsibility to check whether the returned
+format is acceptable for the algorithm, and to provide an appropriate
+fallback when the returned format is not usable.
 
 .. seealso:: :py:func:`setPreferredRasterFormat`
 
@@ -538,12 +574,15 @@ and to provide an appropriate fallback when the returned format is not usable.
 %Docstring
 Sets the preferred raster ``format`` to use for raster outputs.
 
-This method sets a file extension to use when creating raster outputs (e.g. "tif"). Generally,
-it is preferable to use the extension associated with a particular parameter, which can be retrieved through
-:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`. However, in some cases, a specific parameter
-may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
-and which creates multiple output layers in that folder). In this case, the format set by this
-function will be used when creating these outputs.
+This method sets a file extension to use when creating raster outputs
+(e.g. "tif"). Generally, it is preferable to use the extension
+associated with a particular parameter, which can be retrieved through
+:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`.
+However, in some cases, a specific parameter may not be available to
+call this method on (e.g. for an algorithm which has only an output
+folder parameter and which creates multiple output layers in that
+folder). In this case, the format set by this function will be used when
+creating these outputs.
 
 .. seealso:: :py:func:`preferredRasterFormat`
 
@@ -554,7 +593,8 @@ function will be used when creating these outputs.
 
     Qgis::ProcessingLogLevel logLevel() const /HoldGIL/;
 %Docstring
-Returns the logging level for algorithms to use when pushing feedback messages to users.
+Returns the logging level for algorithms to use when pushing feedback
+messages to users.
 
 .. seealso:: :py:func:`setLogLevel`
 
@@ -563,7 +603,8 @@ Returns the logging level for algorithms to use when pushing feedback messages t
 
     void setLogLevel( Qgis::ProcessingLogLevel level ) /HoldGIL/;
 %Docstring
-Sets the logging ``level`` for algorithms to use when pushing feedback messages to users.
+Sets the logging ``level`` for algorithms to use when pushing feedback
+messages to users.
 
 .. seealso:: :py:func:`logLevel`
 
@@ -574,8 +615,9 @@ Sets the logging ``level`` for algorithms to use when pushing feedback messages 
 %Docstring
 Returns the (optional) temporary folder to use when running algorithms.
 
-If set, this overrides the standard global Processing temporary folder and should be used
-for all temporary files created during algorithm execution.
+If set, this overrides the standard global Processing temporary folder
+and should be used for all temporary files created during algorithm
+execution.
 
 .. seealso:: :py:func:`setTemporaryFolder`
 
@@ -586,8 +628,9 @@ for all temporary files created during algorithm execution.
 %Docstring
 Sets the (optional) temporary ``folder`` to use when running algorithms.
 
-If set, this overrides the standard global Processing temporary folder and should be used
-for all temporary files created during algorithm execution.
+If set, this overrides the standard global Processing temporary folder
+and should be used for all temporary files created during algorithm
+execution.
 
 .. seealso:: :py:func:`temporaryFolder`
 
@@ -612,11 +655,12 @@ Returns the (optional) number of threads to use when running algorithms.
 
     void setMaximumThreads( int threads ) /HoldGIL/;
 %Docstring
-Sets the (optional) number of ``threads`` to use when running algorithms.
+Sets the (optional) number of ``threads`` to use when running
+algorithms.
 
-If set, this overrides the standard global Processing number of threads setting.
-Note that if algorithm implementation does not support multhreaded execution, this
-setting will be ignored.
+If set, this overrides the standard global Processing number of threads
+setting. Note that if algorithm implementation does not support
+multhreaded execution, this setting will be ignored.
 
 .. warning::
 
@@ -646,7 +690,8 @@ Exports the context's settings to a variant map.
 
     QStringList asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlags flags = QgsProcessingContext::ProcessArgumentFlags() ) const;
 %Docstring
-Returns list of the equivalent qgis_process arguments representing the settings from the context.
+Returns list of the equivalent qgis_process arguments representing the
+settings from the context.
 
 .. versionadded:: 3.24
 %End
@@ -656,7 +701,8 @@ Returns list of the equivalent qgis_process arguments representing the settings 
 
     QgsProcessingModelResult modelResult() const;
 %Docstring
-Returns the model results, populated when the context is used to run a model algorithm.
+Returns the model results, populated when the context is used to run a
+model algorithm.
 
 .. versionadded:: 3.38
 %End
@@ -664,7 +710,8 @@ Returns the model results, populated when the context is used to run a model alg
 
     void clearModelResult();
 %Docstring
-Clears model results previously populated when the context was used to run a model algorithm.
+Clears model results previously populated when the context was used to
+run a model algorithm.
 
 .. versionadded:: 3.42
 %End
@@ -682,13 +729,16 @@ QFlags<QgsProcessingContext::ProcessArgumentFlag> operator|(QgsProcessingContext
 class QgsProcessingLayerPostProcessorInterface
 {
 %Docstring(signature="appended")
-An interface for layer post-processing handlers for execution following a processing algorithm operation.
+An interface for layer post-processing handlers for execution following
+a processing algorithm operation.
 
-Note that post-processing of a layer will ONLY occur if that layer is set to be loaded into a QGIS project
-on algorithm completion. See :py:func:`QgsProcessingContext.layersToLoadOnCompletion()`.
+Note that post-processing of a layer will ONLY occur if that layer is
+set to be loaded into a QGIS project on algorithm completion. See
+:py:func:`QgsProcessingContext.layersToLoadOnCompletion()`.
 
-Algorithms that wish to set post-processing steps for generated layers should implement this interface
-in a separate class (NOT the algorithm class itself!).
+Algorithms that wish to set post-processing steps for generated layers
+should implement this interface in a separate class (NOT the algorithm
+class itself!).
 
 .. versionadded:: 3.2
 %End
@@ -702,18 +752,22 @@ in a separate class (NOT the algorithm class itself!).
 
     virtual void postProcessLayer( QgsMapLayer *layer, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
 %Docstring
-Post-processes the specified ``layer``, following successful execution of a processing algorithm. This method
-always runs in the main thread and can be used to setup renderers, editor widgets, metadata, etc for
+Post-processes the specified ``layer``, following successful execution
+of a processing algorithm. This method always runs in the main thread
+and can be used to setup renderers, editor widgets, metadata, etc for
 the given layer.
 
-Post-processing classes can utilize settings from the algorithm's ``context`` and report logging messages
-or errors via the given ``feedback`` object.
+Post-processing classes can utilize settings from the algorithm's
+``context`` and report logging messages or errors via the given
+``feedback`` object.
 
-In the case of an algorithm run as part of a larger model, the post-processing occurs following the completed
-execution of the entire model.
+In the case of an algorithm run as part of a larger model, the
+post-processing occurs following the completed execution of the entire
+model.
 
-Note that post-processing of a layer will ONLY occur if that layer is set to be loaded into a QGIS project
-on algorithm completion. See :py:func:`QgsProcessingContext.layersToLoadOnCompletion()`.
+Note that post-processing of a layer will ONLY occur if that layer is
+set to be loaded into a QGIS project on algorithm completion. See
+:py:func:`QgsProcessingContext.layersToLoadOnCompletion()`.
 %End
 
 };

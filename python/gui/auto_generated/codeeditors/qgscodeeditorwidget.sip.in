@@ -14,13 +14,15 @@
 class QgsCodeEditorWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A widget which wraps a :py:class:`QgsCodeEditor` in additional functionality.
+A widget which wraps a :py:class:`QgsCodeEditor` in additional
+functionality.
 
-This widget wraps an existing :py:class:`QgsCodeEditor` object in a widget which provides
-additional standard functionality, such as search/replace tools. The caller
-must create an unparented :py:class:`QgsCodeEditor` object (or a subclass of :py:class:`QgsCodeEditor`)
-first, and then construct a :py:class:`QgsCodeEditorWidget` passing this object to the
-constructor.
+This widget wraps an existing :py:class:`QgsCodeEditor` object in a
+widget which provides additional standard functionality, such as
+search/replace tools. The caller must create an unparented
+:py:class:`QgsCodeEditor` object (or a subclass of
+:py:class:`QgsCodeEditor`) first, and then construct a
+:py:class:`QgsCodeEditorWidget` passing this object to the constructor.
 
 .. note::
 
@@ -35,12 +37,13 @@ constructor.
   public:
     QgsCodeEditorWidget( QgsCodeEditor *editor /Transfer/, QgsMessageBar *messageBar = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsCodeEditorWidget, wrapping the specified ``editor`` widget.
+Constructor for QgsCodeEditorWidget, wrapping the specified ``editor``
+widget.
 
 Ownership of ``editor`` will be transferred to this widget.
 
-If an explicit ``messageBar`` is specified then it will be used to provide
-feedback, otherwise an integrated message bar will be used.
+If an explicit ``messageBar`` is specified then it will be used to
+provide feedback, otherwise an integrated message bar will be used.
 %End
     ~QgsCodeEditorWidget();
 
@@ -63,21 +66,24 @@ Returns ``True`` if the search bar is visible.
 
     QgsMessageBar *messageBar();
 %Docstring
-Returns the message bar associated with the widget, to use for user feedback.
+Returns the message bar associated with the widget, to use for user
+feedback.
 %End
 
     QgsScrollBarHighlightController *scrollbarHighlightController();
 %Docstring
-Returns the scrollbar highlight controller, which can be used to add highlights
-in the code editor scrollbar.
+Returns the scrollbar highlight controller, which can be used to add
+highlights in the code editor scrollbar.
 %End
 
     void addWarning( int lineNumber, const QString &warning );
 %Docstring
-Adds a ``warning`` message and indicator to the specified a ``lineNumber``.
+Adds a ``warning`` message and indicator to the specified a
+``lineNumber``.
 
-This method calls :py:func:`QgsCodeEditor.addWarning()`, but also automatically adds
-highlights to the widget scrollbars locating the warning location.
+This method calls :py:func:`QgsCodeEditor.addWarning()`, but also
+automatically adds highlights to the widget scrollbars locating the
+warning location.
 
 .. seealso:: :py:func:`clearWarnings`
 %End
@@ -86,8 +92,8 @@ highlights to the widget scrollbars locating the warning location.
 %Docstring
 Clears all warning messages from the editor.
 
-This method calls :py:func:`QgsCodeEditor.clearWarnings()`, but also removes
-highlights from the widget scrollbars at the warning locations.
+This method calls :py:func:`QgsCodeEditor.clearWarnings()`, but also
+removes highlights from the widget scrollbars at the warning locations.
 
 .. seealso:: :py:func:`addWarning`
 %End
@@ -105,7 +111,8 @@ Returns the widget's associated file path.
 %Docstring
 Saves the code editor content into the file ``path``.
 
-:return: ``False`` if the file path has not previously been set, or if writing the file fails.
+:return: ``False`` if the file path has not previously been set, or if
+         writing the file fails.
 
 .. note::
 
@@ -156,16 +163,18 @@ Sets whether the replace bar is ``visible``.
 %Docstring
 Triggers a find operation, using the default behavior.
 
-This will automatically open the search bar and start a find operation using
-the default behavior, e.g. searching for any selected text in the code editor.
+This will automatically open the search bar and start a find operation
+using the default behavior, e.g. searching for any selected text in the
+code editor.
 %End
 
     bool loadFile( const QString &path );
 %Docstring
-Loads the file at the specified ``path`` into the widget, replacing the code editor's
-content with that from the file.
+Loads the file at the specified ``path`` into the widget, replacing the
+code editor's content with that from the file.
 
-This automatically sets the widget's :py:func:`~QgsCodeEditorWidget.filePath`
+This automatically sets the widget's
+:py:func:`~QgsCodeEditorWidget.filePath`
 
 Returns ``True`` if the file was loaded successfully.
 %End
@@ -185,13 +194,15 @@ Sets the widget's associated file ``path``.
 %Docstring
 Attempts to opens the script from the editor in an external text editor.
 
-This requires that the widget has an associated :py:func:`~QgsCodeEditorWidget.filePath` set.
+This requires that the widget has an associated
+:py:func:`~QgsCodeEditorWidget.filePath` set.
 
-Optionally a target ``line`` and ``column`` number can be specified to open the editor
-at the corresponding location. (Not all external editors support this.) Line/column
-numbers of -1 indicate that the current cursor position should be used. A ``line``
-number of 0 corresponds to the first line, and a column number of 0 corresponds to
-the first column.
+Optionally a target ``line`` and ``column`` number can be specified to
+open the editor at the corresponding location. (Not all external editors
+support this.) Line/column numbers of -1 indicate that the current
+cursor position should be used. A ``line`` number of 0 corresponds to
+the first line, and a column number of 0 corresponds to the first
+column.
 
 :return: ``True`` if the file was opened successfully.
 %End
@@ -200,9 +211,11 @@ the first column.
 %Docstring
 Shares the contents of the code editor on GitHub Gist.
 
-Requires that the user has configured an API token with appropriate permission in advance.
+Requires that the user has configured an API token with appropriate
+permission in advance.
 
-:return: ``False`` if the user has not configured a GitHub personal access token.
+:return: ``False`` if the user has not configured a GitHub personal
+         access token.
 %End
 
   signals:
@@ -223,8 +236,8 @@ Emitted when the widget's associated file path is changed.
 
     void loadedExternalChanges();
 %Docstring
-Emitted when the widget loads in text from the associated file to bring in
-changes made externally to the file.
+Emitted when the widget loads in text from the associated file to bring
+in changes made externally to the file.
 %End
 
 };

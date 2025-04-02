@@ -11,7 +11,6 @@
 class QgsLabeling
 {
 %Docstring(signature="appended")
-
 Contains constants and enums relating to labeling.
 
 .. versionadded:: 3.12

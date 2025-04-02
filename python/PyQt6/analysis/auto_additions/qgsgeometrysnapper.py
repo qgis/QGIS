@@ -7,7 +7,7 @@ QgsGeometrySnapper.EndPointPreferNodes = QgsGeometrySnapper.SnapMode.EndPointPre
 QgsGeometrySnapper.EndPointPreferClosest = QgsGeometrySnapper.SnapMode.EndPointPreferClosest
 QgsGeometrySnapper.EndPointToEndPoint = QgsGeometrySnapper.SnapMode.EndPointToEndPoint
 try:
-    QgsGeometrySnapper.__attribute_docs__ = {'featureSnapped': 'Emitted each time a feature has been processed when calling :py:func:`~QgsGeometrySnapper.snapFeatures`\n'}
+    QgsGeometrySnapper.__attribute_docs__ = {'featureSnapped': 'Emitted each time a feature has been processed when calling\n:py:func:`~QgsGeometrySnapper.snapFeatures`\n'}
     QgsGeometrySnapper.__group__ = ['vector']
 except (NameError, AttributeError):
     pass

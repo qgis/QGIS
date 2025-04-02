@@ -13,8 +13,8 @@
 class QgsScaleCalculator
 {
 %Docstring(signature="appended")
-Calculates scale for a given combination of canvas size, map extent,
-and monitor dpi.
+Calculates scale for a given combination of canvas size, map extent, and
+monitor dpi.
 %End
 
 %TypeHeaderCode
@@ -33,7 +33,8 @@ Constructor
 
     void setDpi( double dpi );
 %Docstring
-Sets the ``dpi`` (dots per inch) for the output resolution, to be used in scale calculations.
+Sets the ``dpi`` (dots per inch) for the output resolution, to be used
+in scale calculations.
 
 .. seealso:: :py:func:`dpi`
 %End
@@ -63,17 +64,22 @@ Returns current map units.
 %Docstring
 Calculate the scale denominator.
 
-:param mapExtent: :py:class:`QgsRectangle` containing the current map extent. Units are specified by :py:func:`~QgsScaleCalculator.mapUnits`.
+:param mapExtent: :py:class:`QgsRectangle` containing the current map
+                  extent. Units are specified by
+                  :py:func:`~QgsScaleCalculator.mapUnits`.
 :param canvasWidth: Width of the map canvas in pixel (physical) units
 
-:return: scale denominator of current map view, e.g. 1000.0 for a 1:1000 map.
+:return: scale denominator of current map view, e.g. 1000.0 for a 1:1000
+         map.
 %End
 
     QSizeF calculateImageSize( const QgsRectangle &mapExtent, double scale ) const;
 %Docstring
 Calculate the image size in pixel (physical) units.
 
-:param mapExtent: :py:class:`QgsRectangle` containing the current map extent. Units are specified by :py:func:`~QgsScaleCalculator.mapUnits`
+:param mapExtent: :py:class:`QgsRectangle` containing the current map
+                  extent. Units are specified by
+                  :py:func:`~QgsScaleCalculator.mapUnits`
 :param scale: Scale denominator, e.g. 1000.0 for a 1:1000 map
 
 :return: image size
@@ -87,7 +93,8 @@ Calculate the distance between two points in geographic coordinates.
 Used to calculate scale for map views with geographic (decimal degree)
 data.
 
-:param mapExtent: :py:class:`QgsRectangle` containing the current map extent
+:param mapExtent: :py:class:`QgsRectangle` containing the current map
+                  extent
 %End
 
 };

@@ -13,8 +13,8 @@
 class QgsGradientStopEditor : QWidget
 {
 %Docstring(signature="appended")
-An interactive editor for previewing a gradient color ramp and modifying the position of color
-stops along the gradient.
+An interactive editor for previewing a gradient color ramp and modifying
+the position of color stops along the gradient.
 %End
 
 %TypeHeaderCode
@@ -85,8 +85,9 @@ Sets the color for the current selected stop.
 
     void setSelectedStopOffset( double offset );
 %Docstring
-Sets the offset for the current selected stop. This slot has no effect if either the
-first or last stop is selected, as they cannot be repositioned.
+Sets the offset for the current selected stop. This slot has no effect
+if either the first or last stop is selected, as they cannot be
+repositioned.
 
 :param offset: new stop offset
 
