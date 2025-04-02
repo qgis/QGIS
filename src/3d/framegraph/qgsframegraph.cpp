@@ -772,6 +772,16 @@ void QgsFrameGraph::setDebugOverlayEnabled( bool enabled )
   forwardRenderView().setDebugOverlayEnabled( enabled );
 }
 
+void QgsFrameGraph::removeClipPlanes()
+{
+  forwardRenderView().removeClipPlanes();
+}
+
+void QgsFrameGraph::addClipPlanes( int nrClipPlanes )
+{
+  forwardRenderView().addClipPlanes( nrClipPlanes );
+}
+
 QgsForwardRenderView &QgsFrameGraph::forwardRenderView()
 {
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::FORWARD_RENDERVIEW].get();
