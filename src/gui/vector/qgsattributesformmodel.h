@@ -1,6 +1,22 @@
+/***************************************************************************
+    qgsattributesformmodel.h
+    ---------------------
+    begin                : March 2025
+    copyright            : (C) 2025 by Germán Carrillo
+    email                : german at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSATTRIBUTESFORMMODEL_H
 #define QGSATTRIBUTESFORMMODEL_H
 
+#include "qgsaddtaborgroup.h"
 #include "qgsattributeeditorelement.h"
 #include "qgsoptionalexpression.h"
 #include "qgsvectorlayer.h"
@@ -322,10 +338,8 @@ class AttributesFormTreeNode
 
     int childCount() const;
     //bool insertChildren(int position, int count, int columns);
-    //bool insertColumns(int position, int columns);
     AttributesFormTreeNode *parent() { return mParent; }
     //bool removeChildren(int position, int count);
-    //bool removeColumns(int position, int columns);
     int row() const;
     QVariant data( int role ) const;
     bool setData( int role, const QVariant &value );
@@ -335,13 +349,16 @@ class AttributesFormTreeNode
      */
     void addChildItem( std::unique_ptr< AttributesFormTreeNode > &&child );
 
+    void insertChildNode( int position, std::unique_ptr< AttributesFormTreeNode > &&node );
+
+    void deleteChildAtIndex( int index );
+
     /**
      * Deletes all child items from this item.
      */
     void deleteChildren();
 
     QgsAttributeFormTreeData::AttributeFormTreeItemType type() const { return mNodeType; }
-
     QString id() const { return mNodeId; }
     QString name() const { return mName; }
 
@@ -398,6 +415,12 @@ class QgsAttributesFormModel : public QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
+    // Drag and drop support
+    //Qt::DropActions supportedDropActions() const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    //bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
+
     //QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     //bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
@@ -435,7 +458,7 @@ class QgsAttributesAvailableWidgetsModel : public QgsAttributesFormModel
 
     //~QgsAttributesAvailableWidgetsModel() override;
 
-    // Header:
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     // Basic functionality:
@@ -447,6 +470,12 @@ class QgsAttributesAvailableWidgetsModel : public QgsAttributesFormModel
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+
+    // Drag and drop support
+    //Qt::DropActions supportedDropActions() const override;
+    //QStringList mimeTypes() const override;
+    //QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    //bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
     // Add data:
     //bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
@@ -477,7 +506,7 @@ class QgsAttributesFormLayoutModel : public QgsAttributesFormModel
 
     //~QgsAttributesFormLayoutModel() override;
 
-    // Header:
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     // Basic functionality:
@@ -490,21 +519,38 @@ class QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
-    // Add data:
+    // Add/remove data:
     //bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    //bool insertColumns( int column, int count, const QModelIndex &parent = QModelIndex() ) override;
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    bool removeRow( int row, const QModelIndex &parent = QModelIndex() );
 
-    // Remove data:
-    //bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    //bool removeColumns( int column, int count, const QModelIndex &parent = QModelIndex() ) override;
+    // Drag and drop support
+    Qt::DropActions supportedDropActions() const override;
+    //QStringList mimeTypes() const override;
+    //QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
     // Other methods
-    //QModelIndex getFieldModelIndex( const QString &fieldName ) const;
+    QList< QgsAddAttributeFormContainerDialog::ContainerPair > getListOfContainers() const;
+
+    /**
+     * Adds a new container to \a parent.
+     *
+     * If no \a parent is set then the container will be forced to be a tab widget.
+     */
+    void addContainer( QModelIndex &parent, const QString &title, int columnCount, Qgis::AttributeEditorContainerType type );
+
+    void insertNode( const QModelIndex &parent, int row, QString &nodeId, QgsAttributeFormTreeData::AttributeFormTreeItemType nodeType, QString &nodeName, QgsAttributeFormTreeData::DnDTreeItemData nodeData );
 
   public slots:
     void populate() override;
 
+  signals:
+    //! Informs that nodes were inserted (via drop) in the model.
+    void nodeDropped( QModelIndex &index );
+
   private:
+    QList< QgsAddAttributeFormContainerDialog::ContainerPair > getRecursiveListOfContainers( AttributesFormTreeNode *parent ) const;
     void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, AttributesFormTreeNode *parent );
     //AttributeFormLayoutTreeItem *getItem( const QModelIndex &index ) const;
 
@@ -512,6 +558,10 @@ class QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     //QgsProject *mProject;
     //std::unique_ptr< AttributeFormLayoutTreeItem > mRootItem;
 };
+
+
+QDataStream &operator<<( QDataStream &stream, const QgsAttributeFormTreeData::DnDTreeItemData &data );
+QDataStream &operator>>( QDataStream &stream, QgsAttributeFormTreeData::DnDTreeItemData &data );
 
 
 Q_DECLARE_METATYPE( QgsAttributeFormTreeData::RelationEditorConfiguration )

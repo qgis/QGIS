@@ -26,12 +26,11 @@
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
 
-class QTreeWidgetItem;
 class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * \brief Dialog to add a tab or group of attributes
+ * \brief Dialog to add a container for attribute widgets
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14
@@ -41,13 +40,13 @@ class GUI_EXPORT QgsAddAttributeFormContainerDialog : public QDialog, private Ui
     Q_OBJECT
 
   public:
-    typedef QPair<QString, QTreeWidgetItem *> ContainerPair;
+    typedef QPair<QString, QModelIndex> ContainerPair;
 
   public:
     //! constructor
-    QgsAddAttributeFormContainerDialog( QgsVectorLayer *lyr, const QList<ContainerPair> &existingContainerList, QTreeWidgetItem *currentTab = nullptr, QWidget *parent = nullptr );
+    QgsAddAttributeFormContainerDialog( QgsVectorLayer *layer, const QList<ContainerPair> &existingContainerList, QModelIndex &currentNodeIndex, QWidget *parent = nullptr );
 
-    //! Returns the name of the tab or group
+    //! Returns the name of the container
     QString name();
 
     /**
@@ -55,7 +54,7 @@ class GUI_EXPORT QgsAddAttributeFormContainerDialog : public QDialog, private Ui
      *
      * Will be NULLPTR when a new tab is created.
      */
-    QTreeWidgetItem *parentContainerItem();
+    QModelIndex parentContainerNode() const;
 
     //! Returns the column count
     int columnCount() const;

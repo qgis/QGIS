@@ -44,7 +44,7 @@ class GUI_EXPORT QgsAttributeFormContainerEdit : public QWidget, private Ui_QgsA
 
     /**
      * Sets up the container type comboBox
-     * @param isTopLevelContainer Whether the container is allowed to be a tab or not
+     * \param isTopLevelContainer Whether the container is allowed to be a tab or not
      *
      * \since QGIS 3.44
      */
