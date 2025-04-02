@@ -19,6 +19,8 @@ __author__ = "Andrea Giudiceandrea"
 __date__ = "June 2023"
 __copyright__ = "(C) 2023, Andrea Giudiceandrea"
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """Verify if we have the right parameters"""
@@ -26,6 +28,8 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     rules = alg.parameterAsString(parameters, "rules", context)
     column = alg.parameterAsString(parameters, "column", context)
     if (rules and column) or (not rules and not column):
-        return False, alg.tr("You need to set either a rules file or a column!")
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt", "You need to set either a rules file or a column!"
+        )
 
     return True, None
