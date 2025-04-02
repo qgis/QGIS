@@ -153,7 +153,7 @@ layer must be in edit mode.
    This method does not apply new vertices to the mesh layer but only stores the calculated transformation
    that can be applied later with :py:func:`QgsMeshEditor.advancedEdit()`
 
-:param layer:
+:param layer: 
 
 .. versionadded:: 3.44
 %End
@@ -169,14 +169,15 @@ this will create an undefined behavior
 
     void setZFromTerrain( bool enable );
 %Docstring
-Sets if Z values for vertices should be obtained from project terrain, instead of expression.
+Sets if Z values for vertices should be obtained from project terrain,
+instead of expression.
 
 .. note::
 
    If ``enable`` is True, the Z value of the vertex will be obtained from the terrain of the project.
    The optional parameter ``project`` is necessary for function calculate ( :py:func:`calculate` ).
 
-:param enable:
+:param enable: 
 
 .. versionadded:: 3.44
 %End
