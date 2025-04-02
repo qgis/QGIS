@@ -24,9 +24,10 @@ Base class for commands to undo/redo layout and layout object changes.
 
     QgsAbstractLayoutUndoCommand( const QString &text, int id = 0, QUndoCommand *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for :py:class:`QgsLayoutUndoCommand`.
-The ``id`` argument can be used to specify an id number for the source event - this is used to determine whether QUndoCommand
-command compression can apply to the command.
+Constructor for :py:class:`QgsLayoutUndoCommand`. The ``id`` argument
+can be used to specify an id number for the source event - this is used
+to determine whether QUndoCommand command compression can apply to the
+command.
 %End
 
     virtual void undo();
@@ -73,7 +74,8 @@ Returns the after state for the layout.
 
     virtual bool containsChange() const;
 %Docstring
-Returns ``True`` if both the before and after states are valid and different.
+Returns ``True`` if both the before and after states are valid and
+different.
 %End
 
   protected:
@@ -82,7 +84,8 @@ Returns ``True`` if both the before and after states are valid and different.
 %Docstring
 Saves the state of the object to the specified ``stateDoc``.
 
-Subclasses must implement this to handle encapsulating their current state into a DOM document.
+Subclasses must implement this to handle encapsulating their current
+state into a DOM document.
 
 .. seealso:: :py:func:`restoreState`
 %End
@@ -91,14 +94,16 @@ Subclasses must implement this to handle encapsulating their current state into 
 %Docstring
 Restores the state of the object from the specified ``stateDoc``.
 
-Subclasses must implement this to handle restoring their current state from the encapsulated state.
+Subclasses must implement this to handle restoring their current state
+from the encapsulated state.
 
 .. seealso:: :py:func:`saveState`
 %End
 
     void setAfterState( const QDomDocument &stateDoc );
 %Docstring
-Manually sets the after state for the command. Generally this should not be called directly.
+Manually sets the after state for the command. Generally this should not
+be called directly.
 %End
 
 
@@ -119,10 +124,12 @@ Interface for layout objects which support undo/redo commands.
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id = 0, QUndoCommand *parent = 0 ) = 0 /Factory/;
 %Docstring
-Creates a new layout undo command with the specified ``text`` and ``parent``.
+Creates a new layout undo command with the specified ``text`` and
+``parent``.
 
-The ``id`` argument can be used to specify an id number for the source event - this is used to determine whether QUndoCommand
-command compression can apply to the command.
+The ``id`` argument can be used to specify an id number for the source
+event - this is used to determine whether QUndoCommand command
+compression can apply to the command.
 %End
 };
 

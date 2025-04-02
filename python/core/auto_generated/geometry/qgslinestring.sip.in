@@ -31,9 +31,11 @@ Constructor for an empty linestring geometry.
 
     QgsLineString( SIP_PYOBJECT points /TypeHint="Sequence[Union[QgsPoint, QgsPointXY, Sequence[float]]]"/ ) /HoldGIL/ [( const QVector<double> &x, const QVector<double> &y, const QVector<double> &z = QVector<double>(), const QVector<double> &m = QVector<double>(), bool is25DType = false )];
 %Docstring
-Construct a linestring from a sequence of points (:py:class:`QgsPoint` objects, :py:class:`QgsPointXY` objects, or sequences of float values).
+Construct a linestring from a sequence of points (:py:class:`QgsPoint`
+objects, :py:class:`QgsPointXY` objects, or sequences of float values).
 
-The linestring Z and M type will be set based on the type of the first point in the sequence.
+The linestring Z and M type will be set based on the type of the first
+point in the sequence.
 
 .. versionadded:: 3.20
 %End
@@ -222,20 +224,20 @@ Construct a linestring from a single 2d line segment.
                    const QVector<double> &z = QVector<double>(),
                    const QVector<double> &m = QVector<double>(), bool is25DType = false ) /HoldGIL/;
 %Docstring
-Construct a linestring from arrays of coordinates. If the z or m
-arrays are non-empty then the resultant linestring will have
-z and m types accordingly.
-This constructor is more efficient then calling :py:func:`~QgsLineString.setPoints`
-or repeatedly calling :py:func:`~QgsLineString.addVertex`
+Construct a linestring from arrays of coordinates. If the z or m arrays
+are non-empty then the resultant linestring will have z and m types
+accordingly. This constructor is more efficient then calling
+:py:func:`~QgsLineString.setPoints` or repeatedly calling
+:py:func:`~QgsLineString.addVertex`
 
-If the ``z`` vector is filled, then the geometry type will either
-be a LineStringZ(M) or LineString25D depending on the ``is25DType``
-argument. If ``is25DType`` is ``True`` (and the ``m`` vector is unfilled) then
-the created Linestring will be a LineString25D type. Otherwise, the
+If the ``z`` vector is filled, then the geometry type will either be a
+LineStringZ(M) or LineString25D depending on the ``is25DType`` argument.
+If ``is25DType`` is ``True`` (and the ``m`` vector is unfilled) then the
+created Linestring will be a LineString25D type. Otherwise, the
 LineString will be LineStringZ (or LineStringZM) type.
 
-If the sizes of ``x`` and ``y`` are non-equal then the resultant linestring
-will be created using the minimum size of these arrays.
+If the sizes of ``x`` and ``y`` are non-equal then the resultant
+linestring will be created using the minimum size of these arrays.
 %End
 
     QgsLineString( const QgsPoint &p1, const QgsPoint &p2 ) /HoldGIL/;
@@ -247,12 +249,14 @@ Constructs a linestring with a single segment from ``p1`` to ``p2``.
 
     static std::unique_ptr< QgsLineString > fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 );
 %Docstring
-Returns a new linestring created by segmentizing the bezier curve between ``start`` and ``end``, with
-the specified control points.
+Returns a new linestring created by segmentizing the bezier curve
+between ``start`` and ``end``, with the specified control points.
 
-The ``segments`` parameter controls how many line segments will be present in the returned linestring.
+The ``segments`` parameter controls how many line segments will be
+present in the returned linestring.
 
-Any z or m values present in the input coordinates will be interpolated along with the x and y values.
+Any z or m values present in the input coordinates will be interpolated
+along with the x and y values.
 
 .. versionadded:: 3.10
 %End
@@ -277,8 +281,9 @@ Returns a new linestring from a QPolygonF ``polygon`` input.
 %Docstring
 Returns the point at the specified index.
 
-Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-corresponds to the last point in the line.
+Indexes can be less than 0, in which case they correspond to positions
+from the end of the line. E.g. an index of -1 corresponds to the last
+point in the line.
 
 :raises IndexError: if no point with the specified index exists.
 %End
@@ -306,8 +311,9 @@ corresponds to the last point in the line.
 %Docstring
 Returns the x-coordinate of the specified node in the line string.
 
-Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-corresponds to the last point in the line.
+Indexes can be less than 0, in which case they correspond to positions
+from the end of the line. E.g. an index of -1 corresponds to the last
+point in the line.
 
 :raises IndexError: if no point with the specified index exists.
 %End
@@ -333,8 +339,9 @@ corresponds to the last point in the line.
 %Docstring
 Returns the y-coordinate of the specified node in the line string.
 
-Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-corresponds to the last point in the line.
+Indexes can be less than 0, in which case they correspond to positions
+from the end of the line. E.g. an index of -1 corresponds to the last
+point in the line.
 
 :raises IndexError: if no point with the specified index exists.
 %End
@@ -369,10 +376,12 @@ corresponds to the last point in the line.
 %Docstring
 Returns the z-coordinate of the specified node in the line string.
 
-If the LineString does not have a z-dimension then ``NaN`` will be returned.
+If the LineString does not have a z-dimension then ``NaN`` will be
+returned.
 
-Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-corresponds to the last point in the line.
+Indexes can be less than 0, in which case they correspond to positions
+from the end of the line. E.g. an index of -1 corresponds to the last
+point in the line.
 
 :raises IndexError: if no point with the specified index exists.
 %End
@@ -398,10 +407,12 @@ corresponds to the last point in the line.
 %Docstring
 Returns the m-coordinate of the specified node in the line string.
 
-If the LineString does not have a m-dimension then ``NaN`` will be returned.
+If the LineString does not have a m-dimension then ``NaN`` will be
+returned.
 
-Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-corresponds to the last point in the line.
+Indexes can be less than 0, in which case they correspond to positions
+from the end of the line. E.g. an index of -1 corresponds to the last
+point in the line.
 
 :raises IndexError: if no point with the specified index exists.
 %End
@@ -424,11 +435,12 @@ corresponds to the last point in the line.
 
     void setXAt( int index, double x );
 %Docstring
-Sets the x-coordinate of the specified node in the line string.
-The corresponding node must already exist in line string.
+Sets the x-coordinate of the specified node in the line string. The
+corresponding node must already exist in line string.
 
-Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-corresponds to the last point in the line.
+Indexes can be less than 0, in which case they correspond to positions
+from the end of the line. E.g. an index of -1 corresponds to the last
+point in the line.
 
 :raises IndexError: if no point with the specified index exists.
 
@@ -453,11 +465,12 @@ corresponds to the last point in the line.
 
     void setYAt( int index, double y );
 %Docstring
-Sets the y-coordinate of the specified node in the line string.
-The corresponding node must already exist in line string.
+Sets the y-coordinate of the specified node in the line string. The
+corresponding node must already exist in line string.
 
-Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-corresponds to the last point in the line.
+Indexes can be less than 0, in which case they correspond to positions
+from the end of the line. E.g. an index of -1 corresponds to the last
+point in the line.
 
 :raises IndexError: if no point with the specified index exists.
 
@@ -482,11 +495,13 @@ corresponds to the last point in the line.
 
     void setZAt( int index, double z );
 %Docstring
-Sets the z-coordinate of the specified node in the line string.
-The corresponding node must already exist in line string and the line string must have z-dimension.
+Sets the z-coordinate of the specified node in the line string. The
+corresponding node must already exist in line string and the line string
+must have z-dimension.
 
-Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-corresponds to the last point in the line.
+Indexes can be less than 0, in which case they correspond to positions
+from the end of the line. E.g. an index of -1 corresponds to the last
+point in the line.
 
 :raises IndexError: if no point with the specified index exists.
 
@@ -511,11 +526,13 @@ corresponds to the last point in the line.
 
     void setMAt( int index, double m );
 %Docstring
-Sets the m-coordinate of the specified node in the line string.
-The corresponding node must already exist in line string and the line string must have m-dimension.
+Sets the m-coordinate of the specified node in the line string. The
+corresponding node must already exist in line string and the line string
+must have m-dimension.
 
-Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-corresponds to the last point in the line.
+Indexes can be less than 0, in which case they correspond to positions
+from the end of the line. E.g. an index of -1 corresponds to the last
+point in the line.
 
 :raises IndexError: if no point with the specified index exists.
 
@@ -540,15 +557,17 @@ corresponds to the last point in the line.
 
     void setPoints( const QgsPointSequence &points );
 %Docstring
-Resets the line string to match the specified list of points. The line string will
-inherit the dimensionality of the first point in the list.
+Resets the line string to match the specified list of points. The line
+string will inherit the dimensionality of the first point in the list.
 
-:param points: new points for line string. If empty, line string will be cleared.
+:param points: new points for line string. If empty, line string will be
+               cleared.
 %End
 
     void append( const QgsLineString *line );
 %Docstring
-Appends the contents of another line string to the end of this line string.
+Appends the contents of another line string to the end of this line
+string.
 
 :param line: line to append. Ownership is not transferred.
 %End
@@ -562,22 +581,24 @@ Adds a new vertex to the end of the line string.
 
     void close();
 %Docstring
-Closes the line string by appending the first point to the end of the line, if it is not already closed.
+Closes the line string by appending the first point to the end of the
+line, if it is not already closed.
 %End
 
     virtual QgsCompoundCurve *toCurveType() const /Factory/;
 
 %Docstring
-Returns the geometry converted to the more generic curve type :py:class:`QgsCompoundCurve`
+Returns the geometry converted to the more generic curve type
+:py:class:`QgsCompoundCurve`
 
 :return: the converted geometry. Caller takes ownership
 %End
 
     void extend( double startDistance, double endDistance );
 %Docstring
-Extends the line geometry by extrapolating out the start or end of the line
-by a specified distance. Lines are extended using the bearing of the first or last
-segment in the line.
+Extends the line geometry by extrapolating out the start or end of the
+line by a specified distance. Lines are extended using the bearing of
+the first or last segment in the line.
 %End
 
 
@@ -609,9 +630,11 @@ segment in the line.
 
     QVector< QgsVertexId > collectDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) const;
 %Docstring
-Returns a list of any duplicate nodes contained in the geometry, within the specified tolerance.
+Returns a list of any duplicate nodes contained in the geometry, within
+the specified tolerance.
 
-If ``useZValues`` is ``True`` then z values will also be considered when testing for duplicates.
+If ``useZValues`` is ``True`` then z values will also be considered when
+testing for duplicates.
 
 .. versionadded:: 3.16
 %End
@@ -656,8 +679,8 @@ The ownership of returned pointers is transferred to the caller.
 
     double length3D() const /HoldGIL/;
 %Docstring
-Returns the length in 3D world of the line string.
-If it is not a 3D line string, return its 2D length.
+Returns the length in 3D world of the line string. If it is not a 3D
+line string, return its 2D length.
 
 .. seealso:: :py:func:`length`
 
@@ -671,11 +694,12 @@ If it is not a 3D line string, return its 2D length.
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const  /Factory/;
 
 %Docstring
-Returns a new line string geometry corresponding to a segmentized approximation
-of the curve.
+Returns a new line string geometry corresponding to a segmentized
+approximation of the curve.
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
+:param toleranceType: maximum segmentation angle or maximum difference
+                      between approximation and curve
 %End
 
     virtual int numPoints() const /HoldGIL/;
@@ -723,11 +747,14 @@ of the curve.
     virtual void sumUpArea( double &sum /Out/ ) const;
 
 %Docstring
-Calculates the shoelace/triangle formula sum for the points in the linestring.
-If the linestring is closed (i.e. a polygon) then the polygon area is equal to the absolute value of the sum.
-Please note that the sum will be negative if the points are defined in clockwise order.
-Therefore, if you want to use the sum as an area (as the method name indicates) then you probably should use the absolute value,
-since otherwise a bug can be introduced (such as the bug fixed for github issue 49578)
+Calculates the shoelace/triangle formula sum for the points in the
+linestring. If the linestring is closed (i.e. a polygon) then the
+polygon area is equal to the absolute value of the sum. Please note that
+the sum will be negative if the points are defined in clockwise order.
+Therefore, if you want to use the sum as an area (as the method name
+indicates) then you probably should use the absolute value, since
+otherwise a bug can be introduced (such as the bug fixed for github
+issue 49578)
 
 .. seealso:: https://en.wikipedia.org/wiki/Shoelace_formula#Triangle_formula
 %End
@@ -772,8 +799,9 @@ since otherwise a bug can be introduced (such as the bug fixed for github issue 
 %Docstring
 Returns the point at the specified ``index``.
 
-Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-corresponds to the last point in the line.
+Indexes can be less than 0, in which case they correspond to positions
+from the end of the line. E.g. an index of -1 corresponds to the last
+point in the line.
 
 :raises IndexError: if no point with the specified ``index`` exists.
 
@@ -801,8 +829,9 @@ corresponds to the last point in the line.
 %Docstring
 Sets the point at the specified ``index``.
 
-Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-corresponds to the last point in the line.
+Indexes can be less than 0, in which case they correspond to positions
+from the end of the line. E.g. an index of -1 corresponds to the last
+point in the line.
 
 :raises IndexError: if no point with the specified ``index`` exists.
 
@@ -833,8 +862,9 @@ corresponds to the last point in the line.
 %Docstring
 Deletes the vertex at the specified ``index``.
 
-Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-corresponds to the last point in the line.
+Indexes can be less than 0, in which case they correspond to positions
+from the end of the line. E.g. an index of -1 corresponds to the last
+point in the line.
 
 :raises IndexError: if no point with the specified ``index`` exists.
 
@@ -879,8 +909,9 @@ Calculates the minimal 3D bounding box for the geometry.
 
     std::unique_ptr< QgsLineString > measuredLine( double start, double end ) const;
 %Docstring
-Re-write the measure ordinate (or add one, if it isn't already there) interpolating
-the measure between the supplied ``start`` and ``end`` values.
+Re-write the measure ordinate (or add one, if it isn't already there)
+interpolating the measure between the supplied ``start`` and ``end``
+values.
 
 .. versionadded:: 3.36
 %End
@@ -892,9 +923,9 @@ from m values of surrounding vertices.
 
 If the line does not contain m values, ``None`` is returned.
 
-The ``use3DDistance`` controls whether 2D or 3D distances between vertices
-should be used during interpolation. This option is only considered for lines
-with z values.
+The ``use3DDistance`` controls whether 2D or 3D distances between
+vertices should be used during interpolation. This option is only
+considered for lines with z values.
 
 .. seealso:: :py:func:`lineLocatePointByM`
 
@@ -905,22 +936,29 @@ with z values.
 %Docstring
 Attempts to locate a point on the linestring by m value.
 
-This method will linearly interpolate along line segments to find the point which corresponds to the specified m value.
+This method will linearly interpolate along line segments to find the
+point which corresponds to the specified m value.
 
-If the linestring contains sections with constant m values matching ``m``, then the interpolated point will be located
-at the center of these sections.
+If the linestring contains sections with constant m values matching
+``m``, then the interpolated point will be located at the center of
+these sections.
 
-Any missing (NaN) values in the linestring will be linearly interpolated from the
-m values of surrounding vertices (see :py:func:`~QgsLineString.interpolateM`).
+Any missing (NaN) values in the linestring will be linearly interpolated
+from the m values of surrounding vertices (see
+:py:func:`~QgsLineString.interpolateM`).
 
 :param m: target m value
-:param use3DDistance: controls whether 2D or 3D distances between vertices should be used during interpolation. This option is only considered for lines with z values.
+:param use3DDistance: controls whether 2D or 3D distances between
+                      vertices should be used during interpolation. This
+                      option is only considered for lines with z values.
 
-:return: - ``True`` if a matching point was found, or ``False`` if it could not be found
+:return: - ``True`` if a matching point was found, or ``False`` if it
+           could not be found
          - x: interpolated x coordinate
          - y: interpolated y coordinate
          - z: interpolated z coordinate (for 3D lines only)
-         - distanceFromStart: calculated distance from the start of the linestring to the located point
+         - distanceFromStart: calculated distance from the start of the
+           linestring to the located point
 
 .. seealso:: :py:func:`interpolateM`
 

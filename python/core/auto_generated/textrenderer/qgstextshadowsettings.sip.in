@@ -60,18 +60,18 @@ Sets whether the text shadow will be drawn.
 
     QgsTextShadowSettings::ShadowPlacement shadowPlacement() const;
 %Docstring
-Returns the placement for the drop shadow. The placement determines
-both the z-order stacking position for the shadow and the what shape (e.g., text,
-background shape) is used for casting the shadow.
+Returns the placement for the drop shadow. The placement determines both
+the z-order stacking position for the shadow and the what shape (e.g.,
+text, background shape) is used for casting the shadow.
 
 .. seealso:: :py:func:`setShadowPlacement`
 %End
 
     void setShadowPlacement( QgsTextShadowSettings::ShadowPlacement placement );
 %Docstring
-Sets the placement for the drop shadow. The placement determines
-both the z-order stacking position for the shadow and the what shape (e.g., text,
-background shape) is used for casting the shadow.
+Sets the placement for the drop shadow. The placement determines both
+the z-order stacking position for the shadow and the what shape (e.g.,
+text, background shape) is used for casting the shadow.
 
 :param placement: shadow placement
 
@@ -80,7 +80,8 @@ background shape) is used for casting the shadow.
 
     int offsetAngle() const;
 %Docstring
-Returns the angle for offsetting the position of the shadow from the text.
+Returns the angle for offsetting the position of the shadow from the
+text.
 
 .. seealso:: :py:func:`setOffsetAngle`
 
@@ -100,8 +101,9 @@ Sets the angle for offsetting the position of the shadow from the text.
 
     double offsetDistance() const;
 %Docstring
-Returns the distance for offsetting the position of the shadow from the text. Offset units
-are retrieved via :py:func:`~QgsTextShadowSettings.offsetUnit`.
+Returns the distance for offsetting the position of the shadow from the
+text. Offset units are retrieved via
+:py:func:`~QgsTextShadowSettings.offsetUnit`.
 
 .. seealso:: :py:func:`setOffsetDistance`
 
@@ -110,8 +112,9 @@ are retrieved via :py:func:`~QgsTextShadowSettings.offsetUnit`.
 
     void setOffsetDistance( double distance );
 %Docstring
-Sets the distance for offsetting the position of the shadow from the text. Offset units
-are specified via :py:func:`~QgsTextShadowSettings.setOffsetUnit`.
+Sets the distance for offsetting the position of the shadow from the
+text. Offset units are specified via
+:py:func:`~QgsTextShadowSettings.setOffsetUnit`.
 
 :param distance: offset distance
 
@@ -142,8 +145,9 @@ Sets the units used for the shadow's offset.
 
     QgsMapUnitScale offsetMapUnitScale() const;
 %Docstring
-Returns the map unit scale object for the shadow offset distance. This is only used if the
-:py:func:`~QgsTextShadowSettings.offsetUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+Returns the map unit scale object for the shadow offset distance. This
+is only used if the :py:func:`~QgsTextShadowSettings.offsetUnit` is set
+to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 
@@ -152,8 +156,9 @@ Returns the map unit scale object for the shadow offset distance. This is only u
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit scale object for the shadow offset distance. This is only used if the
-:py:func:`~QgsTextShadowSettings.offsetUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+Sets the map unit scale object for the shadow offset distance. This is
+only used if the :py:func:`~QgsTextShadowSettings.offsetUnit` is set to
+:py:class:`QgsUnitTypes`.RenderMapUnit.
 
 :param scale: scale for shadow offset
 
@@ -178,7 +183,8 @@ Sets whether the global shadow offset should be used.
 
     double blurRadius() const;
 %Docstring
-Returns the blur radius for the shadow. Radius units are retrieved via :py:func:`~QgsTextShadowSettings.blurRadiusUnits`.
+Returns the blur radius for the shadow. Radius units are retrieved via
+:py:func:`~QgsTextShadowSettings.blurRadiusUnits`.
 
 .. seealso:: :py:func:`setBlurRadius`
 
@@ -187,7 +193,8 @@ Returns the blur radius for the shadow. Radius units are retrieved via :py:func:
 
     void setBlurRadius( double blurRadius );
 %Docstring
-Sets the blur radius for the shadow. Radius units are specified via :py:func:`~QgsTextShadowSettings.setBlurRadiusUnits`.
+Sets the blur radius for the shadow. Radius units are specified via
+:py:func:`~QgsTextShadowSettings.setBlurRadiusUnits`.
 
 :param blurRadius: blur radius
 
@@ -218,8 +225,9 @@ Sets the units used for the shadow's blur radius.
 
     QgsMapUnitScale blurRadiusMapUnitScale() const;
 %Docstring
-Returns the map unit scale object for the shadow blur radius. This is only used if the
-:py:func:`~QgsTextShadowSettings.blurRadiusUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+Returns the map unit scale object for the shadow blur radius. This is
+only used if the :py:func:`~QgsTextShadowSettings.blurRadiusUnit` is set
+to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setBlurRadiusMapUnitScale`
 
@@ -228,8 +236,9 @@ Returns the map unit scale object for the shadow blur radius. This is only used 
 
     void setBlurRadiusMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit scale object for the shadow blur radius. This is only used if the
-:py:func:`~QgsTextShadowSettings.blurRadiusUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+Sets the map unit scale object for the shadow blur radius. This is only
+used if the :py:func:`~QgsTextShadowSettings.blurRadiusUnit` is set to
+:py:class:`QgsUnitTypes`.RenderMapUnit.
 
 :param scale: scale for shadow blur radius
 
@@ -249,16 +258,17 @@ Returns whether only the alpha channel for the shadow will be blurred.
 %Docstring
 Sets whether only the alpha channel for the shadow should be blurred.
 
-:param alphaOnly: set to ``True`` to blur only the alpha channel. If ``False``, all channels (including
-                  red, green and blue channel) will be blurred.
+:param alphaOnly: set to ``True`` to blur only the alpha channel. If
+                  ``False``, all channels (including red, green and blue
+                  channel) will be blurred.
 
 .. seealso:: :py:func:`blurAlphaOnly`
 %End
 
     double opacity() const;
 %Docstring
-Returns the shadow's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
-opaque).
+Returns the shadow's opacity. The opacity is a double value between 0
+(fully transparent) and 1 (totally opaque).
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -267,22 +277,24 @@ opaque).
 %Docstring
 Sets the shadow's opacity.
 
-:param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
-                opaque)
+:param opacity: opacity as a double value between 0 (fully transparent)
+                and 1 (totally opaque)
 
 .. seealso:: :py:func:`opacity`
 %End
 
     int scale() const;
 %Docstring
-Returns the scaling used for the drop shadow (in percentage of original size).
+Returns the scaling used for the drop shadow (in percentage of original
+size).
 
 .. seealso:: :py:func:`setScale`
 %End
 
     void setScale( int scale );
 %Docstring
-Sets the scaling used for the drop shadow (in percentage of original size).
+Sets the scaling used for the drop shadow (in percentage of original
+size).
 
 :param scale: scale percent for drop shadow
 
@@ -344,14 +356,16 @@ Write settings into a DOM element.
 
     void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
 %Docstring
-Updates the format by evaluating current values of data defined properties.
+Updates the format by evaluating current values of data defined
+properties.
 
 .. versionadded:: 3.10
 %End
 
     QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 %Docstring
-Returns all field names referenced by the configuration (e.g. from data defined properties).
+Returns all field names referenced by the configuration (e.g. from data
+defined properties).
 
 .. versionadded:: 3.14
 %End

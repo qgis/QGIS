@@ -12,8 +12,9 @@
 class QgsFieldMappingWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsFieldMappingWidget` class creates a mapping from one set of :py:class:`QgsFields` to another,
-for each set of "destination" fields an expression defines how to obtain the values of the
+The :py:class:`QgsFieldMappingWidget` class creates a mapping from one
+set of :py:class:`QgsFields` to another, for each set of "destination"
+fields an expression defines how to obtain the values of the
 "destination" fields.
 
 .. versionadded:: 3.14
@@ -25,10 +26,10 @@ for each set of "destination" fields an expression defines how to obtain the val
   public:
     explicit QgsFieldMappingWidget( QWidget *parent = 0, const QgsFields &sourceFields = QgsFields(), const QgsFields &destinationFields = QgsFields(), const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 %Docstring
-Constructs a QgsFieldMappingWidget from a set of ``sourceFields``
-and ``destinationFields``, initial values for the expressions can be
-optionally specified through ``expressions`` which is a map from the original
-field name to the corresponding expression. A ``parent`` object
+Constructs a QgsFieldMappingWidget from a set of ``sourceFields`` and
+``destinationFields``, initial values for the expressions can be
+optionally specified through ``expressions`` which is a map from the
+original field name to the corresponding expression. A ``parent`` object
 can also be specified.
 %End
 
@@ -49,20 +50,23 @@ Returns the underlying mapping model
 
     QList<QgsFieldMappingModel::Field> mapping() const;
 %Docstring
-Returns a list of Field objects representing the current status of the underlying mapping model
+Returns a list of Field objects representing the current status of the
+underlying mapping model
 %End
 
     QMap<QString, QgsProperty> fieldPropertyMap() const;
 %Docstring
-Returns a map of destination field name to :py:class:`QgsProperty` definition for field value,
-representing the current status of the widget.
+Returns a map of destination field name to :py:class:`QgsProperty`
+definition for field value, representing the current status of the
+widget.
 
 .. seealso:: :py:func:`setFieldPropertyMap`
 %End
 
     void setFieldPropertyMap( const QMap<QString, QgsProperty> &map );
 %Docstring
-Sets a map of destination field name to :py:class:`QgsProperty` definition for field value.
+Sets a map of destination field name to :py:class:`QgsProperty`
+definition for field value.
 
 .. seealso:: :py:func:`fieldPropertyMap`
 %End
@@ -79,7 +83,8 @@ Set source fields of the underlying mapping model to ``sourceFields``
 
     void setSourceLayer( QgsVectorLayer *layer );
 %Docstring
-Sets a source ``layer`` to use when generating expression previews in the widget.
+Sets a source ``layer`` to use when generating expression previews in
+the widget.
 
 .. versionadded:: 3.16
 %End
@@ -108,8 +113,8 @@ Scroll the fields view to ``index``
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 %Docstring
-Register an expression context ``generator`` class that will be used to retrieve
-an expression context for the widget.
+Register an expression context ``generator`` class that will be used to
+retrieve an expression context for the widget.
 %End
 
   signals:

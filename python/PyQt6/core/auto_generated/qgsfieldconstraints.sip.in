@@ -63,17 +63,18 @@ Returns any constraints which are present for the field.
 
     ConstraintOrigin constraintOrigin( Constraint constraint ) const;
 %Docstring
-Returns the origin of a field constraint, or ConstraintOriginNotSet if the constraint
-is not present on this field.
+Returns the origin of a field constraint, or ConstraintOriginNotSet if
+the constraint is not present on this field.
 
 .. seealso:: :py:func:`constraints`
 %End
 
     ConstraintStrength constraintStrength( Constraint constraint ) const;
 %Docstring
-Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
-is not present on this field. If the strength is not set returns ConstraintStrengthNotSet
-for anything but ConstraintExpression which returns ConstraintStrengthHard.
+Returns the strength of a field constraint, or ConstraintStrengthNotSet
+if the constraint is not present on this field. If the strength is not
+set returns ConstraintStrengthNotSet for anything but
+ConstraintExpression which returns ConstraintStrengthHard.
 
 .. seealso:: :py:func:`constraints`
 
@@ -82,8 +83,8 @@ for anything but ConstraintExpression which returns ConstraintStrengthHard.
 
     void setConstraintStrength( Constraint constraint, ConstraintStrength strength );
 %Docstring
-Sets the strength of a constraint. Constraints default to ConstraintStrengthHard unless
-explicitly changed.
+Sets the strength of a constraint. Constraints default to
+ConstraintStrengthHard unless explicitly changed.
 
 .. seealso:: :py:func:`constraintStrength`
 %End
@@ -130,8 +131,9 @@ Returns the descriptive name for the constraint expression.
 
     void setConstraintExpression( const QString &expression, const QString &description = QString() );
 %Docstring
-Set the constraint expression for the field. An optional descriptive name for the constraint
-can also be set. Setting an empty expression will clear any existing expression constraint.
+Set the constraint expression for the field. An optional descriptive
+name for the constraint can also be set. Setting an empty expression
+will clear any existing expression constraint.
 
 .. seealso:: :py:func:`constraintExpression`
 
@@ -142,7 +144,8 @@ can also be set. Setting an empty expression will clear any existing expression 
 
     QString domainName() const;
 %Docstring
-Returns the associated field domain name, for providers which support field domains.
+Returns the associated field domain name, for providers which support
+field domains.
 
 .. seealso:: :py:func:`setDomainName`
 
@@ -151,7 +154,8 @@ Returns the associated field domain name, for providers which support field doma
 
     void setDomainName( const QString &domain );
 %Docstring
-Sets the associated field ``domain`` name, for providers which support field domains.
+Sets the associated field ``domain`` name, for providers which support
+field domains.
 
 .. seealso:: :py:func:`domainName`
 

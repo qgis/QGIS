@@ -24,11 +24,14 @@ Stores metadata about one advanced digitizing tool class.
   public:
     QgsAdvancedDigitizingToolAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
-Constructor for QgsAdvancedDigitizingToolAbstractMetadata with the specified tool ``name``.
+Constructor for QgsAdvancedDigitizingToolAbstractMetadata with the
+specified tool ``name``.
 
-``visibleName`` should be set to a translated, user visible name identifying the corresponding annotation item.
+``visibleName`` should be set to a translated, user visible name
+identifying the corresponding annotation item.
 
-An optional ``icon`` can be set, which will be used by the advanced digitizing dock widget.
+An optional ``icon`` can be set, which will be used by the advanced
+digitizing dock widget.
 %End
 
     virtual ~QgsAdvancedDigitizingToolAbstractMetadata();
@@ -62,7 +65,8 @@ class QgsAdvancedDigitizingToolsRegistry
 %Docstring(signature="appended")
 Registry of available advanced digitizing tools.
 
-:py:class:`QgsAdvancedDigitizingToolsRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsAdvancedDigitizingToolsRegistry` is not usually directly
+created, but rather accessed through
 :py:func:`QgsGui.advancedDigitizingToolsRegistry()`.
 
 .. versionadded:: 3.40
@@ -83,17 +87,20 @@ Adds the default tools shipped in QGIS
 
     bool addTool( QgsAdvancedDigitizingToolAbstractMetadata *toolMetaData /Transfer/ );
 %Docstring
-Adds an advanced digitizing tool (take ownership) and return ``True`` on success
+Adds an advanced digitizing tool (take ownership) and return ``True`` on
+success
 %End
 
     bool removeTool( const QString &name );
 %Docstring
-Removes the advanced digitizing tool matching the provided ``name`` and return ``True`` on success
+Removes the advanced digitizing tool matching the provided ``name`` and
+return ``True`` on success
 %End
 
     QgsAdvancedDigitizingToolAbstractMetadata *toolMetadata( const QString &name );
 %Docstring
-Returns the advanced digitizing tool matching the provided ``name`` or ``None`` when no match available
+Returns the advanced digitizing tool matching the provided ``name`` or
+``None`` when no match available
 %End
 
     const QStringList toolMetadataNames() const;

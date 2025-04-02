@@ -63,29 +63,34 @@ Sets the vertical axis ``inversion`` behavior.
 
     void frameTriggered( float dt );
 %Docstring
-Called internally from 3D scene when a new frame is generated. Updates camera according to keyboard/mouse input
+Called internally from 3D scene when a new frame is generated. Updates
+camera according to keyboard/mouse input
 %End
 
     void resetView( float distance );
 %Docstring
-Move camera back to the initial position (looking down towards origin of world's coordinates)
+Move camera back to the initial position (looking down towards origin of
+world's coordinates)
 %End
 
     void setViewFromTop( float worldX, float worldY, float distance, float yaw = 0 );
 %Docstring
-Sets camera to look down towards given point in world coordinate, in given distance from plane with zero elevation
+Sets camera to look down towards given point in world coordinate, in
+given distance from plane with zero elevation
 %End
 
     QgsVector3D lookingAtPoint() const;
 %Docstring
-Returns the point in the world coordinates towards which the camera is looking
+Returns the point in the world coordinates towards which the camera is
+looking
 %End
 
     void setLookingAtPoint( const QgsVector3D &point, float distance, float pitch, float yaw );
 %Docstring
-Sets the complete camera configuration: the point towards it is looking (in 3D world coordinates), the distance
-of the camera from the point, pitch angle in degrees (0 = looking from the top, 90 = looking from the side) and
-yaw angle in degrees.
+Sets the complete camera configuration: the point towards it is looking
+(in 3D world coordinates), the distance of the camera from the point,
+pitch angle in degrees (0 = looking from the top, 90 = looking from the
+side) and yaw angle in degrees.
 
 .. versionadded:: 3.4
 %End
@@ -106,24 +111,24 @@ Returns camera pose
 
     float distance() const;
 %Docstring
-Returns distance of the camera from the point it is looking at.
-The value should not be smaller than 10.
+Returns distance of the camera from the point it is looking at. The
+value should not be smaller than 10.
 
 .. versionadded:: 3.4
 %End
 
     float pitch() const;
 %Docstring
-Returns pitch angle in degrees (0 = looking from the top, 90 = looking from the side).
-The angle should range from 0 to 180.
+Returns pitch angle in degrees (0 = looking from the top, 90 = looking
+from the side). The angle should range from 0 to 180.
 
 .. versionadded:: 3.4
 %End
 
     float yaw() const;
 %Docstring
-Returns yaw angle in degrees.  Yaw value of zero means the camera is pointing towards north.
-The angle should range from 0 to 360.
+Returns yaw angle in degrees. Yaw value of zero means the camera is
+pointing towards north. The angle should range from 0 to 360.
 
 .. versionadded:: 3.4
 %End
@@ -147,7 +152,8 @@ Tilt up the view by ``deltaPitch`` around the view center (camera moves)
 %End
     void rotateAroundViewCenter( float deltaYaw );
 %Docstring
-Rotate clockwise the view by ``deltaYaw`` around the view center (camera moves)
+Rotate clockwise the view by ``deltaYaw`` around the view center (camera
+moves)
 %End
     void setCameraHeadingAngle( float angle );
 %Docstring
@@ -177,32 +183,32 @@ Rotates the camera on itself.
 
     void rotateCameraAroundPivot( float newPitch, float newHeading, const QVector3D &pivotPoint );
 %Docstring
-Rotates the camera around the pivot point (in world coordinates)
-to the given new pitch and heading angle.
+Rotates the camera around the pivot point (in world coordinates) to the
+given new pitch and heading angle.
 
 .. versionadded:: 3.42
 %End
 
     void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint );
 %Docstring
-Zooms camera by given zoom factor (>1 one means zoom in)
-while keeping the pivot point (given in world coordinates) at the
-same screen coordinates after the zoom.
+Zooms camera by given zoom factor (>1 one means zoom in) while keeping
+the pivot point (given in world coordinates) at the same screen
+coordinates after the zoom.
 
 .. versionadded:: 3.42
 %End
 
     bool willHandleKeyEvent( QKeyEvent *event );
 %Docstring
-Returns ``True`` if the camera controller will handle the specified key ``event``,
-preventing it from being instead handled by parents of the 3D window before
-the controller ever receives it.
+Returns ``True`` if the camera controller will handle the specified key
+``event``, preventing it from being instead handled by parents of the 3D
+window before the controller ever receives it.
 %End
 
     void setOrigin( const QgsVector3D &origin );
 %Docstring
-Reacts to the shift of origin of the scene, updating camera pose and
-any other member variables so that the origin stays at the same position
+Reacts to the shift of origin of the scene, updating camera pose and any
+other member variables so that the origin stays at the same position
 relative to other entities.
 
 .. versionadded:: 3.42
@@ -226,7 +232,8 @@ Sets the navigation mode used by the camera controller.
 
     void depthBufferCaptured( const QImage &depthImage );
 %Docstring
-Sets the depth buffer image used by the camera controller to calculate world position from a pixel's coordinates and depth
+Sets the depth buffer image used by the camera controller to calculate
+world position from a pixel's coordinates and depth
 
 .. versionadded:: 3.24
 %End
@@ -252,8 +259,8 @@ Emitted whenever the camera movement speed is changed by the controller.
 
     void setCursorPosition( QPoint point );
 %Docstring
-Emitted when the mouse cursor position should be moved to the specified ``point``
-on the map viewport.
+Emitted when the mouse cursor position should be moved to the specified
+``point`` on the map viewport.
 %End
 
     void requestDepthBufferCapture();

@@ -29,7 +29,8 @@ Constructor for an empty polygon geometry.
 
     QgsPolygon( QgsLineString *exterior /Transfer/, const QList< QgsLineString * > &rings /Transfer/ = QList< QgsLineString * >() ) /HoldGIL/;
 %Docstring
-Constructor for QgsPolygon, with the specified ``exterior`` ring and interior ``rings``.
+Constructor for QgsPolygon, with the specified ``exterior`` ring and
+interior ``rings``.
 
 Ownership of ``exterior`` and ``rings`` is transferred to the polygon.
 
@@ -56,7 +57,8 @@ Ownership of ``exterior`` and ``rings`` is transferred to the polygon.
     virtual QgsCurvePolygon *toCurveType() const /Factory/;
 
 %Docstring
-Returns the geometry converted to the more generic curve type :py:class:`QgsCurvePolygon`
+Returns the geometry converted to the more generic curve type
+:py:class:`QgsCurvePolygon`
 
 :return: the converted geometry. Caller takes ownership
 %End
@@ -71,9 +73,9 @@ Returns the geometry converted to the more generic curve type :py:class:`QgsCurv
 
     double pointDistanceToBoundary( double x, double y ) const;
 %Docstring
-Returns the distance from a point to the boundary of the polygon (either the
-exterior ring or any closer interior rings). The returned distance will be
-negative if the point lies outside the polygon.
+Returns the distance from a point to the boundary of the polygon (either
+the exterior ring or any closer interior rings). The returned distance
+will be negative if the point lies outside the polygon.
 %End
 
 

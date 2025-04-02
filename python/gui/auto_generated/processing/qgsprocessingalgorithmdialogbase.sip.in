@@ -62,14 +62,16 @@ Returns the algorithm running in the dialog.
 
     void setMainWidget( QgsPanelWidget *widget /Transfer/ );
 %Docstring
-Sets the main ``widget`` for the dialog, usually a panel for configuring algorithm parameters.
+Sets the main ``widget`` for the dialog, usually a panel for configuring
+algorithm parameters.
 
 .. seealso:: :py:func:`mainWidget`
 %End
 
     QgsPanelWidget *mainWidget();
 %Docstring
-Returns the main widget for the dialog, usually a panel for configuring algorithm parameters.
+Returns the main widget for the dialog, usually a panel for configuring
+algorithm parameters.
 
 .. seealso:: :py:func:`setMainWidget`
 %End
@@ -99,14 +101,14 @@ Returns the results returned by the algorithm executed.
 
     QgsProcessingFeedback *createFeedback() /Factory/;
 %Docstring
-Creates a new processing feedback object, automatically connected to the appropriate
-slots in this dialog.
+Creates a new processing feedback object, automatically connected to the
+appropriate slots in this dialog.
 %End
 
     void saveLogToFile( const QString &path, LogFormat format = FormatPlainText );
 %Docstring
-Saves the log contents to a text file (specified by the file ``path``), in
-the given ``format``.
+Saves the log contents to a text file (specified by the file ``path``),
+in the given ``format``.
 
 .. seealso:: :py:func:`saveLog`
 
@@ -115,7 +117,8 @@ the given ``format``.
 
     Qgis::ProcessingLogLevel logLevel() const;
 %Docstring
-Returns the logging level to use when running algorithms from the dialog.
+Returns the logging level to use when running algorithms from the
+dialog.
 
 .. seealso:: :py:func:`setLogLevel`
 
@@ -124,7 +127,8 @@ Returns the logging level to use when running algorithms from the dialog.
 
     void setLogLevel( Qgis::ProcessingLogLevel level );
 %Docstring
-Sets the logging ``level`` to use when running algorithms from the dialog.
+Sets the logging ``level`` to use when running algorithms from the
+dialog.
 
 .. seealso:: :py:func:`logLevel`
 
@@ -144,7 +148,8 @@ Sets the parameter ``values`` to show in the dialog.
 %Docstring
 Reports an ``error`` string to the dialog's log.
 
-If ``fatalError`` is ``True``, the error prevented the algorithm from executing.
+If ``fatalError`` is ``True``, the error prevented the algorithm from
+executing.
 %End
 
     void pushWarning( const QString &warning );
@@ -193,8 +198,8 @@ Pushes a console info string to the dialog's log.
 
     QDialog *createProgressDialog();
 %Docstring
-Creates a modal progress dialog showing progress and log messages
-from this dialog.
+Creates a modal progress dialog showing progress and log messages from
+this dialog.
 %End
 
     void clearLog();
@@ -273,7 +278,8 @@ Sets whether the algorithm was executed through the dialog.
 
     void setExecutedAnyResult( bool executedAnyResult );
 %Docstring
-Sets whether the algorithm was executed through the dialog (no matter the result).
+Sets whether the algorithm was executed through the dialog (no matter
+the result).
 %End
 
     void setResults( const QVariantMap &results );
@@ -297,13 +303,14 @@ Resets the dialog's gui, ready for another algorithm execution.
 
     virtual void resetAdditionalGui();
 %Docstring
-For subclasses to register their own GUI controls to be reset, ready
-for another algorithm execution.
+For subclasses to register their own GUI controls to be reset, ready for
+another algorithm execution.
 %End
 
     void updateRunButtonVisibility();
 %Docstring
-Sets visibility for mutually exclusive buttons Run and Change Parameters.
+Sets visibility for mutually exclusive buttons Run and Change
+Parameters.
 %End
 
     void blockControlsWhileRunning();
@@ -330,8 +337,9 @@ Hides the short help panel.
 
     void setCurrentTask( QgsProcessingAlgRunnerTask *task /Transfer/ );
 %Docstring
-Sets the current ``task`` running in the dialog. The task will automatically be started
-by the dialog. Ownership of ``task`` is transferred to the dialog.
+Sets the current ``task`` running in the dialog. The task will
+automatically be started by the dialog. Ownership of ``task`` is
+transferred to the dialog.
 %End
 
     static QString formatStringForLog( const QString &string );
@@ -341,16 +349,19 @@ Formats an input ``string`` for display in the log tab.
 
     virtual bool isFinalized();
 %Docstring
-Returns ``True`` if the dialog is all finalized and can be safely deleted.
+Returns ``True`` if the dialog is all finalized and can be safely
+deleted.
 
 .. versionadded:: 3.26
 %End
 
     void applyContextOverrides( QgsProcessingContext *context );
 %Docstring
-Applies any defined overrides for Processing context settings to the specified ``context``.
+Applies any defined overrides for Processing context settings to the
+specified ``context``.
 
-This allows the dialog to override default Processing settings for an individual algorithm execution.
+This allows the dialog to override default Processing settings for an
+individual algorithm execution.
 
 .. versionadded:: 3.32
 %End
@@ -361,7 +372,8 @@ This allows the dialog to override default Processing settings for an individual
 %Docstring
 Emitted when the algorithm is about to run in the specified ``context``.
 
-This signal can be used to tweak the ``context`` prior to the algorithm execution.
+This signal can be used to tweak the ``context`` prior to the algorithm
+execution.
 
 .. versionadded:: 3.38
 %End
@@ -382,7 +394,8 @@ Called when the algorithm has finished executing.
 
     virtual void runAlgorithm();
 %Docstring
-Called when the dialog's algorithm should be run. Must be overridden by subclasses.
+Called when the dialog's algorithm should be run. Must be overridden by
+subclasses.
 %End
 
     virtual void algExecuted( bool successful, const QVariantMap &results );

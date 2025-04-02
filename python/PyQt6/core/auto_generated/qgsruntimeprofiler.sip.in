@@ -11,15 +11,15 @@
 class QgsRuntimeProfiler : QAbstractItemModel
 {
 %Docstring(signature="appended")
-
 Provides a method of recording run time profiles of operations, allowing
 easy recording of their overall run time.
 
-:py:class:`QgsRuntimeProfiler` is not usually instantied manually, but rather accessed
-through :py:func:`QgsApplication.profiler()`.
+:py:class:`QgsRuntimeProfiler` is not usually instantied manually, but
+rather accessed through :py:func:`QgsApplication.profiler()`.
 
-This class is thread-safe only if accessed through :py:func:`QgsApplication.profiler()`.
-If accessed in this way, operations can be profiled from non-main threads.
+This class is thread-safe only if accessed through
+:py:func:`QgsApplication.profiler()`. If accessed in this way,
+operations can be profiled from non-main threads.
 %End
 
 %TypeHeaderCode
@@ -68,12 +68,11 @@ Returns a list of all child groups with the specified ``parent``.
 
     void start( const QString &name, const QString &group = "startup", const QString &id = QString() );
 %Docstring
-Start a profile event with the given name.
-The ``name`` of the profile event. Will have the name of
-the active ``group`` appended after ending.
+Start a profile event with the given name. The ``name`` of the profile
+event. Will have the name of the active ``group`` appended after ending.
 
-Since QGIS 3.34, the optional ``id`` argument can be used to provide a unique
-ID to disambiguate nodes with the same ``name``.
+Since QGIS 3.34, the optional ``id`` argument can be used to provide a
+unique ID to disambiguate nodes with the same ``name``.
 %End
 
     void end( const QString &group = "startup" );
@@ -83,10 +82,11 @@ End the current profile event.
 
     void record( const QString &name, double time, const QString &group = "startup", const QString &id = QString() );
 %Docstring
-Manually adds a profile event with the given name and total ``time`` (in seconds).
+Manually adds a profile event with the given name and total ``time`` (in
+seconds).
 
-The optional ``id`` argument can be used to provider a unique
-ID to disambiguate nodes with the same ``name``.
+The optional ``id`` argument can be used to provider a unique ID to
+disambiguate nodes with the same ``name``.
 
 .. versionadded:: 3.34
 %End
@@ -163,13 +163,15 @@ Emitted when a new group has started being profiled.
 class QgsScopedRuntimeProfile
 {
 %Docstring(signature="appended")
+Scoped object for logging of the runtime for a single operation or group
+of operations.
 
-Scoped object for logging of the runtime for a single operation or group of operations.
+This class automatically takes care of registering an operation in the
+:py:func:`QgsApplication.profiler()` registry upon construction, and
+recording of the elapsed runtime upon destruction.
 
-This class automatically takes care of registering an operation in the :py:func:`QgsApplication.profiler()`
-registry upon construction, and recording of the elapsed runtime upon destruction.
-
-Python scripts should not use :py:class:`QgsScopedRuntimeProfile` directly. Instead, use :py:func:`QgsRuntimeProfiler.profile()`
+Python scripts should not use :py:class:`QgsScopedRuntimeProfile`
+directly. Instead, use :py:func:`QgsRuntimeProfiler.profile()`
 
 .. code-block:: python
 
@@ -188,21 +190,24 @@ Python scripts should not use :py:class:`QgsScopedRuntimeProfile` directly. Inst
 %Docstring
 Constructor for QgsScopedRuntimeProfile.
 
-Automatically registers the operation in the :py:func:`QgsApplication.profiler()` instance
-and starts recording the run time of the operation.
+Automatically registers the operation in the
+:py:func:`QgsApplication.profiler()` instance and starts recording the
+run time of the operation.
 
-Since QGIS 3.34, the optional ``id`` argument can be used to provide a unique
-ID to disambiguate nodes with the same ``name``.
+Since QGIS 3.34, the optional ``id`` argument can be used to provide a
+unique ID to disambiguate nodes with the same ``name``.
 %End
 
     ~QgsScopedRuntimeProfile();
 
     void switchTask( const QString &name );
 %Docstring
-Switches the current task managed by the scoped profile to a new task with the given ``name``.
-The current task will be finalised before switching.
+Switches the current task managed by the scoped profile to a new task
+with the given ``name``. The current task will be finalised before
+switching.
 
-This is useful for reusing an existing scoped runtime profiler with multi-step processes.
+This is useful for reusing an existing scoped runtime profiler with
+multi-step processes.
 
 .. versionadded:: 3.14
 %End

@@ -16,20 +16,21 @@ class QgsMessageBar : QFrame
 %Docstring(signature="appended")
 A bar for displaying non-blocking messages to the user.
 
-:py:class:`QgsMessageBar` is a reusable widget which allows for providing feedback to users in
-a non-intrusive way. Messages are shown in a horizontal bar widget, which is styled
-automatically to reflect the severity ("message level") of the displayed message (e.g.
-warning messages are styled in an orange color scheme, critical errors are shown in
-red, etc).
+:py:class:`QgsMessageBar` is a reusable widget which allows for
+providing feedback to users in a non-intrusive way. Messages are shown
+in a horizontal bar widget, which is styled automatically to reflect the
+severity ("message level") of the displayed message (e.g. warning
+messages are styled in an orange color scheme, critical errors are shown
+in red, etc).
 
-The message bar supports automatic stacking of multiple messages, so that
-only the most recent message is shown to users. Users can then manually dismiss
-individual messages to remove them from the stack, causing the next-most-recent
-message to be shown. If no messages are available to show then the message bar
-automatically hides.
+The message bar supports automatic stacking of multiple messages, so
+that only the most recent message is shown to users. Users can then
+manually dismiss individual messages to remove them from the stack,
+causing the next-most-recent message to be shown. If no messages are
+available to show then the message bar automatically hides.
 
-The class also supports pushing custom widgets to the notification stack via
-the :py:func:`~pushWidget` method.
+The class also supports pushing custom widgets to the notification stack
+via the :py:func:`~pushWidget` method.
 %End
 
 %TypeHeaderCode
@@ -43,27 +44,30 @@ Constructor for QgsMessageBar
 
     void pushItem( QgsMessageBarItem *item /Transfer/ );
 %Docstring
-Display a message ``item`` on the bar, after hiding the currently visible one
-and putting it in a stack.
+Display a message ``item`` on the bar, after hiding the currently
+visible one and putting it in a stack.
 
 The message bar will take ownership of ``item``.
 %End
 
     QgsMessageBarItem *pushWidget( QWidget *widget /Transfer/, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 0 );
 %Docstring
-Display a ``widget`` as a message on the bar, after hiding the currently visible one
-and putting it in a stack.
+Display a ``widget`` as a message on the bar, after hiding the currently
+visible one and putting it in a stack.
 
 :param widget: message widget to display
-:param level: is :py:class:`Qgis`.MessageLevel.Info, Warning, Critical or Success
-:param duration: timeout duration of message in seconds, 0 value indicates no timeout (i.e.
-                 the message must be manually cleared by the user).
+:param level: is :py:class:`Qgis`.MessageLevel.Info, Warning, Critical
+              or Success
+:param duration: timeout duration of message in seconds, 0 value
+                 indicates no timeout (i.e. the message must be manually
+                 cleared by the user).
 %End
 
     bool popWidget( QgsMessageBarItem *item );
 %Docstring
-Remove the specified ``item`` from the bar, and display the next most recent one in the stack.
-If no messages remain in the stack, then the bar will be hidden.
+Remove the specified ``item`` from the bar, and display the next most
+recent one in the stack. If no messages remain in the stack, then the
+bar will be hidden.
 
 :param item: previously added item to remove.
 
@@ -72,7 +76,8 @@ If no messages remain in the stack, then the bar will be hidden.
 
     static QgsMessageBarItem *createMessage( const QString &text, QWidget *parent = 0 ) /Factory/;
 %Docstring
-Creates message bar item widget containing a message ``text`` to be displayed on the bar.
+Creates message bar item widget containing a message ``text`` to be
+displayed on the bar.
 
 The caller takes ownership of the returned item.
 
@@ -84,7 +89,8 @@ The caller takes ownership of the returned item.
 
     static QgsMessageBarItem *createMessage( const QString &title, const QString &text, QWidget *parent = 0 ) /Factory/;
 %Docstring
-Creates message bar item widget containing a ``title`` and message ``text`` to be displayed on the bar.
+Creates message bar item widget containing a ``title`` and message
+``text`` to be displayed on the bar.
 
 The caller takes ownership of the returned item.
 
@@ -96,7 +102,8 @@ The caller takes ownership of the returned item.
 
     static QgsMessageBarItem *createMessage( QWidget *widget, QWidget *parent = 0 ) /Factory/;
 %Docstring
-Creates message bar item widget containing a custom ``widget`` to be displayed on the bar.
+Creates message bar item widget containing a custom ``widget`` to be
+displayed on the bar.
 
 The caller takes ownership of the returned item.
 
@@ -108,39 +115,48 @@ The caller takes ownership of the returned item.
 
     void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1 );
 %Docstring
-A convenience method for pushing a message with the specified ``text`` to the bar.
+A convenience method for pushing a message with the specified ``text``
+to the bar.
 
-The ``level`` argument specifies the desired message level (severity) of the message, which controls
-how the message bar is styled.
+The ``level`` argument specifies the desired message level (severity) of
+the message, which controls how the message bar is styled.
 
-The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
-is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
-the default timeout for the message ``level`` should be used.
+The optional ``duration`` argument can be used to specify the message
+timeout in seconds. If ``duration`` is set to 0, then the message must
+be manually dismissed by the user. Since QGIS 3.18, a duration of -1
+indicates that the default timeout for the message ``level`` should be
+used.
 %End
 
     void pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1 );
 %Docstring
-A convenience method for pushing a message with the specified ``title`` and ``text`` to the bar.
+A convenience method for pushing a message with the specified ``title``
+and ``text`` to the bar.
 
-The ``level`` argument specifies the desired message level (severity) of the message, which controls
-how the message bar is styled.
+The ``level`` argument specifies the desired message level (severity) of
+the message, which controls how the message bar is styled.
 
-The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
-is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
-the default timeout for the message ``level`` should be used.
+The optional ``duration`` argument can be used to specify the message
+timeout in seconds. If ``duration`` is set to 0, then the message must
+be manually dismissed by the user. Since QGIS 3.18, a duration of -1
+indicates that the default timeout for the message ``level`` should be
+used.
 %End
 
     void pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1 );
 %Docstring
-A convenience method for pushing a message with the specified ``title`` and ``text`` to the bar. Additional
-message content specified via ``showMore`` will be shown when the user presses a "more" button.
+A convenience method for pushing a message with the specified ``title``
+and ``text`` to the bar. Additional message content specified via
+``showMore`` will be shown when the user presses a "more" button.
 
-The ``level`` argument specifies the desired message level (severity) of the message, which controls
-how the message bar is styled.
+The ``level`` argument specifies the desired message level (severity) of
+the message, which controls how the message bar is styled.
 
-The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
-is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
-the default timeout for the message ``level`` should be used.
+The optional ``duration`` argument can be used to specify the message
+timeout in seconds. If ``duration`` is set to 0, then the message must
+be manually dismissed by the user. Since QGIS 3.18, a duration of -1
+indicates that the default timeout for the message ``level`` should be
+used.
 %End
 
     QgsMessageBarItem *currentItem();
@@ -157,7 +173,8 @@ Returns a list of all items currently visible or queued for the bar.
 
     static int defaultMessageTimeout( Qgis::MessageLevel level = Qgis::MessageLevel::NoLevel );
 %Docstring
-Returns the default timeout in seconds for timed messages of the specified ``level``.
+Returns the default timeout in seconds for timed messages of the
+specified ``level``.
 
 .. versionadded:: 3.18
 %End
@@ -178,8 +195,9 @@ Emitted whenever an ``item`` was removed from the bar.
 
     bool popWidget();
 %Docstring
-Remove the currently displayed item from the bar and display the next item
-in the stack. If no remaining items are present, the bar will be hidden.
+Remove the currently displayed item from the bar and display the next
+item in the stack. If no remaining items are present, the bar will be
+hidden.
 
 :return: ``True`` if the widget was removed, ``False`` otherwise
 %End
@@ -201,7 +219,8 @@ Pushes a success ``message`` with default timeout to the message bar.
 
     void pushInfo( const QString &title, const QString &message );
 %Docstring
-Pushes a information ``message`` with default timeout to the message bar.
+Pushes a information ``message`` with default timeout to the message
+bar.
 
 :param title: title string for message
 :param message: The message to be displayed
@@ -209,7 +228,8 @@ Pushes a information ``message`` with default timeout to the message bar.
 
     void pushWarning( const QString &title, const QString &message );
 %Docstring
-Pushes a warning ``message`` that must be manually dismissed by the user. Before QGIS 3.18 the default timeout was used.
+Pushes a warning ``message`` that must be manually dismissed by the
+user. Before QGIS 3.18 the default timeout was used.
 
 :param title: title string for message
 :param message: The message to be displayed
@@ -217,7 +237,8 @@ Pushes a warning ``message`` that must be manually dismissed by the user. Before
 
     void pushCritical( const QString &title, const QString &message );
 %Docstring
-Pushes a critical warning ``message`` that must be manually dismissed by the user. Before QGIS 3.18 the default timeout was used.
+Pushes a critical warning ``message`` that must be manually dismissed by
+the user. Before QGIS 3.18 the default timeout was used.
 
 :param title: title string for message
 :param message: The message to be displayed

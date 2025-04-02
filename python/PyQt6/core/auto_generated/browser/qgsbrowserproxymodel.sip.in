@@ -11,7 +11,8 @@
 class QgsBrowserProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-A QSortFilterProxyModel subclass for filtering and sorting browser model items.
+A QSortFilterProxyModel subclass for filtering and sorting browser model
+items.
 
 .. versionadded:: 3.4
 %End
@@ -30,7 +31,8 @@ A QSortFilterProxyModel subclass for filtering and sorting browser model items.
 
     explicit QgsBrowserProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsBrowserProxyModel, with the specified ``parent`` object.
+Constructor for QgsBrowserProxyModel, with the specified ``parent``
+object.
 %End
 
     void setBrowserModel( QgsBrowserModel *model );
@@ -49,8 +51,8 @@ Returns the underlying browser model.
 
     QgsDataItem *dataItem( const QModelIndex &index ) const;
 %Docstring
-Returns the data item at the specified proxy ``index``, or ``None`` if no item
-exists at the index.
+Returns the data item at the specified proxy ``index``, or ``None`` if
+no item exists at the index.
 %End
 
     void setFilterSyntax( FilterSyntax syntax );
@@ -135,43 +137,48 @@ Sets the layer ``type`` to filter the model by. This is only used if
 
     void setHiddenDataItemProviderKeyFilter( const QStringList &hiddenItemsFilter );
 %Docstring
-Sets a filter to hide data items based on :py:func:`QgsDataItem.providerKey()` associated with the item.
+Sets a filter to hide data items based on
+:py:func:`QgsDataItem.providerKey()` associated with the item.
 
-By default browser model shows all items from all available data item providers and few special
-items (e.g. Favorites).
-To customize the behavior, set the filter to not load certain data items.
-The items that are not based on data item providers have prefix "special:", for example
+By default browser model shows all items from all available data item
+providers and few special items (e.g. Favorites). To customize the
+behavior, set the filter to not load certain data items. The items that
+are not based on data item providers have prefix "special:", for example
 "special:Favorites", "special:Home", "PostGIS", "MSSQL"
 
-All items created by the providers listed in filter are hidden from the layer tree.
-This filter is always evaluated.
+All items created by the providers listed in filter are hidden from the
+layer tree. This filter is always evaluated.
 
-:param hiddenItemsFilter: a list of data provider prefixes that will be hidden.
+:param hiddenItemsFilter: a list of data provider prefixes that will be
+                          hidden.
 
 .. versionadded:: 3.12
 %End
 
     void setShownDataItemProviderKeyFilter( const QStringList &shownItemsFilter );
 %Docstring
-Sets a filter to show data items based on :py:func:`QgsDataItem.providerKey()` associated with the item.
+Sets a filter to show data items based on
+:py:func:`QgsDataItem.providerKey()` associated with the item.
 
-By default browser model shows all items from all available data item providers and few special
-items (e.g. Favorites).
-To customize the behavior, set the filter to load only certain data items.
-The items that are not based on data item providers have prefix "special:", for example
+By default browser model shows all items from all available data item
+providers and few special items (e.g. Favorites). To customize the
+behavior, set the filter to load only certain data items. The items that
+are not based on data item providers have prefix "special:", for example
 "special:Favorites", "special:Home", "PostGIS", "MSSQL"
 
-Only the items created by the providers listed in filter are shown in the layer tree.
-This filter is always evaluated.
+Only the items created by the providers listed in filter are shown in
+the layer tree. This filter is always evaluated.
 
-:param shownItemsFilter: a list of data provider prefixes that will be hidden.
+:param shownItemsFilter: a list of data provider prefixes that will be
+                         hidden.
 
 .. versionadded:: 3.14
 %End
 
     bool showLayers() const;
 %Docstring
-Returns ``True`` if layers must be shown, this flag is ``True`` by default.
+Returns ``True`` if layers must be shown, this flag is ``True`` by
+default.
 
 .. seealso:: :py:func:`setShowLayers`
 

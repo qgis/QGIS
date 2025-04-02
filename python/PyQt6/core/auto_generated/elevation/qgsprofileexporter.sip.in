@@ -26,10 +26,11 @@ Handles exports of elevation profiles in various formats.
                         const QgsProfileRequest &request,
                         Qgis::ProfileExportType type );
 %Docstring
-Constructor for QgsProfileExporter, using the provided list of profile ``sources`` to generate the
-results.
+Constructor for QgsProfileExporter, using the provided list of profile
+``sources`` to generate the results.
 
-After construction, call :py:func:`~QgsProfileExporter.run` to initiate the profile generation.
+After construction, call :py:func:`~QgsProfileExporter.run` to initiate
+the profile generation.
 %End
 
 
@@ -37,8 +38,8 @@ After construction, call :py:func:`~QgsProfileExporter.run` to initiate the prof
 
     void run( QgsFeedback *feedback = 0 );
 %Docstring
-Runs the profile generation. This method must be called before retrieving any results from the
-exporter.
+Runs the profile generation. This method must be called before
+retrieving any results from the exporter.
 
 This method is safe to run in a background thread.
 %End
@@ -47,8 +48,9 @@ This method is safe to run in a background thread.
 %Docstring
 Returns a list of vector layer containing the exported profile results.
 
-While this method attempts to condense all results into a single layer, multiple layers may be returned
-when the geometry types of exported features differs.
+While this method attempts to condense all results into a single layer,
+multiple layers may be returned when the geometry types of exported
+features differs.
 
 Ownership of the returned layers is transferred to the caller.
 %End
@@ -60,7 +62,8 @@ Ownership of the returned layers is transferred to the caller.
 class QgsProfileExporterTask : QgsTask
 {
 %Docstring(signature="appended")
-Handles exports of elevation profiles in various formats in a background task.
+Handles exports of elevation profiles in various formats in a background
+task.
 
 .. versionadded:: 3.32
 %End
@@ -86,10 +89,12 @@ Handles exports of elevation profiles in various formats in a background task.
                             const QString &destination,
                             const QgsCoordinateTransformContext &transformContext );
 %Docstring
-Constructor for QgsProfileExporterTask, saving results to the specified ``destination`` file.
+Constructor for QgsProfileExporterTask, saving results to the specified
+``destination`` file.
 
-If ``destination`` is an empty string then the profile results will be generated only and can
-be retrieved by calling :py:func:`~QgsProfileExporterTask.takeLayers`.
+If ``destination`` is an empty string then the profile results will be
+generated only and can be retrieved by calling
+:py:func:`~QgsProfileExporterTask.takeLayers`.
 %End
 
     virtual bool run();
@@ -101,8 +106,9 @@ be retrieved by calling :py:func:`~QgsProfileExporterTask.takeLayers`.
 %Docstring
 Returns a list of vector layer containing the exported profile results.
 
-While this method attempts to condense all results into a single layer, multiple layers may be returned
-when the geometry types of exported features differs.
+While this method attempts to condense all results into a single layer,
+multiple layers may be returned when the geometry types of exported
+features differs.
 
 Ownership of the returned layers is transferred to the caller.
 %End

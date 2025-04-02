@@ -26,7 +26,8 @@ Contains information about a node used for editing an annotation item.
 
     QgsAnnotationItemNode( const QgsVertexId &id, const QgsPointXY &point, Qgis::AnnotationItemNodeType type, Qt::CursorShape cursor = Qt::CursorShape::ArrowCursor );
 %Docstring
-Constructor for QgsAnnotationItemNode, with the specified ``id``, ``point`` and ``type``.
+Constructor for QgsAnnotationItemNode, with the specified ``id``,
+``point`` and ``type``.
 %End
 
     SIP_PYOBJECT __repr__();
@@ -40,7 +41,8 @@ Constructor for QgsAnnotationItemNode, with the specified ``id``, ``point`` and 
 
     QgsVertexId id() const;
 %Docstring
-Returns the ID number of the node, used for uniquely identifying the node in the item.
+Returns the ID number of the node, used for uniquely identifying the
+node in the item.
 %End
 
     QgsPointXY point() const;

@@ -14,7 +14,8 @@ class QgsLayoutView : QGraphicsView
 %Docstring(signature="appended")
 A graphical widget to display and interact with :py:class:`QgsLayouts`.
 
-:py:class:`QgsLayoutView` manages the layout interaction tools and mouse/key events.
+:py:class:`QgsLayoutView` manages the layout interaction tools and
+mouse/key events.
 %End
 
 %TypeHeaderCode
@@ -86,31 +87,35 @@ Sets the ``tool`` currently being used in the view.
 %Docstring
 Unsets the current view tool, if it matches the specified ``tool``.
 
-This is called from destructor of view tools to make sure
-that the tool won't be used any more.
-You don't have to call it manually, :py:class:`QgsLayoutViewTool` takes care of it.
+This is called from destructor of view tools to make sure that the tool
+won't be used any more. You don't have to call it manually,
+:py:class:`QgsLayoutViewTool` takes care of it.
 %End
 
     void setPreviewModeEnabled( bool enabled );
 %Docstring
-Sets whether a preview effect should be used to alter the view's appearance.
+Sets whether a preview effect should be used to alter the view's
+appearance.
 
-:param enabled: Set to ``True`` to enable the preview effect on the view.
+:param enabled: Set to ``True`` to enable the preview effect on the
+                view.
 
 .. seealso:: :py:func:`setPreviewMode`
 %End
 
     bool previewModeEnabled() const;
 %Docstring
-Returns ``True`` if a preview effect is being used to alter the view's appearance.
+Returns ``True`` if a preview effect is being used to alter the view's
+appearance.
 
 .. seealso:: :py:func:`setPreviewModeEnabled`
 %End
 
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 %Docstring
-Sets the preview ``mode`` which should be used to modify the view's appearance. Preview modes are only used
-if :py:func:`~QgsLayoutView.previewModeEnabled` is ``True``.
+Sets the preview ``mode`` which should be used to modify the view's
+appearance. Preview modes are only used if
+:py:func:`~QgsLayoutView.previewModeEnabled` is ``True``.
 
 .. seealso:: :py:func:`setPreviewModeEnabled`
 
@@ -119,8 +124,9 @@ if :py:func:`~QgsLayoutView.previewModeEnabled` is ``True``.
 
     QgsPreviewEffect::PreviewMode previewMode() const;
 %Docstring
-Returns the preview mode which may be used to modify the view's appearance. Preview modes are only used
-if :py:func:`~QgsLayoutView.previewModeEnabled` is ``True``.
+Returns the preview mode which may be used to modify the view's
+appearance. Preview modes are only used if
+:py:func:`~QgsLayoutView.previewModeEnabled` is ``True``.
 
 .. seealso:: :py:func:`setPreviewMode`
 
@@ -129,13 +135,15 @@ if :py:func:`~QgsLayoutView.previewModeEnabled` is ``True``.
 
     void scaleSafe( double scale );
 %Docstring
-Scales the view in a safe way, by limiting the acceptable range
-of the scale applied. The ``scale`` parameter specifies the zoom factor to scale the view by.
+Scales the view in a safe way, by limiting the acceptable range of the
+scale applied. The ``scale`` parameter specifies the zoom factor to
+scale the view by.
 %End
 
     void setZoomLevel( double level );
 %Docstring
-Sets the zoom ``level`` for the view, where a zoom level of 1.0 corresponds to 100%.
+Sets the zoom ``level`` for the view, where a zoom level of 1.0
+corresponds to 100%.
 %End
 
     void setHorizontalRuler( QgsLayoutRuler *ruler );
@@ -154,23 +162,24 @@ Sets a vertical ``ruler`` to synchronize with the view state.
 
     void setMenuProvider( QgsLayoutViewMenuProvider *provider /Transfer/ );
 %Docstring
-Sets a ``provider`` for context menus. Ownership of the provider is transferred to the view.
+Sets a ``provider`` for context menus. Ownership of the provider is
+transferred to the view.
 
 .. seealso:: :py:func:`menuProvider`
 %End
 
     QgsLayoutViewMenuProvider *menuProvider() const;
 %Docstring
-Returns the provider for context menus. Returned value may be ``None`` if no provider is set.
+Returns the provider for context menus. Returned value may be ``None``
+if no provider is set.
 
 .. seealso:: :py:func:`setMenuProvider`
 %End
 
     int currentPage() const;
 %Docstring
-Returns the page visible in the view. This method
-considers the page at the center of the view as the current visible
-page.
+Returns the page visible in the view. This method considers the page at
+the center of the view as the current visible page.
 
 .. seealso:: :py:func:`pageChanged`
 %End
@@ -184,7 +193,8 @@ Returns a list of page items which are currently visible in the view.
 
     QList<int> visiblePageNumbers() const;
 %Docstring
-Returns a list of page numbers for pages which are currently visible in the view.
+Returns a list of page numbers for pages which are currently visible in
+the view.
 
 .. seealso:: :py:func:`visiblePages`
 %End
@@ -218,7 +228,8 @@ Resizes all selected items using the specified ``resize`` mode.
 
     void copySelectedItems( ClipboardOperation operation );
 %Docstring
-Cuts or copies the selected items, respecting the specified ``operation``.
+Cuts or copies the selected items, respecting the specified
+``operation``.
 
 .. seealso:: :py:func:`copyItems`
 
@@ -227,7 +238,8 @@ Cuts or copies the selected items, respecting the specified ``operation``.
 
     void copyItems( const QList<QgsLayoutItem *> &items, ClipboardOperation operation );
 %Docstring
-Cuts or copies the a list of ``items``, respecting the specified ``operation``.
+Cuts or copies the a list of ``items``, respecting the specified
+``operation``.
 
 .. seealso:: :py:func:`copySelectedItems`
 
@@ -247,8 +259,8 @@ A list of pasted items is returned.
 
     QList<QgsLayoutItem *> pasteItems( QPointF layoutPoint );
 %Docstring
-Pastes items from clipboard, at the specified ``layoutPoint``,
-in layout units.
+Pastes items from clipboard, at the specified ``layoutPoint``, in layout
+units.
 
 A list of pasted items is returned.
 
@@ -266,8 +278,8 @@ Returns ``True`` if the current clipboard contains layout items.
 
     QPointF deltaForKeyEvent( QKeyEvent *event );
 %Docstring
-Returns the delta (in layout coordinates) by which to move items
-for the given key ``event``.
+Returns the delta (in layout coordinates) by which to move items for the
+given key ``event``.
 %End
 
 
@@ -361,8 +373,8 @@ Deselects all items in the view.
 
     void invertSelection();
 %Docstring
-Inverts the current selection, selecting deselected items
-and deselecting and selected items.
+Inverts the current selection, selecting deselected items and
+deselecting and selected items.
 
 .. seealso:: :py:func:`selectAll`
 
@@ -437,8 +449,8 @@ Lowers the selected items to the bottom of the z-order.
 
     void lockSelectedItems();
 %Docstring
-Locks any selected items, preventing them from being interacted with
-by mouse interactions.
+Locks any selected items, preventing them from being interacted with by
+mouse interactions.
 
 .. seealso:: :py:func:`unlockAllItems`
 %End
@@ -480,17 +492,17 @@ Ungroups all selected items.
 
     void viewChanged();
 %Docstring
-Updates associated rulers and other widgets after view extent or zoom has changed.
-This should be called after calling any of the QGraphicsView
-base class methods which alter the view's zoom level or extent,
-i.e. QGraphicsView.fitInView().
+Updates associated rulers and other widgets after view extent or zoom
+has changed. This should be called after calling any of the
+QGraphicsView base class methods which alter the view's zoom level or
+extent, i.e. QGraphicsView.fitInView().
 %End
 
     void pushStatusMessage( const QString &message );
 %Docstring
-Pushes a new status bar ``message`` to the view. This causes :py:func:`~QgsLayoutView.statusMessage`
-to be emitted, which should cause the message to appear in the status bar
-for the parent window.
+Pushes a new status bar ``message`` to the view. This causes
+:py:func:`~QgsLayoutView.statusMessage` to be emitted, which should
+cause the message to appear in the status bar for the parent window.
 
 .. seealso:: :py:func:`statusMessage`
 %End
@@ -520,9 +532,9 @@ Emitted whenever the zoom level of the view is changed.
 
     void cursorPosChanged( QPointF layoutPoint );
 %Docstring
-Emitted when the mouse cursor coordinates change within the view.
-The ``layoutPoint`` argument indicates the cursor position within
-the layout coordinate system.
+Emitted when the mouse cursor coordinates change within the view. The
+``layoutPoint`` argument indicates the cursor position within the layout
+coordinate system.
 %End
 
     void pageChanged( int page );
@@ -544,14 +556,15 @@ status bar.
 
     void itemFocused( QgsLayoutItem *item );
 %Docstring
-Emitted when an ``item`` is "focused" in the view, i.e. it becomes the active
-item and should have its properties displayed in any designer windows.
+Emitted when an ``item`` is "focused" in the view, i.e. it becomes the
+active item and should have its properties displayed in any designer
+windows.
 %End
 
     void willBeDeleted();
 %Docstring
-Emitted in the destructor when the view is about to be deleted,
-but is still in a perfectly valid state.
+Emitted in the destructor when the view is about to be deleted, but is
+still in a perfectly valid state.
 %End
 
   protected:
@@ -584,11 +597,11 @@ but is still in a perfectly valid state.
 class QgsLayoutViewMenuProvider
 {
 %Docstring(signature="appended")
-
 Interface for a :py:class:`QgsLayoutView` context menu.
 
-Implementations of this interface can be made to allow :py:class:`QgsLayoutView`
-instances to provide custom context menus (opened upon right-click).
+Implementations of this interface can be made to allow
+:py:class:`QgsLayoutView` instances to provide custom context menus
+(opened upon right-click).
 
 .. seealso:: :py:class:`QgsLayoutView`
 %End

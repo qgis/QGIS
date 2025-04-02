@@ -13,7 +13,6 @@
 class QgsAttributeFormRelationEditorWidget : QgsAttributeFormWidget
 {
 %Docstring(signature="appended")
-
 Widget to show for child relations on an attribute form.
 %End
 

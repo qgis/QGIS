@@ -61,16 +61,19 @@ Creates a new linestring annotation item.
 %Docstring
 Returns the geometry of the item.
 
-The coordinate reference system for the line will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+The coordinate reference system for the line will be the parent layer's
+:py:func:`QgsAnnotationLayer.crs()`.
 
 .. seealso:: :py:func:`setGeometry`
 %End
 
     void setGeometry( QgsCurve *geometry /Transfer/ );
 %Docstring
-Sets the ``geometry`` of the item. Ownership of ``geometry`` is transferred.
+Sets the ``geometry`` of the item. Ownership of ``geometry`` is
+transferred.
 
-The coordinate reference system for the line will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+The coordinate reference system for the line will be the parent layer's
+:py:func:`QgsAnnotationLayer.crs()`.
 
 .. seealso:: :py:func:`geometry`
 %End

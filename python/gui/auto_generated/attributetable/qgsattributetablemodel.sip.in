@@ -13,13 +13,14 @@
 class QgsAttributeTableModel : QAbstractTableModel
 {
 %Docstring(signature="appended")
-A model backed by a :py:class:`QgsVectorLayerCache` which is able to provide
-feature/attribute information to a QAbstractItemView.
+A model backed by a :py:class:`QgsVectorLayerCache` which is able to
+provide feature/attribute information to a QAbstractItemView.
 
-Is able to generate editor widgets for its QModelIndexes as well.
-Is mostly referred to as "master model" within this doc and the source.
+Is able to generate editor widgets for its QModelIndexes as well. Is
+mostly referred to as "master model" within this doc and the source.
 
-\see <a href="http://doc.qt.digia.com/qt/model-view-programming.html">Qt Model View Programming</a>
+\see <a href="http://doc.qt.digia.com/qt/model-view-programming.html">Qt
+Model View Programming</a>
 %End
 
 %TypeHeaderCode
@@ -157,7 +158,8 @@ Swaps two rows
 
     QgsVectorLayer *layer() const;
 %Docstring
-Returns the layer this model uses as backend. Retrieved from the layer cache.
+Returns the layer this model uses as backend. Retrieved from the layer
+cache.
 %End
 
     QgsVectorLayerCache *layerCache() const;
@@ -184,33 +186,35 @@ Returns the feature attributes at given model index
 
     void prefetchColumnData( int column );
 %Docstring
-Caches the entire data for one column. This should be called prior to sorting,
-so the data does not have to be fetched for every single comparison.
-Specify -1 as column to invalidate the cache
+Caches the entire data for one column. This should be called prior to
+sorting, so the data does not have to be fetched for every single
+comparison. Specify -1 as column to invalidate the cache
 
 :param column: The column index of the field to catch
 %End
 
     void prefetchSortData( const QString &expression, unsigned long cacheIndex = 0 );
 %Docstring
-Prefetches the entire data for an ``expression``. Based on this cached information
-the sorting can later be done in a performant way. A ``cacheIndex`` can be specified
-if multiple caches should be filled. In this case, the caches will be available
-as ``QgsAttributeTableModel.SortRole + cacheIndex``.
+Prefetches the entire data for an ``expression``. Based on this cached
+information the sorting can later be done in a performant way. A
+``cacheIndex`` can be specified if multiple caches should be filled. In
+this case, the caches will be available as
+``QgsAttributeTableModel.SortRole + cacheIndex``.
 %End
 
     QString sortCacheExpression( unsigned long cacheIndex = 0 ) const;
 %Docstring
-The expression which was used to fill the sorting cache at index ``cacheIndex``.
+The expression which was used to fill the sorting cache at index
+``cacheIndex``.
 
 .. seealso:: :py:func:`prefetchSortData`
 %End
 
     void setRequest( const QgsFeatureRequest &request );
 %Docstring
-Set a request that will be used to fill this attribute table model.
-In contrast to a filter, the request will constrain the data shown without the possibility
-to dynamically adjust it.
+Set a request that will be used to fill this attribute table model. In
+contrast to a filter, the request will constrain the data shown without
+the possibility to dynamically adjust it.
 
 :param request: The request to use to fill this table model.
 %End
@@ -223,44 +227,44 @@ Gets the the feature request
 
     void setEditorContext( const QgsAttributeEditorContext &context );
 %Docstring
-Sets the context in which this table is shown.
-Will be forwarded to any editor widget created when editing data on this model.
+Sets the context in which this table is shown. Will be forwarded to any
+editor widget created when editing data on this model.
 
 :param context: The context
 %End
 
     const QgsAttributeEditorContext &editorContext() const;
 %Docstring
-Returns the context in which this table is shown.
-Will be forwarded to any editor widget created when editing data on this model.
+Returns the context in which this table is shown. Will be forwarded to
+any editor widget created when editing data on this model.
 
 :return: The context
 %End
 
     int extraColumns() const;
 %Docstring
-Empty extra columns to announce from this model.
-Any extra columns need to be implemented by proxy models in front of this model.
+Empty extra columns to announce from this model. Any extra columns need
+to be implemented by proxy models in front of this model.
 %End
 
     void setExtraColumns( int extraColumns );
 %Docstring
-Empty extra columns to announce from this model.
-Any extra columns need to be implemented by proxy models in front of this model.
+Empty extra columns to announce from this model. Any extra columns need
+to be implemented by proxy models in front of this model.
 %End
 
     bool showValidityState() const;
 %Docstring
-Returns whether the attribute table will add a visual feedback to cells when an attribute
-constraint is not met.
+Returns whether the attribute table will add a visual feedback to cells
+when an attribute constraint is not met.
 
 .. versionadded:: 3.30
 %End
 
     void setShowValidityState( bool show );
 %Docstring
-Sets whether the attribute table will add a visual feedback to cells when an attribute constraint
-is not met.
+Sets whether the attribute table will add a visual feedback to cells
+when an attribute constraint is not met.
 
 .. versionadded:: 3.30
 %End
@@ -269,13 +273,14 @@ is not met.
 
     virtual void loadLayer();
 %Docstring
-Loads the layer into the model
-Preferably to be called, before using this model as source for any other proxy model
+Loads the layer into the model Preferably to be called, before using
+this model as source for any other proxy model
 %End
 
     void fieldConditionalStyleChanged( const QString &fieldName );
 %Docstring
-Handles updating the model when the conditional style for a field changes.
+Handles updating the model when the conditional style for a field
+changes.
 
 :param fieldName: name of field whose conditional style has changed
 %End

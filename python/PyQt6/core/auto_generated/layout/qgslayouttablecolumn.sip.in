@@ -15,9 +15,11 @@ class QgsLayoutTableColumn
 %Docstring(signature="appended")
 Stores properties of a column for a :py:class:`QgsLayoutTable`.
 
-Some properties of a :py:class:`QgsLayoutTableColumn` are applicable only in certain contexts.
-For instance, the attribute and setAttribute methods only have an effect
-for :py:class:`QgsLayoutItemAttributeTables`, and have no effect for :py:class:`QgsLayoutItemTextTables`.
+Some properties of a :py:class:`QgsLayoutTableColumn` are applicable
+only in certain contexts. For instance, the attribute and setAttribute
+methods only have an effect for
+:py:class:`QgsLayoutItemAttributeTables`, and have no effect for
+:py:class:`QgsLayoutItemTextTables`.
 %End
 
 %TypeHeaderCode
@@ -36,7 +38,8 @@ Constructor for QgsLayoutTableColumn.
 %Docstring
 Writes the column's properties to xml for storage.
 
-:param columnElem: an existing QDomElement in which to store the column's properties.
+:param columnElem: an existing QDomElement in which to store the
+                   column's properties.
 :param doc: QDomDocument for the destination xml.
 
 .. seealso:: :py:func:`readXml`
@@ -46,46 +49,48 @@ Writes the column's properties to xml for storage.
 %Docstring
 Reads the column's properties from xml.
 
-:param columnElem: a QDomElement holding the column's desired properties.
+:param columnElem: a QDomElement holding the column's desired
+                   properties.
 
 .. seealso:: :py:func:`writeXml`
 %End
 
     double width() const;
 %Docstring
-Returns the width for the column in mm,
-or 0 if column width is automatically calculated.
+Returns the width for the column in mm, or 0 if column width is
+automatically calculated.
 
 .. seealso:: :py:func:`setWidth`
 %End
 
     void setWidth( const double width );
 %Docstring
-Sets the width for a column in mm. Set the ``width`` to 0 if the column width is to be automatically calculated.
+Sets the width for a column in mm. Set the ``width`` to 0 if the column
+width is to be automatically calculated.
 
 .. seealso:: :py:func:`width`
 %End
 
     QString heading() const;
 %Docstring
-Returns the heading for a column, which is the value displayed in the column's
-header cell.
+Returns the heading for a column, which is the value displayed in the
+column's header cell.
 
 .. seealso:: :py:func:`setHeading`
 %End
 
     void setHeading( const QString &heading );
 %Docstring
-Sets the ``heading`` for a column, which is the value displayed in the column's
-header cell.
+Sets the ``heading`` for a column, which is the value displayed in the
+column's header cell.
 
 .. seealso:: :py:func:`heading`
 %End
 
     Qt::AlignmentFlag hAlignment() const;
 %Docstring
-Returns the horizontal alignment for a column, which controls the alignment
-used for drawing column values within cells.
+Returns the horizontal alignment for a column, which controls the
+alignment used for drawing column values within cells.
 
 .. seealso:: :py:func:`setHAlignment`
 
@@ -94,8 +99,8 @@ used for drawing column values within cells.
 
     void setHAlignment( Qt::AlignmentFlag alignment );
 %Docstring
-Sets the horizontal ``alignment`` for a column, which controls the alignment
-used for drawing column values within cells.
+Sets the horizontal ``alignment`` for a column, which controls the
+alignment used for drawing column values within cells.
 
 .. seealso:: :py:func:`hAlignment`
 
@@ -104,8 +109,8 @@ used for drawing column values within cells.
 
     Qt::AlignmentFlag vAlignment() const;
 %Docstring
-Returns the vertical alignment for a column, which controls the alignment
-used for drawing column values within cells.
+Returns the vertical alignment for a column, which controls the
+alignment used for drawing column values within cells.
 
 .. seealso:: :py:func:`setVAlignment`
 
@@ -114,8 +119,8 @@ used for drawing column values within cells.
 
     void setVAlignment( Qt::AlignmentFlag alignment );
 %Docstring
-Sets the vertical ``alignment`` for a column, which controls the alignment
-used for drawing column values within cells.
+Sets the vertical ``alignment`` for a column, which controls the
+alignment used for drawing column values within cells.
 
 .. seealso:: :py:func:`vAlignment`
 
@@ -124,8 +129,9 @@ used for drawing column values within cells.
 
     QString attribute() const;
 %Docstring
-Returns the attribute name or expression used for the column's values. This property
-is only used when the column is part of a :py:class:`QgsLayoutItemAttributeTable`.
+Returns the attribute name or expression used for the column's values.
+This property is only used when the column is part of a
+:py:class:`QgsLayoutItemAttributeTable`.
 
 .. note::
 
@@ -136,8 +142,9 @@ is only used when the column is part of a :py:class:`QgsLayoutItemAttributeTable
 
     void setAttribute( const QString &attribute );
 %Docstring
-Sets the ``attribute`` name or expression used for the column's values. This property
-is only used when the column is part of a :py:class:`QgsLayoutItemAttributeTable`.
+Sets the ``attribute`` name or expression used for the column's values.
+This property is only used when the column is part of a
+:py:class:`QgsLayoutItemAttributeTable`.
 
 .. note::
 
@@ -148,8 +155,9 @@ is only used when the column is part of a :py:class:`QgsLayoutItemAttributeTable
 
     Qt::SortOrder sortOrder() const;
 %Docstring
-Returns the sort order for the column. This property is only used when the column
-is part of a :py:class:`QgsLayoutItemAttributeTable` and when sortByRank is > 0.
+Returns the sort order for the column. This property is only used when
+the column is part of a :py:class:`QgsLayoutItemAttributeTable` and when
+sortByRank is > 0.
 
 .. note::
 
@@ -162,8 +170,9 @@ is part of a :py:class:`QgsLayoutItemAttributeTable` and when sortByRank is > 0.
 
     void setSortOrder( Qt::SortOrder order );
 %Docstring
-Sets the sort ``order`` for the column. This property is only used when the column
-is part of a :py:class:`QgsLayoutItemAttributeTable` and when :py:func:`~QgsLayoutTableColumn.sortByRank` is > 0.
+Sets the sort ``order`` for the column. This property is only used when
+the column is part of a :py:class:`QgsLayoutItemAttributeTable` and when
+:py:func:`~QgsLayoutTableColumn.sortByRank` is > 0.
 
 .. note::
 
@@ -176,11 +185,11 @@ is part of a :py:class:`QgsLayoutItemAttributeTable` and when :py:func:`~QgsLayo
 
  int sortByRank() const /Deprecated="Since 3.14. The order is now hold in a dedicated model."/;
 %Docstring
-Returns the sort rank for the column. If the sort rank is > 0 then the column
-will be sorted in the table. The sort rank specifies the priority given to the
-column when the table is sorted by multiple columns, with lower sort ranks
-having higher priority. This property is only used when the column
-is part of a :py:class:`QgsLayoutItemAttributeTable`.
+Returns the sort rank for the column. If the sort rank is > 0 then the
+column will be sorted in the table. The sort rank specifies the priority
+given to the column when the table is sorted by multiple columns, with
+lower sort ranks having higher priority. This property is only used when
+the column is part of a :py:class:`QgsLayoutItemAttributeTable`.
 
 If sort rank is <= 0 then the column is not being sorted.
 
@@ -199,12 +208,12 @@ If sort rank is <= 0 then the column is not being sorted.
 
  void setSortByRank( int rank ) /Deprecated="Since 3.14. The order is now hold in a dedicated model."/;
 %Docstring
-Sets the sort ``rank`` for the column. If the sort rank is > 0 then the column
-will be sorted in the table. The sort rank specifies the priority given to the
-column when the table is sorted by multiple columns, with lower sort ranks
-having higher priority. This property is only used when the column
-is part of a :py:class:`QgsLayoutItemAttributeTable`.
-If the sort ``rank`` is <= 0 then the column is not being sorted.
+Sets the sort ``rank`` for the column. If the sort rank is > 0 then the
+column will be sorted in the table. The sort rank specifies the priority
+given to the column when the table is sorted by multiple columns, with
+lower sort ranks having higher priority. This property is only used when
+the column is part of a :py:class:`QgsLayoutItemAttributeTable`. If the
+sort ``rank`` is <= 0 then the column is not being sorted.
 
 .. note::
 

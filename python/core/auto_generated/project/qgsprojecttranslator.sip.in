@@ -26,14 +26,20 @@ An interface for objects which can translate project strings.
 %Docstring
 Translates a string using the Qt QTranslator mechanism.
 
-This function can be called from wherever the :py:class:`QgsReadWriteContext` is available.
+This function can be called from wherever the
+:py:class:`QgsReadWriteContext` is available.
 
-:param context: describes the context of the translation, eg the corresponding map layer
-:param sourceText: the identifier of the text to translate (usually the original untranslated string)
-:param disambiguation: optional string providing additional context for the translation
-:param n: optional "object count", which can alter the translation to account for plural forms
+:param context: describes the context of the translation, eg the
+                corresponding map layer
+:param sourceText: the identifier of the text to translate (usually the
+                   original untranslated string)
+:param disambiguation: optional string providing additional context for
+                       the translation
+:param n: optional "object count", which can alter the translation to
+          account for plural forms
 
-:return: the translated string. In the case that there is no QTranslator available, the ``sourceText`` will be returned unchanged.
+:return: the translated string. In the case that there is no QTranslator
+         available, the ``sourceText`` will be returned unchanged.
 
 .. versionadded:: 3.4
 %End

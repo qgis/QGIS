@@ -23,7 +23,8 @@ Convenience functions for geometry utils.
 
     static double sqrDistance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) /HoldGIL/;
 %Docstring
-Returns the squared 3D distance between (``x1``, ``y1``, ``z1``) and (``x2``, ``y2``, ``z2``).
+Returns the squared 3D distance between (``x1``, ``y1``, ``z1``) and
+(``x2``, ``y2``, ``z2``).
 
 .. warning::
 
@@ -34,7 +35,8 @@ Returns the squared 3D distance between (``x1``, ``y1``, ``z1``) and (``x2``, ``
 
     static double distance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) /HoldGIL/;
 %Docstring
-Returns the 3D distance between (``x1``, ``y1``, ``z1``) and (``x2``, ``y2``, ``z2``).
+Returns the 3D distance between (``x1``, ``y1``, ``z1``) and (``x2``,
+``y2``, ``z2``).
 
 .. warning::
 
@@ -45,7 +47,8 @@ Returns the 3D distance between (``x1``, ``y1``, ``z1``) and (``x2``, ``y2``, ``
 
     static double sqrDistance2D( double x1, double y1, double x2, double y2 ) /HoldGIL/;
 %Docstring
-Returns the squared 2D distance between (``x1``, ``y1``) and (``x2``, ``y2``).
+Returns the squared 2D distance between (``x1``, ``y1``) and (``x2``,
+``y2``).
 %End
 
     static double distance2D( double x1, double y1, double x2, double y2 ) /HoldGIL/;
@@ -60,25 +63,32 @@ Returns the squared distance between a point and a line.
 
     static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 ) /HoldGIL/;
 %Docstring
-Returns a value < 0 if the point (``x``, ``y``) is left of the line from (``x1``, ``y1``) -> (``x2``, ``y2``).
-A positive return value indicates the point is to the right of the line.
+Returns a value < 0 if the point (``x``, ``y``) is left of the line from
+(``x1``, ``y1``) -> (``x2``, ``y2``). A positive return value indicates
+the point is to the right of the line.
 
-If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
-on the line, or exactly in line with the segment) and the result is undefined.
+If the return value is 0, then the test was unsuccessful (e.g. due to
+testing a point exactly on the line, or exactly in line with the
+segment) and the result is undefined.
 %End
 
 
     static void perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x /Out/, double *y /Out/ );
 %Docstring
-Calculates a point a certain ``proportion`` of the way along the segment from (``x1``, ``y1``) to (``x2``, ``y2``),
-offset from the segment by the specified ``offset`` amount.
+Calculates a point a certain ``proportion`` of the way along the segment
+from (``x1``, ``y1``) to (``x2``, ``y2``), offset from the segment by
+the specified ``offset`` amount.
 
 :param x1: x-coordinate of start of segment
 :param y1: y-coordinate of start of segment
 :param x2: x-coordinate of end of segment
 :param y2: y-coordinate of end of segment
-:param proportion: proportion of the segment's length at which to place the point (between 0.0 and 1.0)
-:param offset: perpendicular offset from segment to apply to point. A negative ``offset`` shifts the point to the left of the segment, while a positive ``offset`` will shift it to the right of the segment.
+:param proportion: proportion of the segment's length at which to place
+                   the point (between 0.0 and 1.0)
+:param offset: perpendicular offset from segment to apply to point. A
+               negative ``offset`` shifts the point to the left of the
+               segment, while a positive ``offset`` will shift it to the
+               right of the segment.
 
 Example
 -------------------------------------
@@ -101,18 +111,21 @@ Example
 
     static double ccwAngle( double dy, double dx ) /HoldGIL/;
 %Docstring
-Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
+Returns the counter clockwise angle between a line with components dx,
+dy and the line with dx > 0 and dy = 0
 %End
 
     static void circleCenterRadius( double x1, double y1, double x2, double y2, double x3, double y3, double &radius /Out/,
                                     double &centerX /Out/, double &centerY /Out/ ) /HoldGIL/;
 %Docstring
-Returns radius and center of the circle through (``x1`` ``y1``), (``x2`` ``y2``), (``x3`` ``y3``)
+Returns radius and center of the circle through (``x1`` ``y1``), (``x2``
+``y2``), (``x3`` ``y3``)
 %End
 
     static bool circleClockwise( double angle1, double angle2, double angle3 ) /HoldGIL/;
 %Docstring
-Returns ``True`` if the circle defined by three angles is ordered clockwise.
+Returns ``True`` if the circle defined by three angles is ordered
+clockwise.
 
 The angles are defined counter-clockwise from the origin, i.e. using
 Euclidean angles as opposed to geographic "North up" angles.
@@ -125,8 +138,8 @@ Returns ``True`` if, in a circle, angle is between angle1 and angle2
 
     static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 ) /HoldGIL/;
 %Docstring
-Returns ``True`` if an angle is between angle1 and angle3 on a circle described by
-angle1, angle2 and angle3.
+Returns ``True`` if an angle is between angle1 and angle3 on a circle
+described by angle1, angle2 and angle3.
 %End
 
     static double circleLength( double x1, double y1, double x2, double y2, double x3, double y3 ) /HoldGIL/;
@@ -141,7 +154,8 @@ Calculates angle of a circular string part defined by pt1, pt2, pt3
 
     static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) /HoldGIL/;
 %Docstring
-Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
+Interpolate a value at given angle on circular arc given values (zm1,
+zm2, zm3) at three different angles (a1, a2, a3).
 %End
 
     static double normalizedAngle( double angle ) /HoldGIL/;
@@ -155,21 +169,23 @@ Ensures that an angle is in the range 0 <= angle < 2 pi.
 
     static double lineAngle( double x1, double y1, double x2, double y2 ) /HoldGIL/;
 %Docstring
-Calculates the direction of line joining two points in radians, clockwise from the north direction.
+Calculates the direction of line joining two points in radians,
+clockwise from the north direction.
 
 :param x1: x-coordinate of line start
 :param y1: y-coordinate of line start
 :param x2: x-coordinate of line end
 :param y2: y-coordinate of line end
 
-:return: angle in radians. Returned value is undefined if start and end point are the same.
+:return: angle in radians. Returned value is undefined if start and end
+         point are the same.
 %End
 
     static double angleBetweenThreePoints( double x1, double y1, double x2, double y2,
                                            double x3, double y3 ) /HoldGIL/;
 %Docstring
-Calculates the angle between the lines AB and BC, where AB and BC described
-by points a, b and b, c.
+Calculates the angle between the lines AB and BC, where AB and BC
+described by points a, b and b, c.
 
 :param x1: x-coordinate of point a
 :param y1: y-coordinate of point a
@@ -178,31 +194,35 @@ by points a, b and b, c.
 :param x3: x-coordinate of point c
 :param y3: y-coordinate of point c
 
-:return: angle between lines in radians. Returned value is undefined if two or more points are equal.
+:return: angle between lines in radians. Returned value is undefined if
+         two or more points are equal.
 %End
 
     static double linePerpendicularAngle( double x1, double y1, double x2, double y2 ) /HoldGIL/;
 %Docstring
-Calculates the perpendicular angle to a line joining two points. Returned angle is in radians,
-clockwise from the north direction.
+Calculates the perpendicular angle to a line joining two points.
+Returned angle is in radians, clockwise from the north direction.
 
 :param x1: x-coordinate of line start
 :param y1: y-coordinate of line start
 :param x2: x-coordinate of line end
 :param y2: y-coordinate of line end
 
-:return: angle in radians. Returned value is undefined if start and end point are the same.
+:return: angle in radians. Returned value is undefined if start and end
+         point are the same.
 %End
 
     static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 ) /HoldGIL/;
 %Docstring
-Calculates the average angle (in radians) between the two linear segments from
-(``x1``, ``y1``) to (``x2``, ``y2``) and (``x2``, ``y2``) to (``x3``, ``y3``).
+Calculates the average angle (in radians) between the two linear
+segments from (``x1``, ``y1``) to (``x2``, ``y2``) and (``x2``, ``y2``)
+to (``x3``, ``y3``).
 %End
 
     static double averageAngle( double a1, double a2 ) /HoldGIL/;
 %Docstring
-Averages two angles, correctly handling negative angles and ensuring the result is between 0 and 2 pi.
+Averages two angles, correctly handling negative angles and ensuring the
+result is between 0 and 2 pi.
 
 :param a1: first angle (in radians)
 :param a2: second angle (in radians)
@@ -212,9 +232,9 @@ Averages two angles, correctly handling negative angles and ensuring the result 
 
     static int closestSideOfRectangle( double right, double bottom, double left, double top, double x, double y );
 %Docstring
-Returns a number representing the closest side of a rectangle defined by /a right,
-``bottom``, ``left``, ``top`` to the point at (``x``, ``y``), where
-the point may be in the interior of the rectangle or outside it.
+Returns a number representing the closest side of a rectangle defined by
+/a right, ``bottom``, ``left``, ``top`` to the point at (``x``, ``y``),
+where the point may be in the interior of the rectangle or outside it.
 
 The returned value may be:
 
@@ -245,24 +265,42 @@ The returned value may be:
                                             double segmentLength = 0
                                           ) /HoldGIL/;
 %Docstring
-Create a perpendicular line segment to a given segment [``segmentPoint1``,``segmentPoint2``] with its center at ``centerPoint``.
+Create a perpendicular line segment to a given segment
+[``segmentPoint1``,``segmentPoint2``] with its center at
+``centerPoint``.
 
-May be used to split geometries. Unless ``segmentLength`` is specified the new centered perpendicular line segment will have double the length of the input segment.
+May be used to split geometries. Unless ``segmentLength`` is specified
+the new centered perpendicular line segment will have double the length
+of the input segment.
 
-The result is a line (segment) centered in point p and perpendicular to segment [segmentPoint1, segmentPoint2].
+The result is a line (segment) centered in point p and perpendicular to
+segment [segmentPoint1, segmentPoint2].
 
-:param centerPointX: x-coordinate of the point where the center of the perpendicular should be located
-:param centerPointY: y-coordinate of the point where the center of the perpendicular should be located
-:param segmentPoint1x: : x-coordinate of segmentPoint1, the segment's start point
-:param segmentPoint1y: : y-coordinate of segmentPoint1, the segment's start point
-:param segmentPoint2x: : x-coordinate of segmentPoint2, the segment's end point
-:param segmentPoint2y: : y-coordinate of segmentPoint2, the segment's end point
-:param segmentLength: (optional) Trims to given length. A segmentLength value of 0 refers to the default length which is double the length of the input segment. Set to 1 for a normalized length.
+:param centerPointX: x-coordinate of the point where the center of the
+                     perpendicular should be located
+:param centerPointY: y-coordinate of the point where the center of the
+                     perpendicular should be located
+:param segmentPoint1x: : x-coordinate of segmentPoint1, the segment's
+                       start point
+:param segmentPoint1y: : y-coordinate of segmentPoint1, the segment's
+                       start point
+:param segmentPoint2x: : x-coordinate of segmentPoint2, the segment's
+                       end point
+:param segmentPoint2y: : y-coordinate of segmentPoint2, the segment's
+                       end point
+:param segmentLength: (optional) Trims to given length. A segmentLength
+                      value of 0 refers to the default length which is
+                      double the length of the input segment. Set to 1
+                      for a normalized length.
 
-:return: - perpendicularSegmentPoint1x: : x-coordinate of the perpendicularCenterSegment's start point
-         - perpendicularSegmentPoint1y: : y-coordinate of the perpendicularCenterSegment's start point
-         - perpendicularSegmentPoint2x: : x-coordinate of the perpendicularCenterSegment's end point
-         - perpendicularSegmentPoint2y: : y-coordinate of the perpendicularCenterSegment's end point
+:return: - perpendicularSegmentPoint1x: : x-coordinate of the
+           perpendicularCenterSegment's start point
+         - perpendicularSegmentPoint1y: : y-coordinate of the
+           perpendicularCenterSegment's start point
+         - perpendicularSegmentPoint2x: : x-coordinate of the
+           perpendicularCenterSegment's end point
+         - perpendicularSegmentPoint2y: : y-coordinate of the
+           perpendicularCenterSegment's end point
 
 .. versionadded:: 3.24
 %End
@@ -294,21 +332,24 @@ A method to project one skew line onto another.
 :param epsilon: the tolerance to use.
 
 :return: - ``True`` if such point exists, ``False`` - otherwise.
-         - X1: is the result projection point of line P2P22 onto line P1P12,
+         - X1: is the result projection point of line P2P22 onto line
+           P1P12,
 %End
 
     static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
                                      const QgsVector3D &Lb1, const QgsVector3D &Lb2,
                                      QgsVector3D &intersection /Out/ ) /HoldGIL/;
 %Docstring
-An algorithm to calculate an (approximate) intersection of two lines in 3D.
+An algorithm to calculate an (approximate) intersection of two lines in
+3D.
 
 :param La1: is the first point on the first line,
 :param La2: is the second point on the first line,
 :param Lb1: is the first point on the second line,
 :param Lb2: is the second point on the second line,
 
-:return: - ``True`` if the intersection can be found, ``False`` - otherwise.
+:return: - ``True`` if the intersection can be found, ``False`` -
+           otherwise.
          - intersection: is the result intersection, of it can be found.
 
 Example
@@ -342,16 +383,16 @@ Example
 
     static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY ) /HoldGIL/;
 %Docstring
-Returns the area of the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
-(``cX``, ``cY``).
+Returns the area of the triangle denoted by the points (``aX``, ``aY``),
+(``bX``, ``bY``) and (``cX``, ``cY``).
 
 .. versionadded:: 3.10
 %End
 
     static double pointFractionAlongLine( double x1, double y1, double x2, double y2, double px, double py );
 %Docstring
-Given the line (``x1``, ``y1``) to (``x2``, ``y2``) and a point (``px``, ``py``) returns the fraction
-of the line length at which the point lies.
+Given the line (``x1``, ``y1``) to (``x2``, ``y2``) and a point (``px``,
+``py``) returns the fraction of the line length at which the point lies.
 
 .. warning::
 
@@ -363,8 +404,8 @@ of the line length at which the point lies.
     static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
                                          double weightB, double weightC, double &pointX /Out/, double &pointY /Out/ ) /HoldGIL/;
 %Docstring
-Returns a weighted point inside the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
-(``cX``, ``cY``).
+Returns a weighted point inside the triangle denoted by the points
+(``aX``, ``aY``), (``bX``, ``bY``) and (``cX``, ``cY``).
 
 :param aX: x-coordinate of first vertex in triangle
 :param aY: y-coordinate of first vertex in triangle
@@ -383,8 +424,9 @@ Returns a weighted point inside the triangle denoted by the points (``aX``, ``aY
 
     static bool pointsAreCollinear( double x1, double y1, double x2, double y2, double x3, double y3, double epsilon );
 %Docstring
-Given the points (``x1``, ``y1``), (``x2``, ``y2``) and (``x3``, ``y3``) returns ``True`` if these
-points can be considered collinear with a specified tolerance ``epsilon``.
+Given the points (``x1``, ``y1``), (``x2``, ``y2``) and (``x3``, ``y3``)
+returns ``True`` if these points can be considered collinear with a
+specified tolerance ``epsilon``.
 
 .. versionadded:: 3.32
 %End
@@ -393,9 +435,10 @@ points can be considered collinear with a specified tolerance ``epsilon``.
     static bool angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
                                double &pointX /Out/, double &pointY /Out/, double &angle /Out/ ) /HoldGIL/;
 %Docstring
-Returns the point (``pointX``, ``pointY``) forming the bisector from segment (``aX`` ``aY``) (``bX`` ``bY``)
-and segment (``bX``, ``bY``) (``dX``, ``dY``).
-The bisector segment of AB-CD is (point, projection of point by ``angle``)
+Returns the point (``pointX``, ``pointY``) forming the bisector from
+segment (``aX`` ``aY``) (``bX`` ``bY``) and segment (``bX``, ``bY``)
+(``dX``, ``dY``). The bisector segment of AB-CD is (point, projection of
+point by ``angle``)
 
 :param aX: x-coordinate of first vertex of the segment ab
 :param aY: y-coordinate of first vertex of the segment ab
@@ -406,10 +449,12 @@ The bisector segment of AB-CD is (point, projection of point by ``angle``)
 :param dX: x-coordinate of second vertex of the segment cd
 :param dY: y-coordinate of second vertex of the segment cd
 
-:return: - ``True`` if the bisector exists (A B and C D are not collinear)
+:return: - ``True`` if the bisector exists (A B and C D are not
+           collinear)
          - pointX: x-coordinate of generated point
          - pointY: y-coordinate of generated point
-         - angle: angle of the bisector from pointX, pointY origin on [ab-cd]
+         - angle: angle of the bisector from pointX, pointY origin on
+           [ab-cd]
 
 .. versionadded:: 3.18
 %End
@@ -417,7 +462,8 @@ The bisector segment of AB-CD is (point, projection of point by ``angle``)
     static bool bisector( double aX, double aY, double bX, double bY, double cX, double cY,
                           double &pointX /Out/, double &pointY /Out/ ) /HoldGIL/;
 %Docstring
-Returns the point (``pointX``, ``pointY``) forming the bisector from point (``aX``, ``aY``) to the segment (``bX``, ``bY``) (``cX``, ``cY``).
+Returns the point (``pointX``, ``pointY``) forming the bisector from
+point (``aX``, ``aY``) to the segment (``bX``, ``bY``) (``cX``, ``cY``).
 The bisector segment of ABC is (A-point)
 
 :param aX: x-coordinate of first vertex in triangle
@@ -437,9 +483,8 @@ The bisector segment of ABC is (A-point)
 
     static bool lineIntersection( double p1x, double p1y, QgsVector v1, double p2x, double p2y, QgsVector v2, double &intersectionX /Out/, double &intersectionY /Out/ ) /HoldGIL/;
 %Docstring
-Computes the intersection between two lines. Z dimension is
-supported and is retrieved from the first 3D point amongst ``p1`` and
-``p2``.
+Computes the intersection between two lines. Z dimension is supported
+and is retrieved from the first 3D point amongst ``p1`` and ``p2``.
 
 :param p1x: x-coordinate of point on the first line
 :param p1y: y-coordinate of point on the first line
@@ -466,40 +511,55 @@ Compute the intersection between two segments
 :param q2x: x-coordinate of the second segment end point
 :param q2y: y-coordinate of the second segment end point
 :param tolerance: The tolerance to use
-:param acceptImproperIntersection: By default, this method returns ``True`` only if segments have proper intersection. If set true, returns also ``True`` if segments have improper intersection (end of one segment on other segment ; continuous segments).
+:param acceptImproperIntersection: By default, this method returns
+                                   ``True`` only if segments have proper
+                                   intersection. If set true, returns
+                                   also ``True`` if segments have
+                                   improper intersection (end of one
+                                   segment on other segment ; continuous
+                                   segments).
 
 :return: - Whether the segments intersect
-         - intersectionPointX: Output parameter, x-coordinate of the intersection point
-         - intersectionPointY: Output parameter, y-coordinate of the intersection point
-         - isIntersection: Output parameter, return ``True`` if an intersection is found
+         - intersectionPointX: Output parameter, x-coordinate of the
+           intersection point
+         - intersectionPointY: Output parameter, y-coordinate of the
+           intersection point
+         - isIntersection: Output parameter, return ``True`` if an
+           intersection is found
 %End
 
     static void project( double aX, double aY, double aZ, double distance, double azimuth, double inclination, double &resultX /Out/, double &resultY /Out/, double &resultZ /Out/ ) /HoldGIL/;
 %Docstring
-Returns coordinates of a point which corresponds to this point projected by a specified distance
-with specified angles (azimuth and inclination), using Cartesian mathematics.
-M value is preserved.
-resultX, resultY, resultZ are coordinates of the point projected.
-If a 2D point is projected a 3D point will be returned except if
-inclination is 90. A 3D point is always returned if a 3D point is projected.
+Returns coordinates of a point which corresponds to this point projected
+by a specified distance with specified angles (azimuth and inclination),
+using Cartesian mathematics. M value is preserved. resultX, resultY,
+resultZ are coordinates of the point projected. If a 2D point is
+projected a 3D point will be returned except if inclination is 90. A 3D
+point is always returned if a 3D point is projected.
 
 :param aX: x-coordinate of the point to project
 :param aY: y-coordinate of the point to project
 :param aZ: z-coordinate of the point to project
 :param distance: distance to project
-:param azimuth: angle to project in X Y, clockwise in degrees starting from north
-:param inclination: angle to project in Z (3D). If the point is 2D, the Z value is assumed to be 0.
+:param azimuth: angle to project in X Y, clockwise in degrees starting
+                from north
+:param inclination: angle to project in Z (3D). If the point is 2D, the
+                    Z value is assumed to be 0.
 
-:return: - resultX: Output parameter, x-coordinates of the point projected.
-         - resultY: Output parameter, y-coordinates of the point projected.
-         - resultZ: Output parameter, z-coordinates of the point projected.
+:return: - resultX: Output parameter, x-coordinates of the point
+           projected.
+         - resultY: Output parameter, y-coordinates of the point
+           projected.
+         - resultZ: Output parameter, z-coordinates of the point
+           projected.
 
 .. versionadded:: 3.34
 %End
 
     static double azimuth( double x1, double y1, double x2, double y2 ) /HoldGIL/;
 %Docstring
-Calculates Cartesian azimuth between points (``x1``, ``y1``) and (``x2``, ``y2``)  (clockwise in degree, starting from north)
+Calculates Cartesian azimuth between points (``x1``, ``y1``) and
+(``x2``, ``y2``) (clockwise in degree, starting from north)
 
 :param x1: x-coordinate of the start point
 :param y1: y-coordinate of the start point

@@ -12,8 +12,8 @@
 class QgsNewNameDialog : QgsDialog
 {
 %Docstring(signature="appended")
-New name, for example new layer name dialog. If existing names are provided,
-the dialog warns users if an entered name already exists.
+New name, for example new layer name dialog. If existing names are
+provided, the dialog warns users if an entered name already exists.
 %End
 
 %TypeHeaderCode
@@ -24,9 +24,11 @@ the dialog warns users if an entered name already exists.
 %Docstring
 New dialog constructor.
 
-:param source: original data source name, e.g. original layer name of the layer to be copied
+:param source: original data source name, e.g. original layer name of
+               the layer to be copied
 :param initial: initial name
-:param extensions: base name extensions, e.g. raster base name band extensions or vector layer type extensions
+:param extensions: base name extensions, e.g. raster base name band
+                   extensions or vector layer type extensions
 :param existing: existing names
 :param cs: case sensitivity for new name to existing names comparison
 :param parent: parent widget
@@ -41,8 +43,8 @@ New dialog constructor.
 
     void setHintString( const QString &hintString );
 %Docstring
-Sets the hint string for the dialog (the text shown above the name
-input box).
+Sets the hint string for the dialog (the text shown above the name input
+box).
 
 :param hintString: hint text
 
@@ -59,9 +61,10 @@ input box).
 
     void setOverwriteEnabled( bool enabled );
 %Docstring
-Sets whether users are permitted to overwrite existing names. If ``True``, then
-the dialog will reflect that the new name will overwrite an existing name. If ``False``,
-then the dialog will not accept names which already exist.
+Sets whether users are permitted to overwrite existing names. If
+``True``, then the dialog will reflect that the new name will overwrite
+an existing name. If ``False``, then the dialog will not accept names
+which already exist.
 
 .. seealso:: :py:func:`overwriteEnabled`
 %End
@@ -75,8 +78,8 @@ Returns whether users are permitted to overwrite existing names.
 
     void setAllowEmptyName( bool allowed );
 %Docstring
-Sets whether users are permitted to leave the widget empty.
-If ``True``, the dialog will accept an empty name value.
+Sets whether users are permitted to leave the widget empty. If ``True``,
+the dialog will accept an empty name value.
 
 .. seealso:: :py:func:`allowEmptyName`
 
@@ -96,7 +99,8 @@ Returns ``True`` if the widget can be left empty (no name filled).
 %Docstring
 Sets the string used for warning users if a conflicting name exists.
 
-:param string: warning string. If empty a default warning string will be used.
+:param string: warning string. If empty a default warning string will be
+               used.
 
 .. seealso:: :py:func:`conflictingNameWarning`
 %End
@@ -110,7 +114,8 @@ Returns the string used for warning users if a conflicting name exists.
 
     void setRegularExpression( const QString &expression );
 %Docstring
-Sets a regular ``expression`` to use for validating user-entered names in the dialog.
+Sets a regular ``expression`` to use for validating user-entered names
+in the dialog.
 
 .. versionadded:: 3.22
 %End

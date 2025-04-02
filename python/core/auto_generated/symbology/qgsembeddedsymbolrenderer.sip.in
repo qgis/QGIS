@@ -10,13 +10,13 @@
 class QgsEmbeddedSymbolRenderer : QgsFeatureRenderer
 {
 %Docstring(signature="appended")
+A vector feature renderer which uses embedded feature symbology to
+render per-feature symbols.
 
-A vector feature renderer which uses embedded feature symbology to render per-feature
-symbols.
-
-This renderer can be used for vector layers with a data provider which supports the
-:py:class:`QgsVectorDataProvider`.FeatureSymbology capability, where the dataset has embedded information
-on how each feature should be rendered.
+This renderer can be used for vector layers with a data provider which
+supports the :py:class:`QgsVectorDataProvider`.FeatureSymbology
+capability, where the dataset has embedded information on how each
+feature should be rendered.
 
 .. versionadded:: 3.20
 %End
@@ -30,8 +30,9 @@ on how each feature should be rendered.
 %Docstring
 Constructor for QgsEmbeddedSymbolRenderer.
 
-The ``defaultSymbol`` will be used to render any feature without embedded symbology. Ownership
-of ``defaultSymbol`` is transferred to the renderer.
+The ``defaultSymbol`` will be used to render any feature without
+embedded symbology. Ownership of ``defaultSymbol`` is transferred to the
+renderer.
 %End
     ~QgsEmbeddedSymbolRenderer();
 
@@ -60,14 +61,16 @@ of ``defaultSymbol`` is transferred to the renderer.
 
     QgsSymbol *defaultSymbol() const;
 %Docstring
-Returns the default symbol which will be rendered for any feature which does not have embedded symbology.
+Returns the default symbol which will be rendered for any feature which
+does not have embedded symbology.
 
 .. seealso:: :py:func:`setDefaultSymbol`
 %End
 
     void setDefaultSymbol( QgsSymbol *symbol /Transfer/ );
 %Docstring
-Sets the default ``symbol`` which will be rendered for any feature which does not have embedded symbology.
+Sets the default ``symbol`` which will be rendered for any feature which
+does not have embedded symbology.
 
 Ownership of ``symbol`` is transferred to the renderer.
 
@@ -76,7 +79,8 @@ Ownership of ``symbol`` is transferred to the renderer.
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-Creates a new embedded symbol renderer from an XML ``element``, using the supplied read/write ``context``.
+Creates a new embedded symbol renderer from an XML ``element``, using
+the supplied read/write ``context``.
 
 The caller takes ownership of the returned renderer.
 %End
@@ -85,7 +89,8 @@ The caller takes ownership of the returned renderer.
 %Docstring
 Creates a QgsEmbeddedSymbolRenderer from an existing ``renderer``.
 
-:return: a new renderer if the conversion was possible, otherwise ``None``.
+:return: a new renderer if the conversion was possible, otherwise
+         ``None``.
 %End
 
   private:

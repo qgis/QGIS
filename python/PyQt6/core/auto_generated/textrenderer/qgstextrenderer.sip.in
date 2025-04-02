@@ -14,8 +14,8 @@
 class QgsTextRenderer
 {
 %Docstring(signature="appended")
-Handles rendering text using rich formatting options, including drop shadows, buffers
-and background shapes.
+Handles rendering text using rich formatting options, including drop
+shadows, buffers and background shapes.
 %End
 
 %TypeHeaderCode
@@ -25,7 +25,8 @@ and background shapes.
 
     static Qgis::TextHorizontalAlignment convertQtHAlignment( Qt::Alignment alignment );
 %Docstring
-Converts a Qt horizontal ``alignment`` flag to a :py:class:`Qgis`.TextHorizontalAlignment value.
+Converts a Qt horizontal ``alignment`` flag to a
+:py:class:`Qgis`.TextHorizontalAlignment value.
 
 .. seealso:: :py:func:`convertQtVAlignment`
 
@@ -34,7 +35,8 @@ Converts a Qt horizontal ``alignment`` flag to a :py:class:`Qgis`.TextHorizontal
 
     static Qgis::TextVerticalAlignment convertQtVAlignment( Qt::Alignment alignment );
 %Docstring
-Converts a Qt vertical ``alignment`` flag to a :py:class:`Qgis`.TextVerticalAlignment value.
+Converts a Qt vertical ``alignment`` flag to a
+:py:class:`Qgis`.TextVerticalAlignment value.
 
 .. seealso:: :py:func:`convertQtHAlignment`
 
@@ -43,7 +45,8 @@ Converts a Qt vertical ``alignment`` flag to a :py:class:`Qgis`.TextVerticalAlig
 
     static int sizeToPixel( double size, const QgsRenderContext &c, Qgis::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 %Docstring
-Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+Calculates pixel size (considering output size should be in pixel or map
+units, scale factors and optionally oversampling)
 
 :param size: size to convert
 :param c: rendercontext
@@ -68,13 +71,22 @@ Draws text within a rectangle using the specified settings.
 :param textLines: list of lines of text to draw
 :param context: render context
 :param format: text format
-:param drawAsOutlines: set to ``False`` to render text as text. This allows outputs to
-                       formats like SVG to maintain text as text objects, but at the cost of degraded
-                       rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
-                       as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
+:param drawAsOutlines: set to ``False`` to render text as text. This
+                       allows outputs to formats like SVG to maintain
+                       text as text objects, but at the cost of degraded
+                       rendering and may result in side effects like
+                       misaligned text buffers. This setting is
+                       deprecated and has no effect as of QGIS 3.4.3 and
+                       the text format should be set using
+                       :py:func:`QgsRenderContext.setTextRenderFormat()`
+                       instead.
 :param vAlignment: vertical alignment (since QGIS 3.16)
 :param flags: text rendering flags (since QGIS 3.24)
-:param mode: text layout mode. Only :py:class:`Qgis`.TextLayoutMode.Rectangle, :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are accepted (since QGIS 3.30)
+:param mode: text layout mode. Only
+             :py:class:`Qgis`.TextLayoutMode.Rectangle,
+             :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and
+             :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are
+             accepted (since QGIS 3.30)
 
 .. seealso:: :py:func:`drawDocument` which is more efficient if the text document and metrics have already been calculated.
 %End
@@ -92,8 +104,9 @@ Draws text within a rectangle using the specified settings.
 %Docstring
 Draws a text document within a rectangle using the specified settings.
 
-Calling this method is more efficient than calling :py:func:`~QgsTextRenderer.drawText` if the text document and metrics have already
-been calculated.
+Calling this method is more efficient than calling
+:py:func:`~QgsTextRenderer.drawText` if the text document and metrics
+have already been calculated.
 
 .. warning::
 
@@ -108,7 +121,11 @@ been calculated.
 :param horizontalAlignment: horizontal alignment
 :param verticalAlignment: vertical alignment
 :param rotation: text rotation
-:param mode: text layout mode. Only :py:class:`Qgis`.TextLayoutMode.Rectangle, :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are accepted.
+:param mode: text layout mode. Only
+             :py:class:`Qgis`.TextLayoutMode.Rectangle,
+             :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and
+             :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are
+             accepted.
 :param flags: text rendering flags
 
 .. versionadded:: 3.30
@@ -126,10 +143,15 @@ Draws text at a point origin using the specified settings.
 :param textLines: list of lines of text to draw
 :param context: render context
 :param format: text format
-:param drawAsOutlines: set to ``False`` to render text as text. This allows outputs to
-                       formats like SVG to maintain text as text objects, but at the cost of degraded
-                       rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
-                       as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
+:param drawAsOutlines: set to ``False`` to render text as text. This
+                       allows outputs to formats like SVG to maintain
+                       text as text objects, but at the cost of degraded
+                       rendering and may result in side effects like
+                       misaligned text buffers. This setting is
+                       deprecated and has no effect as of QGIS 3.4.3 and
+                       the text format should be set using
+                       :py:func:`QgsRenderContext.setTextRenderFormat()`
+                       instead.
 %End
 
     static void drawDocument( QPointF point,
@@ -143,8 +165,9 @@ Draws text at a point origin using the specified settings.
 %Docstring
 Draws a text document at a point origin using the specified settings.
 
-Calling this method is more efficient than calling :py:func:`~QgsTextRenderer.drawText` if the text document and metrics have already
-been calculated.
+Calling this method is more efficient than calling
+:py:func:`~QgsTextRenderer.drawText` if the text document and metrics
+have already been calculated.
 
 .. warning::
 
@@ -173,8 +196,12 @@ Draws text along a line using the specified settings.
 :param text: text to draw
 :param context: render context
 :param format: text format
-:param offsetAlongLine: offset along the line (in painter units) to start text at
-:param offsetFromLine: offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+:param offsetAlongLine: offset along the line (in painter units) to
+                        start text at
+:param offsetFromLine: offset from the line (in painter units). Negative
+                       values will shift the text to the left of the
+                       line, positive values will shift the text to the
+                       right.
 
 .. versionadded:: 3.32
 %End
@@ -192,8 +219,12 @@ Draws a text document along a line using the specified settings.
 :param format: text format
 :param document: text document to draw
 :param context: render context
-:param offsetAlongLine: offset along the line (in painter units) to start text at
-:param offsetFromLine: offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+:param offsetAlongLine: offset along the line (in painter units) to
+                        start text at
+:param offsetFromLine: offset from the line (in painter units). Negative
+                       values will shift the text to the left of the
+                       line, positive values will shift the text to the
+                       right.
 
 .. versionadded:: 3.32
 %End
@@ -210,13 +241,19 @@ Draws a single component of rendered text using the specified settings.
 :param textLines: list of lines of text to draw
 :param context: render context
 :param format: text format
-:param part: component of text to draw. Note that Shadow parts cannot be drawn
-             individually and instead are drawn with their associated part (e.g., drawn together
-             with the text or background parts)
-:param drawAsOutlines: set to ``False`` to render text as text. This allows outputs to
-                       formats like SVG to maintain text as text objects, but at the cost of degraded
-                       rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
-                       as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
+:param part: component of text to draw. Note that Shadow parts cannot be
+             drawn individually and instead are drawn with their
+             associated part (e.g., drawn together with the text or
+             background parts)
+:param drawAsOutlines: set to ``False`` to render text as text. This
+                       allows outputs to formats like SVG to maintain
+                       text as text objects, but at the cost of degraded
+                       rendering and may result in side effects like
+                       misaligned text buffers. This setting is
+                       deprecated and has no effect as of QGIS 3.4.3 and
+                       the text format should be set using
+                       :py:func:`QgsRenderContext.setTextRenderFormat()`
+                       instead.
 
 .. deprecated:: 3.40
 
@@ -229,19 +266,26 @@ Draws a single component of rendered text using the specified settings.
 %Docstring
 Draws a single component of rendered text using the specified settings.
 
-:param origin: origin for start of text, in painter units. Y coordinate will be used as baseline.
+:param origin: origin for start of text, in painter units. Y coordinate
+               will be used as baseline.
 :param rotation: text rotation
 :param alignment: horizontal alignment
 :param textLines: list of lines of text to draw
 :param context: render context
 :param format: text format
-:param part: component of text to draw. Note that Shadow parts cannot be drawn
-             individually and instead are drawn with their associated part (e.g., drawn together
-             with the text or background parts)
-:param drawAsOutlines: set to ``False`` to render text as text. This allows outputs to
-                       formats like SVG to maintain text as text objects, but at the cost of degraded
-                       rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
-                       as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
+:param part: component of text to draw. Note that Shadow parts cannot be
+             drawn individually and instead are drawn with their
+             associated part (e.g., drawn together with the text or
+             background parts)
+:param drawAsOutlines: set to ``False`` to render text as text. This
+                       allows outputs to formats like SVG to maintain
+                       text as text objects, but at the cost of degraded
+                       rendering and may result in side effects like
+                       misaligned text buffers. This setting is
+                       deprecated and has no effect as of QGIS 3.4.3 and
+                       the text format should be set using
+                       :py:func:`QgsRenderContext.setTextRenderFormat()`
+                       instead.
 
 .. deprecated:: 3.40
 
@@ -250,14 +294,16 @@ Draws a single component of rendered text using the specified settings.
 
     static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format, double scaleFactor = 1.0 );
 %Docstring
-Returns the font metrics for the given text ``format``, when rendered
-in the specified render ``context``. The font metrics will take into account
-all scaling required by the render context.
+Returns the font metrics for the given text ``format``, when rendered in
+the specified render ``context``. The font metrics will take into
+account all scaling required by the render context.
 
-The optional ``scaleFactor`` argument can specify a font size scaling factor. It is recommended to set this to
-:py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then manually scale painter devices or calculations
-based on the resultant font metrics. Failure to do so will result in poor quality text rendering
-at small font sizes.
+The optional ``scaleFactor`` argument can specify a font size scaling
+factor. It is recommended to set this to
+:py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then
+manually scale painter devices or calculations based on the resultant
+font metrics. Failure to do so will result in poor quality text
+rendering at small font sizes.
 
 .. versionadded:: 3.2
 %End
@@ -284,25 +330,33 @@ Returns the height of a text based on a given format.
 :param mode: draw mode
 :param fontMetrics: font metrics
 :param flags: text renderer flags (since QGIS 3.24)
-:param maxLineWidth: maximum line width, in painter units. Used when the :py:class:`Qgis`.TextRendererFlag.WrapLines flag is used (since QGIS 3.24)
+:param maxLineWidth: maximum line width, in painter units. Used when the
+                     :py:class:`Qgis`.TextRendererFlag.WrapLines flag is
+                     used (since QGIS 3.24)
 %End
 
     static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects = false );
 %Docstring
-Returns the height of a character when rendered with the specified text ``format``.
+Returns the height of a character when rendered with the specified text
+``format``.
 
 :param context: render context
 :param format: text format
-:param character: character to determine height of. If ``character`` is invalid, then the maximum character height will be returned.
-:param includeEffects: if ``True``, then the size of formatting effects such as buffers and shadows will be considered in the
-                       returned height. If ``False``, then the returned size considers the character only.
+:param character: character to determine height of. If ``character`` is
+                  invalid, then the maximum character height will be
+                  returned.
+:param includeEffects: if ``True``, then the size of formatting effects
+                       such as buffers and shadows will be considered in
+                       the returned height. If ``False``, then the
+                       returned size considers the character only.
 
 .. versionadded:: 3.16
 %End
 
     static bool textRequiresWrapping( const QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format );
 %Docstring
-Returns ``True`` if the specified ``text`` requires line wrapping in order to fit within the specified ``width`` (in painter units).
+Returns ``True`` if the specified ``text`` requires line wrapping in
+order to fit within the specified ``width`` (in painter units).
 
 .. seealso:: :py:func:`wrappedText`
 
@@ -311,7 +365,8 @@ Returns ``True`` if the specified ``text`` requires line wrapping in order to fi
 
     static QStringList wrappedText( const QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format );
 %Docstring
-Wraps a ``text`` string to multiple lines, such that each individual line will fit within the specified ``width`` (in painter units).
+Wraps a ``text`` string to multiple lines, such that each individual
+line will fit within the specified ``width`` (in painter units).
 
 .. seealso:: :py:func:`textRequiresWrapping`
 
@@ -322,10 +377,12 @@ Wraps a ``text`` string to multiple lines, such that each individual line will f
 
     static double calculateScaleFactorForFormat( const QgsRenderContext &context, const QgsTextFormat &format );
 %Docstring
-Returns the scale factor used for upscaling font sizes and downscaling destination painter devices.
+Returns the scale factor used for upscaling font sizes and downscaling
+destination painter devices.
 
-Using this scale factor and manually adjusting any font metric based calculations results in more stable
-font metrics and sizes for small font sizes.
+Using this scale factor and manually adjusting any font metric based
+calculations results in more stable font metrics and sizes for small
+font sizes.
 
 .. versionadded:: 3.40
 %End

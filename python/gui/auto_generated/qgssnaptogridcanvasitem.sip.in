@@ -17,7 +17,6 @@
 class QgsSnapToGridCanvasItem : QgsMapCanvasItem
 {
 %Docstring(signature="appended")
-
 Shows a grid on the map canvas given a spatial resolution.
 
 .. versionadded:: 3.4
@@ -49,42 +48,42 @@ Will automatically be added to the ``mapCanvas``.
 
     QgsPointXY point() const;
 %Docstring
-A point that will be highlighted on the map canvas.
-The point needs to be in map coordinates. The closest point on the
-grid will be highlighted.
+A point that will be highlighted on the map canvas. The point needs to
+be in map coordinates. The closest point on the grid will be
+highlighted.
 %End
 
     void setPoint( const QgsPointXY &point );
 %Docstring
-A point that will be highlighted on the map canvas.
-The point needs to be in map coordinates. The closest point on the
-grid will be highlighted.
+A point that will be highlighted on the map canvas. The point needs to
+be in map coordinates. The closest point on the grid will be
+highlighted.
 %End
 
     double precision() const;
 %Docstring
-The resolution of the grid in map units.
-If a crs has been specified it will be in CRS units.
+The resolution of the grid in map units. If a crs has been specified it
+will be in CRS units.
 %End
 
     void setPrecision( double precision );
 %Docstring
-The resolution of the grid in map units.
-If a crs has been specified it will be in CRS units.
+The resolution of the grid in map units. If a crs has been specified it
+will be in CRS units.
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
-The CRS in which the grid should be calculated.
-By default will be an invalid :py:class:`QgsCoordinateReferenceSystem` and
-as such equal to the CRS of the map canvas.
+The CRS in which the grid should be calculated. By default will be an
+invalid :py:class:`QgsCoordinateReferenceSystem` and as such equal to
+the CRS of the map canvas.
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
-The CRS in which the grid should be calculated.
-By default will be an invalid :py:class:`QgsCoordinateReferenceSystem` and
-as such equal to the CRS of the map canvas.
+The CRS in which the grid should be calculated. By default will be an
+invalid :py:class:`QgsCoordinateReferenceSystem` and as such equal to
+the CRS of the map canvas.
 %End
 
     bool enabled() const;

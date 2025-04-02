@@ -28,11 +28,14 @@ Contains a collection of field domain items.
 %Docstring
 Constructor for QgsFieldDomainsItem, with the specified ``parent`` item.
 
-The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
-but :py:class:`QgsDataItem` items pointing to different logical locations should always use a different item ``path``.
-The ``connectionUri`` argument is the connection part of the layer URI that it is used internally to create
-a connection and retrieve fields information.
-The ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
+The ``path`` argument gives the item path in the browser tree. The
+``path`` string can take any form, but :py:class:`QgsDataItem` items
+pointing to different logical locations should always use a different
+item ``path``. The ``connectionUri`` argument is the connection part of
+the layer URI that it is used internally to create a connection and
+retrieve fields information. The ``providerKey`` string can be used to
+specify the key for the :py:class:`QgsDataItemProvider` that created
+this item.
 %End
 
     ~QgsFieldDomainsItem();
@@ -73,7 +76,8 @@ A browser item representing a field domain.
     QgsFieldDomainItem( QgsDataItem *parent /TransferThis/,
                         QgsFieldDomain *domain /Transfer/ );
 %Docstring
-Constructor for QgsFieldDomainItem, with the specified ``parent`` item and ``domain``.
+Constructor for QgsFieldDomainItem, with the specified ``parent`` item
+and ``domain``.
 
 Ownership of ``domain`` is transferred to the item.
 

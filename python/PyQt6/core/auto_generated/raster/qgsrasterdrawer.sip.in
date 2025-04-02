@@ -26,7 +26,8 @@ The drawing pipe for raster layers.
 The QgsRasterDrawer constructor.
 
 :param iterator: the raster iterator to fetch data from
-:param dpiTarget: the target dpi (dots per inch) to be taken into consideration when rendering
+:param dpiTarget: the target dpi (dots per inch) to be taken into
+                  consideration when rendering
 
 .. deprecated:: 3.28
 
@@ -47,7 +48,8 @@ Draws raster data.
 :param p: destination QPainter
 :param viewPort: viewport to render
 :param qgsMapToPixel: map to pixel converter
-:param feedback: optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
+:param feedback: optional raster feedback object for
+                 cancellation/preview. Added in QGIS 3.0.
 %End
 
     void draw( QgsRenderContext &context, QgsRasterViewPort *viewPort, QgsRasterBlockFeedback *feedback = 0 );
@@ -56,7 +58,8 @@ Draws raster data.
 
 :param context: the render context
 :param viewPort: viewport to render
-:param feedback: optional raster feedback object for cancellation/preview.
+:param feedback: optional raster feedback object for
+                 cancellation/preview.
 
 .. versionadded:: 3.28
 %End

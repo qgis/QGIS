@@ -28,19 +28,16 @@ Constructor
 
     QString type() const;
 %Docstring
-
 :return: the widget type to use
 %End
 
     QVariantMap config() const;
 %Docstring
-
 :return: the widget configuration to used
 %End
 
     bool isNull() const;
 %Docstring
-
 :return: ``True`` if there is no widget configured.
 %End
 
