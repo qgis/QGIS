@@ -618,7 +618,7 @@ expression
     static QgsStringMap getSvgParameterList( QDomElement &element );
 
     static QDomElement createVendorOptionElement( QDomDocument &doc, const QString &name, const QString &value );
-    static QgsStringMap getVendorOptionList( QDomElement &element );
+    static QMultiMap<QString, QString> getVendorOptionList( QDomElement &element );
 
     static QVariantMap parseProperties( const QDomElement &element );
 %Docstring

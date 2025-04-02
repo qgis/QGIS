@@ -2509,21 +2509,30 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     // <Geometry>
     QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString() );
 
-    QString gap;
-    if ( placements() & Qgis::MarkerLinePlacement::FirstVertex )
-      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "firstPoint" ) ) );
-    if ( placements() & Qgis::MarkerLinePlacement::LastVertex )
-      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "lastPoint" ) ) );
-    if ( placements() & Qgis::MarkerLinePlacement::CentralPoint )
-      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "centralPoint" ) ) );
     if ( placements() & Qgis::MarkerLinePlacement::Vertex )
       // no way to get line/polygon's vertices, use a VendorOption
       symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "points" ) ) );
+    if ( placements() & Qgis::MarkerLinePlacement::LastVertex )
+      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "lastPoint" ) ) );
+    if ( placements() & Qgis::MarkerLinePlacement::FirstVertex )
+      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "firstPoint" ) ) );
+    if ( placements() & Qgis::MarkerLinePlacement::CentralPoint )
+      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "centralPoint" ) ) );
+    if ( placements() & Qgis::MarkerLinePlacement::CurvePoint )
+      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "curvePoint" ) ) );
+    if ( placements() & Qgis::MarkerLinePlacement::SegmentCenter )
+      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "segmentCenter" ) ) );
+    if ( placements() & Qgis::MarkerLinePlacement::InnerVertices )
+      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "innerVertices" ) ) );
+    if ( !placeOnEveryPart() )
+      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "notOnEveryPart" ) ) );
 
+    QString gap;
     if ( placements() & Qgis::MarkerLinePlacement::Interval )
     {
       double interval = QgsSymbolLayerUtils::rescaleUom( QgsMarkerLineSymbolLayer::interval(), intervalUnit(), props );
       gap = qgsDoubleToString( interval );
+      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "interval" ) ) );
     }
 
     if ( !rotateSymbols() )
@@ -2586,21 +2595,32 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
 
   // retrieve vendor options
   bool rotateMarker = true;
-  Qgis::MarkerLinePlacement placement = Qgis::MarkerLinePlacement::Interval;
+  bool placeOnEveryPart = true;
+  Qgis::MarkerLinePlacements placements;
 
-  QgsStringMap vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( element );
-  for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
+  QMultiMap<QString, QString> vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( element );
+  for ( QMultiMap<QString, QString>::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
   {
     if ( it.key() == QLatin1String( "placement" ) )
     {
-      if ( it.value() == QLatin1String( "points" ) )
-        placement = Qgis::MarkerLinePlacement::Vertex;
-      else if ( it.value() == QLatin1String( "firstPoint" ) )
-        placement = Qgis::MarkerLinePlacement::FirstVertex;
+      if ( it.value() == QLatin1String( "interval" ) )
+        placements.setFlag( Qgis::MarkerLinePlacement::Interval );
+      else if ( it.value() == QLatin1String( "points" ) )
+        placements.setFlag( Qgis::MarkerLinePlacement::Vertex );
       else if ( it.value() == QLatin1String( "lastPoint" ) )
-        placement = Qgis::MarkerLinePlacement::LastVertex;
+        placements.setFlag( Qgis::MarkerLinePlacement::LastVertex );
+      else if ( it.value() == QLatin1String( "firstPoint" ) )
+        placements.setFlag( Qgis::MarkerLinePlacement::FirstVertex );
       else if ( it.value() == QLatin1String( "centralPoint" ) )
-        placement = Qgis::MarkerLinePlacement::CentralPoint;
+        placements.setFlag( Qgis::MarkerLinePlacement::CentralPoint );
+      else if ( it.value() == QLatin1String( "curvePoint" ) )
+        placements.setFlag( Qgis::MarkerLinePlacement::CurvePoint );
+      else if ( it.value() == QLatin1String( "segmentCenter" ) )
+        placements.setFlag( Qgis::MarkerLinePlacement::SegmentCenter );
+      else if ( it.value() == QLatin1String( "innerVertices" ) )
+        placements.setFlag( Qgis::MarkerLinePlacement::InnerVertices );
+      else if ( it.value() == QLatin1String( "notOnEveryPart" ) )
+        placeOnEveryPart = false;
     }
     else if ( it.value() == QLatin1String( "rotateMarker" ) )
     {
@@ -2631,6 +2651,9 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
       interval = d;
   }
 
+  if ( !vendorOptions.contains( "placement" ) && interval != 0 )
+    placements.setFlag( Qgis::MarkerLinePlacement::Interval );
+
   double offset = 0.0;
   QDomElement perpOffsetElem = graphicStrokeElem.firstChildElement( QStringLiteral( "PerpendicularOffset" ) );
   if ( !perpOffsetElem.isNull() )
@@ -2649,7 +2672,8 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
 
   QgsMarkerLineSymbolLayer *x = new QgsMarkerLineSymbolLayer( rotateMarker );
   x->setOutputUnit( sldUnitSize );
-  x->setPlacements( placement );
+  x->setPlacements( placements );
+  x->setPlaceOnEveryPart( placeOnEveryPart );
   x->setInterval( interval );
   x->setSubSymbol( marker.release() );
   x->setOffset( offset );

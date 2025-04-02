@@ -1905,8 +1905,8 @@ bool QgsSymbolLayerUtils::needEllipseMarker( QDomElement &element )
   if ( graphicElem.isNull() )
     return false;
 
-  QgsStringMap vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( graphicElem );
-  for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
+  QMultiMap<QString, QString> vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( graphicElem );
+  for ( QMultiMap<QString, QString>::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
   {
     if ( it.key() == QLatin1String( "widthHeightFactor" ) )
     {
@@ -3280,9 +3280,9 @@ QDomElement QgsSymbolLayerUtils::createVendorOptionElement( QDomDocument &doc, c
   return nodeElem;
 }
 
-QgsStringMap QgsSymbolLayerUtils::getVendorOptionList( QDomElement &element )
+QMultiMap<QString, QString> QgsSymbolLayerUtils::getVendorOptionList( QDomElement &element )
 {
-  QgsStringMap params;
+  QMultiMap<QString, QString> params;
 
   QDomElement paramElem = element.firstChildElement( QStringLiteral( "VendorOption" ) );
   while ( !paramElem.isNull() )
@@ -3291,7 +3291,7 @@ QgsStringMap QgsSymbolLayerUtils::getVendorOptionList( QDomElement &element )
     const QString value = paramElem.firstChild().nodeValue();
 
     if ( !name.isEmpty() && !value.isEmpty() )
-      params[ name ] = value;
+      params.insert( name, value );
 
     paramElem = paramElem.nextSiblingElement( QStringLiteral( "VendorOption" ) );
   }
