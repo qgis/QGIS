@@ -560,6 +560,28 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     {
                         "INPUT": source,
                         "EXTENT": extent,
+                        "CREATION_OPTIONS": "COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9",
+                        "DATA_TYPE": 0,
+                        "OUTPUT": outdir + "/check.jpg",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdal_translate",
+                    "-of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
+                ],
+            )
+            # using old parameter
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": source,
+                        "EXTENT": extent,
                         "OPTIONS": "COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9",
                         "DATA_TYPE": 0,
                         "OUTPUT": outdir + "/check.jpg",
@@ -759,7 +781,31 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     + "/check.jpg",
                 ],
             )
+
             # with creation options
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": source,
+                        "MASK": mask,
+                        "CREATION_OPTIONS": "COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9",
+                        "OUTPUT": outdir + "/check.jpg",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdalwarp",
+                    "-overwrite -of JPEG -cutline "
+                    + mask
+                    + " -cl polys2 -crop_to_cutline -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
+                ],
+            )
+            # using old parameter
             self.assertEqual(
                 alg.getConsoleCommands(
                     {
@@ -782,6 +828,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     + "/check.jpg",
                 ],
             )
+
             # with multothreading and additional parameters
             self.assertEqual(
                 alg.getConsoleCommands(
@@ -1371,6 +1418,25 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             )
 
             # additional creation options
+            formula = "A*2"
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT_A": source,
+                        "BAND_A": 1,
+                        "FORMULA": formula,
+                        "CREATION_OPTIONS": "COMPRESS=JPEG|JPEG_QUALITY=75",
+                        "OUTPUT": output,
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdal_calc.py",
+                    f'--overwrite --calc "{formula}" --format JPEG --type Float32 -A {source} --A_band 1 --co COMPRESS=JPEG --co JPEG_QUALITY=75 --outfile {output}',
+                ],
+            )
+            # using old parameter
             formula = "A*2"
             self.assertEqual(
                 alg.getConsoleCommands(
@@ -2801,6 +2867,31 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                         "ZERO_FLAT": False,
                         "COMPUTE_EDGES": False,
                         "ZEVENBERGEN": False,
+                        "CREATION_OPTIONS": "COMPRESS=JPEG|JPEG_QUALITY=75",
+                        "OUTPUT": outdir + "/check.tif",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdaldem",
+                    "aspect "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.tif -of GTiff -b 1 -co COMPRESS=JPEG -co JPEG_QUALITY=75",
+                ],
+            )
+            # using old parameter
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": source,
+                        "BAND": 1,
+                        "TRIG_ANGLE": False,
+                        "ZERO_FLAT": False,
+                        "COMPUTE_EDGES": False,
+                        "ZEVENBERGEN": False,
                         "OPTIONS": "COMPRESS=JPEG|JPEG_QUALITY=75",
                         "OUTPUT": outdir + "/check.tif",
                     },
@@ -2955,6 +3046,27 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             )
 
             # with creation options
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": source,
+                        "BAND": 1,
+                        "CREATION_OPTIONS": "COMPRESS=JPEG|JPEG_QUALITY=75",
+                        "OUTPUT": outdir + "/check.tif",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdaldem",
+                    "slope "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.tif -of GTiff -b 1 -s 1.0 -co COMPRESS=JPEG -co JPEG_QUALITY=75",
+                ],
+            )
+            # using old parameter
             self.assertEqual(
                 alg.getConsoleCommands(
                     {
@@ -3126,6 +3238,31 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             )
 
             # with creation options
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": source,
+                        "BAND": 1,
+                        "COLOR_TABLE": colorTable,
+                        "MATCH_MODE": 1,
+                        "CREATION_OPTIONS": "COMPRESS=JPEG|JPEG_QUALITY=75",
+                        "OUTPUT": outdir + "/check.tif",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdaldem",
+                    "color-relief "
+                    + source
+                    + " "
+                    + colorTable
+                    + " "
+                    + outdir
+                    + "/check.tif -of GTiff -b 1 -nearest_color_entry -co COMPRESS=JPEG -co JPEG_QUALITY=75",
+                ],
+            )
+            # using old parameter
             self.assertEqual(
                 alg.getConsoleCommands(
                     {
@@ -4570,6 +4707,27 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
+                        "CREATION_OPTIONS": "COMPRESS=JPEG|JPEG_QUALITY=75",
+                        "EXTRA": "-nb 5 -setalpha",
+                        "OUTPUT": outdir + "/check.tif",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "nearblack",
+                    source
+                    + " -of GTiff -o "
+                    + outdir
+                    + "/check.tif "
+                    + "-near 15 -co COMPRESS=JPEG -co JPEG_QUALITY=75 -nb 5 -setalpha",
+                ],
+            )
+            # using old parameter
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": source,
                         "OPTIONS": "COMPRESS=JPEG|JPEG_QUALITY=75",
                         "EXTRA": "-nb 5 -setalpha",
                         "OUTPUT": outdir + "/check.tif",
@@ -4772,6 +4930,23 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             )
 
             # creation options
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": source,
+                        "BAND": 1,
+                        "CREATION_OPTIONS": "COMPRESS=JPEG|JPEG_QUALITY=75",
+                        "OUTPUT": outsource,
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdal_fillnodata.py",
+                    f"{source} {outsource} -md 10 -b 1 -of GTiff -co COMPRESS=JPEG -co JPEG_QUALITY=75",
+                ],
+            )
+            # using old parameter
             self.assertEqual(
                 alg.getConsoleCommands(
                     {
@@ -5525,6 +5700,29 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ],
             )
 
+            # creation options
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": dem,
+                        "BAND": 1,
+                        "OBSERVER": "18.67274,45.80599",
+                        "CREATION_OPTIONS": "COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9",
+                        "OUTPUT": outsource,
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdal_viewshed",
+                    "-b 1 -ox 18.67274 -oy 45.80599 -oz 1.0 -tz 1.0 -md 100.0 -f GTiff "
+                    + "-co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 "
+                    + dem
+                    + " "
+                    + outsource,
+                ],
+            )
+            # using old parameter
             self.assertEqual(
                 alg.getConsoleCommands(
                     {
@@ -6017,6 +6215,27 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             )
 
             # creation options
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": source,
+                        "CREATION_OPTIONS": "COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9",
+                        "OUTPUT": outdir + "/check.tif",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdaldem",
+                    "roughness "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.tif "
+                    + "-of GTiff -b 1 -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9",
+                ],
+            )
+            # using old parameter
             self.assertEqual(
                 alg.getConsoleCommands(
                     {
