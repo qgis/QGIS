@@ -501,8 +501,8 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
   double widthHeightFactor = 1.0;
   Qt::PenStyle strokeStyle;
 
-  QgsStringMap vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( graphicElem );
-  for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
+  QMultiMap<QString, QString> vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( graphicElem );
+  for ( QMultiMap<QString, QString>::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
   {
     if ( it.key() == QLatin1String( "widthHeightFactor" ) )
     {
