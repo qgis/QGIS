@@ -46,10 +46,9 @@ representation that will be ultimately used.
 Methods that allow inspection of CRS instances include
 :py:func:`~isValid`, :py:func:`~authid`, :py:func:`~description`,
 :py:func:`~toWkt`, :py:func:`~toProj`, :py:func:`~mapUnits` and others.
-Creation of CRS instances is further described in \ref
-crs_construct_and_copy section below. Transformations between coordinate
-reference systems are done using :py:class:`QgsCoordinateTransform`
-class.
+Creation of CRS instances is further described in crs_construct_and_copy
+section below. Transformations between coordinate reference systems are
+done using :py:class:`QgsCoordinateTransform` class.
 
 For example, the following code will create and inspect "British
 national grid" CRS:
@@ -145,7 +144,7 @@ features a GUI for management of local custom CRS definitions.
 
 There are therefore two databases: one for shipped CRS definitions and
 one for custom CRS definitions. Custom CRS have internal IDs (accessible
-with :py:func:`~srsid`) greater or equal to \ref
+with :py:func:`~srsid`) greater or equal to
 :py:class:`Qgis`.USER_CRS_START_ID. The local CRS databases should never
 be accessed directly with SQLite functions, instead you should use
 :py:class:`QgsCoordinateReferenceSystem` API for CRS lookups and for
