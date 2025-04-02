@@ -8,7 +8,7 @@ tests:
       INPUT:
         name: dem.tif
         type: raster
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       TRIG_ANGLE: false
       ZERO_FLAT: false
       ZEVENBERGEN: false
@@ -26,7 +26,7 @@ tests:
         type: raster
       OVERCRS: false
       NODATA: 0.0
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       PROJWIN: 18.673038221977773,18.699957975064194,45.782253906735804,45.80350236352593
     results:
       OUTPUT:
@@ -42,7 +42,7 @@ tests:
         type: raster
       OVERCRS: false
       NODATA: 0.0
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       PROJWIN: 18.674136950224096,18.70011285383855,45.78239420868433,45.80342583519035
         [EPSG:4326]
     results:
@@ -63,7 +63,7 @@ tests:
       MASK:
         name: custom/polygon_mask.gml
         type: vector
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
     results:
       OUTPUT:
         hash:
@@ -83,7 +83,7 @@ tests:
         name: dem.tif
         type: raster
       MATCH_MODE: 2
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
     results:
       OUTPUT:
         hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
@@ -101,7 +101,7 @@ tests:
         name: dem.tif
         type: raster
       MATCH_MODE: 1
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
     results:
       OUTPUT:
         hash: 3d1b5ddaf0e9763164b7865e5e4ac2d55c4993aa52de2705f2ba4232
@@ -209,7 +209,7 @@ tests:
         type: vector
       MIN_POINTS: 0
       NODATA: 0.0
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       RADIUS_1: 5.0
       RADIUS_2: 5.0
     results:
@@ -233,7 +233,7 @@ tests:
       METRIC: 2
       MIN_POINTS: 0
       NODATA: 0.0
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       RADIUS_1: 5.0
       RADIUS_2: 5.0
     results:
@@ -257,7 +257,7 @@ tests:
       MAX_POINTS: 0
       MIN_POINTS: 0
       NODATA: 0.0
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       POWER: 2.0
       RADIUS_1: 0.0
       RADIUS_2: 0.0
@@ -282,7 +282,7 @@ tests:
       MAX_POINTS: 0
       MIN_POINTS: 0
       NODATA: 0.0
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       POWER: 2.0
       RADIUS: 5.0
       SMOOTHING: 0.0
@@ -304,7 +304,7 @@ tests:
         name: pointsz.gml
         type: vector
       NODATA: 0.0
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       RADIUS: -1.0
     results:
       OUTPUT:
@@ -327,7 +327,7 @@ tests:
         name: pointsz.gml
         type: vector
       NODATA: 0.0
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       RADIUS_1: 0.0
       RADIUS_2: 0.0
     results:
@@ -349,7 +349,7 @@ tests:
         name: dem.tif
         type: raster
       MULTIDIRECTIONAL: false
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       SCALE: 1.0
       ZEVENBERGEN: false
       Z_FACTOR: 1.0
@@ -390,7 +390,7 @@ tests:
         type: vector
       INVERT: false
       NODATA: 0.0
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       UNITS: 0
       WIDTH: 10.0
     results:
@@ -415,7 +415,7 @@ tests:
         type: vector
       INVERT: false
       NODATA: 0.0
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       UNITS: 0
       WIDTH: 10.0
     results:
@@ -431,7 +431,7 @@ tests:
       INPUT:
         name: dem.tif
         type: raster
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
     results:
       OUTPUT:
         hash: ee2b317e022da1001378fac60c9b613a74d3566b9870f9d121e6e322
@@ -446,7 +446,7 @@ tests:
       INPUT:
         name: dem.tif
         type: raster
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       SCALE: 1.0
       ZEVENBERGEN: false
     results:
@@ -462,7 +462,7 @@ tests:
       INPUT:
         name: dem.tif
         type: raster
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
     results:
       OUTPUT:
         hash: 4af1fe42d2a75c92eb9edcad9d77bd6cae958c0212de11e320fad689
@@ -476,7 +476,7 @@ tests:
       INPUT:
         name: dem.tif
         type: raster
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
     results:
       OUTPUT:
         hash:
@@ -493,7 +493,7 @@ tests:
         name: dem.tif
         type: raster
       MULTITHREADING: false
-      OPTIONS: ''
+      CREATION_OPTIONS: ''
       RESAMPLING: 0
     results:
       OUTPUT:
