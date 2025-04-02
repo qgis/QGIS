@@ -17,8 +17,10 @@
 #include "qgsfeature.h"
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
+#include "qfuturewatcher.h"
 
 #include "qgsgeometrycollection.h"
+#include "qgsgeometrychecker.h"
 #include "qgsgeometryanglecheck.h"
 #include "qgsgeometryareacheck.h"
 #include "qgsgeometrycontainedcheck.h"
@@ -105,6 +107,7 @@ class TestQgsGeometryChecks : public QObject
     void testSliverPolygonCheck();
     void testGapCheckPointInPoly();
     void testOverlapCheckToleranceBug();
+    void testChecker();
 };
 
 void TestQgsGeometryChecks::initTestCase()
@@ -1314,6 +1317,47 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
   QCOMPARE( f.geometry().vertexAt( 2 ).asWkt( 4 ), QStringLiteral( "Point (2537297.0824 1152290.7825)" ) );
 
   cleanupTestContext( testContext );
+}
+
+void TestQgsGeometryChecks::testChecker()
+{
+  // This test verifies that the QgsGeometryChecker::execute() method, which is multithreaded, does not crash.
+  // We launch many checks on a relatively big layer (~9k features) to maximize chances
+  // of threading issues (i.e. locks, not using thread-safe code, etc.) in a "real user case".
+  //
+  // cf. issue #61087 and PR #61196
+
+  QTemporaryDir dir;
+  QMap<QString, QString> layers;
+  layers.insert( "lines_layer.gpkg.zip", "" );
+  auto testContext = createTestContext( dir, layers );
+
+  // Prepare checks
+  QgsGeometrySelfIntersectionCheck self_intersection_check( testContext.first, QVariantMap() );
+  QgsGeometryMultipartCheck multipart_check( testContext.first, QVariantMap() );
+  QgsGeometryDangleCheck dangle_check( testContext.first, QVariantMap() );
+  QVariantMap configuration;
+  configuration.insert( "minAngle", 15 );
+  QgsGeometryAngleCheck angle_check( testContext.first, configuration );
+
+  QgsGeometryChecker *checker = new QgsGeometryChecker(
+    QList<QgsGeometryCheck *>()
+      << static_cast<QgsGeometryCheck *>( &self_intersection_check )
+      << static_cast<QgsGeometryCheck *>( &angle_check )
+      << static_cast<QgsGeometryCheck *>( &multipart_check )
+      << static_cast<QgsGeometryCheck *>( &dangle_check ),
+    testContext.first, testContext.second
+  );
+
+  QEventLoop evLoop;
+  QFutureWatcher<void> futureWatcher;
+  connect( &futureWatcher, &QFutureWatcherBase::finished, &evLoop, &QEventLoop::quit );
+
+  // Launch all checks in parallel
+  futureWatcher.setFuture( checker->execute() );
+
+  // Wait for all checks to end
+  evLoop.exec();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
