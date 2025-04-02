@@ -145,9 +145,9 @@ features a GUI for management of local custom CRS definitions.
 
 There are therefore two databases: one for shipped CRS definitions and
 one for custom CRS definitions. Custom CRS have internal IDs (accessible
-with :py:func:`~srsid`) greater or equal to \ref USER_CRS_START_ID. The
-local CRS databases should never be accessed directly with SQLite
-functions, instead you should use
+with :py:func:`~srsid`) greater or equal to \ref
+:py:class:`Qgis`.USER_CRS_START_ID. The local CRS databases should never
+be accessed directly with SQLite functions, instead you should use
 :py:class:`QgsCoordinateReferenceSystem` API for CRS lookups and for
 managements of custom CRS.
 
