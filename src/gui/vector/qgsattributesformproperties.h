@@ -235,7 +235,8 @@ class GUI_EXPORT QgsAttributesFormLayoutTreeView : public QgsAttributesFormBaseT
 
   private slots:
     void onItemDoubleClicked( const QModelIndex &index );
-    void selectDroppedNode( QModelIndex &index );
+    void handleExternalDroppedNode( QModelIndex &index );
+    void handleInternalDroppedNode( QModelIndex &index );
 
   private:
     QgsAttributesFormLayoutModel *mModel;

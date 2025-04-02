@@ -550,8 +550,10 @@ class QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     void populate() override;
 
   signals:
-    //! Informs that nodes were inserted (via drop) in the model.
-    void nodeDropped( QModelIndex &index );
+    //! Informs that nodes were inserted (via drop) in the model from another model.
+    void externalNodeDropped( QModelIndex &index );
+    //! Informs that nodes were moved (via drop) in the model from the same model.
+    void internalNodeDropped( QModelIndex &index );
 
   private:
     QList< QgsAddAttributeFormContainerDialog::ContainerPair > getRecursiveListOfContainers( AttributesFormTreeNode *parent ) const;

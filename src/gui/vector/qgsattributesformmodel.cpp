@@ -1081,17 +1081,17 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
 
       bDropSuccessful = true;
 
-      if ( nodeType == QgsAttributeFormTreeData::QmlWidget
-           || nodeType == QgsAttributeFormTreeData::HtmlWidget
-           || nodeType == QgsAttributeFormTreeData::TextWidget
-           || nodeType == QgsAttributeFormTreeData::SpacerWidget )
+      QModelIndex addedIndex = index( row + rows, 0, parent );
+      if ( action == Qt::CopyAction ) // External drop
       {
-        // Emit signal to open their dialogs
+        emit externalNodeDropped( addedIndex );
+      }
+      else if ( action == Qt::MoveAction ) // Internal move
+      {
+        emit internalNodeDropped( addedIndex );
       }
 
-      //QModelIndex addedIndex = index( row + rows, 0, parent );
       rows++;
-      //emit nodeDropped( addedIndex );
     }
   }
 

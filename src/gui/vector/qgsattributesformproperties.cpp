@@ -1054,7 +1054,8 @@ void QgsAttributesFormLayoutTreeView::setModel( QAbstractItemModel *model )
 
   QTreeView::setModel( mModel );
 
-  connect( mModel, &QgsAttributesFormLayoutModel::nodeDropped, this, &QgsAttributesFormLayoutTreeView::selectDroppedNode );
+  connect( mModel, &QgsAttributesFormLayoutModel::externalNodeDropped, this, &QgsAttributesFormLayoutTreeView::handleExternalDroppedNode );
+  connect( mModel, &QgsAttributesFormLayoutModel::internalNodeDropped, this, &QgsAttributesFormLayoutTreeView::handleInternalDroppedNode );
 }
 
 QgsAttributesFormLayoutModel *QgsAttributesFormLayoutTreeView::formLayoutModel() const
@@ -1062,11 +1063,25 @@ QgsAttributesFormLayoutModel *QgsAttributesFormLayoutTreeView::formLayoutModel()
   return mModel;
 }
 
-void QgsAttributesFormLayoutTreeView::selectDroppedNode( QModelIndex &index )
+void QgsAttributesFormLayoutTreeView::handleExternalDroppedNode( QModelIndex &index )
 {
   selectionModel()->setCurrentIndex( index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+
+  const auto nodeType = static_cast< QgsAttributeFormTreeData::AttributeFormTreeItemType >( index.data( QgsAttributesFormModel::NodeTypeRole ).toInt() );
+
+  if ( nodeType == QgsAttributeFormTreeData::QmlWidget
+       || nodeType == QgsAttributeFormTreeData::HtmlWidget
+       || nodeType == QgsAttributeFormTreeData::TextWidget
+       || nodeType == QgsAttributeFormTreeData::SpacerWidget )
+  {
+    onItemDoubleClicked( index );
+  }
 }
 
+void QgsAttributesFormLayoutTreeView::handleInternalDroppedNode( QModelIndex &index )
+{
+  selectionModel()->clearCurrentIndex();
+}
 
 void QgsAttributesFormLayoutTreeView::dragEnterEvent( QDragEnterEvent *event )
 {
