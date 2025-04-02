@@ -1180,6 +1180,15 @@ void Qgs3DMapCanvasWidget::setSceneExtent( const QgsRectangle &extent )
   if ( !extent.isEmpty() )
     mCanvas->mapSettings()->setExtent( extent );
 
+  if ( !mapCanvas3D()->scene()->clipPlaneEquations().isEmpty() )
+  {
+    if ( !mMapToolClippingPlanes->clippedPolygon().intersects( extent ) )
+    {
+      disableClippingPlanes();
+      mMessageBar->pushInfo( QString(), tr( "Cross-section has been disabled, because it's outside current extent" ) );
+    }
+  }
+
   if ( mMapToolPrevious )
     mMainCanvas->setMapTool( mMapToolPrevious );
   else

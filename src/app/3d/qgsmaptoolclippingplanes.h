@@ -49,6 +49,8 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     void clear() const;
     //! Removes the tool's rubber band from canvas, which highlights the cross-section.
     void clearHighLightedArea() const;
+    //! Returns the Geometry of clipped area
+    QgsGeometry clippedPolygon() const;
 
   private:
     void clearRubberBand() const;
