@@ -322,6 +322,10 @@ void QgsAuthOAuth2Config::validateConfigId( bool needsId )
   {
     mValid = ( !tokenUrl().isEmpty() && !username().isEmpty() && !password().isEmpty() && ( needsId ? !id().isEmpty() : true ) );
   }
+  else if ( mGrantFlow == GrantFlow::ClientCredentials )
+  {
+    mValid = ( !tokenUrl().isEmpty() && !clientId().isEmpty() && !clientSecret().isEmpty() && ( needsId ? !id().isEmpty() : true ) );
+  }
 
   if ( mValid != oldvalid )
     emit validityChanged( mValid );
@@ -872,6 +876,8 @@ QString QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow flo
       return tr( "Authorization Code PKCE" );
     case QgsAuthOAuth2Config::GrantFlow::ResourceOwner:
       return tr( "Resource Owner" );
+    case QgsAuthOAuth2Config::GrantFlow::ClientCredentials:
+      return tr( "Client Credentials" );
   }
   BUILTIN_UNREACHABLE
 }
