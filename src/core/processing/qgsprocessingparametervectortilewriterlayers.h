@@ -122,7 +122,7 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorTileWriterLayers : public QgsP
       return QStringList();
     }
 
-    QStringList acceptedOutputTypes() const
+    QStringList acceptedOutputTypes() const override
     {
       return QStringList();
     }

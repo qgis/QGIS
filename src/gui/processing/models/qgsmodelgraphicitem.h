@@ -150,9 +150,9 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
 
 /**
  * \ingroup gui
- * \brief A socket allowing linking component together
+ * \brief A socket allowing linking component together.
  * \warning Not stable API
- * \since QGIS 3.42
+ * \since QGIS 3.44
  */
 class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlatButtonGraphicItem
 {
