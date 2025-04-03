@@ -18,6 +18,7 @@
 
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
+#include "qgsprocessingoutputs.h"
 #include "qgsalignrasterdata.h"
 
 /**
@@ -122,6 +123,27 @@ class CORE_EXPORT QgsProcessingParameterTypeAlignRasterLayers : public QgsProces
              << QObject::tr( "str: layer source" )
              << QStringLiteral( "list[QgsMapLayer]" )
              << QStringLiteral( "QgsRasterLayer" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterMultipleLayers::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterFile::typeName()
+             << QgsProcessingParameterString::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMultipleLayers::typeName()
+             << QgsProcessingOutputFile::typeName();
     }
 };
 

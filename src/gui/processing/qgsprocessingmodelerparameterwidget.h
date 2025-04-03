@@ -109,6 +109,8 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      */
     void populateSources( const QStringList &compatibleParameterTypes, const QStringList &compatibleOutputTypes, const QList<int> &compatibleDataTypes );
 
+    void populateSources( const QgsProcessingParameterDefinition *param );
+
     /**
      * HACK : Ugly workaround to expose the compatible sources for a parameter definition ( QgsProcessingParameterDefinition)
      * Idealy we should no rely on any UI-related function to get this

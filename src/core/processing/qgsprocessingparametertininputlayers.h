@@ -107,6 +107,17 @@ class CORE_EXPORT QgsProcessingParameterTypeTinInputLayers : public QgsProcessin
     {
       return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterTinInputLayers docs" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterTinInputLayers::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList();
+    }
 };
 
 ///@endcond

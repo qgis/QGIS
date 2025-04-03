@@ -27,6 +27,8 @@
 #include "qgsguiutils.h"
 #include "qgsexpressioncontext.h"
 #include "qgsapplication.h"
+#include "qgsprocessingregistry.h"
+#include "qgsprocessingparametertype.h"
 #include "qgsfilterlineedit.h"
 #include <QHBoxLayout>
 #include <QToolButton>
@@ -410,6 +412,11 @@ void QgsProcessingModelerParameterWidget::updateUi()
   mChildOutputCombo->setCurrentIndex( currentIndex );
 }
 
+void QgsProcessingModelerParameterWidget::populateSources( const QgsProcessingParameterDefinition *param )
+{
+  const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( param->type() );
+  return populateSources( paramType->acceptedParameterTypes(), paramType->acceptedOutputTypes(), paramType->acceptedDataTypes( param ) );
+}
 void QgsProcessingModelerParameterWidget::populateSources( const QStringList &compatibleParameterTypes, const QStringList &compatibleOutputTypes, const QList<int> &compatibleDataTypes )
 {
   mSources = mModel->availableSourcesForChild( mChildId, compatibleParameterTypes, compatibleOutputTypes, compatibleDataTypes );

@@ -675,6 +675,15 @@ class DummyParameterType : public QgsProcessingParameterType
     {
       return QStringLiteral( "paramType" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList();
+    }
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList();
+    }
 };
 
 class DummyPluginLayer : public QgsPluginLayer

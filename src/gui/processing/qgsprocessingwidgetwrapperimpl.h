@@ -115,10 +115,6 @@ class GUI_EXPORT QgsProcessingBooleanWidgetWrapper : public QgsAbstractProcessin
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
-
   private:
     QCheckBox *mCheckBox = nullptr;
     QComboBox *mComboBox = nullptr;
@@ -162,8 +158,6 @@ class GUI_EXPORT QgsProcessingCrsWidgetWrapper : public QgsAbstractProcessingPar
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -210,10 +204,6 @@ class GUI_EXPORT QgsProcessingStringWidgetWrapper : public QgsAbstractProcessing
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
-
   private:
     QLineEdit *mLineEdit = nullptr;
     QComboBox *mComboBox = nullptr;
@@ -240,10 +230,6 @@ class GUI_EXPORT QgsProcessingAuthConfigWidgetWrapper : public QgsAbstractProces
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
-
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
 
   private:
     QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
@@ -290,10 +276,6 @@ class GUI_EXPORT QgsProcessingNumericWidgetWrapper : public QgsAbstractProcessin
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
-
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
 
   protected:
     QgsSpinBox *mSpinBox = nullptr;
@@ -588,8 +570,6 @@ class GUI_EXPORT QgsProcessingRangeWidgetWrapper : public QgsAbstractProcessingP
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   protected:
@@ -638,8 +618,6 @@ class GUI_EXPORT QgsProcessingMatrixWidgetWrapper : public QgsAbstractProcessing
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -685,9 +663,6 @@ class GUI_EXPORT QgsProcessingFileWidgetWrapper : public QgsAbstractProcessingPa
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -740,10 +715,6 @@ class GUI_EXPORT QgsProcessingExpressionWidgetWrapper : public QgsAbstractProces
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
-
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
 
     QString modelerExpressionFormatString() const override;
     const QgsVectorLayer *linkedVectorLayer() const override;
@@ -853,10 +824,6 @@ class GUI_EXPORT QgsProcessingEnumWidgetWrapper : public QgsAbstractProcessingPa
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
-
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -886,10 +853,6 @@ class GUI_EXPORT QgsProcessingLayoutWidgetWrapper : public QgsAbstractProcessing
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
-
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
 
     QString modelerExpressionFormatString() const override;
 
@@ -942,9 +905,6 @@ class GUI_EXPORT QgsProcessingLayoutItemWidgetWrapper : public QgsAbstractProces
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -1058,9 +1018,6 @@ class GUI_EXPORT QgsProcessingPointWidgetWrapper : public QgsAbstractProcessingP
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -1106,9 +1063,6 @@ class GUI_EXPORT QgsProcessingGeometryWidgetWrapper : public QgsAbstractProcessi
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -1154,9 +1108,6 @@ class GUI_EXPORT QgsProcessingExtentWidgetWrapper : public QgsAbstractProcessing
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -1202,9 +1153,6 @@ class GUI_EXPORT QgsProcessingColorWidgetWrapper : public QgsAbstractProcessingP
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -1256,9 +1204,6 @@ class GUI_EXPORT QgsProcessingCoordinateOperationWidgetWrapper : public QgsAbstr
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -1352,9 +1297,6 @@ class GUI_EXPORT QgsProcessingFieldWidgetWrapper : public QgsAbstractProcessingP
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
     const QgsVectorLayer *linkedVectorLayer() const override;
 
@@ -1406,9 +1348,6 @@ class GUI_EXPORT QgsProcessingMapThemeWidgetWrapper : public QgsAbstractProcessi
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -1453,8 +1392,6 @@ class GUI_EXPORT QgsProcessingDateTimeWidgetWrapper : public QgsAbstractProcessi
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -1507,9 +1444,6 @@ class GUI_EXPORT QgsProcessingProviderConnectionWidgetWrapper : public QgsAbstra
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -1561,9 +1495,6 @@ class GUI_EXPORT QgsProcessingDatabaseSchemaWidgetWrapper : public QgsAbstractPr
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -1617,9 +1548,6 @@ class GUI_EXPORT QgsProcessingDatabaseTableWidgetWrapper : public QgsAbstractPro
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -1668,9 +1596,6 @@ class GUI_EXPORT QgsProcessingMapLayerWidgetWrapper : public QgsAbstractProcessi
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
     Qgis::ProcessingModelChildParameterSource defaultModelSource( const QgsProcessingParameterDefinition *parameter ) const override;
 
@@ -1700,10 +1625,6 @@ class GUI_EXPORT QgsProcessingRasterLayerWidgetWrapper : public QgsProcessingMap
     ) override;
 
   protected:
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
-
     QString modelerExpressionFormatString() const override;
 };
 
@@ -1737,12 +1658,7 @@ class GUI_EXPORT QgsProcessingVectorLayerWidgetWrapper : public QgsProcessingMap
     ) override;
 
   protected:
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
-
     QString modelerExpressionFormatString() const override;
-    QList<int> compatibleDataTypes( const QgsProcessingParameterDefinition *parameter ) const override;
 };
 
 
@@ -1775,12 +1691,7 @@ class GUI_EXPORT QgsProcessingFeatureSourceWidgetWrapper : public QgsProcessingM
     ) override;
 
   protected:
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
-
     QString modelerExpressionFormatString() const override;
-    QList<int> compatibleDataTypes( const QgsProcessingParameterDefinition *parameter ) const override;
 };
 
 
@@ -1802,10 +1713,6 @@ class GUI_EXPORT QgsProcessingMeshLayerWidgetWrapper : public QgsProcessingMapLa
     ) override;
 
   protected:
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
-
     QString modelerExpressionFormatString() const override;
 };
 
@@ -1888,9 +1795,6 @@ class GUI_EXPORT QgsProcessingBandWidgetWrapper : public QgsAbstractProcessingPa
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -1995,9 +1899,6 @@ class GUI_EXPORT QgsProcessingMultipleLayerWidgetWrapper : public QgsAbstractPro
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:
@@ -2021,10 +1922,6 @@ class GUI_EXPORT QgsProcessingOutputWidgetWrapper : public QgsAbstractProcessing
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
     QVariantMap customProperties() const override;
-
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
 
   private:
     QgsProcessingLayerOutputDestinationWidget *mOutputWidget = nullptr;
@@ -2109,8 +2006,6 @@ class GUI_EXPORT QgsProcessingFileDestinationWidgetWrapper : public QgsProcessin
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
 
   protected:
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 };
 
@@ -2126,8 +2021,6 @@ class GUI_EXPORT QgsProcessingFolderDestinationWidgetWrapper : public QgsProcess
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
 
   protected:
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 };
 
@@ -2149,10 +2042,6 @@ class GUI_EXPORT QgsProcessingPointCloudLayerWidgetWrapper : public QgsProcessin
     ) override;
 
   protected:
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
-
     QString modelerExpressionFormatString() const override;
 };
 
@@ -2180,10 +2069,6 @@ class GUI_EXPORT QgsProcessingAnnotationLayerWidgetWrapper : public QgsAbstractP
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
-
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
 
     QString modelerExpressionFormatString() const override;
 
@@ -2273,9 +2158,6 @@ class GUI_EXPORT QgsProcessingPointCloudAttributeWidgetWrapper : public QgsAbstr
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
   private:

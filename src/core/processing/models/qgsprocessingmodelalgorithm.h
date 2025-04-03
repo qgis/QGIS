@@ -460,6 +460,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
         const QStringList &outputTypes = QStringList(), const QList< int > &dataTypes = QList< int >() ) const;
 
     /**
+     * Same as above except compatibilies list is draw from the \a parameTypes
+     */
+    QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QgsProcessingParameterDefinition *param ) const;
+
+    /**
      * \brief Definition of a expression context variable available during model execution.
      * \ingroup core
      */

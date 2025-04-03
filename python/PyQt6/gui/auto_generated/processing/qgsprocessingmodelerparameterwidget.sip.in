@@ -81,6 +81,8 @@ The ``compatibleDataTypes`` list corresponds to the compatible data types
 from :py:class:`QgsProcessing`.SourceType.
 %End
 
+    void populateSources( const QgsProcessingParameterDefinition *param );
+
     QList<QgsProcessingModelChildParameterSource> availableSourcesForChild();
 %Docstring
 HACK : Ugly workaround to expose the compatible sources for a parameter definition ( :py:class:`QgsProcessingParameterDefinition`)

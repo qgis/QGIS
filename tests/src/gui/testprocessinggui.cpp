@@ -173,11 +173,6 @@ class TestWidgetFactory : public QgsProcessingParameterWidgetFactoryInterface
     {
       return new TestWidgetWrapper( parameter, type );
     }
-
-
-    QStringList compatibleParameterTypes() const override { return QStringList(); }
-
-    QStringList compatibleOutputTypes() const override { return QStringList(); }
 };
 
 class DummyPluginLayer : public QgsPluginLayer

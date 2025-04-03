@@ -128,9 +128,6 @@ class QgsProcessingVectorTileWriterLayersWidgetWrapper : public QgsAbstractProce
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
-
   private:
     QgsProcessingVectorTileWriterLayersWidget *mPanel = nullptr;
 

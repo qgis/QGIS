@@ -200,42 +200,6 @@ QVariant QgsProcessingBooleanWidgetWrapper::widgetValue() const
   return QVariant();
 }
 
-QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
-{
-  //pretty much everything is compatible here and can be converted to a bool!
-  return QStringList() << QgsProcessingParameterBoolean::typeName()
-                       << QgsProcessingParameterString::typeName()
-                       << QgsProcessingParameterNumber::typeName()
-                       << QgsProcessingParameterDistance::typeName()
-                       << QgsProcessingParameterArea::typeName()
-                       << QgsProcessingParameterVolume::typeName()
-                       << QgsProcessingParameterDuration::typeName()
-                       << QgsProcessingParameterScale::typeName()
-                       << QgsProcessingParameterFile::typeName()
-                       << QgsProcessingParameterField::typeName()
-                       << QgsProcessingParameterFeatureSource::typeName()
-                       << QgsProcessingParameterMapLayer::typeName()
-                       << QgsProcessingParameterRasterLayer::typeName()
-                       << QgsProcessingParameterVectorLayer::typeName()
-                       << QgsProcessingParameterMeshLayer::typeName()
-                       << QgsProcessingParameterExpression::typeName()
-                       << QgsProcessingParameterProviderConnection::typeName()
-                       << QgsProcessingParameterPointCloudLayer::typeName()
-                       << QgsProcessingParameterAnnotationLayer::typeName();
-}
-
-QStringList QgsProcessingBooleanWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputNumber::typeName()
-                       << QgsProcessingOutputMapLayer::typeName()
-                       << QgsProcessingOutputFile::typeName()
-                       << QgsProcessingOutputRasterLayer::typeName()
-                       << QgsProcessingOutputVectorLayer::typeName()
-                       << QgsProcessingOutputString::typeName()
-                       << QgsProcessingOutputVariant::typeName()
-                       << QgsProcessingOutputBoolean::typeName();
-}
-
 QString QgsProcessingBooleanWidgetWrapper::parameterType() const
 {
   return QgsProcessingParameterBoolean::typeName();
@@ -366,29 +330,6 @@ QVariant QgsProcessingCrsWidgetWrapper::widgetValue() const
     return mProjectionSelectionWidget->crs().isValid() ? mProjectionSelectionWidget->crs() : QVariant();
   else
     return QVariant();
-}
-
-QStringList QgsProcessingCrsWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterCrs::typeName()
-         << QgsProcessingParameterExpression::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterRasterLayer::typeName()
-         << QgsProcessingParameterVectorLayer::typeName()
-         << QgsProcessingParameterMeshLayer::typeName()
-         << QgsProcessingParameterFeatureSource::typeName()
-         << QgsProcessingParameterPointCloudLayer::typeName()
-         << QgsProcessingParameterAnnotationLayer::typeName();
-}
-
-QStringList QgsProcessingCrsWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputVectorLayer::typeName()
-                       << QgsProcessingOutputRasterLayer::typeName()
-                       << QgsProcessingOutputMapLayer::typeName()
-                       << QgsProcessingOutputString::typeName()
-                       << QgsProcessingOutputVariant::typeName();
 }
 
 QString QgsProcessingCrsWidgetWrapper::modelerExpressionFormatString() const
@@ -556,33 +497,6 @@ QVariant QgsProcessingStringWidgetWrapper::widgetValue() const
     return QVariant();
 }
 
-QStringList QgsProcessingStringWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterAuthConfig::typeName()
-         << QgsProcessingParameterNumber::typeName()
-         << QgsProcessingParameterDistance::typeName()
-         << QgsProcessingParameterArea::typeName()
-         << QgsProcessingParameterVolume::typeName()
-         << QgsProcessingParameterDuration::typeName()
-         << QgsProcessingParameterScale::typeName()
-         << QgsProcessingParameterFile::typeName()
-         << QgsProcessingParameterField::typeName()
-         << QgsProcessingParameterExpression::typeName()
-         << QgsProcessingParameterCoordinateOperation::typeName()
-         << QgsProcessingParameterProviderConnection::typeName();
-}
-
-QStringList QgsProcessingStringWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputNumber::typeName()
-                       << QgsProcessingOutputVariant::typeName()
-                       << QgsProcessingOutputFile::typeName()
-                       << QgsProcessingOutputFolder::typeName()
-                       << QgsProcessingOutputString::typeName();
-}
-
 QString QgsProcessingStringWidgetWrapper::parameterType() const
 {
   return QgsProcessingParameterString::typeName();
@@ -641,20 +555,6 @@ QVariant QgsProcessingAuthConfigWidgetWrapper::widgetValue() const
     return mAuthConfigSelect->configId();
   else
     return QVariant();
-}
-
-QStringList QgsProcessingAuthConfigWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterAuthConfig::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingAuthConfigWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputString::typeName()
-                       << QgsProcessingOutputVariant::typeName();
 }
 
 QString QgsProcessingAuthConfigWidgetWrapper::parameterType() const
@@ -934,24 +834,6 @@ QVariant QgsProcessingNumericWidgetWrapper::widgetValue() const
   }
   else
     return QVariant();
-}
-
-QStringList QgsProcessingNumericWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterNumber::typeName()
-         << QgsProcessingParameterDistance::typeName()
-         << QgsProcessingParameterVolume::typeName()
-         << QgsProcessingParameterDuration::typeName()
-         << QgsProcessingParameterScale::typeName();
-}
-
-QStringList QgsProcessingNumericWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputNumber::typeName()
-                       << QgsProcessingOutputVariant::typeName()
-                       << QgsProcessingOutputString::typeName();
 }
 
 double QgsProcessingNumericWidgetWrapper::calculateStep( const double minimum, const double maximum )
@@ -2354,19 +2236,6 @@ QVariant QgsProcessingRangeWidgetWrapper::widgetValue() const
     return QStringLiteral( "%1,%2" ).arg( mMinSpinBox->value() ).arg( mMaxSpinBox->value() );
 }
 
-QStringList QgsProcessingRangeWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterRange::typeName()
-         << QgsProcessingParameterString::typeName();
-}
-
-QStringList QgsProcessingRangeWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputString::typeName()
-                       << QgsProcessingOutputVariant::typeName();
-}
-
 QString QgsProcessingRangeWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "string as two comma delimited floats, e.g. '1,10'" );
@@ -2455,17 +2324,6 @@ QVariant QgsProcessingMatrixWidgetWrapper::widgetValue() const
     return mMatrixWidget->value().isEmpty() ? QVariant() : mMatrixWidget->value();
   else
     return QVariant();
-}
-
-QStringList QgsProcessingMatrixWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterMatrix::typeName();
-}
-
-QStringList QgsProcessingMatrixWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList();
 }
 
 QString QgsProcessingMatrixWidgetWrapper::modelerExpressionFormatString() const
@@ -2621,24 +2479,6 @@ QVariant QgsProcessingFileWidgetWrapper::widgetValue() const
     return mFileWidget->filePath();
   else
     return QVariant();
-}
-
-QStringList QgsProcessingFileWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterFile::typeName();
-}
-
-QStringList QgsProcessingFileWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputFile::typeName()
-                       << QgsProcessingOutputFolder::typeName()
-                       << QgsProcessingOutputString::typeName()
-                       << QgsProcessingOutputVariant::typeName()
-                       << QgsProcessingOutputRasterLayer::typeName()
-                       << QgsProcessingOutputVectorLayer::typeName()
-                       << QgsProcessingOutputMapLayer::typeName();
 }
 
 QString QgsProcessingFileWidgetWrapper::modelerExpressionFormatString() const
@@ -3075,27 +2915,6 @@ QVariant QgsProcessingExpressionWidgetWrapper::widgetValue() const
     return mRasterCalculatorExpLineEdit->expression();
   else
     return QVariant();
-}
-
-QStringList QgsProcessingExpressionWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterExpression::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterNumber::typeName()
-         << QgsProcessingParameterDistance::typeName()
-         << QgsProcessingParameterArea::typeName()
-         << QgsProcessingParameterVolume::typeName()
-         << QgsProcessingParameterScale::typeName()
-         << QgsProcessingParameterProviderConnection::typeName();
-}
-
-QStringList QgsProcessingExpressionWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputNumber::typeName()
-         << QgsProcessingOutputVariant::typeName();
 }
 
 QString QgsProcessingExpressionWidgetWrapper::modelerExpressionFormatString() const
@@ -3558,22 +3377,6 @@ QVariant QgsProcessingEnumWidgetWrapper::widgetValue() const
     return QVariant();
 }
 
-QStringList QgsProcessingEnumWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterEnum::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterNumber::typeName();
-}
-
-QStringList QgsProcessingEnumWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName()
-         << QgsProcessingOutputNumber::typeName();
-}
-
 QString QgsProcessingEnumWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "selected option index (starting from 0), array of indices, or comma separated string of options (e.g. '1,3')" );
@@ -3688,20 +3491,6 @@ void QgsProcessingLayoutWidgetWrapper::setWidgetContext( const QgsProcessingPara
     for ( const QgsPrintLayout *layout : layouts )
       mPlainComboBox->addItem( layout->name() );
   }
-}
-
-QStringList QgsProcessingLayoutWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterLayout::typeName()
-         << QgsProcessingParameterString::typeName();
-}
-
-QStringList QgsProcessingLayoutWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
 }
 
 QString QgsProcessingLayoutWidgetWrapper::modelerExpressionFormatString() const
@@ -3898,19 +3687,6 @@ QVariant QgsProcessingLayoutItemWidgetWrapper::widgetValue() const
     return QVariant();
 }
 
-QStringList QgsProcessingLayoutItemWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterLayoutItem::typeName()
-         << QgsProcessingParameterString::typeName();
-}
-
-QStringList QgsProcessingLayoutItemWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
-}
 
 QString QgsProcessingLayoutItemWidgetWrapper::modelerExpressionFormatString() const
 {
@@ -4307,20 +4083,6 @@ QVariant QgsProcessingPointWidgetWrapper::widgetValue() const
     return QVariant();
 }
 
-QStringList QgsProcessingPointWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterPoint::typeName()
-         << QgsProcessingParameterString::typeName();
-}
-
-QStringList QgsProcessingPointWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
-}
-
 QString QgsProcessingPointWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "string of the format 'x,y' or a geometry value (centroid is used)" );
@@ -4428,22 +4190,6 @@ QVariant QgsProcessingGeometryWidgetWrapper::widgetValue() const
   {
     return QVariant();
   }
-}
-
-QStringList QgsProcessingGeometryWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterGeometry::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterPoint::typeName()
-         << QgsProcessingParameterExtent::typeName();
-}
-
-QStringList QgsProcessingGeometryWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
 }
 
 QString QgsProcessingGeometryWidgetWrapper::modelerExpressionFormatString() const
@@ -4573,20 +4319,6 @@ QVariant QgsProcessingColorWidgetWrapper::widgetValue() const
     return mColorButton->isNull() ? QVariant() : mColorButton->color();
   else
     return QVariant();
-}
-
-QStringList QgsProcessingColorWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterColor::typeName()
-         << QgsProcessingParameterString::typeName();
-}
-
-QStringList QgsProcessingColorWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
 }
 
 QString QgsProcessingColorWidgetWrapper::modelerExpressionFormatString() const
@@ -4841,20 +4573,6 @@ QVariant QgsProcessingCoordinateOperationWidgetWrapper::widgetValue() const
     return mLineEdit->text();
   else
     return QVariant();
-}
-
-QStringList QgsProcessingCoordinateOperationWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterCoordinateOperation::typeName()
-         << QgsProcessingParameterString::typeName();
-}
-
-QStringList QgsProcessingCoordinateOperationWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
 }
 
 QString QgsProcessingCoordinateOperationWidgetWrapper::modelerExpressionFormatString() const
@@ -5428,20 +5146,6 @@ QVariant QgsProcessingFieldWidgetWrapper::widgetValue() const
     return QVariant();
 }
 
-QStringList QgsProcessingFieldWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterField::typeName()
-         << QgsProcessingParameterString::typeName();
-}
-
-QStringList QgsProcessingFieldWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
-}
-
 QString QgsProcessingFieldWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "selected field names as an array of names, or semicolon separated string of options (e.g. 'fid;place_name')" );
@@ -5631,20 +5335,6 @@ QVariant QgsProcessingMapThemeWidgetWrapper::widgetValue() const
     return QVariant();
 }
 
-QStringList QgsProcessingMapThemeWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingMapThemeWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
-}
-
 QString QgsProcessingMapThemeWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "map theme as a string value (e.g. 'base maps')" );
@@ -5793,20 +5483,6 @@ QVariant QgsProcessingDateTimeWidgetWrapper::widgetValue() const
     return !mTimeEdit->time().isNull() && mTimeEdit->time().isValid() ? QVariant( mTimeEdit->time() ) : QVariant();
   else
     return QVariant();
-}
-
-QStringList QgsProcessingDateTimeWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterDateTime::typeName()
-         << QgsProcessingParameterString::typeName();
-}
-
-QStringList QgsProcessingDateTimeWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
 }
 
 QString QgsProcessingDateTimeWidgetWrapper::modelerExpressionFormatString() const
@@ -5958,21 +5634,6 @@ QVariant QgsProcessingProviderConnectionWidgetWrapper::widgetValue() const
       return mProviderComboBox->currentConnection().isEmpty() ? QVariant() : QVariant( mProviderComboBox->currentConnection() );
   else
     return QVariant();
-}
-
-QStringList QgsProcessingProviderConnectionWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterProviderConnection::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingProviderConnectionWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
 }
 
 QString QgsProcessingProviderConnectionWidgetWrapper::modelerExpressionFormatString() const
@@ -6162,21 +5823,6 @@ QVariant QgsProcessingDatabaseSchemaWidgetWrapper::widgetValue() const
       return mSchemaComboBox->currentSchema().isEmpty() ? QVariant() : QVariant( mSchemaComboBox->currentSchema() );
   else
     return QVariant();
-}
-
-QStringList QgsProcessingDatabaseSchemaWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterDatabaseSchema::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingDatabaseSchemaWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
 }
 
 QString QgsProcessingDatabaseSchemaWidgetWrapper::modelerExpressionFormatString() const
@@ -6440,21 +6086,6 @@ QVariant QgsProcessingDatabaseTableWidgetWrapper::widgetValue() const
     return QVariant();
 }
 
-QStringList QgsProcessingDatabaseTableWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterDatabaseTable::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingDatabaseTableWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
-}
-
 QString QgsProcessingDatabaseTableWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "database table name as a string value" );
@@ -6636,30 +6267,6 @@ QVariant QgsProcessingExtentWidgetWrapper::widgetValue() const
     return QVariant();
 }
 
-QStringList QgsProcessingExtentWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterExtent::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterMapLayer::typeName()
-         << QgsProcessingParameterFeatureSource::typeName()
-         << QgsProcessingParameterRasterLayer::typeName()
-         << QgsProcessingParameterVectorLayer::typeName()
-         << QgsProcessingParameterMeshLayer::typeName()
-         << QgsProcessingParameterPointCloudLayer::typeName()
-         << QgsProcessingParameterAnnotationLayer::typeName();
-}
-
-QStringList QgsProcessingExtentWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputRasterLayer::typeName()
-         << QgsProcessingOutputVectorLayer::typeName()
-         << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputVariant::typeName();
-}
-
 QString QgsProcessingExtentWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "string of the format 'x min,x max,y min,y max' or a geometry value (bounding box is used)" );
@@ -6789,30 +6396,6 @@ QVariant QgsProcessingMapLayerWidgetWrapper::widgetValue() const
   return mComboBox ? mComboBox->value() : QVariant();
 }
 
-QStringList QgsProcessingMapLayerWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterRasterLayer::typeName()
-         << QgsProcessingParameterMeshLayer::typeName()
-         << QgsProcessingParameterVectorLayer::typeName()
-         << QgsProcessingParameterMapLayer::typeName()
-         << QgsProcessingParameterPointCloudLayer::typeName()
-         << QgsProcessingParameterAnnotationLayer::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingMapLayerWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputRasterLayer::typeName()
-         << QgsProcessingOutputVectorLayer::typeName()
-         << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputFile::typeName()
-         << QgsProcessingOutputVariant::typeName();
-}
-
 QString QgsProcessingMapLayerWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "path to a map layer" );
@@ -6855,25 +6438,6 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMapLayerWidgetWrapp
 QgsProcessingRasterLayerWidgetWrapper::QgsProcessingRasterLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsProcessingMapLayerWidgetWrapper( parameter, type, parent )
 {
-}
-
-QStringList QgsProcessingRasterLayerWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterRasterLayer::typeName()
-         << QgsProcessingParameterMapLayer::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingRasterLayerWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputRasterLayer::typeName()
-         << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputFile::typeName()
-         << QgsProcessingOutputFolder::typeName();
 }
 
 QString QgsProcessingRasterLayerWidgetWrapper::modelerExpressionFormatString() const
@@ -6950,36 +6514,9 @@ QgsProcessingVectorLayerWidgetWrapper::QgsProcessingVectorLayerWidgetWrapper( co
 {
 }
 
-QStringList QgsProcessingVectorLayerWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterVectorLayer::typeName()
-         << QgsProcessingParameterMapLayer::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingVectorLayerWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVectorLayer::typeName()
-         << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputFile::typeName()
-         << QgsProcessingOutputFolder::typeName();
-}
-
 QString QgsProcessingVectorLayerWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "path to a vector layer" );
-}
-
-QList<int> QgsProcessingVectorLayerWidgetWrapper::compatibleDataTypes( const QgsProcessingParameterDefinition *parameter ) const
-{
-  if ( const QgsProcessingParameterVectorLayer *param = dynamic_cast<const QgsProcessingParameterVectorLayer *>( parameter ) )
-    return param->dataTypes();
-  else
-    return QList<int>();
 }
 
 QString QgsProcessingVectorLayerWidgetWrapper::parameterType() const
@@ -7049,37 +6586,9 @@ QgsProcessingFeatureSourceWidgetWrapper::QgsProcessingFeatureSourceWidgetWrapper
 {
 }
 
-QStringList QgsProcessingFeatureSourceWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterFeatureSource::typeName()
-         << QgsProcessingParameterVectorLayer::typeName()
-         << QgsProcessingParameterMapLayer::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingFeatureSourceWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVectorLayer::typeName()
-         << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputFile::typeName()
-         << QgsProcessingOutputFolder::typeName();
-}
-
 QString QgsProcessingFeatureSourceWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "path to a vector layer" );
-}
-
-QList<int> QgsProcessingFeatureSourceWidgetWrapper::compatibleDataTypes( const QgsProcessingParameterDefinition *parameter ) const
-{
-  if ( const QgsProcessingParameterFeatureSource *param = dynamic_cast<const QgsProcessingParameterFeatureSource *>( parameter ) )
-    return param->dataTypes();
-  else
-    return QList<int>();
 }
 
 QString QgsProcessingFeatureSourceWidgetWrapper::parameterType() const
@@ -7104,25 +6613,6 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingFeatureSourceWidget
 QgsProcessingMeshLayerWidgetWrapper::QgsProcessingMeshLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsProcessingMapLayerWidgetWrapper( parameter, type, parent )
 {
-}
-
-QStringList QgsProcessingMeshLayerWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterMeshLayer::typeName()
-         << QgsProcessingParameterMapLayer::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingMeshLayerWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         // TODO  << QgsProcessingOutputMeshLayer::typeName()
-         << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputFile::typeName()
-         << QgsProcessingOutputFolder::typeName();
 }
 
 QString QgsProcessingMeshLayerWidgetWrapper::modelerExpressionFormatString() const
@@ -7549,20 +7039,6 @@ QVariant QgsProcessingBandWidgetWrapper::widgetValue() const
     return QVariant();
 }
 
-QStringList QgsProcessingBandWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterBand::typeName()
-         << QgsProcessingParameterNumber::typeName();
-}
-
-QStringList QgsProcessingBandWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputNumber::typeName()
-         << QgsProcessingOutputVariant::typeName();
-}
-
 QString QgsProcessingBandWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "selected band numbers as an array of numbers, or semicolon separated string of options (e.g. '1;3')" );
@@ -7913,31 +7389,6 @@ QVariant QgsProcessingMultipleLayerWidgetWrapper::widgetValue() const
     return QVariant();
 }
 
-QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterMultipleLayers::typeName()
-         << QgsProcessingParameterMapLayer::typeName()
-         << QgsProcessingParameterVectorLayer::typeName()
-         << QgsProcessingParameterMeshLayer::typeName()
-         << QgsProcessingParameterFeatureSource::typeName()
-         << QgsProcessingParameterRasterLayer::typeName()
-         << QgsProcessingParameterFile::typeName()
-         << QgsProcessingParameterString::typeName();
-}
-
-QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputRasterLayer::typeName()
-         << QgsProcessingOutputVectorLayer::typeName()
-         << QgsProcessingOutputMultipleLayers::typeName()
-         << QgsProcessingOutputFile::typeName()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
-}
-
 QString QgsProcessingMultipleLayerWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "an array of layer paths, or semicolon separated string of layer paths" );
@@ -7966,25 +7417,6 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMultipleLayerWidget
 QgsProcessingPointCloudLayerWidgetWrapper::QgsProcessingPointCloudLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsProcessingMapLayerWidgetWrapper( parameter, type, parent )
 {
-}
-
-QStringList QgsProcessingPointCloudLayerWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterPointCloudLayer::typeName()
-         << QgsProcessingParameterMapLayer::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingPointCloudLayerWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputPointCloudLayer::typeName()
-         << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputFile::typeName()
-         << QgsProcessingOutputFolder::typeName();
 }
 
 QString QgsProcessingPointCloudLayerWidgetWrapper::modelerExpressionFormatString() const
@@ -8020,23 +7452,6 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingPointCloudLayerWidg
 QgsProcessingAnnotationLayerWidgetWrapper::QgsProcessingAnnotationLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
-}
-
-QStringList QgsProcessingAnnotationLayerWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterAnnotationLayer::typeName()
-         << QgsProcessingParameterMapLayer::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingAnnotationLayerWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputVariant::typeName();
 }
 
 QString QgsProcessingAnnotationLayerWidgetWrapper::modelerExpressionFormatString() const
@@ -8551,20 +7966,6 @@ QVariant QgsProcessingPointCloudAttributeWidgetWrapper::widgetValue() const
     return QVariant();
 }
 
-QStringList QgsProcessingPointCloudAttributeWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterPointCloudAttribute::typeName()
-         << QgsProcessingParameterString::typeName();
-}
-
-QStringList QgsProcessingPointCloudAttributeWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputVariant::typeName();
-}
-
 QString QgsProcessingPointCloudAttributeWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "selected attribute names as an array of names, or semicolon separated string of options (e.g. 'X;Intensity')" );
@@ -8651,26 +8052,6 @@ QVariantMap QgsProcessingOutputWidgetWrapper::customProperties() const
   if ( mOutputWidget )
     res.insert( QStringLiteral( "OPEN_AFTER_RUNNING" ), mOutputWidget->openAfterRunning() );
   return res;
-}
-
-QStringList QgsProcessingOutputWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterRasterLayer::typeName()
-         << QgsProcessingParameterMeshLayer::typeName()
-         << QgsProcessingParameterVectorLayer::typeName()
-         << QgsProcessingParameterMapLayer::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterExpression::typeName();
-}
-
-QStringList QgsProcessingOutputWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName()
-         << QgsProcessingOutputFolder::typeName()
-         << QgsProcessingOutputFile::typeName()
-         << QgsProcessingOutputVariant::typeName();
 }
 
 //
@@ -8788,22 +8169,6 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFileDestinationWidgetW
   return new QgsProcessingFileDestinationWidgetWrapper( parameter, type );
 }
 
-QStringList QgsProcessingFileDestinationWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterFile::typeName();
-}
-
-QStringList QgsProcessingFileDestinationWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputFile::typeName()
-                       << QgsProcessingOutputString::typeName()
-                       << QgsProcessingOutputVariant::typeName()
-                       << QgsProcessingOutputRasterLayer::typeName()
-                       << QgsProcessingOutputVectorLayer::typeName()
-                       << QgsProcessingOutputMapLayer::typeName();
-}
 
 QString QgsProcessingFileDestinationWidgetWrapper::modelerExpressionFormatString() const
 {
@@ -8829,20 +8194,6 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFolderDestinationWidge
   return new QgsProcessingFolderDestinationWidgetWrapper( parameter, type );
 }
 
-QStringList QgsProcessingFolderDestinationWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterFile::typeName();
-}
-
-QStringList QgsProcessingFolderDestinationWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputFile::typeName()
-                       << QgsProcessingOutputFolder::typeName()
-                       << QgsProcessingOutputString::typeName()
-                       << QgsProcessingOutputVariant::typeName();
-}
 
 QString QgsProcessingFolderDestinationWidgetWrapper::modelerExpressionFormatString() const
 {

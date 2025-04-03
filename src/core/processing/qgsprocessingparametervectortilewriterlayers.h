@@ -112,6 +112,16 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorTileWriterLayers : public QgsP
     {
       return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterVectorTileWriterLayers docs" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList();
+    }
+
+    QStringList acceptedOutputTypes() const
+    {
+      return QStringList();
+    }
 };
 
 ///@endcond

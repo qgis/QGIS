@@ -514,6 +514,11 @@ If specified, an optional list of ``dataTypes`` can be used to filter the return
 sources to those with compatible data types for the parameter/outputs.
 %End
 
+    QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QgsProcessingParameterDefinition *param ) const;
+%Docstring
+Same as above except compatibilies list is draw from the ``parameTypes``
+%End
+
     class VariableDefinition
 {
 %Docstring(signature="appended")

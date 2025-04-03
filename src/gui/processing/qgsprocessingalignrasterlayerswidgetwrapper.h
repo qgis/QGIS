@@ -126,9 +126,6 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersWidgetWrapper : public QgsAbstrac
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
-
   private:
     QgsProcessingAlignRasterLayersWidget *mPanel = nullptr;
 
