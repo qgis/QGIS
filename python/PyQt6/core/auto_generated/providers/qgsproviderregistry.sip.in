@@ -109,6 +109,7 @@ Returns the provider capabilities
 %End
 
 
+
     QgsRasterDataProvider *createRasterDataProvider(
       const QString &providerKey,
       const QString &uri,
@@ -118,7 +119,7 @@ Returns the provider capabilities
       int width, int height,
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
-      const QStringList &creationOptions = QStringList() ) /Factory/;
+      const QStringList &createOptions = QStringList() ) /Factory/;
 %Docstring
 Creates new instance of raster data provider
 

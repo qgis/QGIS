@@ -465,6 +465,7 @@ create new empty GeoPackage or FileGeodatabase databases.
 .. versionadded:: 3.28
 %End
 
+
     virtual QgsRasterDataProvider *createRasterDataProvider(
       const QString &uri,
       const QString &format,
@@ -474,7 +475,7 @@ create new empty GeoPackage or FileGeodatabase databases.
       int height,
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
-      const QStringList &creationOptions = QStringList() ) /Factory/;
+      const QStringList &createOptions = QStringList() ) /Factory/;
 %Docstring
 Creates a new instance of the raster data provider.
 

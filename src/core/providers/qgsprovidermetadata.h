@@ -519,6 +519,8 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     virtual bool createDatabase( const QString &uri, QString &errorMessage SIP_OUT );
 
+    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+
     /**
      * Creates a new instance of the raster data provider.
      * \since QGIS 3.10
@@ -532,7 +534,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       int height,
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
-      const QStringList &creationOptions = QStringList() ) SIP_FACTORY;
+      const QStringList &createOptions = QStringList() ) SIP_FACTORY;
 
     /**
      * Creates mesh data source from a file name \a fileName and a driver \a driverName, that is the mesh frame stored in file, memory or with other way (depending of the provider)
