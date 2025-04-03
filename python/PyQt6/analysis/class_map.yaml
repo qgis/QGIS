@@ -263,12 +263,14 @@ QgsNetworkStrategy.cost: src/analysis/network/qgsnetworkstrategy.h#L68
 QgsNetworkStrategy: src/analysis/network/qgsnetworkstrategy.h#L41
 QgsNineCellFilter.cellSizeX: src/analysis/raster/qgsninecellfilter.h#L51
 QgsNineCellFilter.cellSizeY: src/analysis/raster/qgsninecellfilter.h#L53
+QgsNineCellFilter.creationOptions: src/analysis/raster/qgsninecellfilter.h#L78
 QgsNineCellFilter.inputNodataValue: src/analysis/raster/qgsninecellfilter.h#L59
 QgsNineCellFilter.outputNodataValue: src/analysis/raster/qgsninecellfilter.h#L61
-QgsNineCellFilter.processNineCellWindow: src/analysis/raster/qgsninecellfilter.h#L82
+QgsNineCellFilter.processNineCellWindow: src/analysis/raster/qgsninecellfilter.h#L98
 QgsNineCellFilter.processRaster: src/analysis/raster/qgsninecellfilter.h#L49
 QgsNineCellFilter.setCellSizeX: src/analysis/raster/qgsninecellfilter.h#L52
 QgsNineCellFilter.setCellSizeY: src/analysis/raster/qgsninecellfilter.h#L54
+QgsNineCellFilter.setCreationOptions: src/analysis/raster/qgsninecellfilter.h#L70
 QgsNineCellFilter.setInputNodataValue: src/analysis/raster/qgsninecellfilter.h#L60
 QgsNineCellFilter.setOutputNodataValue: src/analysis/raster/qgsninecellfilter.h#L62
 QgsNineCellFilter.setZFactor: src/analysis/raster/qgsninecellfilter.h#L57
