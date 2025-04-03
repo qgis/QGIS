@@ -140,12 +140,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
     source = QgsProcessingModelChildParameterSource::fromModelParameter( paramFrom->parameterName() );
   }
 
-  QgsProcessingContext context;
-  QgsProcessingModelerParameterWidget *widget = QgsGui::processingGuiRegistry()->createModelerParameterWidget( view()->modelScene()->model(), childTo->childId(), toParam, context );
-
-
-  QList<QgsProcessingModelChildParameterSource> compatibleParamSources = widget->availableSourcesForChild();
-  delete widget;
+  QList<QgsProcessingModelChildParameterSource> compatibleParamSources = scene()->model()->availableSourcesForChild( childTo->childId(), toParam );
 
   if ( !compatibleParamSources.contains( source ) )
   {

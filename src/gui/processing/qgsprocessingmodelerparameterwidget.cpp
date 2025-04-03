@@ -415,13 +415,9 @@ void QgsProcessingModelerParameterWidget::updateUi()
 void QgsProcessingModelerParameterWidget::populateSources( const QgsProcessingParameterDefinition *param )
 {
   const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( param->type() );
-  return populateSources( paramType->acceptedParameterTypes(), paramType->acceptedOutputTypes(), paramType->acceptedDataTypes( param ) );
-}
-void QgsProcessingModelerParameterWidget::populateSources( const QStringList &compatibleParameterTypes, const QStringList &compatibleOutputTypes, const QList<int> &compatibleDataTypes )
-{
-  mSources = mModel->availableSourcesForChild( mChildId, compatibleParameterTypes, compatibleOutputTypes, compatibleDataTypes );
+  const QgsProcessingModelChildParameterSources sources = mModel->availableSourcesForChild( mChildId, paramType->acceptedParameterTypes(), paramType->acceptedOutputTypes(), paramType->acceptedDataTypes( param ) );
 
-  for ( const QgsProcessingModelChildParameterSource &source : mSources )
+  for ( const QgsProcessingModelChildParameterSource &source : sources )
   {
     switch ( source.source() )
     {
@@ -452,11 +448,6 @@ void QgsProcessingModelerParameterWidget::populateSources( const QStringList &co
     }
   }
 }
-
-QList<QgsProcessingModelChildParameterSource> QgsProcessingModelerParameterWidget::availableSourcesForChild()
-{
-  return mSources;
-};
 
 void QgsProcessingModelerParameterWidget::setExpressionHelpText( const QString &text )
 {

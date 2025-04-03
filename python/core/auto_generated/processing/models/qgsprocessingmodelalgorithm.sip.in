@@ -503,6 +503,14 @@ The ``outputType`` argument dictates the desired script type.
 The ``indentSize`` arguments specifies the size of indented lines.
 %End
 
+    QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QgsProcessingParameterDefinition *param ) const;
+%Docstring
+Returns a list of possible sources which can be used for the parameters ``param`` for a child ``childId``
+algorithm in the model
+
+The source compatibilibity is deducted from the parameter type
+%End
+
     QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QStringList &parameterTypes = QStringList(),
         const QStringList &outputTypes = QStringList(), const QList< int > &dataTypes = QList< int >() ) const;
 %Docstring
@@ -512,11 +520,8 @@ specified ``parameterTypes`` (see :py:func:`QgsProcessingParameterDefinition.typ
 one of the specified ``outputTypes`` (see :py:func:`QgsProcessingOutputDefinition.type()` ).
 If specified, an optional list of ``dataTypes`` can be used to filter the returned
 sources to those with compatible data types for the parameter/outputs.
-%End
 
-    QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QgsProcessingParameterDefinition *param ) const;
-%Docstring
-Same as above except compatibilies list is draw from the ``parameTypes``
+Use it when you need fine grained support for the requested compatible sources
 %End
 
     class VariableDefinition

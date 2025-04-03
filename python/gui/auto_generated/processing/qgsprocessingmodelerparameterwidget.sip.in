@@ -65,7 +65,8 @@ Registers a Processing context ``generator`` class that will be used to retrieve
 a Processing context for the widget when required.
 %End
 
-    void populateSources( const QStringList &compatibleParameterTypes, const QStringList &compatibleOutputTypes, const QList<int> &compatibleDataTypes );
+
+    void populateSources( const QgsProcessingParameterDefinition *param );
 %Docstring
 Populates the widget with available sources for the parameter's value, e.g.
 adding the available child algorithm outputs and model input parameter
@@ -80,19 +81,6 @@ various available values for :py:func:`QgsProcessingParameterDefinition.type()` 
 The ``compatibleDataTypes`` list corresponds to the compatible data types
 from :py:class:`QgsProcessing`.SourceType.
 %End
-
-    void populateSources( const QgsProcessingParameterDefinition *param );
-
-    QList<QgsProcessingModelChildParameterSource> availableSourcesForChild();
-%Docstring
-HACK : Ugly workaround to expose the compatible sources for a parameter definition ( :py:class:`QgsProcessingParameterDefinition`)
-Idealy we should no rely on any UI-related function to get this
-
-see also :py:class:`QgsProcessingModelAlgorithm`.availableSourcesForChild
-
-The available sources are created on widget creation in :py:func:`populateSources`
-%End
-
 
     void setExpressionHelpText( const QString &text );
 %Docstring
