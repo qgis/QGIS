@@ -166,7 +166,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * \see creationOptions()
      * \since QGIS 3.44
      */
-    void setCreationOptions( const QStringList &list ) { mCreationOptions = list; }
+    void setCreationOptions( const QStringList &options ) { mCreationOptions = options; }
 
     /**
      * Returns the list of data source creation options which will be used when creating the output raster file.

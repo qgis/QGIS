@@ -155,7 +155,7 @@ Returns a description of the last error encountered.
 .. versionadded:: 3.4
 %End
 
-    void setCreationOptions( const QStringList &list );
+    void setCreationOptions( const QStringList &options );
 %Docstring
 Sets a list of data source creation options to use when creating the
 output raster file.

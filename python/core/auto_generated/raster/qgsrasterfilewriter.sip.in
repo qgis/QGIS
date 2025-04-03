@@ -258,7 +258,7 @@ Returns the maximum tile height (in pixels) for tiled outputs.
 .. seealso:: :py:func:`tiledMode`
 %End
 
- void setCreateOptions( const QStringList &list );
+ void setCreateOptions( const QStringList &options );
 %Docstring
 Sets a list of data source creation options to use when creating the
 output raster file.
@@ -292,17 +292,17 @@ creating the output raster file.
 .. versionadded:: 3.44
 %End
 
-    void setCreationOptions( const QStringList &list );
+    void setCreationOptions( const QStringList &options );
 %Docstring
-Sets a list of data source creation options to use when
-creating the output raster file.
+Sets a list of data source creation options to use when creating the
+output raster file.
 
 .. seealso:: :py:func:`creationOptions`
 
 .. versionadded:: 3.44
 %End
 
-    void setPyramidsConfigOptions( const QStringList &list );
+    void setPyramidsConfigOptions( const QStringList &options );
 %Docstring
 Sets a ``list`` of configuration options to use when creating the
 pyramids for the output raster file.

@@ -162,7 +162,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget : public QWidget, private Ui::
     void deleteCreationOptions( const QString &profile ) SIP_FORCE;
     void setCreationOptions() SIP_FORCE;
     void setCreationOptions( const QString &profile, const QString &options ) SIP_FORCE;
-    void setCreationOptions( const QString &profile, const QStringList &list ) SIP_FORCE;
+    void setCreationOptions( const QString &profile, const QStringList &options ) SIP_FORCE;
     QStringList profiles() const SIP_FORCE;
     bool eventFilter( QObject *obj, QEvent *event ) override SIP_FORCE;
     QString pseudoFormat() const SIP_FORCE;

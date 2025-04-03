@@ -254,7 +254,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * \see createOptions()
      * \deprecated QGIS 3.44. Use setCreationOptions() instead.
      */
-    Q_DECL_DEPRECATED void setCreateOptions( const QStringList &list ) { setCreationOptions( list ); }
+    Q_DECL_DEPRECATED void setCreateOptions( const QStringList &options ) { setCreationOptions( options ); }
 
     /**
      * Returns the list of data source creation options which will be used when
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * \see creationOptions()
      * \since QGIS 3.44
      */
-    void setCreationOptions( const QStringList &list ) { mCreationOptions = list; }
+    void setCreationOptions( const QStringList &options ) { mCreationOptions = options; }
 
     /**
      * Sets a \a list of configuration options to use when
@@ -289,7 +289,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see pyramidsConfigOptions()
      */
-    void setPyramidsConfigOptions( const QStringList &list ) { mPyramidsConfigOptions = list; }
+    void setPyramidsConfigOptions( const QStringList &options ) { mPyramidsConfigOptions = options; }
 
     /**
      * Returns the list of configuration options used when
