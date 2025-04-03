@@ -426,6 +426,7 @@ ALLOWED_NON_CLASS_ENUMS = [
     "QgsNewHttpConnection::ConnectionType",
     "QgsNewHttpConnection::Flag",
     "QgsNewHttpConnection::WfsVersionIndex",
+    "QgsNineCellFilter::Result",
     "QgsOfflineEditing::ContainerType",
     "QgsOfflineEditing::ProgressMode",
     "QgsOgcUtils::FilterVersion",
