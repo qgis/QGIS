@@ -27,6 +27,18 @@ subclass
 #include "qgsninecellfilter.h"
 %End
   public:
+    enum Result /BaseType=IntEnum/
+    {
+      Success,
+      InputLayerError,
+      DriverError,
+      CreateOutputError,
+      InputBandError,
+      OutputBandError,
+      RasterSizeError,
+      Canceled,
+    };
+
     QgsNineCellFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
 %Docstring
 Constructor that takes input file, output file and output format (GDAL
@@ -34,7 +46,7 @@ string)
 %End
     virtual ~QgsNineCellFilter();
 
-    int processRaster( QgsFeedback *feedback = 0 );
+    Result processRaster( QgsFeedback *feedback = 0 );
 %Docstring
 Starts the calculation, reads from mInputFile and stores the result in
 mOutputFile
@@ -42,7 +54,8 @@ mOutputFile
 :param feedback: feedback object that receives update and that is
                  checked for cancellation.
 
-:return: 0 in case of success
+:return: QgsNineCellFilter.Success in case of success or error value on
+         failure.
 %End
 
     double cellSizeX() const;

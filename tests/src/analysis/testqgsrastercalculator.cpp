@@ -1185,13 +1185,13 @@ void TestQgsRasterCalculator::testNoDataValue()
   tmpFile.close();
 
   QgsRasterCalculator rc( QStringLiteral( "\"landsat@1\" + 2" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  rc.setNoDataValue( -9999.0 );
+  rc.setNoDataValue( -5555.0 );
   QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
 
   //open output file and check results
   const std::unique_ptr<QgsRasterLayer> result = std::make_unique<QgsRasterLayer>( tmpName, QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
   QVERIFY( result->dataProvider()->sourceHasNoDataValue( 1 ) );
-  QCOMPARE( result->dataProvider()->sourceNoDataValue( 1 ), -9999.0 );
+  QCOMPARE( result->dataProvider()->sourceNoDataValue( 1 ), -5555.0 );
 }
 
 
