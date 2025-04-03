@@ -15,7 +15,8 @@
 class QgsAccessControl : QgsFeatureFilterProvider
 {
 %Docstring(signature="appended")
-A helper class that centralizes restrictions given by all the access control filter plugins.
+A helper class that centralizes restrictions given by all the access
+control filter plugins.
 %End
 
 %TypeHeaderCode
@@ -36,11 +37,11 @@ Constructor
 
     void resolveFilterFeatures( const QList<QgsMapLayer *> &layers );
 %Docstring
-Resolve features' filter of layers
-The method fetch filter's expressions returned from access control plugins and
-and combine them to a unique expression for each layer.
-The resulted expressions are stored in cache for efficiency; between each requests, the cache
-must be cleared using ':py:func:`~QgsAccessControl.unresolveFilterFeatures`'.
+Resolve features' filter of layers The method fetch filter's expressions
+returned from access control plugins and and combine them to a unique
+expression for each layer. The resulted expressions are stored in cache
+for efficiency; between each requests, the cache must be cleared using
+':py:func:`~QgsAccessControl.unresolveFilterFeatures`'.
 
 :param layers: to filter
 %End

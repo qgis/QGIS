@@ -48,7 +48,8 @@ Generates a command for importing data into a GPS format using babel.
 :param output: output path
 :param flags: optional flags to control how babel command is generated
 
-Returns an empty list if the format does not support imports (see :py:func:`~QgsAbstractBabelFormat.capabilities`).
+Returns an empty list if the format does not support imports (see
+:py:func:`~QgsAbstractBabelFormat.capabilities`).
 %End
 
     virtual QStringList exportCommand( const QString &babel,
@@ -57,7 +58,8 @@ Returns an empty list if the format does not support imports (see :py:func:`~Qgs
                                        const QString &output,
                                        Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 %Docstring
-Generates a command for exporting GPS data into a different format using babel.
+Generates a command for exporting GPS data into a different format using
+babel.
 
 :param babel: path to the babel executable
 :param featureType: type of GPS feature to export
@@ -65,7 +67,8 @@ Generates a command for exporting GPS data into a different format using babel.
 :param output: output path
 :param flags: optional flags to control how babel command is generated
 
-Returns an empty list if the format does not support exports (see :py:func:`~QgsAbstractBabelFormat.capabilities`).
+Returns an empty list if the format does not support exports (see
+:py:func:`~QgsAbstractBabelFormat.capabilities`).
 %End
 
   protected:
@@ -102,15 +105,17 @@ A babel format capable of converting input files to GPX files.
 %Docstring
 Constructor for QgsBabelSimpleImportFormat.
 
-The ``format`` argument specifies the babel identifier for the input format.
+The ``format`` argument specifies the babel identifier for the input
+format.
 
-The ``description`` argument specified a descriptive name for the format.
+The ``description`` argument specified a descriptive name for the
+format.
 
-The ``capabilities`` argument must reflect whether the format is capable of handling
-waypoints, routes and/or tracks.
+The ``capabilities`` argument must reflect whether the format is capable
+of handling waypoints, routes and/or tracks.
 
-The optional ``extensions`` argument can be used to populate a list of known file
-extensions for the format (e.g. "csv", "txt").
+The optional ``extensions`` argument can be used to populate a list of
+known file extensions for the format (e.g. "csv", "txt").
 %End
 
     QString description() const;

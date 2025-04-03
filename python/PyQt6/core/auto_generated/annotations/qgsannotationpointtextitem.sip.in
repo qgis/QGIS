@@ -25,7 +25,8 @@ An annotation item which renders a text string at a point location.
 
     QgsAnnotationPointTextItem( const QString &text, QgsPointXY point );
 %Docstring
-Constructor for QgsAnnotationPointTextItem, containing the specified ``text`` at the specified ``point``.
+Constructor for QgsAnnotationPointTextItem, containing the specified
+``text`` at the specified ``point``.
 %End
     ~QgsAnnotationPointTextItem();
 
@@ -62,7 +63,8 @@ Creates a new text at point annotation item.
 %Docstring
 Returns the point location of the text.
 
-The coordinate reference system for the point will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+The coordinate reference system for the point will be the parent layer's
+:py:func:`QgsAnnotationLayer.crs()`.
 
 .. seealso:: :py:func:`setPoint`
 %End
@@ -71,7 +73,8 @@ The coordinate reference system for the point will be the parent layer's :py:fun
 %Docstring
 Sets the ``point`` location of the text.
 
-The coordinate reference system for the point will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+The coordinate reference system for the point will be the parent layer's
+:py:func:`QgsAnnotationLayer.crs()`.
 
 .. seealso:: :py:func:`point`
 %End
@@ -120,14 +123,16 @@ Sets the text's rotation ``angle``, in degrees clockwise.
 
     Qt::Alignment alignment() const;
 %Docstring
-Returns the text's alignment relative to the reference :py:func:`~QgsAnnotationPointTextItem.point`.
+Returns the text's alignment relative to the reference
+:py:func:`~QgsAnnotationPointTextItem.point`.
 
 .. seealso:: :py:func:`setAlignment`
 %End
 
     void setAlignment( Qt::Alignment alignment );
 %Docstring
-Sets the text's ``alignment`` relative to the reference :py:func:`~QgsAnnotationPointTextItem.point`.
+Sets the text's ``alignment`` relative to the reference
+:py:func:`~QgsAnnotationPointTextItem.point`.
 
 .. seealso:: :py:func:`alignment`
 %End

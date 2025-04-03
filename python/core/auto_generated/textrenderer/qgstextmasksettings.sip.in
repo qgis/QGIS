@@ -16,7 +16,8 @@ class QgsTextMaskSettings
 %Docstring(signature="appended")
 Container for settings relating to a selective masking around a text.
 
-A selective masking only makes sense in contexts where the text is rendered over some other map layers, especially for labeling.
+A selective masking only makes sense in contexts where the text is
+rendered over some other map layers, especially for labeling.
 
 .. note::
 
@@ -81,7 +82,8 @@ Returns the size of the buffer.
 
     void setSize( double size );
 %Docstring
-Sets the size of the buffer. The size units are specified using :py:func:`~QgsTextMaskSettings.setSizeUnit`.
+Sets the size of the buffer. The size units are specified using
+:py:func:`~QgsTextMaskSettings.setSizeUnit`.
 
 :param size: buffer size
 
@@ -112,8 +114,8 @@ Sets the units used for the buffer size.
 
     QgsMapUnitScale sizeMapUnitScale() const;
 %Docstring
-Returns the map unit scale object for the buffer size. This is only used if the
-buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+Returns the map unit scale object for the buffer size. This is only used
+if the buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setSizeMapUnitScale`
 
@@ -122,8 +124,8 @@ buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit scale object for the buffer size. This is only used if the
-buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+Sets the map unit scale object for the buffer size. This is only used if
+the buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 :param scale: scale for buffer size
 
@@ -150,8 +152,8 @@ Sets the join style used for drawing the buffer.
 
     double opacity() const;
 %Docstring
-Returns the mask's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
-opaque).
+Returns the mask's opacity. The opacity is a double value between 0
+(fully transparent) and 1 (totally opaque).
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -160,8 +162,8 @@ opaque).
 %Docstring
 Sets the mask's opacity.
 
-:param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
-                opaque)
+:param opacity: opacity as a double value between 0 (fully transparent)
+                and 1 (totally opaque)
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -179,7 +181,8 @@ Returns the current paint effect for the mask.
 %Docstring
 Sets the current paint ``effect`` for the mask.
 
-:param effect: paint effect. Ownership is transferred to the mask settings.
+:param effect: paint effect. Ownership is transferred to the mask
+               settings.
 
 .. seealso:: :py:func:`paintEffect`
 %End
@@ -200,7 +203,8 @@ Write settings into a DOM element.
 
     QList<QgsSymbolLayerReference> maskedSymbolLayers() const;
 %Docstring
-Returns a list of references to symbol layers that are masked by this buffer.
+Returns a list of references to symbol layers that are masked by this
+buffer.
 
 :return: a list of references to masked symbol layers
 
@@ -218,12 +222,14 @@ Sets the symbol layers that will be masked by this buffer.
 
     void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
 %Docstring
-Updates the format by evaluating current values of data defined properties.
+Updates the format by evaluating current values of data defined
+properties.
 %End
 
     QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 %Docstring
-Returns all field names referenced by the configuration (e.g. from data defined properties).
+Returns all field names referenced by the configuration (e.g. from data
+defined properties).
 
 .. versionadded:: 3.14
 %End

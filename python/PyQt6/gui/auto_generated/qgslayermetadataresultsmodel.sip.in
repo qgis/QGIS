@@ -15,8 +15,8 @@
 class QgsLayerMetadataResultsModel : QAbstractTableModel
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLayerMetadataResultsModel` class handles the metadata fetching from
-the registered layer metadata providers.
+The :py:class:`QgsLayerMetadataResultsModel` class handles the metadata
+fetching from the registered layer metadata providers.
 
 .. versionadded:: 3.28
 %End
@@ -78,7 +78,8 @@ Load/Reload model data asynchronously using threads.
 
     void resultsReady( const QgsLayerMetadataSearchResults &results );
 %Docstring
-Triggered when metadata ``results`` have been fetched and can be added to the model.
+Triggered when metadata ``results`` have been fetched and can be added
+to the model.
 %End
 
     void cancel();

@@ -43,7 +43,8 @@ Constructor for an valid tile.
 
     bool isValid() const;
 %Docstring
-Returns ``True`` if the tile is a valid tile (i.e. not default constructed).
+Returns ``True`` if the tile is a valid tile (i.e. not default
+constructed).
 %End
 
     long long id() const;
@@ -55,8 +56,9 @@ Returns the tile's unique ID.
 %Docstring
 Returns the tile's refinement process.
 
-Refinement determines the process by which a lower resolution parent tile's
-content is handled when its higher resolution children are also included.
+Refinement determines the process by which a lower resolution parent
+tile's content is handled when its higher resolution children are also
+included.
 
 .. seealso:: :py:func:`setRefinementProcess`
 %End
@@ -65,8 +67,9 @@ content is handled when its higher resolution children are also included.
 %Docstring
 Sets the tile's refinement ``process``.
 
-Refinement determines the process by which a lower resolution parent tile's
-content is handled when its higher resolution children are also included.
+Refinement determines the process by which a lower resolution parent
+tile's content is handled when its higher resolution children are also
+included.
 
 .. seealso:: :py:func:`refinementProcess`
 %End
@@ -94,10 +97,12 @@ Sets the tile's ``transform``.
 
     const QgsMatrix4x4 *transform() const;
 %Docstring
-Returns the tile's transform. May be ``None`` if no transform is associated with the tile.
+Returns the tile's transform. May be ``None`` if no transform is
+associated with the tile.
 
-This represents the transformation which must be applied to all geometries from the tile
-in order to transform them to the dataset's coordinate reference system.
+This represents the transformation which must be applied to all
+geometries from the tile in order to transform them to the dataset's
+coordinate reference system.
 
 .. seealso:: :py:func:`transform`
 %End
@@ -134,16 +139,16 @@ the tile's simplified representation of its source geometry.
 
     QUrl baseUrl() const;
 %Docstring
-Returns the tile's base URL. If this tile's resources are relative paths, they would
-get resolved against this URL.
+Returns the tile's base URL. If this tile's resources are relative
+paths, they would get resolved against this URL.
 
 .. seealso:: :py:func:`setBaseUrl`
 %End
 
     void setBaseUrl( const QUrl &baseUrl );
 %Docstring
-Sets the tile's base URL. If this tile's resources are relative paths, they would
-get resolved against this URL.
+Sets the tile's base URL. If this tile's resources are relative paths,
+they would get resolved against this URL.
 
 .. seealso:: :py:func:`baseUrl`
 %End

@@ -13,10 +13,13 @@ class QgsValidityCheckContext
 %Docstring(signature="appended")
 Base class for validity check contexts.
 
-:py:class:`QgsAbstractValidityCheck` subclasses are passed a :py:class:`QgsValidityCheckContext` subclass which
-encapsulates the context around that particular check type. For instance, a :py:class:`QgsAbstractValidityCheck`
-of the :py:class:`QgsAbstractValidityCheck`.TypeLayoutCheck type will be passed a :py:class:`QgsLayoutValidityCheckContext`
-context, containing a reference to the :py:class:`QgsLayout` to be checked.
+:py:class:`QgsAbstractValidityCheck` subclasses are passed a
+:py:class:`QgsValidityCheckContext` subclass which encapsulates the
+context around that particular check type. For instance, a
+:py:class:`QgsAbstractValidityCheck` of the
+:py:class:`QgsAbstractValidityCheck`.TypeLayoutCheck type will be passed
+a :py:class:`QgsLayoutValidityCheckContext` context, containing a
+reference to the :py:class:`QgsLayout` to be checked.
 
 .. versionadded:: 3.6
 %End
@@ -52,8 +55,9 @@ class QgsLayoutValidityCheckContext : QgsValidityCheckContext
 %Docstring(signature="appended")
 Validity check context for print layout validation.
 
-:py:class:`QgsLayoutValidityCheckContext` are passed to :py:class:`QgsAbstractValidityCheck` subclasses which
-indicate they are of the :py:class:`QgsAbstractValidityCheck`.TypeLayoutCheck type.
+:py:class:`QgsLayoutValidityCheckContext` are passed to
+:py:class:`QgsAbstractValidityCheck` subclasses which indicate they are
+of the :py:class:`QgsAbstractValidityCheck`.TypeLayoutCheck type.
 
 .. versionadded:: 3.6
 %End
@@ -65,7 +69,8 @@ indicate they are of the :py:class:`QgsAbstractValidityCheck`.TypeLayoutCheck ty
 
     QgsLayoutValidityCheckContext( QgsLayout *layout );
 %Docstring
-Constructor for QgsLayoutValidityCheckContext for the specified ``layout``.
+Constructor for QgsLayoutValidityCheckContext for the specified
+``layout``.
 %End
 
     virtual int type() const;

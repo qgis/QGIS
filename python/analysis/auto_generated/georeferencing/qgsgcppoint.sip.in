@@ -31,7 +31,9 @@ Contains properties of a ground control point (GCP).
 %Docstring
 Constructor for QgsGcpPoint.
 
-:param sourcePoint: source coordinates. This may either be in pixels (for completely non-referenced images) OR in the source layer CRS.
+:param sourcePoint: source coordinates. This may either be in pixels
+                    (for completely non-referenced images) OR in the
+                    source layer CRS.
 :param destinationPoint: destination coordinates
 :param destinationPointCrs: CRS of destination point
 :param enabled: whether the point is currently enabled
@@ -41,7 +43,8 @@ Constructor for QgsGcpPoint.
 %Docstring
 Returns the source coordinates.
 
-This may either be in pixels (for completely non-referenced images) OR in the source layer CRS.
+This may either be in pixels (for completely non-referenced images) OR
+in the source layer CRS.
 
 .. seealso:: :py:func:`setSourcePoint`
 %End
@@ -50,7 +53,8 @@ This may either be in pixels (for completely non-referenced images) OR in the so
 %Docstring
 Sets the source coordinates.
 
-This may either be in pixels (for completely non-referenced images) OR in the source layer CRS.
+This may either be in pixels (for completely non-referenced images) OR
+in the source layer CRS.
 
 .. seealso:: :py:func:`sourcePoint`
 %End
@@ -85,7 +89,8 @@ Sets the ``crs`` of the destination point.
 
     QgsPointXY transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
 %Docstring
-Returns the :py:func:`~QgsGcpPoint.destinationPoint` transformed to the given target CRS.
+Returns the :py:func:`~QgsGcpPoint.destinationPoint` transformed to the
+given target CRS.
 %End
 
     bool isEnabled() const;

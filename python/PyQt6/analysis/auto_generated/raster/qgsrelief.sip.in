@@ -33,9 +33,11 @@ Produces colored relief rasters from DEM.
 
     int processRaster( QgsFeedback *feedback = 0 );
 %Docstring
-Starts the calculation, reads from mInputFile and stores the result in mOutputFile
+Starts the calculation, reads from mInputFile and stores the result in
+mOutputFile
 
-:param feedback: feedback object that receives update and that is checked for cancellation.
+:param feedback: feedback object that receives update and that is
+                 checked for cancellation.
 
 :return: 0 in case of success
 %End
@@ -50,7 +52,8 @@ Starts the calculation, reads from mInputFile and stores the result in mOutputFi
 
     QList<QgsRelief::ReliefColor> calculateOptimizedReliefClasses();
 %Docstring
-Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
+Calculates class breaks according with the method of Buenzli (2011)
+using an iterative algorithm for segmented regression
 
 :return: ``True`` in case of success
 %End

@@ -12,24 +12,28 @@
 class QgsCustomDropHandler : QObject
 {
 %Docstring(signature="appended")
-Abstract base class that may be implemented to handle new types of data to be dropped in QGIS.
+Abstract base class that may be implemented to handle new types of data
+to be dropped in QGIS.
 
 Implementations have three approaches they can use to handle drops.
 
-- The simplest approach is to implement :py:func:`~handleFileDrop` when they need to handle
-  dropped files (i.e. with mime type "text/uri-list").
-- Reimplement :py:func:`~handleCustomUriDrop` when they want to handle dropped custom
-  :py:class:`QgsMimeDataUtils`.Uri entries, for instance handling dropping custom entries
-  from the browser tree (with mime type "application/x-vnd.qgis.qgis.uri"). In
-  this case the implementation's :py:func:`~customUriProviderKey` must match the uri
-  entry's providerKey.
-- Reimplement :py:func:`~handleMimeData` to directly handle dropped QMimeData.
-  Subclasses should take care when overriding this method. When a drop event
-  occurs, Qt will lock the source application of the drag for the duration
-  of the drop event handling via :py:func:`~handleMimeData` (e.g. dragging files from
-  explorer to QGIS will lock the explorer window until the drop handling has
-  been complete). Accordingly :py:func:`~handleMimeData` implementations must return
-  quickly and defer any intensive or slow processing.
+- The simplest approach is to implement :py:func:`~handleFileDrop` when
+  they need to handle dropped files (i.e. with mime type
+  "text/uri-list").
+- Reimplement :py:func:`~handleCustomUriDrop` when they want to handle
+  dropped custom :py:class:`QgsMimeDataUtils`.Uri entries, for instance
+  handling dropping custom entries from the browser tree (with mime type
+  "application/x-vnd.qgis.qgis.uri"). In this case the implementation's
+  :py:func:`~customUriProviderKey` must match the uri entry's
+  providerKey.
+- Reimplement :py:func:`~handleMimeData` to directly handle dropped
+  QMimeData. Subclasses should take care when overriding this method.
+  When a drop event occurs, Qt will lock the source application of the
+  drag for the duration of the drop event handling via
+  :py:func:`~handleMimeData` (e.g. dragging files from explorer to QGIS
+  will lock the explorer window until the drop handling has been
+  complete). Accordingly :py:func:`~handleMimeData` implementations must
+  return quickly and defer any intensive or slow processing.
 %End
 
 %TypeHeaderCode
@@ -38,32 +42,35 @@ Implementations have three approaches they can use to handle drops.
   public:
     virtual QString customUriProviderKey() const;
 %Docstring
-Type of custom URI recognized by the handler. This must match
-the URI entry's providerKey in order for :py:func:`~QgsCustomDropHandler.handleCustomUriDrop`
-to be called.
+Type of custom URI recognized by the handler. This must match the URI
+entry's providerKey in order for
+:py:func:`~QgsCustomDropHandler.handleCustomUriDrop` to be called.
 
 .. seealso:: :py:func:`handleCustomUriDrop`
 %End
 
     virtual void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const;
 %Docstring
-Called from QGIS after a drop event with custom URI known by the handler.
+Called from QGIS after a drop event with custom URI known by the
+handler.
 
-In order for :py:func:`~QgsCustomDropHandler.handleCustomUriDrop` to be called, subclasses must
-also implement :py:func:`~QgsCustomDropHandler.customUriProviderKey` to indicate the providerKey
-value which the handler accepts.
+In order for :py:func:`~QgsCustomDropHandler.handleCustomUriDrop` to be
+called, subclasses must also implement
+:py:func:`~QgsCustomDropHandler.customUriProviderKey` to indicate the
+providerKey value which the handler accepts.
 
 .. seealso:: :py:func:`customUriProviderKey`
 %End
 
     virtual bool canHandleMimeData( const QMimeData *data );
 %Docstring
-Returns ``True`` if the handler is capable of handling the provided mime ``data``.
-The base class implementation returns ``False`` regardless of mime data.
+Returns ``True`` if the handler is capable of handling the provided mime
+``data``. The base class implementation returns ``False`` regardless of
+mime data.
 
-This method is called when mime data is dragged over the QGIS window, in order
-to determine whether any handlers are capable of handling the data and to
-determine whether the drag action should be accepted.
+This method is called when mime data is dragged over the QGIS window, in
+order to determine whether any handlers are capable of handling the data
+and to determine whether the drag action should be accepted.
 
 .. versionadded:: 3.10
 %End
@@ -75,14 +82,15 @@ Called when the specified mime ``data`` has been dropped onto QGIS.
 
 The base class implementation does nothing.
 
-Subclasses should take care when overriding this method. When a drop event
-occurs, Qt will lock the source application of the drag for the duration
-of the drop event handling (e.g. dragging files from explorer to QGIS will
-lock the explorer window until the drop handling has been complete).
+Subclasses should take care when overriding this method. When a drop
+event occurs, Qt will lock the source application of the drag for the
+duration of the drop event handling (e.g. dragging files from explorer
+to QGIS will lock the explorer window until the drop handling has been
+complete).
 
 Accordingly, only implementations must be lightweight and return ASAP.
-(For instance by copying the relevant parts of ``data`` and then handling
-the data after a short timeout).
+(For instance by copying the relevant parts of ``data`` and then
+handling the data after a short timeout).
 
 .. deprecated:: 3.10
 
@@ -95,44 +103,48 @@ Called when the specified mime ``data`` has been dropped onto QGIS.
 
 The base class implementation does nothing.
 
-Subclasses should take care when overriding this method. When a drop event
-occurs, Qt will lock the source application of the drag for the duration
-of the drop event handling (e.g. dragging files from explorer to QGIS will
-lock the explorer window until the drop handling has been complete).
+Subclasses should take care when overriding this method. When a drop
+event occurs, Qt will lock the source application of the drag for the
+duration of the drop event handling (e.g. dragging files from explorer
+to QGIS will lock the explorer window until the drop handling has been
+complete).
 
 Accordingly, only implementations must be lightweight and return ASAP.
-(For instance by copying the relevant parts of ``data`` and then handling
-the data after a short timeout).
+(For instance by copying the relevant parts of ``data`` and then
+handling the data after a short timeout).
 
-If the function returns ``True``, it means the handler has accepted the drop
-and it should not be further processed (e.g. by other :py:class:`QgsCustomDropHandlers`)
+If the function returns ``True``, it means the handler has accepted the
+drop and it should not be further processed (e.g. by other
+:py:class:`QgsCustomDropHandlers`)
 
 .. versionadded:: 3.10
 %End
 
     virtual bool handleFileDrop( const QString &file );
 %Docstring
-Called when the specified ``file`` has been dropped onto QGIS. If ``True``
-is returned, then the handler has accepted this file and it should not
-be further processed (e.g. by other :py:class:`QgsCustomDropHandlers`).
+Called when the specified ``file`` has been dropped onto QGIS. If
+``True`` is returned, then the handler has accepted this file and it
+should not be further processed (e.g. by other
+:py:class:`QgsCustomDropHandlers`).
 
 The base class implementation does nothing.
 
-This method is not called directly while drop handling is occurring,
-so the limitations described in :py:func:`~QgsCustomDropHandler.handleMimeData` about returning
-quickly do not apply.
+This method is not called directly while drop handling is occurring, so
+the limitations described in
+:py:func:`~QgsCustomDropHandler.handleMimeData` about returning quickly
+do not apply.
 %End
 
     virtual bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas );
 %Docstring
-Returns ``True`` if the handler is capable of handling the provided mime ``uri``
-when dropped onto a map ``canvas``.
+Returns ``True`` if the handler is capable of handling the provided mime
+``uri`` when dropped onto a map ``canvas``.
 
 The base class implementation returns ``False`` regardless of mime data.
 
-This method is called when mime data is dragged over a map canvas, in order
-to determine whether any handlers are capable of handling the data and to
-determine whether the drag action should be accepted.
+This method is called when mime data is dragged over a map canvas, in
+order to determine whether any handlers are capable of handling the data
+and to determine whether the drag action should be accepted.
 
 .. warning::
 
@@ -146,17 +158,20 @@ determine whether the drag action should be accepted.
 
     virtual bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) const;
 %Docstring
-Called from QGIS after a drop event with custom ``uri`` known by the handler occurs
-onto a map ``canvas``.
+Called from QGIS after a drop event with custom ``uri`` known by the
+handler occurs onto a map ``canvas``.
 
-In order for :py:func:`~QgsCustomDropHandler.handleCustomUriCanvasDrop` to be called, subclasses must
-also implement :py:func:`~QgsCustomDropHandler.customUriProviderKey` to indicate the providerKey
-value which the handler accepts.
+In order for :py:func:`~QgsCustomDropHandler.handleCustomUriCanvasDrop`
+to be called, subclasses must also implement
+:py:func:`~QgsCustomDropHandler.customUriProviderKey` to indicate the
+providerKey value which the handler accepts.
 
-If the function returns ``True``, it means the handler has accepted the drop
-and it should not be further processed (e.g. by other :py:class:`QgsCustomDropHandlers`).
+If the function returns ``True``, it means the handler has accepted the
+drop and it should not be further processed (e.g. by other
+:py:class:`QgsCustomDropHandlers`).
 
-Subclasses which implement this must also implement corresponding versions of
+Subclasses which implement this must also implement corresponding
+versions of
 :py:func:`~QgsCustomDropHandler.canHandleCustomUriCanvasDrop`.
 
 .. seealso:: :py:func:`customUriProviderKey`

@@ -31,7 +31,8 @@ A model for display of recently used coordinate reference systems.
 
     QgsRecentCoordinateReferenceSystemsModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsRecentCoordinateReferenceSystemsModel, with the specified ``parent`` object.
+Constructor for QgsRecentCoordinateReferenceSystemsModel, with the
+specified ``parent`` object.
 %End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -71,7 +72,8 @@ A sort/filter proxy model for recent coordinate reference systems.
   public:
     explicit QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the given ``parent`` object.
+Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the
+given ``parent`` object.
 %End
 
     QgsRecentCoordinateReferenceSystemsModel *recentCoordinateReferenceSystemsModel();
@@ -92,8 +94,8 @@ Sets whether deprecated CRS should be filtered from the results.
 
     void setFilterString( const QString &filter );
 %Docstring
-Sets a ``filter`` string, such that only coordinate reference systems matching the
-specified string will be shown.
+Sets a ``filter`` string, such that only coordinate reference systems
+matching the specified string will be shown.
 %End
 
     QgsCoordinateReferenceSystemProxyModel::Filters filters() const;

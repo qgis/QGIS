@@ -13,9 +13,9 @@
 class QgsBatchGeocodeAlgorithm : QgsProcessingFeatureBasedAlgorithm
 {
 %Docstring(signature="appended")
-
-A base class for batch geocoder algorithms, which takes a :py:class:`QgsGeocoderInterface` object and exposes it as
-a Processing algorithm for batch geocoding operations.
+A base class for batch geocoder algorithms, which takes a
+:py:class:`QgsGeocoderInterface` object and exposes it as a Processing
+algorithm for batch geocoding operations.
 
 Example
 -------------------------------------
@@ -61,9 +61,10 @@ Example
 %Docstring
 Constructor for QgsBatchGeocodeAlgorithm.
 
-The ``geocoder`` must specify an instance of a class which implements the :py:class:`QgsGeocoderInterface`
-interface. Ownership of ``geocoder`` is not transferred, and the caller must ensure that ``geocoder``
-exists for the lifetime of this algorithm.
+The ``geocoder`` must specify an instance of a class which implements
+the :py:class:`QgsGeocoderInterface` interface. Ownership of
+``geocoder`` is not transferred, and the caller must ensure that
+``geocoder`` exists for the lifetime of this algorithm.
 %End
 
     virtual void initParameters( const QVariantMap &configuration = QVariantMap() );

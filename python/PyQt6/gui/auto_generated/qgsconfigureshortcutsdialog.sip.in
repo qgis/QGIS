@@ -14,7 +14,8 @@
 class QgsConfigureShortcutsDialog : QDialog
 {
 %Docstring(signature="appended")
-Reusable dialog for allowing users to configure shortcuts contained in a :py:class:`QgsShortcutsManager`.
+Reusable dialog for allowing users to configure shortcuts contained in a
+:py:class:`QgsShortcutsManager`.
 %End
 
 %TypeHeaderCode
@@ -26,8 +27,9 @@ Reusable dialog for allowing users to configure shortcuts contained in a :py:cla
 Constructor for QgsConfigureShortcutsDialog.
 
 :param parent: parent widget
-:param manager: associated :py:class:`QgsShortcutsManager`, or leave as ``None`` to use the default
-                singleton :py:class:`QgsShortcutsManager` instance.
+:param manager: associated :py:class:`QgsShortcutsManager`, or leave as
+                ``None`` to use the default singleton
+                :py:class:`QgsShortcutsManager` instance.
 %End
 
   protected:

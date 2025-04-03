@@ -49,11 +49,13 @@ class QgsVectorTileRawData;
  * Vector tile layer currently does not use the concept of data providers that other
  * layer types use. The process of rendering of vector tiles looks like this:
  *
+ * ~~~
  * +--------+                +------+                 +---------+
  * |  DATA  |                |  RAW |                 | DECODED |
  * |        | --> LOADER --> |      | --> DECODER --> |         | --> RENDERER
  * | SOURCE |                | TILE |                 |  TILE   |
  * +--------+                +------+                 +---------+
+ * ~~~
  *
  * Data source is a place from where tiles are fetched from (URL for HTTP access, local
  * files, MBTiles file, GeoPackage file or others. Loader (QgsVectorTileLoader) class

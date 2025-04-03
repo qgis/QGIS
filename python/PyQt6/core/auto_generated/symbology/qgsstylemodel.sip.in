@@ -13,13 +13,13 @@
 class QgsStyleModel: QAbstractItemModel
 {
 %Docstring(signature="appended")
+A QAbstractItemModel subclass for showing symbol and color ramp entities
+contained within a :py:class:`QgsStyle` database.
 
-A QAbstractItemModel subclass for showing symbol and color ramp entities contained
-within a :py:class:`QgsStyle` database.
-
-If you are creating a style model for the default application style (see :py:func:`QgsStyle.defaultStyle()`),
-consider using the shared style model available at :py:func:`QgsApplication.defaultStyleModel()` for performance
-instead.
+If you are creating a style model for the default application style (see
+:py:func:`QgsStyle.defaultStyle()`), consider using the shared style
+model available at :py:func:`QgsApplication.defaultStyleModel()` for
+performance instead.
 
 .. seealso:: :py:class:`QgsStyleProxyModel`
 
@@ -54,7 +54,8 @@ instead.
 
     explicit QgsStyleModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsStyleModel, for the specified ``style`` and ``parent`` object.
+Constructor for QgsStyleModel, for the specified ``style`` and
+``parent`` object.
 
 The ``style`` object must exist for the lifetime of this model.
 %End
@@ -93,10 +94,12 @@ corresponds exactly to the view's icon size in which this model is used.
 
     void addTargetScreenProperties( const QgsScreenProperties &properties );
 %Docstring
-Adds additional target screen ``properties`` to use when generating icons for Qt.DecorationRole data.
+Adds additional target screen ``properties`` to use when generating
+icons for Qt.DecorationRole data.
 
-This allows style icons to be generated at an icon device pixel ratio and DPI which
-corresponds exactly to the view's screen properties in which this model is used.
+This allows style icons to be generated at an icon device pixel ratio
+and DPI which corresponds exactly to the view's screen properties in
+which this model is used.
 
 .. versionadded:: 3.32
 %End
@@ -107,8 +110,8 @@ corresponds exactly to the view's screen properties in which this model is used.
 class QgsStyleProxyModel: QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-
-A QSortFilterProxyModel subclass for showing filtered symbol and color ramps entries from a :py:class:`QgsStyle` database.
+A QSortFilterProxyModel subclass for showing filtered symbol and color
+ramps entries from a :py:class:`QgsStyle` database.
 
 .. seealso:: :py:class:`QgsStyleModel`
 
@@ -122,21 +125,24 @@ A QSortFilterProxyModel subclass for showing filtered symbol and color ramps ent
 
     explicit QgsStyleProxyModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsStyleProxyModel, for the specified ``style`` and ``parent`` object.
+Constructor for QgsStyleProxyModel, for the specified ``style`` and
+``parent`` object.
 
 The ``style`` object must exist for the lifetime of this model.
 %End
 
     explicit QgsStyleProxyModel( QgsStyleModel *model, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsStyleProxyModel, using the specified source ``model`` and ``parent`` object.
+Constructor for QgsStyleProxyModel, using the specified source ``model``
+and ``parent`` object.
 
 The source ``model`` object must exist for the lifetime of this model.
 %End
 
     explicit QgsStyleProxyModel( QgsCombinedStyleModel *model, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsStyleProxyModel, using the specified source combined ``model`` and ``parent`` object.
+Constructor for QgsStyleProxyModel, using the specified source combined
+``model`` and ``parent`` object.
 
 The source ``model`` object must exist for the lifetime of this model.
 
@@ -190,8 +196,9 @@ Returns ``True`` if filtering by entity type is enabled.
 %Docstring
 Sets whether filtering by entity type is ``enabled``.
 
-If ``enabled`` is ``False``, then the value of :py:func:`~QgsStyleProxyModel.entityFilter` will have no
-effect on the model filtering.
+If ``enabled`` is ``False``, then the value of
+:py:func:`~QgsStyleProxyModel.entityFilter` will have no effect on the
+model filtering.
 
 .. seealso:: :py:func:`entityFilterEnabled`
 
@@ -234,9 +241,9 @@ Returns ``True`` if filtering by symbol type is enabled.
 %Docstring
 Sets whether filtering by symbol type is ``enabled``.
 
-If ``enabled`` is ``False``, then the value of :py:class:`Qgis`.SymbolType() will have no
-effect on the model filtering. This has
-no effect on non-symbol entities (i.e. color ramps).
+If ``enabled`` is ``False``, then the value of
+:py:class:`Qgis`.SymbolType() will have no effect on the model
+filtering. This has no effect on non-symbol entities (i.e. color ramps).
 
 .. seealso:: Qgis.SymbolTypeFilterEnabled
 
@@ -245,26 +252,28 @@ no effect on non-symbol entities (i.e. color ramps).
 
     Qgis::GeometryType layerType() const;
 %Docstring
-Returns the layer type filter, or :py:class:`Qgis`.GeometryType.Unknown if no
-layer type filter is present.
+Returns the layer type filter, or :py:class:`Qgis`.GeometryType.Unknown
+if no layer type filter is present.
 
-This setting has an effect on label settings entities and 3d symbols only.
+This setting has an effect on label settings entities and 3d symbols
+only.
 
 .. seealso:: :py:func:`setLayerType`
 %End
 
     void setLayerType( Qgis::GeometryType type );
 %Docstring
-Sets the layer ``type`` filter. Set ``type`` to :py:class:`Qgis`.GeometryType.Unknown if no
-layer type filter is desired.
+Sets the layer ``type`` filter. Set ``type`` to
+:py:class:`Qgis`.GeometryType.Unknown if no layer type filter is
+desired.
 
 .. seealso:: :py:func:`layerType`
 %End
 
     void setTagId( int id );
 %Docstring
-Sets a tag ``id`` to filter style entities by. Only entities with the given
-tag will be shown in the model.
+Sets a tag ``id`` to filter style entities by. Only entities with the
+given tag will be shown in the model.
 
 Set ``id`` to -1 to disable tag filtering.
 
@@ -313,8 +322,8 @@ If returned value is empty, then no tag filtering is being conducted.
 
     void setSmartGroupId( int id );
 %Docstring
-Sets a smart group ``id`` to filter style entities by. Only entities within the given
-smart group will be shown in the model.
+Sets a smart group ``id`` to filter style entities by. Only entities
+within the given smart group will be shown in the model.
 
 Set ``id`` to -1 to disable smart group filtering.
 
@@ -329,7 +338,8 @@ Set ``id`` to -1 to disable smart group filtering.
 %Docstring
 Returns the smart group id used to filter style entities by.
 
-If returned value is -1, then no smart group filtering is being conducted.
+If returned value is -1, then no smart group filtering is being
+conducted.
 
 .. note::
 
@@ -367,10 +377,12 @@ corresponds exactly to the view's icon size in which this model is used.
 
     void addTargetScreenProperties( const QgsScreenProperties &properties );
 %Docstring
-Adds additional target screen ``properties`` to use when generating icons for Qt.DecorationRole data.
+Adds additional target screen ``properties`` to use when generating
+icons for Qt.DecorationRole data.
 
-This allows style icons to be generated at an icon device pixel ratio and DPI which
-corresponds exactly to the view's screen properties in which this model is used.
+This allows style icons to be generated at an icon device pixel ratio
+and DPI which corresponds exactly to the view's screen properties in
+which this model is used.
 
 .. versionadded:: 3.32
 %End
@@ -379,8 +391,8 @@ corresponds exactly to the view's screen properties in which this model is used.
 
     void setFilterString( const QString &filter );
 %Docstring
-Sets a ``filter`` string, such that only symbol entities with names matching the
-specified string will be shown.
+Sets a ``filter`` string, such that only symbol entities with names
+matching the specified string will be shown.
 
 .. seealso:: :py:func:`filterString`
 %End

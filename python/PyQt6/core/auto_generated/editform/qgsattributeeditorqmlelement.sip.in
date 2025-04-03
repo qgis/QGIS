@@ -40,7 +40,8 @@ The QML code that will be represented within this widget.
 
     void setQmlCode( const QString &qmlCode );
 %Docstring
-Sets the QML code that will be represented within this widget to ``qmlCode``.
+Sets the QML code that will be represented within this widget to
+``qmlCode``.
 %End
 
 };

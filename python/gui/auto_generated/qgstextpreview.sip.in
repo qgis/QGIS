@@ -15,12 +15,14 @@ class QgsTextPreview : QLabel
 %Docstring(signature="appended")
 A widget for previewing text formatting settings.
 
-:py:class:`QgsTextPreview` provides a widget for previewing the appearance of text rendered
-using :py:class:`QgsTextRenderer`. The preview includes all settings contained within
-a :py:class:`QgsTextFormat`, including shadow, background and buffer.
+:py:class:`QgsTextPreview` provides a widget for previewing the
+appearance of text rendered using :py:class:`QgsTextRenderer`. The
+preview includes all settings contained within a
+:py:class:`QgsTextFormat`, including shadow, background and buffer.
 
-In order to preview the exact appearance of text which uses sizes in map units,
-the scale and map units must be set by calling :py:func:`~setScale` and :py:func:`~setMapUnits`.
+In order to preview the exact appearance of text which uses sizes in map
+units, the scale and map units must be set by calling
+:py:func:`~setScale` and :py:func:`~setMapUnits`.
 %End
 
 %TypeHeaderCode
@@ -55,8 +57,9 @@ Returns the text format used for previewing text in the widget.
 
     void setScale( double scale );
 %Docstring
-Sets the ``scale`` to use for previewing format sizes in map units.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Sets the ``scale`` to use for previewing format sizes in map units. The
+scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000
+map.
 
 .. seealso:: :py:func:`scale`
 
@@ -65,8 +68,9 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
     double scale() const;
 %Docstring
-Returns the scale used for previewing format sizes in map units.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Returns the scale used for previewing format sizes in map units. The
+scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000
+map.
 
 .. seealso:: :py:func:`setScale`
 

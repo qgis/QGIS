@@ -47,7 +47,8 @@ QGraphicsScene subclass representing the model designer.
 
     QgsModelGraphicsScene( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsModelGraphicsScene with the specified ``parent`` object.
+Constructor for QgsModelGraphicsScene with the specified ``parent``
+object.
 %End
 
     QgsProcessingModelAlgorithm *model();
@@ -56,7 +57,8 @@ Constructor for QgsModelGraphicsScene with the specified ``parent`` object.
 
     void setFlags( QgsModelGraphicsScene::Flags flags );
 %Docstring
-Sets the combination of ``flags`` controlling how the scene is rendered and behaves.
+Sets the combination of ``flags`` controlling how the scene is rendered
+and behaves.
 
 .. seealso:: :py:func:`setFlag`
 
@@ -87,7 +89,8 @@ Returns the current combination of flags set for the scene.
 
     void createItems( QgsProcessingModelAlgorithm *model, QgsProcessingContext &context );
 %Docstring
-Populates the scene by creating items representing the specified ``model``.
+Populates the scene by creating items representing the specified
+``model``.
 %End
 
     QList<QgsModelComponentGraphicItem *> selectedComponentItems();
@@ -102,7 +105,8 @@ Returns the topmost component item at a specified ``position``.
 
     QgsModelComponentGraphicItem *groupBoxItem( const QString &uuid );
 %Docstring
-Returns the graphic item corresponding to the specified group box ``uuid``.
+Returns the graphic item corresponding to the specified group box
+``uuid``.
 %End
 
     void selectAll();
@@ -114,8 +118,9 @@ Selects all the components in the scene.
 %Docstring
 Clears any selected items in the scene.
 
-Call this method rather than QGraphicsScene.clearSelection, as the latter does
-not correctly emit signals to allow the scene's model to update.
+Call this method rather than QGraphicsScene.clearSelection, as the
+latter does not correctly emit signals to allow the scene's model to
+update.
 %End
 
     void setSelectedItem( QgsModelComponentGraphicItem *item );
@@ -125,7 +130,8 @@ Clears any selected items and sets ``item`` as the current selection.
 
     void setLastRunResult( const QgsProcessingModelResult &result );
 %Docstring
-Sets the ``result`` of the last run of the model through the designer window.
+Sets the ``result`` of the last run of the model through the designer
+window.
 %End
 
     QgsMessageBar *messageBar() const;
@@ -144,7 +150,8 @@ Sets the message ``bar`` associated with the scene.
 
     void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::MessageLevel::Warning ) const;
 %Docstring
-Shows a warning message, allowing users to click a button to see the full details (``longMessage``).
+Shows a warning message, allowing users to click a button to see the
+full details (``longMessage``).
 %End
 
   signals:
@@ -158,8 +165,9 @@ Emitted when a change in the model requires a full rebuild of the scene.
 %Docstring
 Emitted whenever a component of the model is about to be changed.
 
-The ``text`` argument gives the translated text describing the change about to occur, and the
-optional ``id`` can be used to group the associated undo commands.
+The ``text`` argument gives the translated text describing the change
+about to occur, and the optional ``id`` can be used to group the
+associated undo commands.
 %End
 
     void componentChanged();
@@ -169,8 +177,8 @@ Emitted whenever a component of the model is changed.
 
     void selectedItemChanged( QgsModelComponentGraphicItem *selected );
 %Docstring
-Emitted whenever the selected item changes.
-If ``None``, no item is selected.
+Emitted whenever the selected item changes. If ``None``, no item is
+selected.
 %End
 
     void runSelected();
@@ -182,21 +190,24 @@ Emitted when the user opts to run selected steps from the model.
 
     void runFromChild( const QString &childId );
 %Docstring
-Emitted when the user opts to run the part of the model starting from the specified child algorithm.
+Emitted when the user opts to run the part of the model starting from
+the specified child algorithm.
 
 .. versionadded:: 3.38
 %End
 
     void showChildAlgorithmOutputs( const QString &childId );
 %Docstring
-Emitted when the user opts to view previous results from the child algorithm with matching ID.
+Emitted when the user opts to view previous results from the child
+algorithm with matching ID.
 
 .. versionadded:: 3.38
 %End
 
     void showChildAlgorithmLog( const QString &childId );
 %Docstring
-Emitted when the user opts to view the previous log from the child algorithm with matching ID.
+Emitted when the user opts to view the previous log from the child
+algorithm with matching ID.
 
 .. versionadded:: 3.38
 %End

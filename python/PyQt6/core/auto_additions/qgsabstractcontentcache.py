@@ -4,7 +4,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsAbstractContentCacheBase.__attribute_docs__ = {'remoteContentFetched': 'Emitted when the cache has finished retrieving content from a remote ``url``.\n'}
+    QgsAbstractContentCacheBase.__attribute_docs__ = {'remoteContentFetched': 'Emitted when the cache has finished retrieving content from a remote\n``url``.\n'}
     QgsAbstractContentCacheBase.parseBase64DataUrl = staticmethod(QgsAbstractContentCacheBase.parseBase64DataUrl)
     QgsAbstractContentCacheBase.parseEmbeddedStringData = staticmethod(QgsAbstractContentCacheBase.parseEmbeddedStringData)
     QgsAbstractContentCacheBase.isBase64Data = staticmethod(QgsAbstractContentCacheBase.isBase64Data)

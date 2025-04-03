@@ -47,7 +47,8 @@ A widget for configuring vertical elevation slicing behavior for maps.
   public:
     QgsElevationControllerWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsElevationControllerWidget, with the specified ``parent`` widget.
+Constructor for QgsElevationControllerWidget, with the specified
+``parent`` widget.
 %End
 
     virtual void resizeEvent( QResizeEvent *event );
@@ -64,7 +65,8 @@ Returns the current visible range from the widget.
 
     QgsDoubleRange rangeLimits() const;
 %Docstring
-Returns the limits of the elevation range which can be selected by the widget.
+Returns the limits of the elevation range which can be selected by the
+widget.
 
 .. seealso:: :py:func:`rangeLimits`
 %End
@@ -76,16 +78,16 @@ Returns a reference to the slider component of the widget.
 
     QMenu *menu();
 %Docstring
-Returns a reference to the widget's configuration menu, which can be used
-to add actions to the menu.
+Returns a reference to the widget's configuration menu, which can be
+used to add actions to the menu.
 %End
 
     double fixedRangeSize() const;
 %Docstring
 Returns the fixed range size, or -1 if no fixed size is set.
 
-A fixed size forces the selected elevation range to have a matching difference between
-the upper and lower elevation.
+A fixed size forces the selected elevation range to have a matching
+difference between the upper and lower elevation.
 
 .. seealso:: :py:func:`setFixedRangeSize`
 %End
@@ -103,7 +105,8 @@ Sets the current visible ``range`` for the widget.
 
     void setRangeLimits( const QgsDoubleRange &limits );
 %Docstring
-Sets the limits of the elevation range which can be selected by the widget.
+Sets the limits of the elevation range which can be selected by the
+widget.
 
 .. seealso:: :py:func:`rangeLimits`
 %End
@@ -112,8 +115,8 @@ Sets the limits of the elevation range which can be selected by the widget.
 %Docstring
 Sets the fixed range ``size``. Set to -1 if no fixed size is desired.
 
-A fixed size forces the selected elevation range to have a matching difference between
-the upper and lower elevation.
+A fixed size forces the selected elevation range to have a matching
+difference between the upper and lower elevation.
 
 .. seealso:: :py:func:`fixedRangeSize`
 

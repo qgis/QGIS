@@ -15,7 +15,8 @@
 class QgsStyleItemsListWidget : QWidget
 {
 %Docstring(signature="appended")
-A reusable widget for showing a filtered list of entities from a :py:class:`QgsStyle` database.
+A reusable widget for showing a filtered list of entities from a
+:py:class:`QgsStyle` database.
 
 .. versionadded:: 3.10
 %End
@@ -26,15 +27,16 @@ A reusable widget for showing a filtered list of entities from a :py:class:`QgsS
   public:
     QgsStyleItemsListWidget( QWidget *parent /TransferThis/ );
 %Docstring
-Constructor for QgsStyleItemsListWidget, with the specified ``parent`` widget.
+Constructor for QgsStyleItemsListWidget, with the specified ``parent``
+widget.
 %End
 
     void setStyle( QgsStyle *style );
 %Docstring
 Sets the ``style`` database associated with the widget.
 
-Ownership of ``style`` is not transferred, and the caller is responsible for ensuring that
-it exists for the lifetime of the widget.
+Ownership of ``style`` is not transferred, and the caller is responsible
+for ensuring that it exists for the lifetime of the widget.
 %End
 
     void setEntityType( QgsStyle::StyleEntity type );
@@ -54,8 +56,9 @@ Sets the ``type`` of symbols to show in the widget.
 
     void setLayerType( Qgis::GeometryType type );
 %Docstring
-Sets the layer ``type`` to show in the widget. Set ``type`` to :py:class:`Qgis`.GeometryType.Unknown if no
-layer type filter is desired.
+Sets the layer ``type`` to show in the widget. Set ``type`` to
+:py:class:`Qgis`.GeometryType.Unknown if no layer type filter is
+desired.
 
 This setting only applies to label settings and 3d style entities.
 %End

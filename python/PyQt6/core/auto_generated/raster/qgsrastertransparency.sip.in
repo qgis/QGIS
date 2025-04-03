@@ -33,9 +33,21 @@ Constructor for TransparentThreeValuePixel.
 :param green: green pixel value
 :param blue: blue pixel value
 :param opacity: opacity for pixel, between 0 and 1.0
-:param fuzzyToleranceRed: (since QGIS 3.40) allows specifying a tolerance for the red color component, where the pixel's red component can deviate from values specified here by a maximum of this tolerance amount
-:param fuzzyToleranceGreen: (since QGIS 3.40) allows specifying a tolerance for the green color component, where the pixel's green component can deviate from values specified here by a maximum of this tolerance amount
-:param fuzzyToleranceBlue: (since QGIS 3.40) allows specifying a tolerance for the blue color component, where the pixel's blue component can deviate from values specified here by a maximum of this tolerance amount
+:param fuzzyToleranceRed: (since QGIS 3.40) allows specifying a
+                          tolerance for the red color component, where
+                          the pixel's red component can deviate from
+                          values specified here by a maximum of this
+                          tolerance amount
+:param fuzzyToleranceGreen: (since QGIS 3.40) allows specifying a
+                            tolerance for the green color component,
+                            where the pixel's green component can
+                            deviate from values specified here by a
+                            maximum of this tolerance amount
+:param fuzzyToleranceBlue: (since QGIS 3.40) allows specifying a
+                           tolerance for the blue color component, where
+                           the pixel's blue component can deviate from
+                           values specified here by a maximum of this
+                           tolerance amount
 
 .. versionadded:: 3.38
 %End
@@ -78,8 +90,10 @@ Constructor for TransparentSingleValuePixel.
 :param minimum: minimum pixel value to include in range
 :param maximum: maximum pixel value to include in range
 :param opacity: opacity for pixel, between 0 and 1.0
-:param includeMinimum: whether the minimum value should be included in the range
-:param includeMaximum: whether the maximum value should be included in the range
+:param includeMinimum: whether the minimum value should be included in
+                       the range
+:param includeMaximum: whether the maximum value should be included in
+                       the range
 
 .. versionadded:: 3.38
 %End
@@ -130,14 +144,16 @@ Resets the transparency list to single red, green, and blue values.
 
     void setTransparentSingleValuePixelList( const QVector<QgsRasterTransparency::TransparentSingleValuePixel> &newList );
 %Docstring
-Sets the transparent single value pixel list, replacing the whole existing list.
+Sets the transparent single value pixel list, replacing the whole
+existing list.
 
 .. seealso:: :py:func:`transparentSingleValuePixelList`
 %End
 
     void setTransparentThreeValuePixelList( const QVector<QgsRasterTransparency::TransparentThreeValuePixel> &newList );
 %Docstring
-Sets the transparent three value pixel list, replacing the whole existing list.
+Sets the transparent three value pixel list, replacing the whole
+existing list.
 
 .. seealso:: :py:func:`transparentThreeValuePixelList`
 %End
@@ -146,8 +162,8 @@ Sets the transparent three value pixel list, replacing the whole existing list.
 %Docstring
 Returns the transparency value for a single ``value`` pixel.
 
-Searches through the transparency list, and if a match is found, the global transparency value is scaled
-by the stored transparency value.
+Searches through the transparency list, and if a match is found, the
+global transparency value is scaled by the stored transparency value.
 
 :param value: the needle to search for in the transparency hay stack
 :param globalTransparency: the overall transparency level for the layer
@@ -159,10 +175,12 @@ by the stored transparency value.
 
     double opacityForValue( double value ) const;
 %Docstring
-Returns the opacity (as a value from 0 to 1) for a single ``value`` pixel.
+Returns the opacity (as a value from 0 to 1) for a single ``value``
+pixel.
 
 Searches through the transparency list, and if a match is found, returns
-the opacity corresponding to the value. Returns 1 if no matches are found.
+the opacity corresponding to the value. Returns 1 if no matches are
+found.
 
 .. versionadded:: 3.38
 %End
@@ -171,12 +189,15 @@ the opacity corresponding to the value. Returns 1 if no matches are found.
 %Docstring
 Returns the transparency value for a RGB pixel.
 
-Searches through the transparency list, if a match is found, the global transparency value is scaled
-by the stored transparency value.
+Searches through the transparency list, if a match is found, the global
+transparency value is scaled by the stored transparency value.
 
-:param redValue: the red portion of the needle to search for in the transparency hay stack
-:param greenValue: the green portion of the needle to search for in the transparency hay stack
-:param blueValue: the green portion of the needle to search for in the transparency hay stack
+:param redValue: the red portion of the needle to search for in the
+                 transparency hay stack
+:param greenValue: the green portion of the needle to search for in the
+                   transparency hay stack
+:param blueValue: the green portion of the needle to search for in the
+                  transparency hay stack
 :param globalTransparency: the overall transparency level for the layer
 
 .. deprecated:: 3.40
@@ -186,10 +207,12 @@ by the stored transparency value.
 
     double opacityForRgbValues( double redValue, double greenValue, double blueValue ) const;
 %Docstring
-Returns the opacity (as a value from 0 to 1) for a set of RGB pixel values.
+Returns the opacity (as a value from 0 to 1) for a set of RGB pixel
+values.
 
 Searches through the transparency list, and if a match is found, returns
-the opacity corresponding to the values. Returns 1 if no matches are found.
+the opacity corresponding to the values. Returns 1 if no matches are
+found.
 
 If any of the red, green or blue values are NaN, 0 will be returned.
 

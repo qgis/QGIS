@@ -13,8 +13,8 @@
 class QgsPreviewEffect : QGraphicsEffect
 {
 %Docstring(signature="appended")
-A graphics effect which can be applied to a widget to simulate various printing and
-color blindness modes.
+A graphics effect which can be applied to a widget to simulate various
+printing and color blindness modes.
 %End
 
 %TypeHeaderCode
@@ -34,7 +34,8 @@ color blindness modes.
 
     void setMode( PreviewMode mode );
 %Docstring
-Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
+Sets the mode for the preview effect, which controls how the effect
+modifies a widgets appearance.
 
 :param mode: PreviewMode to use to draw the widget
 

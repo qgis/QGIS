@@ -12,7 +12,8 @@
 class QgsRangeSlider : QWidget
 {
 %Docstring(signature="appended")
-A slider control with two interactive endpoints, for interactive selection of a range of values.
+A slider control with two interactive endpoints, for interactive
+selection of a range of values.
 
 .. versionadded:: 3.18
 %End
@@ -30,7 +31,8 @@ Constructor for QgsRangeSlider, with the specified ``parent`` widget.
 %Docstring
 Constructor for QgsRangeSlider, with the specified ``parent`` widget.
 
-The ``orientation`` parameter determines whether the slider is horizontal or vertical.
+The ``orientation`` parameter determines whether the slider is
+horizontal or vertical.
 %End
 
     int minimum() const;
@@ -115,8 +117,9 @@ Returns the orientation of the slider.
 %Docstring
 Returns ``True`` if the slider has its values flipped.
 
-If this property is ``False`` (the default), the minimum and maximum will be shown in its classic
-position for the widget. If the value is ``True``, the minimum and maximum appear at their opposite location.
+If this property is ``False`` (the default), the minimum and maximum
+will be shown in its classic position for the widget. If the value is
+``True``, the minimum and maximum appear at their opposite location.
 
 .. seealso:: :py:func:`setFlippedDirection`
 %End
@@ -125,9 +128,11 @@ position for the widget. If the value is ``True``, the minimum and maximum appea
 %Docstring
 Sets whether the slider has its values ``flipped``.
 
-If this property is ``False`` (the default), the minimum and maximum will be shown in its classic
-position for the widget. If the value is ``True``, the minimum and maximum appear at their opposite location.
-(i.e. minimum at the bottom of a vertical slider, maximum at the top of a vertical slider).
+If this property is ``False`` (the default), the minimum and maximum
+will be shown in its classic position for the widget. If the value is
+``True``, the minimum and maximum appear at their opposite location.
+(i.e. minimum at the bottom of a vertical slider, maximum at the top of
+a vertical slider).
 
 .. seealso:: :py:func:`flippedDirection`
 %End
@@ -151,7 +156,8 @@ position for the widget. If the value is ``True``, the minimum and maximum appea
 %Docstring
 Returns the single step value for the widget.
 
-This corresponds to the smaller increment or decrement applied when the user presses an arrow key.
+This corresponds to the smaller increment or decrement applied when the
+user presses an arrow key.
 
 .. seealso:: :py:func:`setSingleStep`
 
@@ -162,7 +168,8 @@ This corresponds to the smaller increment or decrement applied when the user pre
 %Docstring
 Returns the page step value for the widget.
 
-This corresponds to the larger increment or decrement applied when the user presses the page increment key (usually PageUp or PageDown).
+This corresponds to the larger increment or decrement applied when the
+user presses the page increment key (usually PageUp or PageDown).
 
 .. seealso:: :py:func:`setPageStep`
 
@@ -173,9 +180,9 @@ This corresponds to the larger increment or decrement applied when the user pres
 %Docstring
 Returns the slider's fixed range size, or -1 if not set.
 
-If a fixed range size is set then moving either the lower or upper slider will automatically
-move the other slider accordingly, in order to keep the selected range at the specified
-fixed size.
+If a fixed range size is set then moving either the lower or upper
+slider will automatically move the other slider accordingly, in order to
+keep the selected range at the specified fixed size.
 
 .. seealso:: :py:func:`setFixedRangeSize`
 
@@ -184,11 +191,12 @@ fixed size.
 
     void setFixedRangeSize( int size );
 %Docstring
-Sets the slider's fixed range ``size``. Set to -1 if no fixed size is desired.
+Sets the slider's fixed range ``size``. Set to -1 if no fixed size is
+desired.
 
-If a fixed range size is set then moving either the lower or upper slider will automatically
-move the other slider accordingly, in order to keep the selected range at the specified
-fixed size.
+If a fixed range size is set then moving either the lower or upper
+slider will automatically move the other slider accordingly, in order to
+keep the selected range at the specified fixed size.
 
 .. seealso:: :py:func:`fixedRangeSize`
 
@@ -217,7 +225,8 @@ Sets the ``minimum`` value allowed in the widget.
 
     void setRangeLimits( int minimum, int maximum );
 %Docstring
-Sets the ``minimum`` and ``maximum`` range limits for values allowed in the widget.
+Sets the ``minimum`` and ``maximum`` range limits for values allowed in
+the widget.
 
 .. seealso:: :py:func:`setMinimum`
 
@@ -259,7 +268,8 @@ Sets the current range selected in the widget.
 %Docstring
 Sets the single ``step`` value for the widget.
 
-This corresponds to the smaller increment or decrement applied when the user presses an arrow key.
+This corresponds to the smaller increment or decrement applied when the
+user presses an arrow key.
 
 .. seealso:: :py:func:`singleStep`
 
@@ -270,7 +280,8 @@ This corresponds to the smaller increment or decrement applied when the user pre
 %Docstring
 Sets the page ``step`` value for the widget.
 
-This corresponds to the larger increment or decrement applied when the user presses the page increment key (usually PageUp or PageDown).
+This corresponds to the larger increment or decrement applied when the
+user presses the page increment key (usually PageUp or PageDown).
 
 .. seealso:: :py:func:`pageStep`
 

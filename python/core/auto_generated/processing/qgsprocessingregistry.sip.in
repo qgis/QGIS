@@ -32,11 +32,11 @@ Contains basic properties for a Processing algorithm.
 class QgsProcessingRegistry : QObject
 {
 %Docstring(signature="appended")
-Registry for various processing components, including providers, algorithms
-and various parameters and outputs.
+Registry for various processing components, including providers,
+algorithms and various parameters and outputs.
 
-:py:class:`QgsProcessingRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.processingRegistry()`.
+:py:class:`QgsProcessingRegistry` is not usually directly created, but
+rather accessed through :py:func:`QgsApplication.processingRegistry()`.
 %End
 
 %TypeHeaderCode
@@ -59,28 +59,31 @@ Gets list of available providers.
 
     bool addProvider( QgsProcessingProvider *provider /Transfer/ );
 %Docstring
-Add a processing provider to the registry. Ownership of the provider is transferred to the registry,
-and the provider's parent will be set to the registry.
-Returns ``False`` if the provider could not be added (eg if a provider with a duplicate ID already exists
-in the registry).
-Adding a provider to the registry automatically triggers the providers :py:func:`QgsProcessingProvider.load()`
-method to populate the provider with algorithms.
+Add a processing provider to the registry. Ownership of the provider is
+transferred to the registry, and the provider's parent will be set to
+the registry. Returns ``False`` if the provider could not be added (eg
+if a provider with a duplicate ID already exists in the registry).
+Adding a provider to the registry automatically triggers the providers
+:py:func:`QgsProcessingProvider.load()` method to populate the provider
+with algorithms.
 
 .. seealso:: :py:func:`removeProvider`
 %End
 
     bool removeProvider( QgsProcessingProvider *provider );
 %Docstring
-Removes a provider implementation from the registry (the provider object is deleted).
-Returns ``False`` if the provider could not be removed (eg provider does not exist in the registry).
+Removes a provider implementation from the registry (the provider object
+is deleted). Returns ``False`` if the provider could not be removed (eg
+provider does not exist in the registry).
 
 .. seealso:: :py:func:`addProvider`
 %End
 
     bool removeProvider( const QString &providerId );
 %Docstring
-Removes a provider implementation from the registry (the provider object is deleted).
-Returns ``False`` if the provider could not be removed (eg provider does not exist in the registry).
+Removes a provider implementation from the registry (the provider object
+is deleted). Returns ``False`` if the provider could not be removed (eg
+provider does not exist in the registry).
 
 .. seealso:: :py:func:`addProvider`
 %End
@@ -109,8 +112,8 @@ returned and is suitable for calling many times.
 
     const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
 %Docstring
-Finds an algorithm by its ID. If no matching algorithm is found, ``None``
-is returned.
+Finds an algorithm by its ID. If no matching algorithm is found,
+``None`` is returned.
 
 .. seealso:: :py:func:`algorithms`
 
@@ -120,14 +123,15 @@ is returned.
 
     QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const /TransferBack/;
 %Docstring
-Creates a new instance of an algorithm by its ID. If no matching algorithm is found, ``None``
-is returned. Callers take responsibility for deleting the returned object.
+Creates a new instance of an algorithm by its ID. If no matching
+algorithm is found, ``None`` is returned. Callers take responsibility
+for deleting the returned object.
 
-The ``configuration`` argument allows passing of a map of configuration settings
-to the algorithm, allowing it to dynamically adjust its initialized parameters
-and outputs according to this configuration. This is generally used only for
-algorithms in a model, allowing them to adjust their behavior at run time
-according to some user configuration.
+The ``configuration`` argument allows passing of a map of configuration
+settings to the algorithm, allowing it to dynamically adjust its
+initialized parameters and outputs according to this configuration. This
+is generally used only for algorithms in a model, allowing them to
+adjust their behavior at run time according to some user configuration.
 
 .. seealso:: :py:func:`algorithms`
 
@@ -138,20 +142,23 @@ according to some user configuration.
 %Docstring
 Adds a new alias to an existing algorithm.
 
-This allows algorithms to be referred to by a different provider ID and algorithm name to their actual underlying provider and algorithm name.
-It provides a mechanism to allow algorithms to be moved between providers without breaking existing scripts or plugins.
+This allows algorithms to be referred to by a different provider ID and
+algorithm name to their actual underlying provider and algorithm name.
+It provides a mechanism to allow algorithms to be moved between
+providers without breaking existing scripts or plugins.
 
-The ``aliasId`` argument specifies the "fake" algorithm id (eg "fake_provider:fake_alg") by which the algorithm can
-be referred to, and the ``actualId`` argument specifies the real algorithm ID for the algorithm.
+The ``aliasId`` argument specifies the "fake" algorithm id (eg
+"fake_provider:fake_alg") by which the algorithm can be referred to, and
+the ``actualId`` argument specifies the real algorithm ID for the
+algorithm.
 
 .. versionadded:: 3.10
 %End
 
     bool addParameterType( QgsProcessingParameterType *type /Transfer/ );
 %Docstring
-Register a new parameter type for processing.
-Ownership is transferred to the registry.
-Will emit parameterTypeAdded.
+Register a new parameter type for processing. Ownership is transferred
+to the registry. Will emit parameterTypeAdded.
 
 .. seealso:: :py:func:`removeParameterType`
 
@@ -160,9 +167,8 @@ Will emit parameterTypeAdded.
 
     void removeParameterType( QgsProcessingParameterType *type );
 %Docstring
-Unregister a custom parameter type from processing.
-The type will be deleted.
-Will emit parameterTypeRemoved.
+Unregister a custom parameter type from processing. The type will be
+deleted. Will emit parameterTypeRemoved.
 
 .. seealso:: :py:func:`addParameterType`
 
@@ -204,8 +210,8 @@ Emitted when a new parameter type has been added to the registry.
 
     void parameterTypeRemoved( QgsProcessingParameterType *type );
 %Docstring
-Emitted when a parameter type has been removed from the
-registry and is about to be deleted.
+Emitted when a parameter type has been removed from the registry and is
+about to be deleted.
 
 .. versionadded:: 3.2
 %End

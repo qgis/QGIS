@@ -13,12 +13,15 @@
 class QgsDateTimeStatisticalSummary
 {
 %Docstring(signature="appended")
-Calculator for summary statistics and aggregates for a list of datetimes.
+Calculator for summary statistics and aggregates for a list of
+datetimes.
 
-Statistics are calculated by calling :py:func:`~calculate` and passing a list of datetimes. The
-individual statistics can then be retrieved using the associated methods. Note that not all statistics
-are calculated by default. Statistics which require slower computations are only calculated by
-specifying the statistic in the constructor or via :py:func:`~setStatistics`.
+Statistics are calculated by calling :py:func:`~calculate` and passing a
+list of datetimes. The individual statistics can then be retrieved using
+the associated methods. Note that not all statistics are calculated by
+default. Statistics which require slower computations are only
+calculated by specifying the statistic in the constructor or via
+:py:func:`~setStatistics`.
 %End
 
 %TypeHeaderCode
@@ -35,16 +38,16 @@ Constructor for QgsDateTimeStatisticalSummary
 
     Qgis::DateTimeStatistics statistics() const;
 %Docstring
-Returns flags which specify which statistics will be calculated. Some statistics
-are always calculated (e.g., count).
+Returns flags which specify which statistics will be calculated. Some
+statistics are always calculated (e.g., count).
 
 .. seealso:: :py:func:`setStatistics`
 %End
 
     void setStatistics( Qgis::DateTimeStatistics stats );
 %Docstring
-Sets flags which specify which statistics will be calculated. Some statistics
-are always calculated (e.g., count).
+Sets flags which specify which statistics will be calculated. Some
+statistics are always calculated (e.g., count).
 
 :param stats: flags for statistics to calculate
 
@@ -58,8 +61,8 @@ Resets the calculated values
 
     void calculate( const QVariantList &values );
 %Docstring
-Calculates summary statistics for a list of variants. Any non-datetime variants will be
-ignored.
+Calculates summary statistics for a list of variants. Any non-datetime
+variants will be ignored.
 
 :param values: list of variants
 
@@ -68,12 +71,14 @@ ignored.
 
     void addValue( const QVariant &value );
 %Docstring
-Adds a single datetime to the statistics calculation. Calling this method
-allows datetimes to be added to the calculation one at a time. For large
-quantities of dates this may be more efficient then first adding all the
-variants to a list and calling :py:func:`~QgsDateTimeStatisticalSummary.calculate`.
+Adds a single datetime to the statistics calculation. Calling this
+method allows datetimes to be added to the calculation one at a time.
+For large quantities of dates this may be more efficient then first
+adding all the variants to a list and calling
+:py:func:`~QgsDateTimeStatisticalSummary.calculate`.
 
-:param value: datetime to add. Any non-datetime variants will be ignored.
+:param value: datetime to add. Any non-datetime variants will be
+              ignored.
 
 .. note::
 
@@ -92,7 +97,8 @@ variants to a list and calling :py:func:`~QgsDateTimeStatisticalSummary.calculat
 
     void finalize();
 %Docstring
-Must be called after adding all datetimes with :py:func:`~QgsDateTimeStatisticalSummary.addValue` and before retrieving
+Must be called after adding all datetimes with
+:py:func:`~QgsDateTimeStatisticalSummary.addValue` and before retrieving
 any calculated datetime statistics.
 
 .. seealso:: :py:func:`addValue`
@@ -139,7 +145,8 @@ Returns the maximum (latest) non-null datetime value.
 
     QgsInterval range() const;
 %Docstring
-Returns the range (interval between earliest and latest non-null datetime values).
+Returns the range (interval between earliest and latest non-null
+datetime values).
 %End
 
     static QString displayName( Qgis::DateTimeStatistic statistic );

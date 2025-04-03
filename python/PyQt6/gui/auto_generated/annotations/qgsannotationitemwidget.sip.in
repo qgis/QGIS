@@ -11,7 +11,6 @@
 class QgsAnnotationItemBaseWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-
 A base class for property widgets for annotation items.
 
 All annotation item widgets should inherit from this base class.
@@ -40,12 +39,12 @@ Updates an existing item to match the settings defined in the widget.
 
     bool setItem( QgsAnnotationItem *item );
 %Docstring
-Sets the current ``item`` to show in the widget. If ``True`` is returned, ``item``
-was an acceptable type for display in this widget and the widget has been
-updated to match ``item``'s properties.
+Sets the current ``item`` to show in the widget. If ``True`` is
+returned, ``item`` was an acceptable type for display in this widget and
+the widget has been updated to match ``item``'s properties.
 
-If ``False`` is returned, then the widget could not be successfully updated
-to show the properties of ``item``.
+If ``False`` is returned, then the widget could not be successfully
+updated to show the properties of ``item``.
 %End
 
     virtual void setLayer( QgsAnnotationLayer *layer );
@@ -86,14 +85,16 @@ Returns the associated annotation item id.
 
     virtual void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
-Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+Sets the ``context`` in which the widget is shown, e.g., the associated
+map canvas and expression contexts.
 
 .. seealso:: :py:func:`context`
 %End
 
     QgsSymbolWidgetContext context() const;
 %Docstring
-Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+Returns the context in which the widget is shown, e.g., the associated
+map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
 %End
@@ -109,24 +110,26 @@ Focuses the default widget for the page.
 
     void itemChanged();
 %Docstring
-Emitted when the annotation item definition in the widget is changed by the user.
+Emitted when the annotation item definition in the widget is changed by
+the user.
 %End
 
   protected:
     virtual bool setNewItem( QgsAnnotationItem *item );
 %Docstring
-Attempts to update the widget to show the properties
-for the specified ``item``.
+Attempts to update the widget to show the properties for the specified
+``item``.
 
 Subclasses can override this if they support changing items in place.
 
-Implementations must return ``True`` if the item was accepted and
-the widget was updated.
+Implementations must return ``True`` if the item was accepted and the
+widget was updated.
 %End
 
     const QgsRenderedAnnotationItemDetails *renderedItemDetails();
 %Docstring
-Retrieve rendered annotation details for the associated annotation, if available.
+Retrieve rendered annotation details for the associated annotation, if
+available.
 
 .. versionadded:: 3.40
 %End

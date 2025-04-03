@@ -39,13 +39,11 @@ This element will load a relation editor onto the form.
 
  QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent );
 %Docstring
-
 .. deprecated:: 3.16
 %End
 
  QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent );
 %Docstring
-
 .. deprecated:: 3.16
 %End
 
@@ -95,23 +93,26 @@ Determines the force suppress form popup status.
     void setForceSuppressFormPopup( bool forceSuppressFormPopup );
 %Docstring
 Sets force suppress form popup status to ``forceSuppressFormPopup``.
-This flag is to override the layer and general settings regarding the automatic
-opening of the attribute form dialog when digitizing is completed.
+This flag is to override the layer and general settings regarding the
+automatic opening of the attribute form dialog when digitizing is
+completed.
 
 .. versionadded:: 3.16
 %End
 
     QVariant nmRelationId() const;
 %Docstring
-Determines the relation id of the second relation involved in an N:M relation.
+Determines the relation id of the second relation involved in an N:M
+relation.
 
 .. versionadded:: 3.16
 %End
 
     void setNmRelationId( const QVariant &nmRelationId = QVariant() );
 %Docstring
-Sets ``nmRelationId`` for the relation id of the second relation involved in an N:M relation.
-If it's empty, then it's considered as a 1:M relationship.
+Sets ``nmRelationId`` for the relation id of the second relation
+involved in an N:M relation. If it's empty, then it's considered as a
+1:M relationship.
 
 .. versionadded:: 3.16
 %End
@@ -125,8 +126,8 @@ Determines the label of this element
 
     void setLabel( const QString &label = QString() );
 %Docstring
-Sets ``label`` for this element
-If it's empty it takes the relation id as label
+Sets ``label`` for this element If it's empty it takes the relation id
+as label
 
 .. versionadded:: 3.16
 %End

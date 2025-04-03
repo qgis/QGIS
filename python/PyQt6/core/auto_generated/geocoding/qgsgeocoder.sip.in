@@ -14,8 +14,9 @@ class QgsGeocoderInterface
 %Docstring(signature="appended")
 Interface for geocoders.
 
-:py:class:`QgsGeocoderInterface` implementations are able to take either a :py:class:`QgsFeature` or a free-form string
-and calculate the corresponding geometry of the feature.
+:py:class:`QgsGeocoderInterface` implementations are able to take either
+a :py:class:`QgsFeature` or a free-form string and calculate the
+corresponding geometry of the feature.
 
 .. versionadded:: 3.18
 %End
@@ -44,36 +45,44 @@ Returns the geocoder's capability flags.
 %Docstring
 Geocodes a ``feature``.
 
-If implemented by the geocoder (i.e. :py:func:`~QgsGeocoderInterface.flags` returns the QgsGeocoderInterface.Flag.GeocodesFeatures flag), a list of matching results will be returned.
+If implemented by the geocoder (i.e.
+:py:func:`~QgsGeocoderInterface.flags` returns the
+QgsGeocoderInterface.Flag.GeocodesFeatures flag), a list of matching
+results will be returned.
 
-The optional ``feedback`` argument can be used to provider cancellation support.
+The optional ``feedback`` argument can be used to provider cancellation
+support.
 %End
 
     virtual QgsFields appendedFields() const;
 %Docstring
-Returns a set of newly created fields which will be appended to existing features during the geocode
-operation.
+Returns a set of newly created fields which will be appended to existing
+features during the geocode operation.
 
-These fields will include any extra content returned by the geocoder, such as fields for accuracy of the
-match or correct attribute values.
+These fields will include any extra content returned by the geocoder,
+such as fields for accuracy of the match or correct attribute values.
 %End
 
     virtual Qgis::WkbType wkbType() const;
 %Docstring
 Returns the WKB type of geometries returned by the geocoder.
 
-If this is not known in advance then :py:class:`QgsWkbTypes`.Unknown should be returned (e.g.
-in the case that a geocoder may return different geometry types depending on the
-quality of the match).
+If this is not known in advance then :py:class:`QgsWkbTypes`.Unknown
+should be returned (e.g. in the case that a geocoder may return
+different geometry types depending on the quality of the match).
 %End
 
     virtual QList< QgsGeocoderResult > geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback = 0 ) const;
 %Docstring
 Geocodes a ``string``.
 
-If implemented by the geocoder (i.e. :py:func:`~QgsGeocoderInterface.flags` returns the QgsGeocoderInterface.Flag.GeocodesStrings flag), a list of matching results will be returned.
+If implemented by the geocoder (i.e.
+:py:func:`~QgsGeocoderInterface.flags` returns the
+QgsGeocoderInterface.Flag.GeocodesStrings flag), a list of matching
+results will be returned.
 
-The optional ``feedback`` argument can be used to provider cancellation support.
+The optional ``feedback`` argument can be used to provider cancellation
+support.
 %End
 
 };

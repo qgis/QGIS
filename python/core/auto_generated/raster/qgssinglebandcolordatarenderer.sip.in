@@ -26,7 +26,8 @@ Raster renderer pipe for single band color.
     virtual QgsSingleBandColorDataRenderer *clone() const /Factory/;
 
 %Docstring
-QgsSingleBandColorDataRenderer cannot be copied. Use :py:func:`~QgsSingleBandColorDataRenderer.clone` instead.
+QgsSingleBandColorDataRenderer cannot be copied. Use
+:py:func:`~QgsSingleBandColorDataRenderer.clone` instead.
 %End
     virtual Qgis::RasterRendererFlags flags() const;
 

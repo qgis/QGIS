@@ -10,7 +10,6 @@
 class QgsSelectionContext
 {
 %Docstring(signature="appended")
-
 Encapsulates the context of a layer selection operation.
 
 .. versionadded:: 3.28
@@ -25,7 +24,8 @@ Encapsulates the context of a layer selection operation.
 %Docstring
 Returns the map scale at which the selection should occur.
 
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+The scale value indicates the scale denominator, e.g. 1000.0 for a
+1:1000 map.
 
 .. seealso:: :py:func:`setScale`
 %End
@@ -34,7 +34,8 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %Docstring
 Sets the map ``scale`` at which the selection should occur.
 
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+The scale value indicates the scale denominator, e.g. 1000.0 for a
+1:1000 map.
 
 .. seealso:: :py:func:`scale`
 %End

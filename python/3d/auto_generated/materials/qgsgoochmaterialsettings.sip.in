@@ -13,8 +13,8 @@
 class QgsGoochMaterialSettings : QgsAbstractMaterialSettings
 {
 %Docstring(signature="appended")
-Basic shading material used for rendering based on the Phong shading model
-with three color components: ambient, diffuse and specular.
+Basic shading material used for rendering based on the Phong shading
+model with three color components: ambient, diffuse and specular.
 
 .. warning::
 
@@ -40,7 +40,8 @@ Returns a new instance of QgsGoochMaterialSettings.
 
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 %Docstring
-Returns ``True`` if the specified ``technique`` is supported by the Gooch material.
+Returns ``True`` if the specified ``technique`` is supported by the
+Gooch material.
 %End
 
     virtual QgsGoochMaterialSettings *clone() const /Factory/;

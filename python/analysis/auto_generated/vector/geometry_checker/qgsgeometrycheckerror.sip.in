@@ -45,9 +45,9 @@ This represents an error reported by a geometry check.
     QgsGeometryCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, QgsVertexId vidx = QgsVertexId(), const QVariant &value = QVariant(), ValueType valueType = ValueOther );
 %Docstring
 Create a new geometry check error with the parent ``check`` and for the
-``layerFeature`` pair at the ``errorLocation``. Optionally the vertex can be
-specified via ``vixd`` and a ``value`` with its ``value`` Type for
-additional information.
+``layerFeature`` pair at the ``errorLocation``. Optionally the vertex
+can be specified via ``vixd`` and a ``value`` with its ``value`` Type
+for additional information.
 %End
 
     virtual ~QgsGeometryCheckError();
@@ -75,10 +75,9 @@ The geometry of the error in map units.
 
     virtual QgsRectangle contextBoundingBox() const;
 %Docstring
-The context of the error.
-For topology checks like gap checks this returns the context of an error
-and the involved features.
-May be a NULL rectangle.
+The context of the error. For topology checks like gap checks this
+returns the context of an error and the involved features. May be a NULL
+rectangle.
 
 .. versionadded:: 3.10
 %End
@@ -101,8 +100,8 @@ The location of the error in map units.
 
     QVariant value() const;
 %Docstring
-An additional value for the error.
-Lengths and areas are provided in map units.
+An additional value for the error. Lengths and areas are provided in map
+units.
 
 .. seealso:: :py:func:`valueType`
 %End
@@ -148,21 +147,21 @@ Set the error status to obsolete.
 
     virtual bool isEqual( QgsGeometryCheckError *other ) const;
 %Docstring
-Check if this error is equal to ``other``.
-Is reimplemented by subclasses with additional information, comparison
-of base information is done in parent class.
+Check if this error is equal to ``other``. Is reimplemented by
+subclasses with additional information, comparison of base information
+is done in parent class.
 %End
 
     virtual bool closeMatch( QgsGeometryCheckError * /*other*/ ) const;
 %Docstring
-Check if this error is almost equal to ``other``.
-If this returns ``True``, it can be used to update existing errors after re-checking.
+Check if this error is almost equal to ``other``. If this returns
+``True``, it can be used to update existing errors after re-checking.
 %End
 
     virtual void update( const QgsGeometryCheckError *other );
 %Docstring
-Update this error with the information from ``other``.
-Will be used to update existing errors whenever they are re-checked.
+Update this error with the information from ``other``. Will be used to
+update existing errors whenever they are re-checked.
 %End
 
 
@@ -178,9 +177,8 @@ Returns an icon that should be shown for this kind of error.
     QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId, QgsFeatureId featureId, const QgsGeometry &geometry, const QgsPointXY &errorLocation, QgsVertexId vidx = QgsVertexId(), const QVariant &value = QVariant(), ValueType valueType = ValueOther );
 %Docstring
 Create a new geometry check error with the parent ``check`` and for the
-layer with ``layerId`` and ``featureId``.
-The ``geometry`` of the error and the ``errorLocation`` need to be
-specified in map coordinates.
+layer with ``layerId`` and ``featureId``. The ``geometry`` of the error
+and the ``errorLocation`` need to be specified in map coordinates.
 Optionally the vertex can be specified via ``vixd`` and a ``value`` with
 its ``value`` Type for additional information.
 %End

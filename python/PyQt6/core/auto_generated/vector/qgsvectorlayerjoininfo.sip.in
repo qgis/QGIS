@@ -12,9 +12,11 @@
 class QgsVectorLayerJoinInfo
 {
 %Docstring(signature="appended")
-Defines left outer join from our vector layer to some other vector layer.
+Defines left outer join from our vector layer to some other vector
+layer.
 
-The join is done based on [our layer].targetField = [join layer].joinField
+The join is done based on [our layer].targetField = [join
+layer].joinField
 %End
 
 %TypeHeaderCode
@@ -30,16 +32,20 @@ Sets weak reference to the joined layer
 %End
     QgsVectorLayer *joinLayer() const;
 %Docstring
-Returns joined layer (may be ``None`` if the reference was set by layer ID and not resolved yet)
+Returns joined layer (may be ``None`` if the reference was set by layer
+ID and not resolved yet)
 %End
 
     void setJoinLayerId( const QString &layerId );
 %Docstring
-Sets ID of the joined layer. It will need to be overwritten by :py:func:`~QgsVectorLayerJoinInfo.setJoinLayer` to a reference to real layer
+Sets ID of the joined layer. It will need to be overwritten by
+:py:func:`~QgsVectorLayerJoinInfo.setJoinLayer` to a reference to real
+layer
 %End
     QString joinLayerId() const;
 %Docstring
-ID of the joined layer - may be used to resolve reference to the joined layer
+ID of the joined layer - may be used to resolve reference to the joined
+layer
 %End
 
     void setTargetFieldName( const QString &fieldName );
@@ -62,28 +68,31 @@ Returns name of the field of joined layer that will be used for join
 
     void setPrefix( const QString &prefix );
 %Docstring
-Sets prefix of fields from the joined layer. If ``None``, joined layer's name will be used.
+Sets prefix of fields from the joined layer. If ``None``, joined layer's
+name will be used.
 %End
     QString prefix() const;
 %Docstring
-Returns prefix of fields from the joined layer. If ``None``, joined layer's name will be used.
+Returns prefix of fields from the joined layer. If ``None``, joined
+layer's name will be used.
 %End
 
     void setUsingMemoryCache( bool enabled );
 %Docstring
-Sets whether values from the joined layer should be cached in memory to speed up lookups
+Sets whether values from the joined layer should be cached in memory to
+speed up lookups
 %End
 
     bool isUsingMemoryCache() const;
 %Docstring
-Returns whether values from the joined layer should be cached in memory to speed up lookups.
-Will return ``False`` if upsertOnEdit is enabled.
+Returns whether values from the joined layer should be cached in memory
+to speed up lookups. Will return ``False`` if upsertOnEdit is enabled.
 %End
 
     bool isDynamicFormEnabled() const;
 %Docstring
-Returns whether the form has to be dynamically updated with joined fields
-when  a feature is being created in the target layer.
+Returns whether the form has to be dynamically updated with joined
+fields when a feature is being created in the target layer.
 %End
 
     void setDynamicFormEnabled( bool enabled );
@@ -94,8 +103,8 @@ when a feature is being created in the target layer.
 
     bool isEditable() const;
 %Docstring
-Returns whether joined fields may be edited through the form of
-the target layer.
+Returns whether joined fields may be edited through the form of the
+target layer.
 %End
 
     void setEditable( bool enabled );
@@ -105,14 +114,14 @@ Sets whether the form of the target layer allows editing joined fields.
 
     bool hasUpsertOnEdit() const;
 %Docstring
-Returns whether a feature created on the target layer has to impact
-the joined layer by creating a new feature if necessary.
+Returns whether a feature created on the target layer has to impact the
+joined layer by creating a new feature if necessary.
 %End
 
     void setUpsertOnEdit( bool enabled );
 %Docstring
-Sets whether a feature created on the target layer has to impact
-the joined layer by creating a new feature if necessary.
+Sets whether a feature created on the target layer has to impact the
+joined layer by creating a new feature if necessary.
 %End
 
     bool hasCascadedDelete() const;
@@ -138,8 +147,8 @@ Returns the prefixed name of the field.
 
     QgsFeature extractJoinedFeature( const QgsFeature &feature ) const;
 %Docstring
-Extract the join feature from the target feature for the current
-join layer information.
+Extract the join feature from the target feature for the current join
+layer information.
 
 :param feature: A feature from the target layer
 
@@ -184,8 +193,8 @@ Returns the list of fields to ignore.
 
     bool hasSubset( bool blocklisted = true ) const;
 %Docstring
-Returns ``True`` if blocklisted fields is not empty or if a subset of names
-has been set.
+Returns ``True`` if blocklisted fields is not empty or if a subset of
+names has been set.
 %End
 
     static QStringList joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, bool blocklisted = true );
@@ -215,7 +224,8 @@ This method is thread safe.
 %Docstring
 Sets the subset of fields to be used from joined layer.
 
-Ownership of ``fileNamesSubset`` is transferred. A ``fieldNameSubset`` of ``None`` indicates that all fields should be used.
+Ownership of ``fileNamesSubset`` is transferred. A ``fieldNameSubset``
+of ``None`` indicates that all fields should be used.
 
 .. seealso:: :py:func:`joinFieldNamesSubset`
 %End

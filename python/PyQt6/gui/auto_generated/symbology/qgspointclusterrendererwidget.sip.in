@@ -14,7 +14,8 @@
 class QgsPointClusterRendererWidget : QgsRendererWidget
 {
 %Docstring(signature="appended")
-A widget which allows configuration of the properties for a :py:class:`QgsPointClusterRenderer`.
+A widget which allows configuration of the properties for a
+:py:class:`QgsPointClusterRenderer`.
 %End
 
 %TypeHeaderCode

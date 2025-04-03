@@ -42,7 +42,8 @@ The Html code that will be represented within this widget.
 
     void setHtmlCode( const QString &htmlCode );
 %Docstring
-Sets the HTML code that will be represented within this widget to ``htmlCode``.
+Sets the HTML code that will be represented within this widget to
+``htmlCode``.
 %End
 
 };

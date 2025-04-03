@@ -40,7 +40,8 @@ Represents a gamepad device used for controlling a 2D map.
   public:
     QgsGamepad2DMapController( int gamepadDeviceId, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsGamepad2DMapController, with the specified ``gamepadDeviceId`` and ``parent`` object.
+Constructor for QgsGamepad2DMapController, with the specified
+``gamepadDeviceId`` and ``parent`` object.
 %End
 
     virtual QgsGamepad2DMapController *clone() const /Factory/;
@@ -61,122 +62,147 @@ Returns the reported name of the gamepad if one is available.
 
     double axisLeftX() const;
 %Docstring
-Returns the value of the left thumbstick's X axis. The axis values range from -1.0 to 1.0.
+Returns the value of the left thumbstick's X axis. The axis values range
+from -1.0 to 1.0.
 %End
 
     double axisLeftY() const;
 %Docstring
-Returns the value of the left thumbstick's Y axis. The axis values range from -1.0 to 1.0.
+Returns the value of the left thumbstick's Y axis. The axis values range
+from -1.0 to 1.0.
 %End
 
     double axisRightX() const;
 %Docstring
-Returns the value of the right thumbstick's X axis. The axis values range from -1.0 to 1.0.
+Returns the value of the right thumbstick's X axis. The axis values
+range from -1.0 to 1.0.
 %End
 
     double axisRightY() const;
 %Docstring
-Returns the value of the right thumbstick's Y axis. The axis values range from -1.0 to 1.0.
+Returns the value of the right thumbstick's Y axis. The axis values
+range from -1.0 to 1.0.
 %End
 
     bool buttonA() const;
 %Docstring
-Returns the state of the A button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the A button. The value is ``True`` when pressed,
+and ``False`` when not pressed.
 %End
 
     bool buttonB() const;
 %Docstring
-Returns the state of the B button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the B button. The value is ``True`` when pressed,
+and ``False`` when not pressed.
 %End
 
     bool buttonX() const;
 %Docstring
-Returns the state of the X button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the X button. The value is ``True`` when pressed,
+and ``False`` when not pressed.
 %End
 
     bool buttonY() const;
 %Docstring
-Returns the state of the Y button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the Y button. The value is ``True`` when pressed,
+and ``False`` when not pressed.
 %End
 
     bool buttonL1() const;
 %Docstring
-Returns the state of the left shoulder button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the left shoulder button. The value is ``True``
+when pressed, and ``False`` when not pressed.
 %End
 
     bool buttonR1() const;
 %Docstring
-Returns the state of the right shoulder button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the right shoulder button. The value is ``True``
+when pressed, and ``False`` when not pressed.
 %End
 
     double buttonL2() const;
 %Docstring
-Returns the value of the left trigger button. This trigger value ranges from 0.0 when not pressed to 1.0 when pressed completely.
+Returns the value of the left trigger button. This trigger value ranges
+from 0.0 when not pressed to 1.0 when pressed completely.
 %End
 
     double buttonR2() const;
 %Docstring
-Returns the value of the right trigger button. This trigger value ranges from 0.0 when not pressed to 1.0 when pressed completely.
+Returns the value of the right trigger button. This trigger value ranges
+from 0.0 when not pressed to 1.0 when pressed completely.
 %End
 
     bool buttonSelect() const;
 %Docstring
-Returns the state of the select button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the select button. The value is ``True`` when
+pressed, and ``False`` when not pressed.
 
-This button can sometimes be labeled as the Back button on some gamepads.
+This button can sometimes be labeled as the Back button on some
+gamepads.
 %End
 
     bool buttonStart() const;
 %Docstring
-Returns the state of the start button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the start button. The value is ``True`` when
+pressed, and ``False`` when not pressed.
 
-This button can sometimes be labeled as the Forward button on some gamepads.
+This button can sometimes be labeled as the Forward button on some
+gamepads.
 %End
 
     bool buttonL3() const;
 %Docstring
-Returns the state of the left stick button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the left stick button. The value is ``True`` when
+pressed, and ``False`` when not pressed.
 
 This button is usually triggered by pressing the left joystick itself.
 %End
 
     bool buttonR3() const;
 %Docstring
-Returns the state of the right stick button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the right stick button. The value is ``True`` when
+pressed, and ``False`` when not pressed.
 
 This button is usually triggered by pressing the right joystick itself.
 %End
 
     bool buttonUp() const;
 %Docstring
-Returns the state of the direction pad up button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the direction pad up button. The value is ``True``
+when pressed, and ``False`` when not pressed.
 %End
 
     bool buttonDown() const;
 %Docstring
-Returns the state of the direction pad down button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the direction pad down button. The value is
+``True`` when pressed, and ``False`` when not pressed.
 %End
 
     bool buttonLeft() const;
 %Docstring
-Returns the state of the direction pad left button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the direction pad left button. The value is
+``True`` when pressed, and ``False`` when not pressed.
 %End
 
     bool buttonRight() const;
 %Docstring
-Returns the state of the direction pad right button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the direction pad right button. The value is
+``True`` when pressed, and ``False`` when not pressed.
 %End
 
     bool buttonCenter() const;
 %Docstring
-Returns the state of the center button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the center button. The value is ``True`` when
+pressed, and ``False`` when not pressed.
 %End
 
     bool buttonGuide() const;
 %Docstring
-Returns the state of the center button. The value is ``True`` when pressed, and ``False`` when not pressed.
+Returns the state of the center button. The value is ``True`` when
+pressed, and ``False`` when not pressed.
 
-This button is typically the one in the center of the gamepad with a logo. Not all gamepads have a guide button.
+This button is typically the one in the center of the gamepad with a
+logo. Not all gamepads have a guide button.
 %End
 
   signals:

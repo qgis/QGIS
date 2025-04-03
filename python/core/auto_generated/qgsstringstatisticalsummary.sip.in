@@ -16,10 +16,12 @@ class QgsStringStatisticalSummary
 %Docstring(signature="appended")
 Calculator for summary statistics and aggregates for a list of strings.
 
-Statistics are calculated by calling :py:func:`~calculate` and passing a list of strings. The
-individual statistics can then be retrieved using the associated methods. Note that not all statistics
-are calculated by default. Statistics which require slower computations are only calculated by
-specifying the statistic in the constructor or via :py:func:`~setStatistics`.
+Statistics are calculated by calling :py:func:`~calculate` and passing a
+list of strings. The individual statistics can then be retrieved using
+the associated methods. Note that not all statistics are calculated by
+default. Statistics which require slower computations are only
+calculated by specifying the statistic in the constructor or via
+:py:func:`~setStatistics`.
 %End
 
 %TypeHeaderCode
@@ -36,16 +38,16 @@ Constructor for :py:class:`QgsStringStatistics`
 
     Qgis::StringStatistics statistics() const;
 %Docstring
-Returns flags which specify which statistics will be calculated. Some statistics
-are always calculated (e.g., count).
+Returns flags which specify which statistics will be calculated. Some
+statistics are always calculated (e.g., count).
 
 .. seealso:: :py:func:`setStatistics`
 %End
 
     void setStatistics( Qgis::StringStatistics stats );
 %Docstring
-Sets flags which specify which statistics will be calculated. Some statistics
-are always calculated (e.g., count).
+Sets flags which specify which statistics will be calculated. Some
+statistics are always calculated (e.g., count).
 
 :param stats: flags for statistics to calculate
 
@@ -70,8 +72,8 @@ Calculates summary statistics for an entire list of strings at once.
 
     void calculateFromVariants( const QVariantList &values );
 %Docstring
-Calculates summary statistics for an entire list of variants at once. Any
-non-string variants will be ignored.
+Calculates summary statistics for an entire list of variants at once.
+Any non-string variants will be ignored.
 
 :param values: list of variants
 
@@ -84,8 +86,9 @@ non-string variants will be ignored.
 %Docstring
 Adds a single string to the statistics calculation. Calling this method
 allows strings to be added to the calculation one at a time. For large
-quantities of strings this may be more efficient then first adding all the
-strings to a list and calling :py:func:`~QgsStringStatisticalSummary.calculate`.
+quantities of strings this may be more efficient then first adding all
+the strings to a list and calling
+:py:func:`~QgsStringStatisticalSummary.calculate`.
 
 :param string: string to add
 
@@ -110,8 +113,9 @@ strings to a list and calling :py:func:`~QgsStringStatisticalSummary.calculate`.
 %Docstring
 Adds a single variant to the statistics calculation. Calling this method
 allows variants to be added to the calculation one at a time. For large
-quantities of variants this may be more efficient then first adding all the
-variants to a list and calling :py:func:`~QgsStringStatisticalSummary.calculateFromVariants`.
+quantities of variants this may be more efficient then first adding all
+the variants to a list and calling
+:py:func:`~QgsStringStatisticalSummary.calculateFromVariants`.
 
 :param value: variant to add
 
@@ -132,7 +136,8 @@ variants to a list and calling :py:func:`~QgsStringStatisticalSummary.calculateF
 
     void finalize();
 %Docstring
-Must be called after adding all strings with :py:func:`~QgsStringStatisticalSummary.addString` and before retrieving
+Must be called after adding all strings with
+:py:func:`~QgsStringStatisticalSummary.addString` and before retrieving
 any calculated string statistics.
 
 .. seealso:: :py:func:`addString`
@@ -198,10 +203,11 @@ Returns the mean length of strings.
 
     QString minority() const;
 %Docstring
-Returns the least common string. The minority is the value with least occurrences in the list
-This is only calculated if Statistic.Minority has been specified in the constructor
-or via setStatistics. If multiple values match, return the first value relative to the
-initial values order.
+Returns the least common string. The minority is the value with least
+occurrences in the list This is only calculated if Statistic.Minority
+has been specified in the constructor or via setStatistics. If multiple
+values match, return the first value relative to the initial values
+order.
 
 .. seealso:: :py:func:`majority`
 
@@ -210,10 +216,11 @@ initial values order.
 
     QString majority() const;
 %Docstring
-Returns the most common string. The majority is the value with most occurrences in the list
-This is only calculated if Statistic.Majority has been specified in the constructor
-or via setStatistics. If multiple values match, return the first value relative to the
-initial values order.
+Returns the most common string. The majority is the value with most
+occurrences in the list This is only calculated if Statistic.Majority
+has been specified in the constructor or via setStatistics. If multiple
+values match, return the first value relative to the initial values
+order.
 
 .. seealso:: :py:func:`minority`
 

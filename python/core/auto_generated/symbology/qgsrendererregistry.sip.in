@@ -38,11 +38,14 @@ Stores metadata about one renderer class.
 
     QgsRendererAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
-Constructor for QgsRendererAbstractMetadata, with the specified ``name``.
+Constructor for QgsRendererAbstractMetadata, with the specified
+``name``.
 
-The ``visibleName`` argument gives a translated, user friendly string identifying the renderer type.
+The ``visibleName`` argument gives a translated, user friendly string
+identifying the renderer type.
 
-The ``icon`` argument can be used to specify an icon representing the renderer.
+The ``icon`` argument can be used to specify an icon representing the
+renderer.
 %End
     virtual ~QgsRendererAbstractMetadata();
 
@@ -55,7 +58,8 @@ Returns the unique name of the renderer. This value is not translated.
 
     QString visibleName() const;
 %Docstring
-Returns a friendly display name of the renderer. This value is translated.
+Returns a friendly display name of the renderer. This value is
+translated.
 
 .. seealso:: :py:func:`name`
 %End
@@ -76,27 +80,33 @@ Sets an ``icon`` representing the renderer.
 
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const;
 %Docstring
-Returns flags indicating the types of layer the renderer is compatible with.
+Returns flags indicating the types of layer the renderer is compatible
+with.
 %End
 
     virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 /Factory/;
 %Docstring
-Returns new instance of the renderer given the DOM element. Returns ``None`` on error.
-Pure virtual function: must be implemented in derived classes.
+Returns new instance of the renderer given the DOM element. Returns
+``None`` on error. Pure virtual function: must be implemented in derived
+classes.
 %End
 
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer ) /Factory/;
 %Docstring
-Returns new instance of settings widget for the renderer. Returns ``None`` on error.
+Returns new instance of settings widget for the renderer. Returns
+``None`` on error.
 
-The ``oldRenderer`` argument may refer to previously used renderer (or it is ``None``).
-If not ``None``, it may be used to initialize GUI of the widget from the previous settings.
-The old renderer does not have to be of the same type as returned by :py:func:`~QgsRendererAbstractMetadata.createRenderer`.
+The ``oldRenderer`` argument may refer to previously used renderer (or
+it is ``None``). If not ``None``, it may be used to initialize GUI of
+the widget from the previous settings. The old renderer does not have to
+be of the same type as returned by
+:py:func:`~QgsRendererAbstractMetadata.createRenderer`.
 %End
 
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, Qgis::GeometryType geomType ) /Factory/;
 %Docstring
-Returns a new instance of the renderer, converted from an SLD XML element.
+Returns a new instance of the renderer, converted from an SLD XML
+element.
 %End
 
   protected:
@@ -111,7 +121,8 @@ QFlags<QgsRendererAbstractMetadata::LayerType> operator|(QgsRendererAbstractMeta
 class QgsRendererMetadata : QgsRendererAbstractMetadata
 {
 %Docstring(signature="appended")
-Convenience metadata class that uses static functions to create renderer and its widget.
+Convenience metadata class that uses static functions to create renderer
+and its widget.
 %End
 
 %TypeHeaderCode
@@ -142,8 +153,8 @@ class QgsRendererRegistry
 %Docstring(signature="appended")
 Registry of renderers.
 
-:py:class:`QgsRendererRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.rendererRegistry()`.
+:py:class:`QgsRendererRegistry` is not usually directly created, but
+rather accessed through :py:func:`QgsApplication.rendererRegistry()`.
 %End
 
 %TypeHeaderCode
@@ -161,8 +172,9 @@ Adds a renderer to the registry. Takes ownership of the metadata object.
 
 :param metadata: renderer metadata
 
-:return: ``True`` if renderer was added successfully, or ``False`` if renderer could not
-         be added (e.g., a renderer with a duplicate name already exists)
+:return: ``True`` if renderer was added successfully, or ``False`` if
+         renderer could not be added (e.g., a renderer with a duplicate
+         name already exists)
 %End
 
     bool removeRenderer( const QString &rendererName );
@@ -171,26 +183,28 @@ Removes a renderer from registry.
 
 :param rendererName: name of renderer to remove from registry
 
-:return: ``True`` if renderer was successfully removed, or ``False`` if matching
-         renderer could not be found
+:return: ``True`` if renderer was successfully removed, or ``False`` if
+         matching renderer could not be found
 %End
 
     QgsRendererAbstractMetadata *rendererMetadata( const QString &rendererName );
 %Docstring
-Returns the metadata for a specified renderer. Returns ``None`` if a matching
-renderer was not found in the registry.
+Returns the metadata for a specified renderer. Returns ``None`` if a
+matching renderer was not found in the registry.
 %End
 
     QStringList renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) const;
 %Docstring
 Returns a list of available renderers.
 
-:param layerTypes: flags to filter the renderers by compatible layer types
+:param layerTypes: flags to filter the renderers by compatible layer
+                   types
 %End
 
     QStringList renderersList( const QgsVectorLayer *layer ) const;
 %Docstring
-Returns a list of available renderers which are compatible with a specified layer.
+Returns a list of available renderers which are compatible with a
+specified layer.
 
 :param layer: vector layer
 %End

@@ -22,7 +22,8 @@ Abstract base class for all 3D map controllers.
   public:
     QgsAbstract3DMapController( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsAbstract3DMapController, with the specified ``parent`` object.
+Constructor for QgsAbstract3DMapController, with the specified
+``parent`` object.
 %End
 
     virtual Qgis::InputControllerType type() const;

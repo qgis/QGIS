@@ -10,12 +10,11 @@
 class QgsVectorLayerFeatureCounter : QgsTask
 {
 %Docstring(signature="appended")
-
 Counts the features in a :py:class:`QgsVectorLayer` in task.
 
 You should most likely not use this directly and instead call
-:py:func:`QgsVectorLayer.countSymbolFeatures()` and connect to the signal
-:py:func:`QgsVectorLayer.symbolFeatureCountMapChanged()`.
+:py:func:`QgsVectorLayer.countSymbolFeatures()` and connect to the
+signal :py:func:`QgsVectorLayer.symbolFeatureCountMapChanged()`.
 %End
 
 %TypeHeaderCode
@@ -28,8 +27,11 @@ You should most likely not use this directly and instead call
 Create a new feature counter for ``layer``.
 
 :param layer: Target :py:class:`QgsVectorLayer` to perform counting on.
-:param context: Specific :py:class:`QgsExpressionContext` to use during the rendering step.
-:param storeSymbolFids: If ``True`` will store the feature ids (fids), otherwise will only count the number of features per symbol. Default ``False``.
+:param context: Specific :py:class:`QgsExpressionContext` to use during
+                the rendering step.
+:param storeSymbolFids: If ``True`` will store the feature ids (fids),
+                        otherwise will only count the number of features
+                        per symbol. Default ``False``.
 %End
     ~QgsVectorLayerFeatureCounter();
 
@@ -45,15 +47,15 @@ Calculates the feature count and Ids per symbol
 
     long long featureCount( const QString &legendKey ) const;
 %Docstring
-Returns the feature count for a particular ``legendKey``.
-If the key has not been found, -1 will be returned.
+Returns the feature count for a particular ``legendKey``. If the key has
+not been found, -1 will be returned.
 %End
 
 
     QgsFeatureIds featureIds( const QString &symbolkey ) const;
 %Docstring
-Returns the feature Ids for a particular ``legendKey``.
-If the key has not been found an empty QSet will be returned.
+Returns the feature Ids for a particular ``legendKey``. If the key has
+not been found an empty QSet will be returned.
 
 .. versionadded:: 3.10
 %End

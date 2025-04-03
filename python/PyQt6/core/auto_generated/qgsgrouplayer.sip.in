@@ -13,12 +13,12 @@
 class QgsGroupLayer : QgsMapLayer
 {
 %Docstring(signature="appended")
+A map layer which consists of a set of child layers, where all component
+layers are rendered as a single flattened object during map renders.
 
-A map layer which consists of a set of child layers, where all component layers are rendered as a single
-flattened object during map renders.
-
-Child layers are never owned by :py:class:`QgsGroupLayer`. References to layers in a group are stored as weak
-references only, which wills be automatically cleaned up whenever the linked child layer is deleted.
+Child layers are never owned by :py:class:`QgsGroupLayer`. References to
+layers in a group are stored as weak references only, which wills be
+automatically cleaned up whenever the linked child layer is deleted.
 
 .. versionadded:: 3.24
 %End
@@ -81,8 +81,9 @@ The ``options`` argument specifies load-time layer options.
 %Docstring
 Sets the child ``layers`` contained by the group.
 
-This method does not take ownership of the layers, but rather assigns them to the group. Layers should be already added to
-the parent :py:class:`QgsProject` wherever appropriate.
+This method does not take ownership of the layers, but rather assigns
+them to the group. Layers should be already added to the parent
+:py:class:`QgsProject` wherever appropriate.
 
 .. seealso:: :py:func:`childLayers`
 %End
@@ -114,9 +115,9 @@ Ownership is transferred to the renderer.
 %Docstring
 Prepares all child layers in the group prior to removal from the group.
 
-This method should be called before removing a group layer from a project, to ensure
-that the existing child layers are in a state which is compatible with non-group
-layer children.
+This method should be called before removing a group layer from a
+project, to ensure that the existing child layers are in a state which
+is compatible with non-group layer children.
 
 .. versionadded:: 3.30
 %End

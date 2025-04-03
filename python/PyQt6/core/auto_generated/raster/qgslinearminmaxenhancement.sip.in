@@ -12,7 +12,8 @@
 class QgsLinearMinMaxEnhancement : QgsContrastEnhancementFunction
 {
 %Docstring(signature="appended")
-A color enhancement function that performs a linear enhanceContrast between min and max.
+A color enhancement function that performs a linear enhanceContrast
+between min and max.
 %End
 
 %TypeHeaderCode

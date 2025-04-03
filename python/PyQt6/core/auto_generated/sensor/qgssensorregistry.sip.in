@@ -26,7 +26,8 @@ Stores metadata about a sensor class.
 
     QgsSensorAbstractMetadata( const QString &type, const QString &visibleName );
 %Docstring
-Constructor for QgsSensorAbstractMetadata with the specified class ``type``.
+Constructor for QgsSensorAbstractMetadata with the specified class
+``type``.
 %End
 
     virtual ~QgsSensorAbstractMetadata();
@@ -56,11 +57,11 @@ class QgsSensorRegistry : QObject
 %Docstring(signature="appended")
 Registry of available sensor types.
 
-:py:class:`QgsSensorRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.sensorRegistry()`.
+:py:class:`QgsSensorRegistry` is not usually directly created, but
+rather accessed through :py:func:`QgsApplication.sensorRegistry()`.
 
-A companion class, :py:class:`QgsSensorGuiRegistry`, handles the GUI behavior
-of sensors.
+A companion class, :py:class:`QgsSensorGuiRegistry`, handles the GUI
+behavior of sensors.
 
 .. versionadded:: 3.32
 %End
@@ -74,8 +75,8 @@ of sensors.
 %Docstring
 Creates a new empty item registry.
 
-QgsSensorRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.sensorRegistry()`.
+QgsSensorRegistry is not usually directly created, but rather accessed
+through :py:func:`QgsApplication.sensorRegistry()`.
 
 .. seealso:: :py:func:`populate`
 %End
@@ -83,15 +84,16 @@ QgsSensorRegistry is not usually directly created, but rather accessed through
 
     bool populate();
 %Docstring
-Populates the registry with standard sensor types. If called on a non-empty registry
-then this will have no effect and will return ``False``.
+Populates the registry with standard sensor types. If called on a
+non-empty registry then this will have no effect and will return
+``False``.
 %End
 
 
     QgsSensorAbstractMetadata *sensorMetadata( const QString &type ) const;
 %Docstring
-Returns the metadata for the specified sensor ``type``. Returns ``None`` if
-a corresponding type was not found in the registry.
+Returns the metadata for the specified sensor ``type``. Returns ``None``
+if a corresponding type was not found in the registry.
 %End
 
 
@@ -123,8 +125,8 @@ Returns a map of available sensor types to translated name.
 
     void sensorAdded( const QString &type, const QString &name );
 %Docstring
-Emitted whenever a new sensor type is added to the registry, with the specified
-``type`` and visible ``name``.
+Emitted whenever a new sensor type is added to the registry, with the
+specified ``type`` and visible ``name``.
 %End
 
   private:

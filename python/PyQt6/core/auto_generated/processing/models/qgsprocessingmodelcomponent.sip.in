@@ -74,7 +74,8 @@ Sets the ``size`` of the model component within the model designer.
 %Docstring
 Returns the color of the model component within the model designer.
 
-An invalid color indicates that the default color for the component should be used.
+An invalid color indicates that the default color for the component
+should be used.
 
 .. seealso:: :py:func:`setColor`
 
@@ -83,8 +84,9 @@ An invalid color indicates that the default color for the component should be us
 
     void setColor( const QColor &color );
 %Docstring
-Sets the ``color`` of the model component within the model designer. An invalid ``color``
-indicates that the default color for the component should be used.
+Sets the ``color`` of the model component within the model designer. An
+invalid ``color`` indicates that the default color for the component
+should be used.
 
 .. seealso:: :py:func:`color`
 
@@ -93,15 +95,16 @@ indicates that the default color for the component should be used.
 
     bool linksCollapsed( Qt::Edge edge ) const;
 %Docstring
-Returns ``True`` if the link points for the specified ``edge`` should be shown collapsed or not.
+Returns ``True`` if the link points for the specified ``edge`` should be
+shown collapsed or not.
 
 .. seealso:: :py:func:`setLinksCollapsed`
 %End
 
     void setLinksCollapsed( Qt::Edge edge, bool collapsed );
 %Docstring
-Sets whether the link points for the specified ``edge`` for this component should be shown collapsed
-in the model designer.
+Sets whether the link points for the specified ``edge`` for this
+component should be shown collapsed in the model designer.
 
 .. seealso:: :py:func:`linksCollapsed`
 %End
@@ -157,10 +160,11 @@ Restores the component properties from a QVariantMap.
 
     void copyNonDefinitionProperties( const QgsProcessingModelComponent &other );
 %Docstring
-Copies all non-specific definition properties from the ``other`` component definition.
+Copies all non-specific definition properties from the ``other``
+component definition.
 
-This includes properties like the size and position of the component, but not properties
-like the specific algorithm or input details.
+This includes properties like the size and position of the component,
+but not properties like the specific algorithm or input details.
 
 .. versionadded:: 3.14
 %End

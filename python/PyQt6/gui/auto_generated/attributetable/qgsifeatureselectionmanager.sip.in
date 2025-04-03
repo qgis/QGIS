@@ -14,7 +14,8 @@ class QgsIFeatureSelectionManager : QObject
 %Docstring(signature="appended")
 Is an interface class to abstract feature selection handling.
 
-e.g. :py:class:`QgsVectorLayer` implements this interface to manage its selections.
+e.g. :py:class:`QgsVectorLayer` implements this interface to manage its
+selections.
 %End
 
 %TypeHeaderCode
@@ -39,8 +40,9 @@ Deselect features by feature ``ids``.
 
     virtual void setSelectedFeatures( const QgsFeatureIds &ids ) = 0;
 %Docstring
-Change selection to the new set of features. Dismisses the current selection.
-Will emit the :py:func:`~QgsIFeatureSelectionManager.selectionChanged` signal with the
+Change selection to the new set of features. Dismisses the current
+selection. Will emit the
+:py:func:`~QgsIFeatureSelectionManager.selectionChanged` signal with the
 clearAndSelect flag set.
 
 :param ids: The ids which will be the new selection
@@ -64,8 +66,11 @@ Returns reference to identifiers of selected features
 Emitted when selection was changed.
 
 :param selected: Newly selected feature ids
-:param deselected: Ids of all features which have previously been selected but are not any more
-:param clearAndSelect: In case this is set to ``True``, the old selection was dismissed and the new selection corresponds to selected
+:param deselected: Ids of all features which have previously been
+                   selected but are not any more
+:param clearAndSelect: In case this is set to ``True``, the old
+                       selection was dismissed and the new selection
+                       corresponds to selected
 %End
 };
 

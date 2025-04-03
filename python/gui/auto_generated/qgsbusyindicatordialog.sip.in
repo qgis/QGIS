@@ -23,8 +23,7 @@ A simple dialog to show an indeterminate busy progress indicator.
   public:
     QgsBusyIndicatorDialog( const QString &message = QString(), QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
-Constructor
-Modal busy indicator dialog with no buttons.
+Constructor Modal busy indicator dialog with no buttons.
 
 :param message: Text to show above busy progress indicator.
 :param parent: parent object (owner)

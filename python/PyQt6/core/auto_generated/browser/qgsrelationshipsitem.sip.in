@@ -28,16 +28,21 @@ Contains a collection of relationship items.
                           const QString &schema = QString(),
                           const QString &tableName = QString() );
 %Docstring
-Constructor for QgsRelationshipsItem, with the specified ``parent`` item.
+Constructor for QgsRelationshipsItem, with the specified ``parent``
+item.
 
-The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
-but :py:class:`QgsDataItem` items pointing to different logical locations should always use a different item ``path``.
-The ``connectionUri`` argument is the connection part of the layer URI that it is used internally to create
-a connection and retrieve fields information.
-The ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
+The ``path`` argument gives the item path in the browser tree. The
+``path`` string can take any form, but :py:class:`QgsDataItem` items
+pointing to different logical locations should always use a different
+item ``path``. The ``connectionUri`` argument is the connection part of
+the layer URI that it is used internally to create a connection and
+retrieve fields information. The ``providerKey`` string can be used to
+specify the key for the :py:class:`QgsDataItemProvider` that created
+this item.
 
-The optional ``schema`` and ``tableName`` arguments can be used to restrict the visible relationships to
-those with a matching parent table.
+The optional ``schema`` and ``tableName`` arguments can be used to
+restrict the visible relationships to those with a matching parent
+table.
 %End
 
     ~QgsRelationshipsItem();
@@ -92,7 +97,8 @@ A browser item representing a relationship.
     QgsRelationshipItem( QgsDataItem *parent /TransferThis/,
                          const QgsWeakRelation &relation );
 %Docstring
-Constructor for QgsRelationshipItem, with the specified ``parent`` item and ``relation``.
+Constructor for QgsRelationshipItem, with the specified ``parent`` item
+and ``relation``.
 
 .. note::
 

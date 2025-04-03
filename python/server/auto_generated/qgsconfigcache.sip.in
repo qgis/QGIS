@@ -44,11 +44,11 @@ Removes an entry from cache.
     const QgsProject *project( const QString &path, const QgsServerSettings *settings = 0 );
 %Docstring
 If the project is not cached yet, then the project is read from the
-path. If the project is not available, then ``None`` is returned.
-If the project contains any bad layer it is considered unavailable
-unless the server configuration variable QGIS_SERVER_IGNORE_BAD_LAYERS
-passed in the optional settings argument is set to ``True`` (the default
-value is ``False``).
+path. If the project is not available, then ``None`` is returned. If the
+project contains any bad layer it is considered unavailable unless the
+server configuration variable QGIS_SERVER_IGNORE_BAD_LAYERS passed in
+the optional settings argument is set to ``True`` (the default value is
+``False``).
 
 :param path: the filename of the QGIS project
 :param settings: QGIS server settings

@@ -209,7 +209,8 @@ Returns the conversion factor between the specified areal units.
 
     static Qgis::AreaUnit distanceToAreaUnit( Qgis::DistanceUnit distanceUnit );
 %Docstring
-Converts a distance unit to its corresponding area unit, e.g., meters to square meters
+Converts a distance unit to its corresponding area unit, e.g., meters to
+square meters
 
 :param distanceUnit: distance unit to convert
 
@@ -218,7 +219,8 @@ Converts a distance unit to its corresponding area unit, e.g., meters to square 
 
     static Qgis::DistanceUnit areaToDistanceUnit( Qgis::AreaUnit areaUnit );
 %Docstring
-Converts an area unit to its corresponding distance unit, e.g., square meters to meters
+Converts an area unit to its corresponding distance unit, e.g., square
+meters to meters
 
 :param areaUnit: area unit to convert
 
@@ -384,7 +386,8 @@ Returns the conversion factor between the specified volume units.
 
     static Qgis::VolumeUnit distanceToVolumeUnit( Qgis::DistanceUnit distanceUnit );
 %Docstring
-Converts a distance unit to its corresponding volume unit, e.g., meters to cubic meters
+Converts a distance unit to its corresponding volume unit, e.g., meters
+to cubic meters
 
 :param distanceUnit: distance unit to convert
 
@@ -395,7 +398,8 @@ Converts a distance unit to its corresponding volume unit, e.g., meters to cubic
 
     static Qgis::DistanceUnit volumeToDistanceUnit( Qgis::VolumeUnit volumeUnit );
 %Docstring
-Converts a volume unit to its corresponding distance unit, e.g., cubic meters to meters
+Converts a volume unit to its corresponding distance unit, e.g., cubic
+meters to meters
 
 :param volumeUnit: volume unit to convert
 
@@ -450,7 +454,9 @@ Returns the conversion factor between the specified angular units.
 Returns an angle formatted as a friendly string.
 
 :param angle: angle to format
-:param decimals: number of decimal places to show. A value of -1 indicates that an appropriate number of decimal places should automatically be selected.
+:param decimals: number of decimal places to show. A value of -1
+                 indicates that an appropriate number of decimal places
+                 should automatically be selected.
 :param unit: unit of angle
 
 :return: formatted angle string
@@ -458,20 +464,22 @@ Returns an angle formatted as a friendly string.
 
     static QgsUnitTypes::DistanceValue scaledDistance( double distance, Qgis::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
 %Docstring
-Will convert a ``distance`` with a given ``unit`` to a distance value which is nice to display.
-It will convert between different units (e.g. from meters to kilometers or millimeters)
-if appropriate, unless forced otherwise with ``keepBaseUnit``.
-The value will also be rounded to ``decimals`` (be prepared that the returned value is still a double so it will require
-further formatting when converting to a string).
+Will convert a ``distance`` with a given ``unit`` to a distance value
+which is nice to display. It will convert between different units (e.g.
+from meters to kilometers or millimeters) if appropriate, unless forced
+otherwise with ``keepBaseUnit``. The value will also be rounded to
+``decimals`` (be prepared that the returned value is still a double so
+it will require further formatting when converting to a string).
 %End
 
     static QgsUnitTypes::AreaValue scaledArea( double area, Qgis::AreaUnit unit, int decimals, bool keepBaseUnit = false );
 %Docstring
-Will convert an ``area`` with a given ``unit`` to an area value which is nice to display.
-It will convert between different units (e.g. from square meters to square kilometers)
-if appropriate, unless forced otherwise with ``keepBaseUnit``.
-The value will also be rounded to ``decimals`` (be prepared that the returned value is still a double so it will require
-further formatting when converting to a string).
+Will convert an ``area`` with a given ``unit`` to an area value which is
+nice to display. It will convert between different units (e.g. from
+square meters to square kilometers) if appropriate, unless forced
+otherwise with ``keepBaseUnit``. The value will also be rounded to
+``decimals`` (be prepared that the returned value is still a double so
+it will require further formatting when converting to a string).
 %End
 
     static QString formatDistance( double distance, int decimals, Qgis::DistanceUnit unit, bool keepBaseUnit = false );
@@ -481,7 +489,8 @@ Returns an distance formatted as a friendly string.
 :param distance: distance to format
 :param decimals: number of decimal places to show
 :param unit: unit of distance
-:param keepBaseUnit: set to ``False`` to allow conversion of large distances to more suitable units, e.g., meters to
+:param keepBaseUnit: set to ``False`` to allow conversion of large
+                     distances to more suitable units, e.g., meters to
                      kilometers
 
 :return: formatted distance string
@@ -496,7 +505,8 @@ Returns an area formatted as a friendly string.
 :param area: area to format
 :param decimals: number of decimal places to show
 :param unit: unit of area
-:param keepBaseUnit: set to ``False`` to allow conversion of large areas to more suitable units, e.g., square meters to
+:param keepBaseUnit: set to ``False`` to allow conversion of large areas
+                     to more suitable units, e.g., square meters to
                      square kilometers
 
 :return: formatted area string
@@ -575,7 +585,8 @@ Returns the type for a unit of measurement.
 
     static QString toAbbreviatedString( Qgis::LayoutUnit unit );
 %Docstring
-Returns a translated abbreviation representing a layout ``unit`` (e.g. "mm").
+Returns a translated abbreviation representing a layout ``unit`` (e.g.
+"mm").
 %End
 
     static QString toString( Qgis::LayoutUnit unit );

@@ -11,7 +11,8 @@
 class QgsPrintLayout : QgsLayout, QgsMasterLayoutInterface
 {
 %Docstring(signature="appended")
-Print layout, a :py:class:`QgsLayout` subclass for static or atlas-based layouts.
+Print layout, a :py:class:`QgsLayout` subclass for static or atlas-based
+layouts.
 %End
 
 %TypeHeaderCode

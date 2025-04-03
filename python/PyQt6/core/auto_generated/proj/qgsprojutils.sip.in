@@ -38,7 +38,8 @@ Returns the proj library minor version number.
 
     static QString epsgRegistryVersion();
 %Docstring
-Returns the EPSG registry database version used by the proj library (e.g. "v9.8.6").
+Returns the EPSG registry database version used by the proj library
+(e.g. "v9.8.6").
 
 .. seealso:: :py:func:`epsgRegistryDate`
 
@@ -47,7 +48,8 @@ Returns the EPSG registry database version used by the proj library (e.g. "v9.8.
 
     static QDate epsgRegistryDate();
 %Docstring
-Returns the EPSG registry database release date used by the proj library.
+Returns the EPSG registry database release date used by the proj
+library.
 
 .. seealso:: :py:func:`epsgRegistryVersion`
 
@@ -56,7 +58,8 @@ Returns the EPSG registry database release date used by the proj library.
 
     static QString esriDatabaseVersion();
 %Docstring
-Returns the ESRI projection engine database version used by the proj library (e.g. "ArcMap 10.8.0").
+Returns the ESRI projection engine database version used by the proj
+library (e.g. "ArcMap 10.8.0").
 
 .. seealso:: :py:func:`esriDatabaseDate`
 
@@ -65,7 +68,8 @@ Returns the ESRI projection engine database version used by the proj library (e.
 
     static QDate esriDatabaseDate();
 %Docstring
-Returns the ESRI projection engine database release date used by the proj library.
+Returns the ESRI projection engine database release date used by the
+proj library.
 
 .. seealso:: :py:func:`esriDatabaseVersion`
 
@@ -74,7 +78,8 @@ Returns the ESRI projection engine database release date used by the proj librar
 
     static QString ignfDatabaseVersion();
 %Docstring
-Returns the IGNF database version used by the proj library (e.g. "3.1.0").
+Returns the IGNF database version used by the proj library (e.g.
+"3.1.0").
 
 .. seealso:: :py:func:`ignfDatabaseDate`
 

@@ -229,6 +229,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     /**
      * \brief some brief
+     *
      * My long doc \a string
      * is not very interesting!
      * Here's some comment mentioning another class QgsAutoAwesomemater::makeLessAwesome.

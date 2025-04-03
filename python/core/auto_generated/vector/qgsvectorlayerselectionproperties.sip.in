@@ -27,7 +27,8 @@ Implementation of layer selection properties for vector layers.
 
     QgsVectorLayerSelectionProperties( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsVectorLayerSelectionProperties, with the specified ``parent`` object.
+Constructor for QgsVectorLayerSelectionProperties, with the specified
+``parent`` object.
 %End
     ~QgsVectorLayerSelectionProperties();
 
@@ -40,14 +41,16 @@ Constructor for QgsVectorLayerSelectionProperties, with the specified ``parent``
 
     Qgis::SelectionRenderingMode selectionRenderingMode() const;
 %Docstring
-Returns the selection rendering mode to use for selected features in the layer.
+Returns the selection rendering mode to use for selected features in the
+layer.
 
 .. seealso:: :py:func:`setSelectionRenderingMode`
 %End
 
     void setSelectionRenderingMode( Qgis::SelectionRenderingMode mode );
 %Docstring
-Sets the selection rendering ``mode`` to use for selected features in the layer.
+Sets the selection rendering ``mode`` to use for selected features in
+the layer.
 
 .. seealso:: :py:func:`selectionRenderingMode`
 %End
@@ -56,8 +59,8 @@ Sets the selection rendering ``mode`` to use for selected features in the layer.
 %Docstring
 Returns the color to use for rendering selected features in the layer.
 
-An invalid color indicates that the default (i.e. project level) selection
-color should be used instead.
+An invalid color indicates that the default (i.e. project level)
+selection color should be used instead.
 
 .. seealso:: :py:func:`setSelectionColor`
 %End
@@ -66,8 +69,8 @@ color should be used instead.
 %Docstring
 Sets the ``color`` to use for rendering selected features in the layer.
 
-An invalid ``color`` indicates that the default (i.e. project level) selection
-color should be used instead.
+An invalid ``color`` indicates that the default (i.e. project level)
+selection color should be used instead.
 
 .. seealso:: :py:func:`selectionColor`
 %End
@@ -85,8 +88,8 @@ May be ``None`` if the default symbol should be used instead.
 %Docstring
 Sets the ``symbol`` used to render selected features in the layer.
 
-Ownership of ``symbol`` is transferred to the plot. If ``symbol`` is ``None`` then
-the default symbol will be used instead.
+Ownership of ``symbol`` is transferred to the plot. If ``symbol`` is
+``None`` then the default symbol will be used instead.
 
 .. seealso:: :py:func:`selectionSymbol`
 %End

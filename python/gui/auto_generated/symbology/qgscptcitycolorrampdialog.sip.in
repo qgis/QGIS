@@ -15,7 +15,8 @@
 class QgsCptCityColorRampDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allows users to modify the properties of a :py:class:`QgsCptCityColorRamp`.
+A dialog which allows users to modify the properties of a
+:py:class:`QgsCptCityColorRamp`.
 %End
 
 %TypeHeaderCode
@@ -53,7 +54,8 @@ Returns the name of the ramp currently selected in the dialog.
 
     bool saveAsGradientRamp() const;
 %Docstring
-Returns ``True`` if the ramp should be converted to a :py:class:`QgsGradientColorRamp`.
+Returns ``True`` if the ramp should be converted to a
+:py:class:`QgsGradientColorRamp`.
 %End
 
     QDialogButtonBox *buttonBox() const;

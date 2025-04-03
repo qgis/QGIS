@@ -27,12 +27,13 @@ Interface for classes which can generate elevation profiles.
 
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) = 0 /Factory/;
 %Docstring
-Given a profile ``request``, returns a new profile generator ready for generating
-elevation profiles.
+Given a profile ``request``, returns a new profile generator ready for
+generating elevation profiles.
 
 The caller takes ownership of the returned generator.
 
-May return ``None`` if the source cannot generate a profile at this time.
+May return ``None`` if the source cannot generate a profile at this
+time.
 %End
 
 };

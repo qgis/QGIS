@@ -50,7 +50,8 @@ Returns encoded representation of the object
 
       QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const;
 %Docstring
-Gets vector layer from uri if possible, otherwise returns ``None`` and error is set
+Gets vector layer from uri if possible, otherwise returns ``None`` and
+error is set
 
 :param owner: set to ``True`` if caller becomes owner
 :param error: set to error message if cannot get vector
@@ -58,7 +59,8 @@ Gets vector layer from uri if possible, otherwise returns ``None`` and error is 
 
       QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
 %Docstring
-Gets raster layer from uri if possible, otherwise returns ``None`` and error is set
+Gets raster layer from uri if possible, otherwise returns ``None`` and
+error is set
 
 :param owner: set to ``True`` if caller becomes owner
 :param error: set to error message if cannot get raster
@@ -66,7 +68,8 @@ Gets raster layer from uri if possible, otherwise returns ``None`` and error is 
 
       QgsMeshLayer *meshLayer( bool &owner, QString &error ) const;
 %Docstring
-Gets mesh layer from uri if possible, otherwise returns ``None`` and error is set
+Gets mesh layer from uri if possible, otherwise returns ``None`` and
+error is set
 
 :param owner: set to ``True`` if caller becomes owner
 :param error: set to error message if cannot get raster
@@ -74,11 +77,13 @@ Gets mesh layer from uri if possible, otherwise returns ``None`` and error is se
 
       QgsMapLayer *mapLayer() const;
 %Docstring
-Returns the layer from the active project corresponding to this uri (if possible),
-otherwise returns ``None``.
+Returns the layer from the active project corresponding to this uri (if
+possible), otherwise returns ``None``.
 
-Unlike :py:func:`~QgsMimeDataUtils.vectorLayer`, :py:func:`~QgsMimeDataUtils.rasterLayer`, or :py:func:`~QgsMimeDataUtils.meshLayer`, this method will not attempt
-to create a new layer corresponding to the URI.
+Unlike :py:func:`~QgsMimeDataUtils.vectorLayer`,
+:py:func:`~QgsMimeDataUtils.rasterLayer`, or
+:py:func:`~QgsMimeDataUtils.meshLayer`, this method will not attempt to
+create a new layer corresponding to the URI.
 
 .. versionadded:: 3.8
 %End

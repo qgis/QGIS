@@ -13,7 +13,6 @@
 class QgsMeshTimeSettings
 {
 %Docstring(signature="appended")
-
 Represents a mesh time settings for mesh datasets
 
 .. versionadded:: 3.8

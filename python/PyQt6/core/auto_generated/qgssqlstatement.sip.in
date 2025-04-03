@@ -40,30 +40,30 @@ Returns parser error
 
     bool doBasicValidationChecks( QString &errorMsgOut /Out/ ) const;
 %Docstring
-Performs basic validity checks. Basically checking that columns referencing
-a table, references a specified table. Returns ``True`` if the validation is
-successful
+Performs basic validity checks. Basically checking that columns
+referencing a table, references a specified table. Returns ``True`` if
+the validation is successful
 %End
 
 
     const QgsSQLStatement::Node *rootNode() const;
 %Docstring
-Returns the root node of the statement.
-The root node is ``None`` if parsing has failed.
+Returns the root node of the statement. The root node is ``None`` if
+parsing has failed.
 %End
 
     QString statement() const;
 %Docstring
-Returns the original, unmodified statement string.
-If there was none supplied because it was constructed by sole
-API calls, :py:func:`~QgsSQLStatement.dump` will be used to create one instead.
+Returns the original, unmodified statement string. If there was none
+supplied because it was constructed by sole API calls,
+:py:func:`~QgsSQLStatement.dump` will be used to create one instead.
 %End
 
     QString dump() const;
 %Docstring
-Returns the statement string, constructed from the internal
-abstract syntax tree. This does not contain any nice whitespace
-formatting or comments. In general it is preferable to use
+Returns the statement string, constructed from the internal abstract
+syntax tree. This does not contain any nice whitespace formatting or
+comments. In general it is preferable to use
 :py:func:`~QgsSQLStatement.statement` instead.
 %End
 
@@ -229,9 +229,8 @@ Abstract virtual dump method
 
         virtual QgsSQLStatement::Node *clone() const = 0 /Factory/;
 %Docstring
-Generate a clone of this node.
-Make sure that the clone does not contain any information which is
-generated in prepare and context related.
+Generate a clone of this node. Make sure that the clone does not contain
+any information which is generated in prepare and context related.
 Ownership is transferred to the caller.
 
 :return: a deep copy of this node.
@@ -772,7 +771,8 @@ Table definition
 
         QgsSQLStatement::Node *onExpr() const;
 %Docstring
-On expression. Will be ``None`` if :py:func:`~NodeJoin.usingColumns` is not empty
+On expression. Will be ``None`` if :py:func:`~NodeJoin.usingColumns` is
+not empty
 %End
 
         QList<QString> usingColumns() const;
@@ -914,8 +914,8 @@ Returns the list of order by columns
     class Visitor
 {
 %Docstring(signature="appended")
-Support for visitor pattern - algorithms dealing with the statement
-may be implemented without modifying the Node classes
+Support for visitor pattern - algorithms dealing with the statement may
+be implemented without modifying the Node classes
 %End
 
 %TypeHeaderCode
@@ -1018,8 +1018,8 @@ Entry function for the visitor pattern
 %Docstring
 Constructor for QgsSQLStatement, with the specified ``statement``.
 
-If ``allowFragments`` is ``True`` then the parser will allow SQL fragments,
-such as a expression or filter where clause alone.
+If ``allowFragments`` is ``True`` then the parser will allow SQL
+fragments, such as a expression or filter where clause alone.
 
 .. versionadded:: 3.16
 %End
@@ -1029,7 +1029,8 @@ such as a expression or filter where clause alone.
 class QgsSQLStatementFragment : QgsSQLStatement
 {
 %Docstring(signature="appended")
-Class for parsing fragments of SQL statements, such as an expression or where clause.
+Class for parsing fragments of SQL statements, such as an expression or
+where clause.
 
 .. versionadded:: 3.16
 %End

@@ -14,8 +14,8 @@ class QgsProcessingProvider : QObject
 %Docstring(signature="appended")
 Abstract base class for processing providers.
 
-An algorithm provider is a set of related algorithms, typically from the same external application or related
-to a common area of analysis.
+An algorithm provider is a set of related algorithms, typically from the
+same external application or related to a common area of analysis.
 %End
 
 %TypeHeaderCode
@@ -47,17 +47,17 @@ Returns a path to an SVG version of the provider's icon.
 
     virtual Qgis::ProcessingProviderFlags flags() const /HoldGIL/;
 %Docstring
-Returns the flags indicating how and when the provider operates and should be exposed to users.
-Default is no flags.
+Returns the flags indicating how and when the provider operates and
+should be exposed to users. Default is no flags.
 
 .. versionadded:: 3.14
 %End
 
     virtual QString id() const = 0 /HoldGIL/;
 %Docstring
-Returns the unique provider id, used for identifying the provider. This string
-should be a unique, short, character only string, eg "qgis" or "gdal". This
-string should not be localised.
+Returns the unique provider id, used for identifying the provider. This
+string should be a unique, short, character only string, eg "qgis" or
+"gdal". This string should not be localised.
 
 .. seealso:: :py:func:`name`
 
@@ -66,17 +66,18 @@ string should not be localised.
 
     virtual QString helpId() const /HoldGIL/;
 %Docstring
-Returns the provider help id string, used for creating :py:class:`QgsHelp` urls for algorithms
-belong to this provider. By default, this returns an empty string, meaning that
-no :py:class:`QgsHelp` url should be created for the provider's algorithms.
+Returns the provider help id string, used for creating
+:py:class:`QgsHelp` urls for algorithms belong to this provider. By
+default, this returns an empty string, meaning that no
+:py:class:`QgsHelp` url should be created for the provider's algorithms.
 
 .. seealso:: :py:func:`id`
 %End
 
     virtual QString name() const = 0 /HoldGIL/;
 %Docstring
-Returns the provider name, which is used to describe the provider within the GUI.
-This string should be short (e.g. "Lastools") and localised.
+Returns the provider name, which is used to describe the provider within
+the GUI. This string should be short (e.g. "Lastools") and localised.
 
 .. seealso:: :py:func:`longName`
 
@@ -85,11 +86,12 @@ This string should be short (e.g. "Lastools") and localised.
 
     virtual QString longName() const /HoldGIL/;
 %Docstring
-Returns the longer version of the provider name, which can include extra details
-such as version numbers. E.g. "Lastools LIDAR tools (version 2.2.1)".
-This string should be localised.
+Returns the longer version of the provider name, which can include extra
+details such as version numbers. E.g. "Lastools LIDAR tools (version
+2.2.1)". This string should be localised.
 
-The default implementation returns the same string as :py:func:`~QgsProcessingProvider.name`.
+The default implementation returns the same string as
+:py:func:`~QgsProcessingProvider.name`.
 
 .. seealso:: :py:func:`name`
 
@@ -98,30 +100,34 @@ The default implementation returns the same string as :py:func:`~QgsProcessingPr
 
     virtual QString versionInfo() const /HoldGIL/;
 %Docstring
-Returns a version information string for the provider, or an empty string if this
-is not applicable (e.g. for inbuilt Processing providers).
+Returns a version information string for the provider, or an empty
+string if this is not applicable (e.g. for inbuilt Processing
+providers).
 
-For plugin based providers, this should return the plugin's version identifier.
+For plugin based providers, this should return the plugin's version
+identifier.
 
 .. versionadded:: 3.8
 %End
 
     virtual bool canBeActivated() const;
 %Docstring
-Returns ``True`` if the provider can be activated, or ``False`` if it cannot be activated (e.g. due to
-missing external dependencies).
+Returns ``True`` if the provider can be activated, or ``False`` if it
+cannot be activated (e.g. due to missing external dependencies).
 
 .. seealso:: :py:func:`isActive`
 %End
 
     virtual QString warningMessage() const;
 %Docstring
-Returns an optional warning message to show users when running algorithms from this provider.
+Returns an optional warning message to show users when running
+algorithms from this provider.
 
-This can be used to return a translated warning message which should be shown to users
-of this provider. It's intended for use in cases such as a provider which relies on a 3rd-party
-backend, where the version of the backend software is not officially supported, or for
-alerting users to providers in a "beta" or "untrustworthy" state.
+This can be used to return a translated warning message which should be
+shown to users of this provider. It's intended for use in cases such as
+a provider which relies on a 3rd-party backend, where the version of the
+backend software is not officially supported, or for alerting users to
+providers in a "beta" or "untrustworthy" state.
 
 .. versionadded:: 3.10.1
 %End
@@ -133,7 +139,8 @@ Returns ``True`` if the provider is active and able to run algorithms.
 
     virtual QStringList supportedOutputRasterLayerExtensions() const;
 %Docstring
-Returns a list of the raster format file extensions supported by this provider.
+Returns a list of the raster format file extensions supported by this
+provider.
 
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
 
@@ -144,7 +151,8 @@ Returns a list of the raster format file extensions supported by this provider.
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring
-Returns a list of the vector format file extensions supported by this provider.
+Returns a list of the vector format file extensions supported by this
+provider.
 
 .. seealso:: :py:func:`supportedOutputTableExtensions`
 
@@ -161,7 +169,8 @@ Returns a list of the vector format file extensions supported by this provider.
 
     virtual QStringList supportedOutputPointCloudLayerExtensions() const;
 %Docstring
-Returns a list of the point cloud format file extensions supported by this provider.
+Returns a list of the point cloud format file extensions supported by
+this provider.
 
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
 
@@ -180,7 +189,8 @@ Returns a list of the point cloud format file extensions supported by this provi
 
     virtual QStringList supportedOutputVectorTileLayerExtensions() const;
 %Docstring
-Returns a list of the vector tile format file extensions supported by this provider.
+Returns a list of the vector tile format file extensions supported by
+this provider.
 
 By default returns a list containing only "mbtiles" extension.
 
@@ -199,10 +209,13 @@ By default returns a list containing only "mbtiles" extension.
 
     virtual QStringList supportedOutputTableExtensions() const;
 %Docstring
-Returns a list of the table (geometry-less vector layers) file extensions supported by this provider.
+Returns a list of the table (geometry-less vector layers) file
+extensions supported by this provider.
 
-By default this is the same as :py:func:`~QgsProcessingProvider.supportedOutputVectorLayerExtensions`. Providers which utilize different
-formats for geometry-less layers can override this method to return a different list of supported formats.
+By default this is the same as
+:py:func:`~QgsProcessingProvider.supportedOutputVectorLayerExtensions`.
+Providers which utilize different formats for geometry-less layers can
+override this method to return a different list of supported formats.
 
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
 
@@ -219,23 +232,27 @@ formats for geometry-less layers can override this method to return a different 
 
     virtual bool isSupportedOutputValue( const QVariant &outputValue, const QgsProcessingDestinationParameter *parameter, QgsProcessingContext &context, QString &error /Out/ ) const;
 %Docstring
-Returns ``True`` if the specified ``outputValue`` is of a supported file format for the given destination ``parameter``.
+Returns ``True`` if the specified ``outputValue`` is of a supported file
+format for the given destination ``parameter``.
 
-If the output value is not supported, ``error`` will be set to a descriptive message explaining why.
+If the output value is not supported, ``error`` will be set to a
+descriptive message explaining why.
 
 .. versionadded:: 3.6
 %End
 
     virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
 %Docstring
-Returns the default file extension to use for vector outputs created by the
-provider.
+Returns the default file extension to use for vector outputs created by
+the provider.
 
-If ``hasGeometry`` is ``True`` then the output file format must have support for
-geometry. If ``hasGeometry`` is ``False`` then non-spatial formats can be used.
+If ``hasGeometry`` is ``True`` then the output file format must have
+support for geometry. If ``hasGeometry`` is ``False`` then non-spatial
+formats can be used.
 
-The default implementation returns the user's default Processing vector output format
-setting, if it's supported by the provider (see :py:func:`~QgsProcessingProvider.supportedOutputVectorLayerExtensions`).
+The default implementation returns the user's default Processing vector
+output format setting, if it's supported by the provider (see
+:py:func:`~QgsProcessingProvider.supportedOutputVectorLayerExtensions`).
 Otherwise the first reported supported vector format will be used.
 
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
@@ -249,11 +266,12 @@ Otherwise the first reported supported vector format will be used.
 
     virtual QString defaultRasterFileExtension() const;
 %Docstring
-Returns the default file extension to use for raster outputs created by the
-provider.
+Returns the default file extension to use for raster outputs created by
+the provider.
 
-The default implementation returns the user's default Processing raster output format
-setting, if it's supported by the provider (see :py:func:`~QgsProcessingProvider.supportedOutputRasterLayerExtensions`).
+The default implementation returns the user's default Processing raster
+output format setting, if it's supported by the provider (see
+:py:func:`~QgsProcessingProvider.supportedOutputRasterLayerExtensions`).
 Otherwise the first reported supported raster format will be used.
 
 .. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
@@ -267,11 +285,12 @@ Otherwise the first reported supported raster format will be used.
 
     virtual QString defaultPointCloudFileExtension() const;
 %Docstring
-Returns the default file extension to use for point cloud outputs created by the
-provider.
+Returns the default file extension to use for point cloud outputs
+created by the provider.
 
-The default implementation returns the user's default Processing point cloud output format
-setting, if it's supported by the provider (see :py:func:`~QgsProcessingProvider.supportedOutputPointCloudLayerExtensions`).
+The default implementation returns the user's default Processing point
+cloud output format setting, if it's supported by the provider (see
+:py:func:`~QgsProcessingProvider.supportedOutputPointCloudLayerExtensions`).
 Otherwise the first reported supported point cloud format will be used.
 
 .. seealso:: :py:func:`supportedOutputPointCloudLayerExtensions`
@@ -287,11 +306,12 @@ Otherwise the first reported supported point cloud format will be used.
 
     virtual QString defaultVectorTileFileExtension() const;
 %Docstring
-Returns the default file extension to use for vector tile outputs created by the
-provider.
+Returns the default file extension to use for vector tile outputs
+created by the provider.
 
-The default implementation returns the user's default Processing vector tile output format
-setting, if it's supported by the provider (see :py:func:`~QgsProcessingProvider.supportedOutputVectorTileLayerExtensions`).
+The default implementation returns the user's default Processing vector
+tile output format setting, if it's supported by the provider (see
+:py:func:`~QgsProcessingProvider.supportedOutputVectorTileLayerExtensions`).
 Otherwise the first reported supported vector tile format will be used.
 
 .. seealso:: :py:func:`supportedOutputPointCloudLayerExtensions`
@@ -305,26 +325,32 @@ Otherwise the first reported supported vector tile format will be used.
 
     virtual bool supportsNonFileBasedOutput() const;
 %Docstring
-Returns ``True`` if the provider supports non-file based outputs (such as memory layers
-or direct database outputs). If a provider returns ``False`` for this method than it
-indicates that none of the outputs from any of the provider's algorithms have
-support for non-file based outputs. Returning ``True`` indicates that the algorithm's
-parameters will each individually declare their non-file based support.
+Returns ``True`` if the provider supports non-file based outputs (such
+as memory layers or direct database outputs). If a provider returns
+``False`` for this method than it indicates that none of the outputs
+from any of the provider's algorithms have support for non-file based
+outputs. Returning ``True`` indicates that the algorithm's parameters
+will each individually declare their non-file based support.
 
-The default behavior for providers is to support non-file based outputs, and most
-providers which rely solely on QGIS API (and which do not depend on third-party scripts
-or external dependencies) will automatically support this.
+The default behavior for providers is to support non-file based outputs,
+and most providers which rely solely on QGIS API (and which do not
+depend on third-party scripts or external dependencies) will
+automatically support this.
 
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
 %End
 
     virtual bool load();
 %Docstring
-Loads the provider. This will be called when the plugin is being loaded, and any general
-setup actions should occur in an overridden version of this method.
-Subclasses should not individually load any algorithms in their :py:func:`~QgsProcessingProvider.load` implementations, as that must
-occur within the :py:func:`~QgsProcessingProvider.loadAlgorithms` method. Instead, subclasses should call :py:func:`~QgsProcessingProvider.refreshAlgorithms`
-from any overloaded :py:func:`~QgsProcessingProvider.load` method to trigger an initial load of the provider's algorithms.
+Loads the provider. This will be called when the plugin is being loaded,
+and any general setup actions should occur in an overridden version of
+this method. Subclasses should not individually load any algorithms in
+their :py:func:`~QgsProcessingProvider.load` implementations, as that
+must occur within the :py:func:`~QgsProcessingProvider.loadAlgorithms`
+method. Instead, subclasses should call
+:py:func:`~QgsProcessingProvider.refreshAlgorithms` from any overloaded
+:py:func:`~QgsProcessingProvider.load` method to trigger an initial load
+of the provider's algorithms.
 
 :return: ``True`` if provider could be successfully loaded
 
@@ -333,14 +359,16 @@ from any overloaded :py:func:`~QgsProcessingProvider.load` method to trigger an 
 
     virtual void unload();
 %Docstring
-Unloads the provider. Any tear-down steps required by the provider should be implemented here.
+Unloads the provider. Any tear-down steps required by the provider
+should be implemented here.
 
 .. seealso:: :py:func:`load`
 %End
 
     void refreshAlgorithms();
 %Docstring
-Refreshes the algorithms available from the provider, causing it to re-populate with all associated algorithms.
+Refreshes the algorithms available from the provider, causing it to
+re-populate with all associated algorithms.
 %End
 
     QList< const QgsProcessingAlgorithm * > algorithms() const;
@@ -362,8 +390,8 @@ algorithm is contained by this provider.
 
     void algorithmsLoaded();
 %Docstring
-Emitted when the provider has loaded (or refreshed) its list of available
-algorithms.
+Emitted when the provider has loaded (or refreshed) its list of
+available algorithms.
 
 .. seealso:: :py:func:`refreshAlgorithms`
 %End
@@ -372,13 +400,15 @@ algorithms.
 
     virtual void loadAlgorithms() = 0;
 %Docstring
-Loads all algorithms belonging to this provider. Subclasses should implement this, calling
-:py:func:`~QgsProcessingProvider.addAlgorithm` to register all their associated algorithms.
+Loads all algorithms belonging to this provider. Subclasses should
+implement this, calling :py:func:`~QgsProcessingProvider.addAlgorithm`
+to register all their associated algorithms.
 %End
 
     bool addAlgorithm( QgsProcessingAlgorithm *algorithm /Transfer/ );
 %Docstring
-Adds an ``algorithm`` to the provider. Ownership of the algorithm is transferred to the provider.
+Adds an ``algorithm`` to the provider. Ownership of the algorithm is
+transferred to the provider.
 %End
 
   private:

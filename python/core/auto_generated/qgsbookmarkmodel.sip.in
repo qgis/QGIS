@@ -12,14 +12,16 @@
 class QgsBookmarkManagerModel: QAbstractTableModel
 {
 %Docstring(signature="appended")
+Implements a model for the contents of :py:class:`QgsBookmarkManager`
+objects.
 
-Implements a model for the contents of :py:class:`QgsBookmarkManager` objects.
-
-:py:class:`QgsBookmarkModel` provides a Qt table model for displaying and manipulating
-the bookmarks managed by a :py:class:`QgsBookmarkManager` object. The model requires
-both a main manager (usually the application bookmark manager, accessed
-via :py:func:`QgsApplication.bookmarkManager()`) and a project-based manager. The resultant
-model data is a merge of the bookmarks stored in both managers.
+:py:class:`QgsBookmarkModel` provides a Qt table model for displaying
+and manipulating the bookmarks managed by a
+:py:class:`QgsBookmarkManager` object. The model requires both a main
+manager (usually the application bookmark manager, accessed via
+:py:func:`QgsApplication.bookmarkManager()`) and a project-based
+manager. The resultant model data is a merge of the bookmarks stored in
+both managers.
 
 .. versionadded:: 3.10
 %End
@@ -54,9 +56,10 @@ model data is a merge of the bookmarks stored in both managers.
 
     QgsBookmarkManagerModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = 0, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsBookmarkManagerModel, associated with a main ``manager``
-(usually the application bookmark manager, accessed via :py:func:`QgsApplication.bookmarkManager()`)
-and a secondary ``projectManager`` (a project based bookmark manager).
+Constructor for QgsBookmarkManagerModel, associated with a main
+``manager`` (usually the application bookmark manager, accessed via
+:py:func:`QgsApplication.bookmarkManager()`) and a secondary
+``projectManager`` (a project based bookmark manager).
 %End
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -81,8 +84,8 @@ and a secondary ``projectManager`` (a project based bookmark manager).
 class QgsBookmarkManagerProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-
-A QSortFilterProxyModel subclass for sorting the entries in a :py:class:`QgsBookmarkManagerModel`.
+A QSortFilterProxyModel subclass for sorting the entries in a
+:py:class:`QgsBookmarkManagerModel`.
 
 .. versionadded:: 3.10
 %End
@@ -94,9 +97,10 @@ A QSortFilterProxyModel subclass for sorting the entries in a :py:class:`QgsBook
 
     QgsBookmarkManagerProxyModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = 0, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsBookmarkManagerProxyModel, associated with a main ``manager``
-(usually the application bookmark manager, accessed via :py:func:`QgsApplication.bookmarkManager()`)
-and a secondary ``projectManager`` (a project based bookmark manager).
+Constructor for QgsBookmarkManagerProxyModel, associated with a main
+``manager`` (usually the application bookmark manager, accessed via
+:py:func:`QgsApplication.bookmarkManager()`) and a secondary
+``projectManager`` (a project based bookmark manager).
 %End
 
 };

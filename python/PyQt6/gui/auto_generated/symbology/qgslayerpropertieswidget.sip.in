@@ -13,10 +13,12 @@
 class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
-A widget which allows configuration of the properties of a single :py:class:`QgsSymbolLayer`.
+A widget which allows configuration of the properties of a single
+:py:class:`QgsSymbolLayer`.
 
-This widget includes a combobox box for selection of the symbol layer type, and a panel for
-showing configuration properties for the selected symbol layer type.
+This widget includes a combobox box for selection of the symbol layer
+type, and a panel for showing configuration properties for the selected
+symbol layer type.
 %End
 
 %TypeHeaderCode
@@ -35,7 +37,8 @@ Constructor for QgsLayerPropertiesWidget.
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
-Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+Sets the context in which the symbol widget is shown, e.g., the
+associated map canvas and expression contexts.
 
 :param context: symbol widget context
 
@@ -44,7 +47,8 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 
     QgsSymbolWidgetContext context() const;
 %Docstring
-Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+Returns the context in which the symbol widget is shown, e.g., the
+associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
 %End
@@ -52,8 +56,8 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
     virtual void setDockMode( bool dockMode );
 
 %Docstring
-Set the widget in dock mode which tells the widget to emit panel
-widgets and not open dialogs
+Set the widget in dock mode which tells the widget to emit panel widgets
+and not open dialogs
 
 :param dockMode: ``True`` to enable dock mode.
 %End
@@ -84,8 +88,8 @@ Emitted when the symbol ``layer`` is changed in the widget.
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 %Docstring
 Registers a data defined override button. Handles setting up connections
-for the button and initializing the button to show the correct descriptions
-and help text for the associated property.
+for the button and initializing the button to show the correct
+descriptions and help text for the associated property.
 %End
 
   protected: // data

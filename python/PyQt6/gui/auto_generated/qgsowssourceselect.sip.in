@@ -19,8 +19,8 @@ Dialog to create connections and add layers WCS etc.
 This dialog allows the user to define and save connection information
 for WMS servers, etc.
 
-The user can then connect and add
-layers from the WCS server to the map canvas.
+The user can then connect and add layers from the WCS server to the map
+canvas.
 %End
 
 %TypeHeaderCode
@@ -82,7 +82,8 @@ Server CRS supported for currently selected layer item(s)
 
     virtual QStringList selectedLayersTimes();
 %Docstring
-List of times (temporalDomain timePosition/timePeriod for currently selected layer item(s)
+List of times (temporalDomain timePosition/timePeriod for currently
+selected layer item(s)
 %End
 
 
@@ -157,7 +158,8 @@ Returns a textual description for the authority id
 
     virtual void enableLayersForCrs( QTreeWidgetItem *item );
 %Docstring
-layer name derived from latest layer selection (updated as long it's not edited manually)
+layer name derived from latest layer selection (updated as long it's not
+edited manually)
 %End
 
     QString selectedFormat();
@@ -182,9 +184,8 @@ Returns currently selected cache load control
 
     void prepareExtent();
 %Docstring
-Prepares the spatial extent box with the general settings
-including original crs, destination crs and the map
-canvas if it is available.
+Prepares the spatial extent box with the general settings including
+original crs, destination crs and the map canvas if it is available.
 
 .. versionadded:: 3.26
 %End

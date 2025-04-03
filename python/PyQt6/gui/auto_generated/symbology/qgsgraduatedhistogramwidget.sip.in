@@ -14,7 +14,8 @@ class QgsGraduatedHistogramWidget : QgsHistogramWidget
 {
 %Docstring(signature="appended")
 Graphical histogram for displaying distribution of field values and
-editing range breaks for a :py:class:`QgsGraduatedSymbolRenderer` renderer.
+editing range breaks for a :py:class:`QgsGraduatedSymbolRenderer`
+renderer.
 %End
 
 %TypeHeaderCode
@@ -30,8 +31,9 @@ QgsGraduatedHistogramWidget constructor
 
     void setRenderer( QgsGraduatedSymbolRenderer *renderer );
 %Docstring
-Sets the :py:class:`QgsGraduatedSymbolRenderer` renderer associated with the histogram.
-The histogram will fetch the ranges from the renderer before every refresh.
+Sets the :py:class:`QgsGraduatedSymbolRenderer` renderer associated with
+the histogram. The histogram will fetch the ranges from the renderer
+before every refresh.
 
 :param renderer: associated :py:class:`QgsGraduatedSymbolRenderer`
 %End
@@ -40,10 +42,11 @@ The histogram will fetch the ranges from the renderer before every refresh.
 
     void rangesModified( bool rangesAdded );
 %Docstring
-Emitted when the user modifies the graduated ranges using the histogram widget.
+Emitted when the user modifies the graduated ranges using the histogram
+widget.
 
-:param rangesAdded: ``True`` if the user has added ranges, ``False`` if the user has just
-                    modified existing range breaks
+:param rangesAdded: ``True`` if the user has added ranges, ``False`` if
+                    the user has just modified existing range breaks
 %End
 
   protected:

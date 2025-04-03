@@ -24,8 +24,8 @@ An annotation item which renders paragraphs of text within a rectangle.
 
     QgsAnnotationRectangleTextItem( const QString &text, const QgsRectangle &bounds );
 %Docstring
-Constructor for QgsAnnotationRectangleTextItem, containing the specified ``text``
-within the specified ``bounds`` rectangle.
+Constructor for QgsAnnotationRectangleTextItem, containing the specified
+``text`` within the specified ``bounds`` rectangle.
 %End
     ~QgsAnnotationRectangleTextItem();
 
@@ -76,23 +76,27 @@ Sets the text ``format`` used to render the text.
 
     Qt::Alignment alignment() const;
 %Docstring
-Returns the text's alignment relative to the :py:func:`~QgsAnnotationRectangleTextItem.bounds` rectangle.
+Returns the text's alignment relative to the
+:py:func:`~QgsAnnotationRectangleTextItem.bounds` rectangle.
 
 .. seealso:: :py:func:`setAlignment`
 %End
 
     void setAlignment( Qt::Alignment alignment );
 %Docstring
-Sets the text's ``alignment`` relative to the :py:func:`~QgsAnnotationRectangleTextItem.bounds` rectangle.
+Sets the text's ``alignment`` relative to the
+:py:func:`~QgsAnnotationRectangleTextItem.bounds` rectangle.
 
 .. seealso:: :py:func:`alignment`
 %End
 
     const QgsMargins &margins() const;
 %Docstring
-Returns the margins between the outside of the item's frame and the interior text.
+Returns the margins between the outside of the item's frame and the
+interior text.
 
-Units are retrieved via :py:func:`~QgsAnnotationRectangleTextItem.marginsUnit`
+Units are retrieved via
+:py:func:`~QgsAnnotationRectangleTextItem.marginsUnit`
 
 .. seealso:: :py:func:`setMargins`
 
@@ -101,9 +105,11 @@ Units are retrieved via :py:func:`~QgsAnnotationRectangleTextItem.marginsUnit`
 
     void setMargins( const QgsMargins &margins );
 %Docstring
-Sets the ``margins`` between the outside of the item's frame and the interior text.
+Sets the ``margins`` between the outside of the item's frame and the
+interior text.
 
-Units are set via :py:func:`~QgsAnnotationRectangleTextItem.setMarginsUnit`
+Units are set via
+:py:func:`~QgsAnnotationRectangleTextItem.setMarginsUnit`
 
 .. seealso:: :py:func:`margins`
 
@@ -112,7 +118,8 @@ Units are set via :py:func:`~QgsAnnotationRectangleTextItem.setMarginsUnit`
 
     void setMarginsUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``unit`` for the margins between the item's frame and the interior text.
+Sets the ``unit`` for the margins between the item's frame and the
+interior text.
 
 .. seealso:: :py:func:`margins`
 
@@ -121,7 +128,8 @@ Sets the ``unit`` for the margins between the item's frame and the interior text
 
     Qgis::RenderUnit marginsUnit() const;
 %Docstring
-Returns the units for the margins between the item's frame and the interior text.
+Returns the units for the margins between the item's frame and the
+interior text.
 
 .. seealso:: :py:func:`setMarginsUnit`
 

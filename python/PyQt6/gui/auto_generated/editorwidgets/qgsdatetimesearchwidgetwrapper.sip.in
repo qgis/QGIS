@@ -32,8 +32,9 @@ Constructor for QgsDateTimeSearchWidgetWrapper.
 
     QVariant value() const;
 %Docstring
-Returns a variant representing the current state of the widget, respecting
-the editor widget's configured field format for date/time values.
+Returns a variant representing the current state of the widget,
+respecting the editor widget's configured field format for date/time
+values.
 %End
 
     virtual bool applyDirectly();

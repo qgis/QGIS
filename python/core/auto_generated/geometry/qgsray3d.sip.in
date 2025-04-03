@@ -13,7 +13,8 @@ class QgsRay3D
 %Docstring(signature="appended")
 A representation of a ray in 3D.
 
-A ray is composed of an origin point (the start of the ray) and a direction vector.
+A ray is composed of an origin point (the start of the ray) and a
+direction vector.
 
 .. versionadded:: 3.18
 %End
@@ -41,8 +42,7 @@ Returns the origin of the ray
 
     QVector3D direction() const;
 %Docstring
-Returns the direction of the ray
-see :py:func:`~QgsRay3D.setDirection`
+Returns the direction of the ray see :py:func:`~QgsRay3D.setDirection`
 %End
 
     void setOrigin( const QVector3D &origin );
@@ -65,8 +65,8 @@ Sets the direction of the ray
 
     QVector3D projectedPoint( const QVector3D &point ) const;
 %Docstring
-Returns the projection of the point on the ray
-(which is the closest point of the ray to ``point``)
+Returns the projection of the point on the ray (which is the closest
+point of the ray to ``point``)
 %End
     bool isInFront( const QVector3D &point ) const;
 %Docstring
@@ -74,7 +74,8 @@ Checks whether the point is in front of the ray
 %End
     double angleToPoint( const QVector3D &point ) const;
 %Docstring
-Returns the angle between the ray and the vector from the ray's origin and the point ``point``
+Returns the angle between the ray and the vector from the ray's origin
+and the point ``point``
 %End
 
 };

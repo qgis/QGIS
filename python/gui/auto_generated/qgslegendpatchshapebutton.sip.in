@@ -11,7 +11,8 @@
 class QgsLegendPatchShapeButton : QToolButton
 {
 %Docstring(signature="appended")
-A button for creating and modifying :py:class:`QgsLegendPatchShape` settings.
+A button for creating and modifying :py:class:`QgsLegendPatchShape`
+settings.
 
 .. versionadded:: 3.14
 %End
@@ -23,7 +24,8 @@ A button for creating and modifying :py:class:`QgsLegendPatchShape` settings.
     QgsLegendPatchShapeButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring
 Construct a new patch shape button with the specified ``parent`` widget.
-Use ``dialogTitle`` string to define the title to show in the legend patch shape widget.
+Use ``dialogTitle`` string to define the title to show in the legend
+patch shape widget.
 %End
     ~QgsLegendPatchShapeButton();
 
@@ -34,9 +36,9 @@ Use ``dialogTitle`` string to define the title to show in the legend patch shape
 
     void setSymbolType( Qgis::SymbolType type );
 %Docstring
-Sets the symbol ``type`` which the button requires.
-If the type differs from the current symbol type, the symbol will be reset
-to a default symbol style of the new type.
+Sets the symbol ``type`` which the button requires. If the type differs
+from the current symbol type, the symbol will be reset to a default
+symbol style of the new type.
 
 .. seealso:: :py:func:`symbolType`
 %End
@@ -52,8 +54,9 @@ Returns the symbol type which the button requires.
 %Docstring
 Sets the symbol to use for previewing the legend patch shape.
 
-Ownership is transferred to the button. It is the caller's responsibility
-to ensure that the symbol type matches the button's :py:func:`~QgsLegendPatchShapeButton.symbolType`
+Ownership is transferred to the button. It is the caller's
+responsibility to ensure that the symbol type matches the button's
+:py:func:`~QgsLegendPatchShapeButton.symbolType`
 %End
 
     void setDialogTitle( const QString &title );
@@ -81,8 +84,8 @@ Returns the current shape defined by the button.
 
     void setMessageBar( QgsMessageBar *bar );
 %Docstring
-Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
-to the appropriate message bar.
+Sets the message ``bar`` associated with the widget. This allows the
+widget to push feedback messages to the appropriate message bar.
 
 .. seealso:: :py:func:`messageBar`
 

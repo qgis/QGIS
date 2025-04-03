@@ -14,7 +14,8 @@
 class QgsMeshLayerElevationProperties : QgsMapLayerElevationProperties
 {
 %Docstring(signature="appended")
-Mesh layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
+Mesh layer specific subclass of
+:py:class:`QgsMapLayerElevationProperties`.
 
 .. versionadded:: 3.26
 %End
@@ -26,7 +27,8 @@ Mesh layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
 
     QgsMeshLayerElevationProperties( QObject *parent /TransferThis/ );
 %Docstring
-Constructor for QgsMeshLayerElevationProperties, with the specified ``parent`` object.
+Constructor for QgsMeshLayerElevationProperties, with the specified
+``parent`` object.
 %End
     ~QgsMeshLayerElevationProperties();
 
@@ -139,14 +141,16 @@ Sets the fixed elevation range for each group.
 
     QgsLineSymbol *profileLineSymbol() const;
 %Docstring
-Returns the line symbol used to render the mesh profile in elevation profile plots.
+Returns the line symbol used to render the mesh profile in elevation
+profile plots.
 
 .. seealso:: :py:func:`setProfileLineSymbol`
 %End
 
     void setProfileLineSymbol( QgsLineSymbol *symbol /Transfer/ );
 %Docstring
-Sets the line ``symbol`` used to render the mesh profile in elevation profile plots.
+Sets the line ``symbol`` used to render the mesh profile in elevation
+profile plots.
 
 Ownership of ``symbol`` is transferred to the plot.
 
@@ -155,14 +159,16 @@ Ownership of ``symbol`` is transferred to the plot.
 
     QgsFillSymbol *profileFillSymbol() const;
 %Docstring
-Returns the fill symbol used to render the mesh profile in elevation profile plots.
+Returns the fill symbol used to render the mesh profile in elevation
+profile plots.
 
 .. seealso:: :py:func:`setProfileFillSymbol`
 %End
 
     void setProfileFillSymbol( QgsFillSymbol *symbol /Transfer/ );
 %Docstring
-Sets the fill ``symbol`` used to render the mesh profile in elevation profile plots.
+Sets the fill ``symbol`` used to render the mesh profile in elevation
+profile plots.
 
 Ownership of ``symbol`` is transferred to the plot.
 
@@ -171,25 +177,30 @@ Ownership of ``symbol`` is transferred to the plot.
 
     Qgis::ProfileSurfaceSymbology profileSymbology() const;
 %Docstring
-Returns the symbology option used to render the mesh profile in elevation profile plots.
+Returns the symbology option used to render the mesh profile in
+elevation profile plots.
 
 .. seealso:: :py:func:`setProfileSymbology`
 %End
 
     void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
 %Docstring
-Sets the ``symbology`` option used to render the mesh profile in elevation profile plots.
+Sets the ``symbology`` option used to render the mesh profile in
+elevation profile plots.
 
 .. seealso:: :py:func:`setProfileSymbology`
 %End
 
     double elevationLimit() const;
 %Docstring
-Returns the elevation limit, which is used when :py:func:`~QgsMeshLayerElevationProperties.profileSymbology` is
-:py:class:`Qgis`.ProfileSurfaceSymbology.FillBelow or :py:class:`Qgis`.ProfileSurfaceSymbology.FillAbove
-to limit the fill to a specific elevation range.
+Returns the elevation limit, which is used when
+:py:func:`~QgsMeshLayerElevationProperties.profileSymbology` is
+:py:class:`Qgis`.ProfileSurfaceSymbology.FillBelow or
+:py:class:`Qgis`.ProfileSurfaceSymbology.FillAbove to limit the fill to
+a specific elevation range.
 
-By default this is NaN, which indicates that there is no elevation limit.
+By default this is NaN, which indicates that there is no elevation
+limit.
 
 .. seealso:: :py:func:`setElevationLimit`
 
@@ -198,9 +209,11 @@ By default this is NaN, which indicates that there is no elevation limit.
 
     void setElevationLimit( double limit );
 %Docstring
-Sets the elevation ``limit``, which is used when :py:func:`~QgsMeshLayerElevationProperties.profileSymbology` is
-:py:class:`Qgis`.ProfileSurfaceSymbology.FillBelow or :py:class:`Qgis`.ProfileSurfaceSymbology.FillAbove
-to limit the fill to a specific elevation range.
+Sets the elevation ``limit``, which is used when
+:py:func:`~QgsMeshLayerElevationProperties.profileSymbology` is
+:py:class:`Qgis`.ProfileSurfaceSymbology.FillBelow or
+:py:class:`Qgis`.ProfileSurfaceSymbology.FillAbove to limit the fill to
+a specific elevation range.
 
 Set to NaN to indicate that there is no elevation limit.
 

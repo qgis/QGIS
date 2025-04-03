@@ -27,7 +27,8 @@ Constructor for an invalid entry.
 
     explicit QgsHistoryEntry( const QString &providerId, const QDateTime &timestamp, const QVariantMap &entry );
 %Docstring
-Constructor for QgsHistoryEntry ``entry``, with the specified ``providerId`` and ``timestamp``.
+Constructor for QgsHistoryEntry ``entry``, with the specified
+``providerId`` and ``timestamp``.
 %End
 
     explicit QgsHistoryEntry( const QVariantMap &entry );

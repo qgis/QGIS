@@ -44,9 +44,9 @@ Sets the ``curve`` to show in the widget.
 
     void setHistogramSource( const QgsVectorLayer *layer, const QString &expression );
 %Docstring
-Sets a ``layer`` and ``expression`` source for values to show in a histogram
-behind the curve. The histogram is generated in a background thread to keep
-the widget responsive.
+Sets a ``layer`` and ``expression`` source for values to show in a
+histogram behind the curve. The histogram is generated in a background
+thread to keep the widget responsive.
 
 .. seealso:: :py:func:`minHistogramValueRange`
 
@@ -55,7 +55,8 @@ the widget responsive.
 
     double minHistogramValueRange() const;
 %Docstring
-Returns the minimum expected value for the range of values shown in the histogram.
+Returns the minimum expected value for the range of values shown in the
+histogram.
 
 .. seealso:: :py:func:`maxHistogramValueRange`
 
@@ -64,7 +65,8 @@ Returns the minimum expected value for the range of values shown in the histogra
 
     double maxHistogramValueRange() const;
 %Docstring
-Returns the maximum expected value for the range of values shown in the histogram.
+Returns the maximum expected value for the range of values shown in the
+histogram.
 
 .. seealso:: :py:func:`minHistogramValueRange`
 
@@ -75,7 +77,8 @@ Returns the maximum expected value for the range of values shown in the histogra
 
     void setMinHistogramValueRange( double minValueRange );
 %Docstring
-Sets the minimum expected value for the range of values shown in the histogram.
+Sets the minimum expected value for the range of values shown in the
+histogram.
 
 .. seealso:: :py:func:`setMaxHistogramValueRange`
 
@@ -84,7 +87,8 @@ Sets the minimum expected value for the range of values shown in the histogram.
 
     void setMaxHistogramValueRange( double maxValueRange );
 %Docstring
-Sets the maximum expected value for the range of values shown in the histogram.
+Sets the maximum expected value for the range of values shown in the
+histogram.
 
 .. seealso:: :py:func:`setMinHistogramValueRange`
 

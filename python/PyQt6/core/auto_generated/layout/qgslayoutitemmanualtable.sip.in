@@ -12,7 +12,8 @@
 class QgsLayoutItemManualTable: QgsLayoutTable
 {
 %Docstring(signature="appended")
-A layout table subclass that displays manually entered (and formatted) content.
+A layout table subclass that displays manually entered (and formatted)
+content.
 
 .. versionadded:: 3.12
 %End
@@ -24,7 +25,8 @@ A layout table subclass that displays manually entered (and formatted) content.
 
     QgsLayoutItemManualTable( QgsLayout *layout /TransferThis/ );
 %Docstring
-Constructor for QgsLayoutItemManualTable, attached to the specified ``layout``.
+Constructor for QgsLayoutItemManualTable, attached to the specified
+``layout``.
 
 Ownership is transferred to the layout.
 %End
@@ -40,7 +42,8 @@ Ownership is transferred to the layout.
 
     static QgsLayoutItemManualTable *create( QgsLayout *layout ) /Factory/;
 %Docstring
-Returns a new QgsLayoutItemManualTable for the specified parent ``layout``.
+Returns a new QgsLayoutItemManualTable for the specified parent
+``layout``.
 %End
     virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
 
@@ -61,9 +64,11 @@ Returns the contents of the table.
 
     QList< double > rowHeights() const;
 %Docstring
-Returns the list of row heights (in millimeters) to use when rendering the table.
+Returns the list of row heights (in millimeters) to use when rendering
+the table.
 
-A height of 0 indicates that the row height should be automatically calculated.
+A height of 0 indicates that the row height should be automatically
+calculated.
 
 .. seealso:: :py:func:`setRowHeights`
 
@@ -72,9 +77,11 @@ A height of 0 indicates that the row height should be automatically calculated.
 
     void setRowHeights( const QList< double > &heights );
 %Docstring
-Sets the list of row ``heights`` (in millimeters) to use when rendering the table.
+Sets the list of row ``heights`` (in millimeters) to use when rendering
+the table.
 
-A height of 0 indicates that the row height should be automatically calculated.
+A height of 0 indicates that the row height should be automatically
+calculated.
 
 .. seealso:: :py:func:`rowHeights`
 
@@ -83,9 +90,11 @@ A height of 0 indicates that the row height should be automatically calculated.
 
     QList< double > columnWidths() const;
 %Docstring
-Returns the list of column widths (in millimeters) to use when rendering the table.
+Returns the list of column widths (in millimeters) to use when rendering
+the table.
 
-A width of 0 indicates that the column width should be automatically calculated.
+A width of 0 indicates that the column width should be automatically
+calculated.
 
 .. seealso:: :py:func:`setColumnWidths`
 
@@ -94,9 +103,11 @@ A width of 0 indicates that the column width should be automatically calculated.
 
     void setColumnWidths( const QList< double > &widths );
 %Docstring
-Sets the list of column ``widths`` (in millimeters) to use when rendering the table.
+Sets the list of column ``widths`` (in millimeters) to use when
+rendering the table.
 
-A width of 0 indicates that the column width should be automatically calculated.
+A width of 0 indicates that the column width should be automatically
+calculated.
 
 .. seealso:: :py:func:`columnWidths`
 
@@ -126,7 +137,8 @@ Returns a reference to the list of headers shown in the table
 
     void setHeaders( const QgsLayoutTableColumns &headers );
 %Docstring
-Replaces the headers in the table with a specified list of :py:class:`QgsLayoutTableColumns`.
+Replaces the headers in the table with a specified list of
+:py:class:`QgsLayoutTableColumns`.
 
 .. seealso:: :py:func:`headers`
 %End
