@@ -461,7 +461,7 @@ void TestQgsSymbol::symbolProperties()
 void TestQgsSymbol::regression24954()
 {
   //test if the interval value for marker placement is read from an sld file
-  QString sldFileName ( mTestDataDir + "symbol_layer/QgsMarkerLineSymbolLayer.sld" );
+  QString sldFileName( mTestDataDir + "symbol_layer/QgsMarkerLineSymbolLayer.sld" );
 
   bool defaultLoadedFlag = false;
 
@@ -469,10 +469,10 @@ void TestQgsSymbol::regression24954()
   mpLinesLayer->loadSldStyle( sldFileName, defaultLoadedFlag );
 
   //create a symbol and convert it's first layer to a marker line symbol layer
-  QgsFeatureRenderer* renderer = mpLinesLayer->renderer();
+  QgsFeatureRenderer *renderer = mpLinesLayer->renderer();
   QgsRenderContext renderContext;
-  QgsSymbol* symbol = renderer->symbols( renderContext ).at( 0 );
-  QgsMarkerLineSymbolLayer* symbolLayer = static_cast<QgsMarkerLineSymbolLayer*>(symbol->symbolLayer(0));
+  QgsSymbol *symbol = renderer->symbols( renderContext ).at( 0 );
+  QgsMarkerLineSymbolLayer *symbolLayer = static_cast<QgsMarkerLineSymbolLayer *>( symbol->symbolLayer( 0 ) );
 
   QVERIFY( symbolLayer->interval() == 3.3 );
 }
