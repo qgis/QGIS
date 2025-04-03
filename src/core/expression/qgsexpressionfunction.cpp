@@ -1014,7 +1014,6 @@ static QVariant fcnAggregateGeneric( Qgis::Aggregate aggregate, const QVariantLi
   const QSet<QString> refVars = filterExp.referencedVariables() + subExp.referencedVariables();
   QString evalVars;
   QVariant evaluatedVar;
-  QString varHolder( "var('%1')");
   for ( const QString &varName : refVars )
   {
     if ( isStatic )
@@ -1025,8 +1024,8 @@ static QVariant fcnAggregateGeneric( Qgis::Aggregate aggregate, const QVariantLi
         isStatic = false;
       }
     }
-    evaluatedVar = QgsExpression( varHolder.arg( varName ) ).evaluate( context );
-    if ( evaluatedVar.userType() == qMetaTypeId< QgsGeometry>() )
+    evaluatedVar = context->variable( varName );
+    if ( evaluatedVar.userType() == qMetaTypeId< QgsGeometry >() )
       evalVars.append( evaluatedVar.value<QgsGeometry>().asWkt(7) );
     else
       evalVars.append( evaluatedVar.toString() );
