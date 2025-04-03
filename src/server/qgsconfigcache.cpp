@@ -85,6 +85,8 @@ QgsConfigCache *QgsConfigCache::instance()
 QgsConfigCache::QgsConfigCache( QgsServerSettings *settings )
   : QgsConfigCache( getStrategyFromSettings( settings ) )
 {
+  mXmlDocumentCache.setMaxCost( settings->projectCacheSize() );
+  mProjectCache.setMaxCost( settings->projectCacheSize() );
 }
 
 QgsConfigCache::QgsConfigCache( QgsAbstractCacheStrategy *strategy )
