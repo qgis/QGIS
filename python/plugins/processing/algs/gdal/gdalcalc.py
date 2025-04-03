@@ -471,7 +471,9 @@ class gdalcalc(GdalAlgorithm):
         if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
             options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
-            arguments.extend(GdalUtils.parseCreationOptions(options))
+            parts = options.split("|")
+            for p in parts:
+                arguments.append("--co " + p)
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
