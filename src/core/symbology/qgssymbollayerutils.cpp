@@ -5715,3 +5715,159 @@ void QgsSymbolLayerUtils::resetSymbolLayerIds( QgsSymbol *symbol )
 {
   changeSymbolLayerIds( symbol, []() { return QUuid::createUuid().toString(); } );
 }
+
+QString QgsSymbolLayerUtils::getStyleNodeMinMax( const QDomNode & ruleNode )
+{
+  QStringList scaleRules;
+  QDomNamedNodeMap attribs = ruleNode.attributes();
+  if ( attribs.contains( "scalemindenom" ) )
+    scaleRules.append( QStringLiteral( "@map_scale <= %1" ).arg( attribs.namedItem( "scalemindenom" ).nodeValue() ) );
+  if ( attribs.contains("scalemaxdenom") )
+    scaleRules.append( QStringLiteral( "@map_scale >= %1" ).arg( attribs.namedItem( "scalemaxdenom" ).nodeValue() ) );
+  return( scaleRules.join( " AND " ) );
+};
+
+QString QgsSymbolLayerUtils::ruleNodeExpression( const QDomNode & node, const QString & key )
+{
+  bool finalElse = false;
+  bool elseNode = false;
+  QStringList nodeRules;
+  QString nodeValue;
+  QString minmaxscale;
+  QStringList ruleParts;
+  QDomNode cnode;
+  QDomNodeList childrenNode = node.childNodes();
+
+  for ( int cidx = 0 ; cidx < childrenNode.count(); cidx++  )
+  {
+    cnode = childrenNode.item( cidx );
+    nodeValue = cnode.attributes().namedItem( "filter" ).nodeValue();
+    if  ( nodeValue == "ELSE" && !( finalElse ) )
+    {
+      elseNode = true;
+    }
+    else
+    {
+      elseNode = false;
+      nodeRules << nodeValue;
+    }
+
+    if ( finalElse )
+        continue;
+
+    if ( cnode.attributes().namedItem( "key" ).nodeValue() != key )
+    {
+        if ( cnode.hasChildNodes() )
+        {
+          QString childRules = ruleNodeExpression( cnode, key );
+          if ( childRules.length() > 0 )
+          {
+            ruleParts << childRules;
+          }
+        }
+        else continue;
+    }
+
+    minmaxscale = getStyleNodeMinMax( cnode );
+    if ( minmaxscale.length() > 2 )
+      ruleParts << minmaxscale;
+    if ( elseNode )
+    {
+      finalElse = true;
+    }
+    else
+    {
+      ruleParts << nodeValue;
+      break;
+    }
+  }
+  if ( finalElse )
+  {
+    ruleParts << QStringLiteral( "NOT((%1))" ).arg( nodeRules.join( ") OR (" ) );
+  }
+  if ( ruleParts.length() == 1 )
+    return( ruleParts.join( ") AND (" ) );
+  else if ( ruleParts.length() > 1 )
+    return( QStringLiteral( "(%1)" ).arg( ruleParts.join( ") AND (" ) ) );
+  else
+    return( QString() );
+};
+
+QString QgsSymbolLayerUtils::legendKeyToExpression( const QString &style,const QString &ikey, bool *ok )
+{
+  QDomDocument styleDoc = QDomDocument();
+  bool parsedOk = styleDoc.setContent( style );
+
+  if( !parsedOk )
+    return QString();
+
+  QDomNodeList renders = styleDoc.elementsByTagName( "renderer-v2" );
+  QDomNode render = renders.item( 0 );
+  if ( render.isNull() )
+    return QString();
+  QDomNamedNodeMap attribs = render.attributes();
+  QDomNode renderTypeNode = attribs.namedItem( "type" );
+  QString renderType = render.attributes().namedItem( "type" ).nodeValue();
+  if ( renders.size() > 1 &&  QStringList( { "pointDisplacement", "invertedPolygonRenderer", "mergedFeatureRenderer" } ).contains( renderType ) )
+  {
+    render = renders.item(1);
+    renderType = render.attributes().namedItem( "type" ).nodeValue();
+  }
+  QDomNode subrend;
+  if ( renderType == "RuleRenderer" )
+  {
+    QDomNode headNode = render.firstChild();
+    return( ruleNodeExpression( headNode, ikey ) );
+  }
+  else if (renderType == "graduatedSymbol" )
+  {
+    QString gradattrib = QgsExpression::quotedColumnRef( render.attributes().namedItem( "attr" ).nodeValue() );
+    QDomNodeList children = render.firstChild().childNodes();
+    for ( int ix = 0; ix < children.count(); ix++ )
+    {
+      subrend = children.item( ix );
+      if( subrend.attributes().namedItem( "uuid" ).nodeValue() == ikey )
+      {
+        return QStringLiteral( "(%1 >= %2) AND (%1 <= %3)" ).arg( gradattrib,
+          subrend.attributes().namedItem( "lower" ).nodeValue(),
+          subrend.attributes().namedItem( "upper" ).nodeValue() );
+      }
+    }
+  }
+  else if ( renderType == "categorizedSymbol" )
+  {
+    QString catattrib = QgsExpression::quotedColumnRef( render.attributes().namedItem( "attr" ).nodeValue() );
+    QDomNodeList catchildren = render.firstChild().childNodes();
+    for ( int ix = 0; ix < catchildren.count(); ix ++)
+    {
+      subrend = catchildren.item( ix );
+      if( subrend.attributes().namedItem( "uuid" ).nodeValue() == ikey )
+      {
+        if ( subrend.hasChildNodes() )
+        {
+          const QDomNodeList catlist = subrend.childNodes();
+          QStringList parts;
+          parts.reserve( catlist.size() );
+          for ( int cidx = 0 ; catlist.count() ; cidx++ )
+          {
+            parts.append( QgsExpression::quotedValue( catlist.item(cidx).attributes().namedItem( "value" ).nodeValue() ) );
+          }
+
+          return QStringLiteral( "%1 IN (%2)" ).arg( catattrib, parts.join( QLatin1String( ", " ) ) );
+        }
+        else if ( subrend.attributes().namedItem( "type" ).nodeValue() == "NULL" )
+        {
+          return QStringLiteral( "%1 IS NULL" ).arg( catattrib );
+        }
+        else
+        {
+          return QStringLiteral( "%1 = %2" ).arg( catattrib, QgsExpression::quotedValue( subrend.attributes().namedItem( "value" ).nodeValue() ) );
+        }
+      }
+    }
+  }
+
+  return( "TRUE" );
+}
+
+
