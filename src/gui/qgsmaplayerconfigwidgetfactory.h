@@ -28,7 +28,7 @@ class QgsLayerTreeGroup;
 /**
  * \ingroup gui
  * \class QgsMapLayerConfigWidgetFactory
- * \brief Factory class for creating custom map layer property pages
+ * \brief Factory class for creating custom map layer property pages.
  */
 class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 {

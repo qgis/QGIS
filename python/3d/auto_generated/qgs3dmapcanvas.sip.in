@@ -16,7 +16,8 @@
 class Qgs3DMapCanvas : QWindow
 {
 %Docstring(signature="appended")
-Qgs3DMapCanvas is a convenience wrapper to simplify the creation of a 3D window ready to be used with QGIS.
+Convenience wrapper to simplify the creation of a 3D window ready to be
+used with QGIS.
 
 .. note::
 
@@ -52,7 +53,9 @@ Returns access to the 3D scene (root 3D entity)
 
     QgsCameraController *cameraController();
 %Docstring
-Returns access to the view's camera controller. Returns ``None`` if the scene has not been initialized yet with :py:func:`~Qgs3DMapCanvas.setMapSettings`
+Returns access to the view's camera controller. Returns ``None`` if the
+scene has not been initialized yet with
+:py:func:`~Qgs3DMapCanvas.setMapSettings`
 %End
 
 

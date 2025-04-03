@@ -62,6 +62,22 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     void setOutputNodataValue( double value ) { mOutputNodataValue = value; }
 
     /**
+     * Sets a list of data source creation options to use when creating the output raster file.
+     *
+     * \see creationOptions()
+     * \since QGIS 3.44
+     */
+    void setCreationOptions( const QStringList &list ) { mCreationOptions = list; }
+
+    /**
+     * Returns the list of data source creation options which will be used when creating the output raster file.
+     *
+     * \see setCreationOptions()
+     * \since QGIS 3.44
+     */
+    QStringList creationOptions() const { return mCreationOptions; }
+
+    /**
      * Calculates output value from nine input values. The input values and the output
      * value can be equal to the nodata value if not present or outside of the border.
      * Must be implemented by subclasses.
@@ -138,13 +154,14 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     QString mInputFile;
     QString mOutputFile;
     QString mOutputFormat;
+    QStringList mCreationOptions;
 
     double mCellSizeX = -1.0;
     double mCellSizeY = -1.0;
     //! The nodata value of the input layer
-    float mInputNodataValue = -1.0;
+    double mInputNodataValue = -1.0;
     //! The nodata value of the output layer
-    float mOutputNodataValue = -1.0;
+    double mOutputNodataValue = -9999.0;
     //! Scale factor for z-value if x-/y- units are different to z-units (111120 for degree->meters and 370400 for degree->feet)
     double mZFactor = 1.0;
 };

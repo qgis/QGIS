@@ -58,7 +58,7 @@ bool QgsVectorLayerSelectionProperties::readXml( const QDomElement &element, con
 
   {
     const QDomElement selectionSymbolElement = selectionElement.firstChildElement( QStringLiteral( "selectionSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-    mSelectionSymbol.reset( QgsSymbolLayerUtils::loadSymbol( selectionSymbolElement, context ) );
+    mSelectionSymbol = QgsSymbolLayerUtils::loadSymbol( selectionSymbolElement, context );
   }
   return true;
 }

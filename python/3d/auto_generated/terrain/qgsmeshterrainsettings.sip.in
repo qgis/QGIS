@@ -12,7 +12,8 @@
 class QgsMeshTerrainSettings : QgsAbstractTerrainSettings
 {
 %Docstring(signature="appended")
-Terrain settings for a terrain generator that uses uses the Z values of a mesh layer to build a terrain.
+Terrain settings for a terrain generator that uses the Z values of a
+mesh layer to build a terrain.
 
 .. warning::
 
@@ -42,14 +43,16 @@ Creates a new instance of a QgsMeshTerrainSettings object.
 
     void setLayer( QgsMeshLayer *layer );
 %Docstring
-Sets the mesh ``layer`` with elevation model to be used for terrain generation.
+Sets the mesh ``layer`` with elevation model to be used for terrain
+generation.
 
 .. seealso:: :py:func:`layer`
 %End
 
     QgsMeshLayer *layer() const;
 %Docstring
-Returns the mesh layer with elevation model to be used for terrain generation.
+Returns the mesh layer with elevation model to be used for terrain
+generation.
 
 .. seealso:: :py:func:`setLayer`
 %End

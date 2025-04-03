@@ -697,7 +697,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 
 /**
  * \ingroup core
- * \brief Intermediate base class adding functionality that allows client to query the rendered image.
+ * \brief Intermediate base class adding functionality that allows a client to query the rendered image.
  *
  * The image can be queried even while the rendering is still in progress to get intermediate result
  *

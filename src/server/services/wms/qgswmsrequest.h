@@ -28,7 +28,7 @@ namespace QgsWms
   /**
    * \ingroup server
    * \class QgsWmsRequest
-   * \brief Class defining request interface passed to WMS service
+   * \brief Defines request interfaces passed to WMS service.
    * \since QGIS 3.20
    */
   class QgsWmsRequest : public QgsServerRequest

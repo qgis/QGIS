@@ -27,7 +27,7 @@
 class QgsClassificationRange
 {
 %Docstring(signature="appended")
-:py:class:`QgsClassificationRange` contains the information about a classification range
+Contains the information about a classification range.
 
 .. versionadded:: 3.10
 %End
@@ -67,7 +67,7 @@ Returns the lower bound
 class QgsClassificationMethod /Abstract/
 {
 %Docstring(signature="appended")
-:py:class:`QgsClassificationMethod` is an abstract class for implementations of classification methods
+An abstract class for implementations of classification methods.
 
 .. seealso:: :py:class:`QgsClassificationMethodRegistry`
 
@@ -125,8 +125,8 @@ Creates a classification method.
 
     virtual std::unique_ptr< QgsClassificationMethod > clone() const = 0;
 %Docstring
-Returns a clone of the method.
-Implementation can take advantage of copyBase method which copies the parameters of the base class
+Returns a clone of the method. Implementation can take advantage of
+copyBase method which copies the parameters of the base class
 %End
 
     virtual QString name() const = 0;
@@ -168,8 +168,8 @@ Reads extra information to apply it to the method
 
     virtual bool valuesRequired() const;
 %Docstring
-Returns if the method requires values to calculate the classes
-If not, bounds are sufficient
+Returns if the method requires values to calculate the classes If not,
+bounds are sufficient
 %End
 
 
@@ -196,18 +196,20 @@ Returns the symmetry point for symmetric mode
 
     bool symmetryAstride() const;
 %Docstring
-Returns if the symmetric mode is astride
-if ``True``, it will remove the symmetry point break so that the 2 classes form only one
+Returns if the symmetric mode is astride if ``True``, it will remove the
+symmetry point break so that the 2 classes form only one
 %End
 
     void setSymmetricMode( bool enabled, double symmetryPoint = 0, bool symmetryAstride = false );
 %Docstring
 Defines if the symmetric mode is enables and configures its parameters.
-If the symmetric mode is not available in the current implementation, calling this method has no effect.
+If the symmetric mode is not available in the current implementation,
+calling this method has no effect.
 
 :param enabled: if the symmetric mode is enabled
 :param symmetryPoint: the value of the symmetry point
-:param symmetryAstride: if ``True``, it will remove the symmetry point break so that the 2 classes form only one
+:param symmetryAstride: if ``True``, it will remove the symmetry point
+                        break so that the 2 classes form only one
 %End
 
     QString labelFormat() const;
@@ -216,7 +218,8 @@ Returns the format of the label for the classes
 %End
     void setLabelFormat( const QString &format );
 %Docstring
-Defines the format of the labels for the classes, using %1 and %2 for the bounds
+Defines the format of the labels for the classes, using %1 and %2 for
+the bounds
 %End
     int labelPrecision() const;
 %Docstring
@@ -245,7 +248,8 @@ Transforms a list of classes to a list of breaks
 This will calculate the classes for a given layer to define the classes.
 
 :param layer: The vector layer
-:param expression: The name of the field on which the classes are calculated
+:param expression: The name of the field on which the classes are
+                   calculated
 :param nclasses: The number of classes to be returned
 
 .. deprecated:: 3.38
@@ -258,11 +262,13 @@ This will calculate the classes for a given layer to define the classes.
 This will calculate the classes for a given layer to define the classes.
 
 :param layer: The vector layer
-:param expression: The name of the field on which the classes are calculated
+:param expression: The name of the field on which the classes are
+                   calculated
 :param nclasses: The number of classes to be returned
 
 :return: - list of generated classes
-         - error: error string if an error occurred while generating the classes
+         - error: error string if an error occurred while generating the
+           classes
 
 .. versionadded:: 3.38
 %End
@@ -306,12 +312,14 @@ Reads the DOM element and return a new classification method from it
 
     static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool astride );
 %Docstring
-Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
-Does not put a break on the symmetryPoint. This is done before.
+Remove the breaks that are above the existing opposite sign classes to
+keep colors symmetrically balanced around symmetryPoint Does not put a
+break on the symmetryPoint. This is done before.
 
 :param breaks: The breaks of an already-done classification
 :param symmetryPoint: The point around which we want a symmetry
-:param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+:param astride: A bool indicating if the symmetry is made astride the
+                symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 %End
 
     QString labelForRange( const QgsRendererRange &range, ClassPosition position = Inner ) const;
@@ -342,8 +350,9 @@ Defines the values of the additional parameters
 
     QVariantMap parameterValues() const;
 %Docstring
-Returns the values of the processing parameters.
-One could use :py:class:`QgsProcessingParameters`.parameterAsXxxx to retrieve the actual value of a parameter.
+Returns the values of the processing parameters. One could use
+:py:class:`QgsProcessingParameters`.parameterAsXxxx to retrieve the
+actual value of a parameter.
 
 .. versionadded:: 3.12
 %End
@@ -365,8 +374,8 @@ Format the number according to label properties
 
     void addParameter( QgsProcessingParameterDefinition *definition /Transfer/ );
 %Docstring
-Add a parameter to the method.
-The paramaeter is a processing parameter which will allow its configuration in the GUI.
+Add a parameter to the method. The paramaeter is a processing parameter
+which will allow its configuration in the GUI.
 
 .. note::
 

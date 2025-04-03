@@ -50,8 +50,8 @@ class QgsWindow3DEngine;
 class Qgs3DMapScene;
 
 /**
- * \ingroup 3d
- * \brief Object that controls camera movement based on user input
+ * \ingroup qgis_3d
+ * \brief Object that controls camera movement based on user input.
  */
 #ifndef SIP_RUN
 class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
@@ -277,6 +277,12 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     void resetGlobe( float distance, double lat = 0, double lon = 0 );
 
+    /**
+     * Returns the origin of the scene in map coordinates
+     * \since QGIS 3.44
+     */
+    const QgsVector3D origin() const { return mOrigin; }
+
   public slots:
 
     /**
@@ -421,8 +427,8 @@ class _3D_EXPORT QgsCameraController : public QObject
     bool mRotationCenterCalculated = false;
     QVector3D mRotationCenter;
     double mRotationDistanceFromCenter = 0;
-    double mRotationPitch = 0;
-    double mRotationYaw = 0;
+    float mRotationPitch = 0;
+    float mRotationYaw = 0;
 
     bool mDragPointCalculated = false;
     QVector3D mDragPoint;

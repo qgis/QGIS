@@ -11,7 +11,8 @@
 class QgsAbstractLayoutIterator
 {
 %Docstring(signature="appended")
-An abstract base class for :py:class:`QgsLayout` based classes which can be exported by :py:class:`QgsLayoutExporter`.
+An abstract base class for :py:class:`QgsLayout` based classes which can
+be exported by :py:class:`QgsLayoutExporter`.
 %End
 
 %TypeHeaderCode
@@ -28,8 +29,9 @@ Returns the layout associated with the iterator.
 
     virtual bool beginRender() = 0;
 %Docstring
-Called when rendering begins, before iteration commences. Returns ``True`` if successful, ``False`` if no iteration
-is available or required.
+Called when rendering begins, before iteration commences. Returns
+``True`` if successful, ``False`` if no iteration is available or
+required.
 
 .. seealso:: :py:func:`endRender`
 %End
@@ -46,13 +48,14 @@ Returns the number of features to iterate over.
 
     virtual bool next() = 0;
 %Docstring
-Iterates to next feature, returning ``False`` if no more features exist to iterate over.
+Iterates to next feature, returning ``False`` if no more features exist
+to iterate over.
 %End
 
     virtual QString filePath( const QString &baseFilePath, const QString &extension ) = 0;
 %Docstring
-Returns the file path for the current feature, based on a
-specified base file path and extension.
+Returns the file path for the current feature, based on a specified base
+file path and extension.
 %End
 
 };

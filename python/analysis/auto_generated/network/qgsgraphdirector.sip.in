@@ -17,8 +17,8 @@
 class QgsGraphDirector : QObject
 {
 %Docstring(signature="appended")
-Determine making the graph. :py:class:`QgsGraphBuilder` and :py:class:`QgsGraphDirector` implemented
-using "builder" design patter.
+Determine making the graph. :py:class:`QgsGraphBuilder` and
+:py:class:`QgsGraphDirector` implemented using "builder" design patter.
 %End
 
 %TypeHeaderCode
@@ -38,7 +38,8 @@ using "builder" design patter.
 Make a graph using :py:class:`QgsGraphBuilder`
 
 :param builder: the graph builder
-:param additionalPoints: list of points that should be snapped to the graph
+:param additionalPoints: list of points that should be snapped to the
+                         graph
 :param feedback: feedback object for reporting progress
 
 .. note::

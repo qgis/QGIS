@@ -300,6 +300,7 @@
         <file>themes/default/mActionEditCut.svg</file>
         <file>themes/default/mActionEditPaste.svg</file>
         <file>themes/default/mActionEditTable.svg</file>
+        <file>themes/default/mActionEditCutDisabled.svg</file>
         <file>themes/default/mActionExpandNewTree.svg</file>
         <file>themes/default/mActionExpandTree.svg</file>
         <file>themes/default/mActionFileExit.svg</file>
@@ -774,6 +775,7 @@
         <file>themes/default/mesh/SingleTop.svg</file>
         <file>themes/default/mesh/SingleBottom.svg</file>
         <file>themes/default/mActionNew3DMap.svg</file>
+        <file>themes/default/mActionNew3DMapGlobe.svg</file>
         <file>themes/default/mActionNewMap.svg</file>
         <file>themes/default/mActionNext.svg</file>
         <file>themes/default/mActionMapSettings.svg</file>

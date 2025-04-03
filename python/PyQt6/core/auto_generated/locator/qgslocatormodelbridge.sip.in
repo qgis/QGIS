@@ -16,8 +16,7 @@
 class QgsLocatorModelBridge : QObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLocatorModelBridge` class provides the core functionality
-to be used in a locator widget.
+Provides the core functionality to be used in a locator widget.
 
 .. versionadded:: 3.6
 %End
@@ -59,13 +58,14 @@ Returns ``True`` if the a search is currently running
 
     void triggerResult( const QModelIndex &index,  const int actionId = -1 );
 %Docstring
-Triggers the result at given ``index`` and with optional ``actionId`` if an additional action was triggered
+Triggers the result at given ``index`` and with optional ``actionId`` if
+an additional action was triggered
 %End
 
     QgsCoordinateTransformContext transformContext() const;
 %Docstring
-Returns the coordinate transform context, which should be used whenever the
-locator constructs a coordinate transform.
+Returns the coordinate transform context, which should be used whenever
+the locator constructs a coordinate transform.
 
 .. seealso:: :py:func:`setTransformContext`
 
@@ -74,8 +74,8 @@ locator constructs a coordinate transform.
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
 %Docstring
-Sets the coordinate transform ``context``, which should be used whenever the
-locator constructs a coordinate transform.
+Sets the coordinate transform ``context``, which should be used whenever
+the locator constructs a coordinate transform.
 
 .. seealso:: :py:func:`transformContext`
 
@@ -116,7 +116,8 @@ Update the canvas CRS used to create search context
 
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 %Docstring
-This will call filters implementation of selection/deselection of results
+This will call filters implementation of selection/deselection of
+results
 
 .. versionadded:: 3.40
 %End

@@ -14,8 +14,8 @@
 class QgsAggregateMappingModel : QAbstractTableModel
 {
 %Docstring(signature="appended")
-The :py:class:`QgsAggregateMappingModel` holds mapping information for defining sets of aggregates of
-fields from a :py:class:`QgsFields` object.
+Holds mapping information for defining sets of aggregates of fields from
+a :py:class:`QgsFields` object.
 
 .. versionadded:: 3.14
 %End
@@ -49,8 +49,8 @@ fields from a :py:class:`QgsFields` object.
 
     QgsAggregateMappingModel( const QgsFields &sourceFields = QgsFields(), QObject *parent = 0 );
 %Docstring
-Constructs a QgsAggregateMappingModel from a set of ``sourceFields``.
-A ``parent`` object can be also specified.
+Constructs a QgsAggregateMappingModel from a set of ``sourceFields``. A
+``parent`` object can be also specified.
 %End
 
     QgsFields sourceFields() const;
@@ -60,7 +60,8 @@ Returns a list of source fields
 
     QList<QgsAggregateMappingModel::Aggregate> mapping() const;
 %Docstring
-Returns a list of Aggregate objects representing the current status of the model
+Returns a list of Aggregate objects representing the current status of
+the model
 %End
 
     void setMapping( const QList<QgsAggregateMappingModel::Aggregate> &mapping );
@@ -70,12 +71,14 @@ Sets the ``mapping`` to show in the model.
 
     void appendField( const QgsField &field, const QString &source = QString(), const QString &aggregate = QString() );
 %Docstring
-Appends a new ``field`` to the model, with an optional ``source`` and ``aggregate``
+Appends a new ``field`` to the model, with an optional ``source`` and
+``aggregate``
 %End
 
     bool removeField( const QModelIndex &index );
 %Docstring
-Removes the field at ``index`` from the model, returns ``True`` on success
+Removes the field at ``index`` from the model, returns ``True`` on
+success
 %End
 
     bool moveUp( const QModelIndex &index );
@@ -100,8 +103,8 @@ Returns the context generator with the source fields
 
     void setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 %Docstring
-Sets the base expression context ``generator``, which will generate the expression
-contexts for expression based widgets used by the model.
+Sets the base expression context ``generator``, which will generate the
+expression contexts for expression based widgets used by the model.
 %End
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -122,7 +125,7 @@ contexts for expression based widgets used by the model.
 class QgsAggregateMappingWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsAggregateMappingWidget` class creates a mapping for defining sets of aggregates of
+A widget which creates a mapping for defining sets of aggregates of
 fields from a :py:class:`QgsFields` object.
 
 .. versionadded:: 3.14
@@ -134,8 +137,8 @@ fields from a :py:class:`QgsFields` object.
   public:
     explicit QgsAggregateMappingWidget( QWidget *parent = 0, const QgsFields &sourceFields = QgsFields() );
 %Docstring
-Constructs a QgsAggregateMappingWidget from a set of ``sourceFields``. A ``parent`` object
-can also be specified.
+Constructs a QgsAggregateMappingWidget from a set of ``sourceFields``. A
+``parent`` object can also be specified.
 %End
 
     QgsAggregateMappingModel *model() const;
@@ -145,7 +148,8 @@ Returns the underlying mapping model
 
     QList<QgsAggregateMappingModel::Aggregate> mapping() const;
 %Docstring
-Returns a list of Aggregate objects representing the current status of the underlying mapping model
+Returns a list of Aggregate objects representing the current status of
+the underlying mapping model
 %End
 
     void setMapping( const QList<QgsAggregateMappingModel::Aggregate> &mapping );
@@ -165,7 +169,8 @@ Set source fields of the underlying mapping model to ``sourceFields``
 
     void setSourceLayer( QgsVectorLayer *layer );
 %Docstring
-Sets a source ``layer`` to use when generating expression previews in the widget.
+Sets a source ``layer`` to use when generating expression previews in
+the widget.
 
 .. versionadded:: 3.16
 %End
@@ -186,8 +191,8 @@ Scroll the fields view to ``index``
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 %Docstring
-Register an expression context ``generator`` class that will be used to retrieve
-an expression context for the widget.
+Register an expression context ``generator`` class that will be used to
+retrieve an expression context for the widget.
 %End
 
   signals:
@@ -201,7 +206,8 @@ Emitted when the aggregates defined in the widget are changed.
 
     void appendField( const QgsField &field, const QString &source = QString(), const QString &aggregate = QString() );
 %Docstring
-Appends a new ``field`` to the model, with an optional ``source`` and ``aggregate``
+Appends a new ``field`` to the model, with an optional ``source`` and
+``aggregate``
 %End
 
     bool removeSelectedFields();

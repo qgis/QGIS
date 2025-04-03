@@ -23,3 +23,7 @@ QgsAdvancedDigitizingFloater.FloaterItem.__doc__ = """Available floater items
 # --
 QgsAdvancedDigitizingFloater.FloaterItem.baseClass = QgsAdvancedDigitizingFloater
 FloaterItem = QgsAdvancedDigitizingFloater  # dirty hack since SIP seems to introduce the flags in module
+try:
+    QgsAdvancedDigitizingFloater.__overridden_methods__ = ['eventFilter']
+except (NameError, AttributeError):
+    pass

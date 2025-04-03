@@ -36,7 +36,7 @@ class CORE_EXPORT QgsUserProfile
   public:
 
     /**
-     * Reference to a existing user profile folder.
+     * Reference to an existing user profile folder.
      * Profile folder should be created using QgsProfileManager.
      * \param folder An existing profile folder as the base of the user profile.
      */

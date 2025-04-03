@@ -26,7 +26,7 @@ QgsArrowSymbolLayer::QgsArrowSymbolLayer()
   setOffset( 0.0 );
   setOffsetUnit( Qgis::RenderUnit::Millimeters );
 
-  mSymbol.reset( static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
+  mSymbol = QgsFillSymbol::createSimple( QVariantMap() );
 }
 
 QgsArrowSymbolLayer::~QgsArrowSymbolLayer() = default;
@@ -108,7 +108,7 @@ QgsSymbolLayer *QgsArrowSymbolLayer::create( const QVariantMap &props )
 
   l->restoreOldDataDefinedProperties( props );
 
-  l->setSubSymbol( QgsFillSymbol::createSimple( props ) );
+  l->setSubSymbol( QgsFillSymbol::createSimple( props ).release() );
 
   return l;
 }

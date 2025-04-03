@@ -55,24 +55,27 @@ class CORE_EXPORT QgsPointCloudLayerUndoCommandChangeAttribute : public QgsPoint
     /**
      * Constructor for QgsPointCloudLayerUndoCommandChangeAttribute
      * \param layer associated point cloud layer
-     * \param n the node id whose points will be modified
-     * \param points the list of points to be modified
+     * \param nodesAndPoints affected nodes, each with a list of points to be modified
      * \param attribute the attribute whose value will be modified
      * \param value the new value for the modified attribure
      */
-    QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value );
+    QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QHash<QgsPointCloudNodeId, QVector<int>> &nodesAndPoints, const QgsPointCloudAttribute &attribute, double value );
 
     void undo() override;
     void redo() override;
 
   private:
+    struct PerNodeData
+    {
+      QHash<int, double> oldPointValues;
+      bool firstEdit = false;
+      int attributeOffset = 0;
+    };
+
     void undoRedoPrivate( bool isUndo );
 
-    QgsPointCloudNodeId mNode;
-    QHash< int, double > mPointValues; // contains pairs of (point number, old value)
+    QHash<QgsPointCloudNodeId, PerNodeData> mPerNodeData;
     QgsPointCloudAttribute mAttribute;
-    int mAttributeOffset = 0;
     double mNewValue = 0;
-    bool mFirstEditForNode = false;
 };
 #endif // QGSPOINTCLOUDLAYERUNDOCOMMAND_H

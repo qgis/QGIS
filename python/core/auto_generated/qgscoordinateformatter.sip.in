@@ -13,14 +13,17 @@
 class QgsCoordinateFormatter
 {
 %Docstring(signature="appended")
-Contains methods for converting coordinates for display in various formats.
+Contains methods for converting coordinates for display in various
+formats.
 
-:py:class:`QgsCoordinateFormatter` contains static methods for converting numeric coordinates into different
-formats, for instance as degrees, minutes, seconds values. Note that :py:class:`QgsCoordinateFormatter` has
-no consideration for the validity of converting coordinates to the various display formats, and it
-is up to the caller to ensure that sensible formats are used for particular coordinates. For instance,
-ensuring that only geographic coordinates and not projected coordinates are formatted to degree
-based formats.
+:py:class:`QgsCoordinateFormatter` contains static methods for
+converting numeric coordinates into different formats, for instance as
+degrees, minutes, seconds values. Note that
+:py:class:`QgsCoordinateFormatter` has no consideration for the validity
+of converting coordinates to the various display formats, and it is up
+to the caller to ensure that sensible formats are used for particular
+coordinates. For instance, ensuring that only geographic coordinates and
+not projected coordinates are formatted to degree based formats.
 %End
 
 %TypeHeaderCode
@@ -48,9 +51,11 @@ based formats.
 %Docstring
 Formats an ``x`` coordinate value according to the specified parameters.
 
-The ``format`` argument indicates the desired display format for the coordinate.
+The ``format`` argument indicates the desired display format for the
+coordinate.
 
-The ``precision`` argument gives the number of decimal places to include for coordinates.
+The ``precision`` argument gives the number of decimal places to include
+for coordinates.
 
 Optional ``flags`` can be specified to control the output format.
 
@@ -61,9 +66,11 @@ Optional ``flags`` can be specified to control the output format.
 %Docstring
 Formats a ``y`` coordinate value according to the specified parameters.
 
-The ``format`` argument indicates the desired display format for the coordinate.
+The ``format`` argument indicates the desired display format for the
+coordinate.
 
-The ``precision`` argument gives the number of decimal places to include for coordinates.
+The ``precision`` argument gives the number of decimal places to include
+for coordinates.
 
 Optional ``flags`` can be specified to control the output format.
 
@@ -74,27 +81,31 @@ Optional ``flags`` can be specified to control the output format.
 %Docstring
 Formats a ``point`` according to the specified parameters.
 
-The ``format`` argument indicates the desired display format for the coordinate.
+The ``format`` argument indicates the desired display format for the
+coordinate.
 
-The ``precision`` argument gives the number of decimal places to include for coordinates.
+The ``precision`` argument gives the number of decimal places to include
+for coordinates.
 
 Optional ``flags`` can be specified to control the output format.
 
-Since QGIS 3.26 the optional ``order`` argument can be used to control the order of the coordinates.
+Since QGIS 3.26 the optional ``order`` argument can be used to control
+the order of the coordinates.
 %End
 
     static QString asPair( double x, double y, int precision = 12, Qgis::CoordinateOrder order = Qgis::CoordinateOrder::XY );
 %Docstring
-Formats coordinates as an "``x``,``y``" pair, with optional decimal ``precision`` (number
-of decimal places to include).
+Formats coordinates as an "``x``,``y``" pair, with optional decimal
+``precision`` (number of decimal places to include).
 
-Since QGIS 3.26 the optional ``order`` argument can be used to control the order of the coordinates.
+Since QGIS 3.26 the optional ``order`` argument can be used to control
+the order of the coordinates.
 %End
 
     static QChar separator( );
 %Docstring
-Returns the character used as X/Y separator, this is a `,` on locales that do not use
-`,` as decimal separator, it is a space otherwise.
+Returns the character used as X/Y separator, this is a `,` on locales
+that do not use `,` as decimal separator, it is a space otherwise.
 
 .. versionadded:: 3.20
 %End

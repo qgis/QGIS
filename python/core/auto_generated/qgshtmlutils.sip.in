@@ -12,7 +12,7 @@
 class QgsHtmlUtils
 {
 %Docstring(signature="appended")
-Class for HTML utilities.
+Contains utilities for working with HTML.
 %End
 
 %TypeHeaderCode
@@ -22,8 +22,7 @@ Class for HTML utilities.
 
     static QString buildBulletList( const QStringList &values );
 %Docstring
-Build a bullet list.
-This will return a HTML "ul" element.
+Build a bullet list. This will return a HTML "ul" element.
 %End
 };
 

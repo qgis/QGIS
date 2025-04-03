@@ -15,7 +15,7 @@
 class QgsVectorLayerUndoPassthroughCommand : QgsVectorLayerUndoCommand
 {
 %Docstring(signature="appended")
-Undo command for vector layer in transaction group mode.
+Undo command for vector layer in a transaction group mode.
 %End
 
 %TypeHeaderCode
@@ -29,7 +29,8 @@ Constructor for QgsVectorLayerUndoPassthroughCommand
 
 :param buffer: associated edit buffer
 :param text: text associated with command
-:param autocreate: flag allowing to automatically create a savepoint if necessary
+:param autocreate: flag allowing to automatically create a savepoint if
+                   necessary
 %End
 
     bool hasError() const;
@@ -41,17 +42,16 @@ Returns error status
 
     bool rollBackToSavePoint();
 %Docstring
-Rollback command, release savepoint or set error status
-save point must be set prior to call
-error satus should be ``False`` prior to call
+Rollback command, release savepoint or set error status save point must
+be set prior to call error satus should be ``False`` prior to call
 %End
 
     bool setSavePoint( const QString &savePointId = QString() );
 %Docstring
-Set the command savepoint or set error status.
-Error satus should be ``False`` prior to call. If the savepoint given in
-parameter is empty, then a new one is created if none is currently
-available in the transaction.
+Set the command savepoint or set error status. Error satus should be
+``False`` prior to call. If the savepoint given in parameter is empty,
+then a new one is created if none is currently available in the
+transaction.
 %End
 
     void setError();
@@ -75,7 +75,8 @@ Returns the error message or an empty string if there's none.
 class QgsVectorLayerUndoPassthroughCommandAddFeatures : QgsVectorLayerUndoPassthroughCommand
 {
 %Docstring(signature="appended")
-Undo command for adding a feature to a vector layer in transaction group mode.
+Undo command for adding a feature to a vector layer in a transaction
+group mode.
 %End
 
 %TypeHeaderCode
@@ -98,7 +99,8 @@ Constructor for QgsVectorLayerUndoPassthroughCommandAddFeatures
 
     QgsFeatureList features() const;
 %Docstring
-List of features (added feaures can be modified by default values from database)
+List of features (added feaures can be modified by default values from
+database)
 %End
 
 };
@@ -108,7 +110,8 @@ List of features (added feaures can be modified by default values from database)
 class QgsVectorLayerUndoPassthroughCommandDeleteFeatures : QgsVectorLayerUndoPassthroughCommand
 {
 %Docstring(signature="appended")
-Undo command for deleting features from a vector layer in transaction group.
+Undo command for deleting features from a vector layer in a transaction
+group.
 %End
 
 %TypeHeaderCode
@@ -135,7 +138,8 @@ Constructor for QgsVectorLayerUndoPassthroughCommandDeleteFeatures
 class QgsVectorLayerUndoPassthroughCommandChangeGeometry : QgsVectorLayerUndoPassthroughCommand
 {
 %Docstring(signature="appended")
-Undo command for changing feature geometry from a vector layer in transaction group.
+Undo command for changing feature geometry from a vector layer in a
+transaction group.
 %End
 
 %TypeHeaderCode
@@ -167,7 +171,8 @@ Constructor for QgsVectorLayerUndoPassthroughCommandChangeGeometry
 class QgsVectorLayerUndoPassthroughCommandChangeAttribute: QgsVectorLayerUndoPassthroughCommand
 {
 %Docstring(signature="appended")
-Undo command for changing attr value from a vector layer in transaction group.
+Undo command for changing attr value from a vector layer in a
+transaction group.
 %End
 
 %TypeHeaderCode
@@ -181,8 +186,8 @@ Constructor for QgsVectorLayerUndoPassthroughCommandChangeAttribute
 
 :param buffer: associated edit buffer
 :param fid: feature ID of feature
-:param field:
-:param newValue:
+:param field: 
+:param newValue: 
 %End
 
     virtual void undo();
@@ -196,7 +201,8 @@ Constructor for QgsVectorLayerUndoPassthroughCommandChangeAttribute
 class QgsVectorLayerUndoPassthroughCommandChangeAttributes: QgsVectorLayerUndoPassthroughCommand
 {
 %Docstring(signature="appended")
-Undo command for changing attributes' values from a vector layer in transaction group.
+Undo command for changing attributes' values from a vector layer in a
+transaction group.
 %End
 
 %TypeHeaderCode
@@ -238,7 +244,7 @@ Undo command for adding attri to a vector layer in transaction group.
 Constructor for QgsVectorLayerUndoPassthroughCommandAddAttribute
 
 :param buffer: associated edit buffer
-:param field:
+:param field: 
 %End
 
     virtual void undo();
@@ -252,7 +258,8 @@ Constructor for QgsVectorLayerUndoPassthroughCommandAddAttribute
 class QgsVectorLayerUndoPassthroughCommandDeleteAttribute : QgsVectorLayerUndoPassthroughCommand
 {
 %Docstring(signature="appended")
-Undo command for deleting attri of a vector layer in transaction group.
+Undo command for deleting attributes of a vector layer in a transaction
+group.
 %End
 
 %TypeHeaderCode
@@ -265,7 +272,7 @@ Undo command for deleting attri of a vector layer in transaction group.
 Constructor for :py:class:`QgsVectorLayerUndoCommandDeleteAttribute`
 
 :param buffer: associated edit buffer
-:param attr:
+:param attr: 
 %End
 
     virtual void undo();
@@ -279,7 +286,8 @@ Constructor for :py:class:`QgsVectorLayerUndoCommandDeleteAttribute`
 class QgsVectorLayerUndoPassthroughCommandRenameAttribute : QgsVectorLayerUndoPassthroughCommand
 {
 %Docstring(signature="appended")
-Undo command for deleting attri of a vector layer in transaction group.
+Undo command for deleting attributes of a vector layer in a transaction
+group.
 %End
 
 %TypeHeaderCode
@@ -292,8 +300,8 @@ Undo command for deleting attri of a vector layer in transaction group.
 Constructor for :py:class:`QgsVectorLayerUndoCommandRenameAttribute`
 
 :param buffer: associated edit buffer
-:param attr:
-:param newName:
+:param attr: 
+:param newName: 
 %End
 
     virtual void undo();
@@ -307,7 +315,7 @@ Constructor for :py:class:`QgsVectorLayerUndoCommandRenameAttribute`
 class QgsVectorLayerUndoPassthroughCommandUpdate : QgsVectorLayerUndoPassthroughCommand
 {
 %Docstring(signature="appended")
-Undo command for running a specific sql query in transaction group.
+Undo command for running a specific sql query in a transaction group.
 %End
 
 %TypeHeaderCode

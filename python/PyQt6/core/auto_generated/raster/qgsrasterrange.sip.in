@@ -15,8 +15,8 @@ typedef QList<QgsRasterRange> QgsRasterRangeList;
 class QgsRasterRange
 {
 %Docstring(signature="appended")
-Raster values range container. Represents range of values between min and max
-including min and max value.
+Represents a range of raster values between min and max, optionally
+including the min and max value.
 %End
 
 %TypeHeaderCode
@@ -34,7 +34,8 @@ including min and max value.
 
     QgsRasterRange();
 %Docstring
-Default constructor, both min and max value for the range will be set to NaN.
+Default constructor, both min and max value for the range will be set to
+NaN.
 %End
 
     QgsRasterRange( double min, double max, BoundsType bounds = IncludeMinAndMax );
@@ -61,9 +62,8 @@ Returns the maximum value for the range.
 
     BoundsType bounds() const;
 %Docstring
-Returns the bounds type for the range, which specifies
-whether or not the min and max values themselves are included
-in the range.
+Returns the bounds type for the range, which specifies whether or not
+the min and max values themselves are included in the range.
 
 .. seealso:: :py:func:`setBounds`
 
@@ -86,9 +86,8 @@ Sets the maximum value for the range.
 
     void setBounds( BoundsType type );
 %Docstring
-Sets the bounds ``type`` for the range, which specifies
-whether or not the min and max values themselves are included
-in the range.
+Sets the bounds ``type`` for the range, which specifies whether or not
+the min and max values themselves are included in the range.
 
 .. seealso:: :py:func:`bounds`
 

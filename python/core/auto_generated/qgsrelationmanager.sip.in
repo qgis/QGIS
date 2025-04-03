@@ -13,7 +13,7 @@
 class QgsRelationManager : QObject
 {
 %Docstring(signature="appended")
-This class manages a set of relations between layers.
+Manages a set of relations between layers.
 %End
 
 %TypeHeaderCode
@@ -44,14 +44,14 @@ Will set the specified relations and remove any relation currently set.
 %Docstring
 Gets access to the relations managed by this class.
 
-:return: A QMap where the key is the relation id, the value the relation object.
+:return: A QMap where the key is the relation id, the value the relation
+         object.
 %End
 
     void addRelation( const QgsRelation &relation );
 %Docstring
-Add a relation.
-Invalid relations are added only if both referencing layer and referenced
-layer exist.
+Add a relation. Invalid relations are added only if both referencing
+layer and referenced layer exist.
 
 :param relation: The relation to add.
 %End
@@ -99,21 +99,25 @@ Remove any relation managed by this class.
 
     QList<QgsRelation> referencingRelations( const QgsVectorLayer *layer = 0, int fieldIdx = -2 ) const;
 %Docstring
-Gets all relations where the specified layer (and field) is the referencing part (i.e. the child table with the foreign key).
+Gets all relations where the specified layer (and field) is the
+referencing part (i.e. the child table with the foreign key).
 
 :param layer: The layer which should be searched for.
-:param fieldIdx: The field which should be part of the foreign key. If not set will return all relations.
+:param fieldIdx: The field which should be part of the foreign key. If
+                 not set will return all relations.
 
 :return: A list of relations matching the given layer and fieldIdx.
 %End
 
     QList<QgsRelation> referencedRelations( const QgsVectorLayer *layer = 0 ) const;
 %Docstring
-Gets all relations where this layer is the referenced part (i.e. the parent table with the primary key being referenced from another layer).
+Gets all relations where this layer is the referenced part (i.e. the
+parent table with the primary key being referenced from another layer).
 
 :param layer: The layer which should be searched for.
 
-:return: A list of relations where the specified layer is the referenced part.
+:return: A list of relations where the specified layer is the referenced
+         part.
 %End
 
     static QList<QgsRelation> discoverRelations( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers );
@@ -138,7 +142,8 @@ Returns the list of relations associated with a polymorphic relation
 
     void addPolymorphicRelation( const QgsPolymorphicRelation &polymorphicRelation );
 %Docstring
-Adds a new polymorphic relation. The generated relations are not available, they will be created automatically.
+Adds a new polymorphic relation. The generated relations are not
+available, they will be created automatically.
 %End
 
     void removePolymorphicRelation( const QString &polymorphicRelationId );
@@ -148,8 +153,9 @@ Removes an existing polymorphic relation and it's generated relations.
 
     void setPolymorphicRelations( const QList<QgsPolymorphicRelation> &relations );
 %Docstring
-Sets the specified polymorphic ``relations`` and removes any polymorphic relations currently set.
-Will remove any generated relations and recreate them.
+Sets the specified polymorphic ``relations`` and removes any polymorphic
+relations currently set. Will remove any generated relations and
+recreate them.
 %End
 
   signals:

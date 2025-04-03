@@ -132,6 +132,30 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     void setFilterExpression( const QString &filterExpression );
 
     /**
+     * Returns an attribute form feature to be used with the filter expression.
+     * \since QGIS 3.42.2
+     */
+    QgsFeature formFeature() const;
+
+    /**
+     * Sets an attribute form \a feature to be used with the filter expression.
+     * \since QGIS 3.42.2
+     */
+    void setFormFeature( const QgsFeature &feature );
+
+    /**
+     * Returns a parent attribute form feature to be used with the filter expression.
+     * \since QGIS 3.42.2
+     */
+    QgsFeature parentFormFeature() const;
+
+    /**
+     * Sets a parent attribute form \a feature to be used with the filter expression.
+     * \since QGIS 3.42.2
+     */
+    void setParentFormFeature( const QgsFeature &feature );
+
+    /**
      * Indicator if the model is currently performing any feature iteration in the background.
      */
     bool isLoading() const;
@@ -218,6 +242,18 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
      * Can be used for spatial filtering etc.
      */
     void filterExpressionChanged();
+
+    /**
+     * An attribute form feature to be used alongside the filter expression.
+     * \since QGIS 3.42.2
+     */
+    void formFeatureChanged();
+
+    /**
+     * A parent attribute form feature to be used alongside the filter expression.
+     * \since QGIS 3.42.2
+     */
+    void parentFormFeatureChanged();
 
     /**
      * Indicator if the model is currently performing any feature iteration in the background.
@@ -346,6 +382,9 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     QgsExpression mDisplayExpression;
     QString mFilterValue;
     QString mFilterExpression;
+
+    QgsFeature mFormFeature;
+    QgsFeature mParentFormFeature;
 
     mutable QgsExpressionContext mExpressionContext;
     mutable QMap< QgsFeatureId, QgsConditionalStyle > mEntryStylesMap;

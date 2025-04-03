@@ -31,8 +31,8 @@ Constructor for invalid properties.
 
     explicit QgsScreenProperties( const QScreen *screen );
 %Docstring
-Constructor for QgsScreenProperties, copying
-properties from the specified ``screen``.
+Constructor for QgsScreenProperties, copying properties from the
+specified ``screen``.
 %End
 
     bool operator==( const QgsScreenProperties &other ) const;
@@ -46,22 +46,28 @@ Returns ``True`` if the properties are valid.
 
     double devicePixelRatio() const;
 %Docstring
-Returns the ratio between physical pixels and device-independent pixels for the screen.
+Returns the ratio between physical pixels and device-independent pixels
+for the screen.
 
-This property holds the screen's ratio between physical pixels and device-independent pixels.
+This property holds the screen's ratio between physical pixels and
+device-independent pixels.
 
-Common values are 1.0 on normal displays and 2.0 on "retina" displays. Higher values are also possible.
+Common values are 1.0 on normal displays and 2.0 on "retina" displays.
+Higher values are also possible.
 
 .. seealso:: :py:func:`setDevicePixelRatio`
 %End
 
     void setDevicePixelRatio( double ratio );
 %Docstring
-Sets the ``ratio`` between physical pixels and device-independent pixels for the screen.
+Sets the ``ratio`` between physical pixels and device-independent pixels
+for the screen.
 
-This property holds the screen's ratio between physical pixels and device-independent pixels.
+This property holds the screen's ratio between physical pixels and
+device-independent pixels.
 
-Common values are 1.0 on normal displays and 2.0 on "retina" displays. Higher values are also possible.
+Common values are 1.0 on normal displays and 2.0 on "retina" displays.
+Higher values are also possible.
 
 .. seealso:: :py:func:`devicePixelRatio`
 %End
@@ -71,7 +77,8 @@ Common values are 1.0 on normal displays and 2.0 on "retina" displays. Higher va
 This property holds the number of physical dots or pixels per inch.
 
 This value represents the pixel density on the screen's display.
-Depending on what information the underlying system provides the value might not be entirely accurate.
+Depending on what information the underlying system provides the value
+might not be entirely accurate.
 
 .. note::
 
@@ -86,7 +93,8 @@ Depending on what information the underlying system provides the value might not
 Sets number of physical dots or pixels per inch.
 
 This value represents the pixel density on the screen's display.
-Depending on what information the underlying system provides the value might not be entirely accurate.
+Depending on what information the underlying system provides the value
+might not be entirely accurate.
 
 .. note::
 
@@ -98,8 +106,8 @@ Depending on what information the underlying system provides the value might not
 
     void updateRenderContextForScreen( QgsRenderContext &context ) const;
 %Docstring
-Updates the settings in a render ``context``
-to match the screen settings.
+Updates the settings in a render ``context`` to match the screen
+settings.
 %End
 
 };

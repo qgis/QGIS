@@ -18,6 +18,8 @@ QgsAuthMethod.Expansion.__and__ = lambda flag1, flag2: _force_int(flag1) & _forc
 QgsAuthMethod.Expansion.__or__ = lambda flag1, flag2: QgsAuthMethod.Expansion(_force_int(flag1) | _force_int(flag2))
 try:
     QgsAuthMethod.authMethodTag = staticmethod(QgsAuthMethod.authMethodTag)
+    QgsAuthMethod.__virtual_methods__ = ['editWidget', 'updateNetworkRequest', 'updateNetworkReply', 'updateDataSourceUriItems', 'updateNetworkProxy']
+    QgsAuthMethod.__abstract_methods__ = ['key', 'description', 'displayDescription', 'clearCachedConfig', 'updateMethodConfig']
     QgsAuthMethod.__group__ = ['auth']
 except (NameError, AttributeError):
     pass

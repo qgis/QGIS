@@ -29,6 +29,7 @@
 /**
  * \ingroup gui
  * \class QgsFieldValidator
+ * \brief A QValidator for validation against a QgsField's constraints and field type.
  */
 class GUI_EXPORT QgsFieldValidator : public QValidator
 {

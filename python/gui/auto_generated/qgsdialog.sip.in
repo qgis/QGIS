@@ -13,7 +13,7 @@
 class QgsDialog : QDialog
 {
 %Docstring(signature="appended")
-A generic dialog with layout and button box
+A generic dialog with layout and button box.
 %End
 
 %TypeHeaderCode
@@ -27,7 +27,8 @@ Constructor for QgsDialog.
 
     QVBoxLayout *layout();
 %Docstring
-Returns the central layout. Widgets added to it must have this dialog as parent.
+Returns the central layout. Widgets added to it must have this dialog as
+parent.
 %End
     QDialogButtonBox *buttonBox();
 %Docstring

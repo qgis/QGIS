@@ -14,7 +14,7 @@
 class QgsServerLogger : QgsMessageLogConsole
 {
 %Docstring(signature="appended")
-Writes message log into server logfile
+Writes message log into server log files.
 %End
 
 %TypeHeaderCode

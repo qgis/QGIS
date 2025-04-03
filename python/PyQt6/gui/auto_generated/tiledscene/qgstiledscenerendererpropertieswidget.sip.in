@@ -24,12 +24,14 @@ A generic widget for setting the 2D renderer for a tiled scene layer.
   public:
     QgsTiledSceneRendererPropertiesWidget( QgsTiledSceneLayer *layer, QgsStyle *style, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsTiledSceneRendererPropertiesWidget, associated with the specified ``layer`` and ``style`` database.
+Constructor for QgsTiledSceneRendererPropertiesWidget, associated with
+the specified ``layer`` and ``style`` database.
 %End
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
-Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+Sets the ``context`` in which the widget is shown, e.g., the associated
+map canvas and expression contexts.
 %End
 
     void syncToLayer( QgsMapLayer *layer ) final;

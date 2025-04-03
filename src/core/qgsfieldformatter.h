@@ -26,7 +26,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * \brief A context for field formatter containing information like the project
+ * \brief A context for field formatter containing information like the project.
  *
  * \since QGIS 3.12
  */

@@ -31,9 +31,9 @@ class QgsMapTool : QObject
 {
 %Docstring(signature="appended")
 Abstract base class for all map tools.
-Map tools are user interactive tools for manipulating the
-map canvas. For example map pan and zoom features are
-implemented as map tools.
+
+Map tools are user interactive tools for manipulating the map canvas.
+For example map pan and zoom features are implemented as map tools.
 %End
 
 %TypeHeaderCode
@@ -90,7 +90,8 @@ Mouse move event for overriding. Default implementation does nothing.
 
     virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e );
 %Docstring
-Mouse double-click event for overriding. Default implementation does nothing.
+Mouse double-click event for overriding. Default implementation does
+nothing.
 %End
 
     virtual void canvasPressEvent( QgsMapMouseEvent *e );
@@ -126,22 +127,24 @@ gesture event for overriding. Default implementation does nothing.
     virtual bool canvasToolTipEvent( QHelpEvent *e );
 %Docstring
 Tooltip event for overriding. Default implementation does nothing.
-Returns whether the event was handled by the tool and should not be propagated further.
+Returns whether the event was handled by the tool and should not be
+propagated further.
 
 .. versionadded:: 3.22
 %End
 
     void setAction( QAction *action );
 %Docstring
-Use this to associate a QAction to this maptool. Then when the setMapTool
-method of mapcanvas is called the action state will be set to on.
-Usually this will cause e.g. a toolbutton to appear pressed in and
+Use this to associate a QAction to this maptool. Then when the
+setMapTool method of mapcanvas is called the action state will be set to
+on. Usually this will cause e.g. a toolbutton to appear pressed in and
 the previously used toolbutton to pop out.
 %End
 
     QAction *action();
 %Docstring
-Returns associated action with map tool or ``None`` if no action is associated
+Returns associated action with map tool or ``None`` if no action is
+associated
 %End
 
     bool isActive() const;
@@ -154,12 +157,14 @@ Returns if the current map tool active on the map canvas
     void setButton( QAbstractButton *button );
 %Docstring
 Use this to associate a button to this maptool. It has the same meaning
-as :py:func:`~QgsMapTool.setAction` function except it works with a button instead of an QAction.
+as :py:func:`~QgsMapTool.setAction` function except it works with a
+button instead of an QAction.
 %End
 
     QAbstractButton *button();
 %Docstring
-Returns associated button with map tool or ``None`` if no button is associated
+Returns associated button with map tool or ``None`` if no button is
+associated
 %End
 
     virtual void setCursor( const QCursor &cursor );
@@ -205,30 +210,33 @@ Emit map tool changed with the old tool
 
     static double searchRadiusMM();
 %Docstring
-Gets search radius in mm. Used by identify, tip etc.
-The values is currently set in identify tool options (move somewhere else?)
-and defaults to :py:class:`Qgis`.DEFAULT_SEARCH_RADIUS_MM.
+Gets search radius in mm. Used by identify, tip etc. The values is
+currently set in identify tool options (move somewhere else?) and
+defaults to :py:class:`Qgis`.DEFAULT_SEARCH_RADIUS_MM.
 %End
 
     static double searchRadiusMU( const QgsRenderContext &context );
 %Docstring
-Gets search radius in map units for given context. Used by identify, tip etc.
-The values is calculated from :py:func:`~QgsMapTool.searchRadiusMM`.
+Gets search radius in map units for given context. Used by identify, tip
+etc. The values is calculated from
+:py:func:`~QgsMapTool.searchRadiusMM`.
 %End
 
     static double searchRadiusMU( QgsMapCanvas *canvas );
 %Docstring
-Gets search radius in map units for given canvas. Used by identify, tip etc.
-The values is calculated from :py:func:`~QgsMapTool.searchRadiusMM`.
+Gets search radius in map units for given canvas. Used by identify, tip
+etc. The values is calculated from
+:py:func:`~QgsMapTool.searchRadiusMM`.
 %End
 
     virtual void populateContextMenu( QMenu *menu );
 %Docstring
-Allows the tool to populate and customize the given ``menu``,
-prior to showing it in response to a right-mouse button click.
+Allows the tool to populate and customize the given ``menu``, prior to
+showing it in response to a right-mouse button click.
 
-``menu`` will be initially populated with a set of default, generic actions.
-Any new actions added to the menu should be correctly parented to ``menu``.
+``menu`` will be initially populated with a set of default, generic
+actions. Any new actions added to the menu should be correctly parented
+to ``menu``.
 
 The default implementation does nothing.
 
@@ -242,15 +250,18 @@ The default implementation does nothing.
 
     virtual bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event );
 %Docstring
-Allows the tool to populate and customize the given ``menu``,
-prior to showing it in response to a right-mouse button click.
+Allows the tool to populate and customize the given ``menu``, prior to
+showing it in response to a right-mouse button click.
 
-``menu`` will be initially populated with a set of default, generic actions.
-Any new actions added to the menu should be correctly parented to ``menu``.
+``menu`` will be initially populated with a set of default, generic
+actions. Any new actions added to the menu should be correctly parented
+to ``menu``.
 
-A pointer to the map mouse ``event`` can be provided to allow particular behavior depending on the map tool.
+A pointer to the map mouse ``event`` can be provided to allow particular
+behavior depending on the map tool.
 
-This method can return true to inform the caller that the menu was effectively populated.
+This method can return true to inform the caller that the menu was
+effectively populated.
 
 The default implementation does nothing and returns false.
 
@@ -271,14 +282,16 @@ Transforms a ``point`` from screen coordinates to map coordinates.
 
     void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 %Docstring
-Emitted when a ``message`` should be shown to the user in the application message bar.
+Emitted when a ``message`` should be shown to the user in the
+application message bar.
 
 .. seealso:: :py:func:`messageDiscarded`
 %End
 
     void messageDiscarded();
 %Docstring
-Emitted when the previous message from the tool should be cleared from the application message bar.
+Emitted when the previous message from the tool should be cleared from
+the application message bar.
 
 .. seealso:: :py:func:`messageEmitted`
 %End
@@ -314,6 +327,7 @@ Constructor takes a map canvas as a parameter.
 %Docstring
 Transforms a ``point`` from map coordinates to ``layer`` coordinates.
 
+
 %End
 
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
@@ -328,12 +342,15 @@ Transforms a ``point`` from map coordinates to ``layer`` coordinates.
 
     QgsPointXY toMapCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 %Docstring
-Transforms a ``point`` from ``layer`` coordinates to map coordinates (which is different in case reprojection is used).
+Transforms a ``point`` from ``layer`` coordinates to map coordinates
+(which is different in case reprojection is used).
 %End
 
     QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) /PyName=toMapCoordinatesV2/;
 %Docstring
-Transforms a ``point`` from ``layer`` coordinates to map coordinates (which is different in case reprojection is used).
+Transforms a ``point`` from ``layer`` coordinates to map coordinates
+(which is different in case reprojection is used).
+
 
 %End
 
@@ -349,11 +366,14 @@ Transforms a ``point`` from map coordinates to screen coordinates.
 
     QgsMapLayer *layer( const QString &id );
 %Docstring
-Returns the map layer with the matching ID, or ``None`` if no layers could be found.
+Returns the map layer with the matching ID, or ``None`` if no layers
+could be found.
 
-This method searches both layers associated with the map canvas (see :py:func:`QgsMapCanvas.layers()`)
-and layers from the :py:class:`QgsProject` associated with the canvas. It can be used to resolve layer IDs to
-layers which may be visible in the canvas, but not associated with a :py:class:`QgsProject`.
+This method searches both layers associated with the map canvas (see
+:py:func:`QgsMapCanvas.layers()`) and layers from the
+:py:class:`QgsProject` associated with the canvas. It can be used to
+resolve layer IDs to layers which may be visible in the canvas, but not
+associated with a :py:class:`QgsProject`.
 
 .. versionadded:: 3.22
 %End

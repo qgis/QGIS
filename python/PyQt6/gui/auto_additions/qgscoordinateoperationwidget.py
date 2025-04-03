@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/gui/proj/qgscoordinateoperationwidget.h
 try:
     QgsCoordinateOperationWidget.OperationDetails.__attribute_docs__ = {'sourceTransformId': 'Source transform ID', 'destinationTransformId': 'Destination transform ID', 'proj': 'Proj coordinate operation description, for Proj >= 6.0 builds only', 'isAvailable': '``True`` if operation is available', 'allowFallback': '``True`` if fallback transforms can be used'}
+    QgsCoordinateOperationWidget.OperationDetails.__annotations__ = {'sourceTransformId': int, 'destinationTransformId': int, 'proj': str, 'isAvailable': bool, 'allowFallback': bool}
     QgsCoordinateOperationWidget.OperationDetails.__doc__ = """Coordinate operation details"""
     QgsCoordinateOperationWidget.OperationDetails.__group__ = ['proj']
 except (NameError, AttributeError):

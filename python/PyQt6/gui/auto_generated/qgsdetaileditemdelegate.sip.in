@@ -12,8 +12,8 @@
 class QgsDetailedItemDelegate : QAbstractItemDelegate
 {
 %Docstring(signature="appended")
-A custom model/view delegate that can display an icon, heading
-and detail sections.
+A custom model/view delegate that can display an icon, heading and
+detail sections.
 
 .. seealso:: :py:class:`QgsDetailedItemData`
 %End

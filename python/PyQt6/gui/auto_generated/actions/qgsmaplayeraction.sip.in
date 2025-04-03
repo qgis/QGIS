@@ -14,10 +14,12 @@
 class QgsMapLayerAction : QAction
 {
 %Docstring(signature="appended")
-An action which can run on map layers
+An action which can run on map layers.
+
 The class can be used in two manners:
-* by instantiating it and connecting to its signals to perform an action
-* by subclassing and reimplementing its method (only since QGIS 3.18.2)
+
+- by instantiating it and connecting to its signals to perform an action
+- by subclassing and reimplementing its method (only since QGIS 3.18.2)
 %End
 
 %TypeHeaderCode
@@ -129,7 +131,8 @@ Returns availibity of action
 
     bool isEnabledOnlyWhenEditable() const;
 %Docstring
-Returns ``True`` if the action is only enabled for layers in editable mode.
+Returns ``True`` if the action is only enabled for layers in editable
+mode.
 %End
 
   signals:

@@ -1,4 +1,4 @@
-/* **************************************************************************
+/***************************************************************************
                 qgscolorrampshader.cpp -  description
                        -------------------
 begin                : Fri Dec 28 2007
@@ -9,7 +9,7 @@ This class is based off of code that was originally written by Marco Hugentobler
 originally part of the larger QgsRasterLayer class
 ****************************************************************************/
 
-/* **************************************************************************
+/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -608,7 +608,7 @@ void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem, const 
   QDomElement sourceColorRampElem = colorRampShaderElem.firstChildElement( QStringLiteral( "colorramp" ) );
   if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
   {
-    setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
+    setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ).release() );
   }
 
   setColorRampType( colorRampShaderElem.attribute( QStringLiteral( "colorRampType" ), QStringLiteral( "INTERPOLATED" ) ) );

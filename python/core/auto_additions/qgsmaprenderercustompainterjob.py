@@ -1,9 +1,10 @@
 # The following has been generated automatically from src/core/maprenderer/qgsmaprenderercustompainterjob.h
 try:
-    QgsMapRendererAbstractCustomPainterJob.__group__ = ['maprenderer']
+    QgsMapRendererCustomPainterJob.__overridden_methods__ = ['cancel', 'cancelWithoutBlocking', 'waitForFinished', 'isActive', 'usedCachedLabels', 'takeLabelingResults']
+    QgsMapRendererCustomPainterJob.__group__ = ['maprenderer']
 except (NameError, AttributeError):
     pass
 try:
-    QgsMapRendererCustomPainterJob.__group__ = ['maprenderer']
+    QgsMapRendererAbstractCustomPainterJob.__group__ = ['maprenderer']
 except (NameError, AttributeError):
     pass

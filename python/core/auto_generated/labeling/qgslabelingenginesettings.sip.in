@@ -11,7 +11,7 @@
 class QgsLabelingEngineSettings
 {
 %Docstring(signature="appended")
-Stores global configuration for labeling engine
+Stores global configuration for labeling engine.
 %End
 
 %TypeHeaderCode
@@ -58,7 +58,8 @@ Sets whether a particual flag is enabled
 
     double maximumLineCandidatesPerCm() const;
 %Docstring
-Returns the maximum number of line label candidate positions per centimeter.
+Returns the maximum number of line label candidate positions per
+centimeter.
 
 .. seealso:: :py:func:`setMaximumLineCandidatesPerCm`
 
@@ -76,7 +77,8 @@ Sets the maximum number of line label ``candidates`` per centimeter.
 
     double maximumPolygonCandidatesPerCmSquared() const;
 %Docstring
-Returns the maximum number of polygon label candidate positions per centimeter squared.
+Returns the maximum number of polygon label candidate positions per
+centimeter squared.
 
 .. seealso:: :py:func:`setMaximumPolygonCandidatesPerCmSquared`
 
@@ -85,7 +87,8 @@ Returns the maximum number of polygon label candidate positions per centimeter s
 
     void setMaximumPolygonCandidatesPerCmSquared( double candidates );
 %Docstring
-Sets the maximum number of polygon label ``candidates`` per centimeter squared.
+Sets the maximum number of polygon label ``candidates`` per centimeter
+squared.
 
 .. seealso:: :py:func:`maximumPolygonCandidatesPerCmSquared`
 
@@ -94,7 +97,8 @@ Sets the maximum number of polygon label ``candidates`` per centimeter squared.
 
  void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const /Deprecated="Since 3.12. Use maximumPolygonCandidatesPerCmSquared() and maximumLineCandidatesPerCm() instead."/;
 %Docstring
-Gets number of candidate positions that will be generated for each label feature.
+Gets number of candidate positions that will be generated for each label
+feature.
 
 .. deprecated:: 3.12
 
@@ -103,7 +107,8 @@ Gets number of candidate positions that will be generated for each label feature
 
  void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) /Deprecated="Since 3.12. Use setMaximumPolygonCandidatesPerCmSquared() and setMaximumLineCandidatesPerCm() instead."/;
 %Docstring
-Sets the number of candidate positions that will be generated for each label feature.
+Sets the number of candidate positions that will be generated for each
+label feature.
 
 .. deprecated:: 3.12
 
@@ -112,7 +117,8 @@ Sets the number of candidate positions that will be generated for each label fea
 
  void setSearchMethod( Search s ) /Deprecated="Since 3.10. Chain is always used."/;
 %Docstring
-Used to set which search method to use for removal collisions between labels
+Used to set which search method to use for removal collisions between
+labels
 
 .. deprecated:: 3.10
 
@@ -185,7 +191,8 @@ Reads the label engine settings from an XML ``element``.
 %Docstring
 Resolves reference to layers from stored layer ID.
 
-Should be called following a call :py:func:`~QgsLabelingEngineSettings.readXml`.
+Should be called following a call
+:py:func:`~QgsLabelingEngineSettings.readXml`.
 
 .. versionadded:: 3.40
 %End
@@ -229,7 +236,8 @@ Sets the ``color`` to use when rendering unplaced labels.
 
     Qgis::LabelPlacementEngineVersion placementVersion() const;
 %Docstring
-Returns the placement engine version, which dictates how the label placement problem is solved.
+Returns the placement engine version, which dictates how the label
+placement problem is solved.
 
 .. seealso:: :py:func:`setPlacementVersion`
 
@@ -238,7 +246,8 @@ Returns the placement engine version, which dictates how the label placement pro
 
     void setPlacementVersion( Qgis::LabelPlacementEngineVersion version );
 %Docstring
-Sets the placement engine ``version``, which dictates how the label placement problem is solved.
+Sets the placement engine ``version``, which dictates how the label
+placement problem is solved.
 
 .. seealso:: :py:func:`placementVersion`
 
@@ -247,8 +256,8 @@ Sets the placement engine ``version``, which dictates how the label placement pr
 
     QList< QgsAbstractLabelingEngineRule * > rules();
 %Docstring
-Returns a list of labeling engine rules which must be satisfied
-while placing labels.
+Returns a list of labeling engine rules which must be satisfied while
+placing labels.
 
 .. seealso:: :py:func:`addRule`
 
@@ -260,8 +269,8 @@ while placing labels.
 
     void addRule( QgsAbstractLabelingEngineRule *rule /Transfer/ );
 %Docstring
-Adds a labeling engine ``rule`` which must be satisfied
-while placing labels.
+Adds a labeling engine ``rule`` which must be satisfied while placing
+labels.
 
 Ownership of the rule is transferred to the settings.
 
@@ -274,8 +283,8 @@ Ownership of the rule is transferred to the settings.
 
     void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules /Transfer/ );
 %Docstring
-Sets the labeling engine ``rules`` which must be satisfied
-while placing labels.
+Sets the labeling engine ``rules`` which must be satisfied while placing
+labels.
 
 Ownership of the rules are transferred to the settings.
 

@@ -82,7 +82,7 @@ class GUI_EXPORT QgsAbstractSensorWidget : public QWidget
 /**
  * \ingroup gui
  * \class QgsTcpSocketSensorWidget
- * \brief A configuration widget which allow control over QgsTcpSocketSensor properties.
+ * \brief A configuration widget which allows control over QgsTcpSocketSensor properties.
  * \since QGIS 3.32
  */
 class GUI_EXPORT QgsTcpSocketSensorWidget : public QgsAbstractSensorWidget, private Ui::WidgetTcpSocketSensor
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsTcpSocketSensorWidget : public QgsAbstractSensorWidget, priv
 /**
  * \ingroup gui
  * \class QgsUdpSocketSensorWidget
- * \brief A configuration widget which allow control over QgsUdpSocketSensorWidget properties.
+ * \brief A configuration widget which allows control over QgsUdpSocketSensorWidget properties.
  * \since QGIS 3.32
  */
 class GUI_EXPORT QgsUdpSocketSensorWidget : public QgsAbstractSensorWidget, private Ui::WidgetUdpSocketSensor
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsUdpSocketSensorWidget : public QgsAbstractSensorWidget, priv
 /**
  * \ingroup gui
  * \class QgsSerialPortSensorWidget
- * \brief A configuration widget which allow control over QgsSerialPortSensor properties.
+ * \brief A configuration widget which allows control over QgsSerialPortSensor properties.
  * \since QGIS 3.32
  */
 class GUI_EXPORT QgsSerialPortSensorWidget : public QgsAbstractSensorWidget, private Ui::WidgetSerialPortSensor

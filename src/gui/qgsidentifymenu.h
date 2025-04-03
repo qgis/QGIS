@@ -41,10 +41,13 @@ class CustomActionRegistry : public QgsMapLayerActionRegistry
 
 /**
  * \ingroup gui
- * \brief The QgsIdentifyMenu class builds a menu to be used with identify results (\see QgsMapToolIdentify).
+ * \brief Builds a menu to be used with identify results.
+ *
  * It is customizable and can display attribute actions (\see QgsAction) as well as map layer actions (\see QgsMapLayerAction).
  * It can also embed custom map layer actions, defined for this menu exclusively.
  * If used in a QgsMapToolIdentify, it is accessible via QgsMapToolIdentify::identifyMenu() and can be customized in the map tool sub-class.
+ *
+ * \see QgsMapToolIdentify
  */
 class GUI_EXPORT QgsIdentifyMenu : public QMenu
 {

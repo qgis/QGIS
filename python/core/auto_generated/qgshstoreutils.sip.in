@@ -8,23 +8,30 @@
 
 
 
-%ModuleHeaderCode
-#include "qgshstoreutils.h"
+class QgsHstoreUtils
+{
+%Docstring(signature="appended")
+Provides utility functions for handling hstore-formatted strings.
+
+.. versionadded:: 3.4
 %End
 
-namespace QgsHstoreUtils
-{
+%TypeHeaderCode
+#include "qgshstoreutils.h"
+%End
+  public:
 
-  QVariantMap parse( const QString &string );
+    static QVariantMap parse( const QString &string );
 %Docstring
-Returns a QVariantMap object containing the key and values from a hstore-formatted string.
+Returns a QVariantMap object containing the key and values from a
+hstore-formatted string.
 
 :param string: The hstored-formatted string
 
 .. versionadded:: 3.4
 %End
 
-  QString build( const QVariantMap &map );
+    static QString build( const QVariantMap &map );
 %Docstring
 Build a hstore-formatted string from a QVariantMap.
 

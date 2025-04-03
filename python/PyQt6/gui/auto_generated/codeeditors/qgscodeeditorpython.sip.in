@@ -14,8 +14,9 @@
 class QgsCodeEditorPython : QgsCodeEditor
 {
 %Docstring(signature="appended")
-A Python editor based on QScintilla2. Adds syntax highlighting and
-code autocompletion.
+A Python editor based on QScintilla2.
+
+Adds syntax highlighting and code autocompletion.
 
 .. note::
 
@@ -56,21 +57,24 @@ Loads a ``script`` file.
 
     bool isCursorInsideStringLiteralOrComment() const;
 %Docstring
-Check whether the current cursor position is inside a string literal or a comment
+Check whether the current cursor position is inside a string literal or
+a comment
 
 .. versionadded:: 3.30
 %End
 
     QString characterBeforeCursor() const;
 %Docstring
-Returns the character before the cursor, or an empty string if cursor is set at start
+Returns the character before the cursor, or an empty string if cursor is
+set at start
 
 .. versionadded:: 3.30
 %End
 
     QString characterAfterCursor() const;
 %Docstring
-Returns the character after the cursor, or an empty string if the cursor is set at end
+Returns the character after the cursor, or an empty string if the cursor
+is set at end
 
 .. versionadded:: 3.30
 %End
@@ -96,7 +100,8 @@ Searches the selected text in the official PyQGIS online documentation.
 
     virtual void showApiDocumentation( const QString &item );
 %Docstring
-Displays the given text in the official APIs (PyQGIS, C++ QGIS or Qt) documentation.
+Displays the given text in the official APIs (PyQGIS, C++ QGIS or Qt)
+documentation.
 
 .. versionadded:: 3.42
 %End

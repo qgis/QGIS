@@ -59,10 +59,12 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsLayoutGuideCollection.__overridden_methods__ = ['stringType', 'layout', 'rowCount', 'columnCount', 'data', 'setData', 'flags', 'headerData', 'removeRows', 'writeXml', 'readXml']
     QgsLayoutGuideCollection.__group__ = ['layout']
 except (NameError, AttributeError):
     pass
 try:
+    QgsLayoutGuideProxyModel.__overridden_methods__ = ['filterAcceptsRow', 'lessThan']
     QgsLayoutGuideProxyModel.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

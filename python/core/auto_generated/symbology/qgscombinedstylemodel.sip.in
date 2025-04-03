@@ -12,8 +12,8 @@
 class QgsCombinedStyleModel: QConcatenateTablesProxyModel
 {
 %Docstring(signature="appended")
-
-A model which contains entities from multiple :py:class:`QgsStyle` databases.
+A model which contains entities from multiple :py:class:`QgsStyle`
+databases.
 
 .. note::
 
@@ -29,7 +29,8 @@ A model which contains entities from multiple :py:class:`QgsStyle` databases.
 
     explicit QgsCombinedStyleModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsCombinedStyleModel with the specified ``parent`` object.
+Constructor for QgsCombinedStyleModel with the specified ``parent``
+object.
 %End
 
      virtual QVariant headerData( int section, Qt::Orientation orientation,
@@ -50,7 +51,8 @@ Ownership of ``style`` is not transferred.
 
     void addDefaultStyle();
 %Docstring
-Adds the default style (:py:func:`QgsStyle.defaultStyle()`) to the model.
+Adds the default style (:py:func:`QgsStyle.defaultStyle()`) to the
+model.
 
 .. seealso:: :py:func:`addStyle`
 %End
@@ -79,10 +81,12 @@ corresponds exactly to the view's icon size in which this model is used.
 
     void addTargetScreenProperties( const QgsScreenProperties &properties );
 %Docstring
-Adds additional target screen ``properties`` to use when generating icons for Qt.DecorationRole data.
+Adds additional target screen ``properties`` to use when generating
+icons for Qt.DecorationRole data.
 
-This allows style icons to be generated at an icon device pixel ratio and DPI which
-corresponds exactly to the view's screen properties in which this model is used.
+This allows style icons to be generated at an icon device pixel ratio
+and DPI which corresponds exactly to the view's screen properties in
+which this model is used.
 
 .. versionadded:: 3.32
 %End

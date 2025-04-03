@@ -12,7 +12,8 @@
 class QgsQuantizedMeshTerrainSettings : QgsAbstractTerrainSettings
 {
 %Docstring(signature="appended")
-Terrain settings for a terrain generator that uses uses a quantized mesh tile layer to build a terrain.
+Terrain settings for a terrain generator that uses a quantized mesh tile
+layer to build a terrain.
 
 .. warning::
 
@@ -40,14 +41,16 @@ Creates a new instance of a QgsQuantizedMeshTerrainSettings object.
 
     void setLayer( QgsTiledSceneLayer *layer );
 %Docstring
-Sets the quantized mesh tile ``layer`` with elevation model to be used for terrain generation.
+Sets the quantized mesh tile ``layer`` with elevation model to be used
+for terrain generation.
 
 .. seealso:: :py:func:`layer`
 %End
 
     QgsTiledSceneLayer *layer() const;
 %Docstring
-Returns the quantized mesh tile layer with elevation model to be used for terrain generation.
+Returns the quantized mesh tile layer with elevation model to be used
+for terrain generation.
 
 .. seealso:: :py:func:`setLayer`
 %End

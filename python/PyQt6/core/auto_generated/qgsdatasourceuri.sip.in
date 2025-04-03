@@ -13,10 +13,12 @@
 class QgsDataSourceUri
 {
 %Docstring(signature="appended")
-Class for storing the component parts of a RDBMS data source URI (e.g. a Postgres data source).
+Stores the component parts of a data source URI (e.g. a Postgres data
+source).
 
-This structure stores the database connection information, including host, database,
-user name, password, schema, password, and SQL where clause.
+This structure stores the database connection information, including
+host, database, user name, password, schema, password, and SQL where
+clause.
 %End
 
 %TypeHeaderCode
@@ -85,6 +87,7 @@ Sets a generic parameter ``value`` on the URI.
 %Docstring
 Sets a generic parameter list ``value`` on the URI.
 
+
 %End
 
     int removeParam( const QString &key );
@@ -98,12 +101,14 @@ Removes a generic parameter by ``key``.
 
     QString param( const QString &key ) const;
 %Docstring
-Returns a generic parameter value corresponding to the specified ``key``.
+Returns a generic parameter value corresponding to the specified
+``key``.
 %End
 
     QStringList params( const QString &key ) const;
 %Docstring
-Returns multiple generic parameter values corresponding to the specified ``key``.
+Returns multiple generic parameter values corresponding to the specified
+``key``.
 %End
 
     bool hasParam( const QString &key ) const;
@@ -145,8 +150,9 @@ Sets the URI database name.
 %Docstring
 Sets all data source related members at once.
 
-The ``aSql`` argument represents a subset filter string to be applied to the source, and should take the
-form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+The ``aSql`` argument represents a subset filter string to be applied to
+the source, and should take the form of a SQL "where" clause (e.g.
+"VALUE > 5", "CAT IN (1,2,3)").
 %End
 
     void setAuthConfigId( const QString &authcfg );
@@ -169,14 +175,17 @@ Sets the ``password`` for the URI.
 Removes the password element from a URI.
 
 :param aUri: A data source uri
-:param hide: ``True`` to replace the password value with 'xxxxxxxx', ``False`` to remove password (key and value) (since QGIS 3.34)
+:param hide: ``True`` to replace the password value with 'xxxxxxxx',
+             ``False`` to remove password (key and value) (since QGIS
+             3.34)
 
 :return: The data source uri without the password
 %End
 
     QString authConfigId() const;
 %Docstring
-Returns any associated authentication configuration ID stored in the URI.
+Returns any associated authentication configuration ID stored in the
+URI.
 %End
 
     QString username() const;
@@ -198,8 +207,9 @@ Returns the table name stored in the URI.
 %Docstring
 Returns the SQL filter stored in the URI, if set.
 
-This represents a subset filter string to be applied to the source, and takes the
-form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+This represents a subset filter string to be applied to the source, and
+takes the form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN
+(1,2,3)").
 
 .. seealso:: :py:func:`setSql`
 %End
@@ -216,7 +226,8 @@ Sets whether estimated metadata should be used for the connection.
 
     bool useEstimatedMetadata() const;
 %Docstring
-Returns ``True`` if estimated metadata should be used for the connection.
+Returns ``True`` if estimated metadata should be used for the
+connection.
 %End
 
     void disableSelectAtId( bool flag );
@@ -243,8 +254,9 @@ Sets the ``scheme`` for the URI.
 %Docstring
 Sets the ``sql`` filter for the URI.
 
-The ``sql`` represents a subset filter string to be applied to the source, and should take the
-form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+The ``sql`` represents a subset filter string to be applied to the
+source, and should take the form of a SQL "where" clause (e.g. "VALUE >
+5", "CAT IN (1,2,3)").
 
 .. seealso:: :py:func:`sql`
 %End
@@ -365,7 +377,8 @@ Sets the spatial reference ID associated with the URI.
 
     static SslMode decodeSslMode( const QString &sslMode );
 %Docstring
-Decodes SSL mode string into enum value. If the string is not recognized, SslPrefer is returned.
+Decodes SSL mode string into enum value. If the string is not
+recognized, SslPrefer is returned.
 
 .. versionadded:: 3.2
 %End
@@ -393,7 +406,8 @@ Sets geometry column name to ``geometryColumn``
 
     QSet<QString> parameterKeys() const;
 %Docstring
-Returns parameter keys used in the uri: specialized ones ("table", "schema", etc.) or generic parameters.
+Returns parameter keys used in the uri: specialized ones ("table",
+"schema", etc.) or generic parameters.
 
 .. versionadded:: 3.26
 %End

@@ -33,7 +33,7 @@
 
 /**
  * \ingroup core
- * \brief This class wraps a request for features to a vector layer (or directly its vector data provider).
+ * \brief Wraps a request for features to a vector layer (or directly its vector data provider).
  *
  * The request may apply an attribute/ID filter to fetch only a particular subset of features. Currently supported filters:
  *
@@ -1031,7 +1031,7 @@ class QgsAbstractFeatureIterator;
 
 /**
  * \ingroup core
- * \brief Base class that can be used for any class that is capable of returning features
+ * \brief Base class that can be used for any class that is capable of returning features.
  */
 class CORE_EXPORT QgsAbstractFeatureSource
 {

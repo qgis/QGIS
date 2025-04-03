@@ -13,7 +13,7 @@
 class QgsGui : QObject
 {
 %Docstring(signature="appended")
-:py:class:`QgsGui` is a singleton class containing various registry and other global members
+A singleton class containing various registry and other global members
 related to GUI classes.
 %End
 
@@ -44,87 +44,100 @@ Returns the gui's settings registry, used for managing gui settings.
 
     static QgsEditorWidgetRegistry *editorWidgetRegistry() /KeepReference/;
 %Docstring
-Returns the global editor widget registry, used for managing all known edit widget factories.
+Returns the global editor widget registry, used for managing all known
+edit widget factories.
 %End
 
     static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry() /KeepReference/;
 %Docstring
-Returns the global source select provider registry, used for managing all known source select widget factories.
+Returns the global source select provider registry, used for managing
+all known source select widget factories.
 %End
 
     static QgsShortcutsManager *shortcutsManager();
 %Docstring
-Returns the global shortcuts manager, used for managing a QAction and QShortcut sequences.
+Returns the global shortcuts manager, used for managing a QAction and
+QShortcut sequences.
 %End
 
     static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry() /KeepReference/;
 %Docstring
-Returns the global layer tree embedded widget registry, used for registering widgets that may be embedded into layer tree view.
+Returns the global layer tree embedded widget registry, used for
+registering widgets that may be embedded into layer tree view.
 %End
 
     static QgsMapLayerActionRegistry *mapLayerActionRegistry() /KeepReference/;
 %Docstring
-Returns the global map layer action registry, used for registering map layer actions.
+Returns the global map layer action registry, used for registering map
+layer actions.
 %End
 
     static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry() /KeepReference/;
 %Docstring
-Returns the global layout item GUI registry, used for registering the GUI behavior of layout items.
+Returns the global layout item GUI registry, used for registering the
+GUI behavior of layout items.
 %End
 
     static QgsAnnotationItemGuiRegistry *annotationItemGuiRegistry() /KeepReference/;
 %Docstring
-Returns the global annotation item GUI registry, used for registering the GUI behavior of annotation items.
+Returns the global annotation item GUI registry, used for registering
+the GUI behavior of annotation items.
 
 .. versionadded:: 3.22
 %End
 
     static QgsAdvancedDigitizingToolsRegistry *advancedDigitizingToolsRegistry() /KeepReference/;
 %Docstring
-Returns the global advanced digitizing tools registry, used for registering advanced digitizing tools.
+Returns the global advanced digitizing tools registry, used for
+registering advanced digitizing tools.
 
 .. versionadded:: 3.40
 %End
 
     static QgsProcessingGuiRegistry *processingGuiRegistry() /KeepReference/;
 %Docstring
-Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
+Returns the global processing gui registry, used for registering the GUI
+behavior of processing algorithms.
 
 .. versionadded:: 3.2
 %End
 
     static QgsNumericFormatGuiRegistry *numericFormatGuiRegistry() /KeepReference/;
 %Docstring
-Returns the global numeric format gui registry, used for registering the GUI widgets associated with :py:class:`QgsNumericFormats`.
+Returns the global numeric format gui registry, used for registering the
+GUI widgets associated with :py:class:`QgsNumericFormats`.
 
 .. versionadded:: 3.12
 %End
 
     static QgsCodeEditorColorSchemeRegistry *codeEditorColorSchemeRegistry() /KeepReference/;
 %Docstring
-Returns the global code editor color scheme registry, used for registering the color schemes for :py:class:`QgsCodeEditor` widgets.
+Returns the global code editor color scheme registry, used for
+registering the color schemes for :py:class:`QgsCodeEditor` widgets.
 
 .. versionadded:: 3.16
 %End
 
     static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
 %Docstring
-Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
+Returns the global processing recent algorithm log, used for tracking
+recently used processing algorithms.
 
 .. versionadded:: 3.4
 %End
 
     static QgsProcessingFavoriteAlgorithmManager *processingFavoriteAlgorithmManager();
 %Docstring
-Returns the global Processing favorite algorithm manager, used for tracking favorite Processing algorithms.
+Returns the global Processing favorite algorithm manager, used for
+tracking favorite Processing algorithms.
 
 .. versionadded:: 3.40
 %End
 
     static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() /KeepReference/;
 %Docstring
-Returns the global data item GUI provider registry, used for tracking providers which affect the browser
-GUI.
+Returns the global data item GUI provider registry, used for tracking
+providers which affect the browser GUI.
 
 .. versionadded:: 3.6
 %End
@@ -166,7 +179,8 @@ Returns the registry of provider source widget providers.
 
     static QgsRelationWidgetRegistry *relationWidgetRegistry() /KeepReference/;
 %Docstring
-Returns the global relation widget registry, used for managing all known relation widget factories.
+Returns the global relation widget registry, used for managing all known
+relation widget factories.
 
 .. versionadded:: 3.18
 %End
@@ -174,7 +188,8 @@ Returns the global relation widget registry, used for managing all known relatio
 
     static QgsHistoryProviderRegistry *historyProviderRegistry() /KeepReference/;
 %Docstring
-Returns the global history provider registry, used for tracking history providers.
+Returns the global history provider registry, used for tracking history
+providers.
 
 .. versionadded:: 3.24
 %End
@@ -188,8 +203,10 @@ Returns the registry of settings editors.
 
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
 %Docstring
-Register the widget to allow its position to be automatically saved and restored when open and closed.
-Use this to avoid needing to call :py:func:`~QgsGui.saveGeometry` and :py:func:`~QgsGui.restoreGeometry` on your widget.
+Register the widget to allow its position to be automatically saved and
+restored when open and closed. Use this to avoid needing to call
+:py:func:`~QgsGui.saveGeometry` and :py:func:`~QgsGui.restoreGeometry`
+on your widget.
 %End
 
     static QgsWindowManagerInterface *windowManager();
@@ -203,7 +220,8 @@ Returns the global window manager, if set.
 
     static void setWindowManager( QgsWindowManagerInterface *manager /Transfer/ );
 %Docstring
-Sets the global window ``manager``. Ownership is transferred to the QgsGui instance.
+Sets the global window ``manager``. Ownership is transferred to the
+QgsGui instance.
 
 .. seealso:: :py:func:`windowManager`
 
@@ -269,12 +287,13 @@ Checks whether QWebEngineView is available to display HTML content.
 
     void optionsChanged();
 %Docstring
-This signal is emitted whenever the application options have been changed.
+This signal is emitted whenever the application options have been
+changed.
 
-This signal is a "blanket" signal, and will be emitted whenever the options dialog
-has been accepted regardless of whether or not individual settings are changed.
-It is designed as a "last resort" fallback only, allowing widgets to respond
-to possible settings changes.
+This signal is a "blanket" signal, and will be emitted whenever the
+options dialog has been accepted regardless of whether or not individual
+settings are changed. It is designed as a "last resort" fallback only,
+allowing widgets to respond to possible settings changes.
 
 .. versionadded:: 3.16
 %End

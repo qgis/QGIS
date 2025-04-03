@@ -24,7 +24,7 @@ class QgsNumericFormat;
 
 /**
  * \ingroup core
- * \brief Line symbol layer used for decorating accordingly to linear referencing.
+ * \brief Line symbol layer used for decorating according to linear referencing.
  *
  * This symbol layer type allows placing text labels at regular intervals along
  * a line (or at positions corresponding to existing vertices). Positions

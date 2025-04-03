@@ -2317,6 +2317,21 @@ QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const
     case Qgis::FieldDomainMergePolicy::GeometryWeighted:
       metadata += tr( "Use geometry weighted value" );
       break;
+    case Qgis::FieldDomainMergePolicy::UnsetField:
+      metadata += tr( "Unset field" );
+      break;
+    case Qgis::FieldDomainMergePolicy::LargestGeometry:
+      metadata += tr( "Largest geometry" );
+      break;
+    case Qgis::FieldDomainMergePolicy::MaximumValue:
+      metadata += tr( "Maximum value" );
+      break;
+    case Qgis::FieldDomainMergePolicy::MinimumValue:
+      metadata += tr( "Minimum value" );
+      break;
+    case Qgis::FieldDomainMergePolicy::SetToNull:
+      metadata += tr( "Set attribute to NULL" );
+      break;
   }
 
   metadata += QLatin1String( "</table>\n<br><br>" );

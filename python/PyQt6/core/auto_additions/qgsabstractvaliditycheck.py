@@ -25,10 +25,13 @@ QgsAbstractValidityCheck.Type.__doc__ = """Check types
 # --
 try:
     QgsValidityCheckResult.__attribute_docs__ = {'type': 'Result type', 'title': 'A short, translated string summarising the result. Ideally a single sentence.', 'detailedDescription': 'Detailed description of the result (translated), giving users enough detail for them to resolve\nthe error.', 'checkId': 'ID of the check which generated the result. This is usually automatically populated.'}
+    QgsValidityCheckResult.__annotations__ = {'type': 'QgsValidityCheckResult.Type', 'title': str, 'detailedDescription': str, 'checkId': str}
     QgsValidityCheckResult.__group__ = ['validity']
 except (NameError, AttributeError):
     pass
 try:
+    QgsAbstractValidityCheck.__virtual_methods__ = ['prepareCheck']
+    QgsAbstractValidityCheck.__abstract_methods__ = ['create', 'id', 'checkType', 'runCheck']
     QgsAbstractValidityCheck.__group__ = ['validity']
 except (NameError, AttributeError):
     pass

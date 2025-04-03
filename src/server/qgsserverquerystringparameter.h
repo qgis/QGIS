@@ -35,7 +35,7 @@ class QgsServerApiBadRequestException;
 
 
 /**
- * The QgsServerQueryStringParameter class holds the information regarding
+ * Holds the information regarding
  * a query string input parameter and its validation.
  *
  * The class is extendable through custom validators (C++ only) and/or by

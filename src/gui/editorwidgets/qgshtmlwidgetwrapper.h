@@ -23,7 +23,7 @@
 
 /**
  * \ingroup gui
- * \brief Wraps a QQuickWidget to display HTML code
+ * \brief Wraps a QQuickWidget to display HTML code.
  * \since QGIS 3.4
  */
 class GUI_EXPORT QgsHtmlWidgetWrapper : public QgsWidgetWrapper

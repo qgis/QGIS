@@ -13,7 +13,8 @@
 class QgsMapLayerProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-The :py:class:`QgsMapLayerProxyModel` class provides an easy to use model to display the list of layers in widgets.
+A proxy model which provides an easy to use model to display the list of
+layers in widgets.
 %End
 
 %TypeHeaderCode
@@ -23,18 +24,21 @@ The :py:class:`QgsMapLayerProxyModel` class provides an easy to use model to dis
 
     explicit QgsMapLayerProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
-:py:class:`QgsMapLayerProxModel` creates a proxy model with a :py:class:`QgsMapLayerModel` as source model.
-It can be used to filter the layers list in a widget.
+:py:class:`QgsMapLayerProxModel` creates a proxy model with a
+:py:class:`QgsMapLayerModel` as source model. It can be used to filter
+the layers list in a widget.
 %End
 
     QgsMapLayerModel *sourceLayerModel() const;
 %Docstring
-layerModel returns the :py:class:`QgsMapLayerModel` used in this QSortFilterProxyModel
+layerModel returns the :py:class:`QgsMapLayerModel` used in this
+QSortFilterProxyModel
 %End
 
     QgsMapLayerProxyModel *setFilters( Qgis::LayerFilters filters );
 %Docstring
-Sets ``filter`` flags which affect how layers are filtered within the model.
+Sets ``filter`` flags which affect how layers are filtered within the
+model.
 
 .. seealso:: :py:func:`filters`
 %End
@@ -56,7 +60,8 @@ Filters according to layer type and/or geometry type.
 
     const Qgis::LayerFilters &filters() const;
 %Docstring
-Returns the filter flags which affect how layers are filtered within the model.
+Returns the filter flags which affect how layers are filtered within the
+model.
 
 .. seealso:: :py:func:`setFilters`
 %End
@@ -65,7 +70,8 @@ Returns the filter flags which affect how layers are filtered within the model.
 %Docstring
 Sets the ``project`` from which map layers are shown.
 
-If ``project`` is ``None`` then :py:func:`QgsProject.instance()` will be used.
+If ``project`` is ``None`` then :py:func:`QgsProject.instance()` will be
+used.
 
 .. versionadded:: 3.24
 %End
@@ -111,7 +117,8 @@ An empty list indicates that no filter by allowlist should be performed.
 %Docstring
 Returns the list of layers which are excluded from the model.
 
-An empty list indicates that no filtering by allowlist should be performed.
+An empty list indicates that no filtering by allowlist should be
+performed.
 
 .. seealso:: :py:func:`setLayerAllowlist`
 
@@ -126,7 +133,8 @@ An empty list indicates that no filtering by allowlist should be performed.
 %Docstring
 Returns the list of layers which are excluded from the model.
 
-An empty list indicates that no filtering by allowlist should be performed.
+An empty list indicates that no filtering by allowlist should be
+performed.
 
 .. seealso:: :py:func:`setLayerAllowlist`
 
@@ -177,14 +185,16 @@ Returns the blocklist of layer IDs which are excluded from the model.
 
     void setExcludedProviders( const QStringList &providers );
 %Docstring
-Sets a blocklist of data providers which should be excluded from the model.
+Sets a blocklist of data providers which should be excluded from the
+model.
 
 .. seealso:: :py:func:`excludedProviders`
 %End
 
     QStringList excludedProviders() const;
 %Docstring
-Returns the blocklist of data providers which are excluded from the model.
+Returns the blocklist of data providers which are excluded from the
+model.
 
 .. seealso:: :py:func:`setExcludedProviders`
 %End

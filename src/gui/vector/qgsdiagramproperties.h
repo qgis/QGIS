@@ -36,6 +36,7 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * \class QgsDiagramProperties
+ * \brief A widget which configures diagrams for a vector layer.
  *
  * \note This class is not a part of public API
  */
@@ -234,6 +235,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
 /**
  * \ingroup gui
  * \class EditBlockerDelegate
+ * \brief Custom item delegate which prevents editing.
  */
 class EditBlockerDelegate : public QStyledItemDelegate
 {

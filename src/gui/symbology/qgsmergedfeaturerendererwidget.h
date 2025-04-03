@@ -25,7 +25,7 @@ class QgsMergedFeatureRenderer;
 
 /**
  * \ingroup gui
- * \brief A widget used represent options of a QgsMergedFeatureRenderer
+ * \brief A widget for configuring options for a QgsMergedFeatureRenderer.
  *
  * \since QGIS 3.18
  */

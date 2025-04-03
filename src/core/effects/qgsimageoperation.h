@@ -32,7 +32,7 @@ class QgsFeedback;
 /**
  * \ingroup core
  * \class QgsImageOperation
- * \brief Contains operations and filters which apply to QImages
+ * \brief Contains operations and filters which apply to QImages.
  *
  * A set of optimised pixel manipulation operations and filters which can be applied
  * to QImages. All operations only apply to ARGB32 format images, and it is left up

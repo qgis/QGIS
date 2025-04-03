@@ -13,12 +13,14 @@
 class QgsFilterLineEdit : QLineEdit
 {
 %Docstring(signature="appended")
-QLineEdit subclass with built in support for clearing the widget's value and
-handling custom null value representations.
+QLineEdit subclass with built in support for clearing the widget's value
+and handling custom null value representations.
 
-When using :py:class:`QgsFilterLineEdit` the :py:func:`~value`, :py:func:`~setValue` and :py:func:`~clearValue` methods should be used
-instead of QLineEdit's :py:func:`~text`, :py:func:`~setText` and :py:func:`~clear` methods, and the :py:func:`~valueChanged`
-signal should be used instead of :py:func:`~textChanged`.
+When using :py:class:`QgsFilterLineEdit` the :py:func:`~value`,
+:py:func:`~setValue` and :py:func:`~clearValue` methods should be used
+instead of QLineEdit's :py:func:`~text`, :py:func:`~setText` and
+:py:func:`~clear` methods, and the :py:func:`~valueChanged` signal
+should be used instead of :py:func:`~textChanged`.
 %End
 
 %TypeHeaderCode
@@ -63,25 +65,27 @@ Sets whether the widget's clear button is visible.
 
     ClearMode clearMode() const;
 %Docstring
-Returns the clear mode for the widget. The clear mode defines the behavior of the
-widget when its value is cleared. This defaults to ClearToNull.
+Returns the clear mode for the widget. The clear mode defines the
+behavior of the widget when its value is cleared. This defaults to
+ClearToNull.
 
 .. seealso:: :py:func:`setClearMode`
 %End
 
     void setClearMode( ClearMode mode );
 %Docstring
-Sets the clear mode for the widget. The clear mode defines the behavior of the
-widget when its value is cleared. This defaults to ClearToNull.
+Sets the clear mode for the widget. The clear mode defines the behavior
+of the widget when its value is cleared. This defaults to ClearToNull.
 
 .. seealso:: :py:func:`clearMode`
 %End
 
     void setNullValue( const QString &nullValue );
 %Docstring
-Sets the string representation for null values in the widget. This does not
-affect the values returned for null values by :py:func:`~QgsFilterLineEdit.value`, rather it only affects
-the text that is shown to users when the widget's value is null.
+Sets the string representation for null values in the widget. This does
+not affect the values returned for null values by
+:py:func:`~QgsFilterLineEdit.value`, rather it only affects the text
+that is shown to users when the widget's value is null.
 
 :param nullValue: string to show when widget's value is null
 
@@ -99,23 +103,23 @@ Returns the string used for representing null values in the widget.
 
     void setShowSearchIcon( bool visible );
 %Docstring
-Define if a search icon shall be shown on the left of the image
-when no text is entered
+Define if a search icon shall be shown on the left of the image when no
+text is entered
 
 :param visible: set to ``False`` to hide the search icon
 %End
 
     bool showSearchIcon() const;
 %Docstring
-Returns if a search icon shall be shown on the left of the image
-when no text is entered
+Returns if a search icon shall be shown on the left of the image when no
+text is entered
 %End
 
     void setDefaultValue( const QString &defaultValue );
 %Docstring
 Sets the default value for the widget. The default value is a value
-which the widget will be reset to if it is cleared and the :py:func:`~QgsFilterLineEdit.clearMode`
-is equal to ClearToDefault.
+which the widget will be reset to if it is cleared and the
+:py:func:`~QgsFilterLineEdit.clearMode` is equal to ClearToDefault.
 
 :param defaultValue: default value
 
@@ -127,8 +131,8 @@ is equal to ClearToDefault.
     QString defaultValue() const;
 %Docstring
 Returns the default value for the widget. The default value is a value
-which the widget will be reset to if it is cleared and the :py:func:`~QgsFilterLineEdit.clearMode`
-is equal to ClearToDefault.
+which the widget will be reset to if it is cleared and the
+:py:func:`~QgsFilterLineEdit.clearMode` is equal to ClearToDefault.
 
 .. seealso:: :py:func:`setDefaultValue`
 
@@ -137,21 +141,25 @@ is equal to ClearToDefault.
 
     void setValue( const QString &value );
 %Docstring
-Sets the current text for the widget with support for handling null values.
+Sets the current text for the widget with support for handling null
+values.
 
-:param value: The text to set. If a null string is provided, the text shown in the
-              widget will be set to the current :py:func:`~QgsFilterLineEdit.nullValue`.
+:param value: The text to set. If a null string is provided, the text
+              shown in the widget will be set to the current
+              :py:func:`~QgsFilterLineEdit.nullValue`.
 
 .. seealso:: :py:func:`value`
 %End
 
     QString value() const;
 %Docstring
-Returns the text of this edit with support for handling null values. If the text
-in the widget matches the current :py:func:`~QgsFilterLineEdit.nullValue` then the returned value will be
+Returns the text of this edit with support for handling null values. If
+the text in the widget matches the current
+:py:func:`~QgsFilterLineEdit.nullValue` then the returned value will be
 a null string.
 
-:return: Current text (or null string if it matches the :py:func:`~QgsFilterLineEdit.nullValue` property )
+:return: Current text (or null string if it matches the
+         :py:func:`~QgsFilterLineEdit.nullValue` property )
 
 .. seealso:: :py:func:`setValue`
 %End
@@ -190,8 +198,8 @@ Will select all text when this widget receives the focus.
     virtual bool event( QEvent *event );
 
 %Docstring
-Reimplemented to enable/disable the clear action
-depending on read-only status
+Reimplemented to enable/disable the clear action depending on read-only
+status
 %End
 
     bool hasStateStored() const;
@@ -212,14 +220,16 @@ Clears the widget and resets it to the null value.
 
     void storeState();
 %Docstring
-Stores the current state of the line edit (selection and cursor position)
+Stores the current state of the line edit (selection and cursor
+position)
 
 .. versionadded:: 3.14
 %End
 
     void restoreState();
 %Docstring
-Restores the current state of the line edit (selection and cursor position)
+Restores the current state of the line edit (selection and cursor
+position)
 
 .. versionadded:: 3.14
 %End
@@ -235,9 +245,11 @@ Emitted when the widget is cleared
 
     void valueChanged( const QString &value );
 %Docstring
-Same as :py:func:`~QgsFilterLineEdit.textChanged` but with support for null values.
+Same as :py:func:`~QgsFilterLineEdit.textChanged` but with support for
+null values.
 
-:param value: The current text or null string if it matches the :py:func:`~QgsFilterLineEdit.nullValue` property.
+:param value: The current text or null string if it matches the
+              :py:func:`~QgsFilterLineEdit.nullValue` property.
 %End
 
     void showSpinnerChanged();

@@ -26,8 +26,9 @@
 
 /**
  * \ingroup core
- * \brief QgsInvertedPolygonRenderer is a polygon-only feature renderer used to
- * display features inverted, where the exterior is turned to an interior
+ * \brief A polygon-only feature renderer used to display features inverted.
+ *
+ * The exterior of the polygon is turned to an interior
  * and where the exterior theoretically spans the entire plane, allowing
  * to mask the surroundings of some features.
  *

@@ -13,7 +13,7 @@
 class QgsCurve: QgsAbstractGeometry /Abstract/
 {
 %Docstring(signature="appended")
-Abstract base class for curved geometry type
+Abstract base class for curved geometry type.
 %End
 
 %TypeHeaderCode
@@ -75,14 +75,15 @@ Returns ``True`` if the curve is a ring.
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 /Factory/;
 %Docstring
-Returns a new line string geometry corresponding to a segmentized approximation
-of the curve.
+Returns a new line string geometry corresponding to a segmentized
+approximation of the curve.
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
+:param toleranceType: maximum segmentation angle or maximum difference
+                      between approximation and curve
 
-Uses a MaximumAngle tolerance of 1 degrees by default (360
-segments in a full circle)
+Uses a MaximumAngle tolerance of 1 degrees by default (360 segments in a
+full circle)
 %End
 
     virtual void addToPainterPath( QPainterPath &path ) const = 0;
@@ -125,7 +126,8 @@ Returns the number of points in the curve.
 
     virtual void sumUpArea( double &sum /Out/ ) const = 0;
 %Docstring
-Sums up the area of the curve by iterating over the vertices (shoelace formula).
+Sums up the area of the curve by iterating over the vertices (shoelace
+formula).
 %End
 
     virtual QgsCoordinateSequence coordinateSequence() const;
@@ -150,8 +152,8 @@ Returns the point and vertex id of a point within the curve.
 
     virtual int indexOf( const QgsPoint &point ) const = 0;
 %Docstring
-Returns the index of the first vertex matching the given ``point``, or -1 if a matching
-vertex is not found.
+Returns the index of the first vertex matching the given ``point``, or
+-1 if a matching vertex is not found.
 
 .. note::
 
@@ -167,7 +169,8 @@ vertex is not found.
 
     virtual QgsCurve *reversed() const = 0 /Factory/;
 %Docstring
-Returns a reversed copy of the curve, where the direction of the curve has been flipped.
+Returns a reversed copy of the curve, where the direction of the curve
+has been flipped.
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
@@ -182,7 +185,8 @@ Returns a reversed copy of the curve, where the direction of the curve has been 
 Returns a geometry without curves. Caller takes ownership
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
+:param toleranceType: maximum segmentation angle or maximum difference
+                      between approximation and curve
 %End
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const;
@@ -249,13 +253,14 @@ Returns a QPolygonF representing the points.
 
     virtual QgsPoint *interpolatePoint( double distance ) const = 0 /Factory/;
 %Docstring
-Returns an interpolated point on the curve at the specified ``distance``.
+Returns an interpolated point on the curve at the specified
+``distance``.
 
-If z or m values are present, the output z and m will be interpolated using
-the existing vertices' z or m values.
+If z or m values are present, the output z and m will be interpolated
+using the existing vertices' z or m values.
 
-If distance is negative, or is greater than the length of the curve, ``None``
-will be returned.
+If distance is negative, or is greater than the length of the curve,
+``None`` will be returned.
 
 .. versionadded:: 3.4
 %End
@@ -264,20 +269,21 @@ will be returned.
 %Docstring
 Returns a new curve representing a substring of this curve.
 
-The ``startDistance`` and ``endDistance`` arguments specify the length along the curve
-which the substring should start and end at. If the ``endDistance`` is greater than the
-total length of the curve then any "extra" length will be ignored.
+The ``startDistance`` and ``endDistance`` arguments specify the length
+along the curve which the substring should start and end at. If the
+``endDistance`` is greater than the total length of the curve then any
+"extra" length will be ignored.
 
-If z or m values are present, the output z and m will be interpolated using
-the existing vertices' z or m values.
+If z or m values are present, the output z and m will be interpolated
+using the existing vertices' z or m values.
 
 .. versionadded:: 3.4
 %End
 
     double straightDistance2d() const;
 %Docstring
-Returns the straight distance of the curve, i.e. the direct/euclidean distance
-between the first and last vertex of the curve. (Also known as
+Returns the straight distance of the curve, i.e. the direct/euclidean
+distance between the first and last vertex of the curve. (Also known as
 "as the crow flies" distance).
 
 .. versionadded:: 3.2
@@ -285,11 +291,14 @@ between the first and last vertex of the curve. (Also known as
 
     double sinuosity() const;
 %Docstring
-Returns the curve sinuosity, which is the ratio of the curve :py:func:`~QgsCurve.length` to curve
-:py:func:`~QgsCurve.straightDistance2d`. Larger numbers indicate a more "sinuous" curve (i.e. more
-"bendy"). The minimum value returned of 1.0 indicates a perfectly straight curve.
+Returns the curve sinuosity, which is the ratio of the curve
+:py:func:`~QgsCurve.length` to curve
+:py:func:`~QgsCurve.straightDistance2d`. Larger numbers indicate a more
+"sinuous" curve (i.e. more "bendy"). The minimum value returned of 1.0
+indicates a perfectly straight curve.
 
-If a curve :py:func:`~QgsCurve.isClosed`, it has infinite sinuosity and will return NaN.
+If a curve :py:func:`~QgsCurve.isClosed`, it has infinite sinuosity and
+will return NaN.
 
 .. versionadded:: 3.2
 %End
@@ -307,7 +316,8 @@ Returns the curve's orientation, e.g. clockwise or counter-clockwise.
 
     virtual void scroll( int firstVertexIndex ) = 0;
 %Docstring
-Scrolls the curve vertices so that they start with the vertex at the given index.
+Scrolls the curve vertices so that they start with the vertex at the
+given index.
 
 .. warning::
 

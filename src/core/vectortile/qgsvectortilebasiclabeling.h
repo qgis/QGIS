@@ -24,7 +24,7 @@ class QgsPalLayerSettings;
 
 /**
  * \ingroup core
- * \brief Configuration of a single style within QgsVectorTileBasicLabeling
+ * \brief Configuration of a single style within QgsVectorTileBasicLabeling.
  *
  * \since QGIS 3.14
  */
@@ -141,7 +141,9 @@ class CORE_EXPORT QgsVectorTileBasicLabelingStyle
 
 /**
  * \ingroup core
- * \brief Basic labeling configuration for vector tile layers. It contains a definition
+ * \brief Basic labeling configuration for vector tile layers.
+ *
+ * It contains a definition
  * of a list of labeling styles, where each labeling style is a combination of
  * sub-layer name, geometry type, filter expression, zoom range and label settings.
  *

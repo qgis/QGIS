@@ -34,7 +34,8 @@ A babel format capable of interacting directly with a GPS device.
 %Docstring
 Constructor for QgsBabelGpsDeviceFormat.
 
-:param waypointDownloadCommand: command for downloading waypoints from device
+:param waypointDownloadCommand: command for downloading waypoints from
+                                device
 :param waypointUploadCommand: command for uploading waypoints to device
 :param routeDownloadCommand: command for downloading routes from device
 :param routeUploadCommand: command for uploading routes to device

@@ -15,25 +15,33 @@
 class QgsMapLayerStyleManager : QObject
 {
 %Docstring(signature="appended")
-Management of styles for use with one map layer
+Management of styles for use with one map layer.
 
-Stored styles are identified by their names. The manager
-always keep track of which style of the stored ones is currently active. When the current style is changed,
-the new style is applied to the associated layer.
+Stored styles are identified by their names. The manager always keep
+track of which style of the stored ones is currently active. When the
+current style is changed, the new style is applied to the associated
+layer.
 
-The class takes care of updating itself when the layer's current style configuration changes.
-When some of layer style's properties change (e.g. opacity / colors), the style manager will
-record them in the currently active style without any extra effort required.
+The class takes care of updating itself when the layer's current style
+configuration changes. When some of layer style's properties change
+(e.g. opacity / colors), the style manager will record them in the
+currently active style without any extra effort required.
 
-When an instance is created, it creates "default" style (with empty name) recorded from the associated map layer
-and it is set as the current style. The instance must always contain at least one style (which is the current).
+When an instance is created, it creates "default" style (with empty
+name) recorded from the associated map layer and it is set as the
+current style. The instance must always contain at least one style
+(which is the current).
 
-The style which is marked as current has no style data stored in its entry. This is to avoid duplication
-of data as all data is stored in map layer and can be retrieved easily. Also when saving, the entry for
-the current style will be saved with no data because everything is already saved by the map layer itself.
+The style which is marked as current has no style data stored in its
+entry. This is to avoid duplication of data as all data is stored in map
+layer and can be retrieved easily. Also when saving, the entry for the
+current style will be saved with no data because everything is already
+saved by the map layer itself.
 
-The class also features support for temporary change of the layer's style, ideal for short-term use of a custom
-style followed by restoration of the original style (for example, when rendering a map with a different than current style).
+The class also features support for temporary change of the layer's
+style, ideal for short-term use of a custom style followed by
+restoration of the original style (for example, when rendering a map
+with a different than current style).
 %End
 
 %TypeHeaderCode
@@ -43,8 +51,8 @@ style followed by restoration of the original style (for example, when rendering
 
     QgsMapLayerStyleManager( QgsMapLayer *layer /TransferThis/ );
 %Docstring
-Construct a style manager associated with a map layer (must not be ``None``).
-The style manager will be parented to ``layer``.
+Construct a style manager associated with a map layer (must not be
+``None``). The style manager will be parented to ``layer``.
 %End
 
     QgsMapLayer *layer() const;
@@ -54,7 +62,8 @@ Gets pointer to the associated map layer
 
     void reset();
 %Docstring
-Reset the style manager to a basic state - with one default style which is set as current
+Reset the style manager to a basic state - with one default style which
+is set as current
 %End
 
     void readXml( const QDomElement &mgrElement );
@@ -125,13 +134,14 @@ Set a different style as the current style - will apply it to the layer
 
     bool setOverrideStyle( const QString &styleDef );
 %Docstring
-Temporarily apply a different style to the layer. The argument
-can be either a style name or a full QML style definition.
-Each call must be paired with :py:func:`~QgsMapLayerStyleManager.restoreOverrideStyle`
+Temporarily apply a different style to the layer. The argument can be
+either a style name or a full QML style definition. Each call must be
+paired with :py:func:`~QgsMapLayerStyleManager.restoreOverrideStyle`
 %End
     bool restoreOverrideStyle();
 %Docstring
-Restore the original store after a call to :py:func:`~QgsMapLayerStyleManager.setOverrideStyle`
+Restore the original store after a call to
+:py:func:`~QgsMapLayerStyleManager.setOverrideStyle`
 %End
 
     static bool isDefault( const QString &styleName );
@@ -141,8 +151,8 @@ Returns ``True`` if this is the default style
 
     void copyStylesFrom( QgsMapLayerStyleManager *other );
 %Docstring
-Copies all styles from ``other``.
-In case there is already a style with the same name it will be overwritten.
+Copies all styles from ``other``. In case there is already a style with
+the same name it will be overwritten.
 
 .. versionadded:: 3.14
 %End

@@ -29,7 +29,7 @@ class QgsPluginLayer;
 
 /**
  * \ingroup core
- * \brief Class for creating plugin specific layers
+ * \brief Responsible for creating plugin specific map layers.
 */
 class CORE_EXPORT QgsPluginLayerType
 {

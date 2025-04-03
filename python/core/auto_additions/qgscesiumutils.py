@@ -1,12 +1,14 @@
 # The following has been generated automatically from src/core/tiledscene/qgscesiumutils.h
 try:
     QgsCesiumUtils.B3DMContents.__attribute_docs__ = {'gltf': 'GLTF binary content', 'rtcCenter': 'Optional RTC center'}
+    QgsCesiumUtils.B3DMContents.__annotations__ = {'gltf': 'QByteArray', 'rtcCenter': 'QgsVector3D'}
     QgsCesiumUtils.B3DMContents.__doc__ = """Encapsulates the contents of a B3DM file."""
     QgsCesiumUtils.B3DMContents.__group__ = ['tiledscene']
 except (NameError, AttributeError):
     pass
 try:
     QgsCesiumUtils.TileContents.__attribute_docs__ = {'gltf': 'GLTF binary content', 'rtcCenter': 'Center position of relative-to-center coordinates (when used)'}
+    QgsCesiumUtils.TileContents.__annotations__ = {'gltf': 'QByteArray', 'rtcCenter': 'QgsVector3D'}
     QgsCesiumUtils.TileContents.__doc__ = """Encapsulates the contents of a 3D tile."""
     QgsCesiumUtils.TileContents.__group__ = ['tiledscene']
 except (NameError, AttributeError):

@@ -27,7 +27,7 @@
 class QgsAbstractMaterialSettings;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3D symbol that draws mesh geometry as planar triangles.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is

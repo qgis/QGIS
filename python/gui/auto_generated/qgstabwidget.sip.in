@@ -11,8 +11,7 @@
 class QgsTabWidget : QTabWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsTabWidget` class is the same as the QTabWidget but with additional methods to
-temporarily hide/show tabs.
+A QTabWidget with additional methods to temporarily hide/show tabs.
 %End
 
 %TypeHeaderCode
@@ -41,9 +40,9 @@ Control the visibility for the tab with the given widget.
 
     int realTabIndex( QWidget *widget );
 %Docstring
-Returns the index of the tab with the given widget.
-This index is not the same as the one provided to insertTab and removeTab
-since these methods are not aware of hidden tabs.
+Returns the index of the tab with the given widget. This index is not
+the same as the one provided to insertTab and removeTab since these
+methods are not aware of hidden tabs.
 %End
 
     virtual void tabInserted( int index );
@@ -64,7 +63,8 @@ Is used to keep track of currently available and visible tabs.
 
     void setTabStyle( int tabIndex, const QgsAttributeEditorElement::LabelStyle &labelStyle );
 %Docstring
-Sets the optional custom ``labelStyle`` for the tab identified by ``tabIndex``.
+Sets the optional custom ``labelStyle`` for the tab identified by
+``tabIndex``.
 
 .. versionadded:: 3.26
 %End

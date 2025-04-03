@@ -31,7 +31,8 @@ class QgsVectorTileDataProvider;
 
 /**
  * \ingroup core
- * \brief This class provides map rendering functionality for vector tile layers.
+ * \brief Provides map rendering functionality for vector tile layers.
+ *
  * In render() function (assumed to be run in a worker thread) it will:
  *
  * - fetch vector tiles using QgsVectorTileLoader

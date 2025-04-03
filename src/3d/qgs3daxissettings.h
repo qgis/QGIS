@@ -19,7 +19,7 @@
 #include <QString>
 #include <QMap>
 
-#include "qgis_3d.h"
+#include "qgs3daxisrenderview.h"
 
 class QgsReadWriteContext;
 class QDomElement;
@@ -29,7 +29,7 @@ class QDomElement;
 /**
  * \brief Contains the configuration of a 3d axis.
  *
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \since QGIS 3.26
  */
 class _3D_EXPORT Qgs3DAxisSettings

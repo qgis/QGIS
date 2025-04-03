@@ -12,7 +12,7 @@
 class QgsLayoutItemTextTable : QgsLayoutTable
 {
 %Docstring(signature="appended")
-A text table item that reads text from string lists
+A text table item that reads text from string lists.
 %End
 
 %TypeHeaderCode
@@ -34,14 +34,16 @@ Ownership is transferred to the layout.
 
     static QgsLayoutItemTextTable *create( QgsLayout *layout ) /Factory/;
 %Docstring
-Returns a new QgsLayoutItemTextTable for the specified parent ``layout``.
+Returns a new QgsLayoutItemTextTable for the specified parent
+``layout``.
 %End
 
     void addRow( const QStringList &row );
 %Docstring
 Adds a row to the table
 
-:param row: list of strings to use for each cell's value in the newly added row
+:param row: list of strings to use for each cell's value in the newly
+            added row
 
 .. note::
 

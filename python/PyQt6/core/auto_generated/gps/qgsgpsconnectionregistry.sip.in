@@ -14,10 +14,11 @@
 class QgsGpsConnectionRegistry
 {
 %Docstring(signature="appended")
-A class to register / unregister existing GPS connections such that the information
-is available to all classes and plugins.
+Registers existing GPS connections such that the information is
+available to all classes and plugins.
 
-:py:class:`QgsGpsConnectionRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsGpsConnectionRegistry` is not usually directly created,
+but rather accessed through
 :py:func:`QgsApplication.gpsConnectionRegistry()`.
 %End
 
@@ -32,7 +33,8 @@ is available to all classes and plugins.
 
     void registerConnection( QgsGpsConnection *c );
 %Docstring
-Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again
+Inserts a connection into the registry. The connection is owned by the
+registry class until it is unregistered again
 %End
     void unregisterConnection( QgsGpsConnection *c );
 %Docstring

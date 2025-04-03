@@ -10,7 +10,8 @@
 class QgsBasicNumericFormat : QgsNumericFormat
 {
 %Docstring(signature="appended")
-A numeric formatter which returns a simple text representation of a value.
+A numeric formater which returns a simple text representation of a
+value.
 
 .. versionadded:: 3.12
 %End
@@ -80,7 +81,8 @@ Sets whether the thousands grouping separator will be shown.
 
     bool showPlusSign() const;
 %Docstring
-Returns ``True`` if a leading plus sign will be shown for positive values.
+Returns ``True`` if a leading plus sign will be shown for positive
+values.
 
 .. seealso:: :py:func:`setShowPlusSign`
 %End
@@ -114,46 +116,49 @@ Sets whether trailing zeros will be shown (up to the specified
 
     RoundingType roundingType() const;
 %Docstring
-Returns the rounding type, which controls the behavior of the :py:func:`~QgsBasicNumericFormat.numberDecimalPlaces` setting.
+Returns the rounding type, which controls the behavior of the
+:py:func:`~QgsBasicNumericFormat.numberDecimalPlaces` setting.
 
 .. seealso:: :py:func:`setRoundingType`
 %End
 
     void setRoundingType( RoundingType type );
 %Docstring
-Sets the rounding ``type``, which controls the behavior of the :py:func:`~QgsBasicNumericFormat.numberDecimalPlaces` setting.
+Sets the rounding ``type``, which controls the behavior of the
+:py:func:`~QgsBasicNumericFormat.numberDecimalPlaces` setting.
 
 .. seealso:: :py:func:`roundingType`
 %End
 
     QChar thousandsSeparator() const;
 %Docstring
-Returns any override for the thousands separator character. If an invalid QChar is returned,
-then the QGIS locale separator is used instead.
+Returns any override for the thousands separator character. If an
+invalid QChar is returned, then the QGIS locale separator is used
+instead.
 
 .. seealso:: :py:func:`setThousandsSeparator`
 %End
 
     void setThousandsSeparator( QChar character );
 %Docstring
-Sets an override ``character`` for the thousands separator character. If an invalid QChar is set,
-then the QGIS locale separator is used instead.
+Sets an override ``character`` for the thousands separator character. If
+an invalid QChar is set, then the QGIS locale separator is used instead.
 
 .. seealso:: :py:func:`thousandsSeparator`
 %End
 
     QChar decimalSeparator() const;
 %Docstring
-Returns any override for the decimal separator character. If an invalid QChar is returned,
-then the QGIS locale separator is used instead.
+Returns any override for the decimal separator character. If an invalid
+QChar is returned, then the QGIS locale separator is used instead.
 
 .. seealso:: :py:func:`setDecimalSeparator`
 %End
 
     void setDecimalSeparator( QChar character );
 %Docstring
-Sets an override ``character`` for the decimal separator character. If an invalid QChar is set,
-then the QGIS locale separator is used instead.
+Sets an override ``character`` for the decimal separator character. If
+an invalid QChar is set, then the QGIS locale separator is used instead.
 
 .. seealso:: :py:func:`decimalSeparator`
 %End

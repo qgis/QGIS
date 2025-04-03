@@ -12,7 +12,8 @@
 class QgsEncodingFileDialog : QFileDialog
 {
 %Docstring(signature="appended")
-A file dialog which lets the user select the preferred encoding type for a data provider.
+A file dialog which lets the user select the preferred encoding type for
+a data provider.
 %End
 
 %TypeHeaderCode
@@ -59,7 +60,8 @@ Constructor for QgsEncodingSelectionDialog.
 
 If ``caption`` is set, it will be used as the caption within the dialog.
 
-The ``encoding`` argument can be used to specify the encoding initially selected in the dialog.
+The ``encoding`` argument can be used to specify the encoding initially
+selected in the dialog.
 %End
 
     QString encoding() const;
@@ -71,8 +73,8 @@ Returns the encoding selected within the dialog.
 
     void setEncoding( const QString &encoding );
 %Docstring
-Sets the ``encoding`` selected within the dialog.
-see :py:func:`~QgsEncodingSelectionDialog.encoding`
+Sets the ``encoding`` selected within the dialog. see
+:py:func:`~QgsEncodingSelectionDialog.encoding`
 %End
 
 };

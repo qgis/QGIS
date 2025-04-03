@@ -49,7 +49,7 @@ class GUI_EXPORT QgsModelerToolboxModel : public QgsProcessingToolboxProxyModel
 
 /**
  * \ingroup gui
- * \brief Model designer dialog base class
+ * \brief Model designer dialog base class.
  * \warning Not stable API
  * \since QGIS 3.14
  */

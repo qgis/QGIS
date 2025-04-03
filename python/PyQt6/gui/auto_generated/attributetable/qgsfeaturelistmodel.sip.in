@@ -12,6 +12,9 @@
 
 class QgsFeatureListModel : QSortFilterProxyModel, QgsFeatureModel
 {
+%Docstring(signature="appended")
+A proxy model for feature lists.
+%End
 
 %TypeHeaderCode
 #include "qgsfeaturelistmodel.h"
@@ -44,7 +47,8 @@ Constructor for QgsFeatureListModel
 
     QgsVectorLayerCache *layerCache();
 %Docstring
-Returns the vector layer cache which is being used to populate the model.
+Returns the vector layer cache which is being used to populate the
+model.
 %End
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
@@ -74,17 +78,18 @@ Returns the current state of null value injection
 
     bool setDisplayExpression( const QString &expression );
 %Docstring
-
 :param expression: A :py:class:`QgsExpression` compatible string.
 
-:return: ``True`` if the expression could be set, ``False`` if there was a parse error.
-         If it fails, the old expression will still be applied. Call :py:func:`~QgsFeatureListModel.parserErrorString`
+:return: ``True`` if the expression could be set, ``False`` if there was
+         a parse error. If it fails, the old expression will still be
+         applied. Call :py:func:`~QgsFeatureListModel.parserErrorString`
          for a meaningful error message.
 %End
 
     QString parserErrorString();
 %Docstring
-Returns a detailed message about errors while parsing a :py:class:`QgsExpression`.
+Returns a detailed message about errors while parsing a
+:py:class:`QgsExpression`.
 
 :return: A message containing information about the parser error.
 %End
@@ -151,7 +156,8 @@ Sort this model by its display expression.
 
  void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
 %Docstring
-Does nothing except for calling :py:func:`~QgsFeatureListModel.beginRemoveRows`
+Does nothing except for calling
+:py:func:`~QgsFeatureListModel.beginRemoveRows`
 
 .. deprecated:: 3.40
 
@@ -160,7 +166,8 @@ Does nothing except for calling :py:func:`~QgsFeatureListModel.beginRemoveRows`
 
  void onEndRemoveRows( const QModelIndex &parent, int first, int last );
 %Docstring
-Does nothing except for calling :py:func:`~QgsFeatureListModel.endRemoveRows`
+Does nothing except for calling
+:py:func:`~QgsFeatureListModel.endRemoveRows`
 
 .. deprecated:: 3.40
 
@@ -169,7 +176,8 @@ Does nothing except for calling :py:func:`~QgsFeatureListModel.endRemoveRows`
 
  void onBeginInsertRows( const QModelIndex &parent, int first, int last );
 %Docstring
-Does nothing except for calling :py:func:`~QgsFeatureListModel.beginInsertRows`
+Does nothing except for calling
+:py:func:`~QgsFeatureListModel.beginInsertRows`
 
 .. deprecated:: 3.40
 
@@ -178,7 +186,8 @@ Does nothing except for calling :py:func:`~QgsFeatureListModel.beginInsertRows`
 
  void onEndInsertRows( const QModelIndex &parent, int first, int last );
 %Docstring
-Does nothing except for calling :py:func:`~QgsFeatureListModel.endInsertRows`
+Does nothing except for calling
+:py:func:`~QgsFeatureListModel.endInsertRows`
 
 .. deprecated:: 3.40
 

@@ -29,9 +29,11 @@ A custom dock widget for code editors.
   public:
     QgsCodeEditorDockWidget( const QString &dockId = QString(), bool usePersistentWidget = false );
 %Docstring
-Constructor for QgsCodeEditorDockWidget, with the specified window geometry settings key.
+Constructor for QgsCodeEditorDockWidget, with the specified window
+geometry settings key.
 
-If ``usePersistentWidget`` is ``True`` then the widget (either as a dock or window) cannot be destroyed and must be hidden instead.
+If ``usePersistentWidget`` is ``True`` then the widget (either as a dock
+or window) cannot be destroyed and must be hidden instead.
 %End
     ~QgsCodeEditorDockWidget();
 
@@ -42,7 +44,8 @@ Sets the title to use for the code editor dock widget or window.
 
     QToolButton *dockToggleButton();
 %Docstring
-Returns the dock toggle button for the widget, which is used to toggle between dock or full window mode.
+Returns the dock toggle button for the widget, which is used to toggle
+between dock or full window mode.
 %End
 
     void setDockObjectName( const QString &name );

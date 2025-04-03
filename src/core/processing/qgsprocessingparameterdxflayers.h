@@ -22,15 +22,19 @@
 
 /**
  * \brief A parameter for Processing algorithms that need a list of input vector
- * layers to export as DXF file - this parameter provides Processing
- * framework's adapter for QList<QgsDxfExport::DxfLayer>.
+ * layers to export as DXF file.
+ *
+ * This parameter provides Processing framework's adapter for QList<QgsDxfExport::DxfLayer>.
  *
  * A valid value for this parameter is a list (QVariantList), where each
  * item is a map (QVariantMap) in this form:
+ *
+ * \code{.py}
  * {
  *   'layer':  string or QgsMapLayer,
  *   'attributeIndex': int
  * }
+ * \endcode
  *
  * Also it can accept lists (either string lists or QgsVectorLayer list)
  * as well as individual layer object or string representing layer source.

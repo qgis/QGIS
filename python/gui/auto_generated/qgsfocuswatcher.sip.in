@@ -12,10 +12,12 @@
 class QgsFocusWatcher : QObject
 {
 %Docstring(signature="appended")
-A event filter for watching for focus events on a parent object. Usually QObjects must
-subclass and override methods like focusOutEvent to handle focus events. Using this class
-as an event filter avoids the need to subclass objects and the focus events can be directly
-caught using the emitted signals.
+An event filter for watching for focus events on a parent object.
+
+Usually QObjects must subclass and override methods like focusOutEvent
+to handle focus events. Using this class as an event filter avoids the
+need to subclass objects and the focus events can be directly caught
+using the emitted signals.
 %End
 
 %TypeHeaderCode
@@ -26,8 +28,8 @@ caught using the emitted signals.
 %Docstring
 Constructor for QgsFocusWatcher.
 
-:param parent: parent widget to catch focus events for. This class will automatically be
-               installed as an event filter for parent.
+:param parent: parent widget to catch focus events for. This class will
+               automatically be installed as an event filter for parent.
 %End
 
     virtual bool eventFilter( QObject *obj, QEvent *event );
@@ -39,7 +41,8 @@ Constructor for QgsFocusWatcher.
 %Docstring
 Emitted when parent object's focus changes.
 
-:param focused: ``True`` if object gained focus, ``False`` if object lost focus
+:param focused: ``True`` if object gained focus, ``False`` if object
+                lost focus
 %End
 
     void focusIn();

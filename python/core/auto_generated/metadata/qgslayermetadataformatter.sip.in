@@ -13,7 +13,7 @@
 class QgsLayerMetadataFormatter
 {
 %Docstring(signature="appended")
-Class for metadata formatter.
+Formats layer metadata into HTML.
 %End
 
 %TypeHeaderCode
@@ -28,22 +28,23 @@ Constructor for QgsLayerMetadataFormatter
 
     QString accessSectionHtml() const;
 %Docstring
-Formats the "Access" section according to a ``metadata`` object.
-This will return a HTML table.
+Formats the "Access" section according to a ``metadata`` object. This
+will return a HTML table.
 %End
 
     QString contactsSectionHtml() const;
 %Docstring
-Formats the "Contacts" section according to a ``metadata`` object.
-This will return a HTML table.
+Formats the "Contacts" section according to a ``metadata`` object. This
+will return a HTML table.
 %End
 
     QString extentSectionHtml( const bool showSpatialExtent = true ) const;
 %Docstring
-Formats the "Extents" section according to a ``metadata`` object (extent and temporal).
-This will return a HTML table.
+Formats the "Extents" section according to a ``metadata`` object (extent
+and temporal). This will return a HTML table.
 
-:param showSpatialExtent: flag if the spatial extent needs to be displayed. Default to ``True``.
+:param showSpatialExtent: flag if the spatial extent needs to be
+                          displayed. Default to ``True``.
 %End
 
     QString identificationSectionHtml() const;
@@ -54,14 +55,14 @@ This will return a HTML table.
 
     QString historySectionHtml() const;
 %Docstring
-Formats the "History" section according to a ``metadata`` object.
-This will return a HTML table.
+Formats the "History" section according to a ``metadata`` object. This
+will return a HTML table.
 %End
 
     QString linksSectionHtml() const;
 %Docstring
-Formats the "Links" section according to a ``metadata`` object.
-This will return a HTML table.
+Formats the "Links" section according to a ``metadata`` object. This
+will return a HTML table.
 %End
 
 };

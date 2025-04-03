@@ -589,7 +589,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
 /**
  * \ingroup core
- * \brief Data item that can be used to report problems (e.g. network error)
+ * \brief A browser item that can be used to report problems (e.g. network error).
  */
 class CORE_EXPORT QgsErrorItem : public QgsDataItem
 {

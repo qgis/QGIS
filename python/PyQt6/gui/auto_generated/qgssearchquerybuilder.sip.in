@@ -13,7 +13,7 @@
 class QgsSearchQueryBuilder : QDialog
 {
 %Docstring(signature="appended")
-Query Builder for search strings
+Query builder for search strings.
 
 .. deprecated:: 3.40
 

@@ -29,7 +29,7 @@
 /**
  * \ingroup gui
  * \class QgsHttpHeaderWidget
- * \brief Display referer http header field and collapsible table of key/value pairs
+ * \brief Displays referer HTTP header field and collapsible table of key/value pairs.
  *
  * \since QGIS 3.24
  */

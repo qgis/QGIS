@@ -27,7 +27,7 @@ class QgsPointXY;
 
 /**
  * \ingroup core
- * \brief This is the class is providing tolerance value in map unit values.
+ * \brief Provides calculations for tolerance values in map units.
  */
 class CORE_EXPORT QgsTolerance
 {

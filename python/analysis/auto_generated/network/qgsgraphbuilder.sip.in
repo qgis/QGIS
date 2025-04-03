@@ -14,7 +14,7 @@
 class QgsGraphBuilder : QgsGraphBuilderInterface /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-This class used for making the :py:class:`QgsGraph` object
+Used for making the :py:class:`QgsGraph` object.
 %End
 
 %TypeHeaderCode
@@ -48,8 +48,8 @@ The builder is left in its current state.
 
     QgsGraph *takeGraph() /Factory/;
 %Docstring
-Takes the generated graph from the builder, resetting the builder back to its initial
-state ready for additional graph construction.
+Takes the generated graph from the builder, resetting the builder back
+to its initial state ready for additional graph construction.
 
 .. versionadded:: 3.22
 %End

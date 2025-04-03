@@ -3015,7 +3015,7 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
   }
   else if ( ! mExtent2D.isNull() || ! mExtent3D.isNull() )
   {
-    QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), transformContext() };
+    QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), transformContext() };
     transformer.setBallparkTransformsAreAppropriate( true );
     try
     {
@@ -3323,7 +3323,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
           if ( !ensemble.code().isEmpty() )
             id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
           else
-            id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+            id = QStringLiteral( "<i>%1</i>”" ).arg( ensemble.name() );
 
           if ( ensemble.accuracy() > 0 )
           {

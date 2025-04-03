@@ -43,13 +43,6 @@
 #include <cmath>
 #include <QString>
 
-/**
- * \ingroup core
- * \brief pal labeling engine
- * \class pal::LabelInfo
- * \note not available in Python bindings
- */
-
 namespace pal
 {
   class LabelPosition;
@@ -57,7 +50,7 @@ namespace pal
 
   /**
    * \ingroup core
-   * \brief Main class to handle feature
+   * \brief Represents a part of a label feature.
    * \class pal::FeaturePart
    * \note not available in Python bindings
    */

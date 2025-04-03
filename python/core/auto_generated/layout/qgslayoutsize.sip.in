@@ -13,8 +13,10 @@
 class QgsLayoutSize
 {
 %Docstring(signature="appended")
-This class provides a method of storing sizes, consisting of a width and height,
-for use in QGIS layouts. Measurement units are stored alongside the size.
+Provides a method of storing sizes, consisting of a width and height,
+for use in QGIS layouts.
+
+Measurement units are stored alongside the size.
 
 .. seealso:: :py:class:`QgsLayoutMeasurementConverter`
 
@@ -109,16 +111,15 @@ Returns the units for the size.
 
     void setUnits( const Qgis::LayoutUnit units );
 %Docstring
-Sets the ``units`` for the size. Does not alter the stored width or height,
-ie. no conversion is done.
+Sets the ``units`` for the size. Does not alter the stored width or
+height, ie. no conversion is done.
 
 .. seealso:: :py:func:`units`
 %End
 
     bool isEmpty() const;
 %Docstring
-Tests whether the size is empty, ie both its width and height
-are zero.
+Tests whether the size is empty, ie both its width and height are zero.
 
 :return: ``True`` if size is empty
 %End

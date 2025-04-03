@@ -8,9 +8,14 @@ QgsServerParameter.FILE_NAME = QgsServerParameter.Name.FILE_NAME
 QgsServerParameter.Name.baseClass = QgsServerParameter
 try:
     QgsServerParameterDefinition.raiseError = staticmethod(QgsServerParameterDefinition.raiseError)
+    QgsServerParameterDefinition.__virtual_methods__ = ['isValid']
 except (NameError, AttributeError):
     pass
 try:
     QgsServerParameter.name = staticmethod(QgsServerParameter.name)
+except (NameError, AttributeError):
+    pass
+try:
+    QgsServerParameters.__virtual_methods__ = ['request', 'version', 'loadParameter']
 except (NameError, AttributeError):
     pass

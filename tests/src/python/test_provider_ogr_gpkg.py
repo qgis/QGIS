@@ -3781,6 +3781,120 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
         self.assertEqual(featureCount, 3)
 
+    def test_add_feature_invalid_attribute_type(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dest_file_name = os.path.join(temp_dir, "test_field_types.gpkg")
+            ds = ogr.GetDriverByName("GPKG").CreateDataSource(dest_file_name)
+            lyr = ds.CreateLayer("test", geom_type=ogr.wkbPoint)
+            lyr.CreateField(ogr.FieldDefn("int_field", ogr.OFTInteger))
+            lyr.CreateField(ogr.FieldDefn("int64_field", ogr.OFTInteger64))
+            lyr.CreateField(ogr.FieldDefn("real_field", ogr.OFTReal))
+            lyr.CreateField(ogr.FieldDefn("datetime_field", ogr.OFTDateTime))
+            lyr.CreateField(ogr.FieldDefn("date_field", ogr.OFTDateTime))
+            lyr.CreateField(ogr.FieldDefn("string_field", ogr.OFTString))
+            fld_defn = ogr.FieldDefn("bool_field", ogr.OFTInteger)
+            fld_defn.SetSubType(ogr.OFSTBoolean)
+            lyr.CreateField(fld_defn)
+            ds = None
+
+            vl = QgsVectorLayer(f"{dest_file_name}|layername=test", "test", "ogr")
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.featureCount(), 0)
+
+            dp = vl.dataProvider()
+            self.assertEqual(len(dp.fields()), 8)
+            self.assertEqual(
+                [f.name() for f in dp.fields()],
+                [
+                    "fid",
+                    "int_field",
+                    "int64_field",
+                    "real_field",
+                    "datetime_field",
+                    "date_field",
+                    "string_field",
+                    "bool_field",
+                ],
+            )
+
+            feature = QgsFeature(dp.fields())
+            # with valid field attributes
+            feature.setId(1)
+            feature.setAttributes(
+                [
+                    1,
+                    11,
+                    2,
+                    3.4,
+                    QDateTime(2010, 1, 1, 1, 1, 1, 0),
+                    QDate(2010, 1, 1),
+                    "a string",
+                    True,
+                ]
+            )
+            self.assertTrue(dp.addFeature(feature))
+
+            # try a string in an int field
+            feature.setId(2)
+            feature.setAttributes(
+                [
+                    2,
+                    "not possible",
+                    2,
+                    3.4,
+                    QDateTime(2010, 1, 1, 1, 1, 1, 0),
+                    QDate(2010, 1, 1),
+                    "a string",
+                    True,
+                ]
+            )
+            self.assertFalse(dp.addFeature(feature))
+            self.assertEqual(
+                dp.lastError(),
+                "wrong data type for attribute int_field of feature 2: Got QString, expected int",
+            )
+
+            # date in int
+            feature.setAttributes(
+                [
+                    2,
+                    QDate(2010, 1, 1),
+                    2,
+                    3.4,
+                    QDateTime(2010, 1, 1, 1, 1, 1, 0),
+                    QDate(2010, 1, 1),
+                    "a string",
+                    True,
+                ]
+            )
+            self.assertFalse(dp.addFeature(feature))
+            self.assertEqual(
+                dp.lastError(),
+                "wrong data type for attribute int_field of feature 2: Got QDate, expected int",
+            )
+
+            # string in an int field, feature fields not set
+            feature = QgsFeature()
+            feature.initAttributes(8)
+            feature.setId(2)
+            feature.setAttributes(
+                [
+                    2,
+                    "not possible",
+                    2,
+                    3.4,
+                    QDateTime(2010, 1, 1, 1, 1, 1, 0),
+                    QDate(2010, 1, 1),
+                    "a string",
+                    True,
+                ]
+            )
+            self.assertFalse(dp.addFeature(feature))
+            self.assertEqual(
+                dp.lastError(),
+                "wrong data type for attribute int_field of feature 2: Got QString, expected int",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

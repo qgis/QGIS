@@ -82,7 +82,7 @@ class CORE_EXPORT QgsVectorTileWriter
 
     /**
      * \ingroup core
-     * \brief Configuration of a single input vector layer to be included in the output
+     * \brief Configuration of a single input vector layer to be included in the output.
      * \since QGIS 3.14
      */
     class Layer

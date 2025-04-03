@@ -188,7 +188,7 @@ bool QgsAnnotationLineItem::readXml( const QDomElement &element, const QgsReadWr
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
-    setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( symbolElem, context ) );
+    setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( symbolElem, context ).release() );
 
   readCommonProperties( element, context );
 

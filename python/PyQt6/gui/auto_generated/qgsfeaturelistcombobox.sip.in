@@ -12,10 +12,13 @@
 class QgsFeatureListComboBox : QComboBox
 {
 %Docstring(signature="appended")
-This offers a combobox with autocompleter that allows selecting features from a layer.
+This offers a combobox with autocompleter that allows selecting features
+from a layer.
 
-It will show up to 100 entries at a time. The entries can be chosen based on the displayExpression
-and whenever text is typed into the combobox, the completer and popup will adjust to features matching the typed text.
+It will show up to 100 entries at a time. The entries can be chosen
+based on the displayExpression and whenever text is typed into the
+combobox, the completer and popup will adjust to features matching the
+typed text.
 %End
 
 %TypeHeaderCode
@@ -46,20 +49,14 @@ Sets the current index by using the given feature
 
     QString displayExpression() const;
 %Docstring
-The display expression will be used to display features as well as
-the value to match the typed text against.
+The display expression will be used to display features as well as the
+value to match the typed text against.
 %End
 
     void setDisplayExpression( const QString &displayExpression );
 %Docstring
-The display expression will be used to display features as well as
-the value to match the typed text against.
-%End
-
-    QString filterExpression() const;
-%Docstring
-An additional expression to further restrict the available features.
-This can be used to integrate additional spatial or other constraints.
+The display expression will be used to display features as well as the
+value to match the typed text against.
 %End
 
     int nullIndex() const;
@@ -70,10 +67,47 @@ not allowed.
 .. versionadded:: 3.2
 %End
 
+    QString filterExpression() const;
+%Docstring
+An additional expression to further restrict the available features.
+This can be used to integrate additional spatial or other constraints.
+%End
+
     void setFilterExpression( const QString &filterExpression );
 %Docstring
 An additional expression to further restrict the available features.
 This can be used to integrate additional spatial or other constraints.
+%End
+
+    QgsFeature formFeature() const;
+%Docstring
+Returns an attribute form feature to be used with the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    void setFormFeature( const QgsFeature &feature );
+%Docstring
+Sets an attribute form ``feature`` to be used with the filter
+expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    QgsFeature parentFormFeature() const;
+%Docstring
+Returns a parent attribute form feature to be used with the filter
+expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    void setParentFormFeature( const QgsFeature &feature );
+%Docstring
+Sets a parent attribute form ``feature`` to be used with the filter
+expression.
+
+.. versionadded:: 3.42.2
 %End
 
  QVariant identifierValue() const /Deprecated="Since 3.10. "/;
@@ -86,8 +120,8 @@ identifierField.
 
     QVariantList identifierValues() const;
 %Docstring
-The identifier values of the currently selected feature. A value from the
-identifierField.
+The identifier values of the currently selected feature. A value from
+the identifierField.
 
 .. versionadded:: 3.10
 %End
@@ -105,15 +139,16 @@ identifierField.
 
     void setIdentifierValues( const QVariantList &identifierValues );
 %Docstring
-The identifier values of the currently selected feature. A value from the
-identifierFields.
+The identifier values of the currently selected feature. A value from
+the identifierFields.
 
 .. versionadded:: 3.10
 %End
 
     void setIdentifierValuesToNull();
 %Docstring
-Sets the identifier values of the currently selected feature to NULL value(s).
+Sets the identifier values of the currently selected feature to NULL
+value(s).
 
 .. versionadded:: 3.10
 %End
@@ -143,8 +178,8 @@ Returns the feature request fetch limit
 
     void setFetchLimit( int fetchLimit );
 %Docstring
-Defines the feature request fetch limit
-If set to 0, no limit is applied when fetching
+Defines the feature request fetch limit If set to 0, no limit is applied
+when fetching
 
 .. versionadded:: 3.32
 %End
@@ -208,14 +243,29 @@ The layer from which features should be listed.
 
     void displayExpressionChanged();
 %Docstring
-The display expression will be used to display features as well as
-the the value to match the typed text against.
+The display expression will be used to display features as well as the
+the value to match the typed text against.
 %End
 
     void filterExpressionChanged();
 %Docstring
 An additional expression to further restrict the available features.
 This can be used to integrate additional spatial or other constraints.
+%End
+
+    void formFeatureChanged();
+%Docstring
+An attribute form feature to be used alongside the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    void parentFormFeatureChanged();
+%Docstring
+A parent attribute form feature to be used alongside the filter
+expression.
+
+.. versionadded:: 3.42.2
 %End
 
     void identifierValueChanged();
@@ -244,7 +294,8 @@ Emitted when the current feature changes
 
     void currentFeatureFoundChanged( bool found );
 %Docstring
-Emitted when the feature picker model changes its feature ``found`` state
+Emitted when the feature picker model changes its feature ``found``
+state
 
 .. versionadded:: 3.38
 %End

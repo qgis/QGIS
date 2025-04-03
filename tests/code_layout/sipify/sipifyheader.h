@@ -56,7 +56,7 @@ typedef QMap<QgsFeatureId, QPair<QMap<Something, Complex> >>  SIP_PYALTERNATIVET
 
 /**
  * \ingroup core
- * A super QGIS class
+ * A super QGIS class.
  */
 #ifndef SIP_RUN // following will be hidden
 class CORE_EXPORT QgsSuperClass : public QtClass<QVariant>
@@ -87,7 +87,7 @@ typedef QVector<QVariant> QgsSuperClass;
 
 /**
  * \ingroup core
- * Documentation goes here
+ * Documentation goes here.
  *
  * Here's some comment mentioning another class QgsAutoAwesomemater::makeAwesome.
  * \note some other note
@@ -229,6 +229,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     /**
      * \brief some brief
+     *
      * My long doc \a string
      * is not very interesting!
      * Here's some comment mentioning another class QgsAutoAwesomemater::makeLessAwesome.
@@ -478,7 +479,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 /**
  * \class ClassWithPrivateInheritanceOnly
  * \ingroup core
- * Documentation goes here
+ * Documentation goes here.
  */
 class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass SIP_ABSTRACT
 {
@@ -496,7 +497,7 @@ class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass SIP_ABS
 /**
  * \class AbstractClass
  * \ingroup core
- * Documentation goes here
+ * Documentation goes here.
  */
 
 class CORE_EXPORT AbstractClass SIP_ABSTRACT

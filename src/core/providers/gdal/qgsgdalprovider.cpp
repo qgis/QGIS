@@ -3503,7 +3503,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
           // Did that work?
           if ( changed && ratCopy->isValid( ) )
           {
-            rat.reset( ratCopy.release() );
+            rat = std::move( ratCopy );
           }
         }
 

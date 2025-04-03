@@ -159,6 +159,7 @@ typedef QList<QgsRendererCategory> QgsCategoryList;
 /**
  * \ingroup core
  * \class QgsCategorizedSymbolRenderer
+ * \brief A feature renderer which represents features using a list of renderer categories.
  */
 class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 {

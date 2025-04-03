@@ -51,9 +51,10 @@ Constructor for QgsTiledSceneTextureRenderer.
 Creates a textured renderer from an XML ``element``.
 %End
 
-    static QgsFillSymbol *createDefaultFillSymbol() /Factory/;
+    static std::unique_ptr< QgsFillSymbol > createDefaultFillSymbol() /Factory/;
 %Docstring
-Returns a copy of the default fill symbol used to render triangles without textures.
+Returns a copy of the default fill symbol used to render triangles
+without textures.
 
 .. seealso:: :py:func:`setFillSymbol`
 %End

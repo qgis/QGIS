@@ -15,8 +15,9 @@ class QgsLocatorModel : QAbstractTableModel
 %Docstring(signature="appended")
 An abstract list model for displaying the results of locator searches.
 
-Note that this class should generally be used with a :py:class:`QgsLocatorProxyModel`
-in order to ensure correct sorting of results by priority and match level.
+Note that this class should generally be used with a
+:py:class:`QgsLocatorProxyModel` in order to ensure correct sorting of
+results by priority and match level.
 %End
 
 %TypeHeaderCode
@@ -55,9 +56,12 @@ Resets the model and clears all existing results.
 
     void deferredClear();
 %Docstring
-Resets the model and clears all existing results after a short delay, or whenever the next result is added to the model
-(whichever occurs first). Using :py:func:`~QgsLocatorModel.deferredClear` instead of :py:func:`~QgsLocatorModel.clear` can avoid the visually distracting frequent clears
-which may occur if the model is being updated quickly multiple times as a result of users typing in a search query.
+Resets the model and clears all existing results after a short delay, or
+whenever the next result is added to the model (whichever occurs first).
+Using :py:func:`~QgsLocatorModel.deferredClear` instead of
+:py:func:`~QgsLocatorModel.clear` can avoid the visually distracting
+frequent clears which may occur if the model is being updated quickly
+multiple times as a result of users typing in a search query.
 
 .. seealso:: :py:func:`deferredClear`
 %End
@@ -85,18 +89,19 @@ Adds a new ``result`` to the model.
 class QgsLocatorAutomaticModel : QgsLocatorModel
 {
 %Docstring(signature="appended")
-A :py:class:`QgsLocatorModel` which has is associated directly with a
-:py:class:`QgsLocator`, and is automatically populated with results
-from locator searches.
+A :py:class:`QgsLocatorModel` which is associated directly with a
+:py:class:`QgsLocator`, and is automatically populated with results from
+locator searches.
 
-Use this :py:class:`QgsLocatorModel` subclass when you want the connections
-between a :py:class:`QgsLocator` and the model to be automatically created
-for you. If more flexibility in model behavior is required,
-use the base :py:class:`QgsLocatorModel` class instead and setup the
-connections manually.
+Use this :py:class:`QgsLocatorModel` subclass when you want the
+connections between a :py:class:`QgsLocator` and the model to be
+automatically created for you. If more flexibility in model behavior is
+required, use the base :py:class:`QgsLocatorModel` class instead and
+setup the connections manually.
 
-Note that this class should generally be used with a :py:class:`QgsLocatorProxyModel`
-in order to ensure correct sorting of results by priority and match level.
+Note that this class should generally be used with a
+:py:class:`QgsLocatorProxyModel` in order to ensure correct sorting of
+results by priority and match level.
 %End
 
 %TypeHeaderCode
@@ -106,7 +111,8 @@ in order to ensure correct sorting of results by priority and match level.
 
     explicit QgsLocatorAutomaticModel( QgsLocator *locator /TransferThis/ );
 %Docstring
-Constructor for QgsLocatorAutomaticModel, linked with the specified ``locator``.
+Constructor for QgsLocatorAutomaticModel, linked with the specified
+``locator``.
 
 The ``locator`` is used as the model's parent.
 %End
@@ -120,18 +126,18 @@ Returns a pointer to the locator utilized by this model.
 %Docstring
 Enqueues a search for a specified ``string`` within the model.
 
-Note that the search may not begin immediately if an existing search request
-is still running. In this case the existing search must be completely
-terminated before the new search can begin. The model handles this
-situation automatically, and will trigger a search for the new
+Note that the search may not begin immediately if an existing search
+request is still running. In this case the existing search must be
+completely terminated before the new search can begin. The model handles
+this situation automatically, and will trigger a search for the new
 search string as soon as possible.
 %End
 
     virtual QgsLocatorContext createContext();
 %Docstring
 Returns a new locator context for searches. The default implementation
-returns a default constructed :py:class:`QgsLocatorContext`. Subclasses can override
-this method to implement custom context creation logic.
+returns a default constructed :py:class:`QgsLocatorContext`. Subclasses
+can override this method to implement custom context creation logic.
 %End
 
 };
@@ -139,8 +145,8 @@ this method to implement custom context creation logic.
 class QgsLocatorProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-A sort proxy model for :py:class:`QgsLocatorModel`, which automatically sorts
-results by precedence.
+A sort proxy model for :py:class:`QgsLocatorModel`, which automatically
+sorts results by precedence.
 %End
 
 %TypeHeaderCode
@@ -150,7 +156,8 @@ results by precedence.
 
     explicit QgsLocatorProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsLocatorProxyModel, with the specified ``parent`` object.
+Constructor for QgsLocatorProxyModel, with the specified ``parent``
+object.
 %End
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 

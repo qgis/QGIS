@@ -15,14 +15,16 @@
 class QgsQueryResultWidget : QWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsQueryResultWidget` class allows users to enter and run an SQL query on a
-DB connection (an instance of :py:class:`QgsAbstractDatabaseProviderConnection`).
+The :py:class:`QgsQueryResultWidget` class allows users to enter and run
+an SQL query on a DB connection (an instance of
+:py:class:`QgsAbstractDatabaseProviderConnection`).
 
-Query results are displayed in a table view.
-Query execution and result fetching can be interrupted by pressing the "Stop" push button.
+Query results are displayed in a table view. Query execution and result
+fetching can be interrupted by pressing the "Stop" push button.
 
-The widget supports a few QueryWidgetMode modes that pre-configure the widget appearance to
-be used in different contexts like when updating the SQL of an existing query layer.
+The widget supports a few QueryWidgetMode modes that pre-configure the
+widget appearance to be used in different contexts like when updating
+the SQL of an existing query layer.
 
 .. note::
 
@@ -44,7 +46,8 @@ be used in different contexts like when updating the SQL of an existing query la
 
     QgsQueryResultWidget( QWidget *parent = 0, QgsAbstractDatabaseProviderConnection *connection /Transfer/ = 0 );
 %Docstring
-Creates a QgsQueryResultWidget with the given ``connection``, ownership is transferred to the widget.
+Creates a QgsQueryResultWidget with the given ``connection``, ownership
+is transferred to the widget.
 %End
 
     virtual ~QgsQueryResultWidget();
@@ -61,7 +64,8 @@ Sets the widget mode to ``widgetMode``, default is SqlQueryMode.
 
     void setConnection( QgsAbstractDatabaseProviderConnection *connection /Transfer/ );
 %Docstring
-Sets the connection to ``connection``, ownership is transferred to the widget.
+Sets the connection to ``connection``, ownership is transferred to the
+widget.
 %End
 
     void setQuery( const QString &sql );
@@ -74,7 +78,8 @@ Convenience method to set the SQL editor text to ``sql``.
 
     void notify( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 %Docstring
-Displays a message with ``text`` ``title`` and ``level`` in the widget's message bar.
+Displays a message with ``text`` ``title`` and ``level`` in the widget's
+message bar.
 %End
 
     void executeQuery();
@@ -84,8 +89,8 @@ Starts executing the query.
 
     void showError( const QString &title, const QString &message, bool isSqlError = false );
 %Docstring
-Hides the result table and shows the error ``title`` and ``message`` in the message bar or
-in the SQL error panel is ``isSqlError`` is set.
+Hides the result table and shows the error ``title`` and ``message`` in
+the message bar or in the SQL error panel is ``isSqlError`` is set.
 %End
 
     void tokensReady( const QStringList &tokens );
@@ -102,7 +107,8 @@ Copies the query results to the clipboard, as a formatted table.
 
     void copyResults( int fromRow, int toRow, int fromColumn, int toColumn );
 %Docstring
-Copies a range of the query results to the clipboard, as a formatted table.
+Copies a range of the query results to the clipboard, as a formatted
+table.
 
 .. versionadded:: 3.32
 %End
@@ -114,8 +120,9 @@ Copies a range of the query results to the clipboard, as a formatted table.
 Emitted when a new vector SQL (query) layer must be created.
 
 :param providerKey: name of the data provider
-:param connectionUri: the connection URI as returned by :py:func:`QgsAbstractProviderConnection.uri()`
-:param options:
+:param connectionUri: the connection URI as returned by
+                      :py:func:`QgsAbstractProviderConnection.uri()`
+:param options: 
 %End
 
     void firstResultBatchFetched();
@@ -133,8 +140,9 @@ Emitted when the first batch of results has been fetched.
 class QgsQueryResultDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allows users to enter and run an SQL query on a
-DB connection (an instance of :py:class:`QgsAbstractDatabaseProviderConnection`).
+A dialog which allows users to enter and run an SQL query on a DB
+connection (an instance of
+:py:class:`QgsAbstractDatabaseProviderConnection`).
 
 .. note::
 
@@ -169,8 +177,9 @@ Returns the :py:class:`QgsQueryResultWidget` shown in the dialog.
 class QgsQueryResultMainWindow : QMainWindow
 {
 %Docstring(signature="appended")
-A main window which allows users to enter and run an SQL query on a
-DB connection (an instance of :py:class:`QgsAbstractDatabaseProviderConnection`).
+A main window which allows users to enter and run an SQL query on a DB
+connection (an instance of
+:py:class:`QgsAbstractDatabaseProviderConnection`).
 
 .. note::
 

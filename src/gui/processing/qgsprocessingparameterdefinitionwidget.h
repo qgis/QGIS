@@ -112,7 +112,7 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
 
 
 /**
- * A widget which allow users to specify the properties of a Processing parameter.
+ * A widget which allows users to specify the properties of a Processing parameter.
  *
  * \ingroup gui
  * \since QGIS 3.10
@@ -165,7 +165,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget : public QWidget
 };
 
 /**
- * A dialog which allow users to specify the properties of a Processing parameter.
+ * A dialog which allows users to specify the properties of a Processing parameter.
  *
  * \ingroup gui
  * \since QGIS 3.10

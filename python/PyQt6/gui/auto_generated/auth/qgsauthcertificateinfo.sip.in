@@ -14,7 +14,8 @@
 class QgsAuthCertInfo : QWidget
 {
 %Docstring(signature="appended")
-Widget for viewing detailed info on a certificate and its hierarchical trust chain
+Widget for viewing detailed info on a certificate and its hierarchical
+trust chain.
 %End
 
 %TypeHeaderCode
@@ -34,7 +35,8 @@ Constructor for QgsAuthCertInfo
 class QgsAuthCertInfoDialog : QDialog
 {
 %Docstring(signature="appended")
-Dialog wrapper for widget displaying detailed info on a certificate and its hierarchical trust chain
+Dialog wrapper for widget displaying detailed info on a certificate and
+its hierarchical trust chain.
 %End
 
 %TypeHeaderCode
@@ -43,10 +45,12 @@ Dialog wrapper for widget displaying detailed info on a certificate and its hier
   public:
     explicit QgsAuthCertInfoDialog( const QSslCertificate &cert, bool manageCertTrust, QWidget *parent /TransferThis/ = 0, const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 %Docstring
-Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
+Construct a dialog displaying detailed info on a certificate and its
+hierarchical trust chain
 
 :param cert: Certificate object
-:param manageCertTrust: Whether to show widgets to manage the trust policy of certs in hierarchy
+:param manageCertTrust: Whether to show widgets to manage the trust
+                        policy of certs in hierarchy
 :param parent: Parent widget
 :param connectionCAs: List of hierarchical certificates in a connection
 %End

@@ -13,12 +13,14 @@
 class QgsPlotMouseEvent : QMouseEvent
 {
 %Docstring(signature="appended")
-A :py:class:`QgsPlotMouseEvent` is the result of a user interaction with the mouse on a :py:class:`QgsPlotCanvas`.
+A mouse event which is the result of a user interaction with a
+:py:class:`QgsPlotCanvas`.
 
-The event is sent whenever the user moves, clicks, releases or double clicks the mouse.
+The event is sent whenever the user moves, clicks, releases or double
+clicks the mouse.
 
-In addition to the coordinates in pixel space the event may have knowledge about
-geographic coordinates corresponding to the event.
+In addition to the coordinates in pixel space the event may have
+knowledge about geographic coordinates corresponding to the event.
 
 .. versionadded:: 3.26
 %End
@@ -57,7 +59,8 @@ Creates a new QgsPlotMouseEvent.
 %Docstring
 Returns the point in map coordinates corresponding to the event.
 
-May return an empty point if the event cannot be converted to a map point.
+May return an empty point if the event cannot be converted to a map
+point.
 %End
 
     QgsPointXY snappedPoint();

@@ -14,7 +14,8 @@
 class QgsDatabaseTableComboBox : QWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDatabaseTableComboBox` class is a combo box which displays the list of tables for a specific database connection.
+A combobox which displays the list of tables for a specific database
+connection.
 
 .. warning::
 
@@ -30,9 +31,11 @@ The :py:class:`QgsDatabaseTableComboBox` class is a combo box which displays the
   public:
     explicit QgsDatabaseTableComboBox( const QString &provider, const QString &connection, const QString &schema = QString(), QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDatabaseTableComboBox, for the specified ``provider`` and ``connection``.
+Constructor for QgsDatabaseTableComboBox, for the specified ``provider``
+and ``connection``.
 
-The optional ``schema`` argument can be used to restrict the listed tables to a specific schema.
+The optional ``schema`` argument can be used to restrict the listed
+tables to a specific schema.
 
 .. warning::
 
@@ -42,23 +45,27 @@ The optional ``schema`` argument can be used to restrict the listed tables to a 
 
     explicit QgsDatabaseTableComboBox( QgsAbstractDatabaseProviderConnection *connection /Transfer/, const QString &schema = QString(), QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDatabaseTableComboBox, for the specified ``connection``.
+Constructor for QgsDatabaseTableComboBox, for the specified
+``connection``.
 
-The optional ``schema`` argument can be used to restrict the listed tables to a specific schema.
+The optional ``schema`` argument can be used to restrict the listed
+tables to a specific schema.
 
 Ownership of ``connection`` is transferred to the combobox.
 %End
 
     void setAllowEmptyTable( bool allowEmpty );
 %Docstring
-Sets whether an optional empty table ("not set") option is present in the combobox.
+Sets whether an optional empty table ("not set") option is present in
+the combobox.
 
 .. seealso:: :py:func:`allowEmptyTable`
 %End
 
     bool allowEmptyTable() const;
 %Docstring
-Returns ``True`` if the combobox allows the empty table ("not set") choice.
+Returns ``True`` if the combobox allows the empty table ("not set")
+choice.
 
 .. seealso:: :py:func:`setAllowEmptyTable`
 %End
@@ -89,7 +96,8 @@ If necessary, the ``schema`` can be specified too.
 
     void setConnectionName( const QString &connection, const QString &provider = QString() );
 %Docstring
-Sets the database connection name from which to retrieve the available tables.
+Sets the database connection name from which to retrieve the available
+tables.
 
 Optionally the ``provider`` can be reset too.
 %End

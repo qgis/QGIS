@@ -41,7 +41,7 @@ class QgsMapBoxGlStyleConversionContext;
 
 /**
  * \ingroup core
- * \brief Random utility functions for working with vector tiles
+ * \brief Utility functions for working with vector tiles.
  *
  * \since QGIS 3.14
  */

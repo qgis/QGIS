@@ -11,6 +11,9 @@
 
 class QgsFeatureSelectionModel : QItemSelectionModel
 {
+%Docstring(signature="appended")
+Item selection model for selecting features.
+%End
 
 %TypeHeaderCode
 #include "qgsfeatureselectionmodel.h"
@@ -21,10 +24,11 @@ class QgsFeatureSelectionModel : QItemSelectionModel
     void enableSync( bool enable );
 %Docstring
 Enables or disables synchronisation to the :py:class:`QgsVectorLayer`
-When synchronisation is disabled, any selection change will be buffered inside this selection model.
-When enabled, any buffered changes are communicated to the layer and the buffer is emptied.
-Mainly to be used for performance reasons, because selection change on the layer can cost time as it
-repaints the layer.
+When synchronisation is disabled, any selection change will be buffered
+inside this selection model. When enabled, any buffered changes are
+communicated to the layer and the buffer is emptied. Mainly to be used
+for performance reasons, because selection change on the layer can cost
+time as it repaints the layer.
 
 :param enable: The synchronisation status to set.
 %End
@@ -52,16 +56,16 @@ Returns the selection status of a given QModelIndex.
 
     void requestRepaint( const QModelIndexList &indexes );
 %Docstring
-Request a repaint of a list of model indexes.
-Views using this model should connect to and properly process this signal.
+Request a repaint of a list of model indexes. Views using this model
+should connect to and properly process this signal.
 
 :param indexes: The model indexes which need to be repainted
 %End
 
     void requestRepaint();
 %Docstring
-Request a repaint of the visible items of connected views.
-Views using this model should connect to and properly process this signal.
+Request a repaint of the visible items of connected views. Views using
+this model should connect to and properly process this signal.
 %End
 
   public slots:
@@ -82,10 +86,12 @@ Overwritten to do NOTHING (we handle selection ourselves)
 
     virtual void selectFeatures( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command );
 %Docstring
-Select features on this table. Is to be used in favor of the stock select methods.
+Select features on this table. Is to be used in favor of the stock
+select methods.
 
 :param selection: The QItemSelection which will be selected
-:param command: The command to apply. Select, Deselect and ClearAndSelect are processed.
+:param command: The command to apply. Select, Deselect and
+                ClearAndSelect are processed.
 %End
 
     virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );

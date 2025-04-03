@@ -27,7 +27,7 @@
 /**
  * \ingroup core
  * \class QgsAbstractSensor
- * \brief An abstract base class for sensor classes
+ * \brief An abstract base class for sensors.
  * \since QGIS 3.32
  */
 class CORE_EXPORT QgsAbstractSensor : public QObject

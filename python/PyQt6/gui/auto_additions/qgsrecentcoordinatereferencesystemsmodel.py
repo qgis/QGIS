@@ -24,10 +24,12 @@ QgsRecentCoordinateReferenceSystemsModel.CustomRole.__doc__ = """Custom model ro
 # --
 QgsRecentCoordinateReferenceSystemsModel.CustomRole.baseClass = QgsRecentCoordinateReferenceSystemsModel
 try:
+    QgsRecentCoordinateReferenceSystemsModel.__overridden_methods__ = ['flags', 'data', 'rowCount', 'columnCount', 'index', 'parent']
     QgsRecentCoordinateReferenceSystemsModel.__group__ = ['proj']
 except (NameError, AttributeError):
     pass
 try:
+    QgsRecentCoordinateReferenceSystemsProxyModel.__overridden_methods__ = ['filterAcceptsRow']
     QgsRecentCoordinateReferenceSystemsProxyModel.__group__ = ['proj']
 except (NameError, AttributeError):
     pass

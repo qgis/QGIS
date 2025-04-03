@@ -12,8 +12,8 @@
 class QgsVector3D
 {
 %Docstring(signature="appended")
-Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
-instead of single precision floating point numbers.
+A 3D vector (similar to QVector3D) with the difference that it uses
+double precision instead of single precision floating point numbers.
 %End
 
 %TypeHeaderCode
@@ -122,8 +122,8 @@ Returns the perpendicular point of vector ``vp`` from [``v1`` - ``v2``]
 
     QString toString( int precision = 17 ) const /HoldGIL/;
 %Docstring
-Returns a string representation of the 3D vector.
-Members will be truncated to the specified ``precision``.
+Returns a string representation of the 3D vector. Members will be
+truncated to the specified ``precision``.
 %End
 
     QVector3D toVector3D() const /HoldGIL/;

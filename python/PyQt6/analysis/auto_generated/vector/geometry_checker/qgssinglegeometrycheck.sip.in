@@ -14,7 +14,6 @@
 class QgsSingleGeometryCheckError
 {
 %Docstring(signature="appended")
-
 An error from a :py:class:`QgsSingleGeometryCheck`.
 
 .. note::
@@ -37,15 +36,15 @@ Creates a new single geometry check error.
 
     virtual void update( const QgsSingleGeometryCheckError *other );
 %Docstring
-Update this error with the information from ``other``.
-Will be used to update existing errors whenever they are re-checked.
+Update this error with the information from ``other``. Will be used to
+update existing errors whenever they are re-checked.
 %End
 
     virtual bool isEqual( const QgsSingleGeometryCheckError *other ) const;
 %Docstring
-Check if this error is equal to ``other``.
-Is reimplemented by subclasses with additional information, comparison
-of base information is done in parent class.
+Check if this error is equal to ``other``. Is reimplemented by
+subclasses with additional information, comparison of base information
+is done in parent class.
 %End
 
 
@@ -81,9 +80,9 @@ The vertex id of the error. May be invalid depending on the check.
 class QgsGeometryCheckErrorSingle : QgsGeometryCheckError
 {
 %Docstring(signature="appended")
-
-Wraps a :py:class:`QgsSingleGeometryError` into a standard :py:class:`QgsGeometryCheckError`.
-The single error can be obtained via singleError.
+Wraps a :py:class:`QgsSingleGeometryError` into a standard
+:py:class:`QgsGeometryCheckError`. The single error can be obtained via
+singleError.
 
 .. note::
 
@@ -114,8 +113,9 @@ The underlying single error.
 class QgsSingleGeometryCheck : QgsGeometryCheck
 {
 %Docstring(signature="appended")
+Base class for geometry checks for a single geometry without any context
+of the layer or other layers in the project.
 
-Base class for geometry checks for a single geometry without any context of the layer or other layers in the project.
 Classic examples are validity checks like self-intersection.
 
 Subclasses need to implement the processGeometry method.
@@ -137,10 +137,12 @@ Creates a new single geometry check.
 
     virtual QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const = 0;
 %Docstring
-Check the ``geometry`` for errors. It may make use of ``configuration`` options.
+Check the ``geometry`` for errors. It may make use of ``configuration``
+options.
 
-Returns a list of :py:class:`QgsSingleGeometryCheckErrors`, ownership is transferred to the caller.
-An empty list is returned for geometries without errors.
+Returns a list of :py:class:`QgsSingleGeometryCheckErrors`, ownership is
+transferred to the caller. An empty list is returned for geometries
+without errors.
 
 .. versionadded:: 3.4
 %End

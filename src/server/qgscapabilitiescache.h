@@ -30,7 +30,7 @@
 
 /**
  * \ingroup server
- * \brief A cache for capabilities xml documents (by configuration file path)
+ * \brief A cache for capabilities xml documents (by configuration file path).
  */
 class SERVER_EXPORT QgsCapabilitiesCache : public QObject
 {

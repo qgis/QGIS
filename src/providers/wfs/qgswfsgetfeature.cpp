@@ -87,12 +87,12 @@ bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion, con
       if ( !filter.isEmpty() )
       {
         QDomDocument filterDoc;
-        QDomElement filterElement = postDocument.createElement( useVersion2 ? QStringLiteral( "fes:Filter" ) : QStringLiteral( "ogc:Filter" ) );
-        if ( filterDoc.setContent( filter ) )
+        QString cleanedFilter = filter;
+        cleanedFilter = cleanedFilter.replace( QLatin1String( "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">" ), QLatin1String( "<fes:Filter>" ) );
+        if ( filterDoc.setContent( cleanedFilter ) )
         {
-          filterElement.appendChild( filterDoc.documentElement() );
+          queryElement.appendChild( filterDoc.documentElement() );
         }
-        queryElement.appendChild( filterElement );
       }
       getFeatureElement.appendChild( queryElement );
 

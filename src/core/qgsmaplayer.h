@@ -70,7 +70,8 @@ class QgsBox3D;
 /**
  * \ingroup core
  * \brief Base class for all map layer types.
- * This is the base class for all map layer types (vector, raster).
+ *
+ * This is the base class for all map layer types (vector, raster, mesh, point cloud, annotations, etc).
  */
 class CORE_EXPORT QgsMapLayer : public QObject
 {

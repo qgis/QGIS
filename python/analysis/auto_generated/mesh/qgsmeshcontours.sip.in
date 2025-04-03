@@ -14,7 +14,6 @@
 class QgsMeshContours
 {
 %Docstring(signature="appended")
-
 Exporter of contours lines or polygons from a mesh layer.
 
 .. versionadded:: 3.12
@@ -26,8 +25,8 @@ Exporter of contours lines or polygons from a mesh layer.
   public:
     QgsMeshContours( QgsMeshLayer *layer );
 %Docstring
-Constructs the mesh contours exporter.
-Caches the native and triangular mesh from data provider
+Constructs the mesh contours exporter. Caches the native and triangular
+mesh from data provider
 
 :param layer: mesh layer to be associated with this exporter
 %End
@@ -38,12 +37,15 @@ Caches the native and triangular mesh from data provider
 
     QgsGeometry exportLines( const QgsMeshDatasetIndex &index, double value, QgsMeshRendererScalarSettings::DataResamplingMethod method, QgsFeedback *feedback = 0 );
 %Docstring
-Exports multi line string containing the contour line for particular dataset and value.
+Exports multi line string containing the contour line for particular
+dataset and value.
 
 :param index: dataset index that is used to update the cache
 :param value: value of the contour line
-:param method: for datasets defined on faces, the method will be used to convert data to vertices
-:param feedback: optional feedback object for progress and cancellation support
+:param method: for datasets defined on faces, the method will be used to
+               convert data to vertices
+:param feedback: optional feedback object for progress and cancellation
+                 support
 
 :return: MultiLineString geometry containing contour lines
 
@@ -55,13 +57,16 @@ Exports multi line string containing the contour line for particular dataset and
 
     QgsGeometry exportPolygons( const QgsMeshDatasetIndex &index, double min_value, double max_value, QgsMeshRendererScalarSettings::DataResamplingMethod method, QgsFeedback *feedback = 0 );
 %Docstring
-Exports multi polygons representing the areas with values in range for particular dataset
+Exports multi polygons representing the areas with values in range for
+particular dataset
 
 :param index: dataset index
 :param min_value: minimum of the value interval for contour polygon
 :param max_value: maximum of the value interval for contour polygon
-:param method: for datasets defined on faces, the method will be used to convert data to vertices
-:param feedback: optional feedback object for progress and cancellation support
+:param method: for datasets defined on faces, the method will be used to
+               convert data to vertices
+:param feedback: optional feedback object for progress and cancellation
+                 support
 
 :return: MultiPolygon geometry containing contour polygons
 

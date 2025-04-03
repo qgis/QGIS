@@ -26,8 +26,8 @@ class QDomDocument;
 class QDomElement;
 
 /**
- * \ingroup 3d
- * \brief Definition of a point light in a 3D map scene
+ * \ingroup qgis_3d
+ * \brief Definition of a point light in a 3D map scene.
  *
  * Total light at the distance D from a point light with intensity I
  * is (I / TA) where TA is total attenuation which is calculated as

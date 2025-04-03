@@ -12,7 +12,8 @@
 class QgsDemTerrainSettings : QgsAbstractTerrainSettings
 {
 %Docstring(signature="appended")
-Terrain settings for a terrain generator that uses a raster DEM layer to build terrain.
+Terrain settings for a terrain generator that uses a raster DEM layer to
+build terrain.
 
 .. warning::
 
@@ -40,28 +41,32 @@ Creates a new instance of a QgsDemTerrainSettings object.
 
     void setLayer( QgsRasterLayer *layer );
 %Docstring
-Sets the raster ``layer`` with elevation model to be used for terrain generation.
+Sets the raster ``layer`` with elevation model to be used for terrain
+generation.
 
 .. seealso:: :py:func:`layer`
 %End
 
     QgsRasterLayer *layer() const;
 %Docstring
-Returns the raster layer with elevation model to be used for terrain generation.
+Returns the raster layer with elevation model to be used for terrain
+generation.
 
 .. seealso:: :py:func:`setLayer`
 %End
 
     void setResolution( int resolution );
 %Docstring
-Sets the ``resolution`` of the terrain (how many elevation samples are taken on one side of a terrain tile).
+Sets the ``resolution`` of the terrain (how many elevation samples are
+taken on one side of a terrain tile).
 
 .. seealso:: :py:func:`resolution`
 %End
 
     int resolution() const;
 %Docstring
-Returns the resolution of the terrain (how many elevation samples are taken on one side of a terrain tile).
+Returns the resolution of the terrain (how many elevation samples are
+taken on one side of a terrain tile).
 
 .. seealso:: :py:func:`resolution`
 %End
@@ -70,7 +75,8 @@ Returns the resolution of the terrain (how many elevation samples are taken on o
 %Docstring
 Sets the skirt ``height`` (in world units).
 
-Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
+Skirts at the edges of terrain tiles help hide cracks between adjacent
+tiles.
 
 .. seealso:: :py:func:`skirtHeight`
 %End
@@ -79,7 +85,8 @@ Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
 %Docstring
 Returns the skirt height (in world units).
 
-Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
+Skirts at the edges of terrain tiles help hide cracks between adjacent
+tiles.
 
 .. seealso:: :py:func:`setSkirtHeight`
 %End

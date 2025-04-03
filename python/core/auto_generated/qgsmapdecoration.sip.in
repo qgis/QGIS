@@ -39,8 +39,9 @@ Returns the map decoration display name.
 
     virtual bool hasFixedMapPosition() const;
 %Docstring
-Returns ``True`` if the decoration is attached to a fixed map position (e.g grid, layout extent), or
-``False`` if the annotation uses a position relative to the map canvas (e.g. title, copyright...)
+Returns ``True`` if the decoration is attached to a fixed map position
+(e.g grid, layout extent), or ``False`` if the annotation uses a
+position relative to the map canvas (e.g. title, copyright...)
 
 .. versionadded:: 3.34
 %End

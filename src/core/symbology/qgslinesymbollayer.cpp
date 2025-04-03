@@ -2610,11 +2610,11 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
 
   std::unique_ptr< QgsMarkerSymbol > marker;
 
-  QgsSymbolLayer *l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
+  std::unique_ptr< QgsSymbolLayer > l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
   if ( l )
   {
     QgsSymbolLayerList layers;
-    layers.append( l );
+    layers.append( l.release() );
     marker.reset( new QgsMarkerSymbol( layers ) );
   }
 
@@ -3825,7 +3825,7 @@ QgsFilledLineSymbolLayer::QgsFilledLineSymbolLayer( double width, QgsFillSymbol 
   : QgsLineSymbolLayer()
 {
   mWidth = width;
-  mFill.reset( fillSymbol ? fillSymbol : static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
+  mFill = fillSymbol ? std::unique_ptr< QgsFillSymbol >( fillSymbol ) : QgsFillSymbol::createSimple( QVariantMap() );
 }
 
 QgsFilledLineSymbolLayer::~QgsFilledLineSymbolLayer() = default;
@@ -3850,7 +3850,7 @@ QgsSymbolLayer *QgsFilledLineSymbolLayer::create( const QVariantMap &props )
     width = props[QStringLiteral( "width" )].toDouble();
   }
 
-  auto l = std::make_unique< QgsFilledLineSymbolLayer >( width, QgsFillSymbol::createSimple( props ) );
+  auto l = std::make_unique< QgsFilledLineSymbolLayer >( width, QgsFillSymbol::createSimple( props ).release() );
 
   if ( props.contains( QStringLiteral( "line_width_unit" ) ) )
   {

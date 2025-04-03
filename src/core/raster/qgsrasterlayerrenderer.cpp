@@ -856,7 +856,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
                gdalDsOutput.get(),
                QgsGdalUtils::gdalResamplingAlgorithm( dataProvider->zoomedInResamplingMethod() ), nullptr ) )
         {
-          elevationBlock.reset( rotatedElevationBlock.release() );
+          elevationBlock = std::move( rotatedElevationBlock );
         }
 
         topLeft = QPoint( left, top );

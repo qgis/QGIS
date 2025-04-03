@@ -15,7 +15,8 @@
 class QgsExpressionItem : QStandardItem
 {
 %Docstring(signature="appended")
-An expression item that can be used in the :py:class:`QgsExpressionBuilderWidget` tree.
+An expression item that can be used in the
+:py:class:`QgsExpressionBuilderWidget` tree.
 %End
 
 %TypeHeaderCode
@@ -70,9 +71,11 @@ Gets the type of expression item, e.g., header, field, ExpressionNode.
 class QgsExpressionItemSearchProxy : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-Search proxy used to filter the :py:class:`QgsExpressionBuilderWidget` tree.
-The default search for a tree model only searches top level this will handle one
-level down
+Search proxy used to filter the :py:class:`QgsExpressionBuilderWidget`
+tree.
+
+The default search for a tree model only searches top level this will
+handle one level down.
 %End
 
 %TypeHeaderCode
@@ -100,8 +103,8 @@ Sets the search filter ``string``.
 class QgsExpressionTreeView : QTreeView
 {
 %Docstring(signature="appended")
-:py:class:`QgsExpressionTreeView` is a tree view to list all expressions
-functions, variables and fields that can be used in an expression.
+A tree view to list all expressions functions, variables and fields that
+can be used in an expression.
 
 .. seealso:: :py:class:`QgsExpressionBuilderWidget`
 
@@ -115,8 +118,9 @@ functions, variables and fields that can be used in an expression.
     class MenuProvider
 {
 %Docstring(signature="appended")
-Implementation of this interface can be implemented to allow QgsExpressionTreeView
-instance to provide custom context menus (opened upon right-click).
+Implementation of this interface can be implemented to allow
+QgsExpressionTreeView instance to provide custom context menus (opened
+upon right-click).
 
 .. versionadded:: 3.14
 %End
@@ -151,8 +155,8 @@ This allows loading fields without specifying a layer
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
-Sets the expression context for the tree view. The context is used
-to populate the list of available functions and variables.
+Sets the expression context for the tree view. The context is used to
+populate the list of available functions and variables.
 
 :param context: expression context
 
@@ -161,8 +165,9 @@ to populate the list of available functions and variables.
 
     QgsExpressionContext expressionContext() const;
 %Docstring
-Returns the expression context for the widget. The context is used for the expression
-preview result and for populating the list of available functions and variables.
+Returns the expression context for the widget. The context is used for
+the expression preview result and for populating the list of available
+functions and variables.
 
 .. seealso:: :py:func:`setExpressionContext`
 %End
@@ -176,16 +181,16 @@ Returns the project currently associated with the widget.
 
     void setProject( QgsProject *project );
 %Docstring
-Sets the ``project`` currently associated with the widget. This
-controls which layers and relations and other project-specific items are shown in the widget.
+Sets the ``project`` currently associated with the widget. This controls
+which layers and relations and other project-specific items are shown in
+the widget.
 
 .. seealso:: :py:func:`project`
 %End
 
     void setMenuProvider( MenuProvider *provider );
 %Docstring
-Sets the menu provider.
-This does not take ownership of the provider
+Sets the menu provider. This does not take ownership of the provider
 %End
 
     void refresh();
@@ -201,14 +206,14 @@ Returns the current item or a None
 
     void loadRecent( const QString &collection = QStringLiteral( "generic" ) );
 %Docstring
-Loads the recent expressions from the given ``collection``.
-By default it is loaded from the collection "generic".
+Loads the recent expressions from the given ``collection``. By default
+it is loaded from the collection "generic".
 %End
 
     void saveToRecent( const QString &expressionText, const QString &collection = "generic" );
 %Docstring
-Adds the current expression to the given ``collection``.
-By default it is saved to the collection "generic".
+Adds the current expression to the given ``collection``. By default it
+is saved to the collection "generic".
 %End
 
     void saveToUserExpressions( const QString &label, const QString &expression, const QString &helpText );
@@ -223,8 +228,8 @@ Removes the expression ``label`` from the user stored expressions.
 
     void loadUserExpressions();
 %Docstring
-Loads the user expressions.
-This is done on request since it can be very slow if there are thousands of user expressions
+Loads the user expressions. This is done on request since it can be very
+slow if there are thousands of user expressions
 %End
 
     const QList<QgsExpressionItem *> findExpressions( const QString &label );
@@ -235,14 +240,16 @@ Returns the list of expression items matching a ``label``.
 
     QJsonDocument exportUserExpressions();
 %Docstring
-Create the expressions JSON document storing all the user expressions to be exported.
+Create the expressions JSON document storing all the user expressions to
+be exported.
 
 :return: the created expressions JSON file
 %End
 
     void loadExpressionsFromJson( const QJsonDocument &expressionsDocument );
 %Docstring
-Load and permanently store the expressions from the expressions JSON document.
+Load and permanently store the expressions from the expressions JSON
+document.
 
 :param expressionsDocument: the parsed expressions JSON file
 %End

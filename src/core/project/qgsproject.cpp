@@ -985,9 +985,9 @@ QString QgsProject::ellipsoid() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( !crs().isValid() )
-    return geoNone();
+    return Qgis::geoNone();
 
-  return readEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), geoNone() );
+  return readEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), Qgis::geoNone() );
 }
 
 void QgsProject::setEllipsoid( const QString &ellipsoid )
@@ -1211,6 +1211,8 @@ void QgsProject::clear()
   ok = false;
   const Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
   setAreaUnits( ok ? areaUnits : Qgis::AreaUnit::SquareMeters );
+
+  setScaleMethod( Qgis::ScaleCalculationMethod::HorizontalMiddle );
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
@@ -2199,6 +2201,8 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   const QString areaUnitString = readEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), QString() );
   if ( !areaUnitString.isEmpty() )
     setAreaUnits( QgsUnitTypes::decodeAreaUnit( areaUnitString ) );
+
+  setScaleMethod( qgsEnumKeyToValue( readEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/ScaleMethod" ), QString() ), Qgis::ScaleCalculationMethod::HorizontalMiddle ) );
 
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
@@ -3417,6 +3421,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), QgsUnitTypes::encodeUnit( mDistanceUnits ) );
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), QgsUnitTypes::encodeUnit( mAreaUnits ) );
+  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/ScaleMethod" ), qgsEnumValueToKey( mScaleMethod ) );
 
   // now add the optional extra properties
 #if 0
@@ -4188,6 +4193,18 @@ void QgsProject::setAreaUnits( Qgis::AreaUnit unit )
   emit areaUnitsChanged();
 }
 
+void QgsProject::setScaleMethod( Qgis::ScaleCalculationMethod method )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mScaleMethod == method )
+    return;
+
+  mScaleMethod = method;
+
+  emit scaleMethodChanged();
+}
+
 QString QgsProject::homePath() const
 {
   // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
@@ -4939,7 +4956,7 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
   else
   {
     // global crs
-    const QString layerDefaultCrs = mSettings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString();
+    const QString layerDefaultCrs = mSettings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), QStringLiteral( "EPSG:4326" ) ).toString();
     defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( layerDefaultCrs );
   }
 

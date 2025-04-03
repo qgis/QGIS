@@ -23,7 +23,7 @@ class QgsLayout;
 
 /**
  * \ingroup core
- * \brief This class allows checking rendered images against comparison images.
+ * \brief Allows checking rendered images against comparison images.
  *
  * Its main purpose is for the unit testing framework.
  *
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsMultiRenderChecker
 /**
  * \ingroup core
  * \class QgsLayoutChecker
- * \brief Renders a layout to an image and compares with an expected output
+ * \brief Renders a layout to an image and compares with an expected output.
  */
 class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
 {

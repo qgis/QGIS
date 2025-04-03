@@ -1,11 +1,13 @@
 # The following has been generated automatically from src/core/qgsunittypes.h
 try:
     QgsUnitTypes.DistanceValue.__attribute_docs__ = {'value': 'The value part of the distance. For 3.7 meters, this will be 3.7.', 'unit': 'The value part of the distance. For 3.7 meters, this will be QgsUnitTypes.DistanceMeters.'}
+    QgsUnitTypes.DistanceValue.__annotations__ = {'value': float, 'unit': 'Qgis.DistanceUnit'}
     QgsUnitTypes.DistanceValue.__doc__ = """A combination of distance value and unit."""
 except (NameError, AttributeError):
     pass
 try:
     QgsUnitTypes.AreaValue.__attribute_docs__ = {'value': 'The value part of the distance. For 3.7 square meters, this will be 3.7.', 'unit': 'The value part of the distance. For 3.7 square meters, this will be QgsUnitTypes.AreaSquareMeters.'}
+    QgsUnitTypes.AreaValue.__annotations__ = {'value': float, 'unit': 'Qgis.AreaUnit'}
     QgsUnitTypes.AreaValue.__doc__ = """A combination of area value and unit."""
 except (NameError, AttributeError):
     pass

@@ -14,10 +14,12 @@
 class QgsOptionsDialogHighlightWidget
 {
 %Docstring(signature="appended")
-Container for a widget to be used to search text in the option dialog
+Container for a widget to be used to search text in the option dialog.
+
 If the widget type is handled, it is valid.
-It can perform a text search in the widget and highlight it in case of success.
-This uses stylesheets.
+
+It can perform a text search in the widget and highlight it in case of
+success. This uses stylesheets.
 %End
 
 %TypeHeaderCode
@@ -26,18 +28,19 @@ This uses stylesheets.
   public:
     static QgsOptionsDialogHighlightWidget *createWidget( QWidget *widget ) /Factory/;
 %Docstring
-create a highlight widget implementation for the proper widget type.
-For instance a :py:class:`QgsOptionsDialogHighlightButton` for button.
+create a highlight widget implementation for the proper widget type. For
+instance a :py:class:`QgsOptionsDialogHighlightButton` for button.
 
-:return: a QgsOptionsDialogHighlightWidget or ``None`` if there is no implementation
-         for the given widget.
+:return: a QgsOptionsDialogHighlightWidget or ``None`` if there is no
+         implementation for the given widget.
 %End
 
     virtual ~QgsOptionsDialogHighlightWidget();
 
     bool isValid();
 %Docstring
-Returns if it valid: if the widget type is handled and if the widget is not still available
+Returns if it valid: if the widget type is handled and if the widget is
+not still available
 %End
 
     bool searchHighlight( const QString &text );
@@ -55,7 +58,8 @@ Returns the widget
   protected:
     virtual bool searchText( const QString &text ) = 0;
 %Docstring
-Search for the ``text`` in the widget and return ``True`` if it was found
+Search for the ``text`` in the widget and return ``True`` if it was
+found
 %End
 
     virtual bool highlightText( const QString &text ) = 0;

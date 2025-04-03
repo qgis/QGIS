@@ -29,7 +29,7 @@
 /**
  * \ingroup server
  * \class QgsFilterResponseDecorator
- * \brief Class defining decorator for calling filter's hooks
+ * \brief A decorator for calling filter's hooks.
  */
 class QgsFilterResponseDecorator : public QgsServerResponse
 {

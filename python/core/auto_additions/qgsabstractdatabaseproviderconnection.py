@@ -50,6 +50,7 @@ QgsAbstractDatabaseProviderConnection.GeometryColumnCapabilities.baseClass = Qgs
 GeometryColumnCapabilities = QgsAbstractDatabaseProviderConnection  # dirty hack since SIP seems to introduce the flags in module
 try:
     QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__attribute_docs__ = {'sql': 'The SQL expression that defines the SQL (query) layer', 'filter': 'Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability.Filters capability', 'layerName': 'Optional name for the new layer', 'primaryKeyColumns': 'List of primary key column names', 'geometryColumn': 'Name of the geometry column', 'disableSelectAtId': 'If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability.SelectAtId capability'}
+    QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__annotations__ = {'sql': str, 'filter': str, 'layerName': str, 'primaryKeyColumns': 'List[str]', 'geometryColumn': str, 'disableSelectAtId': bool}
     QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__doc__ = """The SqlVectorLayerOptions stores all information required to create a SQL (query) layer.
 
 .. seealso:: :py:func:`createSqlVectorLayer`
@@ -60,6 +61,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__attribute_docs__ = {'geometryColumnName': 'Specifies the name of the geometry column to create the index for'}
+    QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__annotations__ = {'geometryColumnName': str}
     QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__doc__ = """The SpatialIndexOptions contains extra options relating to spatial index creation.
 
 .. versionadded:: 3.14"""
@@ -68,12 +70,19 @@ except (NameError, AttributeError):
     pass
 try:
     QgsAbstractDatabaseProviderConnection.VectorLayerExporterOptions.__attribute_docs__ = {'layerName': 'Name for the new layer', 'schema': 'Optional schema for the new layer. May not be supported by all providers.', 'wkbType': 'WKB type for destination layer geometry', 'primaryKeyColumns': 'List of primary key column names. Note that some providers may ignore this if not supported.', 'geometryColumn': 'Preferred name for the geometry column, if required. Note that some providers may ignore this if a specific geometry column name is required.'}
+    QgsAbstractDatabaseProviderConnection.VectorLayerExporterOptions.__annotations__ = {'layerName': str, 'schema': str, 'wkbType': 'Qgis.WkbType', 'primaryKeyColumns': 'List[str]', 'geometryColumn': str}
     QgsAbstractDatabaseProviderConnection.VectorLayerExporterOptions.__doc__ = """Stores all information required to create a :py:class:`QgsVectorLayerExporter` for the backend.
 
 .. seealso:: :py:func:`createVectorLayerExporterDestinationUri`
 
 .. versionadded:: 3.44"""
     QgsAbstractDatabaseProviderConnection.VectorLayerExporterOptions.__group__ = ['providers']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsAbstractDatabaseProviderConnection.__virtual_methods__ = ['geometryColumnCapabilities', 'sqlLayerDefinitionCapabilities', 'tableUri', 'createVectorTable', 'createVectorLayerExporterDestinationUri', 'tableExists', 'dropVectorTable', 'dropRasterTable', 'renameVectorTable', 'renameRasterTable', 'createSchema', 'dropSchema', 'deleteField', 'addField', 'renameField', 'renameSchema', 'executeSql', 'createSqlVectorLayer', 'validateSqlVectorLayer', 'sqlOptions', 'execSql', 'vacuum', 'createSpatialIndex', 'spatialIndexExists', 'deleteSpatialIndex', 'table', 'SIP_THROW', 'fields', 'sqlDictionary', 'illegalFieldNames', 'defaultPrimaryKeyColumnName', 'defaultGeometryColumnName', 'supportedFieldDomainTypes', 'fieldDomain', 'setFieldDomainName', 'addFieldDomain', 'setFieldAlias', 'setTableComment', 'setFieldComment', 'supportedRelationshipCapabilities', 'relatedTableTypes', 'relationships', 'addRelationship', 'updateRelationship', 'deleteRelationship', 'queryBuilder', 'searchLayerMetadata']
+    QgsAbstractDatabaseProviderConnection.__abstract_methods__ = ['tableImportCapabilities', 'nativeTypes']
+    QgsAbstractDatabaseProviderConnection.__group__ = ['providers']
 except (NameError, AttributeError):
     pass
 try:
@@ -106,9 +115,5 @@ try:
     QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType.__doc__ = """The GeometryColumnType struct represents the combination
 of geometry type and CRS for the table geometry column."""
     QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType.__group__ = ['providers']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsAbstractDatabaseProviderConnection.__group__ = ['providers']
 except (NameError, AttributeError):
     pass

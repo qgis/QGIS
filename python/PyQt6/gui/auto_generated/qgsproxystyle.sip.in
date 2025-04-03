@@ -11,8 +11,8 @@
 class QgsProxyStyle : QProxyStyle
 {
 %Docstring(signature="appended")
-A QProxyStyle subclass which correctly sets the base style to match
-the QGIS application style, and handles object lifetime by correctly
+A QProxyStyle subclass which correctly sets the base style to match the
+QGIS application style, and handles object lifetime by correctly
 parenting to a parent widget.
 
 .. versionadded:: 3.2
@@ -24,9 +24,11 @@ parenting to a parent widget.
   public:
     explicit QgsProxyStyle( QWidget *parent /Transfer/ );
 %Docstring
-Constructor for QgsProxyStyle. Ownership is transferred to the ``parent`` widget.
+Constructor for QgsProxyStyle. Ownership is transferred to the
+``parent`` widget.
 
-The base style for the QProxyStyle will be set to match the current QGIS application style.
+The base style for the QProxyStyle will be set to match the current QGIS
+application style.
 %End
 };
 

@@ -13,6 +13,10 @@
 
 class QgsStyleExportImportDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog allowing importing and exporting of entities from a
+:py:class:`QgsStyle`.
+%End
 
 %TypeHeaderCode
 #include "qgsstyleexportimportdialog.h"
@@ -26,16 +30,19 @@ class QgsStyleExportImportDialog : QDialog
 
     QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0, Mode mode = Export );
 %Docstring
-Constructor for QgsStyleExportImportDialog, with the specified ``parent`` widget.
+Constructor for QgsStyleExportImportDialog, with the specified
+``parent`` widget.
 
-Creates a dialog for importing symbols into the given ``style``, or exporting symbols from the ``style``.
-The ``mode`` argument dictates whether the dialog is to be used for exporting or importing symbols.
+Creates a dialog for importing symbols into the given ``style``, or
+exporting symbols from the ``style``. The ``mode`` argument dictates
+whether the dialog is to be used for exporting or importing symbols.
 %End
     ~QgsStyleExportImportDialog();
 
     void setImportFilePath( const QString &path );
 %Docstring
-Sets the initial ``path`` to use for importing files, when the dialog is in a Import mode.
+Sets the initial ``path`` to use for importing files, when the dialog is
+in a Import mode.
 
 .. versionadded:: 3.6
 %End
@@ -104,14 +111,14 @@ Deselect the symbols belonging to the given tag
 %Docstring
 selectSmartgroup selects all symbols from a smart group
 
-:param groupName:
+:param groupName: 
 %End
 
     void deselectSmartgroup( const QString &groupName );
 %Docstring
 deselectSmartgroup deselects all symbols from a smart group
 
-:param groupName:
+:param groupName: 
 %End
 
     void importTypeChanged( int );

@@ -43,8 +43,8 @@ class QgsUserInputWidget;
 
 /**
  * \ingroup gui
- * \brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
- * used to handle the CAD tools on top of a selection of map tools.
+ * \brief A dockable widget used to handle the CAD tools on top of a selection of map tools.
+ *
  * It handles both the UI and the constraints. Constraints are applied
  * by implementing filters called from QgsMapToolAdvancedDigitizing.
  */

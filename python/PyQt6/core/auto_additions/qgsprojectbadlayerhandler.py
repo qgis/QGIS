@@ -7,6 +7,7 @@ QgsProjectBadLayerHandler.IS_DATABASE = QgsProjectBadLayerHandler.ProviderType.I
 QgsProjectBadLayerHandler.IS_URL = QgsProjectBadLayerHandler.ProviderType.IS_URL
 QgsProjectBadLayerHandler.IS_Unknown = QgsProjectBadLayerHandler.ProviderType.IS_Unknown
 try:
+    QgsProjectBadLayerHandler.__virtual_methods__ = ['handleBadLayers']
     QgsProjectBadLayerHandler.__group__ = ['project']
 except (NameError, AttributeError):
     pass

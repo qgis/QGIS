@@ -12,6 +12,8 @@ try:
     QgsFileWidget.__attribute_docs__ = {'fileChanged': 'Emitted whenever the current file or directory ``path`` is changed.\n'}
     QgsFileWidget.splitFilePaths = staticmethod(QgsFileWidget.splitFilePaths)
     QgsFileWidget.isMultiFiles = staticmethod(QgsFileWidget.isMultiFiles)
+    QgsFileWidget.__virtual_methods__ = ['setReadOnly', 'updateLayout', 'setSelectedFileNames']
+    QgsFileWidget.__overridden_methods__ = ['minimumSizeHint']
     QgsFileWidget.__signal_arguments__ = {'fileChanged': ['path: str']}
 except (NameError, AttributeError):
     pass

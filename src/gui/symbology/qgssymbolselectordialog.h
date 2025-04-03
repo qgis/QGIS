@@ -83,7 +83,7 @@ class QgsSymbolSelectorDialog;
 
 /**
  * \ingroup gui
- * \brief Symbol selector widget that can be used to select and build a symbol
+ * \brief Symbol selector widget that can be used to select and build a symbol.
  */
 class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::QgsSymbolSelectorDialogBase
 {

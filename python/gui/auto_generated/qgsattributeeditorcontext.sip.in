@@ -14,7 +14,8 @@
 class QgsAttributeEditorContext
 {
 %Docstring(signature="appended")
-This class contains context information for attribute editor widgets.
+Contains context information for attribute editor widgets.
+
 It will be passed to embedded widgets whenever this occurs (e.g. when
 showing an embedded form due to relations)
 %End
@@ -59,7 +60,8 @@ showing an embedded form due to relations)
 
     void setDistanceArea( const QgsDistanceArea &distanceArea );
 %Docstring
-Sets distance area object, ``distanceArea``, for area/length calculations
+Sets distance area object, ``distanceArea``, for area/length
+calculations
 
 .. seealso:: :py:func:`distanceArea`
 %End
@@ -73,7 +75,8 @@ Returns the distance area object used for area/length calculations.
 
     void setMapCanvas( QgsMapCanvas *mapCanvas );
 %Docstring
-Sets the associated map canvas, ``mapCanvas``, (e.g. to zoom to related features).
+Sets the associated map canvas, ``mapCanvas``, (e.g. to zoom to related
+features).
 
 .. seealso:: :py:func:`mapCanvas`
 
@@ -91,7 +94,8 @@ Returns the associated map canvas (e.g. to zoom to related features).
 
     void setCadDockWidget( QgsAdvancedDigitizingDockWidget *cadDockWidget );
 %Docstring
-Sets the associated CAD dock widget, ``cadDockWidget``, (e.g. to be used in map tools).
+Sets the associated CAD dock widget, ``cadDockWidget``, (e.g. to be used
+in map tools).
 
 .. note::
 
@@ -179,7 +183,8 @@ Sets the form mode.
 
     bool allowCustomUi() const;
 %Docstring
-Returns ``True`` if the attribute editor should permit use of custom UI forms.
+Returns ``True`` if the attribute editor should permit use of custom UI
+forms.
 
 .. seealso:: :py:func:`setAllowCustomUi`
 %End
@@ -188,8 +193,8 @@ Returns ``True`` if the attribute editor should permit use of custom UI forms.
 %Docstring
 Sets whether the attribute editor should permit use of custom UI forms.
 
-:param allow: set to ``True`` to allow custom UI forms, or ``False`` to disable them and use default generated
-              QGIS forms
+:param allow: set to ``True`` to allow custom UI forms, or ``False`` to
+              disable them and use default generated QGIS forms
 
 .. seealso:: :py:func:`allowCustomUi`
 %End
@@ -216,7 +221,8 @@ Set current ``feature`` for the currently edited form or table row
 
     QgsFeature parentFormFeature() const;
 %Docstring
-Returns the feature of the currently edited parent form in its actual state
+Returns the feature of the currently edited parent form in its actual
+state
 
 .. seealso:: :py:func:`setParentFormFeature`
 

@@ -30,7 +30,7 @@ class QDomElement;
 /**
  * \brief Contains the configuration of a skybox entity.
  *
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \since QGIS 3.16
  */
 class _3D_EXPORT QgsSkyboxSettings

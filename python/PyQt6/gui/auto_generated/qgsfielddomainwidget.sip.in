@@ -12,7 +12,8 @@
 class QgsFieldDomainWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget for configuration of the properties of a :py:class:`QgsFieldDomain`.
+A widget for configuration of the properties of a
+:py:class:`QgsFieldDomain`.
 
 .. versionadded:: 3.26
 %End
@@ -23,7 +24,8 @@ A widget for configuration of the properties of a :py:class:`QgsFieldDomain`.
   public:
     QgsFieldDomainWidget( Qgis::FieldDomainType type, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsFieldDomainWidget for the given domain ``type``, with the specified ``parent`` widget.
+Constructor for QgsFieldDomainWidget for the given domain ``type``, with
+the specified ``parent`` widget.
 %End
 
     void setFieldDomain( const QgsFieldDomain *domain );
@@ -44,7 +46,8 @@ Caller takes ownership of the returned object.
 
     bool isValid() const;
 %Docstring
-Returns ``True`` if the widget currently represents a valid field domain configuration.
+Returns ``True`` if the widget currently represents a valid field domain
+configuration.
 
 .. seealso:: :py:func:`validityChanged`
 %End
@@ -53,7 +56,8 @@ Returns ``True`` if the widget currently represents a valid field domain configu
 
     void validityChanged( bool isValid );
 %Docstring
-Emitted whenever the validity of the field domain configuration in the widget changes.
+Emitted whenever the validity of the field domain configuration in the
+widget changes.
 
 .. seealso:: :py:func:`isValid`
 %End
@@ -64,7 +68,8 @@ Emitted whenever the validity of the field domain configuration in the widget ch
 class QgsFieldDomainDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog for configuration of the properties of a :py:class:`QgsFieldDomain`.
+A dialog for configuration of the properties of a
+:py:class:`QgsFieldDomain`.
 
 .. versionadded:: 3.26
 %End
@@ -75,7 +80,8 @@ A dialog for configuration of the properties of a :py:class:`QgsFieldDomain`.
   public:
     explicit QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
-Constructor for QgsFieldDomainDialog for the given domain ``type``, with the specified ``parent`` widget and window ``flags``.
+Constructor for QgsFieldDomainDialog for the given domain ``type``, with
+the specified ``parent`` widget and window ``flags``.
 %End
 
     void setFieldDomain( const QgsFieldDomain *domain );

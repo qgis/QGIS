@@ -224,7 +224,7 @@ void QgsOfflineEditing::synchronize( bool useTransaction )
       const QPair<QString, QString> pair( remoteLayer->providerType(), connectionString );
       std::shared_ptr<QgsTransactionGroup> transactionGroup = transactionGroups.value( pair );
 
-      if ( !transactionGroup.get() )
+      if ( !transactionGroup )
         transactionGroup = std::make_shared<QgsTransactionGroup>();
 
       if ( !transactionGroup->addLayer( remoteLayer.get() ) )

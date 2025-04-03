@@ -62,6 +62,7 @@ QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
 
   if ( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
   {
+    setCameraNavigationMode( mScene->mapSettings()->cameraNavigationMode() );
     mGlobeCrsToLatLon = QgsCoordinateTransform( mScene->mapSettings()->crs(), mScene->mapSettings()->crs().toGeographicCrs(), mScene->mapSettings()->transformContext() );
   }
 }
@@ -185,6 +186,12 @@ void QgsCameraController::resetView( float distance )
 
 void QgsCameraController::setViewFromTop( float worldX, float worldY, float distance, float yaw )
 {
+  if ( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
+  {
+    QgsDebugError( QStringLiteral( "setViewFromTop() should not be used with globe!" ) );
+    return;
+  }
+
   QgsCameraPose camPose;
   QgsTerrainEntity *terrain = mScene->terrainEntity();
   const float terrainElevationOffset = terrain ? terrain->terrainElevationOffset() : 0.0f;
@@ -259,6 +266,14 @@ void QgsCameraController::readXml( const QDomElement &elem )
 double QgsCameraController::sampleDepthBuffer( int px, int py )
 {
   double depth = 1;
+
+  if ( QWindow *win = window() )
+  {
+    // on high DPI screens, the mouse position is in device-independent pixels,
+    // but the depth buffer is in physical pixels...
+    px = static_cast<int>( px * win->devicePixelRatio() );
+    py = static_cast<int>( py * win->devicePixelRatio() );
+  }
 
   // Sample the neighbouring pixels for the closest point to the camera
   for ( int x = px - 3; x <= px + 3; ++x )
@@ -617,6 +632,25 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
 void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QMouseEvent *mouse )
 {
+  const bool hasShift = ( mouse->modifiers() & Qt::ShiftModifier );
+  const bool hasCtrl = ( mouse->modifiers() & Qt::ControlModifier );
+  const bool hasLeftButton = ( mouse->buttons() & Qt::LeftButton );
+  const bool hasMiddleButton = ( mouse->buttons() & Qt::MiddleButton );
+
+  if ( ( hasLeftButton && hasShift && !hasCtrl ) || ( hasMiddleButton && !hasShift && !hasCtrl ) )
+  {
+    setMouseParameters( MouseOperation::RotationCenter, mMousePos );
+
+    const float scale = static_cast<float>( std::max( mScene->engine()->size().width(), mScene->engine()->size().height() ) );
+    const float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
+    const float yawDiff = -180.0f * static_cast<float>( mouse->x() - mClickPoint.x() ) / scale;
+
+    mCameraPose.setPitchAngle( mRotationPitch + pitchDiff );
+    mCameraPose.setHeadingAngle( mRotationYaw + yawDiff );
+    updateCameraFromPose();
+    return;
+  }
+
   if ( !( mouse->buttons() & Qt::LeftButton ) )
     return;
 

@@ -33,10 +33,12 @@ class QgsMapLayerActionContext;
 
 /**
  * \ingroup gui
-* \brief An action which can run on map layers
+* \brief An action which can run on map layers.
+*
 * The class can be used in two manners:
-* * by instantiating it and connecting to its signals to perform an action
-* * by subclassing and reimplementing its method (only since QGIS 3.18.2)
+*
+* - by instantiating it and connecting to its signals to perform an action
+* - by subclassing and reimplementing its method (only since QGIS 3.18.2)
 */
 class GUI_EXPORT QgsMapLayerAction : public QAction
 {

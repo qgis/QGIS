@@ -13,7 +13,7 @@
 class QgsKeyValueWidget : QgsTableWidgetBase
 {
 %Docstring(signature="appended")
-Widget allowing to edit a QVariantMap, using a table.
+Widget allowing editing a QVariantMap, using a table.
 %End
 
 %TypeHeaderCode

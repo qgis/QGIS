@@ -26,7 +26,7 @@ class QgsModelGraphicsView;
 
 /**
  * \ingroup gui
- * \brief A QgsModelViewMouseEvent is the result of a user interaction with the mouse on a QgsModelGraphicsView.
+ * \brief A mouse event which is the result of a user interaction with a QgsModelGraphicsView.
  *
  * It is sent whenever the user moves, clicks, releases or double clicks the mouse.
  * In addition to the coordinates in pixel space it also knows the coordinates the model space.

@@ -27,7 +27,7 @@ SIP_IF_MODULE( HAVE_QSCI_SIP )
 /**
  * \ingroup gui
  * \class QgsJsonEditWidget
- * \brief The QgsJsonEditWidget is a widget to display JSON data in a code highlighted text or tree form.
+ * \brief A widget for displaying JSON data in a code highlighted text or tree form.
  * \since QGIS 3.20
  */
 class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidget

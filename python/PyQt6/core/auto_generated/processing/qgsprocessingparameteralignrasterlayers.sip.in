@@ -11,25 +11,33 @@
 class QgsProcessingParameterAlignRasterLayers : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
+A parameter for Processing algorithms specifying how rasters should be
+aligned.
+
 A parameter for Processing algorithms that need a list of input raster
-layers to align - this parameter provides Processing framework's adapter for
-QList<:py:class:`QgsAlignRaster`.Item>.
+layers to align - this parameter provides Processing framework's adapter
+for QList<:py:class:`QgsAlignRaster`.Item>.
 
 A valid value for this parameter is a list (QVariantList), where each
 item is a map (QVariantMap) in this form:
-{
-'inputFile':  string,
-'outputFile': string,
-'resampleMethod': int,
-'rescale': bool,
-}
 
-Also it can accept lists (either string lists or :py:class:`QgsMapLayer` list)
-as well as individual layer object or string representing layer source.
+.. code-block:: python
 
-Static functions :py:func:`~parametersAsItems`, :py:func:`~variantMapAsItem`, :py:func:`~itemAsVariantMap`
-provide conversion between :py:class:`QgsAlignRaster`.Item representation and QVariant
-representation.
+     {
+       'inputFile':  string,
+       'outputFile': string,
+       'resampleMethod': int,
+       'rescale': bool,
+     }
+
+Also it can accept lists (either string lists or :py:class:`QgsMapLayer`
+list) as well as individual layer object or string representing layer
+source.
+
+Static functions :py:func:`~parametersAsItems`,
+:py:func:`~variantMapAsItem`, :py:func:`~itemAsVariantMap` provide
+conversion between :py:class:`QgsAlignRaster`.Item representation and
+QVariant representation.
 
 .. versionadded:: 3.34
 %End

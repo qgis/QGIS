@@ -17,8 +17,9 @@ class QgsLayoutViewTool : QObject
 {
 %Docstring(signature="appended")
 Abstract base class for all layout view tools.
-Layout view tools are user interactive tools for manipulating and adding items
-to :py:class:`QgsLayoutView` widgets.
+
+Layout view tools are user interactive tools for manipulating and adding
+items to :py:class:`QgsLayoutView` widgets.
 %End
 
 %TypeHeaderCode
@@ -54,25 +55,26 @@ Mouse move event for overriding. Default implementation does nothing.
 
     virtual void layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event );
 %Docstring
-Mouse double-click event for overriding. Default implementation does nothing.
+Mouse double-click event for overriding. Default implementation does
+nothing.
 %End
 
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
 %Docstring
 Mouse press event for overriding. Default implementation does nothing.
-Note that subclasses must ensure that they correctly handle cases
-when a layoutPressEvent is called without a corresponding
-layoutReleaseEvent (e.g. due to tool being changed mid way
-through a press-release operation).
+Note that subclasses must ensure that they correctly handle cases when a
+layoutPressEvent is called without a corresponding layoutReleaseEvent
+(e.g. due to tool being changed mid way through a press-release
+operation).
 %End
 
     virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
 %Docstring
 Mouse release event for overriding. Default implementation does nothing.
-Note that subclasses must ensure that they correctly handle cases
-when a layoutPressEvent is called without a corresponding
-layoutReleaseEvent (e.g. due to tool being changed mid way
-through a press-release operation).
+Note that subclasses must ensure that they correctly handle cases when a
+layoutPressEvent is called without a corresponding layoutReleaseEvent
+(e.g. due to tool being changed mid way through a press-release
+operation).
 %End
 
     virtual void wheelEvent( QWheelEvent *event );
@@ -92,17 +94,18 @@ Key release event for overriding. Default implementation does nothing.
 
     void setAction( QAction *action );
 %Docstring
-Associates an ``action`` with this tool. When the setLayoutTool
-method of :py:class:`QgsLayoutView` is called the action's state will be set to on.
-Usually this will cause a toolbutton to appear pressed in and
-the previously used toolbutton to pop out.
+Associates an ``action`` with this tool. When the setLayoutTool method
+of :py:class:`QgsLayoutView` is called the action's state will be set to
+on. Usually this will cause a toolbutton to appear pressed in and the
+previously used toolbutton to pop out.
 
 .. seealso:: :py:func:`action`
 %End
 
     QAction *action();
 %Docstring
-Returns the action associated with the tool or ``None`` if no action is associated.
+Returns the action associated with the tool or ``None`` if no action is
+associated.
 
 .. seealso:: :py:func:`setAction`
 %End
@@ -114,14 +117,14 @@ Sets a user defined ``cursor`` for use when the tool is active.
 
     virtual void activate();
 %Docstring
-Called when tool is set as the currently active layout tool.
-Overridden implementations must take care to call the base class implementation.
+Called when tool is set as the currently active layout tool. Overridden
+implementations must take care to call the base class implementation.
 %End
 
     virtual void deactivate();
 %Docstring
-Called when tool is deactivated.
-Overridden implementations must take care to call the base class implementation.
+Called when tool is deactivated. Overridden implementations must take
+care to call the base class implementation.
 %End
 
     QString toolName() const;
@@ -163,8 +166,9 @@ Emitted when the tool is deactivated.
 
     void itemFocused( QgsLayoutItem *item );
 %Docstring
-Emitted when an ``item`` is "focused" by the tool, i.e. it should become the active
-item and should have its properties displayed in any designer windows.
+Emitted when an ``item`` is "focused" by the tool, i.e. it should become
+the active item and should have its properties displayed in any designer
+windows.
 %End
 
   protected:
@@ -177,15 +181,15 @@ Sets the combination of ``flags`` that will be used for the tool.
 
     QgsLayoutViewTool( QgsLayoutView *view /TransferThis/, const QString &name );
 %Docstring
-Constructor for QgsLayoutViewTool, taking a layout ``view`` and
-tool ``name`` as parameters.
+Constructor for QgsLayoutViewTool, taking a layout ``view`` and tool
+``name`` as parameters.
 %End
 
     bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
 %Docstring
 Returns ``True`` if a mouse press/release operation which started at
-``startViewPoint`` and ended at ``endViewPoint`` should be considered
-a "click and drag". If ``False`` is returned, the operation should be
+``startViewPoint`` and ended at ``endViewPoint`` should be considered a
+"click and drag". If ``False`` is returned, the operation should be
 instead treated as just a click on ``startViewPoint``.
 %End
 

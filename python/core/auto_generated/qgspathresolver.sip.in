@@ -12,7 +12,9 @@
 class QgsPathResolver
 {
 %Docstring(signature="appended")
-Resolves relative paths into absolute paths and vice versa. Used for writing
+Resolves relative paths into absolute paths and vice versa.
+
+Used for writing and reading paths for projects.
 %End
 
 %TypeHeaderCode
@@ -21,14 +23,15 @@ Resolves relative paths into absolute paths and vice versa. Used for writing
   public:
     explicit QgsPathResolver( const QString &baseFileName = QString(), const QString &attachmentDir = QString() );
 %Docstring
-Initialize path resolver with a base filename. Null filename means no conversion between relative/absolute path
+Initialize path resolver with a base filename. Null filename means no
+conversion between relative/absolute path
 %End
 
     QString writePath( const QString &filename ) const;
 %Docstring
-Prepare a filename to save it to the project file.
-Creates an absolute or relative path according to the project settings.
-Paths written to the project file should be prepared with this method.
+Prepare a filename to save it to the project file. Creates an absolute
+or relative path according to the project settings. Paths written to the
+project file should be prepared with this method.
 %End
 
     QString readPath( const QString &filename ) const;
@@ -39,16 +42,18 @@ Turn filename read from the project file to an absolute path
 
     static QString setPathPreprocessor( SIP_PYCALLABLE / AllowNone / );
 %Docstring
-Sets a path pre-processor function, which allows for manipulation of paths and data sources prior
-to resolving them to file references or layer sources.
+Sets a path pre-processor function, which allows for manipulation of
+paths and data sources prior to resolving them to file references or
+layer sources.
 
-The ``processor`` function must accept a single string argument (representing the original file path
-or data source), and return a processed version of this path.
+The ``processor`` function must accept a single string argument
+(representing the original file path or data source), and return a
+processed version of this path.
 
 The path pre-processor function is called before any bad layer handler.
 
-If multiple preprocessors are set, they will be called in sequence based on the order in which
-they were originally set.
+If multiple preprocessors are set, they will be called in sequence based
+on the order in which they were originally set.
 
 Example - replace an outdated folder path with a new one:
 
@@ -113,7 +118,8 @@ Example - replace stored database credentials with new ones:
 %Docstring
 Removes the custom pre-processor function with matching ``id``.
 
-The ``id`` must correspond to a pre-processor previously added via a call to :py:func:`~QgsPathResolver.setPathPreprocessor`.
+The ``id`` must correspond to a pre-processor previously added via a
+call to :py:func:`~QgsPathResolver.setPathPreprocessor`.
 
 :raises KeyError: if no processor with the specified ``id`` exists.
 
@@ -134,16 +140,17 @@ The ``id`` must correspond to a pre-processor previously added via a call to :py
 
     static QString setPathWriter( SIP_PYCALLABLE / AllowNone / );
 %Docstring
-Sets a path writer function, which allows for manipulation of paths and data sources prior
-to writing them to the project file.
+Sets a path writer function, which allows for manipulation of paths and
+data sources prior to writing them to the project file.
 
-The ``writer`` function must accept a single string argument (representing the original file path
-or data source), and return a processed version of this path.
+The ``writer`` function must accept a single string argument
+(representing the original file path or data source), and return a
+processed version of this path.
 
 The path writer function is called before any bad layer handler.
 
-If multiple writers are set, they will be called in sequence based on the order in which
-they were originally set.
+If multiple writers are set, they will be called in sequence based on
+the order in which they were originally set.
 
 Example - replace path with a variable:
 
@@ -188,8 +195,9 @@ Example - replace path with a variable:
 %Docstring
 Removes the custom writer function with matching ``id``.
 
-The ``id`` must correspond to a writer previously added via a call to :py:func:`~QgsPathResolver.setPathWriter`.
-An KeyError will be raised if no processor with the specified ``id`` exists.
+The ``id`` must correspond to a writer previously added via a call to
+:py:func:`~QgsPathResolver.setPathWriter`. An KeyError will be raised if
+no processor with the specified ``id`` exists.
 
 .. seealso:: :py:func:`setPathWriter`
 

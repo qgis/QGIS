@@ -20,7 +20,7 @@
 class QgsOwsConnection : QObject
 {
 %Docstring(signature="appended")
-Connections management
+Connections management for OWS connections.
 %End
 
 %TypeHeaderCode
@@ -59,8 +59,9 @@ Returns the connection uri.
 
  static QgsDataSourceUri &addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey ) /Deprecated="Since 3.26. Use addWmsWcsConnectionSettings with service and connection name parameters."/;
 %Docstring
-Adds uri parameters relating to the settings for a WMS or WCS connection to a :py:class:`QgsDataSourceUri` ``uri``.
-Connection settings are taken from the specified QSettings ``settingsKey``.
+Adds uri parameters relating to the settings for a WMS or WCS connection
+to a :py:class:`QgsDataSourceUri` ``uri``. Connection settings are taken
+from the specified QSettings ``settingsKey``.
 
 .. deprecated:: 3.26
 
@@ -69,16 +70,18 @@ Connection settings are taken from the specified QSettings ``settingsKey``.
 
     static QgsDataSourceUri &addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &service, const QString &connName );
 %Docstring
-Adds uri parameters relating to the settings for a WMS or WCS connection to a :py:class:`QgsDataSourceUri` ``uri``.
-Connection settings are taken from the specified ``servcie`` and ``connName``
+Adds uri parameters relating to the settings for a WMS or WCS connection
+to a :py:class:`QgsDataSourceUri` ``uri``. Connection settings are taken
+from the specified ``servcie`` and ``connName``
 
 .. versionadded:: 3.26
 %End
 
  static QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey ) /Deprecated="Since 3.26. Use addWfsConnectionSettings with service and connection name parameters."/;
 %Docstring
-Adds uri parameters relating to the settings for a WFS connection to a :py:class:`QgsDataSourceUri` ``uri``.
-Connection settings are taken from the specified QSettings ``settingsKey``.
+Adds uri parameters relating to the settings for a WFS connection to a
+:py:class:`QgsDataSourceUri` ``uri``. Connection settings are taken from
+the specified QSettings ``settingsKey``.
 
 .. deprecated:: 3.26
 
@@ -87,8 +90,9 @@ Connection settings are taken from the specified QSettings ``settingsKey``.
 
     static QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &service, const QString &connName );
 %Docstring
-Adds uri parameters relating to the settings for a WFS connection to a :py:class:`QgsDataSourceUri` ``uri``.
-Connection settings are taken from the specified ``servcie`` and ``connName``
+Adds uri parameters relating to the settings for a WFS connection to a
+:py:class:`QgsDataSourceUri` ``uri``. Connection settings are taken from
+the specified ``servcie`` and ``connName``
 
 .. versionadded:: 3.26
 %End

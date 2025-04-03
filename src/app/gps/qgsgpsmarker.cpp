@@ -94,7 +94,7 @@ void QgsGpsMarker::updateMarkerSymbol()
   QDomDocument symbolDoc;
   symbolDoc.setContent( defaultSymbol );
   const QDomElement markerElement = symbolDoc.documentElement();
-  mMarkerSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( markerElement, QgsReadWriteContext() ) );
+  mMarkerSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( markerElement, QgsReadWriteContext() );
   setSymbol( std::unique_ptr<QgsMarkerSymbol>( mMarkerSymbol->clone() ) );
   updateSize();
 }

@@ -24,8 +24,9 @@ SIP_IF_MODULE( HAVE_QSCI_SIP )
 
 /**
  * \ingroup gui
- * \brief A HTML editor based on QScintilla2. Adds syntax highlighting and
- * code autocompletion.
+ * \brief A HTML editor based on QScintilla2.
+ *
+ * Adds syntax highlighting and code autocompletion.
  * \note may not be available in Python bindings, depending on platform support
  */
 class GUI_EXPORT QgsCodeEditorHTML : public QgsCodeEditor

@@ -32,7 +32,8 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * \brief This class contains context information for attribute editor widgets.
+ * \brief Contains context information for attribute editor widgets.
+ *
  * It will be passed to embedded widgets whenever this occurs (e.g. when
  * showing an embedded form due to relations)
  */

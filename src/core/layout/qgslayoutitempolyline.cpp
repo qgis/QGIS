@@ -104,7 +104,7 @@ void QgsLayoutItemPolyline::createDefaultPolylineStyleSymbol()
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "0.3" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "square" ) );
 
-  mPolylineStyleSymbol.reset( QgsLineSymbol::createSimple( properties ) );
+  mPolylineStyleSymbol = QgsLineSymbol::createSimple( properties );
   refreshSymbol();
 }
 
@@ -299,7 +299,7 @@ void QgsLayoutItemPolyline::_draw( QgsLayoutItemRenderContext &context, const QS
 
 void QgsLayoutItemPolyline::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context )
 {
-  mPolylineStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elmt, context ) );
+  mPolylineStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elmt, context );
 }
 
 void QgsLayoutItemPolyline::setSymbol( QgsLineSymbol *symbol )

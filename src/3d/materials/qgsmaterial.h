@@ -30,7 +30,7 @@ namespace Qt3DRender
 }
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for all materials used within QGIS 3D views.
  * It provides common functionality (such as clipping) that all materials should support (where applicable).
  * \since QGIS 3.40

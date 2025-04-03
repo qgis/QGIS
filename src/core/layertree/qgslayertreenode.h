@@ -30,7 +30,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * \brief This class is a base class for nodes in a layer tree.
+ * \brief Base class for nodes in a layer tree.
  *
  * Layer tree is a hierarchical structure consisting of group and layer nodes:
  *

@@ -22,6 +22,7 @@ from qgis.PyQt.QtGui import QColor, QPainter, QImage
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
+    Qgis,
     QgsAnnotationPolygonItem,
     QgsCoordinateReferenceSystem,
     QgsFeature,
@@ -1104,6 +1105,33 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map = QgsLayoutItemMap(layout)
         ms = map.mapSettings(QgsRectangle(0, 0, 1, 1), QSizeF(10, 10), 96, False)
         self.assertEqual(ms.dpiTarget(), 111.1)
+
+    def test_scale_methods(self):
+        p = QgsProject()
+        layout = QgsLayout(p)
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        map.setFrameEnabled(True)
+        map.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        map.zoomToExtent(QgsRectangle(-49.42, 102.1, -4.44, 161.56))
+        layout.addLayoutItem(map)
+
+        self.assertAlmostEqual(map.scale(), 30729092, -4)
+        ms = map.mapSettings(map.extent(), map.rect().size(), 300, False)
+        self.assertEqual(ms.scaleMethod(), Qgis.ScaleCalculationMethod.HorizontalMiddle)
+        self.assertAlmostEqual(ms.scale(), 362942041, -4)
+
+        p.setScaleMethod(Qgis.ScaleCalculationMethod.HorizontalTop)
+        self.assertAlmostEqual(map.scale(), 52333363, -4)
+        ms = map.mapSettings(map.extent(), map.rect().size(), 300, False)
+        self.assertEqual(ms.scaleMethod(), Qgis.ScaleCalculationMethod.HorizontalTop)
+        self.assertAlmostEqual(ms.scale(), 618110591, -4)
+
+        p.setScaleMethod(Qgis.ScaleCalculationMethod.HorizontalBottom)
+        self.assertAlmostEqual(map.scale(), 8924266, -4)
+        ms = map.mapSettings(map.extent(), map.rect().size(), 300, False)
+        self.assertEqual(ms.scaleMethod(), Qgis.ScaleCalculationMethod.HorizontalBottom)
+        self.assertAlmostEqual(ms.scale(), 105404726, -4)
 
 
 if __name__ == "__main__":

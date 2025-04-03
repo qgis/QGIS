@@ -21,10 +21,9 @@
 
 #include "qgssymbollayerutils.h"
 
-//! helper class to generate color tooltip
-
 /**
  * \ingroup gui
+ * \brief Helper class for generating color tooltips.
  * \since QGIS 3.40
  */
 class QgsColorTooltip

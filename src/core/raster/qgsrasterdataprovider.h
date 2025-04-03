@@ -51,7 +51,7 @@ class QgsRasterIdentifyResult;
 class QgsMapSettings;
 
 /**
- * \brief Handles asynchronous download of images
+ * \brief Handles asynchronous download of images.
  * \ingroup core
  */
 class CORE_EXPORT QgsImageFetcher : public QObject

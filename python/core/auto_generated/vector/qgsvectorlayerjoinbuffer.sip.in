@@ -30,7 +30,8 @@ Manages joined fields for a vector layer.
 %Docstring
 Joins another vector layer to this layer
 
-:param joinInfo: join object containing join layer id, target and source field
+:param joinInfo: join object containing join layer id, target and source
+                 field
 
 :return: (since 2.6) whether the join was successfully added
 %End
@@ -51,7 +52,8 @@ Updates field map with joined attributes
 
     void createJoinCaches();
 %Docstring
-Calls :py:func:`~QgsVectorLayerJoinBuffer.cacheJoinLayer` for all vector joins
+Calls :py:func:`~QgsVectorLayerJoinBuffer.cacheJoinLayer` for all vector
+joins
 %End
 
     void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
@@ -61,13 +63,14 @@ Saves mVectorJoins to xml under the layer node
 
     void readXml( const QDomNode &layer_node );
 %Docstring
-Reads joins from project file.
-Does not resolve layer IDs to layers - call :py:func:`~QgsVectorLayerJoinBuffer.resolveReferences` afterwards
+Reads joins from project file. Does not resolve layer IDs to layers -
+call :py:func:`~QgsVectorLayerJoinBuffer.resolveReferences` afterwards
 %End
 
     void resolveReferences( QgsProject *project );
 %Docstring
-Resolves layer IDs of joined layers using given project's available layers
+Resolves layer IDs of joined layers using given project's available
+layers
 %End
 
     bool containsJoins() const;
@@ -90,17 +93,20 @@ Finds the vector join for a layer field index.
 
     int joinedFieldsOffset( const QgsVectorLayerJoinInfo *info, const QgsFields &fields );
 %Docstring
-Find out what is the first index of the join within fields. Returns -1 if join is not present
+Find out what is the first index of the join within fields. Returns -1
+if join is not present
 %End
 
     static QVector<int> joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset );
 %Docstring
-Returns a vector of indices for use in join based on field names from the layer
+Returns a vector of indices for use in join based on field names from
+the layer
 %End
 
     static QVector<int> joinSubsetIndices( const QgsFields &joinLayerFields, const QStringList &joinFieldsSubset );
 %Docstring
-Returns a vector of indices for use in join based on field names from the join layer's fields.
+Returns a vector of indices for use in join based on field names from
+the join layer's fields.
 
 .. versionadded:: 3.20
 %End
@@ -132,11 +138,13 @@ Returns the targeted feature corresponding to the joined feature.
 
     bool isAuxiliaryJoin( const QgsVectorLayerJoinInfo &info ) const;
 %Docstring
-Returns ``True`` if the join information is about auxiliary layer, ``False`` otherwise
+Returns ``True`` if the join information is about auxiliary layer,
+``False`` otherwise
 
 :param info: The join information
 
-:return: ``True`` if the join information is about auxiliary layer, ``False`` otherwise
+:return: ``True`` if the join information is about auxiliary layer,
+         ``False`` otherwise
 %End
 
     QgsVectorLayerJoinBuffer *clone() const /Factory/;
@@ -190,22 +198,24 @@ created if its fields are not empty.
 
     bool deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context = 0 ) const;
 %Docstring
-Deletes a feature from joined layers. The feature id given in
-parameter is the one coming from the target layer.
+Deletes a feature from joined layers. The feature id given in parameter
+is the one coming from the target layer.
 
 :param fid: The feature id from the target layer to delete
-:param context: The chain of features which will be deleted for feedback and to avoid infinite recursions. Can be ``None``.
+:param context: The chain of features which will be deleted for feedback
+                and to avoid infinite recursions. Can be ``None``.
 
 :return: ``False`` if an error happened, ``True`` otherwise
 %End
 
     bool deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context = 0 ) const;
 %Docstring
-Deletes a list of features from joined layers. Feature ids given
-in a parameter are those coming from the target layer.
+Deletes a list of features from joined layers. Feature ids given in a
+parameter are those coming from the target layer.
 
 :param fids: Feature ids from the target layer to delete
-:param context: The chain of features who will be deleted for feedback and to avoid infinite recursions. Can be ``None``.
+:param context: The chain of features who will be deleted for feedback
+                and to avoid infinite recursions. Can be ``None``.
 
 :return: ``False`` if an error happened, ``True`` otherwise
 %End
@@ -214,7 +224,8 @@ in a parameter are those coming from the target layer.
 
     void joinedFieldsChanged();
 %Docstring
-Emitted whenever the list of joined fields changes (e.g. added join or joined layer's fields change)
+Emitted whenever the list of joined fields changes (e.g. added join or
+joined layer's fields change)
 %End
 
 };

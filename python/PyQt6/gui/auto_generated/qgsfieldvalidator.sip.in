@@ -11,6 +11,10 @@
 
 class QgsFieldValidator : QValidator
 {
+%Docstring(signature="appended")
+A QValidator for validation against a :py:class:`QgsField`'s constraints
+and field type.
+%End
 
 %TypeHeaderCode
 #include "qgsfieldvalidator.h"

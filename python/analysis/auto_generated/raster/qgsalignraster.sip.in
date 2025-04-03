@@ -14,8 +14,10 @@
 class QgsAlignRaster
 {
 %Docstring(signature="appended")
-:py:class:`QgsAlignRaster` takes one or more raster layers and warps (resamples) them
-so they have the same:
+Takes one or more raster layers and warps (resamples) them to a common
+grid.
+
+The aligned rasters will have the same:
 
 - coordinate reference system
 - cell size and raster size
@@ -100,7 +102,8 @@ Method to be overridden for progress reporting.
 
 :param complete: Overall progress of the alignment operation
 
-:return: ``False`` if the execution should be canceled, ``True`` otherwise
+:return: ``False`` if the execution should be canceled, ``True``
+         otherwise
 %End
 
         virtual ~ProgressHandler();
@@ -108,7 +111,8 @@ Method to be overridden for progress reporting.
 
     void setProgressHandler( ProgressHandler *progressHandler );
 %Docstring
-Assign a progress handler instance. Does not take ownership. ``None`` can be passed.
+Assign a progress handler instance. Does not take ownership. ``None``
+can be passed.
 %End
     ProgressHandler *progressHandler() const;
 %Docstring
@@ -151,46 +155,50 @@ Gets the output CRS in WKT format
 
     void setClipExtent( double xmin, double ymin, double xmax, double ymax );
 %Docstring
-Configure clipping extent (region of interest).
-No extra clipping is done if the rectangle is null
+Configure clipping extent (region of interest). No extra clipping is
+done if the rectangle is null
 %End
 
     void setClipExtent( const QgsRectangle &extent );
 %Docstring
-Configure clipping extent (region of interest).
-No extra clipping is done if the rectangle is null
+Configure clipping extent (region of interest). No extra clipping is
+done if the rectangle is null
 %End
 
     QgsRectangle clipExtent() const;
 %Docstring
-Gets clipping extent (region of interest).
-No extra clipping is done if the rectangle is null
+Gets clipping extent (region of interest). No extra clipping is done if
+the rectangle is null
 %End
 
     bool setParametersFromRaster( const RasterInfo &rasterInfo, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
 %Docstring
-Set destination CRS, cell size and grid offset from a raster file.
-The user may provide custom values for some of the parameters - in such case
+Set destination CRS, cell size and grid offset from a raster file. The
+user may provide custom values for some of the parameters - in such case
 only the remaining parameters are calculated.
 
-If default CRS is used, the parameters are set according to the raster file's geo-transform.
-If a custom CRS is provided, suggested reprojection is calculated first (using GDAL) in order
-to determine suitable defaults for cell size and grid offset.
+If default CRS is used, the parameters are set according to the raster
+file's geo-transform. If a custom CRS is provided, suggested
+reprojection is calculated first (using GDAL) in order to determine
+suitable defaults for cell size and grid offset.
 
-:return: ``True`` on success (may fail if it is not possible to reproject raster to given CRS)
+:return: ``True`` on success (may fail if it is not possible to
+         reproject raster to given CRS)
 %End
 
     bool setParametersFromRaster( const QString &filename, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
 %Docstring
-Overridden variant for convenience, taking filename instead RasterInfo object.
-See the other variant for details.
+Overridden variant for convenience, taking filename instead RasterInfo
+object. See the other variant for details.
 %End
 
     bool checkInputParameters();
 %Docstring
-Determine destination extent from the input rasters and calculate derived values
+Determine destination extent from the input rasters and calculate
+derived values
 
-:return: ``True`` on success, sets error on error (see :py:func:`~QgsAlignRaster.errorMessage`)
+:return: ``True`` on success, sets error on error (see
+         :py:func:`~QgsAlignRaster.errorMessage`)
 %End
 
     QSize alignedRasterSize() const;
@@ -215,13 +223,15 @@ Returns the expected extent of the resulting aligned raster
 %Docstring
 Run the alignment process
 
-:return: ``True`` on success, sets error on error (see :py:func:`~QgsAlignRaster.errorMessage`)
+:return: ``True`` on success, sets error on error (see
+         :py:func:`~QgsAlignRaster.errorMessage`)
 %End
 
     QString errorMessage() const;
 %Docstring
 Returns the error from a previous :py:func:`~QgsAlignRaster.run` call.
-Error message is empty if :py:func:`~QgsAlignRaster.run` succeeded (returned ``True``)
+Error message is empty if :py:func:`~QgsAlignRaster.run` succeeded
+(returned ``True``)
 %End
 
     void dump() const;
@@ -231,18 +241,21 @@ write contents of the object to standard error stream - for debugging
 
     int suggestedReferenceLayer() const;
 %Docstring
-Returns the index of the layer which has smallest cell size (returns -1 on error)
+Returns the index of the layer which has smallest cell size (returns -1
+on error)
 %End
 
   protected:
     bool createAndWarp( const Item &raster );
 %Docstring
-Internal function for processing of one raster (1. create output, 2. do the alignment)
+Internal function for processing of one raster (1. create output, 2. do
+the alignment)
 %End
 
     static bool suggestedWarpOutput( const RasterInfo &info, const QString &destWkt, QSizeF *cellSize = 0, QPointF *gridOffset = 0, QgsRectangle *rect = 0 );
 %Docstring
-Determine suggested output of raster warp to a different CRS. Returns ``True`` on success
+Determine suggested output of raster warp to a different CRS. Returns
+``True`` on success
 %End
 
   protected:

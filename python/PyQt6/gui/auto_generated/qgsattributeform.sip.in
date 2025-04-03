@@ -14,6 +14,9 @@
 
 class QgsAttributeForm : QWidget
 {
+%Docstring(signature="appended")
+The attribute form widget for vector layer features.
+%End
 
 %TypeHeaderCode
 #include "qgsattributeform.h"
@@ -43,8 +46,8 @@ class QgsAttributeForm : QWidget
 
     QgsFeature currentFormFeature() const;
 %Docstring
-Returns the feature that is currently displayed in the form with all
-the changes received on editing the values in the widgets.
+Returns the feature that is currently displayed in the form with all the
+changes received on editing the values in the widgets.
 
 .. versionadded:: 3.16
 %End
@@ -84,14 +87,15 @@ Shows the button box (OK/Cancel) and disables auto-commit
     void disconnectButtonBox();
 %Docstring
 Disconnects the button box (OK/Cancel) from the accept/resetValues slots
-If this method is called, you have to create these connections from outside
+If this method is called, you have to create these connections from
+outside
 %End
 
     void addInterface( QgsAttributeFormInterface *iface /Transfer/ );
 %Docstring
 Takes ownership
 
-:param iface:
+:param iface: 
 %End
 
     QgsVectorLayer *layer();
@@ -126,7 +130,8 @@ Sets the current mode of the form.
 
     void setEditCommandMessage( const QString &message );
 %Docstring
-Sets the edit command message (Undo) that will be used when the dialog is accepted
+Sets the edit command message (Undo) that will be used when the dialog
+is accepted
 
 :param message: The message
 %End
@@ -144,30 +149,31 @@ Intercepts keypress on custom form (escape should not close it)
 
     void setMultiEditFeatureIds( const QgsFeatureIds &fids );
 %Docstring
-Sets all feature IDs which are to be edited if the form is in multiedit mode
+Sets all feature IDs which are to be edited if the form is in multiedit
+mode
 
 :param fids: feature ID list
 %End
 
     void setMessageBar( QgsMessageBar *messageBar );
 %Docstring
-Sets the message bar to display feedback from the form in. This is used in the search/filter
-mode to display the count of selected features.
+Sets the message bar to display feedback from the form in. This is used
+in the search/filter mode to display the count of selected features.
 
 :param messageBar: target message bar
 %End
 
     QString aggregateFilter() const;
 %Docstring
-The aggregate filter is only useful if the form is in AggregateFilter mode.
-In this case it will return a combined expression according to the chosen filters
-on all attribute widgets.
+The aggregate filter is only useful if the form is in AggregateFilter
+mode. In this case it will return a combined expression according to the
+chosen filters on all attribute widgets.
 %End
 
     void setExtraContextScope( QgsExpressionContextScope *extraScope /Transfer/ );
 %Docstring
-Sets an additional expression context scope to be used
-for calculations in this form.
+Sets an additional expression context scope to be used for calculations
+in this form.
 
 .. versionadded:: 3.16
 %End
@@ -183,8 +189,8 @@ Returns ``True`` if any of the form widgets need feature geometry
 
  void attributeChanged( const QString &attribute, const QVariant &value ) /Deprecated="Since 3.0. "/;
 %Docstring
-Notifies about changes of attributes, this signal is not emitted when the value is set
-back to the original one.
+Notifies about changes of attributes, this signal is not emitted when
+the value is set back to the original one.
 
 :param attribute: The name of the attribute that changed.
 :param value: The new value of the attribute.
@@ -198,7 +204,8 @@ Notifies about changes of attributes
 
 :param attribute: The name of the attribute that changed.
 :param value: The new value of the attribute.
-:param attributeChanged: If ``True``, it corresponds to an actual change of the feature attribute
+:param attributeChanged: If ``True``, it corresponds to an actual change
+                         of the feature attribute
 %End
 
 
@@ -224,7 +231,8 @@ Emitted when the form changes mode.
 
     void closed();
 %Docstring
-Emitted when the user selects the close option from the form's button bar.
+Emitted when the user selects the close option from the form's button
+bar.
 %End
 
     void zoomToFeatures( const QString &filter );
@@ -239,7 +247,8 @@ Emitted when the user chooses to flash a filtered set of features.
 
     void openFilteredFeaturesAttributeTable( const QString &filter );
 %Docstring
-Emitted when the user chooses to open the attribute table dialog with a filtered set of features.
+Emitted when the user chooses to open the attribute table dialog with a
+filtered set of features.
 
 .. versionadded:: 3.24
 %End
@@ -248,7 +257,8 @@ Emitted when the user chooses to open the attribute table dialog with a filtered
 
     void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );
 %Docstring
-Call this to change the content of a given attribute. Will update the editor(s) related to this field.
+Call this to change the content of a given attribute. Will update the
+editor(s) related to this field.
 
 :param field: The field to change
 :param value: The new value
@@ -281,8 +291,10 @@ Save all the values from the editors to the layer.
 Save all the values from the editors to the layer.
 
 
+
 :return: - ``True`` if save was successful
-         - error: an explanatory error message if an error occurs while saving the form.
+         - error: an explanatory error message if an error occurs while
+           saving the form.
 
 .. versionadded:: 3.18
 %End
@@ -304,11 +316,11 @@ reload current feature
 
     void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
 %Docstring
-Is called in embedded forms when an ``attribute`` value in the parent form
-has changed to ``newValue``.
+Is called in embedded forms when an ``attribute`` value in the parent
+form has changed to ``newValue``.
 
-Notify the form widgets that something has changed in case they
-have filter expressions that depend on the parent form scope.
+Notify the form widgets that something has changed in case they have
+filter expressions that depend on the parent form scope.
 
 .. versionadded:: 3.14
 %End

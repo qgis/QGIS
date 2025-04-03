@@ -100,7 +100,7 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
 
 /**
  * \ingroup gui
- * \brief View style which shows drop indicator line between items
+ * \brief View style which shows a drop indicator line between items
  *
  * \since QGIS 3.40.6
  */
@@ -121,6 +121,7 @@ class QgsStackedDiagramsViewStyle : public QgsProxyStyle
 /**
  * \ingroup gui
  * \class QgsStackedDiagramProperties
+ * \brief A widget for editing sub diagrams.
  *
  * \since QGIS 3.40
  */

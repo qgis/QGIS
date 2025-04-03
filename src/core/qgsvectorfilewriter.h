@@ -57,6 +57,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * \ingroup core
+     * \brief Describes an available option for configuring file writing for a particular output format.
      */
     class Option
     {
@@ -72,6 +73,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * \ingroup core
+     * \brief An available option for configuring file writing for a particular output format, presenting a choice of preset values.
      */
     class SetOption : public QgsVectorFileWriter::Option
     {
@@ -90,6 +92,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * \ingroup core
+     * \brief An available option for configuring file writing for a particular output format, presenting a freeform string option.
      */
     class StringOption: public QgsVectorFileWriter::Option
     {
@@ -104,6 +107,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * \ingroup core
+     * \brief An available option for configuring file writing for a particular output format, presenting an integer option.
      */
     class IntOption: public QgsVectorFileWriter::Option
     {
@@ -118,6 +122,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * \ingroup core
+     * \brief An available option for configuring file writing for a particular output format, presenting an boolean option.
      */
     class BoolOption : public QgsVectorFileWriter::SetOption
     {
@@ -129,6 +134,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * \ingroup core
+     * \brief A hidden option for file writing for a particular output format.
      */
     class HiddenOption : public QgsVectorFileWriter::Option
     {
@@ -205,7 +211,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * \ingroup core
-     * \brief Interface to convert raw field values to their user-friendly value.
+     * \brief Interface to convert raw field values to their user-friendly values.
      */
     class CORE_EXPORT FieldValueConverter
     {
@@ -439,7 +445,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * \ingroup core
-     * \brief Options to pass to writeAsVectorFormat()
+     * \brief Options to pass to QgsVectorFileWriter::writeAsVectorFormat().
      */
     class CORE_EXPORT SaveVectorOptions
     {
@@ -522,7 +528,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
          *
          * \since QGIS 3.18
          */
-        FieldNameSource fieldNameSource = Original;
+        QgsVectorFileWriter::FieldNameSource fieldNameSource = QgsVectorFileWriter::Original;
 
         /**
          * Set to TRUE to save layer metadata for the exported vector file.
@@ -752,7 +758,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       QString filterString;
 
       /**
-       * Matching glob patterns for format, e.g. *.shp.
+       * Matching glob patterns for format, e.g. ``*.shp``.
        * \since QGIS 3.2
        */
       QStringList globs;

@@ -12,9 +12,8 @@
 class QgsVirtualLayerTask : QgsTask
 {
 %Docstring(signature="appended")
-
 Initializes a virtual layer with postpone mode activated and reloads the
-data in a separated thread.
+data in a separate thread.
 
 .. versionadded:: 3.2
 %End
@@ -28,7 +27,8 @@ data in a separated thread.
 %Docstring
 Constructor.
 
-:param definition: The definition to use for initializing the virtual layer
+:param definition: The definition to use for initializing the virtual
+                   layer
 %End
 
     QgsVectorLayer *layer();
@@ -62,7 +62,8 @@ Cancels the pending query and the parent task.
 
     QString exceptionText() const;
 %Docstring
-Returns the exception text or an empty string if no exceptions were raised
+Returns the exception text or an empty string if no exceptions were
+raised
 
 .. versionadded:: 3.4
 %End

@@ -11,7 +11,8 @@
 class QgsConnectionsRootItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")
-A Collection that represents a root group of connections from a single data provider
+A browser item that represents a root group of connections from a single
+data provider.
 
 .. versionadded:: 3.16
 %End
@@ -23,15 +24,19 @@ A Collection that represents a root group of connections from a single data prov
 
     QgsConnectionsRootItem( QgsDataItem *parent /TransferThis/, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
 %Docstring
-Constructor for QgsConnectionsRootItem, with the specified ``parent`` item.
+Constructor for QgsConnectionsRootItem, with the specified ``parent``
+item.
 
-The ``name`` argument specifies the text to show in the model for the item. A translated string should
-be used wherever appropriate.
+The ``name`` argument specifies the text to show in the model for the
+item. A translated string should be used wherever appropriate.
 
-The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
-but :py:class:`QgsSchemaItem` items pointing to different logical locations should always use a different item ``path``.
+The ``path`` argument gives the item path in the browser tree. The
+``path`` string can take any form, but :py:class:`QgsSchemaItem` items
+pointing to different logical locations should always use a different
+item ``path``.
 
-The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
+The optional ``providerKey`` string can be used to specify the key for
+the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
     ~QgsConnectionsRootItem();

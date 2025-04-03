@@ -12,6 +12,7 @@ class QgsFeatureFilterModel : QgsFeaturePickerModelBase
 {
 %Docstring(signature="appended")
 Provides a list of features based on filter conditions.
+
 Features are fetched asynchronously.
 %End
 
@@ -27,9 +28,10 @@ Create a new QgsFeatureFilterModel, optionally specifying a ``parent``.
 
  QString identifierField() const;
 %Docstring
-The identifier field should be a unique field that can be used to identify individual features.
-It is normally set to the primary key of the layer.
-If there are several identifier fields defined, the behavior is not guaranteed
+The identifier field should be a unique field that can be used to
+identify individual features. It is normally set to the primary key of
+the layer. If there are several identifier fields defined, the behavior
+is not guaranteed
 
 .. deprecated:: 3.10
 
@@ -38,16 +40,18 @@ If there are several identifier fields defined, the behavior is not guaranteed
 
     QStringList identifierFields() const;
 %Docstring
-The identifier field should be a unique field that can be used to identify individual features.
-It is normally set to the primary key of the layer.
+The identifier field should be a unique field that can be used to
+identify individual features. It is normally set to the primary key of
+the layer.
 
 .. versionadded:: 3.10
 %End
 
     void setIdentifierFields( const QStringList &identifierFields );
 %Docstring
-The identifier field should be a unique field that can be used to identify individual features.
-It is normally set to the primary key of the layer.
+The identifier field should be a unique field that can be used to
+identify individual features. It is normally set to the primary key of
+the layer.
 
 .. note::
 
@@ -59,24 +63,24 @@ It is normally set to the primary key of the layer.
     virtual void setExtraIdentifierValueToNull();
 
 %Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model as NULL value(s).
+Allows specifying one value that does not need to match the filter
+criteria but will still be available in the model as NULL value(s).
 
 .. versionadded:: 3.10
 %End
 
     QVariantList extraIdentifierValues() const;
 %Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model.
+Allows specifying one value that does not need to match the filter
+criteria but will still be available in the model.
 
 .. versionadded:: 3.10
 %End
 
     void setExtraIdentifierValues( const QVariantList &extraIdentifierValues );
 %Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model.
+Allows specifying one value that does not need to match the filter
+criteria but will still be available in the model.
 
 .. versionadded:: 3.10
 %End
@@ -86,14 +90,15 @@ still be available in the model.
 
     void identifierFieldsChanged();
 %Docstring
-The identifier field should be a unique field that can be used to identify individual features.
-It is normally set to the primary key of the layer.
+The identifier field should be a unique field that can be used to
+identify individual features. It is normally set to the primary key of
+the layer.
 %End
 
     void extraIdentifierValuesChanged();
 %Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model.
+Allows specifying one value that does not need to match the filter
+criteria but will still be available in the model.
 %End
 
   private:

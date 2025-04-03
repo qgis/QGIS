@@ -14,7 +14,7 @@
 class QgsMesh3DAveragingMethod /Abstract/
 {
 %Docstring(signature="appended")
-Abstract class to interpolate 3d stacked mesh data to 2d data
+Abstract class for interpolating 3d stacked mesh data to 2d data.
 
 .. note::
 
@@ -119,11 +119,12 @@ Returns type of averaging method
 class QgsMeshMultiLevelsAveragingMethod: QgsMesh3DAveragingMethod
 {
 %Docstring(signature="appended")
-
-Multi level averaging method specifies limits of vertical layers from the top layer down or reversed.
+Multi level averaging method specifies limits of vertical layers from
+the top layer down or reversed.
 
 The limits will be truncated to the maximum number of vertical layers.
-To pick value from a single layer, specify the upper and lower limit to be the same
+To pick value from a single layer, specify the upper and lower limit to
+be the same
 
 .. versionadded:: 3.12
 %End
@@ -142,9 +143,12 @@ Constructs single level averaging method for 1st (top) vertical level
 Constructs multi level averaging method
 
 :param startLevel: starting vertical level index numbered from 1
-:param endLevel: ending vertical level index numbered from 1 (higher or equal than startLevel)
-:param countedFromTop: if ``True``, the startLevel index is counted from surface (index 1 is the top layer).
-                       if ``False``, the startLevel index is counted from the bed level (index 1 is the bottom layer)
+:param endLevel: ending vertical level index numbered from 1 (higher or
+                 equal than startLevel)
+:param countedFromTop: if ``True``, the startLevel index is counted from
+                       surface (index 1 is the top layer). if ``False``,
+                       the startLevel index is counted from the bed
+                       level (index 1 is the bottom layer)
 %End
 
     QgsMeshMultiLevelsAveragingMethod( int verticalLevel, bool countedFromTop );
@@ -152,8 +156,10 @@ Constructs multi level averaging method
 Constructs single level averaging method
 
 :param verticalLevel: vertical level index numbered from 1
-:param countedFromTop: if ``True``, the startLevel index is counted from surface (index 1 is the top layer).
-                       if ``False``, the startLevel index is counted from the bed level (index 1 is the bottom layer)
+:param countedFromTop: if ``True``, the startLevel index is counted from
+                       surface (index 1 is the top layer). if ``False``,
+                       the startLevel index is counted from the bed
+                       level (index 1 is the bottom layer)
 %End
 
     ~QgsMeshMultiLevelsAveragingMethod();
@@ -170,30 +176,38 @@ Constructs single level averaging method
 %Docstring
 Returns starting vertical level.
 
-Numbered from 1. If :py:func:`~QgsMeshMultiLevelsAveragingMethod.countedFromTop`, 1 represents the top (surface) level,
-otherwise 1 represents the bottom (bed) level
+Numbered from 1. If
+:py:func:`~QgsMeshMultiLevelsAveragingMethod.countedFromTop`, 1
+represents the top (surface) level, otherwise 1 represents the bottom
+(bed) level
 
-Always lower or equal than :py:func:`~QgsMeshMultiLevelsAveragingMethod.endVerticalLevel`
+Always lower or equal than
+:py:func:`~QgsMeshMultiLevelsAveragingMethod.endVerticalLevel`
 %End
 
     int endVerticalLevel() const;
 %Docstring
 Returns ending vertical level.
 
-Numbered from 1. If :py:func:`~QgsMeshMultiLevelsAveragingMethod.countedFromTop`, 1 represents the top (surface) level,
-otherwise 1 represents the bottom (bed) level
+Numbered from 1. If
+:py:func:`~QgsMeshMultiLevelsAveragingMethod.countedFromTop`, 1
+represents the top (surface) level, otherwise 1 represents the bottom
+(bed) level
 
-Always lower or equal than :py:func:`~QgsMeshMultiLevelsAveragingMethod.endVerticalLevel`
+Always lower or equal than
+:py:func:`~QgsMeshMultiLevelsAveragingMethod.endVerticalLevel`
 %End
 
     bool countedFromTop() const;
 %Docstring
-Returns whether the start and end vertical levels are indexed from top (surface) or bottom (bed) level
+Returns whether the start and end vertical levels are indexed from top
+(surface) or bottom (bed) level
 %End
 
     bool isSingleLevel() const;
 %Docstring
-Returns whether the averaging method selects only a single vertical level
+Returns whether the averaging method selects only a single vertical
+level
 %End
 
 };
@@ -201,11 +215,11 @@ Returns whether the averaging method selects only a single vertical level
 class QgsMeshSigmaAveragingMethod: QgsMesh3DAveragingMethod
 {
 %Docstring(signature="appended")
-
 Sigma averages over the values between 0 (bed level) and 1 (surface).
 
-The fractions will be truncated to 0-1.
-For example: the average of between a quarter and 3 quarters of the water column - Sigma from 0.25 to 0.75
+The fractions will be truncated to 0-1. For example: the average of
+between a quarter and 3 quarters of the water column - Sigma from 0.25
+to 0.75
 
 .. versionadded:: 3.12
 %End
@@ -224,7 +238,8 @@ Constructs the sigma method for whole value range 0-1
 Constructs the sigma method
 
 :param startFraction: starting fraction (0-1)
-:param endFraction: ending fraction, must be higher or equal than startFraction (0-1)
+:param endFraction: ending fraction, must be higher or equal than
+                    startFraction (0-1)
 %End
 
     ~QgsMeshSigmaAveragingMethod();
@@ -241,16 +256,17 @@ Constructs the sigma method
 %Docstring
 Returns starting fraction.
 
-In range 0-1, where 1 means the surface level and 0 bed level.
-Always lower or equal than :py:func:`~QgsMeshSigmaAveragingMethod.endFraction`
+In range 0-1, where 1 means the surface level and 0 bed level. Always
+lower or equal than :py:func:`~QgsMeshSigmaAveragingMethod.endFraction`
 %End
 
     double endFraction() const;
 %Docstring
 Returns ending fraction.
 
-In range 0-1, where 1 means the surface level and 0 bed level.
-Always higher or equal than :py:func:`~QgsMeshSigmaAveragingMethod.startFraction`
+In range 0-1, where 1 means the surface level and 0 bed level. Always
+higher or equal than
+:py:func:`~QgsMeshSigmaAveragingMethod.startFraction`
 %End
 
 };
@@ -258,18 +274,21 @@ Always higher or equal than :py:func:`~QgsMeshSigmaAveragingMethod.startFraction
 class QgsMeshRelativeHeightAveragingMethod: QgsMesh3DAveragingMethod
 {
 %Docstring(signature="appended")
+Relative height averaging method which averages the values based on
+range defined relative to bed elevation or surface.
 
-Relative height averaging method averages the values based on range defined relative to bed elevation or surface (when :py:func:`~countedFromTop`)
+The range is defined in the same length units as defined by model (e.g.
+meters)
 
-The range is defined in the same length units as defined by model (e.g. meters)
+If :py:func:`~countedFromTop`, the method represents averaging based on
+depth below surface. For example one can pull out results for between 6
+to 12 meters below the water surface - depth from 6m to 12m. The depth
+will be truncated at the bed level.
 
-if :py:func:`~countedFromTop`, the method represents averaging based on depth below surface.
-For example one can pull out results for between 6 to 12 meters below the water surface - depth from 6m to 12m.
-The depth will be truncated at the bed level.
-
-if not :py:func:`~countedFromTop`, the method represents averaging based on height above bed level.
-For example one can pull out results for between 6 to 12 meters above the bed - height from 6m to 12m.
-The height will be truncated at the bed level.
+If not :py:func:`~countedFromTop`, the method represents averaging based
+on height above bed level. For example one can pull out results for
+between 6 to 12 meters above the bed - height from 6m to 12m. The height
+will be truncated at the bed level.
 
 .. versionadded:: 3.12
 %End
@@ -290,8 +309,10 @@ Constructs the depth/height averaging method
 
 :param startHeight: starting depth/height, higher or equal than 0
 :param endHeight: ending depth/height, higher or equal than startDepth
-:param countedFromTop: if ``True``, the startLength and endLength is relative to surface (0 is surface level).
-                       if ``False``, the startLength and endLength is relative to bed (0 is bed level).
+:param countedFromTop: if ``True``, the startLength and endLength is
+                       relative to surface (0 is surface level). if
+                       ``False``, the startLength and endLength is
+                       relative to bed (0 is bed level).
 %End
 
     ~QgsMeshRelativeHeightAveragingMethod();
@@ -308,19 +329,22 @@ Constructs the depth/height averaging method
 %Docstring
 Returns starting depth/height.
 
-Always lower or equal than :py:func:`~QgsMeshRelativeHeightAveragingMethod.endLength`
+Always lower or equal than
+:py:func:`~QgsMeshRelativeHeightAveragingMethod.endLength`
 %End
 
     double endHeight() const;
 %Docstring
 Returns ending depth/height.
 
-Always higher or equal than :py:func:`~QgsMeshRelativeHeightAveragingMethod.startLength`
+Always higher or equal than
+:py:func:`~QgsMeshRelativeHeightAveragingMethod.startLength`
 %End
 
     bool countedFromTop() const;
 %Docstring
-Returns whether the start and end vertical levels are relative to top (surface) or bottom (bed) level
+Returns whether the start and end vertical levels are relative to top
+(surface) or bottom (bed) level
 %End
 
 };
@@ -328,13 +352,15 @@ Returns whether the start and end vertical levels are relative to top (surface) 
 class QgsMeshElevationAveragingMethod: QgsMesh3DAveragingMethod
 {
 %Docstring(signature="appended")
+Elevation averaging method averages the values based on range defined
+absolute value to the model's datum.
 
-Elevation averaging method averages the values based on range defined absolute value to the model's datum
+The range is defined in the same length units as defined by model (e.g.
+meters)
 
-The range is defined in the same length units as defined by model (e.g. meters)
-
-For example one can pull out results irrespective of water level change such as between -16m and -10m.
-The elevation will be truncated at the surface and bed levels.
+For example one can pull out results irrespective of water level change
+such as between -16m and -10m. The elevation will be truncated at the
+surface and bed levels.
 
 .. versionadded:: 3.12
 %End

@@ -29,9 +29,7 @@
 
 /**
  * \ingroup server
- * \brief QgsServerRequest
- * Class defining request interface passed to services QgsService::executeRequest() method
- *
+ * \brief Defines requests passed to QgsService classes.
  */
 class SERVER_EXPORT QgsServerRequest
 {

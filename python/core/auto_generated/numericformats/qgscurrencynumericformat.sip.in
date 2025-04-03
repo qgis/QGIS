@@ -10,7 +10,8 @@
 class QgsCurrencyNumericFormat : QgsBasicNumericFormat
 {
 %Docstring(signature="appended")
-A numeric formatter which returns a text representation of a currency value.
+A numeric formater which returns a text representation of a currency
+value.
 
 .. versionadded:: 3.12
 %End

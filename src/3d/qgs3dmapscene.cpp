@@ -53,6 +53,7 @@
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
 #include "qgsgeotransform.h"
+#include "qgsglobechunkedentity.h"
 #include "qgsmaterial.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
@@ -83,6 +84,8 @@
 
 #include "qgswindow3dengine.h"
 #include "qgspointcloudlayer.h"
+#include "qgsshadowrenderview.h"
+#include "qgsforwardrenderview.h"
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 
@@ -113,7 +116,11 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
   // Camera controlling
   mCameraController = new QgsCameraController( this ); // attaches to the scene
-  mCameraController->resetView( 1000 );
+
+  if ( mMap.sceneMode() == Qgis::SceneMode::Globe )
+    mCameraController->resetGlobe( 10'000'000 );
+  else
+    mCameraController->resetView( 1000 );
 
   addCameraViewCenterEntity( mEngine->camera() );
   addCameraRotationCenterEntity( mCameraController );
@@ -202,7 +209,6 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   // force initial update of ambient occlusion settings
   onAmbientOcclusionSettingsChanged();
 
-  mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
   onCameraMovementSpeedChanged();
 
   on3DAxisSettingsChanged();
@@ -210,6 +216,12 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
 void Qgs3DMapScene::viewZoomFull()
 {
+  if ( mMap.sceneMode() == Qgis::SceneMode::Globe )
+  {
+    mCameraController->resetGlobe( 10'000'000 );
+    return;
+  }
+
   const QgsDoubleRange zRange = elevationRange();
   const QgsRectangle extent = sceneExtent();
   const double side = std::max( extent.width(), extent.height() );
@@ -269,11 +281,6 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
     extent.push_back( QgsPointXY( pMap.x(), pMap.y() ) );
   }
   return extent;
-}
-
-int Qgs3DMapScene::terrainPendingJobsCount() const
-{
-  return mTerrain ? mTerrain->pendingJobsCount() : 0;
 }
 
 int Qgs3DMapScene::totalPendingJobsCount() const
@@ -478,6 +485,14 @@ void Qgs3DMapScene::createTerrain()
     mTerrain = nullptr;
   }
 
+  if ( mGlobe )
+  {
+    mSceneEntities.removeOne( mGlobe );
+
+    delete mGlobe;
+    mGlobe = nullptr;
+  }
+
   if ( !mTerrainUpdateScheduled )
   {
     // defer re-creation of terrain: there may be multiple invocations of this slot, so create the new entity just once
@@ -493,7 +508,14 @@ void Qgs3DMapScene::createTerrain()
 
 void Qgs3DMapScene::createTerrainDeferred()
 {
-  if ( mMap.terrainRenderingEnabled() && mMap.terrainGenerator() )
+  QgsChunkedEntity *terrainOrGlobe = nullptr;
+
+  if ( mMap.sceneMode() == Qgis::SceneMode::Globe && mMap.terrainRenderingEnabled() )
+  {
+    mGlobe = new QgsGlobeEntity( &mMap );
+    terrainOrGlobe = mGlobe;
+  }
+  else if ( mMap.sceneMode() == Qgis::SceneMode::Local && mMap.terrainRenderingEnabled() && mMap.terrainGenerator() )
   {
     double tile0width = mMap.terrainGenerator()->rootChunkExtent().width();
     int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.terrainSettings()->mapTileResolution(), mMap.terrainSettings()->maximumGroundError() );
@@ -503,14 +525,18 @@ void Qgs3DMapScene::createTerrainDeferred()
     mMap.terrainGenerator()->setupQuadtree( rootBox3D, rootError, maxZoomLevel, clippingBox3D );
 
     mTerrain = new QgsTerrainEntity( &mMap );
-    mTerrain->setParent( this );
-    mTerrain->setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
+    terrainOrGlobe = mTerrain;
+  }
 
-    mSceneEntities << mTerrain;
+  if ( terrainOrGlobe )
+  {
+    terrainOrGlobe->setParent( this );
+    terrainOrGlobe->setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
 
-    connect( mTerrain, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
-    connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
-    connect( mTerrain, &Qgs3DMapSceneEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity *entity ) {
+    mSceneEntities << terrainOrGlobe;
+
+    connect( terrainOrGlobe, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+    connect( terrainOrGlobe, &Qgs3DMapSceneEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity *entity ) {
       // let's make sure that any entity we're about to show has the right scene origin set
       const QList<QgsGeoTransform *> transforms = entity->findChildren<QgsGeoTransform *>();
       for ( QgsGeoTransform *transform : transforms )
@@ -521,10 +547,6 @@ void Qgs3DMapScene::createTerrainDeferred()
       // enable clipping on the terrain if necessary
       handleClippingOnEntity( entity );
     } );
-  }
-  else
-  {
-    mTerrain = nullptr;
   }
 
   // make sure that renderers for layers are re-created as well
@@ -627,9 +649,39 @@ void Qgs3DMapScene::updateTemporal()
   }
 }
 
+void Qgs3DMapScene::addSceneEntity( Qgs3DMapSceneEntity *sceneNewEntity )
+{
+  Q_ASSERT( sceneNewEntity );
+
+  mSceneEntities.append( sceneNewEntity );
+
+  sceneNewEntity->setParent( this );
+
+  finalizeNewEntity( sceneNewEntity );
+
+  connect( sceneNewEntity, &Qgs3DMapSceneEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity *entity ) {
+    finalizeNewEntity( entity );
+    // this ensures to update the near/far planes with the exact bounding box of the new entity.
+    updateCameraNearFarPlanes();
+  } );
+
+  connect( sceneNewEntity, &Qgs3DMapSceneEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+
+  onCameraChanged(); // needed for chunked entities
+}
+
+void Qgs3DMapScene::removeSceneEntity( Qgs3DMapSceneEntity *sceneEntity )
+{
+  Q_ASSERT( sceneEntity );
+
+  mSceneEntities.removeOne( sceneEntity );
+
+  sceneEntity->deleteLater();
+}
+
+
 void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 {
-  bool needsSceneUpdate = false;
   QgsAbstract3DRenderer *renderer = layer->renderer3D();
   if ( renderer )
   {
@@ -691,29 +743,20 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     Qt3DCore::QEntity *newEntity = renderer->createEntity( &mMap );
     if ( newEntity )
     {
-      newEntity->setParent( this );
       mLayerEntities.insert( layer, newEntity );
-
-      finalizeNewEntity( newEntity );
 
       if ( Qgs3DMapSceneEntity *sceneNewEntity = qobject_cast<Qgs3DMapSceneEntity *>( newEntity ) )
       {
-        needsSceneUpdate = true;
-        mSceneEntities.append( sceneNewEntity );
-
-        connect( sceneNewEntity, &Qgs3DMapSceneEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity *entity ) {
-          finalizeNewEntity( entity );
-          // this ensures to update the near/far planes with the exact bounding box of the new entity.
-          updateCameraNearFarPlanes();
-        } );
-
-        connect( sceneNewEntity, &Qgs3DMapSceneEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+        // also sets this scene as the entity's parent and finalizes it
+        addSceneEntity( sceneNewEntity );
+      }
+      else
+      {
+        newEntity->setParent( this );
+        finalizeNewEntity( newEntity );
       }
     }
   }
-
-  if ( needsSceneUpdate )
-    onCameraChanged(); // needed for chunked entities
 
   connect( layer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
@@ -743,11 +786,14 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 
   if ( Qgs3DMapSceneEntity *sceneEntity = qobject_cast<Qgs3DMapSceneEntity *>( entity ) )
   {
-    mSceneEntities.removeOne( sceneEntity );
+    // also schedules the entity for deletion
+    removeSceneEntity( sceneEntity );
   }
-
-  if ( entity )
-    entity->deleteLater();
+  else
+  {
+    if ( entity )
+      entity->deleteLater();
+  }
 
   disconnect( layer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
@@ -809,7 +855,7 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
   // Finalize adding the 3D transparent objects by adding the layer components to the entities
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
-  Qt3DRender::QLayer *transparentLayer = frameGraph->transparentObjectLayer();
+  Qt3DRender::QLayer *transparentLayer = frameGraph->forwardRenderView().transparentObjectLayer();
   const QList<Qt3DRender::QMaterial *> childMaterials = newEntity->findChildren<Qt3DRender::QMaterial *>();
   for ( Qt3DRender::QMaterial *material : childMaterials )
   {
@@ -959,29 +1005,7 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
 void Qgs3DMapScene::onShadowSettingsChanged()
 {
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
-
-  const QList<QgsLightSource *> lightSources = mMap.lightSources();
-  QList<QgsDirectionalLightSettings *> directionalLightSources;
-  for ( QgsLightSource *source : lightSources )
-  {
-    if ( source->type() == Qgis::LightSourceType::Directional )
-    {
-      directionalLightSources << qgis::down_cast<QgsDirectionalLightSettings *>( source );
-    }
-  }
-
-  QgsShadowSettings shadowSettings = mMap.shadowSettings();
-  int selectedLight = shadowSettings.selectedDirectionalLight();
-  if ( shadowSettings.renderShadows() && selectedLight >= 0 && selectedLight < directionalLightSources.count() )
-  {
-    frameGraph->setShadowRenderingEnabled( true );
-    frameGraph->setShadowBias( shadowSettings.shadowBias() );
-    frameGraph->setShadowMapResolution( shadowSettings.shadowMapResolution() );
-    QgsDirectionalLightSettings light = *directionalLightSources.at( selectedLight );
-    frameGraph->setupDirectionalLight( light, shadowSettings.maximumShadowRenderingDistance() );
-  }
-  else
-    frameGraph->setShadowRenderingEnabled( false );
+  frameGraph->updateShadowSettings( mMap.shadowSettings(), mMap.lightSources() );
 }
 
 void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()
@@ -1103,11 +1127,11 @@ QgsRectangle Qgs3DMapScene::sceneExtent() const
   return mMap.extent();
 }
 
-QgsDoubleRange Qgs3DMapScene::elevationRange() const
+QgsDoubleRange Qgs3DMapScene::elevationRange( const bool ignoreTerrain ) const
 {
   double zMin = std::numeric_limits<double>::max();
   double zMax = std::numeric_limits<double>::lowest();
-  if ( mMap.terrainRenderingEnabled() && mTerrain )
+  if ( mMap.terrainRenderingEnabled() && mTerrain && !ignoreTerrain )
   {
     const QgsBox3D box3D = mTerrain->rootNode()->box3D();
     zMin = std::min( zMin, box3D.zMinimum() );
@@ -1218,7 +1242,27 @@ void Qgs3DMapScene::onOriginChanged()
     transform->setOrigin( mMap.origin() );
   }
 
+  const QgsVector3D oldOrigin = mCameraController->origin();
   mCameraController->setOrigin( mMap.origin() );
+
+  if ( !mClipPlanesEquations.isEmpty() )
+  {
+    // how the math works - for a plane defined as (a,b,c,d), only "d" changes when
+    // moving the origin - the plane normal vector (a,b,c) stays the same.
+    // - line equation for old shift: a * (x - x0) + b * (y - y0) + c * (z - z0) + d0 = 0
+    // - line equation for new shift: a * (x - x1) + b * (y - y1) + c * (z - z1) + d1 = 0
+    // - we solve for d1:
+    //     d1 = a * (x1 - x0) + b * (y1 - y0) + c * (z1 - z0) + d0
+
+    QList<QVector4D> newPlanes;
+    QgsVector3D originShift = mMap.origin() - oldOrigin;
+    for ( QVector4D plane : std::as_const( mClipPlanesEquations ) )
+    {
+      plane.setW( originShift.x() * plane.x() + originShift.y() * plane.y() + originShift.z() * plane.z() + plane.w() );
+      newPlanes.append( plane );
+    }
+    enableClipping( newPlanes );
+  }
 }
 
 void Qgs3DMapScene::handleClippingOnEntity( QEntity *entity ) const
@@ -1262,6 +1306,10 @@ void Qgs3DMapScene::handleClippingOnAllEntities() const
   {
     handleClippingOnEntity( mTerrain );
   }
+  if ( mGlobe )
+  {
+    handleClippingOnEntity( mGlobe );
+  }
 }
 
 void Qgs3DMapScene::enableClipping( const QList<QVector4D> &clipPlaneEquations )
@@ -1273,8 +1321,8 @@ void Qgs3DMapScene::enableClipping( const QList<QVector4D> &clipPlaneEquations )
   mClipPlanesEquations = clipPlaneEquations.mid( 0, mMaxClipPlanes );
 
   // enable the clip planes on the framegraph
-  QgsFrameGraph *frameGraph = mEngine->frameGraph();
-  frameGraph->addClipPlanes( clipPlaneEquations.size() );
+  QgsForwardRenderView &forwardRenderView = mEngine->frameGraph()->forwardRenderView();
+  forwardRenderView.addClipPlanes( clipPlaneEquations.size() );
 
   // Enable the clip planes for the material of each entity.
   handleClippingOnAllEntities();
@@ -1285,8 +1333,8 @@ void Qgs3DMapScene::disableClipping()
   mClipPlanesEquations.clear();
 
   // disable the clip planes on the framegraph
-  QgsFrameGraph *frameGraph = mEngine->frameGraph();
-  frameGraph->removeClipPlanes();
+  QgsForwardRenderView &forwardRenderView = mEngine->frameGraph()->forwardRenderView();
+  forwardRenderView.removeClipPlanes();
 
   // Disable the clip planes for the material of each entity.
   handleClippingOnAllEntities();

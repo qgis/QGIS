@@ -15,8 +15,10 @@
 class QgsNetworkContentFetcher : QObject
 {
 %Docstring(signature="appended")
-HTTP network content fetcher. A simple method for fetching remote HTTP content
-and converting the content to standard formats.
+HTTP network content fetcher.
+
+A simple method for fetching remote HTTP content and converting the
+content to standard formats.
 
 URL redirects are automatically handled.
 
@@ -34,8 +36,9 @@ URL redirects are automatically handled.
 
     void fetchContent( const QUrl &url, const QString &authcfg = QString() );
 %Docstring
-Fetches content from a remote URL and handles redirects. The :py:func:`~QgsNetworkContentFetcher.finished`
-signal will be emitted when content has been fetched.
+Fetches content from a remote URL and handles redirects. The
+:py:func:`~QgsNetworkContentFetcher.finished` signal will be emitted
+when content has been fetched.
 
 :param url: URL to fetch
 :param authcfg: optional authentication configuration
@@ -43,10 +46,12 @@ signal will be emitted when content has been fetched.
 
     void fetchContent( const QNetworkRequest &request, const QString &authcfg = QString() );
 %Docstring
-Fetches content using a network ``request`` and handles redirects. The :py:func:`~QgsNetworkContentFetcher.finished`
-signal will be emitted when content has been fetched.
+Fetches content using a network ``request`` and handles redirects. The
+:py:func:`~QgsNetworkContentFetcher.finished` signal will be emitted
+when content has been fetched.
 
-Optionally, authentication configuration can be set via the ``authcfg`` argument.
+Optionally, authentication configuration can be set via the ``authcfg``
+argument.
 
 .. versionadded:: 3.2
 %End
@@ -60,7 +65,8 @@ Returns a reference to the network reply
 
     QString contentDispositionFilename() const;
 %Docstring
-Returns the associated filename from the reply's content disposition header, if present.
+Returns the associated filename from the reply's content disposition
+header, if present.
 
 .. versionadded:: 3.28
 %End
@@ -102,8 +108,8 @@ Emitted when data is received.
 
     void errorOccurred( QNetworkReply::NetworkError code, const QString &errorMsg );
 %Docstring
-Emitted when an error with ``code`` error occurred while processing the request
-``errorMsg`` is a textual description of the error
+Emitted when an error with ``code`` error occurred while processing the
+request ``errorMsg`` is a textual description of the error
 
 .. versionadded:: 3.22
 %End

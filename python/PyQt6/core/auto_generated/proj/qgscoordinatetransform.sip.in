@@ -13,17 +13,19 @@
 class QgsCoordinateTransform
 {
 %Docstring(signature="appended")
-Class for doing transforms between two map coordinate systems.
+Handles coordinate transforms between two coordinate systems.
 
-This class can convert map coordinates to a different coordinate reference system.
-It is normally associated with a map layer and is used to transform between the
-layer's coordinate system and the coordinate system of the map canvas, although
-it can be used in a more general sense to transform coordinates.
+This class can convert map coordinates to a different coordinate
+reference system. It is normally associated with a map layer and is used
+to transform between the layer's coordinate system and the coordinate
+system of the map canvas, although it can be used in a more general
+sense to transform coordinates.
 
-When used to transform between a layer and the map canvas, all references to source
-and destination coordinate systems refer to layer and map canvas respectively. All
-operations are from the perspective of the layer. For example, a forward transformation
-transforms coordinates from the layer's coordinate system to the map canvas.
+When used to transform between a layer and the map canvas, all
+references to source and destination coordinate systems refer to layer
+and map canvas respectively. All operations are from the perspective of
+the layer. For example, a forward transformation transforms coordinates
+from the layer's coordinate system to the map canvas.
 
 .. note::
 
@@ -55,18 +57,18 @@ Default constructor, creates an invalid QgsCoordinateTransform.
                                      const QgsCoordinateTransformContext &context,
                                      Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags() );
 %Docstring
-Constructs a QgsCoordinateTransform to transform from the ``source``
-to ``destination`` coordinate reference system.
+Constructs a QgsCoordinateTransform to transform from the ``source`` to
+``destination`` coordinate reference system.
 
 The ``context`` argument specifies the context under which the transform
 will be applied, and is used for calculating necessary datum transforms
 to utilize.
 
-Python scripts should generally use the constructor variant which accepts
-a :py:class:`QgsProject` instance instead of this constructor.
+Python scripts should generally use the constructor variant which
+accepts a :py:class:`QgsProject` instance instead of this constructor.
 
-Since QGIS 3.26 the optional ``flags`` argument can be used to specify flags
-which dictate the behavior of the transformation.
+Since QGIS 3.26 the optional ``flags`` argument can be used to specify
+flags which dictate the behavior of the transformation.
 
 .. warning::
 
@@ -89,25 +91,26 @@ which dictate the behavior of the transformation.
                                      const QgsProject *project,
                                      Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags() );
 %Docstring
-Constructs a QgsCoordinateTransform to transform from the ``source``
-to ``destination`` coordinate reference system, when used with the
-given ``project``.
+Constructs a QgsCoordinateTransform to transform from the ``source`` to
+``destination`` coordinate reference system, when used with the given
+``project``.
 
-No reference to ``project`` is stored or utilized outside of the constructor,
-and it is used to retrieve the project's transform context only.
+No reference to ``project`` is stored or utilized outside of the
+constructor, and it is used to retrieve the project's transform context
+only.
 
-Python scripts should utilize the :py:func:`QgsProject.instance()` project
-instance when creating QgsCoordinateTransform. This will ensure
-that any datum transforms defined in the project will be
-correctly respected during coordinate transforms. E.g.
+Python scripts should utilize the :py:func:`QgsProject.instance()`
+project instance when creating QgsCoordinateTransform. This will ensure
+that any datum transforms defined in the project will be correctly
+respected during coordinate transforms. E.g.
 
 .. code-block:: python
 
        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem("EPSG:3111"),
                                           QgsCoordinateReferenceSystem("EPSG:4326"), QgsProject.instance())
 
-Since QGIS 3.26 the optional ``flags`` argument can be used to specify flags
-which dictate the behavior of the transformation.
+Since QGIS 3.26 the optional ``flags`` argument can be used to specify
+flags which dictate the behavior of the transformation.
 
 .. warning::
 
@@ -121,9 +124,9 @@ which dictate the behavior of the transformation.
         int sourceDatumTransformId,
         int destinationDatumTransformId ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0. Use the constructor with a QgsCoordinateTransformContext argument instead."/;
 %Docstring
-Constructs a QgsCoordinateTransform to transform from the ``source``
-to ``destination`` coordinate reference system, with the specified
-datum transforms (see :py:class:`QgsDatumTransform`).
+Constructs a QgsCoordinateTransform to transform from the ``source`` to
+``destination`` coordinate reference system, with the specified datum
+transforms (see :py:class:`QgsDatumTransform`).
 
 .. deprecated:: 3.40
 
@@ -139,10 +142,12 @@ datum transforms (see :py:class:`QgsDatumTransform`).
 
     static bool isTransformationPossible( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
 %Docstring
-Returns ``True`` if it is theoretically possible to transform between ``source`` and ``destination`` CRSes.
+Returns ``True`` if it is theoretically possible to transform between
+``source`` and ``destination`` CRSes.
 
-For example, will return ``False`` if ``source`` and ``destination`` relate to different celestial bodies and
-a transformation between them will never be possible.
+For example, will return ``False`` if ``source`` and ``destination``
+relate to different celestial bodies and a transformation between them
+will never be possible.
 
 .. warning::
 
@@ -155,8 +160,8 @@ a transformation between them will never be possible.
 
     bool isValid() const;
 %Docstring
-Returns ``True`` if the coordinate transform is valid, ie both the source and destination
-CRS have been set and are valid.
+Returns ``True`` if the coordinate transform is valid, ie both the
+source and destination CRS have been set and are valid.
 %End
 
     void setSourceCrs( const QgsCoordinateReferenceSystem &crs );
@@ -211,8 +216,8 @@ transform coordinates from.
 
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
-Returns the destination coordinate reference system, which the transform will
-transform coordinates to.
+Returns the destination coordinate reference system, which the transform
+will transform coordinates to.
 
 .. seealso:: :py:func:`setDestinationCrs`
 
@@ -221,9 +226,10 @@ transform coordinates to.
 
     QgsPointXY transform( const QgsPointXY &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 %Docstring
-Transform the point from the source CRS to the destination CRS.
-If the direction is ForwardTransform then coordinates are transformed from source to destination,
-otherwise points are transformed from destination to source CRS.
+Transform the point from the source CRS to the destination CRS. If the
+direction is ForwardTransform then coordinates are transformed from
+source to destination, otherwise points are transformed from destination
+to source CRS.
 
 :param point: point to transform
 :param direction: transform direction (defaults to ForwardTransform)
@@ -235,9 +241,10 @@ otherwise points are transformed from destination to source CRS.
 
     QgsPointXY transform( double x, double y, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 %Docstring
-Transform the point specified by x,y from the source CRS to the destination CRS.
-If the direction is ForwardTransform then coordinates are transformed from source to destination,
-otherwise points are transformed from destination to source CRS.
+Transform the point specified by x,y from the source CRS to the
+destination CRS. If the direction is ForwardTransform then coordinates
+are transformed from source to destination, otherwise points are
+transformed from destination to source CRS.
 
 :param x: x coordinate of point to transform
 :param y: y coordinate of point to transform
@@ -250,9 +257,10 @@ otherwise points are transformed from destination to source CRS.
 
     QgsVector3D transform( const QgsVector3D &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 %Docstring
-Transform the point specified in 3D coordinates from the source CRS to the destination CRS.
-If the direction is ForwardTransform then coordinates are transformed from source to destination,
-otherwise points are transformed from destination to source CRS.
+Transform the point specified in 3D coordinates from the source CRS to
+the destination CRS. If the direction is ForwardTransform then
+coordinates are transformed from source to destination, otherwise points
+are transformed from destination to source CRS.
 
 :param point: coordinates of point to transform
 :param direction: transform direction (defaults to ForwardTransform)
@@ -266,17 +274,18 @@ otherwise points are transformed from destination to source CRS.
 
     QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool handle180Crossover = false ) const;
 %Docstring
-Transforms a rectangle from the source CRS to the destination CRS.
-If the direction is ForwardTransform then coordinates are transformed from source to destination,
-otherwise points are transformed from destination to source CRS.
-This method assumes that the rectangle is a bounding box, and creates a bounding box
-in the projected CRS, such that all points from the source rectangle are within
-the returned rectangle.
+Transforms a rectangle from the source CRS to the destination CRS. If
+the direction is ForwardTransform then coordinates are transformed from
+source to destination, otherwise points are transformed from destination
+to source CRS. This method assumes that the rectangle is a bounding box,
+and creates a bounding box in the projected CRS, such that all points
+from the source rectangle are within the returned rectangle.
 
 :param rectangle: rectangle to transform
 :param direction: transform direction (defaults to ForwardTransform)
-:param handle180Crossover: set to ``True`` if destination CRS is geographic and handling of extents
-                           crossing the 180 degree longitude line is required
+:param handle180Crossover: set to ``True`` if destination CRS is
+                           geographic and handling of extents crossing
+                           the 180 degree longitude line is required
 
 :return: rectangle in destination CRS
 
@@ -289,15 +298,18 @@ the returned rectangle.
 
     void transformInPlace( double &x, double &y, double &z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 %Docstring
-Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.
-If the direction is ForwardTransform then coordinates are transformed from source to destination,
-otherwise points are transformed from destination to source CRS.
+Transforms an array of x, y and z double coordinates in place, from the
+source CRS to the destination CRS. If the direction is ForwardTransform
+then coordinates are transformed from source to destination, otherwise
+points are transformed from destination to source CRS.
 
 :param x: array of x coordinates of points to transform
 :param y: array of y coordinates of points to transform
-:param z: array of z coordinates of points to transform. The z coordinates of the points
-          must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
-          heights) and must be expressed in its vertical units (generally meters)
+:param z: array of z coordinates of points to transform. The z
+          coordinates of the points must represent height relative to
+          the vertical datum of the source CRS (generally ellipsoidal
+          heights) and must be expressed in its vertical units
+          (generally meters)
 :param direction: transform direction (defaults to ForwardTransform)
 
 :raises QgsCsException: if the transformation fails
@@ -312,16 +324,18 @@ otherwise points are transformed from destination to source CRS.
 Transforms a polygon to the destination coordinate system.
 
 :param polygon: polygon to transform (occurs in place)
-:param direction: transform direction (defaults to forward transformation)
+:param direction: transform direction (defaults to forward
+                  transformation)
 
 :raises QgsCsException: if the transformation fails
 %End
 
     QgsRectangle transform( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 %Docstring
-Transforms a rectangle to the destination CRS.
-If the direction is ForwardTransform then coordinates are transformed from source to destination,
-otherwise points are transformed from destination to source CRS.
+Transforms a rectangle to the destination CRS. If the direction is
+ForwardTransform then coordinates are transformed from source to
+destination, otherwise points are transformed from destination to source
+CRS.
 
 :param rectangle: rectangle to transform
 :param direction: transform direction (defaults to ForwardTransform)
@@ -333,9 +347,10 @@ otherwise points are transformed from destination to source CRS.
 
     void transformCoords( int numPoint, double *x, double *y, double *z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 %Docstring
-Transform an array of coordinates to the destination CRS.
-If the direction is ForwardTransform then coordinates are transformed from source to destination,
-otherwise points are transformed from destination to source CRS.
+Transform an array of coordinates to the destination CRS. If the
+direction is ForwardTransform then coordinates are transformed from
+source to destination, otherwise points are transformed from destination
+to source CRS.
 
 :param numPoint: number of coordinates in arrays
 :param x: array of x coordinates to transform
@@ -348,21 +363,23 @@ otherwise points are transformed from destination to source CRS.
 
     bool isShortCircuited() const;
 %Docstring
-Returns ``True`` if the transform short circuits because the source and destination are equivalent.
+Returns ``True`` if the transform short circuits because the source and
+destination are equivalent.
 %End
 
     bool hasVerticalComponent() const;
 %Docstring
-Returns ``True`` if the transform includes a vertical component, i.e. if both the :py:func:`~QgsCoordinateTransform.sourceCrs`
-and :py:func:`~QgsCoordinateTransform.destinationCrs` have a vertical axis.
+Returns ``True`` if the transform includes a vertical component, i.e. if
+both the :py:func:`~QgsCoordinateTransform.sourceCrs` and
+:py:func:`~QgsCoordinateTransform.destinationCrs` have a vertical axis.
 
 .. versionadded:: 3.40
 %End
 
     QString coordinateOperation() const;
 %Docstring
-Returns a Proj string representing the coordinate operation which will be used to transform
-coordinates.
+Returns a Proj string representing the coordinate operation which will
+be used to transform coordinates.
 
 .. note::
 
@@ -385,11 +402,12 @@ coordinates.
 
     QgsDatumTransform::TransformDetails instantiatedCoordinateOperationDetails() const;
 %Docstring
-Returns the transform details representing the coordinate operation which is being used to transform
-coordinates.
+Returns the transform details representing the coordinate operation
+which is being used to transform coordinates.
 
-This may differ from the result returned by :py:func:`~QgsCoordinateTransform.coordinateOperation` if the desired coordinate
-operation was not successfully instantiated.
+This may differ from the result returned by
+:py:func:`~QgsCoordinateTransform.coordinateOperation` if the desired
+coordinate operation was not successfully instantiated.
 
 .. note::
 
@@ -403,8 +421,8 @@ operation was not successfully instantiated.
 
     void setCoordinateOperation( const QString &operation ) const;
 %Docstring
-Sets a Proj string representing the coordinate ``operation`` which will be used to transform
-coordinates.
+Sets a Proj string representing the coordinate ``operation`` which will
+be used to transform coordinates.
 
 .. warning::
 
@@ -423,9 +441,11 @@ coordinates.
 
     void setAllowFallbackTransforms( bool allowed );
 %Docstring
-Sets whether "ballpark" fallback transformations can be used in the case that the specified
-coordinate operation fails (such as when coordinates from outside a required grid shift file
-are transformed). See :py:func:`~QgsCoordinateTransform.fallbackOperationOccurred` for further details.
+Sets whether "ballpark" fallback transformations can be used in the case
+that the specified coordinate operation fails (such as when coordinates
+from outside a required grid shift file are transformed). See
+:py:func:`~QgsCoordinateTransform.fallbackOperationOccurred` for further
+details.
 
 .. note::
 
@@ -445,9 +465,11 @@ are transformed). See :py:func:`~QgsCoordinateTransform.fallbackOperationOccurre
 
     bool allowFallbackTransforms() const;
 %Docstring
-Returns whether "ballpark" fallback transformations will be used in the case that the specified
-coordinate operation fails (such as when coordinates from outside a required grid shift file
-are transformed). See :py:func:`~QgsCoordinateTransform.fallbackOperationOccurred` for further details.
+Returns whether "ballpark" fallback transformations will be used in the
+case that the specified coordinate operation fails (such as when
+coordinates from outside a required grid shift file are transformed).
+See :py:func:`~QgsCoordinateTransform.fallbackOperationOccurred` for
+further details.
 
 .. note::
 
@@ -462,28 +484,33 @@ are transformed). See :py:func:`~QgsCoordinateTransform.fallbackOperationOccurre
 
     void setBallparkTransformsAreAppropriate( bool appropriate );
 %Docstring
-Sets whether approximate "ballpark" results are appropriate for this coordinate transform.
+Sets whether approximate "ballpark" results are appropriate for this
+coordinate transform.
 
-When a coordinate transform is only being used to generate ballpark results then the
-``appropriate`` argument should be set to ``True``. This indicates that its perfectable
-acceptable (and even expected!) for the transform to use fallback coordinate operations
-in the case that the preferred or user-specified operation fails (such as when coordinates
+When a coordinate transform is only being used to generate ballpark
+results then the ``appropriate`` argument should be set to ``True``.
+This indicates that its perfectable acceptable (and even expected!) for
+the transform to use fallback coordinate operations in the case that the
+preferred or user-specified operation fails (such as when coordinates
 from outside of a grid shift file's extent are transformed).
 
-When ``appropriate`` is ``True``, then no warnings will be generated when the transform
-falls back to a default operation, which may introduce inaccuracies when compared to
-the default/specified coordinate operation.
+When ``appropriate`` is ``True``, then no warnings will be generated
+when the transform falls back to a default operation, which may
+introduce inaccuracies when compared to the default/specified coordinate
+operation.
 
-This should be set when a transform expects that coordinates outside of the direct
-area of use while be transformed, e.g. when transforming from a global extent to a
-CRS with a localized area of use.
+This should be set when a transform expects that coordinates outside of
+the direct area of use while be transformed, e.g. when transforming from
+a global extent to a CRS with a localized area of use.
 
-If ``appropriate`` is ``False`` (the default behavior), then transforms MAY STILL fallback to default operations
-when the preferred or user-specified operation fails, however whenever this occurs
-a user-visible warning will be generated.
+If ``appropriate`` is ``False`` (the default behavior), then transforms
+MAY STILL fallback to default operations when the preferred or
+user-specified operation fails, however whenever this occurs a
+user-visible warning will be generated.
 
-If ``appropriate`` is ``True``, then this setting overrides :py:func:`~QgsCoordinateTransform.allowFallbackTransforms`
-and fallback transforms will always be allowed when required.
+If ``appropriate`` is ``True``, then this setting overrides
+:py:func:`~QgsCoordinateTransform.allowFallbackTransforms` and fallback
+transforms will always be allowed when required.
 
 .. warning::
 
@@ -499,10 +526,13 @@ and fallback transforms will always be allowed when required.
 
     void disableFallbackOperationHandler( bool disabled );
 %Docstring
-Sets whether the default fallback operation handler is disabled for this transform instance.
+Sets whether the default fallback operation handler is disabled for this
+transform instance.
 
-If the default handler is ``disabled`` then it is possible to determine whether a fallback
-operation occurred by testing :py:func:`~QgsCoordinateTransform.fallbackOperationOccurred` immediately after a transformation.
+If the default handler is ``disabled`` then it is possible to determine
+whether a fallback operation occurred by testing
+:py:func:`~QgsCoordinateTransform.fallbackOperationOccurred` immediately
+after a transformation.
 
 .. warning::
 
@@ -520,7 +550,8 @@ operation occurred by testing :py:func:`~QgsCoordinateTransform.fallbackOperatio
 
     bool fallbackOperationOccurred() const;
 %Docstring
-Returns ``True`` if a fallback operation occurred for the most recent transform.
+Returns ``True`` if a fallback operation occurred for the most recent
+transform.
 
 .. note::
 
@@ -533,11 +564,13 @@ Returns ``True`` if a fallback operation occurred for the most recent transform.
 
  int sourceDatumTransformId() const /Deprecated="Since 3.40. Unused on builds based on Proj 6.0 or later."/;
 %Docstring
-Returns the ID of the datum transform to use when projecting from the source
-CRS.
+Returns the ID of the datum transform to use when projecting from the
+source CRS.
 
-This is usually calculated automatically from the transform's :py:class:`QgsCoordinateTransformContext`,
-but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.setSourceDatumTransformId`.
+This is usually calculated automatically from the transform's
+:py:class:`QgsCoordinateTransformContext`, but can be manually
+overwritten by a call to
+:py:func:`~QgsCoordinateTransform.setSourceDatumTransformId`.
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
@@ -552,11 +585,12 @@ but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.s
 
  void setSourceDatumTransformId( int datumId ) /Deprecated="Since 3.40. Unused on builds based on Proj 6.0 or later."/;
 %Docstring
-Sets the ``datumId`` ID of the datum transform to use when projecting from the source
-CRS.
+Sets the ``datumId`` ID of the datum transform to use when projecting
+from the source CRS.
 
-This is usually calculated automatically from the transform's :py:class:`QgsCoordinateTransformContext`.
-Calling this method will overwrite any automatically calculated datum transform.
+This is usually calculated automatically from the transform's
+:py:class:`QgsCoordinateTransformContext`. Calling this method will
+overwrite any automatically calculated datum transform.
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
@@ -571,11 +605,13 @@ Calling this method will overwrite any automatically calculated datum transform.
 
  int destinationDatumTransformId() const /Deprecated="Since 3.40. Unused on builds based on Proj 6.0 or later."/;
 %Docstring
-Returns the ID of the datum transform to use when projecting to the destination
-CRS.
+Returns the ID of the datum transform to use when projecting to the
+destination CRS.
 
-This is usually calculated automatically from the transform's :py:class:`QgsCoordinateTransformContext`,
-but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.setDestinationDatumTransformId`.
+This is usually calculated automatically from the transform's
+:py:class:`QgsCoordinateTransformContext`, but can be manually
+overwritten by a call to
+:py:func:`~QgsCoordinateTransform.setDestinationDatumTransformId`.
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
@@ -590,11 +626,12 @@ but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.s
 
  void setDestinationDatumTransformId( int datumId ) /Deprecated="Since 3.40. Unused on builds based on Proj 6.0 or later."/;
 %Docstring
-Sets the ``datumId`` ID of the datum transform to use when projecting to the destination
-CRS.
+Sets the ``datumId`` ID of the datum transform to use when projecting to
+the destination CRS.
 
-This is usually calculated automatically from the transform's :py:class:`QgsCoordinateTransformContext`.
-Calling this method will overwrite any automatically calculated datum transform.
+This is usually calculated automatically from the transform's
+:py:class:`QgsCoordinateTransformContext`. Calling this method will
+overwrite any automatically calculated datum transform.
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
@@ -610,18 +647,21 @@ Calling this method will overwrite any automatically calculated datum transform.
 
     static void invalidateCache();
 %Docstring
-Clears the internal cache used to initialize QgsCoordinateTransform objects.
-This should be called whenever the srs database has
-been modified in order to ensure that outdated CRS transforms are not created.
+Clears the internal cache used to initialize QgsCoordinateTransform
+objects. This should be called whenever the srs database has been
+modified in order to ensure that outdated CRS transforms are not
+created.
 %End
 
     double scaleFactor( const QgsRectangle &referenceExtent ) const;
 %Docstring
-Computes an *estimated* conversion factor between source and destination units:
+Computes an *estimated* conversion factor between source and destination
+units:
 
 sourceUnits * scaleFactor = destinationUnits
 
-:param referenceExtent: A reference extent based on which to perform the computation
+:param referenceExtent: A reference extent based on which to perform the
+                        computation
 
 .. versionadded:: 3.4
 %End

@@ -26,7 +26,7 @@
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Implementation of terrain generator that uses the Z values of a mesh layer to build a terrain
  * \since QGIS 3.12
  */

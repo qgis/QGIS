@@ -59,7 +59,7 @@ class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
 
 /**
  * \ingroup gui
- * \brief Widget allowing to edit a QVariantMap, using a table.
+ * \brief Widget allowing editing a QVariantMap, using a table.
  */
 class GUI_EXPORT QgsKeyValueWidget : public QgsTableWidgetBase
 {

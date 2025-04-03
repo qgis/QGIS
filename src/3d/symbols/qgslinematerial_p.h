@@ -34,7 +34,7 @@
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Implementation of material that renders 3D linestrings.
  *
  * Supports:

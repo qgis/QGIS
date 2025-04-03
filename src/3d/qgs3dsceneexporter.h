@@ -47,11 +47,11 @@ class TestQgs3DRendering;
 #define SIP_NO_FILE
 
 /**
- * \brief Entity that handles the exporting of 3D scene
+ * \brief Entity that handles the exporting of 3D scenes.
  *
  * \note Not available in Python bindings
  *
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \since QGIS 3.16
  */
 class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity

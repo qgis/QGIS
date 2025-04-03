@@ -14,11 +14,10 @@
 class QgsService
 {
 %Docstring(signature="appended")
-:py:class:`QgsService`
-Class defining interfaces for QGIS server services
+Defines interfaces for QGIS server services.
 
-This class provides methods for executing server requests
-They are registered at runtime for a given service name.
+This class provides methods for executing server requests They are
+registered at runtime for a given service name.
 %End
 
 %TypeHeaderCode
@@ -32,13 +31,11 @@ They are registered at runtime for a given service name.
 
     virtual QString name() const = 0;
 %Docstring
-
 :return: the name of the service
 %End
 
     virtual QString version() const = 0;
 %Docstring
-
 :return: the version of the service
 %End
 

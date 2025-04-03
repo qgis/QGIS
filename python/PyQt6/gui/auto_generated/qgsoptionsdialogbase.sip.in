@@ -18,20 +18,23 @@
 class QgsOptionsDialogBase : QDialog
 {
 %Docstring(signature="appended")
-A base dialog for options and properties dialogs that offers vertical tabs.
-It handles saving/restoring of geometry, splitter and current tab states,
-switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
-and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
+A base dialog for options and properties dialogs that offers vertical
+tabs.
+
+It handles saving/restoring of geometry, splitter and current tab
+states, switching vertical tabs between icon/text to icon-only modes
+(splitter collapsed to left), and connecting QDialogButtonBox's
+accepted/rejected signals to dialog's accept/reject slots
 
 To use:
 
-- Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
-- In source file for dialog, inherit this class instead of QDialog, then in constructor:
-  ...
-  setupUi( this ); // set up .ui file objects
-  initOptionsBase( ``False`` ); // set up this class to use .ui objects, optionally restoring base ui
-  ...
-  :py:func:`~restoreOptionsBaseUi`; // restore the base ui with initOptionsBase or use this later on
+- Start with copy of qgsoptionsdialog_template.ui and build
+  options/properties dialog.
+- In source file for dialog, inherit this class instead of QDialog, then
+  in constructor: ... setupUi( this ); // set up .ui file objects
+  initOptionsBase( ``False`` ); // set up this class to use .ui objects,
+  optionally restoring base ui ... :py:func:`~restoreOptionsBaseUi`; //
+  restore the base ui with initOptionsBase or use this later on
 %End
 
 %TypeHeaderCode
@@ -42,7 +45,8 @@ To use:
 %Docstring
 Constructor
 
-:param settingsKey: :py:class:`QgsSettings` subgroup key for saving/restore ui states, e.g. "ProjectProperties".
+:param settingsKey: :py:class:`QgsSettings` subgroup key for
+                    saving/restore ui states, e.g. "ProjectProperties".
 :param parent: parent object (owner)
 :param fl: widget flags
 :param settings: custom :py:class:`QgsSettings` pointer
@@ -61,10 +65,12 @@ Set up the base ui connections for vertical tabs.
 
     void restoreOptionsBaseUi( const QString &title = QString() );
 %Docstring
-Restore the base ui.
-Sometimes useful to do at end of subclass's constructor.
+Restore the base ui. Sometimes useful to do at end of subclass's
+constructor.
 
-:param title: the window title (it does not need to be defined if previously given to :py:func:`~QgsOptionsDialogBase.initOptionsBase`;
+:param title: the window title (it does not need to be defined if
+              previously given to
+              :py:func:`~QgsOptionsDialogBase.initOptionsBase`;
 %End
 
     void restoreLastPage();
@@ -99,15 +105,19 @@ Sets the dialog ``page`` (by object name) to show.
 %Docstring
 Adds a new page to the dialog pages.
 
-The ``title``, ``tooltip`` and ``icon`` arguments dictate the page list item title, tooltip and icon respectively.
+The ``title``, ``tooltip`` and ``icon`` arguments dictate the page list
+item title, tooltip and icon respectively.
 
-The page content is specified via the ``widget`` argument. Ownership of ``widget`` is transferred to the dialog.
+The page content is specified via the ``widget`` argument. Ownership of
+``widget`` is transferred to the dialog.
 
-Since QGIS 3.22, the optional ``path`` argument can be used to set the path of the item's entry in the tree view
-(for dialogs which show a tree view of options pages only).
+Since QGIS 3.22, the optional ``path`` argument can be used to set the
+path of the item's entry in the tree view (for dialogs which show a tree
+view of options pages only).
 
-Since QGIS 3.32, the optional ``key`` argument can be used to set an untranslated key that ``path`` can refer to
-in following calls. Default to ``title``.
+Since QGIS 3.32, the optional ``key`` argument can be used to set an
+untranslated key that ``path`` can refer to in following calls. Default
+to ``title``.
 
 .. seealso:: :py:func:`insertPage`
 
@@ -118,18 +128,22 @@ in following calls. Default to ``title``.
 %Docstring
 Inserts a new page into the dialog pages.
 
-The ``title``, ``tooltip`` and ``icon`` arguments dictate the page list item title, tooltip and icon respectively.
+The ``title``, ``tooltip`` and ``icon`` arguments dictate the page list
+item title, tooltip and icon respectively.
 
-The page content is specified via the ``widget`` argument. Ownership of ``widget`` is transferred to the dialog.
+The page content is specified via the ``widget`` argument. Ownership of
+``widget`` is transferred to the dialog.
 
-The ``before`` argument specifies the object name of an existing page. The new page will be inserted directly
-before the matching page.
+The ``before`` argument specifies the object name of an existing page.
+The new page will be inserted directly before the matching page.
 
-Since QGIS 3.22, the optional ``path`` argument can be used to set the path of the item's entry in the tree view
-(for dialogs which show a tree view of options pages only).
+Since QGIS 3.22, the optional ``path`` argument can be used to set the
+path of the item's entry in the tree view (for dialogs which show a tree
+view of options pages only).
 
-Since QGIS 3.32, the optional ``key`` argument can be used to set an untranslated key that ``path`` can refer to
-in following calls. Default to ``title``.
+Since QGIS 3.32, the optional ``key`` argument can be used to set an
+untranslated key that ``path`` can refer to in following calls. Default
+to ``title``.
 
 .. seealso:: :py:func:`addPage`
 
@@ -140,7 +154,8 @@ in following calls. Default to ``title``.
 
     void searchText( const QString &text );
 %Docstring
-searchText searches for a text in all the pages of the stacked widget and highlight the results
+searchText searches for a text in all the pages of the stacked widget
+and highlight the results
 
 :param text: the text to search
 %End
@@ -171,8 +186,9 @@ Remove tab and unregister widgets on page remove
 
     void registerTextSearchWidgets();
 %Docstring
-register widgets in the dialog to search for text in it
-it is automatically called if a line edit has "mSearchLineEdit" as object name.
+register widgets in the dialog to search for text in it it is
+automatically called if a line edit has "mSearchLineEdit" as object
+name.
 %End
 
 

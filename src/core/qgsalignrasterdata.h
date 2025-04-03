@@ -20,7 +20,7 @@
 
 /**
  * \ingroup core
- * \brief The QgsAlignRasterData class provides data structures and enums for align raster tool.
+ * \brief Provides data structures and enums for the align raster tool.
  *
  * \since QGIS 3.34
  */

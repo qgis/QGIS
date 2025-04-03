@@ -28,7 +28,7 @@ class QgsReadWriteContext;
 
 /**
  * \ingroup core
- * \brief Stores global configuration for labeling engine
+ * \brief Stores global configuration for labeling engine.
  */
 class CORE_EXPORT QgsLabelingEngineSettings
 {

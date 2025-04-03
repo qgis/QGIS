@@ -13,8 +13,9 @@
 class QgsObjectCustomProperties
 {
 %Docstring(signature="appended")
-Simple key-value store (keys = strings, values = variants) that supports loading/saving to/from XML
-in \verbatim <customproperties> \endverbatim element.
+Simple key-value store (keys = strings, values = variants) that supports
+loading/saving to/from XML in \verbatim <customproperties> \endverbatim
+element.
 %End
 
 %TypeHeaderCode
@@ -33,14 +34,16 @@ Returns a list of all stored keys.
 %Docstring
 Add an entry to the store with the specified ``key``.
 
-If an entry with the same ``key`` exists already, it will be overwritten.
+If an entry with the same ``key`` exists already, it will be
+overwritten.
 %End
 
     QVariant value( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
 Returns the value for the given ``key``.
 
-If the ``key`` is not present in the properties, the ``defaultValue`` will be returned.
+If the ``key`` is not present in the properties, the ``defaultValue``
+will be returned.
 %End
 
     void remove( const QString &key );
@@ -50,7 +53,8 @@ Removes a ``key`` (entry) from the store.
 
     bool contains( const QString &key ) const;
 %Docstring
-Returns ``True`` if the properties contains a ``key`` with the specified name.
+Returns ``True`` if the properties contains a ``key`` with the specified
+name.
 
 .. versionadded:: 3.14
 %End
@@ -60,7 +64,8 @@ Returns ``True`` if the properties contains a ``key`` with the specified name.
 Read store contents from an XML node.
 
 :param parentNode: node to read from
-:param keyStartsWith: reads only properties starting with the specified string (or all if the string is empty)
+:param keyStartsWith: reads only properties starting with the specified
+                      string (or all if the string is empty)
 
 .. seealso:: :py:func:`writeXml`
 %End

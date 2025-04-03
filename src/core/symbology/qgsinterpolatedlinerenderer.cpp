@@ -1052,7 +1052,7 @@ QgsColorRampShader QgsInterpolatedLineSymbolLayer::createColorRampShaderFromProp
   QVariantMap shaderVariantMap = properties.toMap();
 
   if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_source" ) ) )
-    colorRampShader.setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( shaderVariantMap.value( QStringLiteral( "color_ramp_source" ) ) ) );
+    colorRampShader.setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( shaderVariantMap.value( QStringLiteral( "color_ramp_source" ) ) ).release() );
 
   if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_type" ) ) )
     colorRampShader.setColorRampType( static_cast<Qgis::ShaderInterpolationMethod>( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_type" ) ).toInt() ) );

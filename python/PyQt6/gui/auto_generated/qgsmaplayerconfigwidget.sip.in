@@ -23,24 +23,25 @@ Encapsulates the context for a :py:class:`QgsMapLayerConfigWidget`.
   public:
     QString annotationId() const;
 %Docstring
-Returns the item ID of the target annotation, when modifying
-an annotation from a :py:class:`QgsAnnotationLayer`.
+Returns the item ID of the target annotation, when modifying an
+annotation from a :py:class:`QgsAnnotationLayer`.
 
 .. seealso:: :py:func:`setAnnotationId`
 %End
 
     void setAnnotationId( const QString &id );
 %Docstring
-Sets the item ``id`` of the target annotation, when modifying
-an annotation from a :py:class:`QgsAnnotationLayer`.
+Sets the item ``id`` of the target annotation, when modifying an
+annotation from a :py:class:`QgsAnnotationLayer`.
 
 .. seealso:: :py:func:`annotationId`
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
-Sets the map ``canvas`` associated with the widget. This allows the widget to retrieve the current
-map scale and other properties from the canvas.
+Sets the map ``canvas`` associated with the widget. This allows the
+widget to retrieve the current map scale and other properties from the
+canvas.
 
 .. seealso:: :py:func:`mapCanvas`
 %End
@@ -54,8 +55,8 @@ Returns the map canvas associated with the widget.
 
     void setMessageBar( QgsMessageBar *bar );
 %Docstring
-Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
-to the appropriate message bar.
+Sets the message ``bar`` associated with the widget. This allows the
+widget to push feedback messages to the appropriate message bar.
 
 .. seealso:: :py:func:`messageBar`
 %End
@@ -91,7 +92,7 @@ Returns the layer tree group associated with the widget.
 class QgsMapLayerConfigWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A panel widget that can be shown in the map style dock
+A panel widget that can be shown in the map style dock.
 %End
 
 %TypeHeaderCode
@@ -114,9 +115,11 @@ A panel widget that can be shown in the map style dock
 
     virtual bool shouldTriggerLayerRepaint() const;
 %Docstring
-Whether this config widget changes map layer properties in a way that :py:func:`~QgsMapLayerConfigWidget.triggerRepaint` should
-be called for the layer after applying changes. This is ``True`` by default, but some config widgets
-(for example 3D rendering config) do not need layer repaint as they do not modify 2D map rendering.
+Whether this config widget changes map layer properties in a way that
+:py:func:`~QgsMapLayerConfigWidget.triggerRepaint` should be called for
+the layer after applying changes. This is ``True`` by default, but some
+config widgets (for example 3D rendering config) do not need layer
+repaint as they do not modify 2D map rendering.
 
 .. versionadded:: 3.8
 %End
@@ -133,15 +136,16 @@ Reset to original (vector layer) values
 %Docstring
 Sets the ``context`` under which the widget is being shown.
 
-Subclasses should take care to call the base class implementation when overriding this method.
+Subclasses should take care to call the base class implementation when
+overriding this method.
 %End
 
   public slots:
 
     virtual void apply() = 0;
 %Docstring
-Called when changes to the layer need to be made.
-Will be called when live update is enabled.
+Called when changes to the layer need to be made. Will be called when
+live update is enabled.
 %End
 
     virtual void focusDefaultWidget();

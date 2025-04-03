@@ -26,7 +26,7 @@ class QgsVertexMarker;
 
 /**
  * \ingroup gui
- * \brief Class that shows snapping marker on map canvas for the current snapping match.
+ * \brief Shows a snapping marker on map canvas for the current snapping match.
  */
 class GUI_EXPORT QgsSnapIndicator
 {

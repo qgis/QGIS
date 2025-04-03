@@ -28,5 +28,6 @@ try:
     QgsServerOgcApi.contenTypeFromExtension = staticmethod(QgsServerOgcApi.contenTypeFromExtension)
     QgsServerOgcApi.contentTypeFromExtension = staticmethod(QgsServerOgcApi.contentTypeFromExtension)
     QgsServerOgcApi.mimeType = staticmethod(QgsServerOgcApi.mimeType)
+    QgsServerOgcApi.__overridden_methods__ = ['name', 'description', 'version', 'rootPath', 'executeRequest']
 except (NameError, AttributeError):
     pass

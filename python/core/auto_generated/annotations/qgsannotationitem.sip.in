@@ -13,7 +13,8 @@
 class QgsAnnotationItem
 {
 %Docstring(signature="appended")
-Abstract base class for annotation items which are drawn with :py:class:`QgsAnnotationLayers`.
+Abstract base class for annotation items which are drawn with
+:py:class:`QgsAnnotationLayers`.
 
 .. versionadded:: 3.16
 %End
@@ -73,7 +74,9 @@ Returns item flags.
 %Docstring
 Returns a clone of the item. Ownership is transferred to the caller.
 
-Implementations should include a call to :py:func:`~QgsAnnotationItem.copyCommonProperties` to copy the base class properties.
+Implementations should include a call to
+:py:func:`~QgsAnnotationItem.copyCommonProperties` to copy the base
+class properties.
 
 .. seealso:: :py:func:`copyCommonProperties`
 %End
@@ -85,27 +88,31 @@ Returns a unique (untranslated) string identifying the type of item.
 
     virtual QgsRectangle boundingBox() const = 0;
 %Docstring
-Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
+Returns the bounding box of the item's geographic location, in the
+parent layer's coordinate reference system.
 %End
 
     virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
 %Docstring
-Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
+Returns the bounding box of the item's geographic location, in the
+parent layer's coordinate reference system.
 %End
 
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;
 %Docstring
 Renders the item to the specified render ``context``.
 
-The ``feedback`` argument can be used to detect render cancellations during expensive
-render operations.
+The ``feedback`` argument can be used to detect render cancellations
+during expensive render operations.
 %End
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
 %Docstring
 Writes the item's state into an XML ``element``.
 
-Implementations should include a call to :py:func:`~QgsAnnotationItem.writeCommonProperties` to store the base class properties.
+Implementations should include a call to
+:py:func:`~QgsAnnotationItem.writeCommonProperties` to store the base
+class properties.
 
 .. seealso:: :py:func:`readXml`
 
@@ -116,7 +123,9 @@ Implementations should include a call to :py:func:`~QgsAnnotationItem.writeCommo
 %Docstring
 Reads the item's state from the given DOM ``element``.
 
-Implementations should include a call to :py:func:`~QgsAnnotationItem.readCommonProperties` to read the base class properties.
+Implementations should include a call to
+:py:func:`~QgsAnnotationItem.readCommonProperties` to read the base
+class properties.
 
 .. seealso:: :py:func:`writeXml`
 
@@ -141,7 +150,8 @@ Applies an edit ``operation`` to the item.
 
  virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
 %Docstring
-Retrieves the results of a transient (in progress) edit ``operation`` on the item.
+Retrieves the results of a transient (in progress) edit ``operation`` on
+the item.
 
 .. deprecated:: 3.40
 
@@ -150,30 +160,32 @@ Retrieves the results of a transient (in progress) edit ``operation`` on the ite
 
     virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
 %Docstring
-Retrieves the results of a transient (in progress) edit ``operation`` on the item.
+Retrieves the results of a transient (in progress) edit ``operation`` on
+the item.
 
 .. versionadded:: 3.40
 %End
 
     int zIndex() const;
 %Docstring
-Returns the item's z index, which controls the order in which annotation items
-are rendered in the layer.
+Returns the item's z index, which controls the order in which annotation
+items are rendered in the layer.
 
 .. seealso:: :py:func:`setZIndex`
 %End
 
     void setZIndex( int index );
 %Docstring
-Sets the item's z ``index``, which controls the order in which annotation items
-are rendered in the layer.
+Sets the item's z ``index``, which controls the order in which
+annotation items are rendered in the layer.
 
 .. seealso:: :py:func:`zIndex`
 %End
 
     bool enabled() const;
 %Docstring
-Returns ``True`` if the item is enabled and will be rendered in the layer.
+Returns ``True`` if the item is enabled and will be rendered in the
+layer.
 
 .. seealso:: :py:func:`setEnabled`
 
@@ -207,7 +219,8 @@ Returns the nodes for the item, used for editing the item.
 
     bool useSymbologyReferenceScale() const;
 %Docstring
-Returns ``True`` if the annotation item uses a symbology reference scale.
+Returns ``True`` if the annotation item uses a symbology reference
+scale.
 
 .. seealso:: :py:func:`setUseSymbologyReferenceScale`
 
@@ -227,14 +240,19 @@ Sets whether the annotation item uses a symbology reference scale.
 %Docstring
 Returns the annotation's symbology reference scale.
 
-The reference scale will only be used if :py:func:`~QgsAnnotationItem.useSymbologyReferenceScale` returns ``True``.
+The reference scale will only be used if
+:py:func:`~QgsAnnotationItem.useSymbologyReferenceScale` returns
+``True``.
 
-This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+This represents the desired scale denominator for the rendered map, eg
+1000.0 for a 1:1000 map render.
 
-The symbology reference scale is an optional property which specifies the reference
-scale at which symbology in paper units (such a millimeters or points) is fixed
-to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
-exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+The symbology reference scale is an optional property which specifies
+the reference scale at which symbology in paper units (such a
+millimeters or points) is fixed to. For instance, if the scale is 1000
+then a 2mm thick line will be rendered at exactly 2mm thick when a map
+is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm
+thick at 1:500.
 
 .. seealso:: :py:func:`setSymbologyReferenceScale`
 
@@ -245,14 +263,19 @@ exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered a
 %Docstring
 Sets the annotation's symbology reference ``scale``.
 
-The reference scale will only be used if :py:func:`~QgsAnnotationItem.useSymbologyReferenceScale` returns ``True``.
+The reference scale will only be used if
+:py:func:`~QgsAnnotationItem.useSymbologyReferenceScale` returns
+``True``.
 
-This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+This represents the desired scale denominator for the rendered map, eg
+1000.0 for a 1:1000 map render.
 
-The symbology reference scale is an optional property which specifies the reference
-scale at which symbology in paper units (such a millimeters or points) is fixed
-to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
-exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+The symbology reference scale is an optional property which specifies
+the reference scale at which symbology in paper units (such a
+millimeters or points) is fixed to. For instance, if the scale is 1000
+then a 2mm thick line will be rendered at exactly 2mm thick when a map
+is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm
+thick at 1:500.
 
 .. seealso:: :py:func:`symbologyReferenceScale`
 
@@ -261,13 +284,15 @@ exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered a
 
     QgsCallout *callout() const;
 %Docstring
-Returns the item's callout renderer, responsible for drawing item callouts.
+Returns the item's callout renderer, responsible for drawing item
+callouts.
 
 Ownership is not transferred.
 
-By default items do not have a callout, and it is necessary to be explicitly set
-a callout style (via :py:func:`~QgsAnnotationItem.setCallout` ) and set the callout anchor geometry (via set
-:py:func:`~QgsAnnotationItem.setCalloutAnchor` ).
+By default items do not have a callout, and it is necessary to be
+explicitly set a callout style (via
+:py:func:`~QgsAnnotationItem.setCallout` ) and set the callout anchor
+geometry (via set :py:func:`~QgsAnnotationItem.setCalloutAnchor` ).
 
 .. note::
 
@@ -282,7 +307,8 @@ a callout style (via :py:func:`~QgsAnnotationItem.setCallout` ) and set the call
 
     void setCallout( QgsCallout *callout /Transfer/ );
 %Docstring
-Sets the item's ``callout`` renderer, responsible for drawing item callouts.
+Sets the item's ``callout`` renderer, responsible for drawing item
+callouts.
 
 Ownership of ``callout`` is transferred to the item.
 
@@ -301,10 +327,13 @@ Ownership of ``callout`` is transferred to the item.
 %Docstring
 Returns the callout's anchor geometry.
 
-The anchor dictates the geometry which the option item :py:func:`~QgsAnnotationItem.callout` should connect to. Depending on the
-callout subclass and anchor geometry type, the actual shape of the rendered callout may vary.
+The anchor dictates the geometry which the option item
+:py:func:`~QgsAnnotationItem.callout` should connect to. Depending on
+the callout subclass and anchor geometry type, the actual shape of the
+rendered callout may vary.
 
-The callout anchor geometry is in the parent layer's coordinate reference system.
+The callout anchor geometry is in the parent layer's coordinate
+reference system.
 
 .. seealso:: :py:func:`callout`
 
@@ -317,10 +346,13 @@ The callout anchor geometry is in the parent layer's coordinate reference system
 %Docstring
 Sets the callout's ``anchor`` geometry.
 
-The anchor dictates the geometry which the option item :py:func:`~QgsAnnotationItem.callout` should connect to. Depending on the
-callout subclass and anchor geometry type, the actual shape of the rendered callout may vary.
+The anchor dictates the geometry which the option item
+:py:func:`~QgsAnnotationItem.callout` should connect to. Depending on
+the callout subclass and anchor geometry type, the actual shape of the
+rendered callout may vary.
 
-The callout ``anchor`` geometry must be specified in the parent layer's coordinate reference system.
+The callout ``anchor`` geometry must be specified in the parent layer's
+coordinate reference system.
 
 .. seealso:: :py:func:`setCallout`
 
@@ -331,11 +363,12 @@ The callout ``anchor`` geometry must be specified in the parent layer's coordina
 
     QSizeF offsetFromCallout() const;
 %Docstring
-Returns the (optional) offset of the annotation item from the :py:func:`~QgsAnnotationItem.calloutAnchor`.
+Returns the (optional) offset of the annotation item from the
+:py:func:`~QgsAnnotationItem.calloutAnchor`.
 
-Some annotation item subclasses support placement relative to the callout anchor. For these
-items, the offset from callout defines how far (in screen/page units) the item should be
-placed from the anchor point.
+Some annotation item subclasses support placement relative to the
+callout anchor. For these items, the offset from callout defines how far
+(in screen/page units) the item should be placed from the anchor point.
 
 Units are defined by :py:func:`~QgsAnnotationItem.offsetFromCalloutUnit`
 
@@ -346,11 +379,12 @@ Units are defined by :py:func:`~QgsAnnotationItem.offsetFromCalloutUnit`
 
     void setOffsetFromCallout( const QSizeF &offset );
 %Docstring
-Sets the offset of the annotation item from the :py:func:`~QgsAnnotationItem.calloutAnchor`.
+Sets the offset of the annotation item from the
+:py:func:`~QgsAnnotationItem.calloutAnchor`.
 
-Some annotation item subclasses support placement relative to the callout anchor. For these
-items, the offset from callout defines how far (in screen/page units) the item should be
-placed from the anchor point.
+Some annotation item subclasses support placement relative to the
+callout anchor. For these items, the offset from callout defines how far
+(in screen/page units) the item should be placed from the anchor point.
 
 Units are defined by :py:func:`~QgsAnnotationItem.offsetFromCalloutUnit`
 
@@ -361,7 +395,8 @@ Units are defined by :py:func:`~QgsAnnotationItem.offsetFromCalloutUnit`
 
     Qgis::RenderUnit offsetFromCalloutUnit() const;
 %Docstring
-Returns the units for the :py:func:`~QgsAnnotationItem.offsetFromCallout`.
+Returns the units for the
+:py:func:`~QgsAnnotationItem.offsetFromCallout`.
 
 .. seealso:: :py:func:`offsetFromCallout`
 
@@ -372,7 +407,8 @@ Returns the units for the :py:func:`~QgsAnnotationItem.offsetFromCallout`.
 
     void setOffsetFromCalloutUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``unit`` for the :py:func:`~QgsAnnotationItem.offsetFromCallout`.
+Sets the ``unit`` for the
+:py:func:`~QgsAnnotationItem.offsetFromCallout`.
 
 .. seealso:: :py:func:`setOffsetFromCallout`
 
@@ -401,7 +437,8 @@ Writes common properties from the base class into an XML ``element``.
 
     virtual bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
-Reads common properties from the base class from the given DOM ``element``.
+Reads common properties from the base class from the given DOM
+``element``.
 
 .. seealso:: :py:func:`readXml`
 

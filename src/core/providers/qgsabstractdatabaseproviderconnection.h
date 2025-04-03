@@ -32,8 +32,7 @@ class QgsProviderSqlQueryBuilder;
 
 
 /**
- * \brief The QgsAbstractDatabaseProviderConnection class provides common functionality
- * for DB based connections.
+ * \brief Provides common functionality for database based connections.
  *
  * This class performs low level DB operations without asking
  * the user for confirmation or handling currently opened layers and the registry

@@ -636,7 +636,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem &srs )
       return;
 
     case QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs:
-      srs.createFromOgcWmsCrs( QgsSettings().value( QStringLiteral( "Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString() );
+      srs.createFromOgcWmsCrs( QgsSettings().value( QStringLiteral( "Projections/layerDefaultCrs" ), Qgis::geographicCrsAuthId() ).toString() );
       break;
 
     case QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs:
@@ -893,7 +893,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 
     case QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs:
     {
-      srs.createFromOgcWmsCrs( QgsSettings().value( QStringLiteral( "Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString() );
+      srs.createFromOgcWmsCrs( QgsSettings().value( QStringLiteral( "Projections/layerDefaultCrs" ), Qgis::geographicCrsAuthId() ).toString() );
       sAuthId = srs.authid();
       visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1" ).arg( srs.userFriendlyIdentifier() ), Qgis::MessageLevel::Warning );
       break;
@@ -2897,6 +2897,7 @@ void QgisApp::createActions()
   connect( mActionSaveMapAsPdf, &QAction::triggered, this, [=] { saveMapAsPdf(); } );
   connect( mActionNewMapCanvas, &QAction::triggered, this, &QgisApp::newMapCanvas );
   connect( mActionNew3DMapCanvas, &QAction::triggered, this, &QgisApp::new3DMapCanvas );
+  connect( mActionNew3DMapCanvasGlobe, &QAction::triggered, this, &QgisApp::new3DMapCanvasGlobe );
   connect( mActionNewPrintLayout, &QAction::triggered, this, &QgisApp::newPrintLayout );
   connect( mActionNewReport, &QAction::triggered, this, &QgisApp::newReport );
   connect( mActionShowLayoutManager, &QAction::triggered, this, &QgisApp::showLayoutManager );
@@ -5811,12 +5812,12 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   mScaleWidget->updateScales();
 
   // set project CRS
-  const QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), geoEpsgCrsAuthId(), QgsSettings::App ).toString() );
+  const QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), Qgis::geographicCrsAuthId(), QgsSettings::App ).toString() );
   // write the projections _proj string_ to project settings
   const bool planimetric = settings.value( QStringLiteral( "measure/planimetric" ), true, QgsSettings::Core ).toBool();
   prj->setCrs( srs, !planimetric ); // If the default ellipsoid is not planimetric, set it from the default crs
   if ( planimetric )
-    prj->setEllipsoid( geoNone() );
+    prj->setEllipsoid( Qgis::geoNone() );
 
   /* New Empty Project Created
       (before attempting to load custom project templates/filepaths) */
@@ -6160,6 +6161,7 @@ void QgisApp::showRasterCalculator()
   {
     //invoke analysis library
     QgsRasterCalculator rc( d.formulaString(), d.outputFile(), d.outputFormat(), d.outputRectangle(), d.outputCrs(), d.numberOfColumns(), d.numberOfRows(), QgsRasterCalculatorEntry::rasterEntries(), QgsProject::instance()->transformContext() );
+    rc.setCreateOptions( d.createOptions() );
 
     QProgressDialog p( tr( "Calculating raster expression…" ), tr( "Abort" ), 0, 0 );
     p.setWindowTitle( tr( "Raster calculator" ) );
@@ -9262,6 +9264,7 @@ void QgisApp::populate3DMapviewsMenu( QMenu *menu )
   menu->addActions( acts );
   menu->addSeparator();
   menu->addAction( mActionNew3DMapCanvas );
+  menu->addAction( mActionNew3DMapCanvasGlobe );
   menu->addAction( mActionManage3DMapViews );
 
 #else
@@ -9461,9 +9464,8 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   QgsFeatureList featureList = vl->selectedFeatures();
 
   //merge the attributes together
-  QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
-  //initialize dialog with all columns set to skip
-  d.setAllToSkip();
+  QgsMergeAttributesDialog d( featureList, vl, mapCanvas(), true );
+
   if ( d.exec() == QDialog::Rejected )
   {
     return;
@@ -12226,7 +12228,9 @@ void QgisApp::loadPythonSupport()
   mPythonUtils = pythonlib_inst();
   if ( mPythonUtils )
   {
+#ifndef Q_OS_MACOS
     QgsCrashHandler::sPythonCrashLogFile = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 ) + "/qgis-python-crash-info-" + QString::number( QCoreApplication::applicationPid() );
+#endif
     mPythonUtils->initPython( mQgisInterface, true, QgsCrashHandler::sPythonCrashLogFile );
 
     // do not permit calls to initQgis, exitQgis from Python when running within the QGIS application -- this will crash!
@@ -13185,10 +13189,15 @@ QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
 
 void QgisApp::new3DMapCanvas()
 {
-  createNewMapCanvas3D( QString() );
+  createNewMapCanvas3D( QString(), Qgis::SceneMode::Local );
 }
 
-Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name )
+void QgisApp::new3DMapCanvasGlobe()
+{
+  createNewMapCanvas3D( QString(), Qgis::SceneMode::Globe );
+}
+
+Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneMode sceneMode )
 {
 #ifdef HAVE_3D
   // initialize from project
@@ -13217,23 +13226,14 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name )
     QgsSettings settings;
 
     Qgs3DMapSettings *map = new Qgs3DMapSettings;
-    if ( !prj->crs3D().isGeographic() )
-    {
-      map->setCrs( prj->crs3D() );
-    }
-    else
-    {
-      map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
-    }
-
-    const QgsReferencedRectangle projectExtent = prj->viewSettings()->fullExtent();
-    const QgsRectangle fullExtent = Qgs3DUtils::tryReprojectExtent2D( projectExtent, projectExtent.crs(), map->crs(), prj->transformContext() );
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
     map->setLayers( mMapCanvas->layers( true ) );
     map->setTemporalRange( mMapCanvas->temporalRange() );
 
-    const Qgis::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), Qgis::NavigationMode::TerrainBased, QgsSettings::App );
+    Qgis::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), Qgis::NavigationMode::TerrainBased, QgsSettings::App );
+    if ( defaultNavMode == Qgis::NavigationMode::TerrainBased && sceneMode == Qgis::SceneMode::Globe )
+      defaultNavMode = Qgis::NavigationMode::GlobeTerrainBased;
     map->setCameraNavigationMode( defaultNavMode );
 
     map->setCameraMovementSpeed( settings.value( QStringLiteral( "map3d/defaultMovementSpeed" ), 5, QgsSettings::App ).toDouble() );
@@ -13245,7 +13245,45 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name )
     map->setPathResolver( QgsProject::instance()->pathResolver() );
     map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
 
-    map->configureTerrainFromProject( QgsProject::instance()->elevationProperties(), fullExtent );
+    // configure initial CRS, map extent and terrain
+    switch ( sceneMode )
+    {
+      case Qgis::SceneMode::Local:
+      {
+        if ( !prj->crs3D().isGeographic() )
+        {
+          map->setCrs( prj->crs3D() );
+        }
+        else
+        {
+          map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+        }
+
+        const QgsReferencedRectangle projectExtent = prj->viewSettings()->fullExtent();
+        const QgsRectangle fullExtent = Qgs3DUtils::tryReprojectExtent2D( projectExtent, projectExtent.crs(), map->crs(), prj->transformContext() );
+        map->configureTerrainFromProject( QgsProject::instance()->elevationProperties(), fullExtent );
+        break;
+      }
+
+      case Qgis::SceneMode::Globe:
+        // if project ellipsoid setting matches that of the project's crs, then create a geocentric
+        // crs based on the project's crs. This ensures that the geocentric CRS uses the same datum
+        // as the project's crs, ensuring accurate transformations. Otherwise we just create a datum-less
+        // crs based on the actual project ellipsoid setting. See warnings in QgsCoordinateReferenceSystem::createGeocentricCrs()
+        // documentation.
+        if ( prj->crs().ellipsoidAcronym() == prj->ellipsoid() )
+          map->setCrs( prj->crs().toGeocentricCrs() );
+        else
+          map->setCrs( QgsCoordinateReferenceSystem::createGeocentricCrs( prj->ellipsoid() ) );
+
+        map->configureTerrainFromProject( QgsProject::instance()->elevationProperties(), QgsRectangle() );
+
+        // 3D axis is not very useful with geocentric CRS: disable it by default
+        Qgs3DAxisSettings axis;
+        axis.setMode( Qgs3DAxisSettings::Mode::Off );
+        map->set3DAxisSettings( axis );
+        break;
+    }
 
     // new scenes default to a single directional light
     map->setLightSources( QList<QgsLightSource *>() << new QgsDirectionalLightSettings() );
@@ -13258,9 +13296,47 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name )
 
     canvasWidget->setMapSettings( map );
 
-    const QgsRectangle canvasExtent = Qgs3DUtils::tryReprojectExtent2D( mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(), map->crs(), prj->transformContext() );
-    float dist = static_cast<float>( std::max( canvasExtent.width(), canvasExtent.height() ) );
-    canvasWidget->mapCanvas3D()->setViewFromTop( canvasExtent.center(), dist, static_cast<float>( mMapCanvas->rotation() ) );
+    // configure initial position of the camera (it should approximate the current 2D view)
+    switch ( sceneMode )
+    {
+      case Qgis::SceneMode::Local:
+      {
+        const QgsRectangle canvasExtent = Qgs3DUtils::tryReprojectExtent2D( mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(), map->crs(), prj->transformContext() );
+        float dist = static_cast<float>( std::max( canvasExtent.width(), canvasExtent.height() ) );
+        canvasWidget->mapCanvas3D()->setViewFromTop( canvasExtent.center(), dist, static_cast<float>( mMapCanvas->rotation() ) );
+        break;
+      }
+
+      case Qgis::SceneMode::Globe:
+      {
+        double centerLat = 0, centerLon = 0;
+
+        // base initial view distance on 10,000km from the Earth, but scale to the actual project ellipsoid
+        // so that the initial view distance makes sense for non-Earth bodies
+        constexpr double INITIAL_VIEW_DIST_WGS84 = 10'000'000;
+        constexpr double WGS_84_SEMI_MAJOR = 6378137.0;
+        constexpr double WGS_84_SEMI_MINOR = 6356752.0;
+        constexpr double WGS_84_AVERAGE_RADIUS = ( WGS_84_SEMI_MAJOR + WGS_84_SEMI_MINOR ) / 2;
+
+        const QgsEllipsoidUtils::EllipsoidParameters ellipsoid = QgsEllipsoidUtils::ellipsoidParameters( map->crs().ellipsoidAcronym() );
+        const double projectEllipsoidAverageRadius = 0.5 * ( ellipsoid.semiMajor + ellipsoid.semiMinor );
+        double initialViewDistance = INITIAL_VIEW_DIST_WGS84 * projectEllipsoidAverageRadius / WGS_84_AVERAGE_RADIUS;
+
+        const QgsRectangle canvasExtentLatLon = Qgs3DUtils::tryReprojectExtent2D( mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(), map->crs().toGeographicCrs(), prj->transformContext() );
+        if ( QgsRectangle( -180, -90, 180, 90 ).contains( canvasExtentLatLon ) )
+        {
+          centerLon = ( canvasExtentLatLon.xMinimum() + canvasExtentLatLon.xMaximum() ) / 2;
+          centerLat = ( canvasExtentLatLon.yMinimum() + canvasExtentLatLon.yMaximum() ) / 2;
+
+          // rough approximation (2*pi*R / 360)
+          const double metersPerDegree = 2 * M_PI * projectEllipsoidAverageRadius / 360;
+
+          initialViewDistance = std::max( canvasExtentLatLon.width(), canvasExtentLatLon.height() ) * metersPerDegree;
+        }
+        canvasWidget->mapCanvas3D()->cameraController()->resetGlobe( static_cast<float>( initialViewDistance ), centerLat, centerLon );
+        break;
+      }
+    }
 
     const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( QStringLiteral( "map3d/axisInversion" ), Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
     if ( canvasWidget->mapCanvas3D()->cameraController() )

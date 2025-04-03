@@ -62,7 +62,8 @@ Returns the size of the buffer.
 
     void setSize( double size );
 %Docstring
-Sets the size of the buffer. The size units are specified using :py:func:`~QgsTextBufferSettings.setSizeUnit`.
+Sets the size of the buffer. The size units are specified using
+:py:func:`~QgsTextBufferSettings.setSizeUnit`.
 
 :param size: buffer size
 
@@ -93,8 +94,8 @@ Sets the units used for the buffer size.
 
     QgsMapUnitScale sizeMapUnitScale() const;
 %Docstring
-Returns the map unit scale object for the buffer size. This is only used if the
-buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+Returns the map unit scale object for the buffer size. This is only used
+if the buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setSizeMapUnitScale`
 
@@ -103,8 +104,8 @@ buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit scale object for the buffer size. This is only used if the
-buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+Sets the map unit scale object for the buffer size. This is only used if
+the buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 :param scale: scale for buffer size
 
@@ -131,9 +132,9 @@ Sets the color for the buffer.
 
     bool fillBufferInterior() const;
 %Docstring
-Returns whether the interior of the buffer will be filled in. If ``False``, only the stroke
-of the text will be drawn as the buffer. The effect of this setting is only visible for
-semi-transparent text.
+Returns whether the interior of the buffer will be filled in. If
+``False``, only the stroke of the text will be drawn as the buffer. The
+effect of this setting is only visible for semi-transparent text.
 
 .. seealso:: :py:func:`setFillBufferInterior`
 %End
@@ -142,16 +143,18 @@ semi-transparent text.
 %Docstring
 Sets whether the interior of the buffer will be filled in.
 
-:param fill: set to ``False`` to drawn only the stroke of the text as the buffer, or ``True`` to also
-             shade the area inside the text. The effect of this setting is only visible for semi-transparent text.
+:param fill: set to ``False`` to drawn only the stroke of the text as
+             the buffer, or ``True`` to also shade the area inside the
+             text. The effect of this setting is only visible for
+             semi-transparent text.
 
 .. seealso:: :py:func:`fillBufferInterior`
 %End
 
     double opacity() const;
 %Docstring
-Returns the buffer opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
-opaque).
+Returns the buffer opacity. The opacity is a double value between 0
+(fully transparent) and 1 (totally opaque).
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -160,8 +163,8 @@ opaque).
 %Docstring
 Sets the buffer opacity.
 
-:param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
-                opaque)
+:param opacity: opacity as a double value between 0 (fully transparent)
+                and 1 (totally opaque)
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -232,21 +235,24 @@ Returns the current paint effect for the buffer.
 %Docstring
 Sets the current paint ``effect`` for the buffer.
 
-:param effect: paint effect. Ownership is transferred to the buffer settings.
+:param effect: paint effect. Ownership is transferred to the buffer
+               settings.
 
 .. seealso:: :py:func:`paintEffect`
 %End
 
     void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
 %Docstring
-Updates the format by evaluating current values of data defined properties.
+Updates the format by evaluating current values of data defined
+properties.
 
 .. versionadded:: 3.10
 %End
 
     QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 %Docstring
-Returns all field names referenced by the configuration (e.g. from data defined properties).
+Returns all field names referenced by the configuration (e.g. from data
+defined properties).
 
 .. versionadded:: 3.14
 %End

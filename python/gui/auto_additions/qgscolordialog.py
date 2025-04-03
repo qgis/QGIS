@@ -2,6 +2,7 @@
 try:
     QgsColorDialog.__attribute_docs__ = {'currentColorChanged': "Emitted when the dialog's color changes\n\n:param color: current color\n"}
     QgsColorDialog.getColor = staticmethod(QgsColorDialog.getColor)
+    QgsColorDialog.__overridden_methods__ = ['closeEvent']
     QgsColorDialog.__signal_arguments__ = {'currentColorChanged': ['color: QColor']}
 except (NameError, AttributeError):
     pass

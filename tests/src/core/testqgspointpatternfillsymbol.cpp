@@ -139,7 +139,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbol()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   mPointPatternFill->setSubSymbol( pointSymbol );
   QVERIFY( imageCheck( "symbol_pointfill" ) );
@@ -152,7 +152,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   mPointPatternFill->setSubSymbol( pointSymbol );
   mPointPatternFill->setDistanceX( 10 );
@@ -180,7 +180,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
   mMapSettings.setOutputDpi( 96 );
 
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
-  pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
   mPointPatternFill->setSubSymbol( pointSymbol );
 
   QgsMapRendererCustomPainterJob job( mMapSettings, &p );
@@ -213,7 +213,7 @@ void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbol()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setCoordinateReference( Qgis::SymbolCoordinateReference::Viewport );
   QVERIFY( imageCheck( "symbol_pointfill_viewport", layer.get() ) );
@@ -239,7 +239,7 @@ void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbolVector()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
@@ -257,7 +257,7 @@ void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbol()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   mPointPatternFill->setSubSymbol( pointSymbol );
   mPointPatternFill->setDistanceX( 15 );
@@ -282,7 +282,7 @@ void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbolVector()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   mPointPatternFill->setSubSymbol( pointSymbol );
   mPointPatternFill->setDistanceX( 15 );
@@ -309,7 +309,7 @@ void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
   pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
   pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake',5,10)" ) ) );
   mPointPatternFill->setSubSymbol( pointSymbol );
@@ -323,7 +323,7 @@ void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbol()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   mPointPatternFill->setSubSymbol( pointSymbol );
   mPointPatternFill->setDistanceX( 0 );
@@ -340,7 +340,7 @@ void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbolVector()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   mPointPatternFill->setSubSymbol( pointSymbol );
   mPointPatternFill->setDistanceX( 0 );
@@ -367,7 +367,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillNoClip()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
@@ -391,7 +391,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillCompletelyWithin()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
@@ -415,7 +415,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillCentroidWithin()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
@@ -439,7 +439,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
@@ -464,7 +464,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedWithOpacity()
   properties.insert( QStringLiteral( "outline_style" ), QStringLiteral( "no" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
   pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake',5,10)" ) ) );
@@ -494,7 +494,7 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffset()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
@@ -521,7 +521,7 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetPercent()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
@@ -550,7 +550,7 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetDataDefined()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
@@ -577,7 +577,7 @@ void TestQgsPointPatternFillSymbol::pointPatternAngle()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
@@ -602,7 +602,7 @@ void TestQgsPointPatternFillSymbol::pointPatternAngleDataDefined()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
@@ -628,7 +628,7 @@ void TestQgsPointPatternFillSymbol::pointPatternAngleViewport()
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
 
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );

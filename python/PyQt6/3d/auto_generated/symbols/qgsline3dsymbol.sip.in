@@ -13,7 +13,8 @@
 class QgsLine3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-3D symbol that draws linestring geometries as planar polygons (created from lines using a buffer with given thickness).
+3D symbol that draws linestring geometries as planar polygons (created
+from lines using a buffer with given thickness).
 
 .. warning::
 
@@ -50,16 +51,19 @@ Caller takes ownership of the returned symbol.
 
     Qgis::AltitudeClamping altitudeClamping() const;
 %Docstring
-Returns method that determines altitude (whether to clamp to feature to terrain)
+Returns method that determines altitude (whether to clamp to feature to
+terrain)
 %End
     void setAltitudeClamping( Qgis::AltitudeClamping altClamping );
 %Docstring
-Sets method that determines altitude (whether to clamp to feature to terrain)
+Sets method that determines altitude (whether to clamp to feature to
+terrain)
 %End
 
     Qgis::AltitudeBinding altitudeBinding() const;
 %Docstring
-Returns method that determines how altitude is bound to individual vertices
+Returns method that determines how altitude is bound to individual
+vertices
 %End
     void setAltitudeBinding( Qgis::AltitudeBinding altBinding );
 %Docstring
@@ -118,11 +122,13 @@ Sets extrusion height (in map units)
 
     bool renderAsSimpleLines() const;
 %Docstring
-Returns whether the renderer will render data with simple lines (otherwise it uses buffer)
+Returns whether the renderer will render data with simple lines
+(otherwise it uses buffer)
 %End
     void setRenderAsSimpleLines( bool enabled );
 %Docstring
-Sets whether the renderer will render data with simple lines (otherwise it uses buffer)
+Sets whether the renderer will render data with simple lines (otherwise
+it uses buffer)
 %End
 
     QgsAbstractMaterialSettings *materialSettings() const;

@@ -14,11 +14,12 @@
 class QgsVectorLayerCache : QObject
 {
 %Docstring(signature="appended")
-This class caches features of a given :py:class:`QgsVectorLayer`.
+Caches features for a given :py:class:`QgsVectorLayer`.
 
 The cached features can be indexed by :py:class:`QgsAbstractCacheIndex`.
 
-Proper indexing for a given use-case may speed up performance substantially.
+Proper indexing for a given use-case may speed up performance
+substantially.
 %End
 
 %TypeHeaderCode
@@ -31,16 +32,19 @@ Proper indexing for a given use-case may speed up performance substantially.
 
     void setCacheSize( int cacheSize );
 %Docstring
-Sets the maximum number of features to keep in the cache. Some features will be removed from
-the cache if the number is smaller than the previous size of the cache.
+Sets the maximum number of features to keep in the cache. Some features
+will be removed from the cache if the number is smaller than the
+previous size of the cache.
 
-:param cacheSize: indicates the maximum number of features to keep in the cache
+:param cacheSize: indicates the maximum number of features to keep in
+                  the cache
 %End
 
     int cacheSize();
 %Docstring
-Returns the maximum number of features this cache will hold.
-In case full caching is enabled, this number can change, as new features get added.
+Returns the maximum number of features this cache will hold. In case
+full caching is enabled, this number can change, as new features get
+added.
 
 :return: int
 %End
@@ -87,21 +91,22 @@ Returns the list (possibly a subset) of cached attributes.
 
     void setCacheAddedAttributes( bool cacheAddedAttributes );
 %Docstring
-If this is enabled, the subset of cached attributes will automatically be extended
-to also include newly added attributes.
+If this is enabled, the subset of cached attributes will automatically
+be extended to also include newly added attributes.
 
 :param cacheAddedAttributes: Automatically cache new attributes
 %End
 
     void setFullCache( bool fullCache );
 %Docstring
-This enables or disables full caching.
-If enabled, all features will be held in the cache. The cache size will incrementally
-be increased to offer space for all features.
-When enabled, all features will be read into cache. As this feature will most likely
-be used for slow data sources, be aware, that the call to this method might take a long time.
+This enables or disables full caching. If enabled, all features will be
+held in the cache. The cache size will incrementally be increased to
+offer space for all features. When enabled, all features will be read
+into cache. As this feature will most likely be used for slow data
+sources, be aware, that the call to this method might take a long time.
 
-:param fullCache: ``True``: enable full caching, ``False``: disable full caching
+:param fullCache: ``True``: enable full caching, ``False``: disable full
+                  caching
 
 .. note::
 
@@ -113,29 +118,33 @@ be used for slow data sources, be aware, that the call to this method might take
 
     bool hasFullCache() const;
 %Docstring
-Returns ``True`` if the cache is complete, ie it contains all features. This may happen as
-a result of a call to :py:func:`~QgsVectorLayerCache.setFullCache` or by through a feature request which resulted in
-all available features being cached.
+Returns ``True`` if the cache is complete, ie it contains all features.
+This may happen as a result of a call to
+:py:func:`~QgsVectorLayerCache.setFullCache` or by through a feature
+request which resulted in all available features being cached.
 
 .. seealso:: :py:func:`setFullCache`
 %End
 
     void addCacheIndex( QgsAbstractCacheIndex *cacheIndex /Transfer/ );
 %Docstring
-Adds a :py:class:`QgsAbstractCacheIndex` to this cache. Cache indices know about features present
-in this cache and decide, if enough information is present in the cache to respond to a :py:class:`QgsFeatureRequest`.
-The layer cache will take ownership of the index.
+Adds a :py:class:`QgsAbstractCacheIndex` to this cache. Cache indices
+know about features present in this cache and decide, if enough
+information is present in the cache to respond to a
+:py:class:`QgsFeatureRequest`. The layer cache will take ownership of
+the index.
 
 :param cacheIndex: The cache index to add.
 %End
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &featureRequest = QgsFeatureRequest() );
 %Docstring
-Query this VectorLayerCache for features.
-If the VectorLayerCache (and moreover any of its indices) is able to satisfy
-the request, the returned :py:class:`QgsFeatureIterator` will iterate over cached features.
-If it's not possible to fully satisfy the request from the cache, part or all of the features
-will be requested from the data provider.
+Query this VectorLayerCache for features. If the VectorLayerCache (and
+moreover any of its indices) is able to satisfy the request, the
+returned :py:class:`QgsFeatureIterator` will iterate over cached
+features. If it's not possible to fully satisfy the request from the
+cache, part or all of the features will be requested from the data
+provider.
 
 :param featureRequest: The request specifying filter and required data.
 
@@ -149,8 +158,8 @@ Query the layer for features matching a given expression.
 
     QgsFeature getFeature( QgsFeatureId fid );
 %Docstring
-Query the layer for the feature with the given id.
-If there is no such feature, the returned feature will be invalid.
+Query the layer for the feature with the given id. If there is no such
+feature, the returned feature will be invalid.
 %End
 
     QgsFeatureIterator getFeatures( const QgsFeatureIds &fids );
@@ -160,7 +169,8 @@ Query the layer for the features with the given ids.
 
     QgsFeatureIterator getFeatures( const QgsRectangle &rectangle );
 %Docstring
-Query the layer for the features which intersect the specified rectangle.
+Query the layer for the features which intersect the specified
+rectangle.
 %End
 
     bool isFidCached( QgsFeatureId fid ) const;
@@ -183,28 +193,34 @@ Returns the set of feature IDs for features which are cached.
 
     bool featureAtId( QgsFeatureId featureId, QgsFeature &feature /Out/, bool skipCache = false );
 %Docstring
-Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
+Gets the feature at the given feature id. Considers the changed, added,
+deleted and permanent features
 
 :param featureId: The id of the feature to query
-:param skipCache: Will query the layer regardless if the feature is in the cache already
+:param skipCache: Will query the layer regardless if the feature is in
+                  the cache already
 
 :return: - ``True`` in case of success
-         - feature: The result of the operation will be written to this feature
+         - feature: The result of the operation will be written to this
+           feature
 %End
 
     bool featureAtIdWithAllAttributes( QgsFeatureId featureId, QgsFeature &feature /Out/, bool skipCache = false );
 %Docstring
-Gets the feature at the given feature id with all attributes, if the cached feature
-already contains all attributes, calling this function has the same effect as calling
+Gets the feature at the given feature id with all attributes, if the
+cached feature already contains all attributes, calling this function
+has the same effect as calling
 :py:func:`~QgsVectorLayerCache.featureAtId`.
 
 Considers the changed, added, deleted and permanent features
 
 :param featureId: The id of the feature to query
-:param skipCache: Will query the layer regardless if the feature is in the cache already
+:param skipCache: Will query the layer regardless if the feature is in
+                  the cache already
 
 :return: - ``True`` in case of success
-         - feature: The result of the operation will be written to this feature
+         - feature: The result of the operation will be written to this
+           feature
 
 .. seealso:: :py:func:`featureAtId`
 
@@ -213,17 +229,20 @@ Considers the changed, added, deleted and permanent features
 
     bool completeFeatureAtId( QgsFeatureId featureId, QgsFeature &feature /Out/, bool skipCache = false );
 %Docstring
-Gets the feature at the given feature id with all attributes and geometry, if the cached feature
-already contains all attributes and geometry, calling this function has the same effect as calling
+Gets the feature at the given feature id with all attributes and
+geometry, if the cached feature already contains all attributes and
+geometry, calling this function has the same effect as calling
 :py:func:`~QgsVectorLayerCache.featureAtId`.
 
 Considers the changed, added, deleted and permanent features
 
 :param featureId: The id of the feature to query
-:param skipCache: Will query the layer regardless if the feature is in the cache already
+:param skipCache: Will query the layer regardless if the feature is in
+                  the cache already
 
 :return: - ``True`` in case of success
-         - feature: The result of the operation will be written to this feature
+         - feature: The result of the operation will be written to this
+           feature
 
 .. seealso:: :py:func:`featureAtId`
 
@@ -236,7 +255,8 @@ Removes the feature identified by fid from the cache if present.
 
 :param fid: The id of the feature to delete
 
-:return: ``True`` if the feature was removed, ``False`` if the feature id was not found in the cache
+:return: ``True`` if the feature was removed, ``False`` if the feature
+         id was not found in the cache
 %End
 
     QgsVectorLayer *layer();
@@ -262,8 +282,8 @@ Returns the geometry type for features in the cache.
 
     Py_ssize_t __len__() const;
 %Docstring
-Returns the number of features contained in the source, or -1
-if the feature count is unknown.
+Returns the number of features contained in the source, or -1 if the
+feature count is unknown.
 %End
 %MethodCode
     sipRes = sipCpp->featureCount();
@@ -277,16 +297,17 @@ if the feature count is unknown.
 
     long long featureCount() const;
 %Docstring
-Returns the number of features contained in the source, or -1
-if the feature count is unknown.
+Returns the number of features contained in the source, or -1 if the
+feature count is unknown.
 %End
 
   protected:
 
     void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
 %Docstring
-Gets called, whenever the full list of feature ids for a certain request is known.
-Broadcasts this information to indices, so they can update their tables.
+Gets called, whenever the full list of feature ids for a certain request
+is known. Broadcasts this information to indices, so they can update
+their tables.
 
 :param featureRequest: The feature request that was answered
 :param fids: The feature ids that have been returned
@@ -294,8 +315,8 @@ Broadcasts this information to indices, so they can update their tables.
 
     void featureRemoved( QgsFeatureId fid );
 %Docstring
-Gets called, whenever a feature has been removed.
-Broadcasts this information to indices, so they can invalidate their cache if required.
+Gets called, whenever a feature has been removed. Broadcasts this
+information to indices, so they can invalidate their cache if required.
 
 :param fid: The feature id of the removed feature.
 %End
@@ -304,7 +325,8 @@ Broadcasts this information to indices, so they can invalidate their cache if re
 %Docstring
 Checks if the information required to complete the request is cached.
 i.e. If all attributes required and the geometry is held in the cache.
-Please note, that this does not check, if the requested features are cached.
+Please note, that this does not check, if the requested features are
+cached.
 
 :param featureRequest: The :py:class:`QgsFeatureRequest` to be answered
 
@@ -317,36 +339,41 @@ Please note, that this does not check, if the requested features are cached.
 
     void finished();
 %Docstring
-When filling the cache, this signal gets emitted once the cache is fully initialized.
+When filling the cache, this signal gets emitted once the cache is fully
+initialized.
 %End
 
     void cachedLayerDeleted();
 %Docstring
-Is emitted when the cached layer is deleted. Is emitted when the cached layers :py:func:`~QgsVectorLayerCache.layerDelete`
-signal is being emitted, but before the local reference to it has been set to ``None``. So call to
-:py:func:`~QgsVectorLayerCache.layer` will still return a valid pointer for cleanup purpose.
+Is emitted when the cached layer is deleted. Is emitted when the cached
+layers :py:func:`~QgsVectorLayerCache.layerDelete` signal is being
+emitted, but before the local reference to it has been set to ``None``.
+So call to :py:func:`~QgsVectorLayerCache.layer` will still return a
+valid pointer for cleanup purpose.
 %End
 
     void attributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
 %Docstring
-Emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
-You should connect to this signal, to be sure, to not get a cached value if querying the cache.
+Emitted when an attribute is changed. Is re-emitted after the layer
+itself emits this signal. You should connect to this signal, to be sure,
+to not get a cached value if querying the cache.
 %End
 
     void featureAdded( QgsFeatureId fid );
 %Docstring
 Emitted when a new feature has been added to the layer and this cache.
-You should connect to this signal instead of the layers', if you want to be sure
-that this cache has updated information for the new feature
+You should connect to this signal instead of the layers', if you want to
+be sure that this cache has updated information for the new feature
 
 :param fid: The featureid of the changed feature
 %End
 
     void invalidated();
 %Docstring
-The cache has been invalidated and cleared. Note that when a cache is invalidated
-the :py:func:`~QgsVectorLayerCache.fullCache` setting will be cleared, and a full cache rebuild via setFullCache( ``True`` )
-will need to be performed.
+The cache has been invalidated and cleared. Note that when a cache is
+invalidated the :py:func:`~QgsVectorLayerCache.fullCache` setting will
+be cleared, and a full cache rebuild via setFullCache( ``True`` ) will
+need to be performed.
 %End
 
 };

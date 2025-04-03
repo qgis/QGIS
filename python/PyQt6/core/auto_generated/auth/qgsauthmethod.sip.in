@@ -13,7 +13,7 @@
 class QgsAuthMethod : QObject
 {
 %Docstring(signature="appended")
-Abstract base class for authentication method plugins
+Abstract base class for authentication method plugins.
 %End
 
 %TypeHeaderCode
@@ -41,17 +41,20 @@ A non-translated short name representing the auth method
 
     virtual QString description() const = 0;
 %Docstring
-A non-translated short description representing the auth method for use in debug output and About dialog
+A non-translated short description representing the auth method for use
+in debug output and About dialog
 %End
 
     virtual QString displayDescription() const = 0;
 %Docstring
-Translatable display version of the ':py:func:`~QgsAuthMethod.description`'
+Translatable display version of the
+':py:func:`~QgsAuthMethod.description`'
 %End
 
     int version() const;
 %Docstring
-Increment this if method is significantly updated, allow updater code to be written for previously stored authcfg
+Increment this if method is significantly updated, allow updater code to
+be written for previously stored authcfg
 %End
 
 
@@ -67,8 +70,8 @@ Constructs the configuration for the authentication method
 
     QgsAuthMethod::Expansions supportedExpansions() const;
 %Docstring
-Flags that represent the update points (where authentication configurations are expanded)
-supported by an authentication method.
+Flags that represent the update points (where authentication
+configurations are expanded) supported by an authentication method.
 
 .. note::
 
@@ -77,8 +80,9 @@ supported by an authentication method.
 
     QStringList supportedDataProviders() const;
 %Docstring
-The data providers that the method supports, allowing for filtering out authcfgs that are not
-applicable to a given provider, or where the updating code is not currently implemented.
+The data providers that the method supports, allowing for filtering out
+authcfgs that are not applicable to a given provider, or where the
+updating code is not currently implemented.
 %End
 
     virtual bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
@@ -88,8 +92,9 @@ Update a network request with authentication components
 
 :param request: The network request to update
 :param authcfg: Authentication configuration ID
-:param dataprovider: Textual key for a data provider, e.g. 'postgres', that allows
-                     for custom updater code specific to the provider
+:param dataprovider: Textual key for a data provider, e.g. 'postgres',
+                     that allows for custom updater code specific to the
+                     provider
 
 :return: Whether the update succeeded
 %End
@@ -101,8 +106,9 @@ Update a network reply with authentication components
 
 :param reply: The network reply object to update
 :param authcfg: Authentication configuration ID
-:param dataprovider: Textual key for a data provider, e.g. 'postgres', that allows
-                     for custom updater code specific to the provider
+:param dataprovider: Textual key for a data provider, e.g. 'postgres',
+                     that allows for custom updater code specific to the
+                     provider
 
 :return: Whether the update succeeded
 %End
@@ -112,10 +118,12 @@ Update a network reply with authentication components
 %Docstring
 Update data source connection items with authentication components
 
-:param connectionItems: QStringlist of 'key=value' pairs, as utilized in :py:func:`QgsDataSourceUri.connectionInfo()`
+:param connectionItems: QStringlist of 'key=value' pairs, as utilized in
+                        :py:func:`QgsDataSourceUri.connectionInfo()`
 :param authcfg: Authentication configuration ID
-:param dataprovider: Textual key for a data provider, e.g. 'postgres', that allows
-                     for custom updater code specific to the provider
+:param dataprovider: Textual key for a data provider, e.g. 'postgres',
+                     that allows for custom updater code specific to the
+                     provider
 
 :return: Whether the update succeeded
 %End
@@ -125,17 +133,20 @@ Update data source connection items with authentication components
 %Docstring
 Update proxy settings with authentication components
 
-:param proxy:
+:param proxy: 
 :param authcfg: Authentication configuration ID
-:param dataprovider: Textual key for a data provider, e.g. 'proxy', that allows
-                     for custom updater code specific to the provider
+:param dataprovider: Textual key for a data provider, e.g. 'proxy', that
+                     allows for custom updater code specific to the
+                     provider
 
 :return: Whether the update succeeded
 %End
 
     virtual void clearCachedConfig( const QString &authcfg ) = 0;
 %Docstring
-Clear any cached configuration. Called when the :py:class:`QgsAuthManager` deletes an authentication configuration (authcfg).
+Clear any cached configuration. Called when the
+:py:class:`QgsAuthManager` deletes an authentication configuration
+(authcfg).
 
 .. note::
 
@@ -166,7 +177,8 @@ Construct a default authentication method
 
     static QString authMethodTag();
 %Docstring
-Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output)
+Tag signifying that this is an authentcation method (e.g. for use as
+title in message log panel output)
 %End
 
     void setVersion( int version );
@@ -176,7 +188,8 @@ Sets the version of the auth method (useful for future upgrading)
 
     void setExpansions( QgsAuthMethod::Expansions expansions );
 %Docstring
-Sets the support expansions (points in providers where the authentication is injected) of the auth method
+Sets the support expansions (points in providers where the
+authentication is injected) of the auth method
 %End
     void setDataProviders( const QStringList &dataproviders );
 %Docstring

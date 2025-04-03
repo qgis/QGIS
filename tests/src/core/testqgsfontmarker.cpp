@@ -56,6 +56,7 @@ class TestQgsFontMarkerSymbol : public QgsTest
     void fontMarkerSymbolStroke();
     void bounds();
     void fontMarkerSymbolDataDefinedProperties();
+    void fontMarkerSymbolDataDefinedRotation();
     void opacityWithDataDefinedColor();
     void dataDefinedOpacity();
     void massiveFont();
@@ -153,6 +154,25 @@ void TestQgsFontMarkerSymbol::fontMarkerSymbolDataDefinedProperties()
   mMapSettings.setOutputDpi( 96 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "fontmarker_datadefinedproperties", "fontmarker_datadefinedproperties", mMapSettings, 30 );
 
+  mFontMarkerLayer->setDataDefinedProperties( QgsPropertyCollection() );
+}
+
+void TestQgsFontMarkerSymbol::fontMarkerSymbolDataDefinedRotation()
+{
+  mFontMarkerLayer->setColor( Qt::blue );
+  const QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
+  mFontMarkerLayer->setFontFamily( font.family() );
+  mFontMarkerLayer->setFontStyle( QStringLiteral( "Bold" ) );
+  mFontMarkerLayer->setCharacter( QChar( 'A' ) );
+  mFontMarkerLayer->setSize( 12 );
+  mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Angle, QgsProperty::fromExpression( QStringLiteral( "0" ) ) );
+  mMapSettings.setRotation( 45.0 );
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "fontmarker_datadefinedrotation", "fontmarker_datadefinedrotation", mMapSettings, 30 );
+
+  mMapSettings.setRotation( 0.0 );
+  mMapSettings.setExtent( mpPointsLayer->extent() );
   mFontMarkerLayer->setDataDefinedProperties( QgsPropertyCollection() );
 }
 

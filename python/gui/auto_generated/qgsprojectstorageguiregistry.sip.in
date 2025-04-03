@@ -17,7 +17,8 @@ class QgsProjectStorageGuiRegistry
 %Docstring(signature="appended")
 A registry / canonical manager of GUI parts of project storage backends.
 
-:py:class:`QgsProjectStorageGuiRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsProjectStorageGuiRegistry` is not usually directly
+created, but rather accessed through
 :py:func:`QgsGui.projectStorageGuiRegistry()`.
 
 .. seealso:: :py:class:`QgsProjectStorageRegistry`
@@ -35,12 +36,14 @@ A registry / canonical manager of GUI parts of project storage backends.
 
     QgsProjectStorageGuiProvider *projectStorageFromType( const QString &type );
 %Docstring
-Returns storage implementation if the storage type matches one. Returns ``None`` otherwise (it is a normal file)
+Returns storage implementation if the storage type matches one. Returns
+``None`` otherwise (it is a normal file)
 %End
 
     QgsProjectStorageGuiProvider *projectStorageFromUri( const QString &uri );
 %Docstring
-Returns storage implementation if the URI matches one. Returns ``None`` otherwise (it is a normal file)
+Returns storage implementation if the URI matches one. Returns ``None``
+otherwise (it is a normal file)
 %End
 
     QList<QgsProjectStorageGuiProvider *> projectStorages() const;
@@ -61,7 +64,8 @@ Unregisters a storage backend and destroys its instance
     void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
 %Docstring
 Initializes the registry. The registry needs to be passed explicitly
-(instead of using singleton) because this gets called from :py:class:`QgsGui` constructor.
+(instead of using singleton) because this gets called from
+:py:class:`QgsGui` constructor.
 %End
 
   private:

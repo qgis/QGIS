@@ -36,8 +36,7 @@ class QgsLocatorProxyModel;
 
 /**
  * \ingroup core
- * \brief The QgsLocatorModelBridge class provides the core functionality
- * to be used in a locator widget.
+ * \brief Provides the core functionality to be used in a locator widget.
  * \since QGIS 3.6
  */
 class CORE_EXPORT QgsLocatorModelBridge : public QObject

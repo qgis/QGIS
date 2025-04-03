@@ -16,11 +16,15 @@ Wraps a relation reference widget.
 
 Options:
 
-- **ShowForm** If ``True``, an embedded form with the referenced feature will be shown.
-- **MapIdentification** Will offer a map tool to pick a referenced feature on the map canvas. Only use for layers with geometry.
-- **ReadOnly** If ``True``, will represent the referenced widget in a read-only line edit. Can speed up loading.
+- **ShowForm** If ``True``, an embedded form with the referenced feature
+  will be shown.
+- **MapIdentification** Will offer a map tool to pick a referenced
+  feature on the map canvas. Only use for layers with geometry.
+- **ReadOnly** If ``True``, will represent the referenced widget in a
+  read-only line edit. Can speed up loading.
 - **AllowNULL** Will offer NULL as a value.
-- **Relation** The ID of the relation that will be used to define this widget.
+- **Relation** The ID of the relation that will be used to define this
+  widget.
 - **ReadOnly**
 %End
 
@@ -52,9 +56,25 @@ Constructor for QgsRelationReferenceWidgetWrapper
     virtual void setEnabled( bool enabled );
 
 
+    virtual void parentFormValueChanged( const QString &attribute, const QVariant &value );
+
+
   protected:
     virtual void updateConstraintWidgetStatus();
 
+
+    void widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged );
+%Docstring
+Will be called when a value in the current edited form or table row
+changes
+
+:param attribute: The name of the attribute that changed.
+:param newValue: The new value of the attribute.
+:param attributeChanged: If ``True``, it corresponds to an actual change
+                         of the feature attribute
+
+.. versionadded:: 3.42.2
+%End
 
 };
 

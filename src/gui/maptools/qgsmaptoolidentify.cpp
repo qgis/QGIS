@@ -932,7 +932,7 @@ QMap<QString, QString> QgsMapToolIdentify::featureDerivedAttributes( const QgsFe
     }
 
     QString str;
-    if ( ellipsoid != geoNone() )
+    if ( ellipsoid != Qgis::geoNone() )
     {
       str = formatDistance( dist );
       derivedAttributes.insert( tr( "Length (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
@@ -996,7 +996,7 @@ QMap<QString, QString> QgsMapToolIdentify::featureDerivedAttributes( const QgsFe
     }
 
     QString str;
-    if ( ellipsoid != geoNone() )
+    if ( ellipsoid != Qgis::geoNone() )
     {
       str = formatArea( area );
       derivedAttributes.insert( tr( "Area (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
@@ -1004,7 +1004,7 @@ QMap<QString, QString> QgsMapToolIdentify::featureDerivedAttributes( const QgsFe
     str = formatArea( layerCrsGeometry.area() * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ), cartesianAreaUnits ), cartesianAreaUnits );
     derivedAttributes.insert( tr( "Area (Cartesian)" ), str );
 
-    if ( ellipsoid != geoNone() )
+    if ( ellipsoid != Qgis::geoNone() )
     {
       double perimeter = 0;
       try

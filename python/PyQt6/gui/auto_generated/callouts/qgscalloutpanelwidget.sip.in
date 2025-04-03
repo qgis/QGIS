@@ -23,7 +23,8 @@ A panel widget for configuration of callouts.
   public:
     QgsCalloutPanelWidget( QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
 %Docstring
-Constructor for QgsCalloutPanelWidget, with the specified ``parent`` widget
+Constructor for QgsCalloutPanelWidget, with the specified ``parent``
+widget
 
 The optional ``layer`` argument can be set to an associated map layer.
 %End
@@ -32,8 +33,8 @@ The optional ``layer`` argument can be set to an associated map layer.
 %Docstring
 Sets the geometry ``type`` for the objects associated with the callouts.
 
-If ``type`` is :py:class:`Qgis`.GeometryType.Unknown then an attempt will be made to
-deduce the type from the associated map layer.
+If ``type`` is :py:class:`Qgis`.GeometryType.Unknown then an attempt
+will be made to deduce the type from the associated map layer.
 
 .. seealso:: :py:func:`geometryType`
 %End
@@ -42,22 +43,24 @@ deduce the type from the associated map layer.
 %Docstring
 Returns the geometry type for the objects associated with the callouts.
 
-If the type is :py:class:`Qgis`.GeometryType.Unknown then an attempt will be made to
-deduce the type from the associated map layer.
+If the type is :py:class:`Qgis`.GeometryType.Unknown then an attempt
+will be made to deduce the type from the associated map layer.
 
 .. seealso:: :py:func:`setGeometryType`
 %End
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
-Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+Sets the ``context`` in which the widget is shown, e.g., the associated
+map canvas and expression contexts.
 
 .. seealso:: :py:func:`context`
 %End
 
     QgsSymbolWidgetContext context() const;
 %Docstring
-Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+Returns the context in which the widget is shown, e.g., the associated
+map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
 %End

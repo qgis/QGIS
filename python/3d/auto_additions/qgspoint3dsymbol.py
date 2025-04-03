@@ -3,6 +3,7 @@ try:
     QgsPoint3DSymbol.create = staticmethod(QgsPoint3DSymbol.create)
     QgsPoint3DSymbol.shapeFromString = staticmethod(QgsPoint3DSymbol.shapeFromString)
     QgsPoint3DSymbol.shapeToString = staticmethod(QgsPoint3DSymbol.shapeToString)
+    QgsPoint3DSymbol.__overridden_methods__ = ['type', 'clone', 'writeXml', 'readXml', 'compatibleGeometryTypes', 'setDefaultPropertiesFromLayer']
     QgsPoint3DSymbol.__group__ = ['symbols']
 except (NameError, AttributeError):
     pass

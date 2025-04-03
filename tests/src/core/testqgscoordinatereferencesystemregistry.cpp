@@ -357,7 +357,7 @@ void TestQgsCoordinateReferenceSystemRegistry::testRecent()
   QCOMPARE( pushSpy.size(), 1 );
   QCOMPARE( pushSpy.at( 0 ).at( 0 ).value<QgsCoordinateReferenceSystem>().authid(), QStringLiteral( "EPSG:3111" ) );
 
-  QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( QgsCoordinateReferenceSystem::fromProj( geoProj4() ) );
+  QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" ) ) );
   recent = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
   QCOMPARE( recent.size(), 2 );
   QCOMPARE( recent.at( 0 ).authid(), QStringLiteral( "EPSG:4326" ) );

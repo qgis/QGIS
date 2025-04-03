@@ -28,7 +28,7 @@ class QgsExpressionContext;
 /**
  * \ingroup core
  *
- * \brief Abstract class that can be derived to implement advanced editing on mesh
+ * \brief Abstract class that can be derived to implement advanced editing on mesh.
  *
  * To apply the advanced editing, a pointer to an instance of a derived class is passed
  * in the method QgsMeshEditor::advancedEdit().
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
 /**
  * \ingroup core
  *
- * \brief Class that can do a refinement of faces of a mesh.
+ * \brief Performs refinement of faces of a mesh.
  *
  * This refinement is operated only on faces with 3 or 4 vertices (triangles or quads) by adding a vertex on the middle of each refined face.
  * For quad faces, a vertex is added on the centroid of the original face.
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsMeshEditRefineFaces : public QgsMeshAdvancedEditing
 /**
  * \ingroup core
  *
- * \brief Class that can transform vertices of a mesh by expression
+ * \brief Transforms vertices of a mesh by expression.
  *
  * Each coordinates are associated with an expression that can be defined with function
  * returning the current coordinates (see setExpressions()):
@@ -178,10 +178,13 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
      * Calculates the transformed vertices of the mesh \a layer, returns FALSE if this leads to topological or geometrical errors.
      * The mesh layer must be in edit mode.
      *
-     * \note this method not apply new vertices to the mesh layer but only store the calculated transformation
-     *       that can be apply later with QgsMeshEditor::advancedEdit()
+     * \note This method does not apply new vertices to the mesh layer but only stores the calculated transformation
+     * that can be applied later with QgsMeshEditor.advancedEdit()
+     *
+     * \param layer
+     * \param project QgsProject if it is necessary for the calculation ( for example with \see setZFromTerrain() ) \since QGIS 3.44
      */
-    bool calculate( QgsMeshLayer *layer );
+    bool calculate( QgsMeshLayer *layer, QgsProject *project = nullptr );
 
     /**
      * Returns the transformed vertex from its index \a vertexIndex for the mesh \a layer
@@ -190,11 +193,24 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
      */
     QgsMeshVertex transformedVertex( QgsMeshLayer *layer, int vertexIndex ) const;
 
+    /**
+     * Sets if Z values for vertices should be obtained from project terrain, instead of expression.
+     *
+     * \note If \a enable is True, the Z value of the vertex will be obtained from the terrain of the project.
+     * The optional parameter \a project is necessary for function calculate ( \see calculate() ).
+     *
+     * \param enable
+     *
+     * \since QGIS 3.44
+     */
+    void setZFromTerrain( bool enable );
+
   private:
     QString mExpressionX;
     QString mExpressionY;
     QString mExpressionZ;
     QHash<int, int> mChangingVertexMap;
+    bool mZFromTerrain = false;
 
     QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
 

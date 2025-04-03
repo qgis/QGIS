@@ -17,17 +17,24 @@
 class QgsGeometryEngine
 {
 %Docstring(signature="appended")
-A geometry engine is a low-level representation of a :py:class:`QgsAbstractGeometry` object, optimised for use with external
+A geometry engine is a low-level representation of a
+:py:class:`QgsAbstractGeometry` object, optimised for use with external
 geometry libraries such as GEOS.
 
-:py:class:`QgsGeometryEngine` objects provide a mechanism for optimized evaluation of geometric algorithms, including spatial relationships
+:py:class:`QgsGeometryEngine` objects provide a mechanism for optimized
+evaluation of geometric algorithms, including spatial relationships
 between geometries and operations such as buffers or clipping.
 
-:py:class:`QgsGeometryEngine` objects are not created directly, but are instead created by calling :py:func:`QgsGeometry.createGeometryEngine()`.
+:py:class:`QgsGeometryEngine` objects are not created directly, but are
+instead created by calling
+:py:func:`QgsGeometry.createGeometryEngine()`.
 
-Many methods available in the :py:class:`QgsGeometryEngine` class can benefit from pre-preparing geometries. For instance, whenever
-a large number of spatial relationships will be tested (such as calling :py:func:`~intersects`, :py:func:`~within`, etc) then the
-geometry should first be prepared by calling :py:func:`~prepareGeometry` before performing the tests.
+Many methods available in the :py:class:`QgsGeometryEngine` class can
+benefit from pre-preparing geometries. For instance, whenever a large
+number of spatial relationships will be tested (such as calling
+:py:func:`~intersects`, :py:func:`~within`, etc) then the geometry
+should first be prepared by calling :py:func:`~prepareGeometry` before
+performing the tests.
 
 Example
 -------------------------------------
@@ -51,7 +58,8 @@ Example
            if polygon_geometry_engine.intersects(feature_geometry.constGet()):
                print('feature intersects the polygon!')
 
-:py:class:`QgsGeometryEngine` operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
+:py:class:`QgsGeometryEngine` operations are backed by the GEOS library
+(https://trac.osgeo.org/geos/).
 %End
 
 %TypeHeaderCode
@@ -81,17 +89,17 @@ Example
 
     virtual void geometryChanged() = 0;
 %Docstring
-Should be called whenever the geometry associated with the engine
-has been modified and the engine must be updated to suit.
+Should be called whenever the geometry associated with the engine has
+been modified and the engine must be updated to suit.
 %End
 
     virtual void prepareGeometry() = 0;
 %Docstring
-Prepares the geometry, so that subsequent calls to spatial relation methods
-are much faster.
+Prepares the geometry, so that subsequent calls to spatial relation
+methods are much faster.
 
-This should be called for any geometry which is used for multiple relation
-tests against other geometries.
+This should be called for any geometry which is used for multiple
+relation tests against other geometries.
 
 .. seealso:: :py:func:`geometryChanged`
 %End
@@ -102,7 +110,8 @@ Calculate the intersection of this and ``geom``.
 
 :param geom: geometry to perform the operation
 :param errorMsg: Error message returned by GEOS
-:param parameters: can be used to specify parameters which control the intersection results (since QGIS 3.28)
+:param parameters: can be used to specify parameters which control the
+                   intersection results (since QGIS 3.28)
 %End
 
     virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
@@ -111,7 +120,8 @@ Calculate the difference of this and ``geom``.
 
 :param geom: geometry to perform the operation
 :param errorMsg: Error message returned by GEOS
-:param parameters: can be used to specify parameters which control the difference results (since QGIS 3.28)
+:param parameters: can be used to specify parameters which control the
+                   difference results (since QGIS 3.28)
 %End
 
     virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
@@ -120,7 +130,8 @@ Calculate the combination of this and ``geom``.
 
 :param geom: geometry to perform the operation
 :param errorMsg: Error message returned by GEOS
-:param parameters: can be used to specify parameters which control the union results (since QGIS 3.28)
+:param parameters: can be used to specify parameters which control the
+                   union results (since QGIS 3.28)
 %End
 
     virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
@@ -129,7 +140,8 @@ Calculate the combination of this and ``geometries``.
 
 :param geomList: list of geometries to perform the operation
 :param errorMsg: Error message returned by GEOS
-:param parameters: can be used to specify parameters which control the combination results (since QGIS 3.28)
+:param parameters: can be used to specify parameters which control the
+                   combination results (since QGIS 3.28)
 %End
 
     virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
@@ -138,7 +150,8 @@ Calculate the combination of this and ``geometries``.
 
 :param geometries: list of geometries to perform the operation
 :param errorMsg: Error message returned by GEOS
-:param parameters: can be used to specify parameters which control the combination results (since QGIS 3.28)
+:param parameters: can be used to specify parameters which control the
+                   combination results (since QGIS 3.28)
 %End
 
     virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
@@ -147,7 +160,8 @@ Calculate the symmetric difference of this and ``geom``.
 
 :param geom: geometry to perform the operation
 :param errorMsg: Error message returned by GEOS
-:param parameters: can be used to specify parameters which control the difference results (since QGIS 3.28)
+:param parameters: can be used to specify parameters which control the
+                   difference results (since QGIS 3.28)
 %End
     virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = 0 ) const = 0 /Factory/;
 
@@ -161,14 +175,13 @@ Buffers a geometry.
 
     virtual QgsPoint *centroid( QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
-Calculates the centroid of this.
-May return a ```None```.
+Calculates the centroid of this. May return a ```None```.
 %End
 
     virtual QgsPoint *pointOnSurface( QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
-Calculate a point that is guaranteed to be on the surface of this.
-May return a ```None```.
+Calculate a point that is guaranteed to be on the surface of this. May
+return a ```None```.
 %End
 
     virtual QgsAbstractGeometry *convexHull( QString *errorMsg = 0 ) const = 0 /Factory/;
@@ -225,19 +238,20 @@ Checks if ``geom`` is disjoint from this.
 
     virtual QString relate( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
-Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the
-relationship between the geometries.
+Returns the Dimensional Extended 9 Intersection Model (DE-9IM)
+representation of the relationship between the geometries.
 
 :param geom: geometry to relate to
 :param errorMsg: destination storage for any error message
 
-:return: DE-9IM string for relationship, or an empty string if an error occurred
+:return: DE-9IM string for relationship, or an empty string if an error
+         occurred
 %End
 
     virtual bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = 0 ) const = 0;
 %Docstring
-Tests whether two geometries are related by a specified Dimensional Extended 9 Intersection Model (DE-9IM)
-pattern.
+Tests whether two geometries are related by a specified Dimensional
+Extended 9 Intersection Model (DE-9IM) pattern.
 
 :param geom: geometry to relate to
 :param pattern: DE-9IM pattern for match
@@ -253,19 +267,22 @@ pattern.
 %Docstring
 Returns ``True`` if the geometry is valid.
 
-If the geometry is invalid, ``errorMsg`` will be filled with the reported geometry error.
+If the geometry is invalid, ``errorMsg`` will be filled with the
+reported geometry error.
 
-The ``allowSelfTouchingHoles`` argument specifies whether self-touching holes are permitted.
-OGC validity states that self-touching holes are NOT permitted, whilst other vendor
-validity checks (e.g. ESRI) permit self-touching holes.
+The ``allowSelfTouchingHoles`` argument specifies whether self-touching
+holes are permitted. OGC validity states that self-touching holes are
+NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit
+self-touching holes.
 
-If ``errorLoc`` is specified, it will be set to the geometry of the error location.
+If ``errorLoc`` is specified, it will be set to the geometry of the
+error location.
 %End
 
     virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
-Checks if this is equal to ``geom``.
-If both are Null geometries, ```False``` is returned.
+Checks if this is equal to ``geom``. If both are Null geometries,
+```False``` is returned.
 %End
     virtual bool isEmpty( QString *errorMsg ) const = 0;
 
@@ -283,13 +300,18 @@ Splits this geometry according to a given line.
 
 :param splitLine: the line that splits the geometry
 :param topological: ``True`` if topological editing is enabled
-:param topologyTestPoints: points that need to be tested for topological completeness in the dataset
+:param topologyTestPoints: points that need to be tested for topological
+                           completeness in the dataset
 :param errorMsg: error messages emitted, if any
-:param skipIntersectionCheck: set to ``True`` to skip the potentially expensive initial intersection check. Only set this flag if an intersection
-                              test has already been performed by the caller!
+:param skipIntersectionCheck: set to ``True`` to skip the potentially
+                              expensive initial intersection check. Only
+                              set this flag if an intersection test has
+                              already been performed by the caller!
 
-:return: - 0 in case of success, 1 if geometry has not been split, error else
-         - newGeometries: list of new geometries that have been created with the split
+:return: - 0 in case of success, 1 if geometry has not been split, error
+           else
+         - newGeometries: list of new geometries that have been created
+           with the split
 %End
 
     virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
@@ -299,10 +321,13 @@ Offsets a curve.
 
     void setLogErrors( bool enabled );
 %Docstring
-Sets whether warnings and errors encountered during the geometry operations should be logged.
+Sets whether warnings and errors encountered during the geometry
+operations should be logged.
 
-By default these errors are logged to the console and in the QGIS UI. But for some operations errors are expected and logging
-these just results in noise. In this case setting ``enabled`` to ``False`` will avoid the automatic error reporting.
+By default these errors are logged to the console and in the QGIS UI.
+But for some operations errors are expected and logging these just
+results in noise. In this case setting ``enabled`` to ``False`` will
+avoid the automatic error reporting.
 
 .. versionadded:: 3.16
 %End

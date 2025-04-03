@@ -13,19 +13,21 @@
 class QgsMapRendererCache : QObject
 {
 %Docstring(signature="appended")
-This class is responsible for keeping cache of rendered images resulting from
-a map rendering job.
+Responsible for keeping a cache of rendered images resulting from a map
+rendering job.
 
-Once a job has a rendered image stored in the cache (using setCacheImage(...)),
-the cache listens to :py:func:`~repaintRequested` signals from dependent layers.
-If triggered, the cache removes the rendered image (and disconnects from the
-layers).
+Once a job has a rendered image stored in the cache (using
+setCacheImage(...)), the cache listens to :py:func:`~repaintRequested`
+signals from dependent layers. If triggered, the cache removes the
+rendered image (and disconnects from the layers).
 
-When user pans/zooms the canvas, the cache is also used in rendering period
-for particular layers between the first render update and the moment the layer
-actually has partially rendered something in the resulting image.
+When user pans/zooms the canvas, the cache is also used in rendering
+period for particular layers between the first render update and the
+moment the layer actually has partially rendered something in the
+resulting image.
 
-The class is thread-safe (multiple classes can access the same instance safely).
+The class is thread-safe (multiple classes can access the same instance
+safely).
 %End
 
 %TypeHeaderCode
@@ -44,8 +46,8 @@ Invalidates the cache contents, clearing all cached images.
 
  bool init( const QgsRectangle &extent, double scale ) /Deprecated="Since 3.18. Will be removed in QGIS 4.0. Use the updateParameters() and clear()."/;
 %Docstring
-Initialize cache: sets extent and scale parameters and clears the cache if any
-parameters have changed since last initialization.
+Initialize cache: sets extent and scale parameters and clears the cache
+if any parameters have changed since last initialization.
 
 :return: flag whether the parameters are the same as last time
 
@@ -65,12 +67,14 @@ Sets extent and scale parameters
 
     void setCacheImage( const QString &cacheKey, const QImage &image, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
 %Docstring
-Set the cached ``image`` for a particular ``cacheKey``, using the current cache parameters.
+Set the cached ``image`` for a particular ``cacheKey``, using the
+current cache parameters.
 
-The ``cacheKey`` usually matches the :py:func:`QgsMapLayer.id()` which the image is a render of.
+The ``cacheKey`` usually matches the :py:func:`QgsMapLayer.id()` which
+the image is a render of.
 
-A list of ``dependentLayers`` should be passed containing all layer
-on which this cache image is dependent. If any of these layers triggers a
+A list of ``dependentLayers`` should be passed containing all layer on
+which this cache image is dependent. If any of these layers triggers a
 repaint then the cache image will be cleared.
 
 .. seealso:: :py:func:`setCacheImageWithParameters`
@@ -84,13 +88,15 @@ repaint then the cache image will be cleared.
                                       const QgsMapToPixel &mapToPixel,
                                       const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
 %Docstring
-Set the cached ``image`` for a particular ``cacheKey``, using a specific ``extent`` and ``mapToPixel``
-(which may differ from the current cache parameters).
+Set the cached ``image`` for a particular ``cacheKey``, using a specific
+``extent`` and ``mapToPixel`` (which may differ from the current cache
+parameters).
 
-The ``cacheKey`` usually matches the :py:func:`QgsMapLayer.id()` which the image is a render of.
+The ``cacheKey`` usually matches the :py:func:`QgsMapLayer.id()` which
+the image is a render of.
 
-A list of ``dependentLayers`` should be passed containing all layer
-on which this cache image is dependent. If any of these layers triggers a
+A list of ``dependentLayers`` should be passed containing all layer on
+which this cache image is dependent. If any of these layers triggers a
 repaint then the cache image will be cleared.
 
 .. seealso:: :py:func:`cacheImage`
@@ -100,21 +106,24 @@ repaint then the cache image will be cleared.
 
     bool hasCacheImage( const QString &cacheKey ) const;
 %Docstring
-Returns ``True`` if the cache contains an image with the specified ``cacheKey``
-that has the same extent and scale as the cache's global extent and scale
+Returns ``True`` if the cache contains an image with the specified
+``cacheKey`` that has the same extent and scale as the cache's global
+extent and scale
 
 .. seealso:: :py:func:`cacheImage`
 %End
 
     bool hasAnyCacheImage( const QString &cacheKey, double minimumScaleThreshold = 0, double maximumScaleThreshold = 0 ) const;
 %Docstring
-Returns ``True`` if the cache contains an image with the specified ``cacheKey``
-with any cache's parameters (extent and scale)
+Returns ``True`` if the cache contains an image with the specified
+``cacheKey`` with any cache's parameters (extent and scale)
 
-The optional ``minimumScaleThreshold`` and ``maximumScaleThreshold`` arguments can be used to
-specify a range of acceptable cached scales vs current cache scale parameter. E.g. if the
-``minimumScaleThreshold`` is 0.5 and ``maximumScaleThreshold`` is 2.0, then only cached images
-with a scale between 0.5 * current cache scale and 2.0 * current cache scale will be considered.
+The optional ``minimumScaleThreshold`` and ``maximumScaleThreshold``
+arguments can be used to specify a range of acceptable cached scales vs
+current cache scale parameter. E.g. if the ``minimumScaleThreshold`` is
+0.5 and ``maximumScaleThreshold`` is 2.0, then only cached images with a
+scale between 0.5 * current cache scale and 2.0 * current cache scale
+will be considered.
 
 .. seealso:: :py:func:`transformedCacheImage`
 
@@ -123,9 +132,9 @@ with a scale between 0.5 * current cache scale and 2.0 * current cache scale wil
 
     QImage cacheImage( const QString &cacheKey ) const;
 %Docstring
-Returns the cached image for the specified ``cacheKey``. The ``cacheKey`` usually
-matches the :py:func:`QgsMapLayer.id()` which the image is a render of.
-Returns a null image if it is not cached.
+Returns the cached image for the specified ``cacheKey``. The
+``cacheKey`` usually matches the :py:func:`QgsMapLayer.id()` which the
+image is a render of. Returns a null image if it is not cached.
 
 .. seealso:: :py:func:`setCacheImage`
 
@@ -134,12 +143,11 @@ Returns a null image if it is not cached.
 
     QImage transformedCacheImage( const QString &cacheKey, const QgsMapToPixel &mtp ) const;
 %Docstring
-Returns the cached image for the specified ``cacheKey`` transformed
-to the particular extent and scale.
+Returns the cached image for the specified ``cacheKey`` transformed to
+the particular extent and scale.
 
 The ``cacheKey`` usually matches the :py:func:`QgsMapLayer.id()` which
-the image is a render of.
-Returns a null image if it is not cached.
+the image is a render of. Returns a null image if it is not cached.
 
 .. seealso:: :py:func:`hasAnyCacheImage`
 

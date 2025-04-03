@@ -378,7 +378,9 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
  * \class QgsVectorLayerExporterTask
  * \ingroup core
  * \brief QgsTask task which performs a QgsVectorLayerExporter layer export operation as a background
- * task. This can be used to export a vector layer out to a provider without blocking the
+ * task.
+ *
+ * This can be used to export a vector layer out to a provider without blocking the
  * QGIS interface.
  * \see QgsVectorFileWriterTask
  * \see QgsRasterFileWriterTask

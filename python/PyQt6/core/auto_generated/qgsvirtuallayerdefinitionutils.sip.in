@@ -13,7 +13,7 @@
 class QgsVirtualLayerDefinitionUtils
 {
 %Docstring(signature="appended")
-Utils class for :py:class:`QgsVirtualLayerDefinition`
+Utility class for :py:class:`QgsVirtualLayerDefinition`.
 %End
 
 %TypeHeaderCode
@@ -22,7 +22,8 @@ Utils class for :py:class:`QgsVirtualLayerDefinition`
   public:
     static QgsVirtualLayerDefinition fromJoinedLayer( QgsVectorLayer *joinedLayer );
 %Docstring
-Gets a virtual layer definition from a vector layer where vector joins are replaced by SQL LEFT JOINs
+Gets a virtual layer definition from a vector layer where vector joins
+are replaced by SQL LEFT JOINs
 %End
 };
 

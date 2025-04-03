@@ -22,7 +22,7 @@
 /**
  * \ingroup core
  *
- * \brief QgsOptional is a container for other classes and adds an additional enabled/disabled flag.
+ * \brief A container for other classes and adds an additional enabled/disabled flag.
  *
  * Often it is used for configuration options which can be enabled or disabled but also have
  * more internal configuration information that should not be lost when disabling and re-enabling.

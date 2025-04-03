@@ -45,9 +45,7 @@ typedef QHash<QString, QgsMaskedLayer> QgsMaskedLayers;
  * \ingroup core
  * \class QgsVectorLayerUtils
  * \brief Contains utility methods for working with QgsVectorLayers.
- *
  */
-
 class CORE_EXPORT QgsVectorLayerUtils
 {
   public:
@@ -55,8 +53,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     /**
      * \ingroup core
      * \class QgsDuplicateFeatureContext
-     * \brief Contains mainly the QMap with QgsVectorLayer and QgsFeatureIds do list all the duplicated features
-     *
+     * \brief Contains mainly the QMap with QgsVectorLayer and QgsFeatureIds which list all the duplicated features.
      */
     class CORE_EXPORT QgsDuplicateFeatureContext
     {
@@ -88,7 +85,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     /**
      * \ingroup core
      * \class QgsFeatureData
-     * \brief Encapsulate geometry and attributes for new features, to be passed to createFeatures
+     * \brief Encapsulate geometry and attributes for new features, to be passed to createFeatures.
      * \see createFeatures()
      * \since QGIS 3.6
      */

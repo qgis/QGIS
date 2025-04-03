@@ -7,3 +7,11 @@ QgsMapLayerStyleCategoriesModel.Role.__doc__ = """Custom model roles
 
 """
 # --
+try:
+    QgsMapLayerStyleCategoriesModel.__overridden_methods__ = ['rowCount', 'columnCount', 'data', 'setData', 'flags']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsCategoryDisplayLabelDelegate.__overridden_methods__ = ['drawDisplay', 'sizeHint']
+except (NameError, AttributeError):
+    pass

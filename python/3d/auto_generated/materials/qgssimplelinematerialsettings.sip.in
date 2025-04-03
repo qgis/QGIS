@@ -14,7 +14,8 @@
 class QgsSimpleLineMaterialSettings : QgsAbstractMaterialSettings
 {
 %Docstring(signature="appended")
-Basic shading material used for rendering simple lines as solid line components.
+Basic shading material used for rendering simple lines as solid line
+components.
 
 .. warning::
 
@@ -35,7 +36,8 @@ Basic shading material used for rendering simple lines as solid line components.
 
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 %Docstring
-Returns ``True`` if the specified ``technique`` is supported by the material.
+Returns ``True`` if the specified ``technique`` is supported by the
+material.
 %End
 
     static QgsAbstractMaterialSettings *create() /Factory/;

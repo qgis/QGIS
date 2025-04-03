@@ -10,9 +10,11 @@
 
 
 
-
 class QgsRelationWidgetWrapper : QgsWidgetWrapper
 {
+%Docstring(signature="appended")
+A widget wrapper for relation widgets.
+%End
 
 %TypeHeaderCode
 #include "qgsrelationwidgetwrapper.h"
@@ -41,8 +43,9 @@ Constructor for QgsRelationWidgetWrapper
 
  bool showLabel() const /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
-Defines if a title label should be shown for this widget.
-Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called at least once.
+Defines if a title label should be shown for this widget. Only has an
+effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called
+at least once.
 
 .. deprecated:: 3.20
 
@@ -51,8 +54,9 @@ Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been ca
 
  void setShowLabel( bool showLabel ) /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
-Defines if a title label should be shown for this widget.
-Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called at least once.
+Defines if a title label should be shown for this widget. Only has an
+effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called
+at least once.
 
 .. deprecated:: 3.20
 
@@ -158,32 +162,35 @@ Returns the whole widget config
 
     bool forceSuppressFormPopup() const;
 %Docstring
-Determines the force suppress form popup status that is configured for this widget
+Determines the force suppress form popup status that is configured for
+this widget
 
 .. versionadded:: 3.16
 %End
 
     void setForceSuppressFormPopup( bool forceSuppressFormPopup );
 %Docstring
-Sets force suppress form popup status to ``forceSuppressFormPopup`` for this widget
-and for the vectorLayerTools (if ``True``).
-This flag will override the layer and general settings regarding the automatic
-opening of the attribute form dialog when digitizing is completed.
+Sets force suppress form popup status to ``forceSuppressFormPopup`` for
+this widget and for the vectorLayerTools (if ``True``). This flag will
+override the layer and general settings regarding the automatic opening
+of the attribute form dialog when digitizing is completed.
 
 .. versionadded:: 3.16
 %End
 
     QVariant nmRelationId() const;
 %Docstring
-Determines the relation id of the second relation involved in an N:M relation.
+Determines the relation id of the second relation involved in an N:M
+relation.
 
 .. versionadded:: 3.16
 %End
 
     void setNmRelationId( const QVariant &nmRelationId = QVariant() );
 %Docstring
-Sets ``nmRelationId`` for the relation id of the second relation involved in an N:M relation.
-If it's empty, then it's considered as a 1:M relationship.
+Sets ``nmRelationId`` for the relation id of the second relation
+involved in an N:M relation. If it's empty, then it's considered as a
+1:M relationship.
 
 .. versionadded:: 3.16
 %End
@@ -201,8 +208,8 @@ Determines the label of this element
 
  void setLabel( const QString &label = QString() ) /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
-Sets ``label`` for this element
-If it's empty it takes the relation id as label
+Sets ``label`` for this element If it's empty it takes the relation id
+as label
 
 .. versionadded:: 3.16
 
@@ -225,7 +232,8 @@ Forward the signal to the embedded form
 
 :param attribute: The name of the attribute that changed.
 :param newValue: The new value of the attribute.
-:param attributeChanged: If ``True``, it corresponds to an actual change of the feature attribute
+:param attributeChanged: If ``True``, it corresponds to an actual change
+                         of the feature attribute
 
 .. versionadded:: 3.14
 %End
@@ -243,9 +251,9 @@ Forward the signal to the embedded form
 
     void relatedFeaturesChanged();
 %Docstring
-Emit this signal, whenever the related features changed.
-This happens for example when related features are added, removed,
-linked or unlinked.
+Emit this signal, whenever the related features changed. This happens
+for example when related features are added, removed, linked or
+unlinked.
 
 .. versionadded:: 3.22
 %End

@@ -13,7 +13,7 @@
 class QgsMapLayerModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
-The :py:class:`QgsMapLayerModel` class is a model to display layers in widgets.
+A model for display of map layers in widgets.
 
 .. seealso:: :py:class:`QgsMapLayerProxyModel` to sort and/filter the layers
 
@@ -38,16 +38,19 @@ The :py:class:`QgsMapLayerModel` class is a model to display layers in widgets.
 %Docstring
 QgsMapLayerModel creates a model to display layers in widgets.
 
-If ``project`` is not specified then the :py:func:`QgsProject.instance()` project will be used to
-populate the model.
+If ``project`` is not specified then the
+:py:func:`QgsProject.instance()` project will be used to populate the
+model.
 %End
 
     explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = 0, QgsProject *project = 0 );
 %Docstring
-QgsMapLayerModel creates a model to display a specific list of layers in a widget.
+QgsMapLayerModel creates a model to display a specific list of layers in
+a widget.
 
-If ``project`` is not specified then the :py:func:`QgsProject.instance()` project will be used to
-populate the model.
+If ``project`` is not specified then the
+:py:func:`QgsProject.instance()` project will be used to populate the
+model.
 %End
 
     void setItemsCheckable( bool checkable );
@@ -73,7 +76,8 @@ Sets whether items in the model can be reordered via drag and drop.
 
     bool itemsCanBeReordered() const;
 %Docstring
-Returns ``True`` if items in the model can be reordered via drag and drop.
+Returns ``True`` if items in the model can be reordered via drag and
+drop.
 
 .. seealso:: :py:func:`setItemsCanBeReordered`
 
@@ -87,9 +91,11 @@ checkAll changes the checkstate for all the layers
 
     void setAllowEmptyLayer( bool allowEmpty, const QString &text = QString(), const QIcon &icon = QIcon() );
 %Docstring
-Sets whether an optional empty layer ("not set") option is present in the model.
+Sets whether an optional empty layer ("not set") option is present in
+the model.
 
-Since QGIS 3.20, the optional ``text`` and ``icon`` arguments allows the text and icon for the empty layer item to be set.
+Since QGIS 3.20, the optional ``text`` and ``icon`` arguments allows the
+text and icon for the empty layer item to be set.
 
 .. seealso:: :py:func:`allowEmptyLayer`
 %End
@@ -103,7 +109,8 @@ Returns ``True`` if the model allows the empty layer ("not set") choice.
 
     void setShowCrs( bool showCrs );
 %Docstring
-Sets whether the CRS of layers is also included in the model's display role.
+Sets whether the CRS of layers is also included in the model's display
+role.
 
 .. seealso:: :py:func:`showCrs`
 %End
@@ -146,16 +153,18 @@ Returns the map layer corresponding to the specified ``index``.
 
     void setAdditionalItems( const QStringList &items );
 %Docstring
-Sets a list of additional (non map layer) items to include at the end of the model.
-These may represent additional layers such as layers which are not included in the active project,
-or paths to layers which have not yet been loaded into QGIS.
+Sets a list of additional (non map layer) items to include at the end of
+the model. These may represent additional layers such as layers which
+are not included in the active project, or paths to layers which have
+not yet been loaded into QGIS.
 
 .. seealso:: :py:func:`additionalItems`
 %End
 
     QStringList additionalItems() const;
 %Docstring
-Returns the list of additional (non map layer) items included at the end of the model.
+Returns the list of additional (non map layer) items included at the end
+of the model.
 
 .. seealso:: :py:func:`setAdditionalItems`
 %End
@@ -164,8 +173,8 @@ Returns the list of additional (non map layer) items included at the end of the 
 %Docstring
 Sets a list of additional ``layers`` to include in the model.
 
-This method allows adding additional layers, which are not part of a project's
-layers, into the model.
+This method allows adding additional layers, which are not part of a
+project's layers, into the model.
 
 .. seealso:: :py:func:`additionalLayers`
 

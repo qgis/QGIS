@@ -13,7 +13,7 @@
 class QgsPointCloudLayer3DRenderer : QgsAbstractPointCloud3DRenderer
 {
 %Docstring(signature="appended")
-3D renderer that renders all points from a point cloud layer
+3D renderer that renders all points from a point cloud layer.
 
 .. versionadded:: 3.18
 %End
@@ -43,8 +43,8 @@ Returns point cloud layer associated with the renderer
 
     void setSymbol( QgsPointCloud3DSymbol *symbol /Transfer/ );
 %Docstring
-Sets the 3D ``symbol`` associated with the renderer.
-Ownership of ``symbol`` is transferred to the renderer.
+Sets the 3D ``symbol`` associated with the renderer. Ownership of
+``symbol`` is transferred to the renderer.
 
 .. seealso:: :py:func:`symbol`
 %End
@@ -71,7 +71,8 @@ Larger values result in a faster render with less points rendered.
 
     void setMaximumScreenError( double error );
 %Docstring
-Sets the maximum screen ``error`` allowed when rendering the point cloud.
+Sets the maximum screen ``error`` allowed when rendering the point
+cloud.
 
 Larger values result in a faster render with less points rendered.
 
@@ -80,14 +81,16 @@ Larger values result in a faster render with less points rendered.
 
     bool showBoundingBoxes() const;
 %Docstring
-Returns whether bounding boxes will be visible when rendering the point cloud.
+Returns whether bounding boxes will be visible when rendering the point
+cloud.
 
 .. seealso:: :py:func:`setShowBoundingBoxes`
 %End
 
     void setShowBoundingBoxes( bool showBoundingBoxes );
 %Docstring
-Sets whether bounding boxes will be visible when rendering the point cloud.
+Sets whether bounding boxes will be visible when rendering the point
+cloud.
 
 .. seealso:: :py:func:`showBoundingBoxes`
 %End

@@ -45,7 +45,7 @@ class QFile;
 
 /**
  * \ingroup core
- * \brief QgsLogger is a class to print debug/warning/error messages to the console.
+ * \brief Responsible for printing debug/warning/error messages to the console.
  *
  * The advantage of this class over iostream & co. is that the
  * output can be controlled with environment variables:
@@ -135,6 +135,7 @@ class CORE_EXPORT QgsLogger
 
 /**
  * \ingroup core
+ * \brief Logs the location of the call.
  */
 class CORE_EXPORT QgsScopeLogger // clazy:exclude=rule-of-three
 {

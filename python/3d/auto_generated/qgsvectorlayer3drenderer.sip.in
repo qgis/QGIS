@@ -14,7 +14,8 @@
 class QgsVectorLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
 {
 %Docstring(signature="appended")
-Metadata for vector layer 3D renderer to allow creation of its instances from XML.
+Metadata for vector layer 3D renderer to allow creation of its instances
+from XML.
 
 .. warning::
 
@@ -31,7 +32,8 @@ Metadata for vector layer 3D renderer to allow creation of its instances from XM
     virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
 
 %Docstring
-Creates an instance of a 3D renderer based on a DOM element with renderer configuration
+Creates an instance of a 3D renderer based on a DOM element with
+renderer configuration
 %End
 };
 
@@ -39,7 +41,9 @@ Creates an instance of a 3D renderer based on a DOM element with renderer config
 class QgsVectorLayer3DRenderer : QgsAbstractVectorLayer3DRenderer
 {
 %Docstring(signature="appended")
-3D renderer that renders all features of a vector layer with the same 3D symbol.
+3D renderer that renders all features of a vector layer with the same 3D
+symbol.
+
 The appearance is completely defined by the symbol.
 %End
 
@@ -54,7 +58,8 @@ Takes ownership of the symbol object
 
     void setSymbol( QgsAbstract3DSymbol *symbol /Transfer/ );
 %Docstring
-Sets 3D symbol associated with the renderer. Takes ownership of the symbol
+Sets 3D symbol associated with the renderer. Takes ownership of the
+symbol
 %End
     const QgsAbstract3DSymbol *symbol() const;
 %Docstring

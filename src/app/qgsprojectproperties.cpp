@@ -437,6 +437,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mDistanceUnitsCombo->setCurrentIndex( mDistanceUnitsCombo->findData( static_cast<int>( QgsProject::instance()->distanceUnits() ) ) );
   mAreaUnitsCombo->setCurrentIndex( mAreaUnitsCombo->findData( static_cast<int>( QgsProject::instance()->areaUnits() ) ) );
 
+  mScaleMethodWidget->setScaleMethod( QgsProject::instance()->scaleMethod() );
+
   //get the color selections and set the button color accordingly
   int myRedInt = settings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
   int myGreenInt = settings.value( QStringLiteral( "qgis/default_selection_color_green" ), 255 ).toInt();
@@ -1278,6 +1280,8 @@ void QgsProjectProperties::apply()
 
   const Qgis::AreaUnit areaUnits = static_cast<Qgis::AreaUnit>( mAreaUnitsCombo->currentData().toInt() );
   QgsProject::instance()->setAreaUnits( areaUnits );
+
+  QgsProject::instance()->setScaleMethod( mScaleMethodWidget->scaleMethod() );
 
   QgsProject::instance()->setFilePathStorage( static_cast<Qgis::FilePathType>( cbxAbsolutePath->currentData().toInt() ) );
 
@@ -2417,7 +2421,7 @@ void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
   {
     // calculate top, left and scale based on CRS bounds
     QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr );
-    QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), crs, QgsProject::instance() );
+    QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() ), crs, QgsProject::instance() );
     crsTransform.setBallparkTransformsAreAppropriate( true );
     try
     {
@@ -2486,7 +2490,7 @@ void QgsProjectProperties::populateEllipsoidList()
   //
   EllipsoidDefs myItem;
 
-  myItem.acronym = geoNone();
+  myItem.acronym = Qgis::geoNone();
   myItem.description = tr( GEO_NONE_DESC );
   myItem.semiMajor = 0.0;
   myItem.semiMinor = 0.0;
@@ -2559,7 +2563,7 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
     leSemiMajor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Custom" ) ) );
     leSemiMinor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Custom" ) ) );
   }
-  if ( mEllipsoidList[mEllipsoidIndex].acronym != geoNone() )
+  if ( mEllipsoidList[mEllipsoidIndex].acronym != Qgis::geoNone() )
   {
     leSemiMajor->setText( QLocale().toString( myMajor, 'f', 3 ) );
     leSemiMinor->setText( QLocale().toString( myMinor, 'f', 3 ) );

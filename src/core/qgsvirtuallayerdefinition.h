@@ -23,7 +23,7 @@ email                : hugo dot mercier at oslandia dot com
 
 /**
  * \ingroup core
- * \brief Class to manipulate the definition of a virtual layer
+ * \brief Manipulates the definition of a virtual layer.
  *
  * It is used to extract parameters from an initial virtual layer definition as well as
  * to store the complete, expanded definition once types have been detected.
@@ -34,8 +34,8 @@ class CORE_EXPORT QgsVirtualLayerDefinition
 
     /**
      * \ingroup core
-     * \brief A SourceLayer is either a reference to a live layer in the registry
-     * or all the parameters needed to load it (provider key, source, etc.)
+     * \brief Either a reference to a live layer in the registry
+     * or all the parameters needed to load it (provider key, source, etc.).
      */
     class CORE_EXPORT SourceLayer
     {

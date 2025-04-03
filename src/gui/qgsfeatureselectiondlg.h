@@ -33,6 +33,7 @@ class QgsVectorLayerSelectionManager;
 /**
  * \ingroup gui
  * \class QgsFeatureSelectionDlg
+ * \brief A dialog for selecting features from a vector layer.
  */
 class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeatureSelectionDlg
 {

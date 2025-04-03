@@ -125,6 +125,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( Qgis::AreaUnit areaUnits READ areaUnits WRITE setAreaUnits NOTIFY areaUnitsChanged )
     Q_PROPERTY( QgsProjectDisplaySettings *displaySettings READ displaySettings CONSTANT )
     Q_PROPERTY( Qgis::TransactionMode transactionMode READ transactionMode WRITE setTransactionMode NOTIFY transactionModeChanged )
+    Q_PROPERTY( Qgis::ScaleCalculationMethod scaleMethod READ scaleMethod WRITE setScaleMethod NOTIFY scaleMethodChanged )
 
   public:
 
@@ -788,6 +789,24 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see setDistanceUnits()
      */
     void setAreaUnits( Qgis::AreaUnit unit );
+
+    /**
+     * Returns the method to use for map scale calculations for the project.
+     *
+     * \see setScaleMethod()
+     * \see scaleMethodChanged()
+     * \since QGIS 3.44
+     */
+    Qgis::ScaleCalculationMethod scaleMethod() const { return mScaleMethod; }
+
+    /**
+     * Sets the \a method to use for map scale calculations for the project.
+     *
+     * \see scaleMethod()
+     * \see scaleMethodChanged()
+     * \since QGIS 3.44
+     */
+    void setScaleMethod( Qgis::ScaleCalculationMethod method );
 
     /**
      * Returns the project's home path. This will either be a manually set home path
@@ -1922,6 +1941,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void areaUnitsChanged();
 
     /**
+     * Emitted when the project's scale method is changed.
+     *
+     * \see scaleMethod()
+     * \see setScaleMethod()
+     * \since QGIS 3.44
+     */
+    void scaleMethodChanged();
+
+    /**
      * Emitted when the project transformContext() is changed.
      *
      * \see transformContext()
@@ -2458,6 +2486,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     Qgis::DistanceUnit mDistanceUnits = Qgis::DistanceUnit::Meters;
     Qgis::AreaUnit mAreaUnits = Qgis::AreaUnit::SquareMeters;
+    Qgis::ScaleCalculationMethod mScaleMethod = Qgis::ScaleCalculationMethod::HorizontalMiddle;
 
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     Qgis::TransactionMode mTransactionMode = Qgis::TransactionMode::Disabled; // transaction grouped editing

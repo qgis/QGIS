@@ -299,7 +299,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
   if ( axisSymbolNodes.count() > 0 )
   {
     const QDomElement axisSymbolElem = axisSymbolNodes.at( 0 ).toElement().firstChildElement();
-    mAxisLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( axisSymbolElem, context ) );
+    mAxisLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( axisSymbolElem, context );
   }
   else
   {
@@ -820,7 +820,7 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, c
       const QDomElement sizeLegendSymbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
       if ( !sizeLegendSymbolElem.isNull() && sizeLegendSymbolElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "sizeSymbol" ) )
       {
-        mDataDefinedSizeLegend->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( sizeLegendSymbolElem, context ) );
+        mDataDefinedSizeLegend->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( sizeLegendSymbolElem, context ).release() );
       }
     }
     else
@@ -1333,7 +1333,7 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
   if ( mDataDefinedSizeLegend && mDiagram )
   {
     // add size legend
-    QgsMarkerSymbol *legendSymbol = mDataDefinedSizeLegend->symbol() ? mDataDefinedSizeLegend->symbol()->clone() : QgsMarkerSymbol::createSimple( QVariantMap() );
+    QgsMarkerSymbol *legendSymbol = mDataDefinedSizeLegend->symbol() ? mDataDefinedSizeLegend->symbol()->clone() : QgsMarkerSymbol::createSimple( QVariantMap() ).release();
     legendSymbol->setSizeUnit( mSettings.sizeType );
     legendSymbol->setSizeMapUnitScale( mSettings.sizeScale );
 

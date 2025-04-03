@@ -10,7 +10,8 @@
 class QgsServerStaticHandler : QgsServerOgcApiHandler
 {
 %Docstring(signature="appended")
-The :py:class:`QgsServerStaticHandler` class serves static files from the static path (resources/server/api/wfs3/static)
+Serves static files from the static path
+(resources/server/api/wfs3/static).
 
 .. seealso:: :py:func:`QgsServerOgcApiHandler.staticPath`
 
@@ -25,9 +26,13 @@ The :py:class:`QgsServerStaticHandler` class serves static files from the static
 %Docstring
 Creates QgsServerStaticHandler
 
-:param pathRegExp: optional regular expression to capture static file names, defaults to "/static/(?<staticFilePath>.*)$",
-                   note that the file path is captured in a named group "staticFilePath"
-:param staticPathSuffix: optional path suffix to use when static files are stored in a subdirectory of the default :py:func:`~QgsServerStaticHandler.staticPath`
+:param pathRegExp: optional regular expression to capture static file
+                   names, defaults to "/static/(?<staticFilePath>.*)$",
+                   note that the file path is captured in a named group
+                   "staticFilePath"
+:param staticPathSuffix: optional path suffix to use when static files
+                         are stored in a subdirectory of the default
+                         :py:func:`~QgsServerStaticHandler.staticPath`
 
 .. seealso:: :py:func:`QgsServerOgcApiHandler.staticPath`
 %End

@@ -13,10 +13,10 @@ class QgsQueryBuilder : QgsSubsetStringEditorInterface
 Query Builder for layers.
 
 The query builder allows interactive creation of a SQL for limiting the
-features displayed in a vector layer.  The fields in the table are
+features displayed in a vector layer. The fields in the table are
 displayed and sample values (or all values) can be viewed to aid in
-constructing the query. A test function returns the number of features that
-will be returned.
+constructing the query. A test function returns the number of features
+that will be returned.
 %End
 
 %TypeHeaderCode
@@ -92,10 +92,9 @@ Load query from the XML file
     virtual void test();
 %Docstring
 The default implementation tests that the constructed sql statement to
-see if the vector layer data provider likes it.
-The number of rows that would be returned is displayed in a message box.
-The test uses a "select count(*) from ..." query to test the SQL
-statement.
+see if the vector layer data provider likes it. The number of rows that
+would be returned is displayed in a message box. The test uses a "select
+count(*) from ..." query to test the SQL statement.
 %End
 
     void saveQuery();

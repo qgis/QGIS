@@ -13,8 +13,10 @@
 class QgsMapUnitScaleWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A widget which allows the user to choose the minimum and maximum scale of an object in map units
-and millimeters. This widget is designed to allow users to edit the properties of a
+A widget which allows the user to choose the minimum and maximum scale
+of an object in map units and millimeters.
+
+This widget is designed to allow users to edit the properties of a
 :py:class:`QgsMapUnitScale` object.
 
 .. seealso:: :py:class:`QgsMapUnitScaleDialog`
@@ -35,8 +37,8 @@ Constructor for QgsMapUnitScaleWidget.
 
     QgsMapUnitScale mapUnitScale() const;
 %Docstring
-Returns a :py:class:`QgsMapUnitScale` representing the settings shown in the
-widget.
+Returns a :py:class:`QgsMapUnitScale` representing the settings shown in
+the widget.
 
 .. seealso:: :py:func:`setMapUnitScale`
 
@@ -57,8 +59,8 @@ Updates the widget to reflect the settings from the specified
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
-Sets the map canvas associated with the widget. This allows the
-widget to retrieve the current map scale from the canvas.
+Sets the map canvas associated with the widget. This allows the widget
+to retrieve the current map scale from the canvas.
 
 :param canvas: map canvas
 %End
@@ -69,7 +71,8 @@ widget to retrieve the current map scale from the canvas.
 %Docstring
 Emitted when the settings in the widget are modified.
 
-:param scale: :py:class:`QgsMapUnitScale` reflecting new settings from the widget
+:param scale: :py:class:`QgsMapUnitScale` reflecting new settings from
+              the widget
 %End
 
 };
@@ -77,8 +80,10 @@ Emitted when the settings in the widget are modified.
 class QgsMapUnitScaleDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allows the user to choose the minimum and maximum scale of an object in map units
-and millimeters. This dialog is designed to allow users to edit the properties of a
+A dialog which allows the user to choose the minimum and maximum scale
+of an object in map units and millimeters.
+
+This dialog is designed to allow users to edit the properties of a
 :py:class:`QgsMapUnitScale` object.
 
 .. seealso:: :py:class:`QgsMapUnitScaleWidget`
@@ -99,8 +104,8 @@ Constructor for QgsMapUnitScaleDialog.
 
     QgsMapUnitScale getMapUnitScale() const;
 %Docstring
-Returns a :py:class:`QgsMapUnitScale` representing the settings shown in the
-dialog.
+Returns a :py:class:`QgsMapUnitScale` representing the settings shown in
+the dialog.
 
 .. seealso:: :py:func:`setMapUnitScale`
 %End
@@ -117,8 +122,8 @@ Updates the dialog to reflect the settings from the specified
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
-Sets the map canvas associated with the dialog. This allows the dialog to retrieve the current
-map scale from the canvas.
+Sets the map canvas associated with the dialog. This allows the dialog
+to retrieve the current map scale from the canvas.
 
 :param canvas: map canvas
 %End
@@ -128,10 +133,11 @@ map scale from the canvas.
 class QgsUnitSelectionWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget displaying a combobox allowing the user to choose between various display units,
-such as millimeters or map units.
+A widget displaying a combobox allowing the user to choose between
+various display units, such as millimeters or map units.
 
-If the user chooses map units, a button appears allowing adjustment of minimum and maximum scaling.
+If the user chooses map units, a button appears allowing adjustment of
+minimum and maximum scaling.
 
 .. seealso:: :py:class:`QgsMapUnitScaleWidget`
 
@@ -154,12 +160,14 @@ Constructor for QgsUnitSelectionWidget.
 Sets the units which the user can choose from in the combobox.
 
 :param units: list of strings for custom units to display in the widget
-:param mapUnitIdx: specifies which entry corresponds to the map units, or -1 if none
+:param mapUnitIdx: specifies which entry corresponds to the map units,
+                   or -1 if none
 %End
 
     void setUnits( const QgsUnitTypes::RenderUnitList &units );
 %Docstring
-Sets the units which the user can choose from in the combobox. Clears any existing units.
+Sets the units which the user can choose from in the combobox. Clears
+any existing units.
 
 :param units: list of valid units
 %End
@@ -173,7 +181,9 @@ Gets the selected unit index
 %Docstring
 Returns the current predefined selected unit (if applicable).
 
-:return: selected output unit, or :py:class:`QgsUnitTypes`.RenderUnknownUnit if the widget was populated with custom unit types
+:return: selected output unit, or
+         :py:class:`QgsUnitTypes`.RenderUnknownUnit if the widget was
+         populated with custom unit types
 %End
 
     void setUnit( int unitIndex ) /PyName=setUnitIndex/;
@@ -181,6 +191,7 @@ Returns the current predefined selected unit (if applicable).
 Sets the selected unit index
 
 :param unitIndex: index of unit to set as current
+
 
 %End
 
@@ -203,15 +214,16 @@ Sets the map unit scale
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
-Sets the map canvas associated with the widget. This allows the widget to retrieve the current
-map scale from the canvas.
+Sets the map canvas associated with the widget. This allows the widget
+to retrieve the current map scale from the canvas.
 
 :param canvas: map canvas
 %End
 
     bool showMapScaleButton() const;
 %Docstring
-Returns ``True`` if the widget can show the map scale button when the Map Units option is selected.
+Returns ``True`` if the widget can show the map scale button when the
+Map Units option is selected.
 
 .. seealso:: :py:func:`setShowMapScaleButton`
 
@@ -220,7 +232,8 @@ Returns ``True`` if the widget can show the map scale button when the Map Units 
 
     void setShowMapScaleButton( bool show );
 %Docstring
-Sets whether the widget can show the map scale button when the Map Units option is selected.
+Sets whether the widget can show the map scale button when the Map Units
+option is selected.
 
 .. seealso:: :py:func:`showMapScaleButton`
 
@@ -231,7 +244,8 @@ Sets whether the widget can show the map scale button when the Map Units option 
 
     void changed();
 %Docstring
-Emitted when the selected unit is changed, or the definition of the map unit scale is changed.
+Emitted when the selected unit is changed, or the definition of the map
+unit scale is changed.
 %End
 
 };

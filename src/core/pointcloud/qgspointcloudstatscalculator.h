@@ -41,7 +41,7 @@ class QgsFeedback;
  * \ingroup core
  * \class QgsPointCloudStatsCalculator
  *
- * \brief Class used to calculate statistics of a point cloud dataset.
+ * \brief Calculates statistics of a point cloud dataset.
  *
  * \since QGIS 3.26
  */

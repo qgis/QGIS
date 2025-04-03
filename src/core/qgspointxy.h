@@ -34,7 +34,7 @@ class QgsPoint;
 
 /**
  * \ingroup core
- * \brief A class to represent a 2D point.
+ * \brief Represents a 2D point.
  *
  * A QgsPointXY represents a strictly 2-dimensional position, with only X and Y coordinates.
  * This is a very lightweight class, designed to minimize the memory requirements of storing
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsPointXY
     }
 
     //! Returns the minimum distance between this point and a segment
-    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint SIP_OUT, double epsilon = DEFAULT_SEGMENT_EPSILON ) const SIP_HOLDGIL;
+    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint SIP_OUT, double epsilon = Qgis::DEFAULT_SEGMENT_EPSILON ) const SIP_HOLDGIL;
 
     //! Calculates azimuth between this point and other one (clockwise in degree, starting from north)
     double azimuth( const QgsPointXY &other ) const SIP_HOLDGIL;

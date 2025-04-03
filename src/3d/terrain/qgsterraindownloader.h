@@ -32,7 +32,7 @@ class QgsCoordinateTransformContext;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Takes care of downloading terrain data from a publicly available data source.
  *
  * Currently using terrain tiles in Terrarium format hosted on AWS. More info:

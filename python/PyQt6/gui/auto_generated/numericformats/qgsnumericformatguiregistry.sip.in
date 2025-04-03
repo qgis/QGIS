@@ -13,7 +13,8 @@
 class QgsNumericFormatConfigurationWidgetFactory
 {
 %Docstring(signature="appended")
-Interface base class for factories for numeric format configuration widgets.
+Interface base class for factories for numeric format configuration
+widgets.
 
 .. versionadded:: 3.12
 %End
@@ -33,9 +34,11 @@ Create a new configuration widget for a format.
 class QgsNumericFormatGuiRegistry
 {
 %Docstring(signature="appended")
-The :py:class:`QgsNumericFormatGuiRegistry` is a home for widgets for configuring :py:class:`QgsNumericFormat` objects.
+A registry for widgets which configure :py:class:`QgsNumericFormat`
+objects.
 
-:py:class:`QgsNumericFormatGuiRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsNumericFormatGuiRegistry` is not usually directly created,
+but rather accessed through
 :py:func:`QgsGui.numericFormatGuiRegistry()`.
 
 .. versionadded:: 3.12
@@ -47,28 +50,31 @@ The :py:class:`QgsNumericFormatGuiRegistry` is a home for widgets for configurin
   public:
     QgsNumericFormatGuiRegistry();
 %Docstring
-Constructor. Should never be called manually, is already
-created by :py:class:`QgsGui`.
+Constructor. Should never be called manually, is already created by
+:py:class:`QgsGui`.
 %End
     ~QgsNumericFormatGuiRegistry();
 
     void addFormatConfigurationWidgetFactory( const QString &id, QgsNumericFormatConfigurationWidgetFactory *factory /Transfer/ );
 %Docstring
-Add a new configuration widget factory for customizing a numeric format with the specified ``id``.
+Add a new configuration widget factory for customizing a numeric format
+with the specified ``id``.
 
 Ownership is taken by the reigstry.
 %End
 
     void removeFormatConfigurationWidgetFactory( const QString &id );
 %Docstring
-Removes the configuration widget factory for customizing numeric formats with the specified ``id``.
+Removes the configuration widget factory for customizing numeric formats
+with the specified ``id``.
 %End
 
     QgsNumericFormatWidget *formatConfigurationWidget( const QgsNumericFormat *format ) const /TransferBack/;
 %Docstring
 Returns a new configuration widget for an ``format``.
 
-Returns ``None`` if no configuration widgets are available for the specified ``format``.
+Returns ``None`` if no configuration widgets are available for the
+specified ``format``.
 %End
 
 };

@@ -21,8 +21,7 @@
 
 /**
  * \ingroup core
- * \brief QgsClassificationCustom is an implementation of QgsClassificationMethod
- * based on standard deviation
+ * \brief A classification method which classifies based on standard deviation of values.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsClassificationStandardDeviation : public QgsClassificationMethod

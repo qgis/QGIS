@@ -29,7 +29,7 @@ class QgsServerInterface;
 /**
  * \ingroup server
  * \class QgsServiceModule
- * \brief Class defining the service module interface for QGIS server services
+ * \brief Defines the service module interface for QGIS server services.
  *
  * This class acts as a service registrar for services.
  *

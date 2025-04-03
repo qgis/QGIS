@@ -13,7 +13,7 @@
 class QgsCharacterSelectorDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog for selecting a single character from a single font
+A dialog for selecting a single character from a single font.
 %End
 
 %TypeHeaderCode
@@ -26,9 +26,11 @@ A dialog for selecting a single character from a single font
 
     QChar selectCharacter( bool *gotChar, const QFont &font, const QString &style, QChar initialSelection = QChar() );
 %Docstring
-Opens the dialog modally and returns when the user has selected a character.
+Opens the dialog modally and returns when the user has selected a
+character.
 
-If ``initialSelection`` is specified, then that character will be initially selected in the dialog.
+If ``initialSelection`` is specified, then that character will be
+initially selected in the dialog.
 %End
 
   protected:

@@ -277,6 +277,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
 /**
  * \ingroup gui
  * \class QgsDataDefinedSizeDialog
+ * \brief A dialog for configuring symbol-level data defined size.
  */
 class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
 {
@@ -298,6 +299,7 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
 /**
  * \ingroup gui
  * \class QgsDataDefinedRotationDialog
+ * \brief A dialog for configuring symbol-level data defined rotation.
  */
 class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
 {
@@ -316,6 +318,7 @@ class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
 /**
  * \ingroup gui
  * \class QgsDataDefinedWidthDialog
+ * \brief A dialog for configuring symbol-level data defined width.
  */
 class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog
 {

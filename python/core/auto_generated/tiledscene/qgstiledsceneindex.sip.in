@@ -17,11 +17,11 @@ class QgsTiledSceneIndex
 %Docstring(signature="appended")
 An index for tiled scene data providers.
 
-This is a shallow copy, implicitly shared container for an underlying :py:class:`QgsAbstractTiledSceneIndex`
-implementation.
+This is a shallow copy, implicitly shared container for an underlying
+:py:class:`QgsAbstractTiledSceneIndex` implementation.
 
-The class is thread safe and can be used safely across multiple threads or transferred between
-threads.
+The class is thread safe and can be used safely across multiple threads
+or transferred between threads.
 
 .. versionadded:: 3.34
 %End
@@ -48,20 +48,22 @@ Returns the root tile for the index.
 
     QgsTiledSceneTile getTile( long long id );
 %Docstring
-Returns the tile with matching ``id``, or an invalid tile if the matching tile is not available.
+Returns the tile with matching ``id``, or an invalid tile if the
+matching tile is not available.
 %End
 
     long long parentTileId( long long id ) const;
 %Docstring
-Returns the tile ID of the parent tile of the tile with matching ``id``, or -1
-if the tile has no parent.
+Returns the tile ID of the parent tile of the tile with matching ``id``,
+or -1 if the tile has no parent.
 
 .. seealso:: :py:func:`childTileIds`
 %End
 
     QVector< long long > childTileIds( long long id ) const;
 %Docstring
-Returns a list of the tile IDs of any children for the tile with matching ``id``.
+Returns a list of the tile IDs of any children for the tile with
+matching ``id``.
 
 .. seealso:: :py:func:`parentTileId`
 %End
@@ -82,7 +84,8 @@ Returns the availability for a tile's children.
 
     bool fetchHierarchy( long long id, QgsFeedback *feedback = 0 );
 %Docstring
-Populates the tile with the given ``id`` by fetching any sub datasets attached to the tile.
+Populates the tile with the given ``id`` by fetching any sub datasets
+attached to the tile.
 
 Blocks while the child fetching is in progress.
 
@@ -95,9 +98,11 @@ Returns ``True`` if the population was successful.
 %Docstring
 Retrieves index content for the specified ``uri``.
 
-The content is cached within the index, so multiple calls are potentially cost-free.
+The content is cached within the index, so multiple calls are
+potentially cost-free.
 
-The optional ``feedback`` argument can be used the cancel the request early.
+The optional ``feedback`` argument can be used the cancel the request
+early.
 %End
 
 };

@@ -59,8 +59,9 @@ An abstract base class for :py:class:`QgsReport` subsections.
 
     QgsAbstractReportSection( QgsAbstractReportSection *parentSection = 0 );
 %Docstring
-Constructor for QgsAbstractReportSection, attached to the specified ``parent`` section.
-Note that ownership is not transferred to ``parent``.
+Constructor for QgsAbstractReportSection, attached to the specified
+``parent`` section. Note that ownership is not transferred to
+``parent``.
 %End
 
     ~QgsAbstractReportSection();
@@ -85,8 +86,9 @@ Returns an icon representing the section.
 Clones the report section. Ownership of the returned section is
 transferred to the caller.
 
-Subclasses should call :py:func:`~QgsAbstractReportSection.copyCommonProperties` in their :py:func:`~QgsAbstractReportSection.clone`
-implementations.
+Subclasses should call
+:py:func:`~QgsAbstractReportSection.copyCommonProperties` in their
+:py:func:`~QgsAbstractReportSection.clone` implementations.
 %End
 
     QgsAbstractReportSection *parentSection();
@@ -119,26 +121,26 @@ Resets the section, ready for a new iteration.
 
     virtual bool prepareHeader();
 %Docstring
-Called just before rendering the section's header. Should return ``True`` if the header
-is to be included for this section, or ``False`` to skip the header for the current
-section.
+Called just before rendering the section's header. Should return
+``True`` if the header is to be included for this section, or ``False``
+to skip the header for the current section.
 
 .. seealso:: :py:func:`prepareFooter`
 %End
 
     virtual bool prepareFooter();
 %Docstring
-Called just before rendering the section's footer. Should return ``True`` if the footer
-is to be included for this section, or ``False`` to skip the footerfor the current
-section.
+Called just before rendering the section's footer. Should return
+``True`` if the footer is to be included for this section, or ``False``
+to skip the footerfor the current section.
 
 .. seealso:: :py:func:`prepareHeader`
 %End
 
     virtual QgsLayout *nextBody( bool &ok /Out/ );
 %Docstring
-Returns the next body layout to export, or ``None`` if
-no body layout is required this iteration.
+Returns the next body layout to export, or ``None`` if no body layout is
+required this iteration.
 
 ``ok`` will be set to ``False`` if no bodies remain for this section.
 %End
@@ -168,7 +170,8 @@ Sets whether the header for the section is ``enabled``.
     QgsLayout *header();
 %Docstring
 Returns the header for the section. Note that the header is only
-included if :py:func:`~QgsAbstractReportSection.headerEnabled` is ``True``.
+included if :py:func:`~QgsAbstractReportSection.headerEnabled` is
+``True``.
 
 .. seealso:: :py:func:`setHeaderEnabled`
 
@@ -180,8 +183,8 @@ included if :py:func:`~QgsAbstractReportSection.headerEnabled` is ``True``.
     void setHeader( QgsLayout *header /Transfer/ );
 %Docstring
 Sets the ``header`` for the section. Note that the header is only
-included if :py:func:`~QgsAbstractReportSection.headerEnabled` is ``True``. Ownership of ``header``
-is transferred to the report section.
+included if :py:func:`~QgsAbstractReportSection.headerEnabled` is
+``True``. Ownership of ``header`` is transferred to the report section.
 
 .. seealso:: :py:func:`setHeaderEnabled`
 
@@ -215,7 +218,8 @@ Sets whether the footer for the section is ``enabled``.
     QgsLayout *footer();
 %Docstring
 Returns the footer for the section. Note that the footer is only
-included if :py:func:`~QgsAbstractReportSection.footerEnabled` is ``True``.
+included if :py:func:`~QgsAbstractReportSection.footerEnabled` is
+``True``.
 
 .. seealso:: :py:func:`setFooterEnabled`
 
@@ -227,8 +231,8 @@ included if :py:func:`~QgsAbstractReportSection.footerEnabled` is ``True``.
     void setFooter( QgsLayout *footer /Transfer/ );
 %Docstring
 Sets the ``footer`` for the section. Note that the footer is only
-included if :py:func:`~QgsAbstractReportSection.footerEnabled` is ``True``. Ownership of ``footer``
-is transferred to the report section.
+included if :py:func:`~QgsAbstractReportSection.footerEnabled` is
+``True``. Ownership of ``footer`` is transferred to the report section.
 
 .. seealso:: :py:func:`setFooterEnabled`
 
@@ -252,8 +256,8 @@ Returns the row number of the section within it's parent section.
 
     QList< QgsAbstractReportSection * > childSections() const;
 %Docstring
-Returns all child sections for this report section. The child
-sections form the body of the report section.
+Returns all child sections for this report section. The child sections
+form the body of the report section.
 
 .. seealso:: :py:func:`childCount`
 
@@ -275,7 +279,8 @@ Returns the child section at the specified ``index``.
 
     void appendChild( QgsAbstractReportSection *section /Transfer/ );
 %Docstring
-Adds a child ``section``, transferring ownership of the section to this section.
+Adds a child ``section``, transferring ownership of the section to this
+section.
 
 .. seealso:: :py:func:`children`
 
@@ -284,7 +289,8 @@ Adds a child ``section``, transferring ownership of the section to this section.
 
     void insertChild( int index, QgsAbstractReportSection *section /Transfer/ );
 %Docstring
-Inserts a child ``section`` at the specified ``index``, transferring ownership of the section to this section.
+Inserts a child ``section`` at the specified ``index``, transferring
+ownership of the section to this section.
 
 .. seealso:: :py:func:`children`
 
@@ -340,11 +346,11 @@ Refreshes the section when global layout related options change.
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
-with the report.
+Accepts the specified style entity ``visitor``, causing it to visit all
+style entities associated with the report.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
 %End
@@ -362,8 +368,9 @@ should be canceled.
 
     void copyCommonProperties( QgsAbstractReportSection *destination ) const;
 %Docstring
-Copies the common properties of a report section to a ``destination`` section.
-This method should be called from :py:func:`~QgsAbstractReportSection.clone` implementations.
+Copies the common properties of a report section to a ``destination``
+section. This method should be called from
+:py:func:`~QgsAbstractReportSection.clone` implementations.
 %End
 
     virtual void setParentSection( QgsAbstractReportSection *parent );

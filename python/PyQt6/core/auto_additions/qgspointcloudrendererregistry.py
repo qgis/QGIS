@@ -6,10 +6,12 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsPointCloudRendererAbstractMetadata.__abstract_methods__ = ['createRenderer']
     QgsPointCloudRendererAbstractMetadata.__group__ = ['pointcloud']
 except (NameError, AttributeError):
     pass
 try:
+    QgsPointCloudRendererMetadata.__overridden_methods__ = ['createRenderer']
     QgsPointCloudRendererMetadata.__group__ = ['pointcloud']
 except (NameError, AttributeError):
     pass

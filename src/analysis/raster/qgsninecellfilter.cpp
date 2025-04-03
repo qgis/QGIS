@@ -33,7 +33,6 @@
 #include <QFileInfo>
 #include <iterator>
 
-
 QgsNineCellFilter::QgsNineCellFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
   : mInputFile( inputFile )
   , mOutputFile( outputFile )
@@ -129,8 +128,9 @@ gdal::dataset_unique_ptr QgsNineCellFilter::openOutputFile( GDALDatasetH inputDa
   const int ySize = GDALGetRasterYSize( inputDataset );
 
   //open output file
-  char **papszOptions = nullptr;
+  char **papszOptions = QgsGdalUtils::papszFromStringList( mCreationOptions );
   gdal::dataset_unique_ptr outputDataset( GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), xSize, ySize, 1, GDT_Float32, papszOptions ) );
+  CSLDestroy( papszOptions );
   if ( !outputDataset )
   {
     return outputDataset;
@@ -203,9 +203,8 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   {
     return 5;
   }
-  //try to set -9999 as nodata value
-  GDALSetRasterNoDataValue( outputRasterBand, -9999 );
-  mOutputNodataValue = GDALGetRasterNoDataValue( outputRasterBand, nullptr );
+  // set nodata value
+  GDALSetRasterNoDataValue( outputRasterBand, mOutputNodataValue );
 
   if ( ySize < 3 ) //we require at least three rows (should be true for most datasets)
   {
@@ -378,9 +377,8 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
   {
     return 5;
   }
-  //try to set -9999 as nodata value
-  GDALSetRasterNoDataValue( outputRasterBand, -9999 );
-  mOutputNodataValue = GDALGetRasterNoDataValue( outputRasterBand, nullptr );
+  // set nodata value
+  GDALSetRasterNoDataValue( outputRasterBand, mOutputNodataValue );
 
   if ( ySize < 3 ) //we require at least three rows (should be true for most datasets)
   {

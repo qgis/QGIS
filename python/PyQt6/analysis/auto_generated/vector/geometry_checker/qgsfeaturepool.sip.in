@@ -36,9 +36,10 @@ Must be created on the same thread as ``layer``.
 
     bool getFeature( QgsFeatureId id, QgsFeature &feature );
 %Docstring
-Retrieves the feature with the specified ``id`` into ``feature``.
-It will be retrieved from the cache or from the underlying feature source if unavailable.
-If the feature is neither available from the cache nor from the source it will return ``False``.
+Retrieves the feature with the specified ``id`` into ``feature``. It
+will be retrieved from the cache or from the underlying feature source
+if unavailable. If the feature is neither available from the cache nor
+from the source it will return ``False``.
 
 .. note::
 
@@ -49,8 +50,8 @@ If the feature is neither available from the cache nor from the source it will r
 
     virtual void updateFeature( QgsFeature &feature ) = 0;
 %Docstring
-Updates a feature in this pool.
-Implementations will update the feature on the layer or on the data provider.
+Updates a feature in this pool. Implementations will update the feature
+on the layer or on the data provider.
 
 .. warning::
 
@@ -61,8 +62,8 @@ Implementations will update the feature on the layer or on the data provider.
 
     virtual void deleteFeature( QgsFeatureId fid ) = 0;
 %Docstring
-Removes a feature from this pool.
-Implementations will remove the feature from the layer or from the data provider.
+Removes a feature from this pool. Implementations will remove the
+feature from the layer or from the data provider.
 
 .. warning::
 
@@ -75,8 +76,8 @@ Implementations will remove the feature from the layer or from the data provider
 
     QgsVectorLayer *layer() const;
 %Docstring
-Gets a pointer to the underlying layer.
-May return a ````None```` if the layer has been deleted.
+Gets a pointer to the underlying layer. May return a ````None```` if the
+layer has been deleted.
 
 .. warning::
 
@@ -103,15 +104,15 @@ The coordinate reference system of this layer.
 %Docstring
 Returns the name of the layer.
 
-Should be preferred over :py:func:`~QgsFeaturePool.layer`.name() because it can directly be run on
-the background thread.
+Should be preferred over :py:func:`~QgsFeaturePool.layer`.name() because
+it can directly be run on the background thread.
 %End
 
   protected:
     void insertFeature( const QgsFeature &feature, bool skipLock = false );
 %Docstring
-Inserts a feature into the cache and the spatial index.
-To be used by implementations of ``addFeature``.
+Inserts a feature into the cache and the spatial index. To be used by
+implementations of ``addFeature``.
 
 .. note::
 
@@ -121,8 +122,8 @@ To be used by implementations of ``addFeature``.
 
     void refreshCache( QgsFeature feature, const QgsFeature &origFeature );
 %Docstring
-Changes a feature in the cache and the spatial index.
-To be used by implementations of ``updateFeature``.
+Changes a feature in the cache and the spatial index. To be used by
+implementations of ``updateFeature``.
 
 :param feature: the new feature to put in the cache and index
 :param origFeature: the original feature to remove from the index
@@ -137,8 +138,8 @@ To be used by implementations of ``updateFeature``.
 
     void removeFeature( const QgsFeatureId featureId );
 %Docstring
-Removes a feature from the cache and the spatial index.
-To be used by implementations of ``deleteFeature``.
+Removes a feature from the cache and the spatial index. To be used by
+implementations of ``deleteFeature``.
 
 .. note::
 

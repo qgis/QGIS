@@ -22,8 +22,8 @@
 
 QgsTiledSceneWireframeRenderer::QgsTiledSceneWireframeRenderer()
 {
-  mFillSymbol.reset( createDefaultFillSymbol() );
-  mLineSymbol.reset( createDefaultLineSymbol() );
+  mFillSymbol = createDefaultFillSymbol();
+  mLineSymbol = createDefaultLineSymbol();
 }
 
 QgsTiledSceneWireframeRenderer::~QgsTiledSceneWireframeRenderer() = default;
@@ -76,7 +76,7 @@ QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::create( QDomElement &elem
   return r.release();
 }
 
-QgsFillSymbol *QgsTiledSceneWireframeRenderer::createDefaultFillSymbol()
+std::unique_ptr< QgsFillSymbol > QgsTiledSceneWireframeRenderer::createDefaultFillSymbol()
 {
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
@@ -99,7 +99,7 @@ void QgsTiledSceneWireframeRenderer::setFillSymbol( QgsFillSymbol *symbol )
   mFillSymbol.reset( symbol );
 }
 
-QgsLineSymbol *QgsTiledSceneWireframeRenderer::createDefaultLineSymbol()
+std::unique_ptr<QgsLineSymbol> QgsTiledSceneWireframeRenderer::createDefaultLineSymbol()
 {
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "red" ) );

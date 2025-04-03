@@ -91,9 +91,9 @@ bool QgsPlotAxis::readXml( const QDomElement &element, const QgsReadWriteContext
   mNumericFormat.reset( QgsApplication::numericFormatRegistry()->createFromXml( numericFormatElement, context ) );
 
   const QDomElement gridMajorElement = element.firstChildElement( QStringLiteral( "gridMajorSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mGridMajorSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( gridMajorElement, context ) );
+  mGridMajorSymbol = QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( gridMajorElement, context );
   const QDomElement gridMinorElement = element.firstChildElement( QStringLiteral( "gridMinorSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mGridMinorSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( gridMinorElement, context ) );
+  mGridMinorSymbol = QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( gridMinorElement, context );
 
   const QDomElement textFormatElement = element.firstChildElement( QStringLiteral( "textFormat" ) );
   mLabelTextFormat.readXml( textFormatElement, context );
@@ -217,9 +217,9 @@ bool Qgs2DPlot::readXml( const QDomElement &element, const QgsReadWriteContext &
   mYAxis.readXml( yAxisElement, context );
 
   const QDomElement backgroundElement = element.firstChildElement( QStringLiteral( "backgroundSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mChartBackgroundSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( backgroundElement, context ) );
+  mChartBackgroundSymbol = QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( backgroundElement, context );
   const QDomElement borderElement = element.firstChildElement( QStringLiteral( "borderSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mChartBorderSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( borderElement, context ) );
+  mChartBorderSymbol = QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( borderElement, context );
 
   mMargins = QgsMargins::fromString( element.attribute( QStringLiteral( "margins" ) ) );
 

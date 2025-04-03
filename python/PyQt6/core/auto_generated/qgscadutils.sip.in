@@ -14,7 +14,7 @@
 class QgsCadUtils
 {
 %Docstring(signature="appended")
-The :py:class:`QgsCadUtils` class provides routines for CAD editing.
+Provides routines for CAD editing.
 %End
 
 %TypeHeaderCode
@@ -25,7 +25,7 @@ The :py:class:`QgsCadUtils` class provides routines for CAD editing.
     class AlignMapPointConstraint
 {
 %Docstring(signature="appended")
-Structure with details of one constraint
+Structure with details of one constraint.
 %End
 
 %TypeHeaderCode
@@ -46,7 +46,7 @@ Constructor for AlignMapPointConstraint.
     class AlignMapPointOutput
 {
 %Docstring(signature="appended")
-Structure returned from :py:func:`~QgsCadUtils.alignMapPoint` method
+Structure returned from :py:func:`~QgsCadUtils.alignMapPoint` method.
 %End
 
 %TypeHeaderCode
@@ -71,7 +71,8 @@ Structure returned from :py:func:`~QgsCadUtils.alignMapPoint` method
     class AlignMapPointContext
 {
 %Docstring(signature="appended")
-Defines constraints for the :py:func:`QgsCadUtils.alignMapPoint()` method.
+Defines constraints for the :py:func:`QgsCadUtils.alignMapPoint()`
+method.
 %End
 
 %TypeHeaderCode
@@ -101,8 +102,8 @@ Defines constraints for the :py:func:`QgsCadUtils.alignMapPoint()` method.
 %Docstring
 Returns the list of recent CAD points in map coordinates.
 
-These are used to turn relative constraints to absolute. The first
-point is the most recent point.
+These are used to turn relative constraints to absolute. The first point
+is the most recent point.
 
 .. seealso:: :py:func:`setCadPoints`
 
@@ -118,7 +119,8 @@ Sets the list of recent CAD ``points`` (in map coordinates).
 %End
         void setCadPoint( int index, const QgsPoint &point );
 %Docstring
-Sets the recent CAD point at the specified ``index`` to ``point`` (in map coordinates).
+Sets the recent CAD point at the specified ``index`` to ``point`` (in
+map coordinates).
 
 .. seealso:: :py:func:`cadPoint`
 
@@ -126,7 +128,8 @@ Sets the recent CAD point at the specified ``index`` to ``point`` (in map coordi
 %End
         QgsPoint cadPoint( int index ) const;
 %Docstring
-Returns the recent CAD point at the specified ``index`` (in map coordinates).
+Returns the recent CAD point at the specified ``index`` (in map
+coordinates).
 
 .. seealso:: :py:func:`setCadPoint`
 
@@ -140,9 +143,9 @@ Returns the recent CAD point at the specified ``index`` (in map coordinates).
 
     static QgsCadUtils::AlignMapPointOutput alignMapPoint( const QgsPointXY &originalMapPoint, const QgsCadUtils::AlignMapPointContext &ctx );
 %Docstring
-Applies X/Y/angle/distance constraints from the given context to a map point.
-Returns a structure containing aligned map point, whether the constraints are valid and
-some extra information.
+Applies X/Y/angle/distance constraints from the given context to a map
+point. Returns a structure containing aligned map point, whether the
+constraints are valid and some extra information.
 %End
 
 };

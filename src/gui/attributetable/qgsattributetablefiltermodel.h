@@ -32,6 +32,7 @@ class QItemSelectionModel;
 /**
  * \ingroup gui
  * \class QgsAttributeTableFilterModel
+ * \brief A proxy model for filtering an attribute table model.
  */
 class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, public QgsFeatureModel
 {

@@ -192,7 +192,7 @@ void QgsLayoutItemPage::createDefaultPageStyleSymbol()
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
-  mPageStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+  mPageStyleSymbol = QgsFillSymbol::createSimple( properties );
 }
 
 
@@ -329,7 +329,7 @@ bool QgsLayoutItemPage::readPropertiesFromElement( const QDomElement &element, c
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
   {
-    mPageStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
+    mPageStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context );
   }
   else
   {

@@ -152,7 +152,7 @@ QMap<QString, QgsWmsLayerInfos> QgsWmsLayerInfos::buildWmsLayerInfos(
   bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
   const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
   const QgsRectangle wmsExtent = QgsServerProjectUtils::wmsExtent( *project );
-  const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+  const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() );
 
   for ( QgsMapLayer *ml : project->mapLayers() )
   {

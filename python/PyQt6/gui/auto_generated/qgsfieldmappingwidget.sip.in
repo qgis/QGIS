@@ -12,9 +12,9 @@
 class QgsFieldMappingWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsFieldMappingWidget` class creates a mapping from one set of :py:class:`QgsFields` to another,
-for each set of "destination" fields an expression defines how to obtain the values of the
-"destination" fields.
+Creates a mapping from one set of :py:class:`QgsFields` to another, for
+each set of "destination" fields an expression defines how to obtain the
+values of the "destination" fields.
 
 .. versionadded:: 3.14
 %End
@@ -31,16 +31,17 @@ for each set of "destination" fields an expression defines how to obtain the val
       const QList< QgsVectorDataProvider::NativeType > &nativeTypes = QList< QgsVectorDataProvider::NativeType >()
     );
 %Docstring
-Constructs a QgsFieldMappingWidget from a set of ``sourceFields``
-and ``destinationFields``, initial values for the expressions can be
-optionally specified through ``expressions`` which is a map from the original
-field name to the corresponding expression. A ``parent`` object
+Constructs a QgsFieldMappingWidget from a set of ``sourceFields`` and
+``destinationFields``, initial values for the expressions can be
+optionally specified through ``expressions`` which is a map from the
+original field name to the corresponding expression. A ``parent`` object
 can also be specified.
 
-Since QGIS 3.44, the ``nativeTypes`` argument can be used to specify the list of
-field types natively supported by a data provider. If this list is non-empty, then
-the destination field types will be populated accordingly. If the list is empty,
-then a set of default native types will be used instead.
+Since QGIS 3.44, the ``nativeTypes`` argument can be used to specify the
+list of field types natively supported by a data provider. If this list
+is non-empty, then the destination field types will be populated
+accordingly. If the list is empty, then a set of default native types
+will be used instead.
 %End
 
     void setDestinationEditable( bool editable );
@@ -60,20 +61,23 @@ Returns the underlying mapping model
 
     QList<QgsFieldMappingModel::Field> mapping() const;
 %Docstring
-Returns a list of Field objects representing the current status of the underlying mapping model
+Returns a list of Field objects representing the current status of the
+underlying mapping model
 %End
 
     QMap<QString, QgsProperty> fieldPropertyMap() const;
 %Docstring
-Returns a map of destination field name to :py:class:`QgsProperty` definition for field value,
-representing the current status of the widget.
+Returns a map of destination field name to :py:class:`QgsProperty`
+definition for field value, representing the current status of the
+widget.
 
 .. seealso:: :py:func:`setFieldPropertyMap`
 %End
 
     void setFieldPropertyMap( const QMap<QString, QgsProperty> &map );
 %Docstring
-Sets a map of destination field name to :py:class:`QgsProperty` definition for field value.
+Sets a map of destination field name to :py:class:`QgsProperty`
+definition for field value.
 
 .. seealso:: :py:func:`fieldPropertyMap`
 %End
@@ -90,7 +94,8 @@ Set source fields of the underlying mapping model to ``sourceFields``
 
     void setSourceLayer( QgsVectorLayer *layer );
 %Docstring
-Sets a source ``layer`` to use when generating expression previews in the widget.
+Sets a source ``layer`` to use when generating expression previews in
+the widget.
 
 .. versionadded:: 3.16
 %End
@@ -116,9 +121,9 @@ corresponding expression.
 %Docstring
 Sets the list of ``nativeTypes`` supported by a data provider.
 
-If this list is non-empty, then the destination field types will be populated
-accordingly. If the list is empty, then a set of default native types will be
-used instead.
+If this list is non-empty, then the destination field types will be
+populated accordingly. If the list is empty, then a set of default
+native types will be used instead.
 
 .. versionadded:: 3.44
 %End
@@ -130,8 +135,8 @@ Scroll the fields view to ``index``
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 %Docstring
-Register an expression context ``generator`` class that will be used to retrieve
-an expression context for the widget.
+Register an expression context ``generator`` class that will be used to
+retrieve an expression context for the widget.
 %End
 
   signals:

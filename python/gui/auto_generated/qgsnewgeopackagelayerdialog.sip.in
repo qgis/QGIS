@@ -12,7 +12,8 @@
 class QgsNewGeoPackageLayerDialog : QDialog
 {
 %Docstring(signature="appended")
-Dialog to set up parameters to create a new GeoPackage layer, and on :py:func:`~accept` to create it and add it to the layers
+Dialog to set up parameters to create a new GeoPackage layer, and on
+:py:func:`~accept` to create it and add it to the layers.
 %End
 
 %TypeHeaderCode
@@ -53,15 +54,16 @@ Sets the database path widgets to a locked and read-only mode.
 
     void setOverwriteBehavior( OverwriteBehavior behavior );
 %Docstring
-Sets the ``behavior`` to use when a path to an existing geopackage file is used.
+Sets the ``behavior`` to use when a path to an existing geopackage file
+is used.
 
 The default behavior is to prompt the user for an action to take.
 %End
 
     void setAddToProject( bool addToProject );
 %Docstring
-Sets whether a newly created layer should automatically be added to the current project.
-Defaults to ``True``.
+Sets whether a newly created layer should automatically be added to the
+current project. Defaults to ``True``.
 
 .. versionadded:: 3.6
 %End

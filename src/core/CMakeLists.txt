@@ -854,6 +854,7 @@ set(QGIS_CORE_SRCS
   mesh/qgsmeshforcebypolylines.cpp
   mesh/qgsmeshlayerlabeling.cpp
   mesh/qgsmeshlayerlabelprovider.cpp
+  mesh/qgsmeshutils.cpp
 
   pointcloud/qgspointcloudattribute.cpp
   pointcloud/qgspointcloudattributebyramprenderer.cpp
@@ -1696,6 +1697,7 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshforcebypolylines.h
   mesh/qgsmeshlayerlabeling.h
   mesh/qgsmeshlayerlabelprovider.h
+  mesh/qgsmeshutils.h
 
   painting/qgsgeometrypaintdevice.h
   painting/qgsmaskpaintdevice.h
@@ -1709,7 +1711,6 @@ set(QGIS_CORE_HDRS
   pal/internalexception.h
   pal/labelposition.h
   pal/layer.h
-  pal/palexception.h
   pal/pal.h
   pal/palrtree.h
   pal/pointset.h

@@ -81,14 +81,17 @@ QgsLocatorModel.CustomRole.__doc__ = """Custom model roles.
 # --
 QgsLocatorModel.CustomRole.baseClass = QgsLocatorModel
 try:
-    QgsLocatorModel.__group__ = ['locator']
-except (NameError, AttributeError):
-    pass
-try:
+    QgsLocatorAutomaticModel.__virtual_methods__ = ['createContext']
     QgsLocatorAutomaticModel.__group__ = ['locator']
 except (NameError, AttributeError):
     pass
 try:
+    QgsLocatorModel.__overridden_methods__ = ['rowCount', 'columnCount', 'data', 'flags', 'roleNames']
+    QgsLocatorModel.__group__ = ['locator']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsLocatorProxyModel.__overridden_methods__ = ['lessThan']
     QgsLocatorProxyModel.__group__ = ['locator']
 except (NameError, AttributeError):
     pass

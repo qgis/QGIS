@@ -20,7 +20,7 @@
 
 /**
  * \ingroup core
- * \brief Hack to workaround Qt #5114 by disabling PatternTransform
+ * \brief Hack to workaround Qt #5114 by disabling PatternTransform.
  *
  * \note This is not required for builds based on Qt 6.3 or later, or Qt 5.15 builds
  * using KDE's maintained fork. On these versions the class has no effect.

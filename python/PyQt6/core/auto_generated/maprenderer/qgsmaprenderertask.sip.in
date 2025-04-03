@@ -14,8 +14,10 @@
 class QgsMapRendererTask : QgsTask
 {
 %Docstring(signature="appended")
-:py:class:`QgsTask` task which draws a map to an image file or a painter as a background
-task. This can be used to draw maps without blocking the QGIS interface.
+:py:class:`QgsTask` task which draws a map to an image file or a painter
+as a background task.
+
+This can be used to draw maps without blocking the QGIS interface.
 %End
 
 %TypeHeaderCode
@@ -39,7 +41,8 @@ task. This can be used to draw maps without blocking the QGIS interface.
 %Docstring
 Constructor for QgsMapRendererTask to render a map to an image file.
 
-Since QGIS 3.26 the optional ``flags`` argument can be used to control the task flags.
+Since QGIS 3.26 the optional ``flags`` argument can be used to control
+the task flags.
 %End
 
     QgsMapRendererTask( const QgsMapSettings &ms,
@@ -62,12 +65,14 @@ Adds ``decorations`` to be rendered on the map.
 
     void setSaveWorldFile( bool save );
 %Docstring
-Sets whether the image file will be georeferenced (embedded or via a world file).
+Sets whether the image file will be georeferenced (embedded or via a
+world file).
 %End
 
     void setExportMetadata( bool exportMetadata );
 %Docstring
-Sets whether metadata such as title and subject will be exported whenever possible.
+Sets whether metadata such as title and subject will be exported
+whenever possible.
 %End
 
     virtual void cancel();

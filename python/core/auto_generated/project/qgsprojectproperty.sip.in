@@ -16,11 +16,13 @@
 class QgsProjectProperty
 {
 %Docstring(signature="appended")
-An Abstract Base Class for QGIS project property hierarchys.
+An abstract base class for QGIS project property hierarchys.
 
-Each sub-class is either a :py:class:`QgsProjectPropertyKey` or :py:class:`QgsProjectPropertyValue`.  :py:class:`QgsProjectPropertyKey` can
-contain either :py:class:`QgsProjectPropertyKey` or :py:class:`QgsProjectPropertyValues`, thus describing an
-hierarchy.  :py:class:`QgsProjectPropertyValues` are always graph leaves.
+Each sub-class is either a :py:class:`QgsProjectPropertyKey` or
+:py:class:`QgsProjectPropertyValue`. :py:class:`QgsProjectPropertyKey`
+can contain either :py:class:`QgsProjectPropertyKey` or
+:py:class:`QgsProjectPropertyValues`, thus describing an hierarchy.
+:py:class:`QgsProjectPropertyValues` are always graph leaves.
 
 .. note::
 
@@ -39,7 +41,8 @@ hierarchy.  :py:class:`QgsProjectPropertyValues` are always graph leaves.
 %Docstring
 Dumps out the keys and values
 
-:param tabs: is number of tabs to print; used for pretty-printing hierarchy
+:param tabs: is number of tabs to print; used for pretty-printing
+             hierarchy
 %End
 
     virtual bool isKey() const = 0;
@@ -53,7 +56,8 @@ Returns ``True`` if the property is a :py:class:`QgsProjectPropertyKey`.
 
     virtual bool isValue() const = 0;
 %Docstring
-Returns ``True`` if the property is a :py:class:`QgsProjectPropertyValue`.
+Returns ``True`` if the property is a
+:py:class:`QgsProjectPropertyValue`.
 
 .. seealso:: :py:func:`isKey`
 
@@ -64,10 +68,11 @@ Returns ``True`` if the property is a :py:class:`QgsProjectPropertyValue`.
 %Docstring
 Returns ``True`` if property is a leaf node.
 
-A leaf node is a key node that has either no value or only a single value.
-A non-leaf node would be a key node with key sub-nodes.
+A leaf node is a key node that has either no value or only a single
+value. A non-leaf node would be a key node with key sub-nodes.
 
-This is used for :py:func:`~QgsProjectProperty.entryList` and :py:func:`~QgsProjectProperty.subkeyList` implementation.
+This is used for :py:func:`~QgsProjectProperty.entryList` and
+:py:func:`~QgsProjectProperty.subkeyList` implementation.
 %End
 
     virtual bool readXml( const QDomNode &keyNode ) = 0;
@@ -94,11 +99,12 @@ Used for saving properties to project file.
 %Docstring
 Returns the node's value.
 
-For :py:class:`QgsProjectPropertyValue` nodes, this is straightforward -- just return the
-embedded QVariant, _value.  For :py:class:`QgsProjectPropertyKey`, this means returning
-the :py:class:`QgsProjectPropertyValue` _value that is keyed by its name, if it exists;
-i.e., :py:class:`QgsProjectPropertyKey` "foo" will return the property value mapped to its
-name, "foo", in its QHash of QProperties.
+For :py:class:`QgsProjectPropertyValue` nodes, this is straightforward
+-- just return the embedded QVariant, _value. For
+:py:class:`QgsProjectPropertyKey`, this means returning the
+:py:class:`QgsProjectPropertyValue` _value that is keyed by its name, if
+it exists; i.e., :py:class:`QgsProjectPropertyKey` "foo" will return the
+property value mapped to its name, "foo", in its QHash of QProperties.
 %End
 
 };
@@ -107,7 +113,8 @@ name, "foo", in its QHash of QProperties.
 class QgsProjectPropertyValue : QgsProjectProperty
 {
 %Docstring(signature="appended")
-Project property value node, contains a :py:class:`QgsProjectPropertyKey`'s value.
+Project property value node, contains a
+:py:class:`QgsProjectPropertyKey`'s value.
 %End
 
 %TypeHeaderCode
@@ -119,7 +126,8 @@ Project property value node, contains a :py:class:`QgsProjectPropertyKey`'s valu
 
     QgsProjectPropertyValue( const QVariant &value );
 %Docstring
-Constructor for QgsProjectPropertyValue, initialized to a specified value.
+Constructor for QgsProjectPropertyValue, initialized to a specified
+value.
 %End
 
     virtual bool isKey() const;
@@ -142,20 +150,23 @@ Constructor for QgsProjectPropertyValue, initialized to a specified value.
 class QgsProjectPropertyKey : QgsProjectProperty
 {
 %Docstring(signature="appended")
-
 Project property key node.
 
-Can, itself, contain :py:class:`QgsProjectPropertyKey` and :py:class:`QgsProjectPropertyValues`.
+Can, itself, contain :py:class:`QgsProjectPropertyKey` and
+:py:class:`QgsProjectPropertyValues`.
 
 The internal QHash, mProperties, maps key names to their respective
-:py:class:`QgsProjectPropertyValue` or next :py:class:`QgsProjectPropertyKey` in the key name sequence.  The key with
+:py:class:`QgsProjectPropertyValue` or next
+:py:class:`QgsProjectPropertyKey` in the key name sequence. The key with
 the current name should contain its :py:class:`QgsProjectPropertyValue`.
 
 E.g., given the key sequence "/foo/bar", "foo" will have a corresponding
-:py:class:`QgsProjectPropertyKey` with a name "foo".  It will contain an element in its
-mProperties that maps to "bar", which is another :py:class:`QgsProjectPropertyKey`.  The "bar"
-:py:class:`QgsProjectPropertyKey` will, in turn, have an element that maps to itself, i.e. "bar",
-that will contain a :py:class:`QgsProjectPropertyValue`.
+:py:class:`QgsProjectPropertyKey` with a name "foo". It will contain an
+element in its mProperties that maps to "bar", which is another
+:py:class:`QgsProjectPropertyKey`. The "bar"
+:py:class:`QgsProjectPropertyKey` will, in turn, have an element that
+maps to itself, i.e. "bar", that will contain a
+:py:class:`QgsProjectPropertyValue`.
 %End
 
 %TypeHeaderCode
@@ -186,8 +197,7 @@ The name of the property is used as identifier.
     virtual QVariant value() const;
 
 %Docstring
-If this key has a value, it will be stored by its name in its
-properties
+If this key has a value, it will be stored by its name in its properties
 %End
 
     QgsProjectPropertyKey *addKey( const QString &keyName );
@@ -244,14 +254,16 @@ Returns ``True`` if this property contains no sub-keys.
 
     void entryList( QStringList &entries ) const;
 %Docstring
-Returns any sub-keys contained by this property that do not contain other keys.
+Returns any sub-keys contained by this property that do not contain
+other keys.
 
 .. seealso:: :py:func:`subkeyList`
 %End
 
     void subkeyList( QStringList &entries ) const;
 %Docstring
-Returns any sub-keys contained by this property which themselves contain other keys.
+Returns any sub-keys contained by this property which themselves contain
+other keys.
 
 .. seealso:: :py:func:`entryList`
 %End

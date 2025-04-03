@@ -71,7 +71,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       //Add points to diagrams, so that it's easier to also verify diagram positioning
       QVariantMap symbolProps { { QStringLiteral( "color" ), QStringLiteral( "0,0,0,0" ) } };
-      QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( symbolProps );
+      QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( symbolProps ).release();
       QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( symbol );
       mPointsLayer->setRenderer( symbolRenderer );
 

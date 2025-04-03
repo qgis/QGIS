@@ -24,7 +24,9 @@ class QAction;
 
 /**
  * \ingroup gui
- * \brief An abstract base class for map tool handlers which automatically handle all the necessary
+ * \brief An abstract base class for map tool handlers, implementing application level UI logic.
+ *
+ * QgsAbstractMapToolHandler subclasses automatically handle all the necessary
  * logic for toggling the map tool and enabling/disabling the associated action
  * when the QGIS application is in a state permissible for the tool.
  *

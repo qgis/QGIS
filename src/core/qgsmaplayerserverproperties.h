@@ -32,7 +32,7 @@ class QDomDocument;
 
 /**
  * \ingroup core
- * \brief Manages QGIS Server properties for a map layer
+ * \brief Manages QGIS Server properties for a map layer.
  * \since QGIS 3.22
  */
 class CORE_EXPORT QgsServerMetadataUrlProperties
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsServerMetadataUrlProperties
 
 /**
  * \ingroup core
- * \brief Manages QGIS Server properties for Wms dimensions
+ * \brief Manages QGIS Server properties for WMS dimensions.
  * \since QGIS 3.22
  */
 class CORE_EXPORT QgsServerWmsDimensionProperties
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
 
 /**
  * \ingroup core
- * \brief Manages QGIS Server properties for a map layer
+ * \brief Manages QGIS Server properties for a map layer.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProperties, public QgsServerWmsDimensionProperties
@@ -538,14 +538,15 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
     QString mLegendUrlFormat;
 };
 
+// XXX How to make a proper SIP type alias ?
+//using QgsVectorLayerServerProperties = QgsMapLayerServerProperties;
+
 /**
  * \ingroup core
- * \brief Convenient class for API compatibility
+ * \brief Convenient class for API compatibility.
  * \deprecated QGIS 3.22
  * \since QGIS 3.10
  */
-// XXX How to make a proper SIP type alias ?
-//using QgsVectorLayerServerProperties = QgsMapLayerServerProperties;
 class CORE_EXPORT QgsVectorLayerServerProperties: public QgsMapLayerServerProperties
 {
     Q_GADGET
