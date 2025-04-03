@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/gui/qgsstoredquerymanager.h
 try:
     QgsStoredQueryManager.QueryDetails.__attribute_docs__ = {'name': 'Name of the query.', 'definition': 'Query definition.', 'backend': 'Storage backend.'}
+    QgsStoredQueryManager.QueryDetails.__annotations__ = {'name': str, 'definition': str, 'backend': 'Qgis.QueryStorageBackend'}
 except (NameError, AttributeError):
     pass
 try:

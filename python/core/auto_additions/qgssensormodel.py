@@ -52,6 +52,7 @@ QgsSensorModel.CustomRole.__doc__ = """Custom model roles.
 # --
 QgsSensorModel.CustomRole.baseClass = QgsSensorModel
 try:
+    QgsSensorModel.__overridden_methods__ = ['data', 'setData', 'flags', 'headerData', 'index', 'parent', 'rowCount', 'columnCount']
     QgsSensorModel.__group__ = ['sensor']
 except (NameError, AttributeError):
     pass

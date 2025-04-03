@@ -11,9 +11,11 @@
 class QgsFieldsItem : QgsDataItem
 {
 %Docstring(signature="appended")
-A collection of field items with some internal logic to retrieve
-the fields and a the vector layer instance from a connection URI,
-the schema and the table name.
+A browser item which contains a collection of field items.
+
+:py:class:`QgsFieldsItem` contains internal logic to retrieve the fields
+and the corresponding vector layer instance from a connection URI, the
+schema and the table name.
 
 .. versionadded:: 3.16
 %End
@@ -32,12 +34,15 @@ the schema and the table name.
 %Docstring
 Constructor for QgsFieldsItem, with the specified ``parent`` item.
 
-The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
-but :py:class:`QgsDataItem` items pointing to different logical locations should always use a different item ``path``.
-The ``connectionUri`` argument is the connection part of the layer URI that it is used internally to create
-a connection and retrieve fields information.
-The ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
-The ``schema`` and ``tableName`` are used to retrieve the layer and field information from the ``connectionUri``.
+The ``path`` argument gives the item path in the browser tree. The
+``path`` string can take any form, but :py:class:`QgsDataItem` items
+pointing to different logical locations should always use a different
+item ``path``. The ``connectionUri`` argument is the connection part of
+the layer URI that it is used internally to create a connection and
+retrieve fields information. The ``providerKey`` string can be used to
+specify the key for the :py:class:`QgsDataItemProvider` that created
+this item. The ``schema`` and ``tableName`` are used to retrieve the
+layer and field information from the ``connectionUri``.
 %End
 
     ~QgsFieldsItem();
@@ -71,12 +76,14 @@ Returns the connection URI
 
     QgsVectorLayer *layer() /Factory/;
 %Docstring
-Creates and returns a (possibly ``None``) layer from the connection URI and schema/table information
+Creates and returns a (possibly ``None``) layer from the connection URI
+and schema/table information
 %End
 
     QgsAbstractDatabaseProviderConnection::TableProperty *tableProperty() const;
 %Docstring
-Returns the (possibly ``None``) properties of the table this fields belong to.
+Returns the (possibly ``None``) properties of the table this fields
+belong to.
 
 .. versionadded:: 3.16
 %End
@@ -96,8 +103,9 @@ class QgsFieldItem : QgsDataItem
 %Docstring(signature="appended")
 A data item representing a single field from a layer.
 
-Information about the connection URI, the schema and the table as well as the layer
-instance the field belongs to can be retrieved from the parent :py:class:`QgsFieldsItem` object.
+Information about the connection URI, the schema and the table as well
+as the layer instance the field belongs to can be retrieved from the
+parent :py:class:`QgsFieldsItem` object.
 
 .. versionadded:: 3.16
 %End
@@ -110,7 +118,8 @@ instance the field belongs to can be retrieved from the parent :py:class:`QgsFie
     QgsFieldItem( QgsDataItem *parent /TransferThis/,
                   const QgsField &field );
 %Docstring
-Constructor for QgsFieldItem, with the specified ``parent`` item and ``field``.
+Constructor for QgsFieldItem, with the specified ``parent`` item and
+``field``.
 
 .. note::
 

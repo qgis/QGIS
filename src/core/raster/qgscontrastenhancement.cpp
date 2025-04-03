@@ -1,4 +1,4 @@
-/* **************************************************************************
+/***************************************************************************
                 qgscontrastenhancement.cpp -  description
                        -------------------
 begin                : Mon Oct 22 2007
@@ -9,7 +9,7 @@ This class contains code that was originally part of the larger QgsRasterLayer
 class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 ****************************************************************************/
 
-/* **************************************************************************
+/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *

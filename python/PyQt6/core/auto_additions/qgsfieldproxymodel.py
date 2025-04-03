@@ -25,3 +25,7 @@ QgsFieldProxyModel.Filter.__bool__ = lambda flag: bool(_force_int(flag))
 QgsFieldProxyModel.Filter.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsFieldProxyModel.Filter.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsFieldProxyModel.Filter.__or__ = lambda flag1, flag2: QgsFieldProxyModel.Filter(_force_int(flag1) | _force_int(flag2))
+try:
+    QgsFieldProxyModel.__overridden_methods__ = ['filterAcceptsRow', 'lessThan']
+except (NameError, AttributeError):
+    pass

@@ -22,7 +22,7 @@
 /**
  * \ingroup core
  * \brief A parameter for "aggregate" configurations, which consist of a definition
- * of desired output fields, types, and aggregate used to populate then.
+ * of desired output fields, types, and aggregate used to populate them.
  *
  * Designed for use with the "Aggregate" algorithm.
  *

@@ -14,7 +14,8 @@
 class QgsGridFileWriter
 {
 %Docstring(signature="appended")
-A class that does interpolation to a grid and writes the results to an ascii grid.
+Handles interpolation to a grid and writes the results to a raster grid
+file.
 %End
 
 %TypeHeaderCode
@@ -27,16 +28,56 @@ Constructor for QgsGridFileWriter, for the specified ``interpolator``.
 
 The ``outputPath`` argument is used to set the output file path.
 
-The ``extent`` and ``nCols``, ``nRows`` arguments dictate the extent and size of the output raster.
+The ``extent`` and ``nCols``, ``nRows`` arguments dictate the extent and
+size of the output raster.
 %End
 
     int writeFile( QgsFeedback *feedback = 0 );
 %Docstring
 Writes the grid file.
 
-An optional ``feedback`` object can be set for progress reports and cancellation support
+An optional ``feedback`` object can be set for progress reports and
+cancellation support
 
 :return: 0 in case of success
+%End
+
+    void setCreateOptions( const QStringList &list );
+%Docstring
+Sets a list of data source creation options to use when creating the
+output raster file.
+
+.. seealso:: :py:func:`createOptions`
+
+.. versionadded:: 3.44
+%End
+
+    QStringList createOptions() const;
+%Docstring
+Returns the list of data source creation options which will be used when
+creating the output raster file.
+
+.. seealso:: :py:func:`setCreateOptions`
+
+.. versionadded:: 3.44
+%End
+
+    void setNoDataValue( double noDataValue );
+%Docstring
+Set no data value for output file.
+
+.. seealso:: :py:func:`noDataValue`
+
+.. versionadded:: 3.44
+%End
+
+    double noDataValue() const;
+%Docstring
+Returns no data value used for output file.
+
+.. seealso:: :py:func:`setNoDataValue`
+
+.. versionadded:: 3.44
 %End
 
 };

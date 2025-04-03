@@ -36,19 +36,22 @@ should be used instead.
 %Docstring
 Constructor for QgsLegendPatchShape.
 
-The ``type`` argument specifies the symbol type associated with this patch.
+The ``type`` argument specifies the symbol type associated with this
+patch.
 
-The ``geometry`` argument gives the shape of the patch to render. See :py:func:`~QgsLegendPatchShape.setGeometry`
-for further details on the geometry requirements.
+The ``geometry`` argument gives the shape of the patch to render. See
+:py:func:`~QgsLegendPatchShape.setGeometry` for further details on the
+geometry requirements.
 
-If ``preserveAspectRatio`` is ``True``, then the patch shape should preserve its aspect ratio when
-it is resized to fit a desired legend patch size.
+If ``preserveAspectRatio`` is ``True``, then the patch shape should
+preserve its aspect ratio when it is resized to fit a desired legend
+patch size.
 %End
 
     bool isNull() const;
 %Docstring
-Returns ``True`` if the patch shape is a null QgsLegendPatchShape,
-which indicates that the default legend patch shape should be used instead.
+Returns ``True`` if the patch shape is a null QgsLegendPatchShape, which
+indicates that the default legend patch shape should be used instead.
 %End
 
     Qgis::SymbolType symbolType() const;
@@ -80,10 +83,10 @@ The origin and size of the ``geometry`` is not important, as the legend
 renderer will automatically scale and transform the geometry to match
 the desired overall patch bounds.
 
-Geometries for legend patches are rendered respecting the traditional
-"y values increase toward the top of the map" convention, as opposed
-to the standard computer graphics convention of "y values increase toward
-the bottom of the display".
+Geometries for legend patches are rendered respecting the traditional "y
+values increase toward the top of the map" convention, as opposed to the
+standard computer graphics convention of "y values increase toward the
+bottom of the display".
 
 .. warning::
 
@@ -96,8 +99,8 @@ the bottom of the display".
 
     bool preserveAspectRatio() const;
 %Docstring
-Returns ``True`` if the patch shape should preserve its aspect ratio when
-it is resized to fit a desired legend patch size.
+Returns ``True`` if the patch shape should preserve its aspect ratio
+when it is resized to fit a desired legend patch size.
 
 .. seealso:: :py:func:`setPreserveAspectRatio`
 %End
@@ -107,15 +110,16 @@ it is resized to fit a desired legend patch size.
 Sets whether the patch shape should ``preserve`` its aspect ratio when
 it is resized to fit a desired legend patch size.
 
-The default behavior is to respect the :py:func:`~QgsLegendPatchShape.geometry`'s aspect ratio.
+The default behavior is to respect the
+:py:func:`~QgsLegendPatchShape.geometry`'s aspect ratio.
 
 .. seealso:: :py:func:`setPreserveAspectRatio`
 %End
 
     bool scaleToOutputSize() const;
 %Docstring
-Returns ``True`` if the patch shape should by resized to the desired target size
-when rendering.
+Returns ``True`` if the patch shape should by resized to the desired
+target size when rendering.
 
 Resizing to the target size is the default behavior.
 
@@ -126,8 +130,8 @@ Resizing to the target size is the default behavior.
 
     void setScaleToOutputSize( bool scale );
 %Docstring
-Sets whether the patch shape should by resized to the desired target size
-when rendering.
+Sets whether the patch shape should by resized to the desired target
+size when rendering.
 
 Resizing to the target size is the default behavior.
 
@@ -140,16 +144,17 @@ Resizing to the target size is the default behavior.
 %Docstring
 Returns the patch shape's geometry, scaled to the given size.
 
-Note that if :py:func:`~QgsLegendPatchShape.scaleToOutputSize` is ``False`` then no scaling will be applied.
+Note that if :py:func:`~QgsLegendPatchShape.scaleToOutputSize` is
+``False`` then no scaling will be applied.
 
 .. versionadded:: 3.22
 %End
 
     QList< QList< QPolygonF > > toQPolygonF( Qgis::SymbolType type, QSizeF size ) const;
 %Docstring
-Converts the patch shape to a set of QPolygonF objects representing
-how the patch should be drawn for a symbol of the given ``type`` at the specified ``size`` (as
-geometry parts and rings).
+Converts the patch shape to a set of QPolygonF objects representing how
+the patch should be drawn for a symbol of the given ``type`` at the
+specified ``size`` (as geometry parts and rings).
 %End
 
     void readXml( const QDomElement &element, const QgsReadWriteContext &context );

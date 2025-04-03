@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * \brief A numeric formatter which returns a text representation of a geographic coordinate (latitude or longitude).
+ * \brief A numeric formater which returns a text representation of a geographic coordinate (latitude or longitude).
  *
  * \since QGIS 3.26
  */

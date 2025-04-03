@@ -18,10 +18,11 @@
 class QgsRubberBand : QgsMapCanvasItem
 {
 %Docstring(signature="appended")
-A class for drawing transient features (e.g. digitizing lines) on the map.
+Responsible for drawing transient features (e.g. digitizing lines) on
+the map.
 
-The :py:class:`QgsRubberBand` class provides a transparent overlay widget
-for tracking the mouse while drawing polylines or polygons.
+The :py:class:`QgsRubberBand` class provides a transparent overlay
+widget for tracking the mouse while drawing polylines or polygons.
 %End
 
 %TypeHeaderCode
@@ -67,18 +68,20 @@ for tracking the mouse while drawing polylines or polygons.
 %Docstring
 Creates a new RubberBand.
 
-:param mapCanvas: The map canvas to draw onto.
-                  Its CRS will be used to map points onto screen coordinates.
-                  The ownership is transferred to this canvas.
-:param geometryType: Defines how the data should be drawn onto the screen.
-                     :py:class:`Qgis`.GeometryType.Line, :py:class:`Qgis`.GeometryType.Polygon or :py:class:`Qgis`.GeometryType.Point
+:param mapCanvas: The map canvas to draw onto. Its CRS will be used to
+                  map points onto screen coordinates. The ownership is
+                  transferred to this canvas.
+:param geometryType: Defines how the data should be drawn onto the
+                     screen. :py:class:`Qgis`.GeometryType.Line,
+                     :py:class:`Qgis`.GeometryType.Polygon or
+                     :py:class:`Qgis`.GeometryType.Point
 %End
     ~QgsRubberBand();
 
     void setColor( const QColor &color );
 %Docstring
-Sets the color for the rubberband.
-Shorthand method to set fill and stroke color with a single call.
+Sets the color for the rubberband. Shorthand method to set fill and
+stroke color with a single call.
 
 :param color: The color used to render this rubberband
 %End
@@ -109,10 +112,12 @@ Returns the current stroke color.
 
     void setSecondaryStrokeColor( const QColor &color );
 %Docstring
-Sets a secondary stroke color for the rubberband which will be drawn under the main stroke color.
-Set to an invalid color to avoid drawing the secondary stroke.
+Sets a secondary stroke color for the rubberband which will be drawn
+under the main stroke color. Set to an invalid color to avoid drawing
+the secondary stroke.
 
-:param color: The color used to render a secondary stroke color to this rubberband
+:param color: The color used to render a secondary stroke color to this
+              rubberband
 %End
 
     QColor secondaryStrokeColor() const;
@@ -141,8 +146,8 @@ Sets the icon type to highlight point geometries.
 
     void setSvgIcon( const QString &path, QPoint drawOffset );
 %Docstring
-Set the path to the svg file to use to draw points.
-Calling this function automatically calls setIcon(ICON_SVG)
+Set the path to the svg file to use to draw points. Calling this
+function automatically calls setIcon(ICON_SVG)
 
 :param path: The path to the svg
 :param drawOffset: The offset where to draw the image origin
@@ -178,42 +183,51 @@ Sets the style of the brush
 
     void reset( Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
 %Docstring
-Clears all the geometries in this rubberband.
-Sets the representation type according to geometryType.
+Clears all the geometries in this rubberband. Sets the representation
+type according to geometryType.
 
-:param geometryType: Defines how the data should be drawn onto the screen. (Use :py:class:`Qgis`.Line, :py:class:`Qgis`.Polygon or :py:class:`Qgis`.Point)
+:param geometryType: Defines how the data should be drawn onto the
+                     screen. (Use :py:class:`Qgis`.Line,
+                     :py:class:`Qgis`.Polygon or :py:class:`Qgis`.Point)
 %End
 
     void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 %Docstring
-Adds a vertex to the rubberband and update canvas.
-The rendering of the vertex depends on the current GeometryType and icon.
-If adding more points consider using update=``False`` for better performance
+Adds a vertex to the rubberband and update canvas. The rendering of the
+vertex depends on the current GeometryType and icon. If adding more
+points consider using update=``False`` for better performance
 
 :param p: The vertex/point to add
 :param doUpdate: Should the map canvas be updated immediately?
-:param geometryIndex: The index of the feature part (in case of multipart geometries)
-:param ringIndex: The index of the polygon ring (in case of polygons with holes)
+:param geometryIndex: The index of the feature part (in case of
+                      multipart geometries)
+:param ringIndex: The index of the polygon ring (in case of polygons
+                  with holes)
 %End
 
     void closePoints( bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 %Docstring
-Ensures that a polygon geometry is closed and that the last vertex equals the
-first vertex.
+Ensures that a polygon geometry is closed and that the last vertex
+equals the first vertex.
 
 :param doUpdate: set to ``True`` to update the map canvas immediately
-:param geometryIndex: The index of the feature part (in case of multipart geometries)
-:param ringIndex: The index of the polygon ring (in case of polygons with holes)
+:param geometryIndex: The index of the feature part (in case of
+                      multipart geometries)
+:param ringIndex: The index of the polygon ring (in case of polygons
+                  with holes)
 %End
 
     void removePoint( int index = 0, bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 %Docstring
 Removes a vertex from the rubberband and (optionally) updates canvas.
 
-:param index: The index of the vertex/point to remove, negative indexes start at end
+:param index: The index of the vertex/point to remove, negative indexes
+              start at end
 :param doUpdate: Should the map canvas be updated immediately?
-:param geometryIndex: The index of the feature part (in case of multipart geometries)
-:param ringIndex: The index of the polygon ring (in case of polygons with holes)
+:param geometryIndex: The index of the feature part (in case of
+                      multipart geometries)
+:param ringIndex: The index of the polygon ring (in case of polygons
+                  with holes)
 %End
 
     void removeLastPoint( int geometryIndex = 0, bool doUpdate = true, int ringIndex = 0 );
@@ -223,43 +237,48 @@ Removes the last point. Most useful in connection with undo operations
 
     void movePoint( const QgsPointXY &p, int geometryIndex = 0, int ringIndex = 0 );
 %Docstring
-Moves the rubber band point specified by index. Note that if the rubber band is
-not used to track the last mouse position, the first point of the rubber band has two vertices
+Moves the rubber band point specified by index. Note that if the rubber
+band is not used to track the last mouse position, the first point of
+the rubber band has two vertices
 %End
 
     void movePoint( int index, const QgsPointXY &p, int geometryIndex = 0, int ringIndex = 0 );
 %Docstring
-Moves the rubber band point specified by index. Note that if the rubber band is
-not used to track the last mouse position, the first point of the rubber band has two vertices
+Moves the rubber band point specified by index. Note that if the rubber
+band is not used to track the last mouse position, the first point of
+the rubber band has two vertices
 %End
 
     int partSize( int geometryIndex ) const;
 %Docstring
 Returns number of vertices in feature part
 
-:param geometryIndex: The index of the feature part (in case of multipart geometries)
+:param geometryIndex: The index of the feature part (in case of
+                      multipart geometries)
 
 :return: number of vertices
 %End
 
     void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
 %Docstring
-Sets this rubber band to ``geom``.
-This is useful for feature highlighting.
-In contrast to :py:func:`~QgsRubberBand.addGeometry`, this method does also change the geometry type of the rubberband.
+Sets this rubber band to ``geom``. This is useful for feature
+highlighting. In contrast to :py:func:`~QgsRubberBand.addGeometry`, this
+method does also change the geometry type of the rubberband.
 
 :param geom: the geometry object
-:param layer: the layer containing the feature, used for coord transformation to map
-              crs. If ``layer`` is ``None``, the coordinates are not going to be transformed.
+:param layer: the layer containing the feature, used for coord
+              transformation to map crs. If ``layer`` is ``None``, the
+              coordinates are not going to be transformed.
 %End
 
     void setToGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 %Docstring
-Sets this rubber band to ``geometry``.
-In contrast to :py:func:`~QgsRubberBand.addGeometry`, this method does also change the geometry type of the rubberband.
-The coordinate reference system of the geometry can be specified with ``crs``. If an invalid ``crs``
-is passed, the geometry will not be reprojected and needs to be in canvas crs already.
-By default, no reprojection is done.
+Sets this rubber band to ``geometry``. In contrast to
+:py:func:`~QgsRubberBand.addGeometry`, this method does also change the
+geometry type of the rubberband. The coordinate reference system of the
+geometry can be specified with ``crs``. If an invalid ``crs`` is passed,
+the geometry will not be reprojected and needs to be in canvas crs
+already. By default, no reprojection is done.
 
 .. versionadded:: 3.4
 %End
@@ -280,17 +299,25 @@ Copies the points from another rubber band.
 
     void addGeometry( const QgsGeometry &geometry, QgsMapLayer *layer, bool doUpdate = true );
 %Docstring
-Adds the geometry of an existing feature to a rubberband
-This is useful for multi feature highlighting.
-As of 2.0, this method does not change the GeometryType any more. You need to set the GeometryType
-of the rubberband explicitly by calling :py:func:`~QgsRubberBand.reset` or :py:func:`~QgsRubberBand.setToGeometry` with appropriate arguments.
-:py:func:`~QgsRubberBand.setToGeometry` is also to be preferred for backwards-compatibility.
+Adds the geometry of an existing feature to a rubberband This is useful
+for multi feature highlighting. As of 2.0, this method does not change
+the GeometryType any more. You need to set the GeometryType of the
+rubberband explicitly by calling :py:func:`~QgsRubberBand.reset` or
+:py:func:`~QgsRubberBand.setToGeometry` with appropriate arguments.
+:py:func:`~QgsRubberBand.setToGeometry` is also to be preferred for
+backwards-compatibility.
 
-If additional geometries are to be added then set ``doUpdate`` to ``False`` to defer costly repaint and bounding rectangle calculations for better performance.
-After adding the final geometry :py:func:`~QgsRubberBand.updatePosition` should be called.
+If additional geometries are to be added then set ``doUpdate`` to
+``False`` to defer costly repaint and bounding rectangle calculations
+for better performance. After adding the final geometry
+:py:func:`~QgsRubberBand.updatePosition` should be called.
 
-:param geometry: the geometry object. Will be treated as a collection of vertices.
-:param layer: the layer associated with the geometry. This is used for transforming the geometry from the layer's CRS to the map crs. If ``layer`` is ``None`` no coordinate transformation will occur.
+:param geometry: the geometry object. Will be treated as a collection of
+                 vertices.
+:param layer: the layer associated with the geometry. This is used for
+              transforming the geometry from the layer's CRS to the map
+              crs. If ``layer`` is ``None`` no coordinate transformation
+              will occur.
 :param doUpdate: set to ``False`` to defer updates of the rubber band.
 %End
 
@@ -298,11 +325,13 @@ After adding the final geometry :py:func:`~QgsRubberBand.updatePosition` should 
 %Docstring
 Adds a ``geometry`` to the rubberband.
 
-If ``crs`` is specified, the geometry will be automatically reprojected from ``crs``
-to the canvas CRS.
+If ``crs`` is specified, the geometry will be automatically reprojected
+from ``crs`` to the canvas CRS.
 
-If additional geometries are to be added then set ``doUpdate`` to ``False`` to defer costly repaint and bounding rectangle calculations for better performance.
-After adding the final geometry :py:func:`~QgsRubberBand.updatePosition` should be called.
+If additional geometries are to be added then set ``doUpdate`` to
+``False`` to defer costly repaint and bounding rectangle calculations
+for better performance. After adding the final geometry
+:py:func:`~QgsRubberBand.updatePosition` should be called.
 %End
 
     void setTranslationOffset( double dx, double dy );
@@ -341,7 +370,8 @@ Returns a vertex
 %Docstring
 Returns the rubberband as a Geometry
 
-:return: A geometry object which reflects the current state of the rubberband.
+:return: A geometry object which reflects the current state of the
+         rubberband.
 %End
 
     virtual void updatePosition();

@@ -12,6 +12,9 @@
 
 class QgsStyleGroupSelectionDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog which presents available groups from a :py:class:`QgsStyle`.
+%End
 
 %TypeHeaderCode
 #include "qgsstylegroupselectiondialog.h"

@@ -20,7 +20,7 @@
 class QgsGpsConnection : QObject
 {
 %Docstring(signature="appended")
-Abstract base class for connection to a GPS device
+Abstract base class for connections to a GPS device.
 %End
 
 %TypeHeaderCode
@@ -51,7 +51,8 @@ Abstract base class for connection to a GPS device
 %Docstring
 Constructor
 
-:param dev: input device for the connection (e.g. serial device). The class takes ownership of the object
+:param dev: input device for the connection (e.g. serial device). The
+            class takes ownership of the object
 %End
     ~QgsGpsConnection();
     bool connect();
@@ -70,7 +71,8 @@ Sets the GPS source. The class takes ownership of the device class
 
     Status status() const;
 %Docstring
-Returns the status. Possible state are not connected, connected, data received
+Returns the status. Possible state are not connected, connected, data
+received
 %End
 
     QgsGpsInformation currentGPSInformation() const;
@@ -109,7 +111,8 @@ Emitted when the GPS device fix status is changed.
 %Docstring
 Emitted when the GPS position changes.
 
-This signal is only emitted when the new GPS location is considered valid (see :py:func:`QgsGpsInformation.isValid()`).
+This signal is only emitted when the new GPS location is considered
+valid (see :py:func:`QgsGpsInformation.isValid()`).
 
 .. versionadded:: 3.30
 %End

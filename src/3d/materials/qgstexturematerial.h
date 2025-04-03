@@ -39,7 +39,7 @@ namespace Qt3DRender
 ///@cond PRIVATE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief A unlit texture material
  * \since QGIS 3.40
  */

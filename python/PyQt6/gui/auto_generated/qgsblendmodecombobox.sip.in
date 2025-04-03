@@ -12,7 +12,8 @@
 class QgsBlendModeComboBox : QComboBox
 {
 %Docstring(signature="appended")
-A combobox which lets the user select blend modes from a predefined list
+A combobox which lets the user select blend modes from a predefined
+list.
 %End
 
 %TypeHeaderCode
@@ -40,12 +41,14 @@ Sets the selected blend mode.
 
     void setShowClippingModes( bool show );
 %Docstring
-Sets whether composition modes which cause clipping are shown in the combo box.
+Sets whether composition modes which cause clipping are shown in the
+combo box.
 
-By default, these composition modes (such as QPainter.CompositionMode.CompositionMode_DestinationIn )
-are not shown in the combo box, as they can only be used with predictable results in a limited
-set of circumstances. By setting ``show`` to ``True`` these additional composition modes
-will be shown in the combo box.
+By default, these composition modes (such as
+QPainter.CompositionMode.CompositionMode_DestinationIn ) are not shown
+in the combo box, as they can only be used with predictable results in a
+limited set of circumstances. By setting ``show`` to ``True`` these
+additional composition modes will be shown in the combo box.
 
 .. seealso:: :py:func:`showClippingModes`
 
@@ -54,11 +57,13 @@ will be shown in the combo box.
 
     bool showClippingModes() const;
 %Docstring
-Returns ``True`` if composition modes which cause clipping are shown in the combo box.
+Returns ``True`` if composition modes which cause clipping are shown in
+the combo box.
 
-By default, these composition modes (such as QPainter.CompositionMode.CompositionMode_DestinationIn )
-are not shown in the combo box, as they can only be used with predictable results in a limited
-set of circumstances.
+By default, these composition modes (such as
+QPainter.CompositionMode.CompositionMode_DestinationIn ) are not shown
+in the combo box, as they can only be used with predictable results in a
+limited set of circumstances.
 
 .. seealso:: :py:func:`setShowClippingModes`
 
@@ -69,8 +74,8 @@ set of circumstances.
 
     void updateModes();
 %Docstring
-Populates the blend mode combo box, and sets up mapping for
-blend modes to combo box indexes
+Populates the blend mode combo box, and sets up mapping for blend modes
+to combo box indexes
 %End
 };
 

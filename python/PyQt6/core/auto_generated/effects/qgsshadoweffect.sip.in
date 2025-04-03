@@ -9,11 +9,10 @@
 
 
 
-
 class QgsShadowEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-Base class for paint effects which offset, blurred shadows
+Base class for paint effects which render offset, blurred shadows.
 %End
 
 %TypeHeaderCode
@@ -32,8 +31,7 @@ Base class for paint effects which offset, blurred shadows
 %Docstring
 Sets blur level (radius) for the shadow.
 
-:param level: blur level.
-              values indicating greater blur strength.
+:param level: blur level. values indicating greater blur strength.
 
 .. seealso:: :py:func:`blurLevel`
 
@@ -46,8 +44,7 @@ Sets blur level (radius) for the shadow.
 %Docstring
 Returns the blur level (radius) for the shadow.
 
-:return: blur level.
-         values indicating greater blur strength.
+:return: blur level. values indicating greater blur strength.
 
 .. seealso:: :py:func:`setBlurLevel`
 
@@ -142,7 +139,8 @@ Returns the angle used for offsetting the shadow.
 %Docstring
 Sets the distance for offsetting the shadow.
 
-:param distance: offset distance. Units are specified via :py:func:`~QgsShadowEffect.setOffsetUnit`
+:param distance: offset distance. Units are specified via
+                 :py:func:`~QgsShadowEffect.setOffsetUnit`
 
 .. seealso:: :py:func:`offsetDistance`
 
@@ -155,7 +153,8 @@ Sets the distance for offsetting the shadow.
 %Docstring
 Returns the distance used for offsetting the shadow.
 
-:return: offset distance. Distance units are retrieved via :py:func:`~QgsShadowEffect.offsetUnit`
+:return: offset distance. Distance units are retrieved via
+         :py:func:`~QgsShadowEffect.offsetUnit`
 
 .. seealso:: :py:func:`setOffsetDistance`
 
@@ -238,8 +237,8 @@ Returns the color used for the shadow.
 %Docstring
 Sets the ``opacity`` for the effect.
 
-:param opacity: double between 0 and 1 inclusive, where 0 is fully transparent
-                and 1 is fully opaque
+:param opacity: double between 0 and 1 inclusive, where 0 is fully
+                transparent and 1 is fully opaque
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -248,8 +247,8 @@ Sets the ``opacity`` for the effect.
 %Docstring
 Returns the opacity for the effect.
 
-:return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
-         and 1 is fully opaque
+:return: opacity value between 0 and 1 inclusive, where 0 is fully
+         transparent and 1 is fully opaque
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -283,11 +282,11 @@ Returns the blend mode for the effect
 
     virtual bool exteriorShadow() const = 0;
 %Docstring
-Specifies whether the shadow is drawn outside the picture or within
-the picture.
+Specifies whether the shadow is drawn outside the picture or within the
+picture.
 
-:return: ``True`` if shadow is to be drawn outside the picture, or ``False``
-         to draw shadow within the picture
+:return: ``True`` if shadow is to be drawn outside the picture, or
+         ``False`` to draw shadow within the picture
 %End
 
 
@@ -297,7 +296,7 @@ the picture.
 class QgsDropShadowEffect : QgsShadowEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-A paint effect which draws an offset and optionally blurred drop shadow
+A paint effect which draws an offset and optionally blurred drop shadow.
 %End
 
 %TypeHeaderCode

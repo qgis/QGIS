@@ -62,6 +62,7 @@ class QgisVisitor : public SpatialIndex::IVisitor
 /**
  * \ingroup core
  * \class QgsSpatialIndexCopyVisitor
+ * \brief SpatialIndex visitor which copies data to a new index.
  * \note not available in Python bindings
  */
 class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor

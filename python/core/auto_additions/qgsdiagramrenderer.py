@@ -55,13 +55,29 @@ QgsDiagramLayerSettings.Property.__doc__ = """Data definable properties.
 # --
 try:
     QgsDiagramSettings.__attribute_docs__ = {'sizeType': 'Diagram size unit', 'sizeScale': 'Diagram size unit scale', 'lineSizeUnit': 'Line unit index', 'lineSizeScale': 'Line unit scale', 'opacity': 'Opacity, from 0 (transparent) to 1.0 (opaque)', 'rotationOffset': 'Rotation offset, in degrees clockwise from horizontal.', 'maximumScale': 'The maximum map scale (i.e. most "zoomed in" scale) at which the diagrams will be visible.\nThe scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.\nA scale of 0 indicates no maximum scale visibility.\n\n.. seealso:: :py:func:`minimumScale`', 'minimumScale': 'The minimum map scale (i.e. most "zoomed out" scale) at which the diagrams will be visible.\nThe scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.\nA scale of 0 indicates no minimum scale visibility.\n\n.. seealso:: :py:func:`maximumScale`', 'minimumSize': 'Scale diagrams smaller than mMinimumSize to mMinimumSize'}
+    QgsDiagramSettings.__annotations__ = {'sizeType': 'Qgis.RenderUnit', 'sizeScale': 'QgsMapUnitScale', 'lineSizeUnit': 'Qgis.RenderUnit', 'lineSizeScale': 'QgsMapUnitScale', 'opacity': float, 'rotationOffset': float, 'maximumScale': float, 'minimumScale': float, 'minimumSize': float}
 except (NameError, AttributeError):
     pass
 try:
     QgsDiagramInterpolationSettings.__attribute_docs__ = {'classificationField': 'Name of the field for classification'}
+    QgsDiagramInterpolationSettings.__annotations__ = {'classificationField': str}
 except (NameError, AttributeError):
     pass
 try:
     QgsDiagramRenderer.dpiPaintDevice = staticmethod(QgsDiagramRenderer.dpiPaintDevice)
+    QgsDiagramRenderer.__virtual_methods__ = ['sizeMapUnits', 'referencedFields', 'renderDiagram', 'legendItems']
+    QgsDiagramRenderer.__abstract_methods__ = ['clone', 'rendererName', 'diagramAttributes', 'diagramSettings', 'readXml', 'writeXml', 'diagramSize']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsSingleCategoryDiagramRenderer.__overridden_methods__ = ['clone', 'rendererName', 'diagramAttributes', 'diagramSettings', 'readXml', 'writeXml', 'legendItems', 'diagramSize']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsLinearlyInterpolatedDiagramRenderer.__overridden_methods__ = ['clone', 'diagramSettings', 'diagramAttributes', 'referencedFields', 'rendererName', 'readXml', 'writeXml', 'legendItems', 'diagramSize']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsStackedDiagramRenderer.__overridden_methods__ = ['clone', 'sizeMapUnits', 'renderDiagram', 'diagramSettings', 'diagramAttributes', 'rendererName', 'readXml', 'writeXml', 'legendItems', 'diagramSize']
 except (NameError, AttributeError):
     pass

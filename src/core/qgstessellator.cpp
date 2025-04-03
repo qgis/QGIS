@@ -216,29 +216,13 @@ void QgsTessellator::init()
     mStride += 2 * sizeof( float );
 }
 
-static bool _isRingCounterClockWise( const QgsCurve &ring )
-{
-  double a = 0;
-  const int count = ring.numPoints();
-  Qgis::VertexType vt;
-  QgsPoint pt, ptPrev;
-  ring.pointAt( 0, ptPrev, vt );
-  for ( int i = 1; i < count + 1; ++i )
-  {
-    ring.pointAt( i % count, pt, vt );
-    a += ptPrev.x() * pt.y() - ptPrev.y() * pt.x();
-    ptPrev = pt;
-  }
-  return a > 0; // clockwise if a is negative
-}
-
 static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeight, QVector<float> &data,
                         bool addNormals, bool addTextureCoords, double originX, double originY, float textureRotation, bool zUp )
 {
   // we need to find out orientation of the ring so that the triangles we generate
   // face the right direction
   // (for exterior we want clockwise order, for holes we want counter-clockwise order)
-  const bool is_counter_clockwise = _isRingCounterClockWise( ring );
+  const bool is_counter_clockwise = ring.orientation() == Qgis::AngularDirection::CounterClockwise;
 
   QgsPoint pt;
   QgsPoint ptPrev = ring.pointN( is_counter_clockwise == ccw ? 0 : ring.numPoints() - 1 );

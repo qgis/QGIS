@@ -28,7 +28,7 @@ class QgsReadWriteContext;
 
 /**
  * \ingroup core
- * \brief The QgsNumericFormatRegistry manages registered classes of QgsNumericFormat.
+ * \brief A registry which manages classes of QgsNumericFormat.
  *
  * A reference to the QgsFieldFormatterRegistry can be obtained from
  * QgsApplication::numericFormatRegistry().

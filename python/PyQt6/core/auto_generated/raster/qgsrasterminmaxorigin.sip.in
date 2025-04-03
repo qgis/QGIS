@@ -13,8 +13,9 @@
 class QgsRasterMinMaxOrigin
 {
 %Docstring(signature="appended")
-This class describes the origin of min/max values. It does not store by
-itself the min/max values.
+Describes the origin of minimum and maximum values in a raster.
+
+It does not store by itself the min/max values.
 %End
 
 %TypeHeaderCode
@@ -60,7 +61,8 @@ Returns the upper bound of cumulative cut method (between 0 and 1).
 
     double stdDevFactor() const;
 %Docstring
-Returns the factor f so that the min/max range is [ mean - f * stddev , mean + f * stddev ]
+Returns the factor f so that the min/max range is [ mean - f * stddev ,
+mean + f * stddev ]
 %End
 
 
@@ -91,7 +93,8 @@ Sets the upper bound of cumulative cut method (between 0 and 1).
 
     void setStdDevFactor( double val );
 %Docstring
-Sets the factor f so that the min/max range is [ mean - f * stddev , mean + f * stddev ]
+Sets the factor f so that the min/max range is [ mean - f * stddev ,
+mean + f * stddev ]
 %End
 
 

@@ -138,7 +138,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     /**
      * \ingroup core
-     * \brief  This class keeps data about a rules for rule-based renderer.
+     * \brief Represents an individual rule for a rule-based renderer.
      *
      * A rule consists of a symbol, filter expression and range of scales.
      * If filter is empty, it matches all features.

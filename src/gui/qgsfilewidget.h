@@ -33,7 +33,7 @@ class QgsFileDropEdit;
 
 /**
  * \ingroup gui
- * \brief The QgsFileWidget class creates a widget for selecting a file or a folder.
+ * \brief A widget for selecting a file or a folder.
  */
 class GUI_EXPORT QgsFileWidget : public QWidget
 {

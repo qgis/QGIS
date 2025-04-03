@@ -28,7 +28,7 @@ class QgsTiledSceneIndex;
 
 /**
  * \ingroup core
- * \brief Base class for data providers for QgsTiledSceneLayer
+ * \brief Base class for data providers for QgsTiledSceneLayer.
  *
  * \since QGIS 3.34
  */

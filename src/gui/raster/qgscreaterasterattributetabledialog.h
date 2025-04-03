@@ -29,7 +29,9 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * \brief The QgsCreateRasterAttributeTableDialog dialog collects the information required to create a new raster attribute table and performs the creation when the dialog is accepted.
+ * \brief A dialog which collects the information required to create a new raster attribute table.
+ *
+ * This dialog also performs the creation when the dialog is accepted.
  * \warning Client code must check if the creation of attribute tables is supported by the raster layer by calling QgsRasterLayer::canCreateAttributeTable() before using this dialog.
  * \note Not available in Python bindings
  * \since QGIS 3.30

@@ -14,14 +14,14 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 %Docstring(signature="appended")
 Layer tree node points to a map layer.
 
-The node can exist also without a valid instance of a layer (just ID). That
-means the referenced layer does not need to be loaded in order to use it
-in layer tree. In such case, :py:func:`~resolveReferences` method can be called
-once the layer is loaded.
+The node can exist also without a valid instance of a layer (just ID).
+That means the referenced layer does not need to be loaded in order to
+use it in layer tree. In such case, :py:func:`~resolveReferences` method
+can be called once the layer is loaded.
 
 A map layer is supposed to be present in one layer tree just once. It is
-however possible that temporarily a layer exists in one tree more than just
-once, e.g. while reordering items with drag and drop.
+however possible that temporarily a layer exists in one tree more than
+just once, e.g. while reordering items with drag and drop.
 %End
 
 %TypeHeaderCode
@@ -33,7 +33,8 @@ once, e.g. while reordering items with drag and drop.
 
     explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
 %Docstring
-Constructor for QgsLayerTreeLayer using weak references to layer ID, ``name``, public ``source``, and ``provider`` key.
+Constructor for QgsLayerTreeLayer using weak references to layer ID,
+``name``, public ``source``, and ``provider`` key.
 %End
 
     SIP_PYOBJECT __repr__();
@@ -80,8 +81,8 @@ Sets the layer's name.
 
     void setUseLayerName( bool use = true );
 %Docstring
-Uses the layer's name if ``use`` is ``True``, or the name manually set if
-``False``.
+Uses the layer's name if ``use`` is ``True``, or the name manually set
+if ``False``.
 
 .. versionadded:: 3.8
 %End
@@ -95,14 +96,16 @@ Returns whether the layer's name is used, or the name manually set.
 
     static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-Read layer node from XML. Returns new instance.
-Does not resolve textual references to layers. Call :py:func:`~QgsLayerTreeLayer.resolveReferences` afterwards to do it.
+Read layer node from XML. Returns new instance. Does not resolve textual
+references to layers. Call
+:py:func:`~QgsLayerTreeLayer.resolveReferences` afterwards to do it.
 %End
 
     static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-Read layer node from XML. Returns new instance.
-Also resolves textual references to layers from the project (calls :py:func:`~QgsLayerTreeLayer.resolveReferences` internally).
+Read layer node from XML. Returns new instance. Also resolves textual
+references to layers from the project (calls
+:py:func:`~QgsLayerTreeLayer.resolveReferences` internally).
 %End
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
@@ -117,7 +120,8 @@ Also resolves textual references to layers from the project (calls :py:func:`~Qg
     virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
 
 %Docstring
-Resolves reference to layer from stored layer ID (if it has not been resolved already)
+Resolves reference to layer from stored layer ID (if it has not been
+resolved already)
 %End
 
     void setLabelExpression( const QString &expression );
@@ -136,7 +140,8 @@ Returns the expression member of the LayerTreeNode
 
     QgsLegendPatchShape patchShape() const;
 %Docstring
-Returns the symbol patch shape to use when rendering the legend node symbol.
+Returns the symbol patch shape to use when rendering the legend node
+symbol.
 
 .. seealso:: :py:func:`setPatchShape`
 
@@ -145,7 +150,8 @@ Returns the symbol patch shape to use when rendering the legend node symbol.
 
     void setPatchShape( const QgsLegendPatchShape &shape );
 %Docstring
-Sets the symbol patch ``shape`` to use when rendering the legend node symbol.
+Sets the symbol patch ``shape`` to use when rendering the legend node
+symbol.
 
 .. seealso:: :py:func:`patchShape`
 
@@ -156,8 +162,9 @@ Sets the symbol patch ``shape`` to use when rendering the legend node symbol.
 %Docstring
 Returns the user (overridden) size for the legend node.
 
-If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
-symbol width or height from :py:class:`QgsLegendSettings`.
+If either the width or height are non-zero, they will be used when
+rendering the legend node instead of the default symbol width or height
+from :py:class:`QgsLegendSettings`.
 
 .. seealso:: :py:func:`setPatchSize`
 
@@ -168,8 +175,9 @@ symbol width or height from :py:class:`QgsLegendSettings`.
 %Docstring
 Sets the user (overridden) ``size`` for the legend node.
 
-If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
-symbol width or height from :py:class:`QgsLegendSettings`.
+If either the width or height are non-zero, they will be used when
+rendering the legend node instead of the default symbol width or height
+from :py:class:`QgsLegendSettings`.
 
 .. seealso:: :py:func:`patchSize`
 
@@ -187,7 +195,8 @@ symbol width or height from :py:class:`QgsLegendSettings`.
 %Docstring
 Returns the column split behavior for the node.
 
-This value controls how legend nodes belonging the to layer may be split over multiple columns in legends.
+This value controls how legend nodes belonging the to layer may be split
+over multiple columns in legends.
 
 .. seealso:: :py:func:`setLegendSplitBehavior`
 
@@ -198,7 +207,8 @@ This value controls how legend nodes belonging the to layer may be split over mu
 %Docstring
 Sets the column split ``behavior`` for the node.
 
-This value controls how legend nodes belonging the to layer may be split over multiple columns in legends.
+This value controls how legend nodes belonging the to layer may be split
+over multiple columns in legends.
 
 .. seealso:: :py:func:`legendSplitBehavior`
 
@@ -214,7 +224,8 @@ Emitted when a previously unavailable layer got loaded.
 
     void layerWillBeUnloaded();
 %Docstring
-Emitted when a previously available layer got unloaded (from layer registry).
+Emitted when a previously available layer got unloaded (from layer
+registry).
 %End
 
   protected:

@@ -476,6 +476,72 @@ class TestQgsRasterLayerRenderer(QgisTestCase):
             )
         )
 
+    def test_render_fixed_datetime_range_with_temporal_range_filter(self):
+        """
+        Test rendering a raster with a fixed datetime when
+        map settings has a temporal range filter
+        """
+        raster_layer = QgsRasterLayer(os.path.join(TEST_DATA_DIR, "3d", "dtm.tif"))
+        self.assertTrue(raster_layer.isValid())
+
+        # set layer as elevation enabled
+        raster_layer.temporalProperties().setIsActive(True)
+        raster_layer.temporalProperties().setMode(Qgis.RasterTemporalMode.FixedDateTime)
+        raster_layer.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime(QDate(2023, 1, 1), QTime(0, 0, 0)),
+                QDateTime(QDate(2023, 1, 1), QTime(0, 0, 0)),
+            )
+        )
+
+        map_settings = QgsMapSettings()
+        map_settings.setOutputSize(QSize(400, 400))
+        map_settings.setOutputDpi(96)
+        map_settings.setDestinationCrs(raster_layer.crs())
+        map_settings.setExtent(raster_layer.extent())
+        map_settings.setLayers([raster_layer])
+
+        # no filter on map settings
+        map_settings.setIsTemporal(False)
+        self.assertTrue(
+            self.render_map_settings_check(
+                "No temporal filter on map settings, fixed temporal range layer",
+                "dem_no_filter",
+                map_settings,
+            )
+        )
+
+        # map settings range includes layer's range
+        map_settings.setIsTemporal(True)
+        map_settings.setTemporalRange(
+            QgsDateTimeRange(
+                QDateTime(QDate(2022, 1, 1), QTime(0, 0, 0)),
+                QDateTime(QDate(2023, 6, 30), QTime(23, 59, 59)),
+            )
+        )
+        self.assertTrue(
+            self.render_map_settings_check(
+                "Temporal range filter on map settings includes layers fixed range",
+                "fixed_elevation_range_included",
+                map_settings,
+            )
+        )
+
+        # map settings range excludes layer's range
+        map_settings.setTemporalRange(
+            QgsDateTimeRange(
+                QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)),
+                QDateTime(QDate(2024, 6, 30), QTime(23, 59, 59)),
+            )
+        )
+        self.assertTrue(
+            self.render_map_settings_check(
+                "Temporal range filter on map settings outside of layers fixed range",
+                "fixed_elevation_range_excluded",
+                map_settings,
+            )
+        )
+
     def test_render_fixed_range_per_band_with_temporal_range_filter(self):
         """
         Test rendering a raster with a fixed temporal range per band when

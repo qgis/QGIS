@@ -11,7 +11,8 @@
 class QgsNetworkReplyContent
 {
 %Docstring(signature="appended")
-Encapsulates a network reply within a container which is inexpensive to copy and safe to pass between threads.
+Encapsulates a network reply within a container which is inexpensive to
+copy and safe to pass between threads.
 
 .. versionadded:: 3.6
 %End
@@ -28,7 +29,8 @@ Default constructor for an empty reply.
 
     explicit QgsNetworkReplyContent( QNetworkReply *reply );
 %Docstring
-Constructor for QgsNetworkReplyContent, populated from the specified ``reply``.
+Constructor for QgsNetworkReplyContent, populated from the specified
+``reply``.
 %End
 
     void clear();
@@ -38,11 +40,11 @@ Clears the reply, resetting it back to a default, empty reply.
 
     QVariant attribute( QNetworkRequest::Attribute code ) const;
 %Docstring
-Returns the attribute associated with the ``code``. If the attribute has not been set, it returns an
-invalid QVariant.
+Returns the attribute associated with the ``code``. If the attribute has
+not been set, it returns an invalid QVariant.
 
-You can expect the default values listed in QNetworkRequest.Attribute to be
-applied to the values returned by this function.
+You can expect the default values listed in QNetworkRequest.Attribute to
+be applied to the values returned by this function.
 
 .. seealso:: :py:func:`attributes`
 %End
@@ -50,16 +52,16 @@ applied to the values returned by this function.
 
     QNetworkReply::NetworkError error() const;
 %Docstring
-Returns the reply's error message, or QNetworkReply.NoError if no
-error was encountered.
+Returns the reply's error message, or QNetworkReply.NoError if no error
+was encountered.
 
 .. seealso:: :py:func:`errorString`
 %End
 
     QString errorString() const;
 %Docstring
-Returns the error text for the reply, or an empty string if no
-error was encountered.
+Returns the error text for the reply, or an empty string if no error was
+encountered.
 
 .. seealso:: :py:func:`error`
 %End
@@ -67,7 +69,8 @@ error was encountered.
 
     bool hasRawHeader( const QByteArray &headerName ) const;
 %Docstring
-Returns ``True`` if the reply contains a header with the specified ``headerName``.
+Returns ``True`` if the reply contains a header with the specified
+``headerName``.
 
 .. seealso:: :py:func:`rawHeaderPairs`
 
@@ -89,8 +92,8 @@ Returns a list of raw header names contained within the reply.
 
     QByteArray rawHeader( const QByteArray &headerName ) const;
 %Docstring
-Returns the content of the header with the specified ``headerName``, or an
-empty QByteArray if the specified header was not found in the reply.
+Returns the content of the header with the specified ``headerName``, or
+an empty QByteArray if the specified header was not found in the reply.
 
 .. seealso:: :py:func:`rawHeaderPairs`
 
@@ -101,7 +104,8 @@ empty QByteArray if the specified header was not found in the reply.
 
     int requestId() const;
 %Docstring
-Returns the unique ID identifying the original request which this response was formed from.
+Returns the unique ID identifying the original request which this
+response was formed from.
 %End
 
     QNetworkRequest request() const;
@@ -111,32 +115,35 @@ Returns the original network request.
 
     void setContent( const QByteArray &content );
 %Docstring
-Sets the reply content. This is not done by default, as reading network reply content
-can only be done once.
+Sets the reply content. This is not done by default, as reading network
+reply content can only be done once.
 
 .. seealso:: :py:func:`content`
 %End
 
     QByteArray content() const;
 %Docstring
-Returns the reply content. This is not available by default, as reading network reply content
-can only be done once.
+Returns the reply content. This is not available by default, as reading
+network reply content can only be done once.
 
-Blocking network requests (see :py:class:`QgsBlockingNetworkRequest`) will automatically populate this content.
+Blocking network requests (see :py:class:`QgsBlockingNetworkRequest`)
+will automatically populate this content.
 
 .. seealso:: :py:func:`setContent`
 %End
 
     static QString extractFilenameFromContentDispositionHeader( QNetworkReply *reply );
 %Docstring
-Extracts the filename component of the content disposition header from a network ``reply``.
+Extracts the filename component of the content disposition header from a
+network ``reply``.
 
 .. versionadded:: 3.28
 %End
 
     static QString extractFileNameFromContentDispositionHeader( const QString &header );
 %Docstring
-Extracts the filename component of the content disposition header from the ``header``.
+Extracts the filename component of the content disposition header from
+the ``header``.
 
 .. versionadded:: 3.28
 %End

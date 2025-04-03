@@ -11,7 +11,7 @@
 class QgsAbstractFeatureIterator
 {
 %Docstring(signature="appended")
-Internal feature iterator to be implemented within data providers
+Internal feature iterator to be implemented within data providers.
 %End
 
 %TypeHeaderCode
@@ -45,29 +45,33 @@ Resets the iterator to the starting position.
 
     virtual bool close() = 0;
 %Docstring
-Call to end the iteration. This frees any resources used by the iterator.
+Call to end the iteration. This frees any resources used by the
+iterator.
 %End
 
 
     CompileStatus compileStatus() const;
 %Docstring
-Returns the status of expression compilation for filter expression requests.
+Returns the status of expression compilation for filter expression
+requests.
 %End
 
     virtual bool isValid() const;
 %Docstring
-Returns if this iterator is valid.
-An invalid feature iterator is not able to provide a reliable source for data.
-If an iterator is invalid, either give up or try to send the request again (preferably
-after a timeout to give the system some time to stay responsive).
+Returns if this iterator is valid. An invalid feature iterator is not
+able to provide a reliable source for data. If an iterator is invalid,
+either give up or try to send the request again (preferably after a
+timeout to give the system some time to stay responsive).
 
-If you want to check if the iterator successfully completed, better use :py:func:`QgsFeatureIterator.isClosed()`.
+If you want to check if the iterator successfully completed, better use
+:py:func:`QgsFeatureIterator.isClosed()`.
 %End
 
     bool compileFailed() const;
 %Docstring
-Indicator if there was an error when sending the compiled query to the server.
-This indicates that there is something wrong with the expression compiler.
+Indicator if there was an error when sending the compiled query to the
+server. This indicates that there is something wrong with the expression
+compiler.
 
 .. versionadded:: 3.2
 %End
@@ -82,8 +86,8 @@ This indicates that there is something wrong with the expression compiler.
 
     virtual bool fetchFeature( QgsFeature &f ) = 0;
 %Docstring
-If you write a feature iterator for your provider, this is the method you
-need to implement!!
+If you write a feature iterator for your provider, this is the method
+you need to implement!!
 
 :param f: The feature to write to
 
@@ -92,11 +96,11 @@ need to implement!!
 
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
 %Docstring
-By default, the iterator will fetch all features and check if the feature
-matches the expression.
-If you have a more sophisticated metodology (SQL request for the features...)
-and you check for the expression in your fetchFeature method, you can just
-redirect this call to fetchFeature so the default check will be omitted.
+By default, the iterator will fetch all features and check if the
+feature matches the expression. If you have a more sophisticated
+metodology (SQL request for the features...) and you check for the
+expression in your fetchFeature method, you can just redirect this call
+to fetchFeature so the default check will be omitted.
 
 :param f: The feature to write to
 
@@ -105,12 +109,11 @@ redirect this call to fetchFeature so the default check will be omitted.
 
     virtual bool nextFeatureFilterFids( QgsFeature &f );
 %Docstring
-By default, the iterator will fetch all features and check if the id
-is in the request.
-If you have a more sophisticated metodology (SQL request for the features...)
-and you are sure, that any feature you return from fetchFeature will match
-if the request was FilterFids you can just redirect this call to fetchFeature
-so the default check will be omitted.
+By default, the iterator will fetch all features and check if the id is
+in the request. If you have a more sophisticated metodology (SQL request
+for the features...) and you are sure, that any feature you return from
+fetchFeature will match if the request was FilterFids you can just
+redirect this call to fetchFeature so the default check will be omitted.
 
 :param f: The feature to write to
 
@@ -119,34 +122,42 @@ so the default check will be omitted.
 
     void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
 %Docstring
-Transforms ``feature``'s geometry according to the specified coordinate ``transform``.
-If ``feature`` has no geometry or ``transform`` is invalid then calling this method
-has no effect and will be shortcut.
-Iterators should call this method before returning features to ensure that any
-:py:func:`QgsFeatureRequest.destinationCrs()` set on the request is respected.
+Transforms ``feature``'s geometry according to the specified coordinate
+``transform``. If ``feature`` has no geometry or ``transform`` is
+invalid then calling this method has no effect and will be shortcut.
+Iterators should call this method before returning features to ensure
+that any :py:func:`QgsFeatureRequest.destinationCrs()` set on the
+request is respected.
 %End
 
 
     QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const throw( QgsCsException );
 %Docstring
-Returns a rectangle representing the original request's :py:func:`QgsFeatureRequest.filterRect()`.
-If ``transform`` is a valid coordinate transform, the return rectangle will represent
-the requested :py:func:`~QgsAbstractFeatureIterator.filterRect` transformed to the source's coordinate reference system.
-Iterators should call this method and use the returned rectangle for filtering
-features to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on the request is respected.
-Will throw a :py:class:`QgsCsException` if the rect cannot be transformed from the destination CRS.
+Returns a rectangle representing the original request's
+:py:func:`QgsFeatureRequest.filterRect()`. If ``transform`` is a valid
+coordinate transform, the return rectangle will represent the requested
+:py:func:`~QgsAbstractFeatureIterator.filterRect` transformed to the
+source's coordinate reference system. Iterators should call this method
+and use the returned rectangle for filtering features to ensure that any
+:py:func:`QgsFeatureRequest.destinationCrs()` set on the request is
+respected. Will throw a :py:class:`QgsCsException` if the rect cannot be
+transformed from the destination CRS.
 %End
 
     RequestToSourceCrsResult updateRequestToSourceCrs( QgsFeatureRequest &request, const QgsCoordinateTransform &transform ) const throw( QgsCsException );
 %Docstring
 Update a :py:class:`QgsFeatureRequest` so that spatial filters are
-transformed to the source's coordinate reference system.
-Iterators should call this method against the request used for filtering
-features to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on the request is respected.
+transformed to the source's coordinate reference system. Iterators
+should call this method against the request used for filtering features
+to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on
+the request is respected.
 
-:return: result of operation. See QgsAbstractFeatureIterator.RequestToSourceCrsResult for interpretation.
+:return: result of operation. See
+         QgsAbstractFeatureIterator.RequestToSourceCrsResult for
+         interpretation.
 
-:raises QgsCsException: if the rect cannot be transformed from the destination CRS.
+:raises QgsCsException: if the rect cannot be transformed from the
+                        destination CRS.
 
 .. versionadded:: 3.22
 %End
@@ -169,7 +180,8 @@ Remove reference, delete if refs == 0
 
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
 %Docstring
-Setup the simplification of geometries to fetch using the specified simplify method
+Setup the simplification of geometries to fetch using the specified
+simplify method
 %End
 
 
@@ -180,7 +192,8 @@ template<T>
 class QgsAbstractFeatureIteratorFromSource : QgsAbstractFeatureIterator
 {
 %Docstring(signature="appended")
-Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
+Helper template that cares of two things: 1. automatic deletion of
+source if owned by iterator, 2. notification of open/closed iterator.
 
 .. note::
 
@@ -198,7 +211,8 @@ Helper template that cares of two things: 1. automatic deletion of source if own
   protected:
     void iteratorClosed();
 %Docstring
-to be called by from subclass in :py:func:`~QgsAbstractFeatureIteratorFromSource.close`
+to be called by from subclass in
+:py:func:`~QgsAbstractFeatureIteratorFromSource.close`
 %End
 
 };
@@ -207,7 +221,8 @@ to be called by from subclass in :py:func:`~QgsAbstractFeatureIteratorFromSource
 class QgsFeatureIterator
 {
 %Docstring(signature="appended")
-Wrapper for iterator of features from vector data provider or vector layer
+Wrapper for iterator of features from vector data provider or vector
+layer.
 %End
 
 %TypeHeaderCode
@@ -262,14 +277,15 @@ Resets the iterator to the starting position.
 
     bool close();
 %Docstring
-Call to end the iteration. This frees any resources used by the iterator.
+Call to end the iteration. This frees any resources used by the
+iterator.
 %End
 
     bool isValid() const;
 %Docstring
-Will return if this iterator is valid.
-An invalid iterator was probably introduced by a failed attempt to acquire a connection
-or is a default constructed iterator.
+Will return if this iterator is valid. An invalid iterator was probably
+introduced by a failed attempt to acquire a connection or is a default
+constructed iterator.
 
 .. seealso:: :py:func:`isClosed` to check if the iterator successfully completed and returned all the features.
 %End
@@ -282,13 +298,15 @@ find out whether the iterator is still valid or closed already
 
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const;
 %Docstring
-Returns the status of expression compilation for filter expression requests.
+Returns the status of expression compilation for filter expression
+requests.
 %End
 
     bool compileFailed() const;
 %Docstring
-Indicator if there was an error when sending the compiled query to the server.
-This indicates that there is something wrong with the expression compiler.
+Indicator if there was an error when sending the compiled query to the
+server. This indicates that there is something wrong with the expression
+compiler.
 
 .. versionadded:: 3.2
 %End

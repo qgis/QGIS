@@ -28,6 +28,7 @@ class QPaintEvent;
 /**
  * \ingroup gui
  * \class QgsDial
+ * \brief A QDial subclass with additional refinements.
  */
 class GUI_EXPORT QgsDial : public QDial
 {

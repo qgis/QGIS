@@ -19,6 +19,8 @@ __author__ = "Médéric Ribreux"
 __date__ = "February 2016"
 __copyright__ = "(C) 2016, Médéric Ribreux"
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """Verify if we have the right parameters"""
@@ -26,21 +28,25 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     if alg.parameterAsString(
         parameters, "start_coordinates", context
     ) and alg.parameterAsVectorLayer(parameters, "start_points", context):
-        return False, alg.tr(
-            "You need to set either start coordinates OR a start points vector layer!"
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            "You need to set either start coordinates OR a start points vector layer!",
         )
 
     # You need to set at least one parameter
     if not alg.parameterAsString(
         parameters, "start_coordinates", context
     ) and not alg.parameterAsVectorLayer(parameters, "start_points", context):
-        return False, alg.tr(
-            "You need to set either start coordinates OR a start points vector layer!"
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            "You need to set either start coordinates OR a start points vector layer!",
         )
 
     paramscore = [
         f for f in ["-c", "-a", "-n"] if alg.parameterAsBoolean(parameters, f, context)
     ]
     if len(paramscore) > 1:
-        return False, alg.tr("-c, -a, -n parameters are mutually exclusive!")
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt", "-c, -a, -n parameters are mutually exclusive!"
+        )
     return True, None

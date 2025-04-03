@@ -14,14 +14,15 @@ class QgsPropertyOverrideButton : QToolButton
 %Docstring(signature="appended")
 A button for controlling property overrides which may apply to a widget.
 
-:py:class:`QgsPropertyOverrideButton` is designed to be used alongside the QGIS
-properties framework (:py:class:`QgsProperty`, :py:class:`QgsPropertyDefinition`
-and :py:class:`QgsPropertyCollection`).
+:py:class:`QgsPropertyOverrideButton` is designed to be used alongside
+the QGIS properties framework (:py:class:`QgsProperty`,
+:py:class:`QgsPropertyDefinition` and
+:py:class:`QgsPropertyCollection`).
 
-It allows users to specify field or expression based overrides
-which should be applied to a property of an object. Eg, this widget
-is used for controlling data defined overrides in symbology, labeling
-and layouts.
+It allows users to specify field or expression based overrides which
+should be applied to a property of an object. Eg, this widget is used
+for controlling data defined overrides in symbology, labeling and
+layouts.
 %End
 
 %TypeHeaderCode
@@ -38,48 +39,55 @@ Constructor for QgsPropertyOverrideButton.
 
     void init( int propertyKey, const QgsProperty &property, const QgsPropertiesDefinition &definitions, const QgsVectorLayer *layer = 0, bool auxiliaryStorageEnabled = false );
 %Docstring
-Initialize a newly constructed property button (useful if button was included in a UI layout).
+Initialize a newly constructed property button (useful if button was
+included in a UI layout).
 
 :param propertyKey: key for corresponding property
 :param property: initial value of associated property to show in widget
 :param definitions: properties definitions for corresponding collection
 :param layer: associated vector layer
-:param auxiliaryStorageEnabled: If ``True``, activate the button to store data defined in auxiliary storage
+:param auxiliaryStorageEnabled: If ``True``, activate the button to
+                                store data defined in auxiliary storage
 %End
 
     void init( int propertyKey, const QgsProperty &property, const QgsPropertyDefinition &definition, const QgsVectorLayer *layer = 0, bool auxiliaryStorageEnabled = false );
 %Docstring
-Initialize a newly constructed property button (useful if button was included in a UI layout).
+Initialize a newly constructed property button (useful if button was
+included in a UI layout).
 
 :param propertyKey: key for corresponding property
 :param property: initial value of associated property to show in widget
 :param definition: properties definition for button
 :param layer: associated vector layer
-:param auxiliaryStorageEnabled: If ``True``, activate the button to store data defined in auxiliary storage
+:param auxiliaryStorageEnabled: If ``True``, activate the button to
+                                store data defined in auxiliary storage
 %End
 
     void init( int propertyKey, const QgsAbstractPropertyCollection &collection, const QgsPropertiesDefinition &definitions, const QgsVectorLayer *layer = 0, bool auxiliaryStorageEnabled = false );
 %Docstring
-Initialize a newly constructed property button (useful if button was included in a UI layout).
+Initialize a newly constructed property button (useful if button was
+included in a UI layout).
 
 :param propertyKey: key for corresponding property
 :param collection: associated property collection
 :param definitions: properties definitions for collection
 :param layer: associated vector layer
-:param auxiliaryStorageEnabled: If ``True``, activate the button to store data defined in auxiliary storage
+:param auxiliaryStorageEnabled: If ``True``, activate the button to
+                                store data defined in auxiliary storage
 %End
 
     QgsProperty toProperty() const;
 %Docstring
-Returns a :py:class:`QgsProperty` object encapsulating the current state of the
-widget.
+Returns a :py:class:`QgsProperty` object encapsulating the current state
+of the widget.
 
 .. seealso:: :py:func:`setToProperty`
 %End
 
     void setToProperty( const QgsProperty &property );
 %Docstring
-Sets the widget to reflect the current state of a :py:class:`QgsProperty`.
+Sets the widget to reflect the current state of a
+:py:class:`QgsProperty`.
 %End
 
     int propertyKey() const;
@@ -94,9 +102,9 @@ Returns ``True`` if the button has an active property.
 
     QgsPropertyDefinition::DataType validDataType() const;
 %Docstring
-Returns the data type which the widget will accept. This is used to filter
-out fields from the associated vector layer to only show fields which
-are compatible with the property.
+Returns the data type which the widget will accept. This is used to
+filter out fields from the associated vector layer to only show fields
+which are compatible with the property.
 %End
 
     QString fullDescription() const;
@@ -121,24 +129,25 @@ Set the usage information for the property.
 
     void setVectorLayer( const QgsVectorLayer *layer );
 %Docstring
-Sets the vector layer associated with the button. This controls which fields are
-displayed within the widget's pop up menu.
+Sets the vector layer associated with the button. This controls which
+fields are displayed within the widget's pop up menu.
 
 .. seealso:: :py:func:`vectorLayer`
 %End
 
     const QgsVectorLayer *vectorLayer() const;
 %Docstring
-Returns the vector layer associated with the button. This controls which fields are
-displayed within the widget's pop up menu.
+Returns the vector layer associated with the button. This controls which
+fields are displayed within the widget's pop up menu.
 
 .. seealso:: :py:func:`setVectorLayer`
 %End
 
     void registerCheckedWidget( QWidget *widget, bool natural = true );
 %Docstring
-Register a sibling ``widget`` that gets checked when the property is active.
-if ``natural`` is ``False``, widget gets unchecked when the property is active.
+Register a sibling ``widget`` that gets checked when the property is
+active. if ``natural`` is ``False``, widget gets unchecked when the
+property is active.
 
 .. note::
 
@@ -147,8 +156,10 @@ if ``natural`` is ``False``, widget gets unchecked when the property is active.
 
     void registerEnabledWidget( QWidget *widget, bool natural = true );
 %Docstring
-Register a sibling ``widget`` that gets enabled when the property is active, and disabled when the property is inactive.
-if ``natural`` is ``False``, widget gets disabled when the property is active, and enabled when the property is inactive.
+Register a sibling ``widget`` that gets enabled when the property is
+active, and disabled when the property is inactive. if ``natural`` is
+``False``, widget gets disabled when the property is active, and enabled
+when the property is inactive.
 
 .. note::
 
@@ -157,8 +168,10 @@ if ``natural`` is ``False``, widget gets disabled when the property is active, a
 
     void registerVisibleWidget( QWidget *widget, bool natural = true );
 %Docstring
-Register a sibling ``widget`` that gets visible when the property is active, and hidden when the property is inactive.
-if ``natural`` is ``False``, widget gets hidden when the property is active, and visible when the property is inactive.
+Register a sibling ``widget`` that gets visible when the property is
+active, and hidden when the property is inactive. if ``natural`` is
+``False``, widget gets hidden when the property is active, and visible
+when the property is inactive.
 
 .. note::
 
@@ -167,7 +180,8 @@ if ``natural`` is ``False``, widget gets hidden when the property is active, and
 
     void registerExpressionWidget( QWidget *widget );
 %Docstring
-Register a sibling ``widget`` (line edit, text edit) that will receive the property as an expression
+Register a sibling ``widget`` (line edit, text edit) that will receive
+the property as an expression
 
 .. note::
 
@@ -176,17 +190,19 @@ Register a sibling ``widget`` (line edit, text edit) that will receive the prope
 
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 %Docstring
-Register an expression context generator class that will be used to retrieve
-an expression context for the button when required.
+Register an expression context generator class that will be used to
+retrieve an expression context for the button when required.
 %End
 
     void registerLinkedWidget( QWidget *widget );
 %Docstring
-Registers a ``widget`` which is linked to this button. The meaning of linked widgets
-depends on the property type, and the type of linked widget.
+Registers a ``widget`` which is linked to this button. The meaning of
+linked widgets depends on the property type, and the type of linked
+widget.
 
-For color properties, linking a :py:class:`QgsColorButton` allows the color button to correctly
-reflect the status of the property when it's set to follow a project color.
+For color properties, linking a :py:class:`QgsColorButton` allows the
+color button to correctly reflect the status of the property when it's
+set to follow a project color.
 
 .. versionadded:: 3.6
 %End

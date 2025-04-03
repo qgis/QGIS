@@ -833,7 +833,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
   QDomElement sourceColorRampElem = element.firstChildElement( QStringLiteral( "colorramp" ) );
   if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
   {
-    r->setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
+    r->setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ).release() );
   }
 
   QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );

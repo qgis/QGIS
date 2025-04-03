@@ -13,8 +13,9 @@
 class QgsLegendSymbolItem
 {
 %Docstring(signature="appended")
-The class stores information about one class/rule of a vector layer renderer in a unified way
-that can be used by legend model for rendering of legend.
+Stores information about one class/rule of a vector layer renderer in a
+unified way that can be used by the legend model for rendering of
+legend.
 
 .. seealso:: :py:class:`QgsSymbolLegendNode`
 %End
@@ -44,38 +45,45 @@ Returns text label
 %End
     QString ruleKey() const;
 %Docstring
-Returns unique identifier of the rule for identification of the item within renderer
+Returns unique identifier of the rule for identification of the item
+within renderer
 %End
     bool isCheckable() const;
 %Docstring
-Returns whether the item is user-checkable - whether renderer supports enabling/disabling it
+Returns whether the item is user-checkable - whether renderer supports
+enabling/disabling it
 %End
 
     QgsSymbol *legacyRuleKey() const;
 %Docstring
-Used for older code that identifies legend entries from symbol pointer within renderer
+Used for older code that identifies legend entries from symbol pointer
+within renderer
 %End
 
     bool isScaleOK( double scale ) const;
 %Docstring
-Determine whether given scale is within the scale range. Returns ``True`` if scale or scale range is invalid (value <= 0)
+Determine whether given scale is within the scale range. Returns
+``True`` if scale or scale range is invalid (value <= 0)
 %End
 
     int scaleMinDenom() const;
 %Docstring
-Min scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 1000.
-Value <= 0 means the range is unbounded on this side
+Min scale denominator of the scale range. For range 1:1000 to 1:2000
+this will return 1000. Value <= 0 means the range is unbounded on this
+side
 %End
 
     int scaleMaxDenom() const;
 %Docstring
-Max scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 2000.
-Value <= 0 means the range is unbounded on this side
+Max scale denominator of the scale range. For range 1:1000 to 1:2000
+this will return 2000. Value <= 0 means the range is unbounded on this
+side
 %End
 
     int level() const;
 %Docstring
-Indentation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
+Indentation level that tells how deep the item is in a hierarchy of
+items. For flat lists level is 0
 %End
 
     QString parentRuleKey() const;
@@ -91,22 +99,26 @@ Key of the parent legend node. For legends with tree hierarchy
 %Docstring
 Sets the symbol of the item.
 
-Does not take ownership of symbol -- an internal clone is made of the symbol.
+Does not take ownership of symbol -- an internal clone is made of the
+symbol.
 
 .. seealso:: :py:func:`symbol`
 %End
 
     void setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings /Transfer/ );
 %Docstring
-Sets extra information about data-defined size. If set, this item should be converted to :py:class:`QgsDataDefinedSizeLegendNode`
-rather than :py:class:`QgsSymbolLegendNode` instance as usual. Passing ``None`` removes any data-defined size legend settings.
+Sets extra information about data-defined size. If set, this item should
+be converted to :py:class:`QgsDataDefinedSizeLegendNode` rather than
+:py:class:`QgsSymbolLegendNode` instance as usual. Passing ``None``
+removes any data-defined size legend settings.
 
 Takes ownership of the settings object.
 %End
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
 %Docstring
-Returns extra information for data-defined size legend rendering. Normally it returns ``None``.
+Returns extra information for data-defined size legend rendering.
+Normally it returns ``None``.
 %End
 
     void setUserData( int key, QVariant &value );

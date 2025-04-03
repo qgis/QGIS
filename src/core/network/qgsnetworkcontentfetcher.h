@@ -30,7 +30,9 @@ class QTextCodec;
 /**
  * \class QgsNetworkContentFetcher
  * \ingroup core
- * \brief HTTP network content fetcher. A simple method for fetching remote HTTP content
+ * \brief HTTP network content fetcher.
+ *
+ * A simple method for fetching remote HTTP content
  * and converting the content to standard formats.
  *
  * URL redirects are automatically handled.

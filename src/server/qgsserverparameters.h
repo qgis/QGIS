@@ -28,7 +28,7 @@
 /**
  * \ingroup server
  * \class QgsServerParameterDefinition
- * \brief Definition of a parameter with basic conversion methods
+ * \brief Definition of a parameter with basic conversion methods.
  * \since QGIS 3.4
  */
 class SERVER_EXPORT QgsServerParameterDefinition
@@ -191,7 +191,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
 /**
  * \ingroup server
  * \class QgsServerParameter
- * \brief Parameter common to all services (WMS, WFS, ...)
+ * \brief Parameter common to all services (WMS, WFS, ...).
  * \since QGIS 3.4
  */
 class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
@@ -251,7 +251,7 @@ class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
 /**
  * \ingroup server
  * \class QgsServerParameters
- * \brief QgsServerParameters provides an interface to retrieve and manipulate global parameters received from the client.
+ * \brief Provides an interface to retrieve and manipulate global parameters received from the client.
  * \since QGIS 3.4
  */
 class SERVER_EXPORT QgsServerParameters

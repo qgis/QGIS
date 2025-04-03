@@ -14,7 +14,8 @@
 class QgsDatabaseSchemaComboBox : QWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDatabaseSchemaComboBox` class is a combo box which displays the list of schemas for a specific database connection.
+A combo box which displays the list of schemas for a specific database
+connection.
 
 .. warning::
 
@@ -30,7 +31,8 @@ The :py:class:`QgsDatabaseSchemaComboBox` class is a combo box which displays th
   public:
     explicit QgsDatabaseSchemaComboBox( const QString &provider, const QString &connection, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDatabaseSchemaComboBox, for the specified ``provider`` and ``connection``.
+Constructor for QgsDatabaseSchemaComboBox, for the specified
+``provider`` and ``connection``.
 
 .. warning::
 
@@ -40,21 +42,24 @@ Constructor for QgsDatabaseSchemaComboBox, for the specified ``provider`` and ``
 
     explicit QgsDatabaseSchemaComboBox( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDatabaseSchemaComboBox, for the specified ``connection``.
+Constructor for QgsDatabaseSchemaComboBox, for the specified
+``connection``.
 
 Ownership of ``connection`` is transferred to the combobox.
 %End
 
     void setAllowEmptySchema( bool allowEmpty );
 %Docstring
-Sets whether an optional empty schema ("not set") option is present in the combobox.
+Sets whether an optional empty schema ("not set") option is present in
+the combobox.
 
 .. seealso:: :py:func:`allowEmptySchema`
 %End
 
     bool allowEmptySchema() const;
 %Docstring
-Returns ``True`` if the combobox allows the empty schema ("not set") choice.
+Returns ``True`` if the combobox allows the empty schema ("not set")
+choice.
 
 .. seealso:: :py:func:`setAllowEmptySchema`
 %End
@@ -78,7 +83,8 @@ Sets the current schema selected in the combo box.
 
     void setConnectionName( const QString &connection, const QString &provider = QString() );
 %Docstring
-Sets the database connection name from which to retrieve the available schemas.
+Sets the database connection name from which to retrieve the available
+schemas.
 
 Optionally the ``provider`` can be reset too.
 %End

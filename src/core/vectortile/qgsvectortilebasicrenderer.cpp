@@ -438,15 +438,15 @@ QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::simpleStyleWi
   QColor polygonFillColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
   QColor polygonStrokeColor = polygonFillColor;
   polygonFillColor.setAlpha( 100 );
-  double polygonStrokeWidth = DEFAULT_LINE_WIDTH;
+  double polygonStrokeWidth = Qgis::DEFAULT_LINE_WIDTH;
 
   QColor lineStrokeColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
-  double lineStrokeWidth = DEFAULT_LINE_WIDTH;
+  double lineStrokeWidth = Qgis::DEFAULT_LINE_WIDTH;
 
   QColor pointFillColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
   QColor pointStrokeColor = pointFillColor;
   pointFillColor.setAlpha( 100 );
-  double pointSize = DEFAULT_POINT_SIZE;
+  double pointSize = Qgis::DEFAULT_POINT_SIZE;
 
   return simpleStyle( polygonFillColor, polygonStrokeColor, polygonStrokeWidth,
                       lineStrokeColor, lineStrokeWidth,

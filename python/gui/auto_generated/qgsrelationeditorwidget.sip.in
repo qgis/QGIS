@@ -157,7 +157,7 @@ Defines the current configuration
 class QgsRelationEditorConfigWidget : QgsAbstractRelationEditorConfigWidget
 {
 %Docstring(signature="appended")
-Creates a new configuration widget for the relation editor widget
+Creates a new configuration widget for the relation editor widget.
 
 .. versionadded:: 3.18
 %End
@@ -170,7 +170,8 @@ Creates a new configuration widget for the relation editor widget
 %Docstring
 Create a new configuration widget
 
-:param relation: The relation for which the configuration dialog will be created
+:param relation: The relation for which the configuration dialog will be
+                 created
 :param parent: A parent widget
 %End
 
@@ -187,12 +188,14 @@ Create a configuration from the current GUI state
 %Docstring
 Update the configuration widget to represent the given configuration.
 
-:param config: The configuration which should be represented by this widget
+:param config: The configuration which should be represented by this
+               widget
 %End
 
     void mEditExpression_clicked();
 %Docstring
-Opens an expression dialog and sets its value as filter expression for the linking dialog
+Opens an expression dialog and sets its value as filter expression for
+the linking dialog
 %End
 };
 

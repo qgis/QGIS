@@ -13,7 +13,7 @@
 class QgsAuthConfigEditor : QWidget
 {
 %Docstring(signature="appended")
-Widget for editing authentication configuration database
+Widget for editing authentication configuration database.
 %End
 
 %TypeHeaderCode
@@ -26,7 +26,8 @@ Widget for editing authentication configurations directly in database
 
 :param parent: Parent widget
 :param showUtilities: Whether to show the widget's utilities button
-:param relayMessages: Whether to relay auth manager messages to internal message bar
+:param relayMessages: Whether to relay auth manager messages to internal
+                      message bar
 %End
 
     void toggleTitleVisibility( bool visible );
@@ -49,7 +50,8 @@ Sets whether to show the widget's utilities button, e.g. when embedding
 
     void setRelayMessages( bool relay = true );
 %Docstring
-Sets whether to relay auth manager messages to internal message bar, e.g. when embedding
+Sets whether to relay auth manager messages to internal message bar,
+e.g. when embedding
 %End
 
 };

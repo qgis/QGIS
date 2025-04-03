@@ -418,6 +418,16 @@ Qgis::DistanceUnit QgsMapSettings::mapUnits() const
   return mScaleCalculator.mapUnits();
 }
 
+Qgis::ScaleCalculationMethod QgsMapSettings::scaleMethod() const
+{
+  return mScaleCalculator.method();
+}
+
+void QgsMapSettings::setScaleMethod( Qgis::ScaleCalculationMethod method )
+{
+  mScaleCalculator.setMethod( method );
+  updateDerived();
+}
 
 bool QgsMapSettings::hasValidSettings() const
 {

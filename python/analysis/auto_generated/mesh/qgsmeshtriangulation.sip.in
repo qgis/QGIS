@@ -14,8 +14,7 @@
 class QgsMeshTriangulation : QObject
 {
 %Docstring(signature="appended")
-
-Class that handles mesh creation with Delaunay constrained triangulation
+Handles mesh creation with Delaunay constrained triangulation.
 
 .. versionadded:: 3.16
 %End
@@ -29,24 +28,36 @@ Class that handles mesh creation with Delaunay constrained triangulation
 
     bool addVertices( QgsFeatureIterator &vertexFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback = 0, long featureCount = 1 );
 %Docstring
-Adds vertices to the triangulation from a feature iterator, return ``True`` if successful.
+Adds vertices to the triangulation from a feature iterator, return
+``True`` if successful.
 
 :param vertexFeatureIterator: the feature iterator of vertices to insert
-:param valueAttribute: the index of the attribute that represents the value of vertices, if -1 uses Z coordinate of vertices
-:param transform: the coordinates transform used to transform coordinates
-:param feedback: feedback argument may be specified to allow cancellation and progress reports
-:param featureCount: the count of feature to allow progress report of the feedback
+:param valueAttribute: the index of the attribute that represents the
+                       value of vertices, if -1 uses Z coordinate of
+                       vertices
+:param transform: the coordinates transform used to transform
+                  coordinates
+:param feedback: feedback argument may be specified to allow
+                 cancellation and progress reports
+:param featureCount: the count of feature to allow progress report of
+                     the feedback
 %End
 
     bool addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transformContext, QgsFeedback *feedback = 0, long featureCount = 1 );
 %Docstring
 Adds break lines from a vector layer, return ``True`` if successful.
 
-:param lineFeatureIterator: the feature iterator of break lines to insert
-:param valueAttribute: the index of the attribute that represents the value of vertices, if -1 uses Z coordinate of vertices
-:param transformContext: the coordinates transform context used to transform coordinates
-:param feedback: feedback argument may be specified to allow cancellation and progress reports
-:param featureCount: the count of feature to allow progress report of the feedback
+:param lineFeatureIterator: the feature iterator of break lines to
+                            insert
+:param valueAttribute: the index of the attribute that represents the
+                       value of vertices, if -1 uses Z coordinate of
+                       vertices
+:param transformContext: the coordinates transform context used to
+                         transform coordinates
+:param feedback: feedback argument may be specified to allow
+                 cancellation and progress reports
+:param featureCount: the count of feature to allow progress report of
+                     the feedback
 
 .. warning::
 
@@ -55,7 +66,8 @@ Adds break lines from a vector layer, return ``True`` if successful.
 
     int addVertex( const QgsPoint &vertex );
 %Docstring
-Adds a new vertex in the triangulation and returns the index of the new vertex
+Adds a new vertex in the triangulation and returns the index of the new
+vertex
 
 .. versionadded:: 3.22
 %End
@@ -78,8 +90,8 @@ Sets the coordinate reference system used for the triangulation
 class QgsMeshZValueDatasetGroup : QgsMeshDatasetGroup
 {
 %Docstring(signature="appended")
-
-Convenient class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices
+Convenience class that can be used to obtain a dataset group on vertices
+that represents the Z value of the mesh vertices.
 
 .. versionadded:: 3.16
 %End
@@ -116,9 +128,9 @@ Constructor
 class QgsMeshEditingDelaunayTriangulation : QgsMeshAdvancedEditing
 {
 %Docstring(signature="appended")
-
-Class that can be used with :py:func:`QgsMeshEditor.advancedEdit()` to add triangle faces to a mesh created by
-a Delaunay triangulation on provided existing vertex.
+Can be used with :py:func:`QgsMeshEditor.advancedEdit()` to add triangle
+faces to a mesh created by a Delaunay triangulation on existing
+vertices.
 
 .. versionadded:: 3.22
 %End

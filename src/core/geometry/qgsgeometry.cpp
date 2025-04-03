@@ -2935,10 +2935,9 @@ QgsGeometry QgsGeometry::interpolate( double distance ) const
   }
 
   const QgsCurve *curve = nullptr;
-  if ( line.isMultipart() )
+  if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( line.constGet() ) )
   {
     // if multi part, iterate through parts to find target part
-    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( line.constGet() );
     for ( int part = 0; part < collection->numGeometries(); ++part )
     {
       const QgsCurve *candidate = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( part ) );

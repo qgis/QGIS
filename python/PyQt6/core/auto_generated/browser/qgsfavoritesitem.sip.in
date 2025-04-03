@@ -12,7 +12,7 @@
 class QgsFavoritesItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")
-Contains various Favorites directories
+A browser item which contains various Favorites directories.
 %End
 
 %TypeHeaderCode
@@ -22,8 +22,8 @@ Contains various Favorites directories
 
     QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
 %Docstring
-Constructor for QgsFavoritesItem. Accepts a path argument specifying the file path associated with
-the item.
+Constructor for QgsFavoritesItem. Accepts a path argument specifying the
+file path associated with the item.
 %End
 
     SIP_PYOBJECT __repr__();
@@ -39,8 +39,8 @@ the item.
 %Docstring
 Adds a new ``directory`` to the favorites group.
 
-If ``name`` is specified, it will be used as the favorite's name. Otherwise
-the name will be set to match ``directory``.
+If ``name`` is specified, it will be used as the favorite's name.
+Otherwise the name will be set to match ``directory``.
 
 .. seealso:: :py:func:`removeDirectory`
 %End

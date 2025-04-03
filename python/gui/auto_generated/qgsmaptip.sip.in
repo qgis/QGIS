@@ -11,23 +11,23 @@
 class QgsMapTip : QWidget
 {
 %Docstring(signature="appended")
-A maptip is a class to display a tip on a map canvas
-when a mouse is hovered over a feature.
+Displays a tool tip on a map canvas when the mouse is hovered over a
+feature.
 
-Since QGIS 2.16 a maptip can show full html.
-:py:class:`QgsMapTip` is a :py:class:`QgsWebView`, so you can load full HTML/JS/CSS in it.
+Since QGIS 2.16 a maptip can show full html. :py:class:`QgsMapTip` is a
+:py:class:`QgsWebView`, so you can load full HTML/JS/CSS in it.
 
-The code found in the map tips tab is inserted in a inline-block div
-so the frame can be resized based on the content size.
+The code found in the map tips tab is inserted in a inline-block div so
+the frame can be resized based on the content size.
 
-If no element in the html has a width attribute, the frame will squeeze down
-to the widest word. To avoid this you can wrap your HTML in a
-div style="width:300px" or similar.
+If no element in the html has a width attribute, the frame will squeeze
+down to the widest word. To avoid this you can wrap your HTML in a div
+style="width:300px" or similar.
 
-JS can be included using the script tag as usual, while CSS files must be
-linked using link rel="stylesheet" href="URL.css" the html specs
-discourages link rel="stylesheet" in the body, but all browsers allow it.
-see https://jakearchibald.com/2016/link-in-body
+JS can be included using the script tag as usual, while CSS files must
+be linked using link rel="stylesheet" href="URL.css" the html specs
+discourages link rel="stylesheet" in the body, but all browsers allow
+it. see https://jakearchibald.com/2016/link-in-body
 %End
 
 %TypeHeaderCode
@@ -43,12 +43,12 @@ Default constructor
 %Docstring
 Show a maptip at a given point on the map canvas
 
-:param thepLayer: a qgis vector map layer pointer that will
-                  be used to provide the attribute data for the map tip.
-:param mapPosition: a reference to the position of the cursor
-                    in map coordinatess.
-:param pixelPosition: a reference to the position of the cursor
-                      in pixel coordinates.
+:param thepLayer: a qgis vector map layer pointer that will be used to
+                  provide the attribute data for the map tip.
+:param mapPosition: a reference to the position of the cursor in map
+                    coordinatess.
+:param pixelPosition: a reference to the position of the cursor in pixel
+                      coordinates.
 :param mpMapCanvas: a map canvas on which the tip is drawn
 %End
 
@@ -57,21 +57,23 @@ Show a maptip at a given point on the map canvas
 Clear the current maptip if it exists
 
 :param mpMapCanvas: the canvas from which the tip should be cleared.
-:param msDelay: optional time in ms to defer clearing the maptip (since QGIS 3.26)
+:param msDelay: optional time in ms to defer clearing the maptip (since
+                QGIS 3.26)
 %End
 
     static QString vectorMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate, const QString &displayExpression );
 %Docstring
-Returns the html that would be displayed in a maptip for a given layer. If the layer has features, the first feature is used
-to evaluate the expressions.
+Returns the html that would be displayed in a maptip for a given layer.
+If the layer has features, the first feature is used to evaluate the
+expressions.
 
 .. versionadded:: 3.32
 %End
 
     static QString rasterMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate );
 %Docstring
-Returns the html that would be displayed in a maptip for a given layer. The center pixel of the raster is used to
-evaluate the expressions.
+Returns the html that would be displayed in a maptip for a given layer.
+The center pixel of the raster is used to evaluate the expressions.
 
 .. versionadded:: 3.32
 %End

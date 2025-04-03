@@ -13,12 +13,14 @@
 class QgsCodeEditorShell : QgsCodeEditor
 {
 %Docstring(signature="appended")
-A shell script code editor based on QScintilla2. Adds syntax highlighting and
-code autocompletion.
+A shell script code editor based on QScintilla2.
 
-:py:class:`QgsCodeEditorShell` supports either Bash (Linux) or Batch (Windows) code interpreters.
-By default the Batch interpreter will be used on Windows platforms and the Bash interpreter
-on all other platforms.
+Adds syntax highlighting and code autocompletion.
+
+:py:class:`QgsCodeEditorShell` supports either Bash (Linux) or Batch
+(Windows) code interpreters. By default the Batch interpreter will be
+used on Windows platforms and the Bash interpreter on all other
+platforms.
 
 .. versionadded:: 3.32
 %End
@@ -31,9 +33,14 @@ on all other platforms.
 %Docstring
 Constructor for QgsCodeEditorShell.
 
-The ``language`` argument may be :py:class:`Qgis`.ScriptLanguage.Unknown, :py:class:`Qgis`.ScriptLanguage.Bash or :py:class:`Qgis`.ScriptLanguage.Batch.
-If the ``language`` is :py:class:`Qgis`.ScriptLanguage.Unknown, then the :py:class:`Qgis`.ScriptLanguage.Batch interpreter will be used on Windows platforms and the :py:class:`Qgis`.ScriptLanguage.Bash interpreter
-on all other platforms.
+The ``language`` argument may be
+:py:class:`Qgis`.ScriptLanguage.Unknown,
+:py:class:`Qgis`.ScriptLanguage.Bash or
+:py:class:`Qgis`.ScriptLanguage.Batch. If the ``language`` is
+:py:class:`Qgis`.ScriptLanguage.Unknown, then the
+:py:class:`Qgis`.ScriptLanguage.Batch interpreter will be used on
+Windows platforms and the :py:class:`Qgis`.ScriptLanguage.Bash
+interpreter on all other platforms.
 %End
     virtual Qgis::ScriptLanguage language() const;
 

@@ -11,16 +11,22 @@
 
 
 
-%ModuleHeaderCode
-#include "qgsserverprojectutils.h"
+class QgsServerProjectUtils
+{
+%Docstring(signature="appended")
+Contains utility functions to retrieve specific entries from a
+:py:class:`QgsProject`.
+
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgsserverprojectutils.h"
+%End
+  public:
 
-  namespace QgsServerProjectUtils
-{
 
-
-  bool owsServiceCapabilities( const QgsProject &project );
+    static bool owsServiceCapabilities( const QgsProject &project );
 %Docstring
 Returns if owsService capabilities are enabled.
 
@@ -29,16 +35,17 @@ Returns if owsService capabilities are enabled.
 :return: if owsService capabilities are enabled.
 %End
 
-  QString owsServiceTitle( const QgsProject &project );
+    static QString owsServiceTitle( const QgsProject &project );
 %Docstring
 Returns the owsService title defined in project.
 
 :param project: the QGIS project
 
-:return: the owsService title if defined in project with project title as fallback, "Untitled" otherwise.
+:return: the owsService title if defined in project with project title
+         as fallback, "Untitled" otherwise.
 %End
 
-  QString owsServiceAbstract( const QgsProject &project );
+    static QString owsServiceAbstract( const QgsProject &project );
 %Docstring
 Returns the owsService abstract defined in project.
 
@@ -47,7 +54,7 @@ Returns the owsService abstract defined in project.
 :return: the owsService abstract if defined in project.
 %End
 
-  QStringList owsServiceKeywords( const QgsProject &project );
+    static QStringList owsServiceKeywords( const QgsProject &project );
 %Docstring
 Returns the owsService keywords defined in project.
 
@@ -56,7 +63,7 @@ Returns the owsService keywords defined in project.
 :return: the owsService keywords if defined in project.
 %End
 
-  QString owsServiceOnlineResource( const QgsProject &project );
+    static QString owsServiceOnlineResource( const QgsProject &project );
 %Docstring
 Returns the owsService online resource defined in project.
 
@@ -65,7 +72,7 @@ Returns the owsService online resource defined in project.
 :return: the owsService online resource if defined in project.
 %End
 
-  QString owsServiceContactOrganization( const QgsProject &project );
+    static QString owsServiceContactOrganization( const QgsProject &project );
 %Docstring
 Returns the owsService contact organization defined in project.
 
@@ -74,7 +81,7 @@ Returns the owsService contact organization defined in project.
 :return: the owsService contact organization if defined in project.
 %End
 
-  QString owsServiceContactPosition( const QgsProject &project );
+    static QString owsServiceContactPosition( const QgsProject &project );
 %Docstring
 Returns the owsService contact position defined in project.
 
@@ -83,7 +90,7 @@ Returns the owsService contact position defined in project.
 :return: the owsService contact position if defined in project.
 %End
 
-  QString owsServiceContactPerson( const QgsProject &project );
+    static QString owsServiceContactPerson( const QgsProject &project );
 %Docstring
 Returns the owsService contact person defined in project.
 
@@ -92,7 +99,7 @@ Returns the owsService contact person defined in project.
 :return: the owsService contact person if defined in project.
 %End
 
-  QString owsServiceContactMail( const QgsProject &project );
+    static QString owsServiceContactMail( const QgsProject &project );
 %Docstring
 Returns the owsService contact mail defined in project.
 
@@ -101,7 +108,7 @@ Returns the owsService contact mail defined in project.
 :return: the owsService contact mail if defined in project.
 %End
 
-  QString owsServiceContactPhone( const QgsProject &project );
+    static QString owsServiceContactPhone( const QgsProject &project );
 %Docstring
 Returns the owsService contact phone defined in project.
 
@@ -110,7 +117,7 @@ Returns the owsService contact phone defined in project.
 :return: the owsService contact phone if defined in project.
 %End
 
-  QString owsServiceFees( const QgsProject &project );
+    static QString owsServiceFees( const QgsProject &project );
 %Docstring
 Returns the owsService fees defined in project.
 
@@ -119,7 +126,7 @@ Returns the owsService fees defined in project.
 :return: the owsService fees if defined in project.
 %End
 
-  QString owsServiceAccessConstraints( const QgsProject &project );
+    static QString owsServiceAccessConstraints( const QgsProject &project );
 %Docstring
 Returns the owsService access constraints defined in project.
 
@@ -128,7 +135,7 @@ Returns the owsService access constraints defined in project.
 :return: the owsService access constraints if defined in project.
 %End
 
-  int wmsMaxWidth( const QgsProject &project );
+    static int wmsMaxWidth( const QgsProject &project );
 %Docstring
 Returns the maximum width for WMS images defined in a QGIS project.
 
@@ -137,7 +144,7 @@ Returns the maximum width for WMS images defined in a QGIS project.
 :return: width if defined in project, -1 otherwise.
 %End
 
-  int wmsMaxHeight( const QgsProject &project );
+    static int wmsMaxHeight( const QgsProject &project );
 %Docstring
 Returns the maximum height for WMS images defined in a QGIS project.
 
@@ -146,7 +153,7 @@ Returns the maximum height for WMS images defined in a QGIS project.
 :return: height if defined in project, -1 otherwise.
 %End
 
-  int wmsImageQuality( const QgsProject &project );
+    static int wmsImageQuality( const QgsProject &project );
 %Docstring
 Returns the quality for WMS images defined in a QGIS project.
 
@@ -155,9 +162,10 @@ Returns the quality for WMS images defined in a QGIS project.
 :return: quality if defined in project, -1 otherwise.
 %End
 
-  int wmsTileBuffer( const QgsProject &project );
+    static int wmsTileBuffer( const QgsProject &project );
 %Docstring
-Returns the tile buffer in pixels for WMS images defined in a QGIS project.
+Returns the tile buffer in pixels for WMS images defined in a QGIS
+project.
 
 :param project: the QGIS project
 
@@ -166,13 +174,14 @@ Returns the tile buffer in pixels for WMS images defined in a QGIS project.
 .. versionadded:: 3.10
 %End
 
-  bool wmsRenderMapTiles( const QgsProject &project );
+    static bool wmsRenderMapTiles( const QgsProject &project );
 %Docstring
-Returns ``True`` if WMS requests should use the :py:class:`QgsMapSettings`.RenderMapTile flag,
-so that no visible artifacts are visible between adjacent tiles.
+Returns ``True`` if WMS requests should use the
+:py:class:`QgsMapSettings`.RenderMapTile flag, so that no visible
+artifacts are visible between adjacent tiles.
 
-This flag can slow down rendering considerably, so it is only used if the corresponding
-setting is enabled in the project.
+This flag can slow down rendering considerably, so it is only used if
+the corresponding setting is enabled in the project.
 
 :param project: the QGIS project
 
@@ -181,18 +190,20 @@ setting is enabled in the project.
 .. versionadded:: 3.18
 %End
 
-  int wmsMaxAtlasFeatures( const QgsProject &project );
+    static int wmsMaxAtlasFeatures( const QgsProject &project );
 %Docstring
-Returns the maximum number of atlas features which can be printed in a request
+Returns the maximum number of atlas features which can be printed in a
+request
 
 :param project: the QGIS project
 
 :return: the number of atlas features
 %End
 
-  double wmsDefaultMapUnitsPerMm( const QgsProject &project );
+    static double wmsDefaultMapUnitsPerMm( const QgsProject &project );
 %Docstring
-Returns the default number of map units per millimeters in case of the scale is not given
+Returns the default number of map units per millimeters in case of the
+scale is not given
 
 :param project: the QGIS project
 
@@ -201,7 +212,7 @@ Returns the default number of map units per millimeters in case of the scale is 
 .. versionadded:: 3.4
 %End
 
-  bool wmsUseLayerIds( const QgsProject &project );
+    static bool wmsUseLayerIds( const QgsProject &project );
 %Docstring
 Returns if layer ids are used as name in WMS.
 
@@ -210,7 +221,7 @@ Returns if layer ids are used as name in WMS.
 :return: if layer ids are used as name.
 %End
 
-  bool wmsInfoFormatSia2045( const QgsProject &project );
+    static bool wmsInfoFormatSia2045( const QgsProject &project );
 %Docstring
 Returns if the info format is SIA20145.
 
@@ -219,25 +230,29 @@ Returns if the info format is SIA20145.
 :return: if the info format is SIA20145.
 %End
 
-  bool wmsFeatureInfoAddWktGeometry( const QgsProject &project );
+    static bool wmsFeatureInfoAddWktGeometry( const QgsProject &project );
 %Docstring
-Returns if the geometry is displayed as Well Known Text in GetFeatureInfo request.
+Returns if the geometry is displayed as Well Known Text in
+GetFeatureInfo request.
 
 :param project: the QGIS project
 
-:return: if the geometry is displayed as Well Known Text in GetFeatureInfo request.
+:return: if the geometry is displayed as Well Known Text in
+         GetFeatureInfo request.
 %End
 
-  bool wmsFeatureInfoUseAttributeFormSettings( const QgsProject &project );
+    static bool wmsFeatureInfoUseAttributeFormSettings( const QgsProject &project );
 %Docstring
-Returns if feature form settings should be considered for the format of the feature info response
+Returns if feature form settings should be considered for the format of
+the feature info response
 
 :param project: the QGIS project
 
-:return: true if the feature form settings shall be considered for the feature info response
+:return: true if the feature form settings shall be considered for the
+         feature info response
 %End
 
-  bool wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project );
+    static bool wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project );
 %Docstring
 Returns if the geometry has to be segmentize in GetFeatureInfo request.
 
@@ -246,18 +261,20 @@ Returns if the geometry has to be segmentize in GetFeatureInfo request.
 :return: if the geometry has to be segmentize in GetFeatureInfo request.
 %End
 
-  bool wmsAddLegendGroupsLegendGraphic( const QgsProject &project );
+    static bool wmsAddLegendGroupsLegendGraphic( const QgsProject &project );
 %Docstring
-Returns if legend groups should be in the legend graphic response if GetLegendGraphic is called on a layer group.
+Returns if legend groups should be in the legend graphic response if
+GetLegendGraphic is called on a layer group.
 
 :param project: the QGIS project
 
 :return: if the GetLegendGraphic response has to contain legend groups
 %End
 
-  bool wmsSkipNameForGroup( const QgsProject &project );
+    static bool wmsSkipNameForGroup( const QgsProject &project );
 %Docstring
-Returns if name attribute should be skipped for groups in WMS capabilities document.
+Returns if name attribute should be skipped for groups in WMS
+capabilities document.
 
 :param project: the QGIS project
 
@@ -266,7 +283,7 @@ Returns if name attribute should be skipped for groups in WMS capabilities docum
 .. versionadded:: 3.36
 %End
 
-  int wmsFeatureInfoPrecision( const QgsProject &project );
+    static int wmsFeatureInfoPrecision( const QgsProject &project );
 %Docstring
 Returns the geometry precision for GetFeatureInfo request.
 
@@ -275,7 +292,7 @@ Returns the geometry precision for GetFeatureInfo request.
 :return: the geometry precision for GetFeatureInfo request.
 %End
 
-  QString wmsFeatureInfoDocumentElement( const QgsProject &project );
+    static QString wmsFeatureInfoDocumentElement( const QgsProject &project );
 %Docstring
 Returns the document element name for XML GetFeatureInfo request.
 
@@ -284,7 +301,7 @@ Returns the document element name for XML GetFeatureInfo request.
 :return: the document element name for XML GetFeatureInfo request.
 %End
 
-  QString wmsFeatureInfoDocumentElementNs( const QgsProject &project );
+    static QString wmsFeatureInfoDocumentElementNs( const QgsProject &project );
 %Docstring
 Returns the document element namespace for XML GetFeatureInfo request.
 
@@ -293,7 +310,7 @@ Returns the document element namespace for XML GetFeatureInfo request.
 :return: the document element namespace for XML GetFeatureInfo request.
 %End
 
-  QString wmsFeatureInfoSchema( const QgsProject &project );
+    static QString wmsFeatureInfoSchema( const QgsProject &project );
 %Docstring
 Returns the schema URL for XML GetFeatureInfo request.
 
@@ -302,16 +319,18 @@ Returns the schema URL for XML GetFeatureInfo request.
 :return: the schema URL for XML GetFeatureInfo request.
 %End
 
-  QHash<QString, QString> wmsFeatureInfoLayerAliasMap( const QgsProject &project );
+    static QHash<QString, QString> wmsFeatureInfoLayerAliasMap( const QgsProject &project );
 %Docstring
-Returns the mapping between layer name and wms layer name for GetFeatureInfo request.
+Returns the mapping between layer name and wms layer name for
+GetFeatureInfo request.
 
 :param project: the QGIS project
 
-:return: the mapping between layer name and wms layer name for GetFeatureInfo request.
+:return: the mapping between layer name and wms layer name for
+         GetFeatureInfo request.
 %End
 
-  bool wmsInspireActivate( const QgsProject &project );
+    static bool wmsInspireActivate( const QgsProject &project );
 %Docstring
 Returns if Inspire is activated.
 
@@ -320,7 +339,7 @@ Returns if Inspire is activated.
 :return: if Inspire is activated.
 %End
 
-  QString wmsInspireLanguage( const QgsProject &project );
+    static QString wmsInspireLanguage( const QgsProject &project );
 %Docstring
 Returns the Inspire language.
 
@@ -329,7 +348,7 @@ Returns the Inspire language.
 :return: the Inspire language if defined in project.
 %End
 
-  QString wmsInspireMetadataUrl( const QgsProject &project );
+    static QString wmsInspireMetadataUrl( const QgsProject &project );
 %Docstring
 Returns the Inspire metadata URL.
 
@@ -338,7 +357,7 @@ Returns the Inspire metadata URL.
 :return: the Inspire metadata URL if defined in project.
 %End
 
-  QString wmsInspireMetadataUrlType( const QgsProject &project );
+    static QString wmsInspireMetadataUrlType( const QgsProject &project );
 %Docstring
 Returns the Inspire metadata URL type.
 
@@ -347,7 +366,7 @@ Returns the Inspire metadata URL type.
 :return: the Inspire metadata URL type if defined in project.
 %End
 
-  QString wmsInspireTemporalReference( const QgsProject &project );
+    static QString wmsInspireTemporalReference( const QgsProject &project );
 %Docstring
 Returns the Inspire temporal reference.
 
@@ -356,7 +375,7 @@ Returns the Inspire temporal reference.
 :return: the Inspire temporal reference if defined in project.
 %End
 
-  QString wmsInspireMetadataDate( const QgsProject &project );
+    static QString wmsInspireMetadataDate( const QgsProject &project );
 %Docstring
 Returns the Inspire metadata date.
 
@@ -365,7 +384,7 @@ Returns the Inspire metadata date.
 :return: the Inspire metadata date if defined in project.
 %End
 
-  QStringList wmsRestrictedComposers( const QgsProject &project );
+    static QStringList wmsRestrictedComposers( const QgsProject &project );
 %Docstring
 Returns the restricted composer list.
 
@@ -374,10 +393,10 @@ Returns the restricted composer list.
 :return: the restricted composer list if defined in project.
 %End
 
-  QString wmsServiceUrl( const QgsProject &project, const QgsServerRequest &request = QgsServerRequest(), const QgsServerSettings &settings = QgsServerSettings() );
+    static QString wmsServiceUrl( const QgsProject &project, const QgsServerRequest &request = QgsServerRequest(), const QgsServerSettings &settings = QgsServerSettings() );
 %Docstring
-Returns the WMS service url.
-The URL defined in the project or if not defined the URL from serviceUrl.
+Returns the WMS service url. The URL defined in the project or if not
+defined the URL from serviceUrl.
 
 :param project: the QGIS project
 :param request: the request
@@ -386,7 +405,7 @@ The URL defined in the project or if not defined the URL from serviceUrl.
 :return: url to use for this service
 %End
 
-  QString wmsRootName( const QgsProject &project );
+    static QString wmsRootName( const QgsProject &project );
 %Docstring
 Returns the WMS root layer name defined in a QGIS project.
 
@@ -395,7 +414,7 @@ Returns the WMS root layer name defined in a QGIS project.
 :return: root layer name to use for this service
 %End
 
-  QStringList wmsRestrictedLayers( const QgsProject &project );
+    static QStringList wmsRestrictedLayers( const QgsProject &project );
 %Docstring
 Returns the restricted layer name list.
 
@@ -404,7 +423,7 @@ Returns the restricted layer name list.
 :return: the restricted layer name list if defined in project.
 %End
 
-  QStringList wmsOutputCrsList( const QgsProject &project );
+    static QStringList wmsOutputCrsList( const QgsProject &project );
 %Docstring
 Returns the WMS output CRS list.
 
@@ -413,7 +432,7 @@ Returns the WMS output CRS list.
 :return: the WMS output CRS list.
 %End
 
-  QgsRectangle wmsExtent( const QgsProject &project );
+    static QgsRectangle wmsExtent( const QgsProject &project );
 %Docstring
 Returns the WMS Extent restriction.
 
@@ -422,10 +441,10 @@ Returns the WMS Extent restriction.
 :return: the WMS Extent restriction.
 %End
 
-  QString wfsServiceUrl( const QgsProject &project, const QgsServerRequest &request = QgsServerRequest(), const QgsServerSettings &settings = QgsServerSettings() );
+    static QString wfsServiceUrl( const QgsProject &project, const QgsServerRequest &request = QgsServerRequest(), const QgsServerSettings &settings = QgsServerSettings() );
 %Docstring
-Returns the WFS service url.
-The URL defined in the project or if not defined the URL from serviceUrl.
+Returns the WFS service url. The URL defined in the project or if not
+defined the URL from serviceUrl.
 
 :param project: the QGIS project
 :param request: the request
@@ -434,9 +453,10 @@ The URL defined in the project or if not defined the URL from serviceUrl.
 :return: url to use for this service
 %End
 
-  QStringList wfsLayerIds( const QgsProject &project );
+    static QStringList wfsLayerIds( const QgsProject &project );
 %Docstring
-Returns the Layer ids list defined in a QGIS project as published in WFS.
+Returns the Layer ids list defined in a QGIS project as published in
+WFS.
 
 :param project: the QGIS project
 
@@ -444,9 +464,10 @@ Returns the Layer ids list defined in a QGIS project as published in WFS.
 %End
 
 
-  int wfsLayerPrecision( const QgsProject &project, const QString &layerId );
+    static int wfsLayerPrecision( const QgsProject &project, const QString &layerId );
 %Docstring
-Returns the Layer precision defined in a QGIS project for the WFS GetFeature.
+Returns the Layer precision defined in a QGIS project for the WFS
+GetFeature.
 
 :param project: the QGIS project
 :param layerId: the layer id in the project
@@ -454,37 +475,40 @@ Returns the Layer precision defined in a QGIS project for the WFS GetFeature.
 :return: the layer precision for WFS GetFeature.
 %End
 
-  QStringList wfstUpdateLayerIds( const QgsProject &project );
+    static QStringList wfstUpdateLayerIds( const QgsProject &project );
 %Docstring
-Returns the Layer ids list defined in a QGIS project as published as WFS-T with update capabilities.
+Returns the Layer ids list defined in a QGIS project as published as
+WFS-T with update capabilities.
 
 :param project: the QGIS project
 
 :return: the Layer ids list.
 %End
 
-  QStringList wfstInsertLayerIds( const QgsProject &project );
+    static QStringList wfstInsertLayerIds( const QgsProject &project );
 %Docstring
-Returns the Layer ids list defined in a QGIS project as published as WFS-T with insert capabilities.
+Returns the Layer ids list defined in a QGIS project as published as
+WFS-T with insert capabilities.
 
 :param project: the QGIS project
 
 :return: the Layer ids list.
 %End
 
-  QStringList wfstDeleteLayerIds( const QgsProject &project );
+    static QStringList wfstDeleteLayerIds( const QgsProject &project );
 %Docstring
-Returns the Layer ids list defined in a QGIS project as published as WFS-T with delete capabilities.
+Returns the Layer ids list defined in a QGIS project as published as
+WFS-T with delete capabilities.
 
 :param project: the QGIS project
 
 :return: the Layer ids list.
 %End
 
-  QString wcsServiceUrl( const QgsProject &project, const QgsServerRequest &request = QgsServerRequest(), const QgsServerSettings &settings = QgsServerSettings() );
+    static QString wcsServiceUrl( const QgsProject &project, const QgsServerRequest &request = QgsServerRequest(), const QgsServerSettings &settings = QgsServerSettings() );
 %Docstring
-Returns the WCS service url.
-The URL defined in the project or if not defined the URL from serviceUrl.
+Returns the WCS service url. The URL defined in the project or if not
+defined the URL from serviceUrl.
 
 :param project: the QGIS project
 :param request: the request
@@ -493,19 +517,20 @@ The URL defined in the project or if not defined the URL from serviceUrl.
 :return: url to use for this service
 %End
 
-  QStringList wcsLayerIds( const QgsProject &project );
+    static QStringList wcsLayerIds( const QgsProject &project );
 %Docstring
-Returns the Layer ids list defined in a QGIS project as published in WCS.
+Returns the Layer ids list defined in a QGIS project as published in
+WCS.
 
 :param project: the QGIS project
 
 :return: the Layer ids list.
 %End
 
-  QString wmtsServiceUrl( const QgsProject &project, const QgsServerRequest &request = QgsServerRequest(), const QgsServerSettings &settings = QgsServerSettings() );
+    static QString wmtsServiceUrl( const QgsProject &project, const QgsServerRequest &request = QgsServerRequest(), const QgsServerSettings &settings = QgsServerSettings() );
 %Docstring
-Returns the WMTS service url.
-The URL defined in the project or if not defined the URL from serviceUrl.
+Returns the WMTS service url. The URL defined in the project or if not
+defined the URL from serviceUrl.
 
 :param project: the QGIS project
 :param request: the request
@@ -516,10 +541,10 @@ The URL defined in the project or if not defined the URL from serviceUrl.
 .. versionadded:: 3.4
 %End
 
-  QString serviceUrl( const QString &service, const QgsServerRequest &request, const QgsServerSettings &settings );
+    static QString serviceUrl( const QString &service, const QgsServerRequest &request, const QgsServerSettings &settings );
 %Docstring
-Returns the service url defined in the environment variable or with HTTP header.
-This is calculated from (in order of precedence):
+Returns the service url defined in the environment variable or with HTTP
+header. This is calculated from (in order of precedence):
 
 - Value defined in the project per service
 - The ``QGIS_SERVER_<service>_SERVICE_URL`` environment variable
@@ -527,7 +552,8 @@ This is calculated from (in order of precedence):
 - The custom ``X-:py:class:`Qgis`-<service>-Service-Url`` header
 - The custom ``X-:py:class:`Qgis`-Service-Url`` header
 - Build from the standard ``Forwarded`` header
-- Build from the pseudo standard ``X-Forwarded-Host`` and ``X-Forwarded-Proto`` headers
+- Build from the pseudo standard ``X-Forwarded-Host`` and
+  ``X-Forwarded-Proto`` headers
 - Build from the standard ``Host`` header and the server protocol
 - Build from the server name and the server protocol.
 

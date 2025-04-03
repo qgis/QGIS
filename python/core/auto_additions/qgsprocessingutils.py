@@ -82,6 +82,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingFeatureSource.__overridden_methods__ = ['hasFeatures', 'getFeatures', 'sourceCrs', 'fields', 'wkbType', 'featureCount', 'sourceName', 'uniqueValues', 'minimumValue', 'maximumValue', 'sourceExtent', 'allFeatureIds', 'hasSpatialIndex']
     QgsProcessingFeatureSource.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

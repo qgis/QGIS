@@ -17,8 +17,12 @@
 class QgsGraphBuilderInterface
 {
 %Docstring(signature="appended")
-Determine interface for creating a graph. Contains the settings of the graph.
-:py:class:`QgsGraphBuilder` and :py:class:`QgsGraphDirector` both use a "builder" design pattern
+Interface for creating a graph.
+
+Contains the settings of the graph.
+
+:py:class:`QgsGraphBuilder` and :py:class:`QgsGraphDirector` both use a
+"builder" design pattern
 %End
 
 %TypeHeaderCode
@@ -36,8 +40,10 @@ Determine interface for creating a graph. Contains the settings of the graph.
 Default constructor
 
 :param crs: Coordinate reference system for new graph vertex
-:param ctfEnabled: enable coordinate transform from source graph CRS to CRS graph
-:param topologyTolerance: sqrt distance between source point as one graph vertex
+:param ctfEnabled: enable coordinate transform from source graph CRS to
+                   CRS graph
+:param topologyTolerance: sqrt distance between source point as one
+                          graph vertex
 :param ellipsoidID: ellipsoid for edge measurement
 %End
 

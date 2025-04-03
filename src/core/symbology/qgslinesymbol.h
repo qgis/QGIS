@@ -34,7 +34,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
      * Create a line symbol with one symbol layer: SimpleLine with specified properties.
      * This is a convenience method for easier creation of line symbols.
      */
-    static QgsLineSymbol *createSimple( const QVariantMap &properties ) SIP_FACTORY;
+    static std::unique_ptr< QgsLineSymbol > createSimple( const QVariantMap &properties );
 
     /**
      * Constructor for QgsLineSymbol, with the specified list of initial symbol \a layers.

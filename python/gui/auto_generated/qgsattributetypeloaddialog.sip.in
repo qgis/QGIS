@@ -12,6 +12,10 @@
 
 class QgsAttributeTypeLoadDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog which allows populating value maps using features present in a
+vector layer.
+%End
 
 %TypeHeaderCode
 #include "qgsattributetypeloaddialog.h"
@@ -22,8 +26,8 @@ class QgsAttributeTypeLoadDialog : QDialog
     virtual void accept();
 
 %Docstring
-Overloaded accept method which will write the feature field
-values, then delegate to QDialog.accept()
+Overloaded accept method which will write the feature field values, then
+delegate to QDialog.accept()
 %End
 
     void setVectorLayer( QgsVectorLayer *layer );

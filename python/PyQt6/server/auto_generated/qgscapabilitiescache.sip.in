@@ -13,7 +13,7 @@
 class QgsCapabilitiesCache : QObject
 {
 %Docstring(signature="appended")
-A cache for capabilities xml documents (by configuration file path)
+A cache for capabilities xml documents (by configuration file path).
 %End
 
 %TypeHeaderCode
@@ -24,7 +24,8 @@ A cache for capabilities xml documents (by configuration file path)
 
     const QDomDocument *searchCapabilitiesDocument( const QString &configFilePath, const QString &key );
 %Docstring
-Returns cached capabilities document (or 0 if document for configuration file not in cache)
+Returns cached capabilities document (or 0 if document for configuration
+file not in cache)
 
 :param configFilePath: the progect file path
 :param key: key used to separate different version in different cache
@@ -32,7 +33,8 @@ Returns cached capabilities document (or 0 if document for configuration file no
 
     void insertCapabilitiesDocument( const QString &configFilePath, const QString &key, const QDomDocument *doc );
 %Docstring
-Inserts new capabilities document (creates a copy of the document, does not take ownership)
+Inserts new capabilities document (creates a copy of the document, does
+not take ownership)
 
 :param configFilePath: the project file path
 :param key: key used to separate different version in different cache

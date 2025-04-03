@@ -19,6 +19,9 @@
 
 class QgsRelationReferenceWidget : QWidget
 {
+%Docstring(signature="appended")
+A widget which shows related features.
+%End
 
 %TypeHeaderCode
 #include "qgsrelationreferencewidget.h"
@@ -100,7 +103,8 @@ determines if the drop-down is enabled
 
     bool allowMapIdentification();
 %Docstring
-determines if the widget offers the possibility to select the related feature on the map (using a dedicated map tool)
+determines if the widget offers the possibility to select the related
+feature on the map (using a dedicated map tool)
 %End
     void setAllowMapIdentification( bool allowMapIdentification );
 
@@ -124,8 +128,8 @@ Determines if the filters are chained
 
     void setChainFilters( bool chainFilters );
 %Docstring
-Set if filters are chained.
-Chained filters restrict the option of subsequent filters based on the selection of a previous filter.
+Set if filters are chained. Chained filters restrict the option of
+subsequent filters based on the selection of a previous filter.
 
 :param chainFilters: If chaining should be enabled
 %End
@@ -136,14 +140,14 @@ Returns the currently set filter expression.
 %End
     void setFilterExpression( const QString &filterExpression );
 %Docstring
-If not empty, will be used as filter expression.
-Only if this evaluates to ``True``, the value will be shown.
+If not empty, will be used as filter expression. Only if this evaluates
+to ``True``, the value will be shown.
 %End
 
     QgsFeature referencedFeature() const;
 %Docstring
-Returns the related feature (from the referenced layer)
-if no feature is related, it returns an invalid feature
+Returns the related feature (from the referenced layer) if no feature is
+related, it returns an invalid feature
 %End
 
     void showIndeterminateState();
@@ -175,6 +179,13 @@ Set the current form feature (from the referencing layer)
 .. versionadded:: 3.10
 %End
 
+    void setParentFormFeature( const QgsFeature &parentFormFeature );
+%Docstring
+Set the current parent form feature
+
+.. versionadded:: 3.42.2
+%End
+
     QString referencedLayerDataSource() const;
 %Docstring
 Returns the public data source of the referenced layer
@@ -184,7 +195,8 @@ Returns the public data source of the referenced layer
 
     void setReferencedLayerDataSource( const QString &referencedLayerDataSource );
 %Docstring
-Set the public data source of the referenced layer to ``referencedLayerDataSource``
+Set the public data source of the referenced layer to
+``referencedLayerDataSource``
 
 .. versionadded:: 3.12
 %End
@@ -198,7 +210,8 @@ Returns the data provider key of the referenced layer
 
     void setReferencedLayerProviderKey( const QString &referencedLayerProviderKey );
 %Docstring
-Set the data provider key of the referenced layer to ``referencedLayerProviderKey``
+Set the data provider key of the referenced layer to
+``referencedLayerProviderKey``
 
 .. versionadded:: 3.12
 %End
@@ -245,7 +258,6 @@ Set the limit of fetched features (0 means all features)
 .. versionadded:: 3.32
 %End
 
-
   public slots:
     void openForm();
 %Docstring
@@ -260,6 +272,14 @@ activate the map tool to select a new related feature on the map
     void deleteForeignKeys();
 %Docstring
 unset the currently related feature
+%End
+
+    bool saveReferencedAttributeForm();
+%Docstring
+Trigger save of the embedded referenced attribute form. Returns ``True``
+on success or if no embedded form is present.
+
+.. versionadded:: 3.42
 %End
 
   protected:

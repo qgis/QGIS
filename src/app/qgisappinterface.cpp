@@ -390,9 +390,9 @@ QList<Qgs3DMapCanvas *> QgisAppInterface::mapCanvases3D()
   return qgis->mapCanvases3D();
 }
 
-Qgs3DMapCanvas *QgisAppInterface::createNewMapCanvas3D( const QString &name )
+Qgs3DMapCanvas *QgisAppInterface::createNewMapCanvas3D( const QString &name, Qgis::SceneMode sceneMode )
 {
-  return qgis->createNewMapCanvas3D( name );
+  return qgis->createNewMapCanvas3D( name, sceneMode );
 }
 
 void QgisAppInterface::closeMapCanvas3D( const QString &name )

@@ -70,8 +70,8 @@ class QgsRubberBand3D;
 
 
 /**
- * \ingroup 3d
- * \brief Qgs3DMapCanvas is a convenience wrapper to simplify the creation of a 3D window ready to be used with QGIS.
+ * \ingroup qgis_3d
+ * \brief Convenience wrapper to simplify the creation of a 3D window ready to be used with QGIS.
  *
  * \note This is a port of qtwindow3d which does not set the default surface when initialized.
  * \note The default surface must be set before the construction of the QApplication when using shared OpenGL context.

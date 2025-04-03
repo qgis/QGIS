@@ -13,7 +13,8 @@
 class QgsTranslationContext
 {
 %Docstring(signature="appended")
-Used for the collecting of strings from projects for translation and creation of ts files.
+Used for the collecting of strings from projects for translation and
+creation of ts files.
 
 .. versionadded:: 3.4
 %End
@@ -55,8 +56,10 @@ Sets the ``fileName`` of the TS file
 
     void registerTranslation( const QString &context, const QString &source );
 %Docstring
-Registers the ``source`` to be translated. It's the text of the object needed to be translated.
-The ``context`` defines in what context the object is used. Means layer name and sub category of object needed to be translated.
+Registers the ``source`` to be translated. It's the text of the object
+needed to be translated. The ``context`` defines in what context the
+object is used. Means layer name and sub category of object needed to be
+translated.
 %End
 
     void writeTsFile( const QString &locale ) const;

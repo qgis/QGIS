@@ -24,7 +24,7 @@
 #define DEFAULT_SIMPLEFILL_STYLE        Qt::SolidPattern
 #define DEFAULT_SIMPLEFILL_BORDERCOLOR  QColor( 35, 35, 35 )
 #define DEFAULT_SIMPLEFILL_BORDERSTYLE  Qt::SolidLine
-#define DEFAULT_SIMPLEFILL_BORDERWIDTH  DEFAULT_LINE_WIDTH
+#define DEFAULT_SIMPLEFILL_BORDERWIDTH  Qgis::DEFAULT_LINE_WIDTH
 #define DEFAULT_SIMPLEFILL_JOINSTYLE    Qt::BevelJoin
 
 #define INF 1E20
@@ -480,6 +480,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 /**
  * \ingroup core
  * \class QgsShapeburstFillSymbolLayer
+ * \brief A fill symbol layer which applies a gradient from the outer edges of a symbol to the inside.
  */
 class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 {
@@ -751,7 +752,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
 /**
  * \ingroup core
- * \brief Base class for polygon renderers generating texture images
+ * \brief Base class for fill symbol layers which fill polygons with a repeated image.
 */
 class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer SIP_ABSTRACT
 {
@@ -850,7 +851,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer SIP_ABSTRAC
 /**
  * \ingroup core
  * \class QgsRasterFillSymbolLayer
- * \brief A class for filling symbols with a repeated raster image.
+ * \brief A fill symbol layer which fills polygons with a repeated raster image.
  */
 class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 {
@@ -1167,7 +1168,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
 /**
  * \ingroup core
- * \brief A class for filling symbols with a repeated SVG file.
+ * \brief A fill symbol layer which fills polygons with a repeated SVG file.
 */
 class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 {

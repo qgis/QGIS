@@ -11,15 +11,19 @@
 
 
 
+class QgsServerFeatureId
+{
+%Docstring(signature="appended")
+Contains utility functions for using primary keys for feature IDs.
 
-%ModuleHeaderCode
-#include "qgsserverfeatureid.h"
+.. versionadded:: 3.4.9
 %End
 
-
-  namespace QgsServerFeatureId
-{
-  QString getServerFid( const QgsFeature &feature, const QgsAttributeList &pkAttributes );
+%TypeHeaderCode
+#include "qgsserverfeatureid.h"
+%End
+  public:
+    static QString getServerFid( const QgsFeature &feature, const QgsAttributeList &pkAttributes );
 %Docstring
 Returns the feature id based on primary keys.
 
@@ -31,32 +35,36 @@ Returns the feature id based on primary keys.
 .. versionadded:: 3.4.9
 %End
 
-  QgsFeatureRequest updateFeatureRequestFromServerFids( QgsFeatureRequest & featureRequest, const QStringList &serverFids, const QgsVectorDataProvider *provider );
+    static QgsFeatureRequest updateFeatureRequestFromServerFids( QgsFeatureRequest &featureRequest, const QStringList &serverFids, const QgsVectorDataProvider *provider );
 %Docstring
-Returns the feature request based on feature ids build with primary keys.
+Returns the feature request based on feature ids build with primary
+keys.
 
 :param featureRequest: the feature request to update
-:param serverFids: the feature ids build with :py:class:`QgsServerFeatureId`.getServerFid
-:param provider: the vector layer provider to provide fields and primary keys list
+:param serverFids: the feature ids build with
+                   QgsServerFeatureId.getServerFid
+:param provider: the vector layer provider to provide fields and primary
+                 keys list
 
 :return: the feature request updated
 
 .. versionadded:: 3.4.9
 %End
 
-  QString getExpressionFromServerFid( const QString &serverFid, const QgsVectorDataProvider *provider );
+    static QString getExpressionFromServerFid( const QString &serverFid, const QgsVectorDataProvider *provider );
 %Docstring
 Returns the expression feature id based on primary keys.
 
 :param serverFid: the feature id build with primary keys
-:param provider: the vector layer provider to provide fields and primary keys list
+:param provider: the vector layer provider to provide fields and primary
+                 keys list
 
 :return: the feature id based on primary keys
 
 .. versionadded:: 3.4.9
 %End
 
-  QString pkSeparator();
+    static QString pkSeparator();
 %Docstring
 Returns the primary keys separator
 

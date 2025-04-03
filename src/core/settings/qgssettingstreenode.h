@@ -29,7 +29,7 @@ class QgsSettingsEntryString;
 /**
  * \ingroup core
  * \class QgsSettingsTreeNode
- * \brief QgsSettingsTreeNode is a tree node for the settings tree
+ * \brief A tree node for the settings tree
  * to help organizing and introspecting the tree.
  *
  * It is either a root node, a normal node or
@@ -177,9 +177,10 @@ class CORE_EXPORT QgsSettingsTreeNode
 /**
  * \ingroup core
  * \class QgsSettingsTreeNamedListNode
- * \brief QgsSettingsTreeNamedListNode is a named list tree node for the settings tree
+ * \brief A named list tree node for the settings tree
  * to help organizing and introspecting the tree.
- * the named list node is used to store a group of settings under a dynamically named key.
+ *
+ * The named list node is used to store a group of settings under a dynamically named key.
  *
  * \see QgsSettingsTree
  * \see QgsSettingsTreeNode

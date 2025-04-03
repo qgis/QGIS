@@ -46,13 +46,14 @@ Sets the ``relation`` and the ``feature``
 
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 %Docstring
-Sets the relation(s) for this widget
-If only one relation is set, it will act as a simple 1:N relation widget
-If both relations are set, it will act as an N:M relation widget
-inserting and deleting entries on the intermediate table as required.
+Sets the relation(s) for this widget If only one relation is set, it
+will act as a simple 1:N relation widget If both relations are set, it
+will act as an N:M relation widget inserting and deleting entries on the
+intermediate table as required.
 
 :param relation: Relation referencing the edited table
-:param nmrelation: Optional reference from the referencing table to a 3rd N:M table
+:param nmrelation: Optional reference from the referencing table to a
+                   3rd N:M table
 %End
 
     QgsRelation relation() const;
@@ -71,7 +72,8 @@ Returns the nm relation
 
     void setFeature( const QgsFeature &feature, bool update = true );
 %Docstring
-Sets the ``feature`` being edited and updates the UI unless ``update`` is set to ``False``
+Sets the ``feature`` being edited and updates the UI unless ``update``
+is set to ``False``
 %End
 
     void setMultiEditFeatureIds( const QgsFeatureIds &fids );
@@ -118,13 +120,15 @@ Defines if a title label should be shown for this widget.
 
     QVariant nmRelationId() const;
 %Docstring
-Determines the relation id of the second relation involved in an N:M relation.
+Determines the relation id of the second relation involved in an N:M
+relation.
 %End
 
     void setNmRelationId( const QVariant &nmRelationId = QVariant() );
 %Docstring
-Sets ``nmRelationId`` for the relation id of the second relation involved in an N:M relation.
-If it's empty, then it's considered as a 1:M relationship.
+Sets ``nmRelationId`` for the relation id of the second relation
+involved in an N:M relation. If it's empty, then it's considered as a
+1:M relationship.
 %End
 
  QString label() const /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
@@ -138,14 +142,14 @@ Determines the label of this element
 
     void setLabel( const QString &label = QString() );
 %Docstring
-Sets ``label`` for this element
-If it's empty it takes the relation id as label
+Sets ``label`` for this element If it's empty it takes the relation id
+as label
 %End
 
     QgsFeature feature() const;
 %Docstring
-Returns the widget's current feature
-If the widget is in multiedit mode only the first is returned
+Returns the widget's current feature If the widget is in multiedit mode
+only the first is returned
 
 .. seealso:: :py:func:`features`
 %End
@@ -159,7 +163,8 @@ Returns the widget's current features
 
     bool forceSuppressFormPopup() const;
 %Docstring
-Determines the force suppress form popup status that is configured for this widget
+Determines the force suppress form popup status that is configured for
+this widget
 %End
 
     void setForceSuppressFormPopup( bool forceSuppressFormPopup );
@@ -189,9 +194,9 @@ Returns true if editing multiple features at a time
 
     void relatedFeaturesChanged();
 %Docstring
-Emit this signal, whenever the related features changed.
-This happens for example when related features are added, removed,
-linked or unlinked.
+Emit this signal, whenever the related features changed. This happens
+for example when related features are added, removed, linked or
+unlinked.
 
 .. versionadded:: 3.22
 %End
@@ -200,7 +205,8 @@ linked or unlinked.
 
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &newValue ) = 0;
 %Docstring
-Called when an ``attribute`` value in the parent widget has changed to ``newValue``
+Called when an ``attribute`` value in the parent widget has changed to
+``newValue``
 %End
 
   protected slots:
@@ -231,7 +237,8 @@ Delete a feature with given ``fid``
 %Docstring
 Links a new feature to the relation
 
-:param filterExpression: to filter the available features in the link dialog since QGIS 3.40
+:param filterExpression: to filter the available features in the link
+                         dialog since QGIS 3.40
 %End
 
     void onLinkFeatureDlgAccepted();
@@ -285,15 +292,16 @@ Unlinks the features with ``fids``
 
     virtual void updateUi();
 %Docstring
-A hook called every time the state of the relation editor widget has changed via calling its `set*` methods or slots,
-e.g. changed relation, added feature, etc.
-Should be used to refresh the UI regarding the new data.
-Check :py:class:`QgsRealationEditorWidget` as an example.
+A hook called every time the state of the relation editor widget has
+changed via calling its `set*` methods or slots, e.g. changed relation,
+added feature, etc. Should be used to refresh the UI regarding the new
+data. Check :py:class:`QgsRealationEditorWidget` as an example.
 %End
 
  virtual void setTitle( const QString &title ) /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
-Sets the title of the widget, if it is wrapped within a :py:class:`QgsCollapsibleGroupBox`
+Sets the title of the widget, if it is wrapped within a
+:py:class:`QgsCollapsibleGroupBox`
 
 .. deprecated:: 3.20
 
@@ -302,26 +310,37 @@ Sets the title of the widget, if it is wrapped within a :py:class:`QgsCollapsibl
 
     virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature );
 %Docstring
-A hook called right before :py:func:`~QgsAbstractRelationEditorWidget.setRelationFeature` is executed. Used to update the UI once setting the relation feature is done.
-Check :py:class:`QgsRealationEditorWidget` as an example.
+A hook called right before
+:py:func:`~QgsAbstractRelationEditorWidget.setRelationFeature` is
+executed. Used to update the UI once setting the relation feature is
+done. Check :py:class:`QgsRealationEditorWidget` as an example.
 %End
 
     virtual void afterSetRelationFeature();
 %Docstring
-A hook called right after :py:func:`~QgsAbstractRelationEditorWidget.setRelationFeature` is executed, but before :py:func:`~QgsAbstractRelationEditorWidget.updateUi` is called. Used to update the UI once setting the relation feature is done.
-Check :py:class:`QgsRealationEditorWidget` as an example.
+A hook called right after
+:py:func:`~QgsAbstractRelationEditorWidget.setRelationFeature` is
+executed, but before
+:py:func:`~QgsAbstractRelationEditorWidget.updateUi` is called. Used to
+update the UI once setting the relation feature is done. Check
+:py:class:`QgsRealationEditorWidget` as an example.
 %End
 
     virtual void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation );
 %Docstring
-A hook called right before :py:func:`~QgsAbstractRelationEditorWidget.setRelations` is executed. Used to manipulate UI once setting the relations is done.
-Check :py:class:`QgsRealationEditorWidget` as an example.
+A hook called right before
+:py:func:`~QgsAbstractRelationEditorWidget.setRelations` is executed.
+Used to manipulate UI once setting the relations is done. Check
+:py:class:`QgsRealationEditorWidget` as an example.
 %End
 
     virtual void afterSetRelations();
 %Docstring
-A hook called right after :py:func:`~QgsAbstractRelationEditorWidget.setRelations` is executed, but before :py:func:`~QgsAbstractRelationEditorWidget.updateUi` is called. Used to update the UI once setting the relations is done.
-Check :py:class:`QgsRealationEditorWidget` as an example.
+A hook called right after
+:py:func:`~QgsAbstractRelationEditorWidget.setRelations` is executed,
+but before :py:func:`~QgsAbstractRelationEditorWidget.updateUi` is
+called. Used to update the UI once setting the relations is done. Check
+:py:class:`QgsRealationEditorWidget` as an example.
 %End
 };
 
@@ -329,11 +348,13 @@ Check :py:class:`QgsRealationEditorWidget` as an example.
 class QgsAbstractRelationEditorConfigWidget : QWidget
 {
 %Docstring(signature="appended")
-This class should be subclassed for every configurable relation widget type.
+Abstract base class for configurable relation widget types.
 
-It implements the GUI configuration widget and transforms this to/from a configuration.
+It implements the GUI configuration widget and transforms this to/from a
+configuration.
 
-It will only be instantiated by {:py:class:`QgsAbstractRelationEditorWidgetFactory`}
+It will only be instantiated by
+{:py:class:`QgsAbstractRelationEditorWidgetFactory`}
 
 .. versionadded:: 3.18
 %End
@@ -352,7 +373,8 @@ It will only be instantiated by {:py:class:`QgsAbstractRelationEditorWidgetFacto
 %Docstring
 Create a new configuration widget
 
-:param relation: The relation for which the configuration dialog will be created
+:param relation: The relation for which the configuration dialog will be
+                 created
 :param parent: A parent widget
 %End
 
@@ -367,7 +389,8 @@ Create a configuration from the current GUI state
 %Docstring
 Update the configuration widget to represent the given configuration.
 
-:param config: The configuration which should be represented by this widget
+:param config: The configuration which should be represented by this
+               widget
 %End
 
     QgsVectorLayer *layer();
@@ -406,7 +429,8 @@ Returns the nm relation for which this configuration widget applies
 class QgsAbstractRelationEditorWidgetFactory
 {
 %Docstring(signature="appended")
-Factory class for creating relation widgets and their corresponding config widgets
+Factory class for creating relation widgets and their corresponding
+config widgets.
 
 .. versionadded:: 3.18
 %End
@@ -434,9 +458,9 @@ Returns the human readable identifier name of this widget type
 
     virtual QgsAbstractRelationEditorWidget *create( const QVariantMap &config, QWidget *parent = 0 ) const = 0 /Factory/;
 %Docstring
-Override this in your implementation.
-Create a new relation widget. Call :py:func:`QgsEditorWidgetRegistry.create()`
-instead of calling this method directly.
+Override this in your implementation. Create a new relation widget. Call
+:py:func:`QgsEditorWidgetRegistry.create()` instead of calling this
+method directly.
 
 :param config: The widget configuration to build the widget with
 :param parent: The parent for the wrapper class and any created widget.
@@ -446,8 +470,8 @@ instead of calling this method directly.
 
     virtual QgsAbstractRelationEditorConfigWidget *configWidget( const QgsRelation &relation, QWidget *parent ) const = 0 /Factory/;
 %Docstring
-Override this in your implementation.
-Create a new configuration widget for this widget type.
+Override this in your implementation. Create a new configuration widget
+for this widget type.
 
 :param relation: The relation for which the widget will be created
 :param parent: The parent widget of the created config widget

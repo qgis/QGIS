@@ -34,7 +34,7 @@
 
 /**
  * \ingroup gui
- * \brief Widget for viewing detailed info on a certificate and its hierarchical trust chain
+ * \brief Widget for viewing detailed info on a certificate and its hierarchical trust chain.
  */
 class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 {
@@ -133,7 +133,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
 /**
  * \ingroup gui
- * \brief Dialog wrapper for widget displaying detailed info on a certificate and its hierarchical trust chain
+ * \brief Dialog wrapper for widget displaying detailed info on a certificate and its hierarchical trust chain.
  */
 class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
 {

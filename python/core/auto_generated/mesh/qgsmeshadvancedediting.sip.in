@@ -12,11 +12,11 @@
 class QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes /Abstract/
 {
 %Docstring(signature="appended")
+Abstract class that can be derived to implement advanced editing on
+mesh.
 
-Abstract class that can be derived to implement advanced editing on mesh
-
-To apply the advanced editing, a pointer to an instance of a derived class is passed
-in the method :py:func:`QgsMeshEditor.advancedEdit()`.
+To apply the advanced editing, a pointer to an instance of a derived
+class is passed in the method :py:func:`QgsMeshEditor.advancedEdit()`.
 
 .. versionadded:: 3.22
 %End
@@ -41,7 +41,8 @@ Sets the input faces indexes that will be used for the editing
 
     QString message() const;
 %Docstring
-Returns a message that can be provided by the advanced editing when applying is done
+Returns a message that can be provided by the advanced editing when
+applying is done
 %End
 
     void clear();
@@ -51,13 +52,15 @@ Removes all data provided to the editing or created by the editing
 
     virtual bool isFinished() const;
 %Docstring
-Returns whether the advanced edit is finished,
-if not, this edit has to be applied again with :py:func:`QgsMeshEditor.advancedEdit()` until is finished returns ``True``
+Returns whether the advanced edit is finished, if not, this edit has to
+be applied again with :py:func:`QgsMeshEditor.advancedEdit()` until is
+finished returns ``True``
 %End
 
     virtual QString text() const;
 %Docstring
-Returns a short text string describing what this advanced edit does. Default implementation return a void string.
+Returns a short text string describing what this advanced edit does.
+Default implementation return a void string.
 %End
 
   protected:
@@ -67,16 +70,18 @@ Returns a short text string describing what this advanced edit does. Default imp
 class QgsMeshEditRefineFaces : QgsMeshAdvancedEditing
 {
 %Docstring(signature="appended")
+Performs refinement of faces of a mesh.
 
-Class that can do a refinement of faces of a mesh.
-
-This refinement is operated only on faces with 3 or 4 vertices (triangles or quads) by adding a vertex on the middle of each refined face.
-For quad faces, a vertex is added on the centroid of the original face.
+This refinement is operated only on faces with 3 or 4 vertices
+(triangles or quads) by adding a vertex on the middle of each refined
+face. For quad faces, a vertex is added on the centroid of the original
+face.
 
 New vertices Z value are interpolated between original vertices.
 
-Original triangle faces are replaced by four triangles, and original quad faces are replaced by four quads.
-Neighboring faces are triangulated to take account of the new vertex in the shared edge.
+Original triangle faces are replaced by four triangles, and original
+quad faces are replaced by four quads. Neighboring faces are
+triangulated to take account of the new vertex in the shared edge.
 
 .. versionadded:: 3.22
 %End
@@ -97,23 +102,23 @@ Neighboring faces are triangulated to take account of the new vertex in the shar
 class QgsMeshTransformVerticesByExpression : QgsMeshAdvancedEditing
 {
 %Docstring(signature="appended")
+Transforms vertices of a mesh by expression.
 
-Class that can transform vertices of a mesh by expression
-
-Each coordinates are associated with an expression that can be defined with function
-returning the current coordinates (see :py:func:`~setExpressions`):
+Each coordinates are associated with an expression that can be defined
+with function returning the current coordinates (see
+:py:func:`~setExpressions`):
 
 - $vertex_x
 - $vertex_y
 - $vertex_z
 
-Example:
-Transposing a mesh and translate following axe X with a distance of 50 and increase the level of the mesh
-with an height of 80 when previous X coordinate is under 100 and de crease the level of 150 when X is under 100:
+Example: Transposing a mesh and translate following axe X with a
+distance of 50 and increase the level of the mesh with an height of 80
+when previous X coordinate is under 100 and de crease the level of 150
+when X is under 100:
 
-expressionX: "$vertex_y + 50"
-expressionY: "$vertex_x"
-expressionZ: "if( $vertex_x <= 100 , $vertex_z + 80 , $vertex_z - 150)"
+expressionX: "$vertex_y + 50" expressionY: "$vertex_x" expressionZ: "if(
+$vertex_x <= 100 , $vertex_z + 80 , $vertex_z - 150)"
 
 .. versionadded:: 3.22
 %End
@@ -137,22 +142,44 @@ Sets the expressions for the coordinates transformation.
    Expressions are optional for each coordinate, the coordinate will not be transformed if the string is void.
 %End
 
-    bool calculate( QgsMeshLayer *layer );
+    bool calculate( QgsMeshLayer *layer, QgsProject *project = 0 );
 %Docstring
-Calculates the transformed vertices of the mesh ``layer``, returns ``False`` if this leads to topological or geometrical errors.
-The mesh layer must be in edit mode.
+Calculates the transformed vertices of the mesh ``layer``, returns
+``False`` if this leads to topological or geometrical errors. The mesh
+layer must be in edit mode.
 
 .. note::
 
-   this method not apply new vertices to the mesh layer but only store the calculated transformation
-   that can be apply later with :py:func:`QgsMeshEditor.advancedEdit()`
+   This method does not apply new vertices to the mesh layer but only stores the calculated transformation
+   that can be applied later with :py:func:`QgsMeshEditor.advancedEdit()`
+
+:param layer: 
+
+.. versionadded:: 3.44
 %End
 
     QgsMeshVertex transformedVertex( QgsMeshLayer *layer, int vertexIndex ) const;
 %Docstring
-Returns the transformed vertex from its index ``vertexIndex`` for the mesh ``layer``
+Returns the transformed vertex from its index ``vertexIndex`` for the
+mesh ``layer``
 
-If ``layer`` is not the same than the one used to make the calculation, this will create an undefined behavior
+If ``layer`` is not the same than the one used to make the calculation,
+this will create an undefined behavior
+%End
+
+    void setZFromTerrain( bool enable );
+%Docstring
+Sets if Z values for vertices should be obtained from project terrain,
+instead of expression.
+
+.. note::
+
+   If ``enable`` is True, the Z value of the vertex will be obtained from the terrain of the project.
+   The optional parameter ``project`` is necessary for function calculate ( :py:func:`calculate` ).
+
+:param enable: 
+
+.. versionadded:: 3.44
 %End
 
 };

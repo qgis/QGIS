@@ -88,6 +88,7 @@ bool QgsDxfExportAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   {
     mMapThemeStyleOverrides = context.project()->mapThemeCollection()->mapThemeStyleOverrides( mapTheme );
   }
+  mScaleMethod = context.project()->scaleMethod();
   return true;
 }
 
@@ -96,6 +97,7 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   QgsMapSettings mapSettings;
   mapSettings.setTransformContext( context.transformContext() );
   mapSettings.setLayerStyleOverrides( mMapThemeStyleOverrides );
+  mapSettings.setScaleMethod( mScaleMethod );
 
   QList<QgsVectorLayer *> mapLayers;
 

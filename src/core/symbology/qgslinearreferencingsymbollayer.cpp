@@ -1108,7 +1108,7 @@ void QgsLinearReferencingSymbolLayer::setShowMarker( bool show )
   mShowMarker = show;
   if ( show && !mMarkerSymbol )
   {
-    mMarkerSymbol.reset( QgsMarkerSymbol::createSimple( {} ) );
+    mMarkerSymbol = QgsMarkerSymbol::createSimple( {} );
   }
 }
 

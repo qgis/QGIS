@@ -78,6 +78,9 @@ class TestQgsRasterCalculator : public QgsTest
     void parseFunctionTypeString();   //test the parsing of the formule for the tFunction type
     void testFunctionTypeWithLayer(); //test of conditional statement
 
+    void testRasterOptions();
+    void testNoDataValue();
+
   private:
     QgsRasterLayer *mpLandsatRasterLayer = nullptr;
     QgsRasterLayer *mpLandsatRasterLayer4326 = nullptr;
@@ -570,6 +573,7 @@ void TestQgsRasterCalculator::calcWithDataType_data()
   QTest::newRow( "Float64 with OpenCL" ) << static_cast<int>( GDT_Float64 ) << true;
 #endif
 }
+
 void TestQgsRasterCalculator::calcWithDataType()
 {
   QFETCH( int, dataType );
@@ -680,7 +684,6 @@ void TestQgsRasterCalculator::calcWithDataType()
   QCOMPARE( block->value( 1, 0 ), 6 );
   QCOMPARE( block->value( 1, 1 ), 8 );
 }
-
 
 void TestQgsRasterCalculator::findNodes()
 {
@@ -1131,6 +1134,66 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   QCOMPARE( block->value( 2, 0 ), 0.0 );
   QCOMPARE( block->value( 2, 1 ), 0.0 );
 }
+
+void TestQgsRasterCalculator::testRasterOptions()
+{
+  QgsRasterCalculatorEntry entry;
+  entry.bandNumber = 1;
+  entry.raster = mpLandsatRasterLayer;
+  entry.ref = QStringLiteral( "landsat@1" );
+
+  QVector<QgsRasterCalculatorEntry> entries;
+  entries << entry;
+
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
+
+  QTemporaryFile tmpFile;
+  tmpFile.setFileTemplate( "rc-XXXXXX.tif" );
+  tmpFile.open(); // fileName is not available until open
+  QString tmpName = tmpFile.fileName();
+  tmpFile.close();
+
+  QString worldFileName = tmpName.replace( QStringLiteral( ".tif" ), QStringLiteral( ".tfw" ) );
+  QFile worldFile( worldFileName );
+  QVERIFY( !worldFile.exists() );
+
+  QgsRasterCalculator rc( QStringLiteral( "\"landsat@1\" + 2" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
+  rc.setCreateOptions( QStringList() << "TFW=YES" );
+  QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
+
+  QVERIFY( worldFile.exists() );
+  worldFile.remove();
+}
+
+void TestQgsRasterCalculator::testNoDataValue()
+{
+  QgsRasterCalculatorEntry entry;
+  entry.bandNumber = 1;
+  entry.raster = mpLandsatRasterLayer;
+  entry.ref = QStringLiteral( "landsat@1" );
+
+  QVector<QgsRasterCalculatorEntry> entries;
+  entries << entry;
+
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
+
+  QTemporaryFile tmpFile;
+  tmpFile.open(); // fileName is not available until open
+  QString tmpName = tmpFile.fileName();
+  tmpFile.close();
+
+  QgsRasterCalculator rc( QStringLiteral( "\"landsat@1\" + 2" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
+  rc.setNoDataValue( -9999.0 );
+  QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
+
+  //open output file and check results
+  const std::unique_ptr<QgsRasterLayer> result = std::make_unique<QgsRasterLayer>( tmpName, QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  QVERIFY( result->dataProvider()->sourceHasNoDataValue( 1 ) );
+  QCOMPARE( result->dataProvider()->sourceNoDataValue( 1 ), -9999.0 );
+}
+
 
 QGSTEST_MAIN( TestQgsRasterCalculator )
 #include "testqgsrastercalculator.moc"

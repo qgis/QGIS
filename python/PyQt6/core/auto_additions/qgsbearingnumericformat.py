@@ -3,6 +3,7 @@ QgsBearingNumericFormat.UseRange0To180WithEWDirectionalSuffix = QgsBearingNumeri
 QgsBearingNumericFormat.UseRangeNegative180ToPositive180 = QgsBearingNumericFormat.FormatDirectionOption.UseRangeNegative180ToPositive180
 QgsBearingNumericFormat.UseRange0To360 = QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360
 try:
+    QgsBearingNumericFormat.__overridden_methods__ = ['id', 'visibleName', 'sortKey', 'suggestSampleValue', 'formatDouble', 'clone', 'create', 'configuration', 'setConfiguration']
     QgsBearingNumericFormat.__group__ = ['numericformats']
 except (NameError, AttributeError):
     pass

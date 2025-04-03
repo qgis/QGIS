@@ -14,9 +14,11 @@
 class QgsAdvancedDigitizingFloater : QWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsAdvancedDigitizingFloater` class is widget that floats
-next to the mouse pointer, and allow interaction with the AdvancedDigitizing
-feature. It proxies display and actions to :py:class:`QgsMapToolAdvancedDigitizingDockWidget`.
+A widget that floats next to the mouse pointer, and allows interaction
+with the AdvancedDigitizing feature.
+
+It proxies display and actions to
+:py:class:`QgsMapToolAdvancedDigitizingDockWidget`.
 
 .. note::
 
@@ -56,8 +58,8 @@ Create an advanced digitizing floater widget
 
     bool active();
 %Docstring
-Whether the floater is active or not.
-Note that the floater may be active but not visible (e.g. if the mouse is not over the canvas).
+Whether the floater is active or not. Note that the floater may be
+active but not visible (e.g. if the mouse is not over the canvas).
 
 .. versionadded:: 3.8
 %End
@@ -75,10 +77,11 @@ Returns ``True`` if the floater ``item`` visibility setting is enabled.
 
     void setActive( bool active );
 %Docstring
-Set whether the floater should be active or not.
-Note that the floater may be active but not visible (e.g. if the mouse is not over the canvas).
+Set whether the floater should be active or not. Note that the floater
+may be active but not visible (e.g. if the mouse is not over the
+canvas).
 
-:param active:
+:param active: 
 
 .. versionadded:: 3.8
 %End
@@ -88,7 +91,7 @@ Note that the floater may be active but not visible (e.g. if the mouse is not ov
 Set whether the floater ``item`` should be visible or not.
 
 :param item: floater item
-:param visible:
+:param visible: 
 
 .. versionadded:: 3.32
 %End

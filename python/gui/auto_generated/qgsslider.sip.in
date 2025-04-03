@@ -12,6 +12,9 @@
 
 class QgsSlider : QSlider
 {
+%Docstring(signature="appended")
+A custom QSlider with additional refinements.
+%End
 
 %TypeHeaderCode
 #include "qgsslider.h"

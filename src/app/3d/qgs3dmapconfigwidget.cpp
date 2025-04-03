@@ -53,7 +53,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
   m3DOptionsListWidget->setIconSize( QSize( iconSize, iconSize ) );
 
-  mCameraNavigationModeCombo->addItem( tr( "Terrain Based" ), QVariant::fromValue( Qgis::NavigationMode::TerrainBased ) );
+  mCameraNavigationModeCombo->addItem( tr( "Terrain Based" ), QVariant::fromValue( mMap->sceneMode() == Qgis::SceneMode::Globe ? Qgis::NavigationMode::GlobeTerrainBased : Qgis::NavigationMode::TerrainBased ) );
   mCameraNavigationModeCombo->addItem( tr( "Walk Mode (First Person)" ), QVariant::fromValue( Qgis::NavigationMode::Walk ) );
 
   // get rid of annoying outer focus rect on Mac

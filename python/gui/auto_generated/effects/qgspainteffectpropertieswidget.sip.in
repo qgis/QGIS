@@ -10,11 +10,10 @@
 
 
 
-
 class QgsPaintEffectPropertiesWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget which modifies the properties of a :py:class:`QgsPaintEffect`
+A widget which modifies the properties of a :py:class:`QgsPaintEffect`.
 %End
 
 %TypeHeaderCode

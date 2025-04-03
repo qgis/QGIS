@@ -15,7 +15,7 @@
 class QgsXmlUtils
 {
 %Docstring(signature="appended")
-Assorted helper methods for reading and writing chunks of XML
+Assorted helper methods for reading and writing chunks of XML.
 %End
 
 %TypeHeaderCode

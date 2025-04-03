@@ -15,10 +15,12 @@ class QgsProcessingFavoriteAlgorithmManager : QObject
 %Docstring(signature="appended")
 A manager for tracking favorite Processing algorithms.
 
-:py:class:`QgsProcessingFavoriteAlgorithmManager` is not usually directly created, instead
-use the instance accessible through :py:func:`QgsGui.processingFavoriteAlgorithmManager()`.
+:py:class:`QgsProcessingFavoriteAlgorithmManager` is not usually
+directly created, instead use the instance accessible through
+:py:func:`QgsGui.processingFavoriteAlgorithmManager()`.
 
-The favorite algorithms are saved and restored via :py:class:`QgsSettings`.
+The favorite algorithms are saved and restored via
+:py:class:`QgsSettings`.
 
 .. note::
 
@@ -33,8 +35,8 @@ The favorite algorithms are saved and restored via :py:class:`QgsSettings`.
   public:
     QgsProcessingFavoriteAlgorithmManager( QObject *parent = 0 );
 %Docstring
-Constructor for QgsProcessingFavoriteAlgorithmManager, with the specified
-``parent`` object.
+Constructor for QgsProcessingFavoriteAlgorithmManager, with the
+specified ``parent`` object.
 %End
 
     QStringList favoriteAlgorithmIds() const;
@@ -46,16 +48,19 @@ Returns a list of the IDs of favorite Processing algorithms.
 %Docstring
 Adds the algorithm with matching ``id`` to the favorite algorithms list.
 
-If this changes the list of favorite algorithm IDs then the :py:func:`~QgsProcessingFavoriteAlgorithmManager.changed` signal
-will be emitted.
+If this changes the list of favorite algorithm IDs then the
+:py:func:`~QgsProcessingFavoriteAlgorithmManager.changed` signal will be
+emitted.
 %End
 
     void remove( const QString &id );
 %Docstring
-Removes the algorithm with matching ``id`` from the favorite algorithms list.
+Removes the algorithm with matching ``id`` from the favorite algorithms
+list.
 
-If this changes the list of favorite algorithm IDs then the :py:func:`~QgsProcessingFavoriteAlgorithmManager.changed` signal
-will be emitted.
+If this changes the list of favorite algorithm IDs then the
+:py:func:`~QgsProcessingFavoriteAlgorithmManager.changed` signal will be
+emitted.
 %End
 
     void clear();
@@ -65,7 +70,8 @@ Clears list of favorite Processing algorithms
 
     bool isFavorite( const QString &id );
 %Docstring
-Returns ``True`` if the algorithm with matching ``id`` is in a favorite list.
+Returns ``True`` if the algorithm with matching ``id`` is in a favorite
+list.
 %End
 
 
@@ -73,9 +79,9 @@ Returns ``True`` if the algorithm with matching ``id`` is in a favorite list.
 
     void changed();
 %Docstring
-Emitted when the list of favorite algorithms is changed, e.g. when
-a new algorithm ID is added to the list or an existing algorithm ID
-is removed from the list.
+Emitted when the list of favorite algorithms is changed, e.g. when a new
+algorithm ID is added to the list or an existing algorithm ID is removed
+from the list.
 %End
 
 };

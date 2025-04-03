@@ -26,7 +26,7 @@ class QgsRasterLayer;
 
 /**
  * \ingroup gui
- * \brief The QgsRasterAttributeTableDialog class embeds an attribute table widget.
+ * \brief A dialog which embeds a raster attribute table widget.
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsRasterAttributeTableDialog : public QDialog, private Ui::QRasterAttributeTableDialogBase

@@ -24,6 +24,7 @@
 #include "qgsmeshadvancedediting.h"
 #include "qgsgeometryutils.h"
 #include "qgspolygon.h"
+#include "qgsmeshutils.h"
 
 #include <poly2tri.h>
 

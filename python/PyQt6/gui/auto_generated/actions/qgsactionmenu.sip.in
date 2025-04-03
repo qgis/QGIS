@@ -10,11 +10,11 @@
 
 
 
-
 class QgsActionMenu : QMenu
 {
 %Docstring(signature="appended")
-This class is a menu that is populated automatically with the actions defined for a given layer.
+A menu that is populated automatically with the actions defined for a
+given layer.
 %End
 
 %TypeHeaderCode
@@ -38,8 +38,9 @@ This class is a menu that is populated automatically with the actions defined fo
 Constructs a new QgsActionMenu
 
 :param layer: The layer that this action will be run upon.
-:param feature: The feature that this action will be run upon. Make sure that this feature is available
-                for the lifetime of this object.
+:param feature: The feature that this action will be run upon. Make sure
+                that this feature is available for the lifetime of this
+                object.
 :param parent: The usual QWidget parent.
 :param actionScope: The action scope this menu will run in
 %End
@@ -49,14 +50,16 @@ Constructs a new QgsActionMenu
 Constructs a new QgsActionMenu
 
 :param layer: The layer that this action will be run upon.
-:param fid: The feature id of the feature for which this action will be run.
+:param fid: The feature id of the feature for which this action will be
+            run.
 :param parent: The usual QWidget parent.
 :param actionScope: The action scope this menu will run in
 %End
 
     void setActionContextGenerator( QgsMapLayerActionContextGenerator *generator );
 %Docstring
-Sets a :py:class:`QgsMapLayerActionContextGenerator` to create action contexts for the menu.
+Sets a :py:class:`QgsMapLayerActionContextGenerator` to create action
+contexts for the menu.
 
 The ``generator`` object must exist for the lifetime of the menu.
 
@@ -67,8 +70,9 @@ The ``generator`` object must exist for the lifetime of the menu.
 %Docstring
 Change the feature on which actions are performed
 
-:param feature: A feature. Will not take ownership. It's the callers responsibility to keep the feature
-                as long as the menu is displayed and the action is running.
+:param feature: A feature. Will not take ownership. It's the callers
+                responsibility to keep the feature as long as the menu
+                is displayed and the action is running.
 %End
 
     void setMode( QgsAttributeEditorContext::Mode mode );

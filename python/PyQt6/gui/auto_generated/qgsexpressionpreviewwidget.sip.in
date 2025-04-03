@@ -15,8 +15,10 @@
 class QgsExpressionPreviewWidget : QWidget
 {
 %Docstring(signature="appended")
-:py:class:`QgsExpressionPreviewWidget` is a widget to preview an expression result.
-If the layer is set, one can browse across features to see the different outputs.
+A widget for previewing an expression result.
+
+If the layer is set, one can browse across features to see the different
+outputs.
 
 .. versionadded:: 3.14
 %End
@@ -40,13 +42,23 @@ Sets the layer used in the preview
 %Docstring
 Sets the widget to run using a custom preview generator.
 
-In this mode, the widget will call a callback function to generate a new :py:class:`QgsExpressionContext`
-as the previewed object changes. This can be used to provide custom preview values for different
-objects (i.e. for objects which aren't vector layer features).
+In this mode, the widget will call a callback function to generate a new
+:py:class:`QgsExpressionContext` as the previewed object changes. This
+can be used to provide custom preview values for different objects (i.e.
+for objects which aren't vector layer features).
 
-:param label: The label to display for the combo box presenting choices of objects. This should be a representative name, eg "Band" if the widget is showing choices of raster layer bands
-:param choices: A list of choices to present to the user. Each choice is a pair of a human-readable label and a QVariant representing the object to preview.
-:param previewContextGenerator: A function which takes a QVariant representing the object to preview, and returns a :py:class:`QgsExpressionContext` to use for previewing the object.
+:param label: The label to display for the combo box presenting choices
+              of objects. This should be a representative name, eg
+              "Band" if the widget is showing choices of raster layer
+              bands
+:param choices: A list of choices to present to the user. Each choice is
+                a pair of a human-readable label and a QVariant
+                representing the object to preview.
+:param previewContextGenerator: A function which takes a QVariant
+                                representing the object to preview, and
+                                returns a
+                                :py:class:`QgsExpressionContext` to use
+                                for previewing the object.
 
 .. versionadded:: 3.38
 %End
@@ -79,16 +91,18 @@ Sets the expression
 
     QgsExpressionContext expressionContext() const;
 %Docstring
-Returns the expression context for the widget. The context is used for the expression
-preview result and for populating the list of available functions and variables.
+Returns the expression context for the widget. The context is used for
+the expression preview result and for populating the list of available
+functions and variables.
 
 .. seealso:: :py:func:`setExpressionContext`
 %End
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
-Sets the expression context for the widget. The context is used for the expression
-preview result and to populate the list of available functions and variables.
+Sets the expression context for the widget. The context is used for the
+expression preview result and to populate the list of available
+functions and variables.
 
 :param context: expression context
 %End
@@ -100,14 +114,14 @@ Sets geometry calculator used in distance/area calculations.
 
     bool evalError() const;
 %Docstring
-Will be set to ``True`` if the current expression text reported an eval error
-with the context.
+Will be set to ``True`` if the current expression text reported an eval
+error with the context.
 %End
 
     bool parserError() const;
 %Docstring
-Will be set to ``True`` if the current expression text reports a parser error
-with the context.
+Will be set to ``True`` if the current expression text reports a parser
+error with the context.
 %End
 
     const QgsExpressionNode *rootNode() const;
@@ -131,23 +145,24 @@ Returns the current expression result preview text.
 
     void expressionParsed( bool isValid );
 %Docstring
-Emitted when the user changes the expression in the widget.
-Users of this widget should connect to this signal to decide if to let the user
+Emitted when the user changes the expression in the widget. Users of
+this widget should connect to this signal to decide if to let the user
 continue.
 
-:param isValid: Is ``True`` if the expression the user has typed is valid.
+:param isValid: Is ``True`` if the expression the user has typed is
+                valid.
 %End
 
     void evalErrorChanged();
 %Docstring
-Will be set to ``True`` if the current expression text reported an eval error
-with the context.
+Will be set to ``True`` if the current expression text reported an eval
+error with the context.
 %End
 
     void parserErrorChanged();
 %Docstring
-Will be set to ``True`` if the current expression text reported a parser error
-with the context.
+Will be set to ``True`` if the current expression text reported a parser
+error with the context.
 %End
 
     void toolTipChanged( const QString &toolTip );

@@ -16,10 +16,9 @@ class QgsMeshCalculator
 %Docstring(signature="appended")
 Performs mesh layer calculations.
 
-Mesh calculator can do various mathematical operations
-between dataset groups from a single mesh layer.
-Resulting dataset group is added to the mesh layer.
-Result can be filtered by extent or a vector layer mask
+Mesh calculator can do various mathematical operations between dataset
+groups from a single mesh layer. Resulting dataset group is added to the
+mesh layer. Result can be filtered by extent or a vector layer mask
 spatially and by selection of times.
 
 Resulting dataset is always scalar
@@ -53,7 +52,8 @@ Resulting dataset is always scalar
 %Docstring
 Creates calculator with bounding box (rectangular) mask
 
-:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param formulaString: formula/expression to evaluate. Consists of
+                      dataset group names, operators and numbers
 :param outputFile: file to store the resulting dataset group data
 :param outputExtent: spatial filter defined by rectangle
 :param startTime: time filter defining the starting dataset
@@ -72,7 +72,8 @@ Creates calculator with bounding box (rectangular) mask
 %Docstring
 Creates calculator with geometry mask
 
-:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param formulaString: formula/expression to evaluate. Consists of
+                      dataset group names, operators and numbers
 :param outputFile: file to store the resulting dataset group data
 :param outputMask: spatial filter defined by geometry
 :param startTime: time filter defining the starting dataset
@@ -93,7 +94,8 @@ Creates calculator with geometry mask
 %Docstring
 Creates calculator with bounding box (rectangular) mask
 
-:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param formulaString: formula/expression to evaluate. Consists of
+                      dataset group names, operators and numbers
 :param outputDriver: output driver name
 :param outputGroupName: output group name
 :param outputFile: file to store the resulting dataset group data
@@ -116,7 +118,8 @@ Creates calculator with bounding box (rectangular) mask
 %Docstring
 Creates calculator with geometry mask
 
-:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param formulaString: formula/expression to evaluate. Consists of
+                      dataset group names, operators and numbers
 :param outputDriver: output driver name
 :param outputGroupName: output group name
 :param outputFile: file to store the resulting dataset group data
@@ -136,10 +139,12 @@ Creates calculator with geometry mask
                        double startTime,
                        double endTime );
 %Docstring
-Creates calculator with bounding box (rectangular) mask, store the result in ``destination`` (must be on memory or virtual),
-see QgsMeshCalculator.Destination
+Creates calculator with bounding box (rectangular) mask, store the
+result in ``destination`` (must be on memory or virtual), see
+QgsMeshCalculator.Destination
 
-:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param formulaString: formula/expression to evaluate. Consists of
+                      dataset group names, operators and numbers
 :param outputGroupName: output group name
 :param outputExtent: spatial filter defined by rectangle
 :param destination: destination of the calculation (memory or virtual)
@@ -158,10 +163,12 @@ see QgsMeshCalculator.Destination
                        double startTime,
                        double endTime );
 %Docstring
-Creates calculator with with geometry mask, store the result in ``destination`` (must be on memory or virtual),
-see QgsMeshCalculator.Destination
+Creates calculator with with geometry mask, store the result in
+``destination`` (must be on memory or virtual), see
+QgsMeshCalculator.Destination
 
-:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param formulaString: formula/expression to evaluate. Consists of
+                      dataset group names, operators and numbers
 :param outputGroupName: output group name
 :param outputMask: spatial filter defined by geometry
 :param destination: destination of the calculation (memory or virtual)
@@ -174,9 +181,11 @@ see QgsMeshCalculator.Destination
 
     Result processCalculation( QgsFeedback *feedback = 0 );
 %Docstring
-Starts the calculation, creates new dataset group and adds it to the mesh layer
+Starts the calculation, creates new dataset group and adds it to the
+mesh layer
 
-:param feedback: The optional feedback argument for progress reporting and cancellation support
+:param feedback: The optional feedback argument for progress reporting
+                 and cancellation support
 
 :return: QgsMeshCalculator.Success in case of success
 %End
@@ -186,7 +195,8 @@ Starts the calculation, creates new dataset group and adds it to the mesh layer
 %Docstring
 Returns whether formula is valid for particular mesh layer
 
-:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param formulaString: formula/expression to evaluate. Consists of
+                      dataset group names, operators and numbers
 :param layer: mesh layer with dataset groups references in formulaString
 
 :return: QgsMeshCalculator.Success in case of success
@@ -202,9 +212,11 @@ Returns whether formula is valid for particular mesh layer
 %Docstring
 Returns whether formula is valid for particular mesh layer
 
-:param formulaString: formula/expression to evaluate. Consists of dataset group names, operators and numbers
+:param formulaString: formula/expression to evaluate. Consists of
+                      dataset group names, operators and numbers
 :param layer: mesh layer with dataset groups references in formulaString
-:param requiredCapability: returns required capability of driver to store results of the calculation
+:param requiredCapability: returns required capability of driver to
+                           store results of the calculation
 
 :return: QgsMeshCalculator.Success in case of success
 

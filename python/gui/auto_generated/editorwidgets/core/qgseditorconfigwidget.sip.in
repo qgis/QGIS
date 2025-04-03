@@ -14,9 +14,13 @@
 class QgsEditorConfigWidget : QWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
-This class should be subclassed for every configurable editor widget type.
+Base class for widgets which configure editor widget types.
 
-It implements the GUI configuration widget and transforms this to/from a configuration.
+This class should be subclassed for every configurable editor widget
+type.
+
+It implements the GUI configuration widget and transforms this to/from a
+configuration.
 
 It will only be instantiated by {:py:class:`QgsEditorWidgetFactory`}
 %End
@@ -30,7 +34,8 @@ It will only be instantiated by {:py:class:`QgsEditorWidgetFactory`}
 Create a new configuration widget
 
 :param vl: The layer for which the configuration dialog will be created
-:param fieldIdx: The index of the field on the layer for which this dialog will be created
+:param fieldIdx: The index of the field on the layer for which this
+                 dialog will be created
 :param parent: A parent widget
 %End
 
@@ -45,7 +50,8 @@ Create a configuration from the current GUI state
 %Docstring
 Update the configuration widget to represent the given configuration.
 
-:param config: The configuration which should be represented by this widget
+:param config: The configuration which should be represented by this
+               widget
 %End
 
     int field();
@@ -75,7 +81,8 @@ Emitted when the configuration of the widget is changed.
   protected:
     void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key );
 %Docstring
-Registers a property override button, setting up its initial value, connections and description.
+Registers a property override button, setting up its initial value,
+connections and description.
 
 :param button: button to register
 :param key: corresponding data defined property key
@@ -83,12 +90,14 @@ Registers a property override button, setting up its initial value, connections 
 
     void updateDataDefinedButtons();
 %Docstring
-Updates all property override buttons to reflect the widgets's current properties.
+Updates all property override buttons to reflect the widgets's current
+properties.
 %End
 
     void updateDataDefinedButton( QgsPropertyOverrideButton *button );
 %Docstring
-Updates a specific property override ``button`` to reflect the widgets's current properties.
+Updates a specific property override ``button`` to reflect the widgets's
+current properties.
 %End
 
 

@@ -25,3 +25,7 @@ try:
     QgsValidityCheckResultsWidget.runChecks = staticmethod(QgsValidityCheckResultsWidget.runChecks)
 except (NameError, AttributeError):
     pass
+try:
+    QgsValidityCheckResultsModel.__overridden_methods__ = ['index', 'parent', 'rowCount', 'columnCount', 'data']
+except (NameError, AttributeError):
+    pass

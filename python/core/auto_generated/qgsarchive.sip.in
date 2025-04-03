@@ -13,7 +13,7 @@
 class QgsArchive
 {
 %Docstring(signature="appended")
-Class allowing to manage the zip/unzip actions
+Manages zip/unzip operations for an archive.
 %End
 
 %TypeHeaderCode
@@ -67,7 +67,8 @@ Remove a file from this archive and from the filesystem.
 
 :param filename: The path of the file to remove
 
-:return: ``True`` if the file has been removed from the filesystem, ``False`` otherwise
+:return: ``True`` if the file has been removed from the filesystem,
+         ``False`` otherwise
 %End
 
     QStringList files() const;
@@ -82,7 +83,8 @@ Returns the current temporary directory.
 
     bool exists() const;
 %Docstring
-Returns ``True`` if the archive exists on the filesystem, ``False`` otherwise.
+Returns ``True`` if the archive exists on the filesystem, ``False``
+otherwise.
 
 .. versionadded:: 3.20
 %End
@@ -92,7 +94,7 @@ Returns ``True`` if the archive exists on the filesystem, ``False`` otherwise.
 class QgsProjectArchive : QgsArchive
 {
 %Docstring(signature="appended")
-Class allowing to manage the zip/unzip actions on project file
+Allows managing the zip/unzip actions on project files.
 %End
 
 %TypeHeaderCode

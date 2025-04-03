@@ -13,7 +13,7 @@
 class QgsFcgiServerRequest : QgsServerRequest
 {
 %Docstring(signature="appended")
-Class defining fcgi request
+Defines fcgi requests.
 %End
 
 %TypeHeaderCode

@@ -14,7 +14,7 @@
 class QgsExpressionFunction
 {
 %Docstring(signature="appended")
-A abstract base class for defining :py:class:`QgsExpression` functions.
+An abstract base class for defining :py:class:`QgsExpression` functions.
 %End
 
 %TypeHeaderCode
@@ -41,10 +41,12 @@ Represents a single parameter passed to a function.
 %Docstring
 Constructor for Parameter.
 
-:param name: parameter name, used when named parameter are specified in an expression
+:param name: parameter name, used when named parameter are specified in
+             an expression
 :param optional: set to ``True`` if parameter should be optional
 :param defaultValue: default value to use for optional parameters
-:param isSubExpression: set to ``True`` if this parameter is a sub-expression
+:param isSubExpression: set to ``True`` if this parameter is a
+                        sub-expression
 %End
 
         QString name() const;
@@ -65,7 +67,8 @@ Returns the default value for the parameter.
         bool isSubExpression() const;
 %Docstring
 Returns ``True`` if parameter argument is a separate sub-expression, and
-should not be checked while determining referenced columns for the expression.
+should not be checked while determining referenced columns for the
+expression.
 
 .. versionadded:: 3.2
 %End
@@ -149,54 +152,59 @@ Does this function use a geometry object.
 
     virtual QStringList aliases() const;
 %Docstring
-Returns a list of possible aliases for the function. These include
-other permissible names for the function, e.g., deprecated names.
+Returns a list of possible aliases for the function. These include other
+permissible names for the function, e.g., deprecated names.
 
 :return: list of known aliases
 %End
 
     bool lazyEval() const;
 %Docstring
-``True`` if this function should use lazy evaluation.  Lazy evaluation functions take :py:class:`QgsExpression`.Node objects
-rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
-Functions are non lazy default and will be given the node return value when called.
+``True`` if this function should use lazy evaluation. Lazy evaluation
+functions take :py:class:`QgsExpression`.Node objects rather than the
+node results when called. You can use node->eval(parent, feature) to
+evaluate the node and return the result Functions are non lazy default
+and will be given the node return value when called.
 %End
 
     virtual bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
 %Docstring
-Will be called during prepare to determine if the function is static.
-A function is static if it will return the same value for every feature with different
-attributes and/or geometry.
+Will be called during prepare to determine if the function is static. A
+function is static if it will return the same value for every feature
+with different attributes and/or geometry.
 
-By default this will return ``True``, if all arguments that have been passed to the function
-are also static.
+By default this will return ``True``, if all arguments that have been
+passed to the function are also static.
 %End
 
     virtual bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
 %Docstring
-This will be called during the prepare :py:func:`~QgsExpressionFunction.step` of an expression if it is not static.
+This will be called during the prepare
+:py:func:`~QgsExpressionFunction.step` of an expression if it is not
+static.
 
-This can be used by functions to do any preparation steps that might help to speedup the upcoming
-evaluation.
+This can be used by functions to do any preparation steps that might
+help to speedup the upcoming evaluation.
 %End
 
     virtual QSet<QString> referencedColumns( const QgsExpressionNodeFunction *node ) const;
 %Docstring
-Returns a set of field names which are required for this function.
-May contain :py:class:`QgsFeatureRequest`.AllAttributes to signal that all
-attributes are required.
-If in doubt this will return more fields than strictly required.
+Returns a set of field names which are required for this function. May
+contain :py:class:`QgsFeatureRequest`.AllAttributes to signal that all
+attributes are required. If in doubt this will return more fields than
+strictly required.
 %End
 
     bool isContextual() const;
 %Docstring
-Returns whether the function is only available if provided by a :py:class:`QgsExpressionContext` object.
+Returns whether the function is only available if provided by a
+:py:class:`QgsExpressionContext` object.
 %End
 
     virtual bool isDeprecated() const;
 %Docstring
-Returns ``True`` if the function is deprecated and should not be presented as a valid option
-to users in expression builders.
+Returns ``True`` if the function is deprecated and should not be
+presented as a valid option to users in expression builders.
 %End
 
     QString group() const;
@@ -234,27 +242,29 @@ Returns result of evaluating the function.
 
     virtual QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node );
 %Docstring
-Evaluates the function, first evaluating all required arguments before passing them to the
-function's :py:func:`~QgsExpressionFunction.func` method.
+Evaluates the function, first evaluating all required arguments before
+passing them to the function's :py:func:`~QgsExpressionFunction.func`
+method.
 %End
 
     bool operator==( const QgsExpressionFunction &other ) const;
 
     virtual bool handlesNull() const;
 %Docstring
-Returns ``True`` if the function handles NULL values in arguments by itself, and the default
-NULL value handling should be skipped.
+Returns ``True`` if the function handles NULL values in arguments by
+itself, and the default NULL value handling should be skipped.
 %End
 
   protected:
 
     static bool allParamsStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
 %Docstring
-This will return ``True`` if all the params for the provided function ``node`` are static within the
-constraints imposed by the ``context`` within the given ``parent``.
+This will return ``True`` if all the params for the provided function
+``node`` are static within the constraints imposed by the ``context``
+within the given ``parent``.
 
-This can be used as callback for custom implementations of subclasses. It is the default for implementation
-for StaticFunction.isStatic.
+This can be used as callback for custom implementations of subclasses.
+It is the default for implementation for StaticFunction.isStatic.
 %End
 
 };

@@ -15,7 +15,8 @@ class QgsFields
 %Docstring(signature="appended")
 Container of fields for a vector layer.
 
-In addition to storing a list of :py:class:`QgsField` instances, it also:
+In addition to storing a list of :py:class:`QgsField` instances, it
+also:
 
 - allows quick lookups of field names to index in the list
 - keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
@@ -59,20 +60,26 @@ Removes all fields
 %Docstring
 Appends a ``field``.
 
-The field must have a unique name, otherwise it is rejected (returns ``False``).
+The field must have a unique name, otherwise it is rejected (returns
+``False``).
 
-The ``originIndex`` argument must be set to a value corresponding to the ``origin`` type:
+The ``originIndex`` argument must be set to a value corresponding to the
+``origin`` type:
 
-- :py:class:`Qgis`.FieldOrigin.Provider: The field's originIndex is the index in provider's fields.
-- :py:class:`Qgis`.FieldOrigin.Join: The field's originIndex / 1000 = index of the join, originIndex % 1000 = index within the join
-- :py:class:`Qgis`.FieldOrigin.Edit: The originIndex is the index in the list of added attributes
+- :py:class:`Qgis`.FieldOrigin.Provider: The field's originIndex is the
+  index in provider's fields.
+- :py:class:`Qgis`.FieldOrigin.Join: The field's originIndex / 1000 =
+  index of the join, originIndex % 1000 = index within the join
+- :py:class:`Qgis`.FieldOrigin.Edit: The originIndex is the index in the
+  list of added attributes
 %End
 
     bool append( const QList< QgsField > &fields, Qgis::FieldOrigin origin = Qgis::FieldOrigin::Provider ) /HoldGIL/;
 %Docstring
 Appends a list of ``fields``.
 
-The fields must have unique names, otherwise it is rejected (returns ``False``).
+The fields must have unique names, otherwise it is rejected (returns
+``False``).
 
 .. versionadded:: 3.40
 %End
@@ -81,21 +88,24 @@ The fields must have unique names, otherwise it is rejected (returns ``False``).
 %Docstring
 Appends another set of ``fields`` to these fields.
 
-The fields must have unique names, otherwise it is rejected (returns ``False``).
+The fields must have unique names, otherwise it is rejected (returns
+``False``).
 
 .. versionadded:: 3.40
 %End
 
     bool rename( int fieldIdx, const QString &name ) /HoldGIL/;
 %Docstring
-Renames a name of field. The field must have unique name, otherwise change is rejected (returns ``False``)
+Renames a name of field. The field must have unique name, otherwise
+change is rejected (returns ``False``)
 
 .. versionadded:: 3.6
 %End
 
     bool appendExpressionField( const QgsField &field, int originIndex ) /HoldGIL/;
 %Docstring
-Appends an expression field. The field must have unique name, otherwise it is rejected (returns ``False``)
+Appends an expression field. The field must have unique name, otherwise
+it is rejected (returns ``False``)
 %End
 
 
@@ -266,11 +276,15 @@ Returns the field's origin (value from an enumeration).
 
     int fieldOriginIndex( int fieldIdx ) const /HoldGIL/;
 %Docstring
-Returns the field's origin index (its meaning is specific to each type of origin).
+Returns the field's origin index (its meaning is specific to each type
+of origin).
 
-- :py:class:`Qgis`.FieldOrigin.Provider: The field's originIndex is the index in provider's fields.
-- :py:class:`Qgis`.FieldOrigin.Join: The field's originIndex / 1000 = index of the join, originIndex % 1000 = index within the join
-- :py:class:`Qgis`.FieldOrigin.Edit: The originIndex is the index in the list of added attributes
+- :py:class:`Qgis`.FieldOrigin.Provider: The field's originIndex is the
+  index in provider's fields.
+- :py:class:`Qgis`.FieldOrigin.Join: The field's originIndex / 1000 =
+  index of the join, originIndex % 1000 = index within the join
+- :py:class:`Qgis`.FieldOrigin.Edit: The originIndex is the index in the
+  list of added attributes
 
 :raises KeyError: if no field exists at the specified index
 %End
@@ -290,8 +304,8 @@ Returns the field's origin index (its meaning is specific to each type of origin
 %Docstring
 Gets the field index from the field name.
 
-This method is case sensitive and only matches the data source
-name of the field.
+This method is case sensitive and only matches the data source name of
+the field.
 
 Alias for indexOf
 
@@ -306,8 +320,8 @@ Alias for indexOf
 %Docstring
 Gets the field index from the field name.
 
-This method is case sensitive and only matches the data source
-name of the field.
+This method is case sensitive and only matches the data source name of
+the field.
 
 :param fieldName: The name of the field.
 
@@ -318,8 +332,8 @@ name of the field.
 
      int lookupField( const QString &fieldName ) const /HoldGIL/;
 %Docstring
-Looks up field's index from the field name.
-This method matches in the following order:
+Looks up field's index from the field name. This method matches in the
+following order:
 
 1. The exact field name taking case sensitivity into account
 2. Looks for the field name by case insensitive comparison
@@ -348,7 +362,8 @@ Utility function to return a list of :py:class:`QgsField` instances
 
     QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const /Factory/;
 %Docstring
-Returns an icon corresponding to a field index, based on the field's type and source
+Returns an icon corresponding to a field index, based on the field's
+type and source
 
 :param fieldIdx: the field index
 :param considerOrigin: if ``True`` the icon will the origin of the field
@@ -371,8 +386,10 @@ Returns an icon corresponding to a field index, based on the field's type and so
 %Docstring
 Returns an icon corresponding to a field ``type``
 
-Since QGIS 3.24, the optional ``subType`` argument can be used to specify the type of variant list or map values.
-Since QGIS 3.30, the optional ``typeString`` argument can be used to specify field type strings for handling user field types.
+Since QGIS 3.24, the optional ``subType`` argument can be used to
+specify the type of variant list or map values. Since QGIS 3.30, the
+optional ``typeString`` argument can be used to specify field type
+strings for handling user field types.
 
 .. versionadded:: 3.16
 %End
@@ -381,8 +398,10 @@ Since QGIS 3.30, the optional ``typeString`` argument can be used to specify fie
 %Docstring
 Returns an icon corresponding to a field ``type``
 
-Since QGIS 3.24, the optional ``subType`` argument can be used to specify the type of variant list or map values.
-Since QGIS 3.30, the optional ``typeString`` argument can be used to specify field type strings for handling user field types.
+Since QGIS 3.24, the optional ``subType`` argument can be used to
+specify the type of variant list or map values. Since QGIS 3.30, the
+optional ``typeString`` argument can be used to specify field type
+strings for handling user field types.
 
 .. versionadded:: 3.16
 

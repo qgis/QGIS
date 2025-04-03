@@ -13,8 +13,9 @@ class QgsStoredQueryManager : QObject
 %Docstring(signature="appended")
 A manager for stored SQL queries.
 
-:py:class:`QgsStoredQueryManager` is not usually directly created, instead
-use the instance accessible through :py:func:`QgsGui.storedQueryManager()`.
+:py:class:`QgsStoredQueryManager` is not usually directly created,
+instead use the instance accessible through
+:py:func:`QgsGui.storedQueryManager()`.
 
 .. versionadded:: 3.44
 %End
@@ -26,15 +27,16 @@ use the instance accessible through :py:func:`QgsGui.storedQueryManager()`.
 
     QgsStoredQueryManager( QObject *parent = 0 );
 %Docstring
-Constructor for QgsStoredQueryManager, with the specified
-``parent`` object.
+Constructor for QgsStoredQueryManager, with the specified ``parent``
+object.
 %End
 
     void storeQuery( const QString &name, const QString &query, Qgis::QueryStorageBackend backend = Qgis::QueryStorageBackend::LocalProfile );
 %Docstring
 Saves a query to the manager.
 
-If a query with the same ``name`` already exists it will be overwritten with the new definition.
+If a query with the same ``name`` already exists it will be overwritten
+with the new definition.
 
 :param name: user-set, unique name for the query.
 :param query: query definition to store
@@ -57,12 +59,14 @@ Removes the stored query with matching ``name``.
 
     QStringList allQueryNames( Qgis::QueryStorageBackend backend = Qgis::QueryStorageBackend::LocalProfile ) const;
 %Docstring
-Returns a list of the names of all stored queries for the specified ``backend``.
+Returns a list of the names of all stored queries for the specified
+``backend``.
 %End
 
     QString query( const QString &name, Qgis::QueryStorageBackend backend = Qgis::QueryStorageBackend::LocalProfile ) const;
 %Docstring
-Returns the query definition with matching ``name``, from the specified ``backend``.
+Returns the query definition with matching ``name``, from the specified
+``backend``.
 %End
 
     class QueryDetails

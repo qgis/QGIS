@@ -12,7 +12,7 @@
 class QgsVectorLayerSaveAsDialog : QDialog
 {
 %Docstring(signature="appended")
-Class to select destination file, type and CRS for ogr layers
+A dialog for configuring vector layer save to file operations.
 %End
 
 %TypeHeaderCode
@@ -69,8 +69,9 @@ Returns the target layer name.
 
     QStringList datasourceOptions() const;
 %Docstring
-Returns a list of additional data source options which are passed to OGR.
-Refer to the OGR documentation for the target format for available options.
+Returns a list of additional data source options which are passed to
+OGR. Refer to the OGR documentation for the target format for available
+options.
 
 .. seealso:: :py:func:`layerOptions`
 %End
@@ -78,7 +79,8 @@ Refer to the OGR documentation for the target format for available options.
     QStringList layerOptions() const;
 %Docstring
 Returns a list of additional layer options which are passed to OGR.
-Refer to the OGR documentation for the target format for available options.
+Refer to the OGR documentation for the target format for available
+options.
 
 .. seealso:: :py:func:`datasourceOptions`
 %End
@@ -97,7 +99,8 @@ Returns a list of attributes which are selected for saving.
 
     QgsAttributeList attributesAsDisplayedValues() const;
 %Docstring
-Returns selected attributes that must be exported with their displayed values instead of their raw values.
+Returns selected attributes that must be exported with their displayed
+values instead of their raw values.
 %End
 
     QStringList attributesExportNames() const;
@@ -114,7 +117,7 @@ Returns ``True`` if the "add to canvas" checkbox is checked.
 
     void setAddToCanvas( bool checked );
 %Docstring
-Sets whether the  "add to canvas" checkbox should be ``checked``.
+Sets whether the "add to canvas" checkbox should be ``checked``.
 
 .. seealso:: :py:func:`addToCanvas`
 
@@ -128,8 +131,8 @@ Returns type of symbology export.
 
     double scale() const;
 %Docstring
-Returns the specified map scale.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Returns the specified map scale. The scale value indicates the scale
+denominator, e.g. 1000.0 for a 1:1000 map.
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
@@ -167,7 +170,8 @@ Returns whether only selected features will be saved.
 
     bool persistMetadata() const;
 %Docstring
-Returns ``True`` if the persist metadata (copy source metadata to destination layer) option is checked.
+Returns ``True`` if the persist metadata (copy source metadata to
+destination layer) option is checked.
 
 .. versionadded:: 3.20
 %End

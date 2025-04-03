@@ -1070,7 +1070,6 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
     }
     CPLErrorReset();
 
-
     CPLErr err = gdalRasterIO( gdalBand, GF_Read,
                                srcLeft, srcTop, srcWidth, srcHeight,
                                static_cast<void *>( tmpBlock ),
@@ -1110,17 +1109,17 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
 
     sExtraArg.eResampleAlg = getGDALResamplingAlg( mZoomedOutResamplingMethod );
 
-    CPLErr eErr = GDALRasterIOEx( GDALGetRasterBand( hSrcDS.get(), 1 ),
-                                  GF_Read,
-                                  0, 0, tmpWidth, tmpHeight,
-                                  static_cast<char *>( data ) +
-                                  ( tgtTopOri * bufferWidthPix + tgtLeftOri ) * dataSize,
-                                  tgtWidth,
-                                  tgtHeight,
-                                  type,
-                                  dataSize,
-                                  dataSize * bufferWidthPix,
-                                  &sExtraArg );
+    err = GDALRasterIOEx( GDALGetRasterBand( hSrcDS.get(), 1 ),
+                          GF_Read,
+                          0, 0, tmpWidth, tmpHeight,
+                          static_cast<char *>( data ) +
+                          ( tgtTopOri * bufferWidthPix + tgtLeftOri ) * dataSize,
+                          tgtWidth,
+                          tgtHeight,
+                          type,
+                          dataSize,
+                          dataSize * bufferWidthPix,
+                          &sExtraArg );
     if ( err != CPLE_None )
     {
       setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "readBlock" ) ) );
@@ -1128,7 +1127,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
 
     qgsFree( tmpBlock );
 
-    return eErr == CE_None;
+    return err == CE_None;
   }
 
   const int tgtTop = tgtTopOri;
@@ -1554,6 +1553,9 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
       value = static_cast<double>( tempVal );
       break;
     }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+    case GDT_Float16:
+#endif
     case GDT_Float32:
     {
       float tempVal{0};
@@ -1605,6 +1607,9 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
 #endif
     case GDT_CInt16:
     case GDT_CInt32:
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+    case GDT_CFloat16:
+#endif
     case GDT_CFloat32:
     case GDT_CFloat64:
       QgsDebugError( QStringLiteral( "Raster complex data type is not supported!" ) );
@@ -3498,7 +3503,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
           // Did that work?
           if ( changed && ratCopy->isValid( ) )
           {
-            rat.reset( ratCopy.release() );
+            rat = std::move( ratCopy );
           }
         }
 

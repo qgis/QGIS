@@ -10,7 +10,8 @@
 class QgsBearingNumericFormat : QgsBasicNumericFormat
 {
 %Docstring(signature="appended")
-A numeric formatter which returns a text representation of a direction/bearing.
+A numeric formater which returns a text representation of a
+direction/bearing.
 
 .. versionadded:: 3.12
 %End
@@ -51,16 +52,16 @@ Default constructor
 
     FormatDirectionOption directionFormat() const;
 %Docstring
-Returns the directional formatting option, which controls how bearing direction is
-described in the returned strings.
+Returns the directional formatting option, which controls how bearing
+direction is described in the returned strings.
 
 .. seealso:: :py:func:`setDirectionFormat`
 %End
 
     void setDirectionFormat( FormatDirectionOption format );
 %Docstring
-Sets the directional formatting option, which controls how bearing direction is
-described in the returned strings.
+Sets the directional formatting option, which controls how bearing
+direction is described in the returned strings.
 
 .. seealso:: :py:func:`directionFormat`
 %End

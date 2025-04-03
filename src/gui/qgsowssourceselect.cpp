@@ -458,7 +458,7 @@ void QgsOWSSourceSelect::populateCrs()
         defaultCRS = *it;
 
       // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
-      if ( *it == geoEpsgCrsAuthId() )
+      if ( *it == Qgis::geographicCrsAuthId() )
         defaultCRS = *it;
     }
 

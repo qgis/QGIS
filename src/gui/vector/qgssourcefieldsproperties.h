@@ -43,6 +43,8 @@
 /**
  * \ingroup gui
  * \class QgsSourceFieldsProperties
+ *
+ * \brief A widget which displays information about vector layer fields, and allows some configuration of them.
  */
 class GUI_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourceFieldsProperties
 {

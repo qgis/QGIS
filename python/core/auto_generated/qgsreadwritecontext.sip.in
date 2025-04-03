@@ -13,7 +13,8 @@
 class QgsReadWriteContext
 {
 %Docstring(signature="appended")
-The class is used as a container of context for various read/write operations on other objects.
+A container for the context for various read/write operations on
+objects.
 %End
 
 %TypeHeaderCode
@@ -117,8 +118,9 @@ Returns the project translator
 
     void setProjectTranslator( QgsProjectTranslator *projectTranslator );
 %Docstring
-Sets the project translator.
-It's usually the :py:class:`QgsProject` where the function with the context is made and won't be changed anymore.
+Sets the project translator. It's usually the :py:class:`QgsProject`
+where the function with the context is made and won't be changed
+anymore.
 
 .. versionadded:: 3.4
 %End
@@ -147,8 +149,9 @@ Sets data coordinate transform context to ``transformContext``
 class QgsReadWriteContextCategoryPopper
 {
 %Docstring(signature="appended")
-Allows entering a context category and takes care of
-leaving this category on deletion of the class.
+Allows entering a context category and takes care of leaving this
+category on deletion of the class.
+
 This would happen when it gets out of scope.
 
 .. versionadded:: 3.2

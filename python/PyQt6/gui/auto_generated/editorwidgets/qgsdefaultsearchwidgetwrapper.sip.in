@@ -13,7 +13,9 @@
 class QgsDefaultSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring(signature="appended")
-Wraps a search widget. Default form is just a :py:class:`QgsLineFilterEdit`
+Wraps a search widget.
+
+Default form is just a :py:class:`QgsLineFilterEdit`
 %End
 
 %TypeHeaderCode

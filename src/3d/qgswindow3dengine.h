@@ -34,8 +34,8 @@ class QWindow;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
- * \brief On-screen 3D engine: it creates OpenGL window (QWindow) and displays rendered 3D scene there.
+ * \ingroup qgis_3d
+ * \brief On-screen 3D engine: it creates an OpenGL window (QWindow) and displays rendered 3D scenes there.
  * The window can be embedded into a QWidget-based application with QWidget::createWindowContainer().
  *
  * \note Not available in Python bindings
@@ -57,11 +57,6 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     //! Returns the root entity
     Qt3DCore::QEntity *root() const;
 
-    //! Sets whether shadow rendering is enabled
-    void setShadowRenderingEnabled( bool enabled );
-    //! Returns whether shadow rendering is enabled
-    bool shadowRenderingEnabled() { return mShadowRenderingEnabled; }
-
     void setClearColor( const QColor &color ) override;
     void setFrustumCullingEnabled( bool enabled ) override;
     void setRootEntity( Qt3DCore::QEntity *root ) override;
@@ -77,7 +72,6 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     //! 3D window with all the 3D magic inside
     Qgs3DMapCanvas *mMapCanvas3D = nullptr;
     //! Frame graph node for render capture
-    bool mShadowRenderingEnabled = false;
     Qt3DCore::QEntity *mRoot = nullptr;
     Qt3DCore::QEntity *mSceneRoot = nullptr;
 

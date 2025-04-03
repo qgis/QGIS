@@ -25,10 +25,9 @@ class QgsGraph;
 
 /**
  * \ingroup analysis
- * \brief This class performs graph analysis, e.g. calculates shortest path between two
- * points using different strategies with Dijkstra algorithm
+ * \brief Performs graph analysis, e.g. calculates shortest path between two
+ * points using different strategies with Dijkstra's algorithm.
  */
-
 class ANALYSIS_EXPORT QgsGraphAnalyzer
 {
   public:

@@ -22,7 +22,7 @@
 
 /**
  * \ingroup gui
- * \brief The QgsAbstractDbTableModel class is a pure virtual model class for results in a database source widget selector
+ * \brief Pure virtual model class for results in a database source widget selector.
  * \since QGIS 3.24
  */
 class CORE_EXPORT QgsAbstractDbTableModel : public QStandardItemModel

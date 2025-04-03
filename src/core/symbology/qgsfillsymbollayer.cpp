@@ -2441,11 +2441,11 @@ QgsSymbolLayer *QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
   QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( !strokeElem.isNull() )
   {
-    QgsSymbolLayer *l = QgsSymbolLayerUtils::createLineLayerFromSld( strokeElem );
+    std::unique_ptr< QgsSymbolLayer > l = QgsSymbolLayerUtils::createLineLayerFromSld( strokeElem );
     if ( l )
     {
       QgsSymbolLayerList layers;
-      layers.append( l );
+      layers.append( l.release() );
       sl->setSubSymbol( new QgsLineSymbol( layers ) );
     }
   }
@@ -3601,11 +3601,11 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
   QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( !strokeElem.isNull() )
   {
-    QgsSymbolLayer *l = QgsSymbolLayerUtils::createLineLayerFromSld( strokeElem );
+    std::unique_ptr< QgsSymbolLayer > l = QgsSymbolLayerUtils::createLineLayerFromSld( strokeElem );
     if ( l )
     {
       QgsSymbolLayerList layers;
-      layers.append( l );
+      layers.append( l.release() );
       sl->setSubSymbol( new QgsLineSymbol( layers ) );
     }
   }
@@ -4536,13 +4536,12 @@ QgsSymbolLayer *QgsPointPatternFillSymbolLayer::createFromSld( QDomElement &elem
   if ( graphicElem.isNull() )
     return nullptr;
 
-  QgsSymbolLayer *simpleMarkerSl = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicFillElem );
+  std::unique_ptr< QgsSymbolLayer > simpleMarkerSl = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicFillElem );
   if ( !simpleMarkerSl )
     return nullptr;
 
-
   QgsSymbolLayerList layers;
-  layers.append( simpleMarkerSl );
+  layers.append( simpleMarkerSl.release() );
 
   auto marker = std::make_unique< QgsMarkerSymbol >( layers );
 
@@ -5000,12 +4999,12 @@ void QgsCentroidFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element,
 
 QgsSymbolLayer *QgsCentroidFillSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsSymbolLayer *l = QgsSymbolLayerUtils::createMarkerLayerFromSld( element );
+  std::unique_ptr< QgsSymbolLayer > l = QgsSymbolLayerUtils::createMarkerLayerFromSld( element );
   if ( !l )
     return nullptr;
 
   QgsSymbolLayerList layers;
-  layers.append( l );
+  layers.append( l.release() );
   auto marker = std::make_unique<QgsMarkerSymbol>( layers );
 
   auto sl = std::make_unique< QgsCentroidFillSymbolLayer >();

@@ -4744,6 +4744,8 @@ static QVariant fcnCloseLine( const QVariantList &values, const QgsExpressionCon
   else
   {
     const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection *>( geom.constGet() );
+    if ( !collection )
+      return QVariant();
 
     std::unique_ptr< QgsGeometryCollection > closed( collection->createEmptyWithSameType() );
 

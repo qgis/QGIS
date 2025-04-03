@@ -10,6 +10,9 @@
 
 class QgsTransactionGroup : QObject
 {
+%Docstring(signature="appended")
+Represents a transaction group.
+%End
 
 %TypeHeaderCode
 #include "qgstransactiongroup.h"
@@ -37,19 +40,20 @@ Gets the set of layers currently managed by this transaction group.
 
     bool modified() const;
 %Docstring
-Returns ``True`` if any of the layers in this group reports a modification.
+Returns ``True`` if any of the layers in this group reports a
+modification.
 %End
 
     QString connString() const;
 %Docstring
-Returns the connection string used by this transaction group.
-Layers need be compatible when added.
+Returns the connection string used by this transaction group. Layers
+need be compatible when added.
 %End
 
     QString providerKey() const;
 %Docstring
-Returns the provider key used by this transaction group.
-Layers need be compatible when added.
+Returns the provider key used by this transaction group. Layers need be
+compatible when added.
 %End
 
     bool isEmpty() const;

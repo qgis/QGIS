@@ -103,8 +103,9 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingParametersGenerator::Flags )
 /**
  * \ingroup gui
  * \class QgsProcessingParameterWidgetContext
- * \brief Contains settings which reflect the context in which a Processing parameter widget is shown, e.g., the
- * parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+ * \brief Contains settings which reflect the context in which a Processing parameter widget is shown.
+ *
+ * For instance, the parent model algorithm, a linked map canvas, and other relevant information which allows the widget
  * to fine-tune its behavior.
  *
  * \since QGIS 3.4
@@ -598,7 +599,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
 /**
  * \class QgsProcessingHiddenWidgetWrapper
  *
- * \brief An widget wrapper for hidden widgets.
+ * \brief A widget wrapper for hidden widgets.
  *
  * The hidden widget wrapper allows for creation of a widget wrapper which does not provide
  * a graphical widget, yet still implements the QgsAbstractProcessingParameterWidgetWrapper

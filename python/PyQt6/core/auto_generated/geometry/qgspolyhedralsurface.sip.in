@@ -15,7 +15,8 @@ class QgsPolyhedralSurface: QgsSurface
 %Docstring(signature="appended")
 Polyhedral surface geometry type.
 
-A polyhedral surface is a collection of polygons which share common boundary segments.
+A polyhedral surface is a collection of polygons which share common
+boundary segments.
 
 .. versionadded:: 3.40
 %End
@@ -101,7 +102,8 @@ Returns the number of patches contained with the polyhedral surface.
 
     SIP_PYOBJECT patchN( int i ) /HoldGIL,TypeHint="QgsPolygon"/;
 %Docstring
-Retrieves a patch from the polyhedral surface. The first patch has index 0.
+Retrieves a patch from the polyhedral surface. The first patch has index
+0.
 
 :raises IndexError: if no patch with the specified index exists.
 
@@ -126,14 +128,16 @@ Sets all patches, transferring ownership to the polyhedral surface.
 
     virtual void addPatch( QgsPolygon *patch /Transfer/ );
 %Docstring
-Adds a patch to the geometry, transferring ownership to the polyhedral surface.
+Adds a patch to the geometry, transferring ownership to the polyhedral
+surface.
 %End
 
 
     bool removePatch( int ringIndex );
 %Docstring
-Removes a patch from the polyhedral surface. The first patch has index 0.
-The corresponding patch is removed from the polyhedral surface and deleted.
+Removes a patch from the polyhedral surface. The first patch has index
+0. The corresponding patch is removed from the polyhedral surface and
+deleted.
 
 :raises IndexError: if no patch with the specified index exists.
 %End
@@ -188,13 +192,15 @@ The corresponding patch is removed from the polyhedral surface and deleted.
 Returns a geometry without curves. Caller takes ownership
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
+:param toleranceType: maximum segmentation angle or maximum difference
+                      between approximation and curve
 %End
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
 %Docstring
-Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+Returns approximate rotation angle for a vertex. Usually average angle
+between adjacent segments.
 
 :param vertex: the vertex id
 
@@ -231,8 +237,7 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
 
     QgsMultiPolygon *toMultiPolygon() const /Factory/;
 %Docstring
-Converts a polyhedral surface to a multipolygon.
-Caller takes ownership.
+Converts a polyhedral surface to a multipolygon. Caller takes ownership.
 %End
 
 
@@ -260,8 +265,9 @@ Returns the number of patches within the polyhedral surface.
 %Docstring
 Returns the geometry at the specified ``index``.
 
-Indexes can be less than 0, in which case they correspond to geometries from the end of the collect. E.g. an index of -1
-corresponds to the last geometry in the collection.
+Indexes can be less than 0, in which case they correspond to geometries
+from the end of the collect. E.g. an index of -1 corresponds to the last
+geometry in the collection.
 
 :raises IndexError: if no geometry with the specified ``index`` exists.
 %End

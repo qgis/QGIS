@@ -1688,7 +1688,7 @@ void TestQgsLegendRenderer::testDataDefinedSizeCollapsed()
   props[QStringLiteral( "name" )] = QStringLiteral( "circle" );
   props[QStringLiteral( "color" )] = QStringLiteral( "200,200,200" );
   props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,0,0" );
-  QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( props );
+  QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( props ).release();
   QgsProperty ddsProperty = QgsProperty::fromField( QStringLiteral( "test_attr" ) );
   ddsProperty.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear, 100, 300, 10, 30 ) ); // takes ownership
   symbol->setDataDefinedSize( ddsProperty );
@@ -1749,7 +1749,7 @@ void TestQgsLegendRenderer::testDataDefinedSizeSeparated()
   props[QStringLiteral( "name" )] = QStringLiteral( "circle" );
   props[QStringLiteral( "color" )] = QStringLiteral( "200,200,200" );
   props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,0,0" );
-  QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( props );
+  QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( props ).release();
   QgsProperty ddsProperty = QgsProperty::fromField( QStringLiteral( "test_attr" ) );
   ddsProperty.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear, 100, 300, 10, 30 ) ); // takes ownership
   symbol->setDataDefinedSize( ddsProperty );
@@ -1810,7 +1810,7 @@ void TestQgsLegendRenderer::testDataDefinedSizeCollapsedFilterByMap()
   props[QStringLiteral( "name" )] = QStringLiteral( "circle" );
   props[QStringLiteral( "color" )] = QStringLiteral( "200,200,200" );
   props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,0,0" );
-  QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( props );
+  QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( props ).release();
   QgsProperty ddsProperty = QgsProperty::fromField( QStringLiteral( "test_attr" ) );
   ddsProperty.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear, 100, 300, 10, 30 ) ); // takes ownership
   symbol->setDataDefinedSize( ddsProperty );
@@ -1881,7 +1881,7 @@ void TestQgsLegendRenderer::testDataDefinedSizeSeparatedFilterByMap()
   props[QStringLiteral( "name" )] = QStringLiteral( "circle" );
   props[QStringLiteral( "color" )] = QStringLiteral( "200,200,200" );
   props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,0,0" );
-  QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( props );
+  QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( props ).release();
   QgsProperty ddsProperty = QgsProperty::fromField( QStringLiteral( "test_attr" ) );
   ddsProperty.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear, 100, 300, 10, 30 ) ); // takes ownership
   symbol->setDataDefinedSize( ddsProperty );

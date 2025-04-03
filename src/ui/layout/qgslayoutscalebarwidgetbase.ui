@@ -62,14 +62,14 @@
         <x>0</x>
         <y>0</y>
         <width>566</width>
-        <height>1031</height>
+        <height>1023</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
          <property name="focusPolicy">
-          <enum>Qt::FocusPolicy::StrongFocus</enum>
+          <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Main Properties</string>
@@ -122,7 +122,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mGroupBoxUnits">
          <property name="focusPolicy">
-          <enum>Qt::FocusPolicy::StrongFocus</enum>
+          <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Units</string>
@@ -217,13 +217,17 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
-           <widget class="QComboBox" name="mMethodCombo"/>
-          </item>
           <item row="4" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>Method</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QgsScaleMethodWidget" name="mScaleMethodWidget" native="true">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
             </property>
            </widget>
           </item>
@@ -233,7 +237,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mGroupBoxSegments">
          <property name="focusPolicy">
-          <enum>Qt::FocusPolicy::StrongFocus</enum>
+          <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Segments</string>
@@ -536,7 +540,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_5">
          <property name="focusPolicy">
-          <enum>Qt::FocusPolicy::StrongFocus</enum>
+          <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Appearance</string>
@@ -734,9 +738,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFontButton</class>
@@ -749,20 +759,20 @@
    <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSymbolButton</class>
    <extends>QToolButton</extends>
    <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
+   <class>QgsScaleMethodWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalemethodwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
@@ -792,7 +802,7 @@
   <tabstop>mMapUnitsPerBarUnitSpinBox</tabstop>
   <tabstop>mUnitLabelLineEdit</tabstop>
   <tabstop>mNumberFormatPushButton</tabstop>
-  <tabstop>mMethodCombo</tabstop>
+  <tabstop>mScaleMethodWidget</tabstop>
   <tabstop>mGroupBoxSegments</tabstop>
   <tabstop>mSegmentsLeftSpinBox</tabstop>
   <tabstop>mSegmentsLeftDDBtn</tabstop>

@@ -73,7 +73,7 @@ class CORE_EXPORT QgsAnnotationItemEditContext
 
 /**
  * \ingroup core
- * \brief Abstract base class for annotation item edit operations
+ * \brief Abstract base class for annotation item edit operations.
  * \since QGIS 3.22
  */
 class CORE_EXPORT QgsAbstractAnnotationItemEditOperation
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsAbstractAnnotationItemEditOperation
 
 /**
  * \ingroup core
- * \brief Annotation item edit operation consisting of moving a node
+ * \brief Annotation item edit operation consisting of moving a node.
  * \since QGIS 3.22
  */
 class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnnotationItemEditOperation
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
 
 /**
  * \ingroup core
- * \brief Annotation item edit operation consisting of deleting a node
+ * \brief Annotation item edit operation consisting of deleting a node.
  * \since QGIS 3.22
  */
 class CORE_EXPORT QgsAnnotationItemEditOperationDeleteNode : public QgsAbstractAnnotationItemEditOperation
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsAnnotationItemEditOperationDeleteNode : public QgsAbstractA
 
 /**
  * \ingroup core
- * \brief Annotation item edit operation consisting of adding a node
+ * \brief Annotation item edit operation consisting of adding a node.
  * \since QGIS 3.22
  */
 class CORE_EXPORT QgsAnnotationItemEditOperationAddNode : public QgsAbstractAnnotationItemEditOperation
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsAnnotationItemEditOperationAddNode : public QgsAbstractAnno
 
 /**
  * \ingroup core
- * \brief Annotation item edit operation consisting of translating (moving) an item
+ * \brief Annotation item edit operation consisting of translating (moving) an item.
  * \since QGIS 3.22
  */
 class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstractAnnotationItemEditOperation

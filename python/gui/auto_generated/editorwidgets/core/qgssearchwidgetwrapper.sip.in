@@ -60,7 +60,6 @@
 class QgsSearchWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring(signature="appended")
-
 Shows a search widget on a filter form.
 %End
 
@@ -91,14 +90,16 @@ Shows a search widget on a filter form.
 
     static QList<QgsSearchWidgetWrapper::FilterFlag> exclusiveFilterFlags();
 %Docstring
-Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
+Returns a list of exclusive filter flags, which cannot be combined with
+other flags (e.g., EqualTo/NotEqualTo)
 
 .. seealso:: :py:func:`nonExclusiveFilterFlags`
 %End
 
     static QList<QgsSearchWidgetWrapper::FilterFlag> nonExclusiveFilterFlags();
 %Docstring
-Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
+Returns a list of non-exclusive filter flags, which can be combined with
+other flags (e.g., CaseInsensitive)
 
 .. seealso:: :py:func:`exclusiveFilterFlags`
 %End
@@ -116,7 +117,8 @@ Create a new widget wrapper
 
 :param vl: The layer on which the field is
 :param fieldIdx: The field which will be controlled
-:param parent: A parent widget for this widget wrapper and the created widget.
+:param parent: A parent widget for this widget wrapper and the created
+               widget.
 %End
 
     virtual FilterFlags supportedFlags() const;
@@ -128,15 +130,16 @@ Returns filter flags supported by the search widget.
 
     virtual FilterFlags defaultFlags() const;
 %Docstring
-Returns the filter flags which should be set by default for the search widget.
+Returns the filter flags which should be set by default for the search
+widget.
 
 .. seealso:: :py:func:`supportedFlags`
 %End
 
     virtual QString expression() const = 0;
 %Docstring
-Will be used to access the widget's value. Read the value from the widget and
-return it properly formatted to be saved in the attribute.
+Will be used to access the widget's value. Read the value from the
+widget and return it properly formatted to be saved in the attribute.
 
 If an invalid variant is returned this will be interpreted as no change.
 Be sure to return a NULL QVariant if it should be set to NULL.
@@ -153,8 +156,8 @@ when its expression changes
 
     virtual QString createExpression( FilterFlags flags ) const;
 %Docstring
-Creates a filter expression based on the current state of the search widget
-and the specified filter flags.
+Creates a filter expression based on the current state of the search
+widget and the specified filter flags.
 
 :param flags: filter flags
 
@@ -163,9 +166,9 @@ and the specified filter flags.
 
     QString createFieldIdentifier() const;
 %Docstring
-Gets a field name or expression to use as field comparison.
-If in SearchMode returns a quoted field identifier.
-If in AggregateSearchMode returns an appropriate aggregate expression.
+Gets a field name or expression to use as field comparison. If in
+SearchMode returns a quoted field identifier. If in AggregateSearchMode
+returns an appropriate aggregate expression.
 %End
 
     QString aggregate() const;
@@ -191,7 +194,8 @@ Returns the field index
 
     virtual void clearWidget();
 %Docstring
-Clears the widget's current value and resets it back to the default state
+Clears the widget's current value and resets it back to the default
+state
 %End
 
     virtual void setEnabled( bool enabled );
@@ -217,15 +221,16 @@ Emitted when a user changes the value of the search widget.
 
     void valueCleared();
 %Docstring
-Emitted when a user changes the value of the search widget back
-to an empty, default state.
+Emitted when a user changes the value of the search widget back to an
+empty, default state.
 %End
 
   protected slots:
 
     virtual void setExpression( const QString &expression ) = 0;
 %Docstring
-Set the ``expression`` which is currently used as filter for this widget.
+Set the ``expression`` which is currently used as filter for this
+widget.
 %End
 
     virtual void setFeature( const QgsFeature &feature );

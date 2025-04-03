@@ -869,7 +869,7 @@ class CORE_EXPORT QgsDiagramRenderer
 
 /**
  * \ingroup core
- * \brief Renders the diagrams for all features with the same settings
+ * \brief Renders the diagrams for all features with the same settings.
 */
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {
@@ -905,7 +905,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 /**
  * \ingroup core
  * \class QgsLinearlyInterpolatedDiagramRenderer
- * \brief Alters the size of rendered diagrams using a linear scaling.
+ * \brief Alters the size of rendered diagrams using linear scaling.
  */
 class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRenderer
 {
@@ -992,8 +992,9 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 /**
  * \ingroup core
  * \class QgsStackedDiagramRenderer
- * Renders diagrams using mixed diagram render types. The size of
- * the rendered diagram is given by a combination of subrenderers.
+ * Renders diagrams using mixed diagram render types.
+ *
+ * The size of the rendered diagram is given by a combination of subrenderers.
  *
  * \since QGIS 3.40
  */

@@ -258,7 +258,7 @@ void QgsUserProfileManager::loadUserProfile( const QString &name )
 
 void QgsUserProfileManager::setActiveUserProfile( const QString &profile )
 {
-  if ( ! mUserProfile.get() )
+  if ( ! mUserProfile )
   {
     mUserProfile.reset( profileForName( profile ) );
   }

@@ -12,15 +12,16 @@
 class QgsAnnotationManager : QObject
 {
 %Docstring(signature="appended")
+Manages storage of a set of :py:class:`QgsAnnotation` annotation
+objects.
 
-Manages storage of a set of :py:class:`QgsAnnotation` annotation objects.
+:py:class:`QgsAnnotationManager` handles the storage, serializing and
+deserializing of :py:class:`QgsAnnotations`. Usually this class is not
+constructed directly, but rather accessed through a
+:py:class:`QgsProject` via :py:func:`QgsProject.annotationManager()`.
 
-:py:class:`QgsAnnotationManager` handles the storage, serializing and deserializing
-of :py:class:`QgsAnnotations`. Usually this class is not constructed directly, but
-rather accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.annotationManager()`.
-
-:py:class:`QgsAnnotationManager` retains ownership of all the annotations contained
-in the manager.
+:py:class:`QgsAnnotationManager` retains ownership of all the
+annotations contained in the manager.
 %End
 
 %TypeHeaderCode
@@ -30,16 +31,17 @@ in the manager.
 
     explicit QgsAnnotationManager( QgsProject *project /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsAnnotationManager. The project will become the parent object for this
-manager.
+Constructor for QgsAnnotationManager. The project will become the parent
+object for this manager.
 %End
 
     ~QgsAnnotationManager();
 
     bool addAnnotation( QgsAnnotation *annotation /Transfer/ );
 %Docstring
-Adds an annotation to the manager. Ownership of the annotation is transferred to the manager.
-Returns ``True`` if the addition was successful, or ``False`` if the annotation could not be added.
+Adds an annotation to the manager. Ownership of the annotation is
+transferred to the manager. Returns ``True`` if the addition was
+successful, or ``False`` if the annotation could not be added.
 
 .. seealso:: :py:func:`removeAnnotation`
 
@@ -49,8 +51,9 @@ Returns ``True`` if the addition was successful, or ``False`` if the annotation 
     bool removeAnnotation( QgsAnnotation *annotation );
 %Docstring
 Removes an annotation from the manager. The annotation is deleted.
-Returns ``True`` if the removal was successful, or ``False`` if the removal failed (eg as a result
-of removing an annotation which is not contained in the manager).
+Returns ``True`` if the removal was successful, or ``False`` if the
+removal failed (eg as a result of removing an annotation which is not
+contained in the manager).
 
 .. seealso:: :py:func:`addAnnotation`
 
@@ -77,9 +80,9 @@ Returns a list of all annotations contained in the manager.
 
     QList< QgsAnnotation * > cloneAnnotations() const /Factory/;
 %Docstring
-Returns a list containing clones of all annotations contained
-in the manager. The caller takes responsibility for deleting
-all returned annotations.
+Returns a list containing clones of all annotations contained in the
+manager. The caller takes responsibility for deleting all returned
+annotations.
 
 .. seealso:: :py:func:`annotations`
 %End
@@ -102,11 +105,11 @@ Returns a DOM element representing the state of the manager.
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
-within the contained annotations.
+Accepts the specified style entity ``visitor``, causing it to visit all
+style entities associated within the contained annotations.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
 %End

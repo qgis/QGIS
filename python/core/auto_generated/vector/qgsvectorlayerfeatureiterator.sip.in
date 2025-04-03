@@ -18,7 +18,8 @@
 class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
 {
 %Docstring(signature="appended")
-Partial snapshot of vector layer's state (only the members necessary for access to features)
+Partial snapshot of vector layer's state (only the members necessary for
+access to features).
 %End
 
 %TypeHeaderCode
@@ -42,13 +43,14 @@ Constructor for QgsVectorLayerFeatureSource.
 
     QgsFields fields() const;
 %Docstring
-Returns the fields that will be available for features that are retrieved from
-this source.
+Returns the fields that will be available for features that are
+retrieved from this source.
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
-Returns the coordinate reference system for features retrieved from this source.
+Returns the coordinate reference system for features retrieved from this
+source.
 %End
 
     QString id() const;
@@ -80,7 +82,8 @@ typedef QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource> QgsAbs
 class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIteratorFromSourceQgsVectorLayerFeatureSourceBase
 {
 %Docstring(signature="appended")
-A feature iterator which iterates over features from a :py:class:`QgsVectorLayer`.
+A feature iterator which iterates over features from a
+:py:class:`QgsVectorLayer`.
 %End
 
 %TypeHeaderCode
@@ -133,14 +136,16 @@ fetch next feature, return ``True`` on success
 
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
 %Docstring
-Overrides default method as we only need to filter features in the edit buffer
-while for others filtering is left to the provider implementation.
+Overrides default method as we only need to filter features in the edit
+buffer while for others filtering is left to the provider
+implementation.
 %End
 
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
 
 %Docstring
-Setup the simplification of geometries to fetch using the specified simplify method
+Setup the simplification of geometries to fetch using the specified
+simplify method
 %End
 
 
@@ -170,7 +175,8 @@ Setup the simplification of geometries to fetch using the specified simplify met
 class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource, QgsExpressionContextScopeGenerator
 {
 %Docstring(signature="appended")
-:py:class:`QgsFeatureSource` subclass for the selected features from a :py:class:`QgsVectorLayer`.
+:py:class:`QgsFeatureSource` subclass for the selected features from a
+:py:class:`QgsVectorLayer`.
 %End
 
 %TypeHeaderCode
@@ -180,9 +186,10 @@ class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource, QgsExpressionConte
 
     QgsVectorLayerSelectedFeatureSource( QgsVectorLayer *layer );
 %Docstring
-Constructor for QgsVectorLayerSelectedFeatureSource, for selected features from the specified ``layer``.
-The currently selected feature IDs are stored, so change to the layer selection after constructing
-the QgsVectorLayerSelectedFeatureSource will not be reflected.
+Constructor for QgsVectorLayerSelectedFeatureSource, for selected
+features from the specified ``layer``. The currently selected feature
+IDs are stored, so change to the layer selection after constructing the
+QgsVectorLayerSelectedFeatureSource will not be reflected.
 %End
 
 

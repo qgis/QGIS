@@ -14,7 +14,7 @@
 class QgsSnappingConfig
 {
 %Docstring(signature="appended")
-This is a container for configuration of the snapping of the project
+Stores configuration of snapping settings for the project.
 %End
 
 %TypeHeaderCode
@@ -82,7 +82,8 @@ Convenient method to return an icon corresponding to the enum type
     class IndividualLayerSettings
 {
 %Docstring(signature="appended")
-This is a container of advanced configuration (per layer) of the snapping of the project
+A container of advanced configuration (per layer) of the snapping of the
+project.
 %End
 
 %TypeHeaderCode
@@ -94,10 +95,10 @@ This is a container of advanced configuration (per layer) of the snapping of the
 %Docstring
 IndividualLayerSettings
 
-:param enabled:
-:param type:
-:param tolerance:
-:param units:
+:param enabled: 
+:param type: 
+:param tolerance: 
+:param units: 
 
 .. deprecated:: 3.12
 
@@ -108,10 +109,10 @@ IndividualLayerSettings
 %Docstring
 IndividualLayerSettings
 
-:param enabled:
-:param type:
-:param tolerance:
-:param units:
+:param enabled: 
+:param type: 
+:param tolerance: 
+:param units: 
 :param minScale: 0.0 disable scale limit
 :param maxScale: 0.0 disable scale limit
 
@@ -199,7 +200,8 @@ Returns minimum scale on which snapping is limited
 
         void setMinimumScale( double minScale );
 %Docstring
-Sets the min scale value on which snapping is used, 0.0 disable scale limit
+Sets the min scale value on which snapping is used, 0.0 disable scale
+limit
 
 .. versionadded:: 3.14
 %End
@@ -213,7 +215,8 @@ Returns max scale on which snapping is limited
 
         void setMaximumScale( double maxScale );
 %Docstring
-Sets the max scale value on which snapping is used, 0.0 disable scale limit
+Sets the max scale value on which snapping is used, 0.0 disable scale
+limit
 
 .. versionadded:: 3.14
 %End
@@ -362,14 +365,16 @@ Sets if the snapping on intersection is enabled
 
     bool selfSnapping() const;
 %Docstring
-Returns if self snapping (snapping to the currently digitized feature) is enabled
+Returns if self snapping (snapping to the currently digitized feature)
+is enabled
 
 .. versionadded:: 3.14
 %End
 
     void setSelfSnapping( bool enabled );
 %Docstring
-Sets if self snapping (snapping to the currently digitized feature) is enabled
+Sets if self snapping (snapping to the currently digitized feature) is
+enabled
 
 .. versionadded:: 3.14
 %End
@@ -420,12 +425,14 @@ Returns individual snapping settings for all layers
 
     QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer *vl ) const;
 %Docstring
-Returns individual layer snappings settings (applied if mode is AdvancedConfiguration)
+Returns individual layer snappings settings (applied if mode is
+AdvancedConfiguration)
 %End
 
     void setIndividualLayerSettings( QgsVectorLayer *vl, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
 %Docstring
-Sets individual layer snappings settings (applied if mode is AdvancedConfiguration)
+Sets individual layer snappings settings (applied if mode is
+AdvancedConfiguration)
 %End
 
     void clearIndividualLayerSettings();
@@ -449,10 +456,10 @@ Writes the configuration to the specified QGIS project document.
 
     bool addLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
-Adds the specified layers as individual layers to the configuration
-with standard configuration.
-When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
-it is best to directly feed this with information from the layer registry.
+Adds the specified layers as individual layers to the configuration with
+standard configuration. When implementing a long-living
+QgsSnappingConfig (like the one in QgsProject) it is best to directly
+feed this with information from the layer registry.
 
 :return: ``True`` if changes have been done.
 %End
@@ -461,8 +468,9 @@ it is best to directly feed this with information from the layer registry.
     bool removeLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
 Removes the specified layers from the individual layer configuration.
-When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
-it is best to directly feed this with information from the layer registry.
+When implementing a long-living QgsSnappingConfig (like the one in
+QgsProject) it is best to directly feed this with information from the
+layer registry.
 
 :return: ``True`` if changes have been done.
 %End

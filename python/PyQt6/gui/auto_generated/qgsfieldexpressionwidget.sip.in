@@ -15,12 +15,16 @@
 class QgsFieldExpressionWidget : QWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsFieldExpressionWidget` class creates a widget to choose fields and edit expressions
-It contains a combo box to display the fields and expression and a button to open the expression dialog.
-The combo box is editable, allowing expressions to be edited inline.
-The validity of the expression is checked live on key press, invalid expressions are displayed in red.
-The expression will be added to the model (and the fieldChanged signals emitted)
-only when editing in the line edit is finished (focus lost, enter key pressed).
+A widget for selection of layer fields or expression creation.
+
+It contains a combo box to display the fields and expression and a
+button to open the expression dialog. The combo box is editable,
+allowing expressions to be edited inline.
+
+The validity of the expression is checked live on key press, invalid
+expressions are displayed in red. The expression will be added to the
+model (and the fieldChanged signals emitted) only when editing in the
+line edit is finished (focus lost, enter key pressed).
 %End
 
 %TypeHeaderCode
@@ -29,7 +33,8 @@ only when editing in the line edit is finished (focus lost, enter key pressed).
   public:
     explicit QgsFieldExpressionWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
+QgsFieldExpressionWidget creates a widget with a combo box to display
+the fields and expression and a button to open the expression dialog
 %End
 
     void setExpressionDialogTitle( const QString &title );
@@ -58,7 +63,8 @@ setFilters allows filtering according to the type of field
 
     void setAllowEmptyFieldName( bool allowEmpty );
 %Docstring
-Sets whether an optional empty field ("not set") option is shown in the combo box.
+Sets whether an optional empty field ("not set") option is shown in the
+combo box.
 
 .. seealso:: :py:func:`allowEmptyFieldName`
 
@@ -67,7 +73,8 @@ Sets whether an optional empty field ("not set") option is shown in the combo bo
 
     bool allowEmptyFieldName() const;
 %Docstring
-Returns ``True`` if the combo box allows the empty field ("not set") choice.
+Returns ``True`` if the combo box allows the empty field ("not set")
+choice.
 
 .. seealso:: :py:func:`setAllowEmptyFieldName`
 
@@ -88,10 +95,13 @@ Sets the geometry calculator used in the expression dialog
 
     QString currentField( bool *isExpression = 0, bool *isValid = 0 ) const;
 %Docstring
-currentField returns the currently selected field or expression if allowed
+currentField returns the currently selected field or expression if
+allowed
 
-:param isExpression: determines if the string returned is the name of a field or an expression
-:param isValid: determines if the expression (or field) returned is valid
+:param isExpression: determines if the string returned is the name of a
+                     field or an expression
+:param isValid: determines if the expression (or field) returned is
+                valid
 %End
 
     bool isValidExpression( QString *expressionError = 0 ) const;
@@ -101,7 +111,8 @@ Returns ``True`` if the current expression is valid
 
     bool isExpression() const;
 %Docstring
-If the content is not just a simple field this method will return ``True``.
+If the content is not just a simple field this method will return
+``True``.
 %End
 
     QString currentText() const;
@@ -111,15 +122,17 @@ Returns the current text that is set in the expression area
 
     QString asExpression() const;
 %Docstring
-Returns the currently selected field or expression. If a field is currently selected, the returned
-value will be converted to a valid expression referencing this field (ie enclosing the field name with
+Returns the currently selected field or expression. If a field is
+currently selected, the returned value will be converted to a valid
+expression referencing this field (ie enclosing the field name with
 appropriate quotations).
 %End
 
     QString expression() const;
 %Docstring
-Returns the currently selected field or expression. If a field is currently selected, the returned
-value will be converted to a valid expression referencing this field (ie enclosing the field name with
+Returns the currently selected field or expression. If a field is
+currently selected, the returned value will be converted to a valid
+expression referencing this field (ie enclosing the field name with
 appropriate quotations).
 
 Alias for :py:func:`~QgsFieldExpressionWidget.asExpression`
@@ -134,11 +147,12 @@ Returns the layer currently associated with the widget.
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 %Docstring
-Register an expression context generator class that will be used to retrieve
-an expression context for the widget.
+Register an expression context generator class that will be used to
+retrieve an expression context for the widget.
 
-:param generator: A :py:class:`QgsExpressionContextGenerator` class that will be used to
-                  create an expression context when required.
+:param generator: A :py:class:`QgsExpressionContextGenerator` class that
+                  will be used to create an expression context when
+                  required.
 %End
 
 
@@ -146,13 +160,23 @@ an expression context for the widget.
 %Docstring
 Sets the widget to run using a custom preview generator.
 
-In this mode, the widget will call a callback function to generate a new :py:class:`QgsExpressionContext`
-as the previewed object changes. This can be used to provide custom preview values for different
-objects (i.e. for objects which aren't vector layer features).
+In this mode, the widget will call a callback function to generate a new
+:py:class:`QgsExpressionContext` as the previewed object changes. This
+can be used to provide custom preview values for different objects (i.e.
+for objects which aren't vector layer features).
 
-:param label: The label to display for the combo box presenting choices of objects. This should be a representative name, eg "Band" if the widget is showing choices of raster layer bands
-:param choices: A list of choices to present to the user. Each choice is a pair of a human-readable label and a QVariant representing the object to preview.
-:param previewContextGenerator: A function which takes a QVariant representing the object to preview, and returns a :py:class:`QgsExpressionContext` to use for previewing the object.
+:param label: The label to display for the combo box presenting choices
+              of objects. This should be a representative name, eg
+              "Band" if the widget is showing choices of raster layer
+              bands
+:param choices: A list of choices to present to the user. Each choice is
+                a pair of a human-readable label and a QVariant
+                representing the object to preview.
+:param previewContextGenerator: A function which takes a QVariant
+                                representing the object to preview, and
+                                returns a
+                                :py:class:`QgsExpressionContext` to use
+                                for previewing the object.
 
 .. versionadded:: 3.38
 %End
@@ -180,21 +204,24 @@ objects (i.e. for objects which aren't vector layer features).
 
     bool allowEvalErrors() const;
 %Docstring
-Allow accepting expressions with evaluation errors. This can be useful when we are not able to
-provide an expression context of which we are sure it's completely populated.
+Allow accepting expressions with evaluation errors. This can be useful
+when we are not able to provide an expression context of which we are
+sure it's completely populated.
 %End
 
     void setAllowEvalErrors( bool allowEvalErrors );
 %Docstring
-Allow accepting expressions with evaluation errors. This can be useful when we are not able to
-provide an expression context of which we are sure it's completely populated.
+Allow accepting expressions with evaluation errors. This can be useful
+when we are not able to provide an expression context of which we are
+sure it's completely populated.
 %End
 
     bool buttonVisible() const;
 %Docstring
 Returns the visibility of the button
 
-If button is hidden, the widget essentially becomes an editable combo box
+If button is hidden, the widget essentially becomes an editable combo
+box
 
 .. versionadded:: 3.36
 %End
@@ -203,7 +230,8 @@ If button is hidden, the widget essentially becomes an editable combo box
 %Docstring
 Set the visibility of the button
 
-If button is hidden, the widget essentially becomes an editable combo box
+If button is hidden, the widget essentially becomes an editable combo
+box
 
 .. versionadded:: 3.36
 %End
@@ -221,8 +249,9 @@ fieldChanged signal with indication of the validity of the expression
 
     void allowEvalErrorsChanged();
 %Docstring
-Allow accepting expressions with evaluation errors. This can be useful when we are not able to
-provide an expression context of which we are sure it's completely populated.
+Allow accepting expressions with evaluation errors. This can be useful
+when we are not able to provide an expression context of which we are
+sure it's completely populated.
 %End
 
     void buttonVisibleChanged();
@@ -253,15 +282,16 @@ sets the current field or expression in the widget
 
     void setFields( const QgsFields &fields );
 %Docstring
-Sets the fields used in the widget to ``fields``, this allows the widget to work without a layer.
+Sets the fields used in the widget to ``fields``, this allows the widget
+to work without a layer.
 
 .. versionadded:: 3.14
 %End
 
     void setExpression( const QString &expression );
 %Docstring
-Sets the current expression text and if applicable also the field.
-Alias for setField.
+Sets the current expression text and if applicable also the field. Alias
+for setField.
 %End
 
   protected slots:
@@ -272,7 +302,8 @@ open the expression dialog to edit the current or add a new expression
 
     void expressionEdited( const QString &expression );
 %Docstring
-when expression is edited by the user in the line edit, it will be checked for validity
+when expression is edited by the user in the line edit, it will be
+checked for validity
 %End
 
     void expressionEditingFinished();
@@ -284,10 +315,12 @@ when expression has been edited (finished) it will be added to the model
 
     void updateLineEditStyle( const QString &expression = QString() );
 %Docstring
-updateLineEditStyle will re-style (color/font) the line edit depending on content and status
+updateLineEditStyle will re-style (color/font) the line edit depending
+on content and status
 
-:param expression: if expression is given it will be evaluated for the given string, otherwise it takes
-                   current expression from the model
+:param expression: if expression is given it will be evaluated for the
+                   given string, otherwise it takes current expression
+                   from the model
 %End
 
     bool isExpressionValid( const QString &expressionStr );

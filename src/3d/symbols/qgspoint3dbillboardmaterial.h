@@ -27,7 +27,7 @@ class QgsMarkerSymbol;
 class Qgs3DRenderContext;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Material of the billboard rendering for points in 3D map view.
  *
  * \note Not available in Python bindings

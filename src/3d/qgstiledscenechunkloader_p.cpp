@@ -65,13 +65,14 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
 
   const QgsChunkNodeId tileId = node->tileId();
   const QgsVector3D chunkOrigin = node->box3D().center();
-  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset, boundsTransform, chunkOrigin] {
+  const bool isGlobe = factory.mRenderContext.crs().type() == Qgis::CrsType::Geocentric;
+  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset, boundsTransform, chunkOrigin, isGlobe] {
     const QgsTiledSceneTile tile = mIndex.getTile( tileId.uniqueId );
 
-    // we do not load tiles that are too big - at least for the time being
+    // we do not load tiles that are too big when not in globe scene mode...
     // the problem is that their 3D bounding boxes with ECEF coordinates are huge
     // and we are unable to turn them into planar bounding boxes
-    if ( hasLargeBounds( tile, boundsTransform ) )
+    if ( !isGlobe && hasLargeBounds( tile, boundsTransform ) )
       return;
 
     QString uri = tile.resources().value( QStringLiteral( "content" ) ).toString();
@@ -181,7 +182,7 @@ QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode
 QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const
 {
   QgsChunkNode *node = nullptr;
-  if ( hasLargeBounds( t, mBoundsTransform ) )
+  if ( mRenderContext.crs().type() != Qgis::CrsType::Geocentric && hasLargeBounds( t, mBoundsTransform ) )
   {
     // use the full extent of the scene
     QgsVector3D v0( mRenderContext.extent().xMinimum(), mRenderContext.extent().yMinimum(), -100 );
@@ -229,6 +230,7 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
     // Cesium 3D tiles as well. For now this hack is in place to make sure both
     // work in practice.
     if ( t.metadata()["contentFormat"] == QStringLiteral( "cesiumtiles" )
+         && mRenderContext.crs().type() != Qgis::CrsType::Geocentric
          && hasLargeBounds( t, mBoundsTransform ) )
     {
       // if the tile is huge, let's try to see if our scene is actually inside
@@ -389,7 +391,9 @@ QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersec
       {
         QVector3D nodeIntPoint;
         int triangleIndex = -1;
-        bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, QMatrix4x4(), nodeIntPoint, triangleIndex );
+        QgsGeoTransform *nodeGeoTransform = node->entity()->findChild<QgsGeoTransform *>();
+        Q_ASSERT( nodeGeoTransform );
+        bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, nodeGeoTransform->matrix(), nodeIntPoint, triangleIndex );
         if ( success )
         {
 #ifdef QGISDEBUG

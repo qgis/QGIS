@@ -14,14 +14,12 @@
 class QgsServiceRegistry
 {
 %Docstring(signature="appended")
-:py:class:`QgsServiceRegistry`
-Class defining the registry manager for QGIS server services
+A registry manager for QGIS server services.
 
-This class provides methods for registering and retrieving
-services.
+This class provides methods for registering and retrieving services.
 
-IMPORTANT: The registry hold ownership of registered services and
-will call 'delete'  on cleanup
+IMPORTANT: The registry hold ownership of registered services and will
+call 'delete' on cleanup
 %End
 
 %TypeHeaderCode
@@ -40,17 +38,19 @@ Retrieve a service from its name
 
 :return: :py:class:`QgsService`
 
-If the version is not provided the higher version of the service is returned
+If the version is not provided the higher version of the service is
+returned
 %End
 
     void registerService( QgsService *service /Transfer/ );
 %Docstring
 Register a service by its name and version
 
-This method is intended to  be called by modules for registering
+This method is intended to be called by modules for registering
 services. A module may register multiple services.
 
-The registry takes ownership of services and will call 'delete' on cleanup
+The registry takes ownership of services and will call 'delete' on
+cleanup
 
 :param service: a :py:class:`QgsService` to be registered
 %End
@@ -59,7 +59,8 @@ The registry takes ownership of services and will call 'delete' on cleanup
 %Docstring
 Registers the :py:class:`QgsServerApi` ``api``
 
-The registry takes ownership of services and will call 'delete' on cleanup
+The registry takes ownership of services and will call 'delete' on
+cleanup
 
 .. versionadded:: 3.10
 %End
@@ -84,7 +85,8 @@ are unloaded
 %Docstring
 Retrieves an API from its name
 
-If the version is not provided the higher version of the service is returned
+If the version is not provided the higher version of the service is
+returned
 
 :param name: the name of the API
 :param version: the version string (optional)
@@ -103,8 +105,8 @@ Unregister service from its name and version
 
 :return: the number of services unregistered
 
-If the version is not specified then all versions from the specified service
-are unloaded
+If the version is not specified then all versions from the specified
+service are unloaded
 %End
 
     void init( const QString &nativeModulepath, QgsServerInterface *serverIface = 0 );

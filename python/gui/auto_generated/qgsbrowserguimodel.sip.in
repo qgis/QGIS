@@ -11,12 +11,12 @@
 class QgsBrowserGuiModel : QgsBrowserModel
 {
 %Docstring(signature="appended")
+A model for showing available data sources and other items in a
+structured tree.
 
-A model for showing available data sources and other items in a structured
-tree.
-
-:py:class:`QgsBrowserGuiModel` is the foundation for the QGIS browser panel, and includes
-items for the different data providers and folders accessible to users.
+:py:class:`QgsBrowserGuiModel` is the foundation for the QGIS browser
+panel, and includes items for the different data providers and folders
+accessible to users.
 
 .. versionadded:: 3.10
 %End
@@ -27,7 +27,8 @@ items for the different data providers and folders accessible to users.
   public:
     explicit QgsBrowserGuiModel( QObject *parent = 0 );
 %Docstring
-Constructor for QgsBrowserGuiModel, with the specified ``parent`` object.
+Constructor for QgsBrowserGuiModel, with the specified ``parent``
+object.
 
 .. note::
 
@@ -44,12 +45,14 @@ Constructor for QgsBrowserGuiModel, with the specified ``parent`` object.
 
     void setMessageBar( QgsMessageBar *bar );
 %Docstring
-Sets message bar that will be passed in :py:class:`QgsDataItemGuiContext` to data items
+Sets message bar that will be passed in
+:py:class:`QgsDataItemGuiContext` to data items
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
-Sets the associated map ``canvas`` that will be passed in :py:class:`QgsDataItemGuiContext` to data items.
+Sets the associated map ``canvas`` that will be passed in
+:py:class:`QgsDataItemGuiContext` to data items.
 
 .. versionadded:: 3.44
 %End

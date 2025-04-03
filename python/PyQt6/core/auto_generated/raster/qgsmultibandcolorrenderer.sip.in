@@ -13,7 +13,7 @@
 class QgsMultiBandColorRenderer: QgsRasterRenderer
 {
 %Docstring(signature="appended")
-Renderer for multiband images with the color components
+Renderer for multiband images with the color components.
 %End
 
 %TypeHeaderCode
@@ -29,7 +29,8 @@ Renderer for multiband images with the color components
     virtual QgsMultiBandColorRenderer *clone() const /Factory/;
 
 %Docstring
-QgsMultiBandColorRenderer cannot be copied. Use :py:func:`~QgsMultiBandColorRenderer.clone` instead.
+QgsMultiBandColorRenderer cannot be copied. Use
+:py:func:`~QgsMultiBandColorRenderer.clone` instead.
 %End
     virtual Qgis::RasterRendererFlags flags() const;
 

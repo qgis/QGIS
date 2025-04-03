@@ -13,10 +13,12 @@
 class QgsDoubleValidator : QRegularExpressionValidator
 {
 %Docstring(signature="appended")
+A custom validator which allows entry of doubles in a locale-tolerant
+way.
 
-:py:class:`QgsDoubleValidator` is a QLineEdit Validator that combines QDoubleValidator
-and QRegularExpressionValidator to allow users to enter doubles with both
-local and C interpretation as a fallback.
+:py:class:`QgsDoubleValidator` is a QLineEdit Validator that combines
+QDoubleValidator and QRegularExpressionValidator to allow users to enter
+doubles with both local and C interpretation as a fallback.
 
 .. versionadded:: 3.14
 %End
@@ -71,7 +73,8 @@ Constructor for QgsDoubleValidator.
 
     void setMaxDecimals( int maxDecimals );
 %Docstring
-Sets the number of decimals accepted by the validator to ``maxDecimals``.
+Sets the number of decimals accepted by the validator to
+``maxDecimals``.
 
 .. warning::
 
@@ -84,16 +87,15 @@ Sets the number of decimals accepted by the validator to ``maxDecimals``.
 
     QValidator::State validate( QString &input ) const;
 %Docstring
-Evaluates ``input`` string validity according to QRegularExpression
-and ability to be converted in double value.
+Evaluates ``input`` string validity according to QRegularExpression and
+ability to be converted in double value.
 %End
 
 
     static double toDouble( const QString &input );
 %Docstring
-Converts ``input`` string to double value.
-It uses locale interpretation first
-and C locale interpretation as fallback
+Converts ``input`` string to double value. It uses locale interpretation
+first and C locale interpretation as fallback
 %End
 
     void setBottom( double bottom );

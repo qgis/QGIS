@@ -26,8 +26,7 @@ class QgsSettingsEntryBool;
 /**
  * \ingroup gui
  * \class QgsSettingsRegistryGui
- * \brief QgsSettingsRegistryGui is used for settings introspection and collects all
- * QgsSettingsEntry instances of gui.
+ * \brief Used for settings introspection and collects all QgsSettingsEntry instances of GUI.
  *
  * \since QGIS 3.22
  */

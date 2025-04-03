@@ -211,8 +211,27 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
   public:
+    /**
+     * Options to configure the QGIS application behavior at startup.
+     *
+     * This enumeration defines flags that control various aspects of QGIS
+     * initialization.
+     *
+         * \since QGIS 3.44
+     */
+    enum class AppOption : int
+    {
+      NoOption = 0,              //! No Option
+      RestorePlugins = 1 << 0,   //! Automatically restore and load previously enabled plugins.
+      SkipBadLayers = 1 << 1,    //! Skip loading layers that are detected as problematic.
+      SkipVersionCheck = 1 << 2, //! Bypass the version compatibility check during startup.
+      EnablePython = 1 << 3      //! Enable the Python interface for scripting and plugins.
+    };
+    Q_DECLARE_FLAGS( AppOptions, AppOption )
+    static const AppOptions DEFAULT_OPTIONS;
+
     //! Constructor
-    QgisApp( QSplashScreen *splash, bool restorePlugins = true, bool skipBadLayers = false, bool skipVersionCheck = false, const QString &rootProfileLocation = QString(), const QString &activeProfile = QString(), QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
+    QgisApp( QSplashScreen *splash, AppOptions options = DEFAULT_OPTIONS, const QString &rootProfileLocation = QString(), const QString &activeProfile = QString(), QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
     //! Constructor for unit tests
     QgisApp();
 
@@ -441,7 +460,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *
      * \since QGIS 3.36
      */
-    Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name );
+    Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name, Qgis::SceneMode sceneMode );
 
     /**
      * Opens a 3D view canvas for a 3D map view called \a name.
@@ -1715,6 +1734,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Creates a new 3D map canvas view
     void new3DMapCanvas();
 
+    //! Creates a new 3D map canvas view in globe mode
+    void new3DMapCanvasGlobe();
+
     //! Create a new empty vector layer
     void newVectorLayer();
     //! Create a new memory layer
@@ -2774,6 +2796,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     friend class QgisAppInterface;
     friend class QgsAppScreenShots;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgisApp::AppOptions )
 
 #ifdef ANDROID
 #define QGIS_ICON_SIZE 32

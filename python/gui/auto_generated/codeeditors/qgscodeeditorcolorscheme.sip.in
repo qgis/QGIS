@@ -64,20 +64,24 @@ Defines a color scheme for use in :py:class:`QgsCodeEditor` widgets.
 %Docstring
 Constructor for QgsCodeEditorColorScheme.
 
-The ``id`` argument must be set to a unique, non-translated identifier for the color scheme.
+The ``id`` argument must be set to a unique, non-translated identifier
+for the color scheme.
 
-The ``name`` argument must be set to a translated, user-visible descriptive name of the scheme.
+The ``name`` argument must be set to a translated, user-visible
+descriptive name of the scheme.
 %End
 
 
     QString id() const;
 %Docstring
-Returns the ID of the color scheme, which is a unique, non-translated identifier for the scheme.
+Returns the ID of the color scheme, which is a unique, non-translated
+identifier for the scheme.
 %End
 
     QString name() const;
 %Docstring
-Returns the name of the color scheme, which is the translated, user-visible name of the scheme.
+Returns the name of the color scheme, which is the translated,
+user-visible name of the scheme.
 %End
 
     QColor color( ColorRole role ) const;

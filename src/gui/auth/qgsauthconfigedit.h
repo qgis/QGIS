@@ -49,7 +49,7 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
     /**
      * Create a dialog for editing an authentication configuration
      * \param parent Parent widget
-     * \param authcfg Authentication config id for a existing config in auth database
+     * \param authcfg Authentication config id for an existing config in auth database
      * \param dataprovider The provider origin of the edit, to allow for customized code and filtering
      */
     explicit QgsAuthConfigEdit( QWidget *parent = nullptr, const QString &authcfg = QString(), const QString &dataprovider = QString() );

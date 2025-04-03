@@ -31,7 +31,7 @@ class QGraphicsRectItem;
 
 /**
  * \ingroup gui
- * \brief QgsPlotRubberBand is an abstract base class for temporary rubber band items
+ * \brief An abstract base class for temporary rubber band items
  * in various shapes, for use within QgsPlotCanvas widgets.
  * \since QGIS 3.26
  */
@@ -117,7 +117,7 @@ class GUI_EXPORT QgsPlotRubberBand : public QObject
 
 /**
  * \ingroup gui
- * \brief QgsPlotRectangularRubberBand is rectangular rubber band for use within QgsPlotCanvas widgets.
+ * \brief A rectangular rubber band for use within QgsPlotCanvas widgets.
  * \since QGIS 3.26
  */
 class GUI_EXPORT QgsPlotRectangularRubberBand : public QgsPlotRubberBand

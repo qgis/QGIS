@@ -15,11 +15,15 @@
 class QgsRuleBasedRendererModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
-Tree model for the rules:
+Tree model for a rule-based renderer's rules.
 
-(invalid)  == root node
-+--- top level rule
-+--- top level rule
+The model represents rules as a tree:
+
+::
+
+     (invalid) == root node
+     +--- top level rule
+     +--- top level rule
 %End
 
 %TypeHeaderCode
@@ -28,7 +32,8 @@ Tree model for the rules:
   public:
     QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent, QScreen *screen = 0 );
 %Docstring
-Constructor for QgsRuleBasedRendererModel, for the specified ``renderer``.
+Constructor for QgsRuleBasedRendererModel, for the specified
+``renderer``.
 %End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -71,8 +76,8 @@ Constructor for QgsRuleBasedRendererModel, for the specified ``renderer``.
 
     void setSymbol( const QModelIndex &index, QgsSymbol *symbol /Transfer/ );
 %Docstring
-Sets the ``symbol`` for the rule at the specified ``index``. Ownership of the symbols is
-transferred to the renderer.
+Sets the ``symbol`` for the rule at the specified ``index``. Ownership
+of the symbols is transferred to the renderer.
 
 .. versionadded:: 3.10
 %End
@@ -90,6 +95,9 @@ transferred to the renderer.
 
 class QgsRuleBasedRendererWidget : QgsRendererWidget
 {
+%Docstring(signature="appended")
+A widget for configuring a :py:class:`QgsRuleBasedRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgsrulebasedrendererwidget.h"
@@ -169,6 +177,9 @@ Opens the dialog for refining a rule using ranges
 
 class QgsRendererRulePropsWidget : QgsPanelWidget
 {
+%Docstring(signature="appended")
+A widget for editing the details of a rule based renderer rule.
+%End
 
 %TypeHeaderCode
 #include "qgsrulebasedrendererwidget.h"
@@ -224,6 +235,9 @@ Set the widget in dock mode.
 
 class QgsRendererRulePropsDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for editing the details of a rule based renderer rule.
+%End
 
 %TypeHeaderCode
 #include "qgsrulebasedrendererwidget.h"

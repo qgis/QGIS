@@ -28,7 +28,7 @@
 
 /**
  * \ingroup gui
- * \brief Selector widget for authentication configs
+ * \brief Selector widget for authentication configs.
  */
 class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfigSelect
 {
@@ -104,7 +104,7 @@ class QPushButton;
 
 /**
  * \ingroup gui
- * \brief Dialog wrapper of select widget to edit an authcfg in a data source URI
+ * \brief Dialog wrapper of select widget to edit an authcfg in a data source URI.
  */
 class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfigUriEdit
 {

@@ -35,7 +35,8 @@ Individual record of a visible layer in a map theme record.
       public:
         MapThemeLayerRecord( QgsMapLayer *l = 0 );
 %Docstring
-Initialize layer record with a map layer - it will be stored as a weak pointer
+Initialize layer record with a map layer - it will be stored as a weak
+pointer
 %End
 
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const;
@@ -101,62 +102,73 @@ Add a new record for a layer.
 
         bool hasExpandedStateInfo() const;
 %Docstring
-Returns whether information about expanded/collapsed state of nodes has been recorded
-and thus whether :py:func:`~MapThemeRecord.expandedGroupNodes` and expandedLegendItems + expandedLayerNode from layer records are valid.
+Returns whether information about expanded/collapsed state of nodes has
+been recorded and thus whether
+:py:func:`~MapThemeRecord.expandedGroupNodes` and expandedLegendItems +
+expandedLayerNode from layer records are valid.
 
 .. versionadded:: 3.2
 %End
 
         bool hasCheckedStateInfo() const;
 %Docstring
-Returns whether information about checked/unchecked state of groups has been recorded
-and thus whether :py:func:`~MapThemeRecord.checkedGroupNodes` is valid.
+Returns whether information about checked/unchecked state of groups has
+been recorded and thus whether
+:py:func:`~MapThemeRecord.checkedGroupNodes` is valid.
 
 .. versionadded:: 3.10.1
 %End
         void setHasExpandedStateInfo( bool hasInfo );
 %Docstring
-Sets whether the map theme contains valid expanded/collapsed state of nodes
+Sets whether the map theme contains valid expanded/collapsed state of
+nodes
 
 .. versionadded:: 3.2
 %End
 
         void setHasCheckedStateInfo( bool hasInfo );
 %Docstring
-Sets whether the map theme contains valid checked/unchecked state of group nodes
+Sets whether the map theme contains valid checked/unchecked state of
+group nodes
 
 .. versionadded:: 3.10.1
 %End
         QSet<QString> expandedGroupNodes() const;
 %Docstring
-Returns a set of group identifiers for group nodes that should have expanded state (other group nodes should be collapsed).
-The returned value is valid only when :py:func:`~MapThemeRecord.hasExpandedStateInfo` returns ``True``.
-Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
-and a forward slash, e.g. "level1/level2"
+Returns a set of group identifiers for group nodes that should have
+expanded state (other group nodes should be collapsed). The returned
+value is valid only when :py:func:`~MapThemeRecord.hasExpandedStateInfo`
+returns ``True``. Group identifiers are built using group names, a
+sub-group name is prepended by parent group's identifier and a forward
+slash, e.g. "level1/level2"
 
 .. versionadded:: 3.2
 %End
 
         QSet<QString> checkedGroupNodes() const;
 %Docstring
-Returns a set of group identifiers for group nodes that should have checked state (other group nodes should be unchecked).
-The returned value is valid only when :py:func:`~MapThemeRecord.hasCheckedStateInfo` returns ``True``.
-Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
-and a forward slash, e.g. "level1/level2"
+Returns a set of group identifiers for group nodes that should have
+checked state (other group nodes should be unchecked). The returned
+value is valid only when :py:func:`~MapThemeRecord.hasCheckedStateInfo`
+returns ``True``. Group identifiers are built using group names, a
+sub-group name is prepended by parent group's identifier and a forward
+slash, e.g. "level1/level2"
 
 .. versionadded:: 3.10.1
 %End
 
         void setExpandedGroupNodes( const QSet<QString> &expandedGroupNodes );
 %Docstring
-Sets a set of group identifiers for group nodes that should have expanded state. See :py:func:`~MapThemeRecord.expandedGroupNodes`.
+Sets a set of group identifiers for group nodes that should have
+expanded state. See :py:func:`~MapThemeRecord.expandedGroupNodes`.
 
 .. versionadded:: 3.2
 %End
 
         void setCheckedGroupNodes( const QSet<QString> &checkedGroupNodes );
 %Docstring
-Sets a set of group identifiers for group nodes that should have checked state. See :py:func:`~MapThemeRecord.checkedGroupNodes`.
+Sets a set of group identifiers for group nodes that should have checked
+state. See :py:func:`~MapThemeRecord.checkedGroupNodes`.
 
 .. versionadded:: 3.10.1
 %End
@@ -221,8 +233,9 @@ Removes an existing map theme from collection.
 
     bool renameMapTheme( const QString &name, const QString &newName );
 %Docstring
-Renames the existing map theme called ``name`` to ``newName``.
-Returns ``True`` if the rename was successful, or ``False`` if it failed (e.g. due to a duplicate name for ``newName``).
+Renames the existing map theme called ``name`` to ``newName``. Returns
+``True`` if the rename was successful, or ``False`` if it failed (e.g.
+due to a duplicate name for ``newName``).
 
 .. versionadded:: 3.14
 %End
@@ -244,7 +257,8 @@ Returns the recorded state of a map theme.
 
     QStringList mapThemeVisibleLayerIds( const QString &name ) const;
 %Docstring
-Returns the list of layer IDs that are visible for the specified map theme.
+Returns the list of layer IDs that are visible for the specified map
+theme.
 
 .. note::
 
@@ -264,7 +278,8 @@ Returns the list of layers that are visible for the specified map theme.
 
     QMap<QString, QString> mapThemeStyleOverrides( const QString &name );
 %Docstring
-Gets layer style overrides (for :py:class:`QgsMapSettings`) of the visible layers for given map theme.
+Gets layer style overrides (for :py:class:`QgsMapSettings`) of the
+visible layers for given map theme.
 %End
 
     void readXml( const QDomDocument &doc );
@@ -287,19 +302,21 @@ Writes the map theme collection state to XML.
 
     static QgsMapThemeCollection::MapThemeRecord createThemeFromCurrentState( QgsLayerTreeGroup *root, QgsLayerTreeModel *model );
 %Docstring
-Static method to create theme from the current state of layer visibilities in layer tree,
-current style of layers and check state of legend items (from a layer tree model).
+Static method to create theme from the current state of layer
+visibilities in layer tree, current style of layers and check state of
+legend items (from a layer tree model).
 %End
 
     void applyTheme( const QString &name, QgsLayerTreeGroup *root, QgsLayerTreeModel *model );
 %Docstring
-Apply theme given by its name and modify layer tree, current style of layers and checked
-legend items of passed layer tree model.
+Apply theme given by its name and modify layer tree, current style of
+layers and checked legend items of passed layer tree model.
 %End
 
     QgsProject *project();
 %Docstring
-Returns the :py:class:`QgsProject` on which this map theme collection works.
+Returns the :py:class:`QgsProject` on which this map theme collection
+works.
 
 .. seealso:: :py:func:`setProject`
 
@@ -317,17 +334,20 @@ Sets the ``project`` on which this map theme collection works.
 
     QList< QgsMapLayer * > masterLayerOrder() const;
 %Docstring
-Returns the master layer order (this will always match the project's :py:func:`QgsProject.layerOrder()` ).
-All map themes will maintain the same layer order as the master layer order.
+Returns the master layer order (this will always match the project's
+:py:func:`QgsProject.layerOrder()` ). All map themes will maintain the
+same layer order as the master layer order.
 
 .. seealso:: :py:func:`masterVisibleLayers`
 %End
 
     QList< QgsMapLayer * > masterVisibleLayers() const;
 %Docstring
-Returns the master list of visible layers. The order of returned layers will always match those
-of :py:func:`~QgsMapThemeCollection.masterLayerOrder`, but the returned layers are filtered to only include those visible
-in the project's layer tree.
+Returns the master list of visible layers. The order of returned layers
+will always match those of
+:py:func:`~QgsMapThemeCollection.masterLayerOrder`, but the returned
+layers are filtered to only include those visible in the project's layer
+tree.
 
 .. seealso:: :py:func:`masterLayerOrder`
 %End

@@ -21,6 +21,8 @@
 #include "qgslinestring.h"
 #include "qgsmeshlayerinterpolator.h"
 #include "qgsmeshlayerutils.h"
+#include "qgsrastershader.h"
+#include "qgssinglebandpseudocolorrenderer.h"
 
 #include <QPointer>
 

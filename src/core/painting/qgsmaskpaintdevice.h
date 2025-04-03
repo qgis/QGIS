@@ -57,7 +57,7 @@ class QgsMaskPaintEngine: public QPaintEngine
 /**
  * \ingroup core
  * \brief Mask painter device that can be used to register everything painted into a QPainterPath
- * used later as clip path
+ * used later as clip path.
  * \deprecated QGIS 3.38. Use QgsGeometryPaintDevice instead.
  */
 class CORE_EXPORT QgsMaskPaintDevice: public QPaintDevice

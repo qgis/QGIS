@@ -2037,7 +2037,7 @@ bool QgsDatabaseItemGuiProvider::handleDropUri( QgsDataItem *item, const QgsMime
     }
   };
 
-  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer )]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
       connectionItemPointer->refresh();
@@ -2071,7 +2071,7 @@ void QgsDatabaseItemGuiProvider::handleImportVector( QgsDataItem *item, QgsDataI
     }
   };
 
-  auto onFailure = [connectionItemPointer]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer )]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
       connectionItemPointer->refresh();
@@ -2316,6 +2316,21 @@ QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const
       break;
     case Qgis::FieldDomainMergePolicy::GeometryWeighted:
       metadata += tr( "Use geometry weighted value" );
+      break;
+    case Qgis::FieldDomainMergePolicy::UnsetField:
+      metadata += tr( "Unset field" );
+      break;
+    case Qgis::FieldDomainMergePolicy::LargestGeometry:
+      metadata += tr( "Largest geometry" );
+      break;
+    case Qgis::FieldDomainMergePolicy::MaximumValue:
+      metadata += tr( "Maximum value" );
+      break;
+    case Qgis::FieldDomainMergePolicy::MinimumValue:
+      metadata += tr( "Minimum value" );
+      break;
+    case Qgis::FieldDomainMergePolicy::SetToNull:
+      metadata += tr( "Set attribute to NULL" );
       break;
   }
 

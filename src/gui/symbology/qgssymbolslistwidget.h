@@ -31,6 +31,7 @@ class QMenu;
 /**
  * \ingroup gui
  * \class QgsSymbolsListWidget
+ * \brief A widget which presents symbol-level properties (such as size), and allows selection of symbols from stored styles.
  */
 class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListWidget, private QgsExpressionContextGenerator
 {

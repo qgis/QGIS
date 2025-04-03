@@ -167,6 +167,7 @@ class QgsPalettedRendererProxyModel : public QSortFilterProxyModel
 /**
  * \ingroup gui
  * \class QgsPalettedRendererWidget
+ * \brief A widget for configuring QgsPalettedRasterRenderer.
  */
 class GUI_EXPORT QgsPalettedRendererWidget : public QgsRasterRendererWidget, private Ui::QgsPalettedRendererWidgetBase
 {

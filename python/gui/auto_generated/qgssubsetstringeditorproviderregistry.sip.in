@@ -13,9 +13,10 @@
 class QgsSubsetStringEditorProviderRegistry
 {
 %Docstring(signature="appended")
-This class keeps a list of subset string editor providers.
+A registry for subset string editor providers.
 
-:py:class:`QgsSubsetStringEditorProviderRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsSubsetStringEditorProviderRegistry` is not usually
+directly created, but rather accessed through
 :py:func:`QgsGui.subsetStringEditorProvideRegistry()`.
 
 .. versionadded:: 3.18
@@ -41,7 +42,8 @@ Add a ``provider`` implementation. Takes ownership of the object.
 
     bool removeProvider( QgsSubsetStringEditorProvider *provider /Transfer/ );
 %Docstring
-Remove ``provider`` implementation from the list (``provider`` object is deleted)
+Remove ``provider`` implementation from the list (``provider`` object is
+deleted)
 
 :return: ``True`` if the provider was actually removed and deleted
 %End
@@ -49,7 +51,8 @@ Remove ``provider`` implementation from the list (``provider`` object is deleted
     void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
 %Docstring
 Initializes the registry. The registry needs to be passed explicitly
-(instead of using singleton) because this gets called from :py:class:`QgsGui` constructor.
+(instead of using singleton) because this gets called from
+:py:class:`QgsGui` constructor.
 %End
 
     QgsSubsetStringEditorProvider *providerByName( const QString &name );
@@ -64,9 +67,10 @@ Returns a (possibly empty) list of providers by data ``providerkey``
 
     QgsSubsetStringEditorInterface *createDialog( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags ) /TransferBack/;
 %Docstring
-Creates a new dialog to edit the subset string of the provided ``layer``.
-It will default to returning a :py:class:`QgsQueryBuilder` if no provider was found.
-The returned object must be destroyed by the caller.
+Creates a new dialog to edit the subset string of the provided
+``layer``. It will default to returning a :py:class:`QgsQueryBuilder` if
+no provider was found. The returned object must be destroyed by the
+caller.
 %End
 
   private:

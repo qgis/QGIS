@@ -20,8 +20,9 @@
 
 #include "ui_qgsrastercalcdialogbase.h"
 #include "qgsrastercalculator.h"
-#include "qgshelp.h"
 #include "qgis_app.h"
+
+class QgsMapCanvas;
 
 //! A dialog to enter a raster calculation expression
 class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalcDialogBase
@@ -34,7 +35,7 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
      * \param parent widget
      * \param f window flags
      */
-    QgsRasterCalcDialog( QgsRasterLayer *rasterLayer = nullptr, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsRasterCalcDialog( QgsRasterLayer *rasterLayer = nullptr, QgsMapCanvas *canvas = nullptr, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
     QString formulaString() const;
     QString outputFile() const;
@@ -53,6 +54,9 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
     //! Number of pixels in y-direction
     int numberOfRows() const;
 
+    //! Raster creation options
+    QStringList createOptions() const;
+
     /**
      * Extract raster layer information from the current project
      * \return a vector of raster entries from the current project
@@ -62,9 +66,10 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
 
   private slots:
     void mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item );
+    void mOutputFormatComboBox_currentIndexChanged( const QString &text );
     void mButtonBox_accepted();
-    void mCurrentLayerExtentButton_clicked();
     void mExpressionTextEdit_textChanged();
+    void extentLayerChanged( QgsMapLayer *layer );
     //! Enables OK button if calculator expression is valid and output file path exists
     void setAcceptButtonState();
     //! Disables some options that are not required if using Virtual Provider
@@ -103,7 +108,7 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
 
   private:
     //! Sets the extent and size of the output
-    void setExtentSize( int width, int height, QgsRectangle bbox );
+    void setExtentSize( QgsRasterLayer *layer );
 
     // Insert available GDAL drivers that support the create() option
     void insertAvailableOutputFormats();
@@ -117,12 +122,16 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
 
     static QString quoteBandEntry( const QString &layerName );
 
+    //! Returns true if the output layer already exists.
+    bool outputLayerExists() const;
+
     //! Stores relation between driver name and extension
     QMap<QString, QString> mDriverExtensionMap;
 
     QList<QgsRasterCalculatorEntry> mAvailableRasterBands;
 
     bool mExtentSizeSet = false;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     friend class TestQgsRasterCalcDialog;
 };

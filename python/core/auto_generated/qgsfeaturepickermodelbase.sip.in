@@ -35,7 +35,8 @@ Features are fetched asynchronously.
 
     explicit QgsFeaturePickerModelBase( QObject *parent = 0 );
 %Docstring
-Create a new QgsFeaturePickerModelBase, optionally specifying a ``parent``.
+Create a new QgsFeaturePickerModelBase, optionally specifying a
+``parent``.
 %End
     ~QgsFeaturePickerModelBase();
 
@@ -67,15 +68,15 @@ The display expression will be used for
 
     QString filterValue() const;
 %Docstring
-This value will be used to filter the features available from
-this model. Whenever a substring of the displayExpression of a feature
+This value will be used to filter the features available from this
+model. Whenever a substring of the displayExpression of a feature
 matches the filter value, it will be accessible by this model.
 %End
 
     void setFilterValue( const QString &filterValue );
 %Docstring
-This value will be used to filter the features available from
-this model. Whenever a substring of the displayExpression of a feature
+This value will be used to filter the features available from this
+model. Whenever a substring of the displayExpression of a feature
 matches the filter value, it will be accessible by this model.
 %End
 
@@ -91,35 +92,69 @@ matches the filter value, it will be accessible by this model.
 
     QString filterExpression() const;
 %Docstring
-An additional filter expression to apply, next to the filterValue.
-Can be used for spatial filtering etc.
+An additional filter expression to apply, next to the filterValue. Can
+be used for spatial filtering etc.
 %End
 
     void setFilterExpression( const QString &filterExpression );
 %Docstring
-An additional filter expression to apply, next to the filterValue.
-Can be used for spatial filtering etc.
+An additional filter expression to apply, next to the filterValue. Can
+be used for spatial filtering etc.
+%End
+
+    QgsFeature formFeature() const;
+%Docstring
+Returns an attribute form feature to be used with the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    void setFormFeature( const QgsFeature &feature );
+%Docstring
+Sets an attribute form ``feature`` to be used with the filter
+expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    QgsFeature parentFormFeature() const;
+%Docstring
+Returns a parent attribute form feature to be used with the filter
+expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    void setParentFormFeature( const QgsFeature &feature );
+%Docstring
+Sets a parent attribute form ``feature`` to be used with the filter
+expression.
+
+.. versionadded:: 3.42.2
 %End
 
     bool isLoading() const;
 %Docstring
-Indicator if the model is currently performing any feature iteration in the background.
+Indicator if the model is currently performing any feature iteration in
+the background.
 %End
 
     virtual void setExtraIdentifierValueToNull() = 0;
 %Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model as NULL value(s).
+Allows specifying one value that does not need to match the filter
+criteria but will still be available in the model as NULL value(s).
 %End
 
     int extraIdentifierValueIndex() const;
 %Docstring
-The index at which the extra identifier value is available within the model.
+The index at which the extra identifier value is available within the
+model.
 %End
 
     bool extraValueDoesNotExist() const;
 %Docstring
-Flag indicating that the extraIdentifierValue does not exist in the data.
+Flag indicating that the extraIdentifierValue does not exist in the
+data.
 %End
 
     bool allowNull() const;
@@ -149,17 +184,18 @@ Returns the feature request fetch limit
 
     void setFetchLimit( int fetchLimit );
 %Docstring
-Defines the feature request fetch limit
-If set to 0, no limit is applied when fetching
+Defines the feature request fetch limit If set to 0, no limit is applied
+when fetching
 %End
 
   signals:
 
     void currentFeatureChanged();
 %Docstring
-Emitted when the current feature in the model has changed
-This emitted both when the extra value changes and when the extra value status changes.
-It allows being notified when the feature is fetched after the extra value has been set.
+Emitted when the current feature in the model has changed This emitted
+both when the extra value changes and when the extra value status
+changes. It allows being notified when the feature is fetched after the
+extra value has been set.
 
 .. versionadded:: 3.16.5
 %End
@@ -179,51 +215,72 @@ The display expression will be used for
 
     void filterValueChanged();
 %Docstring
-This value will be used to filter the features available from
-this model. Whenever a substring of the displayExpression of a feature
+This value will be used to filter the features available from this
+model. Whenever a substring of the displayExpression of a feature
 matches the filter value, it will be accessible by this model.
 %End
 
     void filterExpressionChanged();
 %Docstring
-An additional filter expression to apply, next to the filterValue.
-Can be used for spatial filtering etc.
+An additional filter expression to apply, next to the filterValue. Can
+be used for spatial filtering etc.
+%End
+
+    void formFeatureChanged();
+%Docstring
+An attribute form feature to be used alongside the filter expression.
+
+.. versionadded:: 3.42.2
+%End
+
+    void parentFormFeatureChanged();
+%Docstring
+A parent attribute form feature to be used alongside the filter
+expression.
+
+.. versionadded:: 3.42.2
 %End
 
     void isLoadingChanged();
 %Docstring
-Indicator if the model is currently performing any feature iteration in the background.
+Indicator if the model is currently performing any feature iteration in
+the background.
 %End
 
     void filterJobCompleted();
 %Docstring
-Indicates that a filter job has been completed and new data may be available.
+Indicates that a filter job has been completed and new data may be
+available.
 %End
 
     void extraIdentifierValueChanged();
 %Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model.
+Allows specifying one value that does not need to match the filter
+criteria but will still be available in the model.
 %End
 
     void extraIdentifierValueIndexChanged( int index );
 %Docstring
-The index at which the extra identifier value is available within the model.
+The index at which the extra identifier value is available within the
+model.
 %End
 
     void extraValueDoesNotExistChanged( bool found );
 %Docstring
-Notification whether the model has ``found`` a feature tied to the extraIdentifierValue or not.
+Notification whether the model has ``found`` a feature tied to the
+extraIdentifierValue or not.
 %End
 
     void beginUpdate();
 %Docstring
-Notification that the model is about to be changed because a job was completed.
+Notification that the model is about to be changed because a job was
+completed.
 %End
 
     void endUpdate();
 %Docstring
-Notification that the model change is finished. Will always be emitted in sync with beginUpdate.
+Notification that the model change is finished. Will always be emitted
+in sync with beginUpdate.
 %End
 
     void allowNullChanged();
@@ -246,14 +303,14 @@ Emitted when the fetching limit for the feature request changes
 
     QVariant extraIdentifierValue() const;
 %Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model.
+Allows specifying one value that does not need to match the filter
+criteria but will still be available in the model.
 %End
 
     void setExtraIdentifierValue( const QVariant &extraIdentifierValue );
 %Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model.
+Allows specifying one value that does not need to match the filter
+criteria but will still be available in the model.
 %End
 
     virtual void requestToReloadCurrentFeature( QgsFeatureRequest &request ) = 0;
@@ -263,7 +320,8 @@ Update the request to match the current feature to be reloaded
 
     void setExtraIdentifierValueUnguarded( const QVariant &identifierValue );
 %Docstring
-This will set the identifier value to be set in the model even if it doesn't exist currently in the data
+This will set the identifier value to be set in the model even if it
+doesn't exist currently in the data
 %End
 
 

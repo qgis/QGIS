@@ -31,7 +31,7 @@ class QgsFields;
 
 /**
  * \ingroup analysis
- * \brief Interpolation in a triangular irregular network
+ * \brief Interpolation in a triangular irregular network.
 */
 class ANALYSIS_EXPORT QgsTinInterpolator : public QgsInterpolator
 {

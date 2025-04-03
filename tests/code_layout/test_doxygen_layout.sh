@@ -21,7 +21,12 @@ if [[ -n $output ]]; then
   exit 1
 fi
 
-
+# check that \return(s) is placed before \note and \since
+output=$(unbuffer ag --noaffinity --file-search-regex '\.h$'  '\\ingroup 3d' ${PATHS} | tee /dev/stderr)
+if [[ -n $output ]]; then
+  echo -e "\n\x1B[31m*** Docstring computation: Use \\\ingroup qgis_3d not \\\ingroup 3d\x1B[0m"
+  exit 1
+fi
 
 # code snippets command
 output=$(unbuffer ag --noaffinity --file-search-regex '\.h$' --multiline '~~~\{\.\w+\}' ${PATHS} | tee /dev/stderr)

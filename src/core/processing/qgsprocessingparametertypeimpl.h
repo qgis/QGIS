@@ -1517,7 +1517,7 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
 };
 
 /**
- * \brief A authentication configuration parameter for processing algorithms.
+ * \brief An authentication configuration parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('authcfg')
@@ -1532,7 +1532,7 @@ class CORE_EXPORT QgsProcessingParameterTypeAuthConfig : public QgsProcessingPar
 
     QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "A authentication configuration parameter." );
+      return QCoreApplication::translate( "Processing", "An authentication configuration parameter." );
     }
 
     QString name() const override

@@ -29,11 +29,15 @@ A legend node which renders a color ramp.
 Constructor for QgsColorRampLegendNode.
 
 :param nodeLayer: layer node
-:param ramp: color ramp to render in node. Ownership is transferred to the node.
-:param minimumLabel: label text to render for the minimum value in the ramp
-:param maximumLabel: label text to render for the maximum value in the ramp
+:param ramp: color ramp to render in node. Ownership is transferred to
+             the node.
+:param minimumLabel: label text to render for the minimum value in the
+                     ramp
+:param maximumLabel: label text to render for the maximum value in the
+                     ramp
 :param parent: attach a parent QObject to the legend node.
-:param key: rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.40)
+:param key: rule key. optional identifier to allow a unique ID to be
+            assigned to the node by a renderer (since QGIS 3.40)
 :param parentKey: rule key of parent (since QGIS 3.40)
 %End
 
@@ -45,12 +49,14 @@ Constructor for QgsColorRampLegendNode.
 Constructor for QgsColorRampLegendNode.
 
 :param nodeLayer: layer node
-:param ramp: color ramp to render in node. Ownership is transferred to the node.
+:param ramp: color ramp to render in node. Ownership is transferred to
+             the node.
 :param settings: node settings
 :param minimumValue: value associated with minimum of ramp
 :param maximumValue: value associated with maximum of ramp
 :param parent: attach a parent QObject to the legend node.
-:param key: rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.40)
+:param key: rule key. optional identifier to allow a unique ID to be
+            assigned to the node by a renderer (since QGIS 3.40)
 :param parentKey: rule key of parent (since QGIS 3.40)
 %End
 
@@ -66,14 +72,16 @@ Constructor for QgsColorRampLegendNode.
 
     void setIconSize( QSize size );
 %Docstring
-Set the icon ``size``, which controls how large the ramp will render in a layer tree widget.
+Set the icon ``size``, which controls how large the ramp will render in
+a layer tree widget.
 
 .. seealso:: :py:func:`iconSize`
 %End
 
     QSize iconSize() const;
 %Docstring
-Returns the icon size, which is how large the ramp will render in a layer tree widget.
+Returns the icon size, which is how large the ramp will render in a
+layer tree widget.
 
 .. seealso:: :py:func:`setIconSize`
 %End

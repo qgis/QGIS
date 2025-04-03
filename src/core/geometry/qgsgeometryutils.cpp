@@ -101,7 +101,7 @@ QgsPoint QgsGeometryUtils::closestPoint( const QgsAbstractGeometry &geometry, co
 {
   QgsPoint closestPoint;
   QgsVertexId vertexAfter;
-  geometry.closestSegment( point, closestPoint, vertexAfter, nullptr, DEFAULT_SEGMENT_EPSILON );
+  geometry.closestSegment( point, closestPoint, vertexAfter, nullptr, Qgis::DEFAULT_SEGMENT_EPSILON );
   if ( vertexAfter.isValid() )
   {
     const QgsPoint pointAfter = geometry.vertexAt( vertexAfter );

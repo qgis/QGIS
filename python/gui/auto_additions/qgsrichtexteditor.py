@@ -16,5 +16,6 @@ QgsRichTextEditor.Mode.__doc__ = """Widget modes.
 QgsRichTextEditor.Mode.baseClass = QgsRichTextEditor
 try:
     QgsRichTextEditor.__attribute_docs__ = {'textChanged': 'Emitted when the text contents are changed.\n\n.. versionadded:: 3.26\n'}
+    QgsRichTextEditor.__overridden_methods__ = ['focusInEvent']
 except (NameError, AttributeError):
     pass

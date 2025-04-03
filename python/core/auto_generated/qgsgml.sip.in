@@ -15,11 +15,11 @@
 class QgsGml : QObject
 {
 %Docstring(signature="appended")
-This class reads data from a WFS server or alternatively from a GML file.
+Reads data from a WFS server or alternatively from a GML file.
 
-It uses the expat XML parser and an event based model to keep performance high.
-The parsing starts when the first data arrives, it does not wait until the
-request is finished.
+It uses the expat XML parser and an event based model to keep
+performance high. The parsing starts when the first data arrives, it
+does not wait until the request is finished.
 %End
 
 %TypeHeaderCode
@@ -48,6 +48,7 @@ Does the HTTP GET request to the WFS server
 :param authcfg: authentication configuration id
 
 :return: 0 in case of success
+
 
 %End
 
@@ -86,15 +87,18 @@ Emitted when data reading progresses.
 %Docstring
 Emitted when the total number of bytes to read changes.
 
-:param totalSteps: specifies the total number of bytes which must be processed
+:param totalSteps: specifies the total number of bytes which must be
+                   processed
 %End
 
     void dataProgressAndSteps( int progress, int totalSteps );
 %Docstring
-Emitted when data reading progresses or the total number of bytes to read changes.
+Emitted when data reading progresses or the total number of bytes to
+read changes.
 
 :param progress: specifies the number of bytes processed so far
-:param totalSteps: specifies the total number of bytes which must be processed
+:param totalSteps: specifies the total number of bytes which must be
+                   processed
 %End
 
 };

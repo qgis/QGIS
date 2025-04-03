@@ -81,12 +81,12 @@ class CORE_EXPORT QgsStoredExpression
     //! expression text
     QString expression;
     //! category of the expression use case
-    Category tag = Category::FilterExpression;
+    QgsStoredExpression::Category tag = QgsStoredExpression::Category::FilterExpression;
 };
 
 /**
  * \ingroup core
- * \brief Manages stored expressions regarding creation, modification and storing in the project
+ * \brief Manages stored expressions regarding creation, modification and storing in the project.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStoredExpressionManager : public QObject

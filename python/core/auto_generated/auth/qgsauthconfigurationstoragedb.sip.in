@@ -12,7 +12,8 @@
 class QgsAuthConfigurationStorageDb : QgsAuthConfigurationStorage
 {
 %Docstring(signature="appended")
-QSqlDatabase based implementation of :py:class:`QgsAuthConfigurationStorage`.
+QSqlDatabase based implementation of
+:py:class:`QgsAuthConfigurationStorage`.
 
 .. versionadded:: 3.40
 %End
@@ -24,8 +25,8 @@ QSqlDatabase based implementation of :py:class:`QgsAuthConfigurationStorage`.
 
     QgsAuthConfigurationStorageDb( const QMap<QString, QVariant> &settings );
 %Docstring
-Creates a new QgsAuthConfigurationStorageDb instance from the specified ``settings``.
-Settings can contain the following keys:
+Creates a new QgsAuthConfigurationStorageDb instance from the specified
+``settings``. Settings can contain the following keys:
 
 Mandatory settings:
 
@@ -38,8 +39,10 @@ Optional settings:
 - user: the database user
 - password: the database password
 - port: the database port
-- schema: the database schema for all the tables (ignored if not supported)
-- options: the database connection options (see: https://doc.qt.io/qt-6/qsqldatabase.html#setConnectOptions)
+- schema: the database schema for all the tables (ignored if not
+  supported)
+- options: the database connection options (see:
+  https://doc.qt.io/qt-6/qsqldatabase.html#setConnectOptions)
 
 .. note::
 
@@ -50,8 +53,9 @@ Optional settings:
 
     QgsAuthConfigurationStorageDb( const QString &uri );
 %Docstring
-Creates a new QgsAuthConfigurationStorageDb instance from the specified ``uri``.
-The URI should be in the format: \verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>[?OPTIONS]\endverbatim
+Creates a new QgsAuthConfigurationStorageDb instance from the specified
+``uri``. The URI should be in the format:
+\verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>[?OPTIONS]\endverbatim
 
 .. note::
 
@@ -193,12 +197,14 @@ Returns the name of the table used to store the certificate authorities.
 
     virtual QString sslCertCustomConfigTableName() const;
 %Docstring
-Returns the name of the table used to store the SSL custom configurations.
+Returns the name of the table used to store the SSL custom
+configurations.
 %End
 
     virtual QString certTrustPolicyTableName() const;
 %Docstring
-Returns the name of the table used to store the certificate trust policies.
+Returns the name of the table used to store the certificate trust
+policies.
 %End
 
     virtual QString masterPasswordTableName() const;
@@ -208,7 +214,8 @@ Returns the name of the table used to store the master passwords.
 
     virtual bool tableExists( const QString &table ) const;
 %Docstring
-Returns ``True`` if the specified ``table`` exists in the database, ``False`` otherwise.
+Returns ``True`` if the specified ``table`` exists in the database,
+``False`` otherwise.
 
 .. note::
 
@@ -217,8 +224,8 @@ Returns ``True`` if the specified ``table`` exists in the database, ``False`` ot
 
     virtual QString quotedQualifiedIdentifier( const QString &identifier, bool isIndex = false ) const;
 %Docstring
-Returns the quoted identifier, prefixed with the schema
-(if not null), ready for the insertion into a SQL query.
+Returns the quoted identifier, prefixed with the schema (if not null),
+ready for the insertion into a SQL query.
 
 :param identifier: the identifier to quote.
 :param isIndex: if ``True``, the identifier is treated as an index name.
@@ -230,35 +237,42 @@ Returns the quoted identifier, prefixed with the schema
 %Docstring
 Opens the connction to the database.
 
-:return: ``True`` if the connection was opened successfully, ``False`` otherwise.
+:return: ``True`` if the connection was opened successfully, ``False``
+         otherwise.
 %End
 
     bool authDbQuery( QSqlQuery *query, const QString &sql = QString() ) const;
 %Docstring
-Runs the specified ``query`` on the database. Optional ``sql`` can be provided.
+Runs the specified ``query`` on the database. Optional ``sql`` can be
+provided.
 
-:return: ``True`` if the query was executed successfully, ``False`` otherwise.
+:return: ``True`` if the query was executed successfully, ``False``
+         otherwise.
 %End
 
     bool authDbTransactionQuery( QSqlQuery *query );
 %Docstring
-Executes the specified ``query`` on the database using a transaction. Optional ``sql`` can be provided.
+Executes the specified ``query`` on the database using a transaction.
+Optional ``sql`` can be provided.
 
-:return: ``True`` if the query was executed successfully, ``False`` otherwise.
+:return: ``True`` if the query was executed successfully, ``False``
+         otherwise.
 %End
 
     bool createConfigTables();
 %Docstring
 Creates the configuration tables in the database.
 
-:return: ``True`` if the tables were created successfully, ``False`` otherwise.
+:return: ``True`` if the tables were created successfully, ``False``
+         otherwise.
 %End
 
     bool createCertTables();
 %Docstring
 Creates the certificate tables in the database.
 
-:return: ``True`` if the tables were created successfully, ``False`` otherwise.
+:return: ``True`` if the tables were created successfully, ``False``
+         otherwise.
 %End
 
     virtual void checkCapabilities();

@@ -840,7 +840,7 @@ namespace QgsWms
 
     if ( !wmsExtent.isEmpty() )
     {
-      const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+      const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() );
 
       // Get WMS WGS84 bounding rectangle
       QgsRectangle wmsWgs84BoundingRect;

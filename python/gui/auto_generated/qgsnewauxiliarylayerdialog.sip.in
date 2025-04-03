@@ -13,8 +13,7 @@
 class QgsNewAuxiliaryLayerDialog : QDialog
 {
 %Docstring(signature="appended")
-
-A dialog to create a new auxiliary layer
+A dialog to create a new auxiliary layer.
 %End
 
 %TypeHeaderCode
@@ -25,7 +24,8 @@ A dialog to create a new auxiliary layer
 %Docstring
 Constructor.
 
-:param layer: The vector layer for which the auxiliary layer has to be created
+:param layer: The vector layer for which the auxiliary layer has to be
+              created
 :param parent: Parent window
 %End
 

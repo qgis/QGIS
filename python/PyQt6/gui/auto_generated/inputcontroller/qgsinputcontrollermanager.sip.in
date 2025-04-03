@@ -15,8 +15,8 @@ class QgsInputControllerManager : QObject
 %Docstring(signature="appended")
 Manages input control devices.
 
-:py:class:`QgsInputControllerManager` is not usually directly created, but rather accessed through
-:py:func:`QgsGui.inputControllerManager()`.
+:py:class:`QgsInputControllerManager` is not usually directly created,
+but rather accessed through :py:func:`QgsGui.inputControllerManager()`.
 
 .. versionadded:: 3.34
 %End
@@ -27,7 +27,8 @@ Manages input control devices.
   public:
     QgsInputControllerManager( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsInputControllerManager, with the specified ``parent`` object.
+Constructor for QgsInputControllerManager, with the specified ``parent``
+object.
 
 .. note::
 
@@ -48,7 +49,8 @@ Returns a list of the device IDs of available 2D map controllers.
 
     QgsAbstract2DMapController *create2DMapController( const QString &deviceId ) const /TransferBack/;
 %Docstring
-Returns a new instance of the 2D map controller with the specified ``deviceId``.
+Returns a new instance of the 2D map controller with the specified
+``deviceId``.
 
 The caller takes ownership of the returned object.
 
@@ -63,8 +65,9 @@ Registers a new 2D map ``controller``.
 
 Ownership of ``controller`` is transferred to the manager.
 
-Returns ``True`` if the controller was successfully registered, or ``False`` if it could
-not be registered (e.g. if a controller with matching deviceId has already been registered).
+Returns ``True`` if the controller was successfully registered, or
+``False`` if it could not be registered (e.g. if a controller with
+matching deviceId has already been registered).
 
 .. seealso:: :py:func:`available2DMapControllers`
 %End
@@ -81,7 +84,8 @@ Returns a list of the device IDs of available 3D map controllers.
 
     QgsAbstract3DMapController *create3DMapController( const QString &deviceId ) const /TransferBack/;
 %Docstring
-Returns a new instance of the 3D map controller with the specified ``deviceId``.
+Returns a new instance of the 3D map controller with the specified
+``deviceId``.
 
 The caller takes ownership of the returned object.
 
@@ -96,8 +100,9 @@ Registers a new 3D map ``controller``.
 
 Ownership of ``controller`` is transferred to the manager.
 
-Returns ``True`` if the controller was successfully registered, or ``False`` if it could
-not be registered (e.g. if a controller with matching deviceId has already been registered).
+Returns ``True`` if the controller was successfully registered, or
+``False`` if it could not be registered (e.g. if a controller with
+matching deviceId has already been registered).
 
 .. seealso:: :py:func:`available3DMapControllers`
 %End

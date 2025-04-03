@@ -119,6 +119,7 @@ namespace pal
        */
       void removeLayer( Layer *layer );
 
+      //! Cancelation check callback function
       typedef bool ( *FnIsCanceled )( void *ctx );
 
       //! Register a function that returns whether this job has been canceled - PAL calls it during the computation

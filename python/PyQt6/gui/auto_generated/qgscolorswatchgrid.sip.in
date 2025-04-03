@@ -10,8 +10,9 @@
 class QgsColorSwatchGrid : QWidget
 {
 %Docstring(signature="appended")
-A grid of color swatches, which allows for user selection. Colors are taken from an
-associated :py:class:`QgsColorScheme`.
+A grid of color swatches, which allows for user selection.
+
+Colors are taken from an associated :py:class:`QgsColorScheme`.
 
 .. seealso:: :py:class:`QgsColorGridAction`
 %End
@@ -179,20 +180,21 @@ Sets the current context for the color grid
 
     void setDismissOnColorSelection( bool dismiss );
 %Docstring
-Sets whether the parent menu should be dismissed and closed when a color is selected
-from the action's color widget.
+Sets whether the parent menu should be dismissed and closed when a color
+is selected from the action's color widget.
 
-:param dismiss: set to ``True`` (default) to immediately close the menu when a color is selected
-                from the widget. If set to ``False``, the colorChanged signal will be emitted but the menu will
-                stay open.
+:param dismiss: set to ``True`` (default) to immediately close the menu
+                when a color is selected from the widget. If set to
+                ``False``, the colorChanged signal will be emitted but
+                the menu will stay open.
 
 .. seealso:: :py:func:`dismissOnColorSelection`
 %End
 
     bool dismissOnColorSelection() const;
 %Docstring
-Returns whether the parent menu will be dismissed after a color is selected from the
-action's color widget.
+Returns whether the parent menu will be dismissed after a color is
+selected from the action's color widget.
 
 .. seealso:: :py:func:`setDismissOnColorSelection`
 %End

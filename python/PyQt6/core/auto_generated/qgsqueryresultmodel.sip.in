@@ -16,7 +16,8 @@
 class QgsQueryResultModel : QAbstractTableModel
 {
 %Docstring(signature="appended")
-The :py:class:`QgsQueryResultModel` class is a model for :py:class:`QgsAbstractDatabaseProviderConnection`.QueryResult
+A model for
+:py:class:`QgsAbstractDatabaseProviderConnection`.QueryResult.
 
 .. versionadded:: 3.18
 %End
@@ -28,7 +29,8 @@ The :py:class:`QgsQueryResultModel` class is a model for :py:class:`QgsAbstractD
 
     QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent = 0 );
 %Docstring
-Constructs a QgsQueryResultModel from a ``queryResult`` with optional ``parent``
+Constructs a QgsQueryResultModel from a ``queryResult`` with optional
+``parent``
 %End
 
     ~QgsQueryResultModel();
@@ -65,7 +67,8 @@ Returns the query result
 
     void rowsReady( const QList<QList<QVariant> > &rows );
 %Docstring
-Triggered when ``newRows`` have been fetched and can be added to the model.
+Triggered when ``newRows`` have been fetched and can be added to the
+model.
 %End
 
     void cancel();
@@ -78,8 +81,9 @@ Cancels the row fetching.
 
     void fetchingComplete();
 %Docstring
-Emitted when rows have been fetched (all of them or a batch if `maxRows` was passed to :py:func:`~QgsQueryResultModel.fetchMoreRows` )
-or when the fetching has been stopped (canceled).
+Emitted when rows have been fetched (all of them or a batch if `maxRows`
+was passed to :py:func:`~QgsQueryResultModel.fetchMoreRows` ) or when
+the fetching has been stopped (canceled).
 
 .. seealso:: :py:func:`fetchMoreRows`
 %End

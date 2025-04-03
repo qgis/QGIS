@@ -25,7 +25,7 @@ class QgsEmbeddedSymbolRenderer;
 
 /**
  * \ingroup gui
- * \brief A widget used represent options of a QgsEmbeddedSymbolRenderer
+ * \brief A widget for configuring options for a QgsEmbeddedSymbolRenderer.
  *
  * \since QGIS 3.20
  */

@@ -44,5 +44,6 @@ const QString QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES( QStringLit
 const QString QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE( QStringLiteral( "skipInitialGetFeature" ) );
 const QString QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER( QStringLiteral( "geometryTypeFilter" ) );
 const QString QgsWFSConstants::URI_PARAM_SQL( QStringLiteral( "sql" ) );
+const QString QgsWFSConstants::URI_PARAM_HTTPMETHOD( QStringLiteral( "httpMethod" ) );
 
 const QString QgsWFSConstants::VERSION_AUTO( QStringLiteral( "auto" ) );

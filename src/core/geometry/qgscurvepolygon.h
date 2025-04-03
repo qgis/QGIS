@@ -29,7 +29,7 @@ class QgsPolygon;
 /**
  * \ingroup core
  * \class QgsCurvePolygon
- * \brief Curve polygon geometry type
+ * \brief Curve polygon geometry type.
  */
 class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 {

@@ -24,7 +24,7 @@
  * \ingroup gui
  * \class QgsDirectionalLightWidget
  *
- * \brief Widget for direction light settings
+ * \brief Widget for direction light settings.
  *
  * The user can choose azimuth and altitude values.
  *

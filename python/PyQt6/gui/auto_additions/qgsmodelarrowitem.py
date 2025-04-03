@@ -3,6 +3,7 @@ QgsModelArrowItem.Circle = QgsModelArrowItem.Marker.Circle
 QgsModelArrowItem.ArrowHead = QgsModelArrowItem.Marker.ArrowHead
 QgsModelArrowItem.NoMarker = QgsModelArrowItem.Marker.NoMarker
 try:
+    QgsModelArrowItem.__overridden_methods__ = ['paint']
     QgsModelArrowItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass

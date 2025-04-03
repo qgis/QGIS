@@ -12,7 +12,7 @@
 class QgsBufferServerResponse : QgsServerResponse
 {
 %Docstring(signature="appended")
-Class defining buffered response
+Defines a buffered server response.
 %End
 
 %TypeHeaderCode
@@ -24,16 +24,15 @@ Class defining buffered response
     virtual void setHeader( const QString &key, const QString &value );
 
 %Docstring
-Set Header entry
-Add Header entry to the response
-Note that it is usually an error to set Header after data have been sent through the wire
+Set Header entry Add Header entry to the response Note that it is
+usually an error to set Header after data have been sent through the
+wire
 %End
 
     virtual void removeHeader( const QString &key );
 
 %Docstring
-Clear header
-Undo a previous 'setHeader' call
+Clear header Undo a previous 'setHeader' call
 %End
 
     virtual QString header( const QString &key ) const;
@@ -69,11 +68,12 @@ Returns the http status code
     virtual void sendError( int code, const QString &message );
 
 %Docstring
-Send error
-This method delegates error handling at the server level. This is different
-from calling :py:func:`~QgsBufferServerResponse.setReturnCode` which let you return a specific response body.
-Calling :py:func:`~QgsBufferServerResponse.sendError` will end the transaction and any attempt to write data
-or set headers will be an error.
+Send error This method delegates error handling at the server level.
+This is different from calling
+:py:func:`~QgsBufferServerResponse.setReturnCode` which let you return a
+specific response body. Calling
+:py:func:`~QgsBufferServerResponse.sendError` will end the transaction
+and any attempt to write data or set headers will be an error.
 
 :param code: HHTP return code value
 :param message: An informative error message
@@ -88,7 +88,7 @@ Returns the underlying QIODevice
     virtual void finish();
 
 %Docstring
-Finish the response,  ending the transaction
+Finish the response, ending the transaction
 %End
 
     virtual void flush();
@@ -96,8 +96,9 @@ Finish the response,  ending the transaction
 %Docstring
 Flushes the current output buffer to the network
 
-':py:func:`~QgsBufferServerResponse.flush`' may be called multiple times. For HTTP transactions
-headers will be written on the first call to ':py:func:`~QgsBufferServerResponse.flush`'.
+':py:func:`~QgsBufferServerResponse.flush`' may be called multiple
+times. For HTTP transactions headers will be written on the first call
+to ':py:func:`~QgsBufferServerResponse.flush`'.
 %End
 
     virtual void clear();
@@ -111,11 +112,11 @@ Reset all headers and content for this response
 %Docstring
 Gets the data written so far
 
-This is implementation dependent: some implementations may not
-give access to the underlying and return an empty array.
+This is implementation dependent: some implementations may not give
+access to the underlying and return an empty array.
 
-Note that each call to 'flush' may empty the buffer and in case
-of streaming process you may get partial content
+Note that each call to 'flush' may empty the buffer and in case of
+streaming process you may get partial content
 %End
 
     virtual void truncate();

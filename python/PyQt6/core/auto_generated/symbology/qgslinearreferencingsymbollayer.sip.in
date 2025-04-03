@@ -11,11 +11,12 @@
 class QgsLinearReferencingSymbolLayer : QgsLineSymbolLayer
 {
 %Docstring(signature="appended")
-Line symbol layer used for decorating accordingly to linear referencing.
+Line symbol layer used for decorating according to linear referencing.
 
-This symbol layer type allows placing text labels at regular intervals along
-a line (or at positions corresponding to existing vertices). Positions
-can be calculated using Cartesian distances, or interpolated from z or m values.
+This symbol layer type allows placing text labels at regular intervals
+along a line (or at positions corresponding to existing vertices).
+Positions can be calculated using Cartesian distances, or interpolated
+from z or m values.
 
 .. versionadded:: 3.40
 %End
@@ -29,7 +30,8 @@ can be calculated using Cartesian distances, or interpolated from z or m values.
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates a new QgsLinearReferencingSymbolLayer, using the specified ``properties``.
+Creates a new QgsLinearReferencingSymbolLayer, using the specified
+``properties``.
 
 The caller takes ownership of the returned object.
 %End
@@ -105,10 +107,12 @@ Units are always in the original layer CRS units.
 %Docstring
 Returns the multiple distance to skip labels for.
 
-If this value is non-zero, then any labels which are integer multiples of the returned
-value will be skipped. This allows creation of advanced referencing styles where a single
-:py:class:`QgsSymbol` has multiple :py:class:`QgsLinearReferencingSymbolLayer` symbol layers, eg allowing
-labeling every 100 in a normal font and every 1000 in a bold, larger font.
+If this value is non-zero, then any labels which are integer multiples
+of the returned value will be skipped. This allows creation of advanced
+referencing styles where a single :py:class:`QgsSymbol` has multiple
+:py:class:`QgsLinearReferencingSymbolLayer` symbol layers, eg allowing
+labeling every 100 in a normal font and every 1000 in a bold, larger
+font.
 
 .. seealso:: :py:func:`setSkipMultiplesOf`
 %End
@@ -117,24 +121,28 @@ labeling every 100 in a normal font and every 1000 in a bold, larger font.
 %Docstring
 Sets the ``multiple`` distance to skip labels for.
 
-If this value is non-zero, then any labels which are integer multiples of the returned
-value will be skipped. This allows creation of advanced referencing styles where a single
-:py:class:`QgsSymbol` has multiple :py:class:`QgsLinearReferencingSymbolLayer` symbol layers, eg allowing
-labeling every 100 in a normal font and every 1000 in a bold, larger font.
+If this value is non-zero, then any labels which are integer multiples
+of the returned value will be skipped. This allows creation of advanced
+referencing styles where a single :py:class:`QgsSymbol` has multiple
+:py:class:`QgsLinearReferencingSymbolLayer` symbol layers, eg allowing
+labeling every 100 in a normal font and every 1000 in a bold, larger
+font.
 
 .. seealso:: :py:func:`skipMultiplesOf`
 %End
 
     bool rotateLabels() const;
 %Docstring
-Returns ``True`` if the labels and symbols are to be rotated to match their line segment orientation.
+Returns ``True`` if the labels and symbols are to be rotated to match
+their line segment orientation.
 
 .. seealso:: :py:func:`setRotateLabels`
 %End
 
     void setRotateLabels( bool rotate );
 %Docstring
-Sets whether the labels and symbols should be rotated to match their line segment orientation.
+Sets whether the labels and symbols should be rotated to match their
+line segment orientation.
 
 .. seealso:: :py:func:`rotateLabels`
 %End
@@ -143,7 +151,8 @@ Sets whether the labels and symbols should be rotated to match their line segmen
 %Docstring
 Returns the offset between the line and linear referencing labels.
 
-The unit for the offset is retrievable via :py:func:`~QgsLinearReferencingSymbolLayer.labelOffsetUnit`.
+The unit for the offset is retrievable via
+:py:func:`~QgsLinearReferencingSymbolLayer.labelOffsetUnit`.
 
 .. seealso:: :py:func:`setLabelOffset`
 
@@ -154,7 +163,8 @@ The unit for the offset is retrievable via :py:func:`~QgsLinearReferencingSymbol
 %Docstring
 Sets the ``offset`` between the line and linear referencing labels.
 
-The unit for the offset is set via :py:func:`~QgsLinearReferencingSymbolLayer.setLabelOffsetUnit`.
+The unit for the offset is set via
+:py:func:`~QgsLinearReferencingSymbolLayer.setLabelOffsetUnit`.
 
 .. seealso:: :py:func:`labelOffset`
 
@@ -163,7 +173,8 @@ The unit for the offset is set via :py:func:`~QgsLinearReferencingSymbolLayer.se
 
     Qgis::RenderUnit labelOffsetUnit() const;
 %Docstring
-Returns the unit used for the offset between the line and linear referencing labels.
+Returns the unit used for the offset between the line and linear
+referencing labels.
 
 .. seealso:: :py:func:`setLabelOffsetUnit`
 
@@ -172,7 +183,8 @@ Returns the unit used for the offset between the line and linear referencing lab
 
     void setLabelOffsetUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``unit`` used for the offset between the line and linear referencing labels.
+Sets the ``unit`` used for the offset between the line and linear
+referencing labels.
 
 .. seealso:: :py:func:`labelOffsetUnit`
 
@@ -181,32 +193,38 @@ Sets the ``unit`` used for the offset between the line and linear referencing la
 
     const QgsMapUnitScale &labelOffsetMapUnitScale() const;
 %Docstring
-Returns the map unit scale used for calculating the offset between the line and linear referencing labels.
+Returns the map unit scale used for calculating the offset between the
+line and linear referencing labels.
 
 .. seealso:: :py:func:`setLabelOffsetMapUnitScale`
 %End
 
     void setLabelOffsetMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit ``scale`` used for calculating the offset between the line and linear referencing labels.
+Sets the map unit ``scale`` used for calculating the offset between the
+line and linear referencing labels.
 
 .. seealso:: :py:func:`labelOffsetMapUnitScale`
 %End
 
     bool showMarker() const;
 %Docstring
-Returns ``True`` if a marker symbol should be shown corresponding to the labeled point on line.
+Returns ``True`` if a marker symbol should be shown corresponding to the
+labeled point on line.
 
-The marker symbol is set using :py:func:`~QgsLinearReferencingSymbolLayer.setSubSymbol`
+The marker symbol is set using
+:py:func:`~QgsLinearReferencingSymbolLayer.setSubSymbol`
 
 .. seealso:: :py:func:`setShowMarker`
 %End
 
     void setShowMarker( bool show );
 %Docstring
-Sets whether a marker symbol should be shown corresponding to the labeled point on line.
+Sets whether a marker symbol should be shown corresponding to the
+labeled point on line.
 
-The marker symbol is set using :py:func:`~QgsLinearReferencingSymbolLayer.setSubSymbol`
+The marker symbol is set using
+:py:func:`~QgsLinearReferencingSymbolLayer.setSubSymbol`
 
 .. seealso:: :py:func:`showMarker`
 %End
@@ -227,24 +245,28 @@ Sets the ``placement`` mode for the labels.
 
     Qgis::LinearReferencingLabelSource labelSource() const;
 %Docstring
-Returns the label source, which dictates what quantity to use for the labels shown.
+Returns the label source, which dictates what quantity to use for the
+labels shown.
 
 .. seealso:: :py:func:`setLabelSource`
 %End
 
     void setLabelSource( Qgis::LinearReferencingLabelSource source );
 %Docstring
-Sets the label ``source``, which dictates what quantity to use for the labels shown.
+Sets the label ``source``, which dictates what quantity to use for the
+labels shown.
 
 .. seealso:: :py:func:`labelSource`
 %End
 
     double averageAngleLength() const;
 %Docstring
-Returns the length of line over which the line's direction is averaged when
-calculating individual label angles. Longer lengths smooth out angles from jagged lines to a greater extent.
+Returns the length of line over which the line's direction is averaged
+when calculating individual label angles. Longer lengths smooth out
+angles from jagged lines to a greater extent.
 
-Units are retrieved through :py:func:`~QgsLinearReferencingSymbolLayer.averageAngleUnit`
+Units are retrieved through
+:py:func:`~QgsLinearReferencingSymbolLayer.averageAngleUnit`
 
 .. seealso:: :py:func:`setAverageAngleLength`
 
@@ -255,10 +277,12 @@ Units are retrieved through :py:func:`~QgsLinearReferencingSymbolLayer.averageAn
 
     void setAverageAngleLength( double length );
 %Docstring
-Sets the ``length`` of line over which the line's direction is averaged when
-calculating individual label angles. Longer lengths smooth out angles from jagged lines to a greater extent.
+Sets the ``length`` of line over which the line's direction is averaged
+when calculating individual label angles. Longer lengths smooth out
+angles from jagged lines to a greater extent.
 
-Units are set through :py:func:`~QgsLinearReferencingSymbolLayer.setAverageAngleUnit`
+Units are set through
+:py:func:`~QgsLinearReferencingSymbolLayer.setAverageAngleUnit`
 
 .. seealso:: :py:func:`averageAngleLength`
 
@@ -269,8 +293,8 @@ Units are set through :py:func:`~QgsLinearReferencingSymbolLayer.setAverageAngle
 
     void setAverageAngleUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``unit`` for the length over which the line's direction is averaged when
-calculating individual label angles.
+Sets the ``unit`` for the length over which the line's direction is
+averaged when calculating individual label angles.
 
 .. seealso:: :py:func:`averageAngleUnit`
 
@@ -281,8 +305,8 @@ calculating individual label angles.
 
     Qgis::RenderUnit averageAngleUnit() const;
 %Docstring
-Returns the unit for the length over which the line's direction is averaged when
-calculating individual label angles.
+Returns the unit for the length over which the line's direction is
+averaged when calculating individual label angles.
 
 .. seealso:: :py:func:`setAverageAngleUnit`
 
@@ -293,8 +317,8 @@ calculating individual label angles.
 
     void setAverageAngleMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit ``scale`` for the length over which the line's direction is averaged when
-calculating individual label angles.
+Sets the map unit ``scale`` for the length over which the line's
+direction is averaged when calculating individual label angles.
 
 .. seealso:: :py:func:`averageAngleMapUnitScale`
 
@@ -305,8 +329,8 @@ calculating individual label angles.
 
     const QgsMapUnitScale &averageAngleMapUnitScale() const;
 %Docstring
-Returns the map unit scale for the length over which the line's direction is averaged when
-calculating individual label angles.
+Returns the map unit scale for the length over which the line's
+direction is averaged when calculating individual label angles.
 
 .. seealso:: :py:func:`setAverageAngleMapUnitScale`
 

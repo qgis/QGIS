@@ -30,7 +30,7 @@
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for flags settings
+ * \brief A factory for editors of flags settings.
  *
  * \since QGIS 3.32
  */
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for enum settings
+ * \brief A factory for editors for enum settings.
  *
  * \since QGIS 3.32
  */

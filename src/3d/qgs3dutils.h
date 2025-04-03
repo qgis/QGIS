@@ -30,6 +30,8 @@
 
 #include <memory>
 
+
+class QgsCameraPose;
 class QgsLineString;
 class QgsPolygon;
 class QgsFeedback;
@@ -49,7 +51,7 @@ class QSurface;
 class Qgs3DRenderContext;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Miscellaneous utility functions used from 3D code.
  * \note Not available in Python bindings
  */
@@ -363,6 +365,30 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.44
      */
     static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings );
+
+    /**
+     * Computes the portion of the Y=y plane the camera is looking at
+     * \since QGIS 3.44
+     */
+    static void calculateViewExtent( const Qt3DRender::QCamera *camera, float maxRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ );
+
+    /**
+     * Returns a list of 4 planes derived from a line extending from \a startPoint to \a endPoint.
+     * The parameter \a distance defines the distance between the parallel clipping planes and the line.
+     * Each clipping plane is represented as a 4D vector, where the first three components correspond to
+     * the normalized normal of the plane, and the fourth component represents its distance from the origin of the scene.
+     * \note \a distance is expected to be positive
+     * \since QGIS 3.44
+     */
+    static QList<QVector4D> lineSegmentToClippingPlanes( const QgsVector3D &startPoint, const QgsVector3D &endPoint, double distance, const QgsVector3D &origin );
+
+    /**
+     * Returns the camera pose for a camera looking at mid-point between \a startPoint and \a endPoint.
+     * The camera is angled to provide a profile view and the heading angle is calculated to look from the right side of the line.
+     * The middle of \a elevationRange sets the z attribute of mid-point.
+     * \since QGIS 3.44
+     */
+    static QgsCameraPose lineSegmentToCameraPose( const QgsVector3D &startPoint, const QgsVector3D &endPoint, const QgsDoubleRange &elevationRange, float fieldOfView, const QgsVector3D &worldOrigin );
 };
 
 #endif // QGS3DUTILS_H

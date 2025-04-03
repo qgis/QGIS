@@ -47,7 +47,8 @@ Create a symbol layer of this type given the map of properties.
 %End
     virtual QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer * ) /Factory/;
 %Docstring
-Create widget for symbol layer of this type. Can return ``None`` if there's no GUI
+Create widget for symbol layer of this type. Can return ``None`` if
+there's no GUI
 %End
     virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) /Factory/;
 %Docstring
@@ -59,16 +60,17 @@ Create a symbol layer of this type given the map of properties.
 Resolve paths in symbol layer's properties (if there are any paths).
 When saving is ``True``, paths are converted from absolute to relative,
 when saving is ``False``, paths are converted from relative to absolute.
-This ensures that paths in project files can be relative, but in symbol layer
-instances the paths are always absolute
+This ensures that paths in project files can be relative, but in symbol
+layer instances the paths are always absolute
 %End
 
     virtual void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
 %Docstring
-Resolve fonts from the  symbol layer's ``properties``.
+Resolve fonts from the symbol layer's ``properties``.
 
-This tests whether the required fonts from the encoded ``properties`` are available on the system, and records
-warnings in the ``context`` if not.
+This tests whether the required fonts from the encoded ``properties``
+are available on the system, and records warnings in the ``context`` if
+not.
 
 .. versionadded:: 3.20
 %End
@@ -80,7 +82,8 @@ warnings in the ``context`` if not.
 class QgsSymbolLayerMetadata : QgsSymbolLayerAbstractMetadata
 {
 %Docstring(signature="appended")
-Convenience metadata class that uses static functions to create symbol layer and its widget.
+Convenience metadata class that uses static functions to create symbol
+layer and its widget.
 %End
 
 %TypeHeaderCode
@@ -110,8 +113,8 @@ class QgsSymbolLayerRegistry
 %Docstring(signature="appended")
 Registry of available symbol layer classes.
 
-:py:class:`QgsSymbolLayerRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.symbolLayerRegistry()`.
+:py:class:`QgsSymbolLayerRegistry` is not usually directly created, but
+rather accessed through :py:func:`QgsApplication.symbolLayerRegistry()`.
 %End
 
 %TypeHeaderCode
@@ -125,12 +128,14 @@ Registry of available symbol layer classes.
 
     QgsSymbolLayerAbstractMetadata *symbolLayerMetadata( const QString &name ) const;
 %Docstring
-Returns metadata for specified symbol layer. Returns ``None`` if not found
+Returns metadata for specified symbol layer. Returns ``None`` if not
+found
 %End
 
     bool addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata /Transfer/ );
 %Docstring
-Registers a new symbol layer type. Takes ownership of the metadata instance.
+Registers a new symbol layer type. Takes ownership of the metadata
+instance.
 %End
 
     bool removeSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata );
@@ -140,29 +145,31 @@ Removes a symbol layer type
 .. versionadded:: 3.22.2
 %End
 
-    QgsSymbolLayer *createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const /Factory/;
+    std::unique_ptr< QgsSymbolLayer > createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const;
 %Docstring
-create a new instance of symbol layer given symbol layer name and properties
+create a new instance of symbol layer given symbol layer name and
+properties
 %End
 
-    QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const /Factory/;
+    std::unique_ptr< QgsSymbolLayer > createSymbolLayerFromSld( const QString &name, QDomElement &element ) const;
 %Docstring
 create a new instance of symbol layer given symbol layer name and SLD
 %End
 
     void resolvePaths( const QString &name, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;
 %Docstring
-Resolve paths in properties of a particular symbol layer.
-This normally means converting relative paths to absolute paths when loading
-and converting absolute paths to relative paths when saving.
+Resolve paths in properties of a particular symbol layer. This normally
+means converting relative paths to absolute paths when loading and
+converting absolute paths to relative paths when saving.
 %End
 
     void resolveFonts( const QString &name, QVariantMap &properties, const QgsReadWriteContext &context ) const;
 %Docstring
 Resolve fonts from the ``properties`` of a particular symbol layer.
 
-This tests whether the required fonts from the encoded ``properties`` are available on the system, and records
-warnings in the ``context`` if not.
+This tests whether the required fonts from the encoded ``properties``
+are available on the system, and records warnings in the ``context`` if
+not.
 
 .. versionadded:: 3.20
 %End
@@ -172,9 +179,10 @@ warnings in the ``context`` if not.
 Returns a list of available symbol layers for a specified symbol type
 %End
 
-    static QgsSymbolLayer *defaultSymbolLayer( Qgis::SymbolType type ) /Factory/;
+    static std::unique_ptr< QgsSymbolLayer > defaultSymbolLayer( Qgis::SymbolType type );
 %Docstring
-create a new instance of symbol layer for specified symbol type with default settings
+create a new instance of symbol layer for specified symbol type with
+default settings
 %End
 
   private:

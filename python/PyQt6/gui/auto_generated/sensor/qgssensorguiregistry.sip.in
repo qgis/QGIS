@@ -13,8 +13,8 @@ class QgsSensorAbstractGuiMetadata
 %Docstring(signature="appended")
 Stores GUI metadata about one sensor class.
 
-This is a companion to :py:class:`QgsSensorAbstractMetadata`, storing only
-the components related to the GUI behavior of sensor.
+This is a companion to :py:class:`QgsSensorAbstractMetadata`, storing
+only the components related to the GUI behavior of sensor.
 
 .. note::
 
@@ -29,9 +29,11 @@ the components related to the GUI behavior of sensor.
   public:
     QgsSensorAbstractGuiMetadata( const QString &type, const QString &visibleName );
 %Docstring
-Constructor for QgsSensorAbstractGuiMetadata with the specified class ``type``.
+Constructor for QgsSensorAbstractGuiMetadata with the specified class
+``type``.
 
-``visibleName`` should be set to a translated, user visible name identifying the corresponding sensor type.
+``visibleName`` should be set to a translated, user visible name
+identifying the corresponding sensor type.
 %End
 
     virtual ~QgsSensorAbstractGuiMetadata();
@@ -43,7 +45,8 @@ Returns the unique type code for the sensor class.
 
     QString visibleName() const;
 %Docstring
-Returns a translated, user visible name identifying the corresponding sensor.
+Returns a translated, user visible name identifying the corresponding
+sensor.
 %End
 
     virtual QIcon creationIcon() const;
@@ -54,7 +57,8 @@ Returns an icon representing creation of the sensor type.
 
     virtual QgsAbstractSensorWidget *createSensorWidget( QgsAbstractSensor *sensor ) /TransferBack/;
 %Docstring
-Creates a configuration widget for an ``sensor`` of this type. Can return ``None`` if no configuration GUI is required.
+Creates a configuration widget for an ``sensor`` of this type. Can
+return ``None`` if no configuration GUI is required.
 %End
 
     virtual QgsAbstractSensor *createSensor( QObject *parent ) /TransferBack/;
@@ -71,8 +75,8 @@ class QgsSensorGuiRegistry : QObject
 %Docstring(signature="appended")
 Registry of available sensor GUI behavior.
 
-:py:class:`QgsSensorGuiRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsGui.sensorGuiRegistry()`.
+:py:class:`QgsSensorGuiRegistry` is not usually directly created, but
+rather accessed through :py:func:`QgsGui.sensorGuiRegistry()`.
 
 This acts as a companion to :py:class:`QgsSensorRegistry`, handling only
 the components related to the GUI behavior of sensors.
@@ -88,27 +92,29 @@ the components related to the GUI behavior of sensors.
 %Docstring
 Creates a new empty sensor GUI registry.
 
-QgsSensorGuiRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.sensorGuiRegistry()`.
+QgsSensorGuiRegistry is not usually directly created, but rather
+accessed through :py:func:`QgsGui.sensorGuiRegistry()`.
 %End
     ~QgsSensorGuiRegistry();
 
 
     bool populate();
 %Docstring
-Populates the registry with standard sensor types. If called on a non-empty registry
-then this will have no effect and will return ``False``.
+Populates the registry with standard sensor types. If called on a
+non-empty registry then this will have no effect and will return
+``False``.
 %End
 
     QgsSensorAbstractGuiMetadata *sensorMetadata( const QString &type ) const;
 %Docstring
-Returns the metadata for the specified sensor ``type``. Returns ``None`` if
-a corresponding sensor type was not found in the registry.
+Returns the metadata for the specified sensor ``type``. Returns ``None``
+if a corresponding sensor type was not found in the registry.
 %End
 
     bool addSensorGuiMetadata( QgsSensorAbstractGuiMetadata *metadata /Transfer/ );
 %Docstring
-Registers the GUI metadata for a new sensor type. Takes ownership of the metadata instance.
+Registers the GUI metadata for a new sensor type. Takes ownership of the
+metadata instance.
 %End
 
 
@@ -119,9 +125,10 @@ Creates a new instance of a sensor given the ``type``.
 
     QgsAbstractSensorWidget *createSensorWidget( QgsAbstractSensor *sensor ) const /TransferBack/;
 %Docstring
-Creates a new instance of a sensor configuration widget for the specified ``sensor``. The
-``sensor`` doesn't need to live for the duration of the widget, it is only used when creating
-the configuration widget to match a sensor type and initiate the widget to match the
+Creates a new instance of a sensor configuration widget for the
+specified ``sensor``. The ``sensor`` doesn't need to live for the
+duration of the widget, it is only used when creating the configuration
+widget to match a sensor type and initiate the widget to match the
 ``sensor`` settings.
 %End
 
@@ -134,8 +141,8 @@ Returns a list of sensor types handled by the registry.
 
     void sensorAdded( const QString &type, const QString &name );
 %Docstring
-Emitted whenever a new sensor type is added to the registry, with the specified
-``type``.
+Emitted whenever a new sensor type is added to the registry, with the
+specified ``type``.
 %End
 
   private:

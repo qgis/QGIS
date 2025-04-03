@@ -152,7 +152,7 @@ QMap<QString, QgsWmsLayerInfos> QgsWmsLayerInfos::buildWmsLayerInfos(
   bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
   const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
   const QgsRectangle wmsExtent = QgsServerProjectUtils::wmsExtent( *project );
-  const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+  const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() );
 
   for ( QgsMapLayer *ml : project->mapLayers() )
   {
@@ -218,9 +218,9 @@ QMap<QString, QgsWmsLayerInfos> QgsWmsLayerInfos::buildWmsLayerInfos(
     // layer styles
     pLayer.styles = ml->styleManager()->styles();
     // layer legend URL
-    pLayer.legendUrl = ml->legendUrl();
+    pLayer.legendUrl = ml->serverProperties()->legendUrl();
     // layer legend URL format
-    pLayer.legendUrlFormat = ml->legendUrlFormat();
+    pLayer.legendUrlFormat = ml->serverProperties()->legendUrlFormat();
     // layer min/max scales
     if ( ml->hasScaleBasedVisibility() )
     {

@@ -28,7 +28,7 @@ class QgsExpressionBasedNumericFormat;
 /**
  * \ingroup gui
  * \class QgsNumericFormatWidget
- * \brief Base class for widgets which allow control over the properties of QgsNumericFormat subclasses
+ * \brief Base class for widgets which allow control over the properties of QgsNumericFormat subclasses.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget, public QgsExpressionContextGenerator
@@ -87,7 +87,7 @@ class QgsBasicNumericFormat;
 /**
  * \ingroup gui
  * \class QgsBasicNumericFormatWidget
- * \brief A widget which allow control over the properties of a QgsBasicNumericFormat.
+ * \brief A widget which allows control over the properties of a QgsBasicNumericFormat.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsBasicNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsBasicNumericFormatWidgetBase
@@ -117,7 +117,7 @@ class QgsBearingNumericFormat;
 /**
  * \ingroup gui
  * \class QgsBearingNumericFormatWidget
- * \brief A widget which allow control over the properties of a QgsBearingNumericFormat.
+ * \brief A widget which allows control over the properties of a QgsBearingNumericFormat.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsBearingNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsBearingNumericFormatWidgetBase
@@ -144,7 +144,7 @@ class GUI_EXPORT QgsBearingNumericFormatWidget : public QgsNumericFormatWidget, 
 /**
  * \ingroup gui
  * \class QgsBearingNumericFormatDialog
- * \brief A dialog which allow control over the properties of a QgsBearingNumericFormat.
+ * \brief A dialog which allows control over the properties of a QgsBearingNumericFormat.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsBearingNumericFormatDialog : public QDialog
@@ -176,7 +176,7 @@ class QgsGeographicCoordinateNumericFormat;
 /**
  * \ingroup gui
  * \class QgsGeographicCoordinateNumericFormatWidget
- * \brief A widget which allow control over the properties of a QgsGeographicCoordinateNumericFormat.
+ * \brief A widget which allows control over the properties of a QgsGeographicCoordinateNumericFormat.
  * \since QGIS 3.26
  */
 class GUI_EXPORT QgsGeographicCoordinateNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsGeographicCoordinateNumericFormatWidgetBase
@@ -203,7 +203,7 @@ class GUI_EXPORT QgsGeographicCoordinateNumericFormatWidget : public QgsNumericF
 /**
  * \ingroup gui
  * \class QgsGeographicCoordinateNumericFormatDialog
- * \brief A dialog which allow control over the properties of a QgsGeographicCoordinateNumericFormat.
+ * \brief A dialog which allows control over the properties of a QgsGeographicCoordinateNumericFormat.
  * \since QGIS 3.26
  */
 class GUI_EXPORT QgsGeographicCoordinateNumericFormatDialog : public QDialog
@@ -235,7 +235,7 @@ class QgsCurrencyNumericFormat;
 /**
  * \ingroup gui
  * \class QgsCurrencyNumericFormatWidget
- * \brief A widget which allow control over the properties of a QgsCurrencyNumericFormat.
+ * \brief A widget which allows control over the properties of a QgsCurrencyNumericFormat.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsCurrencyNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsCurrencyNumericFormatWidgetBase
@@ -266,7 +266,7 @@ class QgsPercentageNumericFormat;
 /**
  * \ingroup gui
  * \class QgsPercentageNumericFormatWidget
- * \brief A widget which allow control over the properties of a QgsPercentageNumericFormat.
+ * \brief A widget which allows control over the properties of a QgsPercentageNumericFormat.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsPercentageNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsPercentageNumericFormatWidgetBase
@@ -297,7 +297,7 @@ class QgsScientificNumericFormat;
 /**
  * \ingroup gui
  * \class QgsScientificNumericFormatWidget
- * \brief A widget which allow control over the properties of a QgsScientificNumericFormat.
+ * \brief A widget which allows control over the properties of a QgsScientificNumericFormat.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsScientificNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsScientificNumericFormatWidgetBase
@@ -326,7 +326,7 @@ class GUI_EXPORT QgsScientificNumericFormatWidget : public QgsNumericFormatWidge
 /**
  * \ingroup gui
  * \class QgsFractionNumericFormatWidget
- * \brief A widget which allow control over the properties of a QgsFractionNumericFormat.
+ * \brief A widget which allows control over the properties of a QgsFractionNumericFormat.
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsFractionNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsFractionNumericFormatWidgetBase
@@ -355,7 +355,7 @@ class GUI_EXPORT QgsFractionNumericFormatWidget : public QgsNumericFormatWidget,
 /**
  * \ingroup gui
  * \class QgsExpressionBasedNumericFormatWidget
- * \brief A widget which allow control over the properties of a QgsExpressionBasedNumericFormat.
+ * \brief A widget which allows control over the properties of a QgsExpressionBasedNumericFormat.
  * \since QGIS 3.40
  */
 class GUI_EXPORT QgsExpressionBasedNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsExpressionBasedNumericFormatWidgetBase

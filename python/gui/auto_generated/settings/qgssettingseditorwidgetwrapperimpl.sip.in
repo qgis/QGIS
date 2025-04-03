@@ -17,7 +17,7 @@ template<T,V,U>
 class QgsSettingsEditorWidgetWrapperTemplate : QgsSettingsEditorWidgetWrapper
 {
 %Docstring(signature="appended")
-This class is a base factory of editor for settings
+Base factory for editors for settings.
 
 .. versionadded:: 3.32
 %End
@@ -69,7 +69,8 @@ Returns the setting
 
     virtual void configureEditorPrivateImplementation();
 %Docstring
-To be re-implemented to implemeent type specific configuration (e.g. opacity for colors)
+To be re-implemented to implemeent type specific configuration (e.g.
+opacity for colors)
 %End
 
 };
@@ -81,7 +82,7 @@ typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,
 class QgsSettingsStringLineEditWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for string settings with a line edit
+A factory for editors for string settings with a line edit.
 
 .. versionadded:: 3.32
 %End
@@ -98,7 +99,8 @@ Constructor of the factory
 
     QgsSettingsStringLineEditWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
 
@@ -127,7 +129,7 @@ typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QComboBox,
 class QgsSettingsStringComboBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for string settings with a combo box
+A factory for editors of string settings with a combo box.
 
 .. versionadded:: 3.40
 %End
@@ -150,12 +152,14 @@ Constructor of the factory
 
     QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -184,7 +188,7 @@ typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bo
 class QgsSettingsBoolCheckBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for boolean settings with a checkbox
+A factory for editors of boolean settings with a checkbox.
 
 .. versionadded:: 3.32
 %End
@@ -201,7 +205,8 @@ Constructor of the factory
 
     QgsSettingsBoolCheckBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -228,7 +233,7 @@ typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,
 class QgsSettingsIntegerSpinBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for integer settings with a spin box
+A factory for editors for integer settings with a spin box.
 
 .. versionadded:: 3.32
 %End
@@ -245,7 +250,8 @@ Constructor of the factory
 
     QgsSettingsIntegerSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -273,7 +279,7 @@ typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpi
 class QgsSettingsDoubleSpinBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for double settings with a double spin box
+A factory for editors for double settings with a double spin box.
 
 .. versionadded:: 3.32
 %End
@@ -290,7 +296,8 @@ Constructor of the factory
 
     QgsSettingsDoubleSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -318,7 +325,7 @@ typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorBut
 class QgsSettingsColorButtonWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for color settings with a color button
+A factory for editors of color settings with a color button.
 
 .. versionadded:: 3.32
 %End
@@ -335,7 +342,8 @@ Constructor of the factory
 
     QgsSettingsColorButtonWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;

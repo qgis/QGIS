@@ -240,7 +240,7 @@ class CORE_EXPORT QgsNetworkAuthenticationHandler
 
 /**
  * \class QgsNetworkAccessManager
- * \brief network access manager for QGIS
+ * \brief QNetworkAccessManager with additional QGIS specific logic.
  * \ingroup core
  *
  * \brief This class implements the QGIS network access manager.  It's a singleton
@@ -569,6 +569,99 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     }
     % End
 #endif
+
+    /**
+     * Sets an advanced request pre-processor function, which allows manipulation of a network request before it is processed.
+     *
+     * The \a processor function takes the QNetworkRequest, network operation (a QNetworkAccessManager::Operation cast to an integer value),
+     * and request data as its arguments, and can mutate the request if necessary.
+     *
+     * It should return the desired operation (as a QNetworkAccessManager::Operation cast to an integer value) and request data as a tuple,
+     * transforming as desired.
+     *
+     * \returns An auto-generated string uniquely identifying the preprocessor, which can later be
+     * used to remove the preprocessor (via a call to removeAdvancedRequestPreprocessor()).
+     *
+     * \see removeAdvancedRequestPreprocessor()
+     * \since QGIS 3.44
+     */
+#ifndef SIP_RUN
+    static QString setAdvancedRequestPreprocessor( const std::function< void( QNetworkRequest *, int &op, QByteArray *data )> &processor );
+#else
+    static QString setAdvancedRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    PyObject *s = 0;
+    QString id;
+    Py_XINCREF( a0 );
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsNetworkAccessManager::setAdvancedRequestPreprocessor( [a0]( QNetworkRequest *reqArg, int &op, QByteArray *data )
+    {
+      SIP_BLOCK_THREADS
+
+      PyObject *requestObj = sipConvertFromType( reqArg, sipType_QNetworkRequest, NULL );
+      PyObject *postDataObj = sipConvertFromType( new QByteArray( *data ), sipType_QByteArray, Py_None );
+
+      PyObject *result = sipCallMethod( NULL, a0, "RiR", requestObj, op, postDataObj );
+
+      Py_XDECREF( requestObj );
+      Py_XDECREF( postDataObj );
+
+      if ( result && PyTuple_Check( result ) && PyTuple_Size( result ) == 2 )
+      {
+        // Extract modified operation
+        PyObject *opObj = PyTuple_GetItem( result, 0 );
+        if ( opObj && PyLong_Check( opObj ) )
+        {
+          op = static_cast<int>( PyLong_AsLong( opObj ) );
+        }
+        PyObject *dataObj = PyTuple_GetItem( result, 1 );
+        if ( dataObj && dataObj != Py_None )
+        {
+          int dataState;
+          int sipIsErr = 0;
+          QByteArray *modifiedData = reinterpret_cast<QByteArray *>( sipConvertToType( dataObj, sipType_QByteArray, 0, SIP_NOT_NONE, &dataState, &sipIsErr ) );
+          if ( sipIsErr == 0 )
+          {
+            data->clear();
+            data->append( *modifiedData );
+            sipReleaseType( modifiedData, sipType_QByteArray, dataState );
+          }
+        }
+      }
+
+      Py_XDECREF( result );
+      SIP_UNBLOCK_THREADS
+    } );
+    Py_END_ALLOW_THREADS
+
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    return s;
+    % End
+#endif
+
+    /**
+     * Removes an advanced request pre-processor function with matching \a id.
+     *
+     * The \a id must correspond to a pre-processor previously added via a call to setAdvancedRequestPreprocessor().
+     *
+     * Returns TRUE if processor existed and was removed.
+     *
+     * \see setAdvancedRequestPreprocessor()
+     * \since QGIS 3.44
+     */
+#ifndef SIP_RUN
+    static bool removeAdvancedRequestPreprocessor( const QString &id );
+#else
+    static void removeAdvancedRequestPreprocessor( const QString &id );
+    % MethodCode
+    if ( !QgsNetworkAccessManager::removeAdvancedRequestPreprocessor( *a0 ) )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    % End
+#endif
+
 
     /**
      * Sets a reply pre-processor function, which allows manipulation of QNetworkReply objects after they are created (but before they are fetched).

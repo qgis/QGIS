@@ -4726,6 +4726,9 @@ QgsRasterLayerTemporalProperties.FixedRangePerBand.__doc__ = "Layer has a fixed 
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues = Qgis.RasterTemporalMode.RepresentsTemporalValues
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues.is_monkey_patched = True
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues.__doc__ = "Pixel values represent an datetime"
+QgsRasterLayerTemporalProperties.FixedDateTime = Qgis.RasterTemporalMode.FixedDateTime
+QgsRasterLayerTemporalProperties.FixedDateTime.is_monkey_patched = True
+QgsRasterLayerTemporalProperties.FixedDateTime.__doc__ = "Layer has a fixed date time instant. \n.. versionadded:: 3.44"
 Qgis.RasterTemporalMode.__doc__ = """Raster layer temporal modes
 
 .. versionadded:: 3.22
@@ -4750,6 +4753,10 @@ Qgis.RasterTemporalMode.__doc__ = """Raster layer temporal modes
   .. versionadded:: 3.38
 
 * ``RepresentsTemporalValues``: Pixel values represent an datetime
+* ``FixedDateTime``: Layer has a fixed date time instant.
+
+  .. versionadded:: 3.44
+
 
 """
 # --
@@ -7023,6 +7030,11 @@ Qgis.FieldDomainSplitPolicy.baseClass = Qgis
 Qgis.FieldDomainMergePolicy.DefaultValue.__doc__ = "Use default field value"
 Qgis.FieldDomainMergePolicy.Sum.__doc__ = "Sum of values"
 Qgis.FieldDomainMergePolicy.GeometryWeighted.__doc__ = "New values are computed as the weighted average of the source values"
+Qgis.FieldDomainMergePolicy.UnsetField.__doc__ = "Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \n.. versionadded:: 3.44"
+Qgis.FieldDomainMergePolicy.LargestGeometry.__doc__ = "Use value from the feature with the largest geometry \n.. versionadded:: 3.44"
+Qgis.FieldDomainMergePolicy.MinimumValue.__doc__ = "Use the minimum value from the features-to-be-merged \n.. versionadded:: 3.44"
+Qgis.FieldDomainMergePolicy.MaximumValue.__doc__ = "Use the maximum value from the features-to-be-merged \n.. versionadded:: 3.44"
+Qgis.FieldDomainMergePolicy.SetToNull.__doc__ = "Use a null value \n.. versionadded:: 3.44"
 Qgis.FieldDomainMergePolicy.__doc__ = """Merge policy for field domains.
 
 When a feature is built by merging multiple features, defines how the value of
@@ -7033,6 +7045,26 @@ attributes following the domain are computed.
 * ``DefaultValue``: Use default field value
 * ``Sum``: Sum of values
 * ``GeometryWeighted``: New values are computed as the weighted average of the source values
+* ``UnsetField``: Clears the field value so that the data provider backend will populate using any backend triggers or similar logic
+
+  .. versionadded:: 3.44
+
+* ``LargestGeometry``: Use value from the feature with the largest geometry
+
+  .. versionadded:: 3.44
+
+* ``MinimumValue``: Use the minimum value from the features-to-be-merged
+
+  .. versionadded:: 3.44
+
+* ``MaximumValue``: Use the maximum value from the features-to-be-merged
+
+  .. versionadded:: 3.44
+
+* ``SetToNull``: Use a null value
+
+  .. versionadded:: 3.44
+
 
 """
 # --
@@ -7305,16 +7337,34 @@ Qgis.LightSourceType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.NavigationMode.TerrainBased.__doc__ = "The default navigation based on the terrain"
 Qgis.NavigationMode.Walk.__doc__ = "Uses WASD keys or arrows to navigate in walking (first person) manner"
+Qgis.NavigationMode.GlobeTerrainBased.__doc__ = "Navigation similar to TerrainBased, but for use with globe  \n.. versionadded:: 3.44"
 Qgis.NavigationMode.__doc__ = """The navigation mode used by 3D cameras.
 
 .. versionadded:: 3.30
 
 * ``TerrainBased``: The default navigation based on the terrain
 * ``Walk``: Uses WASD keys or arrows to navigate in walking (first person) manner
+* ``GlobeTerrainBased``: Navigation similar to TerrainBased, but for use with globe
+
+  .. versionadded:: 3.44
+
 
 """
 # --
 Qgis.NavigationMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SceneMode.Local.__doc__ = "Local scene based on a projected CRS"
+Qgis.SceneMode.Globe.__doc__ = "Scene is represented as a globe using a geocentric CRS"
+Qgis.SceneMode.__doc__ = """The 3D scene mode used in 3D map views.
+
+.. versionadded:: 3.44
+
+* ``Local``: Local scene based on a projected CRS
+* ``Globe``: Scene is represented as a globe using a geocentric CRS
+
+"""
+# --
+Qgis.SceneMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements"
 Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes"
@@ -10001,6 +10051,7 @@ Qgis.ScaleCalculationMethod.HorizontalTop.__doc__ = "Calculate horizontally, acr
 Qgis.ScaleCalculationMethod.HorizontalMiddle.__doc__ = "Calculate horizontally, across midle of map"
 Qgis.ScaleCalculationMethod.HorizontalBottom.__doc__ = "Calculate horizontally, across bottom of map"
 Qgis.ScaleCalculationMethod.HorizontalAverage.__doc__ = "Calculate horizontally, using the average of the top, middle and bottom scales"
+Qgis.ScaleCalculationMethod.AtEquator.__doc__ = "Always calculate the scale at the equator, regardless of the actual visible map extent. This method can be used to provide a consistent, static scale for maps in geographic reference systems, regardless of the latitudes actually visible in the map (permitting consistent appearance of these maps when rendering relies on scale based visibility or calculations). This method is only applicable when calculating scales with a degree based reference system. \n.. versionadded:: 3.44"
 Qgis.ScaleCalculationMethod.__doc__ = """Scale calculation logic.
 
 .. versionadded:: 3.40
@@ -10009,6 +10060,10 @@ Qgis.ScaleCalculationMethod.__doc__ = """Scale calculation logic.
 * ``HorizontalMiddle``: Calculate horizontally, across midle of map
 * ``HorizontalBottom``: Calculate horizontally, across bottom of map
 * ``HorizontalAverage``: Calculate horizontally, using the average of the top, middle and bottom scales
+* ``AtEquator``: Always calculate the scale at the equator, regardless of the actual visible map extent. This method can be used to provide a consistent, static scale for maps in geographic reference systems, regardless of the latitudes actually visible in the map (permitting consistent appearance of these maps when rendering relies on scale based visibility or calculations). This method is only applicable when calculating scales with a degree based reference system.
+
+  .. versionadded:: 3.44
+
 
 """
 # --
@@ -11340,7 +11395,8 @@ Qgis.SegmentCalculationMethod.__doc__ = """brief Method used to calculate the nu
 # --
 Qgis.SegmentCalculationMethod.baseClass = Qgis
 try:
-    Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 4.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.'}
+    Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 4.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.', 'USER_CRS_START_ID': 'Minimum ID number for a user-defined projection.', 'DEFAULT_POINT_SIZE': 'The default size (in millimeters) for point marker symbols', 'DEFAULT_LINE_WIDTH': 'The default width (in millimeters) for line symbols', 'DEFAULT_SEGMENT_EPSILON': 'Default snapping tolerance for segments'}
+    Qgis.__annotations__ = {'QGIS_DEV_VERSION': str, 'DEFAULT_SEARCH_RADIUS_MM': float, 'DEFAULT_MAPTOPIXEL_THRESHOLD': float, 'DEFAULT_HIGHLIGHT_COLOR': 'QColor', 'DEFAULT_HIGHLIGHT_BUFFER_MM': float, 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': float, 'SCALE_PRECISION': float, 'DEFAULT_Z_COORDINATE': float, 'DEFAULT_M_COORDINATE': float, 'UI_SCALE_FACTOR': float, 'DEFAULT_SNAP_TOLERANCE': float, 'DEFAULT_SNAP_UNITS': 'Qgis.MapToolUnit', 'USER_CRS_START_ID': int, 'DEFAULT_POINT_SIZE': float, 'DEFAULT_LINE_WIDTH': float, 'DEFAULT_SEGMENT_EPSILON': float}
     Qgis.version = staticmethod(Qgis.version)
     Qgis.versionInt = staticmethod(Qgis.versionInt)
     Qgis.releaseName = staticmethod(Qgis.releaseName)
@@ -11351,5 +11407,9 @@ try:
     Qgis.geosVersionMinor = staticmethod(Qgis.geosVersionMinor)
     Qgis.geosVersionPatch = staticmethod(Qgis.geosVersionPatch)
     Qgis.geosVersion = staticmethod(Qgis.geosVersion)
+    Qgis.geoNone = staticmethod(Qgis.geoNone)
+    Qgis.geographicCrsAuthId = staticmethod(Qgis.geographicCrsAuthId)
+    Qgis.geoWkt = staticmethod(Qgis.geoWkt)
+    Qgis.geoProj4 = staticmethod(Qgis.geoProj4)
 except (NameError, AttributeError):
     pass

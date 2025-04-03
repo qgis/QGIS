@@ -24,14 +24,14 @@ class QMenu;
 
 /**
  * \ingroup gui
- * \brief Base class for any widget that can be shown as a inline panel
+ * \brief Base class for any widget that can be shown as an inline panel.
  */
 class GUI_EXPORT QgsPanelWidget : public QWidget
 {
     Q_OBJECT
   public:
     /**
-     * \brief Base class for any widget that can be shown as a inline panel
+     * \brief Base class for any widget that can be shown as an inline panel
      * \param parent Parent widget.
      */
     QgsPanelWidget( QWidget *parent = nullptr );

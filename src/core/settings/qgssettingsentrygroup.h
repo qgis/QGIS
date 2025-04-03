@@ -30,7 +30,7 @@ class QgsSettingsEntryBase;
 /**
  * \ingroup core
  * \class QgsSettingsEntryGroup
- * \brief Creates a group of setting which have a common definition of base key
+ * \brief Creates a group of settings which have a common definition of base key.
  *
  * \since QGIS 3.26
  * \deprecated QGIS 3.30. Use QgsSettingsTreeNode instead.

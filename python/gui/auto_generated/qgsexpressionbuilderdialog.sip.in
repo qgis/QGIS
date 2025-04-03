@@ -12,7 +12,7 @@
 class QgsExpressionBuilderDialog : QDialog
 {
 %Docstring(signature="appended")
-A generic dialog for building expression strings
+A generic dialog for building expression strings.
 %End
 
 %TypeHeaderCode
@@ -32,33 +32,34 @@ The builder widget that is used by the dialog
 
     QString expectedOutputFormat();
 %Docstring
-Returns the expected format string, which is shown in the dialog.
-This is purely a text format and no expression validation
-is done against it.
+Returns the expected format string, which is shown in the dialog. This
+is purely a text format and no expression validation is done against it.
 
 .. seealso:: :py:func:`setExpectedOutputFormat`
 %End
 
     void setExpectedOutputFormat( const QString &expected );
 %Docstring
-Set the ``expected`` format string, which is shown in the dialog.
-This is purely a text format and no expression validation is done against it.
+Set the ``expected`` format string, which is shown in the dialog. This
+is purely a text format and no expression validation is done against it.
 
 .. seealso:: :py:func:`expectedOutputFormat`
 %End
 
     QgsExpressionContext expressionContext() const;
 %Docstring
-Returns the expression context for the dialog. The context is used for the expression
-preview result and for populating the list of available functions and variables.
+Returns the expression context for the dialog. The context is used for
+the expression preview result and for populating the list of available
+functions and variables.
 
 .. seealso:: :py:func:`setExpressionContext`
 %End
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
-Sets the expression context for the dialog. The context is used for the expression
-preview result and for populating the list of available functions and variables.
+Sets the expression context for the dialog. The context is used for the
+expression preview result and for populating the list of available
+functions and variables.
 
 :param context: expression context
 
@@ -72,30 +73,32 @@ Sets geometry calculator used in distance/area calculations.
 
     bool allowEvalErrors() const;
 %Docstring
-Allow accepting invalid expressions. This can be useful when we are not able to
-provide an expression context of which we are sure it's completely populated.
+Allow accepting invalid expressions. This can be useful when we are not
+able to provide an expression context of which we are sure it's
+completely populated.
 %End
 
     void setAllowEvalErrors( bool allowEvalErrors );
 %Docstring
-Allow accepting expressions with evaluation errors. This can be useful when we are not able to
-provide an expression context of which we are sure it's completely populated.
+Allow accepting expressions with evaluation errors. This can be useful
+when we are not able to provide an expression context of which we are
+sure it's completely populated.
 %End
 
   signals:
 
     void allowEvalErrorsChanged();
 %Docstring
-Allow accepting expressions with evaluation errors. This can be useful when we are not able to
-provide an expression context of which we are sure it's completely populated.
+Allow accepting expressions with evaluation errors. This can be useful
+when we are not able to provide an expression context of which we are
+sure it's completely populated.
 %End
 
   protected:
     virtual void done( int r );
 
 %Docstring
-Is called when the dialog get accepted or rejected
-Used to save geometry
+Is called when the dialog get accepted or rejected Used to save geometry
 
 :param r: result value (unused)
 %End

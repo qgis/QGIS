@@ -25,7 +25,7 @@
 /**
  * \ingroup core
  * \class QgsCompoundCurve
- * \brief Compound curve geometry type
+ * \brief Compound curve geometry type.
  */
 class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 {

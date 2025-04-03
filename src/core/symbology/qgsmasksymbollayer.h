@@ -27,7 +27,7 @@ class QgsSymbolLayerReference;
 /**
  * \ingroup core
  * \class QgsMaskMarkerSymbolLayer
- * \brief Special symbol layer that uses its sub symbol as a selective mask
+ * \brief Special symbol layer that uses its sub symbol as a selective mask.
  * \since QGIS 3.12
  */
 

@@ -32,7 +32,7 @@ class QgsFillSymbol;
 /**
  * \class QgsScaleBarSettings
  * \ingroup core
- * \brief The QgsScaleBarSettings class stores the appearance and layout settings
+ * \brief Stores the appearance and layout settings
  * for scalebar drawing with QgsScaleBarRenderer.
 */
 class CORE_EXPORT QgsScaleBarSettings

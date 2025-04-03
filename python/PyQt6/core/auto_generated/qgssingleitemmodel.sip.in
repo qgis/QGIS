@@ -11,8 +11,7 @@
 class QgsSingleItemModel: QAbstractItemModel
 {
 %Docstring(signature="appended")
-
-A :py:class:`QgsSingleItemModel` subclass which contains a single read-only item.
+A QAbstractItemModel subclass which contains a single read-only item.
 
 .. versionadded:: 3.26
 %End
@@ -25,10 +24,11 @@ A :py:class:`QgsSingleItemModel` subclass which contains a single read-only item
     explicit QgsSingleItemModel( QObject *parent /TransferThis/ = 0, const QString &text = QString(),
                                  const QMap< int, QVariant > &data = QMap< int, QVariant >(), Qt::ItemFlags flags = Qt::NoItemFlags );
 %Docstring
-Constructor for QgsSingleItemModel with the specified ``parent`` object and display ``text``.
+Constructor for QgsSingleItemModel with the specified ``parent`` object
+and display ``text``.
 
-The ``data`` map specifies the data which should be returned for the specified roles, where
-map keys are Qt item roles.
+The ``data`` map specifies the data which should be returned for the
+specified roles, where map keys are Qt item roles.
 
 Custom ``flags`` can also be specified for the item.
 %End
@@ -37,10 +37,12 @@ Custom ``flags`` can also be specified for the item.
                                  const QList< QMap< int, QVariant > > &columnData,
                                  Qt::ItemFlags flags = Qt::NoItemFlags );
 %Docstring
-Constructor for a multi-column QgsSingleItemModel with the specified ``parent`` object.
+Constructor for a multi-column QgsSingleItemModel with the specified
+``parent`` object.
 
-The ``columnData`` list specifies the data which should be returned for the specified roles for each column in the model, where
-each entry in the list must be a QMap of Qt item role to value.
+The ``columnData`` list specifies the data which should be returned for
+the specified roles for each column in the model, where each entry in
+the list must be a QMap of Qt item role to value.
 
 Custom ``flags`` can also be specified for the item.
 %End

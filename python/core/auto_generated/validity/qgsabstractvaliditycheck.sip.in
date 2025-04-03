@@ -11,11 +11,13 @@
 class QgsValidityCheckResult
 {
 %Docstring(signature="appended")
-Represents an individual result from a validity check run by a :py:class:`QgsAbstractValidityCheck` subclass.
+Represents an individual result from a validity check run by a
+:py:class:`QgsAbstractValidityCheck` subclass.
 
-Results can either be warnings or critical errors, as dictated by the type member. Critical error
-are errors which are serious enough to prevent an operation from proceeding, while a warning
-result will be communicated to users, but not prevent them from proceeding.
+Results can either be warnings or critical errors, as dictated by the
+type member. Critical error are errors which are serious enough to
+prevent an operation from proceeding, while a warning result will be
+communicated to users, but not prevent them from proceeding.
 
 .. versionadded:: 3.6
 %End
@@ -31,7 +33,7 @@ result will be communicated to users, but not prevent them from proceeding.
       Critical,
     };
 
-    Type type;
+    QgsValidityCheckResult::Type type;
 
     QString title;
 
@@ -46,18 +48,25 @@ class QgsAbstractValidityCheck
 %Docstring(signature="appended")
 Abstract base class for individual validity checks.
 
-Validity checks represent objects which can run a test using a :py:class:`QgsValidityCheckContext`, and return
-the results of the check via :py:class:`QgsValidityCheckResult` objects.
+Validity checks represent objects which can run a test using a
+:py:class:`QgsValidityCheckContext`, and return the results of the check
+via :py:class:`QgsValidityCheckResult` objects.
 
-Checks can be used for many different use cases, e.g. validating a layout's contents before allowing
-an export to occur, or validating the contents of a Processing model (and warning if required plugin based
-providers are not available or if compulsory algorithm parameters have not been populated).
+Checks can be used for many different use cases, e.g. validating a
+layout's contents before allowing an export to occur, or validating the
+contents of a Processing model (and warning if required plugin based
+providers are not available or if compulsory algorithm parameters have
+not been populated).
 
-Subclasses must indicate the type of check they represent via the :py:func:`~checkType` method. When checks are performed,
-all the registered checks with a matching check type are performed sequentially. The check type also
-dictates the subclass of the :py:class:`QgsValidityCheckContext` which is given to the subclass' runCheck method.
+Subclasses must indicate the type of check they represent via the
+:py:func:`~checkType` method. When checks are performed, all the
+registered checks with a matching check type are performed sequentially.
+The check type also dictates the subclass of the
+:py:class:`QgsValidityCheckContext` which is given to the subclass'
+runCheck method.
 
-Checks must be registered in the application's :py:class:`QgsValidityCheckRegistry`, which is accessible via
+Checks must be registered in the application's
+:py:class:`QgsValidityCheckRegistry`, which is accessible via
 :py:func:`QgsApplication.validityCheckRegistry()`.
 
 .. seealso:: :py:class:`QgsValidityCheckRegistry`
@@ -97,32 +106,43 @@ Returns the type of the check.
 
     virtual bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback );
 %Docstring
-Prepares the check for execution, and returns ``True`` if the check can be run.
+Prepares the check for execution, and returns ``True`` if the check can
+be run.
 
-This method is always called from the main thread, and subclasses can implement
-it to do preparatory steps which are not thread safe (e.g. obtaining feature
-sources from vector layers). It is followed by a call to :py:func:`~QgsAbstractValidityCheck.runCheck`, which
-may be performed in a background thread.
+This method is always called from the main thread, and subclasses can
+implement it to do preparatory steps which are not thread safe (e.g.
+obtaining feature sources from vector layers). It is followed by a call
+to :py:func:`~QgsAbstractValidityCheck.runCheck`, which may be performed
+in a background thread.
 
-Individual calls to :py:func:`~QgsAbstractValidityCheck.prepareCheck`/:py:func:`~QgsAbstractValidityCheck.runCheck` are run on a new instance of the
-check (see :py:func:`~QgsAbstractValidityCheck.create`), so subclasses can safely store state from the :py:func:`~QgsAbstractValidityCheck.prepareCheck` method
-ready for the subsequent :py:func:`~QgsAbstractValidityCheck.runCheck` method.
+Individual calls to
+:py:func:`~QgsAbstractValidityCheck.prepareCheck`/:py:func:`~QgsAbstractValidityCheck.runCheck`
+are run on a new instance of the check (see
+:py:func:`~QgsAbstractValidityCheck.create`), so subclasses can safely
+store state from the :py:func:`~QgsAbstractValidityCheck.prepareCheck`
+method ready for the subsequent
+:py:func:`~QgsAbstractValidityCheck.runCheck` method.
 
-The ``context`` argument gives the wider in which the check is being run.
+The ``context`` argument gives the wider in which the check is being
+run.
 %End
 
     virtual QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) = 0;
 %Docstring
-Runs the check and returns a list of results. If the check is "passed" and no warnings or errors are generated,
-then an empty list should be returned.
+Runs the check and returns a list of results. If the check is "passed"
+and no warnings or errors are generated, then an empty list should be
+returned.
 
-This method may be called in a background thread, so subclasses should take care to ensure that
-only thread-safe methods are used. It is always preceded by a call to :py:func:`~QgsAbstractValidityCheck.prepareCheck`.
+This method may be called in a background thread, so subclasses should
+take care to ensure that only thread-safe methods are used. It is always
+preceded by a call to :py:func:`~QgsAbstractValidityCheck.prepareCheck`.
 
-If a check needs to perform non-thread-safe tests, these should be implemented within :py:func:`~QgsAbstractValidityCheck.prepareCheck`
-and stored in the subclass instance to be returned by this method.
+If a check needs to perform non-thread-safe tests, these should be
+implemented within :py:func:`~QgsAbstractValidityCheck.prepareCheck` and
+stored in the subclass instance to be returned by this method.
 
-The ``context`` argument gives the wider in which the check is being run.
+The ``context`` argument gives the wider in which the check is being
+run.
 %End
 
 };

@@ -15,26 +15,14 @@
 #ifndef QGSWFSCAPABILITIES_H
 #define QGSWFSCAPABILITIES_H
 
-#include <QObject>
 #include <QDomElement>
-
+#include <QSet>
 #include "qgsrectangle.h"
-#include "qgswfsrequest.h"
-#include "qgsdataprovider.h"
 
-//! Manages the GetCapabilities request
-class QgsWfsCapabilities : public QgsWfsRequest
+//! Encapsultes WFS Capabilities
+class QgsWfsCapabilities
 {
-    Q_OBJECT
   public:
-    explicit QgsWfsCapabilities( const QString &uri, const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
-
-    //! returns request URL
-    QUrl requestUrl() const;
-
-    //! start network connection to get capabilities
-    bool requestCapabilities( bool synchronous, bool forceRefresh );
-
     //! description of a vector layer
     struct FeatureType
     {
@@ -90,75 +78,32 @@ class QgsWfsCapabilities : public QgsWfsRequest
         Function() = default;
     };
 
-    //! parsed get capabilities document
-    struct Capabilities
-    {
-        Capabilities();
+    QgsWfsCapabilities();
 
-        QString version;
-        bool supportsHits;
-        bool supportsPaging;
-        bool supportsJoins;
-        long long maxFeatures;
-        QList<FeatureType> featureTypes;
-        QList<Function> spatialPredicatesList;
-        QList<Function> functionList;
-        bool useEPSGColumnFormat; // whether to use EPSG:XXXX srsname
-        QList<QString> outputFormats;
-        QgsStringMap operationGetEndpoints;
-        QgsStringMap operationPostEndpoints;
+    QString version;
+    bool supportsHits;
+    bool supportsPaging;
+    bool supportsJoins;
+    long long maxFeatures;
+    QList<FeatureType> featureTypes;
+    QList<Function> spatialPredicatesList;
+    QList<Function> functionList;
+    bool useEPSGColumnFormat; // whether to use EPSG:XXXX srsname
+    QList<QString> outputFormats;
+    QgsStringMap operationGetEndpoints;
+    QgsStringMap operationPostEndpoints;
 
-        QSet<QString> setAllTypenames;
-        QMap<QString, QString> mapUnprefixedTypenameToPrefixedTypename;
-        QSet<QString> setAmbiguousUnprefixedTypename;
+    QSet<QString> setAllTypenames;
+    QMap<QString, QString> mapUnprefixedTypenameToPrefixedTypename;
+    QSet<QString> setAmbiguousUnprefixedTypename;
 
-        void clear();
-        QString addPrefixIfNeeded( const QString &name ) const;
-        QString getNamespaceForTypename( const QString &name ) const;
-        QString getNamespaceParameterValue( const QString &WFSVersion, const QString &typeName ) const;
+    void clear();
+    QString addPrefixIfNeeded( const QString &name ) const;
+    QString getNamespaceForTypename( const QString &name ) const;
+    QString getNamespaceParameterValue( const QString &WFSVersion, const QString &typeName ) const;
 
-        //! Returns whether the server supports IsPoint, IsCurve and IsSurface functions
-        bool supportsGeometryTypeFilters() const;
-    };
-
-    //! Application level error
-    enum class ApplicationLevelError
-    {
-      NoError,
-      XmlError,
-      VersionNotSupported,
-    };
-
-    //! Returns parsed capabilities - requestCapabilities() must be called before
-    const Capabilities &capabilities() const { return mCaps; }
-
-    //! Returns application level error
-    ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
-
-  signals:
-    //! emitted when the capabilities have been fully parsed, or an error occurred */
-    void gotCapabilities();
-
-  private slots:
-    void capabilitiesReplyFinished();
-
-  protected:
-    QString errorMessageWithReason( const QString &reason ) override;
-    int defaultExpirationInSec() override;
-
-  private:
-    Capabilities mCaps;
-
-    QgsDataProvider::ProviderOptions mOptions;
-
-    ApplicationLevelError mAppLevelError = ApplicationLevelError::NoError;
-
-    //! Takes <Operations> element and updates the capabilities
-    void parseSupportedOperations( const QDomElement &operationsElem, bool &insertCap, bool &updateCap, bool &deleteCap );
-
-    void parseFilterCapabilities( const QDomElement &filterCapabilitiesElem );
-
-    static QString NormalizeSRSName( const QString &crsName );
+    //! Returns whether the server supports IsPoint, IsCurve and IsSurface functions
+    bool supportsGeometryTypeFilters() const;
 };
 
 #endif // QGSWFSCAPABILITIES_H

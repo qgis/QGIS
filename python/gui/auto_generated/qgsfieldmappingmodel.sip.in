@@ -12,11 +12,14 @@
 class QgsFieldMappingModel : QAbstractTableModel
 {
 %Docstring(signature="appended")
-The :py:class:`QgsFieldMappingModel` holds mapping information for mapping from one set of :py:class:`QgsFields` to another,
-for each set of "destination" fields an expression defines how to obtain the values of the
-"destination" fields.
-The model can be optionally set "editable" allowing to modify all the fields, by default only
-the mapping expression is editable.
+Holds mapping information for mapping from one set of
+:py:class:`QgsFields` to another.
+
+For each set of "destination" fields an expression defines how to obtain
+the values of the "destination" fields.
+
+The model can be optionally set "editable" allowing to modify all the
+fields, by default only the mapping expression is editable.
 
 .. versionadded:: 3.14
 %End
@@ -47,10 +50,10 @@ the mapping expression is editable.
 
     QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(), const QgsFields &destinationFields = QgsFields(), const QMap<QString, QString> &expressions = QMap<QString, QString>(), QObject *parent = 0 );
 %Docstring
-Constructs a QgsFieldMappingModel from a set of ``sourceFields``
-and ``destinationFields``, initial values for the expressions can be
-optionally specified through ``expressions`` which is a map from the original
-field name to the corresponding expression. A ``parent`` object
+Constructs a QgsFieldMappingModel from a set of ``sourceFields`` and
+``destinationFields``, initial values for the expressions can be
+optionally specified through ``expressions`` which is a map from the
+original field name to the corresponding expression. A ``parent`` object
 can be also specified.
 %End
 
@@ -58,9 +61,9 @@ can be also specified.
 %Docstring
 Sets the list of ``nativeTypes`` supported by a data provider.
 
-If this list is non-empty, then the destination field types will be populated
-accordingly. If the list is empty, then a set of default native types will be
-used instead.
+If this list is non-empty, then the destination field types will be
+populated accordingly. If the list is empty, then a set of default
+native types will be used instead.
 
 .. versionadded:: 3.44
 %End
@@ -98,20 +101,23 @@ Returns a list of source fields
 
     QList<QgsFieldMappingModel::Field> mapping() const;
 %Docstring
-Returns a list of Field objects representing the current status of the model
+Returns a list of Field objects representing the current status of the
+model
 %End
 
     QMap<QString, QgsProperty> fieldPropertyMap() const;
 %Docstring
-Returns a map of destination field name to :py:class:`QgsProperty` definition for field value,
-representing the current status of the model.
+Returns a map of destination field name to :py:class:`QgsProperty`
+definition for field value, representing the current status of the
+model.
 
 .. seealso:: :py:func:`setFieldPropertyMap`
 %End
 
     void setFieldPropertyMap( const QMap<QString, QgsProperty> &map );
 %Docstring
-Sets a map of destination field name to :py:class:`QgsProperty` definition for field value.
+Sets a map of destination field name to :py:class:`QgsProperty`
+definition for field value.
 
 .. seealso:: :py:func:`fieldPropertyMap`
 %End
@@ -123,7 +129,8 @@ Appends a new ``field`` to the model, with an optional ``expression``
 
     bool removeField( const QModelIndex &index );
 %Docstring
-Removes the field at ``index`` from the model, returns ``True`` on success
+Removes the field at ``index`` from the model, returns ``True`` on
+success
 %End
 
     bool moveUp( const QModelIndex &index );
@@ -148,15 +155,15 @@ Returns the context generator with the source fields
 
     void setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 %Docstring
-Sets the base expression context ``generator``, which will generate the expression
-contexts for expression based widgets used by the model.
+Sets the base expression context ``generator``, which will generate the
+expression contexts for expression based widgets used by the model.
 %End
 
     void setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 %Docstring
-Set destination fields to ``destinationFields``, initial values for the expressions can be
-optionally specified through ``expressions`` which is a map from the original
-field name to the corresponding expression.
+Set destination fields to ``destinationFields``, initial values for the
+expressions can be optionally specified through ``expressions`` which is
+a map from the original field name to the corresponding expression.
 %End
 
 

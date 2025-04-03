@@ -1009,5 +1009,3 @@ void QgsVectorTileLayer::removeSelection()
   mSelectedFeatures.clear();
   emit selectionChanged();
 }
-
-

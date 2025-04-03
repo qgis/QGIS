@@ -22,7 +22,7 @@
 /**
  * \ingroup core
  * \brief A parameter for "field mapping" configurations, which consist of a definition
- * of desired output fields, types, and expressions used to populate then.
+ * of desired output fields, types, and expressions used to populate them.
  *
  * Designed for use with the "Refactor fields" algorithm.
  *

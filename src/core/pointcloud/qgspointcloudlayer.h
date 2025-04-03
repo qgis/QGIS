@@ -36,7 +36,7 @@ class QgsAbstractPointCloud3DRenderer;
 /**
  * \ingroup core
  *
- * \brief Represents a map layer supporting display of point clouds
+ * \brief Represents a map layer supporting display of point clouds.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -317,6 +317,21 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * \since QGIS 3.42
      */
     bool changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
+
+    /**
+     * Attempts to modify attribute values for specific points in the editing buffer.
+     *
+     * \param nodesAndPoints A list of nodes to modify and points to modify within those nodes
+     * \param attribute The attribute whose value will be updated
+     * \param value The new value to set to the attribute
+     * \return TRUE if the editing buffer was updated successfully, FALSE otherwise
+     * \note Calls to changeAttributeValue() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     * \since QGIS 3.44
+     */
+    bool changeAttributeValue( const QHash<QgsPointCloudNodeId, QVector<int>> &nodesAndPoints, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
 
     /**
      * Returns the point cloud index associated with the layer.

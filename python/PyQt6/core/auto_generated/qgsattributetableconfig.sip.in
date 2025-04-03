@@ -9,11 +9,11 @@
 
 
 
-
 class QgsAttributeTableConfig
 {
 %Docstring(signature="appended")
-This is a container for configuration of the attribute table.
+A container for configuration of the attribute table.
+
 The configuration is specific for one vector layer.
 %End
 
@@ -52,13 +52,14 @@ The configuration is specific for one vector layer.
 
     QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
 %Docstring
-Gets the list with all columns and their configuration.
-The list order defines the order of appearance.
+Gets the list with all columns and their configuration. The list order
+defines the order of appearance.
 %End
 
     bool isEmpty() const;
 %Docstring
-Returns ``True`` if the configuration is empty, ie it contains no columns.
+Returns ``True`` if the configuration is empty, ie it contains no
+columns.
 
 .. seealso:: :py:func:`size`
 %End
@@ -86,16 +87,16 @@ Maps a visible column index to its original column index.
 
     void setColumns( const QVector<QgsAttributeTableConfig::ColumnConfig> &columns );
 %Docstring
-Set the list of columns visible in the attribute table.
-The list order defines the order of appearance.
+Set the list of columns visible in the attribute table. The list order
+defines the order of appearance.
 %End
 
     void update( const QgsFields &fields );
 %Docstring
-Update the configuration with the given fields.
-Any field which is present in the configuration but not present in the
-parameter fields will be removed. Any field which is in the parameter
-fields but not in the configuration will be appended.
+Update the configuration with the given fields. Any field which is
+present in the configuration but not present in the parameter fields
+will be removed. Any field which is in the parameter fields but not in
+the configuration will be appended.
 %End
 
     bool actionWidgetVisible() const;
@@ -169,7 +170,8 @@ Returns the width of a column, or -1 if column should use default width.
 Sets the width of a column.
 
 :param column: column index
-:param width: column width in pixels, or -1 if column should use default width
+:param width: column width in pixels, or -1 if column should use default
+              width
 
 :raises IndexError: if the column is not found
 

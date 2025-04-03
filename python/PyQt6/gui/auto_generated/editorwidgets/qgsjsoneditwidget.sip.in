@@ -13,7 +13,8 @@
 class QgsJsonEditWidget : QWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsJsonEditWidget` is a widget to display JSON data in a code highlighted text or tree form.
+A widget for displaying JSON data in a code highlighted text or tree
+form.
 
 .. versionadded:: 3.20
 %End

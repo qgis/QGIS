@@ -13,7 +13,7 @@
 class QgsAuthIdentitiesEditor : QWidget
 {
 %Docstring(signature="appended")
-Widget for viewing and editing authentication identities database
+Widget for viewing and editing authentication identities database.
 %End
 
 %TypeHeaderCode

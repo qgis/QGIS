@@ -46,7 +46,7 @@ class CORE_EXPORT QgsValidityCheckResult
     };
 
     //! Result type
-    Type type;
+    QgsValidityCheckResult::Type type;
 
     /**
      * A short, translated string summarising the result. Ideally a single sentence.

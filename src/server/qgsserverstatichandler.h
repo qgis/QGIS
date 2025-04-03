@@ -21,7 +21,7 @@
 
 /**
  * \ingroup server
- * \brief The QgsServerStaticHandler class serves static files from the static path (resources/server/api/wfs3/static)
+ * \brief Serves static files from the static path (resources/server/api/wfs3/static).
  * \see QgsServerOgcApiHandler::staticPath()
  * \since QGIS 3.16
  */

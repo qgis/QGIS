@@ -13,7 +13,7 @@
 class QgsStyleSaveDialog : QDialog
 {
 %Docstring(signature="appended")
-a dialog for setting properties of a newly saved style.
+A dialog for setting properties of a newly saved style.
 %End
 
 %TypeHeaderCode
@@ -42,7 +42,8 @@ Sets the default ``tags`` for the newly created item.
 
     QString tags() const;
 %Docstring
-Returns any tags entered for the new symbol (as a comma separated value list).
+Returns any tags entered for the new symbol (as a comma separated value
+list).
 %End
 
     bool isFavorite() const;

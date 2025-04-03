@@ -11,13 +11,16 @@
 class QgsUserProfile
 {
 %Docstring(signature="appended")
-User profile contains information about the user profile folders on the machine.
+User profile contains information about the user profile folders on the
+machine.
 
-In QGIS 3 all settings, plugins, etc were moved into a %APPDATA%/profiles folder for each platform.
-This allows for manage different user profiles per machine vs the single default one that was allowed in the
-past.
+In QGIS 3 all settings, plugins, etc were moved into a
+%APPDATA%/profiles folder for each platform. This allows for manage
+different user profiles per machine vs the single default one that was
+allowed in the past.
 
-A user profile is all settings and anything that used to be found in .qgis3 in the users home folder.
+A user profile is all settings and anything that used to be found in
+.qgis3 in the users home folder.
 %End
 
 %TypeHeaderCode
@@ -27,10 +30,11 @@ A user profile is all settings and anything that used to be found in .qgis3 in t
 
     QgsUserProfile( const QString &folder );
 %Docstring
-Reference to a existing user profile folder.
-Profile folder should be created using :py:class:`QgsProfileManager`.
+Reference to an existing user profile folder. Profile folder should be
+created using :py:class:`QgsProfileManager`.
 
-:param folder: An existing profile folder as the base of the user profile.
+:param folder: An existing profile folder as the base of the user
+               profile.
 %End
 
     const QString folder() const;

@@ -11,13 +11,10 @@
 
 
 
+%ModuleHeaderCode
+#include "qgsmeshutils.h"
+%End
 
-
-typedef QgsPoint QgsMeshVertex;
-
-typedef QVector<int> QgsMeshFace;
-
-typedef QPair<int, int> QgsMeshEdge;
 
 struct QgsMesh
 {
@@ -77,7 +74,8 @@ Remove all vertices, edges and faces
 
   static bool compareFaces( const QgsMeshFace &face1, const QgsMeshFace &face2 );
 %Docstring
-Compare two faces, return ``True`` if they are equivalent : same indexes and same clock wise
+Compare two faces, return ``True`` if they are equivalent : same indexes
+and same clock wise
 
 .. versionadded:: 3.16
 %End
@@ -89,17 +87,18 @@ Compare two faces, return ``True`` if they are equivalent : same indexes and sam
 class QgsMeshDataSourceInterface /Abstract/
 {
 %Docstring(signature="appended")
-
-Interface for mesh data sources
+Interface for mesh data sources.
 
 Mesh is a collection of vertices, edges and faces in 2D or 3D space
 
 - vertex - XY(Z) point (in the mesh's coordinate reference system)
-- edge   - two XY(Z) points (in the mesh's coordinate reference system) representing straight seqment
-- faces  - sets of vertices forming a closed shape - typically triangles or quadrilaterals
+- edge - two XY(Z) points (in the mesh's coordinate reference system)
+  representing straight seqment
+- faces - sets of vertices forming a closed shape - typically triangles
+  or quadrilaterals
 
-Base on the underlying data provider/format, whole mesh is either stored in memory or
-read on demand
+Base on the underlying data provider/format, whole mesh is either stored
+in memory or read on demand
 
 .. note::
 
@@ -147,8 +146,8 @@ Returns number of edges in the native mesh
 
     virtual int maximumVerticesCountPerFace() const;
 %Docstring
-Returns the maximum number of vertices per face supported by the current mesh,
-if returns 0, the number of vertices is unlimited
+Returns the maximum number of vertices per face supported by the current
+mesh, if returns 0, the number of vertices is unlimited
 
 :return: Maximum number of vertices per face
 
@@ -176,14 +175,15 @@ Saves the ``mesh`` frame to the source.
 class QgsMeshDatasetSourceInterface /Abstract/
 {
 %Docstring(signature="appended")
-Interface for mesh datasets and dataset groups
+Interface for mesh datasets and dataset groups.
 
-Dataset is a  collection of vector or scalar values on vertices or faces of the mesh.
-Based on the underlying data provider/format, whole dataset is either stored in memory
-or read on demand
+Dataset is a collection of vector or scalar values on vertices or faces
+of the mesh. Based on the underlying data provider/format, whole dataset
+is either stored in memory or read on demand
 
-Datasets are grouped in the dataset groups. A dataset group represents a measured quantity
-(e.g. depth or wind speed), dataset represents values of the quantity in a particular time.
+Datasets are grouped in the dataset groups. A dataset group represents a
+measured quantity (e.g. depth or wind speed), dataset represents values
+of the quantity in a particular time.
 
 .. note::
 
@@ -208,7 +208,8 @@ emits dataChanged when successful
 
     virtual QStringList extraDatasets() const = 0;
 %Docstring
-Returns list of additional dataset file URIs added using :py:func:`~QgsMeshDatasetSourceInterface.addDataset` calls.
+Returns list of additional dataset file URIs added using
+:py:func:`~QgsMeshDatasetSourceInterface.addDataset` calls.
 %End
 
     virtual int datasetGroupCount( ) const = 0;
@@ -244,10 +245,12 @@ Returns dataset metadata
     virtual QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const = 0;
 %Docstring
 Returns vector/scalar value associated with the index from the dataset
-To read multiple continuous values, use :py:func:`~QgsMeshDatasetSourceInterface.datasetValues`
+To read multiple continuous values, use
+:py:func:`~QgsMeshDatasetSourceInterface.datasetValues`
 
-See :py:func:`QgsMeshDatasetMetadata.isVector()` or :py:func:`QgsMeshDataBlock.type()`
-to check if the returned value is vector or scalar
+See :py:func:`QgsMeshDatasetMetadata.isVector()` or
+:py:func:`QgsMeshDataBlock.type()` to check if the returned value is
+vector or scalar
 
 Returns invalid value for DataOnVolumes
 
@@ -258,20 +261,24 @@ Returns invalid value for DataOnVolumes
 %Docstring
 Returns N vector/scalar values from the index from the dataset
 
-See :py:func:`QgsMeshDatasetMetadata.isVector()` or :py:func:`QgsMeshDataBlock.type()`
-to check if the returned value is vector or scalar
+See :py:func:`QgsMeshDatasetMetadata.isVector()` or
+:py:func:`QgsMeshDataBlock.type()` to check if the returned value is
+vector or scalar
 
-Returns invalid block for DataOnVolumes. Use :py:func:`QgsMeshLayerUtils.datasetValues()` if you
-need block for any type of data type
+Returns invalid block for DataOnVolumes. Use
+:py:func:`QgsMeshLayerUtils.datasetValues()` if you need block for any
+type of data type
 
 .. versionadded:: 3.6
 %End
 
     virtual QgsMesh3DDataBlock dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
 %Docstring
-Returns N vector/scalar values from the face index from the dataset for 3d stacked meshes
+Returns N vector/scalar values from the face index from the dataset for
+3d stacked meshes
 
-See :py:func:`QgsMeshDatasetMetadata.isVector()` to check if the returned value is vector or scalar
+See :py:func:`QgsMeshDatasetMetadata.isVector()` to check if the
+returned value is vector or scalar
 
 returns invalid block for DataOnFaces and DataOnVertices.
 
@@ -284,12 +291,10 @@ returns invalid block for DataOnFaces and DataOnVertices.
 %Docstring
 Returns whether the face is active for particular dataset
 
-For example to represent the situation when F1 and F3 are flooded, but F2 is dry,
-some solvers store water depth on vertices V1-V8 (all non-zero values) and
-set active flag for F2 to ``False``.
-V1 ---- V2 ---- V5-----V7
-|   F1  |   F2   | F3  |
-V3 ---- V4 ---- V6-----V8
+For example to represent the situation when F1 and F3 are flooded, but
+F2 is dry, some solvers store water depth on vertices V1-V8 (all
+non-zero values) and set active flag for F2 to ``False``. V1 ---- V2
+---- V5-----V7 | F1 | F2 | F3 | V3 ---- V4 ---- V6-----V8
 %End
 
     virtual QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
@@ -306,16 +311,19 @@ Returns whether the faces are active for particular dataset
         const QVector<double> &times
                                                       ) /Deprecated="Since 3.12.3. "/;
 %Docstring
-Creates a new dataset group from a data and
-persists it into a destination path
+Creates a new dataset group from a data and persists it into a
+destination path
 
 On success, the mesh's dataset group count is changed
 
-:param path: destination path of the stored file in form DRIVER_NAME:path
+:param path: destination path of the stored file in form
+             DRIVER_NAME:path
 :param meta: new group's metadata
-:param datasetValues: scalar/vector values for all datasets and all faces/vertices in the group
-:param datasetActive: active flag values for all datasets in the group. Empty array represents can be used
-                      when all faces are active
+:param datasetValues: scalar/vector values for all datasets and all
+                      faces/vertices in the group
+:param datasetActive: active flag values for all datasets in the group.
+                      Empty array represents can be used when all faces
+                      are active
 :param times: times in hours for all datasets in the group
 
 :return: ``True`` on failure, ``False`` on success
@@ -337,17 +345,19 @@ On success, the mesh's dataset group count is changed
                                       const QVector<double> &times
                                     ) = 0;
 %Docstring
-Creates a new dataset group from a data and
-persists it into a destination path
+Creates a new dataset group from a data and persists it into a
+destination path
 
 On success, the mesh's dataset group count is changed
 
 :param outputFilePath: destination path of the stored file
 :param outputDriver: output driver name
 :param meta: new group's metadata
-:param datasetValues: scalar/vector values for all datasets and all faces/vertices in the group
-:param datasetActive: active flag values for all datasets in the group. Empty array represents can be used
-                      when all faces are active
+:param datasetValues: scalar/vector values for all datasets and all
+                      faces/vertices in the group
+:param datasetActive: active flag values for all datasets in the group.
+                      Empty array represents can be used when all faces
+                      are active
 :param times: times in hours for all datasets in the group
 
 :return: ``True`` on failure, ``False`` on success
@@ -362,7 +372,8 @@ On success, the mesh's dataset group count is changed
                                       int datasetGroupIndex
                                     ) = 0;
 %Docstring
-Saves a an existing dataset group provided by ``source`` to a file with a specified driver
+Saves a an existing dataset group provided by ``source`` to a file with
+a specified driver
 
 On success, the mesh's dataset group count is changed
 
@@ -381,7 +392,8 @@ On success, the mesh's dataset group count is changed
                                             qint64 time,
                                             QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
 %Docstring
-Returns the dataset index of the dataset in a specific dataset group at ``time`` from the ``reference`` time
+Returns the dataset index of the dataset in a specific dataset group at
+``time`` from the ``reference`` time
 
 :param referenceTime: the reference time from where to find the dataset
 :param groupIndex: the index of the dataset group
@@ -396,12 +408,16 @@ Returns the dataset index of the dataset in a specific dataset group at ``time``
         qint64 time1,
         qint64 time2 ) const;
 %Docstring
-Returns a list of dataset indexes of the dataset in a specific dataset group that are between ``time1`` and ``time2`` from the ``reference`` time
+Returns a list of dataset indexes of the dataset in a specific dataset
+group that are between ``time1`` and ``time2`` from the ``reference``
+time
 
 :param referenceTime: the reference time from where to find the dataset
 :param groupIndex: the index of the dataset group
-:param time1: the first relative time of the time intervale from reference time
-:param time2: the second relative time of the time intervale from reference time
+:param time1: the first relative time of the time intervale from
+              reference time
+:param time2: the second relative time of the time intervale from
+              reference time
 
 :return: the dataset index
 
@@ -415,7 +431,7 @@ Returns a list of dataset indexes of the dataset in a specific dataset group tha
 class QgsMeshDataProvider: QgsDataProvider, QgsMeshDataSourceInterface, QgsMeshDatasetSourceInterface
 {
 %Docstring(signature="appended")
-Base class for providing data for :py:class:`QgsMeshLayer`
+Base class for providing data for :py:class:`QgsMeshLayer`.
 
 Responsible for reading native mesh data
 

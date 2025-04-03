@@ -39,7 +39,7 @@ jobs:
         uses: ./.github/actions/setup-vcpkg
 
       - name: 🦬 Setup flex/bison
-        uses: robinraju/release-downloader@v1.11
+        uses: robinraju/release-downloader@v1.12
         with:
           repository: 'lexxmark/winflexbison'
           fileName: '*.zip'

@@ -13,7 +13,6 @@
 class QgsGeometryCheckerUtils
 {
 %Docstring(signature="appended")
-
 Contains utilities required for geometry checks.
 
 .. note::
@@ -30,7 +29,6 @@ Contains utilities required for geometry checks.
     class LayerFeature
 {
 %Docstring(signature="appended")
-
 A layer feature combination to uniquely identify and access a feature in
 a set of layers.
 
@@ -43,16 +41,16 @@ a set of layers.
       public:
         LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, const QgsGeometryCheckContext *context, bool useMapCrs );
 %Docstring
-Create a new layer/feature combination.
-The layer is defined by ``pool``, ``feature`` needs to be from this layer.
-If ``useMapCrs`` is ``True``, geometries will be reprojected to the mapCrs defined
-in ``context``.
+Create a new layer/feature combination. The layer is defined by
+``pool``, ``feature`` needs to be from this layer. If ``useMapCrs`` is
+``True``, geometries will be reprojected to the mapCrs defined in
+``context``.
 %End
 
         QgsFeature feature() const;
 %Docstring
-Returns the feature.
-The geometry will not be reprojected regardless of useMapCrs.
+Returns the feature. The geometry will not be reprojected regardless of
+useMapCrs.
 %End
 
 
@@ -64,9 +62,9 @@ The layer id.
 
         QgsGeometry geometry() const;
 %Docstring
-Returns the geometry of this feature.
-If useMapCrs was specified, it will already be reprojected into the
-CRS specified in the context specified in the constructor.
+Returns the geometry of this feature. If useMapCrs was specified, it
+will already be reprojected into the CRS specified in the context
+specified in the constructor.
 %End
 
         QString id() const;
@@ -86,8 +84,8 @@ Returns if the geometry is reprojected to the map CRS or not.
     class LayerFeatures
 {
 %Docstring(signature="appended")
-
-Contains a set of layers and feature ids in those layers to pass to a geometry check.
+Contains a set of layers and feature ids in those layers to pass to a
+geometry check.
 
 .. versionadded:: 3.4
 %End

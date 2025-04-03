@@ -12,11 +12,11 @@
 class QgsFileDownloaderDialog : QProgressDialog
 {
 %Docstring(signature="appended")
-:py:class:`QgsFileDownloaderDialog` is a QProgressDialog subclass which
-handles file downloads and user feedback.
+A QProgressDialog subclass which handles file downloads and user
+feedback.
 
-Internally, it uses :py:class:`QgsFileDownloader` to handle the download,
-while showing progress via a progress dialog and supporting
+Internally, it uses :py:class:`QgsFileDownloader` to handle the
+download, while showing progress via a progress dialog and supporting
 cancellation.
 
 .. note::
@@ -33,7 +33,8 @@ cancellation.
 :py:class:`QgsFileDownloader`
 
 :param url: the download url
-:param outputFileName: file name where the downloaded content will be stored
+:param outputFileName: file name where the downloaded content will be
+                       stored
 :param authcfg: optionally apply this authentication configuration
 %End
 

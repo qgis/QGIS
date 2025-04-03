@@ -27,7 +27,7 @@ class QKeyEvent;
 
 /**
  * \ingroup gui
- * \brief Base class for map tools that edit vector geometry
+ * \brief Base class for map tools that edit vector geometry.
 */
 class GUI_EXPORT QgsMapToolEdit : public QgsMapTool
 {

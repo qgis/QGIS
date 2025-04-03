@@ -14,15 +14,15 @@
 class QgsImageOperation
 {
 %Docstring(signature="appended")
-Contains operations and filters which apply to QImages
+Contains operations and filters which apply to QImages.
 
-A set of optimised pixel manipulation operations and filters which can be applied
-to QImages. All operations only apply to ARGB32 format images, and it is left up
-to the calling procedure to ensure that any passed images are of the correct
-format.
+A set of optimised pixel manipulation operations and filters which can
+be applied to QImages. All operations only apply to ARGB32 format
+images, and it is left up to the calling procedure to ensure that any
+passed images are of the correct format.
 
-Operations are written to either modify an image in place or return a new image, depending
-on which is faster for the particular operation.
+Operations are written to either modify an image in place or return a
+new image, depending on which is faster for the particular operation.
 %End
 
 %TypeHeaderCode
@@ -50,7 +50,8 @@ Convert a QImage to a grayscale image. Alpha channel is preserved.
 
 :param image: QImage to convert
 :param mode: mode to use during grayscale conversion
-:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
+:param feedback: optional feedback object for responsive cancellation
+                 (since QGIS 3.22)
 %End
 
     static void adjustBrightnessContrast( QImage &image, int brightness, double contrast, QgsFeedback *feedback = 0 );
@@ -58,13 +59,16 @@ Convert a QImage to a grayscale image. Alpha channel is preserved.
 Alter the brightness or contrast of a QImage.
 
 :param image: QImage to alter
-:param brightness: brightness value, in the range -255 to 255. A brightness value of 0 indicates
-                   no change to brightness, a negative value will darken the image, and a positive value will brighten
-                   the image.
-:param contrast: contrast value. Must be a positive or zero value. A value of 1.0 indicates no change
-                 to the contrast, a value of 0 represents an image with 0 contrast, and a value > 1.0 will increase the
-                 contrast of the image.
-:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
+:param brightness: brightness value, in the range -255 to 255. A
+                   brightness value of 0 indicates no change to
+                   brightness, a negative value will darken the image,
+                   and a positive value will brighten the image.
+:param contrast: contrast value. Must be a positive or zero value. A
+                 value of 1.0 indicates no change to the contrast, a
+                 value of 0 represents an image with 0 contrast, and a
+                 value > 1.0 will increase the contrast of the image.
+:param feedback: optional feedback object for responsive cancellation
+                 (since QGIS 3.22)
 %End
 
     static void adjustHueSaturation( QImage &image, double saturation, const QColor &colorizeColor = QColor(),
@@ -73,11 +77,14 @@ Alter the brightness or contrast of a QImage.
 Alter the hue or saturation of a QImage.
 
 :param image: QImage to alter
-:param saturation: double between 0 and 2 inclusive, where 0 = desaturate and 1.0 = no change
-:param colorizeColor: color to use for colorizing image. Set to an invalid QColor to disable
-                      colorization.
-:param colorizeStrength: double between 0 and 1, where 0 = no colorization and 1.0 = full colorization
-:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
+:param saturation: double between 0 and 2 inclusive, where 0 =
+                   desaturate and 1.0 = no change
+:param colorizeColor: color to use for colorizing image. Set to an
+                      invalid QColor to disable colorization.
+:param colorizeStrength: double between 0 and 1, where 0 = no
+                         colorization and 1.0 = full colorization
+:param feedback: optional feedback object for responsive cancellation
+                 (since QGIS 3.22)
 %End
 
     static void multiplyOpacity( QImage &image, double factor, QgsFeedback *feedback = 0 );
@@ -86,16 +93,19 @@ Multiplies opacity of image pixel values by a factor.
 
 :param image: QImage to alter
 :param factor: factor to multiple pixel's opacity by
-:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
+:param feedback: optional feedback object for responsive cancellation
+                 (since QGIS 3.22)
 %End
 
     static void overlayColor( QImage &image, const QColor &color );
 %Docstring
-Overlays a color onto an image. This operation retains the alpha channel of the
-original image, but replaces all image pixel colors with the specified color.
+Overlays a color onto an image. This operation retains the alpha channel
+of the original image, but replaces all image pixel colors with the
+specified color.
 
 :param image: QImage to alter
-:param color: color to overlay (any alpha component of the color is ignored)
+:param color: color to overlay (any alpha component of the color is
+              ignored)
 %End
 
     struct DistanceTransformProperties
@@ -118,18 +128,21 @@ using a color ramp.
 :param image: QImage to alter
 :param properties: DistanceTransformProperties object with parameters
                    for the distance transform operation
-:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
+:param feedback: optional feedback object for responsive cancellation
+                 (since QGIS 3.22)
 %End
 
     static void stackBlur( QImage &image, int radius, bool alphaOnly = false, QgsFeedback *feedback = 0 );
 %Docstring
-Performs a stack blur on an image. Stack blur represents a good balance between
-speed and blur quality.
+Performs a stack blur on an image. Stack blur represents a good balance
+between speed and blur quality.
 
 :param image: QImage to blur
 :param radius: blur radius in pixels, maximum value of 16
-:param alphaOnly: set to ``True`` to blur only the alpha component of the image
-:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
+:param alphaOnly: set to ``True`` to blur only the alpha component of
+                  the image
+:param feedback: optional feedback object for responsive cancellation
+                 (since QGIS 3.22)
 
 .. note::
 
@@ -139,12 +152,13 @@ speed and blur quality.
 
     static QImage *gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = 0 ) /Factory/;
 %Docstring
-Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
-quality blur.
+Performs a gaussian blur on an image. Gaussian blur is slower but
+results in a high quality blur.
 
 :param image: QImage to blur
 :param radius: blur radius in pixels
-:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
+:param feedback: optional feedback object for responsive cancellation
+                 (since QGIS 3.22)
 
 :return: blurred image
 
@@ -167,9 +181,11 @@ Calculates the non-transparent region of an image.
 
 :param image: source image
 :param minSize: minimum size for returned region, if desired. If the
-                non-transparent region of the image is smaller than this minimum size,
-                it will be centered in the returned rectangle.
-:param center: return rectangle will be centered on the center of the original image if set to ``True``
+                non-transparent region of the image is smaller than this
+                minimum size, it will be centered in the returned
+                rectangle.
+:param center: return rectangle will be centered on the center of the
+               original image if set to ``True``
 
 .. seealso:: :py:func:`cropTransparent`
 %End
@@ -180,9 +196,10 @@ Crop any transparent border from around an image.
 
 :param image: source image
 :param minSize: minimum size for cropped image, if desired. If the
-                cropped image is smaller than the minimum size, it will be centered
-                in the returned image.
-:param center: cropped image will be centered on the center of the original image if set to ``True``
+                cropped image is smaller than the minimum size, it will
+                be centered in the returned image.
+:param center: cropped image will be centered on the center of the
+               original image if set to ``True``
 %End
 
       public:

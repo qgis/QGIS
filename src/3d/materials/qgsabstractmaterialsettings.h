@@ -44,7 +44,7 @@ namespace Qt3DCore
 
 /**
  * \brief Material rendering techniques
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \since QGIS 3.16
  */
 enum class QgsMaterialSettingsRenderingTechnique SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractMaterialSettings, RenderingTechnique ) : int
@@ -60,7 +60,7 @@ enum class QgsMaterialSettingsRenderingTechnique SIP_MONKEYPATCH_SCOPEENUM_UNNES
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Context settings for a material.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
@@ -107,7 +107,7 @@ class _3D_EXPORT QgsMaterialContext
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Abstract base class for material settings.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is

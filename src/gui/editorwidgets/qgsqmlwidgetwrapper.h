@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * \brief Wraps a QQuickWidget to display QML code
+ * \brief Wraps a QQuickWidget to display QML code.
  * \since QGIS 3.4
  */
 class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper

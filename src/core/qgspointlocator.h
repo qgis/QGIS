@@ -53,7 +53,7 @@ class QgsPointLocator_VisitorNearestCentroid;
 
 /**
  * \ingroup core
- * \brief Helper class used when traversing the index looking for middle segment - builds a list of matches.
+ * \brief Helper class used when traversing the index looking for the middle segment - builds a list of matches.
  * \note not available in Python bindings
  * \since QGIS 3.12
 */
@@ -88,7 +88,9 @@ namespace SpatialIndex SIP_SKIP
 
 /**
  * \ingroup core
- * \brief The class defines interface for querying point location:
+ * \brief Defines the interface for querying point locations.
+ *
+ * This class offers:
  *
  * - query nearest vertices / edges to a point
  * - query vertices / edges in rectangle

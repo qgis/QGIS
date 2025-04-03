@@ -74,7 +74,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
     QPointer<QScreen> mScreen;
 };
 
-// View style which shows drop indicator line between items
+// View style which shows a drop indicator line between items
 class QgsGraduatedSymbolRendererViewStyle : public QgsProxyStyle
 {
     Q_OBJECT
@@ -91,6 +91,7 @@ class QgsGraduatedSymbolRendererViewStyle : public QgsProxyStyle
 /**
  * \ingroup gui
  * \class QgsGraduatedSymbolRendererWidget
+ * \brief A widget for configuring a QgsGraduatedSymbolRenderer.
  */
 class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsGraduatedSymbolRendererWidget
 {

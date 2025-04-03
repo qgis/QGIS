@@ -12,7 +12,7 @@
 class QgsClassificationLogarithmic : QgsClassificationMethod
 {
 %Docstring(signature="appended")
-Implementation of a logarithmic scale method
+Implementation of a logarithmic scale method for classification.
 
 .. versionadded:: 3.10
 %End

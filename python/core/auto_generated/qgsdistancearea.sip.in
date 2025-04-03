@@ -12,24 +12,30 @@
 class QgsDistanceArea
 {
 %Docstring(signature="appended")
-A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+A general purpose distance and area calculator, capable of performing
+ellipsoid based calculations.
 
-Measurements can either be performed on existing :py:class:`QgsGeometry` objects, or using
-lists of points.
+Measurements can either be performed on existing :py:class:`QgsGeometry`
+objects, or using lists of points.
 
-If a valid :py:func:`~ellipsoid` has been set for the :py:class:`QgsDistanceArea`, all calculations will be
-performed using ellipsoidal algorithms (e.g. using Vincenty's formulas). If no
-ellipsoid has been set, all calculations will be performed using Cartesian
-formulas only. The behavior can be determined by calling :py:func:`~willUseEllipsoid`.
+If a valid :py:func:`~ellipsoid` has been set for the
+:py:class:`QgsDistanceArea`, all calculations will be performed using
+ellipsoidal algorithms (e.g. using Vincenty's formulas). If no ellipsoid
+has been set, all calculations will be performed using Cartesian
+formulas only. The behavior can be determined by calling
+:py:func:`~willUseEllipsoid`.
 
-In order to perform accurate calculations, the source coordinate reference system
-of all measured geometries must first be specified using :py:func:`~setSourceCrs`.
+In order to perform accurate calculations, the source coordinate
+reference system of all measured geometries must first be specified
+using :py:func:`~setSourceCrs`.
 
-Usually, the measurements returned by :py:class:`QgsDistanceArea` are in meters. If no valid
-ellipsoid is set, then the units may not be meters. The units can be retrieved
-by calling :py:func:`~lengthUnits` and :py:func:`~areaUnits`.
+Usually, the measurements returned by :py:class:`QgsDistanceArea` are in
+meters. If no valid ellipsoid is set, then the units may not be meters.
+The units can be retrieved by calling :py:func:`~lengthUnits` and
+:py:func:`~areaUnits`.
 
-Internally, the GeographicLib library is used to calculate all ellipsoid based measurements.
+Internally, the GeographicLib library is used to calculate all ellipsoid
+based measurements.
 %End
 
 %TypeHeaderCode
@@ -44,8 +50,9 @@ Internally, the GeographicLib library is used to calculate all ellipsoid based m
 
     bool willUseEllipsoid() const;
 %Docstring
-Returns whether calculations will use the ellipsoid. Calculations will only use the
-ellipsoid if a valid :py:func:`~QgsDistanceArea.ellipsoid` has been set.
+Returns whether calculations will use the ellipsoid. Calculations will
+only use the ellipsoid if a valid :py:func:`~QgsDistanceArea.ellipsoid`
+has been set.
 
 .. seealso:: :py:func:`ellipsoid`
 %End
@@ -80,8 +87,8 @@ Returns the ellipsoid (destination) spatial reference system.
     bool setEllipsoid( const QString &ellipsoid );
 %Docstring
 Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
-retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`.
-Calculations will only use the ellipsoid if a valid ellipsoid has been set.
+retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`. Calculations
+will only use the ellipsoid if a valid ellipsoid has been set.
 
 :return: ``True`` if ellipsoid was successfully set
 
@@ -92,8 +99,8 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
     bool setEllipsoid( double semiMajor, double semiMinor );
 %Docstring
-Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
-a valid ellipsoid been set.
+Sets ellipsoid by supplied radii. Calculations will only use the
+ellipsoid if a valid ellipsoid been set.
 
 :return: ``True`` if ellipsoid was successfully set
 
@@ -104,8 +111,8 @@ a valid ellipsoid been set.
 
     QString ellipsoid() const;
 %Docstring
-Returns ellipsoid's acronym. Calculations will only use the
-ellipsoid if a valid ellipsoid has been set.
+Returns ellipsoid's acronym. Calculations will only use the ellipsoid if
+a valid ellipsoid has been set.
 
 .. seealso:: :py:func:`setEllipsoid`
 
@@ -138,8 +145,8 @@ Returns ellipsoid's semi minor axis.
 
     double ellipsoidInverseFlattening() const;
 %Docstring
-Returns ellipsoid's inverse flattening.
-The inverse flattening is calculated with invf = a/(a-b).
+Returns ellipsoid's inverse flattening. The inverse flattening is
+calculated with invf = a/(a-b).
 
 .. seealso:: :py:func:`ellipsoid`
 
@@ -154,8 +161,9 @@ Measures the area of a geometry.
 
 :param geometry: geometry to measure
 
-:return: area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
-         returned area can be retrieved by calling :py:func:`~QgsDistanceArea.areaUnits`.
+:return: area of geometry. For geometry collections, non surface
+         geometries will be ignored. The units for the returned area can
+         be retrieved by calling :py:func:`~QgsDistanceArea.areaUnits`.
 
 .. seealso:: :py:func:`measureLength`
 
@@ -163,7 +171,8 @@ Measures the area of a geometry.
 
 .. seealso:: :py:func:`areaUnits`
 
-:raises QgsCsException: if a transformation error occurs while calculating the area
+:raises QgsCsException: if a transformation error occurs while
+                        calculating the area
 %End
 
     double measureLength( const QgsGeometry &geometry ) const throw( QgsCsException );
@@ -172,8 +181,10 @@ Measures the length of a geometry.
 
 :param geometry: geometry to measure
 
-:return: length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
-         returned distance can be retrieved by calling :py:func:`~QgsDistanceArea.lengthUnits`.
+:return: length of geometry. For geometry collections, non curve
+         geometries will be ignored. The units for the returned distance
+         can be retrieved by calling
+         :py:func:`~QgsDistanceArea.lengthUnits`.
 
 .. seealso:: :py:func:`lengthUnits`
 
@@ -181,7 +192,8 @@ Measures the length of a geometry.
 
 .. seealso:: :py:func:`measurePerimeter`
 
-:raises QgsCsException: if a transformation error occurs while calculating the length
+:raises QgsCsException: if a transformation error occurs while
+                        calculating the length
 %End
 
     double measurePerimeter( const QgsGeometry &geometry ) const throw( QgsCsException );
@@ -190,8 +202,10 @@ Measures the perimeter of a polygon geometry.
 
 :param geometry: geometry to measure
 
-:return: perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
-         returned perimeter can be retrieved by calling :py:func:`~QgsDistanceArea.lengthUnits`.
+:return: perimeter of geometry. For geometry collections, any
+         non-polygon geometries will be ignored. The units for the
+         returned perimeter can be retrieved by calling
+         :py:func:`~QgsDistanceArea.lengthUnits`.
 
 .. seealso:: :py:func:`lengthUnits`
 
@@ -199,7 +213,8 @@ Measures the perimeter of a polygon geometry.
 
 .. seealso:: :py:func:`measurePerimeter`
 
-:raises QgsCsException: if a transformation error occurs while calculating the perimeter
+:raises QgsCsException: if a transformation error occurs while
+                        calculating the perimeter
 %End
 
     double measureLine( const QVector<QgsPointXY> &points ) const throw( QgsCsException );
@@ -208,9 +223,11 @@ Measures the length of a line with multiple segments.
 
 :param points: list of points in line
 
-:return: length of line. The units for the returned length can be retrieved by calling :py:func:`~QgsDistanceArea.lengthUnits`.
+:return: length of line. The units for the returned length can be
+         retrieved by calling :py:func:`~QgsDistanceArea.lengthUnits`.
 
-:raises QgsCsException: if a transformation error occurs while calculating the length
+:raises QgsCsException: if a transformation error occurs while
+                        calculating the length
 
 .. seealso:: :py:func:`lengthUnits`
 %End
@@ -222,18 +239,24 @@ Measures the distance between two points.
 :param p1: start of line
 :param p2: end of line
 
-:return: distance between points. The units for the returned distance can be retrieved by calling :py:func:`~QgsDistanceArea.lengthUnits`.
+:return: distance between points. The units for the returned distance
+         can be retrieved by calling
+         :py:func:`~QgsDistanceArea.lengthUnits`.
 
-:raises QgsCsException: if a transformation error occurs while calculating the length
+:raises QgsCsException: if a transformation error occurs while
+                        calculating the length
 
 .. seealso:: :py:func:`lengthUnits`
 %End
 
     double measureLineProjected( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI_2, QgsPointXY *projectedPoint /Out/ = 0 ) const;
 %Docstring
-Calculates the distance from one point with distance in meters and azimuth (direction)
-When the :py:func:`~QgsDistanceArea.sourceCrs` is geographic, :py:func:`~QgsDistanceArea.computeSpheroidProject` will be called
-otherwise :py:func:`QgsPoint.project()` will be called after :py:func:`QgsUnitTypes.fromUnitToUnitFactor()` has been applied to the distance
+Calculates the distance from one point with distance in meters and
+azimuth (direction) When the :py:func:`~QgsDistanceArea.sourceCrs` is
+geographic, :py:func:`~QgsDistanceArea.computeSpheroidProject` will be
+called otherwise :py:func:`QgsPoint.project()` will be called after
+:py:func:`QgsUnitTypes.fromUnitToUnitFactor()` has been applied to the
+distance
 
 :param p1: start point [can be Cartesian or Geographic]
 :param distance: must be in meters
@@ -253,7 +276,8 @@ otherwise :py:func:`QgsPoint.project()` will be called after :py:func:`QgsUnitTy
 
     Qgis::DistanceUnit lengthUnits() const;
 %Docstring
-Returns the units of distance for length calculations made by this object.
+Returns the units of distance for length calculations made by this
+object.
 
 .. seealso:: :py:func:`areaUnits`
 %End
@@ -269,7 +293,8 @@ Returns the units of area for areal calculations made by this object.
 %Docstring
 Measures the area of the polygon described by a set of points.
 
-:raises QgsCsException: if a transformation error occurs while calculating the area.
+:raises QgsCsException: if a transformation error occurs while
+                        calculating the area.
 %End
 
     double bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) const throw( QgsCsException );
@@ -286,7 +311,8 @@ Returns an distance formatted as a friendly string.
 :param distance: distance to format
 :param decimals: number of decimal places to show
 :param unit: unit of distance
-:param keepBaseUnit: set to ``False`` to allow conversion of large distances to more suitable units, e.g., meters to
+:param keepBaseUnit: set to ``False`` to allow conversion of large
+                     distances to more suitable units, e.g., meters to
                      kilometers
 
 :return: formatted distance string
@@ -301,7 +327,8 @@ Returns an area formatted as a friendly string.
 :param area: area to format
 :param decimals: number of decimal places to show
 :param unit: unit of area
-:param keepBaseUnit: set to ``False`` to allow conversion of large areas to more suitable units, e.g., square meters to
+:param keepBaseUnit: set to ``False`` to allow conversion of large areas
+                     to more suitable units, e.g., square meters to
                      square kilometers
 
 :return: formatted area string
@@ -311,11 +338,13 @@ Returns an area formatted as a friendly string.
 
     double convertLengthMeasurement( double length, Qgis::DistanceUnit toUnits ) const;
 %Docstring
-Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
-different distance unit.
+Takes a length measurement calculated by this QgsDistanceArea object and
+converts it to a different distance unit.
 
-:param length: length value calculated by this class to convert. It is assumed that the length
-               was calculated by this class, ie that its unit of length is equal to :py:func:`~QgsDistanceArea.lengthUnits`.
+:param length: length value calculated by this class to convert. It is
+               assumed that the length was calculated by this class, ie
+               that its unit of length is equal to
+               :py:func:`~QgsDistanceArea.lengthUnits`.
 :param toUnits: distance unit to convert measurement to
 
 :return: converted distance
@@ -325,11 +354,13 @@ different distance unit.
 
     double convertAreaMeasurement( double area, Qgis::AreaUnit toUnits ) const;
 %Docstring
-Takes an area measurement calculated by this QgsDistanceArea object and converts it to a
-different areal unit.
+Takes an area measurement calculated by this QgsDistanceArea object and
+converts it to a different areal unit.
 
-:param area: area value calculated by this class to convert. It is assumed that the area
-             was calculated by this class, ie that its unit of area is equal to :py:func:`~QgsDistanceArea.areaUnits`.
+:param area: area value calculated by this class to convert. It is
+             assumed that the area was calculated by this class, ie that
+             its unit of area is equal to
+             :py:func:`~QgsDistanceArea.areaUnits`.
 :param toUnits: area unit to convert measurement to
 
 :return: converted area
@@ -339,10 +370,11 @@ different areal unit.
 
     QgsPointXY computeSpheroidProject( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI_2 ) const;
 %Docstring
-Given a location, an azimuth and a distance, computes the
-location of the projected point.
+Given a location, an azimuth and a distance, computes the location of
+the projected point.
 
-:param p1: location of first geographic (latitude/longitude) point as degrees.
+:param p1: location of first geographic (latitude/longitude) point as
+           degrees.
 :param distance: distance in meters.
 :param azimuth: azimuth in radians, clockwise from North
 
@@ -351,40 +383,49 @@ location of the projected point.
 
     QVector<QVector<QgsPointXY> > geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, double interval, bool breakLine = false ) const;
 %Docstring
-Calculates the geodesic line between ``p1`` and ``p2``, which represents the shortest path on the
-ellipsoid between these two points.
+Calculates the geodesic line between ``p1`` and ``p2``, which represents
+the shortest path on the ellipsoid between these two points.
 
-The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+The ellipsoid settings defined on this QgsDistanceArea object will be
+used during the calculations.
 
-``p1`` and ``p2`` must be in the :py:func:`~QgsDistanceArea.sourceCrs` of this QgsDistanceArea object. The returned line
-will also be in this same CRS.
+``p1`` and ``p2`` must be in the :py:func:`~QgsDistanceArea.sourceCrs`
+of this QgsDistanceArea object. The returned line will also be in this
+same CRS.
 
-The ``interval`` parameter gives the maximum distance between points on the computed line.
-This argument is always specified in meters. A shorter distance results in a denser line,
-at the cost of extra computing time.
+The ``interval`` parameter gives the maximum distance between points on
+the computed line. This argument is always specified in meters. A
+shorter distance results in a denser line, at the cost of extra
+computing time.
 
-If the geodesic line crosses the antimeridian (+/- 180 degrees longitude) and ``breakLine`` is ``True``, then
-the line will be split into two parts, broken at the antimeridian. In this case the function
-will return two lines, corresponding to the portions at either side of the antimeridian.
+If the geodesic line crosses the antimeridian (+/- 180 degrees
+longitude) and ``breakLine`` is ``True``, then the line will be split
+into two parts, broken at the antimeridian. In this case the function
+will return two lines, corresponding to the portions at either side of
+the antimeridian.
 
 .. versionadded:: 3.6
 %End
 
     double latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p1, const QgsPointXY &p2, double &fractionAlongLine /Out/ ) const;
 %Docstring
-Calculates the latitude at which the geodesic line joining ``p1`` and ``p2`` crosses
-the antimeridian (longitude +/- 180 degrees).
+Calculates the latitude at which the geodesic line joining ``p1`` and
+``p2`` crosses the antimeridian (longitude +/- 180 degrees).
 
-The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+The ellipsoid settings defined on this QgsDistanceArea object will be
+used during the calculations.
 
-``p1`` and ``p2`` must be in the :py:func:`~QgsDistanceArea.ellipsoidCrs` of this QgsDistanceArea object. The returned latitude
-will also be in this same CRS.
+``p1`` and ``p2`` must be in the
+:py:func:`~QgsDistanceArea.ellipsoidCrs` of this QgsDistanceArea object.
+The returned latitude will also be in this same CRS.
 
 :param p1: Starting point, in :py:func:`~QgsDistanceArea.ellipsoidCrs`
 :param p2: Ending point, in :py:func:`~QgsDistanceArea.ellipsoidCrs`
 
 :return: - the latitude at which the geodesic crosses the antimeridian
-         - fractionAlongLine: the fraction along the geodesic line joining ``p1`` to ``p2`` at which the antimeridian crossing occurs.
+         - fractionAlongLine: the fraction along the geodesic line
+           joining ``p1`` to ``p2`` at which the antimeridian crossing
+           occurs.
 
 .. seealso:: :py:func:`splitGeometryAtAntimeridian`
 
@@ -393,20 +434,24 @@ will also be in this same CRS.
 
     QgsGeometry splitGeometryAtAntimeridian( const QgsGeometry &geometry ) const;
 %Docstring
-Splits a (Multi)LineString ``geometry`` at the antimeridian (longitude +/- 180 degrees).
-The returned geometry will always be a multi-part geometry.
+Splits a (Multi)LineString ``geometry`` at the antimeridian (longitude
++/- 180 degrees). The returned geometry will always be a multi-part
+geometry.
 
-Whenever line segments in the input geometry cross the antimeridian, they will be
-split into two segments, with the latitude of the breakpoint being determined using a geodesic
-line connecting the points either side of this segment.
+Whenever line segments in the input geometry cross the antimeridian,
+they will be split into two segments, with the latitude of the
+breakpoint being determined using a geodesic line connecting the points
+either side of this segment.
 
-The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+The ellipsoid settings defined on this QgsDistanceArea object will be
+used during the calculations.
 
-``geometry`` must be in the :py:func:`~QgsDistanceArea.sourceCrs` of this QgsDistanceArea object. The returned geometry
-will also be in this same CRS.
+``geometry`` must be in the :py:func:`~QgsDistanceArea.sourceCrs` of
+this QgsDistanceArea object. The returned geometry will also be in this
+same CRS.
 
-If ``geometry`` contains M or Z values, these will be linearly interpolated for the new vertices
-created at the antimeridian.
+If ``geometry`` contains M or Z values, these will be linearly
+interpolated for the new vertices created at the antimeridian.
 
 .. note::
 

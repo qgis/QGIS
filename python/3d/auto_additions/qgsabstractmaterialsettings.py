@@ -40,10 +40,12 @@ QgsMaterialSettingsRenderingTechnique.__doc__ = """Material rendering techniques
 """
 # --
 try:
-    QgsMaterialContext.__group__ = ['materials']
+    QgsAbstractMaterialSettings.__virtual_methods__ = ['readXml', 'writeXml']
+    QgsAbstractMaterialSettings.__abstract_methods__ = ['type', 'clone', 'equals']
+    QgsAbstractMaterialSettings.__group__ = ['materials']
 except (NameError, AttributeError):
     pass
 try:
-    QgsAbstractMaterialSettings.__group__ = ['materials']
+    QgsMaterialContext.__group__ = ['materials']
 except (NameError, AttributeError):
     pass

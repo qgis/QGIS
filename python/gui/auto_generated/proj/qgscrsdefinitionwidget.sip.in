@@ -12,7 +12,7 @@
 class QgsCrsDefinitionWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget for definition a custom coordinate reference system.
+A widget for defining a custom coordinate reference system.
 
 .. versionadded:: 3.24
 %End
@@ -23,7 +23,8 @@ A widget for definition a custom coordinate reference system.
   public:
     QgsCrsDefinitionWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsCrsDefinitionWidget, with the specified ``parent`` widget.
+Constructor for QgsCrsDefinitionWidget, with the specified ``parent``
+widget.
 %End
 
     QgsCoordinateReferenceSystem crs() const;
@@ -46,8 +47,8 @@ Sets the current ``crs`` to display in the widget.
 %Docstring
 Sets the current ``crs`` to display in the widget.
 
-The ``nativeFormat`` argument specifies the format (e.g. WKT or PROJ) is natively associated
-with the custom CRS.
+The ``nativeFormat`` argument specifies the format (e.g. WKT or PROJ) is
+natively associated with the custom CRS.
 
 .. seealso:: :py:func:`crs`
 %End
@@ -70,8 +71,10 @@ Sets the CRS ``format``.
 %Docstring
 Returns the current definition string.
 
-This represents the unaltered user-entered definition string, which may represent
-either a WKT or PROJ string (see :py:func:`~QgsCrsDefinitionWidget.format`), and may not represent a valid CRS definition.
+This represents the unaltered user-entered definition string, which may
+represent either a WKT or PROJ string (see
+:py:func:`~QgsCrsDefinitionWidget.format`), and may not represent a
+valid CRS definition.
 
 .. seealso:: :py:func:`setDefinitionString`
 %End
@@ -80,8 +83,10 @@ either a WKT or PROJ string (see :py:func:`~QgsCrsDefinitionWidget.format`), and
 %Docstring
 Sets the current ``definition`` string.
 
-This represents the unaltered user-entered definition string, which may represent
-either a WKT or PROJ string (see :py:func:`~QgsCrsDefinitionWidget.format`), and may not represent a valid CRS definition.
+This represents the unaltered user-entered definition string, which may
+represent either a WKT or PROJ string (see
+:py:func:`~QgsCrsDefinitionWidget.format`), and may not represent a
+valid CRS definition.
 
 .. seealso:: :py:func:`definitionString`
 %End

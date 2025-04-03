@@ -34,6 +34,7 @@
 #include "qgscoordinatetransform.h"
 
 #include <QProgressDialog>
+#include <QThread>
 
 typedef Qgis::VectorExportResult createEmptyLayer_t(
   const QString &uri,
@@ -693,12 +694,13 @@ QgsVectorLayerExporterTask::QgsVectorLayerExporterTask( QgsVectorLayer *layer, c
 {
   if ( mLayer )
     setDependentLayers( QList< QgsMapLayer * >() << mLayer );
+  if ( mLayer && mOwnsLayer )
+    mLayer->moveToThread( nullptr );
 }
 
 QgsVectorLayerExporterTask *QgsVectorLayerExporterTask::withLayerOwnership( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destinationCrs, const QMap<QString, QVariant> &options )
 {
-  auto newTask = std::make_unique<QgsVectorLayerExporterTask>( layer, uri, providerKey, destinationCrs, options );
-  newTask->mOwnsLayer = true;
+  auto newTask = std::make_unique<QgsVectorLayerExporterTask>( layer, uri, providerKey, destinationCrs, options, true );
   return newTask.release();
 }
 
@@ -713,6 +715,9 @@ bool QgsVectorLayerExporterTask::run()
   if ( !mLayer )
     return false;
 
+  if ( mOwnsLayer )
+    mLayer->moveToThread( QThread::currentThread() );
+
   connect( mOwnedFeedback.get(), &QgsFeedback::progressChanged, this, &QgsVectorLayerExporterTask::setProgress );
 
 
@@ -720,11 +725,17 @@ bool QgsVectorLayerExporterTask::run()
              mLayer.data(), mDestUri, mDestProviderKey, mExportOptions, &mErrorMessage,
              mOptions, mOwnedFeedback.get() );
 
+  if ( mOwnsLayer )
+    mLayer->moveToThread( nullptr );
+
   return mError == Qgis::VectorExportResult::Success;
 }
 
 void QgsVectorLayerExporterTask::finished( bool result )
 {
+  if ( mOwnsLayer && mLayer )
+    mLayer->moveToThread( QThread::currentThread() );
+
   // QgsMapLayer has QTimer member, which must not be destroyed from another thread
   if ( mOwnsLayer )
     delete mLayer;

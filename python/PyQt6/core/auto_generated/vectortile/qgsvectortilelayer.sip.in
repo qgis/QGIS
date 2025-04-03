@@ -15,48 +15,57 @@ class QgsVectorTileLayer : QgsMapLayer
 Implements a map layer that is dedicated to rendering of vector tiles.
 
 Vector tiles compared to "ordinary" vector layers are pre-processed data
-optimized for fast rendering. A dataset is provided with a series of zoom levels
-for different map scales. Each zoom level has a matrix of tiles that contain
-actual data. A single vector tile may be a a file stored on a local drive,
-requested over HTTP request or retrieved from a database.
+optimized for fast rendering. A dataset is provided with a series of
+zoom levels for different map scales. Each zoom level has a matrix of
+tiles that contain actual data. A single vector tile may be a a file
+stored on a local drive, requested over HTTP request or retrieved from a
+database.
 
-Content of a vector tile is divided into one or more named sub-layers. Each such
-sub-layer may contain many features which consist of geometry and attributes.
-Contrary to traditional vector layers, these sub-layers do not need to have a rigid
-schema where geometry type and attributes are the same for all features. A single
-sub-layer may have multiple geometry types in a single tile or have some attributes
-defined only at particular zoom levels.
+Content of a vector tile is divided into one or more named sub-layers.
+Each such sub-layer may contain many features which consist of geometry
+and attributes. Contrary to traditional vector layers, these sub-layers
+do not need to have a rigid schema where geometry type and attributes
+are the same for all features. A single sub-layer may have multiple
+geometry types in a single tile or have some attributes defined only at
+particular zoom levels.
 
-Vector tile layer currently does not use the concept of data providers that other
-layer types use. The process of rendering of vector tiles looks like this:
+Vector tile layer currently does not use the concept of data providers
+that other layer types use. The process of rendering of vector tiles
+looks like this:
 
-+--------+                +------+                 +---------+
-|  DATA  |                |  RAW |                 | DECODED |
-|        | --> LOADER --> |      | --> DECODER --> |         | --> RENDERER
-| SOURCE |                | TILE |                 |  TILE   |
-+--------+                +------+                 +---------+
+::
 
-Data source is a place from where tiles are fetched from (URL for HTTP access, local
-files, MBTiles file, GeoPackage file or others. Loader (:py:class:`QgsVectorTileLoader`) class
-takes care of loading data from the data source. The "raw tile" data is just a blob
-(QByteArray) that is encoded in some way. There are multiple ways how vector tiles
-are encoded just like there are different formats how to store images. For example,
-tiles can be encoded using Mapbox Vector Tiles (MVT) format or in GeoJSON. Decoder
-(:py:class:`QgsVectorTileDecoder`) takes care of decoding raw tile data into :py:class:`QgsFeature` objects.
-A decoded tile is essentially an array of vector features for each sub-layer found
-in the tile - this is what vector tile renderer (:py:class:`QgsVectorTileRenderer`) expects
-and does the map rendering.
+     +--------+                +------+                 +---------+
+     |  DATA  |                |  RAW |                 | DECODED |
+     |        | --> LOADER --> |      | --> DECODER --> |         | --> RENDERER
+     | SOURCE |                | TILE |                 |  TILE   |
+     +--------+                +------+                 +---------+
 
-To construct a vector tile layer, it is best to use :py:class:`QgsDataSourceUri` class and set
-the following parameters to get a valid encoded URI:
+Data source is a place from where tiles are fetched from (URL for HTTP
+access, local files, MBTiles file, GeoPackage file or others. Loader
+(:py:class:`QgsVectorTileLoader`) class takes care of loading data from
+the data source. The "raw tile" data is just a blob (QByteArray) that is
+encoded in some way. There are multiple ways how vector tiles are
+encoded just like there are different formats how to store images. For
+example, tiles can be encoded using Mapbox Vector Tiles (MVT) format or
+in GeoJSON. Decoder (:py:class:`QgsVectorTileDecoder`) takes care of
+decoding raw tile data into :py:class:`QgsFeature` objects. A decoded
+tile is essentially an array of vector features for each sub-layer found
+in the tile - this is what vector tile renderer
+(:py:class:`QgsVectorTileRenderer`) expects and does the map rendering.
+
+To construct a vector tile layer, it is best to use
+:py:class:`QgsDataSourceUri` class and set the following parameters to
+get a valid encoded URI:
 
 - "type" - what kind of data source will be used
 - "url" - URL or path of the data source (specific to each data source type, see below)
 
 Currently supported data source types:
 
-- "xyz" - the "url" should be a template like http://example.com/{z}/{x}/{y}.pbf where
-  {x},{y},{z} will be replaced by tile coordinates
+- "xyz" - the "url" should be a template like
+  http://example.com/{z}/{x}/{y}.pbf where {x},{y},{z} will be replaced
+  by tile coordinates
 - "mbtiles" - tiles read from a MBTiles file (a SQLite database)
 
 Currently supported decoders:
@@ -120,14 +129,14 @@ Constructs a new vector tile layer
 
     bool loadDefaultStyleAndSubLayers( QString &error, QStringList &warnings, QList< QgsMapLayer * > &subLayers /Out,TransferBack/ );
 %Docstring
-Loads the default style for the layer, and returns ``True`` if the style was
-successfully loaded. Also loads any sub layers (such as raster terrain layers) associated
-with the layer's default style.
+Loads the default style for the layer, and returns ``True`` if the style
+was successfully loaded. Also loads any sub layers (such as raster
+terrain layers) associated with the layer's default style.
 
-The ``error`` string will be filled with a translated error message if an error
-occurs during the style load. The ``warnings`` list will be populated with any
-warning messages generated during the style load (e.g. default style properties
-which could not be converted).
+The ``error`` string will be filled with a translated error message if
+an error occurs during the style load. The ``warnings`` list will be
+populated with any warning messages generated during the style load
+(e.g. default style properties which could not be converted).
 
 Ownership of the ``subLayers`` is transferrred to the caller.
 
@@ -158,16 +167,19 @@ Returns type of the data source
 %End
     QString sourcePath() const;
 %Docstring
-Returns URL/path of the data source (syntax different to each data source type)
+Returns URL/path of the data source (syntax different to each data
+source type)
 %End
 
     int sourceMinZoom() const;
 %Docstring
-Returns minimum zoom level at which source has any valid tiles (negative = unconstrained)
+Returns minimum zoom level at which source has any valid tiles (negative
+= unconstrained)
 %End
     int sourceMaxZoom() const;
 %Docstring
-Returns maximum zoom level at which source has any valid tiles (negative = unconstrained)
+Returns maximum zoom level at which source has any valid tiles (negative
+= unconstrained)
 %End
 
 
@@ -199,7 +211,8 @@ Returns currently assigned labeling
 
     bool labelsEnabled() const;
 %Docstring
-Returns whether the layer contains labels which are enabled and should be drawn.
+Returns whether the layer contains labels which are enabled and should
+be drawn.
 
 :return: ``True`` if layer contains enabled labels
 
@@ -269,10 +282,11 @@ Returns the number of features that are selected in this layer.
                            Qgis::SelectionFlags flags = Qgis::SelectionFlags(),
                            QgsRenderContext *renderContext = 0 );
 %Docstring
-Selects features found within the search ``geometry`` (in layer's coordinates).
+Selects features found within the search ``geometry`` (in layer's
+coordinates).
 
-A render context can optionally be specified in order to avoid selecting features which are
-not currently rendered.
+A render context can optionally be specified in order to avoid selecting
+features which are not currently rendered.
 
 .. seealso:: :py:func:`selectedFeatures`
 

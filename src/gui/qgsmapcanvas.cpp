@@ -179,6 +179,13 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
       refresh();
     } );
 
+    mSettings.setScaleMethod( QgsProject::instance()->scaleMethod() );
+    connect( QgsProject::instance(), &QgsProject::scaleMethodChanged, this, [=] {
+      mSettings.setScaleMethod( QgsProject::instance()->scaleMethod() );
+      updateScale();
+      refresh();
+    } );
+
     connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [=] {
       QgsCoordinateReferenceSystem crs = mSettings.destinationCrs();
       crs.updateDefinition();
@@ -1006,7 +1013,7 @@ void QgsMapCanvas::previewJobFinished()
 
   if ( mMap )
   {
-    mMap->addPreviewImage( job->renderedImage(), job->mapSettings().visibleExtent() );
+    mMap->addPreviewImage( job->renderedImage(), job->mapSettings().visiblePolygon() );
     mPreviewJobs.removeAll( job );
 
     int number = job->property( "number" ).toInt();
@@ -3561,7 +3568,7 @@ void QgsMapCanvas::startPreviewJob( int number )
   const QList<QgsMapLayer *> layers = jobSettings.layers();
   QList<QgsMapLayer *> previewLayers;
   QgsDataProvider::PreviewContext context;
-  context.maxRenderingTimeMs = MAXIMUM_LAYER_PREVIEW_TIME_MS;
+  context.maxRenderingTimeMs = Qgis::MAXIMUM_LAYER_PREVIEW_TIME_MS;
   for ( QgsMapLayer *layer : layers )
   {
     if ( layer->customProperty( QStringLiteral( "rendering/noPreviewJobs" ), false ).toBool() )
@@ -3611,7 +3618,7 @@ void QgsMapCanvas::stopPreviewJobs()
 void QgsMapCanvas::schedulePreviewJob( int number )
 {
   mPreviewTimer.setSingleShot( true );
-  mPreviewTimer.setInterval( PREVIEW_JOB_DELAY_MS );
+  mPreviewTimer.setInterval( Qgis::PREVIEW_JOB_DELAY_MS );
   disconnect( mPreviewTimerConnection );
   mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, this, [=]() {
     startPreviewJob( number );

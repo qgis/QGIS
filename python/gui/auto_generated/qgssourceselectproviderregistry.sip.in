@@ -12,10 +12,16 @@
 class QgsSourceSelectProviderRegistry : QObject
 {
 %Docstring(signature="appended")
-This class keeps a list of source select providers that may add items to the :py:class:`QgsDataSourceManagerDialog`
-When created, it automatically adds providers from data provider plugins (e.g. PostGIS, WMS, ...)
+A registry for :py:class:`QgsSourceSelectProvider` source select
+providers.
 
-:py:class:`QgsSourceSelectProviderRegistry` is not usually directly created, but rather accessed through
+This class keeps a list of source select providers that may add items to
+the :py:class:`QgsDataSourceManagerDialog` When created, it
+automatically adds providers from data provider plugins (e.g. PostGIS,
+WMS, ...)
+
+:py:class:`QgsSourceSelectProviderRegistry` is not usually directly
+created, but rather accessed through
 :py:func:`QgsGui.sourceSelectProviderRegistry()`.
 %End
 
@@ -39,7 +45,8 @@ Add a ``provider`` implementation. Takes ownership of the object.
 
     bool removeProvider( QgsSourceSelectProvider *provider /Transfer/ );
 %Docstring
-Remove ``provider`` implementation from the list (``provider`` object is deleted)
+Remove ``provider`` implementation from the list (``provider`` object is
+deleted)
 
 :return: ``True`` if the provider was actually removed and deleted
 %End
@@ -47,7 +54,8 @@ Remove ``provider`` implementation from the list (``provider`` object is deleted
     void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
 %Docstring
 Initializes the registry. The registry needs to be passed explicitly
-(instead of using singleton) because this gets called from :py:class:`QgsGui` constructor.
+(instead of using singleton) because this gets called from
+:py:class:`QgsGui` constructor.
 
 .. versionadded:: 3.10
 %End
@@ -71,7 +79,8 @@ Returns a (possibly empty) list of providers by data ``providerkey``
 %Docstring
 Gets select widget from provider with ``name``
 
-The function is replacement of  :py:func:`QgsProviderRegistry.createSelectionWidget()` from QGIS 3.8
+The function is replacement of
+:py:func:`QgsProviderRegistry.createSelectionWidget()` from QGIS 3.8
 
 .. versionadded:: 3.10
 %End

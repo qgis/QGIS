@@ -696,7 +696,7 @@ bool QgsPostgresDataItemGuiProvider::handleDropUri( QgsPGConnectionItem *connect
     }
   };
 
-  auto onFailure = [connectionItemPointer, toSchema]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer ), toSchema]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
       if ( connectionItemPointer )
@@ -725,7 +725,7 @@ void QgsPostgresDataItemGuiProvider::handleImportVector( QgsPGConnectionItem *co
     }
   };
 
-  auto onFailure = [connectionItemPointer, toSchema]( Qgis::VectorExportResult, const QString & ) {
+  auto onFailure = [connectionItemPointer = std::move( connectionItemPointer ), toSchema]( Qgis::VectorExportResult, const QString & ) {
     if ( connectionItemPointer )
     {
       if ( connectionItemPointer )

@@ -14,7 +14,7 @@
 class QgsFileWidget : QWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsFileWidget` class creates a widget for selecting a file or a folder.
+A widget for selecting a file or a folder.
 %End
 
 %TypeHeaderCode
@@ -51,8 +51,8 @@ QgsFileWidget creates a widget for selecting a file or a folder.
 %Docstring
 Returns the current file path(s).
 
-When multiple files are selected they are quoted and separated
-by a single space (for example: '"/path/foo" "path/bar"')
+When multiple files are selected they are quoted and separated by a
+single space (for example: '"/path/foo" "path/bar"')
 
 .. seealso:: :py:func:`setFilePath`
 
@@ -61,7 +61,8 @@ by a single space (for example: '"/path/foo" "path/bar"')
 
     static QStringList splitFilePaths( const QString &path );
 %Docstring
-Split the the quoted and space separated ``path`` and returns a list of strings.
+Split the the quoted and space separated ``path`` and returns a list of
+strings.
 
 .. seealso:: :py:func:`filePath`
 %End
@@ -103,9 +104,12 @@ returns the filters used for QDialog.getOpenFileName
 
     void setFilter( const QString &filter );
 %Docstring
-setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
+setFilter sets the filter used by the model to filters. The filter is
+used to specify the kind of files that should be shown.
 
-:param filter: Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
+:param filter: Only files that match the given filter are shown, it may
+               be an empty string. If you want multiple filters,
+               separate them with ';;',
 %End
 
     QFileDialog::Options options() const;
@@ -121,8 +125,8 @@ Returns the additional options used for QFileDialog.
 %Docstring
 Set additional options used for QFileDialog.
 
-These options affect the look and feel of the QFileDialog shown when a user is interactively browsing
-for paths.
+These options affect the look and feel of the QFileDialog shown when a
+user is interactively browsing for paths.
 
 .. seealso:: :py:func:`options`
 
@@ -149,14 +153,16 @@ Sets whether a confirmation to overwrite an existing file will appear.
 
 By default, a confirmation will appear.
 
-:param confirmOverwrite: If set to ``True``, an overwrite confirmation will be shown
+:param confirmOverwrite: If set to ``True``, an overwrite confirmation
+                         will be shown
 
 .. seealso:: :py:func:`confirmOverwrite`
 %End
 
     bool confirmOverwrite() const;
 %Docstring
-Returns whether a confirmation will be shown when overwriting an existing file.
+Returns whether a confirmation will be shown when overwriting an
+existing file.
 
 .. seealso:: :py:func:`setConfirmOverwrite`
 %End
@@ -212,7 +218,8 @@ Returns the default root path.
 
     void setDefaultRoot( const QString &defaultRoot );
 %Docstring
-Returns the default root path used as the first shown location when picking a file and used if the RelativeStorage is RelativeDefaultPath.
+Returns the default root path used as the first shown location when
+picking a file and used if the RelativeStorage is RelativeDefaultPath.
 
 .. seealso:: :py:func:`defaultRoot`
 %End
@@ -233,22 +240,25 @@ Sets the widget's storage mode (i.e. file or directory).
 
     QgsFileWidget::RelativeStorage relativeStorage() const;
 %Docstring
-Returns if the relative path is with respect to the project path or the default path.
+Returns if the relative path is with respect to the project path or the
+default path.
 
 .. seealso:: :py:func:`setRelativeStorage`
 %End
 
     void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
 %Docstring
-Sets whether the relative path is with respect to the project path or the default path.
+Sets whether the relative path is with respect to the project path or
+the default path.
 
 .. seealso:: :py:func:`relativeStorage`
 %End
 
     QgsFilterLineEdit *lineEdit();
 %Docstring
-Returns a pointer to the widget's line edit, which can be used to customize
-the appearance and behavior of the line edit portion of the widget.
+Returns a pointer to the widget's line edit, which can be used to
+customize the appearance and behavior of the line edit portion of the
+widget.
 %End
 
   signals:

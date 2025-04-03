@@ -13,17 +13,20 @@
 class QgsLayerTreeMapCanvasBridge : QObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLayerTreeMapCanvasBridge` class takes care of updates of layer set
-for :py:class:`QgsMapCanvas` from a layer tree. The class listens to the updates in the layer tree
-and updates the list of layers for rendering whenever some layers are added, removed,
-or their visibility changes.
+Takes care of updates of layer sets for a :py:class:`QgsMapCanvas` from
+a layer tree.
 
-The update of layers is not done immediately - it is postponed, so a series of updates
-to the layer tree will trigger just one update of canvas layers.
+The class listens to the updates in the layer tree and updates the list
+of layers for rendering whenever some layers are added, removed, or
+their visibility changes.
 
-Also allows the client to override the default order of layers. This is useful
-in advanced cases where the grouping in layer tree should be independent from the actual
-order in the canvas.
+The update of layers is not done immediately - it is postponed, so a
+series of updates to the layer tree will trigger just one update of
+canvas layers.
+
+Also allows the client to override the default order of layers. This is
+useful in advanced cases where the grouping in layer tree should be
+independent from the actual order in the canvas.
 %End
 
 %TypeHeaderCode
@@ -40,7 +43,8 @@ Constructor: does not take ownership of the layer tree nor canvas
 
     void setOverviewCanvas( QgsMapOverviewCanvas *overviewCanvas );
 %Docstring
-Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
+Associates overview canvas with the bridge, so the overview will be
+updated whenever main canvas is updated
 
 .. versionadded:: 3.6
 %End
@@ -58,14 +62,15 @@ Returns associated overview canvas (may be ``None``)
 
     void setAutoSetupOnFirstLayer( bool enabled );
 %Docstring
-if enabled, will automatically set full canvas extent and destination CRS + map units
-when first layer(s) are added
+if enabled, will automatically set full canvas extent and destination
+CRS + map units when first layer(s) are added
 %End
     bool autoSetupOnFirstLayer() const;
 
     void setCanvasLayers();
 %Docstring
-force update of canvas layers from the layer tree. Normally this should not be needed to be called.
+force update of canvas layers from the layer tree. Normally this should
+not be needed to be called.
 %End
 
   signals:

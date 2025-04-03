@@ -24,6 +24,7 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsCheckboxWidgetFactory
+ * \brief Editor widget factory for checkbox widgets.
  * \note not available in Python bindings
  */
 

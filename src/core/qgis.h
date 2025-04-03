@@ -48,7 +48,7 @@ int QgisEvent = QEvent::User + 1;
 
 /**
  * \ingroup core
- * \brief The Qgis class provides global constants for use throughout the application.
+ * \brief Provides global constants and enumerations for use throughout the application.
  */
 class CORE_EXPORT Qgis
 {
@@ -2572,6 +2572,7 @@ class CORE_EXPORT Qgis
       RedrawLayerOnly SIP_MONKEYPATCH_COMPAT_NAME( ModeRedrawLayerOnly ) = 2, //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range. \since QGIS 3.22
       FixedRangePerBand = 3, //!< Layer has a fixed temporal range per band \since QGIS 3.38
       RepresentsTemporalValues = 4, //!< Pixel values represent an datetime
+      FixedDateTime = 5, //!< Layer has a fixed date time instant. \since QGIS 3.44
     };
     Q_ENUM( RasterTemporalMode )
 
@@ -3774,6 +3775,11 @@ class CORE_EXPORT Qgis
       DefaultValue, //!< Use default field value
       Sum, //!< Sum of values
       GeometryWeighted, //!< New values are computed as the weighted average of the source values
+      UnsetField, //!< Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \since QGIS 3.44
+      LargestGeometry, //!< Use value from the feature with the largest geometry \since QGIS 3.44
+      MinimumValue, //!< Use the minimum value from the features-to-be-merged \since QGIS 3.44
+      MaximumValue, //!< Use the maximum value from the features-to-be-merged \since QGIS 3.44
+      SetToNull, //!< Use a null value \since QGIS 3.44
     };
     Q_ENUM( FieldDomainMergePolicy )
 
@@ -3999,9 +4005,22 @@ class CORE_EXPORT Qgis
     enum class NavigationMode : int
     {
       TerrainBased, //!< The default navigation based on the terrain
-      Walk //!< Uses WASD keys or arrows to navigate in walking (first person) manner
+      Walk, //!< Uses WASD keys or arrows to navigate in walking (first person) manner
+      GlobeTerrainBased  //!< Navigation similar to TerrainBased, but for use with globe  \since QGIS 3.44
     };
     Q_ENUM( NavigationMode )
+
+    /**
+     * The 3D scene mode used in 3D map views.
+     *
+     * \since QGIS 3.44
+     */
+    enum class SceneMode : int
+    {
+      Local,   //!< Local scene based on a projected CRS
+      Globe    //!< Scene is represented as a globe using a geocentric CRS
+    };
+    Q_ENUM( SceneMode )
 
     /**
      * Vertical axis inversion options for 3D views.
@@ -5063,6 +5082,7 @@ class CORE_EXPORT Qgis
       HorizontalMiddle, //!< Calculate horizontally, across midle of map
       HorizontalBottom, //!< Calculate horizontally, across bottom of map
       HorizontalAverage, //!< Calculate horizontally, using the average of the top, middle and bottom scales
+      AtEquator, //!< Always calculate the scale at the equator, regardless of the actual visible map extent. This method can be used to provide a consistent, static scale for maps in geographic reference systems, regardless of the latitudes actually visible in the map (permitting consistent appearance of these maps when rendering relies on scale based visibility or calculations). This method is only applicable when calculating scales with a degree based reference system. \since QGIS 3.44
     };
     Q_ENUM( ScaleCalculationMethod )
 
@@ -5922,6 +5942,26 @@ class CORE_EXPORT Qgis
     static const Qgis::MapToolUnit DEFAULT_SNAP_UNITS;
 
     /**
+     * Minimum ID number for a user-defined projection.
+    */
+    static const int USER_CRS_START_ID;
+
+    //! The default size (in millimeters) for point marker symbols
+    static const double DEFAULT_POINT_SIZE;
+
+    //! The default width (in millimeters) for line symbols
+    static const double DEFAULT_LINE_WIDTH;
+
+    //! Default snapping tolerance for segments
+    static const double DEFAULT_SEGMENT_EPSILON;
+
+    //! Delay between the scheduling of 2 preview jobs
+    SIP_SKIP static const int PREVIEW_JOB_DELAY_MS;
+
+    //! Maximum rendering time for a layer of a preview job
+    SIP_SKIP static const int MAXIMUM_LAYER_PREVIEW_TIME_MS;
+
+    /**
      * A string with default project scales.
      *
      * \since QGIS 3.12
@@ -5962,6 +6002,47 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.20
      */
     static QString geosVersion();
+
+    /**
+     * Constant that holds the string representation for "No ellipse/No CRS".
+     *
+     * \since QGIS 3.44
+     */
+    static QString geoNone()
+    {
+      return QStringLiteral( "NONE" );
+    }
+
+    /**
+     * Geographic coordinate system auth:id string for a default geographic CRS (EPSG:4326).
+     *
+     * \since QGIS 3.44
+     */
+    static QString geographicCrsAuthId()
+    {
+      return QStringLiteral( "EPSG:4326" );
+    }
+
+    /**
+    * WKT string that represents a geographic coord system
+    * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+    */
+    Q_DECL_DEPRECATED static QString geoWkt()
+    {
+      return QStringLiteral(
+               R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )"""
+             );
+    }
+
+    /**
+     * PROJ4 string that represents a geographic coord system.
+     * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+     */
+    Q_DECL_DEPRECATED static QString geoProj4()
+    {
+      return QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
+    }
+
 };
 
 QHASH_FOR_CLASS_ENUM( Qgis::CaptureTechnique )
@@ -6618,7 +6699,13 @@ inline bool operator< ( const QVariant &v1, const QVariant &v2 )
 template<> CORE_EXPORT bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 ) SIP_SKIP;
 #endif
 
-CORE_EXPORT QString qgsVsiPrefix( const QString &path );
+/**
+ * Returns a the vsi prefix which corresponds to a file \a path, or an empty
+ * string if the path is not associated with a vsi prefix.
+ *
+ * \deprecated QGIS 3.44. Use QgsGdalUtils::vsiPrefixForPath() instead.
+ */
+Q_DECL_DEPRECATED CORE_EXPORT QString qgsVsiPrefix( const QString &path ) SIP_DEPRECATED;
 
 /**
  * Allocates size bytes and returns a pointer to the allocated  memory.
@@ -6634,12 +6721,6 @@ void CORE_EXPORT *qgsMalloc( size_t size ) SIP_SKIP;
 void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 
 #ifndef SIP_RUN
-
-#ifdef _MSC_VER
-#define CONSTLATIN1STRING inline const QLatin1String
-#else
-#define CONSTLATIN1STRING constexpr QLatin1String
-#endif
 
 ///@cond PRIVATE
 class ScopedIntIncrementor
@@ -6673,72 +6754,28 @@ class ScopedIntIncrementor
 };
 ///@endcond
 
-/**
-* Wkt string that represents a geographic coord sys
-* \since QGIS GEOWkt
-*/
-CONSTLATIN1STRING geoWkt()
-{
-  return QLatin1String(
-           R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )"""
-         );
-}
-
-//! PROJ4 string that represents a geographic coord sys
-CONSTLATIN1STRING geoProj4()
-{
-  return QLatin1String( "+proj=longlat +datum=WGS84 +no_defs" );
-}
-
-//! Geographic coord sys from EPSG authority
-CONSTLATIN1STRING geoEpsgCrsAuthId()
-{
-  return QLatin1String( "EPSG:4326" );
-}
-
-//! Constant that holds the string representation for "No ellips/No CRS"
-CONSTLATIN1STRING geoNone()
-{
-  return QLatin1String( "NONE" );
-}
-
-///@cond PRIVATE
-
-//! Delay between the scheduling of 2 preview jobs
-const int PREVIEW_JOB_DELAY_MS = 250;
-
-//! Maximum rendering time for a layer of a preview job
-const int MAXIMUM_LAYER_PREVIEW_TIME_MS = 250;
-
-///@endcond
-
 #endif
 
-//! Magic number for a geographic coord sys in POSTGIS SRID
-const long GEOSRID = 4326;
-
-//! Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id
-const long GEOCRS_ID = 3452;
-
-//! Magic number for a geographic coord sys in EpsgCrsId ID format
-const long GEO_EPSG_CRS_ID = 4326;
+/**
+ * Numeric ID for the EPSG:4326 geographic coordinate system.
+ *
+ * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ */
+Q_DECL_DEPRECATED const long GEOSRID = 4326;
 
 /**
- * Magick number that determines whether a projection crsid is a system (srs.db)
- * or user (~/.qgis.qgis.db) defined projection.
-*/
-const int USER_CRS_START_ID = 100000;
+ * Numeric ID for the EPSG:4326 geographic coordinate system in QGIS internal srs database.
+ *
+ * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ */
+Q_DECL_DEPRECATED const long GEOCRS_ID = 3452;
 
-//
-// Constants for point symbols
-//
-
-//! Magic number that determines the default point size for point symbols
-const double DEFAULT_POINT_SIZE = 2.0;
-const double DEFAULT_LINE_WIDTH = 0.26;
-
-//! Default snapping tolerance for segments
-const double DEFAULT_SEGMENT_EPSILON = 1e-8;
+/**
+ * Numeric ID for the EPSG:4326 geographic coordinate system.
+ *
+ * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ */
+Q_DECL_DEPRECATED const long GEO_EPSG_CRS_ID = 4326;
 
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
@@ -6859,22 +6896,3 @@ typedef unsigned long long qgssize;
 #define BUILTIN_UNREACHABLE
 #endif
 #endif // SIP_RUN
-
-#ifdef SIP_RUN
-
-/**
- * Wkt string that represents a geographic coord sys
- * \since QGIS GEOWkt
- */
-QString CORE_EXPORT geoWkt();
-
-//! PROJ4 string that represents a geographic coord sys
-QString CORE_EXPORT geoProj4();
-
-//! Geographic coord sys from EPSG authority
-QString CORE_EXPORT geoEpsgCrsAuthId();
-
-//! Constant that holds the string representation for "No ellips/No CRS"
-QString CORE_EXPORT geoNone();
-
-#endif

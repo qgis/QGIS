@@ -132,7 +132,7 @@ class CORE_EXPORT QgsMessageLogNotifyBlocker
 
 /**
  * \ingroup core
- * \brief Default implementation of message logging interface
+ * \brief Default implementation of message logging interface.
  *
  * This class outputs log messages to the standard error. Therefore it might
  * be the right choice for applications without GUI.

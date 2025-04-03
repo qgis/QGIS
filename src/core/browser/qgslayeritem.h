@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * \brief Item that represents a layer that can be opened with one of the providers
+ * \brief A browser item that represents a layer that can be opened with one of the providers.
 */
 class CORE_EXPORT QgsLayerItem : public QgsDataItem
 {

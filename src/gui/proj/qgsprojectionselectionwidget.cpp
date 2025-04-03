@@ -41,7 +41,7 @@ StandardCoordinateReferenceSystemsModel::StandardCoordinateReferenceSystemsModel
 #endif
 
   const QgsSettings settings;
-  mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), geoEpsgCrsAuthId(), QgsSettings::App ).toString() );
+  mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), Qgis::geographicCrsAuthId(), QgsSettings::App ).toString() );
 
   connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [=] {
     mCurrentCrs.updateDefinition();
@@ -770,7 +770,7 @@ void QgsProjectionSelectionWidget::updateWarning()
       if ( !ensemble.code().isEmpty() )
         id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
       else
-        id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+        id = QStringLiteral( "<i>%1</i>”" ).arg( ensemble.name() );
 
       if ( ensemble.accuracy() > 0 )
       {

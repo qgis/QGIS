@@ -35,6 +35,7 @@ class QgsVectorLayerCache;
 /**
  * \ingroup gui
  * \class QgsFeatureListModel
+ * \brief A proxy model for feature lists.
  */
 class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsFeatureModel
 {

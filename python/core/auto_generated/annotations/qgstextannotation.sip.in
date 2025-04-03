@@ -12,7 +12,8 @@
 class QgsTextAnnotation: QgsAnnotation
 {
 %Docstring(signature="appended")
-An annotation item that displays formatted text from a QTextDocument document.
+An annotation item that displays formatted text from a QTextDocument
+document.
 %End
 
 %TypeHeaderCode
@@ -30,16 +31,15 @@ Constructor for QgsTextAnnotation.
 
     const QTextDocument *document() const;
 %Docstring
-Returns the text document which will be rendered
-within the annotation.
+Returns the text document which will be rendered within the annotation.
 
 .. seealso:: :py:func:`setDocument`
 %End
 
     void setDocument( const QTextDocument *doc );
 %Docstring
-Sets the text document which will be rendered
-within the annotation. Ownership is not transferred.
+Sets the text document which will be rendered within the annotation.
+Ownership is not transferred.
 
 .. seealso:: :py:func:`document`
 %End

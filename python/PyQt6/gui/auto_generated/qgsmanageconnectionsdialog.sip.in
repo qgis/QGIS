@@ -11,6 +11,9 @@
 
 class QgsManageConnectionsDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for importing or exporting stored connections.
+%End
 
 %TypeHeaderCode
 #include "qgsmanageconnectionsdialog.h"

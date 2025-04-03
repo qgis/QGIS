@@ -100,8 +100,9 @@ Returns a list of nodes of a specific ``type``
 
     QStringList referencedLayerNames() const;
 %Docstring
-Returns a list of raster layer names that are referenced in the formula without the quotation marks.
-It uses QgsRasterCalcNode.cleanRasterReferences
+Returns a list of raster layer names that are referenced in the formula
+without the quotation marks. It uses
+QgsRasterCalcNode.cleanRasterReferences
 
 .. note::
 
@@ -110,7 +111,8 @@ It uses QgsRasterCalcNode.cleanRasterReferences
 
     QStringList cleanRasterReferences() const;
 %Docstring
-Returns a list of raster layer references that are addressed in the formula, without quotation marks.
+Returns a list of raster layer references that are addressed in the
+formula, without quotation marks.
 
 .. note::
 

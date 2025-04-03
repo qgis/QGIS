@@ -10,6 +10,9 @@
 
 class Qgs25DRendererWidget : QgsRendererWidget, protected Ui::Qgs25DRendererWidgetBase
 {
+%Docstring(signature="appended")
+A widget for configuring a Qgs25DRenderer.
+%End
 
 %TypeHeaderCode
 #include "qgs25drendererwidget.h"
@@ -20,7 +23,7 @@ class Qgs25DRendererWidget : QgsRendererWidget, protected Ui::Qgs25DRendererWidg
 Static creation method
 
 :param layer: the layer where this renderer is applied
-:param style:
+:param style: 
 :param renderer: the mask renderer (will not take ownership)
 %End
 
@@ -29,7 +32,7 @@ Static creation method
 Constructor
 
 :param layer: the layer where this renderer is applied
-:param style:
+:param style: 
 :param renderer: the mask renderer (will not take ownership)
 %End
     ~Qgs25DRendererWidget();

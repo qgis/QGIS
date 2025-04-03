@@ -116,7 +116,7 @@ void TestQgsLayoutAtlas::init()
   QVariantMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "0,127,0" ) );
   props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "0,0,0" ) );
-  QgsFillSymbol *fillSymbol = QgsFillSymbol::createSimple( props );
+  QgsFillSymbol *fillSymbol = QgsFillSymbol::createSimple( props ).release();
   QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( fillSymbol );
   mVectorLayer->setRenderer( renderer );
 
@@ -144,7 +144,7 @@ void TestQgsLayoutAtlas::init()
   QVariantMap props2;
   props2.insert( QStringLiteral( "color" ), QStringLiteral( "127,0,0,127" ) );
   props2.insert( QStringLiteral( "outline_color" ), QStringLiteral( "0,0,0" ) );
-  QgsFillSymbol *fillSymbol2 = QgsFillSymbol::createSimple( props2 );
+  QgsFillSymbol *fillSymbol2 = QgsFillSymbol::createSimple( props2 ).release();
   mOverview->overview()->setFrameSymbol( fillSymbol2 );
 
   // header label

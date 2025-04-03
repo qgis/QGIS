@@ -14,11 +14,11 @@
 class QgsProjectFileTransform
 {
 %Docstring(signature="appended")
-Class to convert from older project file versions to newer.
+Convert from older project file versions to newer.
 
-This class provides possibility to store a project file as a QDomDocument,
-and provides the ability to specify version of the project file, and
-perform upgrades to a more recent version
+This class provides possibility to store a project file as a
+QDomDocument, and provides the ability to specify version of the project
+file, and perform upgrades to a more recent version
 %End
 
 %TypeHeaderCode
@@ -61,9 +61,10 @@ The current project version
 
  static void fixOldSymbolLayerReferences( const QMap<QString, QgsMapLayer *> &mapLayers );
 %Docstring
-:py:class:`QgsSymbolLayerReference` uses :py:class:`QgsSymbolLayer` unique uuid identifier since QGIS 3.30, instead of the symbol
-key (rule for :py:class:`QgsRuleBasedRenderer` for instance) and index path, so this method migrates ``mapLayers`` old references
-to new ones.
+:py:class:`QgsSymbolLayerReference` uses :py:class:`QgsSymbolLayer`
+unique uuid identifier since QGIS 3.30, instead of the symbol key (rule
+for :py:class:`QgsRuleBasedRenderer` for instance) and index path, so
+this method migrates ``mapLayers`` old references to new ones.
 
 .. versionadded:: 3.30
 

@@ -26,7 +26,7 @@ class QgsRenderContext;
 /**
  * \ingroup core
  * \class QgsMapUnitScale
- * \brief Struct for storing maximum and minimum scales for measurements in map units
+ * \brief Struct for storing maximum and minimum scales for measurements in map units.
  *
  * For measurements in map units, a minimum and a maximum scale can be defined.
  * Outside this range, the measurements aren't scaled anymore proportionally to

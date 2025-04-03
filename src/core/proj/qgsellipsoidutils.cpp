@@ -263,7 +263,7 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
         while ( char *code = *codesIt )
         {
           const QgsProjUtils::proj_pj_unique_ptr ellipsoid( proj_create_from_database( context, authority, code, PJ_CATEGORY_ELLIPSOID, 0, nullptr ) );
-          if ( ellipsoid.get() )
+          if ( ellipsoid )
           {
             EllipsoidDefinition def;
             QString name = QString( proj_get_name( ellipsoid.get() ) );

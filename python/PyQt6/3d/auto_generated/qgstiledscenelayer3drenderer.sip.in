@@ -14,7 +14,8 @@
 class QgsTiledSceneLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
 {
 %Docstring(signature="appended")
-Metadata for tiled scene layer 3D renderer to allow creation of its instances from XML
+Metadata for tiled scene layer 3D renderer to allow creation of its
+instances from XML.
 
 .. versionadded:: 3.34
 %End
@@ -28,7 +29,8 @@ Metadata for tiled scene layer 3D renderer to allow creation of its instances fr
     virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
 
 %Docstring
-Creates an instance of a 3D renderer based on a DOM element with renderer configuration
+Creates an instance of a 3D renderer based on a DOM element with
+renderer configuration
 %End
 };
 
@@ -36,7 +38,7 @@ Creates an instance of a 3D renderer based on a DOM element with renderer config
 class QgsTiledSceneLayer3DRenderer : QgsAbstract3DRenderer
 {
 %Docstring(signature="appended")
-3D renderer that renders content of a tiled scene layer
+3D renderer that renders content of a tiled scene layer.
 
 .. versionadded:: 3.34
 %End
@@ -77,7 +79,8 @@ Larger values result in a faster render with less content rendered.
 
     void setMaximumScreenError( double error );
 %Docstring
-Sets the maximum screen ``error`` allowed when rendering the tiled scene.
+Sets the maximum screen ``error`` allowed when rendering the tiled
+scene.
 
 Larger values result in a faster render with less content rendered.
 
@@ -86,14 +89,16 @@ Larger values result in a faster render with less content rendered.
 
     bool showBoundingBoxes() const;
 %Docstring
-Returns whether bounding boxes will be visible when rendering the tiled scene.
+Returns whether bounding boxes will be visible when rendering the tiled
+scene.
 
 .. seealso:: :py:func:`setShowBoundingBoxes`
 %End
 
     void setShowBoundingBoxes( bool showBoundingBoxes );
 %Docstring
-Sets whether bounding boxes will be visible when rendering the tiled scene.
+Sets whether bounding boxes will be visible when rendering the tiled
+scene.
 
 .. seealso:: :py:func:`showBoundingBoxes`
 %End

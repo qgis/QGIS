@@ -13,7 +13,7 @@
 class QgsAuthImportCertDialog : QDialog
 {
 %Docstring(signature="appended")
-Widget for importing a certificate into the authentication database
+Widget for importing a certificate into the authentication database.
 %End
 
 %TypeHeaderCode
@@ -59,7 +59,8 @@ Gets certificate text to import
 
     bool allowInvalidCerts();
 %Docstring
-Whether to allow importation of invalid certificates (so trust policy can be overridden)
+Whether to allow importation of invalid certificates (so trust policy
+can be overridden)
 %End
 
     QgsAuthCertUtils::CertTrustPolicy certTrustPolicy();

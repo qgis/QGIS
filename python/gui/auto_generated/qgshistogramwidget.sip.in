@@ -25,8 +25,9 @@ Graphical histogram for displaying distributions of field values.
   public:
     QgsHistogramWidget( QWidget *parent /TransferThis/ = 0, QgsVectorLayer *layer = 0, const QString &fieldOrExp = QString() );
 %Docstring
-QgsHistogramWidget constructor. If layer and fieldOrExp are specified then the histogram
-will be initially populated with the corresponding values.
+QgsHistogramWidget constructor. If layer and fieldOrExp are specified
+then the histogram will be initially populated with the corresponding
+values.
 
 :param parent: parent widget
 :param layer: source vector layer
@@ -46,8 +47,8 @@ Returns the layer currently associated with the widget.
 
     QString sourceFieldExp() const;
 %Docstring
-Returns the source field name or expression used to calculate values displayed
-in the histogram.
+Returns the source field name or expression used to calculate values
+displayed in the histogram.
 
 .. seealso:: :py:func:`setSourceFieldExp`
 
@@ -56,9 +57,10 @@ in the histogram.
 
     void setPen( const QPen &pen );
 %Docstring
-Sets the pen to use when drawing histogram bars. If set to Qt.NoPen then the
-pen will be automatically calculated. If ranges have been set using :py:func:`~QgsHistogramWidget.setGraduatedRanges`
-then the pen and brush will have no effect.
+Sets the pen to use when drawing histogram bars. If set to Qt.NoPen then
+the pen will be automatically calculated. If ranges have been set using
+:py:func:`~QgsHistogramWidget.setGraduatedRanges` then the pen and brush
+will have no effect.
 
 :param pen: histogram pen
 
@@ -78,8 +80,9 @@ Returns the pen used when drawing histogram bars.
 
     void setBrush( const QBrush &brush );
 %Docstring
-Sets the brush used for drawing histogram bars. If ranges have been set using :py:func:`~QgsHistogramWidget.setGraduatedRanges`
-then the pen and brush will have no effect.
+Sets the brush used for drawing histogram bars. If ranges have been set
+using :py:func:`~QgsHistogramWidget.setGraduatedRanges` then the pen and
+brush will have no effect.
 
 :param brush: histogram brush
 
@@ -99,8 +102,9 @@ Returns the brush used when drawing histogram bars.
 
     void setGraduatedRanges( const QgsRangeList &ranges );
 %Docstring
-Sets the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
-bars and for showing vertical dividers at the histogram breaks.
+Sets the graduated ranges associated with the histogram. If set, the
+ranges will be used to color the histogram bars and for showing vertical
+dividers at the histogram breaks.
 
 :param ranges: graduated range list
 
@@ -109,8 +113,9 @@ bars and for showing vertical dividers at the histogram breaks.
 
     QgsRangeList graduatedRanges() const;
 %Docstring
-Returns the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
-bars and for showing vertical dividers at the histogram breaks.
+Returns the graduated ranges associated with the histogram. If set, the
+ranges will be used to color the histogram bars and for showing vertical
+dividers at the histogram breaks.
 
 :return: graduated range list
 
@@ -166,8 +171,9 @@ Refreshes the values for the histogram by fetching them from the layer.
 
     void refresh();
 %Docstring
-Redraws the histogram. Calling this slot does not update the values
-for the histogram, use :py:func:`~QgsHistogramWidget.refreshValues` to do this.
+Redraws the histogram. Calling this slot does not update the values for
+the histogram, use :py:func:`~QgsHistogramWidget.refreshValues` to do
+this.
 %End
 
     void setLayer( QgsVectorLayer *layer );

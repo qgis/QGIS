@@ -126,6 +126,34 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   mDuplicatePolicyComboBox->addItem( tr( "Remove Value" ), QVariant::fromValue( Qgis::FieldDuplicatePolicy::UnsetField ) );
   connect( mDuplicatePolicyComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::updateDuplicatePolicyLabel );
   updateDuplicatePolicyLabel();
+
+  if ( mLayer->isSpatial() )
+  {
+    mMergePolicyComboBox->addItem( tr( "Remove Value" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::UnsetField ) );
+    mMergePolicyComboBox->addItem( tr( "Use Default Value" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::DefaultValue ) );
+
+    if ( mLayer->fields().at( mFieldIdx ).isNumeric() )
+    {
+      mMergePolicyComboBox->addItem( tr( "Use Sum" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::Sum ) );
+      mMergePolicyComboBox->addItem( tr( "Use Maximum Value" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::MaximumValue ) );
+      mMergePolicyComboBox->addItem( tr( "Use Minimum Value" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::MinimumValue ) );
+
+      if ( mLayer->geometryType() != Qgis::GeometryType::Point )
+        mMergePolicyComboBox->addItem( tr( "Use Average Weighted by Geometry" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::GeometryWeighted ) );
+    }
+
+    mMergePolicyComboBox->addItem( tr( "Use Largest Feature" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::LargestGeometry ) );
+    mMergePolicyComboBox->addItem( tr( "Set to NULL" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::SetToNull ) );
+  }
+  else
+  {
+    mMergePolicyComboBox->setEnabled( false );
+    mMergePolicyLabel->setEnabled( false );
+    mMergePolicyDescriptionLabel->hide();
+  }
+
+  connect( mMergePolicyComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::updateMergePolicyLabel );
+  updateMergePolicyLabel();
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -400,6 +428,17 @@ void QgsAttributeTypeDialog::setDuplicatePolicy( Qgis::FieldDuplicatePolicy poli
   updateSplitPolicyLabel();
 }
 
+void QgsAttributeTypeDialog::setMergePolicy( Qgis::FieldDomainMergePolicy policy )
+{
+  mMergePolicyComboBox->setCurrentIndex( mMergePolicyComboBox->findData( QVariant::fromValue( policy ) ) );
+  updateMergePolicyLabel();
+}
+
+Qgis::FieldDomainMergePolicy QgsAttributeTypeDialog::mergePolicy() const
+{
+  return mMergePolicyComboBox->currentData().value<Qgis::FieldDomainMergePolicy>();
+}
+
 QString QgsAttributeTypeDialog::constraintExpression() const
 {
   return constraintExpressionWidget->asExpression();
@@ -535,6 +574,46 @@ void QgsAttributeTypeDialog::updateDuplicatePolicyLabel()
       break;
   }
   mDuplicatePolicyDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( helperText ) );
+}
+
+void QgsAttributeTypeDialog::updateMergePolicyLabel()
+{
+  QString helperText;
+  switch ( mMergePolicyComboBox->currentData().value<Qgis::FieldDomainMergePolicy>() )
+  {
+    case Qgis::FieldDomainMergePolicy::DefaultValue:
+      helperText = tr( "Use default field value." );
+      break;
+
+    case Qgis::FieldDomainMergePolicy::Sum:
+      helperText = tr( "Sum of values." );
+      break;
+
+    case Qgis::FieldDomainMergePolicy::GeometryWeighted:
+      helperText = tr( "New values are computed as the weighted average of the source values." );
+      break;
+
+    case Qgis::FieldDomainMergePolicy::UnsetField:
+      helperText = tr( "Clears the field to an unset state." );
+      break;
+
+    case Qgis::FieldDomainMergePolicy::LargestGeometry:
+      helperText = tr( "Use value from feature with the largest geometry." );
+      break;
+
+    case Qgis::FieldDomainMergePolicy::MinimumValue:
+      helperText = tr( "Use the lowest value from the selected features." );
+      break;
+
+    case Qgis::FieldDomainMergePolicy::MaximumValue:
+      helperText = tr( "Use the highest value from the selected features." );
+      break;
+
+    case Qgis::FieldDomainMergePolicy::SetToNull:
+      helperText = tr( "Set attribute to NULL." );
+      break;
+  }
+  mMergePolicyDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( helperText ) );
 }
 
 QStandardItem *QgsAttributeTypeDialog::currentItem() const

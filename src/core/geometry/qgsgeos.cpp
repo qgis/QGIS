@@ -3845,7 +3845,7 @@ int QgsGeos::geomDigits( const GEOSGeometry *geom )
 {
   GEOSContextHandle_t context = QgsGeosContext::get();
   geos::unique_ptr bbox( GEOSEnvelope_r( context, geom ) );
-  if ( !bbox.get() )
+  if ( !bbox )
     return -1;
 
   const GEOSGeometry *bBoxRing = GEOSGetExteriorRing_r( context, bbox.get() );

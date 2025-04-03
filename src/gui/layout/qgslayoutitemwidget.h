@@ -51,8 +51,9 @@ class QgsMasterLayoutInterface;
  * \class QgsLayoutConfigObject
  * \ingroup gui
  *
- * \brief An object for property widgets for layout items. All layout config type widgets should contain
- * this object.
+ * \brief An object for property widgets for layout items.
+ *
+ * All layout config type widgets should contain this object.
  *
  * If you are creating a new QgsLayoutItem configuration widget, you should instead
  * inherit from QgsLayoutItemBaseWidget (rather then directly working with QgsLayoutConfigObject).
@@ -110,10 +111,10 @@ class GUI_EXPORT QgsLayoutConfigObject : public QObject
  * \class QgsLayoutItemBaseWidget
  * \ingroup gui
  *
- * \brief A base class for property widgets for layout items. All layout item widgets should inherit from
+ * \brief A base class for property widgets for layout items.
+ *
+ * All layout item widgets should inherit from
  * this base class.
- *
- *
 */
 class GUI_EXPORT QgsLayoutItemBaseWidget : public QgsPanelWidget
 {

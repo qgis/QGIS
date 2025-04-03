@@ -14,7 +14,8 @@
 class QgsAbstractVectorLayerLabeling
 {
 %Docstring(signature="appended")
-Abstract base class - its implementations define different approaches to the labeling of a vector layer.
+Abstract base class - its implementations define different approaches to
+the labeling of a vector layer.
 %End
 
 %TypeHeaderCode
@@ -56,8 +57,9 @@ Gets list of sub-providers within the layer's labeling.
 
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;
 %Docstring
-Gets associated label settings. In case of multiple sub-providers with different settings,
-they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)
+Gets associated label settings. In case of multiple sub-providers with
+different settings, they are identified by their ID (e.g. in case of
+rule-based labeling, provider ID == rule key)
 %End
 
     virtual void setSettings( QgsPalLayerSettings *settings /Transfer/, const QString &providerId = QString() ) = 0;
@@ -70,17 +72,18 @@ Set pal settings for a specific provider (takes ownership).
 
     virtual bool requiresAdvancedEffects() const = 0;
 %Docstring
-Returns ``True`` if drawing labels requires advanced effects like composition
-modes, which could prevent it being used as an isolated cached image
-or exported to a vector format.
+Returns ``True`` if drawing labels requires advanced effects like
+composition modes, which could prevent it being used as an isolated
+cached image or exported to a vector format.
 %End
 
     virtual void multiplyOpacity( double opacityFactor );
 %Docstring
 Multiply opacity by ``opacityFactor``.
 
-This method multiplies the opacity of the labeling elements (text, shadow, buffer etc.)
-by ``opacity`` effectively changing the opacity of the whole labeling elements.
+This method multiplies the opacity of the labeling elements (text,
+shadow, buffer etc.) by ``opacity`` effectively changing the opacity of
+the whole labeling elements.
 
 .. versionadded:: 3.32
 %End
@@ -93,23 +96,25 @@ Try to create instance of an implementation based on the XML data
 
     virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
 %Docstring
-Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
+Writes the SE 1.1 TextSymbolizer element based on the current layer
+labeling settings
 %End
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
-with the labeling.
+Accepts the specified symbology ``visitor``, causing it to visit all
+symbols associated with the labeling.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
 %End
 
     static QgsPalLayerSettings defaultSettingsForLayer( const QgsVectorLayer *layer );
 %Docstring
-Returns the default layer settings to use for the specified vector ``layer``.
+Returns the default layer settings to use for the specified vector
+``layer``.
 
 .. versionadded:: 3.20
 %End
@@ -118,11 +123,14 @@ Returns the default layer settings to use for the specified vector ``layer``.
 
     virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QVariantMap &props ) const;
 %Docstring
-Writes a TextSymbolizer element contents based on the provided labeling settings
+Writes a TextSymbolizer element contents based on the provided labeling
+settings
 
-:param parent: the node that will have the text symbolizer element added to it
+:param parent: the node that will have the text symbolizer element added
+               to it
 :param settings: the settings getting translated to a TextSymbolizer
-:param props: a open ended set of properties that can drive/inform the SLD encoding
+:param props: a open ended set of properties that can drive/inform the
+              SLD encoding
 %End
 
   private:
@@ -134,7 +142,8 @@ class QgsVectorLayerSimpleLabeling : QgsAbstractVectorLayerLabeling
 %Docstring(signature="appended")
 Basic implementation of the labeling interface.
 
-The configuration is kept in layer's custom properties for backward compatibility.
+The configuration is kept in layer's custom properties for backward
+compatibility.
 %End
 
 %TypeHeaderCode

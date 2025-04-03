@@ -13,12 +13,14 @@
 class QgsTessellator
 {
 %Docstring(signature="appended")
-Class that takes care of tessellation of polygons into triangles.
+Tessellates polygons into triangles.
 
-It is expected that client code will create the tessellator object, then repeatedly call
-:py:func:`~addPolygon` method that will generate triangles, and finally call :py:func:`~data` to get final vertex data.
+It is expected that client code will create the tessellator object, then
+repeatedly call :py:func:`~addPolygon` method that will generate
+triangles, and finally call :py:func:`~data` to get final vertex data.
 
-Optionally provides extrusion by adding triangles that serve as walls when extrusion height is non-zero.
+Optionally provides extrusion by adding triangles that serve as walls
+when extrusion height is non-zero.
 %End
 
 %TypeHeaderCode
@@ -28,42 +30,48 @@ Optionally provides extrusion by adding triangles that serve as walls when extru
     QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
                     bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
 %Docstring
-Creates tessellator with a specified origin point of the world (in map coordinates)
+Creates tessellator with a specified origin point of the world (in map
+coordinates)
 %End
 
     QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
                     bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
 %Docstring
-Creates tessellator with a specified ``bounds`` of input geometry coordinates.
-This constructor allows the tessellator to map input coordinates to a desirable range for numerical
-stability during calculations.
+Creates tessellator with a specified ``bounds`` of input geometry
+coordinates. This constructor allows the tessellator to map input
+coordinates to a desirable range for numerical stability during
+calculations.
 
-If ``noZ`` is ``True``, then a 2-dimensional tessellation only will be performed and all z coordinates will be ignored.
+If ``noZ`` is ``True``, then a 2-dimensional tessellation only will be
+performed and all z coordinates will be ignored.
 
 .. versionadded:: 3.10
 %End
 
     void setOutputZUp( bool zUp );
 %Docstring
-Sets whether the "up" direction should be the Z axis on output (``True``),
-otherwise the "up" direction will be the Y axis (``False``). The default
-value is ``False`` (to keep compatibility for existing tessellator use cases).
+Sets whether the "up" direction should be the Z axis on output
+(``True``), otherwise the "up" direction will be the Y axis (``False``).
+The default value is ``False`` (to keep compatibility for existing
+tessellator use cases).
 
 .. versionadded:: 3.42
 %End
 
     bool isOutputZUp() const;
 %Docstring
-Returns whether the "up" direction should be the Z axis on output (``True``),
-otherwise the "up" direction will be the Y axis (``False``). The default
-value is ``False`` (to keep compatibility for existing tessellator use cases).
+Returns whether the "up" direction should be the Z axis on output
+(``True``), otherwise the "up" direction will be the Y axis (``False``).
+The default value is ``False`` (to keep compatibility for existing
+tessellator use cases).
 
 .. versionadded:: 3.42
 %End
 
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
 %Docstring
-Tessellates a triangle and adds its vertex entries to the output data array
+Tessellates a triangle and adds its vertex entries to the output data
+array
 %End
 
     QVector<float> data() const;

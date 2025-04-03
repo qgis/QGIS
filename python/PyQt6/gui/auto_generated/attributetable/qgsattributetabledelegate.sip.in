@@ -13,8 +13,8 @@
 class QgsAttributeTableDelegate : QItemDelegate
 {
 %Docstring(signature="appended")
-A delegate item class for :py:class:`QgsAttributeTable` (see Qt documentation for
-QItemDelegate).
+A delegate item class for :py:class:`QgsAttributeTable` (see Qt
+documentation for QItemDelegate).
 %End
 
 %TypeHeaderCode
@@ -31,8 +31,8 @@ Constructor
     virtual QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
 %Docstring
-Used to create an editor for when the user tries to
-change the contents of a cell
+Used to create an editor for when the user tries to change the contents
+of a cell
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
@@ -46,7 +46,8 @@ Overloads the paint method form the QItemDelegate base class
 %Docstring
 Sets data from editor back to model. Overloads default method
 
-:param editor: editor which was created by create editor function in this class
+:param editor: editor which was created by create editor function in
+               this class
 :param model: model where data should be updated
 :param index: index of field which is to be modified
 %End
@@ -56,7 +57,8 @@ Sets data from editor back to model. Overloads default method
 %Docstring
 Sets data from model into the editor. Overloads default method
 
-:param editor: editor which was created by create editor function in this class
+:param editor: editor which was created by create editor function in
+               this class
 :param index: index of field which is to be retrieved
 %End
 
@@ -66,8 +68,8 @@ Sets data from model into the editor. Overloads default method
 
     void actionColumnItemPainted( const QModelIndex &index ) const;
 %Docstring
-Emitted when an action column item is painted.
-The consumer of this signal can initialize the index widget.
+Emitted when an action column item is painted. The consumer of this
+signal can initialize the index widget.
 
 .. note::
 

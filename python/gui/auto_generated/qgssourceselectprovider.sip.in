@@ -12,7 +12,8 @@
 class QgsSourceSelectProvider
 {
 %Docstring(signature="appended")
-This is the interface for those who want to add entries to the :py:class:`QgsDataSourceManagerDialog`
+An interface for pages shown in a
+:py:class:`QgsDataSourceManagerDialog`.
 %End
 
 %TypeHeaderCode
@@ -48,21 +49,24 @@ Data Provider key
 
     virtual QString name() const;
 %Docstring
-Source select provider name, this is useful to retrieve
-a particular source select in case the provider has more
-than one, it should be unique among all providers.
+Source select provider name, this is useful to retrieve a particular
+source select in case the provider has more than one, it should be
+unique among all providers.
 
-The default implementation returns the :py:func:`~QgsSourceSelectProvider.providerKey`
+The default implementation returns the
+:py:func:`~QgsSourceSelectProvider.providerKey`
 %End
 
     virtual QString text() const = 0;
 %Docstring
-Text for the menu item entry, it will be visible to the user so make sure it's translatable
+Text for the menu item entry, it will be visible to the user so make
+sure it's translatable
 %End
 
     virtual QString toolTip() const;
 %Docstring
-Text for the tooltip menu item entry, it will be visible to the user so make sure it's translatable
+Text for the tooltip menu item entry, it will be visible to the user so
+make sure it's translatable
 
 The default implementation returns an empty string.
 %End
@@ -74,20 +78,20 @@ Creates a new instance of an QIcon for the menu item entry
 
     virtual int ordering() const;
 %Docstring
-Ordering: the source select provider registry will be able to sort
-the source selects (ascending) using this integer value
+Ordering: the source select provider registry will be able to sort the
+source selects (ascending) using this integer value
 %End
 
     virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = 0, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const = 0 /Factory/;
 %Docstring
-Create a new instance of :py:class:`QgsAbstractDataSourceWidget` (or ``None``).
-Caller takes responsibility of deleting created.
+Create a new instance of :py:class:`QgsAbstractDataSourceWidget` (or
+``None``). Caller takes responsibility of deleting created.
 %End
 
     virtual Capabilities capabilities();
 %Docstring
-Returns the source select provider capabilities.
-The default implementation returns no capabilities.
+Returns the source select provider capabilities. The default
+implementation returns no capabilities.
 
 .. versionadded:: 3.38
 %End

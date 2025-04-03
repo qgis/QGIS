@@ -41,7 +41,8 @@ Creates a new QgsGeometryCheckContext.
 %Docstring
 The project can be used to resolve additional layers.
 
-This must only be accessed from the main thread (i.e. do not access from the collectError method)
+This must only be accessed from the main thread (i.e. do not access from
+the collectError method)
 
 .. versionadded:: 3.10
 %End

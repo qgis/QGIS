@@ -32,8 +32,9 @@ Rotates a point / vector around the origin.
     static double normalizedAngle( double angle, bool allowNegative = false );
 %Docstring
 Ensures that an ``angle`` (in degrees) is in the range 0 <= angle < 360.
-If ``allowNegative`` is ``True`` then angles between (-360, 360) are allowed. If ``False``,
-angles are converted to positive angles in the range [0, 360).
+If ``allowNegative`` is ``True`` then angles between (-360, 360) are
+allowed. If ``False``, angles are converted to positive angles in the
+range [0, 360).
 %End
 
     static double snappedAngle( double angle );
@@ -45,21 +46,23 @@ Snaps an ``angle`` (in degrees) to its closest 45 degree angle.
 
     static QgsRenderContext createRenderContextForMap( QgsLayoutItemMap *map, QPainter *painter, double dpi = -1 );
 %Docstring
-Creates a render context suitable for the specified layout ``map`` and ``painter`` destination.
-This method returns a new :py:class:`QgsRenderContext` which matches the scale and settings of the
-target map. If the ``dpi`` argument is not specified then the dpi will be taken from the destination
-painter device.
+Creates a render context suitable for the specified layout ``map`` and
+``painter`` destination. This method returns a new
+:py:class:`QgsRenderContext` which matches the scale and settings of the
+target map. If the ``dpi`` argument is not specified then the dpi will
+be taken from the destination painter device.
 
 .. seealso:: :py:func:`createRenderContextForLayout`
 %End
 
     static QgsRenderContext createRenderContextForLayout( QgsLayout *layout, QPainter *painter, double dpi = -1 );
 %Docstring
-Creates a render context suitable for the specified ``layout`` and ``painter`` destination.
-This method returns a new :py:class:`QgsRenderContext` which matches the scale and settings from the layout's
-:py:func:`QgsLayout.referenceMap()`.
-If the ``dpi`` argument is not specified then the dpi will be taken from the destination
-painter device.
+Creates a render context suitable for the specified ``layout`` and
+``painter`` destination. This method returns a new
+:py:class:`QgsRenderContext` which matches the scale and settings from
+the layout's :py:func:`QgsLayout.referenceMap()`. If the ``dpi``
+argument is not specified then the dpi will be taken from the
+destination painter device.
 
 .. seealso:: :py:func:`createRenderContextForMap`
 %End
@@ -68,9 +71,9 @@ painter device.
 %Docstring
 Resizes a QRectF relative to a resized bounding rectangle.
 
-:param rectToResize: QRectF to resize, contained within boundsBefore. The
-                     rectangle is linearly scaled to retain its relative position and size within
-                     boundsAfter.
+:param rectToResize: QRectF to resize, contained within boundsBefore.
+                     The rectangle is linearly scaled to retain its
+                     relative position and size within boundsAfter.
 :param boundsBefore: QRectF of bounds before resize
 :param boundsAfter: QRectF of bounds after resize
 %End
@@ -90,14 +93,15 @@ Returns a scaled position given a before and after range
 
     static QFont scaledFontPixelSize( const QFont &font );
 %Docstring
-Returns a ``font`` where size is set in points and the size has been upscaled with FONT_WORKAROUND_SCALE
-to workaround QT font rendering bugs.
-Returns a font with size set in pixels.
+Returns a ``font`` where size is set in points and the size has been
+upscaled with FONT_WORKAROUND_SCALE to workaround QT font rendering
+bugs. Returns a font with size set in pixels.
 %End
 
     static double fontAscentMM( const QFont &font );
 %Docstring
-Calculates a ``font`` ascent in millimeters, including workarounds for QT font rendering issues.
+Calculates a ``font`` ascent in millimeters, including workarounds for
+QT font rendering issues.
 
 .. seealso:: :py:func:`fontDescentMM`
 
@@ -110,7 +114,8 @@ Calculates a ``font`` ascent in millimeters, including workarounds for QT font r
 
     static double fontDescentMM( const QFont &font );
 %Docstring
-Calculate a ``font`` descent in millimeters, including workarounds for QT font rendering issues.
+Calculate a ``font`` descent in millimeters, including workarounds for
+QT font rendering issues.
 
 .. seealso:: :py:func:`fontAscentMM`
 
@@ -123,8 +128,9 @@ Calculate a ``font`` descent in millimeters, including workarounds for QT font r
 
     static double fontHeightMM( const QFont &font );
 %Docstring
-Calculate a ``font`` height in millimeters, including workarounds for QT font rendering issues.
-The font height is the font ascent + descent + 1 (for the baseline).
+Calculate a ``font`` height in millimeters, including workarounds for QT
+font rendering issues. The font height is the font ascent + descent + 1
+(for the baseline).
 
 .. seealso:: :py:func:`fontAscentMM`
 
@@ -137,8 +143,8 @@ The font height is the font ascent + descent + 1 (for the baseline).
 
     static double fontHeightCharacterMM( const QFont &font, QChar character );
 %Docstring
-Calculate a ``font`` height in millimeters of a single ``character``, including workarounds for QT font
-rendering issues.
+Calculate a ``font`` height in millimeters of a single ``character``,
+including workarounds for QT font rendering issues.
 
 .. seealso:: :py:func:`fontAscentMM`
 
@@ -151,8 +157,8 @@ rendering issues.
 
     static double textWidthMM( const QFont &font, const QString &text );
 %Docstring
-Calculate a ``font`` width in millimeters for a ``text`` string, including workarounds for QT font
-rendering issues.
+Calculate a ``font`` width in millimeters for a ``text`` string,
+including workarounds for QT font rendering issues.
 
 .. seealso:: :py:func:`fontAscentMM`
 
@@ -167,9 +173,10 @@ rendering issues.
 
     static double textHeightMM( const QFont &font, const QString &text, double multiLineHeight = 1.0 );
 %Docstring
-Calculate a ``font`` height in millimeters for a ``text`` string, including workarounds for QT font
-rendering issues. Note that this method uses a non-standard measure of text height,
-where only the font ascent is considered for the first line of text.
+Calculate a ``font`` height in millimeters for a ``text`` string,
+including workarounds for QT font rendering issues. Note that this
+method uses a non-standard measure of text height, where only the font
+ascent is considered for the first line of text.
 
 The ``multiLineHeight`` parameter specifies the line spacing factor.
 
@@ -178,34 +185,39 @@ The ``multiLineHeight`` parameter specifies the line spacing factor.
 
     static void drawText( QPainter *painter, QPointF position, const QString &text, const QFont &font, const QColor &color = QColor() );
 %Docstring
-Draws ``text`` on a ``painter`` at a specific ``position``, taking care of layout specific issues (calculation to pixel,
-scaling of font and painter to work around Qt font bugs).
+Draws ``text`` on a ``painter`` at a specific ``position``, taking care
+of layout specific issues (calculation to pixel, scaling of font and
+painter to work around Qt font bugs).
 
-If ``color`` is specified, text will be rendered in that color. If not specified, the current painter pen
-color will be used instead.
+If ``color`` is specified, text will be rendered in that color. If not
+specified, the current painter pen color will be used instead.
 %End
 
     static void drawText( QPainter *painter, const QRectF &rectangle, const QString &text, const QFont &font, const QColor &color = QColor(), Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap );
 %Docstring
-Draws ``text`` on a ``painter`` within a ``rectangle``, taking care of layout specific issues (calculation to pixel,
-scaling of font and painter to work around Qt font bugs).
+Draws ``text`` on a ``painter`` within a ``rectangle``, taking care of
+layout specific issues (calculation to pixel, scaling of font and
+painter to work around Qt font bugs).
 
-If ``color`` is specified, text will be rendered in that color. If not specified, the current painter pen
-color will be used instead.
+If ``color`` is specified, text will be rendered in that color. If not
+specified, the current painter pen color will be used instead.
 
-The text alignment within ``rectangle`` can be set via the ``halignment`` and ``valignment``
-arguments.
+The text alignment within ``rectangle`` can be set via the
+``halignment`` and ``valignment`` arguments.
 
-The ``flags`` parameter allows for passing Qt.TextFlags to control appearance of rendered text.
+The ``flags`` parameter allows for passing Qt.TextFlags to control
+appearance of rendered text.
 %End
 
     static QRectF largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, double rotation );
 %Docstring
-Calculates the largest scaled version of ``originalRect`` which fits within ``boundsRect``, when it is rotated by
-the a specified ``rotation`` amount.
+Calculates the largest scaled version of ``originalRect`` which fits
+within ``boundsRect``, when it is rotated by the a specified
+``rotation`` amount.
 
 :param originalRect: QRectF to be rotated and scaled
-:param boundsRect: QRectF specifying the bounds which the rotated and scaled rectangle must fit within
+:param boundsRect: QRectF specifying the bounds which the rotated and
+                   scaled rectangle must fit within
 :param rotation: the rotation in degrees to be applied to the rectangle
 
 :return: largest scaled version of the rectangle possible
@@ -214,8 +226,8 @@ the a specified ``rotation`` amount.
     static QgsLayoutItemPage::Orientation decodePaperOrientation( const QString &string, bool &ok );
 %Docstring
 Decodes a ``string`` representing a paper orientation and returns the
-decoded orientation.
-If the string was correctly decoded, ``ok`` will be set to ``True``.
+decoded orientation. If the string was correctly decoded, ``ok`` will be
+set to ``True``.
 %End
 
  static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style ) /Deprecated="Since 3.40. Use the variant with a QPainter argument instead."/;
@@ -236,28 +248,31 @@ Extracts the scale factor from an item ``style`` and ``painter``.
 
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProject *project );
 %Docstring
-Resolves a ``string`` into a map layer from a given ``project``. Attempts different
-forms of layer matching such as matching by layer id or layer name.
+Resolves a ``string`` into a map layer from a given ``project``.
+Attempts different forms of layer matching such as matching by layer id
+or layer name.
 
-Layer names are matched using a case-insensitive check, ONLY if an exact case
-match was not found.
+Layer names are matched using a case-insensitive check, ONLY if an exact
+case match was not found.
 
 .. versionadded:: 3.2
 %End
 
     static double calculatePrettySize( double minimumSize, double maximumSize );
 %Docstring
-Calculates a "pretty" size which falls between the range [``minimumSize``, ``maximumSize``].
+Calculates a "pretty" size which falls between the range
+[``minimumSize``, ``maximumSize``].
 
-This method will return an optimal round number which falls within the given range, finding
-the largest "pretty" number possible.
+This method will return an optimal round number which falls within the
+given range, finding the largest "pretty" number possible.
 
 .. versionadded:: 3.10
 %End
 
     static bool itemIsAClippingSource( const QgsLayoutItem *item );
 %Docstring
-Returns ``True`` if an ``item`` is a clipping item for another layout item.
+Returns ``True`` if an ``item`` is a clipping item for another layout
+item.
 
 .. versionadded:: 3.16
 %End

@@ -29,7 +29,7 @@
 
 /**
  * \ingroup core
- * \brief Class for parsing SQL statements.
+ * \brief Parses SQL statements.
  */
 class CORE_EXPORT QgsSQLStatement
 {
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief Abstract node class
+     * \brief Abstract node class for SQL statement nodes.
     */
     class CORE_EXPORT Node
     {
@@ -320,7 +320,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief Unary logicial/arithmetical operator ( NOT, - )
+     * \brief Unary logical/arithmetical operator ( NOT, - ).
     */
     class CORE_EXPORT NodeUnaryOperator : public QgsSQLStatement::Node
     {
@@ -348,7 +348,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief Binary logical/arithmetical operator (AND, OR, =, +, ...)
+     * \brief Binary logical/arithmetical operator (AND, OR, =, +, ...).
     */
     class CORE_EXPORT NodeBinaryOperator : public QgsSQLStatement::Node
     {
@@ -391,7 +391,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief 'x IN (y, z)' operator
+     * \brief An 'x IN (y, z)' operator.
     */
     class CORE_EXPORT NodeInOperator : public QgsSQLStatement::Node
     {
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief 'X BETWEEN y and z' operator
+     * \brief An 'X BETWEEN y and z' operator.
     */
     class CORE_EXPORT NodeBetweenOperator : public QgsSQLStatement::Node
     {
@@ -460,7 +460,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief Function with a name and arguments node
+     * \brief Function with a name and arguments node.
     */
     class CORE_EXPORT NodeFunction : public QgsSQLStatement::Node
     {
@@ -489,7 +489,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief Literal value (integer, integer64, double, string)
+     * \brief Literal value (integer, integer64, double, string).
     */
     class CORE_EXPORT NodeLiteral : public QgsSQLStatement::Node
     {
@@ -512,7 +512,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief Reference to a column
+     * \brief Reference to a column.
     */
     class CORE_EXPORT NodeColumnRef : public QgsSQLStatement::Node
     {
@@ -554,7 +554,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief Selected column
+     * \brief Selected column.
     */
     class CORE_EXPORT NodeSelectedColumn : public QgsSQLStatement::Node
     {
@@ -587,7 +587,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief CAST operator
+     * \brief CAST operator.
     */
     class CORE_EXPORT NodeCast : public QgsSQLStatement::Node
     {
@@ -615,7 +615,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief Table definition
+     * \brief Table definition.
     */
     class CORE_EXPORT NodeTableDef : public QgsSQLStatement::Node
     {
@@ -660,7 +660,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief Join definition
+     * \brief Join definition.
     */
     class CORE_EXPORT NodeJoin : public QgsSQLStatement::Node
     {
@@ -700,7 +700,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief Column in a ORDER BY
+     * \brief Column in a ORDER BY.
     */
     class CORE_EXPORT NodeColumnSorted : public QgsSQLStatement::Node
     {
@@ -730,7 +730,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief SELECT node
+     * \brief SELECT node.
     */
     class CORE_EXPORT NodeSelect : public QgsSQLStatement::Node
     {
@@ -781,7 +781,7 @@ class CORE_EXPORT QgsSQLStatement
     /**
      * \ingroup core
      * \brief Support for visitor pattern - algorithms dealing with the statement
-     * may be implemented without modifying the Node classes
+     * may be implemented without modifying the Node classes.
     */
     class CORE_EXPORT Visitor
     {
@@ -817,7 +817,7 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * \ingroup core
-     * \brief A visitor that recursively explores all children
+     * \brief A visitor that recursively explores all children.
     */
     class CORE_EXPORT RecursiveVisitor: public QgsSQLStatement::Visitor
     {
@@ -864,7 +864,7 @@ Q_DECLARE_METATYPE( QgsSQLStatement::Node * )
 
 /**
  * \ingroup core
- * \brief Class for parsing fragments of SQL statements, such as an expression or where clause.
+ * \brief Parses fragments of SQL statements, such as an expression or where clause.
  * \since QGIS 3.16
 */
 class CORE_EXPORT QgsSQLStatementFragment : public QgsSQLStatement

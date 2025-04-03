@@ -12,6 +12,9 @@
 
 class QgsGeometryValidator : QThread
 {
+%Docstring(signature="appended")
+Validates geometries using the QGIS geometry validation model.
+%End
 
 %TypeHeaderCode
 #include "qgsgeometryvalidator.h"
@@ -30,8 +33,8 @@ Constructor for QgsGeometryValidator.
 
     static void validateGeometry( const QgsGeometry &geometry, QVector<QgsGeometry::Error> &errors /Out/, Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal );
 %Docstring
-Validate geometry and produce a list of geometry errors.
-This method blocks the thread until the validation is finished.
+Validate geometry and produce a list of geometry errors. This method
+blocks the thread until the validation is finished.
 %End
 
   signals:
@@ -47,9 +50,9 @@ The ``error`` contains details about the error.
 %Docstring
 Sent when the validation is finished.
 
-The result is in a human readable ``summary``, mentioning
-if the validation has been aborted, successfully been validated
-or how many errors have been found.
+The result is in a human readable ``summary``, mentioning if the
+validation has been aborted, successfully been validated or how many
+errors have been found.
 
 .. versionadded:: 3.6
 %End

@@ -13,7 +13,8 @@
 class QgsAbstractGeometrySimplifier
 {
 %Docstring(signature="appended")
-Abstract base class for simplify geometries using a specific algorithm
+Abstract base class for simplifying geometries using a specific
+algorithm.
 %End
 
 %TypeHeaderCode
@@ -31,7 +32,8 @@ Returns a simplified version the specified geometry
 %Docstring
 Returns a simplified version the specified ``geometry``.
 
-Will return ``None`` if no simplification is to be performed to the geometry.
+Will return ``None`` if no simplification is to be performed to the
+geometry.
 
 Caller takes ownership of the returned geometry.
 
@@ -41,11 +43,13 @@ Caller takes ownership of the returned geometry.
   public:
     static bool isGeneralizableByDeviceBoundingBox( const QgsRectangle &envelope, float mapToPixelTol = 1.0f );
 %Docstring
-Returns whether the device-envelope can be replaced by its BBOX when is applied the specified tolerance
+Returns whether the device-envelope can be replaced by its BBOX when is
+applied the specified tolerance
 %End
     static bool isGeneralizableByDeviceBoundingBox( const QVector<QPointF> &points, float mapToPixelTol = 1.0f );
 %Docstring
-Returns whether the device-geometry can be replaced by its BBOX when is applied the specified tolerance
+Returns whether the device-geometry can be replaced by its BBOX when is
+applied the specified tolerance
 %End
 };
 
@@ -53,10 +57,13 @@ Returns whether the device-geometry can be replaced by its BBOX when is applied 
 class QgsTopologyPreservingSimplifier : QgsAbstractGeometrySimplifier
 {
 %Docstring(signature="appended")
-Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
+Implementation of GeometrySimplifier using the Douglas-Peucker
+algorithm.
 
-Simplifies a geometry, ensuring that the result is a valid geometry having the same dimension and number of components as the input.
-The simplification uses a maximum distance difference algorithm similar to the one used in the Douglas-Peucker algorithm.
+Simplifies a geometry, ensuring that the result is a valid geometry
+having the same dimension and number of components as the input. The
+simplification uses a maximum distance difference algorithm similar to
+the one used in the Douglas-Peucker algorithm.
 %End
 
 %TypeHeaderCode

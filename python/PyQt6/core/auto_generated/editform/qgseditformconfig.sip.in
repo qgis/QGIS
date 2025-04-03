@@ -65,17 +65,20 @@ This is only useful in combination with EditorLayout.TabLayout.
 
     QList< QgsAttributeEditorElement * > tabs() const;
 %Docstring
-Returns a list of tabs for EditorLayout.TabLayout obtained from the invisible root container.
+Returns a list of tabs for EditorLayout.TabLayout obtained from the
+invisible root container.
 %End
 
     void clearTabs();
 %Docstring
-Clears all the tabs for the attribute editor form with EditorLayout.TabLayout.
+Clears all the tabs for the attribute editor form with
+EditorLayout.TabLayout.
 %End
 
     QgsAttributeEditorContainer *invisibleRootContainer();
 %Docstring
-Gets the invisible root container for the drag and drop designer form (EditorLayout.TabLayout).
+Gets the invisible root container for the drag and drop designer form
+(EditorLayout.TabLayout).
 
 .. versionadded:: 3
 %End
@@ -92,22 +95,24 @@ Sets the active layout style for the attribute editor for this layer
 
     QString uiForm() const;
 %Docstring
-Returns the path or URL to the .ui form. Only meaningful with EditorLayout.UiFileLayout
+Returns the path or URL to the .ui form. Only meaningful with
+EditorLayout.UiFileLayout
 %End
 
     void setUiForm( const QString &ui );
 %Docstring
-Set path to the .ui form.
-When a string is provided in ``ui``, the layout style will be set to EditorLayout.UiFileLayout,
-if an empty or a null string is provided, the layout style will be set to
-EditorLayout.GeneratedLayout.
-If ``ui`` is a URL, a local copy of the file will be made and will be used to create the forms
-``context`` is provided to save error messages
+Set path to the .ui form. When a string is provided in ``ui``, the
+layout style will be set to EditorLayout.UiFileLayout, if an empty or a
+null string is provided, the layout style will be set to
+EditorLayout.GeneratedLayout. If ``ui`` is a URL, a local copy of the
+file will be made and will be used to create the forms ``context`` is
+provided to save error messages
 %End
 
     bool setWidgetConfig( const QString &widgetName, const QVariantMap &config );
 %Docstring
-Set the editor widget config for a widget which is not for a simple field.
+Set the editor widget config for a widget which is not for a simple
+field.
 
 Example
 -------------------------------------
@@ -121,8 +126,9 @@ Example
 :param widgetName: The name of the widget to configure
 :param config: The config to set for this widget
 
-:return: ``False`` if a field exists with the provided widgetName. In this case
-         :py:class:`QgsVectorLayer`.setEditorWidgetSetup should be used.
+:return: ``False`` if a field exists with the provided widgetName. In
+         this case :py:class:`QgsVectorLayer`.setEditorWidgetSetup
+         should be used.
 
 .. seealso:: :py:func:`QgsVectorLayer.setEditorWidgetSetup` for field configurations.
 %End
@@ -133,7 +139,8 @@ Gets the configuration for the editor widget with the given name.
 
 :param widgetName: The name of the widget.
 
-:return: The configuration for the editor widget or an empty config if the field does not exist
+:return: The configuration for the editor widget or an empty config if
+         the field does not exist
 %End
 
     bool removeWidgetConfig( const QString &widgetName );
@@ -147,8 +154,8 @@ Remove the configuration for the editor widget with the given name
 
     bool readOnly( int idx ) const;
 %Docstring
-This returns ``True`` if the field is manually set to read only or if the field
-does not support editing like joins or virtual fields.
+This returns ``True`` if the field is manually set to read only or if
+the field does not support editing like joins or virtual fields.
 %End
 
     void setReadOnly( int idx, bool readOnly = true );
@@ -158,23 +165,25 @@ If set to ``False``, the widget at the given index will be read-only.
 
     bool labelOnTop( int idx ) const;
 %Docstring
-If this returns ``True``, the widget at the given index will receive its label on the previous line
-while if it returns ``False``, the widget will receive its label on the left hand side.
-Labeling on top leaves more horizontal space for the widget itself.
+If this returns ``True``, the widget at the given index will receive its
+label on the previous line while if it returns ``False``, the widget
+will receive its label on the left hand side. Labeling on top leaves
+more horizontal space for the widget itself.
 %End
 
     void setLabelOnTop( int idx, bool onTop );
 %Docstring
-If this is set to ``True``, the widget at the given index will receive its label on
-the previous line while if it is set to ``False``, the widget will receive its label
-on the left hand side.
-Labeling on top leaves more horizontal space for the widget itself.
+If this is set to ``True``, the widget at the given index will receive
+its label on the previous line while if it is set to ``False``, the
+widget will receive its label on the left hand side. Labeling on top
+leaves more horizontal space for the widget itself.
 %End
 
     bool reuseLastValue( int index ) const;
 %Docstring
-If this returns ``True``, the widget at the given ``index`` will remember the previously
-entered value from this QGIS session when creating new features.
+If this returns ``True``, the widget at the given ``index`` will
+remember the previously entered value from this QGIS session when
+creating new features.
 
 .. seealso:: :py:func:`setReuseLastValue`
 
@@ -183,8 +192,9 @@ entered value from this QGIS session when creating new features.
 
     void setReuseLastValue( int index, bool reuse );
 %Docstring
-Sets whether the widget at the given ``index`` will remember the previously
-entered value from this QGIS session when creating new features.
+Sets whether the widget at the given ``index`` will remember the
+previously entered value from this QGIS session when creating new
+features.
 
 .. seealso:: :py:func:`reuseLastValue`
 
@@ -194,18 +204,18 @@ entered value from this QGIS session when creating new features.
 
     QString initFunction() const;
 %Docstring
-Gets Python function for edit form initialization.
-Will be looked up in a Python file relative to the project folder if it
-includes a module name or if it's a pure function name it will searched
-in the Python code set with :py:func:`~QgsEditFormConfig.setInitCode`.
+Gets Python function for edit form initialization. Will be looked up in
+a Python file relative to the project folder if it includes a module
+name or if it's a pure function name it will searched in the Python code
+set with :py:func:`~QgsEditFormConfig.setInitCode`.
 %End
 
     void setInitFunction( const QString &function );
 %Docstring
-Set Python function for edit form initialization.
-Will be looked up in a Python file relative to the project folder if it
-includes a module name or if it's a pure function name it will searched
-in the Python code set with :py:func:`~QgsEditFormConfig.setInitCode`.
+Set Python function for edit form initialization. Will be looked up in a
+Python file relative to the project folder if it includes a module name
+or if it's a pure function name it will searched in the Python code set
+with :py:func:`~QgsEditFormConfig.setInitCode`.
 %End
 
     QString initCode() const;
@@ -215,8 +225,8 @@ Gets Python code for edit form initialization.
 
     void setInitCode( const QString &code );
 %Docstring
-Set Python code for edit form initialization.
-Make sure that you also set the appropriate function name in
+Set Python code for edit form initialization. Make sure that you also
+set the appropriate function name in
 :py:func:`~QgsEditFormConfig.setInitFunction`.
 %End
 
@@ -227,43 +237,44 @@ Gets Python external file path for edit form initialization.
 
     void setInitFilePath( const QString &filePath );
 %Docstring
-Set Python external file path for edit form initialization.
-Make sure that you also set the appropriate function name in
+Set Python external file path for edit form initialization. Make sure
+that you also set the appropriate function name in
 :py:func:`~QgsEditFormConfig.setInitFunction`.
 %End
 
     Qgis::AttributeFormPythonInitCodeSource initCodeSource() const;
 %Docstring
-Returns Python code source for edit form initialization
-(if it shall be loaded from a file, read from the
-provided dialog editor or inherited from the environment)
+Returns Python code source for edit form initialization (if it shall be
+loaded from a file, read from the provided dialog editor or inherited
+from the environment)
 %End
 
     void setInitCodeSource( Qgis::AttributeFormPythonInitCodeSource initCodeSource );
 %Docstring
-Sets if Python code shall be used for edit form initialization and its origin
+Sets if Python code shall be used for edit form initialization and its
+origin
 %End
 
     Qgis::AttributeFormSuppression suppress() const;
 %Docstring
-Type of feature form pop-up suppression after feature creation (overrides app setting)
+Type of feature form pop-up suppression after feature creation
+(overrides app setting)
 %End
     void setSuppress( Qgis::AttributeFormSuppression s );
 %Docstring
-Sets type of feature form pop-up suppression after feature creation (overrides app setting)
+Sets type of feature form pop-up suppression after feature creation
+(overrides app setting)
 %End
 
 
     void readXml( const QDomNode &node, QgsReadWriteContext &context );
 %Docstring
-Read XML information
-Deserialize on project load
+Read XML information Deserialize on project load
 %End
 
     void writeXml( QDomNode &node, const QgsReadWriteContext &context ) const;
 %Docstring
-Write XML information
-Serialize on project save
+Write XML information Serialize on project save
 %End
 
  QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Deprecated="Since 3.18. Use QgsAttributeEditorElement.create instead."/;
@@ -277,7 +288,8 @@ Deserialize drag and drop designer elements.
 
     explicit QgsEditFormConfig();
 %Docstring
-Create a new edit form config. Normally invoked by :py:class:`QgsVectorLayer`
+Create a new edit form config. Normally invoked by
+:py:class:`QgsVectorLayer`
 %End
 
     void setDataDefinedFieldProperties( const QString &fieldName, const QgsPropertyCollection &properties );

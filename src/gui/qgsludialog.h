@@ -26,6 +26,7 @@
 /**
  * \ingroup gui
  * \class QgsLUDialog
+ * \brief A dialog for setting a lower and upper range value.
  */
 class GUI_EXPORT QgsLUDialog : public QDialog, private Ui::QgsLUDialogBase
 {

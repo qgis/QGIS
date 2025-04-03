@@ -35,7 +35,8 @@ static const inline QMetaEnum sSettingsTypeMetaEnum = QMetaEnum::fromType<Qgis::
  * \ingroup core
  * \class QgsSettingsEntryBase
  *
- * \brief Represent settings entry and provides methods for reading and writing settings values.
+ * \brief Represents a settings entry and provides methods for reading and writing settings values.
+ *
  * Different subclasses are provided for different settings types with metainformations
  * to validate set values and provide more accurate settings description for the gui.
  *
@@ -370,7 +371,7 @@ class CORE_EXPORT QgsSettingsEntryBase
  * \ingroup core
  * \class QgsSettingsEntryBaseTemplate
  *
- * \brief Base abstract class for settings entries with typed get and set methods
+ * \brief Base abstract class for settings entries with typed get and set methods.
  * \see QgsSettingsEntryBase
  *
  * \since QGIS 3.32

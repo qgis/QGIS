@@ -40,7 +40,8 @@ class QgsMapToolShapeMetadata;
 
 /**
  * \ingroup gui
- * QgsMapToolCapture is a base class capable of capturing point, lines and polygons.
+ * Base class for map tools capable of capturing point, lines and polygons.
+ *
  * The tool supports different techniques: straight segments, curves, streaming and shapes
  * Once the the geometry is captured the virtual private handler geometryCaptured is called
  * as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptured)
@@ -241,12 +242,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     // TODO QGIS 4.0 returns an enum instead of a magic constant
 
     /**
-     * Fetches the original point from the source layer.
-     * If topological editing is activated.
-     * The points are projected to the current layer CRS.
+     * Fetches the original point from the source layer if it has the same
+     * CRS as the current layer.
+     * If topological editing is activated, the points are projected to the
+     * current layer CRS.
      * \returns
      *  0 in case of success
-     *  1 if not applicable (invalid layer)
+     *  1 if not applicable (CRS mismatch / invalid layer)
      *  2 in case of failure
      */
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );

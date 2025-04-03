@@ -56,8 +56,8 @@ QgsDataSourceUri QgsWFSNewConnection::createUri()
 
 void QgsWFSNewConnection::versionDetectButton()
 {
-  mCapabilities.reset( new QgsWfsCapabilities( createUri().uri( false ) ) );
-  connect( mCapabilities.get(), &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSNewConnection::capabilitiesReplyFinished );
+  mCapabilities.reset( new QgsWfsGetCapabilitiesRequest( createUri().uri( false ) ) );
+  connect( mCapabilities.get(), &QgsWfsGetCapabilitiesRequest::gotCapabilities, this, &QgsWFSNewConnection::capabilitiesReplyFinished );
   const bool synchronous = false;
   const bool forceRefresh = true;
   mCapabilities->setLogErrors( false ); // as this might be a OAPIF server
@@ -90,7 +90,7 @@ void QgsWFSNewConnection::capabilitiesReplyFinished()
     return;
   }
 
-  const QgsWfsCapabilities::Capabilities &caps = mCapabilities->capabilities();
+  const QgsWfsCapabilities &caps = mCapabilities->capabilities();
   int versionIdx = WFS_VERSION_MAX;
   wfsPageSizeLineEdit()->clear();
   if ( caps.version.startsWith( QLatin1String( "1.0" ) ) )

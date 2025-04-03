@@ -28,7 +28,7 @@ class QMouseEvent;
 
 /**
  * \ingroup core
- * \brief A directory: contains subdirectories and layers
+ * \brief A browser item for directories: contains subdirectories and layers.
 */
 class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 {

@@ -26,7 +26,7 @@
 /**
  * \ingroup gui
  * \class QgsSubsetStringEditorInterface
- * \brief Interface for a dialog that can edit subset strings
+ * \brief Interface for a dialog that can edit subset strings.
  *
  * \since QGIS 3.18
  */

@@ -28,6 +28,7 @@ class QPaintEvent;
 /**
  * \ingroup gui
  * \class QgsSlider
+ * \brief A custom QSlider with additional refinements.
  */
 class GUI_EXPORT QgsSlider : public QSlider
 {

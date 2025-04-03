@@ -43,6 +43,7 @@ class QSvgWidget;
 /**
  * \ingroup gui
  * \class QgsAttributeForm
+ * \brief The attribute form widget for vector layer features.
  */
 class GUI_EXPORT QgsAttributeForm : public QWidget
 {
