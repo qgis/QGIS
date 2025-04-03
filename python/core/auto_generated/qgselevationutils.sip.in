@@ -12,7 +12,8 @@
 class QgsElevationUtils
 {
 %Docstring(signature="appended")
-Contains utility methods for working with elevation from layers and projects.
+Contains utility methods for working with elevation from layers and
+projects.
 
 .. versionadded:: 3.18
 %End
@@ -26,25 +27,29 @@ Contains utility methods for working with elevation from layers and projects.
 %Docstring
 Calculates the elevation range for a ``project``.
 
-This method considers the elevation (or z) range available from layers contained within the project and
-returns the maximal combined elevation range of these layers.
+This method considers the elevation (or z) range available from layers
+contained within the project and returns the maximal combined elevation
+range of these layers.
 %End
 
     static QList< double > significantZValuesForProject( QgsProject *project );
 %Docstring
-Returns a list of significant elevation/z-values for the specified ``project``, using
-the values from layers contained by the project.
+Returns a list of significant elevation/z-values for the specified
+``project``, using the values from layers contained by the project.
 
-These values will be highlighted in elevation related widgets for the project.
+These values will be highlighted in elevation related widgets for the
+project.
 
 .. versionadded:: 3.38
 %End
 
     static QList< double > significantZValuesForLayers( const QList< QgsMapLayer * > &layers );
 %Docstring
-Returns a list of significant elevation/z-values for the specified ``layers``.
+Returns a list of significant elevation/z-values for the specified
+``layers``.
 
-These values will be highlighted in elevation related widgets for the project.
+These values will be highlighted in elevation related widgets for the
+project.
 
 .. versionadded:: 3.38
 %End
@@ -58,7 +63,8 @@ Returns ``True`` if elevation can be enabled for a map ``layer``.
 
     static bool enableElevationForLayer( QgsMapLayer *layer );
 %Docstring
-Automatically enables elevation for a map ``layer``, using reasonable defaults.
+Automatically enables elevation for a map ``layer``, using reasonable
+defaults.
 
 Returns ``True`` if the elevation was enabled successfully.
 

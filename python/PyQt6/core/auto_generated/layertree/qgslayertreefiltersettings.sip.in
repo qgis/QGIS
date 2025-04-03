@@ -13,7 +13,8 @@
 class QgsLayerTreeFilterSettings
 {
 %Docstring(signature="appended")
-Contains settings relating to filtering the contents of :py:class:`QgsLayerTreeModel` and views.
+Contains settings relating to filtering the contents of
+:py:class:`QgsLayerTreeModel` and views.
 
 .. versionadded:: 3.32
 %End
@@ -25,7 +26,8 @@ Contains settings relating to filtering the contents of :py:class:`QgsLayerTreeM
 
     explicit QgsLayerTreeFilterSettings( const QgsMapSettings &settings );
 %Docstring
-Constructor for QgsLayerTreeFilterSettings, using the specified map ``settings``.
+Constructor for QgsLayerTreeFilterSettings, using the specified map
+``settings``.
 %End
 
     ~QgsLayerTreeFilterSettings();
@@ -71,24 +73,28 @@ Returns the filter expression to use for the layer with the specified
 
     QgsGeometry filterPolygon() const;
 %Docstring
-Returns the optional filter polygon, used when testing for symbols to show in
-the legend.
+Returns the optional filter polygon, used when testing for symbols to
+show in the legend.
 
-The CRS of the polygon will match the destination CRS of :py:func:`~QgsLayerTreeFilterSettings.mapSettings`.
+The CRS of the polygon will match the destination CRS of
+:py:func:`~QgsLayerTreeFilterSettings.mapSettings`.
 
-If not set then the filter visibility extent will use the extent of :py:func:`~QgsLayerTreeFilterSettings.mapSettings`.
+If not set then the filter visibility extent will use the extent of
+:py:func:`~QgsLayerTreeFilterSettings.mapSettings`.
 
 .. seealso:: :py:func:`setFilterPolygon`
 %End
 
     void setFilterPolygon( const QgsGeometry &polygon );
 %Docstring
-Sets the optional filter ``polygon``, used when testing for symbols to show in
-the legend.
+Sets the optional filter ``polygon``, used when testing for symbols to
+show in the legend.
 
-The CRS of the polygon must match the destination CRS of :py:func:`~QgsLayerTreeFilterSettings.mapSettings`.
+The CRS of the polygon must match the destination CRS of
+:py:func:`~QgsLayerTreeFilterSettings.mapSettings`.
 
-If not set then the filter visibility extent will use the extent of :py:func:`~QgsLayerTreeFilterSettings.mapSettings`.
+If not set then the filter visibility extent will use the extent of
+:py:func:`~QgsLayerTreeFilterSettings.mapSettings`.
 
 .. seealso:: :py:func:`filterPolygon`
 %End
@@ -111,10 +117,13 @@ Sets the filter ``flags``.
 %Docstring
 Adds a visible extent ``polygon`` for a map ``layer``.
 
-If ``layer`` is already included in the layers contained within :py:func:`~QgsLayerTreeFilterSettings.mapSettings` (or previously added by
-calling this method) then this ``polygon`` extent will be unioned with the existing extent.
+If ``layer`` is already included in the layers contained within
+:py:func:`~QgsLayerTreeFilterSettings.mapSettings` (or previously added
+by calling this method) then this ``polygon`` extent will be unioned
+with the existing extent.
 
-The ``layer`` will be appended to the list of layers to use during the legend hit test. (See :py:func:`~QgsLayerTreeFilterSettings.layers`).
+The ``layer`` will be appended to the list of layers to use during the
+legend hit test. (See :py:func:`~QgsLayerTreeFilterSettings.layers`).
 %End
 
     QgsGeometry combinedVisibleExtentForLayer( const QgsMapLayer *layer );
@@ -133,7 +142,9 @@ The returned geometry will always be in the layer's CRS.
 %Docstring
 Returns the layers which should be shown in the legend.
 
-This includes all layers from the :py:func:`~QgsLayerTreeFilterSettings.mapSettings` and any additional layers added by calls to
+This includes all layers from the
+:py:func:`~QgsLayerTreeFilterSettings.mapSettings` and any additional
+layers added by calls to
 :py:func:`~QgsLayerTreeFilterSettings.addVisibleExtentForLayer`.
 
 .. seealso:: :py:func:`addVisibleExtentForLayer`

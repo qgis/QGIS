@@ -34,7 +34,8 @@ settings from a :py:class:`QgsTextFormat` for individual text blocks.
 
     QgsTextBlockFormat( const QTextBlockFormat &format );
 %Docstring
-Constructor for QgsTextBlockFormat, based on the specified QTextBlockFormat ``format``.
+Constructor for QgsTextBlockFormat, based on the specified
+QTextBlockFormat ``format``.
 %End
 
     enum class BooleanValue
@@ -49,10 +50,11 @@ Constructor for QgsTextBlockFormat, based on the specified QTextBlockFormat ``fo
 Override all the default/unset properties of the current block format
 with the settings from another format.
 
-This will replace any default/unset existing settings with the
-settings from ``other``.
+This will replace any default/unset existing settings with the settings
+from ``other``.
 
-Any settings which are default/unset in ``other`` will be left unchanged.
+Any settings which are default/unset in ``other`` will be left
+unchanged.
 
 :param other: The format to override with.
 %End
@@ -61,7 +63,8 @@ Any settings which are default/unset in ``other`` will be left unchanged.
 %Docstring
 Returns ``True`` if the format has an explicit horizontal alignment set.
 
-If ``False`` is returned then the horizontal alignment will be inherited.
+If ``False`` is returned then the horizontal alignment will be
+inherited.
 
 .. seealso:: :py:func:`setHasHorizontalAlignmentSet`
 
@@ -83,7 +86,8 @@ If ``set`` is ``False`` then the horizontal alignment will be inherited.
 %Docstring
 Returns the format horizontal alignment.
 
-This property is only respected if :py:func:`~QgsTextBlockFormat.hasHorizontalAlignmentSet` is ``True``.
+This property is only respected if
+:py:func:`~QgsTextBlockFormat.hasHorizontalAlignmentSet` is ``True``.
 
 .. seealso:: :py:func:`hasHorizontalAlignmentSet`
 
@@ -94,7 +98,8 @@ This property is only respected if :py:func:`~QgsTextBlockFormat.hasHorizontalAl
 %Docstring
 Sets the format horizontal ``alignment``.
 
-This property is only respected if :py:func:`~QgsTextBlockFormat.hasHorizontalAlignmentSet` is ``True``.
+This property is only respected if
+:py:func:`~QgsTextBlockFormat.hasHorizontalAlignmentSet` is ``True``.
 
 .. seealso:: :py:func:`hasHorizontalAlignmentSet`
 
@@ -121,8 +126,8 @@ and should be auto calculated.
 %Docstring
 Sets the font line ``height``, in points.
 
-Set ``height`` to NaN if the line height is not set
-and should be auto calculated.
+Set ``height`` to NaN if the line height is not set and should be auto
+calculated.
 
 .. note::
 
@@ -137,7 +142,8 @@ and should be auto calculated.
 
     double lineHeightPercentage() const;
 %Docstring
-Returns the line height percentage size (as fraction of font size from 0.0 to 1.0), or NaN if the line height percentage is not set.
+Returns the line height percentage size (as fraction of font size from
+0.0 to 1.0), or NaN if the line height percentage is not set.
 
 .. note::
 
@@ -152,7 +158,8 @@ Returns the line height percentage size (as fraction of font size from 0.0 to 1.
 
     void setLineHeightPercentage( double height );
 %Docstring
-Sets the line height percentage ``height`` (as fraction of font size from 0.0 to 1.0).
+Sets the line height percentage ``height`` (as fraction of font size
+from 0.0 to 1.0).
 
 Set ``height`` to NaN if the line height percentange is not set.
 
@@ -198,7 +205,8 @@ Returns ``True`` if the block has a background set.
 %Docstring
 Returns the brush used for rendering the background of the block.
 
-Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBrush` set.
+Alternatively, the format may have a
+:py:func:`~QgsTextBlockFormat.backgroundBrush` set.
 
 .. seealso:: :py:func:`hasBackground`
 
@@ -211,7 +219,8 @@ Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBru
 %Docstring
 Sets the ``brush`` used for rendering the background of the block.
 
-Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBrush` set.
+Alternatively, the format may have a
+:py:func:`~QgsTextBlockFormat.backgroundBrush` set.
 
 .. seealso:: :py:func:`backgroundBrush`
 
@@ -220,9 +229,11 @@ Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBru
 
     QString backgroundImagePath() const;
 %Docstring
-Returns the path for the image to be used for rendering the background of the fragment.
+Returns the path for the image to be used for rendering the background
+of the fragment.
 
-Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBrush` set.
+Alternatively, the format may have a
+:py:func:`~QgsTextBlockFormat.backgroundBrush` set.
 
 .. seealso:: :py:func:`hasBackground`
 
@@ -233,9 +244,11 @@ Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBru
 
     void setBackgroundImagePath( const QString &path );
 %Docstring
-Sets the ``path`` for the image to be used for rendering the background of the fragment.
+Sets the ``path`` for the image to be used for rendering the background
+of the fragment.
 
-Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBrush` set.
+Alternatively, the format may have a
+:py:func:`~QgsTextBlockFormat.backgroundBrush` set.
 
 .. seealso:: :py:func:`backgroundImagePath`
 
@@ -244,13 +257,15 @@ Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBru
 
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
-Updates the specified ``font`` in place, applying block formatting options which
-are applicable on a font level when rendered in the given ``context``.
+Updates the specified ``font`` in place, applying block formatting
+options which are applicable on a font level when rendered in the given
+``context``.
 
-The optional ``scaleFactor`` parameter can specify a font size scaling factor. It is recommended to set this to
-:py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then manually calculations
-based on the resultant font metrics. Failure to do so will result in poor quality text rendering
-at small font sizes.
+The optional ``scaleFactor`` parameter can specify a font size scaling
+factor. It is recommended to set this to
+:py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then
+manually calculations based on the resultant font metrics. Failure to do
+so will result in poor quality text rendering at small font sizes.
 %End
 
 };

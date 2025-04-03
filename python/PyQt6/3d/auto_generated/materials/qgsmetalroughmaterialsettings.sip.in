@@ -34,7 +34,8 @@ A PBR metal rough shading material used for rendering.
 
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 %Docstring
-Returns ``True`` if the specified ``technique`` is supported by the metal rough material.
+Returns ``True`` if the specified ``technique`` is supported by the
+metal rough material.
 %End
 
     static QgsAbstractMaterialSettings *create() /Factory/;

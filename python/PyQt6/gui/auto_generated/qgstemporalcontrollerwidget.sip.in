@@ -14,7 +14,8 @@
 class QgsTemporalControllerWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A widget for controlling playback properties of a :py:class:`QgsTemporalController`.
+A widget for controlling playback properties of a
+:py:class:`QgsTemporalController`.
 
 .. versionadded:: 3.14
 %End
@@ -25,12 +26,14 @@ A widget for controlling playback properties of a :py:class:`QgsTemporalControll
   public:
     QgsTemporalControllerWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsTemporalControllerWidget, with the specified ``parent`` widget.
+Constructor for QgsTemporalControllerWidget, with the specified
+``parent`` widget.
 %End
 
     QgsTemporalNavigationObject *temporalController();
 %Docstring
-Returns the temporal controller object used by this object in navigation.
+Returns the temporal controller object used by this object in
+navigation.
 
 The dock widget retains ownership of the returned object.
 %End

@@ -13,7 +13,8 @@
 class QgsMapLayerActionContextGenerator
 {
 %Docstring(signature="appended")
-An interface for objects which can create a :py:class:`QgsMapLayerActionContext`.
+An interface for objects which can create a
+:py:class:`QgsMapLayerActionContext`.
 
 .. versionadded:: 3.30
 %End

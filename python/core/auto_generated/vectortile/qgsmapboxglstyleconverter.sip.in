@@ -46,10 +46,11 @@ Clears the list of warning messages.
 %Docstring
 Returns the target unit type.
 
-By default this is :py:class:`QgsUnitTypes`.RenderPixels in order to exactly match the original
-style rendering. But rendering in pixels can cause issues on hidpi displays or with print
-layouts, so setting a target unit of :py:class:`QgsUnitTypes`.Millimeters or another real-world unit
-type is often more appropriate.
+By default this is :py:class:`QgsUnitTypes`.RenderPixels in order to
+exactly match the original style rendering. But rendering in pixels can
+cause issues on hidpi displays or with print layouts, so setting a
+target unit of :py:class:`QgsUnitTypes`.Millimeters or another
+real-world unit type is often more appropriate.
 
 .. seealso:: :py:func:`setTargetUnit`
 %End
@@ -58,38 +59,41 @@ type is often more appropriate.
 %Docstring
 Sets the target unit type.
 
-By default this is :py:class:`QgsUnitTypes`.RenderPixels in order to exactly match the original
-style rendering. But rendering in pixels can cause issues on hidpi displays or with print
-layouts, so setting a target unit of :py:class:`QgsUnitTypes`.Millimeters or another real-world unit
-type is often more appropriate.
+By default this is :py:class:`QgsUnitTypes`.RenderPixels in order to
+exactly match the original style rendering. But rendering in pixels can
+cause issues on hidpi displays or with print layouts, so setting a
+target unit of :py:class:`QgsUnitTypes`.Millimeters or another
+real-world unit type is often more appropriate.
 
-If setting to a non-pixel unit, be sure to call :py:func:`~QgsMapBoxGlStyleConversionContext.setPixelSizeConversionFactor` in order
-to setup an appropriate pixel-to-unit conversion factor to scale converted sizes
-using. E.g. if the target unit is millimeters, the size conversion factor should be
-set to a pixel-to-millimeter value.
+If setting to a non-pixel unit, be sure to call
+:py:func:`~QgsMapBoxGlStyleConversionContext.setPixelSizeConversionFactor`
+in order to setup an appropriate pixel-to-unit conversion factor to
+scale converted sizes using. E.g. if the target unit is millimeters, the
+size conversion factor should be set to a pixel-to-millimeter value.
 
 .. seealso:: :py:func:`targetUnit`
 %End
 
     double pixelSizeConversionFactor() const;
 %Docstring
-Returns the pixel size conversion factor, used to scale the original pixel sizes
-when converting styles.
+Returns the pixel size conversion factor, used to scale the original
+pixel sizes when converting styles.
 
 .. seealso:: :py:func:`setPixelSizeConversionFactor`
 %End
 
     void setPixelSizeConversionFactor( double sizeConversionFactor );
 %Docstring
-Sets the pixel size conversion factor, used to scale the original pixel sizes
-when converting styles.
+Sets the pixel size conversion factor, used to scale the original pixel
+sizes when converting styles.
 
 .. seealso:: :py:func:`pixelSizeConversionFactor`
 %End
 
     QImage spriteImage() const;
 %Docstring
-Returns the sprite image to use during conversion, or an invalid image if this is not set.
+Returns the sprite image to use during conversion, or an invalid image
+if this is not set.
 
 .. seealso:: :py:func:`spriteDefinitions`
 
@@ -107,7 +111,8 @@ Returns the sprite definitions to use during conversion.
 
     void setSprites( const QImage &image, const QVariantMap &definitions );
 %Docstring
-Sets the sprite ``image`` and ``definitions`` JSON to use during conversion.
+Sets the sprite ``image`` and ``definitions`` JSON to use during
+conversion.
 
 .. seealso:: :py:func:`spriteImage`
 
@@ -116,7 +121,8 @@ Sets the sprite ``image`` and ``definitions`` JSON to use during conversion.
 
     void setSprites( const QImage &image, const QString &definitions );
 %Docstring
-Sets the sprite ``image`` and ``definitions`` JSON string to use during conversion.
+Sets the sprite ``image`` and ``definitions`` JSON string to use during
+conversion.
 
 .. seealso:: :py:func:`spriteImage`
 
@@ -255,7 +261,8 @@ Returns the list of tile sources.
 
     QgsRasterLayer *toRasterLayer() const /Factory/;
 %Docstring
-Returns a new raster layer representing the raster source, or ``None`` if the source cannot be represented as a raster layer.
+Returns a new raster layer representing the raster source, or ``None``
+if the source cannot be represented as a raster layer.
 
 The caller takes ownership of the returned layer.
 %End
@@ -283,7 +290,8 @@ Encapsulates a MapBox GL style raster sub layer.
 
     QgsMapBoxGlStyleRasterSubLayer( const QString &id, const QString &source );
 %Docstring
-Constructor for QgsMapBoxGlStyleRasterSubLayer, with the given ``id`` and ``source``.
+Constructor for QgsMapBoxGlStyleRasterSubLayer, with the given ``id``
+and ``source``.
 %End
 
     QString id() const;
@@ -308,12 +316,12 @@ Returns a reference to the layer's data defined properties.
 class QgsMapBoxGlStyleConverter
 {
 %Docstring(signature="appended")
-Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
-settings.
+Handles conversion of MapBox GL styles to QGIS vector tile renderers and
+labeling settings.
 
-Conversions are performed by calling :py:func:`~convert` with either a JSON map or JSON
-string value, and then retrieving the results by calling :py:func:`~renderer` or :py:func:`~labeling`
-respectively.
+Conversions are performed by calling :py:func:`~convert` with either a
+JSON map or JSON string value, and then retrieving the results by
+calling :py:func:`~renderer` or :py:func:`~labeling` respectively.
 
 .. versionadded:: 3.16
 %End
@@ -351,56 +359,67 @@ Constructor for QgsMapBoxGlStyleConverter.
 
     Result convert( const QVariantMap &style, QgsMapBoxGlStyleConversionContext *context = 0 );
 %Docstring
-Converts a JSON ``style`` map, and returns the resultant status of the conversion.
+Converts a JSON ``style`` map, and returns the resultant status of the
+conversion.
 
-If an error occurs during conversion then a descriptive error message can be retrieved
-by calling :py:func:`~QgsMapBoxGlStyleConverter.errorMessage`.
+If an error occurs during conversion then a descriptive error message
+can be retrieved by calling
+:py:func:`~QgsMapBoxGlStyleConverter.errorMessage`.
 
-After conversion, the resultant labeling and style rules can be retrieved by calling
-:py:func:`~QgsMapBoxGlStyleConverter.renderer` or :py:func:`~QgsMapBoxGlStyleConverter.labeling` respectively.
+After conversion, the resultant labeling and style rules can be
+retrieved by calling :py:func:`~QgsMapBoxGlStyleConverter.renderer` or
+:py:func:`~QgsMapBoxGlStyleConverter.labeling` respectively.
 
-The optional ``context`` argument can be set to use a specific context during the conversion.
+The optional ``context`` argument can be set to use a specific context
+during the conversion.
 %End
 
     Result convert( const QString &style, QgsMapBoxGlStyleConversionContext *context = 0 );
 %Docstring
-Converts a JSON ``style`` string, and returns the resultant status of the conversion.
+Converts a JSON ``style`` string, and returns the resultant status of
+the conversion.
 
-If an error occurs during conversion then a descriptive error message can be retrieved
-by calling :py:func:`~QgsMapBoxGlStyleConverter.errorMessage`.
+If an error occurs during conversion then a descriptive error message
+can be retrieved by calling
+:py:func:`~QgsMapBoxGlStyleConverter.errorMessage`.
 
-After conversion, the resultant labeling and style rules can be retrieved by calling
-:py:func:`~QgsMapBoxGlStyleConverter.renderer` or :py:func:`~QgsMapBoxGlStyleConverter.labeling` respectively.
+After conversion, the resultant labeling and style rules can be
+retrieved by calling :py:func:`~QgsMapBoxGlStyleConverter.renderer` or
+:py:func:`~QgsMapBoxGlStyleConverter.labeling` respectively.
 
-The optional ``context`` argument can be set to use a specific context during the conversion.
+The optional ``context`` argument can be set to use a specific context
+during the conversion.
 %End
 
     QString errorMessage() const;
 %Docstring
-Returns a descriptive error message if an error was encountered during the style conversion,
-or an empty string if no error was encountered.
+Returns a descriptive error message if an error was encountered during
+the style conversion, or an empty string if no error was encountered.
 
 .. seealso:: :py:func:`warnings`
 %End
 
     QStringList warnings() const;
 %Docstring
-Returns a list of user-friendly warnings generated during the conversion, e.g. as a result
-of MapBox GL style settings which cannot be translated to QGIS styles.
+Returns a list of user-friendly warnings generated during the
+conversion, e.g. as a result of MapBox GL style settings which cannot be
+translated to QGIS styles.
 
 .. seealso:: :py:func:`errorMessage`
 %End
 
     QgsVectorTileRenderer *renderer() const /Factory/;
 %Docstring
-Returns a new instance of a vector tile renderer representing the converted style,
-or ``None`` if the style could not be converted successfully.
+Returns a new instance of a vector tile renderer representing the
+converted style, or ``None`` if the style could not be converted
+successfully.
 %End
 
     QgsVectorTileLabeling *labeling() const /Factory/;
 %Docstring
-Returns a new instance of a vector tile labeling representing the converted style,
-or ``None`` if the style could not be converted successfully.
+Returns a new instance of a vector tile labeling representing the
+converted style, or ``None`` if the style could not be converted
+successfully.
 %End
 
     QList< QgsMapBoxGlStyleAbstractSource * > sources();
@@ -419,7 +438,8 @@ Returns a list of raster sub layers contained in the style.
 
     QList< QgsMapLayer * > createSubLayers() const /Factory/;
 %Docstring
-Returns a list of new map layers corresponding to sublayers of the style, e.g. raster layers.
+Returns a list of new map layers corresponding to sublayers of the
+style, e.g. raster layers.
 
 The caller takes ownership of the returned layers.
 
@@ -469,7 +489,8 @@ Parses a fill layer.
 
 :param jsonLayer: fill layer to parse
 :param context: conversion context
-:param isBackgroundStyle: set to ``True`` if the layer should be parsed as background layer
+:param isBackgroundStyle: set to ``True`` if the layer should be parsed
+                          as background layer
 
 :return: - ``True`` if the layer was successfully parsed.
          - style: generated QGIS vector tile style
@@ -521,9 +542,11 @@ Parses a symbol layer as renderer or labeling.
 :param context: conversion context
 
 :return: - rendererStyle: generated QGIS vector tile style
-         - hasRenderer: ``True`` if symbol layer generated a renderer style
+         - hasRenderer: ``True`` if symbol layer generated a renderer
+           style
          - labelingStyle: generated QGIS vector tile labeling
-         - hasLabeling: ``True`` if symbol layer generated a labeling style
+         - hasLabeling: ``True`` if symbol layer generated a labeling
+           style
 %End
 
     static bool parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer,
@@ -550,7 +573,8 @@ Parses a color value which is interpolated by zoom range.
 :param context: conversion context
 
 :return: - :py:class:`QgsProperty` representing interpolation settings
-         - defaultColor: a reasonable "default" color representing the overall property.
+         - defaultColor: a reasonable "default" color representing the
+           overall property.
 %End
 
     static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber /Out/ = 0 );
@@ -562,14 +586,19 @@ Parses a numeric value which is interpolated by zoom range.
 :param multiplier: optional multiplication factor
 
 :return: - :py:class:`QgsProperty` representing interpolation settings
-         - defaultNumber: a reasonable "default" number representing the overall property.
+         - defaultNumber: a reasonable "default" number representing the
+           overall property.
 %End
 
     static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
 %Docstring
-Interpolates opacity with either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base value).
-For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parseOpacityStops` function.
-It uses QGIS :py:func:`~QgsMapBoxGlStyleConverter.set_color_part` function to set alpha component of color.
+Interpolates opacity with either
+:py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or
+:py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base
+value). For ``json`` with intermediate stops it uses
+:py:func:`~QgsMapBoxGlStyleConverter.parseOpacityStops` function. It
+uses QGIS :py:func:`~QgsMapBoxGlStyleConverter.set_color_part` function
+to set alpha component of color.
 
 .. warning::
 
@@ -578,8 +607,10 @@ It uses QGIS :py:func:`~QgsMapBoxGlStyleConverter.set_color_part` function to se
 
     static QString parseOpacityStops( double base, const QVariantList &stops, int maxOpacity, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
-Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
-to interpolate alpha component of color.
+Takes values from stops and uses either
+:py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or
+:py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions to interpolate
+alpha component of color.
 
 .. warning::
 
@@ -588,8 +619,11 @@ to interpolate alpha component of color.
 
     static QgsProperty parseInterpolatePointByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QPointF *defaultPoint /Out/ = 0 );
 %Docstring
-Interpolates a point/offset with either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base value).
-For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parsePointStops` function.
+Interpolates a point/offset with either
+:py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or
+:py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base
+value). For ``json`` with intermediate stops it uses
+:py:func:`~QgsMapBoxGlStyleConverter.parsePointStops` function.
 
 .. warning::
 
@@ -600,8 +634,8 @@ For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverte
         const QVariantMap &conversionMap,
         QString *defaultString /Out/ = 0 );
 %Docstring
-Interpolates a string by zoom.
-For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parseStringStops` function.
+Interpolates a string by zoom. For ``json`` with intermediate stops it
+uses :py:func:`~QgsMapBoxGlStyleConverter.parseStringStops` function.
 
 .. warning::
 
@@ -610,8 +644,10 @@ For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverte
 
     static QString parsePointStops( double base, const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
 %Docstring
-Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
-to interpolate point/offset values.
+Takes values from stops and uses either
+:py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or
+:py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions to interpolate
+point/offset values.
 
 .. warning::
 
@@ -707,7 +743,8 @@ Interpolates a list which starts with the interpolate function.
 
     static QString parseColorExpression( const QVariant &colorExpression, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
-Converts an expression representing a color to a string (can be color string or an expression where a color is expected)
+Converts an expression representing a color to a string (can be color
+string or an expression where a color is expected)
 
 :param colorExpression: the color expression
 :param context: the style conversion context
@@ -734,13 +771,16 @@ Returns an invalid color if the color could not be parsed.
 
     static void colorAsHslaComponents( const QColor &color, int &hue, int &saturation, int &lightness, int &alpha );
 %Docstring
-Takes a QColor object and returns HSLA components in required format for QGIS :py:func:`~QgsMapBoxGlStyleConverter.color_hsla` expression function.
+Takes a QColor object and returns HSLA components in required format for
+QGIS :py:func:`~QgsMapBoxGlStyleConverter.color_hsla` expression
+function.
 
 :param color: input color
 :param hue: an integer value from 0 to 360
 :param saturation: an integer value from 0 to 100
 :param lightness: an integer value from 0 to 100
-:param alpha: an integer value from 0 (completely transparent) to 255 (opaque).
+:param alpha: an integer value from 0 (completely transparent) to 255
+              (opaque).
 
 .. warning::
 
@@ -749,8 +789,8 @@ Takes a QColor object and returns HSLA components in required format for QGIS :p
 
     static QString interpolateExpression( double zoomMin, double zoomMax, QVariant valueMin, QVariant valueMax, double base, double multiplier = 1, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
 %Docstring
-Generates an interpolation for values between ``valueMin`` and ``valueMax``, scaled between the
-ranges ``zoomMin`` to ``zoomMax``.
+Generates an interpolation for values between ``valueMin`` and
+``valueMax``, scaled between the ranges ``zoomMin`` to ``zoomMax``.
 
 .. warning::
 
@@ -786,26 +826,32 @@ Converts a MapBox GL expression to a QGIS expression.
 
     static QImage retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize );
 %Docstring
-Retrieves the sprite image with the specified ``name``, taken from the specified ``context``.
+Retrieves the sprite image with the specified ``name``, taken from the
+specified ``context``.
 
-The ``context`` must have valid sprite definitions and images set via :py:func:`QgsMapBoxGlStyleConversionContext.setSprites()`
-prior to conversion.
+The ``context`` must have valid sprite definitions and images set via
+:py:func:`QgsMapBoxGlStyleConversionContext.setSprites()` prior to
+conversion.
 %End
 
     static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
-Retrieves the sprite image with the specified ``name``, taken from the specified ``context`` as a base64 encoded value
+Retrieves the sprite image with the specified ``name``, taken from the
+specified ``context`` as a base64 encoded value
 
-The ``context`` must have valid sprite definitions and images set via :py:func:`QgsMapBoxGlStyleConversionContext.setSprites()`
-prior to conversion.
+The ``context`` must have valid sprite definitions and images set via
+:py:func:`QgsMapBoxGlStyleConversionContext.setSprites()` prior to
+conversion.
 %End
 
     static QString retrieveSpriteAsBase64WithProperties( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize /Out/, QString &spriteProperty /Out/, QString &spriteSizeProperty /Out/ );
 %Docstring
-Retrieves the sprite image with the specified ``name``, taken from the specified ``context`` as a base64 encoded value
+Retrieves the sprite image with the specified ``name``, taken from the
+specified ``context`` as a base64 encoded value
 
-The ``context`` must have valid sprite definitions and images set via :py:func:`QgsMapBoxGlStyleConversionContext.setSprites()`
-prior to conversion.
+The ``context`` must have valid sprite definitions and images set via
+:py:func:`QgsMapBoxGlStyleConversionContext.setSprites()` prior to
+conversion.
 
 .. versionadded:: 3.40
 %End

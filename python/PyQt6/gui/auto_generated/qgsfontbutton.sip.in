@@ -15,14 +15,16 @@ class QgsFontButton : QToolButton
 %Docstring(signature="appended")
 A button for customizing :py:class:`QgsTextFormat` settings.
 
-The button will open a detailed text format settings dialog when clicked. An attached drop-down
-menu allows for copying and pasting text styles, picking colors for the text, and for dropping
-colors from other color widgets.
+The button will open a detailed text format settings dialog when
+clicked. An attached drop-down menu allows for copying and pasting text
+styles, picking colors for the text, and for dropping colors from other
+color widgets.
 
-The button can be used in two different :py:func:`~modes`. The default behavior is to include
-all settings used for configuring :py:class:`QgsTextFormat`/:py:class:`QgsTextRenderer` classes. A cut down
-mode (without settings for color) is also available when the resultant font is
-used only in a QFont object.
+The button can be used in two different :py:func:`~modes`. The default
+behavior is to include all settings used for configuring
+:py:class:`QgsTextFormat`/:py:class:`QgsTextRenderer` classes. A cut
+down mode (without settings for color) is also available when the
+resultant font is used only in a QFont object.
 %End
 
 %TypeHeaderCode
@@ -38,9 +40,9 @@ used only in a QFont object.
 
     QgsFontButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring
-Construct a new font button.
-Use ``parent`` to attach a parent QWidget to the dialog.
-Use ``dialogTitle`` string to define the title to show in the text settings dialog.
+Construct a new font button. Use ``parent`` to attach a parent QWidget
+to the dialog. Use ``dialogTitle`` string to define the title to show in
+the text settings dialog.
 %End
 
     virtual QSize minimumSizeHint() const;
@@ -57,10 +59,12 @@ Returns the current button mode.
 
     void setMode( Mode mode );
 %Docstring
-Sets the current button ``mode``. This can be used to toggle between
-the full capabilities of the button (for configuring :py:class:`QgsTextFormat`/:py:class:`QgsTextRenderer` objects)
-and a cut-back version for configuring QFont object properties (i.e. with
-no color settings or the other advanced options :py:class:`QgsTextFormat` allows).
+Sets the current button ``mode``. This can be used to toggle between the
+full capabilities of the button (for configuring
+:py:class:`QgsTextFormat`/:py:class:`QgsTextRenderer` objects) and a
+cut-back version for configuring QFont object properties (i.e. with no
+color settings or the other advanced options :py:class:`QgsTextFormat`
+allows).
 
 .. seealso:: :py:func:`mode`
 %End
@@ -89,15 +93,16 @@ Returns the map canvas associated with the widget.
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
 Sets a map ``canvas`` to associate with the widget. This allows the
-widget to fetch current settings from the map canvas, such as current scale.
+widget to fetch current settings from the map canvas, such as current
+scale.
 
 .. seealso:: :py:func:`mapCanvas`
 %End
 
     void setMessageBar( QgsMessageBar *bar );
 %Docstring
-Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
-to the appropriate message bar.
+Sets the message ``bar`` associated with the widget. This allows the
+widget to push feedback messages to the appropriate message bar.
 
 .. seealso:: :py:func:`messageBar`
 
@@ -115,16 +120,16 @@ Returns the message bar associated with the widget.
 
     QgsTextFormat textFormat() const;
 %Docstring
-Returns the current text formatting set by the widget.
-This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
+Returns the current text formatting set by the widget. This is only used
+when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
 
 .. seealso:: :py:func:`setTextFormat`
 %End
 
     QFont currentFont() const;
 %Docstring
-Returns the current QFont set by the widget.
-This is only used when :py:func:`~QgsFontButton.mode` is ModeQFont.
+Returns the current QFont set by the widget. This is only used when
+:py:func:`~QgsFontButton.mode` is ModeQFont.
 
 .. seealso:: :py:func:`setCurrentFont`
 %End
@@ -140,9 +145,9 @@ Returns the layer associated with the widget.
 
     void setLayer( QgsVectorLayer *layer );
 %Docstring
-Sets a ``layer`` to associate with the widget. This allows the
-widget to setup layer related settings within the text settings dialog,
-such as correctly populating data defined override buttons.
+Sets a ``layer`` to associate with the widget. This allows the widget to
+setup layer related settings within the text settings dialog, such as
+correctly populating data defined override buttons.
 
 .. seealso:: :py:func:`layer`
 
@@ -151,19 +156,21 @@ such as correctly populating data defined override buttons.
 
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 %Docstring
-Register an expression context generator class that will be used to retrieve
-an expression context for the button when required.
+Register an expression context generator class that will be used to
+retrieve an expression context for the button when required.
 
 .. versionadded:: 3.10
 %End
 
     void setShowNullFormat( const bool show );
 %Docstring
-Sets whether the "null format" option should be shown in the button's drop-down menu. This option
-is only used for buttons set to the ModeTextRenderer :py:func:`~QgsFontButton.mode`.
+Sets whether the "null format" option should be shown in the button's
+drop-down menu. This option is only used for buttons set to the
+ModeTextRenderer :py:func:`~QgsFontButton.mode`.
 
-If selected, the "null format" option sets the button's format to an invalid :py:class:`QgsTextFormat`. This
-can be used to represent a "use default format" state for the button.
+If selected, the "null format" option sets the button's format to an
+invalid :py:class:`QgsTextFormat`. This can be used to represent a "use
+default format" state for the button.
 
 By default this option is not shown.
 
@@ -176,7 +183,8 @@ By default this option is not shown.
 
     void setNoFormatString( const QString &string );
 %Docstring
-Sets the ``string`` to use for the "null format" option in the button's drop-down menu.
+Sets the ``string`` to use for the "null format" option in the button's
+drop-down menu.
 
 .. note::
 
@@ -189,11 +197,13 @@ Sets the ``string`` to use for the "null format" option in the button's drop-dow
 
     bool showNullFormat() const;
 %Docstring
-Returns whether the "null format" option will be shown in the button's drop-down menu. This option
-is only used for buttons set to the ModeTextRenderer :py:func:`~QgsFontButton.mode`.
+Returns whether the "null format" option will be shown in the button's
+drop-down menu. This option is only used for buttons set to the
+ModeTextRenderer :py:func:`~QgsFontButton.mode`.
 
-If selected, the "null format" option sets the button's format to an invalid :py:class:`QgsTextFormat`. This
-can be used to represent a "use default format" state for the button.
+If selected, the "null format" option sets the button's format to an
+invalid :py:class:`QgsTextFormat`. This can be used to represent a "use
+default format" state for the button.
 
 By default this option is not shown.
 
@@ -206,8 +216,8 @@ By default this option is not shown.
 
     void setTextFormat( const QgsTextFormat &format );
 %Docstring
-Sets the current text ``format`` to show in the widget.
-This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
+Sets the current text ``format`` to show in the widget. This is only
+used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
 
 .. seealso:: :py:func:`textFormat`
 %End
@@ -216,24 +226,25 @@ This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
 %Docstring
 Sets the text format to a null (invalid) :py:class:`QgsTextFormat`.
 
-This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
+This is only used when :py:func:`~QgsFontButton.mode` is
+ModeTextRenderer.
 
 .. versionadded:: 3.16
 %End
 
     void setCurrentFont( const QFont &font );
 %Docstring
-Sets the current text ``font`` to show in the widget.
-This is only used when :py:func:`~QgsFontButton.mode` is ModeQFont.
+Sets the current text ``font`` to show in the widget. This is only used
+when :py:func:`~QgsFontButton.mode` is ModeQFont.
 
 .. seealso:: :py:func:`currentFont`
 %End
 
     void setColor( const QColor &color );
 %Docstring
-Sets the current ``color`` for the text. Will emit a changed signal if the color is different
-to the previous text color.
-This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
+Sets the current ``color`` for the text. Will emit a changed signal if
+the color is different to the previous text color. This is only used
+when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
 %End
 
     void copyFormat();
@@ -245,25 +256,26 @@ Copies the current text format to the clipboard.
 
     void pasteFormat();
 %Docstring
-Pastes a format from the clipboard. If clipboard does not contain a valid
-format then no change is applied.
+Pastes a format from the clipboard. If clipboard does not contain a
+valid format then no change is applied.
 
 .. seealso:: :py:func:`copyFormat`
 %End
 
     void copyColor();
 %Docstring
-Copies the current text color to the clipboard.
-This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
+Copies the current text color to the clipboard. This is only used when
+:py:func:`~QgsFontButton.mode` is ModeTextRenderer.
 
 .. seealso:: :py:func:`pasteColor`
 %End
 
     void pasteColor();
 %Docstring
-Pastes a color from the clipboard to the text format. If clipboard does not contain a valid
-color or string representation of a color, then no change is applied.
-This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
+Pastes a color from the clipboard to the text format. If clipboard does
+not contain a valid color or string representation of a color, then no
+change is applied. This is only used when :py:func:`~QgsFontButton.mode`
+is ModeTextRenderer.
 
 .. seealso:: :py:func:`copyColor`
 %End

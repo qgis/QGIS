@@ -15,8 +15,8 @@ A QTableView subclass with QGIS specific tweaks and improvements.
 
 :py:class:`QgsTableView` should be used instead of QTableView widgets.
 In most cases the use is identical, however :py:class:`QgsTableView`
-adds extra functionality and UI tweaks for improved user
-experience in QGIS.
+adds extra functionality and UI tweaks for improved user experience in
+QGIS.
 
 .. versionadded:: 3.26
 %End

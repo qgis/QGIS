@@ -11,11 +11,10 @@
 class QgsProviderSublayerDetails
 {
 %Docstring(signature="appended")
-
 Contains details about a sub layer available from a dataset.
 
-This class encapsulates the properties of a single sublayer available from a dataset,
-according to a specific data provider.
+This class encapsulates the properties of a single sublayer available
+from a dataset, according to a specific data provider.
 
 .. note::
 
@@ -92,7 +91,8 @@ Constructor for LayerOptions with ``transformContext``.
 
     QgsMapLayer *toLayer( const LayerOptions &options ) const /Factory/;
 %Docstring
-Creates a new :py:class:`QgsMapLayer` object associated with the sublayer.
+Creates a new :py:class:`QgsMapLayer` object associated with the
+sublayer.
 
 Caller takes ownership of the returned layer.
 %End
@@ -159,8 +159,9 @@ Sets the layer's ``driver`` name.
 %Docstring
 Returns the path to the sublayer.
 
-This is an internal path, relative to the dataset itself. It can be used to encapsulate
-the hierarchy of a dataset which organises layers in schemas or in an internal folder structure.
+This is an internal path, relative to the dataset itself. It can be used
+to encapsulate the hierarchy of a dataset which organises layers in
+schemas or in an internal folder structure.
 
 .. seealso:: :py:func:`setPath`
 %End
@@ -169,8 +170,9 @@ the hierarchy of a dataset which organises layers in schemas or in an internal f
 %Docstring
 Sets the ``path`` to the sublayer.
 
-This is an internal path, relative to the dataset itself. It can be used to encapsulate
-the hierarchy of a dataset which organises layers in schemas or in an internal folder structure.
+This is an internal path, relative to the dataset itself. It can be used
+to encapsulate the hierarchy of a dataset which organises layers in
+schemas or in an internal folder structure.
 
 .. seealso:: :py:func:`path`
 %End
@@ -179,7 +181,9 @@ the hierarchy of a dataset which organises layers in schemas or in an internal f
 %Docstring
 Returns the layer's feature count.
 
-Will return :py:class:`Qgis`.FeatureCountState.UnknownCount or :py:class:`Qgis`.FeatureCountState.Uncounted if no feature count is applicable or available.
+Will return :py:class:`Qgis`.FeatureCountState.UnknownCount or
+:py:class:`Qgis`.FeatureCountState.Uncounted if no feature count is
+applicable or available.
 
 .. seealso:: :py:func:`setFeatureCount`
 %End
@@ -188,14 +192,17 @@ Will return :py:class:`Qgis`.FeatureCountState.UnknownCount or :py:class:`Qgis`.
 %Docstring
 Sets the layer's feature ``count``.
 
-Set to :py:class:`Qgis`.FeatureCountState.UnknownCount or :py:class:`Qgis`.FeatureCountState.Uncounted if no feature count is applicable or available.
+Set to :py:class:`Qgis`.FeatureCountState.UnknownCount or
+:py:class:`Qgis`.FeatureCountState.Uncounted if no feature count is
+applicable or available.
 
 .. seealso:: :py:func:`featureCount`
 %End
 
     Qgis::WkbType wkbType() const;
 %Docstring
-Returns the layer's WKB type, or :py:class:`QgsWkbTypes`.Unknown if the WKB type is not application or unknown.
+Returns the layer's WKB type, or :py:class:`QgsWkbTypes`.Unknown if the
+WKB type is not application or unknown.
 
 .. seealso:: :py:func:`setWkbType`
 %End
@@ -204,14 +211,16 @@ Returns the layer's WKB type, or :py:class:`QgsWkbTypes`.Unknown if the WKB type
 %Docstring
 Set the layer's WKB ``type``.
 
-Set to :py:class:`QgsWkbTypes`.Unknown if the WKB type is not application or unknown.
+Set to :py:class:`QgsWkbTypes`.Unknown if the WKB type is not
+application or unknown.
 
 .. seealso:: :py:func:`wkbType`
 %End
 
     QString geometryColumnName() const;
 %Docstring
-Returns the layer's geometry column name, or an empty string if not applicable.
+Returns the layer's geometry column name, or an empty string if not
+applicable.
 
 .. seealso:: :py:func:`setGeometryColumnName`
 %End
@@ -233,37 +242,40 @@ Set to an empty string if not applicable.
 
     int layerNumber() const;
 %Docstring
-Returns the associated layer number, for providers which order sublayers.
+Returns the associated layer number, for providers which order
+sublayers.
 
 .. seealso:: :py:func:`setLayerNumber`
 %End
 
     void setLayerNumber( int number );
 %Docstring
-Sets the associated layer ``number``, for providers which order sublayers.
+Sets the associated layer ``number``, for providers which order
+sublayers.
 
 .. seealso:: :py:func:`layerNumber`
 %End
 
     void setSkippedContainerScan( bool skipped );
 %Docstring
-Set to ``True`` if the layer is a potential dataset container and an in-depth scan
-of its contents was skipped.
+Set to ``True`` if the layer is a potential dataset container and an
+in-depth scan of its contents was skipped.
 
 .. seealso:: :py:func:`skippedContainerScan`
 %End
 
     bool skippedContainerScan() const;
 %Docstring
-Returns ``True`` if the layer is a potential dataset container and an in-depth scan
-of its contents was skipped.
+Returns ``True`` if the layer is a potential dataset container and an
+in-depth scan of its contents was skipped.
 
 .. seealso:: :py:func:`setSkippedContainerScan`
 %End
 
     QgsMimeDataUtils::Uri toMimeUri() const;
 %Docstring
-Converts the sublayer details to a :py:class:`QgsMimeDataUtils`.Uri representing the sublayer.
+Converts the sublayer details to a :py:class:`QgsMimeDataUtils`.Uri
+representing the sublayer.
 
 .. versionadded:: 3.28
 %End

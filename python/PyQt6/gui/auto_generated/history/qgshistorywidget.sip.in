@@ -27,12 +27,13 @@ A widget showing entries from a :py:class:`QgsHistoryProviderRegistry`.
 %Docstring
 Constructor for QgsHistoryWidget, with the specified ``parent`` widget.
 
-If ``providerId`` is specified then the widget will contain only items from the matching
-history provider.
-If ``backends`` is specified then the widget will be filtered to only matching backends.
+If ``providerId`` is specified then the widget will contain only items
+from the matching history provider. If ``backends`` is specified then
+the widget will be filtered to only matching backends.
 
-If no ``registry`` is specified then the singleton :py:class:`QgsHistoryProviderRegistry` from :py:func:`QgsGui.historyProviderRegistry()`
-will be used.
+If no ``registry`` is specified then the singleton
+:py:class:`QgsHistoryProviderRegistry` from
+:py:func:`QgsGui.historyProviderRegistry()` will be used.
 %End
 
 };

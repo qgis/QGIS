@@ -12,9 +12,9 @@
 class QgsAttributeFormWidget : QWidget /Abstract/
 {
 %Docstring(signature="appended")
-
 Base class for all widgets shown on a :py:class:`QgsAttributeForm`.
-Consists of the widget which is visible in edit mode as well as the widget visible in search mode.
+Consists of the widget which is visible in edit mode as well as the
+widget visible in search mode.
 %End
 
 %TypeHeaderCode
@@ -38,8 +38,9 @@ A new form widget for the wrapper ``widget`` on ``form``.
 
     virtual void createSearchWidgetWrappers() = 0;
 %Docstring
-Creates the search widget wrappers for the widget used when the form is in
-search mode.
+Creates the search widget wrappers for the widget used when the form is
+in search mode.
+
 
 %End
 
@@ -52,8 +53,9 @@ search properties represented in the widget.
 
     void setMode( Mode mode );
 %Docstring
-Sets the current mode for the widget. The widget will adapt its state and visible widgets to
-reflect the updated mode. For example, showing multi edit tool buttons if the mode is set to MultiEditMode.
+Sets the current mode for the widget. The widget will adapt its state
+and visible widgets to reflect the updated mode. For example, showing
+multi edit tool buttons if the mode is set to MultiEditMode.
 
 :param mode: widget mode
 
@@ -99,14 +101,15 @@ search mode.
 
     void addAdditionalSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
 %Docstring
-Adds an additional search widget wrapper.
-Used to register a secondary search widget as used for "between" searches.
+Adds an additional search widget wrapper. Used to register a secondary
+search widget as used for "between" searches.
 %End
 
     QList<QgsSearchWidgetWrapper *> searchWidgetWrappers();
 %Docstring
 Returns the search widget wrapper used in this widget. The wrapper must
-first be created using :py:func:`~QgsAttributeFormWidget.createSearchWidgetWrapper`
+first be created using
+:py:func:`~QgsAttributeFormWidget.createSearchWidgetWrapper`
 
 .. note::
 
@@ -121,14 +124,16 @@ Resets the search/filter value of the widget.
 
     bool searchWidgetToolButtonVisible() const;
 %Docstring
-The visibility of the search widget tool button, that allows (de)activating
-this search widgte or defines the comparison operator to use.
+The visibility of the search widget tool button, that allows
+(de)activating this search widgte or defines the comparison operator to
+use.
 %End
 
     void setSearchWidgetToolButtonVisible( bool searchWidgetToolButtonVisible );
 %Docstring
-The visibility of the search widget tool button, that allows (de)activating
-this search widgte or defines the comparison operator to use.
+The visibility of the search widget tool button, that allows
+(de)activating this search widgte or defines the comparison operator to
+use.
 %End
 
   protected:
@@ -137,7 +142,8 @@ this search widgte or defines the comparison operator to use.
 
     void setVisiblePageForMode( QgsAttributeFormWidget::Mode mode );
 %Docstring
-Sets the visible page in the widget to the page matching the specified ``mode``.
+Sets the visible page in the widget to the page matching the specified
+``mode``.
 
 .. versionadded:: 3.32
 %End

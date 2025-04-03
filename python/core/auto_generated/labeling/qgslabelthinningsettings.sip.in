@@ -12,9 +12,8 @@
 class QgsLabelThinningSettings
 {
 %Docstring(signature="appended")
-
-Contains settings related to how the label engine removes candidate label positions and reduces the number
-of displayed labels.
+Contains settings related to how the label engine removes candidate
+label positions and reduces the number of displayed labels.
 
 .. versionadded:: 3.12
 %End
@@ -26,7 +25,8 @@ of displayed labels.
 
     bool limitNumberOfLabelsEnabled() const;
 %Docstring
-Returns ``True`` if the number of labels drawn for the layer should be limited.
+Returns ``True`` if the number of labels drawn for the layer should be
+limited.
 
 .. seealso:: :py:func:`maximumNumberLabels`
 
@@ -35,7 +35,8 @@ Returns ``True`` if the number of labels drawn for the layer should be limited.
 
     void setLimitNumberLabelsEnabled( bool enabled );
 %Docstring
-Sets whether the the number of labels drawn for the layer should be limited.
+Sets whether the the number of labels drawn for the layer should be
+limited.
 
 .. seealso:: :py:func:`setMaximumNumberLabels`
 
@@ -44,8 +45,10 @@ Sets whether the the number of labels drawn for the layer should be limited.
 
     int maximumNumberLabels() const;
 %Docstring
-Returns the maximum number of labels which should be drawn for this layer.
-This only has an effect if :py:func:`~QgsLabelThinningSettings.limitNumberOfLabelsEnabled` is ``True``.
+Returns the maximum number of labels which should be drawn for this
+layer. This only has an effect if
+:py:func:`~QgsLabelThinningSettings.limitNumberOfLabelsEnabled` is
+``True``.
 
 .. seealso:: :py:func:`limitNumberOfLabelsEnabled`
 
@@ -54,8 +57,10 @@ This only has an effect if :py:func:`~QgsLabelThinningSettings.limitNumberOfLabe
 
     void setMaximumNumberLabels( int number );
 %Docstring
-Sets the maximum ``number`` of labels which should be drawn for this layer.
-This only has an effect if :py:func:`~QgsLabelThinningSettings.limitNumberOfLabelsEnabled` is ``True``.
+Sets the maximum ``number`` of labels which should be drawn for this
+layer. This only has an effect if
+:py:func:`~QgsLabelThinningSettings.limitNumberOfLabelsEnabled` is
+``True``.
 
 .. seealso:: :py:func:`setLimitNumberLabelsEnabled`
 
@@ -64,22 +69,24 @@ This only has an effect if :py:func:`~QgsLabelThinningSettings.limitNumberOfLabe
 
     double minimumFeatureSize() const;
 %Docstring
-Returns the minimum feature size (in millimeters) for a feature to be labelled.
+Returns the minimum feature size (in millimeters) for a feature to be
+labelled.
 
 .. seealso:: :py:func:`setMinimumFeatureSize`
 %End
 
     void setMinimumFeatureSize( double size );
 %Docstring
-Sets the minimum feature ``size`` (in millimeters) for a feature to be labelled.
+Sets the minimum feature ``size`` (in millimeters) for a feature to be
+labelled.
 
 .. seealso:: :py:func:`minimumFeatureSize`
 %End
 
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 %Docstring
-Updates the thinning settings to respect any data defined properties
-set within the specified ``properties`` collection.
+Updates the thinning settings to respect any data defined properties set
+within the specified ``properties`` collection.
 %End
 
 };

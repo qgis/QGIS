@@ -13,7 +13,6 @@
 class QgsTiledSceneLayer : QgsMapLayer
 {
 %Docstring(signature="appended")
-
 Represents a map layer supporting display of tiled scene objects.
 
 .. versionadded:: 3.34

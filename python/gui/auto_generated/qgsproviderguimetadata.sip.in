@@ -32,8 +32,9 @@ Constructor for provider gui metadata
 
     virtual void registerGui( QMainWindow *widget );
 %Docstring
-Called during GUI initialization - allows provider to do its internal initialization
-of GUI components, possibly making use of the passed pointer to the QGIS main window.
+Called during GUI initialization - allows provider to do its internal
+initialization of GUI components, possibly making use of the passed
+pointer to the QGIS main window.
 %End
 
     virtual QList<QgsDataItemGuiProvider *> dataItemGuiProviders() /Factory/;

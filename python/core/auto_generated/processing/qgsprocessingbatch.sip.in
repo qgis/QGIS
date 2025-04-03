@@ -25,9 +25,9 @@ Processing feedback subclass for use when batch processing.
 
     QgsProcessingBatchFeedback( int tasks, QgsProcessingFeedback *feedback );
 %Docstring
-Constructor for QgsProcessingBatchFeedback, for a process with the specified
-number of ``tasks``. This feedback object will proxy calls
-to the specified ``feedback`` object.
+Constructor for QgsProcessingBatchFeedback, for a process with the
+specified number of ``tasks``. This feedback object will proxy calls to
+the specified ``feedback`` object.
 %End
 
     virtual void reportError( const QString &error, bool fatalError = false );
@@ -35,7 +35,8 @@ to the specified ``feedback`` object.
 
     QStringList popErrors();
 %Docstring
-Takes the current list of reported errors and clears the stored list of errors.
+Takes the current list of reported errors and clears the stored list of
+errors.
 %End
 
 };

@@ -21,7 +21,8 @@ A layout item subclass for scale bars.
 
     QgsLayoutItemScaleBar( QgsLayout *layout );
 %Docstring
-Constructor for QgsLayoutItemScaleBar, with the specified parent ``layout``.
+Constructor for QgsLayoutItemScaleBar, with the specified parent
+``layout``.
 %End
 
     virtual int type() const;
@@ -58,7 +59,8 @@ Sets the number of ``segments`` included in the scalebar.
 
     int numberOfSegmentsLeft() const;
 %Docstring
-Returns the number of segments included in the left part of the scalebar.
+Returns the number of segments included in the left part of the
+scalebar.
 
 .. seealso:: :py:func:`setNumberOfSegmentsLeft`
 
@@ -67,7 +69,8 @@ Returns the number of segments included in the left part of the scalebar.
 
     void setNumberOfSegmentsLeft( int segments );
 %Docstring
-Sets the number of ``segments`` included in the left part of the scalebar.
+Sets the number of ``segments`` included in the left part of the
+scalebar.
 
 .. seealso:: :py:func:`numberOfSegmentsLeft`
 
@@ -76,7 +79,8 @@ Sets the number of ``segments`` included in the left part of the scalebar.
 
     int numberOfSubdivisions()  const;
 %Docstring
-Returns the number of subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+Returns the number of subdivisions for segments included in the right
+part of the scalebar (only used for some scalebar types).
 
 .. note::
 
@@ -90,7 +94,8 @@ Returns the number of subdivisions for segments included in the right part of th
 
     void setNumberOfSubdivisions( int subdivisions );
 %Docstring
-Sets the number of ``subdivisions`` for segments included in the right part of the scalebar (only used for some scalebar types).
+Sets the number of ``subdivisions`` for segments included in the right
+part of the scalebar (only used for some scalebar types).
 
 .. note::
 
@@ -104,7 +109,9 @@ Sets the number of ``subdivisions`` for segments included in the right part of t
 
     double subdivisionsHeight() const;
 %Docstring
-Returns the scalebar subdivisions height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+Returns the scalebar subdivisions height (in millimeters) for segments
+included in the right part of the scalebar (only used for some scalebar
+types).
 
 .. seealso:: :py:func:`setSubdivisionsHeight`
 
@@ -113,7 +120,9 @@ Returns the scalebar subdivisions height (in millimeters) for segments included 
 
     void setSubdivisionsHeight( double height );
 %Docstring
-Sets the scalebar subdivisions ``height`` (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+Sets the scalebar subdivisions ``height`` (in millimeters) for segments
+included in the right part of the scalebar (only used for some scalebar
+types).
 
 .. seealso:: :py:func:`subdivisionsHeight`
 
@@ -159,8 +168,9 @@ Sets the size ``mode`` for scale bar segments.
     double minimumBarWidth() const;
 %Docstring
 Returns the minimum width (in millimeters) for scale bar segments. This
-property is only effective if the :py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set
-to SegmentSizeFitWidth.
+property is only effective if the
+:py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set to
+SegmentSizeFitWidth.
 
 .. seealso:: :py:func:`segmentSizeMode`
 
@@ -172,8 +182,9 @@ to SegmentSizeFitWidth.
     void setMinimumBarWidth( double minWidth );
 %Docstring
 Sets the minimum ``width`` (in millimeters) for scale bar segments. This
-property is only effective if the :py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set
-to SegmentSizeFitWidth.
+property is only effective if the
+:py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set to
+SegmentSizeFitWidth.
 
 .. seealso:: :py:func:`minimumBarWidth`
 
@@ -185,8 +196,9 @@ to SegmentSizeFitWidth.
     double maximumBarWidth() const;
 %Docstring
 Returns the maximum width (in millimeters) for scale bar segments. This
-property is only effective if the :py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set
-to SegmentSizeFitWidth.
+property is only effective if the
+:py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set to
+SegmentSizeFitWidth.
 
 .. seealso:: :py:func:`segmentSizeMode`
 
@@ -198,8 +210,9 @@ to SegmentSizeFitWidth.
     void setMaximumBarWidth( double maxWidth );
 %Docstring
 Sets the maximum ``width`` (in millimeters) for scale bar segments. This
-property is only effective if the :py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set
-to SegmentSizeFitWidth.
+property is only effective if the
+:py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set to
+SegmentSizeFitWidth.
 
 .. seealso:: :py:func:`minimumBarWidth`
 
@@ -217,7 +230,8 @@ Returns the number of map units per scale bar unit used by the scalebar.
 
     void setMapUnitsPerScaleBarUnit( double units );
 %Docstring
-Sets the number of map ``units`` per scale bar unit used by the scalebar.
+Sets the number of map ``units`` per scale bar unit used by the
+scalebar.
 
 .. seealso:: :py:func:`mapUnitsPerScaleBarUnit`
 %End
@@ -257,7 +271,8 @@ Sets the text ``format`` used for drawing text in the scalebar.
 
     QgsLineSymbol *lineSymbol() const;
 %Docstring
-Returns the line symbol used to render the scalebar (only used for some scalebar types).
+Returns the line symbol used to render the scalebar (only used for some
+scalebar types).
 
 Ownership is not transferred.
 
@@ -272,8 +287,8 @@ Ownership is not transferred.
 
     void setLineSymbol( QgsLineSymbol *symbol /Transfer/ );
 %Docstring
-Sets the line ``symbol`` used to render the scalebar (only used for some scalebar types). Ownership of ``symbol`` is
-transferred to the scalebar.
+Sets the line ``symbol`` used to render the scalebar (only used for some
+scalebar types). Ownership of ``symbol`` is transferred to the scalebar.
 
 .. seealso:: :py:func:`lineSymbol`
 
@@ -286,7 +301,8 @@ transferred to the scalebar.
 
     QgsLineSymbol *divisionLineSymbol() const;
 %Docstring
-Returns the line symbol used to render the scalebar divisions (only used for some scalebar types).
+Returns the line symbol used to render the scalebar divisions (only used
+for some scalebar types).
 
 Ownership is not transferred.
 
@@ -301,8 +317,9 @@ Ownership is not transferred.
 
     void setDivisionLineSymbol( QgsLineSymbol *symbol /Transfer/ );
 %Docstring
-Sets the line ``symbol`` used to render the scalebar divisions (only used for some scalebar types). Ownership of ``symbol`` is
-transferred to the scalebar.
+Sets the line ``symbol`` used to render the scalebar divisions (only
+used for some scalebar types). Ownership of ``symbol`` is transferred to
+the scalebar.
 
 .. seealso:: :py:func:`divisionLineSymbol`
 
@@ -315,7 +332,8 @@ transferred to the scalebar.
 
     QgsLineSymbol *subdivisionLineSymbol() const;
 %Docstring
-Returns the line symbol used to render the scalebar subdivisions (only used for some scalebar types).
+Returns the line symbol used to render the scalebar subdivisions (only
+used for some scalebar types).
 
 Ownership is not transferred.
 
@@ -330,8 +348,9 @@ Ownership is not transferred.
 
     void setSubdivisionLineSymbol( QgsLineSymbol *symbol /Transfer/ );
 %Docstring
-Sets the line ``symbol`` used to render the scalebar subdivisions (only used for some scalebar types). Ownership of ``symbol`` is
-transferred to the scalebar.
+Sets the line ``symbol`` used to render the scalebar subdivisions (only
+used for some scalebar types). Ownership of ``symbol`` is transferred to
+the scalebar.
 
 .. seealso:: :py:func:`subdivisionLineSymbol`
 
@@ -344,7 +363,8 @@ transferred to the scalebar.
 
     QgsFillSymbol *fillSymbol() const;
 %Docstring
-Returns the primary fill symbol used to render the scalebar (only used for some scalebar types).
+Returns the primary fill symbol used to render the scalebar (only used
+for some scalebar types).
 
 Ownership is not transferred.
 
@@ -357,8 +377,9 @@ Ownership is not transferred.
 
     void setFillSymbol( QgsFillSymbol *symbol /Transfer/ );
 %Docstring
-Sets the primary fill ``symbol`` used to render the scalebar (only used for some scalebar types). Ownership of ``symbol`` is
-transferred to the scalebar.
+Sets the primary fill ``symbol`` used to render the scalebar (only used
+for some scalebar types). Ownership of ``symbol`` is transferred to the
+scalebar.
 
 .. seealso:: :py:func:`fillSymbol`
 
@@ -369,7 +390,8 @@ transferred to the scalebar.
 
     QgsFillSymbol *alternateFillSymbol() const;
 %Docstring
-Returns the secondary fill symbol used to render the scalebar (only used for some scalebar types).
+Returns the secondary fill symbol used to render the scalebar (only used
+for some scalebar types).
 
 Ownership is not transferred.
 
@@ -382,8 +404,9 @@ Ownership is not transferred.
 
     void setAlternateFillSymbol( QgsFillSymbol *symbol /Transfer/ );
 %Docstring
-Sets the secondary fill ``symbol`` used to render the scalebar (only used for some scalebar types). Ownership of ``symbol`` is
-transferred to the scalebar.
+Sets the secondary fill ``symbol`` used to render the scalebar (only
+used for some scalebar types). Ownership of ``symbol`` is transferred to
+the scalebar.
 
 .. seealso:: :py:func:`alternateFillSymbol`
 
@@ -564,8 +587,8 @@ Returns the primary brush for the scalebar.
 
  QBrush brush2() const /Deprecated="Since 3.40. Use alternateFillSymbol() instead."/;
 %Docstring
-Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
-as single and double box styles.
+Returns the secondary brush for the scalebar. This is used for
+alternating color style scalebars, such as single and double box styles.
 
 :return: QBrush used for secondary color areas
 
@@ -620,14 +643,16 @@ Sets the spacing (in millimeters) between labels and the scalebar.
 
     double boxContentSpace() const;
 %Docstring
-Returns the spacing (margin) between the scalebar box and content in millimeters.
+Returns the spacing (margin) between the scalebar box and content in
+millimeters.
 
 .. seealso:: :py:func:`setBoxContentSpace`
 %End
 
     void setBoxContentSpace( double space );
 %Docstring
-Sets the ``space`` (margin) between the scalebar box and content in millimeters.
+Sets the ``space`` (margin) between the scalebar box and content in
+millimeters.
 
 .. seealso:: :py:func:`boxContentSpace`
 %End
@@ -749,7 +774,8 @@ Applies the default scalebar settings to the scale bar.
 
     bool applyDefaultRendererSettings( QgsScaleBarRenderer *renderer );
 %Docstring
-Applies any default settings relating to the specified ``renderer`` to the item.
+Applies any default settings relating to the specified ``renderer`` to
+the item.
 
 Returns ``True`` if settings were applied.
 
@@ -758,16 +784,17 @@ Returns ``True`` if settings were applied.
 
     Qgis::DistanceUnit guessUnits() const;
 %Docstring
-Attempts to guess the most reasonable unit choice for the scalebar, given
-the current linked map's scale.
+Attempts to guess the most reasonable unit choice for the scalebar,
+given the current linked map's scale.
 
-This method also considers the linked map's CRS, in order to determine if
-metric or imperial units are more appropriate.
+This method also considers the linked map's CRS, in order to determine
+if metric or imperial units are more appropriate.
 %End
 
     void applyDefaultSize( Qgis::DistanceUnit units = Qgis::DistanceUnit::Meters );
 %Docstring
-Applies the default size to the scale bar (scale bar 1/5 of map item width)
+Applies the default size to the scale bar (scale bar 1/5 of map item
+width)
 
 .. seealso:: :py:func:`applyDefaultSettings`
 %End
@@ -817,7 +844,8 @@ Ownership of ``format`` is transferred to the scalebar.
 
     Qgis::ScaleCalculationMethod method() const;
 %Docstring
-Returns the scale calculation method, which determines how the bar's scale will be calculated.
+Returns the scale calculation method, which determines how the bar's
+scale will be calculated.
 
 .. seealso:: :py:func:`setMethod`
 
@@ -826,7 +854,8 @@ Returns the scale calculation method, which determines how the bar's scale will 
 
     void setMethod( Qgis::ScaleCalculationMethod method );
 %Docstring
-Sets the scale calculation ``method``, which determines how the bar's scale will be calculated.
+Sets the scale calculation ``method``, which determines how the bar's
+scale will be calculated.
 
 .. seealso:: :py:func:`method`
 

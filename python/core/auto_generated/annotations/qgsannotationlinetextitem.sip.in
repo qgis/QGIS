@@ -25,7 +25,8 @@ An annotation item which renders text along a line geometry.
 
     QgsAnnotationLineTextItem( const QString &text, QgsCurve *curve /Transfer/ );
 %Docstring
-Constructor for QgsAnnotationLineTextItem, with the specified ``curve`` and ``text``.
+Constructor for QgsAnnotationLineTextItem, with the specified ``curve``
+and ``text``.
 %End
     ~QgsAnnotationLineTextItem();
 
@@ -63,16 +64,19 @@ Creates a new linestring annotation item.
 %Docstring
 Returns the geometry of the item.
 
-The coordinate reference system for the line will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+The coordinate reference system for the line will be the parent layer's
+:py:func:`QgsAnnotationLayer.crs()`.
 
 .. seealso:: :py:func:`setGeometry`
 %End
 
     void setGeometry( QgsCurve *geometry /Transfer/ );
 %Docstring
-Sets the ``geometry`` of the item. Ownership of ``geometry`` is transferred.
+Sets the ``geometry`` of the item. Ownership of ``geometry`` is
+transferred.
 
-The coordinate reference system for the line will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+The coordinate reference system for the line will be the parent layer's
+:py:func:`QgsAnnotationLayer.crs()`.
 
 .. seealso:: :py:func:`geometry`
 %End
@@ -107,7 +111,10 @@ Sets the text ``format`` used to render the text.
 
     double offsetFromLine() const;
 %Docstring
-Returns the offset distance from the line :py:func:`~QgsAnnotationLineTextItem.geometry` to the text's baseline. Units are specified through :py:func:`~QgsAnnotationLineTextItem.offsetFromLineUnit`.
+Returns the offset distance from the line
+:py:func:`~QgsAnnotationLineTextItem.geometry` to the text's baseline.
+Units are specified through
+:py:func:`~QgsAnnotationLineTextItem.offsetFromLineUnit`.
 
 .. seealso:: :py:func:`setOffsetFromLine`
 
@@ -116,7 +123,10 @@ Returns the offset distance from the line :py:func:`~QgsAnnotationLineTextItem.g
 
     void setOffsetFromLine( double distance );
 %Docstring
-Sets the offset ``distance`` from the line :py:func:`~QgsAnnotationLineTextItem.geometry` to the text's baseline. Units are specified through :py:func:`~QgsAnnotationLineTextItem.setOffsetFromLineUnit`.
+Sets the offset ``distance`` from the line
+:py:func:`~QgsAnnotationLineTextItem.geometry` to the text's baseline.
+Units are specified through
+:py:func:`~QgsAnnotationLineTextItem.setOffsetFromLineUnit`.
 
 .. seealso:: :py:func:`offsetFromLine`
 
@@ -125,7 +135,8 @@ Sets the offset ``distance`` from the line :py:func:`~QgsAnnotationLineTextItem.
 
     void setOffsetFromLineUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``unit`` for the offset from line :py:func:`~QgsAnnotationLineTextItem.geometry` distance.
+Sets the ``unit`` for the offset from line
+:py:func:`~QgsAnnotationLineTextItem.geometry` distance.
 
 .. seealso:: :py:func:`offsetFromLineUnit`
 
@@ -134,7 +145,8 @@ Sets the ``unit`` for the offset from line :py:func:`~QgsAnnotationLineTextItem.
 
     Qgis::RenderUnit offsetFromLineUnit() const;
 %Docstring
-Returns the units for the offset from line :py:func:`~QgsAnnotationLineTextItem.geometry` distance.
+Returns the units for the offset from line
+:py:func:`~QgsAnnotationLineTextItem.geometry` distance.
 
 .. seealso:: :py:func:`setOffsetFromLineUnit`
 
@@ -143,7 +155,8 @@ Returns the units for the offset from line :py:func:`~QgsAnnotationLineTextItem.
 
     void setOffsetFromLineMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit ``scale`` for the offset from line :py:func:`~QgsAnnotationLineTextItem.geometry` distance.
+Sets the map unit ``scale`` for the offset from line
+:py:func:`~QgsAnnotationLineTextItem.geometry` distance.
 
 .. seealso:: :py:func:`offsetFromLineMapUnitScale`
 
@@ -154,7 +167,8 @@ Sets the map unit ``scale`` for the offset from line :py:func:`~QgsAnnotationLin
 
     const QgsMapUnitScale &offsetFromLineMapUnitScale() const;
 %Docstring
-Returns the map unit scale for the offset from line :py:func:`~QgsAnnotationLineTextItem.geometry` distance.
+Returns the map unit scale for the offset from line
+:py:func:`~QgsAnnotationLineTextItem.geometry` distance.
 
 .. seealso:: :py:func:`setOffsetFromLineMapUnitScale`
 

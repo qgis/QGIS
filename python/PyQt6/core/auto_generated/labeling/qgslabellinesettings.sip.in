@@ -12,10 +12,9 @@
 class QgsLabelLineSettings
 {
 %Docstring(signature="appended")
-
 Contains settings related to how the label engine places and formats
-labels for line features (or polygon features which are labeled in
-a "perimeter" style mode).
+labels for line features (or polygon features which are labeled in a
+"perimeter" style mode).
 
 .. versionadded:: 3.16
 %End
@@ -57,47 +56,48 @@ a "perimeter" style mode).
 
     Qgis::LabelLinePlacementFlags placementFlags() const;
 %Docstring
-Returns the line placement flags, which dictate how line labels can be placed
-above or below the lines.
+Returns the line placement flags, which dictate how line labels can be
+placed above or below the lines.
 
 .. seealso:: :py:func:`setPlacementFlags`
 %End
 
     void setPlacementFlags( Qgis::LabelLinePlacementFlags flags );
 %Docstring
-Returns the line placement ``flags``, which dictate how line labels can be placed
-above or below the lines.
+Returns the line placement ``flags``, which dictate how line labels can
+be placed above or below the lines.
 
 .. seealso:: :py:func:`placementFlags`
 %End
 
     bool mergeLines() const;
 %Docstring
-Returns ``True`` if connected line features with identical label text should be merged
-prior to generating label positions.
+Returns ``True`` if connected line features with identical label text
+should be merged prior to generating label positions.
 
 .. seealso:: :py:func:`setMergeLines`
 %End
 
     void setMergeLines( bool merge );
 %Docstring
-Sets whether connected line features with identical label text should be merged
-prior to generating label positions.
+Sets whether connected line features with identical label text should be
+merged prior to generating label positions.
 
 .. seealso:: :py:func:`mergeLines`
 %End
 
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 %Docstring
-Updates the line settings to respect any data defined properties
-set within the specified ``properties`` collection.
+Updates the line settings to respect any data defined properties set
+within the specified ``properties`` collection.
 %End
 
     bool addDirectionSymbol() const;
 %Docstring
-Returns ``True`` if '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
-will be automatically added to the label text, pointing in the
-direction of the line or polygon ring.
+Returns ``True`` if '<' or '>' (or custom strings set via
+leftDirectionSymbol and rightDirectionSymbol) will be automatically
+added to the label text, pointing in the direction of the line or
+polygon ring.
 
 .. seealso:: :py:func:`setAddDirectionSymbol`
 
@@ -112,9 +112,9 @@ direction of the line or polygon ring.
 
     void setAddDirectionSymbol( bool enabled );
 %Docstring
-Sets whether '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
-will be automatically added to the label text, pointing in the
-direction of the line or polygon ring.
+Sets whether '<' or '>' (or custom strings set via leftDirectionSymbol
+and rightDirectionSymbol) will be automatically added to the label text,
+pointing in the direction of the line or polygon ring.
 
 .. seealso:: :py:func:`addDirectionSymbol`
 
@@ -189,7 +189,8 @@ Sets whether the direction symbols should be ``reversed``.
 %Docstring
 Returns the placement for direction symbols.
 
-This setting controls whether to place direction symbols to the left/right, above or below label.
+This setting controls whether to place direction symbols to the
+left/right, above or below label.
 
 .. seealso:: :py:func:`setDirectionSymbolPlacement`
 
@@ -200,7 +201,8 @@ This setting controls whether to place direction symbols to the left/right, abov
 %Docstring
 Sets the ``placement`` for direction symbols.
 
-This setting controls whether to place direction symbols to the left/right, above or below label.
+This setting controls whether to place direction symbols to the
+left/right, above or below label.
 
 .. seealso:: :py:func:`directionSymbolPlacement`
 
@@ -209,7 +211,8 @@ This setting controls whether to place direction symbols to the left/right, abov
 
     double overrunDistance() const;
 %Docstring
-Returns the distance which labels are allowed to overrun past the start or end of line features.
+Returns the distance which labels are allowed to overrun past the start
+or end of line features.
 
 .. seealso:: :py:func:`setOverrunDistance`
 
@@ -220,7 +223,8 @@ Returns the distance which labels are allowed to overrun past the start or end o
 
     void setOverrunDistance( double distance );
 %Docstring
-Sets the ``distance`` which labels are allowed to overrun past the start or end of line features.
+Sets the ``distance`` which labels are allowed to overrun past the start
+or end of line features.
 
 .. seealso:: :py:func:`overrunDistance`
 
@@ -277,10 +281,11 @@ Sets the map unit ``scale`` for label overrun distance.
 %Docstring
 Returns the percent along the line at which labels should be placed.
 
-By default, this is 0.5 which indicates that labels should be placed as close to the
-center of the line as possible. A value of 0.0 indicates that the labels should be placed
-as close to the start of the line as possible, while a value of 1.0 pushes labels towards
-the end of the line.
+By default, this is 0.5 which indicates that labels should be placed as
+close to the center of the line as possible. A value of 0.0 indicates
+that the labels should be placed as close to the start of the line as
+possible, while a value of 1.0 pushes labels towards the end of the
+line.
 
 .. seealso:: :py:func:`setLineAnchorPercent`
 
@@ -295,10 +300,11 @@ the end of the line.
 %Docstring
 Sets the ``percent`` along the line at which labels should be placed.
 
-By default, this is 0.5 which indicates that labels should be placed as close to the
-center of the line as possible. A value of 0.0 indicates that the labels should be placed
-as close to the start of the line as possible, while a value of 1.0 pushes labels towards
-the end of the line.
+By default, this is 0.5 which indicates that labels should be placed as
+close to the center of the line as possible. A value of 0.0 indicates
+that the labels should be placed as close to the start of the line as
+possible, while a value of 1.0 pushes labels towards the end of the
+line.
 
 .. seealso:: :py:func:`lineAnchorPercent`
 
@@ -311,8 +317,8 @@ the end of the line.
 
     AnchorType anchorType() const;
 %Docstring
-Returns the line anchor type, which dictates how the :py:func:`~QgsLabelLineSettings.lineAnchorPercent` setting is
-handled.
+Returns the line anchor type, which dictates how the
+:py:func:`~QgsLabelLineSettings.lineAnchorPercent` setting is handled.
 
 .. seealso:: :py:func:`setAnchorType`
 
@@ -323,8 +329,8 @@ handled.
 
     void setAnchorType( AnchorType type );
 %Docstring
-Sets the line anchor ``type``, which dictates how the :py:func:`~QgsLabelLineSettings.lineAnchorPercent` setting is
-handled.
+Sets the line anchor ``type``, which dictates how the
+:py:func:`~QgsLabelLineSettings.lineAnchorPercent` setting is handled.
 
 .. seealso:: :py:func:`anchorType`
 
@@ -335,8 +341,8 @@ handled.
 
     AnchorClipping anchorClipping() const;
 %Docstring
-Returns the line anchor clipping mode, which dictates how line strings are clipped
-before calculating the line anchor placement.
+Returns the line anchor clipping mode, which dictates how line strings
+are clipped before calculating the line anchor placement.
 
 .. seealso:: :py:func:`setAnchorClipping`
 
@@ -349,8 +355,8 @@ before calculating the line anchor placement.
 
     void setAnchorClipping( AnchorClipping clipping );
 %Docstring
-Sets the line anchor ``clipping`` mode, which dictates how line strings are clipped
-before calculating the line anchor placement.
+Sets the line anchor ``clipping`` mode, which dictates how line strings
+are clipped before calculating the line anchor placement.
 
 .. seealso:: :py:func:`anchorClipping`
 
@@ -363,8 +369,9 @@ before calculating the line anchor placement.
 
     AnchorTextPoint anchorTextPoint() const;
 %Docstring
-Returns the line anchor text point, which dictates which part of the label text
-should be placed at the :py:func:`~QgsLabelLineSettings.lineAnchorPercent`.
+Returns the line anchor text point, which dictates which part of the
+label text should be placed at the
+:py:func:`~QgsLabelLineSettings.lineAnchorPercent`.
 
 .. seealso:: :py:func:`setAnchorTextPoint`
 
@@ -373,8 +380,9 @@ should be placed at the :py:func:`~QgsLabelLineSettings.lineAnchorPercent`.
 
     void setAnchorTextPoint( AnchorTextPoint point );
 %Docstring
-Sets the line anchor text ``point``, which dictates which part of the label text
-should be placed at the :py:func:`~QgsLabelLineSettings.lineAnchorPercent`.
+Sets the line anchor text ``point``, which dictates which part of the
+label text should be placed at the
+:py:func:`~QgsLabelLineSettings.lineAnchorPercent`.
 
 .. seealso:: :py:func:`anchorTextPoint`
 

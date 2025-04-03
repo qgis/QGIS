@@ -26,7 +26,8 @@ Represents a default, "not-specified" value for a feature attribute.
 
     explicit QgsUnsetAttributeValue( const QString &defaultValueClause );
 %Docstring
-Constructor for a QgsUnsetAttributeValue, with the specified original provider's default value clause.
+Constructor for a QgsUnsetAttributeValue, with the specified original
+provider's default value clause.
 %End
 
     QString defaultValueClause() const;

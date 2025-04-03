@@ -16,8 +16,9 @@ class QgsLegendRenderer
 %Docstring(signature="appended")
 Handles automatic layout and rendering of legends.
 
-The content is given by :py:class:`QgsLayerTreeModel` instance. Various layout properties can be configured
-within :py:class:`QgsLegendRenderer`.
+The content is given by :py:class:`QgsLayerTreeModel` instance. Various
+layout properties can be configured within
+:py:class:`QgsLegendRenderer`.
 
 All spacing and sizes are in millimeters.
 %End
@@ -29,16 +30,16 @@ All spacing and sizes are in millimeters.
 
     QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings );
 %Docstring
-Constructor for QgsLegendRenderer. The ownership of the legend model is not changed,
-and the model must exist for the lifetime of this renderer.
+Constructor for QgsLegendRenderer. The ownership of the legend model is
+not changed, and the model must exist for the lifetime of this renderer.
 %End
     ~QgsLegendRenderer();
 
 
     QgsLayerTreeFilterProxyModel *proxyModel();
 %Docstring
-Returns the filter proxy model used for filtering the legend model content during
-rendering.
+Returns the filter proxy model used for filtering the legend model
+content during rendering.
 
 Filters can be set on the proxy model to filter rendered legend content.
 
@@ -47,7 +48,8 @@ Filters can be set on the proxy model to filter rendered legend content.
 
     QSizeF minimumSize( QgsRenderContext *renderContext = 0 );
 %Docstring
-Runs the layout algorithm and returns the minimum size required for the legend.
+Runs the layout algorithm and returns the minimum size required for the
+legend.
 
 .. seealso:: :py:func:`setLegendSize`
 
@@ -58,7 +60,8 @@ Runs the layout algorithm and returns the minimum size required for the legend.
 %Docstring
 Sets the preferred resulting legend size.
 
-If the size is null, the legend will be drawn with the minimum possible size to fit its content.
+If the size is null, the legend will be drawn with the minimum possible
+size to fit its content.
 
 .. seealso:: :py:func:`legendSize`
 
@@ -69,7 +72,8 @@ If the size is null, the legend will be drawn with the minimum possible size to 
 %Docstring
 Returns the preferred legend size set by the client.
 
-If the returned size is null, the legend will be drawn with the minimum possible size to fit its content.
+If the returned size is null, the legend will be drawn with the minimum
+possible size to fit its content.
 
 .. seealso:: :py:func:`minimumSize`
 
@@ -78,8 +82,9 @@ If the returned size is null, the legend will be drawn with the minimum possible
 
  void drawLegend( QPainter *painter ) /Deprecated="Since 3.40. Use the variant which accepts a QgsRenderContext instead."/;
 %Docstring
-Draws the legend with given ``painter``. The legend will occupy the area reported in :py:func:`~QgsLegendRenderer.legendSize`.
-The ``painter`` should be scaled beforehand so that units correspond to millimeters.
+Draws the legend with given ``painter``. The legend will occupy the area
+reported in :py:func:`~QgsLegendRenderer.legendSize`. The ``painter``
+should be scaled beforehand so that units correspond to millimeters.
 
 .. deprecated:: 3.40
 
@@ -88,7 +93,8 @@ The ``painter`` should be scaled beforehand so that units correspond to millimet
 
     void drawLegend( QgsRenderContext &context );
 %Docstring
-Draws the legend using a given render ``context``. The legend will occupy the area reported in :py:func:`~QgsLegendRenderer.legendSize`.
+Draws the legend using a given render ``context``. The legend will
+occupy the area reported in :py:func:`~QgsLegendRenderer.legendSize`.
 
 .. versionadded:: 3.6
 %End
@@ -109,7 +115,8 @@ Sets the ``style`` of a ``node``.
 
     static Qgis::LegendComponent nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
 %Docstring
-Returns the style for the given ``node``, within the specified ``model``.
+Returns the style for the given ``node``, within the specified
+``model``.
 
 .. seealso:: :py:func:`setNodeLegendStyle`
 %End

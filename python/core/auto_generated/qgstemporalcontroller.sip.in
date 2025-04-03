@@ -17,8 +17,8 @@
 class QgsTemporalController : QObject
 {
 %Docstring(signature="appended")
-A controller base class for temporal objects, contains a signal for notifying
-updates of the objects temporal range.
+A controller base class for temporal objects, contains a signal for
+notifying updates of the objects temporal range.
 
 .. versionadded:: 3.14
 %End
@@ -40,7 +40,8 @@ updates of the objects temporal range.
 
     QgsTemporalController( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsTemporalController, with the specified ``parent`` object.
+Constructor for QgsTemporalController, with the specified ``parent``
+object.
 %End
 
   signals:

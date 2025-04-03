@@ -24,7 +24,8 @@ A layout item for showing marker symbols.
 
     explicit QgsLayoutItemMarker( QgsLayout *layout );
 %Docstring
-Constructor for QgsLayoutItemMarker, with the specified parent ``layout``.
+Constructor for QgsLayoutItemMarker, with the specified parent
+``layout``.
 %End
     ~QgsLayoutItemMarker();
 
@@ -43,7 +44,8 @@ The caller takes responsibility for deleting the returned object.
 
     void setSymbol( QgsMarkerSymbol *symbol /Transfer/ );
 %Docstring
-Sets the marker ``symbol`` used to draw the shape. Ownership is transferred.
+Sets the marker ``symbol`` used to draw the shape. Ownership is
+transferred.
 
 .. seealso:: :py:func:`symbol`
 %End
@@ -59,26 +61,26 @@ Returns the marker symbol used to draw the shape.
 %Docstring
 Sets the ``map`` object for rotation.
 
-If this is set then the marker will be rotated by the same
-amount as the specified map object. This is useful especially for
-syncing north arrows with a map item.
+If this is set then the marker will be rotated by the same amount as the
+specified map object. This is useful especially for syncing north arrows
+with a map item.
 
 .. seealso:: :py:func:`linkedMap`
 %End
 
     QgsLayoutItemMap *linkedMap() const;
 %Docstring
-Returns the linked rotation map, if set. An ``None`` means map rotation is
-disabled.  If this is set then the marker is rotated by the same amount
-as the specified map object.
+Returns the linked rotation map, if set. An ``None`` means map rotation
+is disabled. If this is set then the marker is rotated by the same
+amount as the specified map object.
 
 .. seealso:: :py:func:`setLinkedMap`
 %End
 
     double northArrowRotation() const;
 %Docstring
-When the marker is linked to a map in north arrow rotation mode,
-returns the current north arrow rotation for the marker.
+When the marker is linked to a map in north arrow rotation mode, returns
+the current north arrow rotation for the marker.
 
 .. seealso:: :py:func:`setLinkedMap`
 %End

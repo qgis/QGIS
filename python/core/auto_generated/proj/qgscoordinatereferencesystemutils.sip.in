@@ -12,7 +12,8 @@
 class QgsCoordinateReferenceSystemUtils
 {
 %Docstring(signature="appended")
-Utility functions for working with :py:class:`QgsCoordinateReferenceSystem` objects.
+Utility functions for working with
+:py:class:`QgsCoordinateReferenceSystem` objects.
 
 .. versionadded:: 3.26
 %End

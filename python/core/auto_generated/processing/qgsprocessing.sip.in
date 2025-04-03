@@ -14,9 +14,8 @@
 class QgsProcessing
 {
 %Docstring(signature="appended")
-
-Contains enumerations and other constants for use in processing algorithms
-and parameters.
+Contains enumerations and other constants for use in processing
+algorithms and parameters.
 %End
 
 %TypeHeaderCode

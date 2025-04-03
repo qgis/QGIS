@@ -11,11 +11,13 @@
 class QgsAlignmentComboBox : QComboBox
 {
 %Docstring(signature="appended")
-A combo box which allows choice of alignment settings (e.g. left, right, ...).
+A combo box which allows choice of alignment settings (e.g. left, right,
+...).
 
-Currently only horizontal alignments are supported. Available alignment choices
-can be manually specified by calling :py:func:`~setAvailableAlignments`, which is useful
-when only a subset of Qt's alignment options should be exposed.
+Currently only horizontal alignments are supported. Available alignment
+choices can be manually specified by calling
+:py:func:`~setAvailableAlignments`, which is useful when only a subset
+of Qt's alignment options should be exposed.
 
 .. versionadded:: 3.10
 %End
@@ -50,10 +52,11 @@ Sets the current ``alignment`` choice.
 
     void customizeAlignmentDisplay( Qt::Alignment alignment, const QString &text = QString(), const QIcon &icon = QIcon() );
 %Docstring
-Sets the ``text`` and ``icon`` to use for a particular ``alignment`` option,
-replacing the default text or icon.
+Sets the ``text`` and ``icon`` to use for a particular ``alignment``
+option, replacing the default text or icon.
 
-If ``text`` or ``icon`` is not specified, they will not be changed from the default.
+If ``text`` or ``icon`` is not specified, they will not be changed from
+the default.
 
 .. note::
 

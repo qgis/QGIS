@@ -33,8 +33,8 @@ Returns the layer currently associated with the combobox.
 
     int currentBand() const;
 %Docstring
-Returns the current band number selected in the combobox, or -1
-if no band is selected.
+Returns the current band number selected in the combobox, or -1 if no
+band is selected.
 
 .. seealso:: :py:func:`setBand`
 %End
@@ -48,9 +48,9 @@ Returns ``True`` if the combo box is showing the "not set" option.
 
     void setShowNotSetOption( bool show, const QString &string = QString() );
 %Docstring
-Sets whether the combo box should show the "not set" option.
-Optionally the built in "not set" text can be overridden by specifying
-a ``string``.
+Sets whether the combo box should show the "not set" option. Optionally
+the built in "not set" text can be overridden by specifying a
+``string``.
 
 .. seealso:: :py:func:`setShowNotSetOption`
 %End
@@ -64,8 +64,9 @@ Returns a user-friendly band name for the specified ``band``.
 
     void setLayer( QgsMapLayer *layer );
 %Docstring
-Sets the raster ``layer`` for which the bands are listed in the combobox. If no layer is set
-or a non-raster layer is set then the combobox will be empty.
+Sets the raster ``layer`` for which the bands are listed in the
+combobox. If no layer is set or a non-raster layer is set then the
+combobox will be empty.
 
 .. seealso:: :py:func:`layer`
 %End

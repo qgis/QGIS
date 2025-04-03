@@ -36,24 +36,24 @@ Returns the layer
 
         int layerOutputAttributeIndex() const;
 %Docstring
-Returns the attribute index used to split into multiple layers.
-The attribute value is used for layer names.
+Returns the attribute index used to split into multiple layers. The
+attribute value is used for layer names.
 
 .. seealso:: :py:func:`splitLayerAttribute`
 %End
 
         QString splitLayerAttribute() const;
 %Docstring
-If the split layer attribute is set, the vector layer
-will be split into several dxf layers, one per each
-unique value.
+If the split layer attribute is set, the vector layer will be split into
+several dxf layers, one per each unique value.
 
 .. versionadded:: 3.12
 %End
 
         bool buildDataDefinedBlocks() const;
 %Docstring
-Flag if data defined point block symbols should be created. Default is false
+Flag if data defined point block symbols should be created. Default is
+false
 
 :return: True if data defined point block symbols should be created
 
@@ -62,9 +62,10 @@ Flag if data defined point block symbols should be created. Default is false
 
         int dataDefinedBlocksMaximumNumberOfClasses() const;
 %Docstring
-Returns the maximum number of data defined symbol classes for which blocks are created. Returns -1 if there is no such limitation
+Returns the maximum number of data defined symbol classes for which
+blocks are created. Returns -1 if there is no such limitation
 
-:return:
+:return: 
 
 .. versionadded:: 3.38
 %End
@@ -162,7 +163,9 @@ Returns the export flags.
 %Docstring
 Add layers to export
 
-:param layers: list of layers and corresponding attribute indexes that determine the layer name (-1 for original layer name or title)
+:param layers: list of layers and corresponding attribute indexes that
+               determine the layer name (-1 for original layer name or
+               title)
 
 .. seealso:: :py:func:`setLayerTitleAsName`
 %End
@@ -178,16 +181,16 @@ Returns any feedback message produced while export to dxf file.
 
     void setSymbologyScale( double scale );
 %Docstring
-Set reference ``scale`` for output.
-The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Set reference ``scale`` for output. The ``scale`` value indicates the
+scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`symbologyScale`
 %End
 
     double symbologyScale() const;
 %Docstring
-Returns the reference scale for output.
-The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Returns the reference scale for output. The scale value indicates the
+scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`setSymbologyScale`
 %End
@@ -208,7 +211,8 @@ Set destination CRS
 
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
-Returns the destination CRS, or an invalid CRS if no reprojection will be done.
+Returns the destination CRS, or an invalid CRS if no reprojection will
+be done.
 
 .. seealso:: :py:func:`setDestinationCrs`
 %End
@@ -247,8 +251,8 @@ Gets extent of area to export
 
     void setLayerTitleAsName( bool layerTitleAsName );
 %Docstring
-Enable use of title (where set) instead of layer name,
-when attribute index of corresponding layer index is -1
+Enable use of title (where set) instead of layer name, when attribute
+index of corresponding layer index is -1
 
 :param layerTitleAsName: flag
 
@@ -286,7 +290,7 @@ Retrieve whether the output should be forced to 2d
 %Docstring
 Gets DXF palette index of nearest entry for given color
 
-:param color:
+:param color: 
 %End
 
     QString layerName( const QString &id, const QgsFeature &f ) const;
@@ -317,6 +321,7 @@ Write a tuple of group code and integer value
 :param code: group code
 :param i: integer value
 
+
 %End
 
     void writeGroup( int code, long long i ) /PyName=writeGroupLong/;
@@ -326,6 +331,7 @@ Write a tuple of group code and long value
 :param code: group code
 :param i: integer value
 
+
 %End
 
     void writeGroup( int code, double d ) /PyName=writeGroupDouble/;
@@ -334,6 +340,7 @@ Write a group code with a floating point value
 
 :param code: group code
 :param d: floating point value
+
 
 %End
 
@@ -352,6 +359,7 @@ Write a group code with a point
 :param code: group code
 :param p: point value
 
+
 %End
 
     void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
@@ -359,8 +367,10 @@ Write a group code with a point
 Write a group code with color value
 
 :param color: color
-:param exactMatch: group code to use if the color has an exact match in the dxf palette
-:param rgbCode: group code to use if the color doesn't have an exact match or has a transparency component
+:param exactMatch: group code to use if the color has an exact match in
+                   the dxf palette
+:param rgbCode: group code to use if the color doesn't have an exact
+                match or has a transparency component
 :param transparencyCode: group code to use for transparency component
 
 .. note::
@@ -419,6 +429,7 @@ Write line (as a polyline)
 %Docstring
 Write point
 
+
 %End
 
     void writeFilledCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius ) /PyName=writeFillCircleV2/;
@@ -434,11 +445,13 @@ Write filled circle (as hatch)
 %Docstring
 Write circle (as polyline)
 
+
 %End
 
     void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, QgsDxfExport::HAlign hali = QgsDxfExport::HAlign::Undefined, QgsDxfExport::VAlign vali = QgsDxfExport::VAlign::Undefined ) /PyName=writeTextV2/;
 %Docstring
 Write text (TEXT)
+
 
 %End
 

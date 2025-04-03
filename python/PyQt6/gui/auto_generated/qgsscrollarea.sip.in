@@ -15,9 +15,9 @@ A QScrollArea subclass with improved scrolling behavior.
 
 :py:class:`QgsScrollArea` should be used instead of QScrollArea widgets.
 In most cases the use is identical, however :py:class:`QgsScrollArea`
-has extra logic to avoid wheel events changing child widget
-values when the mouse cursor is temporarily located over
-a child widget during a scroll event.
+has extra logic to avoid wheel events changing child widget values when
+the mouse cursor is temporarily located over a child widget during a
+scroll event.
 
 All QGIS code and plugins should use :py:class:`QgsScrollArea` in place
 of QScrollArea.
@@ -34,14 +34,14 @@ Constructor for QgsScrollArea.
 
     void scrollOccurred();
 %Docstring
-Should be called when a scroll occurs on with the
-QScrollArea itself or its child :py:func:`~QgsScrollArea.viewport`.
+Should be called when a scroll occurs on with the QScrollArea itself or
+its child :py:func:`~QgsScrollArea.viewport`.
 %End
 
     bool hasScrolled() const;
 %Docstring
-Returns ``True`` if a scroll recently occurred within
-the QScrollArea or its child :py:func:`~QgsScrollArea.viewport`
+Returns ``True`` if a scroll recently occurred within the QScrollArea or
+its child :py:func:`~QgsScrollArea.viewport`
 %End
 
 
@@ -49,8 +49,8 @@ the QScrollArea or its child :py:func:`~QgsScrollArea.viewport`
 %Docstring
 Sets whether the scroll area only applies vertical.
 
-If set to ``True``, then scroll area children will resize horizontally to match the width of
-the scroll area widget.
+If set to ``True``, then scroll area children will resize horizontally
+to match the width of the scroll area widget.
 
 .. versionadded:: 3.8
 %End

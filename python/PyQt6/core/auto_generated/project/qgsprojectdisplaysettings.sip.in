@@ -12,8 +12,9 @@
 class QgsProjectDisplaySettings : QObject
 {
 %Docstring(signature="appended")
-Contains settings and properties relating to how a :py:class:`QgsProject` should display
-values such as map coordinates and bearings.
+Contains settings and properties relating to how a
+:py:class:`QgsProject` should display values such as map coordinates and
+bearings.
 
 .. versionadded:: 3.12
 %End
@@ -26,7 +27,8 @@ values such as map coordinates and bearings.
 
     QgsProjectDisplaySettings( QObject *parent = 0 );
 %Docstring
-Constructor for QgsProjectDisplaySettings with the specified ``parent`` object.
+Constructor for QgsProjectDisplaySettings with the specified ``parent``
+object.
 %End
 
     ~QgsProjectDisplaySettings();
@@ -38,7 +40,8 @@ Resets the settings to a default state.
 
     void setBearingFormat( QgsBearingNumericFormat *format /Transfer/ );
 %Docstring
-Sets the project bearing ``format``, which controls how bearings associated with the project are displayed.
+Sets the project bearing ``format``, which controls how bearings
+associated with the project are displayed.
 
 Ownership of ``format`` is transferred to the settings.
 
@@ -49,7 +52,8 @@ Ownership of ``format`` is transferred to the settings.
 
     const QgsBearingNumericFormat *bearingFormat() const;
 %Docstring
-Returns the project bearing's format, which controls how bearings associated with the project are displayed.
+Returns the project bearing's format, which controls how bearings
+associated with the project are displayed.
 
 .. seealso:: :py:func:`setBearingFormat`
 
@@ -58,7 +62,8 @@ Returns the project bearing's format, which controls how bearings associated wit
 
     void setGeographicCoordinateFormat( QgsGeographicCoordinateNumericFormat *format /Transfer/ );
 %Docstring
-Sets the project geographic coordinate ``format``, which controls how geographic coordinates associated with the project are displayed.
+Sets the project geographic coordinate ``format``, which controls how
+geographic coordinates associated with the project are displayed.
 
 Ownership of ``format`` is transferred to the settings.
 
@@ -71,7 +76,8 @@ Ownership of ``format`` is transferred to the settings.
 
     const QgsGeographicCoordinateNumericFormat *geographicCoordinateFormat() const;
 %Docstring
-Returns the project's geographic coordinate format, which controls how geographic coordinates associated with the project are displayed.
+Returns the project's geographic coordinate format, which controls how
+geographic coordinates associated with the project are displayed.
 
 .. seealso:: :py:func:`setGeographicCoordinateFormat`
 
@@ -98,7 +104,8 @@ Sets the default coordinate ``type`` for the project.
 
     Qgis::CoordinateOrder coordinateAxisOrder() const;
 %Docstring
-Returns default coordinate axis order to use when displaying coordinates for the project.
+Returns default coordinate axis order to use when displaying coordinates
+for the project.
 
 .. seealso:: :py:func:`setCoordinateAxisOrder`
 
@@ -109,7 +116,8 @@ Returns default coordinate axis order to use when displaying coordinates for the
 
     void setCoordinateAxisOrder( Qgis::CoordinateOrder order );
 %Docstring
-Sets the default coordinate axis ``order`` to use when displaying coordinates for the project.
+Sets the default coordinate axis ``order`` to use when displaying
+coordinates for the project.
 
 .. seealso:: :py:func:`coordinateAxisOrder`
 
@@ -120,7 +128,8 @@ Sets the default coordinate axis ``order`` to use when displaying coordinates fo
 
     QgsCoordinateReferenceSystem coordinateCustomCrs() const;
 %Docstring
-Returns the coordinate custom CRS used when the project coordinate type is set to :py:class:`Qgis`.CoordinateDisplayType.CustomCrs.
+Returns the coordinate custom CRS used when the project coordinate type
+is set to :py:class:`Qgis`.CoordinateDisplayType.CustomCrs.
 
 .. seealso:: :py:func:`setCoordinateCustomCrs`
 
@@ -129,7 +138,8 @@ Returns the coordinate custom CRS used when the project coordinate type is set t
 
     void setCoordinateCustomCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Sets the coordinate custom CRS used when the project coordinate type is set to :py:class:`Qgis`.CoordinateDisplayType.CustomCrs.
+Sets the coordinate custom CRS used when the project coordinate type is
+set to :py:class:`Qgis`.CoordinateDisplayType.CustomCrs.
 
 .. seealso:: :py:func:`setCoordinateCustomCrs`
 
@@ -138,7 +148,8 @@ Sets the coordinate custom CRS used when the project coordinate type is set to :
 
     QgsCoordinateReferenceSystem coordinateCrs() const;
 %Docstring
-Returns the coordinate display CRS used derived from the coordinate type.
+Returns the coordinate display CRS used derived from the coordinate
+type.
 
 .. seealso:: :py:func:`coordinateType`
 

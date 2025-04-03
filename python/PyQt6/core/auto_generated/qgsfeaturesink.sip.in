@@ -12,7 +12,8 @@
 class QgsFeatureSink
 {
 %Docstring(signature="appended")
-An interface for objects which accept features via addFeature(s) methods.
+An interface for objects which accept features via addFeature(s)
+methods.
 %End
 
 %TypeHeaderCode
@@ -49,7 +50,8 @@ Finalizes the sink, flushing any buffered features to the destination.
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 %Docstring
-Adds a single ``feature`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
+Adds a single ``feature`` to the sink. Feature addition behavior is
+controlled by the specified ``flags``.
 
 .. seealso:: :py:func:`addFeatures`
 
@@ -58,7 +60,8 @@ Adds a single ``feature`` to the sink. Feature addition behavior is controlled b
 
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) = 0;
 %Docstring
-Adds a list of ``features`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
+Adds a list of ``features`` to the sink. Feature addition behavior is
+controlled by the specified ``flags``.
 
 .. seealso:: :py:func:`addFeature`
 
@@ -67,21 +70,26 @@ Adds a list of ``features`` to the sink. Feature addition behavior is controlled
 
     virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 %Docstring
-Adds all features from the specified ``iterator`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
+Adds all features from the specified ``iterator`` to the sink. Feature
+addition behavior is controlled by the specified ``flags``.
 
-:return: ``True`` if all features were added successfully, or ``False`` if any feature could not be added
+:return: ``True`` if all features were added successfully, or ``False``
+         if any feature could not be added
 %End
 
     virtual bool flushBuffer();
 %Docstring
-Flushes any internal buffer which may exist in the sink, causing any buffered features to be added to the sink's destination.
+Flushes any internal buffer which may exist in the sink, causing any
+buffered features to be added to the sink's destination.
 
-:return: ``False`` if any buffered features could not be added to the sink.
+:return: ``False`` if any buffered features could not be added to the
+         sink.
 %End
 
     virtual QString lastError() const;
 %Docstring
-Returns the most recent error encountered by the sink, e.g. when a call to :py:func:`~QgsFeatureSink.addFeatures` returns ``False``.
+Returns the most recent error encountered by the sink, e.g. when a call
+to :py:func:`~QgsFeatureSink.addFeatures` returns ``False``.
 
 .. versionadded:: 3.16
 %End

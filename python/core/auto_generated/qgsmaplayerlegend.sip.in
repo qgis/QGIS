@@ -15,8 +15,8 @@
 class QgsMapLayerLegend : QObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsMapLayerLegend` class is abstract interface for implementations
-of legends for one map layer.
+The :py:class:`QgsMapLayerLegend` class is abstract interface for
+implementations of legends for one map layer.
 %End
 
 %TypeHeaderCode
@@ -32,22 +32,24 @@ Constructor for QgsMapLayerLegend
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
-Reads configuration from a DOM element previously written by :py:func:`~QgsMapLayerLegend.writeXml`
+Reads configuration from a DOM element previously written by
+:py:func:`~QgsMapLayerLegend.writeXml`
 
 .. versionadded:: 3.2
 %End
 
     virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
-Writes configuration to a DOM element, to be used later with :py:func:`~QgsMapLayerLegend.readXml`
+Writes configuration to a DOM element, to be used later with
+:py:func:`~QgsMapLayerLegend.readXml`
 
 .. versionadded:: 3.2
 %End
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0 /Factory/;
 %Docstring
-Returns list of legend nodes to be used for a particular layer tree layer node.
-Ownership is transferred to the caller.
+Returns list of legend nodes to be used for a particular layer tree
+layer node. Ownership is transferred to the caller.
 %End
 
 
@@ -76,7 +78,8 @@ Create new legend implementation for a point cloud ``layer``.
   signals:
     void itemsChanged();
 %Docstring
-Emitted when existing items/nodes got invalid and should be replaced by new ones
+Emitted when existing items/nodes got invalid and should be replaced by
+new ones
 %End
 };
 
@@ -101,7 +104,8 @@ Miscellaneous utility functions for handling of map layer legend
 
     static void setLegendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsLegendPatchShape &shape );
 %Docstring
-Sets the legend patch ``shape`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+Sets the legend patch ``shape`` for the legend node belonging to
+``nodeLayer`` at the specified ``originalIndex``.
 
 .. seealso:: :py:func:`legendNodePatchShape`
 
@@ -110,7 +114,8 @@ Sets the legend patch ``shape`` for the legend node belonging to ``nodeLayer`` a
 
     static QgsLegendPatchShape legendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 %Docstring
-Returns the legend patch shape for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+Returns the legend patch shape for the legend node belonging to
+``nodeLayer`` at the specified ``originalIndex``.
 
 .. seealso:: :py:func:`setLegendNodePatchShape`
 
@@ -119,10 +124,12 @@ Returns the legend patch shape for the legend node belonging to ``nodeLayer`` at
 
     static void setLegendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex, QSizeF size );
 %Docstring
-Sets the legend symbol ``size`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+Sets the legend symbol ``size`` for the legend node belonging to
+``nodeLayer`` at the specified ``originalIndex``.
 
-If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
-symbol width or height from :py:class:`QgsLegendSettings`.
+If either the width or height are non-zero, they will be used when
+rendering the legend node instead of the default symbol width or height
+from :py:class:`QgsLegendSettings`.
 
 .. seealso:: :py:func:`legendNodeSymbolSize`
 
@@ -131,10 +138,12 @@ symbol width or height from :py:class:`QgsLegendSettings`.
 
     static QSizeF legendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 %Docstring
-Returns the legend node symbol size for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+Returns the legend node symbol size for the legend node belonging to
+``nodeLayer`` at the specified ``originalIndex``.
 
-If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
-symbol width or height from :py:class:`QgsLegendSettings`.
+If either the width or height are non-zero, they will be used when
+rendering the legend node instead of the default symbol width or height
+from :py:class:`QgsLegendSettings`.
 
 .. seealso:: :py:func:`setLegendNodeSymbolSize`
 
@@ -143,10 +152,11 @@ symbol width or height from :py:class:`QgsLegendSettings`.
 
     static void setLegendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsSymbol *symbol );
 %Docstring
-Sets a custom legend ``symbol`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+Sets a custom legend ``symbol`` for the legend node belonging to
+``nodeLayer`` at the specified ``originalIndex``.
 
-If ``symbol`` is non-``None``, it will be used in place of the default symbol when rendering
-the legend node.
+If ``symbol`` is non-``None``, it will be used in place of the default
+symbol when rendering the legend node.
 
 .. seealso:: :py:func:`legendNodeCustomSymbol`
 
@@ -155,10 +165,11 @@ the legend node.
 
     static QgsSymbol *legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex ) /Factory/;
 %Docstring
-Returns the custom legend symbol for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+Returns the custom legend symbol for the legend node belonging to
+``nodeLayer`` at the specified ``originalIndex``.
 
-If the symbol is non-``None``, it will be used in place of the default symbol when rendering
-the legend node.
+If the symbol is non-``None``, it will be used in place of the default
+symbol when rendering the legend node.
 
 Caller takes ownership of the returned symbol.
 
@@ -169,12 +180,15 @@ Caller takes ownership of the returned symbol.
 
     static void setLegendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsColorRampLegendNodeSettings *settings );
 %Docstring
-Sets a custom legend color ramp ``settings`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+Sets a custom legend color ramp ``settings`` for the legend node
+belonging to ``nodeLayer`` at the specified ``originalIndex``.
 
-If the corresponding legend node is not a :py:class:`QgsColorRampLegendNode` then calling this method will have no effect.
+If the corresponding legend node is not a
+:py:class:`QgsColorRampLegendNode` then calling this method will have no
+effect.
 
-If ``settings`` is non-``None``, they will be used in place of the default settigns when rendering
-the legend node.
+If ``settings`` is non-``None``, they will be used in place of the
+default settigns when rendering the legend node.
 
 .. seealso:: :py:func:`legendNodeColorRampSettings`
 
@@ -183,12 +197,15 @@ the legend node.
 
     static QgsColorRampLegendNodeSettings *legendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex ) /Factory/;
 %Docstring
-Returns the custom legend color ramp settings for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+Returns the custom legend color ramp settings for the legend node
+belonging to ``nodeLayer`` at the specified ``originalIndex``.
 
-If the corresponding legend node is not a :py:class:`QgsColorRampLegendNode` then calling this method will return ``None``.
+If the corresponding legend node is not a
+:py:class:`QgsColorRampLegendNode` then calling this method will return
+``None``.
 
-If the returned value is non-``None``, they will be used in place of the default settings when rendering
-the legend node.
+If the returned value is non-``None``, they will be used in place of the
+default settings when rendering the legend node.
 
 Caller takes ownership of the returned settings.
 
@@ -218,7 +235,8 @@ Returns whether a forced column break should occur before the node.
 
     static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );
 %Docstring
-update according to layer node's custom properties (order of items, user labels for items)
+update according to layer node's custom properties (order of items, user
+labels for items)
 %End
 };
 
@@ -239,18 +257,22 @@ Default legend implementation for vector layers
 
     bool textOnSymbolEnabled() const;
 %Docstring
-Returns whether the "text on symbol" functionality is enabled. When enabled, legend symbols
-may have extra text rendered on top. The content of labels and their style is controlled
-by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
+Returns whether the "text on symbol" functionality is enabled. When
+enabled, legend symbols may have extra text rendered on top. The content
+of labels and their style is controlled by
+:py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and
+:py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
 
 .. versionadded:: 3.2
 %End
 
     void setTextOnSymbolEnabled( bool enabled );
 %Docstring
-Sets whether the "text on symbol" functionality is enabled. When enabled, legend symbols
-may have extra text rendered on top. The content of labels and their style is controlled
-by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
+Sets whether the "text on symbol" functionality is enabled. When
+enabled, legend symbols may have extra text rendered on top. The content
+of labels and their style is controlled by
+:py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and
+:py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
 
 .. versionadded:: 3.2
 %End
@@ -287,16 +309,18 @@ Sets text format of symbol labels for "text on symbol" functionality.
 
     QHash<QString, QString> textOnSymbolContent() const;
 %Docstring
-Returns per-symbol content of labels for "text on symbol" functionality. In the passed dictionary
-the keys are rule keys of legend items, the values are labels to be shown.
+Returns per-symbol content of labels for "text on symbol" functionality.
+In the passed dictionary the keys are rule keys of legend items, the
+values are labels to be shown.
 
 .. versionadded:: 3.2
 %End
 
     void setTextOnSymbolContent( const QHash<QString, QString> &content );
 %Docstring
-Sets per-symbol content of labels for "text on symbol" functionality. In the passed dictionary
-the keys are rule keys of legend items, the values are labels to be shown.
+Sets per-symbol content of labels for "text on symbol" functionality. In
+the passed dictionary the keys are rule keys of legend items, the values
+are labels to be shown.
 
 .. versionadded:: 3.2
 %End

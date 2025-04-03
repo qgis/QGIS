@@ -63,7 +63,8 @@ class QgsSipifyHeader : QtClassQVariantBase
 %Docstring(signature="appended")
 Documentation goes here
 
-Here's some comment mentioning another class :py:class:`QgsAutoAwesomemater`.makeAwesome.
+Here's some comment mentioning another class
+:py:class:`QgsAutoAwesomemater`.makeAwesome.
 
 .. note::
 
@@ -188,16 +189,16 @@ Factory annotation
 
     void LongDocStringMethod();
 %Docstring
-My long doc string
-is not very interesting!
+My long doc string is not very interesting!
 %End
 
     void LongDocStringMethodWithBrief();
 %Docstring
 some brief
-My long doc ``string``
-is not very interesting!
-Here's some comment mentioning another class :py:class:`QgsAutoAwesomemater`.makeLessAwesome.
+
+My long doc ``string`` is not very interesting! Here's some comment
+mentioning another class
+:py:class:`QgsAutoAwesomemater`.makeLessAwesome.
 %End
 
     MyPointer *pointerReturnValue();
@@ -219,7 +220,8 @@ I return a pointer. If something bad happens, I return ``None``.
 
     void complexDefaultValueAndType( QList<QPair<qint64 , QMap<int, QString>>> list = QList<QPair<qint64, QMap<int, QString>>> );
 %Docstring
-complex default value and type (i.e. containing commas) should be given as a string with single quotes
+complex default value and type (i.e. containing commas) should be given
+as a string with single quotes
 %End
 
     int inlineKeyWordShouldNotAppear();

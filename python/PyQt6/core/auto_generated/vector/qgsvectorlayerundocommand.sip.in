@@ -16,7 +16,8 @@
 class QgsVectorLayerUndoCommand : QUndoCommand
 {
 %Docstring(signature="appended")
-Base class for undo commands within a :py:class:`QgsVectorLayerEditBuffer`.
+Base class for undo commands within a
+:py:class:`QgsVectorLayerEditBuffer`.
 %End
 
 %TypeHeaderCode
@@ -102,7 +103,8 @@ Constructor for QgsVectorLayerUndoCommandDeleteFeature
 class QgsVectorLayerUndoCommandChangeGeometry : QgsVectorLayerUndoCommand
 {
 %Docstring(signature="appended")
-Undo command for modifying the geometry of a feature from a vector layer.
+Undo command for modifying the geometry of a feature from a vector
+layer.
 %End
 
 %TypeHeaderCode
@@ -134,7 +136,8 @@ Constructor for QgsVectorLayerUndoCommandChangeGeometry
 class QgsVectorLayerUndoCommandChangeAttribute : QgsVectorLayerUndoCommand
 {
 %Docstring(signature="appended")
-Undo command for modifying an attribute of a feature from a vector layer.
+Undo command for modifying an attribute of a feature from a vector
+layer.
 %End
 
 %TypeHeaderCode

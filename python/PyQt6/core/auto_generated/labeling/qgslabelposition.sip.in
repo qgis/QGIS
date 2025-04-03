@@ -40,7 +40,8 @@ Constructor for QgsLabelPosition.
 :param pinned: ``True`` if label has pinned placement
 :param providerId: ID of associated label provider
 :param labelGeometry: polygon geometry of label boundary
-:param isUnplaced: set to ``True`` if label was unplaced (e.g. due to collisions with other labels)
+:param isUnplaced: set to ``True`` if label was unplaced (e.g. due to
+                   collisions with other labels)
 %End
 
     QgsLabelPosition();

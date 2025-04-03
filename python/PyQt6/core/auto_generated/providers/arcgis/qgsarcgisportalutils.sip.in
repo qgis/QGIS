@@ -29,10 +29,13 @@ Utility functions for working with ArcGIS REST services.
 %Docstring
 Retrieves JSON user info for the specified user name.
 
-If ``user`` is blank then the user associated with the current logon details will be retrieved
+If ``user`` is blank then the user associated with the current logon
+details will be retrieved
 
-:param communityUrl: should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community
-:param user: username to query, or an empty string to query the current user
+:param communityUrl: should be set to the Portal's community URL, e.g.
+                     https://mysite.com/portal/sharing/rest/community
+:param user: username to query, or an empty string to query the current
+             user
 :param authcfg: authentication configuration ID
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
@@ -47,12 +50,16 @@ If ``user`` is blank then the user associated with the current logon details wil
 
  static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
-Retrieves JSON user info for the specified user name. Only to avoid API break.
+Retrieves JSON user info for the specified user name. Only to avoid API
+break.
 
-If ``user`` is blank then the user associated with the current logon details will be retrieved
+If ``user`` is blank then the user associated with the current logon
+details will be retrieved
 
-:param communityUrl: should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community
-:param user: username to query, or an empty string to query the current user
+:param communityUrl: should be set to the Portal's community URL, e.g.
+                     https://mysite.com/portal/sharing/rest/community
+:param user: username to query, or an empty string to query the current
+             user
 :param authcfg: authentication configuration ID
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
@@ -69,12 +76,16 @@ If ``user`` is blank then the user associated with the current logon details wil
 
     static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, const QString &urlPrefix = QString() );
 %Docstring
-Retrieves JSON definitions for all groups which the specified user name is a member of.
+Retrieves JSON definitions for all groups which the specified user name
+is a member of.
 
-If ``user`` is blank then the user associated with the current logon details will be retrieved
+If ``user`` is blank then the user associated with the current logon
+details will be retrieved
 
-:param communityUrl: should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community
-:param user: username to query, or an empty string to query the current user
+:param communityUrl: should be set to the Portal's community URL, e.g.
+                     https://mysite.com/portal/sharing/rest/community
+:param user: username to query, or an empty string to query the current
+             user
 :param authcfg: authentication configuration ID
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
@@ -89,12 +100,16 @@ If ``user`` is blank then the user associated with the current logon details wil
 
  static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
-Retrieves JSON definitions for all groups which the specified user name is a member of. Only to avoid API break.
+Retrieves JSON definitions for all groups which the specified user name
+is a member of. Only to avoid API break.
 
-If ``user`` is blank then the user associated with the current logon details will be retrieved
+If ``user`` is blank then the user associated with the current logon
+details will be retrieved
 
-:param communityUrl: should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community
-:param user: username to query, or an empty string to query the current user
+:param communityUrl: should be set to the Portal's community URL, e.g.
+                     https://mysite.com/portal/sharing/rest/community
+:param user: username to query, or an empty string to query the current
+             user
 :param authcfg: authentication configuration ID
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
@@ -111,14 +126,17 @@ If ``user`` is blank then the user associated with the current logon details wil
 
     static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),  QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() );
 %Docstring
-Retrieves JSON definitions for all items which belong the the specified ``groupId``.
+Retrieves JSON definitions for all items which belong the the specified
+``groupId``.
 
-:param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
+:param contentUrl: should be set to the Portal's content URL, e.g.
+                   https://mysite.com/portal/sharing/rest/content
 :param groupId: ID of group to query
 :param authcfg: authentication configuration ID
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
-:param pageSize: number of results to retrieve for each request. Maximum value is 100.
+:param pageSize: number of results to retrieve for each request. Maximum
+                 value is 100.
 :param urlPrefix: http web proxy url prefix
 
 :return: - a list of JSON item info for all items within the group
@@ -130,14 +148,17 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
 
  static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
-Retrieves JSON definitions for all items which belong the the specified ``groupId``. Only to avoid API break.
+Retrieves JSON definitions for all items which belong the the specified
+``groupId``. Only to avoid API break.
 
-:param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
+:param contentUrl: should be set to the Portal's content URL, e.g.
+                   https://mysite.com/portal/sharing/rest/content
 :param groupId: ID of group to query
 :param authcfg: authentication configuration ID
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
-:param pageSize: number of results to retrieve for each request. Maximum value is 100.
+:param pageSize: number of results to retrieve for each request. Maximum
+                 value is 100.
 :param urlPrefix: http web proxy url prefix
 
 :return: - a list of JSON item info for all items within the group
@@ -153,15 +174,19 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
         const QList< int > &itemTypes,
         QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() );
 %Docstring
-Retrieves JSON definitions for all items which belong the the specified ``groupId``.
+Retrieves JSON definitions for all items which belong the the specified
+``groupId``.
 
-:param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
+:param contentUrl: should be set to the Portal's content URL, e.g.
+                   https://mysite.com/portal/sharing/rest/content
 :param groupId: ID of group to query
 :param authcfg: authentication configuration ID
-:param itemTypes: list of desired item types (using :py:class:`Qgis`.ArcGisRestServiceType values)
+:param itemTypes: list of desired item types (using
+                  :py:class:`Qgis`.ArcGisRestServiceType values)
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
-:param pageSize: number of results to retrieve for each request. Maximum value is 100.
+:param pageSize: number of results to retrieve for each request. Maximum
+                 value is 100.
 :param urlPrefix: http web proxy url prefix
 
 :return: - a list of JSON item info for all items within the group
@@ -175,15 +200,19 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
         const QList< int > &itemTypes,
         QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
-Retrieves JSON definitions for all items which belong the the specified ``groupId``. Only to avoid API break.
+Retrieves JSON definitions for all items which belong the the specified
+``groupId``. Only to avoid API break.
 
-:param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
+:param contentUrl: should be set to the Portal's content URL, e.g.
+                   https://mysite.com/portal/sharing/rest/content
 :param groupId: ID of group to query
 :param authcfg: authentication configuration ID
-:param itemTypes: list of desired item types (using :py:class:`Qgis`.ArcGisRestServiceType values)
+:param itemTypes: list of desired item types (using
+                  :py:class:`Qgis`.ArcGisRestServiceType values)
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
-:param pageSize: number of results to retrieve for each request. Maximum value is 100.
+:param pageSize: number of results to retrieve for each request. Maximum
+                 value is 100.
 :param urlPrefix: http web proxy url prefix
 
 :return: - a list of JSON item info for all items within the group

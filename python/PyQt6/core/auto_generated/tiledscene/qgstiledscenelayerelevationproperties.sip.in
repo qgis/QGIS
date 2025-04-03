@@ -13,7 +13,8 @@
 class QgsTiledSceneLayerElevationProperties : QgsMapLayerElevationProperties
 {
 %Docstring(signature="appended")
-Tiled scene layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
+Tiled scene layer specific subclass of
+:py:class:`QgsMapLayerElevationProperties`.
 
 .. versionadded:: 3.34
 %End
@@ -25,7 +26,8 @@ Tiled scene layer specific subclass of :py:class:`QgsMapLayerElevationProperties
 
     QgsTiledSceneLayerElevationProperties( QObject *parent /TransferThis/ );
 %Docstring
-Constructor for QgsTiledSceneLayerElevationProperties, with the specified ``parent`` object.
+Constructor for QgsTiledSceneLayerElevationProperties, with the
+specified ``parent`` object.
 %End
 
     virtual bool hasElevation() const;

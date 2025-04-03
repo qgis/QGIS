@@ -15,10 +15,10 @@ class QgsDatabaseSchemaModel : QAbstractItemModel
 %Docstring(signature="appended")
 A model containing schemas from a database connection.
 
-This class does not automatically subscribe to database updates. Schemas are queried
-from the database initially upon model construction. In order
-to update the listed schemas, :py:func:`QgsDatabaseSchemaModel.refresh()` must be manually
-called.
+This class does not automatically subscribe to database updates. Schemas
+are queried from the database initially upon model construction. In
+order to update the listed schemas,
+:py:func:`QgsDatabaseSchemaModel.refresh()` must be manually called.
 
 .. versionadded:: 3.14
 %End
@@ -36,7 +36,8 @@ called.
 
     explicit QgsDatabaseSchemaModel( const QString &provider, const QString &connection, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDatabaseSchemaModel, for the specified ``provider`` and ``connection`` name.
+Constructor for QgsDatabaseSchemaModel, for the specified ``provider``
+and ``connection`` name.
 
 .. warning::
 
@@ -46,7 +47,8 @@ Constructor for QgsDatabaseSchemaModel, for the specified ``provider`` and ``con
 
     explicit QgsDatabaseSchemaModel( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDatabaseSchemaModel, for the specified ``connection``.
+Constructor for QgsDatabaseSchemaModel, for the specified
+``connection``.
 
 Ownership of ``connection`` is transferred to the model.
 %End
@@ -64,14 +66,16 @@ Ownership of ``connection`` is transferred to the model.
 
     void setAllowEmptySchema( bool allowEmpty );
 %Docstring
-Sets whether an optional empty schema ("not set") option is present in the model.
+Sets whether an optional empty schema ("not set") option is present in
+the model.
 
 .. seealso:: :py:func:`allowEmptySchema`
 %End
 
     bool allowEmptySchema() const;
 %Docstring
-Returns ``True`` if the model allows the empty schema ("not set") choice.
+Returns ``True`` if the model allows the empty schema ("not set")
+choice.
 
 .. seealso:: :py:func:`setAllowEmptySchema`
 %End

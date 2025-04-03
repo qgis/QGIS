@@ -14,7 +14,8 @@ typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 class QgsVectorLayerEditBuffer : QObject
 {
 %Docstring(signature="appended")
-Stores queued vector layer edit operations prior to committing changes to the layer's data provider.
+Stores queued vector layer edit operations prior to committing changes
+to the layer's data provider.
 %End
 
 %TypeHeaderCode
@@ -39,7 +40,8 @@ Adds a feature
 
     virtual bool addFeatures( QgsFeatureList &features );
 %Docstring
-Insert a copy of the given features into the layer  (but does not commit it)
+Insert a copy of the given features into the layer (but does not commit
+it)
 %End
 
     virtual bool deleteFeature( QgsFeatureId fid );
@@ -71,8 +73,8 @@ Changes values of attributes (but does not commit it).
 
     virtual bool addAttribute( const QgsField &field );
 %Docstring
-Adds an attribute field (but does not commit it)
-returns ``True`` if the field was added
+Adds an attribute field (but does not commit it) returns ``True`` if the
+field was added
 %End
 
     virtual bool deleteAttribute( int attr );
@@ -90,19 +92,18 @@ Renames an attribute field (but does not commit it)
 
     virtual bool commitChanges( QStringList &commitErrors );
 %Docstring
-Attempts to commit any changes to disk.  Returns the result of the attempt.
-If a commit fails, the in-memory changes are left alone.
+Attempts to commit any changes to disk. Returns the result of the
+attempt. If a commit fails, the in-memory changes are left alone.
 
 This allows editing to continue if the commit failed on e.g. a
 disallowed value in a Postgres database - the user can re-edit and try
 again.
 
-The commits occur in distinct stages,
-(add attributes, add features, change attribute values, change
-geometries, delete features, delete attributes)
-so if a stage fails, it's difficult to roll back cleanly.
-Therefore any error message also includes which stage failed so
-that the user has some chance of repairing the damage cleanly.
+The commits occur in distinct stages, (add attributes, add features,
+change attribute values, change geometries, delete features, delete
+attributes) so if a stage fails, it's difficult to roll back cleanly.
+Therefore any error message also includes which stage failed so that the
+user has some chance of repairing the damage cleanly.
 %End
 
     virtual void rollBack();
@@ -119,15 +120,16 @@ Returns a map of new features which are not committed.
 
     QgsFeatureIds allAddedOrEditedFeatures() const;
 %Docstring
-Returns a list of the features IDs for all newly added or edited features
-in the buffer.
+Returns a list of the features IDs for all newly added or edited
+features in the buffer.
 
 .. versionadded:: 3.20
 %End
 
     bool isFeatureAdded( QgsFeatureId id ) const;
 %Docstring
-Returns ``True`` if the specified feature ID has been added but not committed.
+Returns ``True`` if the specified feature ID has been added but not
+committed.
 
 :param id: feature ID
 
@@ -136,14 +138,16 @@ Returns ``True`` if the specified feature ID has been added but not committed.
 
     QgsChangedAttributesMap changedAttributeValues() const;
 %Docstring
-Returns a map of features with changed attributes values which are not committed.
+Returns a map of features with changed attributes values which are not
+committed.
 
 .. seealso:: :py:func:`isFeatureAttributesChanged`
 %End
 
     bool isFeatureAttributesChanged( QgsFeatureId id ) const;
 %Docstring
-Returns ``True`` if the specified feature ID has had an attribute changed but not committed.
+Returns ``True`` if the specified feature ID has had an attribute
+changed but not committed.
 
 :param id: feature ID
 
@@ -152,14 +156,16 @@ Returns ``True`` if the specified feature ID has had an attribute changed but no
 
     QgsAttributeList deletedAttributeIds() const;
 %Docstring
-Returns a list of deleted attributes fields which are not committed. The list is kept sorted.
+Returns a list of deleted attributes fields which are not committed. The
+list is kept sorted.
 
 .. seealso:: :py:func:`isAttributeDeleted`
 %End
 
     bool isAttributeDeleted( int index ) const;
 %Docstring
-Returns ``True`` if the specified attribute has been deleted but not committed.
+Returns ``True`` if the specified attribute has been deleted but not
+committed.
 
 :param index: attribute index
 
@@ -173,14 +179,16 @@ Returns a list of added attributes fields which are not committed.
 
     QgsGeometryMap changedGeometries() const;
 %Docstring
-Returns a map of features with changed geometries which are not committed.
+Returns a map of features with changed geometries which are not
+committed.
 
 .. seealso:: :py:func:`isFeatureGeometryChanged`
 %End
 
     bool isFeatureGeometryChanged( QgsFeatureId id ) const;
 %Docstring
-Returns ``True`` if the specified feature ID has had its geometry changed but not committed.
+Returns ``True`` if the specified feature ID has had its geometry
+changed but not committed.
 
 :param id: feature ID
 
@@ -196,7 +204,8 @@ Returns a list of deleted feature IDs which are not committed.
 
     bool isFeatureDeleted( QgsFeatureId id ) const;
 %Docstring
-Returns ``True`` if the specified feature ID has been deleted but not committed.
+Returns ``True`` if the specified feature ID has been deleted but not
+committed.
 
 :param id: feature ID
 
@@ -206,7 +215,8 @@ Returns ``True`` if the specified feature ID has been deleted but not committed.
 
     QgsVectorLayerEditBufferGroup *editBufferGroup() const;
 %Docstring
-Returns the parent edit buffer group for this edit buffer, or None if not part of a group.
+Returns the parent edit buffer group for this edit buffer, or None if
+not part of a group.
 
 .. versionadded:: 3.26
 %End
@@ -299,7 +309,8 @@ Emitted after feature removal has been committed to the layer.
 
     void committedAttributeValuesChanges( const QString &layerId, const QgsChangedAttributesMap &changedAttributesValues );
 %Docstring
-Emitted after feature attribute value changes have been committed to the layer.
+Emitted after feature attribute value changes have been committed to the
+layer.
 %End
 
     void committedGeometriesChanges( const QString &layerId, const QgsGeometryMap &changedGeometries );
@@ -333,7 +344,8 @@ Update added and changed features after removal of an attribute
 
     void updateAttributeMapIndex( QgsAttributeMap &attrs, int index, int offset ) const;
 %Docstring
-Updates an index in an attribute map to a new value (for updates of changed attributes)
+Updates an index in an attribute map to a new value (for updates of
+changed attributes)
 %End
 
     void updateLayerFields();

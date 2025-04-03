@@ -19,7 +19,8 @@ class QgsLayerMetadataProviderRegistry : QObject
 %Docstring(signature="appended")
 Registry of layer metadata provider backends.
 
-This is a singleton that should be accessed through :py:func:`QgsApplication.layerMetadataProviderRegistry()`.
+This is a singleton that should be accessed through
+:py:func:`QgsApplication.layerMetadataProviderRegistry()`.
 
 .. seealso:: :py:class:`QgsAbstractLayerMetadataProvider`
 
@@ -33,17 +34,20 @@ This is a singleton that should be accessed through :py:func:`QgsApplication.lay
 
     explicit QgsLayerMetadataProviderRegistry( QObject *parent = 0 );
 %Docstring
-Creates the layer metadata provider registry, with an optional ``parent``
+Creates the layer metadata provider registry, with an optional
+``parent``
 %End
 
     void registerLayerMetadataProvider( QgsAbstractLayerMetadataProvider *metadataProvider /Transfer/ );
 %Docstring
-Registers a layer metadata provider ``metadataProvider`` and takes ownership of it
+Registers a layer metadata provider ``metadataProvider`` and takes
+ownership of it
 %End
 
     void unregisterLayerMetadataProvider( QgsAbstractLayerMetadataProvider *metadataProvider );
 %Docstring
-Unregisters a layer metadata provider ``metadataProvider`` and destroys its instance
+Unregisters a layer metadata provider ``metadataProvider`` and destroys
+its instance
 %End
 
     QList<QgsAbstractLayerMetadataProvider *> layerMetadataProviders() const;
@@ -53,13 +57,16 @@ Returns the list of all registered layer metadata providers.
 
     QgsAbstractLayerMetadataProvider *layerMetadataProviderFromId( const QString &id );
 %Docstring
-Returns metadata provider implementation if the ``id`` matches one. Returns ``None`` otherwise.
+Returns metadata provider implementation if the ``id`` matches one.
+Returns ``None`` otherwise.
 %End
 
     const QgsLayerMetadataSearchResults search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 );
 %Docstring
-Search for layers in all the registered layer metadata providers, optionally filtering by ``searchString``
-and ``geographicExtent``, an optional ``feedback`` can be used to monitor and control the search process.
+Search for layers in all the registered layer metadata providers,
+optionally filtering by ``searchString`` and ``geographicExtent``, an
+optional ``feedback`` can be used to monitor and control the search
+process.
 %End
 
 };

@@ -24,13 +24,14 @@ A reusable widget for finding files (recursively) by file pattern.
   public:
     QgsFindFilesByPatternWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsFindFilesByPatternWidget, with the specified ``parent`` widget.
+Constructor for QgsFindFilesByPatternWidget, with the specified
+``parent`` widget.
 %End
 
     QStringList files() const;
 %Docstring
-Returns the list of files found by the dialog. This may be empty if
-no matching files were found.
+Returns the list of files found by the dialog. This may be empty if no
+matching files were found.
 
 .. seealso:: :py:func:`findComplete`
 %End
@@ -41,8 +42,8 @@ no matching files were found.
 %Docstring
 Emitted after files are found in the dialog.
 
-The ``files`` argument contains a list of all matching files found. This may be empty if
-no matching files were found.
+The ``files`` argument contains a list of all matching files found. This
+may be empty if no matching files were found.
 
 .. seealso:: :py:func:`files`
 %End
@@ -63,13 +64,14 @@ A dialog for finding files (recursively) by file pattern.
   public:
     QgsFindFilesByPatternDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsFindFilesByPatternDialog, with the specified ``parent`` widget.
+Constructor for QgsFindFilesByPatternDialog, with the specified
+``parent`` widget.
 %End
 
     QStringList files() const;
 %Docstring
-Returns the list of files found by the dialog. This may be empty if
-no matching files were found.
+Returns the list of files found by the dialog. This may be empty if no
+matching files were found.
 %End
 
 };

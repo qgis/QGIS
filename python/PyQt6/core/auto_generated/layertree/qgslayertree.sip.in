@@ -13,8 +13,9 @@ class QgsLayerTree : QgsLayerTreeGroup
 %Docstring(signature="appended")
 Namespace with helper functions for layer tree operations.
 
-Only generally useful routines should be here. Miscellaneous utility functions for work
-with the layer tree are in :py:class:`QgsLayerTreeUtils` class.
+Only generally useful routines should be here. Miscellaneous utility
+functions for work with the layer tree are in
+:py:class:`QgsLayerTreeUtils` class.
 %End
 
 %TypeHeaderCode
@@ -49,9 +50,10 @@ Create a new empty layer tree
 
     QList<QgsMapLayer *> customLayerOrder() const;
 %Docstring
-The order in which layers will be rendered on the canvas.
-Will only be used if the property hasCustomLayerOrder is ``True``.
-If you need the current layer order that is active, prefer using :py:func:`~QgsLayerTree.layerOrder`.
+The order in which layers will be rendered on the canvas. Will only be
+used if the property hasCustomLayerOrder is ``True``. If you need the
+current layer order that is active, prefer using
+:py:func:`~QgsLayerTree.layerOrder`.
 
 .. seealso:: :py:func:`setCustomLayerOrder`
 
@@ -62,9 +64,10 @@ If you need the current layer order that is active, prefer using :py:func:`~QgsL
 
     void setCustomLayerOrder( const QList<QgsMapLayer *> &customLayerOrder );
 %Docstring
-The order in which layers will be rendered on the canvas.
-Will only be used if the property hasCustomLayerOrder is ``True``.
-If you need the current layer order that is active, prefer using :py:func:`~QgsLayerTree.layerOrder`.
+The order in which layers will be rendered on the canvas. Will only be
+used if the property hasCustomLayerOrder is ``True``. If you need the
+current layer order that is active, prefer using
+:py:func:`~QgsLayerTree.layerOrder`.
 
 .. seealso:: :py:func:`customLayerOrder`
 
@@ -75,9 +78,10 @@ If you need the current layer order that is active, prefer using :py:func:`~QgsL
 
     void setCustomLayerOrder( const QStringList &customLayerOrder ) /PyName=setCustomLayerOrderByIds/;
 %Docstring
-The order in which layers will be rendered on the canvas.
-Will only be used if the property hasCustomLayerOrder is ``True``.
-If you need the current layer order that is active, prefer using :py:func:`~QgsLayerTree.layerOrder`.
+The order in which layers will be rendered on the canvas. Will only be
+used if the property hasCustomLayerOrder is ``True``. If you need the
+current layer order that is active, prefer using
+:py:func:`~QgsLayerTree.layerOrder`.
 
 .. seealso:: :py:func:`customLayerOrder`
 
@@ -88,42 +92,41 @@ If you need the current layer order that is active, prefer using :py:func:`~QgsL
 
     QList<QgsMapLayer *> layerOrder() const;
 %Docstring
-The order in which layers will be rendered on the canvas.
-Depending on hasCustomLayerOrder, this will return either the override
-customLayerOrder or the layer order derived from the tree.
-This property is read only.
+The order in which layers will be rendered on the canvas. Depending on
+hasCustomLayerOrder, this will return either the override
+customLayerOrder or the layer order derived from the tree. This property
+is read only.
 
 .. seealso:: :py:func:`customLayerOrder`
 %End
 
     bool hasCustomLayerOrder() const;
 %Docstring
-Determines if the layer order should be derived from the layer tree
-or if a custom override order shall be used instead.
+Determines if the layer order should be derived from the layer tree or
+if a custom override order shall be used instead.
 
 .. seealso:: :py:func:`customLayerOrder`
 %End
 
     void setHasCustomLayerOrder( bool hasCustomLayerOrder );
 %Docstring
-Determines if the layer order should be derived from the layer tree
-or if a custom override order shall be used instead.
+Determines if the layer order should be derived from the layer tree or
+if a custom override order shall be used instead.
 
 .. seealso:: :py:func:`setCustomLayerOrder`
 %End
 
     static QgsLayerTree *readXml( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
-Load the layer tree from an XML element.
-It is not required that layers are loaded at this point.
-:py:func:`~QgsLayerTree.resolveReferences` needs to be called after loading the layers and
-before using the tree.
+Load the layer tree from an XML element. It is not required that layers
+are loaded at this point. :py:func:`~QgsLayerTree.resolveReferences`
+needs to be called after loading the layers and before using the tree.
 %End
 
     void readLayerOrderFromXml( const QDomElement &doc );
 %Docstring
-Load the layer order from an XML element.
-Make sure that this is only called after the layers are loaded.
+Load the layer order from an XML element. Make sure that this is only
+called after the layers are loaded.
 %End
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );

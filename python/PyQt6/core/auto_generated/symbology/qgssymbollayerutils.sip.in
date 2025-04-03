@@ -76,7 +76,8 @@ Converts a Qt pen joinstyle to a QGIS join style.
 
     static bool hasSldSymbolizer( const QDomElement &element );
 %Docstring
-Returns ``True`` if a DOM ``element`` contains an SLD Symbolizer element.
+Returns ``True`` if a DOM ``element`` contains an SLD Symbolizer
+element.
 
 .. versionadded:: 3.42
 %End
@@ -248,7 +249,8 @@ Converts a ``value`` to a size.
 Encodes a render unit into an SLD unit of measure string.
 
 :param unit: unit to encode
-:param scaleFactor: if specified, will be set to scale factor for unit of measure
+:param scaleFactor: if specified, will be set to scale factor for unit
+                    of measure
 
 :return: encoded string
 
@@ -260,7 +262,8 @@ Encodes a render unit into an SLD unit of measure string.
 Decodes a SLD unit of measure string to a render unit.
 
 :param str: string to decode
-:param scaleFactor: if specified, will be set to scale factor for unit of measure
+:param scaleFactor: if specified, will be set to scale factor for unit
+                    of measure
 
 :return: matching render unit
 
@@ -300,8 +303,12 @@ Returns an icon preview for a color ramp.
 :param symbol: symbol
 :param size: target pixmap size
 :param padding: space between icon edge and symbol
-:param shape: optional legend patch shape to use for rendering the preview icon
-:param screen: can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
+:param shape: optional legend patch shape to use for rendering the
+              preview icon
+:param screen: can be used to specify the destination screen properties
+               for the icon. This allows the icon to be generated using
+               the correct DPI and device pixel ratio for the target
+               screen (since QGIS 3.32)
 
 .. seealso:: :py:func:`symbolPreviewPixmap`
 %End
@@ -317,10 +324,16 @@ Returns a pixmap preview for a color ramp.
 :param size: target pixmap size
 :param padding: space between icon edge and symbol
 :param customContext: custom rendering context
-:param selected: set to ``True`` to render the symbol in a selected state (since QGIS 3.10)
-:param expressionContext: optional custom expression context (since QGIS 3.10)
-:param shape: optional legend patch shape to use for rendering the preview icon (since QGIS 3.14)
-:param screen: can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
+:param selected: set to ``True`` to render the symbol in a selected
+                 state (since QGIS 3.10)
+:param expressionContext: optional custom expression context (since QGIS
+                          3.10)
+:param shape: optional legend patch shape to use for rendering the
+              preview icon (since QGIS 3.14)
+:param screen: can be used to specify the destination screen properties
+               for the icon. This allows the icon to be generated using
+               the correct DPI and device pixel ratio for the target
+               screen (since QGIS 3.32)
 
 .. seealso:: :py:func:`symbolPreviewIcon`
 %End
@@ -333,7 +346,9 @@ Draws a symbol layer preview to a QPicture
 :param units: size units
 :param size: target size of preview picture
 :param scale: map unit scale for preview
-:param parentSymbolType: since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
+:param parentSymbolType: since QGIS 3.22, can be used to specify the
+                         parent symbol type so that geometry generator
+                         preview icons are correctly calculated
 
 :return: QPicture containing symbol layer preview
 
@@ -348,9 +363,16 @@ Draws a symbol layer preview to an icon.
 :param u: size units
 :param size: target size of preview icon
 :param scale: map unit scale for preview
-:param parentSymbolType: since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
-:param mapLayer: since QGIS 3.28, can be used to specify the associated map layer so that layer related expressions are correctly calculated
-:param screen: since QGIS 3.32, can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen.
+:param parentSymbolType: since QGIS 3.22, can be used to specify the
+                         parent symbol type so that geometry generator
+                         preview icons are correctly calculated
+:param mapLayer: since QGIS 3.28, can be used to specify the associated
+                 map layer so that layer related expressions are
+                 correctly calculated
+:param screen: since QGIS 3.32, can be used to specify the destination
+               screen properties for the icon. This allows the icon to
+               be generated using the correct DPI and device pixel ratio
+               for the target screen.
 
 :return: icon containing symbol layer preview
 
@@ -377,10 +399,15 @@ Returns a pixmap preview for a color ramp.
 :param size: target pixmap size
 :param padding: space between icon edge and color ramp
 :param direction: direction to render pixmap (since QGIS 3.18)
-:param flipDirection: set to ``True`` to flip the direction of the ramp. For horizontal ``directions``, ramps will be
-                      rendered left to right by default. For vertical ``directions``, ramps will be rendered top to bottom by default. Setting
-                      this flag to ``True`` will reverse these default directions.
-:param drawTransparentBackground: set to ``False`` to disable the checkerboard effect drawn below transparent colors in the ramp
+:param flipDirection: set to ``True`` to flip the direction of the ramp.
+                      For horizontal ``directions``, ramps will be
+                      rendered left to right by default. For vertical
+                      ``directions``, ramps will be rendered top to
+                      bottom by default. Setting this flag to ``True``
+                      will reverse these default directions.
+:param drawTransparentBackground: set to ``False`` to disable the
+                                  checkerboard effect drawn below
+                                  transparent colors in the ramp
 
 .. seealso:: :py:func:`colorRampPreviewIcon`
 %End
@@ -389,7 +416,8 @@ Returns a pixmap preview for a color ramp.
 
     static void drawVertexMarker( double x, double y, QPainter &p, Qgis::VertexMarkerType type, int markerSize );
 %Docstring
-Draws a vertex symbol at (painter) coordinates x, y. (Useful to assist vertex editing.)
+Draws a vertex symbol at (painter) coordinates x, y. (Useful to assist
+vertex editing.)
 
 .. versionadded:: 3.4.5
 %End
@@ -412,7 +440,8 @@ Attempts to load a symbol from a DOM element
 
     static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
+Reads and returns symbol layer from XML. Caller is responsible for
+deleting the returned object
 %End
     static QDomElement saveSymbol( const QString &symbolName, const QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
@@ -421,8 +450,8 @@ Writes a symbol definition to XML
 
     static QString symbolProperties( QgsSymbol *symbol );
 %Docstring
-Returns a string representing the symbol. Can be used to test for equality
-between symbols.
+Returns a string representing the symbol. Can be used to test for
+equality between symbols.
 %End
 
     static bool createSymbolLayerListFromSld( QDomElement &element, Qgis::GeometryType geomType, QList<QgsSymbolLayer *> &layers );
@@ -436,21 +465,26 @@ Creates a symbol layer list from a DOM ``element``.
 
     static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QList<QgsSymbolLayer *> &layerList );
 %Docstring
-Converts a polygon symbolizer ``element`` to a list of marker symbol layers.
+Converts a polygon symbolizer ``element`` to a list of marker symbol
+layers.
 %End
 
     static bool hasExternalGraphic( QDomElement &element );
 %Docstring
-Checks if ``element`` contains an ExternalGraphic element with format "image/svg+xml"
+Checks if ``element`` contains an ExternalGraphic element with format
+"image/svg+xml"
 
-:return: ``True`` if the ExternalGraphic with format "image/svg+xml" is found .
+:return: ``True`` if the ExternalGraphic with format "image/svg+xml" is
+         found .
 %End
 
     static bool hasExternalGraphicV2( QDomElement &element, const QString format = QString() );
 %Docstring
-Checks if ``element`` contains an ExternalGraphic element, if the optional ``format`` is specified it will also be checked.
+Checks if ``element`` contains an ExternalGraphic element, if the
+optional ``format`` is specified it will also be checked.
 
-:return: ``True`` if the ExternalGraphic element is found and the optionally specified format matches.
+:return: ``True`` if the ExternalGraphic element is found and the
+         optionally specified format matches.
 
 .. versionadded:: 3.30
 %End
@@ -467,9 +501,11 @@ Checks if ``element`` contains an ExternalGraphic element, if the optional ``for
 
     static bool needRasterImageFill( QDomElement &element );
 %Docstring
-Checks if ``element`` contains a graphic fill with a raster image of type PNG, JPEG or GIF.
+Checks if ``element`` contains a graphic fill with a raster image of
+type PNG, JPEG or GIF.
 
-:return: ``True`` if element contains a graphic fill with a raster image.
+:return: ``True`` if element contains a graphic fill with a raster
+         image.
 
 .. versionadded:: 3.30
 %End
@@ -540,7 +576,8 @@ Create ogr feature style string for brush
 
     static void createAnchorPointElement( QDomDocument &doc, QDomElement &element, QPointF anchor );
 %Docstring
-Creates a SE 1.1 anchor point element as a child of the specified element
+Creates a SE 1.1 anchor point element as a child of the specified
+element
 
 :param doc: The document
 :param element: The parent element
@@ -555,7 +592,8 @@ Creates a SE 1.1 anchor point element as a child of the specified element
 
     static bool createExpressionElement( QDomDocument &doc, QDomElement &element, const QString &function );
 %Docstring
-Creates a OGC Expression element based on the provided function expression
+Creates a OGC Expression element based on the provided function
+expression
 
 :param doc: The document owning the element
 :param element: The element parent
@@ -581,28 +619,30 @@ Saves the map of properties to XML
 
     static QgsSymbolMap loadSymbols( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-Reads a collection of symbols from XML and returns them in a map. Caller is responsible for deleting returned symbols.
+Reads a collection of symbols from XML and returns them in a map. Caller
+is responsible for deleting returned symbols.
 %End
     static QDomElement saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
-Writes a collection of symbols to XML with specified tagName for the top-level element
+Writes a collection of symbols to XML with specified tagName for the
+top-level element
 %End
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 
     static QMimeData *symbolToMimeData( const QgsSymbol *symbol ) /Factory/;
 %Docstring
-Creates new mime data from a ``symbol``.
-This also sets the mime color data to match the symbol's color, so that copied symbols
-can be paste in places where a color is expected.
+Creates new mime data from a ``symbol``. This also sets the mime color
+data to match the symbol's color, so that copied symbols can be paste in
+places where a color is expected.
 
 .. seealso:: :py:func:`symbolFromMimeData`
 %End
 
     static QgsSymbol *symbolFromMimeData( const QMimeData *data ) /Factory/;
 %Docstring
-Attempts to parse ``mime`` data as a symbol. A new symbol instance will be returned
-if the data was successfully converted to a symbol.
+Attempts to parse ``mime`` data as a symbol. A new symbol instance will
+be returned if the data was successfully converted to a symbol.
 
 .. seealso:: :py:func:`symbolToMimeData`
 %End
@@ -613,7 +653,8 @@ Creates a color ramp from the settings encoded in an XML element
 
 :param element: DOM element
 
-:return: new color ramp. Caller takes responsibility for deleting the returned value.
+:return: new color ramp. Caller takes responsibility for deleting the
+         returned value.
 
 .. seealso:: :py:func:`saveColorRamp`
 %End
@@ -633,16 +674,16 @@ Encodes a color ramp's settings to an XML element
 
     static QVariant colorRampToVariant( const QString &name, QgsColorRamp *ramp );
 %Docstring
-Saves a color ramp to a QVariantMap, wrapped in a QVariant.
-You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
+Saves a color ramp to a QVariantMap, wrapped in a QVariant. You can use
+:py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadColorRamp`
 %End
 
     static QgsColorRamp *loadColorRamp( const QVariant &value ) /Factory/;
 %Docstring
-Load a color ramp from a QVariantMap, wrapped in a QVariant.
-You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
+Load a color ramp from a QVariantMap, wrapped in a QVariant. You can use
+:py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 
 .. seealso:: :py:func:`colorRampToVariant`
 %End
@@ -658,8 +699,8 @@ Returns a friendly display name for a color
 
     static QList< QColor > parseColorList( const QString &colorStr );
 %Docstring
-Attempts to parse a string as a list of colors using a variety of common formats, including hex
-codes, rgb and rgba strings.
+Attempts to parse a string as a list of colors using a variety of common
+formats, including hex codes, rgb and rgba strings.
 
 :param colorStr: string representing the color list
 
@@ -668,8 +709,8 @@ codes, rgb and rgba strings.
 
     static QMimeData *colorToMimeData( const QColor &color ) /Factory/;
 %Docstring
-Creates mime data from a color. Sets both the mime data's color data, and the
-mime data's text with the color's hex code.
+Creates mime data from a color. Sets both the mime data's color data,
+and the mime data's text with the color's hex code.
 
 :param color: color to encode as mime data
 
@@ -682,8 +723,10 @@ Attempts to parse mime data as a color
 
 :param data: mime data to parse
 
-:return: - valid color if mimedata could be interpreted as a color, otherwise an invalid color
-         - hasAlpha: ``True`` if mime data was interpreted as a color containing an explicit alpha value
+:return: - valid color if mimedata could be interpreted as a color,
+           otherwise an invalid color
+         - hasAlpha: ``True`` if mime data was interpreted as a color
+           containing an explicit alpha value
 %End
 
     static QgsNamedColorList colorListFromMimeData( const QMimeData *data );
@@ -700,7 +743,8 @@ Attempts to parse mime data as a list of named colors
 Creates mime data from a list of named colors
 
 :param colorList: list of named colors
-:param allFormats: set to ``True`` to include additional mime formats, include text/plain and application/x-color
+:param allFormats: set to ``True`` to include additional mime formats,
+                   include text/plain and application/x-color
 
 :return: mime data containing encoded colors
 %End
@@ -733,8 +777,8 @@ Imports colors from a gpl GIMP palette file
 
     static QColor parseColor( const QString &colorStr, bool strictEval = false );
 %Docstring
-Attempts to parse a string as a color using a variety of common formats, including hex
-codes, rgb and rgba strings.
+Attempts to parse a string as a color using a variety of common formats,
+including hex codes, rgb and rgba strings.
 
 :param colorStr: string representing the color
 :param strictEval: set to ``True`` for stricter color parsing rules
@@ -744,11 +788,12 @@ codes, rgb and rgba strings.
 
     static QColor parseColorWithAlpha( const QString &colorStr, bool &containsAlpha, bool strictEval = false );
 %Docstring
-Attempts to parse a string as a color using a variety of common formats, including hex
-codes, rgb and rgba, hsl and hsla strings.
+Attempts to parse a string as a color using a variety of common formats,
+including hex codes, rgb and rgba, hsl and hsla strings.
 
 :param colorStr: string representing the color
-:param containsAlpha: if colorStr contains an explicit alpha value then containsAlpha will be set to ``True``
+:param containsAlpha: if colorStr contains an explicit alpha value then
+                      containsAlpha will be set to ``True``
 :param strictEval: set to ``True`` for stricter color parsing rules
 
 :return: parsed color
@@ -756,7 +801,8 @@ codes, rgb and rgba, hsl and hsla strings.
 
     static void multiplyImageOpacity( QImage *image, qreal opacity );
 %Docstring
-Multiplies opacity of image pixel values with a (global) transparency value.
+Multiplies opacity of image pixel values with a (global) transparency
+value.
 %End
 
     static void blurImageInPlace( QImage &image, QRect rect, int radius, bool alphaOnly );
@@ -766,17 +812,19 @@ Blurs an image in place, e.g. creating Qt-independent drop shadows
 
     static void premultiplyColor( QColor &rgb, int alpha );
 %Docstring
-Converts a QColor into a premultiplied ARGB QColor value using a specified alpha value
+Converts a QColor into a premultiplied ARGB QColor value using a
+specified alpha value
 %End
 
     static bool condenseFillAndOutline( QgsFillSymbolLayer *fill, QgsLineSymbolLayer *outline );
 %Docstring
-Attempts to condense a ``fill`` and ``outline`` layer, by moving the outline layer to the
-fill symbol's stroke.
+Attempts to condense a ``fill`` and ``outline`` layer, by moving the
+outline layer to the fill symbol's stroke.
 
-This will only be done if the ``outline`` can be transformed into a stroke on the fill layer
-losslessly. If so, ``fill`` will be updated in place with the new stroke. Any existing stroke
-settings in ``fill`` will be replaced.
+This will only be done if the ``outline`` can be transformed into a
+stroke on the fill layer losslessly. If so, ``fill`` will be updated in
+place with the new stroke. Any existing stroke settings in ``fill`` will
+be replaced.
 
 Returns ``True`` if the fill and outline were successfully condensed.
 
@@ -789,7 +837,8 @@ Sorts the passed list in requested order
 %End
     static QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance );
 %Docstring
-Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point
+Returns a point on the line from startPoint to directionPoint that is a
+certain distance away from the starting point
 %End
 
     static QStringList listSvgFiles();
@@ -804,9 +853,9 @@ Returns a list of svg files at the specified directory
 
     static QString svgSymbolNameToPath( const QString &name, const QgsPathResolver &pathResolver );
 %Docstring
-Determines an SVG symbol's path from its ``name``.
-If ``name`` is not an absolute path the file is scanned for in the SVG paths specified
-in settings svg/searchPathsForSVG.
+Determines an SVG symbol's path from its ``name``. If ``name`` is not an
+absolute path the file is scanned for in the SVG paths specified in
+settings svg/searchPathsForSVG.
 
 .. seealso:: :py:func:`svgSymbolPathToName`
 %End
@@ -820,18 +869,18 @@ Determines an SVG symbol's name from its ``path``.
 
     static QList< QList< QPolygonF > > toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type );
 %Docstring
-Converts a ``geometry`` to a set of QPolygonF objects representing
-how the geometry should be drawn for a symbol of the given ``type``,
-as a list of geometry parts and rings.
+Converts a ``geometry`` to a set of QPolygonF objects representing how
+the geometry should be drawn for a symbol of the given ``type``, as a
+list of geometry parts and rings.
 
 .. versionadded:: 3.40
 %End
 
     static QList< QList< QPolygonF > > toQPolygonF( const QgsAbstractGeometry *geometry, Qgis::SymbolType type );
 %Docstring
-Converts a ``geometry`` to a set of QPolygonF objects representing
-how the geometry should be drawn for a symbol of the given ``type``,
-as a list of geometry parts and rings.
+Converts a ``geometry`` to a set of QPolygonF objects representing how
+the geometry should be drawn for a symbol of the given ``type``, as a
+list of geometry parts and rings.
 
 .. versionadded:: 3.42
 %End
@@ -860,12 +909,14 @@ Returns the total length of a ``polyline``.
 
     static QPolygonF polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset );
 %Docstring
-Returns the substring of a ``polyline`` which starts at ``startOffset`` from the beginning of the line
-and ends at ``endOffset`` from the start of the line.
+Returns the substring of a ``polyline`` which starts at ``startOffset``
+from the beginning of the line and ends at ``endOffset`` from the start
+of the line.
 
-If ``startOffset`` is less than 0, then the start point will be calculated by subtracting that distance
-from the end of the line. Similarly, if ``endOffset`` is less than zero then the end point will be subtracted
-from the end of the line.
+If ``startOffset`` is less than 0, then the start point will be
+calculated by subtracting that distance from the end of the line.
+Similarly, if ``endOffset`` is less than zero then the end point will be
+subtracted from the end of the line.
 
 May return an empty linestring if the substring is zero length.
 
@@ -874,7 +925,8 @@ May return an empty linestring if the substring is zero length.
 
     static bool isSharpCorner( QPointF p1, QPointF p2, QPointF p3 );
 %Docstring
-Returns ``True`` if the angle formed by the line ``p1`` - ``p2`` - ``p3`` forms a "sharp" corner.
+Returns ``True`` if the angle formed by the line ``p1`` - ``p2`` -
+``p3`` forms a "sharp" corner.
 
 Sharp corners form an angle which exceeds a 45 degree threshold.
 
@@ -885,79 +937,88 @@ Sharp corners form an angle which exceeds a 45 degree threshold.
 %Docstring
 Appends a polyline ``line`` to an existing ``target`` polyline.
 
-Any duplicate points at the start ``line`` which match the end point from ``target`` will be skipped.
+Any duplicate points at the start ``line`` which match the end point
+from ``target`` will be skipped.
 
 .. versionadded:: 3.16
 %End
 
     static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) /Factory/;
 %Docstring
-Returns a new valid expression instance for given field or expression string.
-If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
-If the string is empty, returns ``None``.
-This is useful when accepting input which could be either a non-quoted field name or expression.
+Returns a new valid expression instance for given field or expression
+string. If the input is not a valid expression, it is assumed that it is
+a field name and gets properly quoted. If the string is empty, returns
+``None``. This is useful when accepting input which could be either a
+non-quoted field name or expression.
 %End
 
     static QString fieldOrExpressionFromExpression( QgsExpression *expression );
 %Docstring
-Returns a field name if the whole expression is just a name of the field .
-Returns full expression string if the expression is more complex than just one field.
-Using just expression->:py:func:`~QgsSymbolLayerUtils.expression` method may return quoted field name, but that is not
-wanted for saving (due to backward compatibility) or display in GUI.
+Returns a field name if the whole expression is just a name of the field
+. Returns full expression string if the expression is more complex than
+just one field. Using just
+expression->:py:func:`~QgsSymbolLayerUtils.expression` method may return
+quoted field name, but that is not wanted for saving (due to backward
+compatibility) or display in GUI.
 %End
 
     static QList<double> prettyBreaks( double minimum, double maximum, int classes );
 %Docstring
-Computes a sequence of about 'classes' equally spaced round values
-which cover the range of values from 'minimum' to 'maximum'.
-The values are chosen so that they are 1, 2 or 5 times a power of 10.
+Computes a sequence of about 'classes' equally spaced round values which
+cover the range of values from 'minimum' to 'maximum'. The values are
+chosen so that they are 1, 2 or 5 times a power of 10.
 %End
 
     static double rescaleUom( double size, Qgis::RenderUnit unit, const QVariantMap &props );
 %Docstring
-Rescales the given size based on the uomScale found in the props, if any is found, otherwise
-returns the value un-modified
+Rescales the given size based on the uomScale found in the props, if any
+is found, otherwise returns the value un-modified
 %End
 
     static QPointF rescaleUom( QPointF point, Qgis::RenderUnit unit, const QVariantMap &props ) /PyName=rescalePointUom/;
 %Docstring
-Rescales the given point based on the uomScale found in the props, if any is found, otherwise
-returns a copy of the original point
+Rescales the given point based on the uomScale found in the props, if
+any is found, otherwise returns a copy of the original point
 %End
 
     static QVector<qreal> rescaleUom( const QVector<qreal> &array, Qgis::RenderUnit unit, const QVariantMap &props ) /PyName=rescaleArrayUom/;
 %Docstring
-Rescales the given array based on the uomScale found in the props, if any is found, otherwise
-returns a copy of the original point
+Rescales the given array based on the uomScale found in the props, if
+any is found, otherwise returns a copy of the original point
 %End
 
     static void applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QVariantMap &props );
 %Docstring
-Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element
+Checks if the properties contain scaleMinDenom and scaleMaxDenom, if
+available, they are added into the SE Rule element
 %End
 
     static void mergeScaleDependencies( double mScaleMinDenom, double mScaleMaxDenom, QVariantMap &props );
 %Docstring
-Merges the local scale limits, if any, with the ones already in the map, if any
+Merges the local scale limits, if any, with the ones already in the map,
+if any
 %End
 
     static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
                                     const QString &path,
                                     const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth );
 %Docstring
-Encodes a reference to a parametric SVG into SLD, as a succession of parametric SVG using URL parameters,
-a fallback SVG without parameters, and a final fallback as a mark with the right colors and stroke for systems
-that cannot do SVG at all
+Encodes a reference to a parametric SVG into SLD, as a succession of
+parametric SVG using URL parameters, a fallback SVG without parameters,
+and a final fallback as a mark with the right colors and stroke for
+systems that cannot do SVG at all
 %End
 
     static QString getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth );
 %Docstring
-Encodes a reference to a parametric SVG into a path with parameters according to the SVG Parameters spec
+Encodes a reference to a parametric SVG into a path with parameters
+according to the SVG Parameters spec
 %End
 
  static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 %Docstring
-Converts a set of symbol layer id to a set of pointers to actual symbol layers carried by the feature renderer.
+Converts a set of symbol layer id to a set of pointers to actual symbol
+layers carried by the feature renderer.
 
 .. versionadded:: 3.12
 
@@ -968,7 +1029,8 @@ Converts a set of symbol layer id to a set of pointers to actual symbol layers c
 
     static double rendererFrameRate( const QgsFeatureRenderer *renderer );
 %Docstring
-Calculates the frame rate (in frames per second) at which the given ``renderer`` must be redrawn.
+Calculates the frame rate (in frames per second) at which the given
+``renderer`` must be redrawn.
 
 Returns -1 if the ``renderer`` is not animated.
 
@@ -977,7 +1039,8 @@ Returns -1 if the ``renderer`` is not animated.
 
     static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok = 0 );
 %Docstring
-Creates a new symbol with size restricted to min/max size if original size is out of min/max range
+Creates a new symbol with size restricted to min/max size if original
+size is out of min/max range
 
 :param s: the original symbol
 :param minSize: the minimum size in mm
@@ -985,29 +1048,35 @@ Creates a new symbol with size restricted to min/max size if original size is ou
 :param context: the render context
 :param width: expected width, can be changed by the function
 :param height: expected height, can be changed by the function
-:param ok: if not None, ok is set to false if it's not possible to compute a restricted symbol (if geometry generators
-           are involved for instance)
+:param ok: if not None, ok is set to false if it's not possible to
+           compute a restricted symbol (if geometry generators are
+           involved for instance)
 
-:return: None if size is within minSize/maxSize range or if it's not possible to compute a
-         restricted size symbol. New symbol if size was out of min/max range.
-         Caller takes ownership
+:return: None if size is within minSize/maxSize range or if it's not
+         possible to compute a restricted size symbol. New symbol if
+         size was out of min/max range. Caller takes ownership
 %End
 
     static QgsStringMap evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context );
 %Docstring
-Evaluates a map of properties using the given ``context`` and returns a variant map with evaluated expressions from the properties.
+Evaluates a map of properties using the given ``context`` and returns a
+variant map with evaluated expressions from the properties.
 
 .. versionadded:: 3.18
 %End
 
     static QSize tileSize( int width, int height, double &angleRad /In,Out/ );
 %Docstring
-Calculate the minimum size in pixels of a symbol tile given the symbol ``width`` and ``height`` and the symbol layer rotation ``angleRad`` in radians (counter clockwise).
-The method makes approximations and can modify ``angle`` in order to generate the smallest possible tile.
+Calculate the minimum size in pixels of a symbol tile given the symbol
+``width`` and ``height`` and the symbol layer rotation ``angleRad`` in
+radians (counter clockwise). The method makes approximations and can
+modify ``angle`` in order to generate the smallest possible tile.
 
 :param width: marker width, including margins
 :param height: marker height, including margins
-:param angleRad: symbol layer rotation angle in radians (counter clockwise), it may be approximated by the method to minimize the tile size.
+:param angleRad: symbol layer rotation angle in radians (counter
+                 clockwise), it may be approximated by the method to
+                 minimize the tile size.
 
 :return: the size of the tile
 
@@ -1016,14 +1085,16 @@ The method makes approximations and can modify ``angle`` in order to generate th
 
     static void clearSymbolLayerIds( QgsSymbol *symbol );
 %Docstring
-Remove recursively unique id from all ``symbol`` symbol layers and set an empty string instead
+Remove recursively unique id from all ``symbol`` symbol layers and set
+an empty string instead
 
 .. versionadded:: 3.30
 %End
 
     static void clearSymbolLayerIds( QgsSymbolLayer *symbolLayer );
 %Docstring
-Remove recursively unique id from ``symbolLayer`` and its children and set an empty string instead
+Remove recursively unique id from ``symbolLayer`` and its children and
+set an empty string instead
 
 .. versionadded:: 3.30
 %End
@@ -1051,12 +1122,13 @@ Remove recursively masks from all ``symbol`` symbol layers
 
     static QVector< QgsGeometry > collectSymbolLayerClipGeometries( const QgsRenderContext &context, const QString &symbolLayerId, const QRectF &bounds );
 %Docstring
-Returns a list of the symbol layer clip geometries to be used for the symbol layer with the specified
-ID.
+Returns a list of the symbol layer clip geometries to be used for the
+symbol layer with the specified ID.
 
-The ``bounds`` argument specifies the target bounds (in painter coordinates) for matching geometries. Only mask
-geometries which intersect ``bounds`` will be returned. If ``bounds`` is a null QRectF then all clip geometries
-for the symbol layer will be returned.
+The ``bounds`` argument specifies the target bounds (in painter
+coordinates) for matching geometries. Only mask geometries which
+intersect ``bounds`` will be returned. If ``bounds`` is a null QRectF
+then all clip geometries for the symbol layer will be returned.
 
 .. versionadded:: 3.38
 %End

@@ -28,8 +28,8 @@ Constructor for QgsLayoutItemPolygon for the specified ``layout``.
 
     QgsLayoutItemPolygon( const QPolygonF &polygon, QgsLayout *layout );
 %Docstring
-Constructor for QgsLayoutItemPolygon for the specified ``polygon``
-and ``layout``.
+Constructor for QgsLayoutItemPolygon for the specified ``polygon`` and
+``layout``.
 %End
 
     ~QgsLayoutItemPolygon();
@@ -65,8 +65,8 @@ Returns the fill symbol used to draw the shape.
 
     void setSymbol( QgsFillSymbol *symbol );
 %Docstring
-Sets the ``symbol`` used to draw the shape.
-Ownership of ``symbol`` is not transferred.
+Sets the ``symbol`` used to draw the shape. Ownership of ``symbol`` is
+not transferred.
 
 .. seealso:: :py:func:`symbol`
 %End

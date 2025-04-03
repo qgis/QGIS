@@ -12,11 +12,13 @@
 class QgsRemappingSinkDefinition
 {
 %Docstring(signature="appended")
-Defines the parameters used to remap features when creating a :py:class:`QgsRemappingProxyFeatureSink`.
+Defines the parameters used to remap features when creating a
+:py:class:`QgsRemappingProxyFeatureSink`.
 
-The definition includes parameters required to correctly map incoming features to the structure
-of the destination sink, e.g. information about how to create output field values and how to transform
-geometries to match the destination CRS.
+The definition includes parameters required to correctly map incoming
+features to the structure of the destination sink, e.g. information
+about how to create output field values and how to transform geometries
+to match the destination CRS.
 
 .. versionadded:: 3.14
 %End
@@ -28,11 +30,13 @@ geometries to match the destination CRS.
 
     QMap< QString, QgsProperty > fieldMap() const;
 %Docstring
-Returns the field mapping, which defines how to map the values from incoming features to destination
-field values.
+Returns the field mapping, which defines how to map the values from
+incoming features to destination field values.
 
-Field values are mapped using a :py:class:`QgsProperty` source object, which allows either direct field value to field value
-mapping or use of :py:class:`QgsExpression` expressions to transform values to the destination field.
+Field values are mapped using a :py:class:`QgsProperty` source object,
+which allows either direct field value to field value mapping or use of
+:py:class:`QgsExpression` expressions to transform values to the
+destination field.
 
 .. seealso:: :py:func:`setFieldMap`
 
@@ -41,11 +45,13 @@ mapping or use of :py:class:`QgsExpression` expressions to transform values to t
 
     void setFieldMap( const QMap< QString, QgsProperty > &map );
 %Docstring
-Sets the field mapping, which defines how to map the values from incoming features to destination
-field values.
+Sets the field mapping, which defines how to map the values from
+incoming features to destination field values.
 
-Field values are mapped using a :py:class:`QgsProperty` source object, which allows either direct field value to field value
-mapping or use of :py:class:`QgsExpression` expressions to transform values to the destination field.
+Field values are mapped using a :py:class:`QgsProperty` source object,
+which allows either direct field value to field value mapping or use of
+:py:class:`QgsExpression` expressions to transform values to the
+destination field.
 
 .. seealso:: :py:func:`fieldMap`
 
@@ -56,8 +62,10 @@ mapping or use of :py:class:`QgsExpression` expressions to transform values to t
 %Docstring
 Adds a mapping for a destination field.
 
-Field values are mapped using a :py:class:`QgsProperty` source object, which allows either direct field value to field value
-mapping or use of :py:class:`QgsExpression` expressions to transform values to the destination field.
+Field values are mapped using a :py:class:`QgsProperty` source object,
+which allows either direct field value to field value mapping or use of
+:py:class:`QgsExpression` expressions to transform values to the
+destination field.
 
 .. seealso:: :py:func:`setFieldMap`
 
@@ -66,28 +74,32 @@ mapping or use of :py:class:`QgsExpression` expressions to transform values to t
 
     QgsCoordinateReferenceSystem sourceCrs() const;
 %Docstring
-Returns the source CRS used for reprojecting incoming features to the sink's destination CRS.
+Returns the source CRS used for reprojecting incoming features to the
+sink's destination CRS.
 
 .. seealso:: :py:func:`setSourceCrs`
 %End
 
     void setSourceCrs( const QgsCoordinateReferenceSystem &source );
 %Docstring
-Sets the ``source`` crs used for reprojecting incoming features to the sink's destination CRS.
+Sets the ``source`` crs used for reprojecting incoming features to the
+sink's destination CRS.
 
 .. seealso:: :py:func:`sourceCrs`
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
-Returns the destination CRS used for reprojecting incoming features to the sink's destination CRS.
+Returns the destination CRS used for reprojecting incoming features to
+the sink's destination CRS.
 
 .. seealso:: :py:func:`setDestinationCrs`
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destination );
 %Docstring
-Sets the ``destination`` crs used for reprojecting incoming features to the sink's destination CRS.
+Sets the ``destination`` crs used for reprojecting incoming features to
+the sink's destination CRS.
 
 .. seealso:: :py:func:`destinationCrs`
 %End
@@ -123,15 +135,17 @@ Sets the ``fields`` for the destination sink.
     QVariant toVariant() const;
 %Docstring
 Saves this remapping definition to a QVariantMap, wrapped in a QVariant.
-You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
+You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML
+document.
 
 .. seealso:: :py:func:`loadVariant`
 %End
 
     bool loadVariant( const QVariantMap &map );
 %Docstring
-Loads this remapping definition from a QVariantMap, wrapped in a QVariant.
-You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
+Loads this remapping definition from a QVariantMap, wrapped in a
+QVariant. You can use :py:class:`QgsXmlUtils`.readVariant to load it
+from an XML document.
 
 .. seealso:: :py:func:`toVariant`
 %End
@@ -147,12 +161,14 @@ You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 class QgsRemappingProxyFeatureSink : QgsFeatureSink
 {
 %Docstring(signature="appended")
-A :py:class:`QgsFeatureSink` which proxies incoming features to a destination feature sink, after applying
-transformations and field value mappings.
+A :py:class:`QgsFeatureSink` which proxies incoming features to a
+destination feature sink, after applying transformations and field value
+mappings.
 
-This sink allows for transformation of incoming features to match the requirements of storing
-in an existing destination layer, e.g. by reprojecting the features to the destination's CRS
-and by coercing geometries to the format required by the destination sink.
+This sink allows for transformation of incoming features to match the
+requirements of storing in an existing destination layer, e.g. by
+reprojecting the features to the destination's CRS and by coercing
+geometries to the format required by the destination sink.
 
 .. versionadded:: 3.14
 %End
@@ -165,15 +181,17 @@ and by coercing geometries to the format required by the destination sink.
 
     QgsRemappingProxyFeatureSink( const QgsRemappingSinkDefinition &mappingDefinition, QgsFeatureSink *sink );
 %Docstring
-Constructor for QgsRemappingProxyFeatureSink, using the specified ``mappingDefinition``
-to manipulate features before sending them to the destination ``sink``.
+Constructor for QgsRemappingProxyFeatureSink, using the specified
+``mappingDefinition`` to manipulate features before sending them to the
+destination ``sink``.
 %End
 
     ~QgsRemappingProxyFeatureSink();
 
     void setExpressionContext( const QgsExpressionContext &context ) const;
 %Docstring
-Sets the expression ``context`` to use when evaluating mapped field values.
+Sets the expression ``context`` to use when evaluating mapped field
+values.
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
@@ -183,7 +201,8 @@ Sets the transform ``context`` to use when reprojecting features.
 
     QgsFeatureList remapFeature( const QgsFeature &feature ) const;
 %Docstring
-Remaps a ``feature`` to a set of features compatible with the destination sink.
+Remaps a ``feature`` to a set of features compatible with the
+destination sink.
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
@@ -197,7 +216,8 @@ Remaps a ``feature`` to a set of features compatible with the destination sink.
 
     QgsFeatureSink *destinationSink();
 %Docstring
-Returns the destination :py:class:`QgsFeatureSink` which the proxy will forward features to.
+Returns the destination :py:class:`QgsFeatureSink` which the proxy will
+forward features to.
 %End
 
 };

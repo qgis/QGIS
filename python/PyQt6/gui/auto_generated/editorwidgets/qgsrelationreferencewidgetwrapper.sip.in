@@ -16,11 +16,15 @@ Wraps a relation reference widget.
 
 Options:
 
-- **ShowForm** If ``True``, an embedded form with the referenced feature will be shown.
-- **MapIdentification** Will offer a map tool to pick a referenced feature on the map canvas. Only use for layers with geometry.
-- **ReadOnly** If ``True``, will represent the referenced widget in a read-only line edit. Can speed up loading.
+- **ShowForm** If ``True``, an embedded form with the referenced feature
+  will be shown.
+- **MapIdentification** Will offer a map tool to pick a referenced
+  feature on the map canvas. Only use for layers with geometry.
+- **ReadOnly** If ``True``, will represent the referenced widget in a
+  read-only line edit. Can speed up loading.
 - **AllowNULL** Will offer NULL as a value.
-- **Relation** The ID of the relation that will be used to define this widget.
+- **Relation** The ID of the relation that will be used to define this
+  widget.
 - **ReadOnly**
 %End
 

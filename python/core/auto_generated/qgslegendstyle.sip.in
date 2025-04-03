@@ -13,7 +13,8 @@
 class QgsLegendStyle
 {
 %Docstring(signature="appended")
-Contains detailed styling information relating to how a layout legend should be rendered.
+Contains detailed styling information relating to how a layout legend
+should be rendered.
 %End
 
 %TypeHeaderCode
@@ -180,7 +181,8 @@ Returns the style from name string.
 
     static QString styleLabel( Qgis::LegendComponent s );
 %Docstring
-Returns a translated string representing a style component, for use in UI.
+Returns a translated string representing a style component, for use in
+UI.
 
 .. seealso:: :py:func:`styleName`
 %End

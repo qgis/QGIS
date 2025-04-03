@@ -14,8 +14,8 @@ class QgsReport : QObject, QgsAbstractReportSection, QgsMasterLayoutInterface
 %Docstring(signature="appended")
 Represents a report for use with the :py:class:`QgsLayout` engine.
 
-Reports consist of multiple sections, represented by :py:class:`QgsAbstractReportSection`
-subclasses.
+Reports consist of multiple sections, represented by
+:py:class:`QgsAbstractReportSection` subclasses.
 
 .. warning::
 
@@ -30,8 +30,7 @@ subclasses.
 
     QgsReport( QgsProject *project );
 %Docstring
-Constructor for QgsReport, associated with the specified
-``project``.
+Constructor for QgsReport, associated with the specified ``project``.
 
 Note that ownership is not transferred to ``project``.
 %End

@@ -34,11 +34,14 @@ A widget for selecting a projection.
 
       explicit QgsProjectionSelectionWidget( QWidget *parent /TransferThis/ = 0, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
-Constructor for QgsProjectionSelectionWidget, with the specified ``parent`` widget.
+Constructor for QgsProjectionSelectionWidget, with the specified
+``parent`` widget.
 
-Since QGIS 3.36, the optional ``filter`` argument can be used to specify filters on the systems
-shown in the widget. The default is to show all horizontal and compound CRS in order to match
-the behavior of older QGIS releases. The ``filter`` can be altered to also include vertical CRS if desired.
+Since QGIS 3.36, the optional ``filter`` argument can be used to specify
+filters on the systems shown in the widget. The default is to show all
+horizontal and compound CRS in order to match the behavior of older QGIS
+releases. The ``filter`` can be altered to also include vertical CRS if
+desired.
 %End
 
     QgsCoordinateReferenceSystem crs() const;
@@ -67,22 +70,22 @@ Returns whether the specified CRS option is visible in the widget.
 
     void setNotSetText( const QString &text );
 %Docstring
-Sets the text to show for the not set option. Note that this option is not shown
-by default and must be set visible by calling :py:func:`~QgsProjectionSelectionWidget.setOptionVisible`.
+Sets the text to show for the not set option. Note that this option is
+not shown by default and must be set visible by calling
+:py:func:`~QgsProjectionSelectionWidget.setOptionVisible`.
 %End
 
     void setMessage( const QString &text );
 %Docstring
-Sets a ``message`` to show in the dialog. If an empty string is
-passed, the message will be a generic
-'define the CRS for this layer'.
+Sets a ``message`` to show in the dialog. If an empty string is passed,
+the message will be a generic 'define the CRS for this layer'.
 %End
 
 
     bool showAccuracyWarnings() const;
 %Docstring
-Returns ``True`` if the widget will show a warning to users when they select a CRS which has
-low accuracy.
+Returns ``True`` if the widget will show a warning to users when they
+select a CRS which has low accuracy.
 
 .. seealso:: :py:func:`setShowAccuracyWarnings`
 
@@ -91,8 +94,8 @@ low accuracy.
 
     void setShowAccuracyWarnings( bool show );
 %Docstring
-Sets whether the widget will ``show`` warnings to users when they select a CRS which has
-low accuracy.
+Sets whether the widget will ``show`` warnings to users when they select
+a CRS which has low accuracy.
 
 .. seealso:: :py:func:`showAccuracyWarnings`
 
@@ -103,8 +106,9 @@ low accuracy.
 %Docstring
 Sets the original source ``ensemble`` datum name.
 
-If set, CRS accuracy warnings will not be shown when the selected CRS in the widget has a matching
-ensemble datum, regardless of the ensemble's accuracy.
+If set, CRS accuracy warnings will not be shown when the selected CRS in
+the widget has a matching ensemble datum, regardless of the ensemble's
+accuracy.
 
 .. seealso:: :py:func:`sourceEnsemble`
 
@@ -115,8 +119,9 @@ ensemble datum, regardless of the ensemble's accuracy.
 %Docstring
 Returns the original source ensemble datum name.
 
-If set, CRS accuracy warnings will not be shown when the selected CRS in the widget has a matching
-ensemble datum, regardless of the ensemble's accuracy.
+If set, CRS accuracy warnings will not be shown when the selected CRS in
+the widget has a matching ensemble datum, regardless of the ensemble's
+accuracy.
 
 .. seealso:: :py:func:`setSourceEnsemble`
 
@@ -189,8 +194,8 @@ Sets the current CRS for the widget
 
     void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Sets the layer CRS for the widget. If set, this will be added as an option
-to the preset CRSes shown in the widget.
+Sets the layer CRS for the widget. If set, this will be added as an
+option to the preset CRSes shown in the widget.
 
 :param crs: layer CRS
 %End

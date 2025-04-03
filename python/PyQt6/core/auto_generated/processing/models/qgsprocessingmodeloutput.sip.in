@@ -23,7 +23,8 @@ Represents a final output created by the model.
 
     QgsProcessingModelOutput( const QString &name = QString(), const QString &description = QString() );
 %Docstring
-Constructor for QgsProcessingModelOutput with the specified ``name`` and ``description``.
+Constructor for QgsProcessingModelOutput with the specified ``name`` and
+``description``.
 %End
 
     virtual QgsProcessingModelOutput *clone() const /Factory/;
@@ -63,8 +64,8 @@ Sets the default value for the model output.
 
     bool isMandatory() const;
 %Docstring
-Returns ``True`` if the output is mandatory. This may override the associated
-child algorithm's parameter optional status - e.g. allowing
+Returns ``True`` if the output is mandatory. This may override the
+associated child algorithm's parameter optional status - e.g. allowing
 an optional output from an algorithm to be mandatory within a model.
 
 .. seealso:: :py:func:`setMandatory`
@@ -74,8 +75,8 @@ an optional output from an algorithm to be mandatory within a model.
 
     void setMandatory( bool mandatory );
 %Docstring
-Sets whether the output is ``mandatory``. This may override the associated
-child algorithm's parameter optional status - e.g. allowing
+Sets whether the output is ``mandatory``. This may override the
+associated child algorithm's parameter optional status - e.g. allowing
 an optional output from an algorithm to be mandatory within a model.
 
 .. seealso:: :py:func:`isMandatory`
@@ -99,14 +100,16 @@ Sets the child algorithm ``id`` from which this output is generated.
 
     QString childOutputName() const;
 %Docstring
-Returns the child algorithm output name from which this output is generated.
+Returns the child algorithm output name from which this output is
+generated.
 
 .. seealso:: :py:func:`setOutputName`
 %End
 
     void setChildOutputName( const QString &name );
 %Docstring
-Sets the child algorithm output ``name`` from which this output is generated.
+Sets the child algorithm output ``name`` from which this output is
+generated.
 
 .. seealso:: :py:func:`outputName`
 %End

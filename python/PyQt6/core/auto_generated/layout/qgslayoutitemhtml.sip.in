@@ -47,7 +47,8 @@ Returns a new QgsLayoutItemHtml for the specified parent ``layout``.
 
     static QgsLayoutItemHtml *createFromLabel( QgsLayoutItemLabel *label ) /Factory/;
 %Docstring
-Returns a new QgsLayoutItemHtml matching the content and rendering of a given ``label``.
+Returns a new QgsLayoutItemHtml matching the content and rendering of a
+given ``label``.
 
 .. versionadded:: 3.32
 %End
@@ -76,9 +77,9 @@ Returns the source mode for item's HTML content.
 
     void setUrl( const QUrl &url );
 %Docstring
-Sets the ``url`` for content to display in the item when the item is using
-the QgsLayoutItemHtml.Url mode. Content is automatically fetched and the
-HTML item refreshed after calling this function.
+Sets the ``url`` for content to display in the item when the item is
+using the QgsLayoutItemHtml.Url mode. Content is automatically fetched
+and the HTML item refreshed after calling this function.
 
 .. seealso:: :py:func:`url`
 
@@ -87,8 +88,8 @@ HTML item refreshed after calling this function.
 
     QUrl url() const;
 %Docstring
-Returns the URL of the content displayed in the item if the item is using
-the QgsLayoutItemHtml.Url mode.
+Returns the URL of the content displayed in the item if the item is
+using the QgsLayoutItemHtml.Url mode.
 
 .. seealso:: :py:func:`setUrl`
 
@@ -97,10 +98,10 @@ the QgsLayoutItemHtml.Url mode.
 
     void setHtml( const QString &html );
 %Docstring
-Sets the ``html`` to display in the item when the item is using
-the QgsLayoutItemHtml.ManualHtml mode. Setting the HTML using this function
-does not automatically refresh the item's contents. Call loadHtml to trigger
-a refresh of the item after setting the HTML content.
+Sets the ``html`` to display in the item when the item is using the
+QgsLayoutItemHtml.ManualHtml mode. Setting the HTML using this function
+does not automatically refresh the item's contents. Call loadHtml to
+trigger a refresh of the item after setting the HTML content.
 
 .. seealso:: :py:func:`html`
 
@@ -111,8 +112,8 @@ a refresh of the item after setting the HTML content.
 
     QString html() const;
 %Docstring
-Returns the HTML source displayed in the item if the item is using
-the QgsLayoutItemHtml.ManualHtml mode.
+Returns the HTML source displayed in the item if the item is using the
+QgsLayoutItemHtml.ManualHtml mode.
 
 .. seealso:: :py:func:`setHtml`
 
@@ -121,9 +122,9 @@ the QgsLayoutItemHtml.ManualHtml mode.
 
     bool evaluateExpressions() const;
 %Docstring
-Returns whether html item will evaluate QGIS expressions prior to rendering
-the HTML content. If set, any content inside [% %] tags will be
-treated as a QGIS expression and evaluated against the current atlas
+Returns whether html item will evaluate QGIS expressions prior to
+rendering the HTML content. If set, any content inside [% %] tags will
+be treated as a QGIS expression and evaluated against the current atlas
 feature.
 
 .. seealso:: :py:func:`setEvaluateExpressions`
@@ -131,9 +132,9 @@ feature.
 
     void setEvaluateExpressions( bool evaluateExpressions );
 %Docstring
-Sets whether the html item will evaluate QGIS expressions prior to rendering
-the HTML content. If set, any content inside [% %] tags will be
-treated as a QGIS expression and evaluated against the current atlas
+Sets whether the html item will evaluate QGIS expressions prior to
+rendering the HTML content. If set, any content inside [% %] tags will
+be treated as a QGIS expression and evaluated against the current atlas
 feature.
 
 .. seealso:: :py:func:`evaluateExpressions`
@@ -157,12 +158,12 @@ the html frame contents from breaking mid-way though a line of text.
 
     void setMaxBreakDistance( double distance );
 %Docstring
-Sets the maximum ``distance`` allowed when calculating where to place page breaks
-in the html. This distance is the maximum amount of empty space allowed
-at the bottom of a frame after calculating the optimum break location. Setting
-a larger value will result in better choice of page break location, but more
-wasted space at the bottom of frames. This setting is only effective if
-useSmartBreaks is ``True``.
+Sets the maximum ``distance`` allowed when calculating where to place
+page breaks in the html. This distance is the maximum amount of empty
+space allowed at the bottom of a frame after calculating the optimum
+break location. Setting a larger value will result in better choice of
+page break location, but more wasted space at the bottom of frames. This
+setting is only effective if useSmartBreaks is ``True``.
 
 .. seealso:: :py:func:`maxBreakDistance`
 
@@ -171,10 +172,11 @@ useSmartBreaks is ``True``.
 
     double maxBreakDistance() const;
 %Docstring
-Returns the maximum distance allowed when calculating where to place page breaks
-in the html. This distance is the maximum amount of empty space allowed
-at the bottom of a frame after calculating the optimum break location. This setting
-is only effective if useSmartBreaks is ``True``.
+Returns the maximum distance allowed when calculating where to place
+page breaks in the html. This distance is the maximum amount of empty
+space allowed at the bottom of a frame after calculating the optimum
+break location. This setting is only effective if useSmartBreaks is
+``True``.
 
 .. seealso:: :py:func:`setMaxBreakDistance`
 
@@ -183,10 +185,11 @@ is only effective if useSmartBreaks is ``True``.
 
     void setUserStylesheet( const QString &stylesheet );
 %Docstring
-Sets the user ``stylesheet`` CSS rules to use while rendering the HTML content. These
-allow for overriding the styles specified within the HTML source. Setting the stylesheet
-using this function does not automatically refresh the item's contents. Call loadHtml
-to trigger a refresh of the item after setting the stylesheet rules.
+Sets the user ``stylesheet`` CSS rules to use while rendering the HTML
+content. These allow for overriding the styles specified within the HTML
+source. Setting the stylesheet using this function does not
+automatically refresh the item's contents. Call loadHtml to trigger a
+refresh of the item after setting the stylesheet rules.
 
 .. seealso:: :py:func:`userStylesheet`
 
@@ -197,8 +200,8 @@ to trigger a refresh of the item after setting the stylesheet rules.
 
     QString userStylesheet() const;
 %Docstring
-Returns the user stylesheet CSS rules used while rendering the HTML content. These
-overriding the styles specified within the HTML source.
+Returns the user stylesheet CSS rules used while rendering the HTML
+content. These overriding the styles specified within the HTML source.
 
 .. seealso:: :py:func:`setUserStylesheet`
 
@@ -241,7 +244,8 @@ Reloads the html source from the url and redraws the item.
 
 :param useCache: set to ``True`` to use a cached copy of remote html
                  content
-:param context: expression context for evaluating data defined urls and expressions in html
+:param context: expression context for evaluating data defined urls and
+                expressions in html
 
 .. seealso:: :py:func:`setUrl`
 

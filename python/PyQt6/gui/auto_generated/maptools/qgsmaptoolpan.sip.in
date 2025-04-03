@@ -60,9 +60,9 @@ Returns ``True`` if a drag operation is in progress.
 Emitted whenever the distance or bearing of an in-progress panning
 operation is changed.
 
-This signal will be emitted during a pan operation as the user moves the map,
-giving the total distance and bearing between the map position at the
-start of the pan and the current pan position.
+This signal will be emitted during a pan operation as the user moves the
+map, giving the total distance and bearing between the map position at
+the start of the pan and the current pan position.
 
 .. versionadded:: 3.12
 %End

@@ -15,7 +15,8 @@ class QgsMapToPixel
 %Docstring(signature="appended")
 Perform transforms between map coordinates and device coordinates.
 
-This class can convert device coordinates to map coordinates and vice versa.
+This class can convert device coordinates to map coordinates and vice
+versa.
 %End
 
 %TypeHeaderCode
@@ -27,7 +28,8 @@ This class can convert device coordinates to map coordinates and vice versa.
 %Docstring
 Constructor for an invalid QgsMapToPixel.
 
-A manual call to :py:func:`~QgsMapToPixel.setParameters` is required to initialize the object.
+A manual call to :py:func:`~QgsMapToPixel.setParameters` is required to
+initialize the object.
 %End
 
     QgsMapToPixel( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
@@ -51,7 +53,8 @@ Constructor
 
     static QgsMapToPixel fromScale( double scale, Qgis::DistanceUnit mapUnits, double dpi = 96 );
 %Docstring
-Returns a new QgsMapToPixel created using a specified ``scale`` and distance unit.
+Returns a new QgsMapToPixel created using a specified ``scale`` and
+distance unit.
 
 :param scale: map scale denominator, e.g. 1000.0 for a 1:1000 map.
 :param dpi: screen DPI
@@ -62,15 +65,16 @@ Returns a new QgsMapToPixel created using a specified ``scale`` and distance uni
 
     bool isValid() const;
 %Docstring
-Returns ``True`` if the object is valid (i.e. it has parameters set), or ``False`` if the object is default constructed
-with no parameters set.
+Returns ``True`` if the object is valid (i.e. it has parameters set), or
+``False`` if the object is default constructed with no parameters set.
 
 .. versionadded:: 3.22
 %End
 
     QgsPointXY transform( const QgsPointXY &p ) const;
 %Docstring
-Transforms a point ``p`` from map (world) coordinates to device coordinates.
+Transforms a point ``p`` from map (world) coordinates to device
+coordinates.
 
 :param p: Point to transform
 
@@ -79,12 +83,14 @@ Transforms a point ``p`` from map (world) coordinates to device coordinates.
 
     void transform( QgsPointXY *p ) const;
 %Docstring
-Transforms a point ``p`` from map (world) coordinates to device coordinates in place.
+Transforms a point ``p`` from map (world) coordinates to device
+coordinates in place.
 %End
 
     QgsPointXY transform( qreal x, qreal y ) const;
 %Docstring
-Transforms the point specified by x,y from map (world) coordinates to device coordinates.
+Transforms the point specified by x,y from map (world) coordinates to
+device coordinates.
 
 :param x: x coordinate of point to transform
 :param y: y coordinate of point to transform
@@ -96,16 +102,17 @@ Transforms the point specified by x,y from map (world) coordinates to device coo
 %Docstring
 Transforms map coordinates to device coordinates.
 
-This method modifies the given coordinates in place. It is intended as a fast way to do the
-transform.
+This method modifies the given coordinates in place. It is intended as a
+fast way to do the transform.
 %End
 
     QRectF transformBounds( const QRectF &bounds ) const;
 %Docstring
 Transforms a bounding box from map coordinates to device coordinates.
 
-The returns bounding box will always completely enclose the transformed input bounding box (i.e. this
-method will grow the bounds wherever required).
+The returns bounding box will always completely enclose the transformed
+input bounding box (i.e. this method will grow the bounds wherever
+required).
 
 .. versionadded:: 3.40
 %End

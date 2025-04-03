@@ -10,7 +10,8 @@
 class QgsCalloutWidget : QWidget, protected QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
-Base class for widgets which allow control over the properties of callouts.
+Base class for widgets which allow control over the properties of
+callouts.
 
 .. versionadded:: 3.10
 %End
@@ -29,22 +30,25 @@ Constructor for QgsCalloutWidget.
 
     virtual void setCallout( const QgsCallout *callout ) = 0;
 %Docstring
-Sets the ``callout`` to show in the widget. Ownership is not transferred.
+Sets the ``callout`` to show in the widget. Ownership is not
+transferred.
 
 .. seealso:: :py:func:`callout`
 %End
 
     virtual QgsCallout *callout() = 0;
 %Docstring
-Returns the callout defined by the current settings in the widget. Ownership is not transferred,
-and the caller should clone the returned value.
+Returns the callout defined by the current settings in the widget.
+Ownership is not transferred, and the caller should clone the returned
+value.
 
 .. seealso:: :py:func:`setCallout`
 %End
 
     virtual void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
-Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+Sets the context in which the symbol widget is shown, e.g., the
+associated map canvas and expression contexts.
 
 :param context: symbol widget context
 
@@ -53,7 +57,8 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 
     QgsSymbolWidgetContext context() const;
 %Docstring
-Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+Returns the context in which the symbol widget is shown, e.g., the
+associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
 %End
@@ -76,15 +81,16 @@ Returns the vector layer associated with the widget.
 
     virtual void setGeometryType( Qgis::GeometryType type ) = 0;
 %Docstring
-Sets the geometry ``type`` of the features to customize the widget accordingly.
+Sets the geometry ``type`` of the features to customize the widget
+accordingly.
 %End
 
   protected:
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key );
 %Docstring
 Registers a data defined override button. Handles setting up connections
-for the button and initializing the button to show the correct descriptions
-and help text for the associated property.
+for the button and initializing the button to show the correct
+descriptions and help text for the associated property.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -94,8 +100,9 @@ and help text for the associated property.
 
     void changed();
 %Docstring
-Should be emitted whenever configuration changes happened on this symbol layer configuration.
-If the subsymbol is changed, :py:func:`~QgsCalloutWidget.symbolChanged` should be emitted instead.
+Should be emitted whenever configuration changes happened on this symbol
+layer configuration. If the subsymbol is changed,
+:py:func:`~QgsCalloutWidget.symbolChanged` should be emitted instead.
 %End
 
 };

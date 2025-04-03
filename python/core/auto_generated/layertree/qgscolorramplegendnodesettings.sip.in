@@ -58,7 +58,8 @@ Sets the ``direction`` of the ramp.
 %Docstring
 Returns the label for the minimum value on the ramp.
 
-If the returned string is empty than a default value will be generated based on the associated minimum value.
+If the returned string is empty than a default value will be generated
+based on the associated minimum value.
 
 .. seealso:: :py:func:`maximumLabel`
 
@@ -69,7 +70,8 @@ If the returned string is empty than a default value will be generated based on 
 %Docstring
 Sets the ``label`` for the minimum value on the ramp.
 
-If the ``label`` is empty than a default value will be generated based on the associated minimum value.
+If the ``label`` is empty than a default value will be generated based
+on the associated minimum value.
 
 .. seealso:: :py:func:`setMaximumLabel`
 
@@ -80,7 +82,8 @@ If the ``label`` is empty than a default value will be generated based on the as
 %Docstring
 Returns the label for the maximum value on the ramp.
 
-If the returned string is empty than a default value will be generated based on the associated maximum value.
+If the returned string is empty than a default value will be generated
+based on the associated maximum value.
 
 .. seealso:: :py:func:`minimumLabel`
 
@@ -91,7 +94,8 @@ If the returned string is empty than a default value will be generated based on 
 %Docstring
 Sets the ``label`` for the maximum value on the ramp.
 
-If the ``label`` is empty than a default value will be generated based on the associated maximum value.
+If the ``label`` is empty than a default value will be generated based
+on the associated maximum value.
 
 .. seealso:: :py:func:`setMinimumLabel`
 
@@ -205,11 +209,12 @@ Returns ``True`` if a continuous gradient legend will be used.
 
     void setUseContinuousLegend( bool useContinuousLegend );
 %Docstring
-Sets the flag to use a continuous gradient legend to ``useContinuousLegend``.
+Sets the flag to use a continuous gradient legend to
+``useContinuousLegend``.
 
-When this flag is set the legend will be rendered using a continuous color ramp with
-min and max values, when it is not set the legend will be rendered using separate
-items for each entry.
+When this flag is set the legend will be rendered using a continuous
+color ramp with min and max values, when it is not set the legend will
+be rendered using separate items for each entry.
 
 .. seealso:: :py:func:`setOrientation`
 

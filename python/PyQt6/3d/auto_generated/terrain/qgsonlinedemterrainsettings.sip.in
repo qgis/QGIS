@@ -11,7 +11,8 @@
 class QgsOnlineDemTerrainSettings : QgsAbstractTerrainSettings
 {
 %Docstring(signature="appended")
-Terrain settings for a terrain generator that uses an online DEM to build terrain.
+Terrain settings for a terrain generator that uses an online DEM to
+build terrain.
 
 .. warning::
 
@@ -38,14 +39,16 @@ Creates a new instance of a QgsOnlineDemTerrainSettings object.
 
     void setResolution( int resolution );
 %Docstring
-Sets the ``resolution`` of the terrain (how many elevation samples are taken on one side of a terrain tile).
+Sets the ``resolution`` of the terrain (how many elevation samples are
+taken on one side of a terrain tile).
 
 .. seealso:: :py:func:`resolution`
 %End
 
     int resolution() const;
 %Docstring
-Returns the resolution of the terrain (how many elevation samples are taken on one side of a terrain tile).
+Returns the resolution of the terrain (how many elevation samples are
+taken on one side of a terrain tile).
 
 .. seealso:: :py:func:`resolution`
 %End
@@ -54,7 +57,8 @@ Returns the resolution of the terrain (how many elevation samples are taken on o
 %Docstring
 Sets the skirt ``height`` (in world units).
 
-Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
+Skirts at the edges of terrain tiles help hide cracks between adjacent
+tiles.
 
 .. seealso:: :py:func:`skirtHeight`
 %End
@@ -63,7 +67,8 @@ Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
 %Docstring
 Returns the skirt height (in world units).
 
-Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
+Skirts at the edges of terrain tiles help hide cracks between adjacent
+tiles.
 
 .. seealso:: :py:func:`setSkirtHeight`
 %End

@@ -24,7 +24,8 @@ Histogram widget
   public:
     QgsRasterHistogramWidget( QgsRasterLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsRasterHistogramWidget, for the specified raster ``layer``.
+Constructor for QgsRasterHistogramWidget, for the specified raster
+``layer``.
 %End
 
     bool histoSaveAsImage( const QString &filename, int width = 600, int height = 600, int quality = -1 );

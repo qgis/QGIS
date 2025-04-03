@@ -112,20 +112,23 @@ Returns a geometry from within the collection.
 %Docstring
 Attempts to allocate memory for at least ``size`` geometries.
 
-If the number of geometries is known in advance, calling this function prior to adding geometries will prevent
-reallocations and memory fragmentation.
+If the number of geometries is known in advance, calling this function
+prior to adding geometries will prevent reallocations and memory
+fragmentation.
 
 .. versionadded:: 3.10
 %End
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 %Docstring
-Adds a geometry and takes ownership. Returns ``True`` in case of success.
+Adds a geometry and takes ownership. Returns ``True`` in case of
+success.
 %End
 
     virtual bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries /Transfer/ );
 %Docstring
-Adds a list of geometries to the collection, transferring ownership to the collection.
+Adds a list of geometries to the collection, transferring ownership to
+the collection.
 
 Returns ``True`` in case of success.
 
@@ -134,9 +137,11 @@ Returns ``True`` in case of success.
 
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 %Docstring
-Inserts a geometry before a specified index and takes ownership. Returns ``True`` in case of success.
+Inserts a geometry before a specified index and takes ownership. Returns
+``True`` in case of success.
 
-:param g: geometry to insert. Ownership is transferred to the collection.
+:param g: geometry to insert. Ownership is transferred to the
+          collection.
 :param index: position to insert geometry before
 %End
 
@@ -164,8 +169,8 @@ Removes a geometry from the collection by index.
 
     QVector< QgsAbstractGeometry * > takeGeometries() /Transfer/;
 %Docstring
-Removes all geometries from the collection, returning them and their ownership
-to the caller.
+Removes all geometries from the collection, returning them and their
+ownership to the caller.
 
 .. versionadded:: 3.38
 %End
@@ -235,7 +240,8 @@ to the caller.
 Returns a geometry without curves. Caller takes ownership
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
+:param toleranceType: maximum segmentation angle or maximum difference
+                      between approximation and curve
 %End
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
@@ -279,8 +285,9 @@ Returns a geometry without curves. Caller takes ownership
 %Docstring
 Returns the geometry at the specified ``index``.
 
-Indexes can be less than 0, in which case they correspond to geometries from the end of the collect. E.g. an index of -1
-corresponds to the last geometry in the collection.
+Indexes can be less than 0, in which case they correspond to geometries
+from the end of the collect. E.g. an index of -1 corresponds to the last
+geometry in the collection.
 
 :raises IndexError: if no geometry with the specified ``index`` exists.
 
@@ -307,8 +314,9 @@ corresponds to the last geometry in the collection.
 %Docstring
 Deletes the geometry at the specified ``index``.
 
-Indexes can be less than 0, in which case they correspond to geometries from the end of the collection. E.g. an index of -1
-corresponds to the last geometry in the collection.
+Indexes can be less than 0, in which case they correspond to geometries
+from the end of the collection. E.g. an index of -1 corresponds to the
+last geometry in the collection.
 
 :raises IndexError: if no geometry at the ``index`` exists
 
@@ -339,14 +347,16 @@ Iterates through all geometries in the collection.
 
     QgsGeometryCollection *extractPartsByType( Qgis::WkbType type, bool useFlatType = true ) const /Factory/;
 %Docstring
-Returns a new QgsGeometryCollection subclass which consists of the parts of this collection
-which match the specified WKB ``type``.
+Returns a new QgsGeometryCollection subclass which consists of the parts
+of this collection which match the specified WKB ``type``.
 
-For instance, if ``type`` is :py:class:`Qgis`.WkbType.Polygon, then the returned object will be a :py:class:`QgsMultiPolygon`
-object containing just the polygons from this collection.
+For instance, if ``type`` is :py:class:`Qgis`.WkbType.Polygon, then the
+returned object will be a :py:class:`QgsMultiPolygon` object containing
+just the polygons from this collection.
 
-If ``useFlatType`` is ``True``, then the WKB types of component geometries from this collection will
-be flattened prior to comparing with ``type``. (I.e. the presence of Z / M dimensions will be ignored
+If ``useFlatType`` is ``True``, then the WKB types of component
+geometries from this collection will be flattened prior to comparing
+with ``type``. (I.e. the presence of Z / M dimensions will be ignored
 when comparing against ``type``).
 
 .. versionadded:: 3.36
@@ -366,7 +376,8 @@ when comparing against ``type``).
 
     virtual bool wktOmitChildType() const;
 %Docstring
-Returns whether child type names are omitted from Wkt representations of the collection
+Returns whether child type names are omitted from Wkt representations of
+the collection
 %End
 
     bool fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );

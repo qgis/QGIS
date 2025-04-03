@@ -13,7 +13,8 @@
 class QgsProcessingMultipleSelectionPanelWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A panel widget for selection of multiple options from a fixed list of options.
+A panel widget for selection of multiple options from a fixed list of
+options.
 
 .. note::
 
@@ -30,16 +31,19 @@ A panel widget for selection of multiple options from a fixed list of options.
 %Docstring
 Constructor for QgsProcessingMultipleSelectionPanelWidget.
 
-The ``availableOptions`` list specifies the list of standard known options for the parameter,
-whilst the ``selectedOptions`` list specifies which options should be initially selected.
+The ``availableOptions`` list specifies the list of standard known
+options for the parameter, whilst the ``selectedOptions`` list specifies
+which options should be initially selected.
 
-The ``selectedOptions`` list may contain extra options which are not present in ``availableOptions``,
-in which case they will be also added as existing options within the dialog.
+The ``selectedOptions`` list may contain extra options which are not
+present in ``availableOptions``, in which case they will be also added
+as existing options within the dialog.
 %End
 
     void setValueFormatter( SIP_PYCALLABLE );
 %Docstring
-Sets a callback function to use when encountering an invalid geometry and
+Sets a callback function to use when encountering an invalid geometry
+and
 %End
 %MethodCode
 
@@ -130,17 +134,20 @@ A dialog for selection of multiple options from a fixed list of options.
 %Docstring
 Constructor for :py:class:`QgsProcessingMultipleSelectionPanelWidget`.
 
-The ``availableOptions`` list specifies the list of standard known options for the parameter,
-whilst the ``selectedOptions`` list specifies which options should be initially selected.
+The ``availableOptions`` list specifies the list of standard known
+options for the parameter, whilst the ``selectedOptions`` list specifies
+which options should be initially selected.
 
-The ``selectedOptions`` list may contain extra options which are not present in ``availableOptions``,
-in which case they will be also added as existing options within the dialog.
+The ``selectedOptions`` list may contain extra options which are not
+present in ``availableOptions``, in which case they will be also added
+as existing options within the dialog.
 %End
 
 
     void setValueFormatter( SIP_PYCALLABLE );
 %Docstring
-Sets a callback function to use when encountering an invalid geometry and
+Sets a callback function to use when encountering an invalid geometry
+and
 %End
 %MethodCode
 
@@ -177,7 +184,8 @@ Returns the ordered list of selected options.
 class QgsProcessingMultipleInputPanelWidget : QgsProcessingMultipleSelectionPanelWidget
 {
 %Docstring(signature="appended")
-A panel widget for selection of multiple inputs from a fixed list of options.
+A panel widget for selection of multiple inputs from a fixed list of
+options.
 
 .. note::
 
@@ -230,8 +238,9 @@ A dialog for selection of multiple layer inputs.
 %Docstring
 Constructor for QgsProcessingMultipleInputDialog.
 
-The ``selectedOptions`` list may contain extra options which are not present in ``availableOptions``,
-in which case they will be also added as existing options within the dialog.
+The ``selectedOptions`` list may contain extra options which are not
+present in ``availableOptions``, in which case they will be also added
+as existing options within the dialog.
 %End
 
     QVariantList selectedOptions() const;

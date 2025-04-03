@@ -33,12 +33,14 @@ Returns the screen that the parent widget appears on, or ``None``.
 
     QWindow *windowHandle();
 %Docstring
-Returns the window handle for the window the parent widget is associated with, or ``None``.
+Returns the window handle for the window the parent widget is associated
+with, or ``None``.
 %End
 
     double screenDpi() const;
 %Docstring
-Returns the current screen DPI for the screen that the parent widget appears on.
+Returns the current screen DPI for the screen that the parent widget
+appears on.
 
 .. seealso:: :py:func:`screenDpiChanged`
 %End
@@ -47,7 +49,8 @@ Returns the current screen DPI for the screen that the parent widget appears on.
 %Docstring
 Returns the current screen available geometry in pixels.
 
-The available geometry is the geometry excluding window manager reserved areas such as task bars and system menus.
+The available geometry is the geometry excluding window manager reserved
+areas such as task bars and system menus.
 
 .. seealso:: :py:func:`availableGeometryChanged`
 %End
@@ -56,14 +59,16 @@ The available geometry is the geometry excluding window manager reserved areas s
 
     void screenDpiChanged( double dpi );
 %Docstring
-Emitted whenever the screen ``dpi`` associated with the widget is changed.
+Emitted whenever the screen ``dpi`` associated with the widget is
+changed.
 
 .. seealso:: :py:func:`screenDpi`
 %End
 
     void availableGeometryChanged( const QRect &geometry );
 %Docstring
-Emitted whenever the available geometry of the screen associated with the widget is changed.
+Emitted whenever the available geometry of the screen associated with
+the widget is changed.
 
 .. seealso:: :py:func:`availableGeometry`
 %End

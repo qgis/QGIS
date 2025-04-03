@@ -13,7 +13,8 @@
 class QgsProjectServerValidator
 {
 %Docstring(signature="appended")
-Validates the server specific parts of the configuration of a QGIS project.
+Validates the server specific parts of the configuration of a QGIS
+project.
 
 .. versionadded:: 3.14
 %End
@@ -58,9 +59,10 @@ Constructor for ValidationResult.
 
     static bool validate( QgsProject *project, QList< QgsProjectServerValidator::ValidationResult > &results /Out/ );
 %Docstring
-Validates a project to detect problems on QGIS Server, and returns ``True`` if it's considered valid.
-If validation fails, the ``results`` list will be filled with a list of
-items describing why the validation failed and what needs to be rectified
+Validates a project to detect problems on QGIS Server, and returns
+``True`` if it's considered valid. If validation fails, the ``results``
+list will be filled with a list of items describing why the validation
+failed and what needs to be rectified
 
 :param project: input project to check
 

@@ -32,7 +32,8 @@ Returns the map layer type corresponding a ``string`` value.
 :param string: string to convert to map layer type
 
 :return: - converted map layer type
-         - ok: ``True`` if ``string`` was successfully converted to a map layer type
+         - ok: ``True`` if ``string`` was successfully converted to a
+           map layer type
 
 .. seealso:: :py:func:`typeToString`
 %End
@@ -62,7 +63,8 @@ Constructor for LayerOptions with ``transformContext``.
     static QgsMapLayer *createLayer( const QString &uri, const QString &name, Qgis::LayerType type, const LayerOptions &options,
                                      const QString &provider = QString() ) /Factory/;
 %Docstring
-Creates a map layer, given a ``uri``, ``name``, layer ``type`` and ``provider`` name.
+Creates a map layer, given a ``uri``, ``name``, layer ``type`` and
+``provider`` name.
 
 Caller takes ownership of the returned layer.
 

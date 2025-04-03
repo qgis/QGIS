@@ -110,10 +110,12 @@ Returns a map of all valid layers by layer ID.
 
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &layers /Transfer/ );
 %Docstring
-Add a list of ``layers`` to the store. Ownership of the layers is transferred
-to the store.
+Add a list of ``layers`` to the store. Ownership of the layers is
+transferred to the store.
 
-The :py:func:`~QgsMapLayerStore.layersAdded` and :py:func:`~QgsMapLayerStore.layerWasAdded` signals will always be emitted.
+The :py:func:`~QgsMapLayerStore.layersAdded` and
+:py:func:`~QgsMapLayerStore.layerWasAdded` signals will always be
+emitted.
 
 :param layers: A list of layer which should be added to the store.
 
@@ -123,25 +125,27 @@ The :py:func:`~QgsMapLayerStore.layersAdded` and :py:func:`~QgsMapLayerStore.lay
    but if the validity of the layer has changed from ``False`` to ``True``, the
    layer data source is updated to the new one.
 
-:return: a list of the map layers that were added
-         successfully. If a layer already exists in the store,
-         it will not be part of the returned list.
+:return: a list of the map layers that were added successfully. If a
+         layer already exists in the store, it will not be part of the
+         returned list.
 
 .. seealso:: :py:func:`addMapLayer`
 %End
 
     QgsMapLayer *addMapLayer( QgsMapLayer *layer /Transfer/ );
 %Docstring
-Add a ``layer`` to the store. Ownership of the layer is transferred to the
-store.
+Add a ``layer`` to the store. Ownership of the layer is transferred to
+the store.
 
-The :py:func:`~QgsMapLayerStore.layersAdded` and :py:func:`~QgsMapLayerStore.layerWasAdded` signals will always be emitted.
-If you are adding multiple layers at once, you should use
+The :py:func:`~QgsMapLayerStore.layersAdded` and
+:py:func:`~QgsMapLayerStore.layerWasAdded` signals will always be
+emitted. If you are adding multiple layers at once, you should use
 :py:func:`~QgsMapLayerStore.addMapLayers` instead.
 
 :param layer: A layer to add to the store
 
-:return: ``None`` if unable to add layer, otherwise pointer to newly added layer
+:return: ``None`` if unable to add layer, otherwise pointer to newly
+         added layer
 
 .. seealso:: :py:func:`addMapLayers`
 
@@ -156,8 +160,8 @@ If you are adding multiple layers at once, you should use
 %Docstring
 Remove a set of layers from the store by layer ID.
 
-The specified layers will be removed from the store.
-These layers will also be deleted.
+The specified layers will be removed from the store. These layers will
+also be deleted.
 
 :param layerIds: list of IDs of the layers to remove
 
@@ -167,14 +171,15 @@ These layers will also be deleted.
 
 .. seealso:: :py:func:`removeAllMapLayers`
 
+
 %End
 
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
 Remove a set of ``layers`` from the store.
 
-The specified layers will be removed from the store.
-These layers will also be deleted.
+The specified layers will be removed from the store. These layers will
+also be deleted.
 
 :param layers: A list of layers to remove. ``None`` values are ignored.
 
@@ -189,7 +194,8 @@ These layers will also be deleted.
 %Docstring
 Remove a layer from the store by layer ``id``.
 
-The specified layer will be removed from the store. The layer will also be deleted.
+The specified layer will be removed from the store. The layer will also
+be deleted.
 
 :param id: ID of the layer to remove
 
@@ -204,7 +210,8 @@ The specified layer will be removed from the store. The layer will also be delet
 %Docstring
 Remove a ``layer`` from the store.
 
-The specified layer will be removed from the store. The layer will also be deleted.
+The specified layer will be removed from the store. The layer will also
+be deleted.
 
 :param layer: The layer to remove. ``None`` values are ignored.
 
@@ -217,9 +224,9 @@ The specified layer will be removed from the store. The layer will also be delet
 
     QgsMapLayer *takeMapLayer( QgsMapLayer *layer ) /TransferBack/;
 %Docstring
-Takes a ``layer`` from the store. If the layer was owned by the store, the
-layer will be returned without deleting it. The caller takes ownership of
-the layer and is responsible for deleting it.
+Takes a ``layer`` from the store. If the layer was owned by the store,
+the layer will be returned without deleting it. The caller takes
+ownership of the layer and is responsible for deleting it.
 
 .. seealso:: :py:func:`removeMapLayer`
 %End
@@ -240,9 +247,9 @@ Removes all registered layers. These layers will also be deleted.
 
     void transferLayersFromStore( QgsMapLayerStore *other );
 %Docstring
-Transfers all the map layers contained within another map layer store and adds
-them to this store.
-Note that ``other`` and this store must have the same thread affinity.
+Transfers all the map layers contained within another map layer store
+and adds them to this store. Note that ``other`` and this store must
+have the same thread affinity.
 %End
 
   signals:
@@ -323,10 +330,13 @@ Emitted after a layer was removed from the store.
 
     void allLayersRemoved();
 %Docstring
-Emitted when all layers are removed, before :py:func:`~QgsMapLayerStore.layersWillBeRemoved` and
-:py:func:`~QgsMapLayerStore.layerWillBeRemoved` signals are emitted. The :py:func:`~QgsMapLayerStore.layersWillBeRemoved` and
-:py:func:`~QgsMapLayerStore.layerWillBeRemoved` signals will still be emitted following this signal.
-You can use this signal to do easy (and fast) cleanup.
+Emitted when all layers are removed, before
+:py:func:`~QgsMapLayerStore.layersWillBeRemoved` and
+:py:func:`~QgsMapLayerStore.layerWillBeRemoved` signals are emitted. The
+:py:func:`~QgsMapLayerStore.layersWillBeRemoved` and
+:py:func:`~QgsMapLayerStore.layerWillBeRemoved` signals will still be
+emitted following this signal. You can use this signal to do easy (and
+fast) cleanup.
 %End
 
     void layersAdded( const QList<QgsMapLayer *> &layers );

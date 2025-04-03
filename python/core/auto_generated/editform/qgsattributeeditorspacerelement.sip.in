@@ -38,7 +38,8 @@ Returns ``True`` if the spacer element will contain an horizontal line.
 
     void setDrawLine( bool drawLine );
 %Docstring
-Sets a flag to define if the spacer element will contain an horizontal line.
+Sets a flag to define if the spacer element will contain an horizontal
+line.
 
 :param drawLine: flag status
 %End

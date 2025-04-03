@@ -11,8 +11,8 @@
 class QgsTextBlock
 {
 %Docstring(signature="appended")
-
-Represents a block of text consisting of one or more :py:class:`QgsTextFragment` objects.
+Represents a block of text consisting of one or more
+:py:class:`QgsTextFragment` objects.
 
 .. warning::
 
@@ -38,10 +38,11 @@ Constructor for a QgsTextBlock consisting of a single text ``fragment``.
 
     static QgsTextBlock fromPlainText( const QString &text, const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
 %Docstring
-Constructor for QgsTextBlock consisting of a plain ``text``, and optional character ``format``.
+Constructor for QgsTextBlock consisting of a plain ``text``, and
+optional character ``format``.
 
-If ``text`` contains tab characters they will be appended as separate text fragments
-within the block, consisting of just the tab character.
+If ``text`` contains tab characters they will be appended as separate
+text fragments within the block, consisting of just the tab character.
 
 .. versionadded:: 3.38
 %End
@@ -55,7 +56,8 @@ Converts the block to plain text.
 
     void reserve( int count );
 %Docstring
-Reserves the specified ``count`` of fragments for optimised fragment appending.
+Reserves the specified ``count`` of fragments for optimised fragment
+appending.
 
 .. versionadded:: 3.40
 %End
@@ -128,7 +130,8 @@ Applies a ``capitalization`` style to the block's text.
 
     bool hasBackgrounds() const;
 %Docstring
-Returns ``True`` if the block or any of the fragments in the block have background brushes set.
+Returns ``True`` if the block or any of the fragments in the block have
+background brushes set.
 
 .. versionadded:: 3.42
 %End

@@ -36,8 +36,8 @@ Emits dart measurements for display in CDash reports.
 
     static const QString typeToString( QgsDartMeasurement::Type type );
 %Docstring
-Convert a QgsDartMeasurement.Type enum to a string that is understood
-by the system.
+Convert a QgsDartMeasurement.Type enum to a string that is understood by
+the system.
 %End
 
 };

@@ -12,21 +12,26 @@
 class QgsFeedback : QObject
 {
 %Docstring(signature="appended")
-Base class for feedback objects to be used for cancellation of something running in a worker thread.
+Base class for feedback objects to be used for cancellation of something
+running in a worker thread.
 
-The class may be used as is or it may be subclassed for extended functionality
-for a particular operation (e.g. report progress or pass some data for preview).
+The class may be used as is or it may be subclassed for extended
+functionality for a particular operation (e.g. report progress or pass
+some data for preview).
 
-When :py:func:`~cancel` is called, the internal code has two options to check for cancellation state:
+When :py:func:`~cancel` is called, the internal code has two options to
+check for cancellation state:
 
 - if the worker thread uses an event loop (e.g. for network communication), the code can make a queued connection to :py:func:`~canceled` signal and handle the cancellation in its slot.
 - if the worker thread does not use an event loop, it can poll :py:func:`~isCanceled` method regularly to see if the operation should be canceled.
 
 The class is meant to be created and destroyed in the main thread.
 
-For map rendering, the object may be created in constructor of a :py:class:`QgsMapLayerRenderer`
-subclass and available with :py:func:`QgsMapLayerRenderer.feedback()` method. When a map rendering job
-gets canceled, the :py:func:`~cancel` method is called on the feedback object of all layers.
+For map rendering, the object may be created in constructor of a
+:py:class:`QgsMapLayerRenderer` subclass and available with
+:py:func:`QgsMapLayerRenderer.feedback()` method. When a map rendering
+job gets canceled, the :py:func:`~cancel` method is called on the
+feedback object of all layers.
 %End
 
 %TypeHeaderCode
@@ -55,9 +60,9 @@ argument is in percentage and valid values range from 0-100.
 
     double progress() const /HoldGIL/;
 %Docstring
-Returns the current progress reported by the feedback object. Depending on how the
-feedback object is used progress reporting may not be supported. The returned value
-is in percentage and ranges from 0-100.
+Returns the current progress reported by the feedback object. Depending
+on how the feedback object is used progress reporting may not be
+supported. The returned value is in percentage and ranges from 0-100.
 
 .. seealso:: :py:func:`setProgress`
 
@@ -66,9 +71,10 @@ is in percentage and ranges from 0-100.
 
     unsigned long long processedCount() const /HoldGIL/;
 %Docstring
-Returns the current processed objects count reported by the feedback object. Depending on how the
-feedback object is used processed count reporting may not be supported. The returned value
-is an unsigned long integer and starts from 0.
+Returns the current processed objects count reported by the feedback
+object. Depending on how the feedback object is used processed count
+reporting may not be supported. The returned value is an unsigned long
+integer and starts from 0.
 
 .. seealso:: :py:func:`setProcessedCount`
 
@@ -79,8 +85,9 @@ is an unsigned long integer and starts from 0.
 
     void setProcessedCount( unsigned long long processedCount );
 %Docstring
-Sets the current processed objects count for the feedback object. The ``processedCount``
-argument is an unsigned long integer and starts from 0.
+Sets the current processed objects count for the feedback object. The
+``processedCount`` argument is an unsigned long integer and starts from
+0.
 
 .. seealso:: :py:func:`processedCount`
 
@@ -93,7 +100,8 @@ argument is an unsigned long integer and starts from 0.
 
     void cancel();
 %Docstring
-Tells the internal routines that the current operation should be canceled. This should be run by the main thread
+Tells the internal routines that the current operation should be
+canceled. This should be run by the main thread
 %End
 
   signals:
@@ -104,9 +112,9 @@ Internal routines can connect to this signal if they use event loop
 
     void progressChanged( double progress );
 %Docstring
-Emitted when the feedback object reports a progress change. Depending on how the
-feedback object is used progress reporting may not be supported. The ``progress``
-argument is in percentage and ranges from 0-100.
+Emitted when the feedback object reports a progress change. Depending on
+how the feedback object is used progress reporting may not be supported.
+The ``progress`` argument is in percentage and ranges from 0-100.
 
 .. seealso:: :py:func:`setProgress`
 
@@ -115,8 +123,9 @@ argument is in percentage and ranges from 0-100.
 
     void processedCountChanged( unsigned long long processedCount );
 %Docstring
-Emitted when the feedback object reports a change in the number of processed objects.
-Depending on how the feedback object is used processed count reporting may not be supported. The ``processedCount``
+Emitted when the feedback object reports a change in the number of
+processed objects. Depending on how the feedback object is used
+processed count reporting may not be supported. The ``processedCount``
 argument is an unsigned long integer and starts from 0.
 
 .. seealso:: :py:func:`setProgress`

@@ -11,7 +11,8 @@
 class QgsPlaybackControllerWidget : QWidget
 {
 %Docstring(signature="appended")
-A compound widget containing a set of buttons for controlling media playback.
+A compound widget containing a set of buttons for controlling media
+playback.
 
 .. versionadded:: 3.36
 %End
@@ -22,7 +23,8 @@ A compound widget containing a set of buttons for controlling media playback.
   public:
     explicit QgsPlaybackControllerWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsPlaybackControllerWidget, with the specified ``parent`` widget.
+Constructor for QgsPlaybackControllerWidget, with the specified
+``parent`` widget.
 %End
 
     QPushButton *button( Qgis::PlaybackOperation operation );

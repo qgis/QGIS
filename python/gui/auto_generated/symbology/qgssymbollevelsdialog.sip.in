@@ -12,7 +12,8 @@
 class QgsSymbolLevelsWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A widget which allows the user to modify the rendering order of symbol layers.
+A widget which allows the user to modify the rendering order of symbol
+layers.
 
 .. seealso:: :py:class:`QgsSymbolLevelsDialog`
 %End
@@ -28,7 +29,8 @@ Constructor for QgsSymbolLevelsWidget
 
     QgsSymbolLevelsWidget( const QgsLegendSymbolList &symbols, bool usingSymbolLevels, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsSymbolLevelsWidget, which takes a list of ``symbols`` to show in the dialog.
+Constructor for QgsSymbolLevelsWidget, which takes a list of ``symbols``
+to show in the dialog.
 
 .. versionadded:: 3.20
 %End
@@ -40,14 +42,16 @@ Returns whether the level ordering is enabled
 
     QgsLegendSymbolList symbolLevels() const;
 %Docstring
-Returns the current legend symbols with rendering passes set, as defined in the widget.
+Returns the current legend symbols with rendering passes set, as defined
+in the widget.
 
 .. versionadded:: 3.20
 %End
 
     void setForceOrderingEnabled( bool enabled );
 %Docstring
-Sets whether the level ordering is always forced on and hide the checkbox (used by rule-based renderer)
+Sets whether the level ordering is always forced on and hide the
+checkbox (used by rule-based renderer)
 
 :param enabled: toggle level ordering
 %End
@@ -69,7 +73,8 @@ Apply button.
 class QgsSymbolLevelsDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allows the user to modify the rendering order of symbol layers.
+A dialog which allows the user to modify the rendering order of symbol
+layers.
 
 .. seealso:: :py:class:`QgsSymbolLevelsWidget`
 %End
@@ -94,7 +99,8 @@ Returns whether the level ordering is enabled.
 
     QgsLegendSymbolList symbolLevels() const;
 %Docstring
-Returns the current legend symbols with rendering passes set, as defined in the widget.
+Returns the current legend symbols with rendering passes set, as defined
+in the widget.
 
 .. versionadded:: 3.20
 %End

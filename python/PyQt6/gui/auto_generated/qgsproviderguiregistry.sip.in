@@ -17,11 +17,11 @@ class QgsProviderGuiRegistry
 %Docstring(signature="appended")
 A registry / canonical manager of GUI parts of data providers.
 
-:py:class:`QgsProviderGuiRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsGui.providerGuiRegistry()`.
+:py:class:`QgsProviderGuiRegistry` is not usually directly created, but
+rather accessed through :py:func:`QgsGui.providerGuiRegistry()`.
 
-:py:func:`~setPluginPath` should be called (once) to load dynamic providers. Static providers are
-loaded in constructor.
+:py:func:`~setPluginPath` should be called (once) to load dynamic
+providers. Static providers are loaded in constructor.
 
 .. versionadded:: 3.10
 %End
@@ -49,13 +49,15 @@ Returns metadata of the provider or ``None`` if not found
 
     void registerGuis( QMainWindow *widget );
 %Docstring
-Called during GUI initialization - allows providers to do its internal initialization
-of GUI components, possibly making use of the passed pointer to the QGIS main window.
+Called during GUI initialization - allows providers to do its internal
+initialization of GUI components, possibly making use of the passed
+pointer to the QGIS main window.
 %End
 
     virtual const QList<QgsDataItemGuiProvider *> dataItemGuiProviders( const QString &providerKey ) /Factory/;
 %Docstring
-Returns all data item gui providers registered in provider with ``providerKey``
+Returns all data item gui providers registered in provider with
+``providerKey``
 
 .. note::
 
@@ -64,7 +66,8 @@ Returns all data item gui providers registered in provider with ``providerKey``
 
     virtual QList<QgsSourceSelectProvider *> sourceSelectProviders( const QString &providerKey ) /Factory/;
 %Docstring
-Returns all source select providers registered in provider with ``providerKey``
+Returns all source select providers registered in provider with
+``providerKey``
 
 .. note::
 
@@ -73,7 +76,8 @@ Returns all source select providers registered in provider with ``providerKey``
 
     virtual QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders( const QString &providerKey ) /Factory/;
 %Docstring
-Returns all project storage gui providers registered in provider with ``providerKey``
+Returns all project storage gui providers registered in provider with
+``providerKey``
 
 .. note::
 
@@ -82,7 +86,8 @@ Returns all project storage gui providers registered in provider with ``provider
 
     virtual QList<QgsSubsetStringEditorProvider *> subsetStringEditorProviders( const QString &providerKey ) /Factory/;
 %Docstring
-Returns all subset string editor providers registered in provider with ``providerKey``
+Returns all subset string editor providers registered in provider with
+``providerKey``
 
 .. note::
 
@@ -93,7 +98,8 @@ Returns all subset string editor providers registered in provider with ``provide
 
     virtual QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders( const QString &providerKey ) /Factory/;
 %Docstring
-Returns all source widget providers registered in provider with ``providerKey``
+Returns all source widget providers registered in provider with
+``providerKey``
 
 .. note::
 
@@ -104,9 +110,11 @@ Returns all source widget providers registered in provider with ``providerKey``
 
     virtual QList<const QgsMapLayerConfigWidgetFactory *> mapLayerConfigWidgetFactories( QgsMapLayer *layer = 0 );
 %Docstring
-Returns all map layer config widget factories associated with the registered providers.
+Returns all map layer config widget factories associated with the
+registered providers.
 
-The optional ``layer`` argument can be used to only return factories which support the specified layer.
+The optional ``layer`` argument can be used to only return factories
+which support the specified layer.
 
 .. versionadded:: 3.20
 %End

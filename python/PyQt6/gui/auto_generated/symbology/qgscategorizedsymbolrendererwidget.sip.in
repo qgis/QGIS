@@ -39,8 +39,8 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 
     int matchToSymbols( QgsStyle *style );
 %Docstring
-Replaces category symbols with the symbols from a style that have a matching
-name.
+Replaces category symbols with the symbols from a style that have a
+matching name.
 
 :param style: style containing symbols to match with
 
@@ -72,8 +72,8 @@ Applies the color ramp passed on by the color ramp button
 
     void matchToSymbolsFromLibrary();
 %Docstring
-Replaces category symbols with the symbols from the users' symbol library that have a
-matching name.
+Replaces category symbols with the symbols from the users' symbol
+library that have a matching name.
 
 .. seealso:: :py:func:`matchToSymbolsFromXml`
 
@@ -82,8 +82,8 @@ matching name.
 
     void matchToSymbolsFromXml();
 %Docstring
-Prompts for selection of an xml file, then replaces category symbols with the symbols
-from the XML file with a matching name.
+Prompts for selection of an xml file, then replaces category symbols
+with the symbols from the XML file with a matching name.
 
 .. seealso:: :py:func:`matchToSymbolsFromLibrary`
 
@@ -106,7 +106,8 @@ from the XML file with a matching name.
 
     int currentCategoryRow();
 %Docstring
-Returns row index for the currently selected category (-1 if on no selection)
+Returns row index for the currently selected category (-1 if on no
+selection)
 %End
 
     QList<int> selectedCategories();
@@ -116,13 +117,15 @@ Returns a list of indexes for the categories under selection
 
     void changeSelectedSymbols();
 %Docstring
-Changes the selected symbols alone for the change button, if there is a selection
+Changes the selected symbols alone for the change button, if there is a
+selection
 %End
 
     void changeCategorySymbol();
     void applyChangeToSymbol();
 %Docstring
-Applies current symbol to selected categories, or to all categories if none is selected
+Applies current symbol to selected categories, or to all categories if
+none is selected
 %End
 
     virtual QList<QgsSymbol *> selectedSymbols();

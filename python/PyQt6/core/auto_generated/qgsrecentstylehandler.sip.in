@@ -14,8 +14,8 @@ class QgsRecentStyleHandler
 %Docstring(signature="appended")
 Handles and tracks style items recently used in the QGIS GUI.
 
-:py:class:`QgsRecentStyleHandler` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.recentStyleHandler()`.
+:py:class:`QgsRecentStyleHandler` is not usually directly created, but
+rather accessed through :py:func:`QgsApplication.recentStyleHandler()`.
 
 .. versionadded:: 3.22
 %End
@@ -29,8 +29,8 @@ Handles and tracks style items recently used in the QGIS GUI.
 %Docstring
 Creates a new recent style handler.
 
-QgsRecentStyleHandler is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.recentStyleHandler()`.
+QgsRecentStyleHandler is not usually directly created, but rather
+accessed through :py:func:`QgsApplication.recentStyleHandler()`.
 %End
 
 
@@ -61,8 +61,8 @@ Example
 
     QgsSymbol *recentSymbol( const QString &identifier ) const /Factory/;
 %Docstring
-Returns a copy of the recently used symbol with the specified ``identifier``, or ``None`` if no symbol
-with the identifier exists.
+Returns a copy of the recently used symbol with the specified
+``identifier``, or ``None`` if no symbol with the identifier exists.
 
 Caller takes ownership of the returned object.
 

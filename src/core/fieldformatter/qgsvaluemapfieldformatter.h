@@ -25,9 +25,11 @@
  *
  * A value relation field formatter looks up the values a map.
  *
- * The map is defined in the configuration as dictionary under the key "map".
+ * The map is defined in the configuration as dictionary under the key "map":
  *
+ * \code{.py}
  * { "map": { 1: "one", 2: "two", 3: "three" } }
+ * \endcode
  *
  * Values that are not on the map will be wrapped in parentheses. So with the above
  * configuration:

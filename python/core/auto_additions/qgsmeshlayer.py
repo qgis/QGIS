@@ -6,7 +6,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsMeshLayer.__attribute_docs__ = {'activeScalarDatasetGroupChanged': 'Emitted when active scalar group dataset is changed\n\n.. versionadded:: 3.14\n', 'activeVectorDatasetGroupChanged': 'Emitted when active vector group dataset is changed\n\n.. versionadded:: 3.14\n', 'timeSettingsChanged': 'Emitted when time format is changed\n\n.. versionadded:: 3.8\n', 'reloaded': 'Emitted when the mesh layer is reloaded, see :py:func:`~QgsMeshLayer.reload`\n\n.. versionadded:: 3.28\n'}
+    QgsMeshLayer.__attribute_docs__ = {'activeScalarDatasetGroupChanged': 'Emitted when active scalar group dataset is changed\n\n.. versionadded:: 3.14\n', 'activeVectorDatasetGroupChanged': 'Emitted when active vector group dataset is changed\n\n.. versionadded:: 3.14\n', 'timeSettingsChanged': 'Emitted when time format is changed\n\n.. versionadded:: 3.8\n', 'reloaded': 'Emitted when the mesh layer is reloaded, see\n:py:func:`~QgsMeshLayer.reload`\n\n.. versionadded:: 3.28\n'}
     QgsMeshLayer.__signal_arguments__ = {'activeScalarDatasetGroupChanged': ['index: int'], 'activeVectorDatasetGroupChanged': ['index: int']}
     QgsMeshLayer.__group__ = ['mesh']
 except (NameError, AttributeError):

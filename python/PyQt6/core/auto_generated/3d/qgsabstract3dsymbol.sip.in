@@ -16,7 +16,8 @@
 class QgsAbstract3DSymbol
 {
 %Docstring(signature="appended")
-Abstract base class for 3D symbols that are used by VectorLayer3DRenderer objects.
+Abstract base class for 3D symbols that are used by
+VectorLayer3DRenderer objects.
 
 3D symbol objects define appearance of GIS data.
 
@@ -38,7 +39,8 @@ Abstract base class for 3D symbols that are used by VectorLayer3DRenderer object
 
     virtual QString type() const = 0;
 %Docstring
-Returns identifier of symbol type. Each 3D symbol implementation should return a different type.
+Returns identifier of symbol type. Each 3D symbol implementation should
+return a different type.
 %End
     virtual QgsAbstract3DSymbol *clone() const = 0 /Factory/;
 %Docstring
@@ -56,7 +58,8 @@ Reads symbol configuration from the given DOM element
 
     virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
 %Docstring
-Returns the list of the vector layer geometry types which are compatible with this symbol.
+Returns the list of the vector layer geometry types which are compatible
+with this symbol.
 
 .. versionadded:: 3.16
 %End
@@ -74,13 +77,15 @@ Returns the symbol layer property definitions.
 
     QgsPropertyCollection &dataDefinedProperties();
 %Docstring
-Returns a reference to the symbol layer's property collection, used for data defined overrides.
+Returns a reference to the symbol layer's property collection, used for
+data defined overrides.
 %End
 
 
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 %Docstring
-Sets the symbol layer's property collection, used for data defined overrides.
+Sets the symbol layer's property collection, used for data defined
+overrides.
 %End
 
 

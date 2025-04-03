@@ -30,7 +30,8 @@ Stores metadata about one 3D material settings class.
   public:
     QgsMaterialSettingsAbstractMetadata( const QString &type, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
-Constructor for QgsMaterialSettingsAbstractMetadata, with the specified ``type`` and ``visibleName``.
+Constructor for QgsMaterialSettingsAbstractMetadata, with the specified
+``type`` and ``visibleName``.
 
 An optional ``icon`` can be specified to represent the material type.
 %End
@@ -61,7 +62,8 @@ Caller takes ownership of the returned object.
 
     virtual bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique ) const = 0;
 %Docstring
-Returns ``True`` if the material type supports the specified rendering ``technique``.
+Returns ``True`` if the material type supports the specified rendering
+``technique``.
 %End
 
 
@@ -77,8 +79,8 @@ class QgsMaterialRegistry
 %Docstring(signature="appended")
 Registry of available 3d material settings classes.
 
-:py:class:`QgsMaterialRegistry` is not usually directly created, but rather accessed through
-Qgs3D.materialRegistry().
+:py:class:`QgsMaterialRegistry` is not usually directly created, but
+rather accessed through Qgs3D.materialRegistry().
 
 .. versionadded:: 3.16
 %End
@@ -93,7 +95,8 @@ Qgs3D.materialRegistry().
 
     QgsMaterialSettingsAbstractMetadata *materialSettingsMetadata( const QString &type ) const;
 %Docstring
-Returns metadata for specified material settings ``type``. Returns ``None`` if not found
+Returns metadata for specified material settings ``type``. Returns
+``None`` if not found
 %End
 
     QStringList materialSettingsTypes() const;
@@ -103,12 +106,14 @@ Returns a list of all available material settings types.
 
     bool addMaterialSettingsType( QgsMaterialSettingsAbstractMetadata *metadata /Transfer/ );
 %Docstring
-Registers a new material settings type. Takes ownership of the ``metadata`` instance.
+Registers a new material settings type. Takes ownership of the
+``metadata`` instance.
 %End
 
     QgsAbstractMaterialSettings *createMaterialSettings( const QString &type ) const /Factory/;
 %Docstring
-Creates a new instance of the material settings of the specified ``type``.
+Creates a new instance of the material settings of the specified
+``type``.
 
 The caller takes ownership of the returned object.
 

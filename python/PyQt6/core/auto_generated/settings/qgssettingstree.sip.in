@@ -11,7 +11,8 @@
 class QgsSettingsTree
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTree` holds the tree structure for the settings in QGIS core
+:py:class:`QgsSettingsTree` holds the tree structure for the settings in
+QGIS core
 
 .. seealso:: :py:class:`QgsSettingsEntryBase`
 

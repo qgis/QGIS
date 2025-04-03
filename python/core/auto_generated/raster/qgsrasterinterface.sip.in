@@ -28,14 +28,15 @@ Construct a new raster block feedback object
 
     virtual void onNewData();
 %Docstring
-May be emitted by raster data provider to indicate that some partial data are available
-and a new preview image may be produced
+May be emitted by raster data provider to indicate that some partial
+data are available and a new preview image may be produced
 %End
 
     bool isPreviewOnly() const;
 %Docstring
-Whether the raster provider should return only data that are already available
-without waiting for full result. By default this flag is not enabled.
+Whether the raster provider should return only data that are already
+available without waiting for full result. By default this flag is not
+enabled.
 
 .. seealso:: :py:func:`setPreviewOnly`
 %End
@@ -49,14 +50,16 @@ set flag whether the block request is for preview purposes only
 
     bool renderPartialOutput() const;
 %Docstring
-Whether our painter is drawing to a temporary image used just by this layer
+Whether our painter is drawing to a temporary image used just by this
+layer
 
 .. seealso:: :py:func:`setRenderPartialOutput`
 %End
 
     void setRenderPartialOutput( bool enable );
 %Docstring
-Set whether our painter is drawing to a temporary image used just by this layer
+Set whether our painter is drawing to a temporary image used just by
+this layer
 
 .. seealso:: :py:func:`renderPartialOutput`
 %End
@@ -73,7 +76,8 @@ whenever an error is encountered while retrieving a raster block.
 
     QStringList errors() const;
 %Docstring
-Returns a list of any errors encountered while retrieving the raster block.
+Returns a list of any errors encountered while retrieving the raster
+block.
 
 .. seealso:: :py:func:`appendError`
 
@@ -104,7 +108,8 @@ Sets the render context of the associated block reading
 class QgsRasterInterface
 {
 %Docstring(signature="appended")
-Base class for processing filters like renderers, reprojector, resampler etc.
+Base class for processing filters like renderers, reprojector, resampler
+etc.
 %End
 
 %TypeHeaderCode
@@ -200,8 +205,8 @@ Returns data type for the band specified by number
 
     virtual Qgis::DataType sourceDataType( int bandNo ) const;
 %Docstring
-Returns source data type for the band specified by number,
-source data type may be shorter than dataType
+Returns source data type for the band specified by number, source data
+type may be shorter than dataType
 %End
 
     virtual QgsRectangle extent() const;
@@ -240,8 +245,8 @@ helper function to create zero padded band names
 
     virtual QString colorInterpretationName( int bandNumber ) const;
 %Docstring
-Returns the name of the color interpretation for the specified ``bandNumber``.
-It is translated since QGIS 3.40
+Returns the name of the color interpretation for the specified
+``bandNumber``. It is translated since QGIS 3.40
 
 .. versionadded:: 3.18
 %End
@@ -255,21 +260,21 @@ Generates a friendly, descriptive name for the specified ``bandNumber``.
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;
 %Docstring
-Read block of data using given extent and size.
-Returns pointer to data.
+Read block of data using given extent and size. Returns pointer to data.
 Caller is responsible to free the memory returned.
 
 :param bandNo: band number
 :param extent: extent of block
 :param width: pixel width of block
 :param height: pixel height of block
-:param feedback: optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
+:param feedback: optional raster feedback object for
+                 cancellation/preview. Added in QGIS 3.0.
 %End
 
     virtual bool setInput( QgsRasterInterface *input );
 %Docstring
-Set input.
-Returns ``True`` if set correctly, ``False`` if cannot use that input
+Set input. Returns ``True`` if set correctly, ``False`` if cannot use
+that input
 %End
 
     virtual QgsRasterInterface *input() const;
@@ -290,8 +295,8 @@ Sets whether the interface is on or off
 
     virtual QgsRasterInterface *sourceInput();
 %Docstring
-Gets source / raw input, the first in pipe, usually provider.
-It may be used to get info about original data, e.g. resolution to decide
+Gets source / raw input, the first in pipe, usually provider. It may be
+used to get info about original data, e.g. resolution to decide
 resampling etc.
 %End
 
@@ -301,8 +306,12 @@ Returns the band statistics.
 
 :param bandNo: The band (number).
 :param stats: Requested statistics
-:param extent: Extent used to calc statistics, if empty, whole raster extent is used.
-:param sampleSize: Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+:param extent: Extent used to calc statistics, if empty, whole raster
+               extent is used.
+:param sampleSize: Approximate number of cells in sample. If 0, all
+                   cells (whole raster will be used). If raster does not
+                   have exact size (WCS without exact size for example),
+                   provider decides size of sample.
 :param feedback: optional feedback object
 
 .. deprecated:: 3.40
@@ -319,15 +328,20 @@ Returns the band statistics.
 
 :param bandNo: The band (number).
 :param stats: Requested statistics
-:param extent: Extent used to calc statistics, if empty, whole raster extent is used.
-:param sampleSize: Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+:param extent: Extent used to calc statistics, if empty, whole raster
+               extent is used.
+:param sampleSize: Approximate number of cells in sample. If 0, all
+                   cells (whole raster will be used). If raster does not
+                   have exact size (WCS without exact size for example),
+                   provider decides size of sample.
 :param feedback: optional feedback object
 %End
 
  bool hasStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0 ) /Deprecated="Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument."/;
 %Docstring
 Returns ``True`` if histogram is available (cached, already calculated).
-The parameters are the same as in :py:func:`~QgsRasterInterface.bandStatistics`
+The parameters are the same as in
+:py:func:`~QgsRasterInterface.bandStatistics`
 
 :return: ``True`` if statistics are available (ready to use)
 
@@ -342,7 +356,8 @@ The parameters are the same as in :py:func:`~QgsRasterInterface.bandStatistics`
                                 int sampleSize = 0 );
 %Docstring
 Returns ``True`` if histogram is available (cached, already calculated).
-The parameters are the same as in :py:func:`~QgsRasterInterface.bandStatistics`
+The parameters are the same as in
+:py:func:`~QgsRasterInterface.bandStatistics`
 
 :return: ``True`` if statistics are available (ready to use)
 %End
@@ -368,11 +383,19 @@ The parameters are the same as in :py:func:`~QgsRasterInterface.bandStatistics`
 Returns a band histogram. Histograms are cached in providers.
 
 :param bandNo: The band (number).
-:param binCount: Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
-:param minimum: Minimum value, if NaN (None for Python), raster minimum value will be used.
-:param maximum: Maximum value, if NaN (None for Python), raster maximum value will be used.
-:param extent: Extent used to calc histogram, if empty, whole raster extent is used.
-:param sampleSize: Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+:param binCount: Number of bins (intervals,buckets). If 0, the number of
+                 bins is decided automatically according to data type,
+                 raster size etc.
+:param minimum: Minimum value, if NaN (None for Python), raster minimum
+                value will be used.
+:param maximum: Maximum value, if NaN (None for Python), raster maximum
+                value will be used.
+:param extent: Extent used to calc histogram, if empty, whole raster
+               extent is used.
+:param sampleSize: Approximate number of cells in sample. If 0, all
+                   cells (whole raster will be used). If raster does not
+                   have exact size (WCS without exact size for example),
+                   provider decides size of sample.
 :param includeOutOfRange: include out of range values
 :param feedback: optional feedback object
 
@@ -469,8 +492,12 @@ Find values for cumulative pixel count cut.
 :param upperCount: The upper count as fraction of 1, e.g. 0.98 = 98%
 :param lowerValue: Location into which the lower value will be set.
 :param upperValue: Location into which the upper value will be set.
-:param extent: Extent used to calc histogram, if empty, whole raster extent is used.
-:param sampleSize: Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+:param extent: Extent used to calc histogram, if empty, whole raster
+               extent is used.
+:param sampleSize: Approximate number of cells in sample. If 0, all
+                   cells (whole raster will be used). If raster does not
+                   have exact size (WCS without exact size for example),
+                   provider decides size of sample.
 %End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
@@ -479,7 +506,8 @@ Write base class members to xml.
 %End
     virtual void readXml( const QDomElement &filterElem );
 %Docstring
-Sets base class members from xml. Usually called from :py:func:`~QgsRasterInterface.create` methods of subclasses
+Sets base class members from xml. Usually called from
+:py:func:`~QgsRasterInterface.create` methods of subclasses
 %End
 
   protected:

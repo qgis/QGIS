@@ -30,7 +30,8 @@ Create a new QgsAction
 :param type: The type of this action
 :param description: A human readable description string
 :param command: The action text. Its interpretation depends on the type
-:param capture: If this is set to ``True``, the output will be captured when an action is run
+:param capture: If this is set to ``True``, the output will be captured
+                when an action is run
 %End
 
     QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString() );
@@ -41,10 +42,14 @@ Create a new QgsAction
 :param description: A human readable description string
 :param action: The action text. Its interpretation depends on the type
 :param icon: Path to an icon for this action
-:param capture: If this is set to ``True``, the output will be captured when an action is run
-:param shortTitle: A short string used to label user interface elements like buttons
-:param actionScopes: A set of scopes in which this action will be available
-:param notificationMessage: A particular message which reception will trigger the action
+:param capture: If this is set to ``True``, the output will be captured
+                when an action is run
+:param shortTitle: A short string used to label user interface elements
+                   like buttons
+:param actionScopes: A set of scopes in which this action will be
+                     available
+:param notificationMessage: A particular message which reception will
+                            trigger the action
 %End
 
     QgsAction( const QUuid &id, Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString() );
@@ -56,10 +61,14 @@ Create a new QgsAction
 :param description: A human readable description string
 :param action: The action text. Its interpretation depends on the type
 :param icon: Path to an icon for this action
-:param capture: If this is set to ``True``, the output will be captured when an action is run
-:param shortTitle: A short string used to label user interface elements like buttons
-:param actionScopes: A set of scopes in which this action will be available
-:param notificationMessage: A particular message which reception will trigger the action
+:param capture: If this is set to ``True``, the output will be captured
+                when an action is run
+:param shortTitle: A short string used to label user interface elements
+                   like buttons
+:param actionScopes: A set of scopes in which this action will be
+                     available
+:param notificationMessage: A particular message which reception will
+                            trigger the action
 %End
 
 
@@ -95,9 +104,9 @@ The icon
 
     QString command() const;
 %Docstring
-Returns the command that is executed by this action.
-How the content is interpreted depends on the :py:func:`~QgsAction.type` and
-the :py:func:`~QgsAction.actionScope`.
+Returns the command that is executed by this action. How the content is
+interpreted depends on the :py:func:`~QgsAction.type` and the
+:py:func:`~QgsAction.actionScope`.
 %End
 
     QString notificationMessage() const;
@@ -145,30 +154,27 @@ Run this action.
 
     QSet<QString> actionScopes() const;
 %Docstring
-The action scopes define where an action will be available.
-Action scopes may offer additional variables like the clicked
-coordinate.
+The action scopes define where an action will be available. Action
+scopes may offer additional variables like the clicked coordinate.
 
 .. seealso:: :py:class:`QgsActionScope`
 %End
 
     void setActionScopes( const QSet<QString> &actionScopes );
 %Docstring
-The action scopes define where an action will be available.
-Action scopes may offer additional variables like the clicked
-coordinate.
+The action scopes define where an action will be available. Action
+scopes may offer additional variables like the clicked coordinate.
 %End
 
     void readXml( const QDomNode &actionNode );
 %Docstring
-Reads an XML definition from actionNode
-into this object.
+Reads an XML definition from actionNode into this object.
 %End
 
     void writeXml( QDomNode &actionsNode ) const;
 %Docstring
-Appends an XML definition for this action as a new
-child node to actionsNode.
+Appends an XML definition for this action as a new child node to
+actionsNode.
 %End
 
     void setExpressionContextScope( const QgsExpressionContextScope &scope );

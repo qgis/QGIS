@@ -32,7 +32,8 @@ Constructor for an invalid QgsSphere.
 
     QgsSphere( double x, double y, double z, double radius ) /HoldGIL/;
 %Docstring
-Constructor for QgsSphere with the specified center (``x``, ``y``, ``z``) and ``radius``.
+Constructor for QgsSphere with the specified center (``x``, ``y``,
+``z``) and ``radius``.
 %End
 
     bool operator==( const QgsSphere &other ) const;
@@ -45,7 +46,8 @@ Returns ``True`` if the sphere is a null (default constructed) sphere.
 
     bool isEmpty() const /HoldGIL/;
 %Docstring
-Returns ``True`` if the sphere is considered empty, i.e. it has a radius of 0.
+Returns ``True`` if the sphere is considered empty, i.e. it has a radius
+of 0.
 %End
 
     QgsPoint center() const /HoldGIL/;

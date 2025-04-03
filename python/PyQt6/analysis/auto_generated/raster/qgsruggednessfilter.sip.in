@@ -14,7 +14,8 @@ class QgsRuggednessFilter : QgsNineCellFilter
 %Docstring(signature="appended")
 Calculates the ruggedness index based on a 3x3 moving window.
 
-Algorithm from Riley et al. 1999: A terrain ruggedness index that quantifies topographic heterogeneity
+Algorithm from Riley et al. 1999: A terrain ruggedness index that
+quantifies topographic heterogeneity
 %End
 
 %TypeHeaderCode

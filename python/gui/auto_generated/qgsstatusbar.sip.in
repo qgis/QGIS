@@ -15,15 +15,18 @@ class QgsStatusBar : QWidget
 %Docstring(signature="appended")
 A proxy widget for QStatusBar.
 
-Unlike QStatusBar, :py:class:`QgsStatusBar` allows finer control of widget placement, including
-the option to locate permanent widgets on the left side of the bar.
+Unlike QStatusBar, :py:class:`QgsStatusBar` allows finer control of
+widget placement, including the option to locate permanent widgets on
+the left side of the bar.
 
 :py:class:`QgsStatusBar` is designed to be embedded into an existing
-window's QStatusBar, as a permanent widget. This allows reuse of the special QStatusBar handling
-for resize grips and other platform specific status bar tweaks.
+window's QStatusBar, as a permanent widget. This allows reuse of the
+special QStatusBar handling for resize grips and other platform specific
+status bar tweaks.
 
-Instead of adding child widgets and showing messages directly in the window's status bar,
-these widgets (and messages) should instead be added into the embedded :py:class:`QgsStatusBar`.
+Instead of adding child widgets and showing messages directly in the
+window's status bar, these widgets (and messages) should instead be
+added into the embedded :py:class:`QgsStatusBar`.
 %End
 
 %TypeHeaderCode
@@ -43,19 +46,21 @@ Constructor for QgsStatusBar.
 
     void addPermanentWidget( QWidget *widget /Transfer/, int stretch = 0, Anchor anchor = AnchorRight );
 %Docstring
-Adds the given ``widget`` permanently to this status bar, reparenting the widget if it isn't already a child
-of this object.
+Adds the given ``widget`` permanently to this status bar, reparenting
+the widget if it isn't already a child of this object.
 
-The ``stretch`` parameter is used to compute a suitable size for the given widget as the status bar
-grows and shrinks. The default stretch factor is 0, i.e giving the widget a minimum of space.
+The ``stretch`` parameter is used to compute a suitable size for the
+given widget as the status bar grows and shrinks. The default stretch
+factor is 0, i.e giving the widget a minimum of space.
 
-The ``anchor`` parameter controls which side of the status bar the widget should be anchored to.
+The ``anchor`` parameter controls which side of the status bar the
+widget should be anchored to.
 %End
 
     void removeWidget( QWidget *widget );
 %Docstring
-Removes a ``widget`` from the status bar. Ownership of the widget remains unchanged, and the
-widget itself is not deleted.
+Removes a ``widget`` from the status bar. Ownership of the widget
+remains unchanged, and the widget itself is not deleted.
 %End
 
     QString currentMessage() const;
@@ -69,9 +74,11 @@ Returns the current message shown in the status bar.
 
     void showMessage( const QString &message, int timeout = 0 );
 %Docstring
-Displays the given ``message`` for the specified number of milli-seconds (``timeout``).
-If ``timeout`` is 0 (default), the message remains displayed until the :py:func:`~QgsStatusBar.clearMessage`
-slot is called or until the :py:func:`~QgsStatusBar.showMessage` slot is called again to change the message.
+Displays the given ``message`` for the specified number of milli-seconds
+(``timeout``). If ``timeout`` is 0 (default), the message remains
+displayed until the :py:func:`~QgsStatusBar.clearMessage` slot is called
+or until the :py:func:`~QgsStatusBar.showMessage` slot is called again
+to change the message.
 
 .. seealso:: :py:func:`clearMessage`
 
@@ -87,9 +94,8 @@ Removes any temporary message being shown.
 
     void setParentStatusBar( QStatusBar *statusBar );
 %Docstring
-Sets the parent status bar.
-Messages that are shown on the parent status bar will be intercepted
-and shown on this status bar too.
+Sets the parent status bar. Messages that are shown on the parent status
+bar will be intercepted and shown on this status bar too.
 
 .. versionadded:: 3.8
 %End

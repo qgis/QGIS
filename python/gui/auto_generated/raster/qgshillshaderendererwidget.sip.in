@@ -67,7 +67,8 @@ Returns the Z scaling factor.
 
     bool multiDirectional() const;
 %Docstring
-Returns ``True`` if the renderer should use the multi-directional hillshade algorithm.
+Returns ``True`` if the renderer should use the multi-directional
+hillshade algorithm.
 
 .. seealso:: :py:func:`setMultiDirectional`
 %End
@@ -105,7 +106,8 @@ Set the Z scaling factor of the result image.
 %Docstring
 Sets whether to render using a multi-directional hillshade algorithm.
 
-:param isMultiDirectional: set to ``True`` to use multi directional rendering
+:param isMultiDirectional: set to ``True`` to use multi directional
+                           rendering
 
 .. seealso:: :py:func:`multiDirectional`
 %End

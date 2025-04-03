@@ -11,8 +11,9 @@
 class QgsSubstitutionListWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A widget which allows users to specify a list of substitutions to apply to a string, with
-options for exporting and importing substitution lists.
+A widget which allows users to specify a list of substitutions to apply
+to a string, with options for exporting and importing substitution
+lists.
 
 .. seealso:: :py:class:`QgsSubstitutionListDialog`
 %End
@@ -56,8 +57,9 @@ Emitted when the substitution definitions change.
 class QgsSubstitutionListDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allows users to specify a list of substitutions to apply to a string, with
-options for exporting and importing substitution lists.
+A dialog which allows users to specify a list of substitutions to apply
+to a string, with options for exporting and importing substitution
+lists.
 
 .. seealso:: :py:class:`QgsSubstitutionListWidget`
 %End

@@ -14,8 +14,9 @@
 class QgsLocatorWidget : QWidget
 {
 %Docstring(signature="appended")
-A special locator widget which allows searching for matching results from a :py:class:`QgsLocator`
-and presenting them to users for selection.
+A special locator widget which allows searching for matching results
+from a :py:class:`QgsLocator` and presenting them to users for
+selection.
 
 .. seealso:: :py:class:`QgsLocator`
 %End
@@ -38,8 +39,9 @@ Returns a pointer to the locator utilized by this widget.
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
 Sets a map ``canvas`` to associate with the widget. This allows the
-widget to customize the searches performed by its :py:func:`~QgsLocatorWidget.locator`, such
-as prioritizing results which are near the current canvas extent.
+widget to customize the searches performed by its
+:py:func:`~QgsLocatorWidget.locator`, such as prioritizing results which
+are near the current canvas extent.
 %End
 
     void setPlaceholderText( const QString &text );
@@ -51,7 +53,8 @@ Set placeholder ``text`` for the line edit.
 
     void setResultContainerAnchors( QgsFloatingWidget::AnchorPoint anchorPoint, QgsFloatingWidget::AnchorPoint anchorWidgetPoint );
 %Docstring
-Sets the result container ``anchorPoint`` and ``anchorWidgetPoint`` position.
+Sets the result container ``anchorPoint`` and ``anchorWidgetPoint``
+position.
 
 .. versionadded:: 3.36
 %End
@@ -60,13 +63,14 @@ Sets the result container ``anchorPoint`` and ``anchorWidgetPoint`` position.
 
     void search( const QString &string );
 %Docstring
-Triggers the locator widget to focus, open and start searching for a specified ``string``.
+Triggers the locator widget to focus, open and start searching for a
+specified ``string``.
 %End
 
     void invalidateResults();
 %Docstring
-Invalidates the current search results, e.g. as a result of changes to the locator
-filter settings.
+Invalidates the current search results, e.g. as a result of changes to
+the locator filter settings.
 %End
 
   signals:

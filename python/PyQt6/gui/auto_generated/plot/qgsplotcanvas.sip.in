@@ -55,10 +55,11 @@ Sets the interactive tool currently being used on the canvas.
 %Docstring
 Unset the current ``tool``.
 
-This is called from destructor of plot tools to make sure
-that this map tool won't be used any more.
+This is called from destructor of plot tools to make sure that this map
+tool won't be used any more.
 
-You don't have to call it manually, :py:class:`QgsPlotTool` takes care of it.
+You don't have to call it manually, :py:class:`QgsPlotTool` takes care
+of it.
 %End
 
     QgsPlotTool *tool();
@@ -68,7 +69,8 @@ Returns the currently active tool.
 
     virtual QgsCoordinateReferenceSystem crs() const;
 %Docstring
-Returns the coordinate reference system (CRS) for map coordinates used by the canvas.
+Returns the coordinate reference system (CRS) for map coordinates used
+by the canvas.
 
 May return an invalid CRS if no CRS is associated with the canvas.
 %End
@@ -77,14 +79,16 @@ May return an invalid CRS if no CRS is associated with the canvas.
 %Docstring
 Converts a ``point`` on the canvas to the associated map coordinate.
 
-May return an empty point if the canvas point cannot be converted to a map point.
+May return an empty point if the canvas point cannot be converted to a
+map point.
 %End
 
     virtual QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const;
 %Docstring
 Converts a ``point`` in map coordinates to the associated canvas point.
 
-May return an empty point if the map point cannot be converted to a canvas point.
+May return an empty point if the map point cannot be converted to a
+canvas point.
 %End
 
     virtual void panContentsBy( double dx, double dy );
@@ -96,7 +100,8 @@ The default implementation does nothing.
 
     virtual void centerPlotOn( double x, double y );
 %Docstring
-Centers the plot on the plot point corresponding to ``x``, ``y`` in canvas units.
+Centers the plot on the plot point corresponding to ``x``, ``y`` in
+canvas units.
 
 The default implementation does nothing.
 %End
@@ -145,14 +150,14 @@ Emitted whenever the visible area of the plot is changed.
 
     void contextMenuAboutToShow( QMenu *menu, QgsPlotMouseEvent *event );
 %Docstring
-Emitted before the canvas context menu will be shown.
-Can be used to extend the context menu.
+Emitted before the canvas context menu will be shown. Can be used to
+extend the context menu.
 %End
 
     void willBeDeleted();
 %Docstring
-Emitted in the destructor when the canvas is about to be deleted,
-but is still in a perfectly valid state.
+Emitted in the destructor when the canvas is about to be deleted, but is
+still in a perfectly valid state.
 %End
 
   protected:

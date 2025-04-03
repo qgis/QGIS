@@ -12,7 +12,8 @@
 class QgsPointClusterRenderer: QgsPointDistanceRenderer
 {
 %Docstring(signature="appended")
-A renderer that automatically clusters points with the same geographic position.
+A renderer that automatically clusters points with the same geographic
+position.
 %End
 
 %TypeHeaderCode
@@ -44,7 +45,8 @@ Creates a renderer from XML element
 
     QgsMarkerSymbol *clusterSymbol();
 %Docstring
-Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
+Returns the symbol used for rendering clustered groups (but not
+ownership of the symbol).
 
 .. seealso:: :py:func:`setClusterSymbol`
 %End
@@ -53,7 +55,8 @@ Returns the symbol used for rendering clustered groups (but not ownership of the
 %Docstring
 Sets the symbol for rendering clustered groups.
 
-:param symbol: new cluster symbol. Ownership is transferred to the renderer.
+:param symbol: new cluster symbol. Ownership is transferred to the
+               renderer.
 
 .. seealso:: :py:func:`clusterSymbol`
 %End
@@ -62,7 +65,8 @@ Sets the symbol for rendering clustered groups.
 %Docstring
 Creates a QgsPointClusterRenderer from an existing renderer.
 
-:return: a new renderer if the conversion was possible, otherwise ``None``.
+:return: a new renderer if the conversion was possible, otherwise
+         ``None``.
 %End
 
   private:

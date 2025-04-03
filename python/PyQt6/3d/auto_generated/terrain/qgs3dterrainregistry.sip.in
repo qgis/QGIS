@@ -29,7 +29,8 @@ Stores metadata about one 3D terrain class.
   public:
     Qgs3DTerrainAbstractMetadata( const QString &type, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
-Constructor for Qgs3DTerrainAbstractMetadata, with the specified ``type`` and ``visibleName``.
+Constructor for Qgs3DTerrainAbstractMetadata, with the specified
+``type`` and ``visibleName``.
 
 An optional ``icon`` can be specified to represent the material type.
 %End
@@ -69,8 +70,8 @@ class Qgs3DTerrainRegistry
 %Docstring(signature="appended")
 Registry of available 3d terrain classes.
 
-Qgs3DTerrainRegistry is not usually directly created, but rather accessed through
-Qgs3D.terrainRegistry().
+Qgs3DTerrainRegistry is not usually directly created, but rather
+accessed through Qgs3D.terrainRegistry().
 
 .. versionadded:: 3.42
 %End
@@ -85,7 +86,8 @@ Qgs3D.terrainRegistry().
 
     Qgs3DTerrainAbstractMetadata *terrainMetadata( const QString &type ) const;
 %Docstring
-Returns metadata for specified terrain ``type``. Returns ``None`` if not found
+Returns metadata for specified terrain ``type``. Returns ``None`` if not
+found
 %End
 
     QStringList types() const;
@@ -95,12 +97,14 @@ Returns a list of all available terrain types.
 
     bool addType( Qgs3DTerrainAbstractMetadata *metadata /Transfer/ );
 %Docstring
-Registers a new terrain type. Takes ownership of the ``metadata`` instance.
+Registers a new terrain type. Takes ownership of the ``metadata``
+instance.
 %End
 
     QgsAbstractTerrainSettings *createTerrainSettings( const QString &type ) const /Factory/;
 %Docstring
-Creates a new instance of the terrain settings of the specified ``type``.
+Creates a new instance of the terrain settings of the specified
+``type``.
 
 The caller takes ownership of the returned object.
 
@@ -110,7 +114,8 @@ Returns ``None`` if the specified type is not found in the registry.
 
     QgsAbstractTerrainSettings *configureTerrainFromProject( QgsProjectElevationProperties *properties ) /Factory/;
 %Docstring
-Create terrain settings directly from a project's elevation ``properties``.
+Create terrain settings directly from a project's elevation
+``properties``.
 %End
 
   private:

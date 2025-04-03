@@ -14,7 +14,8 @@
 class QgsColorRampShader : QgsRasterShaderFunction
 {
 %Docstring(signature="appended")
-A ramp shader will color a raster pixel based on a list of values ranges in a ramp.
+A ramp shader will color a raster pixel based on a list of values ranges
+in a ramp.
 %End
 
 %TypeHeaderCode
@@ -30,7 +31,8 @@ Creates a new color ramp shader.
 :param maximumValue: maximum value for the raster shader
 :param type: interpolation type used
 :param classificationMode: method used to classify the color ramp shader
-:param colorRamp: vector color ramp used to classify the color ramp shader. Ownership is transferred to the shader.
+:param colorRamp: vector color ramp used to classify the color ramp
+                  shader. Ownership is transferred to the shader.
 %End
 
     ~QgsColorRampShader();
@@ -125,9 +127,12 @@ Sets the color ramp type
 Classify color ramp shader
 
 :param classes: number of classes
-:param band: raster band used in classification (only used in quantile mode)
-:param extent: extent used in classification (only used in quantile mode)
-:param input: raster input used in classification (only used in quantile mode)
+:param band: raster band used in classification (only used in quantile
+             mode)
+:param extent: extent used in classification (only used in quantile
+               mode)
+:param input: raster input used in classification (only used in quantile
+              mode)
 %End
 
     void classifyColorRamp( int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 ) /PyName=classifyColorRampV2/;

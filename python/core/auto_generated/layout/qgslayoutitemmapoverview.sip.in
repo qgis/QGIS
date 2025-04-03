@@ -14,8 +14,8 @@ class QgsLayoutItemMapOverviewStack : QgsLayoutItemMapItemStack
 {
 %Docstring(signature="appended")
 A collection of overviews which are drawn above the map content in a
-:py:class:`QgsLayoutItemMap`. The overview stack controls which overviews are drawn and the
-order they are drawn in.
+:py:class:`QgsLayoutItemMap`. The overview stack controls which
+overviews are drawn and the order they are drawn in.
 
 .. seealso:: :py:class:`QgsLayoutItemMapOverview`
 %End
@@ -33,9 +33,9 @@ Constructor for QgsLayoutItemMapOverviewStack, attached to the specified
 
     void addOverview( QgsLayoutItemMapOverview *overview /Transfer/ );
 %Docstring
-Adds a new map ``overview`` to the stack and takes ownership of the overview.
-The overview will be added to the end of the stack, and rendered
-above any existing map overviews already present in the stack.
+Adds a new map ``overview`` to the stack and takes ownership of the
+overview. The overview will be added to the end of the stack, and
+rendered above any existing map overviews already present in the stack.
 
 .. note::
 
@@ -47,7 +47,8 @@ above any existing map overviews already present in the stack.
 
     void removeOverview( const QString &overviewId );
 %Docstring
-Removes an overview with matching overviewId from the stack and deletes the corresponding :py:class:`QgsLayoutItemMapOverview`
+Removes an overview with matching overviewId from the stack and deletes
+the corresponding :py:class:`QgsLayoutItemMapOverview`
 
 .. note::
 
@@ -59,7 +60,8 @@ Removes an overview with matching overviewId from the stack and deletes the corr
 
     void moveOverviewUp( const QString &overviewId );
 %Docstring
-Moves an overview with matching overviewId up the stack, causing it to be rendered above other overviews.
+Moves an overview with matching overviewId up the stack, causing it to
+be rendered above other overviews.
 
 .. note::
 
@@ -71,7 +73,8 @@ Moves an overview with matching overviewId up the stack, causing it to be render
 
     void moveOverviewDown( const QString &overviewId );
 %Docstring
-Moves an overview with matching overviewId down the stack, causing it to be rendered below other overviews.
+Moves an overview with matching overviewId down the stack, causing it to
+be rendered below other overviews.
 
 .. note::
 
@@ -83,27 +86,31 @@ Moves an overview with matching overviewId down the stack, causing it to be rend
 
     QgsLayoutItemMapOverview *overview( const QString &overviewId ) const;
 %Docstring
-Returns a reference to an overview with matching overviewId within the stack.
+Returns a reference to an overview with matching overviewId within the
+stack.
 %End
 
     QgsLayoutItemMapOverview *overview( int index ) const;
 %Docstring
-Returns a reference to an overview at the specified ``index`` within the stack.
+Returns a reference to an overview at the specified ``index`` within the
+stack.
 %End
 
     QgsLayoutItemMapOverview &operator[]( int index );
 
     QList< QgsLayoutItemMapOverview * > asList() const;
 %Docstring
-Returns a list of :py:class:`QgsLayoutItemMapOverviews` contained by the stack.
+Returns a list of :py:class:`QgsLayoutItemMapOverviews` contained by the
+stack.
 %End
     virtual bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context );
 
 
     QList< QgsMapLayer * > modifyMapLayerList( const QList< QgsMapLayer * > &layers );
 %Docstring
-Alters the list of map ``layers`` which will be rendered for the link map item, inserting
-temporary layers which represent overview extents as required.
+Alters the list of map ``layers`` which will be rendered for the link
+map item, inserting temporary layers which represent overview extents as
+required.
 
 .. versionadded:: 3.6
 %End
@@ -114,7 +121,8 @@ class QgsLayoutItemMapOverview : QgsLayoutItemMapItem
 {
 %Docstring(signature="appended")
 An individual overview which is drawn above the map content in a
-:py:class:`QgsLayoutItemMap`, and shows the extent of another :py:class:`QgsLayoutItemMap`.
+:py:class:`QgsLayoutItemMap`, and shows the extent of another
+:py:class:`QgsLayoutItemMap`.
 
 .. seealso:: :py:class:`QgsLayoutItemMapOverviewStack`
 %End
@@ -189,23 +197,24 @@ Sets the blending ``mode`` used for drawing the overview.
 
     bool inverted() const;
 %Docstring
-Returns whether the overview frame is inverted, ie, whether the shaded area is drawn outside
-the extent of the overview map.
+Returns whether the overview frame is inverted, ie, whether the shaded
+area is drawn outside the extent of the overview map.
 
 .. seealso:: :py:func:`setInverted`
 %End
 
     void setInverted( bool inverted );
 %Docstring
-Sets whether the overview frame is ``inverted``, ie, whether the shaded area is drawn outside
-the extent of the overview map.
+Sets whether the overview frame is ``inverted``, ie, whether the shaded
+area is drawn outside the extent of the overview map.
 
 .. seealso:: :py:func:`inverted`
 %End
 
     bool centered() const;
 %Docstring
-Returns whether the extent of the map is forced to center on the overview.
+Returns whether the extent of the map is forced to center on the
+overview.
 
 .. seealso:: :py:func:`setCentered`
 %End
@@ -219,15 +228,16 @@ Sets whether the extent of the map is forced to center on the overview
 
     void connectSignals();
 %Docstring
-Reconnects signals for overview map, so that overview correctly follows changes to source
-map's extent.
+Reconnects signals for overview map, so that overview correctly follows
+changes to source map's extent.
 %End
 
     QgsVectorLayer *asMapLayer();
 %Docstring
-Returns a vector layer to render as part of the :py:class:`QgsLayoutItemMap` render, containing
-a feature representing the overview extent (and with an appropriate renderer set matching
-the overview's :py:func:`~QgsLayoutItemMapOverview.frameSymbol` ).
+Returns a vector layer to render as part of the
+:py:class:`QgsLayoutItemMap` render, containing a feature representing
+the overview extent (and with an appropriate renderer set matching the
+overview's :py:func:`~QgsLayoutItemMapOverview.frameSymbol` ).
 
 Ownership of the layer remain with the overview item.
 

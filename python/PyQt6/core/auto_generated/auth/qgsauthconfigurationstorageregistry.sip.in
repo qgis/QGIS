@@ -15,9 +15,12 @@ class QgsAuthConfigurationStorageRegistry: QObject
 %Docstring(signature="appended")
 Registry for authentication configuration storages.
 
-This singleton class manages a list of authentication configuration storages.
+This singleton class manages a list of authentication configuration
+storages.
 
-:py:class:`QgsAuthConfigurationStorageRegistry` is not usually directly created, but rather accessed through :py:func:`QgsApplication.authConfigurationStorageRegistry()`.
+:py:class:`QgsAuthConfigurationStorageRegistry` is not usually directly
+created, but rather accessed through
+:py:func:`QgsApplication.authConfigurationStorageRegistry()`.
 
 .. versionadded:: 3.40
 %End
@@ -36,12 +39,13 @@ Creates a new QgsAuthConfigurationStorageRegistry instance.
 
     bool addStorage( QgsAuthConfigurationStorage *storage /Transfer/ );
 %Docstring
-Add an authentication configuration storage to the registry.
-The registry takes ownership of the storage object.
+Add an authentication configuration storage to the registry. The
+registry takes ownership of the storage object.
 
 :param storage: The storage to add
 
-:return: ``True`` if the storage was added, ``False`` if it was already present in the registry.
+:return: ``True`` if the storage was added, ``False`` if it was already
+         present in the registry.
 
 .. note::
 
@@ -54,9 +58,11 @@ The registry takes ownership of the storage object.
 
     bool removeStorage( const QString &id );
 %Docstring
-Remove the authentication configuration storage identified by ``id`` from the registry.
+Remove the authentication configuration storage identified by ``id``
+from the registry.
 
-:return: ``True`` if the storage was removed, ``False`` if it was not present in the registry.
+:return: ``True`` if the storage was removed, ``False`` if it was not
+         present in the registry.
 
 .. note::
 
@@ -69,32 +75,36 @@ Remove the authentication configuration storage identified by ``id`` from the re
 
     QList<QgsAuthConfigurationStorage *> storages() const;
 %Docstring
-Returns the list of all registered authentication configuration storages.
+Returns the list of all registered authentication configuration
+storages.
 %End
 
     QList<QgsAuthConfigurationStorage *> readyStorages() const;
 %Docstring
-Returns the list of all ready (and enabled) authentication configuration storage.
+Returns the list of all ready (and enabled) authentication configuration
+storage.
 %End
 
     QList<QgsAuthConfigurationStorage *> readyStoragesWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
 %Docstring
-Returns the list of all ready (and enabled) authentication configuration storage
-with the required capability.
+Returns the list of all ready (and enabled) authentication configuration
+storage with the required capability.
 
 :param capability: The capability to look for
 %End
 
     QgsAuthConfigurationStorage *firstReadyStorageWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
 %Docstring
-Returns the first ready (and enabled) authentication configuration storage which has the required capability.
+Returns the first ready (and enabled) authentication configuration
+storage which has the required capability.
 
 :param capability: The capability to look for
 %End
 
     QgsAuthConfigurationStorage *storage( const QString &id ) const;
 %Docstring
-Returns the storage with the specified ``id`` or ``None`` if not found in the registry.
+Returns the storage with the specified ``id`` or ``None`` if not found
+in the registry.
 
 :param id: The id of the storage to retrieve
 %End
@@ -103,7 +113,8 @@ Returns the storage with the specified ``id`` or ``None`` if not found in the re
 %Docstring
 Order the storages by the specified ``orderIds``.
 
-:param orderIds: The ordered list of storage Ids to apply, storages not in the list will be appended at the end.
+:param orderIds: The ordered list of storage Ids to apply, storages not
+                 in the list will be appended at the end.
 
 .. note::
 

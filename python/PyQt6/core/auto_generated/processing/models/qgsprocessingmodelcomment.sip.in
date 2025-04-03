@@ -25,7 +25,8 @@ Represents a comment in a model.
 
     QgsProcessingModelComment( const QString &description = QString() );
 %Docstring
-Constructor for QgsProcessingModelComment with the specified ``description``.
+Constructor for QgsProcessingModelComment with the specified
+``description``.
 %End
 
     virtual QgsProcessingModelComment *clone() const /Factory/;

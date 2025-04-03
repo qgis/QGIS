@@ -11,13 +11,16 @@
 class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoObjectInterface
 {
 %Docstring(signature="appended")
-Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
+Base class for layouts, which can contain items such as maps, labels,
+scalebars, etc.
 
-While the raw QGraphicsScene API can be used to render the contents of a :py:class:`QgsLayout`
-to a QPainter, it is recommended to instead use a :py:class:`QgsLayoutExporter` to handle rendering
-layouts instead. :py:class:`QgsLayoutExporter` automatically takes care of the intracacies of
-preparing the layout and paint devices for correct exports, respecting various
-user settings such as the layout context DPI.
+While the raw QGraphicsScene API can be used to render the contents of a
+:py:class:`QgsLayout` to a QPainter, it is recommended to instead use a
+:py:class:`QgsLayoutExporter` to handle rendering layouts instead.
+:py:class:`QgsLayoutExporter` automatically takes care of the
+intracacies of preparing the layout and paint devices for correct
+exports, respecting various user settings such as the layout context
+DPI.
 %End
 
 %TypeHeaderCode
@@ -48,22 +51,23 @@ user settings such as the layout context DPI.
 Construct a new layout linked to the specified ``project``.
 
 If the layout is a "new" layout (as opposed to a layout which will
-restore a previous state from XML) then :py:func:`~QgsLayout.initializeDefaults` should be
-called on the new layout.
+restore a previous state from XML) then
+:py:func:`~QgsLayout.initializeDefaults` should be called on the new
+layout.
 %End
 
     ~QgsLayout();
 
     QgsLayout *clone() const /Factory/;
 %Docstring
-Creates a clone of the layout. Ownership of the return layout
-is transferred to the caller.
+Creates a clone of the layout. Ownership of the return layout is
+transferred to the caller.
 %End
 
     void initializeDefaults();
 %Docstring
-Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
-a new layout.
+Initializes an empty layout, e.g. by adding a default page to the
+layout. This should be called after creating a new layout.
 %End
 
     void clear();
@@ -75,8 +79,8 @@ Calling this method removes all items and pages from the layout.
 
     QgsProject *project() const;
 %Docstring
-The project associated with the layout. Used to get access to layers, map themes,
-relations and various other bits. It is never ``None``.
+The project associated with the layout. Used to get access to layers,
+map themes, relations and various other bits. It is never ``None``.
 %End
 
     QgsLayoutModel *itemsModel();
@@ -90,8 +94,8 @@ Returns the items model attached to the layout.
 %Docstring
 Returns list of selected layout items.
 
-If ``includeLockedItems`` is set to ``True``, then locked items will also be included
-in the returned list.
+If ``includeLockedItems`` is set to ``True``, then locked items will
+also be included in the returned list.
 %End
 
     void setSelectedItem( QgsLayoutItem *item );
@@ -103,19 +107,20 @@ Clears any selected items and sets ``item`` as the current selection.
 %Docstring
 Clears any selected items in the layout.
 
-Call this method rather than QGraphicsScene.clearSelection, as the latter does
-not correctly emit signals to allow the layout's model to update.
+Call this method rather than QGraphicsScene.clearSelection, as the
+latter does not correctly emit signals to allow the layout's model to
+update.
 %End
 
     bool raiseItem( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
-Raises an ``item`` up the z-order.
-Returns ``True`` if the item was successfully raised.
+Raises an ``item`` up the z-order. Returns ``True`` if the item was
+successfully raised.
 
-If ``deferUpdate`` is ``True``, the scene will not be visibly updated
-to reflect the new stacking order. This allows multiple
-:py:func:`~QgsLayout.raiseItem` calls to be made in sequence without the cost of
-updating the scene for each one.
+If ``deferUpdate`` is ``True``, the scene will not be visibly updated to
+reflect the new stacking order. This allows multiple
+:py:func:`~QgsLayout.raiseItem` calls to be made in sequence without the
+cost of updating the scene for each one.
 
 .. seealso:: :py:func:`lowerItem`
 
@@ -124,13 +129,13 @@ updating the scene for each one.
 
     bool lowerItem( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
-Lowers an ``item`` down the z-order.
-Returns ``True`` if the item was successfully lowered.
+Lowers an ``item`` down the z-order. Returns ``True`` if the item was
+successfully lowered.
 
-If ``deferUpdate`` is ``True``, the scene will not be visibly updated
-to reflect the new stacking order. This allows multiple
-:py:func:`~QgsLayout.raiseItem` calls to be made in sequence without the cost of
-updating the scene for each one.
+If ``deferUpdate`` is ``True``, the scene will not be visibly updated to
+reflect the new stacking order. This allows multiple
+:py:func:`~QgsLayout.raiseItem` calls to be made in sequence without the
+cost of updating the scene for each one.
 
 .. seealso:: :py:func:`raiseItem`
 
@@ -139,13 +144,13 @@ updating the scene for each one.
 
     bool moveItemToTop( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
-Raises an ``item`` up to the top of the z-order.
-Returns ``True`` if the item was successfully raised.
+Raises an ``item`` up to the top of the z-order. Returns ``True`` if the
+item was successfully raised.
 
-If ``deferUpdate`` is ``True``, the scene will not be visibly updated
-to reflect the new stacking order. This allows multiple
-:py:func:`~QgsLayout.raiseItem` calls to be made in sequence without the cost of
-updating the scene for each one.
+If ``deferUpdate`` is ``True``, the scene will not be visibly updated to
+reflect the new stacking order. This allows multiple
+:py:func:`~QgsLayout.raiseItem` calls to be made in sequence without the
+cost of updating the scene for each one.
 
 .. seealso:: :py:func:`moveItemToBottom`
 
@@ -154,12 +159,11 @@ updating the scene for each one.
 
     bool moveItemToBottom( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
-Lowers an ``item`` down to the bottom of the z-order.
-Returns ``True`` if the item was successfully lowered.
-If ``deferUpdate`` is ``True``, the scene will not be visibly updated
-to reflect the new stacking order. This allows multiple
-:py:func:`~QgsLayout.raiseItem` calls to be made in sequence without the cost of
-updating the scene for each one.
+Lowers an ``item`` down to the bottom of the z-order. Returns ``True``
+if the item was successfully lowered. If ``deferUpdate`` is ``True``,
+the scene will not be visibly updated to reflect the new stacking order.
+This allows multiple :py:func:`~QgsLayout.raiseItem` calls to be made in
+sequence without the cost of updating the scene for each one.
 
 .. seealso:: :py:func:`moveItemToTop`
 
@@ -168,22 +172,24 @@ updating the scene for each one.
 
     void updateZValues( bool addUndoCommands = true );
 %Docstring
-Resets the z-values of items based on their position in the internal
-z order list. This should be called after any stacking changes
-which deferred z-order updates.
+Resets the z-values of items based on their position in the internal z
+order list. This should be called after any stacking changes which
+deferred z-order updates.
 %End
 
     QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 %Docstring
-Returns the layout item with matching ``uuid`` unique identifier, or ``None``
-if a matching item could not be found.
+Returns the layout item with matching ``uuid`` unique identifier, or
+``None`` if a matching item could not be found.
 
-If ``includeTemplateUuids`` is ``True``, then item's template UUID
-will also be tested when trying to match the uuid. This may differ from the item's UUID
-for items which have been added to an existing layout from a template. In this case
-the template UUID returns the original item UUID at the time the template was created,
-vs the item's :py:func:`~QgsLayout.uuid` which returns the current instance of the item's unique identifier.
-Note that template UUIDs are only available while a layout is being restored from XML.
+If ``includeTemplateUuids`` is ``True``, then item's template UUID will
+also be tested when trying to match the uuid. This may differ from the
+item's UUID for items which have been added to an existing layout from a
+template. In this case the template UUID returns the original item UUID
+at the time the template was created, vs the item's
+:py:func:`~QgsLayout.uuid` which returns the current instance of the
+item's unique identifier. Note that template UUIDs are only available
+while a layout is being restored from XML.
 
 .. seealso:: :py:func:`itemByTemplateUuid`
 
@@ -194,15 +200,19 @@ Note that template UUIDs are only available while a layout is being restored fro
 
     QgsLayoutItem *itemByTemplateUuid( const QString &uuid ) const;
 %Docstring
-Returns the layout item with matching template ``uuid`` unique identifier, or ``None``
-if a matching item could not be found. Unlike :py:func:`~QgsLayout.itemByUuid`, this method ONLY checks
-template UUIDs for a match.
+Returns the layout item with matching template ``uuid`` unique
+identifier, or ``None`` if a matching item could not be found. Unlike
+:py:func:`~QgsLayout.itemByUuid`, this method ONLY checks template UUIDs
+for a match.
 
-Template UUIDs are valid only for items which have been added to an existing layout from a template. In this case
-the template UUID is the original item UUID at the time the template was created,
-vs the item's :py:func:`~QgsLayout.uuid` which returns the current instance of the item's unique identifier.
+Template UUIDs are valid only for items which have been added to an
+existing layout from a template. In this case the template UUID is the
+original item UUID at the time the template was created, vs the item's
+:py:func:`~QgsLayout.uuid` which returns the current instance of the
+item's unique identifier.
 
-Note that template UUIDs are only available while a layout is being restored from XML.
+Note that template UUIDs are only available while a layout is being
+restored from XML.
 
 .. seealso:: :py:func:`itemByUuid`
 
@@ -213,46 +223,50 @@ Note that template UUIDs are only available while a layout is being restored fro
 
     QgsLayoutItem *itemById( const QString &id ) const;
 %Docstring
-Returns a layout item given its ``id``.
-Since item IDs are not necessarely unique, this function returns the first matching
-item found.
+Returns a layout item given its ``id``. Since item IDs are not
+necessarely unique, this function returns the first matching item found.
 
 .. seealso:: :py:func:`itemByUuid`
 %End
 
     QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 %Docstring
-Returns the layout multiframe with matching ``uuid`` unique identifier, or ``None``
-if a matching multiframe could not be found.
+Returns the layout multiframe with matching ``uuid`` unique identifier,
+or ``None`` if a matching multiframe could not be found.
 
-If ``includeTemplateUuids`` is ``True``, then the multiframe's :py:func:`QgsLayoutMultiFrame.templateUuid()`
-will also be tested when trying to match the uuid. Template UUIDs are valid only for items
-which have been added to an existing layout from a template. In this case
-the template UUID is the original item UUID at the time the template was created,
-vs the item's :py:func:`~QgsLayout.uuid` which returns the current instance of the item's unique identifier.
-Note that template UUIDs are only available while a layout is being restored from XML.
+If ``includeTemplateUuids`` is ``True``, then the multiframe's
+:py:func:`QgsLayoutMultiFrame.templateUuid()` will also be tested when
+trying to match the uuid. Template UUIDs are valid only for items which
+have been added to an existing layout from a template. In this case the
+template UUID is the original item UUID at the time the template was
+created, vs the item's :py:func:`~QgsLayout.uuid` which returns the
+current instance of the item's unique identifier. Note that template
+UUIDs are only available while a layout is being restored from XML.
 
 .. seealso:: :py:func:`itemByUuid`
 %End
 
     QgsLayoutItem *layoutItemAt( QPointF position, bool ignoreLocked = false, double searchTolerance = 0 ) const;
 %Docstring
-Returns the topmost layout item at a specified ``position``. Ignores paper items.
-If ``ignoreLocked`` is set to ``True`` any locked items will be ignored.
-Since QGIS 3.34 the ``searchTolerance`` parameter was added, which can be used to specify a search tolerance in layout units.
+Returns the topmost layout item at a specified ``position``. Ignores
+paper items. If ``ignoreLocked`` is set to ``True`` any locked items
+will be ignored. Since QGIS 3.34 the ``searchTolerance`` parameter was
+added, which can be used to specify a search tolerance in layout units.
 %End
 
     QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, bool ignoreLocked = false, double searchTolerance = 0 ) const;
 %Docstring
-Returns the topmost layout item at a specified ``position`` which is below a specified ``item``. Ignores paper items.
-If ``ignoreLocked`` is set to ``True`` any locked items will be ignored.
-Since QGIS 3.34 the ``searchTolerance`` parameter was added, which can be used to specify a search tolerance in layout units.
+Returns the topmost layout item at a specified ``position`` which is
+below a specified ``item``. Ignores paper items. If ``ignoreLocked`` is
+set to ``True`` any locked items will be ignored. Since QGIS 3.34 the
+``searchTolerance`` parameter was added, which can be used to specify a
+search tolerance in layout units.
 %End
 
     void setUnits( Qgis::LayoutUnit units );
 %Docstring
-Sets the native measurement ``units`` for the layout. These also form the default unit
-for measurements for the layout.
+Sets the native measurement ``units`` for the layout. These also form
+the default unit for measurements for the layout.
 
 .. seealso:: :py:func:`units`
 
@@ -303,7 +317,8 @@ Converts a ``point`` into the layout's native units.
 
     QgsLayoutMeasurement convertFromLayoutUnits( double length, Qgis::LayoutUnit unit ) const;
 %Docstring
-Converts a ``length`` measurement from the layout's native units to a specified target ``unit``.
+Converts a ``length`` measurement from the layout's native units to a
+specified target ``unit``.
 
 :return: length of measurement in specified units
 
@@ -314,7 +329,8 @@ Converts a ``length`` measurement from the layout's native units to a specified 
 
     QgsLayoutSize convertFromLayoutUnits( QSizeF size, Qgis::LayoutUnit unit ) const;
 %Docstring
-Converts a ``size`` from the layout's native units to a specified target ``unit``.
+Converts a ``size`` from the layout's native units to a specified target
+``unit``.
 
 :return: size of measurement in specified units
 
@@ -325,7 +341,8 @@ Converts a ``size`` from the layout's native units to a specified target ``unit`
 
     QgsLayoutPoint convertFromLayoutUnits( QPointF point, Qgis::LayoutUnit unit ) const;
 %Docstring
-Converts a ``point`` from the layout's native units to a specified target ``unit``.
+Converts a ``point`` from the layout's native units to a specified
+target ``unit``.
 
 :return: point in specified units
 
@@ -336,29 +353,29 @@ Converts a ``point`` from the layout's native units to a specified target ``unit
 
     QgsLayoutRenderContext &renderContext();
 %Docstring
-Returns a reference to the layout's render context, which stores information relating to the
-current rendering settings for the layout.
+Returns a reference to the layout's render context, which stores
+information relating to the current rendering settings for the layout.
 %End
 
 
     QgsLayoutReportContext &reportContext();
 %Docstring
-Returns a reference to the layout's report context, which stores information relating to the
-current reporting context for the layout.
+Returns a reference to the layout's report context, which stores
+information relating to the current reporting context for the layout.
 %End
 
 
     QgsLayoutSnapper &snapper();
 %Docstring
-Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
-and snapping points to the nearest matching point.
+Returns a reference to the layout's snapper, which stores handles layout
+snap grids and lines and snapping points to the nearest matching point.
 %End
 
 
     QgsLayoutGridSettings &gridSettings();
 %Docstring
-Returns a reference to the layout's grid settings, which stores settings relating
-to grid appearance, spacing and offsets.
+Returns a reference to the layout's grid settings, which stores settings
+relating to grid appearance, spacing and offsets.
 %End
 
 
@@ -369,22 +386,25 @@ Refreshes the layout when global layout related options change.
 
     QgsLayoutGuideCollection &guides();
 %Docstring
-Returns a reference to the layout's guide collection, which manages page snap guides.
+Returns a reference to the layout's guide collection, which manages page
+snap guides.
 %End
 
 
     virtual QgsExpressionContext createExpressionContext() const;
 
 %Docstring
-Creates an expression context relating to the layout's current state. The context includes
-scopes for global, project, layout and layout context properties.
+Creates an expression context relating to the layout's current state.
+The context includes scopes for global, project, layout and layout
+context properties.
 %End
 
     void setCustomProperty( const QString &key, const QVariant &value );
 %Docstring
 Set a custom property for the layout.
 
-:param key: property key. If a property with the same key already exists it will be overwritten.
+:param key: property key. If a property with the same key already exists
+            it will be overwritten.
 :param value: property value
 
 .. seealso:: :py:func:`customProperty`
@@ -399,7 +419,8 @@ Set a custom property for the layout.
 Read a custom property from the layout.
 
 :param key: property key
-:param defaultValue: default value to return if property with matching key does not exist
+:param defaultValue: default value to return if property with matching
+                     key does not exist
 
 :return: value of matching property
 
@@ -436,35 +457,37 @@ Returns list of keys stored in custom properties for the layout.
 
     QgsLayoutItemMap *referenceMap() const;
 %Docstring
-Returns the map item which will be used to generate corresponding world files when the
-layout is exported. If no map was explicitly set via :py:func:`~QgsLayout.setReferenceMap`, the largest
-map in the layout will be returned (or ``None`` if there are no maps in the layout).
+Returns the map item which will be used to generate corresponding world
+files when the layout is exported. If no map was explicitly set via
+:py:func:`~QgsLayout.setReferenceMap`, the largest map in the layout
+will be returned (or ``None`` if there are no maps in the layout).
 
 .. seealso:: :py:func:`setReferenceMap`
 %End
 
     void setReferenceMap( QgsLayoutItemMap *map );
 %Docstring
-Sets the ``map`` item which will be used to generate corresponding world files when the
-layout is exported.
+Sets the ``map`` item which will be used to generate corresponding world
+files when the layout is exported.
 
 .. seealso:: :py:func:`referenceMap`
 %End
 
     QgsLayoutPageCollection *pageCollection();
 %Docstring
-Returns a pointer to the layout's page collection, which stores and manages
-page items in the layout.
+Returns a pointer to the layout's page collection, which stores and
+manages page items in the layout.
 %End
 
 
     QRectF layoutBounds( bool ignorePages = false, double margin = 0.0 ) const;
 %Docstring
-Calculates the bounds of all non-gui items in the layout. Ignores snap lines, mouse handles
-and other cosmetic items.
+Calculates the bounds of all non-gui items in the layout. Ignores snap
+lines, mouse handles and other cosmetic items.
 
 :param ignorePages: set to ``True`` to ignore page items
-:param margin: optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
+:param margin: optional marginal (in percent, e.g., 0.05 = 5% ) to add
+               around items
 
 :return: layout bounds, in layout units.
 
@@ -485,20 +508,22 @@ The returned bounds are in layout units.
 
     void addLayoutItem( QgsLayoutItem *item /Transfer/ );
 %Docstring
-Adds an ``item`` to the layout. This should be called instead of the base class :py:func:`~QgsLayout.addItem`
-method. Ownership of the item is transferred to the layout.
+Adds an ``item`` to the layout. This should be called instead of the
+base class :py:func:`~QgsLayout.addItem` method. Ownership of the item
+is transferred to the layout.
 %End
 
     void removeLayoutItem( QgsLayoutItem *item );
 %Docstring
-Removes an ``item`` from the layout. This should be called instead of the base class :py:func:`~QgsLayout.removeItem`
-method.
-The item will also be deleted.
+Removes an ``item`` from the layout. This should be called instead of
+the base class :py:func:`~QgsLayout.removeItem` method. The item will
+also be deleted.
 %End
 
     void addMultiFrame( QgsLayoutMultiFrame *multiFrame /Transfer/ );
 %Docstring
-Adds a ``multiFrame`` to the layout. The object is owned by the layout until :py:func:`~QgsLayout.removeMultiFrame` is called.
+Adds a ``multiFrame`` to the layout. The object is owned by the layout
+until :py:func:`~QgsLayout.removeMultiFrame` is called.
 
 .. seealso:: :py:func:`removeMultiFrame`
 
@@ -525,8 +550,8 @@ Returns a list of multi frames contained in the layout.
 
     bool saveAsTemplate( const QString &path, const QgsReadWriteContext &context ) const;
 %Docstring
-Saves the layout as a template at the given file ``path``.
-Returns ``True`` if save was successful.
+Saves the layout as a template at the given file ``path``. Returns
+``True`` if save was successful.
 
 .. seealso:: :py:func:`loadFromTemplate`
 %End
@@ -535,11 +560,13 @@ Returns ``True`` if save was successful.
 %Docstring
 Load a layout template ``document``.
 
-By default this method will clear all items from the existing layout and real all layout
-settings from the template. Setting ``clearExisting`` to ``False`` will only add new items
-from the template, without overwriting the existing items or layout settings.
+By default this method will clear all items from the existing layout and
+real all layout settings from the template. Setting ``clearExisting`` to
+``False`` will only add new items from the template, without overwriting
+the existing items or layout settings.
 
-If ``ok`` is specified, it will be set to ``True`` if the load was successful.
+If ``ok`` is specified, it will be set to ``True`` if the load was
+successful.
 
 Returns a list of loaded items.
 %End
@@ -553,7 +580,8 @@ Returns the layout's state encapsulated in a DOM element.
 
     virtual bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
-Sets the collection's state from a DOM element. ``layoutElement`` is the DOM node corresponding to the layout.
+Sets the collection's state from a DOM element. ``layoutElement`` is the
+DOM node corresponding to the layout.
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -562,22 +590,25 @@ Sets the collection's state from a DOM element. ``layoutElement`` is the DOM nod
         const QgsReadWriteContext &context,
         QPointF *position = 0, bool pasteInPlace = false );
 %Docstring
-Add items from an XML representation to the layout. Used for project file reading and pasting items from clipboard.
+Add items from an XML representation to the layout. Used for project
+file reading and pasting items from clipboard.
 
-The ``position`` argument is optional, and if it is not specified the items will be restored to their
-original position from the XML serialization. If specified, the items will be positioned such that the top-left
-bounds of all added items is located at this ``position``.
+The ``position`` argument is optional, and if it is not specified the
+items will be restored to their original position from the XML
+serialization. If specified, the items will be positioned such that the
+top-left bounds of all added items is located at this ``position``.
 
-The ``pasteInPlace`` argument determines whether the serialized position should be respected, but remapped to the
-origin of the page corresponding to the page at ``position``.
+The ``pasteInPlace`` argument determines whether the serialized position
+should be respected, but remapped to the origin of the page
+corresponding to the page at ``position``.
 
 A list of the newly added items is returned.
 %End
 
     QgsLayoutUndoStack *undoStack();
 %Docstring
-Returns a pointer to the layout's undo stack, which manages undo/redo states for the layout
-and it's associated objects.
+Returns a pointer to the layout's undo stack, which manages undo/redo
+states for the layout and it's associated objects.
 %End
 
 
@@ -586,30 +617,31 @@ and it's associated objects.
 
     QgsLayoutItemGroup *groupItems( const QList<QgsLayoutItem *> &items );
 %Docstring
-Creates a new group from a list of layout ``items`` and adds the group to the layout.
-If grouping was not possible, ``None`` will be returned.
+Creates a new group from a list of layout ``items`` and adds the group
+to the layout. If grouping was not possible, ``None`` will be returned.
 
 .. seealso:: :py:func:`ungroupItems`
 %End
 
     QList<QgsLayoutItem *> ungroupItems( QgsLayoutItemGroup *group );
 %Docstring
-Ungroups items by removing them from an item ``group`` and removing the group from the
-layout. Child items will remain in the layout and will not be deleted.
+Ungroups items by removing them from an item ``group`` and removing the
+group from the layout. Child items will remain in the layout and will
+not be deleted.
 
-Returns a list of the items removed from the group, or an empty list if ungrouping
-was not successful.
+Returns a list of the items removed from the group, or an empty list if
+ungrouping was not successful.
 
 .. seealso:: :py:func:`groupItems`
 %End
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
-with the layout.
+Accepts the specified style entity ``visitor``, causing it to visit all
+style entities associated with the layout.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
 %End
@@ -619,9 +651,10 @@ should be canceled.
 
     void refresh();
 %Docstring
-Forces the layout, and all items contained within it, to refresh. For instance, this causes maps to redraw
-and rebuild cached images, html items to reload their source url, and attribute tables
-to refresh their contents. Calling this also triggers a recalculation of all data defined
+Forces the layout, and all items contained within it, to refresh. For
+instance, this causes maps to redraw and rebuild cached images, html
+items to reload their source url, and attribute tables to refresh their
+contents. Calling this also triggers a recalculation of all data defined
 attributes within the layout.
 
 .. seealso:: :py:func:`refreshed`
@@ -643,24 +676,26 @@ when child items change.
 
     void variablesChanged();
 %Docstring
-Emitted whenever the expression variables stored in the layout have been changed.
+Emitted whenever the expression variables stored in the layout have been
+changed.
 %End
 
     void selectedItemChanged( QgsLayoutItem *selected );
 %Docstring
-Emitted whenever the selected item changes.
-If ``None``, no item is selected.
+Emitted whenever the selected item changes. If ``None``, no item is
+selected.
 %End
 
     void refreshed();
 %Docstring
-Emitted when the layout has been refreshed and items should also be refreshed
-and updated.
+Emitted when the layout has been refreshed and items should also be
+refreshed and updated.
 %End
 
     void backgroundTaskCountChanged( int total );
 %Docstring
-Emitted whenever the ``total`` number of background tasks running in items from the layout changes.
+Emitted whenever the ``total`` number of background tasks running in
+items from the layout changes.
 
 .. versionadded:: 3.10
 %End

@@ -25,7 +25,8 @@ Constructs a margins object with all margins set to 0.
 
     QgsMargins( double left, double top, double right, double bottom );
 %Docstring
-Constructs margins with the given ``left``, ``top``, ``right``, ``bottom``
+Constructs margins with the given ``left``, ``top``, ``right``,
+``bottom``
 
 .. seealso:: :py:func:`setLeft`
 
@@ -38,7 +39,8 @@ Constructs margins with the given ``left``, ``top``, ``right``, ``bottom``
 
     bool isNull() const;
 %Docstring
-Returns \c ``True`` if all margins are is 0; otherwise returns ``False``.
+Returns \c ``True`` if all margins are is 0; otherwise returns
+``False``.
 %End
 
     double left() const;

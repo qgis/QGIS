@@ -5,7 +5,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayoutDesignerInterface.__attribute_docs__ = {'layoutExported': 'Emitted whenever a layout is exported from the layout designer.\n\nThe results of the export can be retrieved by calling :py:func:`~QgsLayoutDesignerInterface.lastExportResults`.\n\n.. versionadded:: 3.20\n', 'mapPreviewRefreshed': "Emitted when a ``map`` item's preview has been refreshed.\n\n.. versionadded:: 3.20\n"}
+    QgsLayoutDesignerInterface.__attribute_docs__ = {'layoutExported': 'Emitted whenever a layout is exported from the layout designer.\n\nThe results of the export can be retrieved by calling\n:py:func:`~QgsLayoutDesignerInterface.lastExportResults`.\n\n.. versionadded:: 3.20\n', 'mapPreviewRefreshed': "Emitted when a ``map`` item's preview has been refreshed.\n\n.. versionadded:: 3.20\n"}
     QgsLayoutDesignerInterface.__signal_arguments__ = {'mapPreviewRefreshed': ['map: QgsLayoutItemMap']}
     QgsLayoutDesignerInterface.__group__ = ['layout']
 except (NameError, AttributeError):

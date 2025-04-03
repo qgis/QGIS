@@ -26,9 +26,12 @@ Implementation of map layer temporal properties for raster layers.
 
     QgsRasterLayerTemporalProperties( QObject *parent /TransferThis/ = 0, bool enabled = false );
 %Docstring
-Constructor for QgsRasterLayerTemporalProperties, with the specified ``parent`` object.
+Constructor for QgsRasterLayerTemporalProperties, with the specified
+``parent`` object.
 
-The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see :py:func:`~QgsRasterLayerTemporalProperties.isActive`).
+The ``enabled`` argument specifies whether the temporal properties are
+initially enabled or not (see
+:py:func:`~QgsRasterLayerTemporalProperties.isActive`).
 %End
 
     virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
@@ -58,16 +61,16 @@ Returns flags associated to the temporal property.
 
     Qgis::TemporalIntervalMatchMethod intervalHandlingMethod() const;
 %Docstring
-Returns the desired method to use when resolving a temporal interval to matching
-layers or bands in the data provider.
+Returns the desired method to use when resolving a temporal interval to
+matching layers or bands in the data provider.
 
 .. seealso:: :py:func:`setIntervalHandlingMethod`
 %End
 
     void setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod method );
 %Docstring
-Sets the desired ``method`` to use when resolving a temporal interval to matching
-layers or bands in the data provider.
+Sets the desired ``method`` to use when resolving a temporal interval to
+matching layers or bands in the data provider.
 
 .. seealso:: :py:func:`intervalHandlingMethod`
 %End
@@ -170,8 +173,8 @@ Sets the band number from which temporal values should be taken.
 
     QDateTime temporalRepresentationOffset() const;
 %Docstring
-Returns the temporal offset, which is a fixed datetime which should be added to individual pixel values
-from the layer.
+Returns the temporal offset, which is a fixed datetime which should be
+added to individual pixel values from the layer.
 
 .. note::
 
@@ -184,8 +187,8 @@ from the layer.
 
     void setTemporalRepresentationOffset( const QDateTime &offset );
 %Docstring
-Sets the temporal offset, which is a fixed datetime which should be added to individual pixel values
-from the layer.
+Sets the temporal offset, which is a fixed datetime which should be
+added to individual pixel values from the layer.
 
 .. note::
 
@@ -198,8 +201,8 @@ from the layer.
 
     const QgsInterval &temporalRepresentationScale() const;
 %Docstring
-Returns the scale, which is an interval factor which should be applied to individual pixel
-values from the layer.
+Returns the scale, which is an interval factor which should be applied
+to individual pixel values from the layer.
 
 .. note::
 
@@ -212,8 +215,8 @@ values from the layer.
 
     void setTemporalRepresentationScale( const QgsInterval &scale );
 %Docstring
-Sets the scale, which is an interval factor which should be applied to individual pixel
-values from the layer.
+Sets the scale, which is an interval factor which should be applied to
+individual pixel values from the layer.
 
 .. note::
 

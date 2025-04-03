@@ -29,7 +29,8 @@ This class allows for functionality in 3D to be called from core.
 
     virtual bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer ) = 0;
 %Docstring
-Updates the 3D renderer's symbol to match that of a given :py:class:`QgsPointCloudRenderer`
+Updates the 3D renderer's symbol to match that of a given
+:py:class:`QgsPointCloudRenderer`
 
 :return: ``True`` on success, ``False`` otherwise
 %End

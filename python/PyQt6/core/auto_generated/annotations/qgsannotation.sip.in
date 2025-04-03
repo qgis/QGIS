@@ -15,17 +15,18 @@
 class QgsAnnotation : QObject
 {
 %Docstring(signature="appended")
-
 Abstract base class for annotation items which are drawn over a map.
 
-:py:class:`QgsAnnotation` is an abstract base class for map annotation items. These annotations can be
-drawn within a map, and have either a fixed map position (retrieved using :py:func:`~mapPosition`)
-or are placed relative to the map's frame (retrieved using :py:func:`~relativePosition`).
-Annotations with a fixed map position also have a corresponding
-:py:class:`QgsCoordinateReferenceSystem`, which can be determined by calling :py:func:`~mapPositionCrs`.
+:py:class:`QgsAnnotation` is an abstract base class for map annotation
+items. These annotations can be drawn within a map, and have either a
+fixed map position (retrieved using :py:func:`~mapPosition`) or are
+placed relative to the map's frame (retrieved using
+:py:func:`~relativePosition`). Annotations with a fixed map position
+also have a corresponding :py:class:`QgsCoordinateReferenceSystem`,
+which can be determined by calling :py:func:`~mapPositionCrs`.
 
-Derived classes should implement their custom painting routines within
-a :py:func:`~renderAnnotation` override.
+Derived classes should implement their custom painting routines within a
+:py:func:`~renderAnnotation` override.
 %End
 
 %TypeHeaderCode
@@ -52,8 +53,8 @@ Constructor for QgsAnnotation.
 
     virtual QgsAnnotation *clone() const = 0 /Factory/;
 %Docstring
-Clones the annotation, returning a new copy of the annotation
-reflecting the annotation's current state.
+Clones the annotation, returning a new copy of the annotation reflecting
+the annotation's current state.
 %End
 
     bool isVisible() const;
@@ -72,9 +73,9 @@ Sets whether the annotation is visible and should be rendered.
 
     bool hasFixedMapPosition() const;
 %Docstring
-Returns ``True`` if the annotation is attached to a fixed map position, or
-``False`` if the annotation uses a position relative to the current map
-extent.
+Returns ``True`` if the annotation is attached to a fixed map position,
+or ``False`` if the annotation uses a position relative to the current
+map extent.
 
 .. seealso:: :py:func:`setHasFixedMapPosition`
 
@@ -85,16 +86,16 @@ extent.
 
     void setHasFixedMapPosition( bool fixed );
 %Docstring
-Sets whether the annotation is attached to a fixed map position, or
-uses a position relative to the current map extent.
+Sets whether the annotation is attached to a fixed map position, or uses
+a position relative to the current map extent.
 
 .. seealso:: :py:func:`hasFixedMapPosition`
 %End
 
     QgsPointXY mapPosition() const;
 %Docstring
-Returns the map position of the annotation, if it is attached to a fixed map
-position.
+Returns the map position of the annotation, if it is attached to a fixed
+map position.
 
 .. seealso:: :py:func:`setMapPosition`
 
@@ -105,16 +106,16 @@ position.
 
     void setMapPosition( const QgsPointXY &position );
 %Docstring
-Sets the map position of the annotation, if it is attached to a fixed map
-position.
+Sets the map position of the annotation, if it is attached to a fixed
+map position.
 
 .. seealso:: :py:func:`mapPosition`
 %End
 
     QgsCoordinateReferenceSystem mapPositionCrs() const;
 %Docstring
-Returns the CRS of the map position, or an invalid CRS if the annotation does
-not have a fixed map position.
+Returns the CRS of the map position, or an invalid CRS if the annotation
+does not have a fixed map position.
 
 .. seealso:: :py:func:`setMapPositionCrs`
 %End
@@ -128,25 +129,28 @@ Sets the CRS of the map position.
 
     QPointF relativePosition() const;
 %Docstring
-Returns the relative position of the annotation, if it is not attached to a fixed map
-position. The coordinates in the return point should be between 0 and 1, and represent
-the relative percentage for the position compared to the map width and height.
+Returns the relative position of the annotation, if it is not attached
+to a fixed map position. The coordinates in the return point should be
+between 0 and 1, and represent the relative percentage for the position
+compared to the map width and height.
 
 .. seealso:: :py:func:`setRelativePosition`
 %End
 
     void setRelativePosition( QPointF position );
 %Docstring
-Sets the relative position of the annotation, if it is not attached to a fixed map
-position. The coordinates in the return point should be between 0 and 1, and represent
-the relative percentage for the position compared to the map width and height.
+Sets the relative position of the annotation, if it is not attached to a
+fixed map position. The coordinates in the return point should be
+between 0 and 1, and represent the relative percentage for the position
+compared to the map width and height.
 
 .. seealso:: :py:func:`relativePosition`
 %End
 
  void setFrameOffsetFromReferencePoint( QPointF offset ) /Deprecated="Since 3.40. Use setFrameOffsetFromReferencePointMm() instead."/;
 %Docstring
-Sets the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
+Sets the annotation's frame's offset (in pixels) from the
+:py:func:`~QgsAnnotation.mapPosition` reference point.
 
 .. seealso:: :py:func:`frameOffsetFromReferencePoint`
 
@@ -157,7 +161,8 @@ Sets the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotati
 
  QPointF frameOffsetFromReferencePoint() const /Deprecated="Since 3.40. Use frameOffsetFromReferencePointMm() instead."/;
 %Docstring
-Returns the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
+Returns the annotation's frame's offset (in pixels) from the
+:py:func:`~QgsAnnotation.mapPosition` reference point.
 
 .. seealso:: :py:func:`setFrameOffsetFromReferencePoint`
 
@@ -168,7 +173,8 @@ Returns the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnot
 
     void setFrameOffsetFromReferencePointMm( QPointF offset );
 %Docstring
-Sets the annotation's frame's offset (in millimeters) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
+Sets the annotation's frame's offset (in millimeters) from the
+:py:func:`~QgsAnnotation.mapPosition` reference point.
 
 .. seealso:: :py:func:`frameOffsetFromReferencePointMm`
 
@@ -177,7 +183,8 @@ Sets the annotation's frame's offset (in millimeters) from the :py:func:`~QgsAnn
 
     QPointF frameOffsetFromReferencePointMm() const;
 %Docstring
-Returns the annotation's frame's offset (in millimeters) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
+Returns the annotation's frame's offset (in millimeters) from the
+:py:func:`~QgsAnnotation.mapPosition` reference point.
 
 .. seealso:: :py:func:`setFrameOffsetFromReferencePointMm`
 
@@ -186,8 +193,8 @@ Returns the annotation's frame's offset (in millimeters) from the :py:func:`~Qgs
 
  void setFrameSize( QSizeF size ) /Deprecated="Since 3.40. Use setFrameSizeMm() instead."/;
 %Docstring
-Sets the size (in pixels) of the annotation's frame (the main area in which
-the annotation's content is drawn).
+Sets the size (in pixels) of the annotation's frame (the main area in
+which the annotation's content is drawn).
 
 .. seealso:: :py:func:`frameSize`
 
@@ -198,8 +205,8 @@ the annotation's content is drawn).
 
  QSizeF frameSize() const /Deprecated="Since 3.40. Use frameSizeMm() instead."/;
 %Docstring
-Returns the size (in pixels) of the annotation's frame (the main area in which
-the annotation's content is drawn).
+Returns the size (in pixels) of the annotation's frame (the main area in
+which the annotation's content is drawn).
 
 .. seealso:: :py:func:`setFrameSize`
 
@@ -210,8 +217,8 @@ the annotation's content is drawn).
 
     void setFrameSizeMm( QSizeF size );
 %Docstring
-Sets the size (in millimeters) of the annotation's frame (the main area in which
-the annotation's content is drawn).
+Sets the size (in millimeters) of the annotation's frame (the main area
+in which the annotation's content is drawn).
 
 .. seealso:: :py:func:`frameSizeMm`
 
@@ -220,8 +227,8 @@ the annotation's content is drawn).
 
     QSizeF frameSizeMm() const;
 %Docstring
-Returns the size (in millimeters) of the annotation's frame (the main area in which
-the annotation's content is drawn).
+Returns the size (in millimeters) of the annotation's frame (the main
+area in which the annotation's content is drawn).
 
 .. seealso:: :py:func:`setFrameSizeMm`
 
@@ -230,16 +237,16 @@ the annotation's content is drawn).
 
     void setContentsMargin( const QgsMargins &margins );
 %Docstring
-Sets the margins (in millimeters) between the outside of the frame and the annotation
-content.
+Sets the margins (in millimeters) between the outside of the frame and
+the annotation content.
 
 .. seealso:: :py:func:`contentsMargin`
 %End
 
     QgsMargins contentsMargin() const;
 %Docstring
-Returns the margins (in millimeters) between the outside of the frame and the annotation
-content.
+Returns the margins (in millimeters) between the outside of the frame
+and the annotation content.
 
 .. seealso:: :py:func:`setContentsMargin`
 %End
@@ -276,8 +283,8 @@ call _writeXml() within their implementation of this method.
 
     virtual void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context ) = 0;
 %Docstring
-Restores the annotation's state from a DOM element. Derived classes should
-call _readXml() within their implementation of this method.
+Restores the annotation's state from a DOM element. Derived classes
+should call _readXml() within their implementation of this method.
 
 .. seealso:: :py:func:`writeXml`
 
@@ -286,8 +293,8 @@ call _readXml() within their implementation of this method.
 
     void setMarkerSymbol( QgsMarkerSymbol *symbol /Transfer/ );
 %Docstring
-Sets the symbol that is drawn at the annotation's map position. Ownership
-of the symbol is transferred to the annotation.
+Sets the symbol that is drawn at the annotation's map position.
+Ownership of the symbol is transferred to the annotation.
 
 .. seealso:: :py:func:`markerSymbol`
 %End
@@ -334,11 +341,11 @@ Sets the feature associated with the annotation.
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
-within the annotation.
+Accepts the specified style entity ``visitor``, causing it to visit all
+style entities associated within the annotation.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
 %End
@@ -352,8 +359,8 @@ Emitted whenever the annotation's appearance changes
 
     void moved();
 %Docstring
-Emitted when the annotation's position has changed and items need
-to be moved to reflect this.
+Emitted when the annotation's position has changed and items need to be
+moved to reflect this.
 %End
 
     void mapLayerChanged();
@@ -365,20 +372,22 @@ Emitted when the map layer associated with the annotation changes.
 
     virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const = 0;
 %Docstring
-Renders the annotation's contents to a target /a context at the specified /a size.
-Derived classes should implement their custom annotation drawing logic here.
+Renders the annotation's contents to a target /a context at the
+specified /a size. Derived classes should implement their custom
+annotation drawing logic here.
 %End
 
     virtual QSizeF minimumFrameSize() const;
 %Docstring
-Returns the minimum frame size for the annotation. Subclasses should implement this if they
-cannot be resized smaller than a certain minimum size.
+Returns the minimum frame size for the annotation. Subclasses should
+implement this if they cannot be resized smaller than a certain minimum
+size.
 %End
 
     void _writeXml( QDomElement &itemElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
-Writes common annotation properties to a DOM element.
-This method should be called from subclasses in their writeXml method.
+Writes common annotation properties to a DOM element. This method should
+be called from subclasses in their writeXml method.
 
 .. seealso:: :py:func:`writeXml`
 
@@ -387,8 +396,8 @@ This method should be called from subclasses in their writeXml method.
 
     void _readXml( const QDomElement &annotationElem, const QgsReadWriteContext &context );
 %Docstring
-Reads common annotation properties from a DOM element.
-This method should be called from subclasses in their readXml method.
+Reads common annotation properties from a DOM element. This method
+should be called from subclasses in their readXml method.
 
 .. seealso:: :py:func:`readXml`
 
@@ -397,10 +406,9 @@ This method should be called from subclasses in their readXml method.
 
     void copyCommonProperties( QgsAnnotation *target ) const;
 %Docstring
-Copies common annotation properties to the ``targe``
-annotation.
-Can be used within :py:func:`QgsAnnotation.clone()` implementations
-to assist with creating copies.
+Copies common annotation properties to the ``targe`` annotation. Can be
+used within :py:func:`QgsAnnotation.clone()` implementations to assist
+with creating copies.
 %End
 
 };

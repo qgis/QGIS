@@ -13,7 +13,8 @@
 class QgsPointCloudCategory
 {
 %Docstring(signature="appended")
-Represents an individual category (class) from a :py:class:`QgsPointCloudClassifiedRenderer`.
+Represents an individual category (class) from a
+:py:class:`QgsPointCloudClassifiedRenderer`.
 
 .. versionadded:: 3.18
 %End
@@ -27,13 +28,17 @@ Represents an individual category (class) from a :py:class:`QgsPointCloudClassif
 
     QgsPointCloudCategory( int value, const QColor &color, const QString &label, bool render = true, double pointSize = 0 );
 %Docstring
-Constructor for a new QgsPointCloudCategory, with the specified ``value`` and ``color``.
+Constructor for a new QgsPointCloudCategory, with the specified
+``value`` and ``color``.
 
-The ``label`` argument specifies the label used for this category in legends and the layer tree.
+The ``label`` argument specifies the label used for this category in
+legends and the layer tree.
 
-The ``render`` argument indicates whether the category should initially be rendered and appear checked in the layer tree.
+The ``render`` argument indicates whether the category should initially
+be rendered and appear checked in the layer tree.
 
-A positive ``pointSize`` argument overrides the layer's point size setting for this category (added in QGIS 3.36).
+A positive ``pointSize`` argument overrides the layer's point size
+setting for this category (added in QGIS 3.36).
 %End
 
     bool operator==( const QgsPointCloudCategory &other ) const;
@@ -63,8 +68,8 @@ Returns the point size for this category.
 
     QString label() const;
 %Docstring
-Returns the label for this category, which is used to represent the category within
-legends and the layer tree.
+Returns the label for this category, which is used to represent the
+category within legends and the layer tree.
 
 .. seealso:: :py:func:`setLabel`
 %End
@@ -94,15 +99,16 @@ Sets the point size for this category.
 
     void setLabel( const QString &label );
 %Docstring
-Sets the ``label`` for this category, which is used to represent the category within
-legends and the layer tree.
+Sets the ``label`` for this category, which is used to represent the
+category within legends and the layer tree.
 
 .. seealso:: :py:func:`label`
 %End
 
     bool renderState() const;
 %Docstring
-Returns ``True`` if the category is currently enabled and should be rendered.
+Returns ``True`` if the category is currently enabled and should be
+rendered.
 
 .. seealso:: :py:func:`setRenderState`
 %End

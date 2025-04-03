@@ -13,11 +13,12 @@
 class QgsRichTextEditor : QWidget, protected Ui::QgsRichTextEditorBase
 {
 %Docstring(signature="appended")
-A widget for editing rich text documents, with support for user controlled formatting of text
-and insertion of hyperlinks and images.
+A widget for editing rich text documents, with support for user
+controlled formatting of text and insertion of hyperlinks and images.
 
-:py:class:`QgsRichTextEditor` provides a reusable widget for allowing users to edit rich text documents,
-and retrieving and setting the documents via HTML formatted strings.
+:py:class:`QgsRichTextEditor` provides a reusable widget for allowing
+users to edit rich text documents, and retrieving and setting the
+documents via HTML formatted strings.
 
 .. versionadded:: 3.20
 %End
@@ -40,7 +41,8 @@ Constructor for QgsRichTextEditor, with the specified ``parent`` widget.
 
     Mode mode() const;
 %Docstring
-Returns the widget's mode, which defines which formatting options are exposed in the widget.
+Returns the widget's mode, which defines which formatting options are
+exposed in the widget.
 
 .. seealso:: :py:func:`setMode`
 
@@ -49,7 +51,8 @@ Returns the widget's mode, which defines which formatting options are exposed in
 
     void setMode( Mode mode );
 %Docstring
-Sets the widget's ``mode``, which defines which formatting options are exposed in the widget.
+Sets the widget's ``mode``, which defines which formatting options are
+exposed in the widget.
 
 .. seealso:: :py:func:`mode`
 

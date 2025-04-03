@@ -13,8 +13,8 @@
 class QgsPhongMaterialSettings : QgsAbstractMaterialSettings
 {
 %Docstring(signature="appended")
-Basic shading material used for rendering based on the Phong shading model
-with three color components: ambient, diffuse and specular.
+Basic shading material used for rendering based on the Phong shading
+model with three color components: ambient, diffuse and specular.
 
 .. warning::
 
@@ -33,7 +33,8 @@ with three color components: ambient, diffuse and specular.
 
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 %Docstring
-Returns ``True`` if the specified ``technique`` is supported by the Phong material.
+Returns ``True`` if the specified ``technique`` is supported by the
+Phong material.
 %End
 
     static QgsAbstractMaterialSettings *create() /Factory/;
@@ -72,7 +73,8 @@ Returns the opacity of the surface
 
     double ambientCoefficient() const;
 %Docstring
-Returns the coefficient for the ambient color contribution (ie strength factor of the ambient color).
+Returns the coefficient for the ambient color contribution (ie strength
+factor of the ambient color).
 
 .. seealso:: :py:func:`setAmbientCoefficient`
 
@@ -85,7 +87,8 @@ Returns the coefficient for the ambient color contribution (ie strength factor o
 
     double diffuseCoefficient() const;
 %Docstring
-Returns the coefficient for the diffuse color contribution (ie strength factor of the diffuse color).
+Returns the coefficient for the diffuse color contribution (ie strength
+factor of the diffuse color).
 
 .. seealso:: :py:func:`setDiffuseCoefficient`
 
@@ -98,7 +101,8 @@ Returns the coefficient for the diffuse color contribution (ie strength factor o
 
     double specularCoefficient() const;
 %Docstring
-Returns the coefficient for the specular color contribution (ie strength factor of the specular color).
+Returns the coefficient for the specular color contribution (ie strength
+factor of the specular color).
 
 .. seealso:: :py:func:`setSpecularCoefficient`
 
@@ -138,7 +142,8 @@ Sets opacity of the surface
 
     void setAmbientCoefficient( double coefficient );
 %Docstring
-Sets the ``coefficient`` for the ambient color contribution (ie strength factor of the ambient color).
+Sets the ``coefficient`` for the ambient color contribution (ie strength
+factor of the ambient color).
 
 .. seealso:: :py:func:`ambientCoefficient`
 
@@ -151,7 +156,8 @@ Sets the ``coefficient`` for the ambient color contribution (ie strength factor 
 
     void setDiffuseCoefficient( double coefficient );
 %Docstring
-Sets the ``coefficient`` for the diffuse color contribution (ie strength factor of the diffuse color).
+Sets the ``coefficient`` for the diffuse color contribution (ie strength
+factor of the diffuse color).
 
 .. seealso:: :py:func:`diffuseCoefficient`
 
@@ -164,7 +170,8 @@ Sets the ``coefficient`` for the diffuse color contribution (ie strength factor 
 
     void setSpecularCoefficient( double coefficient );
 %Docstring
-Sets the ``coefficient`` for the specular color contribution (ie strength factor of the specular color).
+Sets the ``coefficient`` for the specular color contribution (ie
+strength factor of the specular color).
 
 .. seealso:: :py:func:`specularCoefficient`
 

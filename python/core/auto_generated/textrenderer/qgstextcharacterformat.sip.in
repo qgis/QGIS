@@ -16,7 +16,8 @@ class QgsTextCharacterFormat
 Stores information relating to individual character formatting.
 
 These options encapsulate formatting options which override the default
-settings from a :py:class:`QgsTextFormat` for individual characters (or sets of characters).
+settings from a :py:class:`QgsTextFormat` for individual characters (or
+sets of characters).
 
 .. warning::
 
@@ -34,7 +35,8 @@ settings from a :py:class:`QgsTextFormat` for individual characters (or sets of 
 
     QgsTextCharacterFormat( const QTextCharFormat &format );
 %Docstring
-Constructor for QgsTextCharacterFormat, based on the specified QTextCharFormat ``format``.
+Constructor for QgsTextCharacterFormat, based on the specified
+QTextCharFormat ``format``.
 %End
 
     enum class BooleanValue
@@ -46,13 +48,14 @@ Constructor for QgsTextCharacterFormat, based on the specified QTextCharFormat `
 
     void overrideWith( const QgsTextCharacterFormat &other );
 %Docstring
-Override all the default/unset properties of the current character format
-with the settings from another format.
+Override all the default/unset properties of the current character
+format with the settings from another format.
 
-This will replace any default/unset existing settings with the
-settings from ``other``.
+This will replace any default/unset existing settings with the settings
+from ``other``.
 
-Any settings which are default/unset in ``other`` will be left unchanged.
+Any settings which are default/unset in ``other`` will be left
+unchanged.
 
 :param other: The format to override with.
 
@@ -61,8 +64,8 @@ Any settings which are default/unset in ``other`` will be left unchanged.
 
     QColor textColor() const;
 %Docstring
-Returns the character's text color, or an invalid color if no color override
-is set and the default format color should be used.
+Returns the character's text color, or an invalid color if no color
+override is set and the default format color should be used.
 
 .. seealso:: :py:func:`setTextColor`
 %End
@@ -71,16 +74,16 @@ is set and the default format color should be used.
 %Docstring
 Sets the character's text ``color``.
 
-Set ``color`` to an invalid color if no color override
-is desired and the default format color should be used.
+Set ``color`` to an invalid color if no color override is desired and
+the default format color should be used.
 
 .. seealso:: :py:func:`textColor`
 %End
 
     double fontPointSize() const;
 %Docstring
-Returns the font point size, or -1 if the font size is not set
-and should be inherited.
+Returns the font point size, or -1 if the font size is not set and
+should be inherited.
 
 .. note::
 
@@ -97,8 +100,7 @@ and should be inherited.
 %Docstring
 Sets the font point ``size``.
 
-Set ``size`` to -1 if the font size is not set
-and should be inherited.
+Set ``size`` to -1 if the font size is not set and should be inherited.
 
 .. note::
 
@@ -113,7 +115,8 @@ and should be inherited.
 
     double fontPercentageSize() const;
 %Docstring
-Returns the font percentage size (as fraction of inherited font size), or -1 if the font size percentage is not set.
+Returns the font percentage size (as fraction of inherited font size),
+or -1 if the font size percentage is not set.
 
 .. note::
 
@@ -128,7 +131,7 @@ Returns the font percentage size (as fraction of inherited font size), or -1 if 
 
     void setFontPercentageSize( double size );
 %Docstring
-Sets  the font percentage ``size`` (as fraction of inherited font size).
+Sets the font percentage ``size`` (as fraction of inherited font size).
 
 Set ``size`` to -1 if the font percentange size is not set.
 
@@ -145,8 +148,8 @@ Set ``size`` to -1 if the font percentange size is not set.
 
     QString family() const;
 %Docstring
-Returns the font family name, or an empty string if the
-family is not set and should be inherited.
+Returns the font family name, or an empty string if the family is not
+set and should be inherited.
 
 .. seealso:: :py:func:`setFamily`
 
@@ -166,8 +169,8 @@ Set to an empty string if the family should be inherited.
 
     int fontWeight() const;
 %Docstring
-Returns the font weight, or -1 if the font weight is not set
-and should be inherited.
+Returns the font weight, or -1 if the font weight is not set and should
+be inherited.
 
 .. seealso:: :py:func:`setFontWeight`
 
@@ -178,8 +181,8 @@ and should be inherited.
 %Docstring
 Sets the font ``weight``.
 
-Set ``weight`` to -1 if the font weight is not set
-and should be inherited.
+Set ``weight`` to -1 if the font weight is not set and should be
+inherited.
 
 .. seealso:: :py:func:`fontWeight`
 
@@ -188,7 +191,8 @@ and should be inherited.
 
     double wordSpacing() const;
 %Docstring
-Returns the font word spacing, in points, or NaN if word spacing is not set and should be inherited.
+Returns the font word spacing, in points, or NaN if word spacing is not
+set and should be inherited.
 
 .. seealso:: :py:func:`setWordSpacing`
 
@@ -197,7 +201,8 @@ Returns the font word spacing, in points, or NaN if word spacing is not set and 
 
     void setWordSpacing( double spacing );
 %Docstring
-Sets the font word ``spacing``, in points, or NaN if word spacing is not set and should be inherited.
+Sets the font word ``spacing``, in points, or NaN if word spacing is not
+set and should be inherited.
 
 .. seealso:: :py:func:`wordSpacing`
 
@@ -266,7 +271,8 @@ Sets whether the format has overline ``enabled``.
 
     QString imagePath() const;
 %Docstring
-Returns the path to the image to render, if the format applies to a document image fragment.
+Returns the path to the image to render, if the format applies to a
+document image fragment.
 
 .. seealso:: :py:func:`QgsTextFragment.isImage`
 
@@ -279,7 +285,8 @@ Returns the path to the image to render, if the format applies to a document ima
 
     void setImagePath( const QString &path );
 %Docstring
-Sets the ``path`` to the image to render, if the format applies to a document image fragment.
+Sets the ``path`` to the image to render, if the format applies to a
+document image fragment.
 
 .. seealso:: :py:func:`QgsTextFragment.isImage`
 
@@ -292,9 +299,11 @@ Sets the ``path`` to the image to render, if the format applies to a document im
 
     QSizeF imageSize() const;
 %Docstring
-Returns the image size, if the format applies to a document image fragment.
+Returns the image size, if the format applies to a document image
+fragment.
 
-The image size is always considered to be in :py:class:`Qgis`.RenderUnit.Points.
+The image size is always considered to be in
+:py:class:`Qgis`.RenderUnit.Points.
 
 .. seealso:: :py:func:`QgsTextFragment.isImage`
 
@@ -307,9 +316,11 @@ The image size is always considered to be in :py:class:`Qgis`.RenderUnit.Points.
 
     void setImageSize( const QSizeF &size );
 %Docstring
-Sets the image ``size``, if the format applies to a document image fragment.
+Sets the image ``size``, if the format applies to a document image
+fragment.
 
-The image size is always considered to be in :py:class:`Qgis`.RenderUnit.Points.
+The image size is always considered to be in
+:py:class:`Qgis`.RenderUnit.Points.
 
 .. seealso:: :py:func:`QgsTextFragment.isImage`
 
@@ -350,7 +361,8 @@ If ``set`` is ``False`` then the vertical alignment will be inherited.
 %Docstring
 Returns the format vertical alignment.
 
-This property is only respected if :py:func:`~QgsTextCharacterFormat.hasVerticalAlignmentSet` is ``True``.
+This property is only respected if
+:py:func:`~QgsTextCharacterFormat.hasVerticalAlignmentSet` is ``True``.
 
 .. seealso:: :py:func:`hasVerticalAlignmentSet`
 
@@ -363,7 +375,8 @@ This property is only respected if :py:func:`~QgsTextCharacterFormat.hasVertical
 %Docstring
 Sets the format vertical ``alignment``.
 
-This property is only respected if :py:func:`~QgsTextCharacterFormat.hasVerticalAlignmentSet` is ``True``.
+This property is only respected if
+:py:func:`~QgsTextCharacterFormat.hasVerticalAlignmentSet` is ``True``.
 
 .. seealso:: :py:func:`hasVerticalAlignmentSet`
 
@@ -385,7 +398,8 @@ Returns ``True`` if the fragment has a background set.
 %Docstring
 Returns the brush used for rendering the background of the fragment.
 
-Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroundImagePath` set.
+Alternatively, the format may have a
+:py:func:`~QgsTextCharacterFormat.backgroundImagePath` set.
 
 .. seealso:: :py:func:`hasBackground`
 
@@ -398,7 +412,8 @@ Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroun
 %Docstring
 Sets the ``brush`` used for rendering the background of the fragment.
 
-Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroundImagePath` set.
+Alternatively, the format may have a
+:py:func:`~QgsTextCharacterFormat.backgroundImagePath` set.
 
 .. seealso:: :py:func:`backgroundBrush`
 
@@ -407,9 +422,11 @@ Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroun
 
     QString backgroundImagePath() const;
 %Docstring
-Returns the path for the image to be used for rendering the background of the fragment.
+Returns the path for the image to be used for rendering the background
+of the fragment.
 
-Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroundBrush` set.
+Alternatively, the format may have a
+:py:func:`~QgsTextCharacterFormat.backgroundBrush` set.
 
 .. seealso:: :py:func:`hasBackground`
 
@@ -420,9 +437,11 @@ Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroun
 
     void setBackgroundImagePath( const QString &path );
 %Docstring
-Sets the ``path`` for the image to be used for rendering the background of the fragment.
+Sets the ``path`` for the image to be used for rendering the background
+of the fragment.
 
-Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroundBrush` set.
+Alternatively, the format may have a
+:py:func:`~QgsTextCharacterFormat.backgroundBrush` set.
 
 .. seealso:: :py:func:`backgroundImagePath`
 
@@ -431,13 +450,15 @@ Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroun
 
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
-Updates the specified ``font`` in place, applying character formatting options which
-are applicable on a font level when rendered in the given ``context``.
+Updates the specified ``font`` in place, applying character formatting
+options which are applicable on a font level when rendered in the given
+``context``.
 
-The optional ``scaleFactor`` parameter can specify a font size scaling factor. It is recommended to set this to
-:py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then manually calculations
-based on the resultant font metrics. Failure to do so will result in poor quality text rendering
-at small font sizes.
+The optional ``scaleFactor`` parameter can specify a font size scaling
+factor. It is recommended to set this to
+:py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then
+manually calculations based on the resultant font metrics. Failure to do
+so will result in poor quality text rendering at small font sizes.
 %End
 
 };

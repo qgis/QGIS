@@ -12,11 +12,12 @@
 class QgsReferencedGeometryBase
 {
 %Docstring(signature="appended")
-A base class for geometry primitives which are stored with an associated reference system.
+A base class for geometry primitives which are stored with an associated
+reference system.
 
-:py:class:`QgsReferencedGeometryBase` classes represent some form of geometry primitive
-(such as rectangles) which have an optional coordinate reference system
-associated with them.
+:py:class:`QgsReferencedGeometryBase` classes represent some form of
+geometry primitive (such as rectangles) which have an optional
+coordinate reference system associated with them.
 
 .. seealso:: :py:class:`QgsReferencedRectangle`
 %End
@@ -41,8 +42,8 @@ no reference system is set.
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Sets the associated ``crs``. Set to an invalid CRS if
-no reference system is required.
+Sets the associated ``crs``. Set to an invalid CRS if no reference
+system is required.
 
 .. seealso:: :py:func:`crs`
 %End
@@ -65,8 +66,8 @@ A :py:class:`QgsRectangle` with associated coordinate reference system.
 
     QgsReferencedRectangle( const QgsRectangle &rectangle, const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Constructor for QgsReferencedRectangle, with the specified initial ``rectangle``
-and ``crs``.
+Constructor for QgsReferencedRectangle, with the specified initial
+``rectangle`` and ``crs``.
 %End
 
     QgsReferencedRectangle();
@@ -98,8 +99,8 @@ A :py:class:`QgsPointXY` with associated coordinate reference system.
 
     QgsReferencedPointXY( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Constructor for QgsReferencedPointXY, with the specified initial ``point``
-and ``crs``.
+Constructor for QgsReferencedPointXY, with the specified initial
+``point`` and ``crs``.
 %End
 
     QgsReferencedPointXY();
@@ -133,8 +134,8 @@ A :py:class:`QgsGeometry` with associated coordinate reference system.
 
     QgsReferencedGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Constructor for QgsReferencedGeometry, with the specified initial ``geometry``
-and ``crs``.
+Constructor for QgsReferencedGeometry, with the specified initial
+``geometry`` and ``crs``.
 %End
 
     QgsReferencedGeometry();

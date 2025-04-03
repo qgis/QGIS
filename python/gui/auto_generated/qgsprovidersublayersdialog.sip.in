@@ -13,8 +13,8 @@
 class QgsProviderSublayerDialogModel : QgsProviderSublayerModel
 {
 %Docstring(signature="appended")
-
-A model for representing the sublayers present in a URI for the :py:class:`QgsProviderSublayersDialog`.
+A model for representing the sublayers present in a URI for the
+:py:class:`QgsProviderSublayersDialog`.
 
 .. versionadded:: 3.30
 %End
@@ -43,7 +43,6 @@ Sets whether geometry types are resolved.
 class QgsProviderSublayersDialog : QDialog
 {
 %Docstring(signature="appended")
-
 Dialog for selecting provider sublayers.
 
 .. versionadded:: 3.30
@@ -72,7 +71,8 @@ Returns the list of selected layers.
 
     QList<QgsProviderSublayerModel::NonLayerItem> selectedNonLayerItems() const;
 %Docstring
-Returns the list of selected non-layer items (e.g. embedded QGIS project items).
+Returns the list of selected non-layer items (e.g. embedded QGIS project
+items).
 %End
 
     QString groupName() const;
@@ -89,7 +89,8 @@ Sets an appropriate name for the layer group.
 
     void layersAdded( const QList<QgsProviderSublayerDetails> &layers );
 %Docstring
-Emitted when sublayers selected from the dialog should be added to the project.
+Emitted when sublayers selected from the dialog should be added to the
+project.
 %End
 
 };

@@ -16,8 +16,9 @@
 class QgsProcessingAlgorithmConfigurationWidget : QWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
-A configuration widget for processing algorithms allows providing additional
-configuration options directly on algorithm level, in addition to parameters.
+A configuration widget for processing algorithms allows providing
+additional configuration options directly on algorithm level, in
+addition to parameters.
 
 .. versionadded:: 3.2
 %End
@@ -44,11 +45,12 @@ Set the configuration which this widget should represent.
 
     virtual void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
 %Docstring
-Sets the ``context`` in which the Processing algorithm widget is shown, e.g., the
-parent model algorithm, a linked map canvas, and other relevant information which allows the widget
-to fine-tune its behavior.
+Sets the ``context`` in which the Processing algorithm widget is shown,
+e.g., the parent model algorithm, a linked map canvas, and other
+relevant information which allows the widget to fine-tune its behavior.
 
-Subclasses should take care to call the base class method when reimplementing this method.
+Subclasses should take care to call the base class method when
+reimplementing this method.
 
 .. seealso:: :py:func:`widgetContext`
 
@@ -57,9 +59,9 @@ Subclasses should take care to call the base class method when reimplementing th
 
     const QgsProcessingParameterWidgetContext &widgetContext() const;
 %Docstring
-Returns the context in which the Processing algorithm widget is shown, e.g., the
-parent model algorithm, a linked map canvas, and other relevant information which allows the widget
-to fine-tune its behavior.
+Returns the context in which the Processing algorithm widget is shown,
+e.g., the parent model algorithm, a linked map canvas, and other
+relevant information which allows the widget to fine-tune its behavior.
 
 .. seealso:: :py:func:`setWidgetContext`
 
@@ -86,8 +88,8 @@ Returns the algorithm instance associated with this widget.
 
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 %Docstring
-Registers a Processing context ``generator`` class that will be used to retrieve
-a Processing context for the widget when required.
+Registers a Processing context ``generator`` class that will be used to
+retrieve a Processing context for the widget when required.
 
 .. versionadded:: 3.6
 %End

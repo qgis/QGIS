@@ -14,8 +14,8 @@
 class QgsStyleManagerDialog : QDialog
 {
 %Docstring(signature="appended")
-
-A dialog allowing users to customize and populate a :py:class:`QgsStyle`.
+A dialog allowing users to customize and populate a
+:py:class:`QgsStyle`.
 %End
 
 %TypeHeaderCode
@@ -25,16 +25,20 @@ A dialog allowing users to customize and populate a :py:class:`QgsStyle`.
 
     QgsStyleManagerDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags(), bool readOnly = false );
 %Docstring
-Constructor for QgsStyleManagerDialog, with the specified ``parent`` widget and window ``flags``.
+Constructor for QgsStyleManagerDialog, with the specified ``parent``
+widget and window ``flags``.
 
-The ``style`` argument specifies the linked :py:class:`QgsStyle` database. Symbols and objects contained within
-this style will be shown in the dialog, and changes made within the dialog will be applied to ``style``.
-The ``style`` object must last for the lifetime of the dialog.
+The ``style`` argument specifies the linked :py:class:`QgsStyle`
+database. Symbols and objects contained within this style will be shown
+in the dialog, and changes made within the dialog will be applied to
+``style``. The ``style`` object must last for the lifetime of the
+dialog.
 %End
 
     QgsStyleManagerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
-Constructor for QgsStyleManagerDialog, with the specified ``parent`` widget and window ``flags``.
+Constructor for QgsStyleManagerDialog, with the specified ``parent``
+widget and window ``flags``.
 
 All styles linked to the current project will be available.
 
@@ -44,32 +48,36 @@ All styles linked to the current project will be available.
 
     static QString addColorRampStatic( QWidget *parent, QgsStyle *style, const QString &RampType = QString() );
 %Docstring
-Opens the add color ramp dialog, returning the new color ramp's name if the ramp has been added.
+Opens the add color ramp dialog, returning the new color ramp's name if
+the ramp has been added.
 
-The ``RampType`` argument should be set to a string representing a valid :py:func:`QgsColorRamp.type()` value.
+The ``RampType`` argument should be set to a string representing a valid
+:py:func:`QgsColorRamp.type()` value.
 %End
 
     void setFavoritesGroupVisible( bool show );
 %Docstring
-Sets whether the favorites group should be shown. The default is to show the group.
+Sets whether the favorites group should be shown. The default is to show
+the group.
 
 .. versionadded:: 3.6
 %End
 
     void setSmartGroupsVisible( bool show );
 %Docstring
-Sets whether smart groups should be shown. The default is to show the groups.
+Sets whether smart groups should be shown. The default is to show the
+groups.
 
 .. versionadded:: 3.6
 %End
 
     void setBaseStyleName( const QString &name );
 %Docstring
-Sets the base ``name`` for the style, which is used by the dialog to reflect the
-original style/XML file name.
+Sets the base ``name`` for the style, which is used by the dialog to
+reflect the original style/XML file name.
 
-``name`` should be stripped of any extensions and folder information, e.g. "transport_styles",
-not "d:/stuff/transport_styles.xml".
+``name`` should be stripped of any extensions and folder information,
+e.g. "transport_styles", not "d:/stuff/transport_styles.xml".
 
 .. versionadded:: 3.6
 %End
@@ -120,7 +128,8 @@ Triggers the dialog to export selected items as PNG files.
 
     void exportSelectedItemsImages( const QString &dir, const QString &format, QSize size );
 %Docstring
-Triggers the dialog to export selected items as images of the specified ``format`` and ``size``.
+Triggers the dialog to export selected items as images of the specified
+``format`` and ``size``.
 
 .. seealso:: :py:func:`exportItemsSVG`
 
@@ -163,7 +172,6 @@ Opens the associated help
 
  void itemChanged( QStandardItem *item ) /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
-
 .. deprecated:: 3.6
 
    Has no effect and will be removed in QGIS 4.0.
@@ -206,7 +214,6 @@ Triggers the dialog for editing the selected smart group.
 
  void regrouped( QStandardItem * ) /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
-
 .. deprecated:: 3.6
 
    Has no effect and will be removed in QGIS 4.0.
@@ -243,9 +250,10 @@ Context menu for the listItems ( symbols list )
 %Docstring
 Triggers adding a new color ramp.
 
-If ``type`` is set to a string representing a valid :py:func:`QgsColorRamp.type()` value then a new ramp
-of that type will be created. If ``type`` is empty, then the user will be prompted to select
-the color ramp type.
+If ``type`` is set to a string representing a valid
+:py:func:`QgsColorRamp.type()` value then a new ramp of that type will
+be created. If ``type`` is empty, then the user will be prompted to
+select the color ramp type.
 %End
 
     void addFavoriteSelectedSymbols();
@@ -282,7 +290,6 @@ populate the groups
 
  void setSymbolsChecked( const QStringList & ) /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
-
 .. deprecated:: 3.6
 
    Has no effect and will be removed in QGIS 4.0.
@@ -290,7 +297,8 @@ populate the groups
 
  void populateSymbols( const QStringList &symbolNames, bool checkable = false ) /Deprecated="Since 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
-Populates the list view with symbols of the current type with the given names.
+Populates the list view with symbols of the current type with the given
+names.
 
 .. deprecated:: 3.40
 
@@ -299,7 +307,8 @@ Populates the list view with symbols of the current type with the given names.
 
  void populateColorRamps( const QStringList &colorRamps, bool checkable = false ) /Deprecated="Since 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
-Populates the list view with color ramps of the current type with the given names.
+Populates the list view with color ramps of the current type with the
+given names.
 
 .. deprecated:: 3.40
 
@@ -319,7 +328,6 @@ add a new symbol to style
 
  bool removeSymbol() /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
-
 .. deprecated:: 3.6
 
    Has no effect and will be removed in QGIS 4.0.
@@ -327,7 +335,6 @@ add a new symbol to style
 
  bool removeColorRamp() /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
-
 .. deprecated:: 3.6
 
    Has no effect and will be removed in QGIS 4.0.

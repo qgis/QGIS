@@ -37,11 +37,16 @@ Constructor for QgsWebEnginePage, with the specified ``parent`` widget.
 
     bool setContent( const QByteArray &data, const QString &mimeType = QString(), const QUrl &baseUrl = QUrl(), bool blocking = false );
 %Docstring
-Sets the content of the web page to ``data``. If the ``mimeType`` argument is empty, it is assumed that the content is text/plain,charset=US-ASCII
+Sets the content of the web page to ``data``. If the ``mimeType``
+argument is empty, it is assumed that the content is
+text/plain,charset=US-ASCII
 
-The ``baseUrl`` is optional and used to resolve relative URLs in the document, such as referenced images or stylesheets.
+The ``baseUrl`` is optional and used to resolve relative URLs in the
+document, such as referenced images or stylesheets.
 
-If ``blocking`` is ``True`` then the call will block while the HTML is loaded. Otherwise the html is loaded immediately; external objects are loaded asynchronously.
+If ``blocking`` is ``True`` then the call will block while the HTML is
+loaded. Otherwise the html is loaded immediately; external objects are
+loaded asynchronously.
 
 .. warning::
 
@@ -54,9 +59,12 @@ If ``blocking`` is ``True`` then the call will block while the HTML is loaded. O
 %Docstring
 Sets the content of this page to ``html``.
 
-The ``baseUrl`` is optional and used to resolve relative URLs in the document, such as referenced images or stylesheets.
+The ``baseUrl`` is optional and used to resolve relative URLs in the
+document, such as referenced images or stylesheets.
 
-If ``blocking`` is ``True`` then the call will block while the HTML is loaded. Otherwise the html is loaded immediately; external objects are loaded asynchronously.
+If ``blocking`` is ``True`` then the call will block while the HTML is
+loaded. Otherwise the html is loaded immediately; external objects are
+loaded asynchronously.
 
 .. note::
 
@@ -75,7 +83,9 @@ Sets the ``url`` of the web page to be displayed.
 
 Setting this property clears the page and loads the URL.
 
-If ``blocking`` is ``True`` then the call will block while the HTML is loaded. Otherwise the html is loaded immediately; external objects are loaded asynchronously.
+If ``blocking`` is ``True`` then the call will block while the HTML is
+loaded. Otherwise the html is loaded immediately; external objects are
+loaded asynchronously.
 
 .. warning::
 
@@ -95,9 +105,11 @@ Returns the size of the page document, in pixels.
 
     bool render( QPainter *painter, const QRectF &painterRect );
 %Docstring
-Renders the web page contents to a ``painter``. Content will be rendered as vector objects.
+Renders the web page contents to a ``painter``. Content will be rendered
+as vector objects.
 
-The ``painterRect`` argument specifies the target rectangle for the page in ``painter`` coordinates.
+The ``painterRect`` argument specifies the target rectangle for the page
+in ``painter`` coordinates.
 
 .. warning::
 
@@ -109,7 +121,8 @@ The ``painterRect`` argument specifies the target rectangle for the page in ``pa
 
 :return: ``True`` if rendering was successful
 
-:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library support.
+:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library
+                                  support.
 %End
 
   signals:
@@ -133,7 +146,8 @@ This signal is emitted when the page finishes loading content.
 
 This signal is independent of script execution or page rendering.
 
-``ok`` will indicate whether the load was successful or any error occurred.
+``ok`` will indicate whether the load was successful or any error
+occurred.
 %End
 
 };
