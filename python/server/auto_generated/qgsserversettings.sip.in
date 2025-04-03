@@ -61,6 +61,7 @@ configuration.
       QGIS_SERVER_LANDING_PAGE_PREFIX,
       QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL,
       QGIS_SERVER_PROJECT_CACHE_STRATEGY,
+      QGIS_SERVER_PROJECT_CACHE_SIZE,
       QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS,
       QGIS_SERVER_APPLICATION_NAME,
       QGIS_SERVER_CAPABILITIES_CACHE_SIZE,
@@ -344,6 +345,15 @@ QGIS_SERVER_PROJECT_CACHE_STRATEGY. Possible values are:
 - 'off': Disable completely internal project's cache handling
 
 .. versionadded:: 3.26
+%End
+
+    int projectCacheSize() const;
+%Docstring
+Returns the projects cache size The default value is 100, the value can
+be changed by setting the environment variable
+QGIS_SERVER_PROJECT_CACHE_SIZE.
+
+.. versionadded:: 3.44
 %End
 
     QStringList allowedExtraSqlTokens() const;
