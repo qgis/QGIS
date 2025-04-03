@@ -452,13 +452,14 @@ editing mode in order to allow write operations.
 :return: ``True`` on success
 %End
 
+
     static QgsRasterDataProvider *create( const QString &providerKey,
                                           const QString &uri,
                                           const QString &format, int nBands,
                                           Qgis::DataType type,
                                           int width, int height, double *geoTransform,
                                           const QgsCoordinateReferenceSystem &crs,
-                                          const QStringList &creationOptions = QStringList() );
+                                          const QStringList &createOptions = QStringList() );
 %Docstring
 Creates a new dataset with mDataSourceURI
 %End
@@ -527,7 +528,8 @@ Encodes the URI starting from the struct .
    since QGIS 3.22
 %End
 
-    virtual QString validateCreationOptions( const QStringList &creationOptions, const QString &format );
+
+    virtual QString validateCreationOptions( const QStringList &createOptions, const QString &format );
 %Docstring
 Validates creation options for a specific dataset and destination
 format.

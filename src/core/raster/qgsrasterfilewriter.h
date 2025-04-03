@@ -247,6 +247,8 @@ class CORE_EXPORT QgsRasterFileWriter
      */
     int maxTileHeight() const { return mMaxTileHeight; }
 
+    // TODO QGIS 4.0: rename list to options to have more semantic argument name
+
     /**
      * Sets a list of data source creation options to use when
      * creating the output raster file.
@@ -281,7 +283,9 @@ class CORE_EXPORT QgsRasterFileWriter
      * \see creationOptions()
      * \since QGIS 3.44
      */
-    void setCreationOptions( const QStringList &list ) { mCreationOptions = list; }
+    void setCreationOptions( const QStringList &options ) { mCreationOptions = options; }
+
+    // TODO QGIS 4.0: rename list to options to have more semantic argument name
 
     /**
      * Sets a \a list of configuration options to use when

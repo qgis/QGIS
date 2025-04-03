@@ -507,9 +507,9 @@ void QgsRasterFormatSaveOptionsWidget::setCreationOptions( const QString &profil
   mySettings.setValue( settingsKey( profileName ), options.trimmed() );
 }
 
-void QgsRasterFormatSaveOptionsWidget::setCreationOptions( const QString &profileName, const QStringList &list )
+void QgsRasterFormatSaveOptionsWidget::setCreationOptions( const QString &profileName, const QStringList &options )
 {
-  setCreationOptions( profileName, list.join( QLatin1Char( ' ' ) ) );
+  setCreationOptions( profileName, options.join( QLatin1Char( ' ' ) ) );
 }
 
 QStringList QgsRasterFormatSaveOptionsWidget::profiles() const

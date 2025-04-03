@@ -439,6 +439,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     bool writeBlock( QgsRasterBlock *block, int band, int xOffset = 0, int yOffset = 0 );
 
+    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+
     //! Creates a new dataset with mDataSourceURI
     static QgsRasterDataProvider *create( const QString &providerKey,
                                           const QString &uri,
@@ -446,7 +448,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
                                           Qgis::DataType type,
                                           int width, int height, double *geoTransform,
                                           const QgsCoordinateReferenceSystem &crs,
-                                          const QStringList &creationOptions = QStringList() );
+                                          const QStringList &createOptions = QStringList() );
 
     /**
      * Set no data value on created dataset
@@ -506,13 +508,15 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     static QString encodeVirtualRasterProviderUri( const VirtualRasterParameters &parts );
 
+    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+
     /**
      * Validates creation options for a specific dataset and destination format.
      * \note used by GDAL provider only
      * \note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only
      */
-    virtual QString validateCreationOptions( const QStringList &creationOptions, const QString &format )
-    { Q_UNUSED( creationOptions ) Q_UNUSED( format ); return QString(); }
+    virtual QString validateCreationOptions( const QStringList &createOptions, const QString &format )
+    { Q_UNUSED( createOptions ) Q_UNUSED( format ); return QString(); }
 
     /**
      * Validates pyramid creation options for a specific dataset and destination format
