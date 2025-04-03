@@ -27,10 +27,10 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@latest
-        with:
-          cmakeVersion: 3.29.6
+      - name: Check cmake version
+        shell: bash
+        run: |
+          which cmake && cmake --version
 
       - name: 🧽 Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@v1
@@ -64,6 +64,7 @@ jobs:
         run: |
           BUILD_DIR=$( cygpath "${{ github.workspace }}/build" )
           SOURCE_DIR=$( cygpath "${{ github.workspace }}" )
+          export CMAKE_POLICY_VERSION_MINIMUM=3.31
 
           cmake -S "${SOURCE_DIR}" \
                 -B "${BUILD_DIR}" \
