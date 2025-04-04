@@ -45,7 +45,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   auto writer = std::make_unique<QgsRasterFileWriter>( mOutputFilePath );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
-  writer->setCreateOptions( mCreateOptions );
+  writer->setCreationOptions( mCreationOptions );
 
   std::unique_ptr<QgsRasterDataProvider> provider( writer->createOneBandRaster( Qgis::DataType::Float32, mNumColumns, mNumRows, mInterpolationExtent, crs ) );
   if ( !provider )

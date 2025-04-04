@@ -196,7 +196,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QString buildPyramids( const QList<QgsRasterPyramid> &rasterPyramidList,
                            const QString &resamplingMethod = "NEAREST",
                            Qgis::RasterPyramidFormat format = Qgis::RasterPyramidFormat::GeoTiff,
-                           const QStringList &createOptions = QStringList(),
+                           const QStringList &creationOptions = QStringList(),
                            QgsRasterBlockFeedback *feedback = nullptr ) override;
     QList<QgsRasterPyramid> buildPyramidList( const QList<int> &overviewList = QList<int>() ) override;
 
@@ -209,7 +209,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     bool setNoDataValue( int bandNo, double noDataValue ) override;
     bool remove() override;
 
-    QString validateCreationOptions( const QStringList &createOptions, const QString &format ) override;
+    QString validateCreationOptions( const QStringList &creationOptions, const QString &format ) override;
     QString validatePyramidsConfigOptions( Qgis::RasterPyramidFormat pyramidsFormat,
                                            const QStringList &configOptions, const QString &fileFormat ) override;
 
@@ -402,7 +402,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
       int height,
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
-      const QStringList &createOptions ) override;
+      const QStringList &creationOptions ) override;
     QString filters( Qgis::FileFilterType type ) override;
     QList<QPair<QString, QString> > pyramidResamplingMethods() override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;

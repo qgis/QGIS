@@ -474,7 +474,7 @@ create new empty GeoPackage or FileGeodatabase databases.
       int height,
       double *geoTransform,
       const QgsCoordinateReferenceSystem &crs,
-      const QStringList &createOptions = QStringList() ) /Factory/;
+      const QStringList &creationOptions = QStringList() ) /Factory/;
 %Docstring
 Creates a new instance of the raster data provider.
 

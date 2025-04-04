@@ -458,13 +458,13 @@ QgsRasterDataProvider *QgsRasterDataProvider::create( const QString &providerKey
     Qgis::DataType type,
     int width, int height, double *geoTransform,
     const QgsCoordinateReferenceSystem &crs,
-    const QStringList &createOptions )
+    const QStringList &creationOptions )
 {
   QgsRasterDataProvider *ret = QgsProviderRegistry::instance()->createRasterDataProvider(
                                  providerKey,
                                  uri, format,
                                  nBands, type, width,
-                                 height, geoTransform, crs, createOptions );
+                                 height, geoTransform, crs, creationOptions );
   if ( !ret )
   {
     QgsDebugError( "Cannot resolve 'createRasterDataProviderFunction' function in " + providerKey + " provider" );

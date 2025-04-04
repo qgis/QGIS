@@ -78,7 +78,7 @@ class TestQgsRasterCalculator : public QgsTest
     void parseFunctionTypeString();   //test the parsing of the formule for the tFunction type
     void testFunctionTypeWithLayer(); //test of conditional statement
 
-    void testRasterOptions();
+    void testCreationOptions();
     void testNoDataValue();
 
   private:
@@ -1135,7 +1135,7 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   QCOMPARE( block->value( 2, 1 ), 0.0 );
 }
 
-void TestQgsRasterCalculator::testRasterOptions()
+void TestQgsRasterCalculator::testCreationOptions()
 {
   QgsRasterCalculatorEntry entry;
   entry.bandNumber = 1;
@@ -1159,7 +1159,7 @@ void TestQgsRasterCalculator::testRasterOptions()
   QVERIFY( !worldFile.exists() );
 
   QgsRasterCalculator rc( QStringLiteral( "\"landsat@1\" + 2" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  rc.setCreateOptions( QStringList() << "TFW=YES" );
+  rc.setCreationOptions( QStringList() << "TFW=YES" );
   QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
 
   QVERIFY( worldFile.exists() );
@@ -1185,13 +1185,13 @@ void TestQgsRasterCalculator::testNoDataValue()
   tmpFile.close();
 
   QgsRasterCalculator rc( QStringLiteral( "\"landsat@1\" + 2" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  rc.setNoDataValue( -9999.0 );
+  rc.setNoDataValue( -5555.0 );
   QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
 
   //open output file and check results
   const std::unique_ptr<QgsRasterLayer> result = std::make_unique<QgsRasterLayer>( tmpName, QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
   QVERIFY( result->dataProvider()->sourceHasNoDataValue( 1 ) );
-  QCOMPARE( result->dataProvider()->sourceNoDataValue( 1 ), -9999.0 );
+  QCOMPARE( result->dataProvider()->sourceNoDataValue( 1 ), -5555.0 );
 }
 
 
