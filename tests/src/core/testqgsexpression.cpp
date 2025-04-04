@@ -1242,7 +1242,6 @@ class TestQgsExpression : public QObject
       QTest::newRow( "end_point multipoint" ) << "geom_to_wkt(end_point(geom_from_wkt('MULTIPOINT((3 3), (1 1), (2 2))')))" << false << QVariant( "Point (2 2)" );
       QTest::newRow( "end_point line" ) << "geom_to_wkt(end_point(geom_from_wkt('LINESTRING(4 1, 1 1, 2 2)')))" << false << QVariant( "Point (2 2)" );
       QTest::newRow( "end_point polygon" ) << "geom_to_wkt(end_point(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))')))" << false << QVariant( "Point (-1 -1)" );
-      QTest::newRow( "reverse not geom" ) << "reverse('g')" << true << QVariant();
       QTest::newRow( "reverse null" ) << "reverse(NULL)" << false << QVariant();
       QTest::newRow( "reverse point" ) << "reverse(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
       QTest::newRow( "reverse polygon" ) << "reverse(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'))" << false << QVariant();
@@ -1696,6 +1695,8 @@ class TestQgsExpression : public QObject
       QTest::newRow( "regexp_replace non greedy" ) << "regexp_replace('HeLLo','(?<=H).*?L', '-')" << false << QVariant( "H-Lo" );
       QTest::newRow( "regexp_replace cap group" ) << "regexp_replace('HeLLo','(eL)', 'x\\\\1x')" << false << QVariant( "HxeLxLo" );
       QTest::newRow( "regexp_replace invalid" ) << "regexp_replace('HeLLo','[[[', '-')" << true << QVariant();
+      QTest::newRow( "reverse string" ) << "reverse('HeLLo')" << false << QVariant( "oLLeH" );
+      QTest::newRow( "reverse empty string" ) << "reverse('')" << false << QVariant( "" );
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
       QTest::newRow( "substr named parameters" ) << "substr(string:='HeLLo',start:=3,length:=2)" << false << QVariant( "LL" );
       QTest::newRow( "substr negative start" ) << "substr('HeLLo', -4)" << false << QVariant( "eLLo" );
