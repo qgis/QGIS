@@ -540,6 +540,7 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
       NodeNameRole,                //!< Prior to QGIS 3.44, this was available as FieldNameRole
       NodeIdRole,                  //!< Nodes may have ids to ease comparison. Used by Relations, fields and actions.
       NodeTypeRole,
+      NodeDisplayRole,
     };
 
     /**
@@ -706,11 +707,35 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     void addContainer( QModelIndex &parent, const QString &title, int columnCount, Qgis::AttributeEditorContainerType type );
 
     /**
+     * Updates the aliases of all matching fields in the model.
+     *
+     * Required because a field might appear several times in the form layout.
+     *
+     * \param fieldName Name of the field to search
+     * \param fieldAlias Alias to be set to matching fields
+     */
+    void updateAliasForFieldNodes( const QString &fieldName, const QString &fieldAlias );
+
+    /**
      * Inserts a new child to \a parent model index at the given \a row position.
      *
      * The child is constructed from the given \a nodeId, \a nodeType, \a nodeName and \a nodeData.
      */
     void insertChild( const QModelIndex &parent, int row, QString &nodeId, QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, QString &nodeName, QgsAttributesFormTreeData::DnDTreeNodeData nodeData );
+
+    /**
+     * Returns whether field aliases are preferred over field names as item text.
+     *
+     * \see setShowAliases()
+     */
+    bool showAliases() const;
+
+    /**
+     * Sets whether field aliases should be preferred over field names as item text.
+     *
+     * \see showAliases()
+     */
+    void setShowAliases( bool show );
 
   public slots:
     void populate() override;
@@ -722,8 +747,11 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     void internalNodeDropped( QModelIndex &index );
 
   private:
+    void updateAliasForFieldNodesRecursive( QgsAttributesFormTreeNode *parent, const QString &fieldName, const QString &fieldAlias );
     QList< QgsAddAttributeFormContainerDialog::ContainerPair > recursiveListOfContainers( QgsAttributesFormTreeNode *parent ) const;
     void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, QgsAttributesFormTreeNode *parent );
+
+    bool mShowAliases = false;
 };
 
 

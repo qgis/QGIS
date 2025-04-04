@@ -25,6 +25,8 @@
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsattributeeditorelement.h"
 #include "qgspropertycollection.h"
+#include "qgssettingstree.h"
+#include "qgssettingstreenode.h"
 #include "qgsmessagebar.h"
 
 #include <QMimeData>
@@ -59,6 +61,9 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     Q_OBJECT
 
   public:
+    static inline QgsSettingsTreeNode *sTreeAttributesForm = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "attributes-form" ) );
+    static const QgsSettingsEntryBool *settingShowAliases;
+
     explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     /**
@@ -116,6 +121,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void mEditorLayoutComboBox_currentIndexChanged( int index );
     void pbnSelectEditForm_clicked();
     void mTbInitCode_clicked();
+    void toggleShowAliases( bool checked );
 
     /**
      * Inverts selection of top-level nodes.

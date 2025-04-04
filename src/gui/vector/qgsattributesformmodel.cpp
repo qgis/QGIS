@@ -26,7 +26,7 @@
 #include "qgsattributeeditortextelement.h"
 #include "qgsattributeeditorspacerelement.h"
 
-#include "QMimeData"
+#include <QMimeData>
 
 /*
  * FieldConfig implementation
@@ -301,10 +301,11 @@ QVariant QgsAttributesFormTreeNode::data( int role ) const
       return mName;
     case QgsAttributesFormModel::NodeIdRole:
       return mNodeId;
+    case QgsAttributesFormModel::NodeDisplayRole:
+      return mDisplayName;
     default:
       return QVariant();
   }
-  return QVariant();
 }
 
 bool QgsAttributesFormTreeNode::setData( int role, const QVariant &value )
@@ -326,6 +327,11 @@ bool QgsAttributesFormTreeNode::setData( int role, const QVariant &value )
       mName = value.toString();
       return true;
     }
+    case QgsAttributesFormModel::NodeDisplayRole:
+    {
+      mDisplayName = value.toString();
+      return true;
+    }
     case QgsAttributesFormModel::NodeTypeRole:
     {
       mNodeType = static_cast<QgsAttributesFormTreeData::AttributesFormTreeNodeType>( value.toInt() );
@@ -339,7 +345,6 @@ bool QgsAttributesFormTreeNode::setData( int role, const QVariant &value )
     default:
       return false;
   }
-  return false;
 }
 
 
@@ -779,6 +784,12 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       editorItem->setData( NodeTypeRole, QgsAttributesFormTreeData::Field );
       editorItem->setData( NodeDataRole, itemData );
 
+      const int fieldIndex = mLayer->fields().indexOf( editorElement->name() );
+      if ( fieldIndex != -1 )
+      {
+        editorItem->setData( NodeDisplayRole, mLayer->fields().field( fieldIndex ).alias() );
+      }
+
       break;
     }
 
@@ -942,7 +953,14 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
   {
     case Qt::DisplayRole:
     {
-      return node->displayName().isEmpty() ? node->name() : node->displayName();
+      if ( !showAliases() && node->type() == QgsAttributesFormTreeData::Field )
+      {
+        return node->name();
+      }
+      else
+      {
+        return node->displayName().isEmpty() ? node->name() : node->displayName();
+      }
     }
 
     case Qt::ToolTipRole:
@@ -965,11 +983,34 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
       return QVariant();
     }
 
+    case Qt::ForegroundRole:
+      if ( showAliases() && node->type() == QgsAttributesFormTreeData::Field )
+      {
+        if ( node->displayName().isEmpty() )
+        {
+          return QBrush( QColor( Qt::lightGray ) );
+        }
+      }
+      return QVariant();
+
+    case Qt::FontRole:
+      if ( showAliases() && node->type() == QgsAttributesFormTreeData::Field )
+      {
+        if ( node->displayName().isEmpty() )
+        {
+          QFont font = QFont();
+          font.setItalic( true );
+          return font;
+        }
+      }
+      return QVariant();
+
     case NodeDataRole:
     case NodeFieldConfigRole:
     case NodeNameRole:
     case NodeIdRole:
     case NodeTypeRole:
+    case NodeDisplayRole:
       return node->data( role );
 
     default:
@@ -1079,6 +1120,29 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
   return bDropSuccessful;
 }
 
+void QgsAttributesFormLayoutModel::updateAliasForFieldNodesRecursive( QgsAttributesFormTreeNode *parent, const QString &fieldName, const QString &fieldAlias )
+{
+  for ( int i = 0; i < parent->childCount(); i++ )
+  {
+    QgsAttributesFormTreeNode *child = parent->child( i );
+    if ( child->name() == fieldName && child->type() == QgsAttributesFormTreeData::Field )
+    {
+      child->setData( NodeDisplayRole, fieldAlias );
+      const QModelIndex index = createIndex( child->row(), 0, child );
+      emit dataChanged( index, index );
+    }
+
+    if ( child->childCount() > 0 )
+    {
+      updateAliasForFieldNodesRecursive( child, fieldName, fieldAlias );
+    }
+  }
+}
+
+void QgsAttributesFormLayoutModel::updateAliasForFieldNodes( const QString &fieldName, const QString &fieldAlias )
+{
+  updateAliasForFieldNodesRecursive( mRootNode.get(), fieldName, fieldAlias );
+}
 
 QList< QgsAddAttributeFormContainerDialog::ContainerPair > QgsAttributesFormLayoutModel::recursiveListOfContainers( QgsAttributesFormTreeNode *parent ) const
 {
@@ -1138,6 +1202,17 @@ void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int r
 
   nodeForIndex( parent )->insertChildNode( row, std::move( node ) );
   endInsertRows();
+}
+
+bool QgsAttributesFormLayoutModel::showAliases() const
+{
+  return mShowAliases;
+}
+
+void QgsAttributesFormLayoutModel::setShowAliases( bool show )
+{
+  mShowAliases = show;
+  emit dataChanged( QModelIndex(), QModelIndex(), QVector<int>() << Qt::DisplayRole << Qt::ForegroundRole << Qt::FontRole );
 }
 
 
