@@ -56,7 +56,7 @@ QString QgsGeometryCheckSliverPolygonAlgorithm::shortHelpString() const
                       "The thinness is the ratio between the area of the minimum square containing the polygon and the area of the polygon itself "
                       "(a square has a thinness value of  1).\n"
                       "The thinness value is between 1 and +infinity.\n"
-                      "If a polygon has an area higher than the maximum area, it is skipped (a maxium area value of 0 means no area check).\n\n"
+                      "If a polygon has an area higher than the maximum area, it is skipped (a maximum area value of 0 means no area check).\n\n"
                       "Polygons having a thinness higher than the maximum thinness are errors." );
 }
 
