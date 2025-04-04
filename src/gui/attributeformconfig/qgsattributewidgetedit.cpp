@@ -19,7 +19,7 @@
 #include "qgsgui.h"
 #include "qgsrelationwidgetregistry.h"
 
-QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( const QgsAttributeFormTreeData::DnDTreeItemData &itemData, QWidget *parent )
+QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( const QgsAttributesFormTreeData::DnDTreeNodeData &nodeData, QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
 {
   setupUi( this );
@@ -27,20 +27,20 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( const QgsAttributeFormTreeData::
   mVertStretchSpin->setClearValue( 0, tr( "Default" ) );
 
   // common configs
-  mShowLabelCheckBox->setChecked( itemData.showLabel() );
+  mShowLabelCheckBox->setChecked( nodeData.showLabel() );
 
-  mFormLabelFormatWidget->setLabelStyle( itemData.labelStyle() );
-  mHozStretchSpin->setValue( itemData.horizontalStretch() );
-  mVertStretchSpin->setValue( itemData.verticalStretch() );
+  mFormLabelFormatWidget->setLabelStyle( nodeData.labelStyle() );
+  mHozStretchSpin->setValue( nodeData.horizontalStretch() );
+  mVertStretchSpin->setValue( nodeData.verticalStretch() );
 
   mWidgetSpecificConfigGroupBox->hide();
 }
 
-void QgsAttributeWidgetEdit::setRelationSpecificWidget( const QgsAttributeFormTreeData::RelationEditorConfiguration &config, const QString &relationId )
+void QgsAttributeWidgetEdit::setRelationSpecificWidget( const QgsAttributesFormTreeData::RelationEditorConfiguration &configuration, const QString &relationId )
 {
   QGridLayout *layout = new QGridLayout;
   QgsAttributeWidgetRelationEditWidget *editWidget = new QgsAttributeWidgetRelationEditWidget( this );
-  editWidget->setRelationEditorConfiguration( config, relationId );
+  editWidget->setRelationEditorConfiguration( configuration, relationId );
   mSpecificEditWidget = editWidget;
   layout->addWidget( mSpecificEditWidget );
   mWidgetSpecificConfigGroupBox->setLayout( layout );
@@ -48,23 +48,23 @@ void QgsAttributeWidgetEdit::setRelationSpecificWidget( const QgsAttributeFormTr
   mWidgetSpecificConfigGroupBox->show();
 }
 
-void QgsAttributeWidgetEdit::updateItemData( QgsAttributeFormTreeData::DnDTreeItemData &itemData ) const
+void QgsAttributeWidgetEdit::updateNodeData( QgsAttributesFormTreeData::DnDTreeNodeData &nodeData ) const
 {
   // common configs
-  itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
-  itemData.setLabelStyle( mFormLabelFormatWidget->labelStyle() );
-  itemData.setHorizontalStretch( mHozStretchSpin->value() );
-  itemData.setVerticalStretch( mVertStretchSpin->value() );
+  nodeData.setShowLabel( mShowLabelCheckBox->isChecked() );
+  nodeData.setLabelStyle( mFormLabelFormatWidget->labelStyle() );
+  nodeData.setHorizontalStretch( mHozStretchSpin->value() );
+  nodeData.setVerticalStretch( mVertStretchSpin->value() );
 }
 
-QgsAttributeFormTreeData::RelationEditorConfiguration QgsAttributeWidgetEdit::updatedRelationConfiguration() const
+QgsAttributesFormTreeData::RelationEditorConfiguration QgsAttributeWidgetEdit::updatedRelationConfiguration() const
 {
   QgsAttributeWidgetRelationEditWidget *editWidget = qobject_cast<QgsAttributeWidgetRelationEditWidget *>( mSpecificEditWidget );
   if ( editWidget )
   {
     return editWidget->relationEditorConfiguration();
   }
-  return QVariant().value< QgsAttributeFormTreeData::RelationEditorConfiguration >();
+  return QVariant().value< QgsAttributesFormTreeData::RelationEditorConfiguration >();
 }
 
 void QgsAttributeWidgetEdit::setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle )
@@ -105,7 +105,7 @@ QgsAttributeWidgetRelationEditWidget::QgsAttributeWidgetRelationEditWidget( QWid
   connect( mRelationCardinalityCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributeWidgetRelationEditWidget::relationCardinalityComboCurrentIndexChanged );
 }
 
-void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const QgsAttributeFormTreeData::RelationEditorConfiguration &config, const QString &relationId )
+void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const QgsAttributesFormTreeData::RelationEditorConfiguration &config, const QString &relationId )
 {
   //load the combo mRelationCardinalityCombo
   mRelationCardinalityCombo->clear();
@@ -154,9 +154,9 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
   mRelationForceSuppressFormPopupCheckBox->setChecked( config.forceSuppressFormPopup );
 }
 
-QgsAttributeFormTreeData::RelationEditorConfiguration QgsAttributeWidgetRelationEditWidget::relationEditorConfiguration() const
+QgsAttributesFormTreeData::RelationEditorConfiguration QgsAttributeWidgetRelationEditWidget::relationEditorConfiguration() const
 {
-  QgsAttributeFormTreeData::RelationEditorConfiguration relEdCfg;
+  QgsAttributesFormTreeData::RelationEditorConfiguration relEdCfg;
   relEdCfg.mRelationWidgetType = mWidgetTypeComboBox->currentData().toString();
   relEdCfg.mRelationWidgetConfig = mConfigWidget->config();
   relEdCfg.nmRelationId = mRelationCardinalityCombo->currentData();

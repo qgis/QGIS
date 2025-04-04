@@ -20,7 +20,7 @@
 #include "qgsattributesformmodel.h"
 #include "qgsvectorlayer.h"
 
-QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( const QgsAttributeFormTreeData::DnDTreeItemData &itemData, QgsVectorLayer *layer, QWidget *parent )
+QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( const QgsAttributesFormTreeData::DnDTreeNodeData &nodeData, QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
@@ -28,22 +28,22 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( const QgsAttribute
   mHozStretchSpin->setClearValue( 0, tr( "Default" ) );
   mVertStretchSpin->setClearValue( 0, tr( "Default" ) );
 
-  mShowLabelCheckBox->setChecked( itemData.showLabel() );
+  mShowLabelCheckBox->setChecked( nodeData.showLabel() );
 
-  mControlVisibilityGroupBox->setChecked( itemData.visibilityExpression().enabled() );
+  mControlVisibilityGroupBox->setChecked( nodeData.visibilityExpression().enabled() );
   mVisibilityExpressionWidget->setLayer( layer );
-  mVisibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
-  mColumnCountSpinBox->setValue( itemData.columnCount() );
+  mVisibilityExpressionWidget->setExpression( nodeData.visibilityExpression()->expression() );
+  mColumnCountSpinBox->setValue( nodeData.columnCount() );
   mBackgroundColorButton->setShowNull( true );
-  mBackgroundColorButton->setColor( itemData.backgroundColor() );
-  mCollapsedCheckBox->setChecked( itemData.collapsed() );
-  mControlCollapsedGroupBox->setChecked( itemData.collapsedExpression().enabled() );
-  mCollapsedExpressionWidget->setExpression( itemData.collapsedExpression()->expression() );
+  mBackgroundColorButton->setColor( nodeData.backgroundColor() );
+  mCollapsedCheckBox->setChecked( nodeData.collapsed() );
+  mControlCollapsedGroupBox->setChecked( nodeData.collapsedExpression().enabled() );
+  mCollapsedExpressionWidget->setExpression( nodeData.collapsedExpression()->expression() );
 
-  mHozStretchSpin->setValue( itemData.horizontalStretch() );
-  mVertStretchSpin->setValue( itemData.verticalStretch() );
+  mHozStretchSpin->setValue( nodeData.horizontalStretch() );
+  mVertStretchSpin->setValue( nodeData.verticalStretch() );
 
-  mFormLabelFormatWidget->setLabelStyle( itemData.labelStyle() );
+  mFormLabelFormatWidget->setLabelStyle( nodeData.labelStyle() );
 }
 
 void QgsAttributeFormContainerEdit::setTitle( const QString &containerName )
@@ -55,7 +55,7 @@ void QgsAttributeFormContainerEdit::setUpContainerTypeComboBox( bool isTopLevelC
 {
   if ( isTopLevelContainer )
   {
-    // only top level items can be tabs
+    // only top level nodes can be tabs
     mTypeCombo->addItem( tr( "Tab" ), QVariant::fromValue( Qgis::AttributeEditorContainerType::Tab ) );
   }
   mTypeCombo->addItem( tr( "Group Box" ), QVariant::fromValue( Qgis::AttributeEditorContainerType::GroupBox ) );
@@ -75,27 +75,27 @@ void QgsAttributeFormContainerEdit::registerExpressionContextGenerator( QgsExpre
   mCollapsedExpressionWidget->registerExpressionContextGenerator( generator );
 }
 
-void QgsAttributeFormContainerEdit::updateItemData( QgsAttributeFormTreeData::DnDTreeItemData &itemData, QString &containerName )
+void QgsAttributeFormContainerEdit::updateNodeData( QgsAttributesFormTreeData::DnDTreeNodeData &nodeData, QString &containerName )
 {
-  itemData.setColumnCount( mColumnCountSpinBox->value() );
-  itemData.setContainerType( mTypeCombo->currentData().value<Qgis::AttributeEditorContainerType>() );
+  nodeData.setColumnCount( mColumnCountSpinBox->value() );
+  nodeData.setContainerType( mTypeCombo->currentData().value<Qgis::AttributeEditorContainerType>() );
   containerName = mTitleLineEdit->text();
-  itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
-  itemData.setBackgroundColor( mBackgroundColorButton->color() );
-  itemData.setLabelStyle( mFormLabelFormatWidget->labelStyle() );
-  itemData.setHorizontalStretch( mHozStretchSpin->value() );
-  itemData.setVerticalStretch( mVertStretchSpin->value() );
+  nodeData.setShowLabel( mShowLabelCheckBox->isChecked() );
+  nodeData.setBackgroundColor( mBackgroundColorButton->color() );
+  nodeData.setLabelStyle( mFormLabelFormatWidget->labelStyle() );
+  nodeData.setHorizontalStretch( mHozStretchSpin->value() );
+  nodeData.setVerticalStretch( mVertStretchSpin->value() );
 
   QgsOptionalExpression visibilityExpression;
   visibilityExpression.setData( QgsExpression( mVisibilityExpressionWidget->expression() ) );
   visibilityExpression.setEnabled( mControlVisibilityGroupBox->isChecked() );
-  itemData.setVisibilityExpression( visibilityExpression );
+  nodeData.setVisibilityExpression( visibilityExpression );
 
   QgsOptionalExpression collapsedExpression;
   collapsedExpression.setData( QgsExpression( mCollapsedExpressionWidget->expression() ) );
   collapsedExpression.setEnabled( mControlCollapsedGroupBox->isChecked() );
-  itemData.setCollapsedExpression( collapsedExpression );
-  itemData.setCollapsed( mCollapsedCheckBox->isEnabled() ? mCollapsedCheckBox->isChecked() : false );
+  nodeData.setCollapsedExpression( collapsedExpression );
+  nodeData.setCollapsed( mCollapsedCheckBox->isEnabled() ? mCollapsedCheckBox->isChecked() : false );
 }
 
 void QgsAttributeFormContainerEdit::containerTypeChanged()

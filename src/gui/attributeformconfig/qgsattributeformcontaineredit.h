@@ -26,10 +26,9 @@
 #include <QWidget>
 
 
-class QTreeWidgetItem;
-
 /**
- * Widget to edit a container (tab or group box) of a form configuration
+ * Widget to edit a container (tab, group box, or row) of a form configuration.
+ *
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsAttributeFormContainerEdit : public QWidget, private Ui_QgsAttributeFormContainerEdit
@@ -37,14 +36,17 @@ class GUI_EXPORT QgsAttributeFormContainerEdit : public QWidget, private Ui_QgsA
     Q_OBJECT
 
   public:
-    explicit QgsAttributeFormContainerEdit( const QgsAttributeFormTreeData::DnDTreeItemData &itemData, QgsVectorLayer *layer, QWidget *parent = nullptr );
+    explicit QgsAttributeFormContainerEdit( const QgsAttributesFormTreeData::DnDTreeNodeData &nodeData, QgsVectorLayer *layer, QWidget *parent = nullptr );
 
-
+    /**
+     * Sets the \a containerName.
+     *
+     * \since QGIS 3.44
+     */
     void setTitle( const QString &containerName );
 
     /**
-     * Sets up the container type comboBox
-     * \param isTopLevelContainer Whether the container is allowed to be a tab or not
+     * Sets up the container type comboBox based on the \a containerType and on whether it \a isTopLevelContainer.
      *
      * \since QGIS 3.44
      */
@@ -57,10 +59,14 @@ class GUI_EXPORT QgsAttributeFormContainerEdit : public QWidget, private Ui_QgsA
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
-    void updateItemData( QgsAttributeFormTreeData::DnDTreeItemData &itemData, QString &containerName );
+    /**
+     * Updates the contents of the \a nodeData object, as well as the \a containerName based on the widget status.
+     *
+     * \since QGIS 3.44
+     */
+    void updateNodeData( QgsAttributesFormTreeData::DnDTreeNodeData &nodeData, QString &containerName );
 
   private slots:
-
     void containerTypeChanged();
 };
 

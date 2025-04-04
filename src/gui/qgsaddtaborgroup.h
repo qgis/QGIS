@@ -50,9 +50,10 @@ class GUI_EXPORT QgsAddAttributeFormContainerDialog : public QDialog, private Ui
     QString name();
 
     /**
-     * Returns tree item corresponding to the selected parent container.
+     * Returns tree model index corresponding to the selected parent container.
      *
-     * Will be NULLPTR when a new tab is created.
+     * Will be an invalid index when a new tab is created.
+     * \since QGIS 3.44
      */
     QModelIndex parentContainerNode() const;
 

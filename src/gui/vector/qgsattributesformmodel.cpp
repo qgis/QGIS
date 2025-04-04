@@ -15,6 +15,7 @@
 
 #include "qgsactionmanager.h"
 #include "qgsattributesformmodel.h"
+#include "moc_qgsattributesformmodel.cpp"
 #include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsattributeeditoraction.h"
@@ -30,7 +31,7 @@
 /*
  * FieldConfig implementation
  */
-QgsAttributeFormTreeData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
+QgsAttributesFormTreeData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
 {
   mAlias = layer->fields().at( idx ).alias();
   mDataDefinedProperties = layer->editFormConfig().dataDefinedFieldProperties( layer->fields().at( idx ).name() );
@@ -46,163 +47,164 @@ QgsAttributeFormTreeData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int i
   mDuplicatePolicy = layer->fields().at( idx ).duplicatePolicy();
 }
 
-QgsAttributeFormTreeData::FieldConfig::operator QVariant()
+QgsAttributesFormTreeData::FieldConfig::operator QVariant()
 {
-  return QVariant::fromValue<QgsAttributeFormTreeData::FieldConfig>( *this );
+  return QVariant::fromValue<QgsAttributesFormTreeData::FieldConfig>( *this );
 }
 
 /*
  * RelationEditorConfiguration implementation
  */
-QgsAttributeFormTreeData::RelationEditorConfiguration::operator QVariant()
+QgsAttributesFormTreeData::RelationEditorConfiguration::operator QVariant()
 {
-  return QVariant::fromValue<QgsAttributeFormTreeData::RelationEditorConfiguration>( *this );
+  return QVariant::fromValue<QgsAttributesFormTreeData::RelationEditorConfiguration>( *this );
 }
 
-Qgis::AttributeEditorContainerType QgsAttributeFormTreeData::DnDTreeItemData::containerType() const
+Qgis::AttributeEditorContainerType QgsAttributesFormTreeData::DnDTreeNodeData::containerType() const
 {
   return mContainerType;
 }
 
-void QgsAttributeFormTreeData::DnDTreeItemData::setContainerType( Qgis::AttributeEditorContainerType type )
+void QgsAttributesFormTreeData::DnDTreeNodeData::setContainerType( Qgis::AttributeEditorContainerType type )
 {
   mContainerType = type;
 }
 
-const QgsAttributeEditorElement::LabelStyle QgsAttributeFormTreeData::DnDTreeItemData::labelStyle() const
+const QgsAttributeEditorElement::LabelStyle QgsAttributesFormTreeData::DnDTreeNodeData::labelStyle() const
 {
   return mLabelStyle;
 }
 
-void QgsAttributeFormTreeData::DnDTreeItemData::setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle )
+void QgsAttributesFormTreeData::DnDTreeNodeData::setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle )
 {
   mLabelStyle = labelStyle;
 }
 
-bool QgsAttributeFormTreeData::DnDTreeItemData::showLabel() const
+bool QgsAttributesFormTreeData::DnDTreeNodeData::showLabel() const
 {
   return mShowLabel;
 }
 
-void QgsAttributeFormTreeData::DnDTreeItemData::setShowLabel( bool showLabel )
+void QgsAttributesFormTreeData::DnDTreeNodeData::setShowLabel( bool showLabel )
 {
   mShowLabel = showLabel;
 }
 
-QgsOptionalExpression QgsAttributeFormTreeData::DnDTreeItemData::visibilityExpression() const
+QgsOptionalExpression QgsAttributesFormTreeData::DnDTreeNodeData::visibilityExpression() const
 {
   return mVisibilityExpression;
 }
 
-void QgsAttributeFormTreeData::DnDTreeItemData::setVisibilityExpression( const QgsOptionalExpression &visibilityExpression )
+void QgsAttributesFormTreeData::DnDTreeNodeData::setVisibilityExpression( const QgsOptionalExpression &visibilityExpression )
 {
   mVisibilityExpression = visibilityExpression;
 }
 
-QgsOptionalExpression QgsAttributeFormTreeData::DnDTreeItemData::collapsedExpression() const
+QgsOptionalExpression QgsAttributesFormTreeData::DnDTreeNodeData::collapsedExpression() const
 {
   return mCollapsedExpression;
 }
 
-void QgsAttributeFormTreeData::DnDTreeItemData::setCollapsedExpression( const QgsOptionalExpression &collapsedExpression )
+void QgsAttributesFormTreeData::DnDTreeNodeData::setCollapsedExpression( const QgsOptionalExpression &collapsedExpression )
 {
   mCollapsedExpression = collapsedExpression;
 }
 
-QgsAttributeFormTreeData::RelationEditorConfiguration QgsAttributeFormTreeData::DnDTreeItemData::relationEditorConfiguration() const
+QgsAttributesFormTreeData::RelationEditorConfiguration QgsAttributesFormTreeData::DnDTreeNodeData::relationEditorConfiguration() const
 {
   return mRelationEditorConfiguration;
 }
 
-void QgsAttributeFormTreeData::DnDTreeItemData::setRelationEditorConfiguration( const QgsAttributeFormTreeData::RelationEditorConfiguration &relationEditorConfiguration )
+void QgsAttributesFormTreeData::DnDTreeNodeData::setRelationEditorConfiguration( const QgsAttributesFormTreeData::RelationEditorConfiguration &relationEditorConfiguration )
 {
   mRelationEditorConfiguration = relationEditorConfiguration;
 }
 
-QgsAttributeFormTreeData::QmlElementEditorConfiguration QgsAttributeFormTreeData::DnDTreeItemData::qmlElementEditorConfiguration() const
+QgsAttributesFormTreeData::QmlElementEditorConfiguration QgsAttributesFormTreeData::DnDTreeNodeData::qmlElementEditorConfiguration() const
 {
   return mQmlElementEditorConfiguration;
 }
 
-void QgsAttributeFormTreeData::DnDTreeItemData::setQmlElementEditorConfiguration( const QmlElementEditorConfiguration &qmlElementEditorConfiguration )
+void QgsAttributesFormTreeData::DnDTreeNodeData::setQmlElementEditorConfiguration( const QmlElementEditorConfiguration &qmlElementEditorConfiguration )
 {
   mQmlElementEditorConfiguration = qmlElementEditorConfiguration;
 }
 
 
-QgsAttributeFormTreeData::HtmlElementEditorConfiguration QgsAttributeFormTreeData::DnDTreeItemData::htmlElementEditorConfiguration() const
+QgsAttributesFormTreeData::HtmlElementEditorConfiguration QgsAttributesFormTreeData::DnDTreeNodeData::htmlElementEditorConfiguration() const
 {
   return mHtmlElementEditorConfiguration;
 }
 
-void QgsAttributeFormTreeData::DnDTreeItemData::setHtmlElementEditorConfiguration( const HtmlElementEditorConfiguration &htmlElementEditorConfiguration )
+void QgsAttributesFormTreeData::DnDTreeNodeData::setHtmlElementEditorConfiguration( const HtmlElementEditorConfiguration &htmlElementEditorConfiguration )
 {
   mHtmlElementEditorConfiguration = htmlElementEditorConfiguration;
 }
 
-QgsAttributeFormTreeData::SpacerElementEditorConfiguration QgsAttributeFormTreeData::DnDTreeItemData::spacerElementEditorConfiguration() const
+QgsAttributesFormTreeData::SpacerElementEditorConfiguration QgsAttributesFormTreeData::DnDTreeNodeData::spacerElementEditorConfiguration() const
 {
   return mSpacerElementEditorConfiguration;
 }
 
-void QgsAttributeFormTreeData::DnDTreeItemData::setSpacerElementEditorConfiguration( SpacerElementEditorConfiguration spacerElementEditorConfiguration )
+void QgsAttributesFormTreeData::DnDTreeNodeData::setSpacerElementEditorConfiguration( SpacerElementEditorConfiguration spacerElementEditorConfiguration )
 {
   mSpacerElementEditorConfiguration = spacerElementEditorConfiguration;
 }
 
-QColor QgsAttributeFormTreeData::DnDTreeItemData::backgroundColor() const
+QColor QgsAttributesFormTreeData::DnDTreeNodeData::backgroundColor() const
 {
   return mBackgroundColor;
 }
 
-void QgsAttributeFormTreeData::DnDTreeItemData::setBackgroundColor( const QColor &backgroundColor )
+void QgsAttributesFormTreeData::DnDTreeNodeData::setBackgroundColor( const QColor &backgroundColor )
 {
   mBackgroundColor = backgroundColor;
 }
 
-QgsAttributeFormTreeData::TextElementEditorConfiguration QgsAttributeFormTreeData::DnDTreeItemData::textElementEditorConfiguration() const
+QgsAttributesFormTreeData::TextElementEditorConfiguration QgsAttributesFormTreeData::DnDTreeNodeData::textElementEditorConfiguration() const
 {
   return mTextElementEditorConfiguration;
 }
 
-void QgsAttributeFormTreeData::DnDTreeItemData::setTextElementEditorConfiguration( const QgsAttributeFormTreeData::TextElementEditorConfiguration &textElementEditorConfiguration )
+void QgsAttributesFormTreeData::DnDTreeNodeData::setTextElementEditorConfiguration( const QgsAttributesFormTreeData::TextElementEditorConfiguration &textElementEditorConfiguration )
 {
   mTextElementEditorConfiguration = textElementEditorConfiguration;
 }
 
 //
-// AttributesFormTreeNode implementation
+// QgsAttributesFormTreeNode implementation
 //
-AttributesFormTreeNode::AttributesFormTreeNode( QgsAttributeFormTreeData::AttributeFormTreeItemType itemType, const QString &name, const QString &displayName, AttributesFormTreeNode *parent )
+
+QgsAttributesFormTreeNode::QgsAttributesFormTreeNode( QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, const QString &name, const QString &displayName, QgsAttributesFormTreeNode *parent )
   : mName( name )
   , mDisplayName( !displayName.isEmpty() ? displayName : name )
-  , mNodeType( itemType )
+  , mNodeType( nodeType )
   , mParent( parent )
 {}
 
-AttributesFormTreeNode::AttributesFormTreeNode( QgsAttributeFormTreeData::AttributeFormTreeItemType itemType, const QgsAttributeFormTreeData::DnDTreeItemData &data, const QString &name, const QString &displayName, AttributesFormTreeNode *parent )
+QgsAttributesFormTreeNode::QgsAttributesFormTreeNode( QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, const QgsAttributesFormTreeData::DnDTreeNodeData &data, const QString &name, const QString &displayName, QgsAttributesFormTreeNode *parent )
   : mName( name )
   , mDisplayName( !displayName.isEmpty() ? displayName : name )
-  , mNodeType( itemType )
+  , mNodeType( nodeType )
   , mNodeData( data )
   , mParent( parent )
 {}
 
-AttributesFormTreeNode *AttributesFormTreeNode::child( int number )
+QgsAttributesFormTreeNode *QgsAttributesFormTreeNode::child( int row )
 {
-  if ( !mChildren.empty() && number >= 0 && number < childCount() )
-    return mChildren.at( number ).get();
+  if ( !mChildren.empty() && row >= 0 && row < childCount() )
+    return mChildren.at( row ).get();
 
   return nullptr;
 }
 
-AttributesFormTreeNode *AttributesFormTreeNode::firstTopChild( const QgsAttributeFormTreeData::AttributeFormTreeItemType nodeType, const QString &nodeId ) const
+QgsAttributesFormTreeNode *QgsAttributesFormTreeNode::firstTopChild( const QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, const QString &nodeId ) const
 {
   if ( !mChildren.empty() && nodeId.trimmed().isEmpty() )
     return nullptr;
 
-  // Search for first matching item by name
-  const auto it = std::find_if( mChildren.cbegin(), mChildren.cend(), [nodeType, nodeId]( const std::unique_ptr< AttributesFormTreeNode > &treeNode ) {
+  // Search for first matching node by name
+  const auto it = std::find_if( mChildren.cbegin(), mChildren.cend(), [nodeType, nodeId]( const std::unique_ptr< QgsAttributesFormTreeNode > &treeNode ) {
     return treeNode->type() == nodeType && treeNode->name() == nodeId;
   } );
 
@@ -212,25 +214,10 @@ AttributesFormTreeNode *AttributesFormTreeNode::firstTopChild( const QgsAttribut
   return nullptr;
 }
 
-AttributesFormTreeNode *AttributesFormTreeNode::firstChildRecursive( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const
+QgsAttributesFormTreeNode *QgsAttributesFormTreeNode::firstChildRecursive( const QgsAttributesFormTreeData::AttributesFormTreeNodeType &nodeType, const QString &nodeId ) const
 {
   if ( !mChildren.empty() && nodeId.trimmed().isEmpty() )
     return nullptr;
-
-  // for ( const auto &child : std::as_const( mChildren ) )
-  // {
-  //   if ( child->childCount() == 0 )
-  //   {
-  //     if ( child->type() == nodeType && child->id() == nodeId )
-  //       return child.get();
-  //   }
-  //   else
-  //   {
-  //     AttributesFormTreeNode *node = child->firstChildRecursive( nodeType, nodeId );
-  //     if ( node )
-  //       return node;
-  //   }
-  // }
 
   for ( const auto &child : std::as_const( mChildren ) )
   {
@@ -239,7 +226,7 @@ AttributesFormTreeNode *AttributesFormTreeNode::firstChildRecursive( const QgsAt
 
     if ( child->childCount() > 0 )
     {
-      AttributesFormTreeNode *node = child->firstChildRecursive( nodeType, nodeId );
+      QgsAttributesFormTreeNode *node = child->firstChildRecursive( nodeType, nodeId );
       if ( node )
         return node;
     }
@@ -248,18 +235,18 @@ AttributesFormTreeNode *AttributesFormTreeNode::firstChildRecursive( const QgsAt
   return nullptr;
 }
 
-int AttributesFormTreeNode::childCount() const
+int QgsAttributesFormTreeNode::childCount() const
 {
   return int( mChildren.size() );
 }
 
-int AttributesFormTreeNode::row() const
+int QgsAttributesFormTreeNode::row() const
 {
   if ( !mParent )
     return 0;
 
-  const auto it = std::find_if( mParent->mChildren.cbegin(), mParent->mChildren.cend(), [this]( const std::unique_ptr< AttributesFormTreeNode > &treeItem ) {
-    return treeItem.get() == this;
+  const auto it = std::find_if( mParent->mChildren.cbegin(), mParent->mChildren.cend(), [this]( const std::unique_ptr< QgsAttributesFormTreeNode > &treeNode ) {
+    return treeNode.get() == this;
   } );
 
   if ( it != mParent->mChildren.cend() )
@@ -267,18 +254,18 @@ int AttributesFormTreeNode::row() const
   return -1;
 }
 
-void AttributesFormTreeNode::addChildItem( std::unique_ptr< AttributesFormTreeNode > &&item )
+void QgsAttributesFormTreeNode::addChildNode( std::unique_ptr< QgsAttributesFormTreeNode > &&node )
 {
-  if ( !item )
+  if ( !node )
     return;
 
-  if ( !item->mParent )
-    item->mParent = this;
+  if ( !node->mParent )
+    node->mParent = this;
 
-  mChildren.push_back( std::move( item ) );
+  mChildren.push_back( std::move( node ) );
 }
 
-void AttributesFormTreeNode::insertChildNode( int position, std::unique_ptr< AttributesFormTreeNode > &&node )
+void QgsAttributesFormTreeNode::insertChildNode( int position, std::unique_ptr< QgsAttributesFormTreeNode > &&node )
 {
   if ( position < 0 || position > ( int ) mChildren.size() || !node )
     return;
@@ -289,18 +276,18 @@ void AttributesFormTreeNode::insertChildNode( int position, std::unique_ptr< Att
   mChildren.insert( mChildren.begin() + position, std::move( node ) );
 }
 
-void AttributesFormTreeNode::deleteChildAtIndex( int index )
+void QgsAttributesFormTreeNode::deleteChildAtIndex( int index )
 {
   if ( index >= 0 && index < ( int ) mChildren.size() )
     mChildren.erase( mChildren.begin() + index );
 }
 
-void AttributesFormTreeNode::deleteChildren()
+void QgsAttributesFormTreeNode::deleteChildren()
 {
   mChildren.clear();
 }
 
-QVariant AttributesFormTreeNode::data( int role ) const
+QVariant QgsAttributesFormTreeNode::data( int role ) const
 {
   switch ( role )
   {
@@ -320,18 +307,18 @@ QVariant AttributesFormTreeNode::data( int role ) const
   return QVariant();
 }
 
-bool AttributesFormTreeNode::setData( int role, const QVariant &value )
+bool QgsAttributesFormTreeNode::setData( int role, const QVariant &value )
 {
   switch ( role )
   {
     case QgsAttributesFormModel::NodeDataRole:
     {
-      mNodeData = value.value< QgsAttributeFormTreeData::DnDTreeItemData >();
+      mNodeData = value.value< QgsAttributesFormTreeData::DnDTreeNodeData >();
       return true;
     }
     case QgsAttributesFormModel::NodeFieldConfigRole:
     {
-      mFieldConfigData = value.value< QgsAttributeFormTreeData::FieldConfig >();
+      mFieldConfigData = value.value< QgsAttributesFormTreeData::FieldConfig >();
       return true;
     }
     case QgsAttributesFormModel::NodeNameRole:
@@ -341,7 +328,7 @@ bool AttributesFormTreeNode::setData( int role, const QVariant &value )
     }
     case QgsAttributesFormModel::NodeTypeRole:
     {
-      mNodeType = static_cast<QgsAttributeFormTreeData::AttributeFormTreeItemType>( value.toInt() );
+      mNodeType = static_cast<QgsAttributesFormTreeData::AttributesFormTreeNodeType>( value.toInt() );
       return true;
     }
     case QgsAttributesFormModel::NodeIdRole:
@@ -355,28 +342,28 @@ bool AttributesFormTreeNode::setData( int role, const QVariant &value )
   return false;
 }
 
+
 //
 // QgsAttributesFormModel implementation
 //
 
-
 QgsAttributesFormModel::QgsAttributesFormModel( QgsVectorLayer *layer, QObject *parent )
   : QAbstractItemModel( parent )
-  , mRootItem( std::make_unique< AttributesFormTreeNode >() )
+  , mRootNode( std::make_unique< QgsAttributesFormTreeNode >() )
   , mLayer( layer )
 {
 }
 
 QgsAttributesFormModel::~QgsAttributesFormModel() = default;
 
-AttributesFormTreeNode *QgsAttributesFormModel::getItem( const QModelIndex &index ) const
+QgsAttributesFormTreeNode *QgsAttributesFormModel::nodeForIndex( const QModelIndex &index ) const
 {
   if ( index.isValid() )
   {
-    if ( auto *item = static_cast<AttributesFormTreeNode *>( index.internalPointer() ) )
-      return item;
+    if ( auto *node = static_cast<QgsAttributesFormTreeNode *>( index.internalPointer() ) )
+      return node;
   }
-  return mRootItem.get();
+  return mRootNode.get();
 }
 
 int QgsAttributesFormModel::rowCount( const QModelIndex &parent ) const
@@ -384,9 +371,9 @@ int QgsAttributesFormModel::rowCount( const QModelIndex &parent ) const
   if ( parent.isValid() && parent.column() > 0 )
     return 0;
 
-  const AttributesFormTreeNode *parentItem = getItem( parent );
+  const QgsAttributesFormTreeNode *parentNode = nodeForIndex( parent );
 
-  return parentItem ? parentItem->childCount() : 0;
+  return parentNode ? parentNode->childCount() : 0;
 }
 
 int QgsAttributesFormModel::columnCount( const QModelIndex &parent ) const
@@ -440,12 +427,12 @@ QModelIndex QgsAttributesFormModel::index( int row, int column, const QModelInde
   if ( !hasIndex( row, column, parent ) )
     return QModelIndex();
 
-  AttributesFormTreeNode *parentItem = getItem( parent );
-  if ( !parentItem )
+  QgsAttributesFormTreeNode *parentNode = nodeForIndex( parent );
+  if ( !parentNode )
     return QModelIndex();
 
-  if ( AttributesFormTreeNode *childItem = parentItem->child( row ) )
-    return createIndex( row, column, childItem );
+  if ( QgsAttributesFormTreeNode *childNode = parentNode->child( row ) )
+    return createIndex( row, column, childNode );
 
   return QModelIndex();
 }
@@ -455,23 +442,23 @@ QModelIndex QgsAttributesFormModel::parent( const QModelIndex &index ) const
   if ( !index.isValid() )
     return QModelIndex();
 
-  AttributesFormTreeNode *childItem = getItem( index );
-  AttributesFormTreeNode *parentItem = childItem ? childItem->parent() : nullptr;
+  QgsAttributesFormTreeNode *childNode = nodeForIndex( index );
+  QgsAttributesFormTreeNode *parentNode = childNode ? childNode->parent() : nullptr;
 
-  return ( parentItem != mRootItem.get() && parentItem != nullptr )
-           ? createIndex( parentItem->row(), 0, parentItem )
+  return ( parentNode != mRootNode.get() && parentNode != nullptr )
+           ? createIndex( parentNode->row(), 0, parentNode )
            : QModelIndex();
 }
 
-QModelIndex QgsAttributesFormModel::getFirstTopMatchingModelIndex( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const
+QModelIndex QgsAttributesFormModel::firstTopMatchingModelIndex( const QgsAttributesFormTreeData::AttributesFormTreeNodeType &nodeType, const QString &nodeId ) const
 {
-  AttributesFormTreeNode *node = mRootItem->firstTopChild( nodeType, nodeId );
+  QgsAttributesFormTreeNode *node = mRootNode->firstTopChild( nodeType, nodeId );
   return node ? createIndex( node->row(), 0, node ) : QModelIndex();
 }
 
-QModelIndex QgsAttributesFormModel::getFirstRecursiveMatchingModelIndex( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const
+QModelIndex QgsAttributesFormModel::firstRecursiveMatchingModelIndex( const QgsAttributesFormTreeData::AttributesFormTreeNodeType &nodeType, const QString &nodeId ) const
 {
-  AttributesFormTreeNode *node = mRootItem->firstChildRecursive( nodeType, nodeId );
+  QgsAttributesFormTreeNode *node = mRootNode->firstChildRecursive( nodeType, nodeId );
   return node ? createIndex( node->row(), 0, node ) : QModelIndex();
 }
 
@@ -485,8 +472,6 @@ QgsAttributesAvailableWidgetsModel::QgsAttributesAvailableWidgetsModel( QgsVecto
   , mProject( project )
 {
 }
-
-//QgsAttributesAvailableWidgetsModel::~QgsAttributesAvailableWidgetsModel() = default;
 
 Qt::ItemFlags QgsAttributesAvailableWidgetsModel::flags( const QModelIndex &index ) const
 {
@@ -505,37 +490,37 @@ QVariant QgsAttributesAvailableWidgetsModel::headerData( int section, Qt::Orient
 void QgsAttributesAvailableWidgetsModel::populate()
 {
   beginResetModel();
-  mRootItem->deleteChildren();
+  mRootNode->deleteChildren();
 
   // load Fields
 
-  auto itemFields = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::WidgetType, QStringLiteral( "Fields" ) );
+  auto itemFields = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::WidgetType, QStringLiteral( "Fields" ) );
 
   const QgsFields fields = mLayer->fields();
   for ( int i = 0; i < fields.size(); ++i )
   {
     const QgsField field = fields.at( i );
-    auto itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+    auto itemData = QgsAttributesFormTreeData::DnDTreeNodeData();
     itemData.setShowLabel( true );
 
-    QgsAttributeFormTreeData::FieldConfig cfg( mLayer, i );
+    QgsAttributesFormTreeData::FieldConfig cfg( mLayer, i );
 
-    auto item = std::make_unique< AttributesFormTreeNode >();
+    auto item = std::make_unique< QgsAttributesFormTreeNode >();
     item->setData( NodeFieldConfigRole, cfg );
     item->setData( NodeNameRole, field.name() );
     item->setData( NodeIdRole, field.name() ); // Field names act as ids
-    item->setData( NodeTypeRole, QgsAttributeFormTreeData::Field );
+    item->setData( NodeTypeRole, QgsAttributesFormTreeData::Field );
     item->setData( NodeDataRole, itemData );
     item->setIcon( fields.iconForField( i, true ) );
 
-    itemFields->addChildItem( std::move( item ) );
+    itemFields->addChildNode( std::move( item ) );
   }
 
-  mRootItem->addChildItem( std::move( itemFields ) );
+  mRootNode->addChildNode( std::move( itemFields ) );
 
   //load Relations
 
-  auto itemRelations = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::WidgetType, QStringLiteral( "Relations" ), tr( "Relations" ) );
+  auto itemRelations = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::WidgetType, QStringLiteral( "Relations" ), tr( "Relations" ) );
 
   const QList<QgsRelation> relations = mProject->relationManager()->referencedRelations( mLayer );
 
@@ -551,22 +536,22 @@ void QgsAttributesAvailableWidgetsModel::populate()
     {
       name = relation.name();
     }
-    QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+    QgsAttributesFormTreeData::DnDTreeNodeData itemData = QgsAttributesFormTreeData::DnDTreeNodeData();
     itemData.setShowLabel( true );
 
-    auto itemRelation = std::make_unique< AttributesFormTreeNode >();
-    itemRelation->setData( NodeTypeRole, QgsAttributeFormTreeData::Relation );
+    auto itemRelation = std::make_unique< QgsAttributesFormTreeNode >();
+    itemRelation->setData( NodeTypeRole, QgsAttributesFormTreeData::Relation );
     itemRelation->setData( NodeNameRole, name );
     itemRelation->setData( NodeIdRole, relation.id() );
     itemRelation->setData( NodeDataRole, itemData );
-    itemRelations->addChildItem( std::move( itemRelation ) );
+    itemRelations->addChildNode( std::move( itemRelation ) );
   }
 
-  mRootItem->addChildItem( std::move( itemRelations ) );
+  mRootNode->addChildNode( std::move( itemRelations ) );
 
   // Load form actions
 
-  auto itemActions = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::WidgetType, QStringLiteral( "Actions" ), tr( "Actions" ) );
+  auto itemActions = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::WidgetType, QStringLiteral( "Actions" ), tr( "Actions" ) );
   const QList<QgsAction> actions { mLayer->actions()->actions() };
 
   for ( const auto &action : std::as_const( actions ) )
@@ -575,46 +560,46 @@ void QgsAttributesAvailableWidgetsModel::populate()
     {
       const QString actionTitle { action.shortTitle().isEmpty() ? action.name() : action.shortTitle() };
 
-      QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+      QgsAttributesFormTreeData::DnDTreeNodeData itemData = QgsAttributesFormTreeData::DnDTreeNodeData();
       itemData.setShowLabel( true );
 
-      auto itemAction = std::make_unique< AttributesFormTreeNode >();
+      auto itemAction = std::make_unique< QgsAttributesFormTreeNode >();
       itemAction->setData( NodeIdRole, action.id().toString() );
-      itemAction->setData( NodeTypeRole, QgsAttributeFormTreeData::Action );
+      itemAction->setData( NodeTypeRole, QgsAttributesFormTreeData::Action );
       itemAction->setData( NodeNameRole, actionTitle );
       itemAction->setData( NodeDataRole, itemData );
 
-      itemActions->addChildItem( std::move( itemAction ) );
+      itemActions->addChildNode( std::move( itemAction ) );
     }
   }
 
-  mRootItem->addChildItem( std::move( itemActions ) );
+  mRootNode->addChildNode( std::move( itemActions ) );
 
   // QML/HTML widgets
 
-  auto itemOtherWidgets = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::WidgetType, QStringLiteral( "Other" ), tr( "Other Widgets" ) );
+  auto itemOtherWidgets = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::WidgetType, QStringLiteral( "Other" ), tr( "Other Widgets" ) );
 
-  QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+  QgsAttributesFormTreeData::DnDTreeNodeData itemData = QgsAttributesFormTreeData::DnDTreeNodeData();
   itemData.setShowLabel( true );
-  auto itemQml = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::QmlWidget, itemData, QStringLiteral( "QML Widget" ), tr( "QML Widget" ) );
-  itemOtherWidgets->addChildItem( std::move( itemQml ) );
+  auto itemQml = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::QmlWidget, itemData, QStringLiteral( "QML Widget" ), tr( "QML Widget" ) );
+  itemOtherWidgets->addChildNode( std::move( itemQml ) );
 
-  QgsAttributeFormTreeData::DnDTreeItemData itemHtmlData = QgsAttributeFormTreeData::DnDTreeItemData();
+  QgsAttributesFormTreeData::DnDTreeNodeData itemHtmlData = QgsAttributesFormTreeData::DnDTreeNodeData();
   itemHtmlData.setShowLabel( true );
-  auto itemHtml = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::HtmlWidget, itemHtmlData, QStringLiteral( "HTML Widget" ), tr( "HTML Widget" ) );
-  itemOtherWidgets->addChildItem( std::move( itemHtml ) );
+  auto itemHtml = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::HtmlWidget, itemHtmlData, QStringLiteral( "HTML Widget" ), tr( "HTML Widget" ) );
+  itemOtherWidgets->addChildNode( std::move( itemHtml ) );
 
-  QgsAttributeFormTreeData::DnDTreeItemData itemTextData = QgsAttributeFormTreeData::DnDTreeItemData();
+  QgsAttributesFormTreeData::DnDTreeNodeData itemTextData = QgsAttributesFormTreeData::DnDTreeNodeData();
   itemTextData.setShowLabel( true );
-  auto itemText = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::TextWidget, itemTextData, QStringLiteral( "Text Widget" ), tr( "Text Widget" ) );
-  itemOtherWidgets->addChildItem( std::move( itemText ) );
+  auto itemText = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::TextWidget, itemTextData, QStringLiteral( "Text Widget" ), tr( "Text Widget" ) );
+  itemOtherWidgets->addChildNode( std::move( itemText ) );
 
-  QgsAttributeFormTreeData::DnDTreeItemData itemSpacerData = QgsAttributeFormTreeData::DnDTreeItemData();
+  QgsAttributesFormTreeData::DnDTreeNodeData itemSpacerData = QgsAttributesFormTreeData::DnDTreeNodeData();
   itemTextData.setShowLabel( false );
-  auto itemSpacer = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::SpacerWidget, QStringLiteral( "Spacer Widget" ), tr( "Spacer Widget" ) );
-  itemOtherWidgets->addChildItem( std::move( itemSpacer ) );
+  auto itemSpacer = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::SpacerWidget, QStringLiteral( "Spacer Widget" ), tr( "Spacer Widget" ) );
+  itemOtherWidgets->addChildNode( std::move( itemSpacer ) );
 
-  mRootItem->addChildItem( std::move( itemOtherWidgets ) );
+  mRootNode->addChildNode( std::move( itemOtherWidgets ) );
 
   endResetModel();
 }
@@ -624,36 +609,36 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
   if ( !index.isValid() )
     return QVariant();
 
-  const AttributesFormTreeNode *item = getItem( index );
-  if ( !item )
+  const QgsAttributesFormTreeNode *node = nodeForIndex( index );
+  if ( !node )
     return QVariant();
 
   switch ( role )
   {
     case Qt::DisplayRole:
     {
-      return item->displayName().isEmpty() ? item->name() : item->displayName();
+      return node->displayName().isEmpty() ? node->name() : node->displayName();
     }
 
     case Qt::ToolTipRole:
     {
-      if ( item->type() == QgsAttributeFormTreeData::AttributeFormTreeItemType::Field )
+      if ( node->type() == QgsAttributesFormTreeData::AttributesFormTreeNodeType::Field )
       {
-        const auto cfg = item->data( NodeFieldConfigRole ).value<QgsAttributeFormTreeData::FieldConfig>();
+        const auto cfg = node->data( NodeFieldConfigRole ).value<QgsAttributesFormTreeData::FieldConfig>();
         if ( !cfg.mAlias.isEmpty() )
-          return tr( "%1 (%2)" ).arg( item->name(), cfg.mAlias );
+          return tr( "%1 (%2)" ).arg( node->name(), cfg.mAlias );
         else
-          return item->name();
+          return node->name();
       }
       return QVariant();
     }
 
     case Qt::DecorationRole:
-      return item->icon();
+      return node->icon();
 
     case Qt::BackgroundRole:
     {
-      if ( item->type() == QgsAttributeFormTreeData::AttributeFormTreeItemType::WidgetType )
+      if ( node->type() == QgsAttributesFormTreeData::AttributesFormTreeNodeType::WidgetType )
         return QBrush( Qt::lightGray );
 
       return QVariant();
@@ -664,7 +649,7 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
     case NodeNameRole:
     case NodeTypeRole:
     case NodeIdRole:
-      return item->data( role );
+      return node->data( role );
 
     default:
       return QVariant();
@@ -676,8 +661,8 @@ bool QgsAttributesAvailableWidgetsModel::setData( const QModelIndex &index, cons
   if ( !index.isValid() )
     return false;
 
-  AttributesFormTreeNode *item = getItem( index );
-  bool result = item->setData( role, value );
+  QgsAttributesFormTreeNode *node = nodeForIndex( index );
+  bool result = node->setData( role, value );
 
   if ( result )
     emit dataChanged( index, index, { role } );
@@ -690,41 +675,41 @@ Qt::DropActions QgsAttributesAvailableWidgetsModel::supportedDragActions() const
   return Qt::CopyAction;
 }
 
-QModelIndex QgsAttributesAvailableWidgetsModel::getFieldContainer() const
+QModelIndex QgsAttributesAvailableWidgetsModel::fieldContainer() const
 {
-  if ( mRootItem->childCount() > 0 )
+  if ( mRootNode->childCount() > 0 )
   {
     const int row = 0;
-    AttributesFormTreeNode *node = mRootItem->child( row );
-    if ( node && node->name() == QLatin1String( "Fields" ) )
+    QgsAttributesFormTreeNode *node = mRootNode->child( row );
+    if ( node && node->name() == QLatin1String( "Fields" ) && node->type() == QgsAttributesFormTreeData::WidgetType )
       return createIndex( row, 0, node );
   }
   return QModelIndex();
 }
 
-QModelIndex QgsAttributesAvailableWidgetsModel::getRelationContainer() const
+QModelIndex QgsAttributesAvailableWidgetsModel::relationContainer() const
 {
-  if ( mRootItem->childCount() > 1 )
+  if ( mRootNode->childCount() > 1 )
   {
     const int row = 1;
-    AttributesFormTreeNode *node = mRootItem->child( row );
-    if ( node && node->name() == QLatin1String( "Relations" ) )
+    QgsAttributesFormTreeNode *node = mRootNode->child( row );
+    if ( node && node->name() == QLatin1String( "Relations" ) && node->type() == QgsAttributesFormTreeData::WidgetType )
       return createIndex( row, 0, node );
   }
   return QModelIndex();
 }
 
-QModelIndex QgsAttributesAvailableWidgetsModel::getFieldModelIndex( const QString &fieldName ) const
+QModelIndex QgsAttributesAvailableWidgetsModel::fieldModelIndex( const QString &fieldName ) const
 {
-  if ( mRootItem->childCount() == 0 )
+  if ( mRootNode->childCount() == 0 )
     return QModelIndex();
 
-  AttributesFormTreeNode *fieldsItems = mRootItem->child( 0 );
-  if ( !fieldsItems || fieldsItems->name() != QLatin1String( "Fields" ) )
+  QgsAttributesFormTreeNode *fieldNodes = mRootNode->child( 0 );
+  if ( !fieldNodes || fieldNodes->name() != QLatin1String( "Fields" ) || fieldNodes->type() != QgsAttributesFormTreeData::WidgetType )
     return QModelIndex();
 
-  AttributesFormTreeNode *item = fieldsItems->firstTopChild( QgsAttributeFormTreeData::Field, fieldName );
-  return item ? createIndex( item->row(), 0, item ) : QModelIndex();
+  QgsAttributesFormTreeNode *node = fieldNodes->firstTopChild( QgsAttributesFormTreeData::Field, fieldName );
+  return node ? createIndex( node->row(), 0, node ) : QModelIndex();
 }
 
 
@@ -750,8 +735,8 @@ Qt::ItemFlags QgsAttributesFormLayoutModel::flags( const QModelIndex &index ) co
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 
-  AttributesFormTreeNode *node = getItem( index );
-  if ( node->type() == QgsAttributeFormTreeData::WidgetType || node->type() == QgsAttributeFormTreeData::Container )
+  QgsAttributesFormTreeNode *node = nodeForIndex( index );
+  if ( node->type() == QgsAttributesFormTreeData::WidgetType || node->type() == QgsAttributesFormTreeData::Container )
     flags |= Qt::ItemIsDropEnabled;
 
   return flags;
@@ -760,38 +745,38 @@ Qt::ItemFlags QgsAttributesFormLayoutModel::flags( const QModelIndex &index ) co
 void QgsAttributesFormLayoutModel::populate()
 {
   beginResetModel();
-  mRootItem->deleteChildren();
+  mRootNode->deleteChildren();
 
   const auto editorElements = mLayer->editFormConfig().tabs();
   for ( QgsAttributeEditorElement *editorElement : editorElements )
   {
-    loadAttributeEditorElementItem( editorElement, mRootItem.get() );
+    loadAttributeEditorElementItem( editorElement, mRootNode.get() );
   }
 
   endResetModel();
 }
 
-void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, AttributesFormTreeNode *parent )
+void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, QgsAttributesFormTreeNode *parent )
 {
-  auto setCommonProperties = [editorElement]( QgsAttributeFormTreeData::DnDTreeItemData &itemData ) {
+  auto setCommonProperties = [editorElement]( QgsAttributesFormTreeData::DnDTreeNodeData &itemData ) {
     itemData.setShowLabel( editorElement->showLabel() );
     itemData.setLabelStyle( editorElement->labelStyle() );
     itemData.setHorizontalStretch( editorElement->horizontalStretch() );
     itemData.setVerticalStretch( editorElement->verticalStretch() );
   };
 
-  auto editorItem = std::make_unique< AttributesFormTreeNode >();
+  auto editorItem = std::make_unique< QgsAttributesFormTreeNode >();
 
   switch ( editorElement->type() )
   {
     case Qgis::AttributeEditorType::Field:
     {
-      QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+      QgsAttributesFormTreeData::DnDTreeNodeData itemData = QgsAttributesFormTreeData::DnDTreeNodeData();
       setCommonProperties( itemData );
 
       editorItem->setData( NodeNameRole, editorElement->name() );
       editorItem->setData( NodeIdRole, editorElement->name() ); // Field names act as ids
-      editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::Field );
+      editorItem->setData( NodeTypeRole, QgsAttributesFormTreeData::Field );
       editorItem->setData( NodeDataRole, itemData );
 
       break;
@@ -803,12 +788,12 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       const QgsAction action { actionEditor->action( mLayer ) };
       if ( action.isValid() )
       {
-        QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+        QgsAttributesFormTreeData::DnDTreeNodeData itemData = QgsAttributesFormTreeData::DnDTreeNodeData();
         setCommonProperties( itemData );
 
         editorItem->setData( NodeIdRole, action.id().toString() );
         editorItem->setData( NodeNameRole, action.shortTitle().isEmpty() ? action.name() : action.shortTitle() );
-        editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::Action );
+        editorItem->setData( NodeTypeRole, QgsAttributesFormTreeData::Action );
         editorItem->setData( NodeDataRole, itemData );
       }
       else
@@ -820,11 +805,11 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
 
     case Qgis::AttributeEditorType::Relation:
     {
-      QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+      QgsAttributesFormTreeData::DnDTreeNodeData itemData = QgsAttributesFormTreeData::DnDTreeNodeData();
       setCommonProperties( itemData );
 
       const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( editorElement );
-      QgsAttributeFormTreeData::RelationEditorConfiguration relationEditorConfig;
+      QgsAttributesFormTreeData::RelationEditorConfiguration relationEditorConfig;
       relationEditorConfig.mRelationWidgetType = relationEditor->relationWidgetTypeId();
       relationEditorConfig.mRelationWidgetConfig = relationEditor->relationEditorConfiguration();
       relationEditorConfig.nmRelationId = relationEditor->nmRelationId();
@@ -834,7 +819,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
 
       editorItem->setData( NodeIdRole, relationEditor->relation().id() );
       editorItem->setData( NodeNameRole, relationEditor->relation().name() );
-      editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::Relation );
+      editorItem->setData( NodeTypeRole, QgsAttributesFormTreeData::Relation );
       editorItem->setData( NodeDataRole, itemData );
 
       break;
@@ -842,11 +827,11 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
 
     case Qgis::AttributeEditorType::Container:
     {
-      QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+      QgsAttributesFormTreeData::DnDTreeNodeData itemData = QgsAttributesFormTreeData::DnDTreeNodeData();
       setCommonProperties( itemData );
 
       editorItem->setData( NodeNameRole, editorElement->name() );
-      editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::Container );
+      editorItem->setData( NodeTypeRole, QgsAttributesFormTreeData::Container );
 
       const QgsAttributeEditorContainer *container = static_cast<const QgsAttributeEditorContainer *>( editorElement );
       if ( !container )
@@ -872,15 +857,15 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
     case Qgis::AttributeEditorType::QmlElement:
     {
       const QgsAttributeEditorQmlElement *qmlElementEditor = static_cast<const QgsAttributeEditorQmlElement *>( editorElement );
-      QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+      QgsAttributesFormTreeData::DnDTreeNodeData itemData = QgsAttributesFormTreeData::DnDTreeNodeData();
       setCommonProperties( itemData );
 
-      QgsAttributeFormTreeData::QmlElementEditorConfiguration qmlEdConfig;
+      QgsAttributesFormTreeData::QmlElementEditorConfiguration qmlEdConfig;
       qmlEdConfig.qmlCode = qmlElementEditor->qmlCode();
       itemData.setQmlElementEditorConfiguration( qmlEdConfig );
 
       editorItem->setData( NodeNameRole, editorElement->name() );
-      editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::QmlWidget );
+      editorItem->setData( NodeTypeRole, QgsAttributesFormTreeData::QmlWidget );
       editorItem->setData( NodeDataRole, itemData );
       break;
     }
@@ -888,15 +873,15 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
     case Qgis::AttributeEditorType::HtmlElement:
     {
       const QgsAttributeEditorHtmlElement *htmlElementEditor = static_cast<const QgsAttributeEditorHtmlElement *>( editorElement );
-      QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+      QgsAttributesFormTreeData::DnDTreeNodeData itemData = QgsAttributesFormTreeData::DnDTreeNodeData();
       setCommonProperties( itemData );
 
-      QgsAttributeFormTreeData::HtmlElementEditorConfiguration htmlEdConfig;
+      QgsAttributesFormTreeData::HtmlElementEditorConfiguration htmlEdConfig;
       htmlEdConfig.htmlCode = htmlElementEditor->htmlCode();
       itemData.setHtmlElementEditorConfiguration( htmlEdConfig );
 
       editorItem->setData( NodeNameRole, editorElement->name() );
-      editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::HtmlWidget );
+      editorItem->setData( NodeTypeRole, QgsAttributesFormTreeData::HtmlWidget );
       editorItem->setData( NodeDataRole, itemData );
       break;
     }
@@ -904,15 +889,15 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
     case Qgis::AttributeEditorType::TextElement:
     {
       const QgsAttributeEditorTextElement *textElementEditor = static_cast<const QgsAttributeEditorTextElement *>( editorElement );
-      QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+      QgsAttributesFormTreeData::DnDTreeNodeData itemData = QgsAttributesFormTreeData::DnDTreeNodeData();
       setCommonProperties( itemData );
 
-      QgsAttributeFormTreeData::TextElementEditorConfiguration textEdConfig;
+      QgsAttributesFormTreeData::TextElementEditorConfiguration textEdConfig;
       textEdConfig.text = textElementEditor->text();
       itemData.setTextElementEditorConfiguration( textEdConfig );
 
       editorItem->setData( NodeNameRole, editorElement->name() );
-      editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::TextWidget );
+      editorItem->setData( NodeTypeRole, QgsAttributesFormTreeData::TextWidget );
       editorItem->setData( NodeDataRole, itemData );
       break;
     }
@@ -920,16 +905,16 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
     case Qgis::AttributeEditorType::SpacerElement:
     {
       const QgsAttributeEditorSpacerElement *spacerElementEditor = static_cast<const QgsAttributeEditorSpacerElement *>( editorElement );
-      QgsAttributeFormTreeData::DnDTreeItemData itemData = QgsAttributeFormTreeData::DnDTreeItemData();
+      QgsAttributesFormTreeData::DnDTreeNodeData itemData = QgsAttributesFormTreeData::DnDTreeNodeData();
       setCommonProperties( itemData );
       itemData.setShowLabel( false );
 
-      QgsAttributeFormTreeData::SpacerElementEditorConfiguration spacerEdConfig;
+      QgsAttributesFormTreeData::SpacerElementEditorConfiguration spacerEdConfig;
       spacerEdConfig.drawLine = spacerElementEditor->drawLine();
       itemData.setSpacerElementEditorConfiguration( spacerEdConfig );
 
       editorItem->setData( NodeNameRole, editorElement->name() );
-      editorItem->setData( NodeTypeRole, QgsAttributeFormTreeData::SpacerWidget );
+      editorItem->setData( NodeTypeRole, QgsAttributesFormTreeData::SpacerWidget );
       editorItem->setData( NodeDataRole, itemData );
       break;
     }
@@ -941,7 +926,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
     }
   }
 
-  parent->addChildItem( std::move( editorItem ) );
+  parent->addChildNode( std::move( editorItem ) );
 }
 
 QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role ) const
@@ -949,36 +934,32 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
   if ( !index.isValid() )
     return QVariant();
 
-  const AttributesFormTreeNode *item = getItem( index );
-  if ( !item )
+  const QgsAttributesFormTreeNode *node = nodeForIndex( index );
+  if ( !node )
     return QVariant();
 
   switch ( role )
   {
     case Qt::DisplayRole:
     {
-      return item->displayName().isEmpty() ? item->name() : item->displayName();
+      return node->displayName().isEmpty() ? node->name() : node->displayName();
     }
 
     case Qt::ToolTipRole:
     {
-      if ( item->type() == QgsAttributeFormTreeData::Field )
+      if ( node->type() == QgsAttributesFormTreeData::Field )
       {
-        // const auto cfg = item->data( FieldPropertiesRoles::FieldConfigRole ).value<QgsAttributeFormTreeData::FieldConfig>();
-        // if ( !cfg.mAlias.isEmpty() )
-        //   return tr( "%1 (%2)" ).arg( item->name(), cfg.mAlias );
-        // else
-        return item->name();
+        return node->name();
       }
       return QVariant();
     }
 
     case Qt::DecorationRole:
-      return item->icon();
+      return node->icon();
 
     case Qt::BackgroundRole:
     {
-      if ( item->type() == QgsAttributeFormTreeData::Container )
+      if ( node->type() == QgsAttributesFormTreeData::Container )
         return QBrush( Qt::lightGray );
 
       return QVariant();
@@ -989,7 +970,7 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
     case NodeNameRole:
     case NodeIdRole:
     case NodeTypeRole:
-      return item->data( role );
+      return node->data( role );
 
     default:
       return QVariant();
@@ -1004,8 +985,8 @@ bool QgsAttributesFormLayoutModel::setData( const QModelIndex &index, const QVar
   if ( role == NodeFieldConfigRole ) // This model doesn't store data for that role
     return false;
 
-  AttributesFormTreeNode *item = getItem( index );
-  bool result = item->setData( role, value );
+  QgsAttributesFormTreeNode *node = nodeForIndex( index );
+  bool result = node->setData( role, value );
 
   if ( result )
     emit dataChanged( index, index, { role } );
@@ -1018,7 +999,7 @@ bool QgsAttributesFormLayoutModel::removeRows( int row, int count, const QModelI
   if ( row < 0 )
     return false;
 
-  AttributesFormTreeNode *node = getItem( parent );
+  QgsAttributesFormTreeNode *node = nodeForIndex( parent );
 
   if ( row > node->childCount() - count )
     return false;
@@ -1033,7 +1014,7 @@ bool QgsAttributesFormLayoutModel::removeRows( int row, int count, const QModelI
 bool QgsAttributesFormLayoutModel::removeRow( int row, const QModelIndex &parent )
 {
   beginRemoveRows( parent, row, row );
-  AttributesFormTreeNode *node = getItem( parent );
+  QgsAttributesFormTreeNode *node = nodeForIndex( parent );
   node->deleteChildAtIndex( row );
   endRemoveRows();
   return true;
@@ -1056,7 +1037,7 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
   int rows = 0;
 
   if ( row == -1 )            // Dropped at invalid index
-    row = rowCount( parent ); // Let's append the item
+    row = rowCount( parent ); // Let's append the node
 
   if ( action == Qt::IgnoreAction )
   {
@@ -1066,18 +1047,18 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
   {
     QByteArray itemData = data->data( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
-    QgsAttributeFormTreeData::DnDTreeItemData itemElement;
+    QgsAttributesFormTreeData::DnDTreeNodeData itemElement;
 
     while ( !stream.atEnd() )
     {
       QString nodeId;
       int nodeTypeInt;
       QString nodeName;
-      QgsAttributeFormTreeData::DnDTreeItemData nodeData;
+      QgsAttributesFormTreeData::DnDTreeNodeData nodeData;
       stream >> nodeId >> nodeTypeInt >> nodeName >> nodeData;
 
-      const auto nodeType = static_cast< QgsAttributeFormTreeData::AttributeFormTreeItemType >( nodeTypeInt );
-      insertNode( parent, row + rows, nodeId, nodeType, nodeName, nodeData );
+      const auto nodeType = static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( nodeTypeInt );
+      insertChild( parent, row + rows, nodeId, nodeType, nodeName, nodeData );
 
       bDropSuccessful = true;
 
@@ -1099,63 +1080,63 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
 }
 
 
-QList< QgsAddAttributeFormContainerDialog::ContainerPair > QgsAttributesFormLayoutModel::getRecursiveListOfContainers( AttributesFormTreeNode *parent ) const
+QList< QgsAddAttributeFormContainerDialog::ContainerPair > QgsAttributesFormLayoutModel::recursiveListOfContainers( QgsAttributesFormTreeNode *parent ) const
 {
   QList< QgsAddAttributeFormContainerDialog::ContainerPair > containerList;
   for ( int i = 0; i < parent->childCount(); i++ )
   {
-    AttributesFormTreeNode *child = parent->child( i );
-    if ( child->type() == QgsAttributeFormTreeData::Container )
+    QgsAttributesFormTreeNode *child = parent->child( i );
+    if ( child->type() == QgsAttributesFormTreeData::Container )
     {
       containerList << QgsAddAttributeFormContainerDialog::ContainerPair( child->name(), createIndex( child->row(), 0, child ) );
     }
 
     if ( child->childCount() > 0 )
     {
-      containerList.append( getRecursiveListOfContainers( child ) );
+      containerList.append( recursiveListOfContainers( child ) );
     }
   }
 
   return containerList;
 }
 
-QList< QgsAddAttributeFormContainerDialog::ContainerPair > QgsAttributesFormLayoutModel::getListOfContainers() const
+QList< QgsAddAttributeFormContainerDialog::ContainerPair > QgsAttributesFormLayoutModel::listOfContainers() const
 {
-  return getRecursiveListOfContainers( mRootItem.get() );
+  return recursiveListOfContainers( mRootNode.get() );
 }
 
 void QgsAttributesFormLayoutModel::addContainer( QModelIndex &parent, const QString &title, int columnCount, Qgis::AttributeEditorContainerType type )
 {
   beginInsertRows( parent, rowCount( parent ), rowCount( parent ) );
 
-  AttributesFormTreeNode *parentNode = getItem( parent );
+  QgsAttributesFormTreeNode *parentNode = nodeForIndex( parent );
 
-  std::unique_ptr< AttributesFormTreeNode > containerNode = std::make_unique< AttributesFormTreeNode >( QgsAttributeFormTreeData::Container, title, QString(), parentNode );
+  std::unique_ptr< QgsAttributesFormTreeNode > containerNode = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::Container, title, QString(), parentNode );
 
-  QgsAttributeFormTreeData::DnDTreeItemData nodeData;
+  QgsAttributesFormTreeData::DnDTreeNodeData nodeData;
   nodeData.setColumnCount( columnCount );
   nodeData.setContainerType( parent.isValid() ? type : Qgis::AttributeEditorContainerType::Tab );
 
   containerNode->setData( QgsAttributesFormModel::NodeDataRole, nodeData );
-  parentNode->addChildItem( std::move( containerNode ) );
+  parentNode->addChildNode( std::move( containerNode ) );
 
   endInsertRows();
 }
 
-void QgsAttributesFormLayoutModel::insertNode( const QModelIndex &parent, int row, QString &nodeId, QgsAttributeFormTreeData::AttributeFormTreeItemType nodeType, QString &nodeName, QgsAttributeFormTreeData::DnDTreeItemData nodeData )
+void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int row, QString &nodeId, QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, QString &nodeName, QgsAttributesFormTreeData::DnDTreeNodeData nodeData )
 {
   if ( row < 0 )
     return;
 
   beginInsertRows( parent, row, row );
-  std::unique_ptr< AttributesFormTreeNode > node = std::make_unique< AttributesFormTreeNode >();
+  std::unique_ptr< QgsAttributesFormTreeNode > node = std::make_unique< QgsAttributesFormTreeNode >();
 
   node->setData( QgsAttributesFormModel::NodeIdRole, nodeId );
   node->setData( QgsAttributesFormModel::NodeTypeRole, nodeType );
   node->setData( QgsAttributesFormModel::NodeNameRole, nodeName );
   node->setData( QgsAttributesFormModel::NodeDataRole, nodeData );
 
-  getItem( parent )->insertChildNode( row, std::move( node ) );
+  nodeForIndex( parent )->insertChildNode( row, std::move( node ) );
   endInsertRows();
 }
 
@@ -1164,18 +1145,18 @@ void QgsAttributesFormLayoutModel::insertNode( const QModelIndex &parent, int ro
  * Serialization helpers for DesigerTreeItemData so we can stuff this easily into QMimeData
  */
 
-QDataStream &operator<<( QDataStream &stream, const QgsAttributeFormTreeData::DnDTreeItemData &data )
+QDataStream &operator<<( QDataStream &stream, const QgsAttributesFormTreeData::DnDTreeNodeData &data )
 {
-  QVariant streamData = QVariant::fromValue<QgsAttributeFormTreeData::DnDTreeItemData>( data );
+  QVariant streamData = QVariant::fromValue<QgsAttributesFormTreeData::DnDTreeNodeData>( data );
   stream << streamData;
   return stream;
 }
 
-QDataStream &operator>>( QDataStream &stream, QgsAttributeFormTreeData::DnDTreeItemData &data )
+QDataStream &operator>>( QDataStream &stream, QgsAttributesFormTreeData::DnDTreeNodeData &data )
 {
   QVariant streamData;
   stream >> streamData;
-  data = streamData.value< QgsAttributeFormTreeData::DnDTreeItemData >();
+  data = streamData.value< QgsAttributesFormTreeData::DnDTreeNodeData >();
 
   return stream;
 }

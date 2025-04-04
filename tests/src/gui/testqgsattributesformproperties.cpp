@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 2025-01-21
     Copyright            : (C) 2025 Mathieu Pellerin
-    Email                : paul dot blottiere at oslandia dot com
+    Email                : mathieu at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,11 +16,10 @@
 
 #include "qgstest.h"
 
+#include "qgsattributesformmodel.h"
 #include "qgsattributesformproperties.h"
 #include "qgsattributetypedialog.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsgui.h"
 
 class TestQgsAttributesFormProperties : public QObject
 {
@@ -63,26 +62,30 @@ void TestQgsAttributesFormProperties::testConfigStored()
   attributeFormProperties.init();
 
   // Get the fields
-  // QVERIFY( attributeFormProperties.mAvailableWidgetsTree );
-  // QTreeWidgetItem *fieldsItem = attributeFormProperties.mAvailableWidgetsTree->topLevelItem( 0 );
-  // QVERIFY( fieldsItem );
-  // QCOMPARE( fieldsItem->text( 0 ), QStringLiteral( "Fields" ) );
-  // QCOMPARE( fieldsItem->childCount(), 2 );
+  QVERIFY( attributeFormProperties.mAvailableWidgetsTreeView );
+  const QgsAttributesAvailableWidgetsModel *availableWidgetsModel = static_cast<QgsAttributesAvailableWidgetsTreeView *>( attributeFormProperties.mAvailableWidgetsTreeView )->availableWidgetsModel();
+  QVERIFY( availableWidgetsModel );
+  const QModelIndex fieldContainer = availableWidgetsModel->fieldContainer();
 
-  // // Insure that the configuration was stored when switching from one available widgets tree item to another
-  // attributeFormProperties.mAvailableWidgetsTree->setCurrentItem( fieldsItem->child( 0 ) );
-  // QVERIFY( attributeFormProperties.mAttributeTypeDialog );
-  // attributeFormProperties.mAttributeTypeDialog->setAlias( QStringLiteral( "alias0" ) );
-  // attributeFormProperties.mAvailableWidgetsTree->setCurrentItem( fieldsItem->child( 1 ) );
-  // QVERIFY( attributeFormProperties.mAttributeTypeDialog );
-  // attributeFormProperties.mAttributeTypeDialog->setAlias( QStringLiteral( "alias1" ) );
+  QVERIFY( fieldContainer.isValid() );
+  const QString name = fieldContainer.data( QgsAttributesFormModel::NodeNameRole ).toString();
+  QCOMPARE( name, QStringLiteral( "Fields" ) );
+  QCOMPARE( availableWidgetsModel->rowCount( fieldContainer ), 2 );
 
-  // attributeFormProperties.mAvailableWidgetsTree->setCurrentItem( fieldsItem->child( 0 ) );
-  // QVERIFY( attributeFormProperties.mAttributeTypeDialog );
-  // QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), QStringLiteral( "alias0" ) );
-  // attributeFormProperties.mAvailableWidgetsTree->setCurrentItem( fieldsItem->child( 1 ) );
-  // QVERIFY( attributeFormProperties.mAttributeTypeDialog );
-  // QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), QStringLiteral( "alias1" ) );
+  // Insure that the configuration was stored when switching from one available widgets tree item to another
+  attributeFormProperties.mAvailableWidgetsTreeView->setCurrentIndex( availableWidgetsModel->index( 0, 0, fieldContainer ) );
+  QVERIFY( attributeFormProperties.mAttributeTypeDialog );
+  attributeFormProperties.mAttributeTypeDialog->setAlias( QStringLiteral( "alias0" ) );
+  attributeFormProperties.mAvailableWidgetsTreeView->setCurrentIndex( availableWidgetsModel->index( 1, 0, fieldContainer ) );
+  QVERIFY( attributeFormProperties.mAttributeTypeDialog );
+  attributeFormProperties.mAttributeTypeDialog->setAlias( QStringLiteral( "alias1" ) );
+
+  attributeFormProperties.mAvailableWidgetsTreeView->setCurrentIndex( availableWidgetsModel->index( 0, 0, fieldContainer ) );
+  QVERIFY( attributeFormProperties.mAttributeTypeDialog );
+  QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), QStringLiteral( "alias0" ) );
+  attributeFormProperties.mAvailableWidgetsTreeView->setCurrentIndex( availableWidgetsModel->index( 1, 0, fieldContainer ) );
+  QVERIFY( attributeFormProperties.mAttributeTypeDialog );
+  QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), QStringLiteral( "alias1" ) );
 }
 
 QGSTEST_MAIN( TestQgsAttributesFormProperties )

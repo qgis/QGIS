@@ -22,16 +22,15 @@
 #include <QWidget>
 
 #include "qgsattributesformmodel.h"
-
 #include "ui_qgsattributewidgeteditgroupbox.h"
 #include "ui_qgsattributewidgetrelationeditwidget.h"
-
 #include "qgis_gui.h"
 
 class QgsAbstractRelationEditorConfigWidget;
 
 /**
- * Widget to edit the configuration (tab or group box, any field or relation, QML, …) of a form item
+ * Widget to edit the configuration (tab, group box, row, any field or relation, QML, …) of a form item
+ *
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private Ui_QgsAttributeWidgetEditGroupBox
@@ -39,10 +38,21 @@ class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private
     Q_OBJECT
 
   public:
-    explicit QgsAttributeWidgetEdit( const QgsAttributeFormTreeData::DnDTreeItemData &itemData, QWidget *parent = nullptr );
+    explicit QgsAttributeWidgetEdit( const QgsAttributesFormTreeData::DnDTreeNodeData &nodeData, QWidget *parent = nullptr );
 
-    void updateItemData( QgsAttributeFormTreeData::DnDTreeItemData &itemData ) const;
-    QgsAttributeFormTreeData::RelationEditorConfiguration updatedRelationConfiguration() const;
+    /**
+     * Updates the contents of the \a nodeData object based on the widget status.
+     *
+     * \since QGIS 3.44
+     */
+    void updateNodeData( QgsAttributesFormTreeData::DnDTreeNodeData &nodeData ) const;
+
+    /**
+     * Returns an updated relation editor configuration based on the widget status.
+     *
+     * \since QGIS 3.44
+     */
+    QgsAttributesFormTreeData::RelationEditorConfiguration updatedRelationConfiguration() const;
 
     // Methods to update widget status
     void setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle );
@@ -50,7 +60,12 @@ class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private
     void setHorizontalStretch( const int horizontalStretch );
     void setVerticalStretch( const int verticalStretch );
 
-    void setRelationSpecificWidget( const QgsAttributeFormTreeData::RelationEditorConfiguration &config, const QString &relationId );
+    /**
+     * Sets up the relation specific widget based on a \a configuration object and on a \a relationId.
+     *
+     * \since QGIS 3.44
+     */
+    void setRelationSpecificWidget( const QgsAttributesFormTreeData::RelationEditorConfiguration &configuration, const QString &relationId );
 
   private:
     void showRelationButtons( bool show );
@@ -70,9 +85,9 @@ class GUI_EXPORT QgsAttributeWidgetRelationEditWidget : public QWidget, private 
   public:
     explicit QgsAttributeWidgetRelationEditWidget( QWidget *parent = nullptr );
 
-    void setRelationEditorConfiguration( const QgsAttributeFormTreeData::RelationEditorConfiguration &config, const QString &relationId );
+    void setRelationEditorConfiguration( const QgsAttributesFormTreeData::RelationEditorConfiguration &config, const QString &relationId );
 
-    QgsAttributeFormTreeData::RelationEditorConfiguration relationEditorConfiguration() const;
+    QgsAttributesFormTreeData::RelationEditorConfiguration relationEditorConfiguration() const;
 
     static QString title() { return tr( "Relation" ); }
 

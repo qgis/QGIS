@@ -16,6 +16,7 @@
 #ifndef QGSATTRIBUTESFORMMODEL_H
 #define QGSATTRIBUTESFORMMODEL_H
 
+// We don't want to expose this in the public API
 #define SIP_NO_FILE
 
 #include "qgsaddtaborgroup.h"
@@ -26,18 +27,31 @@
 #include <QAbstractItemModel>
 #include <QPushButton>
 
-
-class QgsAttributeFormTreeData
+/**
+ * \brief Class to describe editor data contained within a QgsAttributesFormModel.
+ *
+ * \warning Not part of stable API and may change in future QGIS releases.
+ * \ingroup gui
+ * \note Prior to QGIS 3.44 this was available as QgsAttributesFormProperties
+ * \since QGIS 3.44
+ */
+class GUI_EXPORT QgsAttributesFormTreeData
 {
   public:
-    enum AttributeFormTreeItemType
+    /**
+     * Custom node types.
+     *
+     * \note Prior to QGIS 3.44 this was available as QgsAttributesFormProperties::DnDTreeItemData::Type
+     * \since QGIS 3.44
+     */
+    enum AttributesFormTreeNodeType
     {
       Field,
       Relation,
       Container, //!< Container for the form
       QmlWidget,
       HtmlWidget,
-      WidgetType,   //!< In the widget tree, the type of widget
+      WidgetType,   //!< In the available widgets tree, the type of widget
       Action,       //!< Layer action
       TextWidget,   //!< Text widget type, \since QGIS 3.30
       SpacerWidget, //!< Spacer widget type, \since QGIS 3.30
@@ -99,21 +113,24 @@ class QgsAttributeFormTreeData
     };
 
     /**
+     * \brief Main class to store and transfer editor data contained within a QgsAttributesFormModel.
+     *
      * \ingroup gui
-     * \class DnDTreeItemData
+     * \note Prior to QGIS 3.44 this was available as QgsAttributesFormProperties::DnDTreeItemData
+     * \since QGIS 3.44
      */
-    class DnDTreeItemData
+    class DnDTreeNodeData
     {
       public:
-        DnDTreeItemData() = default;
+        DnDTreeNodeData() = default;
 
-        // DnDTreeItemData( const QColor &backgroundColor = QColor() )
-        //   : mBackgroundColor( backgroundColor )
-        // {}
+        //! Allows direct construction of QVariants from DnDTreeNodeData.
+        operator QVariant() { return QVariant::fromValue<DnDTreeNodeData>( *this ); }
 
-        operator QVariant() { return QVariant::fromValue<DnDTreeItemData>( *this ); }
-
+        //! Returns the number of columns in a container.
         int columnCount() const { return mColumnCount; }
+
+        //! Sets the number of columns for a container.
         void setColumnCount( int count ) { mColumnCount = count; }
 
         /**
@@ -165,7 +182,10 @@ class QgsAttributeFormTreeData
          */
         void setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle );
 
+        //! Returns whether the widget's label is to be shown.
         bool showLabel() const;
+
+        //! Sets whether the label for the widget should be shown.
         void setShowLabel( bool showLabel );
 
         /**
@@ -208,6 +228,11 @@ class QgsAttributeFormTreeData
          */
         void setVerticalStretch( int stretch ) { mVerticalStretch = stretch; }
 
+        /**
+         * Returns the expression to control the visibility status of a container.
+         *
+         * \see setVisibilityExpression()
+         */
         QgsOptionalExpression visibilityExpression() const;
 
         /**
@@ -292,7 +317,18 @@ class QgsAttributeFormTreeData
          */
         void setSpacerElementEditorConfiguration( SpacerElementEditorConfiguration spacerElementEditorConfiguration );
 
+        /**
+         * Returns the background color of a container.
+         *
+         * \see setBackgroundColor()
+         */
         QColor backgroundColor() const;
+
+        /**
+         * Sets the background color of a container.
+         *
+         * \see backgroundColor()
+         */
         void setBackgroundColor( const QColor &backgroundColor );
 
         /**
@@ -327,171 +363,288 @@ class QgsAttributeFormTreeData
 };
 
 
-class AttributesFormTreeNode
+/**
+ * \brief Class to hold parent-child relations as well as node data contained within a QgsAttributesFormModel.
+ *
+ * \warning Not part of stable API and may change in future QGIS releases.
+ * \ingroup gui
+ * \since QGIS 3.44
+ */
+class GUI_EXPORT QgsAttributesFormTreeNode
 {
   public:
-    AttributesFormTreeNode() = default;
-    explicit AttributesFormTreeNode( QgsAttributeFormTreeData::AttributeFormTreeItemType itemType, const QString &name, const QString &displayName = QString(), AttributesFormTreeNode *parent = nullptr );
-    explicit AttributesFormTreeNode( QgsAttributeFormTreeData::AttributeFormTreeItemType itemType, const QgsAttributeFormTreeData::DnDTreeItemData &data, const QString &name, const QString &displayName = QString(), AttributesFormTreeNode *parent = nullptr );
+    QgsAttributesFormTreeNode() = default;
 
-    AttributesFormTreeNode *child( int number );
-    AttributesFormTreeNode *firstTopChild( const QgsAttributeFormTreeData::AttributeFormTreeItemType nodeType, const QString &nodeId ) const;
-    AttributesFormTreeNode *firstChildRecursive( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const;
+    /**
+     * Constructor for QgsAttributesFormTreeNode, with the given \a nodeType and
+     * the given \a name.
+     *
+     * If \a displayName is specified then it will be used as the preferred display
+     * name for the node. If it is not specified, \a name will be displayed instead.
+     *
+     * If \a parent is specified, the node will be added as child of the parent node.
+     * If it is not specified then it will be set when manually added to another node.
+     */
+    explicit QgsAttributesFormTreeNode( QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, const QString &name, const QString &displayName = QString(), QgsAttributesFormTreeNode *parent = nullptr );
 
+    /**
+     * Constructor for QgsAttributesFormTreeNode, with the given \a nodeType, the
+     * given \a data and the given \a name.
+     *
+     * If \a displayName is specified then it will be used as the preferred display
+     * name for the node. If it is not specified, \a name will be displayed instead.
+     *
+     * If \a parent is specified, the node will be added as child of the parent node.
+     * If it is not specified then it will be set when manually added to another node.
+     */
+    explicit QgsAttributesFormTreeNode( QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, const QgsAttributesFormTreeData::DnDTreeNodeData &data, const QString &name, const QString &displayName = QString(), QgsAttributesFormTreeNode *parent = nullptr );
+
+    /**
+     * \brief Access the child node located at \a row position.
+     *
+     * If there is no child node for the given \a row position, a NULLPTR is returned.
+     */
+    QgsAttributesFormTreeNode *child( int row );
+
+    /**
+     * \brief Access the first top-level child node that matches \a nodeType and \a nodeId.
+     *
+     * If there is no top-level matching child node, a NULLPTR is returned.
+     */
+    QgsAttributesFormTreeNode *firstTopChild( const QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, const QString &nodeId ) const;
+
+    /**
+     * \brief Access the first child node that matches \a nodeType and \a nodeId, recursively.
+     *
+     * If there is no matching child node in the whole node hierarchy, a NULLPTR is returned.
+     */
+    QgsAttributesFormTreeNode *firstChildRecursive( const QgsAttributesFormTreeData::AttributesFormTreeNodeType &nodeType, const QString &nodeId ) const;
+
+    /**
+     * Returns the number of children nodes for the given node.
+     */
     int childCount() const;
-    //bool insertChildren(int position, int count, int columns);
-    AttributesFormTreeNode *parent() { return mParent; }
-    //bool removeChildren(int position, int count);
+
+    /**
+     * Returns the parent object of the current node.
+     *
+     * If node is a top-level node, its parent is the root object and a NULLPTR is returned.
+     */
+    QgsAttributesFormTreeNode *parent() { return mParent; }
+
+    /**
+     * Returns the position of the current node regarding its parent.
+     */
     int row() const;
+
+    /**
+     * Returns the data stored in the current node, corresponding to the given \a role.
+     */
     QVariant data( int role ) const;
+
+    /**
+     * Stores a data \a value in a given \a role inside the current node.
+     */
     bool setData( int role, const QVariant &value );
 
     /**
-     * Adds a \a child to this item. Takes ownership of the child.
+     * Appends a \a child to this node. Takes ownership of the child.
      */
-    void addChildItem( std::unique_ptr< AttributesFormTreeNode > &&child );
+    void addChildNode( std::unique_ptr< QgsAttributesFormTreeNode > &&child );
 
-    void insertChildNode( int position, std::unique_ptr< AttributesFormTreeNode > &&node );
+    /**
+     * Inserts a child \a node to the current node at a given \a position. Takes ownership of the child node.
+     */
+    void insertChildNode( int position, std::unique_ptr< QgsAttributesFormTreeNode > &&node );
 
+    /**
+     * Deletes the child of the current node placed at the given \a index.
+     */
     void deleteChildAtIndex( int index );
 
     /**
-     * Deletes all child items from this item.
+     * Deletes all child nodes from this node.
      */
     void deleteChildren();
 
-    QgsAttributeFormTreeData::AttributeFormTreeItemType type() const { return mNodeType; }
+    /**
+     * Returns the type of the current node.
+     */
+    QgsAttributesFormTreeData::AttributesFormTreeNodeType type() const { return mNodeType; }
+
+    /**
+     * Returns the id of the current node.
+     */
     QString id() const { return mNodeId; }
+
+    /**
+     * Returns the name of the current node.
+     */
     QString name() const { return mName; }
 
+    /**
+     * Returns the display name of the current node.
+     */
     QString displayName() const { return mDisplayName; }
-    void setDisplayName( const QString &displayName ) { mDisplayName = displayName; }
 
+    /**
+     * Returns the icon of the current node.
+     *
+     * \see setIcon()
+     */
     QIcon icon() const { return mIcon; }
+
+    /**
+     * Sets an icon for the current node.
+     *
+     * \see icon()
+     */
     void setIcon( const QIcon &icon ) { mIcon = icon; }
 
   private:
-    QString mName;
-    QString mDisplayName;
+    QString mName = QString();
+    QString mDisplayName = QString();
     QIcon mIcon;
-    QgsAttributeFormTreeData::AttributeFormTreeItemType mNodeType;
-    QString mNodeId;
-    QgsAttributeFormTreeData::DnDTreeItemData mNodeData;
-    QgsAttributeFormTreeData::FieldConfig mFieldConfigData;
+    QgsAttributesFormTreeData::AttributesFormTreeNodeType mNodeType = QgsAttributesFormTreeData::Field;
+    QString mNodeId = QString();
+    QgsAttributesFormTreeData::DnDTreeNodeData mNodeData;
+    QgsAttributesFormTreeData::FieldConfig mFieldConfigData;
 
-    std::vector< std::unique_ptr< AttributesFormTreeNode > > mChildren;
-    AttributesFormTreeNode *mParent;
+    std::vector< std::unique_ptr< QgsAttributesFormTreeNode > > mChildren;
+    QgsAttributesFormTreeNode *mParent = nullptr;
 };
 
 
 /**
- * Abstract class
+ * \brief Abstract class for tree views allowing for configuration of attributes forms.
+ *
+ * \warning Not part of stable API and may change in future QGIS releases.
+ * \ingroup gui
+ * \since QGIS 3.44
  */
-class QgsAttributesFormModel : public QAbstractItemModel
+class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.44 this was available as QgsAttributesFormProperties::FieldPropertiesRoles
+     * \since QGIS 3.44
+     */
     enum NodeRoles
     {
-      NodeDataRole = Qt::UserRole,
-      NodeFieldConfigRole,
-      NodeNameRole,
-      NodeIdRole, // Items may have ids, to ease comparison. Used by Relations, fields and actions.
+      NodeDataRole = Qt::UserRole, //!< Prior to QGIS 3.44, this was available as DnDTreeRole
+      NodeFieldConfigRole,         //!< Prior to QGIS 3.44, this was available as FieldConfigRole
+      NodeNameRole,                //!< Prior to QGIS 3.44, this was available as FieldNameRole
+      NodeIdRole,                  //!< Nodes may have ids to ease comparison. Used by Relations, fields and actions.
       NodeTypeRole,
     };
 
+    /**
+     * Constructor for QgsAttributesFormModel, with the given \a layer object and
+     * the given \a parent.
+     *
+     * The \a layer is the data source to populate the model.
+     */
     explicit QgsAttributesFormModel( QgsVectorLayer *layer, QObject *parent = nullptr );
-
-    //explicit QgsAttributesFormLayoutModel( QgsVectorLayer *layer, QObject *parent = nullptr );
 
     ~QgsAttributesFormModel() override;
 
-    // Header:
-    //QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-
-    // Basic functionality:
+    // Basic functionality
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
-    // Drag and drop support
-    //Qt::DropActions supportedDropActions() const override;
+    // Drag and drop support (common methods)
     QStringList mimeTypes() const override;
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
-    //bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
-
-    //QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    //bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-
-    // Add data:
-    //bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    //bool insertColumns( int column, int count, const QModelIndex &parent = QModelIndex() ) override;
-
-    // Remove data:
-    //bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    //bool removeColumns( int column, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     // Other methods
-    QModelIndex getFirstTopMatchingModelIndex( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const;
-    QModelIndex getFirstRecursiveMatchingModelIndex( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId ) const;
-    //QModelIndex getFieldModelIndex( const QString &fieldName ) const;
+    /**
+     * Returns the first top-level model index that matches the given \a nodeType and \a nodeId.
+     *
+     * If there is no matching top-level model index an invalid index is returned.
+     */
+    QModelIndex firstTopMatchingModelIndex( const QgsAttributesFormTreeData::AttributesFormTreeNodeType &nodeType, const QString &nodeId ) const;
 
-    //void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, AttributeFormLayoutTreeItem *parent );
+    /**
+     * Returns the first model index that matches the given \a nodeType and \a nodeId, recursively.
+     *
+     * If there is no matching model index in the whole hierarchy an invalid index is returned.
+     */
+    QModelIndex firstRecursiveMatchingModelIndex( const QgsAttributesFormTreeData::AttributesFormTreeNodeType &nodeType, const QString &nodeId ) const;
 
   public slots:
+    /**
+     * Populates the model with initial data read from the layer.
+     */
     virtual void populate() = 0;
 
   protected:
-    AttributesFormTreeNode *getItem( const QModelIndex &index ) const;
-    std::unique_ptr< AttributesFormTreeNode > mRootItem;
+    /**
+     * Returns the underlying node that corresponds to the given \a index.
+     *
+     * If the given \a index is not valid the root node is returned.
+     */
+    QgsAttributesFormTreeNode *nodeForIndex( const QModelIndex &index ) const;
+
+    std::unique_ptr< QgsAttributesFormTreeNode > mRootNode;
     QgsVectorLayer *mLayer;
 };
 
 
-class QgsAttributesAvailableWidgetsModel : public QgsAttributesFormModel
+/**
+ * \brief Class for available widgets when configuring attributes forms.
+ *
+ * \warning Not part of stable API and may change in future QGIS releases.
+ * \ingroup gui
+ * \since QGIS 3.44
+ */
+class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormModel
 {
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsAttributesAvailableWidgetsModel, with the given \a parent.
+     *
+     * The given \a layer and \a project are the data sources to populate the model.
+     */
     explicit QgsAttributesAvailableWidgetsModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent = nullptr );
-
-    //~QgsAttributesAvailableWidgetsModel() override;
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-
-    // Basic functionality:
-    // QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    // QModelIndex parent( const QModelIndex &index ) const override;
-
-    // int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    // int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     // Drag and drop support
     Qt::DropActions supportedDragActions() const override;
-    //Qt::DropActions supportedDropActions() const override;
-    //QStringList mimeTypes() const override;
-    //QMimeData *mimeData( const QModelIndexList &indexes ) const override;
-    //bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
-
-    // Add data:
-    //bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    //bool insertColumns( int column, int count, const QModelIndex &parent = QModelIndex() ) override;
-
-    // Remove data:
-    //bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    //bool removeColumns( int column, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     // Other methods
-    QModelIndex getFieldContainer() const;
-    QModelIndex getRelationContainer() const;
-    QModelIndex getFieldModelIndex( const QString &fieldName ) const;
+
+    /**
+     * Returns the field container in this model, expected to be placed at the first top-level row.
+     *
+     * If there is no field container set, an invalid index is returned.
+     */
+    QModelIndex fieldContainer() const;
+
+    /**
+     * Returns the relation container in this model, expected to be placed at the second top-level row.
+     *
+     * If there is no relation container set, an invalid index is returned.
+     */
+    QModelIndex relationContainer() const;
+
+    /**
+     * Returns the model index that corresponds to the field with the given \a fieldName.
+     */
+    QModelIndex fieldModelIndex( const QString &fieldName ) const;
 
   public slots:
     void populate() override;
@@ -500,42 +653,50 @@ class QgsAttributesAvailableWidgetsModel : public QgsAttributesFormModel
     QgsProject *mProject;
 };
 
-class QgsAttributesFormLayoutModel : public QgsAttributesFormModel
+
+/**
+ * \brief Class for form layouts when configuring attributes forms via drag and drop designer.
+ *
+ * \warning Not part of stable API and may change in future QGIS releases.
+ * \ingroup gui
+ * \since QGIS 3.44
+ */
+class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
 {
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsAttributesFormLayoutModel, with the given \a parent.
+     *
+     * The given \a layer is the data source to populate the model.
+     */
     explicit QgsAttributesFormLayoutModel( QgsVectorLayer *layer, QObject *parent = nullptr );
-
-    //~QgsAttributesFormLayoutModel() override;
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
-    // Basic functionality:
-    // QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    // QModelIndex parent( const QModelIndex &index ) const override;
-
-    // int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    // int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-
+    // Basic functionality
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
-    // Add/remove data:
-    //bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    // Add/remove data
+    /**
+     * Removes the index located at \a row within the given \a parent.
+     */
     bool removeRow( int row, const QModelIndex &parent = QModelIndex() );
 
     // Drag and drop support
     Qt::DropActions supportedDragActions() const override;
     Qt::DropActions supportedDropActions() const override;
-    //QStringList mimeTypes() const override;
-    //QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     // Other methods
-    QList< QgsAddAttributeFormContainerDialog::ContainerPair > getListOfContainers() const;
+    /**
+     * Returns a list of containers stored in the model, structured as pairs (name, container model index).
+     */
+    QList< QgsAddAttributeFormContainerDialog::ContainerPair > listOfContainers() const;
 
     /**
      * Adds a new container to \a parent.
@@ -544,7 +705,12 @@ class QgsAttributesFormLayoutModel : public QgsAttributesFormModel
      */
     void addContainer( QModelIndex &parent, const QString &title, int columnCount, Qgis::AttributeEditorContainerType type );
 
-    void insertNode( const QModelIndex &parent, int row, QString &nodeId, QgsAttributeFormTreeData::AttributeFormTreeItemType nodeType, QString &nodeName, QgsAttributeFormTreeData::DnDTreeItemData nodeData );
+    /**
+     * Inserts a new child to \a parent model index at the given \a row position.
+     *
+     * The child is constructed from the given \a nodeId, \a nodeType, \a nodeName and \a nodeData.
+     */
+    void insertChild( const QModelIndex &parent, int row, QString &nodeId, QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, QString &nodeName, QgsAttributesFormTreeData::DnDTreeNodeData nodeData );
 
   public slots:
     void populate() override;
@@ -556,22 +722,17 @@ class QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     void internalNodeDropped( QModelIndex &index );
 
   private:
-    QList< QgsAddAttributeFormContainerDialog::ContainerPair > getRecursiveListOfContainers( AttributesFormTreeNode *parent ) const;
-    void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, AttributesFormTreeNode *parent );
-    //AttributeFormLayoutTreeItem *getItem( const QModelIndex &index ) const;
-
-    //QgsVectorLayer *mLayer;
-    //QgsProject *mProject;
-    //std::unique_ptr< AttributeFormLayoutTreeItem > mRootItem;
+    QList< QgsAddAttributeFormContainerDialog::ContainerPair > recursiveListOfContainers( QgsAttributesFormTreeNode *parent ) const;
+    void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, QgsAttributesFormTreeNode *parent );
 };
 
 
-QDataStream &operator<<( QDataStream &stream, const QgsAttributeFormTreeData::DnDTreeItemData &data );
-QDataStream &operator>>( QDataStream &stream, QgsAttributeFormTreeData::DnDTreeItemData &data );
+QDataStream &operator<<( QDataStream &stream, const QgsAttributesFormTreeData::DnDTreeNodeData &data );
+QDataStream &operator>>( QDataStream &stream, QgsAttributesFormTreeData::DnDTreeNodeData &data );
 
 
-Q_DECLARE_METATYPE( QgsAttributeFormTreeData::RelationEditorConfiguration )
-Q_DECLARE_METATYPE( QgsAttributeFormTreeData::FieldConfig )
-Q_DECLARE_METATYPE( QgsAttributeFormTreeData::DnDTreeItemData )
+Q_DECLARE_METATYPE( QgsAttributesFormTreeData::RelationEditorConfiguration )
+Q_DECLARE_METATYPE( QgsAttributesFormTreeData::FieldConfig )
+Q_DECLARE_METATYPE( QgsAttributesFormTreeData::DnDTreeNodeData )
 
 #endif // QGSATTRIBUTESFORMMODEL_H

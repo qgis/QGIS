@@ -19,15 +19,20 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
+#include "ui_qgsattributesformproperties.h"
+#include "qgis_gui.h"
+#include "qgsattributesformmodel.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsattributeeditorelement.h"
+#include "qgspropertycollection.h"
+#include "qgsmessagebar.h"
+
 #include <QMimeData>
 #include <QPushButton>
-#include <QTableWidget>
-#include <QTreeWidget>
 #include <QWidget>
+#include <QTreeView>
 #include <QSpinBox>
-#include <QTreeWidgetItem>
 #include <QDropEvent>
-#include <QTableWidgetItem>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -37,35 +42,21 @@
 #include <QMenu>
 #include <QClipboard>
 
-#include "ui_qgsattributesformproperties.h"
-#include "qgis_gui.h"
-#include "qgsattributesformmodel.h"
-#include "qgsexpressioncontextgenerator.h"
-#include "qgsattributeeditorelement.h"
-#include "qgspropertycollection.h"
-#include "qgsmessagebar.h"
-
 class QgsAttributeFormContainerEdit;
 class QgsAttributeTypeDialog;
 class QgsAttributeWidgetEdit;
 class QgsAttributesFormBaseTreeView;
 
 /**
+ * \brief Class to create a panel to configure attributes forms.
+ *
+ * \warning Not part of stable API and may change in future QGIS releases.
  * \ingroup gui
- * \class QgsAttributesFormProperties
- * \brief A widget for configuring attribute forms.
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpressionContextGenerator, private Ui_QgsAttributesFormProperties
 {
     Q_OBJECT
-
-  public:
-    enum FieldPropertiesRoles
-    {
-      DnDTreeRole = Qt::UserRole,
-      FieldConfigRole,
-      FieldNameRole,
-    };
 
   public:
     explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
@@ -90,8 +81,16 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     void loadRelations();
 
-    void initAvailableWidgetsTree();
-    void initFormLayoutTree();
+    /**
+     * Initializes the available widgets tree view, repopulating the underlying model.
+     */
+    void initAvailableWidgetsTreeView();
+
+    /**
+     * Initializes the form layout tree view, repopulating the underlying model.
+     */
+    void initFormLayoutTreeView();
+
     void initLayoutConfig();
     void initInitPython();
     void initSuppressCombo();
@@ -101,7 +100,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
   protected:
     void updateButtons();
 
-    //QList<QgsRelation> mRelations;
     QgsVectorLayer *mLayer = nullptr;
 
     QgsAttributesFormBaseTreeView *mAvailableWidgetsTreeView = nullptr;
@@ -119,7 +117,11 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void pbnSelectEditForm_clicked();
     void mTbInitCode_clicked();
 
+    /**
+     * Inverts selection of top-level nodes.
+     */
     void onInvertSelectionButtonClicked( bool checked );
+
     void loadAttributeSpecificEditor( QgsAttributesFormBaseTreeView *emitter, QgsAttributesFormBaseTreeView *receiver, QModelIndex &deselectedFormLayoutIndex );
     void onAttributeSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void onFormLayoutSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
@@ -130,23 +132,34 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void updatedFields();
 
   private:
-    QModelIndex getPreviousIndex( const QgsAttributesFormBaseTreeView *treeView, const QItemSelection &deselected ) const;
+    /**
+     * Gets the index that was previously selected to store configuration when changing node selection.
+     */
+    QModelIndex previousIndex( const QgsAttributesFormBaseTreeView *treeView, const QItemSelection &deselected ) const;
 
     //! this will clean the right panel
     void clearAttributeTypeFrame();
 
     void loadAttributeWidgetEdit();
+
+    /**
+     * Stores attribute widget edit for the selected node in form layout tree view.
+     */
     void storeAttributeWidgetEdit();
 
-    // index should come from mFormLayoutTreeView because it's there that attribute widget config is stored!
+    /**
+     * Stores attribute container edit for the selected node in form layout tree view.
+     */
+    void storeAttributeContainerEdit();
+
+    //! Index should come from mFormLayoutTreeView because it's there that attribute widget config is stored!
     void storeAttributeWidgetEdit( const QModelIndex &index );
     void storeAttributeContainerEdit( const QModelIndex &index );
 
     void loadAttributeTypeDialog();
-    void loadAttributeTypeDialogFromConfiguration( const QgsAttributeFormTreeData::FieldConfig &cfg );
+    void loadAttributeTypeDialogFromConfiguration( const QgsAttributesFormTreeData::FieldConfig &cfg );
     void storeAttributeTypeDialog();
 
-    void storeAttributeContainerEdit();
     void loadAttributeContainerEdit();
 
     void loadInfoWidget( const QString &infoText );
@@ -175,71 +188,108 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
 
 /**
- * \ingroup gui
- * \class QgsAttributesFormBaseTreeView
+ * \brief Graphical representation for the attribute drag and drop editor.
  *
- * Graphical representation for the attribute drag and drop editor
+ * \warning Not part of stable API and may change in future QGIS releases.
+ * \ingroup gui
+ * \since QGIS 3.44
  */
 class GUI_EXPORT QgsAttributesFormBaseTreeView : public QTreeView, protected QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsAttributesFormBaseTreeView, with the given \a parent.
+     *
+     * The given \a layer is used to build an expression context with the layer scope.
+     */
     explicit QgsAttributesFormBaseTreeView( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     // QgsExpressionContextGenerator interface
     QgsExpressionContext createExpressionContext() const override;
 
   public slots:
-    void selectFirstMatchingItem( const QgsAttributeFormTreeData::AttributeFormTreeItemType &nodeType, const QString &nodeId );
+    /**
+     * Selects the first node that matches a \a nodeType and a \a nodeId.
+     *
+     * Helps to keep in sync selection from both Attribute Widget view and Form Layout view.
+     */
+    void selectFirstMatchingNode( const QgsAttributesFormTreeData::AttributesFormTreeNodeType &nodeType, const QString &nodeId );
 
   protected:
     QgsVectorLayer *mLayer = nullptr;
 };
 
+
+/**
+ * \brief Graphical representation for the available widgets while configuring attributes forms.
+ *
+ * \warning Not part of stable API and may change in future QGIS releases.
+ * \ingroup gui
+ * \since QGIS 3.44
+ */
 class GUI_EXPORT QgsAttributesAvailableWidgetsTreeView : public QgsAttributesFormBaseTreeView
 {
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsAttributesAvailableWidgetsTreeView, with the given \a parent.
+     *
+     * The given \a layer is used to build an expression context with the layer scope.
+     */
     explicit QgsAttributesAvailableWidgetsTreeView( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     //! Overridden setModel() from base class. Only QgsAttributesAvailableWidgetsModel is an acceptable model.
     void setModel( QAbstractItemModel *model ) override;
 
-    //! Gets access to the QgsAttributesAvailableWidgetsModel model
+    //! Access the underlying QgsAttributesAvailableWidgetsModel model
     QgsAttributesAvailableWidgetsModel *availableWidgetsModel() const;
 
   private:
-    QgsAttributesAvailableWidgetsModel *mModel;
+    QgsAttributesAvailableWidgetsModel *mModel = nullptr;
 };
 
+
+/**
+ * \brief Graphical representation for the form layout while configuring attributes forms.
+ *
+ * \warning Not part of stable API and may change in future QGIS releases.
+ * \ingroup gui
+ * \since QGIS 3.44
+ */
 class GUI_EXPORT QgsAttributesFormLayoutTreeView : public QgsAttributesFormBaseTreeView
 {
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsAttributesFormLayoutTreeView, with the given \a parent.
+     *
+     * The given \a layer is used to build an expression context with the layer scope.
+     */
     explicit QgsAttributesFormLayoutTreeView( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     //! Overridden setModel() from base class. Only QgsAttributesFormLayoutModel is an acceptable model.
     void setModel( QAbstractItemModel *model ) override;
 
-    //! Gets access to the QgsAttributesFormLayoutModel model
+    //! Access the underlying QgsAttributesFormLayoutModel model
     QgsAttributesFormLayoutModel *formLayoutModel() const;
 
   protected:
+    // Drag and drop support (to handle internal moves)
     void dragEnterEvent( QDragEnterEvent *event ) override;
-
     void dragMoveEvent( QDragMoveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
 
   private slots:
-    void onItemDoubleClicked( const QModelIndex &index );
+    void onNodeDoubleClicked( const QModelIndex &index );
     void handleExternalDroppedNode( QModelIndex &index );
     void handleInternalDroppedNode( QModelIndex &index );
 
   private:
-    QgsAttributesFormLayoutModel *mModel;
+    QgsAttributesFormLayoutModel *mModel = nullptr;
 };
 
 #endif // QGSATTRIBUTESFORMPROPERTIES_H
