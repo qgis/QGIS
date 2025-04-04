@@ -24,6 +24,7 @@
 #include <QCompleter>
 #include <QPointer>
 #include <QScreen>
+#include <QUuid>
 
 #include "qgsgraduatedsymbolrendererwidget.h"
 #include "moc_qgsgraduatedsymbolrendererwidget.cpp"
@@ -1453,9 +1454,10 @@ void QgsGraduatedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
   }
   else if ( event->key() == Qt::Key_V && event->modifiers() == Qt::ControlModifier )
   {
-    QgsRangeList::const_iterator rIt = mCopyBuffer.constBegin();
-    for ( ; rIt != mCopyBuffer.constEnd(); ++rIt )
+    QgsRangeList::iterator rIt = mCopyBuffer.begin();
+    for ( ; rIt != mCopyBuffer.end(); ++rIt )
     {
+      rIt->mUuid = QUuid::createUuid().toString();
       mModel->addClass( *rIt );
     }
     emit widgetChanged();

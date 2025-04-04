@@ -192,6 +192,8 @@ class CORE_EXPORT QgsRendererRange
 #endif
 
   protected:
+    friend class QgsGraduatedSymbolRendererWidget;
+
     double mLowerValue = 0, mUpperValue = 0;
     std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;

@@ -147,6 +147,8 @@ class CORE_EXPORT QgsRendererCategory
 #endif
 
   protected:
+    friend class QgsCategorizedSymbolRendererWidget;
+
     QVariant mValue;
     std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;
