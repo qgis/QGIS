@@ -1,4 +1,4 @@
-ARG DISTRO_VERSION=39
+ARG DISTRO_VERSION=42
 
 FROM fedora:${DISTRO_VERSION} as binary-for-oracle
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>

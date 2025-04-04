@@ -59,7 +59,7 @@ jobs:
             experimental: false
             unity-builds: ON
 
-          - distro-version: '39'
+          - distro-version: '42'
             qt-version: 6
             run-tests: true
             with-qt6: ON
@@ -70,7 +70,7 @@ jobs:
             with-grass7: OFF
             with-grass8: ON
             with-webengine: ON
-            with-pdf4qt: ON
+            with-pdf4qt: OFF
             with-compile-commands: OFF
             LD_PRELOAD: ''
             experimental: false
@@ -251,7 +251,7 @@ jobs:
             docker-target: binary-only
 
           - qt-version: 6
-            distro-version: 39
+            distro-version: 42
             docker-target: binary-only
 
           - qt-version: 5
