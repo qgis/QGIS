@@ -35,10 +35,6 @@ class QgsDepthEntity : public QgsRenderPassQuad
   public:
     //! Constructor
     QgsDepthEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
-
-  private:
-    Qt3DRender::QParameter *mTextureParameter = nullptr;
-    Qt3DRender::QParameter *mTextureTransformParameter = nullptr;
 };
 
 #endif // QGSDEPTHENTITY_H

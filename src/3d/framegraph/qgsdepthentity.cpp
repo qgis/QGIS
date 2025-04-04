@@ -27,15 +27,9 @@ QgsDepthEntity::QgsDepthEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLa
 {
   setObjectName( "depthRenderQuad" );
 
-  QMatrix4x4 modelMatrix;
-  modelMatrix.setToIdentity();
-
   // construct material
-
-  mTextureParameter = new Qt3DRender::QParameter( "depthTexture", texture );
-  mTextureTransformParameter = new Qt3DRender::QParameter( "modelMatrix", QVariant::fromValue( modelMatrix ) );
-  mMaterial->addParameter( mTextureParameter );
-  mMaterial->addParameter( mTextureTransformParameter );
+  Qt3DRender::QParameter *textureParameter = new Qt3DRender::QParameter( "depthTexture", texture );
+  mMaterial->addParameter( textureParameter );
 
   const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/depth_render.vert" );
   const QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/depth_render.frag" );
