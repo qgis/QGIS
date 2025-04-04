@@ -78,6 +78,23 @@ Returns the currently selected algorithm in the tree view, or ``None``
 if no algorithm is currently selected.
 %End
 
+    const QgsProcessingParameterType *parameterTypeForIndex( const QModelIndex &index );
+%Docstring
+Returns the model parameter at the specified tree view ``index``, or
+``None`` if the index does not correspond to a model parameter.
+
+.. versionadded:: 3.44
+%End
+
+    const QgsProcessingParameterType *selectedParameterType();
+%Docstring
+Returns the currently selected model parameter in the tree view, or
+``None`` if no model parameter is currently selected.
+
+.. versionadded:: 3.44
+%End
+
+
     void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
 %Docstring
 Sets ``filters`` controlling the view's contents.
