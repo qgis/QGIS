@@ -70,7 +70,7 @@ jobs:
             with-grass7: OFF
             with-grass8: ON
             with-webengine: ON
-            with-pdf4qt: ON
+            with-pdf4qt: OFF
             with-compile-commands: OFF
             LD_PRELOAD: ''
             experimental: false
