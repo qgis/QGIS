@@ -105,9 +105,7 @@ namespace QgsWfs
     }
   }
 
-  void writeGetFeature( QgsServerInterface *serverIface, const QgsProject *project,
-                        const QString &version, const QgsServerRequest &request,
-                        QgsServerResponse &response )
+  void writeGetFeature( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response )
   {
     Q_UNUSED( version )
 
