@@ -1683,6 +1683,10 @@ class TestQgsExpression : public QObject
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );
       QTest::newRow( "upper" ) << "upper('HeLLo')" << false << QVariant( "HELLO" );
       QTest::newRow( "length" ) << "length('HeLLo')" << false << QVariant( 5 );
+      QTest::newRow( "repeat 0" ) << "repeat('HeLLo', 0)" << false << QVariant( "" );
+      QTest::newRow( "repeat 1" ) << "repeat('HeLLo', 1)" << false << QVariant( "HeLLo" );
+      QTest::newRow( "repeat 3" ) << "repeat('HeLLo', 3)" << false << QVariant( "HeLLoHeLLoHeLLo" );
+      QTest::newRow( "repeat -1" ) << "repeat('HeLLo', -1)" << false << QVariant( "" );
       QTest::newRow( "replace" ) << "replace('HeLLo', 'LL', 'xx')" << false << QVariant( "Hexxo" );
       QTest::newRow( "replace (array replaced by array)" ) << "replace('321', array('1','2','3'), array('7','8','9'))" << false << QVariant( "987" );
       QTest::newRow( "replace (array replaced by string)" ) << "replace('12345', array('2','4'), '')" << false << QVariant( "135" );
