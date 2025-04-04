@@ -893,38 +893,6 @@ void QgsMeshLayer::setDatasetGroupTreeRootItem( QgsMeshDatasetGroupTreeItem *roo
   updateActiveDatasetGroups();
 }
 
-int QgsMeshLayer::closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  const QgsRectangle searchRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
-  const QgsTriangularMesh *mesh = triangularMesh();
-  // search for the closest edge in search area from point
-  const QList<int> edgeIndexes = mesh->edgeIndexesForRectangle( searchRectangle );
-  int selectedIndex = -1;
-  if ( mesh->contains( QgsMesh::Edge ) &&
-       mDataProvider->isValid() )
-  {
-    double sqrMaxDistFromPoint = pow( searchRadius, 2 );
-    for ( const int edgeIndex : edgeIndexes )
-    {
-      const QgsMeshEdge &edge = mesh->edges().at( edgeIndex );
-      const QgsMeshVertex &vertex1 = mesh->vertices()[edge.first];
-      const QgsMeshVertex &vertex2 = mesh->vertices()[edge.second];
-      QgsPointXY projPoint;
-      const double sqrDist = point.sqrDistToSegment( vertex1.x(), vertex1.y(), vertex2.x(), vertex2.y(), projPoint, 0 );
-      if ( sqrDist < sqrMaxDistFromPoint )
-      {
-        selectedIndex = edgeIndex;
-        projectedPoint = projPoint;
-        sqrMaxDistFromPoint = sqrDist;
-      }
-    }
-  }
-
-  return selectedIndex;
-}
-
 QgsMeshDatasetIndex QgsMeshLayer::staticVectorDatasetIndex( int group ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -949,14 +917,49 @@ void QgsMeshLayer::setTemporalMatchingMethod( const QgsMeshDataProviderTemporalC
   mTemporalProperties->setMatchingMethod( matchingMethod );
 }
 
-QgsPointXY QgsMeshLayer::snapOnVertex( const QgsPointXY &point, double searchRadius )
+int QgsMeshLayer::closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  const QgsRectangle searchRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
+  const QgsTriangularMesh *mesh = triangularMesh();
+  // search for the closest edge in search area from point
+  const QList<int> edgeIndexes = mesh->edgeIndexesForRectangle( searchRectangle );
+  int selectedIndex = -1;
+  projectedPoint = QgsPointXY();
+  if ( mesh->contains( QgsMesh::Edge ) &&
+       mDataProvider->isValid() )
+  {
+    double sqrMaxDistFromPoint = pow( searchRadius, 2 );
+    for ( const int edgeIndex : edgeIndexes )
+    {
+      const QgsMeshEdge &edge = mesh->edges().at( edgeIndex );
+      const QgsMeshVertex &vertex1 = mesh->vertices()[edge.first];
+      const QgsMeshVertex &vertex2 = mesh->vertices()[edge.second];
+      QgsPointXY projPoint;
+      const double sqrDist = point.sqrDistToSegment( vertex1.x(), vertex1.y(), vertex2.x(), vertex2.y(), projPoint, 0 );
+      if ( sqrDist < sqrMaxDistFromPoint )
+      {
+        selectedIndex = edgeIndex;
+        projectedPoint = projPoint;
+        sqrMaxDistFromPoint = sqrDist;
+      }
+    }
+  }
+
+  return selectedIndex;
+}
+
+int QgsMeshLayer::closestVertex( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   const QgsTriangularMesh *mesh = triangularMesh();
-  QgsPointXY exactPosition;
+  int selectedIndex = -1;
+  projectedPoint = QgsPointXY();
   if ( !mesh )
-    return exactPosition;
+    return selectedIndex;
+
   const QgsRectangle rectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
   double maxDistance = searchRadius;
   //attempt to snap on edges's vertices
@@ -971,12 +974,14 @@ QgsPointXY QgsMeshLayer::snapOnVertex( const QgsPointXY &point, double searchRad
     if ( dist1 < maxDistance )
     {
       maxDistance = dist1;
-      exactPosition = vertex1;
+      projectedPoint = vertex1;
+      selectedIndex = edge.first;
     }
     if ( dist2 < maxDistance )
     {
       maxDistance = dist2;
-      exactPosition = vertex2;
+      projectedPoint = vertex2;
+      selectedIndex = edge.second;
     }
   }
 
@@ -992,32 +997,25 @@ QgsPointXY QgsMeshLayer::snapOnVertex( const QgsPointXY &point, double searchRad
       if ( dist < maxDistance )
       {
         maxDistance = dist;
-        exactPosition = vertex;
+        projectedPoint = vertex;
+        selectedIndex = face.at( i );
       }
     }
   }
 
-  return exactPosition;
+  return selectedIndex;
 }
 
-QgsPointXY QgsMeshLayer::snapOnEdge( const QgsPointXY &point, double searchRadius )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  QgsPointXY projectedPoint;
-  closestEdge( point, searchRadius, projectedPoint );
-
-  return projectedPoint;
-}
-
-QgsPointXY QgsMeshLayer::snapOnFace( const QgsPointXY &point, double searchRadius )
+int QgsMeshLayer::closestFace( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   const QgsTriangularMesh *mesh = triangularMesh();
-  QgsPointXY centroidPosition;
+  int selectedIndex = -1;
+  projectedPoint = QgsPointXY();
   if ( !mesh )
-    return centroidPosition;
+    return selectedIndex;
+
   const QgsRectangle rectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
   double maxDistance = std::numeric_limits<double>::max();
 
@@ -1032,11 +1030,12 @@ QgsPointXY QgsMeshLayer::snapOnFace( const QgsPointXY &point, double searchRadiu
     if ( dist < maxDistance )
     {
       maxDistance = dist;
-      centroidPosition = centroid;
+      projectedPoint = centroid;
+      selectedIndex = nativefaceIndex;
     }
   }
 
-  return centroidPosition;
+  return selectedIndex;
 }
 
 void QgsMeshLayer::resetDatasetGroupTreeItem()
@@ -1489,16 +1488,25 @@ QgsPointXY QgsMeshLayer::snapOnElement( QgsMesh::ElementType elementType, const 
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  QgsPointXY projectedPoint;
+  closestElement( elementType, point, searchRadius, projectedPoint );
+  return projectedPoint;
+}
+
+int QgsMeshLayer::closestElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   switch ( elementType )
   {
     case QgsMesh::Vertex:
-      return snapOnVertex( point, searchRadius );
+      return closestVertex( point, searchRadius, projectedPoint );
     case QgsMesh::Edge:
-      return snapOnEdge( point, searchRadius );
+      return closestEdge( point, searchRadius, projectedPoint );
     case QgsMesh::Face:
-      return snapOnFace( point, searchRadius );
+      return closestFace( point, searchRadius, projectedPoint );
   }
-  return QgsPointXY(); // avoid warnings
+  return -1;
 }
 
 QList<int> QgsMeshLayer::selectVerticesByExpression( QgsExpression expression )
