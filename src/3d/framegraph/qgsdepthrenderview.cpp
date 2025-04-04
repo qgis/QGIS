@@ -32,7 +32,6 @@
 
 QgsDepthRenderView::QgsDepthRenderView( const QString &viewName, QSize size, Qt3DRender::QTexture2D *forwardDepthTexture, Qt3DCore::QEntity *rootSceneEntity )
   : QgsAbstractRenderView( viewName )
-  , mMainCamera( mainCamera )
 {
   mLayer = new Qt3DRender::QLayer;
   mLayer->setRecursive( true );
@@ -45,7 +44,6 @@ QgsDepthRenderView::QgsDepthRenderView( const QString &viewName, QSize size, Qt3
 void QgsDepthRenderView::updateWindowResize( int width, int height )
 {
   mColorTexture->setSize( width, height );
-  mDepthTexture->setSize( width, height );
 }
 
 Qt3DRender::QRenderTarget *QgsDepthRenderView::buildTextures( QSize size )
@@ -66,24 +64,9 @@ Qt3DRender::QRenderTarget *QgsDepthRenderView::buildTextures( QSize size )
   // Hook the texture up to our output, and the output up to this object.
   colorOutput->setTexture( mColorTexture );
 
-  Qt3DRender::QRenderTargetOutput *depthOutput = new Qt3DRender::QRenderTargetOutput;
-
-  depthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
-  mDepthTexture = new Qt3DRender::QTexture2D( depthOutput );
-  mDepthTexture->setSize( size.width(), size.height() );
-  mDepthTexture->setFormat( Qt3DRender::QAbstractTexture::DepthFormat );
-  mDepthTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
-  mDepthTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
-  mDepthTexture->setComparisonFunction( Qt3DRender::QAbstractTexture::CompareLessEqual );
-  mDepthTexture->setComparisonMode( Qt3DRender::QAbstractTexture::CompareRefToTexture );
-  mDepthTexture->setObjectName( mViewName + "::mDepthTexture" );
-
-  depthOutput->setTexture( mDepthTexture );
-
   Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget;
   renderTarget->setObjectName( mViewName + "::RenderTarget" );
   renderTarget->addOutput( colorOutput );
-  renderTarget->addOutput( depthOutput );
 
   return renderTarget;
 }
@@ -91,22 +74,7 @@ Qt3DRender::QRenderTarget *QgsDepthRenderView::buildTextures( QSize size )
 void QgsDepthRenderView::buildRenderPass( QSize size, Qt3DRender::QTexture2D *forwardDepthTexture, Qt3DCore::QEntity *rootSceneEntity )
 {
   // depth buffer render to copy pass
-
-  Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector( mRendererEnabler );
-  cameraSelector->setObjectName( mViewName + "::CameraSelector" );
-  cameraSelector->setCamera( mMainCamera );
-
-  Qt3DRender::QRenderStateSet *stateSet = new Qt3DRender::QRenderStateSet( cameraSelector );
-
-  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
-  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
-  Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-  cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
-
-  stateSet->addRenderState( depthTest );
-  stateSet->addRenderState( cullFace );
-
-  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( stateSet );
+  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( mRendererEnabler );
   layerFilter->addLayer( mLayer );
 
   Qt3DRender::QRenderTargetSelector *renderTargetSelector = new Qt3DRender::QRenderTargetSelector( layerFilter );

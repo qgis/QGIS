@@ -59,11 +59,9 @@ class QgsDepthRenderView : public QgsAbstractRenderView
     virtual void updateWindowResize( int width, int height ) override;
 
   private:
-    Qt3DRender::QCamera *mMainCamera = nullptr;
     Qt3DRender::QRenderCapture *mDepthRenderCapture = nullptr;
     Qt3DRender::QLayer *mLayer = nullptr;
     Qt3DRender::QTexture2D *mColorTexture = nullptr;
-    Qt3DRender::QTexture2D *mDepthTexture = nullptr;
 
     Qt3DRender::QRenderTarget *buildTextures( QSize size );
     void buildRenderPass( QSize size, Qt3DRender::QTexture2D *forwardDepthTexture, Qt3DCore::QEntity *rootSceneEntity );

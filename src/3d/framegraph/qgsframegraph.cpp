@@ -309,7 +309,7 @@ void QgsFrameGraph::constructDepthRenderPass()
 {
   // entity used to draw the depth texture and convert it to rgb image
   Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView().depthTexture();
-  QgsDepthRenderView *rv = new QgsDepthRenderView( DEPTH_RENDERVIEW, mMainCamera, mSize, forwardDepthTexture, mRootEntity );
+  QgsDepthRenderView *rv = new QgsDepthRenderView( DEPTH_RENDERVIEW, mSize, forwardDepthTexture, mRootEntity );
   registerRenderView( std::unique_ptr<QgsDepthRenderView>( rv ), DEPTH_RENDERVIEW );
 }
 
