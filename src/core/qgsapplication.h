@@ -1090,6 +1090,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const QgsSettingsEntryBool *settingsLocaleShowGroupSeparator;
     //! Settings entry search path for SVG
     static const QgsSettingsEntryStringList *settingsSearchPathsForSVG;
+    //! Settings entry to configure the maximum number of concurrent connections within connection pools
+    static const QgsSettingsEntryInteger *settingsConnectionPoolMaximumConcurrentConnections;
 #endif
 
 #ifdef SIP_RUN
