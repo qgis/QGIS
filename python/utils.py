@@ -888,7 +888,7 @@ serverIface = None
 
 def initServerInterface(pointer):
     from qgis.server import QgsServerInterface
-    from sip import wrapinstance
+    from qgis.PyQt.sip import wrapinstance
 
     sys.excepthook = sys.__excepthook__
     global serverIface
