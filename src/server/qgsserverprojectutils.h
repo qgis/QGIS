@@ -360,6 +360,8 @@ class SERVER_EXPORT QgsServerProjectUtils
    */
     static QStringList wmsOutputCrsList( const QgsProject &project );
 
+    SERVER_EXPORT QStringList wmsOutputCrsListAsOgcUrn( const QgsProject &project );
+
     /**
    * Returns the WMS Extent restriction.
    * \param project the QGIS project
