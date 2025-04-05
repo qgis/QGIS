@@ -1552,8 +1552,8 @@ static QVariant fcnLength3D( const QVariantList &values, const QgsExpressionCont
 static QVariant fcnRepeat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  const int number = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
-  return string.repeated( std::max( number, 0 ) );
+  const qlonglong number = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  return string.repeated( std::max( static_cast< int >( number ), 0 ) );
 }
 
 static QVariant fcnReplace( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
