@@ -268,7 +268,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     // low-level utility functions
 
     //! Read common XML elements.
-    void readCommonXml( QDomElement &element );
+    void readCommonXml( const QDomElement &element );
     //! Write common XML elements.
     void writeCommonXml( QDomElement &element );
 

@@ -41,6 +41,14 @@ QString QgsProjectServerValidator::displayValidationError( QgsProjectServerValid
   return QString();
 }
 
+//! helper method to retrieve a layer or layer tree group short name
+template <class T>
+QString getShortName( T *node )
+{
+  const QString shortName = node->serverProperties()->shortName();
+  return shortName.isEmpty() ? node->name() : shortName;
+}
+
 void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages )
 {
   const QList< QgsLayerTreeNode * > treeGroupChildren = treeGroup->children();
@@ -50,11 +58,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
     if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
     {
       QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
-      const QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
-      if ( shortName.isEmpty() )
-        owsNames << treeGroupChild->name();
-      else
-        owsNames << shortName;
+      owsNames << getShortName( treeGroupChild );
       browseLayerTree( treeGroupChild, owsNames, encodingMessages );
     }
     else
@@ -63,12 +67,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
       QgsMapLayer *layer = treeLayer->layer();
       if ( layer )
       {
-        const QString shortName = layer->serverProperties()->shortName();
-        if ( shortName.isEmpty() )
-          owsNames << layer->name();
-        else
-          owsNames << shortName;
-
+        owsNames << getShortName( layer );
         if ( layer->type() == Qgis::LayerType::Vector )
         {
           QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( layer );

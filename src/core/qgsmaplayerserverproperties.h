@@ -104,6 +104,11 @@ class CORE_EXPORT QgsServerMetadataUrlProperties
     //! Gets the parent layer
     virtual const QgsMapLayer *layer() const = 0;
 
+    // TODO c++20 - replace with = default
+
+    bool operator==( const QgsServerMetadataUrlProperties &other ) const;
+    bool operator!=( const QgsServerMetadataUrlProperties &other ) const;
+
   protected:
     //! Saves server properties to xml under the layer node
     void writeXml( QDomNode &layerNode, QDomDocument &document ) const SIP_SKIP;
@@ -186,6 +191,10 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
         , defaultDisplayType( dimDefaultDisplayType )
         , referenceValue( dimReferenceValue )
       {}
+
+      bool operator==( const WmsDimensionInfo &other ) const;
+      bool operator!=( const WmsDimensionInfo &other ) const;
+
       QString name;
       QString fieldName;
       QString endFieldName;
@@ -196,6 +205,11 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
     };
 
     virtual ~QgsServerWmsDimensionProperties() = default;
+
+    // TODO c++20 - replace with = default
+
+    bool operator==( const QgsServerWmsDimensionProperties &other ) const;
+    bool operator!=( const QgsServerWmsDimensionProperties &other ) const;
 
     /**
      * Returns WMS Dimension default display labels
@@ -281,6 +295,11 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      * \param layer The map layer
      */
     QgsMapLayerServerProperties( QgsMapLayer *layer = nullptr );
+
+    // TODO c++20 - replace with = default
+
+    bool operator==( const QgsMapLayerServerProperties &other ) const;
+    bool operator!=( const QgsMapLayerServerProperties &other ) const;
 
     /**
      * Copy properties to another instance

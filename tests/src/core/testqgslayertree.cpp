@@ -71,6 +71,7 @@ class TestQgsLayerTree : public QObject
     void testRasterSymbolNode();
     void testLayersEditable();
     void testInsertLayerBelow();
+    void testGroupReadWriteXMlServerProperties();
 
   private:
     QgsLayerTreeGroup *mRoot = nullptr;
@@ -1038,6 +1039,35 @@ void TestQgsLayerTree::testInsertLayerBelow()
   // Check the order of the layers
   QCOMPARE( root.findLayerIds(), QStringList() << topLayer->id() << bottomLayer->id() );
 }
+
+void TestQgsLayerTree::testGroupReadWriteXMlServerProperties()
+{
+  // test retro compatibility for project before 3.44
+
+  QgsLayerTreeGroup *group = mRoot->insertGroup( 0, QStringLiteral( "test_grp" ) );
+
+  QDomDocument doc( QStringLiteral( "test-layer-tree-group" ) );
+  QDomElement parentElem = doc.createElement( "root" );
+  QgsReadWriteContext context;
+
+  group->setCustomProperty( QStringLiteral( "wmsShortName" ), QStringLiteral( "testShortName" ) );
+  group->setCustomProperty( QStringLiteral( "wmsTitle" ), QStringLiteral( "testTitle" ) );
+  group->setCustomProperty( QStringLiteral( "wmsAbstract" ), QStringLiteral( "testAbstract" ) );
+
+  group->writeXml( parentElem, context );
+
+  std::unique_ptr<QgsLayerTreeGroup> newGroup( QgsLayerTreeGroup::readXml( parentElem.firstChildElement(), context ) );
+  QCOMPARE( newGroup->serverProperties()->shortName(), QStringLiteral( "testShortName" ) );
+  QCOMPARE( newGroup->serverProperties()->title(), QStringLiteral( "testTitle" ) );
+  QCOMPARE( newGroup->serverProperties()->abstract(), QStringLiteral( "testAbstract" ) );
+
+  QVERIFY( !newGroup->customProperty( QStringLiteral( "wmsShortName" ) ).isValid() );
+  QVERIFY( !newGroup->customProperty( QStringLiteral( "wmsTitle" ) ).isValid() );
+  QVERIFY( !newGroup->customProperty( QStringLiteral( "wmsAbstract" ) ).isValid() );
+
+  mRoot->removeChildNode( group );
+}
+
 
 QGSTEST_MAIN( TestQgsLayerTree )
 #include "testqgslayertree.moc"

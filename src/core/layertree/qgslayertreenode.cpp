@@ -234,7 +234,7 @@ QStringList QgsLayerTreeNode::customProperties() const
   return mProperties.keys();
 }
 
-void QgsLayerTreeNode::readCommonXml( QDomElement &element )
+void QgsLayerTreeNode::readCommonXml( const QDomElement &element )
 {
   mProperties.readXml( element );
 }
