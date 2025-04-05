@@ -73,7 +73,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRaster( QgsFeedback *feedbac
     return processRasterCPU( feedback );
   }
 #ifndef _MSC_VER
-  return InputLayerError;
+  return QgsNineCellFilter::Result::InputLayerError;
 #endif
 #else
   return processRasterCPU( feedback );
@@ -171,41 +171,41 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
   const gdal::dataset_unique_ptr inputDataset( openInputFile( xSize, ySize ) );
   if ( !inputDataset )
   {
-    return InputLayerError; //opening of input file failed
+    return QgsNineCellFilter::Result::InputLayerError; //opening of input file failed
   }
 
   //output driver
   GDALDriverH outputDriver = openOutputDriver();
   if ( !outputDriver )
   {
-    return DriverError;
+    return QgsNineCellFilter::Result::DriverError;
   }
 
   gdal::dataset_unique_ptr outputDataset( openOutputFile( inputDataset.get(), outputDriver ) );
   if ( !outputDataset )
   {
-    return CreateOutputError; //create operation on output file failed
+    return QgsNineCellFilter::Result::CreateOutputError; //create operation on output file failed
   }
 
   //open first raster band for reading (operation is only for single band raster)
   GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset.get(), 1 );
   if ( !rasterBand )
   {
-    return InputBandError;
+    return QgsNineCellFilter::Result::InputBandError;
   }
   mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, nullptr );
 
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
   if ( !outputRasterBand )
   {
-    return OutputBandError;
+    return QgsNineCellFilter::Result::OutputBandError;
   }
   // set nodata value
   GDALSetRasterNoDataValue( outputRasterBand, mOutputNodataValue );
 
   if ( ySize < 3 ) //we require at least three rows (should be true for most datasets)
   {
-    return RasterSizeError;
+    return QgsNineCellFilter::Result::RasterSizeError;
   }
 
   // Prepare context and queue
@@ -328,9 +328,9 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
   {
     //delete the dataset without closing (because it is faster)
     gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
-    return Canceled;
+    return QgsNineCellFilter::Result::Canceled;
   }
-  return Success;
+  return QgsNineCellFilter::Result::Success;
 }
 #endif
 
@@ -344,41 +344,41 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feed
   const gdal::dataset_unique_ptr inputDataset( openInputFile( xSize, ySize ) );
   if ( !inputDataset )
   {
-    return InputLayerError; //opening of input file failed
+    return QgsNineCellFilter::Result::InputLayerError; //opening of input file failed
   }
 
   //output driver
   GDALDriverH outputDriver = openOutputDriver();
   if ( !outputDriver )
   {
-    return DriverError;
+    return QgsNineCellFilter::Result::DriverError;
   }
 
   gdal::dataset_unique_ptr outputDataset( openOutputFile( inputDataset.get(), outputDriver ) );
   if ( !outputDataset )
   {
-    return CreateOutputError; //create operation on output file failed
+    return QgsNineCellFilter::Result::CreateOutputError; //create operation on output file failed
   }
 
   //open first raster band for reading (operation is only for single band raster)
   GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset.get(), 1 );
   if ( !rasterBand )
   {
-    return InputBandError;
+    return QgsNineCellFilter::Result::InputBandError;
   }
   mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, nullptr );
 
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
   if ( !outputRasterBand )
   {
-    return OutputBandError;
+    return QgsNineCellFilter::Result::OutputBandError;
   }
   // set nodata value
   GDALSetRasterNoDataValue( outputRasterBand, mOutputNodataValue );
 
   if ( ySize < 3 ) //we require at least three rows (should be true for most datasets)
   {
-    return RasterSizeError;
+    return QgsNineCellFilter::Result::RasterSizeError;
   }
 
   //keep only three scanlines in memory at a time, make room for initial and final nodata
@@ -467,7 +467,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feed
   {
     //delete the dataset without closing (because it is faster)
     gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
-    return Canceled;
+    return QgsNineCellFilter::Result::Canceled;
   }
-  return Success;
+  return QgsNineCellFilter::Result::Success;
 }

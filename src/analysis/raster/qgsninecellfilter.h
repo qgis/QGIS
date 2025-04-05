@@ -38,7 +38,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
 {
   public:
     //! Result of the calculation \since QGIS 3.44
-    enum Result
+    enum class Result : int
     {
       Success = 0,           //!< Operation completed successfully
       InputLayerError = 1,   //!< Error reading input file
