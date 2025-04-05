@@ -27,7 +27,7 @@ subclass
 #include "qgsninecellfilter.h"
 %End
   public:
-    enum Result
+    enum class Result
     {
       Success,
       InputLayerError,
