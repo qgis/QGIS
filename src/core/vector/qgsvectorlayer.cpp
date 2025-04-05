@@ -2597,7 +2597,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       {
         const QDomElement mergePolicyElem = mergePolicyNodeList.at( i ).toElement();
         const QString field = mergePolicyElem.attribute( QStringLiteral( "field" ) );
-        const Qgis::FieldDomainMergePolicy policy = qgsEnumKeyToValue( mergePolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainMergePolicy::DefaultValue );
+        const Qgis::FieldDomainMergePolicy policy = qgsEnumKeyToValue( mergePolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainMergePolicy::UnsetField );
         mAttributeMergePolicy.insert( field, policy );
       }
     }
