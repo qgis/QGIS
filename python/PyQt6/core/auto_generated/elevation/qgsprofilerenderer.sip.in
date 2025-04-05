@@ -165,7 +165,6 @@ Renders a portion of the profile using the specified render ``context``.
 If ``sourceId`` is empty then all sources will be rendered, otherwise
 only the matching source will be rendered.
 %End
-
     static std::unique_ptr<QgsLineSymbol> defaultSubSectionsSymbol() /Factory/;
 %Docstring
 Returns the default line symbol to use for subsections lines.
@@ -174,7 +173,6 @@ Returns the default line symbol to use for subsections lines.
 
 .. versionadded:: 3.44
 %End
-
     QgsLineSymbol *subsectionsSymbol();
 %Docstring
 Returns the line symbol used to draw the subsections.
