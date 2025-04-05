@@ -452,10 +452,10 @@
      <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
    </property>
    <property name="text">
-    <string>Select/Move Item</string>
+    <string>Select/Move/Link Item</string>
    </property>
    <property name="toolTip">
-    <string>Select/Move item</string>
+    <string>Select/Move/Link item</string>
    </property>
    <property name="shortcut">
     <string>V</string>

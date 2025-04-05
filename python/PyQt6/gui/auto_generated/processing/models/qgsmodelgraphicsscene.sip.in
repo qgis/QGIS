@@ -109,6 +109,17 @@ Returns the graphic item corresponding to the specified group box
 ``uuid``.
 %End
 
+    QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
+%Docstring
+Returns the graphic item corresponding to the specified child algorithm
+%End
+
+    QgsModelComponentGraphicItem *parameterItem( const QString &name );
+%Docstring
+Returns the :py:class:`QgsModelComponentGraphicItem` corresponding to
+the specified child algorithm
+%End
+
     void selectAll();
 %Docstring
 Selects all the components in the scene.
@@ -152,6 +163,11 @@ Sets the message ``bar`` associated with the scene.
 %Docstring
 Shows a warning message, allowing users to click a button to see the
 full details (``longMessage``).
+%End
+
+    void requestRebuildRequired();
+%Docstring
+Requests a complete rebuild of a model by emitting the according signal
 %End
 
   signals:

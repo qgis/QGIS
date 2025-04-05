@@ -110,6 +110,17 @@ class CORE_EXPORT QgsProcessingParameterTypeFieldMapping : public QgsProcessingP
     {
       return QStringList() << QObject::tr( "list[dict]: list of field definitions as dictionaries" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterFieldMapping::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList();
+    }
 };
 
 ///@endcond

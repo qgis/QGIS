@@ -18,6 +18,7 @@
 
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
+#include "qgsprocessingoutputs.h"
 #include "qgsdxfexport.h"
 
 /**
@@ -124,6 +125,27 @@ class CORE_EXPORT QgsProcessingParameterTypeDxfLayers : public QgsProcessingPara
              << QObject::tr( "str: layer source" )
              << QStringLiteral( "list[QgsMapLayer]" )
              << QStringLiteral( "QgsVectorLayer" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterMultipleLayers::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterFile::typeName()
+             << QgsProcessingParameterString::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMultipleLayers::typeName()
+             << QgsProcessingOutputFile::typeName();
     }
 };
 

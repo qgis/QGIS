@@ -354,14 +354,6 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingTinInputLayersWidgetWr
   return new QgsProcessingTinInputLayersWidgetWrapper( parameter, type );
 }
 
-QStringList QgsProcessingTinInputLayersWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterTinInputLayers::typeName();
-}
-
-QStringList QgsProcessingTinInputLayersWidgetWrapper::compatibleOutputTypes() const { return QStringList(); }
-
 QWidget *QgsProcessingTinInputLayersWidgetWrapper::createWidget()
 {
   mWidget = new QgsProcessingTinInputLayersWidget( widgetContext().project() );

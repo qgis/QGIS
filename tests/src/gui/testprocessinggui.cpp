@@ -173,11 +173,6 @@ class TestWidgetFactory : public QgsProcessingParameterWidgetFactoryInterface
     {
       return new TestWidgetWrapper( parameter, type );
     }
-
-
-    QStringList compatibleParameterTypes() const override { return QStringList(); }
-
-    QStringList compatibleOutputTypes() const override { return QStringList(); }
 };
 
 class DummyPluginLayer : public QgsPluginLayer
@@ -819,12 +814,16 @@ void TestProcessingGui::testModelerWrapper()
   QCOMPARE( w->mSourceButton->toolTip(), QStringLiteral( "Algorithm Output" ) );
 
   // populate sources and re-try
-  w->populateSources( QStringList() << QStringLiteral( "boolean" ), QStringList() << QStringLiteral( "outputVector" ), QList<int>() );
+  // w->populateSources( QStringList() << QStringLiteral( "boolean" ), QStringList() << QStringLiteral( "outputVector" ), QList<int>() );
+  w->populateSources( new QgsProcessingParameterBoolean( "dummyname", "dummy desc" ) );
 
   // model input
   w->setWidgetValue( QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "p1" ) ) );
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().parameterName(), QStringLiteral( "p1" ) );
+
+
+  w->populateSources( new QgsProcessingParameterMapLayer( "dummyname", "dummy desc" ) );
 
   // alg output
   w->setWidgetValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg3" ), QStringLiteral( "OUTPUT" ) ) );
