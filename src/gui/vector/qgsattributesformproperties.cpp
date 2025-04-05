@@ -15,8 +15,6 @@
 
 #include "qgsactionmanager.h"
 #include "qgsaddtaborgroup.h"
-#include "qgsattributeeditorspacerelement.h"
-#include "qgsattributeeditortextelement.h"
 #include "qgsattributesformproperties.h"
 #include "moc_qgsattributesformproperties.cpp"
 #include "qgsattributetypedialog.h"
@@ -29,14 +27,8 @@
 #include "qgscodeeditor.h"
 #include "qgscodeeditorhtml.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsattributeeditoraction.h"
-#include "qgsattributeeditorfield.h"
-#include "qgsattributeeditorcontainer.h"
-#include "qgsattributeeditorqmlelement.h"
-#include "qgsattributeeditorhtmlelement.h"
 #include "qgssettingsregistrycore.h"
 #include "qgstextwidgetwrapper.h"
-#include "qgsattributeeditorrelation.h"
 #include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgscodeeditorexpression.h"
@@ -80,7 +72,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   formLayoutWidgetLayout->addWidget( mFormLayoutTreeView );
   formLayoutWidgetLayout->setContentsMargins( 0, 0, 0, 0 );
 
-  mFormLayoutModel = new QgsAttributesFormLayoutModel( mLayer, this );
+  mFormLayoutModel = new QgsAttributesFormLayoutModel( mLayer, QgsProject().instance(), this );
   mFormLayoutTreeView->setModel( mFormLayoutModel );
 
   connect( mAvailableWidgetsTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
@@ -658,123 +650,6 @@ void QgsAttributesFormProperties::removeTabOrGroupButton()
   }
 }
 
-QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWidget( const QModelIndex &index, QgsAttributeEditorElement *parent, bool isTopLevel )
-{
-  QgsAttributeEditorElement *widgetDef = nullptr;
-
-  const QgsAttributesFormTreeData::DnDTreeNodeData itemData = index.data( QgsAttributesFormModel::NodeDataRole ).value<QgsAttributesFormTreeData::DnDTreeNodeData>();
-  const int indexType = static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( index.data( QgsAttributesFormModel::NodeTypeRole ).toInt() );
-  const QString indexName = index.data( QgsAttributesFormModel::NodeNameRole ).toString();
-  const QString indexId = index.data( QgsAttributesFormModel::NodeIdRole ).toString();
-
-  switch ( indexType )
-  {
-    case QgsAttributesFormTreeData::Field:
-    {
-      const int fieldIndex = mLayer->fields().lookupField( indexName );
-      widgetDef = new QgsAttributeEditorField( indexName, fieldIndex, parent );
-      break;
-    }
-
-    case QgsAttributesFormTreeData::Action:
-    {
-      const QgsAction action { mLayer->actions()->action( indexId ) };
-      widgetDef = new QgsAttributeEditorAction( action, parent );
-      break;
-    }
-
-    case QgsAttributesFormTreeData::Relation:
-    {
-      const QgsRelation relation = QgsProject::instance()->relationManager()->relation( indexId );
-
-      QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
-      const QgsAttributesFormTreeData::RelationEditorConfiguration relationEditorConfig = itemData.relationEditorConfiguration();
-      relDef->setRelationWidgetTypeId( relationEditorConfig.mRelationWidgetType );
-      relDef->setRelationEditorConfiguration( relationEditorConfig.mRelationWidgetConfig );
-      relDef->setNmRelationId( relationEditorConfig.nmRelationId );
-      relDef->setForceSuppressFormPopup( relationEditorConfig.forceSuppressFormPopup );
-      relDef->setLabel( relationEditorConfig.label );
-      widgetDef = relDef;
-      break;
-    }
-
-    case QgsAttributesFormTreeData::Container:
-    {
-      QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( indexName, parent, itemData.backgroundColor() );
-      container->setColumnCount( itemData.columnCount() );
-      // only top-level containers can be tabs
-      Qgis::AttributeEditorContainerType type = itemData.containerType();
-      if ( type == Qgis::AttributeEditorContainerType::Tab && !isTopLevel )
-      {
-        // a tab container found which isn't at the top level -- reset it to a group box instead
-        type = Qgis::AttributeEditorContainerType::GroupBox;
-      }
-      container->setType( type );
-      container->setCollapsed( itemData.collapsed() );
-      container->setCollapsedExpression( itemData.collapsedExpression() );
-      container->setVisibilityExpression( itemData.visibilityExpression() );
-      container->setBackgroundColor( itemData.backgroundColor() );
-
-      QModelIndex childIndex;
-      for ( int t = 0; t < mFormLayoutModel->rowCount( index ); t++ )
-      {
-        childIndex = mFormLayoutModel->index( t, 0, index );
-        QgsAttributeEditorElement *element { createAttributeEditorWidget( childIndex, container, false ) };
-        if ( element )
-          container->addChildElement( element );
-      }
-      widgetDef = container;
-      break;
-    }
-
-    case QgsAttributesFormTreeData::QmlWidget:
-    {
-      QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( indexName, parent );
-      element->setQmlCode( itemData.qmlElementEditorConfiguration().qmlCode );
-      widgetDef = element;
-      break;
-    }
-
-    case QgsAttributesFormTreeData::HtmlWidget:
-    {
-      QgsAttributeEditorHtmlElement *element = new QgsAttributeEditorHtmlElement( indexName, parent );
-      element->setHtmlCode( itemData.htmlElementEditorConfiguration().htmlCode );
-      widgetDef = element;
-      break;
-    }
-
-    case QgsAttributesFormTreeData::TextWidget:
-    {
-      QgsAttributeEditorTextElement *element = new QgsAttributeEditorTextElement( indexName, parent );
-      element->setText( itemData.textElementEditorConfiguration().text );
-      widgetDef = element;
-      break;
-    }
-
-    case QgsAttributesFormTreeData::SpacerWidget:
-    {
-      QgsAttributeEditorSpacerElement *element = new QgsAttributeEditorSpacerElement( indexName, parent );
-      element->setDrawLine( itemData.spacerElementEditorConfiguration().drawLine );
-      widgetDef = element;
-      break;
-    }
-
-    case QgsAttributesFormTreeData::WidgetType:
-    default:
-      break;
-  }
-
-  if ( widgetDef )
-  {
-    widgetDef->setShowLabel( itemData.showLabel() );
-    widgetDef->setLabelStyle( itemData.labelStyle() );
-    widgetDef->setHorizontalStretch( itemData.horizontalStretch() );
-    widgetDef->setVerticalStretch( itemData.verticalStretch() );
-  }
-
-  return widgetDef;
-}
-
 void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int )
 {
   const Qgis::AttributeFormLayout layout = mEditorLayoutComboBox->currentData().value<Qgis::AttributeFormLayout>();
@@ -918,7 +793,7 @@ void QgsAttributesFormProperties::apply()
   for ( int t = 0; t < mFormLayoutModel->rowCount(); t++ )
   {
     QModelIndex index = mFormLayoutModel->index( t, 0 );
-    QgsAttributeEditorElement *editorElement { createAttributeEditorWidget( index, nullptr, true ) };
+    QgsAttributeEditorElement *editorElement { mFormLayoutModel->createAttributeEditorWidget( index, nullptr ) };
     if ( editorElement )
       editFormConfig.addTab( editorElement );
   }
@@ -1071,16 +946,22 @@ void QgsAttributesFormLayoutTreeView::handleExternalDroppedNode( QModelIndex &in
   }
 }
 
-void QgsAttributesFormLayoutTreeView::handleInternalDroppedNode( QModelIndex & )
+void QgsAttributesFormLayoutTreeView::handleInternalDroppedNode( QModelIndex &index )
 {
   selectionModel()->clearCurrentIndex();
+  const auto nodeType = static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( index.data( QgsAttributesFormModel::NodeTypeRole ).toInt() );
+  if ( nodeType == QgsAttributesFormTreeData::Container )
+  {
+    expandRecursively( index );
+  }
 }
 
 void QgsAttributesFormLayoutTreeView::dragEnterEvent( QDragEnterEvent *event )
 {
   const QMimeData *data = event->mimeData();
 
-  if ( data->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) ) )
+  if ( data->hasFormat( QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) )
+       || data->hasFormat( QStringLiteral( "application/x-qgsattributesformlayoutelement" ) ) )
   {
     // Inner drag and drop actions are always MoveAction
     if ( event->source() == this )
@@ -1104,7 +985,8 @@ void QgsAttributesFormLayoutTreeView::dragMoveEvent( QDragMoveEvent *event )
 {
   const QMimeData *data = event->mimeData();
 
-  if ( data->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) ) )
+  if ( data->hasFormat( QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) )
+       || data->hasFormat( QStringLiteral( "application/x-qgsattributesformlayoutelement" ) ) )
   {
     // Inner drag and drop actions are always MoveAction
     if ( event->source() == this )
@@ -1122,7 +1004,8 @@ void QgsAttributesFormLayoutTreeView::dragMoveEvent( QDragMoveEvent *event )
 
 void QgsAttributesFormLayoutTreeView::dropEvent( QDropEvent *event )
 {
-  if ( !event->mimeData()->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) ) )
+  if ( !( event->mimeData()->hasFormat( QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) )
+          || event->mimeData()->hasFormat( QStringLiteral( "application/x-qgsattributesformlayoutelement" ) ) ) )
     return;
 
   if ( event->source() == this )

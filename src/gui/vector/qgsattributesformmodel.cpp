@@ -20,6 +20,7 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsattributeeditoraction.h"
 #include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorrelation.h"
 #include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorhtmlelement.h"
@@ -352,10 +353,11 @@ bool QgsAttributesFormTreeNode::setData( int role, const QVariant &value )
 // QgsAttributesFormModel implementation
 //
 
-QgsAttributesFormModel::QgsAttributesFormModel( QgsVectorLayer *layer, QObject *parent )
+QgsAttributesFormModel::QgsAttributesFormModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent )
   : QAbstractItemModel( parent )
   , mRootNode( std::make_unique< QgsAttributesFormTreeNode >() )
   , mLayer( layer )
+  , mProject( project )
 {
 }
 
@@ -385,46 +387,6 @@ int QgsAttributesFormModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   return 1;
-}
-
-QStringList QgsAttributesFormModel::mimeTypes() const
-{
-  return QStringList() << QStringLiteral( "application/x-qgsattributetabledesignerelement" );
-}
-
-QMimeData *QgsAttributesFormModel::mimeData( const QModelIndexList &indexes ) const
-{
-  if ( indexes.count() == 0 )
-    return nullptr;
-
-  const QStringList types = mimeTypes();
-  if ( types.isEmpty() )
-    return nullptr;
-
-  QMimeData *data = new QMimeData();
-  const QString format = types.at( 0 );
-  QByteArray encoded;
-  QDataStream stream( &encoded, QIODevice::WriteOnly );
-
-  // Sort indexes since their order reflects selection order
-  QModelIndexList sortedIndexes = indexes;
-  std::sort( sortedIndexes.begin(), sortedIndexes.end() );
-
-  for ( const QModelIndex &index : std::as_const( sortedIndexes ) )
-  {
-    if ( index.isValid() )
-    {
-      const QString nodeId = index.data( QgsAttributesFormModel::NodeIdRole ).toString();
-      const QString nodeName = index.data( QgsAttributesFormModel::NodeNameRole ).toString();
-      int nodeType = index.data( QgsAttributesFormModel::NodeTypeRole ).toInt();
-      const auto nodeData = index.data( QgsAttributesFormModel::NodeDataRole );
-
-      stream << nodeId << nodeType << nodeName << nodeData;
-    }
-  }
-
-  data->setData( format, encoded );
-  return data;
 }
 
 QModelIndex QgsAttributesFormModel::index( int row, int column, const QModelIndex &parent ) const
@@ -473,8 +435,7 @@ QModelIndex QgsAttributesFormModel::firstRecursiveMatchingModelIndex( const QgsA
 //
 
 QgsAttributesAvailableWidgetsModel::QgsAttributesAvailableWidgetsModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent )
-  : QgsAttributesFormModel( layer, parent )
-  , mProject( project )
+  : QgsAttributesFormModel( layer, project, parent )
 {
 }
 
@@ -483,7 +444,15 @@ Qt::ItemFlags QgsAttributesAvailableWidgetsModel::flags( const QModelIndex &inde
   if ( !index.isValid() )
     return Qt::NoItemFlags;
 
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+  Qt::ItemFlags flags = Qt::ItemIsEnabled;
+
+  const auto indexType = static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( index.data( QgsAttributesFormModel::NodeTypeRole ).toInt() );
+  if ( indexType != QgsAttributesFormTreeData::WidgetType )
+  {
+    flags = flags | Qt::ItemIsDragEnabled | Qt::ItemIsSelectable;
+  }
+
+  return flags;
 }
 
 QVariant QgsAttributesAvailableWidgetsModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -680,6 +649,45 @@ Qt::DropActions QgsAttributesAvailableWidgetsModel::supportedDragActions() const
   return Qt::CopyAction;
 }
 
+QStringList QgsAttributesAvailableWidgetsModel::mimeTypes() const
+{
+  return QStringList() << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" );
+}
+
+QMimeData *QgsAttributesAvailableWidgetsModel::mimeData( const QModelIndexList &indexes ) const
+{
+  if ( indexes.count() == 0 )
+    return nullptr;
+
+  const QStringList types = mimeTypes();
+  if ( types.isEmpty() )
+    return nullptr;
+
+  QMimeData *data = new QMimeData();
+  const QString format = types.at( 0 );
+  QByteArray encoded;
+  QDataStream stream( &encoded, QIODevice::WriteOnly );
+
+  // Sort indexes since their order reflects selection order
+  QModelIndexList sortedIndexes = indexes;
+  std::sort( sortedIndexes.begin(), sortedIndexes.end() );
+
+  for ( const QModelIndex &index : std::as_const( sortedIndexes ) )
+  {
+    if ( index.isValid() )
+    {
+      const QString nodeId = index.data( QgsAttributesFormModel::NodeIdRole ).toString();
+      const QString nodeName = index.data( QgsAttributesFormModel::NodeNameRole ).toString();
+      int nodeType = index.data( QgsAttributesFormModel::NodeTypeRole ).toInt();
+
+      stream << nodeId << nodeType << nodeName;
+    }
+  }
+
+  data->setData( format, encoded );
+  return data;
+}
+
 QModelIndex QgsAttributesAvailableWidgetsModel::fieldContainer() const
 {
   if ( mRootNode->childCount() > 0 )
@@ -722,8 +730,8 @@ QModelIndex QgsAttributesAvailableWidgetsModel::fieldModelIndex( const QString &
 // QgsAttributesFormLayoutModel
 //
 
-QgsAttributesFormLayoutModel::QgsAttributesFormLayoutModel( QgsVectorLayer *layer, QObject *parent )
-  : QgsAttributesFormModel( layer, parent )
+QgsAttributesFormLayoutModel::QgsAttributesFormLayoutModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent )
+  : QgsAttributesFormModel( layer, project, parent )
 {
 }
 
@@ -761,7 +769,7 @@ void QgsAttributesFormLayoutModel::populate()
   endResetModel();
 }
 
-void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, QgsAttributesFormTreeNode *parent )
+void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, QgsAttributesFormTreeNode *parent, const int position )
 {
   auto setCommonProperties = [editorElement]( QgsAttributesFormTreeData::DnDTreeNodeData &itemData ) {
     itemData.setShowLabel( editorElement->showLabel() );
@@ -828,8 +836,14 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       relationEditorConfig.label = relationEditor->label();
       itemData.setRelationEditorConfiguration( relationEditorConfig );
 
-      editorItem->setData( NodeIdRole, relationEditor->relation().id() );
-      editorItem->setData( NodeNameRole, relationEditor->relation().name() );
+      QgsRelation relation = relationEditor->relation();
+      if ( !relation.isValid() )
+      {
+        relation = mProject->relationManager()->relation( editorElement->name() );
+      }
+
+      editorItem->setData( NodeIdRole, relation.id() );
+      editorItem->setData( NodeNameRole, relation.name() );
       editorItem->setData( NodeTypeRole, QgsAttributesFormTreeData::Relation );
       editorItem->setData( NodeDataRole, itemData );
 
@@ -937,7 +951,14 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
     }
   }
 
-  parent->addChildNode( std::move( editorItem ) );
+  if ( position >= 0 && position < parent->childCount() )
+  {
+    parent->insertChildNode( position, std::move( editorItem ) );
+  }
+  else
+  {
+    parent->addChildNode( std::move( editorItem ) );
+  }
 }
 
 QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role ) const
@@ -1071,6 +1092,100 @@ Qt::DropActions QgsAttributesFormLayoutModel::supportedDropActions() const
   return Qt::DropAction::CopyAction | Qt::DropAction::MoveAction;
 }
 
+QStringList QgsAttributesFormLayoutModel::mimeTypes() const
+{
+  return QStringList() << QStringLiteral( "application/x-qgsattributesformlayoutelement" ) << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" );
+}
+
+QModelIndexList QgsAttributesFormLayoutModel::curateIndexesForMimeData( const QModelIndexList &indexes ) const
+{
+  QModelIndexList containerList;
+  for ( const auto index : indexes )
+  {
+    const auto indexType = static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( index.data( QgsAttributesFormModel::NodeTypeRole ).toInt() );
+    if ( indexType == QgsAttributesFormTreeData::Container )
+    {
+      containerList << index;
+    }
+  }
+
+  if ( containerList.size() == 0 )
+    return indexes;
+
+  QModelIndexList curatedIndexes;
+
+  // Iterate searching if current index is child of any container in containerList (recursively)
+  for ( const auto index : indexes )
+  {
+    QModelIndex parent = index.parent();
+    bool redundantChild = false;
+
+    while ( parent.isValid() )
+    {
+      if ( containerList.contains( parent ) )
+      {
+        redundantChild = true;
+        break;
+      }
+
+      parent = parent.parent();
+    }
+
+    if ( !redundantChild )
+      curatedIndexes << index;
+  }
+
+  return curatedIndexes;
+}
+
+QMimeData *QgsAttributesFormLayoutModel::mimeData( const QModelIndexList &indexes ) const
+{
+  if ( indexes.count() == 0 )
+    return nullptr;
+
+  // Discard redundant indexes
+  QModelIndexList curatedIndexes;
+  if ( indexes.count() > 1 )
+  {
+    curatedIndexes = curateIndexesForMimeData( indexes );
+  }
+  else
+  {
+    curatedIndexes = indexes;
+  }
+
+  const QStringList types = mimeTypes();
+  if ( types.isEmpty() )
+    return nullptr;
+
+  QMimeData *data = new QMimeData();
+  const QString format = types.at( 0 );
+  QByteArray encoded;
+  QDataStream stream( &encoded, QIODevice::WriteOnly );
+
+  // Sort indexes since their order reflects selection order
+  std::sort( curatedIndexes.begin(), curatedIndexes.end() );
+
+  for ( const QModelIndex &index : std::as_const( curatedIndexes ) )
+  {
+    if ( index.isValid() )
+    {
+      QDomDocument doc;
+
+      QDomElement rootElem = doc.createElement( QStringLiteral( "form_layout_mime" ) );
+      QgsAttributeEditorElement *editor = createAttributeEditorWidget( index, nullptr );
+      QDomElement editorElem = editor->toDomElement( doc );
+      rootElem.appendChild( editorElem );
+
+      doc.appendChild( rootElem );
+      stream << doc.toString( -1 );
+    }
+  }
+
+  data->setData( format, encoded );
+  return data;
+}
+
 bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   Q_UNUSED( column )
@@ -1084,34 +1199,59 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
   {
     bDropSuccessful = true;
   }
-  else if ( data->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) ) )
+  else if ( data->hasFormat( QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) ) )
   {
-    QByteArray itemData = data->data( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) );
+    Q_ASSERT( action == Qt::CopyAction ); // External drop
+    QByteArray itemData = data->data( QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
-    QgsAttributesFormTreeData::DnDTreeNodeData itemElement;
 
     while ( !stream.atEnd() )
     {
       QString nodeId;
       int nodeTypeInt;
       QString nodeName;
-      QgsAttributesFormTreeData::DnDTreeNodeData nodeData;
-      stream >> nodeId >> nodeTypeInt >> nodeName >> nodeData;
+      stream >> nodeId >> nodeTypeInt >> nodeName;
 
       const auto nodeType = static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( nodeTypeInt );
-      insertChild( parent, row + rows, nodeId, nodeType, nodeName, nodeData );
+      insertChild( parent, row + rows, nodeId, nodeType, nodeName );
 
       bDropSuccessful = true;
 
       QModelIndex addedIndex = index( row + rows, 0, parent );
-      if ( action == Qt::CopyAction ) // External drop
-      {
-        emit externalNodeDropped( addedIndex );
-      }
-      else if ( action == Qt::MoveAction ) // Internal move
-      {
-        emit internalNodeDropped( addedIndex );
-      }
+      emit externalNodeDropped( addedIndex );
+
+      rows++;
+    }
+  }
+  else if ( data->hasFormat( QStringLiteral( "application/x-qgsattributesformlayoutelement" ) ) )
+  {
+    Q_ASSERT( action == Qt::MoveAction ); // Internal move
+    QByteArray itemData = data->data( QStringLiteral( "application/x-qgsattributesformlayoutelement" ) );
+    QDataStream stream( &itemData, QIODevice::ReadOnly );
+
+    while ( !stream.atEnd() )
+    {
+      QString text;
+      stream >> text;
+
+      QDomDocument doc;
+      if ( !doc.setContent( text ) )
+        continue;
+      const QDomElement rootElem = doc.documentElement();
+      if ( rootElem.tagName() != QLatin1String( "form_layout_mime" ) || !rootElem.hasChildNodes() )
+        continue;
+      const QDomElement childElem = rootElem.firstChild().toElement();
+
+      // Build editor element from XML and add/insert it to parent
+      QgsAttributeEditorElement *editor = QgsAttributeEditorElement::create( childElem, mLayer->id(), mLayer->fields(), QgsReadWriteContext() );
+      beginInsertRows( parent, row + rows, row + rows );
+      loadAttributeEditorElementItem( editor, nodeForIndex( parent ), row + rows );
+      endInsertRows();
+
+      bDropSuccessful = true;
+
+      QModelIndex addedIndex = index( row + rows, 0, parent );
+      emit internalNodeDropped( addedIndex );
 
       rows++;
     }
@@ -1164,6 +1304,124 @@ QList< QgsAddAttributeFormContainerDialog::ContainerPair > QgsAttributesFormLayo
   return containerList;
 }
 
+QgsAttributeEditorElement *QgsAttributesFormLayoutModel::createAttributeEditorWidget( const QModelIndex &index, QgsAttributeEditorElement *parent ) const
+{
+  QgsAttributeEditorElement *widgetDef = nullptr;
+
+  const QgsAttributesFormTreeData::DnDTreeNodeData itemData = index.data( QgsAttributesFormModel::NodeDataRole ).value<QgsAttributesFormTreeData::DnDTreeNodeData>();
+  const int indexType = static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( index.data( QgsAttributesFormModel::NodeTypeRole ).toInt() );
+  const QString indexName = index.data( QgsAttributesFormModel::NodeNameRole ).toString();
+  const QString indexId = index.data( QgsAttributesFormModel::NodeIdRole ).toString();
+
+  switch ( indexType )
+  {
+    case QgsAttributesFormTreeData::Field:
+    {
+      const int fieldIndex = mLayer->fields().lookupField( indexName );
+      widgetDef = new QgsAttributeEditorField( indexName, fieldIndex, parent );
+      break;
+    }
+
+    case QgsAttributesFormTreeData::Action:
+    {
+      const QgsAction action { mLayer->actions()->action( indexId ) };
+      widgetDef = new QgsAttributeEditorAction( action, parent );
+      break;
+    }
+
+    case QgsAttributesFormTreeData::Relation:
+    {
+      const QgsRelation relation = mProject->relationManager()->relation( indexId );
+
+      QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
+      const QgsAttributesFormTreeData::RelationEditorConfiguration relationEditorConfig = itemData.relationEditorConfiguration();
+      relDef->setRelationWidgetTypeId( relationEditorConfig.mRelationWidgetType );
+      relDef->setRelationEditorConfiguration( relationEditorConfig.mRelationWidgetConfig );
+      relDef->setNmRelationId( relationEditorConfig.nmRelationId );
+      relDef->setForceSuppressFormPopup( relationEditorConfig.forceSuppressFormPopup );
+      relDef->setLabel( relationEditorConfig.label );
+      widgetDef = relDef;
+      break;
+    }
+
+    case QgsAttributesFormTreeData::Container:
+    {
+      QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( indexName, parent, itemData.backgroundColor() );
+      container->setColumnCount( itemData.columnCount() );
+      // only top-level containers can be tabs
+      Qgis::AttributeEditorContainerType type = itemData.containerType();
+      bool isTopLevel = !index.parent().isValid();
+      if ( type == Qgis::AttributeEditorContainerType::Tab && !isTopLevel )
+      {
+        // a tab container found which isn't at the top level -- reset it to a group box instead
+        type = Qgis::AttributeEditorContainerType::GroupBox;
+      }
+      container->setType( type );
+      container->setCollapsed( itemData.collapsed() );
+      container->setCollapsedExpression( itemData.collapsedExpression() );
+      container->setVisibilityExpression( itemData.visibilityExpression() );
+      container->setBackgroundColor( itemData.backgroundColor() );
+
+      QModelIndex childIndex;
+      for ( int t = 0; t < rowCount( index ); t++ )
+      {
+        childIndex = this->index( t, 0, index );
+        QgsAttributeEditorElement *element { createAttributeEditorWidget( childIndex, container ) };
+        if ( element )
+          container->addChildElement( element );
+      }
+      widgetDef = container;
+      break;
+    }
+
+    case QgsAttributesFormTreeData::QmlWidget:
+    {
+      QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( indexName, parent );
+      element->setQmlCode( itemData.qmlElementEditorConfiguration().qmlCode );
+      widgetDef = element;
+      break;
+    }
+
+    case QgsAttributesFormTreeData::HtmlWidget:
+    {
+      QgsAttributeEditorHtmlElement *element = new QgsAttributeEditorHtmlElement( indexName, parent );
+      element->setHtmlCode( itemData.htmlElementEditorConfiguration().htmlCode );
+      widgetDef = element;
+      break;
+    }
+
+    case QgsAttributesFormTreeData::TextWidget:
+    {
+      QgsAttributeEditorTextElement *element = new QgsAttributeEditorTextElement( indexName, parent );
+      element->setText( itemData.textElementEditorConfiguration().text );
+      widgetDef = element;
+      break;
+    }
+
+    case QgsAttributesFormTreeData::SpacerWidget:
+    {
+      QgsAttributeEditorSpacerElement *element = new QgsAttributeEditorSpacerElement( indexName, parent );
+      element->setDrawLine( itemData.spacerElementEditorConfiguration().drawLine );
+      widgetDef = element;
+      break;
+    }
+
+    case QgsAttributesFormTreeData::WidgetType:
+    default:
+      break;
+  }
+
+  if ( widgetDef )
+  {
+    widgetDef->setShowLabel( itemData.showLabel() );
+    widgetDef->setLabelStyle( itemData.labelStyle() );
+    widgetDef->setHorizontalStretch( itemData.horizontalStretch() );
+    widgetDef->setVerticalStretch( itemData.verticalStretch() );
+  }
+
+  return widgetDef;
+}
+
 QList< QgsAddAttributeFormContainerDialog::ContainerPair > QgsAttributesFormLayoutModel::listOfContainers() const
 {
   return recursiveListOfContainers( mRootNode.get() );
@@ -1187,7 +1445,7 @@ void QgsAttributesFormLayoutModel::addContainer( QModelIndex &parent, const QStr
   endInsertRows();
 }
 
-void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int row, QString &nodeId, QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, QString &nodeName, QgsAttributesFormTreeData::DnDTreeNodeData nodeData )
+void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int row, QString &nodeId, QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, QString &nodeName )
 {
   if ( row < 0 )
     return;
@@ -1198,7 +1456,6 @@ void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int r
   node->setData( QgsAttributesFormModel::NodeIdRole, nodeId );
   node->setData( QgsAttributesFormModel::NodeTypeRole, nodeType );
   node->setData( QgsAttributesFormModel::NodeNameRole, nodeName );
-  node->setData( QgsAttributesFormModel::NodeDataRole, nodeData );
 
   nodeForIndex( parent )->insertChildNode( row, std::move( node ) );
   endInsertRows();
@@ -1213,25 +1470,4 @@ void QgsAttributesFormLayoutModel::setShowAliases( bool show )
 {
   mShowAliases = show;
   emit dataChanged( QModelIndex(), QModelIndex(), QVector<int>() << Qt::DisplayRole << Qt::ForegroundRole << Qt::FontRole );
-}
-
-
-/*
- * Serialization helpers for DesigerTreeItemData so we can stuff this easily into QMimeData
- */
-
-QDataStream &operator<<( QDataStream &stream, const QgsAttributesFormTreeData::DnDTreeNodeData &data )
-{
-  QVariant streamData = QVariant::fromValue<QgsAttributesFormTreeData::DnDTreeNodeData>( data );
-  stream << streamData;
-  return stream;
-}
-
-QDataStream &operator>>( QDataStream &stream, QgsAttributesFormTreeData::DnDTreeNodeData &data )
-{
-  QVariant streamData;
-  stream >> streamData;
-  data = streamData.value< QgsAttributesFormTreeData::DnDTreeNodeData >();
-
-  return stream;
 }

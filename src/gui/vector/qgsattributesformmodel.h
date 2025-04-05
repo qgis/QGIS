@@ -544,12 +544,11 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
     };
 
     /**
-     * Constructor for QgsAttributesFormModel, with the given \a layer object and
-     * the given \a parent.
+     * Constructor for QgsAttributesFormModel, with the given \a parent.
      *
-     * The \a layer is the data source to populate the model.
+     * The given \a layer and \a project are data sources to populate the model.
      */
-    explicit QgsAttributesFormModel( QgsVectorLayer *layer, QObject *parent = nullptr );
+    explicit QgsAttributesFormModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent = nullptr );
 
     ~QgsAttributesFormModel() override;
 
@@ -559,10 +558,6 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-
-    // Drag and drop support (common methods)
-    QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
 
     // Other methods
     /**
@@ -595,6 +590,7 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
 
     std::unique_ptr< QgsAttributesFormTreeNode > mRootNode;
     QgsVectorLayer *mLayer;
+    QgsProject *mProject;
 };
 
 
@@ -625,6 +621,8 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
 
     // Drag and drop support
     Qt::DropActions supportedDragActions() const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
 
     // Other methods
 
@@ -649,9 +647,6 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
 
   public slots:
     void populate() override;
-
-  private:
-    QgsProject *mProject;
 };
 
 
@@ -671,8 +666,9 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
      * Constructor for QgsAttributesFormLayoutModel, with the given \a parent.
      *
      * The given \a layer is the data source to populate the model.
+     * The given \a project is used to extract information about relations.
      */
-    explicit QgsAttributesFormLayoutModel( QgsVectorLayer *layer, QObject *parent = nullptr );
+    explicit QgsAttributesFormLayoutModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent = nullptr );
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
@@ -690,10 +686,17 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     // Drag and drop support
     Qt::DropActions supportedDragActions() const override;
     Qt::DropActions supportedDropActions() const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     // Other methods
+    /**
+     * Creates a new attribute editor element based on the definition stored in a form layout model \a index.
+     */
+    QgsAttributeEditorElement *createAttributeEditorWidget( const QModelIndex &index, QgsAttributeEditorElement *parent ) const;
+
     /**
      * Returns a list of containers stored in the model, structured as pairs (name, container model index).
      */
@@ -719,9 +722,9 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     /**
      * Inserts a new child to \a parent model index at the given \a row position.
      *
-     * The child is constructed from the given \a nodeId, \a nodeType, \a nodeName and \a nodeData.
+     * The child is constructed from the given \a nodeId, \a nodeType and \a nodeName.
      */
-    void insertChild( const QModelIndex &parent, int row, QString &nodeId, QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, QString &nodeName, QgsAttributesFormTreeData::DnDTreeNodeData nodeData );
+    void insertChild( const QModelIndex &parent, int row, QString &nodeId, QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, QString &nodeName );
 
     /**
      * Returns whether field aliases are preferred over field names as item text.
@@ -749,15 +752,20 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
   private:
     void updateAliasForFieldNodesRecursive( QgsAttributesFormTreeNode *parent, const QString &fieldName, const QString &fieldAlias );
     QList< QgsAddAttributeFormContainerDialog::ContainerPair > recursiveListOfContainers( QgsAttributesFormTreeNode *parent ) const;
-    void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, QgsAttributesFormTreeNode *parent );
+    void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, QgsAttributesFormTreeNode *parent, const int position = -1 );
+
+    /**
+     * Creates a list of indexes filtering children whose parents are already included.
+     *
+     * This discards redundant indexes before creating MimeData, because a parent will
+     * include all its children, grandchildren, great-grandchildren, etc.
+     *
+     * \param indexes Input list of indexes, potentially with redundant indexes.
+     */
+    QModelIndexList curateIndexesForMimeData( const QModelIndexList &indexes ) const;
 
     bool mShowAliases = false;
 };
-
-
-QDataStream &operator<<( QDataStream &stream, const QgsAttributesFormTreeData::DnDTreeNodeData &data );
-QDataStream &operator>>( QDataStream &stream, QgsAttributesFormTreeData::DnDTreeNodeData &data );
-
 
 Q_DECLARE_METATYPE( QgsAttributesFormTreeData::RelationEditorConfiguration )
 Q_DECLARE_METATYPE( QgsAttributesFormTreeData::FieldConfig )
