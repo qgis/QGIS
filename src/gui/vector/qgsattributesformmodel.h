@@ -370,8 +370,10 @@ class GUI_EXPORT QgsAttributesFormTreeData
  * \ingroup gui
  * \since QGIS 3.44
  */
-class GUI_EXPORT QgsAttributesFormTreeNode
+class GUI_EXPORT QgsAttributesFormTreeNode : public QObject
 {
+    Q_OBJECT
+
   public:
     QgsAttributesFormTreeNode() = default;
 
@@ -512,6 +514,8 @@ class GUI_EXPORT QgsAttributesFormTreeNode
 
     std::vector< std::unique_ptr< QgsAttributesFormTreeNode > > mChildren;
     QgsAttributesFormTreeNode *mParent = nullptr;
+
+    Q_DISABLE_COPY( QgsAttributesFormTreeNode )
 };
 
 
