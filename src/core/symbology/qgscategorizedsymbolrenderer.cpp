@@ -773,7 +773,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
 
   QDomElement catElem = catsElem.firstChildElement();
   int i = 0;
-  QStringList usedUuids;
+  QSet<QString> usedUuids;
   while ( !catElem.isNull() )
   {
     if ( catElem.tagName() == QLatin1String( "category" ) )

@@ -492,7 +492,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
 
   QDomElement rangeElem = rangesElem.firstChildElement();
   int i = 0;
-  QStringList usedUuids;
+  QSet<QString> usedUuids;
   while ( !rangeElem.isNull() )
   {
     if ( rangeElem.tagName() == QLatin1String( "range" ) )
