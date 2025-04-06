@@ -3130,40 +3130,58 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     //split policies
     {
       QDomElement splitPoliciesElement = doc.createElement( QStringLiteral( "splitPolicies" ) );
+      bool hasNonDefaultSplitPolicies = false;
       for ( const QgsField &field : std::as_const( mFields ) )
       {
-        QDomElement splitPolicyElem = doc.createElement( QStringLiteral( "policy" ) );
-        splitPolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
-        splitPolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.splitPolicy() ) );
-        splitPoliciesElement.appendChild( splitPolicyElem );
+        if ( field.splitPolicy() != Qgis::FieldDomainSplitPolicy::Duplicate )
+        {
+          QDomElement splitPolicyElem = doc.createElement( QStringLiteral( "policy" ) );
+          splitPolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
+          splitPolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.splitPolicy() ) );
+          splitPoliciesElement.appendChild( splitPolicyElem );
+          hasNonDefaultSplitPolicies = true;
+        }
       }
-      node.appendChild( splitPoliciesElement );
+      if ( hasNonDefaultSplitPolicies )
+        node.appendChild( splitPoliciesElement );
     }
 
     //duplicate policies
     {
       QDomElement duplicatePoliciesElement = doc.createElement( QStringLiteral( "duplicatePolicies" ) );
+      bool hasNonDefaultDuplicatePolicies = false;
       for ( const QgsField &field : std::as_const( mFields ) )
       {
-        QDomElement duplicatePolicyElem = doc.createElement( QStringLiteral( "policy" ) );
-        duplicatePolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
-        duplicatePolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.duplicatePolicy() ) );
-        duplicatePoliciesElement.appendChild( duplicatePolicyElem );
+        if ( field.duplicatePolicy() != Qgis::FieldDuplicatePolicy::Duplicate )
+        {
+          QDomElement duplicatePolicyElem = doc.createElement( QStringLiteral( "policy" ) );
+          duplicatePolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
+          duplicatePolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.duplicatePolicy() ) );
+          duplicatePoliciesElement.appendChild( duplicatePolicyElem );
+          hasNonDefaultDuplicatePolicies = true;
+        }
       }
-      node.appendChild( duplicatePoliciesElement );
+      if ( hasNonDefaultDuplicatePolicies )
+        node.appendChild( duplicatePoliciesElement );
     }
 
     //merge policies
     {
       QDomElement mergePoliciesElement = doc.createElement( QStringLiteral( "mergePolicies" ) );
+      bool hasNonDefaultMergePolicies = false;
       for ( const QgsField &field : std::as_const( mFields ) )
       {
-        QDomElement mergePolicyElem = doc.createElement( QStringLiteral( "policy" ) );
-        mergePolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
-        mergePolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.mergePolicy() ) );
-        mergePoliciesElement.appendChild( mergePolicyElem );
+        if ( field.mergePolicy() != Qgis::FieldDomainMergePolicy::UnsetField )
+        {
+          QDomElement mergePolicyElem = doc.createElement( QStringLiteral( "policy" ) );
+          mergePolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
+          mergePolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.mergePolicy() ) );
+          mergePoliciesElement.appendChild( mergePolicyElem );
+          hasNonDefaultMergePolicies = true;
+        }
       }
-      node.appendChild( mergePoliciesElement );
+      if ( hasNonDefaultMergePolicies )
+        node.appendChild( mergePoliciesElement );
     }
 
     //default expressions
