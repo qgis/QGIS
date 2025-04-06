@@ -296,14 +296,14 @@ QVariant QgsAttributesFormTreeNode::data( int role ) const
       return mNodeType;
     case QgsAttributesFormModel::NodeDataRole:
       return QVariant::fromValue( mNodeData );
-    case QgsAttributesFormModel::NodeFieldConfigRole:
-      return QVariant::fromValue( mFieldConfigData );
     case QgsAttributesFormModel::NodeNameRole:
       return mName;
     case QgsAttributesFormModel::NodeIdRole:
       return mNodeId;
     case QgsAttributesFormModel::NodeDisplayRole:
       return mDisplayName;
+    case QgsAttributesFormModel::NodeFieldConfigRole:
+      return QVariant::fromValue( mFieldConfigData );
     default:
       return QVariant();
   }
@@ -316,11 +316,6 @@ bool QgsAttributesFormTreeNode::setData( int role, const QVariant &value )
     case QgsAttributesFormModel::NodeDataRole:
     {
       mNodeData = value.value< QgsAttributesFormTreeData::DnDTreeNodeData >();
-      return true;
-    }
-    case QgsAttributesFormModel::NodeFieldConfigRole:
-    {
-      mFieldConfigData = value.value< QgsAttributesFormTreeData::FieldConfig >();
       return true;
     }
     case QgsAttributesFormModel::NodeNameRole:
@@ -341,6 +336,11 @@ bool QgsAttributesFormTreeNode::setData( int role, const QVariant &value )
     case QgsAttributesFormModel::NodeIdRole:
     {
       mNodeId = value.toString();
+      return true;
+    }
+    case QgsAttributesFormModel::NodeFieldConfigRole:
+    {
+      mFieldConfigData = value.value< QgsAttributesFormTreeData::FieldConfig >();
       return true;
     }
     default:
@@ -463,12 +463,15 @@ QVariant QgsAttributesAvailableWidgetsModel::headerData( int section, Qt::Orient
 
 void QgsAttributesAvailableWidgetsModel::populate()
 {
+  if ( !mLayer )
+    return;
+
   beginResetModel();
   mRootNode->deleteChildren();
 
   // load Fields
 
-  auto itemFields = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::WidgetType, QStringLiteral( "Fields" ) );
+  auto itemFields = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::WidgetType, QStringLiteral( "Fields" ), tr( "Fields" ) );
 
   const QgsFields fields = mLayer->fields();
   for ( int i = 0; i < fields.size(); ++i )
@@ -757,6 +760,9 @@ Qt::ItemFlags QgsAttributesFormLayoutModel::flags( const QModelIndex &index ) co
 
 void QgsAttributesFormLayoutModel::populate()
 {
+  if ( !mLayer )
+    return;
+
   beginResetModel();
   mRootNode->deleteChildren();
 
@@ -1445,7 +1451,7 @@ void QgsAttributesFormLayoutModel::addContainer( QModelIndex &parent, const QStr
   endInsertRows();
 }
 
-void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int row, QString &nodeId, QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, QString &nodeName )
+void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int row, const QString &nodeId, QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, const QString &nodeName )
 {
   if ( row < 0 )
     return;

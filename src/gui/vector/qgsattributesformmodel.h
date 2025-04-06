@@ -724,7 +724,7 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
      *
      * The child is constructed from the given \a nodeId, \a nodeType and \a nodeName.
      */
-    void insertChild( const QModelIndex &parent, int row, QString &nodeId, QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, QString &nodeName );
+    void insertChild( const QModelIndex &parent, int row, const QString &nodeId, QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, const QString &nodeName );
 
     /**
      * Returns whether field aliases are preferred over field names as item text.
