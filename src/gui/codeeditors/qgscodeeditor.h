@@ -545,7 +545,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
     /**
      * Adjust the width of the scroll bar to fit the content.
-     * 
+     *
      * \since QGIS 3.42
      */
     void adjustScrollWidth();

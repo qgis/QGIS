@@ -43,6 +43,12 @@ the API. Will also reload all globally registered functions.
 Field names will be added to the API.
 %End
 
+    virtual void toggleComment();
+
+%Docstring
+Toggles comments for selected lines.
+%End
+
   protected:
     virtual void initializeLexer();
 
