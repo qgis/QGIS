@@ -1546,6 +1546,9 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
       value = static_cast<double>( tempVal );
       break;
     }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+    case GDT_Float16:
+#endif
     case GDT_Float32:
     {
       float tempVal{0};
@@ -1597,6 +1600,9 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
 #endif
     case GDT_CInt16:
     case GDT_CInt32:
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+    case GDT_CFloat16:
+#endif
     case GDT_CFloat32:
     case GDT_CFloat64:
       QgsDebugError( QStringLiteral( "Raster complex data type is not supported!" ) );
