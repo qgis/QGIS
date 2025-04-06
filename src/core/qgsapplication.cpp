@@ -132,6 +132,8 @@ const QgsSettingsEntryBool *QgsApplication::settingsLocaleShowGroupSeparator = n
 
 const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = new QgsSettingsEntryStringList( QStringLiteral( "searchPathsForSVG" ), QgsSettingsTree::sTreeSvg, QStringList() );
 
+const QgsSettingsEntryInteger *QgsApplication::settingsConnectionPoolMaximumConcurrentConnections = new QgsSettingsEntryInteger( QStringLiteral( "connection-pool-maximum-concurrent-connections" ), QgsSettingsTree::sTreeCore, 4, QObject::tr( "Maximum number of concurrent connections per connection pool" ), Qgis::SettingsOptions(), 4, 999 );
+
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
 #include <pwd.h>
@@ -2135,7 +2137,7 @@ int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio 
 
 int QgsApplication::maxConcurrentConnectionsPerPool() const
 {
-  return CONN_POOL_MAX_CONCURRENT_CONNS;
+  return settingsConnectionPoolMaximumConcurrentConnections->value();
 }
 
 void QgsApplication::setTranslation( const QString &translation )
