@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscodeeditorexpressoin.cpp - An expression editor based on QScintilla
+    qgscodeeditorexpression.cpp - An expression editor based on QScintilla
      --------------------------------------
     Date                 : 8.9.2018
     Copyright            : (C) 2018 by Matthias Kuhn
@@ -34,6 +34,87 @@ QgsCodeEditorExpression::QgsCodeEditorExpression( QWidget *parent )
 Qgis::ScriptLanguage QgsCodeEditorExpression::language() const
 {
   return Qgis::ScriptLanguage::QgisExpression;
+}
+
+void QgsCodeEditorExpression::toggleComment()
+{
+  if ( isReadOnly() )
+    return;
+
+  beginUndoAction();
+
+  int startLine, startPos, endLine, endPos;
+
+  if ( hasSelectedText() )
+  {
+    getSelection( &startLine, &startPos, &endLine, &endPos );
+  }
+  else
+  {
+    getCursorPosition( &startLine, &startPos );
+    endLine = startLine;
+    endPos = startPos;
+  }
+
+  bool allEmpty = true;
+  bool allCommented = true;
+
+  for ( int line = startLine; line <= endLine; line++ )
+  {
+    const QString stripped = text( line ).trimmed();
+
+    if ( !stripped.isEmpty() )
+    {
+      allEmpty = false;
+
+      if ( !stripped.startsWith( QStringLiteral( "--" ) ) )
+      {
+        allCommented = false;
+      }
+    }
+  }
+
+  if ( allEmpty )
+    return;
+
+  int delta = 0;
+
+  for ( int line = startLine; line <= endLine; line++ )
+  {
+    const QString stripped = text( line ).trimmed();
+
+    // Empty line
+    if ( stripped.isEmpty() )
+    {
+      continue;
+    }
+
+    if ( !allCommented )
+    {
+      insertAt( QStringLiteral( "-- " ), line, 0 );
+      delta = -3;
+    }
+    else
+    {
+      if ( !stripped.startsWith( QStringLiteral( "--" ) ) )
+      {
+        continue;
+      }
+      if ( stripped.startsWith( QStringLiteral( "-- " ) ) )
+      {
+        delta = 3;
+      }
+      else
+      {
+        delta = 2;
+      }
+      setSelection( line, 0, line, delta );
+      removeSelectedText();
+    }
+  }
+
+  endUndoAction();
+  setSelection( startLine, startPos - delta, endLine, endPos - delta );
 }
 
 void QgsCodeEditorExpression::setExpressionContext( const QgsExpressionContext &context )

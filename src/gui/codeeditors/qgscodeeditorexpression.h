@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscodeeditorsql.h - A SQL editor based on QScintilla
+    qgscodeeditorexpression.h - A SQL editor based on QScintilla
      --------------------------------------
     Date                 : 06-Oct-2013
     Copyright            : (C) 2013 by Salvatore Larosa
@@ -55,6 +55,11 @@ class GUI_EXPORT QgsCodeEditorExpression : public QgsCodeEditor
      * Field names will be added to the API.
      */
     void setFields( const QgsFields &fields );
+
+    /**
+     * Toggles comments for selected lines.
+     */
+    void toggleComment() override;
 
   protected:
     void initializeLexer() override;
