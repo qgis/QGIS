@@ -1000,7 +1000,7 @@ QgsApplication.coordinateReferenceSystemRegistry: src/core/qgsapplication.h#L742
 QgsApplication.createDatabase: src/core/qgsapplication.h#L555
 QgsApplication.createThemeFolder: src/core/qgsapplication.h#L558
 QgsApplication.customVariables: src/core/qgsapplication.h#L1023
-QgsApplication.customVariablesChanged: src/core/qgsapplication.h#L1109
+QgsApplication.customVariablesChanged: src/core/qgsapplication.h#L1111
 QgsApplication.dataItemProviderRegistry: src/core/qgsapplication.h#L734
 QgsApplication.databaseQueryLog: src/core/qgsapplication.h#L847
 QgsApplication.defaultStyleModel: src/core/qgsapplication.h#L856
@@ -1036,7 +1036,7 @@ QgsApplication.libexecPath: src/core/qgsapplication.h#L526
 QgsApplication.libraryPath: src/core/qgsapplication.h#L523
 QgsApplication.licenceFilePath: src/core/qgsapplication.h#L319
 QgsApplication.locale: src/core/qgsapplication.h#L503
-QgsApplication.localeChanged: src/core/qgsapplication.h#L1133
+QgsApplication.localeChanged: src/core/qgsapplication.h#L1135
 QgsApplication.localizedDataPathRegistry: src/core/qgsapplication.h#L991
 QgsApplication.maxConcurrentConnectionsPerPool: src/core/qgsapplication.h#L1058
 QgsApplication.maxThreads: src/core/qgsapplication.h#L676
@@ -1045,7 +1045,7 @@ QgsApplication.metadataPath: src/core/qgsapplication.h#L327
 QgsApplication.networkContentFetcherRegistry: src/core/qgsapplication.h#L771
 QgsApplication.notify: src/core/qgsapplication.h#L236
 QgsApplication.nullRepresentation: src/core/qgsapplication.h#L1003
-QgsApplication.nullRepresentationChanged: src/core/qgsapplication.h#L1117
+QgsApplication.nullRepresentationChanged: src/core/qgsapplication.h#L1119
 QgsApplication.numericFormatRegistry: src/core/qgsapplication.h#L928
 QgsApplication.osName: src/core/qgsapplication.h#L469
 QgsApplication.pageSizeRegistry: src/core/qgsapplication.h#L898
@@ -1073,7 +1073,7 @@ QgsApplication.relativePathToAbsolutePath: src/core/qgsapplication.h#L610
 QgsApplication.renderer3DRegistry: src/core/qgsapplication.h#L938
 QgsApplication.rendererRegistry: src/core/qgsapplication.h#L710
 QgsApplication.reportStyleSheet: src/core/qgsapplication.h#L590
-QgsApplication.requestForTranslatableObjects: src/core/qgsapplication.h#L1125
+QgsApplication.requestForTranslatableObjects: src/core/qgsapplication.h#L1127
 QgsApplication.resolvePkgPath: src/core/qgsapplication.h#L257
 QgsApplication.restoreGdalDriver: src/core/qgsapplication.h#L634
 QgsApplication.scaleBarRendererRegistry: src/core/qgsapplication.h#L951
@@ -1120,7 +1120,7 @@ QgsApplication.userLoginName: src/core/qgsapplication.h#L457
 QgsApplication.userStylePath: src/core/qgsapplication.h#L444
 QgsApplication.userThemesFolder: src/core/qgsapplication.h#L514
 QgsApplication.validityCheckRegistry: src/core/qgsapplication.h#L777
-QgsApplication.x11EventFilter: src/core/qgsapplication.h#L1098
+QgsApplication.x11EventFilter: src/core/qgsapplication.h#L1100
 QgsApplication: src/core/qgsapplication.h#L98
 QgsArcGisPortalUtils.retrieveGroupContent: src/core/providers/arcgis/qgsarcgisportalutils.h#L133
 QgsArcGisPortalUtils.retrieveGroupContent: src/core/providers/arcgis/qgsarcgisportalutils.h#L151
