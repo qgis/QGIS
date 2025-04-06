@@ -411,6 +411,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void onExpressionParsed( bool state );
     void expressionTreeItemChanged( QgsExpressionItem *item );
     void operatorButtonClicked();
+    void commentLinesClicked();
     void btnRun_pressed();
     void btnNewFile_pressed();
     void btnRemoveFile_pressed();

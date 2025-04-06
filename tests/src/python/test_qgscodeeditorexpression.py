@@ -19,10 +19,6 @@ import unittest
 from qgis.testing import start_app, QgisTestCase
 
 
-COMPLETIONS_PAIRS = {"(": ")", "[": "]", "{": "}", "'": "'", '"': '"'}
-COMPLETIONS_SINGLE_CHARACTERS = ["`", "*"]
-
-
 class TestQgsCodeEditorExpression(QgisTestCase):
 
     @classmethod
