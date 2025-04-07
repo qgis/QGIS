@@ -25,7 +25,7 @@
 #include <QComboBox>
 #include <QRadioButton>
 
-QgsAddAttributeFormContainerDialog::QgsAddAttributeFormContainerDialog( QgsVectorLayer *layer, const QList<ContainerPair> &existingContainerList, QModelIndex &currentNodeIndex, QWidget *parent )
+QgsAddAttributeFormContainerDialog::QgsAddAttributeFormContainerDialog( QgsVectorLayer *layer, const QList<ContainerPair> &existingContainerList, QModelIndex &currentItemIndex, QWidget *parent )
   : QDialog( parent )
   , mLayer( layer )
   , mExistingContainers( existingContainerList )
@@ -45,7 +45,7 @@ QgsAddAttributeFormContainerDialog::QgsAddAttributeFormContainerDialog( QgsVecto
     for ( const ContainerPair &container : std::as_const( mExistingContainers ) )
     {
       mParentCombo->addItem( container.first, i );
-      if ( currentNodeIndex.isValid() && container.second == currentNodeIndex )
+      if ( currentItemIndex.isValid() && container.second == currentItemIndex )
       {
         mParentCombo->setCurrentIndex( i + 1 ); // Take empty item into account
         mTypeCombo->setCurrentIndex( mTypeCombo->findData( QVariant::fromValue( Qgis::AttributeEditorContainerType::GroupBox ) ) );
@@ -69,7 +69,7 @@ QString QgsAddAttributeFormContainerDialog::name()
   return mName->text();
 }
 
-QModelIndex QgsAddAttributeFormContainerDialog::parentContainerNode() const
+QModelIndex QgsAddAttributeFormContainerDialog::parentContainerItem() const
 {
   if ( containerType() == Qgis::AttributeEditorContainerType::Tab )
     return QModelIndex();

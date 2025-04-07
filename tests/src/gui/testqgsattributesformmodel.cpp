@@ -33,7 +33,7 @@ class TestQgsAttributesFormModel : public QObject
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void init() {}          // will be called before each testfunction is executed.
     void cleanup() {}       // will be called after every testfunction.
-    void testAttributesFormNode();
+    void testAttributesFormItem();
     void testAvailableWidgetsModel();
     void testFormLayoutModel();
 
@@ -66,144 +66,144 @@ void TestQgsAttributesFormModel::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgsAttributesFormModel::testAttributesFormNode()
+void TestQgsAttributesFormModel::testAttributesFormItem()
 {
   // Default constructor (used for the root item)
-  std::unique_ptr< QgsAttributesFormTreeNode > rootNode = std::make_unique< QgsAttributesFormTreeNode >();
-  QVERIFY( rootNode->data( QgsAttributesFormModel::NodeIdRole ).toString().isEmpty() );
-  QVERIFY( rootNode->data( QgsAttributesFormModel::NodeNameRole ).toString().isEmpty() );
-  QVERIFY( rootNode->data( QgsAttributesFormModel::NodeDisplayRole ).toString().isEmpty() );
-  QVERIFY( !rootNode->parent() );
-  QCOMPARE( rootNode->childCount(), 0 );
-  QVERIFY( !rootNode->child( 0 ) );
+  std::unique_ptr< QgsAttributesFormItem > rootItem = std::make_unique< QgsAttributesFormItem >();
+  QVERIFY( rootItem->data( QgsAttributesFormModel::ItemIdRole ).toString().isEmpty() );
+  QVERIFY( rootItem->data( QgsAttributesFormModel::ItemNameRole ).toString().isEmpty() );
+  QVERIFY( rootItem->data( QgsAttributesFormModel::ItemDisplayRole ).toString().isEmpty() );
+  QVERIFY( !rootItem->parent() );
+  QCOMPARE( rootItem->childCount(), 0 );
+  QVERIFY( !rootItem->child( 0 ) );
 
   // Second constructor
-  const QString node1Name = QStringLiteral( "child node1 name" );
-  const QString node1DisplayName = QStringLiteral( "child node1 display name" );
-  std::unique_ptr< QgsAttributesFormTreeNode > node = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::Field, node1Name, node1DisplayName );
-  QVERIFY( !node->parent() );
-  QCOMPARE( node->data( QgsAttributesFormModel::NodeNameRole ).toString(), node1Name );
-  QCOMPARE( node->data( QgsAttributesFormModel::NodeDisplayRole ).toString(), node1DisplayName );
-  QCOMPARE( static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( node->data( QgsAttributesFormModel::NodeTypeRole ).toInt() ), QgsAttributesFormTreeData::Field );
-  QCOMPARE( node->name(), node1Name );
-  QCOMPARE( node->displayName(), node1DisplayName );
-  QCOMPARE( node->type(), QgsAttributesFormTreeData::Field );
-  QCOMPARE( node->id(), QString() );
+  const QString item1Name = QStringLiteral( "child item1 name" );
+  const QString item1DisplayName = QStringLiteral( "child item1 display name" );
+  std::unique_ptr< QgsAttributesFormItem > item = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Field, item1Name, item1DisplayName );
+  QVERIFY( !item->parent() );
+  QCOMPARE( item->data( QgsAttributesFormModel::ItemNameRole ).toString(), item1Name );
+  QCOMPARE( item->data( QgsAttributesFormModel::ItemDisplayRole ).toString(), item1DisplayName );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( item->data( QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
+  QCOMPARE( item->name(), item1Name );
+  QCOMPARE( item->displayName(), item1DisplayName );
+  QCOMPARE( item->type(), QgsAttributesFormData::Field );
+  QCOMPARE( item->id(), QString() );
 
-  const QString node1Id = QStringLiteral( "nodeId" );
-  node->setData( QgsAttributesFormModel::NodeIdRole, node1Id );
-  QCOMPARE( node->id(), node1Id );
+  const QString item1Id = QStringLiteral( "itemId" );
+  item->setData( QgsAttributesFormModel::ItemIdRole, item1Id );
+  QCOMPARE( item->id(), item1Id );
 
-  rootNode->addChildNode( std::move( node ) );
-  QCOMPARE( rootNode->childCount(), 1 );
-  QVERIFY( rootNode->child( 0 ) );
+  rootItem->addChild( std::move( item ) );
+  QCOMPARE( rootItem->childCount(), 1 );
+  QVERIFY( rootItem->child( 0 ) );
 
-  QgsAttributesFormTreeNode *nodePointer = rootNode->child( 0 );
+  QgsAttributesFormItem *itemPointer = rootItem->child( 0 );
 
-  QVERIFY( nodePointer->parent() );
-  QCOMPARE( nodePointer->parent(), rootNode.get() );
-  QCOMPARE( nodePointer->row(), 0 );
-  QCOMPARE( nodePointer->data( QgsAttributesFormModel::NodeNameRole ).toString(), node1Name );
-  QCOMPARE( nodePointer->data( QgsAttributesFormModel::NodeDisplayRole ).toString(), node1DisplayName );
-  QCOMPARE( static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( nodePointer->data( QgsAttributesFormModel::NodeTypeRole ).toInt() ), QgsAttributesFormTreeData::Field );
+  QVERIFY( itemPointer->parent() );
+  QCOMPARE( itemPointer->parent(), rootItem.get() );
+  QCOMPARE( itemPointer->row(), 0 );
+  QCOMPARE( itemPointer->data( QgsAttributesFormModel::ItemNameRole ).toString(), item1Name );
+  QCOMPARE( itemPointer->data( QgsAttributesFormModel::ItemDisplayRole ).toString(), item1DisplayName );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( itemPointer->data( QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
 
   // Third constructor
-  const QString node2Name = QStringLiteral( "child node2 name" );
-  const QString node2DisplayName = QStringLiteral( "child node2 display name" );
-  QgsAttributesFormTreeData::DnDTreeNodeData itemData;
+  const QString item2Name = QStringLiteral( "child item2 name" );
+  const QString item2DisplayName = QStringLiteral( "child item2 display name" );
+  QgsAttributesFormData::AttributeFormItemData itemData;
   itemData.setShowLabel( false );
 
-  std::unique_ptr< QgsAttributesFormTreeNode > node2 = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::Field, itemData, node2Name, node2DisplayName, rootNode.get() );
-  QVERIFY( node2->parent() );
-  QCOMPARE( node2->data( QgsAttributesFormModel::NodeNameRole ).toString(), node2Name );
-  QCOMPARE( node2->data( QgsAttributesFormModel::NodeDisplayRole ).toString(), node2DisplayName );
-  QCOMPARE( static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( node2->data( QgsAttributesFormModel::NodeTypeRole ).toInt() ), QgsAttributesFormTreeData::Field );
-  QCOMPARE( node2->data( QgsAttributesFormModel::NodeDataRole ).value< QgsAttributesFormTreeData::DnDTreeNodeData >().showLabel(), false );
+  std::unique_ptr< QgsAttributesFormItem > item2 = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Field, itemData, item2Name, item2DisplayName, rootItem.get() );
+  QVERIFY( item2->parent() );
+  QCOMPARE( item2->data( QgsAttributesFormModel::ItemNameRole ).toString(), item2Name );
+  QCOMPARE( item2->data( QgsAttributesFormModel::ItemDisplayRole ).toString(), item2DisplayName );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( item2->data( QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
+  QCOMPARE( item2->data( QgsAttributesFormModel::ItemDataRole ).value< QgsAttributesFormData::AttributeFormItemData >().showLabel(), false );
 
-  const QString node2Id = QStringLiteral( "node2Id" );
-  node2->setData( QgsAttributesFormModel::NodeIdRole, node2Id );
+  const QString item2Id = QStringLiteral( "item2Id" );
+  item2->setData( QgsAttributesFormModel::ItemIdRole, item2Id );
 
-  rootNode->insertChildNode( 1, std::move( node2 ) );
-  QCOMPARE( rootNode->childCount(), 2 );
-  QVERIFY( rootNode->child( 1 ) );
+  rootItem->insertChild( 1, std::move( item2 ) );
+  QCOMPARE( rootItem->childCount(), 2 );
+  QVERIFY( rootItem->child( 1 ) );
 
-  nodePointer = rootNode->child( 1 );
-  QVERIFY( nodePointer->parent() );
-  QCOMPARE( nodePointer->parent(), rootNode.get() );
-  QCOMPARE( nodePointer->row(), 1 );
-  QCOMPARE( nodePointer->data( QgsAttributesFormModel::NodeNameRole ).toString(), node2Name );
-  QCOMPARE( nodePointer->data( QgsAttributesFormModel::NodeDisplayRole ).toString(), node2DisplayName );
-  QCOMPARE( static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( nodePointer->data( QgsAttributesFormModel::NodeTypeRole ).toInt() ), QgsAttributesFormTreeData::Field );
+  itemPointer = rootItem->child( 1 );
+  QVERIFY( itemPointer->parent() );
+  QCOMPARE( itemPointer->parent(), rootItem.get() );
+  QCOMPARE( itemPointer->row(), 1 );
+  QCOMPARE( itemPointer->data( QgsAttributesFormModel::ItemNameRole ).toString(), item2Name );
+  QCOMPARE( itemPointer->data( QgsAttributesFormModel::ItemDisplayRole ).toString(), item2DisplayName );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( itemPointer->data( QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
 
   // Add container and grandchild
   const QString containerName = QStringLiteral( "Tab" );
-  std::unique_ptr< QgsAttributesFormTreeNode > containerNode = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::Container, containerName );
-  QCOMPARE( containerNode->childCount(), 0 );
-  containerNode->setData( QgsAttributesFormModel::NodeIdRole, containerName );
+  std::unique_ptr< QgsAttributesFormItem > containerItem = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Container, containerName );
+  QCOMPARE( containerItem->childCount(), 0 );
+  containerItem->setData( QgsAttributesFormModel::ItemIdRole, containerName );
 
-  const QString relationName = QStringLiteral( "Relation node" );
-  std::unique_ptr< QgsAttributesFormTreeNode > relationNode = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::Relation, relationName );
+  const QString relationName = QStringLiteral( "Relation item" );
+  std::unique_ptr< QgsAttributesFormItem > relationItem = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Relation, relationName );
 
   const QString relationId = QStringLiteral( "relationId" );
-  relationNode->setData( QgsAttributesFormModel::NodeIdRole, relationId );
+  relationItem->setData( QgsAttributesFormModel::ItemIdRole, relationId );
 
-  containerNode->addChildNode( std::move( relationNode ) );
-  QCOMPARE( containerNode->childCount(), 1 );
-  QVERIFY( containerNode->child( 0 ) );
-  QCOMPARE( containerNode->child( 0 )->name(), relationName );
-  QCOMPARE( containerNode->child( 0 )->parent(), containerNode.get() );
+  containerItem->addChild( std::move( relationItem ) );
+  QCOMPARE( containerItem->childCount(), 1 );
+  QVERIFY( containerItem->child( 0 ) );
+  QCOMPARE( containerItem->child( 0 )->name(), relationName );
+  QCOMPARE( containerItem->child( 0 )->parent(), containerItem.get() );
 
-  rootNode->insertChildNode( 1, std::move( containerNode ) );
-  QCOMPARE( rootNode->childCount(), 3 );
-  QVERIFY( rootNode->child( 1 ) );
-  nodePointer = rootNode->child( 1 );
-  QVERIFY( nodePointer->parent() );
-  QCOMPARE( nodePointer->parent(), rootNode.get() );
-  QCOMPARE( nodePointer->row(), 1 );
-  QCOMPARE( static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( nodePointer->data( QgsAttributesFormModel::NodeTypeRole ).toInt() ), QgsAttributesFormTreeData::Container );
+  rootItem->insertChild( 1, std::move( containerItem ) );
+  QCOMPARE( rootItem->childCount(), 3 );
+  QVERIFY( rootItem->child( 1 ) );
+  itemPointer = rootItem->child( 1 );
+  QVERIFY( itemPointer->parent() );
+  QCOMPARE( itemPointer->parent(), rootItem.get() );
+  QCOMPARE( itemPointer->row(), 1 );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( itemPointer->data( QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Container );
 
-  // Search nodes
-  nodePointer = rootNode->firstTopChild( QgsAttributesFormTreeData::Field, QStringLiteral( "Inexistent" ) );
-  QVERIFY( !nodePointer );
+  // Search items
+  itemPointer = rootItem->firstTopChild( QgsAttributesFormData::Field, QStringLiteral( "Inexistent" ) );
+  QVERIFY( !itemPointer );
 
-  nodePointer = rootNode->firstTopChild( QgsAttributesFormTreeData::Relation, relationId );
-  QVERIFY( !nodePointer );
+  itemPointer = rootItem->firstTopChild( QgsAttributesFormData::Relation, relationId );
+  QVERIFY( !itemPointer );
 
-  nodePointer = rootNode->firstTopChild( QgsAttributesFormTreeData::Container, containerName );
-  QVERIFY( nodePointer );
-  QCOMPARE( nodePointer->name(), containerName );
-  QCOMPARE( nodePointer->id(), containerName );
+  itemPointer = rootItem->firstTopChild( QgsAttributesFormData::Container, containerName );
+  QVERIFY( itemPointer );
+  QCOMPARE( itemPointer->name(), containerName );
+  QCOMPARE( itemPointer->id(), containerName );
 
-  nodePointer = rootNode->firstTopChild( QgsAttributesFormTreeData::Field, node2Id );
-  QVERIFY( nodePointer );
-  QCOMPARE( nodePointer->name(), node2Name );
+  itemPointer = rootItem->firstTopChild( QgsAttributesFormData::Field, item2Id );
+  QVERIFY( itemPointer );
+  QCOMPARE( itemPointer->name(), item2Name );
 
-  nodePointer = rootNode->firstChildRecursive( QgsAttributesFormTreeData::Field, QStringLiteral( "Inexistent" ) );
-  QVERIFY( !nodePointer );
+  itemPointer = rootItem->firstChildRecursive( QgsAttributesFormData::Field, QStringLiteral( "Inexistent" ) );
+  QVERIFY( !itemPointer );
 
-  nodePointer = rootNode->firstChildRecursive( QgsAttributesFormTreeData::Relation, relationId );
-  QVERIFY( nodePointer );
-  QCOMPARE( nodePointer->name(), relationName );
-  QCOMPARE( nodePointer->id(), relationId );
+  itemPointer = rootItem->firstChildRecursive( QgsAttributesFormData::Relation, relationId );
+  QVERIFY( itemPointer );
+  QCOMPARE( itemPointer->name(), relationName );
+  QCOMPARE( itemPointer->id(), relationId );
 
-  nodePointer = rootNode->firstChildRecursive( QgsAttributesFormTreeData::Field, node2Id );
-  QVERIFY( nodePointer );
-  QCOMPARE( nodePointer->name(), node2Name );
-  QCOMPARE( nodePointer->id(), node2Id );
+  itemPointer = rootItem->firstChildRecursive( QgsAttributesFormData::Field, item2Id );
+  QVERIFY( itemPointer );
+  QCOMPARE( itemPointer->name(), item2Name );
+  QCOMPARE( itemPointer->id(), item2Id );
 
-  // Delete nodes
-  rootNode->deleteChildAtIndex( 1 );
-  QCOMPARE( rootNode->childCount(), 2 );
-  nodePointer = rootNode->child( 1 );
-  QVERIFY( nodePointer->parent() );
-  QCOMPARE( nodePointer->parent(), rootNode.get() );
-  QCOMPARE( nodePointer->row(), 1 );
-  QCOMPARE( nodePointer->data( QgsAttributesFormModel::NodeNameRole ).toString(), node2Name );
-  QCOMPARE( nodePointer->data( QgsAttributesFormModel::NodeDisplayRole ).toString(), node2DisplayName );
-  QCOMPARE( static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( nodePointer->data( QgsAttributesFormModel::NodeTypeRole ).toInt() ), QgsAttributesFormTreeData::Field );
+  // Delete items
+  rootItem->deleteChildAtIndex( 1 );
+  QCOMPARE( rootItem->childCount(), 2 );
+  itemPointer = rootItem->child( 1 );
+  QVERIFY( itemPointer->parent() );
+  QCOMPARE( itemPointer->parent(), rootItem.get() );
+  QCOMPARE( itemPointer->row(), 1 );
+  QCOMPARE( itemPointer->data( QgsAttributesFormModel::ItemNameRole ).toString(), item2Name );
+  QCOMPARE( itemPointer->data( QgsAttributesFormModel::ItemDisplayRole ).toString(), item2DisplayName );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( itemPointer->data( QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
 
-  rootNode->deleteChildren();
-  QCOMPARE( rootNode->childCount(), 0 );
+  rootItem->deleteChildren();
+  QCOMPARE( rootItem->childCount(), 0 );
 }
 
 void TestQgsAttributesFormModel::testAvailableWidgetsModel()
@@ -230,13 +230,13 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModel()
 
   // Check top-level items
   QCOMPARE( availableWidgetsModel.data( availableWidgetsModel.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), tr( "Fields" ) );
-  QCOMPARE( static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( availableWidgetsModel.data( availableWidgetsModel.index( 0, 0, QModelIndex() ), QgsAttributesFormModel::NodeTypeRole ).toInt() ), QgsAttributesFormTreeData::WidgetType );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( availableWidgetsModel.data( availableWidgetsModel.index( 0, 0, QModelIndex() ), QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::WidgetType );
   QCOMPARE( availableWidgetsModel.data( availableWidgetsModel.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), tr( "Relations" ) );
-  QCOMPARE( static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( availableWidgetsModel.data( availableWidgetsModel.index( 1, 0, QModelIndex() ), QgsAttributesFormModel::NodeTypeRole ).toInt() ), QgsAttributesFormTreeData::WidgetType );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( availableWidgetsModel.data( availableWidgetsModel.index( 1, 0, QModelIndex() ), QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::WidgetType );
   QCOMPARE( availableWidgetsModel.data( availableWidgetsModel.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), tr( "Actions" ) );
-  QCOMPARE( static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( availableWidgetsModel.data( availableWidgetsModel.index( 2, 0, QModelIndex() ), QgsAttributesFormModel::NodeTypeRole ).toInt() ), QgsAttributesFormTreeData::WidgetType );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( availableWidgetsModel.data( availableWidgetsModel.index( 2, 0, QModelIndex() ), QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::WidgetType );
   QCOMPARE( availableWidgetsModel.data( availableWidgetsModel.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString(), tr( "Other Widgets" ) );
-  QCOMPARE( static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( availableWidgetsModel.data( availableWidgetsModel.index( 3, 0, QModelIndex() ), QgsAttributesFormModel::NodeTypeRole ).toInt() ), QgsAttributesFormTreeData::WidgetType );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( availableWidgetsModel.data( availableWidgetsModel.index( 3, 0, QModelIndex() ), QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::WidgetType );
 
   // Check fields
   const QModelIndex fieldsIndex = availableWidgetsModel.index( 0, 0, QModelIndex() );
@@ -251,9 +251,9 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModel()
   QCOMPARE( fieldIndex.parent(), fieldsIndex );
   QCOMPARE( fieldIndex.row(), 0 );
 
-  QCOMPARE( static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( availableWidgetsModel.data( fieldIndex, QgsAttributesFormModel::NodeTypeRole ).toInt() ), QgsAttributesFormTreeData::Field );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( availableWidgetsModel.data( fieldIndex, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
 
-  const QString fieldName = fieldIndex.data( QgsAttributesFormModel::NodeNameRole ).toString();
+  const QString fieldName = fieldIndex.data( QgsAttributesFormModel::ItemNameRole ).toString();
 
   QModelIndex foundIndex = availableWidgetsModel.fieldModelIndex( QString() );
   QVERIFY( !foundIndex.isValid() );
@@ -261,17 +261,17 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModel()
   foundIndex = availableWidgetsModel.fieldModelIndex( fieldName );
   QCOMPARE( foundIndex, fieldIndex );
 
-  const QString fieldId = fieldIndex.data( QgsAttributesFormModel::NodeIdRole ).toString();
+  const QString fieldId = fieldIndex.data( QgsAttributesFormModel::ItemIdRole ).toString();
   QCOMPARE( fieldId, fieldName );
 
-  const auto fieldData = fieldIndex.data( QgsAttributesFormModel::NodeDataRole ).value< QgsAttributesFormTreeData::DnDTreeNodeData >();
+  const auto fieldData = fieldIndex.data( QgsAttributesFormModel::ItemDataRole ).value< QgsAttributesFormData::AttributeFormItemData >();
   QVERIFY( fieldData.showLabel() );
 
   const int fieldIdx = mLayer->fields().indexOf( fieldName );
   QCOMPARE( fieldIdx, 0 );
-  QgsAttributesFormTreeData::FieldConfig config( mLayer, fieldIdx );
+  QgsAttributesFormData::FieldConfig config( mLayer, fieldIdx );
 
-  const auto fieldConfig = fieldIndex.data( QgsAttributesFormModel::NodeFieldConfigRole ).value< QgsAttributesFormTreeData::FieldConfig >();
+  const auto fieldConfig = fieldIndex.data( QgsAttributesFormModel::ItemFieldConfigRole ).value< QgsAttributesFormData::FieldConfig >();
   QCOMPARE( fieldConfig.mFieldConstraints, config.mFieldConstraints );
   QCOMPARE( fieldConfig.mEditable, config.mEditable );
   QCOMPARE( fieldConfig.mEditorWidgetType, config.mEditorWidgetType );
@@ -339,11 +339,11 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
   QVERIFY( containerIndex.isValid() );
   QCOMPARE( containerIndex.row(), 0 );
   QCOMPARE( formLayoutModel.data( containerIndex, Qt::DisplayRole ).toString(), QLatin1String( "tab" ) );
-  QCOMPARE( static_cast< QgsAttributesFormTreeData::AttributesFormTreeNodeType >( formLayoutModel.data( containerIndex, QgsAttributesFormModel::NodeTypeRole ).toInt() ), QgsAttributesFormTreeData::Container );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( formLayoutModel.data( containerIndex, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Container );
   QCOMPARE( formLayoutModel.rowCount( containerIndex ), 7 );
 
-  QCOMPARE( containerIndex.data( QgsAttributesFormModel::NodeNameRole ).toString(), QLatin1String( "tab" ) );
-  const auto containerData = containerIndex.data( QgsAttributesFormModel::NodeDataRole ).value< QgsAttributesFormTreeData::DnDTreeNodeData >();
+  QCOMPARE( containerIndex.data( QgsAttributesFormModel::ItemNameRole ).toString(), QLatin1String( "tab" ) );
+  const auto containerData = containerIndex.data( QgsAttributesFormModel::ItemDataRole ).value< QgsAttributesFormData::AttributeFormItemData >();
   QCOMPARE( containerData.containerType(), Qgis::AttributeEditorContainerType::Tab );
   QCOMPARE( containerData.columnCount(), 1 );
   QVERIFY( containerData.showLabel() );
@@ -372,27 +372,27 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
 
   QModelIndex rowContainerIndex = formLayoutModel.index( formLayoutModel.rowCount( rootIndex ) - 1, 0, rootIndex );
   QCOMPARE( containers.at( 2 ).second, rowContainerIndex );
-  QCOMPARE( rowContainerIndex.data( QgsAttributesFormModel::NodeIdRole ).toString(), rowName );
-  QCOMPARE( rowContainerIndex.data( QgsAttributesFormModel::NodeNameRole ).toString(), rowName );
+  QCOMPARE( rowContainerIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), rowName );
+  QCOMPARE( rowContainerIndex.data( QgsAttributesFormModel::ItemNameRole ).toString(), rowName );
 
   const QString newFieldName = QStringLiteral( "Staff" );
   QCOMPARE( formLayoutModel.rowCount( groupContainerIndex ), 0 );
-  formLayoutModel.insertChild( groupContainerIndex, 0, newFieldName, QgsAttributesFormTreeData::Field, newFieldName );
+  formLayoutModel.insertChild( groupContainerIndex, 0, newFieldName, QgsAttributesFormData::Field, newFieldName );
   QCOMPARE( formLayoutModel.rowCount( groupContainerIndex ), 1 );
 
   // First recursive match
   const QString inexistentFieldName = QStringLiteral( "my field" );
-  QModelIndex invalidIndex = formLayoutModel.firstRecursiveMatchingModelIndex( QgsAttributesFormTreeData::Field, inexistentFieldName );
+  QModelIndex invalidIndex = formLayoutModel.firstRecursiveMatchingModelIndex( QgsAttributesFormData::Field, inexistentFieldName );
   QVERIFY( !invalidIndex.isValid() );
 
-  QModelIndex staffIndex = formLayoutModel.firstRecursiveMatchingModelIndex( QgsAttributesFormTreeData::Field, newFieldName );
+  QModelIndex staffIndex = formLayoutModel.firstRecursiveMatchingModelIndex( QgsAttributesFormData::Field, newFieldName );
   QVERIFY( staffIndex.isValid() );
   QCOMPARE( staffIndex.parent(), containerIndex );
 
   // Remove the first occurrence of staffIndex, and re-check
   formLayoutModel.removeRow( staffIndex.row(), containerIndex );
   QCOMPARE( formLayoutModel.rowCount( containerIndex ), 7 );
-  staffIndex = formLayoutModel.firstRecursiveMatchingModelIndex( QgsAttributesFormTreeData::Field, newFieldName );
+  staffIndex = formLayoutModel.firstRecursiveMatchingModelIndex( QgsAttributesFormData::Field, newFieldName );
   QVERIFY( staffIndex.isValid() );
 
   // Before checking against the groupContainerIndex, we need to
@@ -402,33 +402,33 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
   QCOMPARE( staffIndex.parent(), groupContainerIndex );
 
   // 2 staff fields, still the one inside the group is the first that should be found
-  formLayoutModel.insertChild( rootIndex, formLayoutModel.rowCount(), newFieldName, QgsAttributesFormTreeData::Field, newFieldName );
+  formLayoutModel.insertChild( rootIndex, formLayoutModel.rowCount(), newFieldName, QgsAttributesFormData::Field, newFieldName );
   QCOMPARE( formLayoutModel.rowCount(), 3 );
   // Now that the new staff item is after the one in the group box, the first matching index should remain the same
-  staffIndex = formLayoutModel.firstRecursiveMatchingModelIndex( QgsAttributesFormTreeData::Field, newFieldName );
+  staffIndex = formLayoutModel.firstRecursiveMatchingModelIndex( QgsAttributesFormData::Field, newFieldName );
   QVERIFY( staffIndex.isValid() );
   QCOMPARE( staffIndex.parent(), groupContainerIndex );
 
   // First top match
-  invalidIndex = formLayoutModel.firstTopMatchingModelIndex( QgsAttributesFormTreeData::Field, inexistentFieldName );
+  invalidIndex = formLayoutModel.firstTopMatchingModelIndex( QgsAttributesFormData::Field, inexistentFieldName );
   QVERIFY( !invalidIndex.isValid() );
 
-  invalidIndex = formLayoutModel.firstTopMatchingModelIndex( QgsAttributesFormTreeData::Field, rowName );
+  invalidIndex = formLayoutModel.firstTopMatchingModelIndex( QgsAttributesFormData::Field, rowName );
   QVERIFY( !invalidIndex.isValid() );
 
-  QModelIndex foundRowIndex = formLayoutModel.firstTopMatchingModelIndex( QgsAttributesFormTreeData::Container, rowName );
+  QModelIndex foundRowIndex = formLayoutModel.firstTopMatchingModelIndex( QgsAttributesFormData::Container, rowName );
   QVERIFY( foundRowIndex.isValid() );
   QCOMPARE( foundRowIndex.parent(), rootIndex );
-  QCOMPARE( foundRowIndex.data( QgsAttributesFormModel::NodeIdRole ).toString(), rowName );
-  QCOMPARE( foundRowIndex.data( QgsAttributesFormModel::NodeNameRole ).toString(), rowName );
+  QCOMPARE( foundRowIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), rowName );
+  QCOMPARE( foundRowIndex.data( QgsAttributesFormModel::ItemNameRole ).toString(), rowName );
 
-  staffIndex = formLayoutModel.firstTopMatchingModelIndex( QgsAttributesFormTreeData::Field, newFieldName );
+  staffIndex = formLayoutModel.firstTopMatchingModelIndex( QgsAttributesFormData::Field, newFieldName );
   QVERIFY( staffIndex.isValid() );
-  QCOMPARE( staffIndex.data( QgsAttributesFormModel::NodeNameRole ).toString(), newFieldName );
+  QCOMPARE( staffIndex.data( QgsAttributesFormModel::ItemNameRole ).toString(), newFieldName );
 
   // Check showAliases mode
   QCOMPARE( staffIndex.data( Qt::DisplayRole ).toString(), newFieldName );
-  QCOMPARE( staffIndex.data( QgsAttributesFormModel::NodeDisplayRole ).toString(), QString() );
+  QCOMPARE( staffIndex.data( QgsAttributesFormModel::ItemDisplayRole ).toString(), QString() );
 
   formLayoutModel.setShowAliases( true );
 
@@ -438,29 +438,29 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
 
   // Check that non-empty aliases are actually shown
   const QString staffAlias = QStringLiteral( "Staff alias!" );
-  formLayoutModel.updateAliasForFieldNodes( newFieldName, staffAlias );
-  QCOMPARE( staffIndex.data( QgsAttributesFormModel::NodeDisplayRole ).toString(), staffAlias );
+  formLayoutModel.updateAliasForFieldItems( newFieldName, staffAlias );
+  QCOMPARE( staffIndex.data( QgsAttributesFormModel::ItemDisplayRole ).toString(), staffAlias );
   QCOMPARE( staffIndex.data( Qt::DisplayRole ).toString(), staffAlias );
 
   formLayoutModel.setShowAliases( false );
-  QCOMPARE( staffIndex.data( QgsAttributesFormModel::NodeDisplayRole ).toString(), staffAlias );
+  QCOMPARE( staffIndex.data( QgsAttributesFormModel::ItemDisplayRole ).toString(), staffAlias );
   QCOMPARE( staffIndex.data( Qt::DisplayRole ).toString(), newFieldName );
 
   // Lastly check that also the Staff item inside the group box has been updated
-  staffIndex = formLayoutModel.firstRecursiveMatchingModelIndex( QgsAttributesFormTreeData::Field, newFieldName );
+  staffIndex = formLayoutModel.firstRecursiveMatchingModelIndex( QgsAttributesFormData::Field, newFieldName );
   QCOMPARE( staffIndex.parent(), groupContainerIndex );
-  QCOMPARE( staffIndex.data( QgsAttributesFormModel::NodeDisplayRole ).toString(), staffAlias );
+  QCOMPARE( staffIndex.data( QgsAttributesFormModel::ItemDisplayRole ).toString(), staffAlias );
 
   // Check setData
   QString newStaffAlias = QString( "New Staff alias!" );
-  formLayoutModel.setData( staffIndex, newStaffAlias, QgsAttributesFormModel::NodeDisplayRole );
-  QCOMPARE( staffIndex.data( QgsAttributesFormModel::NodeDisplayRole ).toString(), newStaffAlias );
+  formLayoutModel.setData( staffIndex, newStaffAlias, QgsAttributesFormModel::ItemDisplayRole );
+  QCOMPARE( staffIndex.data( QgsAttributesFormModel::ItemDisplayRole ).toString(), newStaffAlias );
 
-  formLayoutModel.setData( staffIndex, newStaffAlias, QgsAttributesFormModel::NodeNameRole );
-  QCOMPARE( staffIndex.data( QgsAttributesFormModel::NodeNameRole ).toString(), newStaffAlias );
+  formLayoutModel.setData( staffIndex, newStaffAlias, QgsAttributesFormModel::ItemNameRole );
+  QCOMPARE( staffIndex.data( QgsAttributesFormModel::ItemNameRole ).toString(), newStaffAlias );
 
-  formLayoutModel.setData( staffIndex, newStaffAlias, QgsAttributesFormModel::NodeIdRole );
-  QCOMPARE( staffIndex.data( QgsAttributesFormModel::NodeIdRole ).toString(), newStaffAlias );
+  formLayoutModel.setData( staffIndex, newStaffAlias, QgsAttributesFormModel::ItemIdRole );
+  QCOMPARE( staffIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), newStaffAlias );
 }
 
 QGSTEST_MAIN( TestQgsAttributesFormModel )

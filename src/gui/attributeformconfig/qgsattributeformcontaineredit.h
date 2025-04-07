@@ -36,17 +36,20 @@ class GUI_EXPORT QgsAttributeFormContainerEdit : public QWidget, private Ui_QgsA
     Q_OBJECT
 
   public:
-    explicit QgsAttributeFormContainerEdit( const QgsAttributesFormTreeData::DnDTreeNodeData &nodeData, QgsVectorLayer *layer, QWidget *parent = nullptr );
+    explicit QgsAttributeFormContainerEdit( const QgsAttributesFormData::AttributeFormItemData &itemData, QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     /**
-     * Sets the \a containerName.
+     * Sets the container \a title.
      *
      * \since QGIS 3.44
      */
-    void setTitle( const QString &containerName );
+    void setTitle( const QString &title );
 
     /**
-     * Sets up the container type comboBox based on the \a containerType and on whether it \a isTopLevelContainer.
+     * Sets up the container type combo box based on its type and whether it is located at the top level.
+     *
+     * \param isTopLevelContainer container sitting at the top level
+     * \param containerType container type
      *
      * \since QGIS 3.44
      */
@@ -60,11 +63,11 @@ class GUI_EXPORT QgsAttributeFormContainerEdit : public QWidget, private Ui_QgsA
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
     /**
-     * Updates the contents of the \a nodeData object, as well as the \a containerName based on the widget status.
+     * Updates the contents of the \a itemData object, as well as the container \a title based on the widget status.
      *
      * \since QGIS 3.44
      */
-    void updateNodeData( QgsAttributesFormTreeData::DnDTreeNodeData &nodeData, QString &containerName );
+    void updateItemData( QgsAttributesFormData::AttributeFormItemData &itemData, QString &title );
 
   private slots:
     void containerTypeChanged();

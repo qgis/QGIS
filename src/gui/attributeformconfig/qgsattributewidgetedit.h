@@ -38,21 +38,21 @@ class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private
     Q_OBJECT
 
   public:
-    explicit QgsAttributeWidgetEdit( const QgsAttributesFormTreeData::DnDTreeNodeData &nodeData, QWidget *parent = nullptr );
+    explicit QgsAttributeWidgetEdit( const QgsAttributesFormData::AttributeFormItemData &itemData, QWidget *parent = nullptr );
 
     /**
-     * Updates the contents of the \a nodeData object based on the widget status.
+     * Updates the contents of the \a itemData object based on the widget status.
      *
      * \since QGIS 3.44
      */
-    void updateNodeData( QgsAttributesFormTreeData::DnDTreeNodeData &nodeData ) const;
+    void updateItemData( QgsAttributesFormData::AttributeFormItemData &itemData ) const;
 
     /**
      * Returns an updated relation editor configuration based on the widget status.
      *
      * \since QGIS 3.44
      */
-    QgsAttributesFormTreeData::RelationEditorConfiguration updatedRelationConfiguration() const;
+    QgsAttributesFormData::RelationEditorConfiguration updatedRelationConfiguration() const;
 
     // Methods to update widget status
     void setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle );
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private
      *
      * \since QGIS 3.44
      */
-    void setRelationSpecificWidget( const QgsAttributesFormTreeData::RelationEditorConfiguration &configuration, const QString &relationId );
+    void setRelationSpecificWidget( const QgsAttributesFormData::RelationEditorConfiguration &configuration, const QString &relationId );
 
   private:
     void showRelationButtons( bool show );
@@ -85,9 +85,9 @@ class GUI_EXPORT QgsAttributeWidgetRelationEditWidget : public QWidget, private 
   public:
     explicit QgsAttributeWidgetRelationEditWidget( QWidget *parent = nullptr );
 
-    void setRelationEditorConfiguration( const QgsAttributesFormTreeData::RelationEditorConfiguration &config, const QString &relationId );
+    void setRelationEditorConfiguration( const QgsAttributesFormData::RelationEditorConfiguration &config, const QString &relationId );
 
-    QgsAttributesFormTreeData::RelationEditorConfiguration relationEditorConfiguration() const;
+    QgsAttributesFormData::RelationEditorConfiguration relationEditorConfiguration() const;
 
     static QString title() { return tr( "Relation" ); }
 

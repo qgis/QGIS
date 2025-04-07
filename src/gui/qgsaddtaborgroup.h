@@ -44,7 +44,7 @@ class GUI_EXPORT QgsAddAttributeFormContainerDialog : public QDialog, private Ui
 
   public:
     //! constructor
-    QgsAddAttributeFormContainerDialog( QgsVectorLayer *layer, const QList<ContainerPair> &existingContainerList, QModelIndex &currentNodeIndex, QWidget *parent = nullptr );
+    QgsAddAttributeFormContainerDialog( QgsVectorLayer *layer, const QList<ContainerPair> &existingContainerList, QModelIndex &currentItemIndex, QWidget *parent = nullptr );
 
     //! Returns the name of the container
     QString name();
@@ -55,7 +55,7 @@ class GUI_EXPORT QgsAddAttributeFormContainerDialog : public QDialog, private Ui
      * Will be an invalid index when a new tab is created.
      * \since QGIS 3.44
      */
-    QModelIndex parentContainerNode() const;
+    QModelIndex parentContainerItem() const;
 
     //! Returns the column count
     int columnCount() const;

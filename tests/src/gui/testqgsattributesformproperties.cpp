@@ -62,28 +62,28 @@ void TestQgsAttributesFormProperties::testConfigStored()
   attributeFormProperties.init();
 
   // Get the fields
-  QVERIFY( attributeFormProperties.mAvailableWidgetsTreeView );
-  const QgsAttributesAvailableWidgetsModel *availableWidgetsModel = static_cast<QgsAttributesAvailableWidgetsTreeView *>( attributeFormProperties.mAvailableWidgetsTreeView )->availableWidgetsModel();
+  QVERIFY( attributeFormProperties.mAvailableWidgetsView );
+  const QgsAttributesAvailableWidgetsModel *availableWidgetsModel = static_cast<QgsAttributesAvailableWidgetsView *>( attributeFormProperties.mAvailableWidgetsView )->availableWidgetsModel();
   QVERIFY( availableWidgetsModel );
   const QModelIndex fieldContainer = availableWidgetsModel->fieldContainer();
 
   QVERIFY( fieldContainer.isValid() );
-  const QString name = fieldContainer.data( QgsAttributesFormModel::NodeNameRole ).toString();
+  const QString name = fieldContainer.data( QgsAttributesFormModel::ItemNameRole ).toString();
   QCOMPARE( name, QStringLiteral( "Fields" ) );
   QCOMPARE( availableWidgetsModel->rowCount( fieldContainer ), 2 );
 
   // Insure that the configuration was stored when switching from one available widgets tree item to another
-  attributeFormProperties.mAvailableWidgetsTreeView->setCurrentIndex( availableWidgetsModel->index( 0, 0, fieldContainer ) );
+  attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( availableWidgetsModel->index( 0, 0, fieldContainer ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
   attributeFormProperties.mAttributeTypeDialog->setAlias( QStringLiteral( "alias0" ) );
-  attributeFormProperties.mAvailableWidgetsTreeView->setCurrentIndex( availableWidgetsModel->index( 1, 0, fieldContainer ) );
+  attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( availableWidgetsModel->index( 1, 0, fieldContainer ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
   attributeFormProperties.mAttributeTypeDialog->setAlias( QStringLiteral( "alias1" ) );
 
-  attributeFormProperties.mAvailableWidgetsTreeView->setCurrentIndex( availableWidgetsModel->index( 0, 0, fieldContainer ) );
+  attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( availableWidgetsModel->index( 0, 0, fieldContainer ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
   QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), QStringLiteral( "alias0" ) );
-  attributeFormProperties.mAvailableWidgetsTreeView->setCurrentIndex( availableWidgetsModel->index( 1, 0, fieldContainer ) );
+  attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( availableWidgetsModel->index( 1, 0, fieldContainer ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
   QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), QStringLiteral( "alias1" ) );
 }
