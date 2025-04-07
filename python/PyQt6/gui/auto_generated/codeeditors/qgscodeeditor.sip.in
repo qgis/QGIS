@@ -686,6 +686,13 @@ The default implementation uses QMessageBox.
 .. versionadded:: 3.32
 %End
 
+    void toggleLineComments( const QString &commentPrefix );
+%Docstring
+Toggles comment for selected lines with the given comment prefix.
+
+.. versionadded:: 3.44
+%End
+
 };
 
 QFlags<QgsCodeEditor::Flag> operator|(QgsCodeEditor::Flag f1, QFlags<QgsCodeEditor::Flag> f2);

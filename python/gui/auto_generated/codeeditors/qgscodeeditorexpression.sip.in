@@ -31,6 +31,8 @@ Constructor for QgsCodeEditorExpression
 
     virtual Qgis::ScriptLanguage language() const;
 
+    virtual Qgis::ScriptLanguageCapabilities languageCapabilities() const;
+
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
@@ -45,9 +47,6 @@ Field names will be added to the API.
 
     virtual void toggleComment();
 
-%Docstring
-Toggles comments for selected lines.
-%End
 
   protected:
     virtual void initializeLexer();

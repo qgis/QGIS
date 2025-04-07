@@ -687,6 +687,13 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     virtual void showMessage( const QString &title, const QString &message, Qgis::MessageLevel level );
 
+    /**
+     * Toggles comment for selected lines with the given comment prefix.
+     *
+     * \since QGIS 3.44
+     */
+    void toggleLineComments( const QString &commentPrefix );
+
   private slots:
     void onLastEditTimeout();
 
