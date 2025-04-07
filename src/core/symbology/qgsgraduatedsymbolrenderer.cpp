@@ -492,6 +492,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
 
   QDomElement rangeElem = rangesElem.firstChildElement();
   int i = 0;
+  QSet<QString> usedUuids;
   while ( !rangeElem.isNull() )
   {
     if ( rangeElem.tagName() == QLatin1String( "range" ) )
@@ -502,10 +503,15 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
       QString label = rangeElem.attribute( QStringLiteral( "label" ) );
       bool render = rangeElem.attribute( QStringLiteral( "render" ), QStringLiteral( "true" ) ) != QLatin1String( "false" );
       QString uuid = rangeElem.attribute( QStringLiteral( "uuid" ), QString::number( i++ ) );
+      while ( usedUuids.contains( uuid ) )
+      {
+        uuid = QUuid::createUuid().toString();
+      }
       if ( symbolMap.contains( symbolName ) )
       {
         QgsSymbol *symbol = symbolMap.take( symbolName );
         ranges.append( QgsRendererRange( lowerValue, upperValue, symbol, label, render, uuid ) );
+        usedUuids << uuid;
       }
     }
     rangeElem = rangeElem.nextSiblingElement();
