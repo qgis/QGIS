@@ -72,6 +72,7 @@ QgsLayoutItem.UndoLegendTitleFont = QgsLayoutItem.UndoCommand.UndoLegendTitleFon
 QgsLayoutItem.UndoLegendGroupFont = QgsLayoutItem.UndoCommand.UndoLegendGroupFont
 QgsLayoutItem.UndoLegendLayerFont = QgsLayoutItem.UndoCommand.UndoLegendLayerFont
 QgsLayoutItem.UndoLegendItemFont = QgsLayoutItem.UndoCommand.UndoLegendItemFont
+QgsLayoutItem.UndoLegendAutoWrapAfter = QgsLayoutItem.UndoCommand.UndoLegendAutoWrapAfter
 QgsLayoutItem.UndoScaleBarLineWidth = QgsLayoutItem.UndoCommand.UndoScaleBarLineWidth
 QgsLayoutItem.UndoScaleBarSegmentSize = QgsLayoutItem.UndoCommand.UndoScaleBarSegmentSize
 QgsLayoutItem.UndoScaleBarSegmentsLeft = QgsLayoutItem.UndoCommand.UndoScaleBarSegmentsLeft

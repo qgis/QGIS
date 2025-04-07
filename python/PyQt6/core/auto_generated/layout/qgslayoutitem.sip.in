@@ -235,6 +235,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoLegendGroupFont,
       UndoLegendLayerFont,
       UndoLegendItemFont,
+      UndoLegendAutoWrapAfter,
       UndoScaleBarLineWidth,
       UndoScaleBarSegmentSize,
       UndoScaleBarSegmentsLeft,

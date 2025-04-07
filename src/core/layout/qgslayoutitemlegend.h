@@ -533,6 +533,56 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setRasterStrokeWidth( double width );
 
     /**
+     * Returns the maximum line length allowed before lines of text in the legend
+     * will be automatically word wrapped.
+     *
+     * Units are retrieved via autoWrapLinesUnit().
+     *
+     * If the returned value is 0, then no automatic wrapping will occur.
+     *
+     * \see setAutoWrapLinesAfter()
+     * \see autoWrapLinesUnit()
+     *
+     * \since QGIS 3.44
+     */
+    double autoWrapLinesAfter() const;
+
+    /**
+     * Sets the maximum line \a length allowed before lines of text in the legend
+     * will be automatically word wrapped.
+     *
+     * Units are set via setAutoWrapLinesUnit().
+     *
+     * If \a length is 0, then no automatic wrapping will occur.
+     *
+     * \see autoWrapLinesAfter()
+     * \see setAutoWrapLinesUnit()
+     *
+     * \since QGIS 3.44
+     */
+    void setAutoWrapLinesAfter( double length );
+
+    /**
+     * Returns the units used for the automatic maximum line length wrapping.
+     *
+     * \see autoWrapLinesAfter()
+     * \see setAutoWrapLinesUnit()
+     *
+     * \since QGIS 3.44
+     */
+    Qgis::RenderUnit autoWrapLinesUnit() const;
+
+    /**
+     * Sets the \a unit used for the automatic maximum line length wrapping.
+     *
+     * \see setAutoWrapLinesAfter()
+     * \see autoWrapLinesUnit()
+     *
+     * \since QGIS 3.44
+     */
+    void setAutoWrapLinesUnit( Qgis::RenderUnit unit );
+
+    /**
      * Sets the \a map to associate with the legend.
      * \see linkedMap()
      * \see setFilterByMapItems()
