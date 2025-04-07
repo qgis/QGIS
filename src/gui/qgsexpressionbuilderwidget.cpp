@@ -133,9 +133,6 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   const auto pushButtons { mOperatorsGroupBox->findChildren<QPushButton *>() };
   for ( QPushButton *button : pushButtons )
   {
-    if ( button == btnCommentLinePushButton )
-      continue;
-
     connect( button, &QAbstractButton::clicked, this, &QgsExpressionBuilderWidget::operatorButtonClicked );
   }
 
