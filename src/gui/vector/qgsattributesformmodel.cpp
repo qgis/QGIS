@@ -579,6 +579,14 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
   if ( !item )
     return QVariant();
 
+  // Relations may be broken due to missing layers or references.
+  // Make those stand out from valid ones.
+  bool invalidRelation = false;
+  if ( ( role == Qt::ToolTipRole || role == Qt::ForegroundRole ) && item->type() == QgsAttributesFormData::Relation )
+  {
+    invalidRelation = !QgsProject::instance()->relationManager()->relation( item->id() ).isValid();
+  }
+
   switch ( role )
   {
     case Qt::DisplayRole:
@@ -596,6 +604,13 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
         else
           return item->name();
       }
+
+      if ( item->type() == QgsAttributesFormData::Relation && invalidRelation )
+      {
+        // Relation name will be displayed, inform users why it's red via tooltip
+        return tr( "Invalid relation" );
+      }
+
       return QVariant();
     }
 
@@ -606,6 +621,16 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
     {
       if ( item->type() == QgsAttributesFormData::AttributesFormItemType::WidgetType )
         return QBrush( Qt::lightGray );
+
+      return QVariant();
+    }
+
+    case Qt::ForegroundRole:
+    {
+      if ( item->type() == QgsAttributesFormData::Relation && invalidRelation )
+      {
+        return QBrush( QColor( 255, 0, 0 ) );
+      }
 
       return QVariant();
     }
@@ -828,8 +853,10 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       itemData.setRelationEditorConfiguration( relationEditorConfig );
 
       QgsRelation relation = relationEditor->relation();
-      if ( !relation.isValid() )
+      if ( relation.id().isEmpty() )
       {
+        // If relation is coming from an internal move, we lose the id.
+        // Go to relation manager and bring relation properties.
         relation = mProject->relationManager()->relation( editorElement->name() );
       }
 
@@ -958,9 +985,17 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
   if ( !index.isValid() )
     return QVariant();
 
-  const QgsAttributesFormItem *item = itemForIndex( index );
+  QgsAttributesFormItem *item = itemForIndex( index );
   if ( !item )
     return QVariant();
+
+  // Relations may be broken due to missing layers or references.
+  // Make those stand out from valid ones.
+  bool invalidRelation = false;
+  if ( ( role == Qt::DisplayRole || role == Qt::ToolTipRole || role == Qt::ForegroundRole ) && item->type() == QgsAttributesFormData::Relation )
+  {
+    invalidRelation = !QgsProject::instance()->relationManager()->relation( item->id() ).isValid();
+  }
 
   switch ( role )
   {
@@ -970,10 +1005,18 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
       {
         return item->name();
       }
-      else
+
+      if ( item->type() == QgsAttributesFormData::Relation && invalidRelation )
       {
-        return item->displayName().isEmpty() ? item->name() : item->displayName();
+        // Invalid relations can have an id, if that's the case, we have a name.
+        // Only set a new name if id is missing.
+        if ( item->id().isEmpty() )
+        {
+          return tr( "Invalid relation" );
+        }
       }
+
+      return item->displayName().isEmpty() ? item->name() : item->displayName();
     }
 
     case Qt::ToolTipRole:
@@ -982,6 +1025,16 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
       {
         return item->name();
       }
+
+      if ( item->type() == QgsAttributesFormData::Relation && invalidRelation )
+      {
+        if ( !item->id().isEmpty() )
+        {
+          // The relation name is shown, let's inform users via tooltip why it's red
+          return tr( "Invalid relation" );
+        }
+      }
+
       return QVariant();
     }
 
@@ -997,6 +1050,7 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
     }
 
     case Qt::ForegroundRole:
+    {
       if ( showAliases() && item->type() == QgsAttributesFormData::Field )
       {
         if ( item->displayName().isEmpty() )
@@ -1004,9 +1058,17 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
           return QBrush( QColor( Qt::lightGray ) );
         }
       }
+
+      if ( item->type() == QgsAttributesFormData::Relation && invalidRelation )
+      {
+        return QBrush( QColor( 255, 0, 0 ) );
+      }
+
       return QVariant();
+    }
 
     case Qt::FontRole:
+    {
       if ( showAliases() && item->type() == QgsAttributesFormData::Field )
       {
         if ( item->displayName().isEmpty() )
@@ -1017,6 +1079,7 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
         }
       }
       return QVariant();
+    }
 
     case ItemDataRole:
     case ItemFieldConfigRole:

@@ -32,12 +32,17 @@ class TestQgsAttributesFormModel : public QObject
     void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void init() {}          // will be called before each testfunction is executed.
-    void cleanup() {}       // will be called after every testfunction.
+    void cleanup();         // will be called after every testfunction.
     void testAttributesFormItem();
     void testAvailableWidgetsModel();
     void testFormLayoutModel();
+    void testInvalidRelationInAvailableWidgets();
+    void testInvalidRelationInFormLayout();
 
   private:
+    void setUpProjectWithRelation();
+    void setUpProjectWithInvalidRelations();
+
     QgsVectorLayer *mLayer = nullptr;
     QgsProject *mProject = QgsProject::instance();
 };
@@ -52,8 +57,10 @@ void TestQgsAttributesFormModel::initTestCase()
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+}
 
-  // Set up sample project with relation
+void TestQgsAttributesFormModel::setUpProjectWithRelation()
+{
   const QString projectPath = QStringLiteral( TEST_DATA_DIR ) + "/relations.qgs";
   QVERIFY( mProject->read( projectPath ) );
 
@@ -61,9 +68,23 @@ void TestQgsAttributesFormModel::initTestCase()
   mLayer = qobject_cast< QgsVectorLayer * >( mProject->mapLayer( layerId ) );
 }
 
+void TestQgsAttributesFormModel::setUpProjectWithInvalidRelations()
+{
+  const QString projectPath = QStringLiteral( TEST_DATA_DIR ) + "/broken_relations2.qgz";
+  QVERIFY( mProject->read( projectPath ) );
+
+  const QString layerId = QLatin1String( "household_0c432204_12d4_47a6_8d90_d759b02560dd" );
+  mLayer = qobject_cast< QgsVectorLayer * >( mProject->mapLayer( layerId ) );
+}
+
 void TestQgsAttributesFormModel::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+}
+
+void TestQgsAttributesFormModel::cleanup()
+{
+  mProject->clear();
 }
 
 void TestQgsAttributesFormModel::testAttributesFormItem()
@@ -208,6 +229,8 @@ void TestQgsAttributesFormModel::testAttributesFormItem()
 
 void TestQgsAttributesFormModel::testAvailableWidgetsModel()
 {
+  setUpProjectWithRelation();
+
   QgsAttributesAvailableWidgetsModel availableWidgetsModel( mLayer, mProject );
 
 #ifdef ENABLE_MODELTEST
@@ -307,6 +330,8 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModel()
 
 void TestQgsAttributesFormModel::testFormLayoutModel()
 {
+  setUpProjectWithRelation();
+
   QgsAttributesFormLayoutModel formLayoutModel( mLayer, mProject );
   QModelIndex rootIndex = QModelIndex();
 
@@ -461,6 +486,102 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
 
   formLayoutModel.setData( staffIndex, newStaffAlias, QgsAttributesFormModel::ItemIdRole );
   QCOMPARE( staffIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), newStaffAlias );
+}
+
+void TestQgsAttributesFormModel::testInvalidRelationInAvailableWidgets()
+{
+  setUpProjectWithInvalidRelations();
+
+  QgsAttributesAvailableWidgetsModel availableWidgetsModel( mLayer, mProject );
+
+#ifdef ENABLE_MODELTEST
+  new ModelTest( &availableWidgetsModel, this ); // for model validity checking
+#endif
+
+  QCOMPARE( availableWidgetsModel.columnCount(), 1 );
+  QCOMPARE( availableWidgetsModel.rowCount(), 0 );
+  QVERIFY( !availableWidgetsModel.hasChildren() );
+  QCOMPARE( availableWidgetsModel.headerData( 0, Qt::Orientation::Horizontal, Qt::DisplayRole ), tr( "Available Widgets" ) );
+  QVERIFY( availableWidgetsModel.mimeTypes().size() == 1 );
+  QCOMPARE( availableWidgetsModel.mimeTypes(), QStringList() << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+
+  // Add data to the model
+  availableWidgetsModel.populate();
+
+  QCOMPARE( availableWidgetsModel.columnCount(), 1 );
+  QCOMPARE( availableWidgetsModel.rowCount(), 4 );
+  QVERIFY( availableWidgetsModel.hasChildren() );
+
+  // Check top-level items
+  QCOMPARE( availableWidgetsModel.data( availableWidgetsModel.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), tr( "Fields" ) );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( availableWidgetsModel.data( availableWidgetsModel.index( 0, 0, QModelIndex() ), QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::WidgetType );
+  QCOMPARE( availableWidgetsModel.data( availableWidgetsModel.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), tr( "Relations" ) );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( availableWidgetsModel.data( availableWidgetsModel.index( 1, 0, QModelIndex() ), QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::WidgetType );
+
+  // Check broken relation
+  const QModelIndex relationsIndex = availableWidgetsModel.index( 1, 0, QModelIndex() );
+  QCOMPARE( availableWidgetsModel.rowCount( relationsIndex ), 1 );
+
+  // Broken relation in Available widgets must have an id and name, because it can be
+  // find in relation manager. We add a custom tooltip to it and color it red.
+  const QModelIndex invalidRelationIndex = availableWidgetsModel.index( 0, 0, relationsIndex );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( availableWidgetsModel.data( invalidRelationIndex, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Relation );
+  QCOMPARE( invalidRelationIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), QStringLiteral( "side_buildings_cbbdebec_0396_4617_9416_a4c348d1d529_household_household_0c432204_12d4_47a6_8d90_d759b02560dd_id" ) );
+  QCOMPARE( invalidRelationIndex.data( QgsAttributesFormModel::ItemNameRole ).toString(), QStringLiteral( "side_buildings_household_fkey" ) );
+  QCOMPARE( invalidRelationIndex.data( Qt::DisplayRole ), QStringLiteral( "side_buildings_household_fkey" ) );
+  QCOMPARE( invalidRelationIndex.data( Qt::ToolTipRole ), tr( "Invalid relation" ) );
+}
+
+void TestQgsAttributesFormModel::testInvalidRelationInFormLayout()
+{
+  setUpProjectWithInvalidRelations();
+
+  QgsAttributesFormLayoutModel formLayoutModel( mLayer, mProject );
+  QModelIndex rootIndex = QModelIndex();
+
+#ifdef ENABLE_MODELTEST
+  new ModelTest( &formLayoutModel, this ); // for model validity checking
+#endif
+
+  QCOMPARE( formLayoutModel.columnCount(), 1 );
+  QCOMPARE( formLayoutModel.rowCount(), 0 );
+  QVERIFY( !formLayoutModel.hasChildren() );
+  QCOMPARE( formLayoutModel.headerData( 0, Qt::Orientation::Horizontal, Qt::DisplayRole ), tr( "Form Layout" ) );
+  QVERIFY( formLayoutModel.mimeTypes().size() == 2 );
+  QCOMPARE( formLayoutModel.mimeTypes(), QStringList() << QStringList() << QStringLiteral( "application/x-qgsattributesformlayoutelement" ) << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+
+  // Add data to the model
+  formLayoutModel.populate();
+
+  QCOMPARE( formLayoutModel.columnCount(), 1 );
+  QCOMPARE( formLayoutModel.rowCount(), 1 );
+  QVERIFY( formLayoutModel.hasChildren() );
+
+  // Check top-level item
+  QModelIndex containerIndex = formLayoutModel.index( 0, 0, rootIndex );
+  QVERIFY( containerIndex.isValid() );
+  QCOMPARE( formLayoutModel.rowCount( containerIndex ), 4 );
+
+  // Check broken relation 1 (exists in relation manager)
+  const QModelIndex relation1Index = formLayoutModel.index( 1, 0, containerIndex );
+
+  // Since it can be found in relation manager, it has an id and name.
+  // We add a custom tooltip to it and color it red.
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( formLayoutModel.data( relation1Index, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Relation );
+  QCOMPARE( relation1Index.data( QgsAttributesFormModel::ItemIdRole ).toString(), QStringLiteral( "side_buildings_cbbdebec_0396_4617_9416_a4c348d1d529_household_household_0c432204_12d4_47a6_8d90_d759b02560dd_id" ) );
+  QCOMPARE( relation1Index.data( QgsAttributesFormModel::ItemNameRole ).toString(), QStringLiteral( "side_buildings_household_fkey" ) );
+  QCOMPARE( relation1Index.data( Qt::DisplayRole ), QStringLiteral( "side_buildings_household_fkey" ) );
+  QCOMPARE( relation1Index.data( Qt::ToolTipRole ), tr( "Invalid relation" ) );
+
+  // Check broken relation 2 (does not exist in relation manager)
+  // It was added to the form layout and then it get broken since
+  // its relation is missing in the project.
+  const QModelIndex relation2Index = formLayoutModel.index( 2, 0, containerIndex );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( formLayoutModel.data( relation2Index, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Relation );
+  QCOMPARE( relation2Index.data( QgsAttributesFormModel::ItemIdRole ).toString(), QString() );   // No id
+  QCOMPARE( relation2Index.data( QgsAttributesFormModel::ItemNameRole ).toString(), QString() ); // No name
+  QCOMPARE( relation2Index.data( Qt::DisplayRole ), tr( "Invalid relation" ) );                  // Custom display text
+  QVERIFY( relation2Index.data( Qt::ToolTipRole ).toString().isEmpty() );                        // No tooltip
 }
 
 QGSTEST_MAIN( TestQgsAttributesFormModel )
