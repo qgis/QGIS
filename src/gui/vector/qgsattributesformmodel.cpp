@@ -178,14 +178,14 @@ void QgsAttributesFormTreeData::DnDTreeNodeData::setTextElementEditorConfigurati
 
 QgsAttributesFormTreeNode::QgsAttributesFormTreeNode( QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, const QString &name, const QString &displayName, QgsAttributesFormTreeNode *parent )
   : mName( name )
-  , mDisplayName( !displayName.isEmpty() ? displayName : name )
+  , mDisplayName( displayName )
   , mNodeType( nodeType )
   , mParent( parent )
 {}
 
 QgsAttributesFormTreeNode::QgsAttributesFormTreeNode( QgsAttributesFormTreeData::AttributesFormTreeNodeType nodeType, const QgsAttributesFormTreeData::DnDTreeNodeData &data, const QString &name, const QString &displayName, QgsAttributesFormTreeNode *parent )
   : mName( name )
-  , mDisplayName( !displayName.isEmpty() ? displayName : name )
+  , mDisplayName( displayName )
   , mNodeType( nodeType )
   , mNodeData( data )
   , mParent( parent )
@@ -206,7 +206,7 @@ QgsAttributesFormTreeNode *QgsAttributesFormTreeNode::firstTopChild( const QgsAt
 
   // Search for first matching node by name
   const auto it = std::find_if( mChildren.cbegin(), mChildren.cend(), [nodeType, nodeId]( const std::unique_ptr< QgsAttributesFormTreeNode > &treeNode ) {
-    return treeNode->type() == nodeType && treeNode->name() == nodeId;
+    return treeNode->type() == nodeType && treeNode->id() == nodeId;
   } );
 
   if ( it != mChildren.cend() )
@@ -862,6 +862,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       setCommonProperties( itemData );
 
       editorItem->setData( NodeNameRole, editorElement->name() );
+      editorItem->setData( NodeIdRole, editorElement->name() ); // Containers don't have id, use name to make them searchable
       editorItem->setData( NodeTypeRole, QgsAttributesFormTreeData::Container );
 
       const QgsAttributeEditorContainer *container = static_cast<const QgsAttributeEditorContainer *>( editorElement );
@@ -1433,19 +1434,20 @@ QList< QgsAddAttributeFormContainerDialog::ContainerPair > QgsAttributesFormLayo
   return recursiveListOfContainers( mRootNode.get() );
 }
 
-void QgsAttributesFormLayoutModel::addContainer( QModelIndex &parent, const QString &title, int columnCount, Qgis::AttributeEditorContainerType type )
+void QgsAttributesFormLayoutModel::addContainer( QModelIndex &parent, const QString &name, int columnCount, Qgis::AttributeEditorContainerType type )
 {
   beginInsertRows( parent, rowCount( parent ), rowCount( parent ) );
 
   QgsAttributesFormTreeNode *parentNode = nodeForIndex( parent );
 
-  std::unique_ptr< QgsAttributesFormTreeNode > containerNode = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::Container, title, QString(), parentNode );
+  std::unique_ptr< QgsAttributesFormTreeNode > containerNode = std::make_unique< QgsAttributesFormTreeNode >( QgsAttributesFormTreeData::Container, name, QString(), parentNode );
 
   QgsAttributesFormTreeData::DnDTreeNodeData nodeData;
   nodeData.setColumnCount( columnCount );
   nodeData.setContainerType( parent.isValid() ? type : Qgis::AttributeEditorContainerType::Tab );
 
   containerNode->setData( QgsAttributesFormModel::NodeDataRole, nodeData );
+  containerNode->setData( QgsAttributesFormModel::NodeIdRole, name ); // Make it searchable
   parentNode->addChildNode( std::move( containerNode ) );
 
   endInsertRows();

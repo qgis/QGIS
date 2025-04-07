@@ -711,7 +711,7 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
      *
      * If no \a parent is set then the container will be forced to be a tab widget.
      */
-    void addContainer( QModelIndex &parent, const QString &title, int columnCount, Qgis::AttributeEditorContainerType type );
+    void addContainer( QModelIndex &parent, const QString &name, int columnCount, Qgis::AttributeEditorContainerType type );
 
     /**
      * Updates the aliases of all matching fields in the model.
