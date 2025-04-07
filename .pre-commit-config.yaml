@@ -8,7 +8,7 @@ fail_fast: false
 
 repos:
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v19.1.6
+    rev: v20.1.0
     # if adding directory handled by clang-format
     # you need to adapt prepare_commit and verify_indentation scripts accordingly
     hooks:
@@ -27,12 +27,12 @@ repos:
         args: [--py39-plus]
 
   - repo: https://github.com/psf/black
-    rev: 24.10.0
+    rev: 25.1.0
     hooks:
       - id: black
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
+    rev: 6.0.1
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
