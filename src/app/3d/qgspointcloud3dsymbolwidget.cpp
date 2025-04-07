@@ -376,21 +376,15 @@ void QgsPointCloud3DSymbolWidget::setCustomMinMaxValues( QgsRgbPointCloud3DSymbo
 
   if ( redEnhancement )
   {
-    redEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>(
-      ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() )
-    ) );
+    redEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>( ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) ) );
   }
   if ( greenEnhancement )
   {
-    greenEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>(
-      ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() )
-    ) );
+    greenEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>( ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) ) );
   }
   if ( blueEnhancement )
   {
-    blueEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>(
-      ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() )
-    ) );
+    blueEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>( ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) ) );
   }
   symbol->setRedContrastEnhancement( redEnhancement );
   symbol->setGreenContrastEnhancement( greenEnhancement );
@@ -401,7 +395,7 @@ void QgsPointCloud3DSymbolWidget::minMaxModified()
 {
   if ( !mDisableMinMaxWidgetRefresh )
   {
-    if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
+    if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm ) ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
     {
       mContrastEnhancementAlgorithmComboBox->setCurrentIndex(
         mContrastEnhancementAlgorithmComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum )

@@ -150,8 +150,7 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
 
     mResults.append( QVariantMap(
       { { QStringLiteral( "parameters" ), mCurrentParameters },
-        { QStringLiteral( "results" ), results }
-      }
+        { QStringLiteral( "results" ), results } }
     ) );
 
     handleAlgorithmResults( algorithm(), *mTaskContext, mBatchFeedback.get(), mCurrentParameters );
@@ -171,8 +170,7 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
 
     mErrors.append( QVariantMap(
       { { QStringLiteral( "parameters" ), mCurrentParameters },
-        { QStringLiteral( "errors" ), taskErrors }
-      }
+        { QStringLiteral( "errors" ), taskErrors } }
     ) );
     executeNext();
   }

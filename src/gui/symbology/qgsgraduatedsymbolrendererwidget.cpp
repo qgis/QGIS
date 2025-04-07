@@ -509,8 +509,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
       Qgis::RenderUnit::MapUnits,
       Qgis::RenderUnit::Pixels,
       Qgis::RenderUnit::Points,
-      Qgis::RenderUnit::Inches
-    }
+      Qgis::RenderUnit::Inches }
   );
 
   spinPrecision->setMinimum( QgsClassificationMethod::MIN_PRECISION );

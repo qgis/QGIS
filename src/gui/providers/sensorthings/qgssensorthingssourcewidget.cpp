@@ -196,10 +196,7 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
 
 QString QgsSensorThingsSourceWidget::sourceUri() const
 {
-  return updateUriFromGui( QgsProviderRegistry::instance()->encodeUri(
-    QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
-    mSourceParts
-  ) );
+  return updateUriFromGui( QgsProviderRegistry::instance()->encodeUri( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, mSourceParts ) );
 }
 
 QString QgsSensorThingsSourceWidget::groupTitle() const

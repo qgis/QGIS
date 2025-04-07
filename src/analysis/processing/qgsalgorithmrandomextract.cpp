@@ -104,9 +104,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
   }
 
   // Build a list of all feature ids
-  QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest()
-                                                  .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
-                                                  .setNoAttributes() );
+  QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setNoAttributes() );
   std::vector<QgsFeatureId> allFeats;
   allFeats.reserve( count );
   QgsFeature f;

@@ -519,8 +519,7 @@ void TestProcessingGui::testWrapperFactoryRegistry()
   TestParamType customParam( QStringLiteral( "custom" ), QStringLiteral( "custom" ) );
   wrapper = registry.createParameterWidgetWrapper( &customParam, QgsProcessingGui::Standard );
   QVERIFY( !wrapper );
-  customParam.setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "str" ) } } ) }
-  } );
+  customParam.setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "str" ) } } ) } } );
   wrapper = registry.createParameterWidgetWrapper( &customParam, QgsProcessingGui::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "custom" ) );
@@ -1187,8 +1186,7 @@ void TestProcessingGui::testStringWrapper()
   // with value hints
   //
   param = QgsProcessingParameterString( QStringLiteral( "string" ), QStringLiteral( "string" ), QVariant() );
-  param.setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "value_hints" ), QStringList() << "value 1" << "value 2" << "value 3" } } ) }
-  } );
+  param.setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "value_hints" ), QStringList() << "value 1" << "value 2" << "value 3" } } ) } } );
 
   QgsProcessingStringWidgetWrapper wrapperHints( &param );
 
@@ -1226,8 +1224,7 @@ void TestProcessingGui::testStringWrapper()
 
   // with value hints, optional param
   param = QgsProcessingParameterString( QStringLiteral( "string" ), QStringLiteral( "string" ), QVariant(), false, true );
-  param.setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "value_hints" ), QStringList() << "value 1" << "value 2" << "value 3" } } ) }
-  } );
+  param.setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "value_hints" ), QStringList() << "value 1" << "value 2" << "value 3" } } ) } } );
 
   QgsProcessingStringWidgetWrapper wrapperHintsOptional( &param );
 
@@ -10405,8 +10402,7 @@ void TestProcessingGui::testAlignRasterLayersWrapper()
 void TestProcessingGui::testRasterOptionsWrapper()
 {
   QgsProcessingParameterString param( QStringLiteral( "string" ), QStringLiteral( "string" ) );
-  param.setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) }
-  } );
+  param.setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } );
 
   QgsProcessingContext context;
   QgsProcessingRasterOptionsWidgetWrapper wrapper( &param );

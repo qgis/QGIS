@@ -89,8 +89,7 @@ QVariant QgsMeshDatasetGroupTreeModel::headerData( int section, Qt::Orientation 
   return QVariant();
 }
 
-QModelIndex QgsMeshDatasetGroupTreeModel::index( int row, int column, const QModelIndex &parent )
-  const
+QModelIndex QgsMeshDatasetGroupTreeModel::index( int row, int column, const QModelIndex &parent ) const
 {
   if ( !hasIndex( row, column, parent ) )
     return QModelIndex();

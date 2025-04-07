@@ -912,8 +912,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         QStringLiteral( "NATURAL" ),
         QStringLiteral( "RECORD" ),
         QStringLiteral( "SUBTYPE" )
-      }
-    },
+      } },
     { Qgis::SqlKeywordCategory::Function,
       { // From: https://docs.oracle.com/cd/B19306_01/server.102/b14200/functions001.htm
         QStringLiteral( "CAST" ),
@@ -930,8 +929,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         QStringLiteral( "UID" ),
         QStringLiteral( "USER" ),
         QStringLiteral( "USERENV" )
-      }
-    },
+      } },
     { Qgis::SqlKeywordCategory::Math,
       { QStringLiteral( "ABS" ),
         QStringLiteral( "ACOS" ),
@@ -961,9 +959,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
 
         QStringLiteral( "TANH" ),
         QStringLiteral( "TRUNC" ),
-        QStringLiteral( "WIDTH_BUCKET" )
-      }
-    },
+        QStringLiteral( "WIDTH_BUCKET" ) } },
     { Qgis::SqlKeywordCategory::String,
       { QStringLiteral( "CHR" ),
         QStringLiteral( "CONCAT" ),
@@ -992,9 +988,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         QStringLiteral( "ASCII" ),
         QStringLiteral( "INSTR" ),
         QStringLiteral( "LENGTH" ),
-        QStringLiteral( "REGEXP_INSTR" )
-      }
-    },
+        QStringLiteral( "REGEXP_INSTR" ) } },
     { Qgis::SqlKeywordCategory::Aggregate,
       { QStringLiteral( "AVG" ),
         QStringLiteral( "COLLECT" ),
@@ -1040,9 +1034,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
 
         QStringLiteral( "VAR_SAMP" ),
         QStringLiteral( "VARIANCE" ),
-        QStringLiteral( "XMLAGG" )
-      }
-    },
+        QStringLiteral( "XMLAGG" ) } },
     { Qgis::SqlKeywordCategory::Geospatial,
       { // From http://docs.oracle.com/cd/B19306_01/appdev.102/b14255/toc.htm
         // Spatial operators
@@ -1313,8 +1305,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         QStringLiteral( "SDO_UTIL.VALIDATE_WKBGEOMETRY" ),
 
         QStringLiteral( "SDO_UTIL.VALIDATE_WKTGEOMETRY" )
-      }
-    },
+      } },
     { Qgis::SqlKeywordCategory::Operator,
       { QStringLiteral( "AND" ),
         QStringLiteral( "OR" ),
@@ -1349,15 +1340,11 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         QStringLiteral( "ALL" ),
         QStringLiteral( "NOT" ),
 
-        QStringLiteral( "CASE {column} WHEN {value} THEN {value}" )
-      }
-    },
+        QStringLiteral( "CASE {column} WHEN {value} THEN {value}" ) } },
     { Qgis::SqlKeywordCategory::Constant,
       { QStringLiteral( "NULL" ),
         QStringLiteral( "FALSE" ),
-        QStringLiteral( "TRUE" )
-      }
-    }
+        QStringLiteral( "TRUE" ) } }
   };
 }
 
@@ -1384,8 +1371,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
   if ( !qry->exec( sql ) )
   {
     logWrapper.setError( qry->lastError().text() );
-    throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 returned %2" )
-                                            .arg( qry->lastQuery(), qry->lastError().text() ) );
+    throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 returned %2" ).arg( qry->lastQuery(), qry->lastError().text() ) );
   }
 
   if ( feedback && feedback->isCanceled() )

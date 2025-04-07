@@ -403,9 +403,7 @@ QgsGpsData *QgsGpsData::getData( const QString &fileName )
         atEnd = 1;
       if ( !XML_Parse( p, buffer, readBytes, atEnd ) )
       {
-        QgsLogger::warning( QObject::tr( "Parse error at line %1 : %2" )
-                              .arg( XML_GetCurrentLineNumber( p ) )
-                              .arg( XML_ErrorString( XML_GetErrorCode( p ) ) ) );
+        QgsLogger::warning( QObject::tr( "Parse error at line %1 : %2" ).arg( XML_GetCurrentLineNumber( p ) ).arg( XML_ErrorString( XML_GetErrorCode( p ) ) ) );
         failed = true;
         break;
       }

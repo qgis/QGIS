@@ -2968,8 +2968,7 @@ namespace QgsWms
         json["features"].push_back(
           { { "type", "Feature" },
             { "id", layerName.toStdString() },
-            { "properties", properties }
-          }
+            { "properties", properties } }
         );
       }
     }

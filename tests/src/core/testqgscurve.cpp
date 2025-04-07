@@ -81,13 +81,7 @@ void TestQgsCurve::curveToLine()
   std::unique_ptr<QgsCircularString> circularString;
 
   /* input: 2 quadrants arc (180 degrees, PI radians) */
-  circularString.reset( dynamic_cast<QgsCircularString *>(
-    QgsGeometryFactory::geomFromWkt( QStringLiteral(
-                                       "CIRCULARSTRING(0 0,100 100,200 0)"
-                                     )
-    )
-      .release()
-  ) );
+  circularString.reset( dynamic_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( QStringLiteral( "CIRCULARSTRING(0 0,100 100,200 0)" ) ).release() ) );
   QVERIFY( circularString.get() );
 
   /* op: Maximum of 10 units of difference, symmetric */
@@ -106,12 +100,7 @@ void TestQgsCurve::curveToLine()
   TEST_C2L( circularString, 70 * M_PI / 180, QgsAbstractGeometry::MaximumAngle, "LineString (0 0, 50 86.6, 150 86.6, 200 0)", 2 );
 
   /* input: 2 arcs of 2 quadrants each (180 degrees + 180 degrees other direction) */
-  circularString.reset( dynamic_cast<QgsCircularString *>(
-    QgsGeometryFactory::geomFromWkt( QStringLiteral(
-                                       "CIRCULARSTRING(0 0,100 100,200 0,300 -100,400 0)"
-                                     ) )
-      .release()
-  ) );
+  circularString.reset( dynamic_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( QStringLiteral( "CIRCULARSTRING(0 0,100 100,200 0,300 -100,400 0)" ) ).release() ) );
   QVERIFY( circularString.get() );
 
   /* op: Maximum of M_PI / 3 degrees of angle */

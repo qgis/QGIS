@@ -100,8 +100,7 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
     { Qgis::RenderUnit::Millimeters,
       Qgis::RenderUnit::MetersInMapUnits,
       Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points
-    }
+      Qgis::RenderUnit::Points }
   );
 
   connect( mTracesTailLengthMapUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
@@ -109,8 +108,7 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
   mWindBarbLengthMapUnitWidget->setUnits(
     { Qgis::RenderUnit::Millimeters,
       Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points
-    }
+      Qgis::RenderUnit::Points }
   );
 
   connect( mWindBarbLengthMapUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );

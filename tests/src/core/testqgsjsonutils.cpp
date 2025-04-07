@@ -285,20 +285,16 @@ void TestQgsJsonUtils::testExportGeomToJson()
   const QMap<QString, QString> testWkts {
     {
       { QStringLiteral( "LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)" ),
-        QStringLiteral( R"json({"coordinates":[[-71.16,42.259],[-71.161,42.259],[-71.161,42.259]],"type":"LineString"})json" )
-      },
+        QStringLiteral( R"json({"coordinates":[[-71.16,42.259],[-71.161,42.259],[-71.161,42.259]],"type":"LineString"})json" ) },
       { QStringLiteral( "MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932), (-70 43.56, -67 44.68))" ),
-        QStringLiteral( R"json({"coordinates":[[[-71.16,42.259],[-71.161,42.259],[-71.161,42.259]],[[-70.0,43.56],[-67.0,44.68]]],"type":"MultiLineString"})json" )
-      },
+        QStringLiteral( R"json({"coordinates":[[[-71.16,42.259],[-71.161,42.259],[-71.161,42.259]],[[-70.0,43.56],[-67.0,44.68]]],"type":"MultiLineString"})json" ) },
       { QStringLiteral( "POINT(-71.064544 42.28787)" ), QStringLiteral( R"json({"coordinates":[-71.065,42.288],"type":"Point"})json" ) },
       { QStringLiteral( "MULTIPOINT(-71.064544 42.28787, -71.1776585052917 42.3902909739571)" ), QStringLiteral( R"json({"coordinates":[[-71.065,42.288],[-71.178,42.39]],"type":"MultiPoint"})json" ) },
       { QStringLiteral( "POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,"
                         "-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))" ),
-        QStringLiteral( R"json({"coordinates":[[[-71.178,42.39],[-71.178,42.39],[-71.178,42.39],[-71.178,42.39],[-71.178,42.39]]],"type":"Polygon"})json" )
-      },
+        QStringLiteral( R"json({"coordinates":[[[-71.178,42.39],[-71.178,42.39],[-71.178,42.39],[-71.178,42.39],[-71.178,42.39]]],"type":"Polygon"})json" ) },
       { QStringLiteral( "MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))" ),
-        QStringLiteral( R"json({"coordinates":[[[[1.0,1.0],[5.0,1.0],[5.0,5.0],[1.0,5.0],[1.0,1.0]],[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],[[[3.0,3.0],[6.0,2.0],[6.0,4.0],[3.0,3.0]]]],"type":"MultiPolygon"})json" )
-      },
+        QStringLiteral( R"json({"coordinates":[[[[1.0,1.0],[5.0,1.0],[5.0,5.0],[1.0,5.0],[1.0,1.0]],[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],[[[3.0,3.0],[6.0,2.0],[6.0,4.0],[3.0,3.0]]]],"type":"MultiPolygon"})json" ) },
       // Note: CIRCULARSTRING json is very long, we will check first three vertices only
       { QStringLiteral( "CIRCULARSTRING(220268 150415,220227 150505,220227 150406)" ), QStringLiteral( R"json({"coordinates":[[220268.0,150415.0],[220268.7,150415.535],[220269.391,150416.081])json" ) },
     }

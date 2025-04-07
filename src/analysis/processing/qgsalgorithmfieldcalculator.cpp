@@ -92,8 +92,7 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
   auto fieldName = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
   auto fieldType = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
   fieldType->setMetadata(
-    { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "icons" ), icons } } ) } } )
-    }
+    { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "icons" ), icons } } ) } } ) }
   );
 
   auto fieldLength = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
@@ -223,8 +222,7 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   mExpression.setAreaUnits( context.areaUnit() );
 
   if ( mExpression.hasParserError() )
-    throw QgsProcessingException( QObject::tr( "Parser error with formula expression \"%2\": %3" )
-                                    .arg( expressionString, mExpression.parserErrorString() ) );
+    throw QgsProcessingException( QObject::tr( "Parser error with formula expression \"%2\": %3" ).arg( expressionString, mExpression.parserErrorString() ) );
 
   mExpression.prepare( &mExpressionContext );
 
@@ -252,8 +250,7 @@ QgsFeatureList QgsFieldCalculatorAlgorithm::processFeature( const QgsFeature &fe
 
     if ( mExpression.hasEvalError() )
     {
-      throw QgsProcessingException( QObject::tr( "Evaluation error in expression \"%1\": %2" )
-                                      .arg( mExpression.expression(), mExpression.evalErrorString() ) );
+      throw QgsProcessingException( QObject::tr( "Evaluation error in expression \"%1\": %2" ).arg( mExpression.expression(), mExpression.evalErrorString() ) );
     }
 
     attributes[mFieldIdx] = value;

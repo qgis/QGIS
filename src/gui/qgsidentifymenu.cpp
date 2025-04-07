@@ -90,9 +90,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas(
           QgsDebugError( QStringLiteral( "Could not transform geometry to layer CRS" ) );
         }
 
-        QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
-                                                             .setFilterRect( rect )
-                                                             .setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
+        QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( rect ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
         QgsFeature f;
         while ( fit.nextFeature( f ) )
         {

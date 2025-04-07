@@ -1444,8 +1444,7 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
     for ( const QString param :
           { "driver", "host", "database", "identifierType", "identifier", "multitenant", "schema", "userTablesOnly",
             "allowGeometrylessTables", "saveUsername", "username", "savePassword", "password", "sslEnabled",
-            "sslCryptoProvider", "sslKeyStore", "sslTrustStore", "sslValidateCertificate", "sslHostNameInCertificate"
-          } )
+            "sslCryptoProvider", "sslKeyStore", "sslTrustStore", "sslValidateCertificate", "sslHostNameInCertificate" } )
       settings.setValue( QStringLiteral( "/" ) + param, child.attribute( param ) );
 
     settings.endGroup();

@@ -152,8 +152,7 @@ QgsMeshEditForceByLineAction::QgsMeshEditForceByLineAction( QObject *parent )
   mUnitSelecionWidget = new QgsUnitSelectionWidget();
   mUnitSelecionWidget->setUnits(
     { Qgis::RenderUnit::MetersInMapUnits,
-      Qgis::RenderUnit::MapUnits
-    }
+      Qgis::RenderUnit::MapUnits }
   );
 
   Qgis::RenderUnit toleranceUnit = settings.enumValue( QStringLiteral( "UI/Mesh/ForceByLineToleranceUnit" ), Qgis::RenderUnit::MapUnits );

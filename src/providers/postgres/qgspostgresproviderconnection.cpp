@@ -764,8 +764,7 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsPostgresProviderConnecti
   }
   else
   {
-    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
-                                            .arg( table, schema ) );
+    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" ).arg( table, schema ) );
   }
 }
 
@@ -1357,8 +1356,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsPostgresProviderConnection::
           QStringLiteral( "xmlserialize" ),
           QStringLiteral( "year" ),
           QStringLiteral( "zone" ),
-        }
-      },
+        } },
       { Qgis::SqlKeywordCategory::Aggregate,
         {
           QStringLiteral( "Max" ),
@@ -1372,8 +1370,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsPostgresProviderConnection::
           QStringLiteral( "Var_Samp" ),
           QStringLiteral( "StdDev_Pop" ),
           QStringLiteral( "StdDev_Samp" ),
-        }
-      },
+        } },
       { Qgis::SqlKeywordCategory::Math,
         {
           QStringLiteral( "Abs" ),
@@ -1400,8 +1397,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsPostgresProviderConnection::
           QStringLiteral( "Tan" ),
           QStringLiteral( "Var_Pop" ),
           QStringLiteral( "Var_Samp" ),
-        }
-      },
+        } },
       { Qgis::SqlKeywordCategory::Geospatial,
         {
           // List from:
@@ -1870,9 +1866,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsPostgresProviderConnection::
           QStringLiteral( "~(box2df,geometry)" ),
           QStringLiteral( "~(geometry,box2df)" ),
           QStringLiteral( "~=" ),
-        }
-      }
-    }
+        } } }
   );
 }
 

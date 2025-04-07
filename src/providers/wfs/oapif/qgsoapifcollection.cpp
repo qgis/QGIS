@@ -108,9 +108,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
       const auto spatial = extent["spatial"];
       if ( spatial.is_object() && spatial.contains( "bbox" ) )
       {
-        QgsCoordinateReferenceSystem crs( QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-          QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS
-        ) );
+        QgsCoordinateReferenceSystem crs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) );
         if ( spatial.contains( "crs" ) )
         {
           const auto jCrs = spatial["crs"];

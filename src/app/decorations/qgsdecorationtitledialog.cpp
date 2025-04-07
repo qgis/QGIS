@@ -85,8 +85,7 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   wgtUnitSelection->setUnits(
     { Qgis::RenderUnit::Millimeters,
       Qgis::RenderUnit::Percentage,
-      Qgis::RenderUnit::Pixels
-    }
+      Qgis::RenderUnit::Pixels }
   );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 

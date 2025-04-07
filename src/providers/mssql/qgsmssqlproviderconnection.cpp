@@ -260,8 +260,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 
   if ( !db->isValid() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" )
-                                            .arg( uri(), db->errorText() ) );
+    throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" ).arg( uri(), db->errorText() ) );
   }
   else
   {
@@ -283,8 +282,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
     {
       const QString errorMessage { q->lastError().text() };
       logWrapper.setError( errorMessage );
-      throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 \n %2" )
-                                              .arg( sql, errorMessage ) );
+      throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 \n %2" ).arg( sql, errorMessage ) );
     }
 
     if ( q->isActive() )
@@ -365,8 +363,7 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsMssqlProviderConnection:
   }
   else
   {
-    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
-                                            .arg( table, schema ) );
+    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" ).arg( table, schema ) );
   }
 }
 
@@ -547,8 +544,7 @@ QgsFields QgsMssqlProviderConnection::fields( const QString &schema, const QStri
   std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
   if ( !db->isValid() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" )
-                                            .arg( uri(), db->errorText() ) );
+    throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" ).arg( uri(), db->errorText() ) );
   }
 
   QgsMssqlDatabase::FieldDetails details;
@@ -760,8 +756,7 @@ bool QgsMssqlProviderConnection::validateSqlVectorLayer( const SqlVectorLayerOpt
   std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
   if ( !db->isValid() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" )
-                                            .arg( uri(), db->errorText() ) );
+    throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" ).arg( uri(), db->errorText() ) );
   }
 
   QgsMssqlDatabase::FieldDetails details;

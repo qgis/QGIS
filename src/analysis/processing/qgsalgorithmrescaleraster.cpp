@@ -88,9 +88,7 @@ bool QgsRescaleRasterAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 
   mBand = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
   if ( mBand < 1 || mBand > layer->bandCount() )
-    throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" )
-                                    .arg( mBand )
-                                    .arg( layer->bandCount() ) );
+    throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( layer->bandCount() ) );
 
   mMinimum = parameterAsDouble( parameters, QStringLiteral( "MINIMUM" ), context );
   mMaximum = parameterAsDouble( parameters, QStringLiteral( "MAXIMUM" ), context );

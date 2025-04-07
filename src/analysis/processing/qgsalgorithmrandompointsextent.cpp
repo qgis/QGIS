@@ -71,8 +71,7 @@ QString QgsRandomPointsExtentAlgorithm::shortHelpString() const
                       "too close to each other. If the minimum distance between points "
                       "makes it impossible to create new points, either "
                       "distance can be decreased or the maximum number of attempts may be "
-                      "increased."
-  );
+                      "increased." );
 }
 
 QgsRandomPointsExtentAlgorithm *QgsRandomPointsExtentAlgorithm::createInstance() const

@@ -32,8 +32,7 @@ QgsMeshRendererMeshSettingsWidget::QgsMeshRendererMeshSettingsWidget( QWidget *p
     { Qgis::RenderUnit::Millimeters,
       Qgis::RenderUnit::MetersInMapUnits,
       Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points
-    }
+      Qgis::RenderUnit::Points }
   );
 
 

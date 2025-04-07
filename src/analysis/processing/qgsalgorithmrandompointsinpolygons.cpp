@@ -128,8 +128,7 @@ QString QgsRandomPointsInPolygonsAlgorithm::shortHelpString() const
                       "<li> The number of missed points (<code>POINTS_MISSED</code>).</li> "
                       "<li> The number of features with non-empty geometry and missing points "
                       "(<code>POLYGONS_WITH_MISSED_POINTS</code>).</li> "
-                      "</ul>"
-  );
+                      "</ul>" );
 }
 
 
@@ -364,8 +363,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
                                    "%1\nNumber of missed points: "
                                    "%2\nPolygons with missing points: "
                                    "%3\nFeatures with empty or missing "
-                                   "geometries: %4"
-  )
+                                   "geometries: %4" )
                         .arg( totNPoints )
                         .arg( missedPoints )
                         .arg( missedPolygons )

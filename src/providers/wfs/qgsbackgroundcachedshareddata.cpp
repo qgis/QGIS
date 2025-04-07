@@ -369,9 +369,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   dsURI.setParam( QStringLiteral( "pragma" ), pragmas );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  mCacheDataProvider.reset( dynamic_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider(
-    QStringLiteral( "spatialite" ), dsURI.uri(), providerOptions
-  ) ) );
+  mCacheDataProvider.reset( dynamic_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "spatialite" ), dsURI.uri(), providerOptions ) ) );
   if ( mCacheDataProvider && !mCacheDataProvider->isValid() )
   {
     mCacheDataProvider.reset();

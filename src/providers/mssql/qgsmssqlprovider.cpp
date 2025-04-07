@@ -2184,8 +2184,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
     //geometryless table
     sql = QStringLiteral( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
                           "CREATE TABLE [%1].[%2]([%3] [int] IDENTITY(1,1) NOT NULL CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
-                          "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'\n"
-    )
+                          "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'\n" )
             .arg( schemaName, tableName, primaryKey );
   }
 

@@ -89,8 +89,7 @@ void QgsElevationShadingRendererSettingsWidget::syncToProject()
       Qgis::RenderUnit::MapUnits,
       Qgis::RenderUnit::Pixels,
       Qgis::RenderUnit::Points,
-      Qgis::RenderUnit::Inches
-    }
+      Qgis::RenderUnit::Inches }
   );
   mEdlDistanceUnit->setUnit( shadingRenderer.eyeDomeLightingDistanceUnit() );
   mHillshadingGroupBox->setChecked( shadingRenderer.isActiveHillshading() );

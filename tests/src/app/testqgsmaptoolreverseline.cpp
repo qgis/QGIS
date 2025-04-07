@@ -75,9 +75,7 @@ void TestQgsMapToolReverseLine::testReverseCurve()
   QgsFeature curve( memoryLayer->dataProvider()->fields(), 1 );
 
   curve.setAttribute( QStringLiteral( "pk" ), 1 );
-  curve.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-    "CircularString(10 10, 5 5)"
-  ) ) );
+  curve.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "CircularString(10 10, 5 5)" ) ) );
 
   memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << curve );
 
@@ -111,9 +109,7 @@ void TestQgsMapToolReverseLine::testReverseLineString()
   QgsFeature line( memoryLayer->dataProvider()->fields(), 1 );
 
   line.setAttribute( QStringLiteral( "pk" ), 1 );
-  line.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-    "LineStringZ(0 0 0, 10 10 10, 5 5 5)"
-  ) ) );
+  line.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineStringZ(0 0 0, 10 10 10, 5 5 5)" ) ) );
 
   memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << line );
   mCanvas->setLayers( QList<QgsMapLayer *>() << memoryLayer.get() );
@@ -148,9 +144,7 @@ void TestQgsMapToolReverseLine::testReverseMultiLineString()
   QgsFeature multi( memoryLayer->dataProvider()->fields(), 1 );
 
   multi.setAttribute( QStringLiteral( "pk" ), 1 );
-  multi.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-    "MultiLineString Z((0 0 0, 10 10 10, 5 5 5), (100 100 100, 120 120 120))"
-  ) ) );
+  multi.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiLineString Z((0 0 0, 10 10 10, 5 5 5), (100 100 100, 120 120 120))" ) ) );
 
   memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << multi );
   mCanvas->setLayers( QList<QgsMapLayer *>() << memoryLayer.get() );

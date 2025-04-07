@@ -134,8 +134,7 @@ QString QgsRandomPointsOnLinesAlgorithm::shortHelpString() const
                       "(<code>LINES_WITH_MISSED_POINTS</code>).</li> "
                       "<li> The number of features with an empty or no geometry "
                       "(<code>LINES_WITH_EMPTY_OR_NO_GEOMETRY</code>).</li> "
-                      "</ul>"
-  );
+                      "</ul>" );
 }
 
 
@@ -349,8 +348,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   missedPoints = desiredNumberOfPoints - totNPoints;
   feedback->pushInfo( QObject::tr( "Total number of points generated: "
                                    " %1\nNumber of missed points: %2\nFeatures with missing points: "
-                                   " %3\nFeatures with empty or missing geometries: %4"
-  )
+                                   " %3\nFeatures with empty or missing geometries: %4" )
                         .arg( totNPoints )
                         .arg( missedPoints )
                         .arg( missedLines )

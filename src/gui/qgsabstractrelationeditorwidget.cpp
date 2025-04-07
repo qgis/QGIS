@@ -631,9 +631,7 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
 
     const QString filter = QStringLiteral( "(%1) AND (%2)" ).arg( featureFilters.join( QLatin1String( " OR " ) ), filters.join( QLatin1String( " OR " ) ) );
 
-    QgsFeatureIterator linkedIterator = mRelation.referencingLayer()->getFeatures( QgsFeatureRequest()
-                                                                                     .setNoAttributes()
-                                                                                     .setFilterExpression( filter ) );
+    QgsFeatureIterator linkedIterator = mRelation.referencingLayer()->getFeatures( QgsFeatureRequest().setNoAttributes().setFilterExpression( filter ) );
 
     QgsFeatureIds fids;
 

@@ -476,10 +476,7 @@ bool QgsMapToolLabel::currentFeature( QgsFeature &f, bool fetchGeom )
   {
     return false;
   }
-  return vlayer->getFeatures( QgsFeatureRequest()
-                                .setFilterFid( mCurrentLabel.pos.featureId )
-                                .setFlags( fetchGeom ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry )
-  )
+  return vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabel.pos.featureId ).setFlags( fetchGeom ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry ) )
     .nextFeature( f );
 }
 

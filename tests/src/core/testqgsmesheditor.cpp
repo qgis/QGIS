@@ -1575,8 +1575,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   //Add a vertex on a face and one external
   editor->addVertices(
     { { 1500, 2800, 0 },
-      { 3000, 3500, 0 }
-    },
+      { 3000, 3500, 0 } },
     10
   );
 

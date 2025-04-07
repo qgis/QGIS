@@ -68,8 +68,7 @@ QString QgsLineDensityAlgorithm::shortHelpString() const
                       "which is obtained in a circular neighborhood within each raster cell. "
                       "First, the length of the segment of each line that is intersected by the circular neighborhood "
                       "is multiplied with the lines weight factor. In a second step, all length values are summed and "
-                      "divided by the area of the circular neighborhood. This process is repeated for all raster cells."
-  );
+                      "divided by the area of the circular neighborhood. This process is repeated for all raster cells." );
 }
 
 QgsLineDensityAlgorithm *QgsLineDensityAlgorithm::createInstance() const

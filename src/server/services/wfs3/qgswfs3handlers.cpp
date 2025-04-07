@@ -64,8 +64,7 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
   const QgsProjectMetadata metadata { context.project()->metadata() };
   json data {
     { "openapi", "3.0.1" },
-    { "tags", { { { "name", "Capabilities" }, { "description", "Essential characteristics of this API including information about the data." } }, { { "name", "Features" }, { "description", "Access to data (features)." } } }
-    },
+    { "tags", { { { "name", "Capabilities" }, { "description", "Essential characteristics of this API including information about the data." } }, { { "name", "Features" }, { "description", "Access to data (features)." } } } },
     { "info", { { "title", projectTitle.toStdString() }, { "description", projectDescription.toStdString() }, { "contact", {
                                                                                                                              { "name", contactPerson.toStdString() }, { "email", contactMail.toStdString() }, { "url", "" } // TODO: contact url
                                                                                                                            } },
@@ -130,8 +129,7 @@ json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
   json data;
   const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/api" ), context.request()->url() ).toStdString() };
   data[path] = {
-    { "get", { { "tags", jsonTags() }, { "summary", summary() }, { "description", description() }, { "operationId", operationId() }, { "responses", { { "200", { { "description", description() }, { "content", { { "application/vnd.oai.openapi+json;version=3.0", { { "schema", { { "type", "object" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } }
-    }
+    { "get", { { "tags", jsonTags() }, { "summary", summary() }, { "description", description() }, { "operationId", operationId() }, { "responses", { { "200", { { "description", description() }, { "content", { { "application/vnd.oai.openapi+json;version=3.0", { { "schema", { { "type", "object" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } } }
   };
   return data;
 }
@@ -254,8 +252,7 @@ json QgsWfs3LandingPageHandler::schema( const QgsServerApiContext &context ) con
   const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath(), context.request()->url() ).toStdString() };
 
   data[path] = {
-    { "get", { { "tags", jsonTags() }, { "summary", summary() }, { "description", description() }, { "operationId", operationId() }, { "responses", { { "200", { { "description", description() }, { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/root" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } }
-    }
+    { "get", { { "tags", jsonTags() }, { "summary", summary() }, { "description", description() }, { "operationId", operationId() }, { "responses", { { "200", { { "description", description() }, { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/root" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } } }
   };
   return data;
 }
@@ -269,8 +266,7 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
 {
   json data {
     { "links", links( context ) },
-    { "conformsTo", { "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core", "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30", "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html", "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson" }
-    }
+    { "conformsTo", { "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core", "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30", "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html", "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson" } }
   };
   json navigation = json::array();
   const QUrl url { context.request()->url() };
@@ -283,8 +279,7 @@ json QgsWfs3ConformanceHandler::schema( const QgsServerApiContext &context ) con
   json data;
   const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/conformance" ), context.request()->url() ).toStdString() };
   data[path] = {
-    { "get", { { "tags", jsonTags() }, { "summary", summary() }, { "description", description() }, { "operationId", operationId() }, { "responses", { { "200", { { "description", description() }, { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/root" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } }
-    }
+    { "get", { { "tags", jsonTags() }, { "summary", summary() }, { "description", description() }, { "operationId", operationId() }, { "responses", { { "200", { { "description", description() }, { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/root" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } } }
   };
   return data;
 }
@@ -303,11 +298,9 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
   }
 
   json data {
-    { "links", links( context )
-    }, // TODO: add XSD or other schema?
+    { "links", links( context ) }, // TODO: add XSD or other schema?
     { "collections", json::array() },
-    { "crs", crss
-    }
+    { "crs", crss }
   };
 
   if ( context.project() )
@@ -341,8 +334,7 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
             { "title", title },
             // a description of the features in the collection
             { "description", layer->serverProperties()->abstract().toStdString() },
-            { "crs", crss
-            },
+            { "crs", crss },
             // TODO: "relations" ?
             {
               "extent", { {
@@ -388,8 +380,7 @@ json QgsWfs3CollectionsHandler::schema( const QgsServerApiContext &context ) con
   json data;
   const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections" ), context.request()->url() ).toStdString() };
   data[path] = {
-    { "get", { { "tags", jsonTags() }, { "summary", summary() }, { "description", description() }, { "operationId", operationId() }, { "responses", { { "200", { { "description", description() }, { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/content" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } }
-    }
+    { "get", { { "tags", jsonTags() }, { "summary", summary() }, { "description", description() }, { "operationId", operationId() }, { "responses", { { "200", { { "description", description() }, { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/content" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } } }
   };
   return data;
 }
@@ -434,25 +425,21 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
     { { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) ) },
       { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
       { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::GEOJSON ) },
-      { "title", itemsTitle + " as " + QgsServerOgcApi::contentTypeToStdString( QgsServerOgcApi::ContentType::GEOJSON ) }
-    }
+      { "title", itemsTitle + " as " + QgsServerOgcApi::contentTypeToStdString( QgsServerOgcApi::ContentType::GEOJSON ) } }
   );
 
   linksList.push_back(
     { { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) ) },
       { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
       { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) },
-      { "title", itemsTitle + " as " + QgsServerOgcApi::contentTypeToStdString( QgsServerOgcApi::ContentType::HTML ) }
-    }
+      { "title", itemsTitle + " as " + QgsServerOgcApi::contentTypeToStdString( QgsServerOgcApi::ContentType::HTML ) } }
   );
 
   linksList.push_back(
-    { { "href", parentLink( context.request()->url(), 3 ).toStdString() + "?request=DescribeFeatureType&typenames=" + QUrlQuery( shortName ).toString( QUrl::EncodeSpaces ).toStdString() + "&service=WFS&version=2.0"
-      },
+    { { "href", parentLink( context.request()->url(), 3 ).toStdString() + "?request=DescribeFeatureType&typenames=" + QUrlQuery( shortName ).toString( QUrl::EncodeSpaces ).toStdString() + "&service=WFS&version=2.0" },
       { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::describedBy ) },
       { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::XML ) },
-      { "title", "Schema for " + title }
-    }
+      { "title", "Schema for " + title } }
   );
 
   json crss = json::array();
@@ -504,8 +491,7 @@ json QgsWfs3DescribeCollectionHandler::schema( const QgsServerApiContext &contex
     const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1" ).arg( shortName ), context.request()->url() ).toStdString() };
 
     data[path] = {
-      { "get", { { "tags", jsonTags() }, { "summary", "Describe the '" + title + "' feature collection" }, { "description", description() }, { "operationId", operationId() + '_' + layerId.toStdString() }, { "responses", { { "200", { { "description", "Metadata about the collection '" + title + "' shared by this API." }, { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/collectionInfo" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } }
-      }
+      { "get", { { "tags", jsonTags() }, { "summary", "Describe the '" + title + "' feature collection" }, { "description", description() }, { "operationId", operationId() + '_' + layerId.toStdString() }, { "responses", { { "200", { { "description", "Metadata about the collection '" + title + "' shared by this API." }, { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/collectionInfo" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } } }
     };
   } // end for loop
   return data;
@@ -720,8 +706,7 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
     }
 
     data[path.toStdString()] = {
-      { "get", { { "tags", jsonTags() }, { "summary", "Retrieve features of '" + title + "' feature collection" }, { "description", description() }, { "operationId", operationId() + '_' + layerId.toStdString() }, { "parameters", componentParameters }, { "responses", { { "200", { { "description", "Metadata about the collection '" + title + "' shared by this API." }, { "content", { { "application/geo+json", { { "schema", { { "$ref", "#/components/schemas/featureCollectionGeoJSON" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } }
-      },
+      { "get", { { "tags", jsonTags() }, { "summary", "Retrieve features of '" + title + "' feature collection" }, { "description", description() }, { "operationId", operationId() + '_' + layerId.toStdString() }, { "parameters", componentParameters }, { "responses", { { "200", { { "description", "Metadata about the collection '" + title + "' shared by this API." }, { "content", { { "application/geo+json", { { "schema", { { "$ref", "#/components/schemas/featureCollectionGeoJSON" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } } },
       { "post", { { "summary", "Adds a new feature to the collection {collectionId}" }, { "tags", { "edit", "insert" } }, { "description", "Adds a new feature to the collection {collectionId}" }, { "operationId", operationId() + '_' + layerId.toStdString() + '_' + "POST" }, { "responses", { {
                                                                                                                                                                                                                                                                                                       "201",
                                                                                                                                                                                                                                                                                                       { { "description", "A new feature was successfully added to the collection" } },
@@ -731,8 +716,7 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
                                                                                                                                                                                                                                                                                                       { { "description", "Forbidden: the operation requested was not authorized" } },
                                                                                                                                                                                                                                                                                                     },
                                                                                                                                                                                                                                                                                                     { "500", { { "description", "Posted data could not be parsed correctly or another error occurred" } } },
-                                                                                                                                                                                                                                                                                                    { "default", defaultResponse() } } } }
-      }
+                                                                                                                                                                                                                                                                                                    { "default", defaultResponse() } } } } }
     };
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -1209,8 +1193,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       const json htmlMetadata {
         { "pageTitle", "Features in layer " + title },
         { "layerTitle", title },
-        { "geojsonUrl", href( context, "/", QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) )
-        },
+        { "geojsonUrl", href( context, "/", QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) ) },
         { "pagesize", pagesize },
         { "pagination", pagination },
         { "navigation", navigation }
@@ -1456,8 +1439,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     navigation.push_back( { { "title", "Items of " + title }, { "href", parentLink( url ).toStdString() } } );
     const json htmlMetadata {
       { "pageTitle", title + " - feature " + featureId.toStdString() },
-      { "geojsonUrl", href( context, "", QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) )
-      },
+      { "geojsonUrl", href( context, "", QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) ) },
       { "navigation", navigation }
     };
     write( data, context, htmlMetadata );
@@ -1795,8 +1777,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
       { "get", { { "tags", jsonTags() }, { "summary", "Retrieve a single feature from the '" + title + "' feature collection" }, { "description", description() }, { "operationId", operationId() + '_' + layerId.toStdString() + '_' + "GET" }, { "parameters", { { // array of objects
                                                                                                                                                                                                                                                                      { "$ref", "#/components/parameters/featureId" }
                                                                                                                                                                                                                                                                  } } },
-                 { "responses", { { "200", { { "description", "Retrieve a '" + title + "' feature by 'featureId'." }, { "content", { { "application/geo+json", { { "schema", { { "$ref", "#/components/schemas/featureGeoJSON" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } }
-      },
+                 { "responses", { { "200", { { "description", "Retrieve a '" + title + "' feature by 'featureId'." }, { "content", { { "application/geo+json", { { "schema", { { "$ref", "#/components/schemas/featureGeoJSON" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } } },
       { "put", { { "summary", "Replaces the feature with ID {featureId} in the collection {collectionId}" }, { "tags", { "edit", "replace" } }, { "description", "Replaces the feature with ID {featureId} in the collection {collectionId}" }, { "operationId", operationId() + "PUT" }, { "responses", { {
                                                                                                                                                                                                                                                                                                              "200",
                                                                                                                                                                                                                                                                                                              { { "description", "The feature was successfully updated" } },
@@ -1809,8 +1790,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                                                                                                                                                                                                                                                                                                              "500",
                                                                                                                                                                                                                                                                                                              { { "description", "Posted data could not be parsed correctly or another error occurred" } },
                                                                                                                                                                                                                                                                                                            },
-                                                                                                                                                                                                                                                                                                           { "default", defaultResponse() } } } }
-      },
+                                                                                                                                                                                                                                                                                                           { "default", defaultResponse() } } } } },
       { "patch", { { "summary", "Changes attributes of feature with ID {featureId} in the collection {collectionId}" }, { "tags", { "edit" } }, { "description", "Changes attributes of feature with ID {featureId} in the collection {collectionId}" }, { "operationId", operationId() + "PUT" }, { "responses", { {
                                                                                                                                                                                                                                                                                                                       "200",
                                                                                                                                                                                                                                                                                                                       { { "description", "The feature was successfully updated" } },
@@ -1823,8 +1803,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                                                                                                                                                                                                                                                                                                                       "500",
                                                                                                                                                                                                                                                                                                                       { { "description", "Posted data could not be parsed correctly or another error occurred" } },
                                                                                                                                                                                                                                                                                                                     },
-                                                                                                                                                                                                                                                                                                                    { "default", defaultResponse() } } } }
-      },
+                                                                                                                                                                                                                                                                                                                    { "default", defaultResponse() } } } } },
       { "delete", { { "summary", "Deletes the feature with ID {featureId} in the collection {collectionId}" }, { "tags", { "edit", "delete" } }, { "description", "Deletes the feature with ID {featureId} in the collection {collectionId}" }, { "operationId", operationId() + "DELETE" }, { "responses", { {
                                                                                                                                                                                                                                                                                                                 "201",
                                                                                                                                                                                                                                                                                                                 { { "description", "The feature was successfully deleted from the collection" } },
@@ -1834,8 +1813,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                                                                                                                                                                                                                                                                                                                 { { "description", "Forbidden: the operation requested was not authorized" } },
                                                                                                                                                                                                                                                                                                               },
                                                                                                                                                                                                                                                                                                               { "500", { { "description", "Posted data could not be parsed correctly or another error occurred" } } },
-                                                                                                                                                                                                                                                                                                              { "default", defaultResponse() } } } }
-      }
+                                                                                                                                                                                                                                                                                                              { "default", defaultResponse() } } } } }
     };
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS

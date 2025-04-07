@@ -317,9 +317,7 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   toggleStyleSpecificControls( style );
 
   //label vertical/horizontal placement
-  mDistanceLabelPlacementComboBox->setCurrentIndex( mDistanceLabelPlacementComboBox->findData( static_cast<int>(
-    distanceLabelPlacement( mScalebar->labelHorizontalPlacement(), mScalebar->labelVerticalPlacement() )
-  ) ) );
+  mDistanceLabelPlacementComboBox->setCurrentIndex( mDistanceLabelPlacementComboBox->findData( static_cast<int>( distanceLabelPlacement( mScalebar->labelHorizontalPlacement(), mScalebar->labelVerticalPlacement() ) ) ) );
 
   //alignment
 

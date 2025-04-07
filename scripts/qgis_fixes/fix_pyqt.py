@@ -1,5 +1,4 @@
-"""Migrate imports of PyQt4 to PyQt wrapper
-"""
+"""Migrate imports of PyQt4 to PyQt wrapper"""
 
 # Author: Juergen E. Fischer
 # Adapted from fix_urllib

@@ -353,7 +353,7 @@ bool QgsGrassModuleInputProxy::filterAcceptsRow( int sourceRow, const QModelInde
   QModelIndex sourceIndex = sourceModel()->index( sourceRow, 0, sourceParent );
 
   QgsDebugMsgLevel( QString( "mType = %1 item type = %2" ).arg( mType ).arg( sourceModel()->data( sourceIndex, QgsGrassModuleInputModel::TypeRole ).toInt() ), 2 );
-  QgsGrassObject::Type itemType = ( QgsGrassObject::Type )( sourceModel()->data( sourceIndex, QgsGrassModuleInputModel::TypeRole ).toInt() );
+  QgsGrassObject::Type itemType = ( QgsGrassObject::Type ) ( sourceModel()->data( sourceIndex, QgsGrassModuleInputModel::TypeRole ).toInt() );
 
   if ( itemType == QgsGrassObject::Mapset )
   {

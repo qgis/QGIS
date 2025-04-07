@@ -59,13 +59,7 @@ class TestQgsMergeattributesDialog : public QgsTest
       options.driverName = "GPKG";
       options.layerName = "test";
       QString newFilename;
-      const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3(
-        &ml,
-        fileName,
-        ml.transformContext(),
-        options, nullptr,
-        &newFilename
-      ) );
+      const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3( &ml, fileName, ml.transformContext(), options, nullptr, &newFilename ) );
 
       QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
       QgsVectorLayer layer( QStringLiteral( "%1|layername=test" ).arg( newFilename ), "src_test", "ogr" );

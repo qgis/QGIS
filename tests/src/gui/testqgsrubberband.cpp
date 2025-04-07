@@ -206,9 +206,7 @@ void TestQgsRubberband::testBoundingRect()
   QCOMPARE( mCanvas->mapUnitsPerPixel(), 1.0 );
 
   // Polygon extent is 10,10 to 30,30
-  const QgsGeometry geom( QgsGeometry::fromWkt(
-    QStringLiteral( "POLYGON((10 10,10 30,30 30,30 10,10 10))" )
-  ) );
+  const QgsGeometry geom( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((10 10,10 30,30 30,30 10,10 10))" ) ) );
   mRubberband = new QgsRubberBand( mCanvas, mPolygonLayer->geometryType() );
   mRubberband->setIconSize( 5 ); // default, but better be explicit
   mRubberband->setWidth( 1 );    // default, but better be explicit
@@ -253,9 +251,7 @@ void TestQgsRubberband::testVisibility()
   QCOMPARE( mRubberband->isVisible(), false );
 
   // Check visibility after setting to valid geometry
-  const QgsGeometry geom( QgsGeometry::fromWkt(
-    QStringLiteral( "POLYGON((10 10,10 30,30 30,30 10,10 10))" )
-  ) );
+  const QgsGeometry geom( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((10 10,10 30,30 30,30 10,10 10))" ) ) );
   mRubberband->setToGeometry( geom, mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), true );
 
@@ -314,12 +310,7 @@ void TestQgsRubberband::testLineSymbolRender()
   QgsRubberBand r( canvas.get(), Qgis::GeometryType::Line );
   r.addGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString( 12 32, 18 33)" ) ) );
 
-  std::unique_ptr<QgsLineSymbol> lineSymbol( QgsLineSymbol::createSimple(
-    { { QStringLiteral( "line_color" ), QStringLiteral( "#0000ff" ) },
-      { QStringLiteral( "line_width" ), QStringLiteral( "3" ) },
-      { QStringLiteral( "capstyle" ), QStringLiteral( "round" ) }
-    }
-  ) );
+  std::unique_ptr<QgsLineSymbol> lineSymbol( QgsLineSymbol::createSimple( { { QStringLiteral( "line_color" ), QStringLiteral( "#0000ff" ) }, { QStringLiteral( "line_width" ), QStringLiteral( "3" ) }, { QStringLiteral( "capstyle" ), QStringLiteral( "round" ) } } ) );
   r.setSymbol( lineSymbol.release() );
 
   QPixmap pixmap( canvas->size() );
@@ -350,13 +341,7 @@ void TestQgsRubberband::testFillSymbolRender()
   QgsRubberBand r( canvas.get(), Qgis::GeometryType::Line );
   r.addGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((12 32, 12 35, 18 35, 12 32))" ) ) );
 
-  std::unique_ptr<QgsFillSymbol> fillSymbol( QgsFillSymbol::createSimple(
-    { { QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) },
-      { QStringLiteral( "line_color" ), QStringLiteral( "#0000ff" ) },
-      { QStringLiteral( "line_width" ), QStringLiteral( "3" ) },
-      { QStringLiteral( "joinstyle" ), QStringLiteral( "round" ) }
-    }
-  ) );
+  std::unique_ptr<QgsFillSymbol> fillSymbol( QgsFillSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) }, { QStringLiteral( "line_color" ), QStringLiteral( "#0000ff" ) }, { QStringLiteral( "line_width" ), QStringLiteral( "3" ) }, { QStringLiteral( "joinstyle" ), QStringLiteral( "round" ) } } ) );
   r.setSymbol( fillSymbol.release() );
 
   QPixmap pixmap( canvas->size() );

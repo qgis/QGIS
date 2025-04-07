@@ -75,8 +75,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
   wgtUnitSelection->setUnits(
     { Qgis::RenderUnit::Millimeters,
       Qgis::RenderUnit::Percentage,
-      Qgis::RenderUnit::Pixels
-    }
+      Qgis::RenderUnit::Pixels }
   );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 

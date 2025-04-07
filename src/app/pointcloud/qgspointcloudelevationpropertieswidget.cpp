@@ -49,8 +49,7 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
       Qgis::RenderUnit::MapUnits,
       Qgis::RenderUnit::Pixels,
       Qgis::RenderUnit::Points,
-      Qgis::RenderUnit::Inches
-    }
+      Qgis::RenderUnit::Inches }
   );
 
   mMaxErrorUnitWidget->setUnits(
@@ -58,8 +57,7 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
       Qgis::RenderUnit::MapUnits,
       Qgis::RenderUnit::Pixels,
       Qgis::RenderUnit::Points,
-      Qgis::RenderUnit::Inches
-    }
+      Qgis::RenderUnit::Inches }
   );
   mMaxErrorSpinBox->setClearValue( 0.3 );
 

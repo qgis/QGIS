@@ -224,8 +224,7 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
                 ok = ( myProviderName == layerItem->providerKey() );
                 if ( !ok )
                 {
-                  QWARN( QString( "Layer %1 opened by provider %2, expecting %3"
-                  )
+                  QWARN( QString( "Layer %1 opened by provider %2, expecting %3" )
                            .arg( layerItem->path(), layerItem->providerKey(), myProviderName )
                            .toLocal8Bit()
                            .data() );

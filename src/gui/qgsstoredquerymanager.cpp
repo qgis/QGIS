@@ -124,9 +124,7 @@ QStringList QgsStoredQueryManager::allQueryNames( Qgis::QueryStorageBackend back
       names.reserve( hashes.size() );
       for ( const QString &hash : hashes )
       {
-        names.append( QgsProject::instance()->readEntry(
-          QStringLiteral( "DBManager" ), QStringLiteral( "savedQueries/%1/name" ).arg( hash )
-        ) );
+        names.append( QgsProject::instance()->readEntry( QStringLiteral( "DBManager" ), QStringLiteral( "savedQueries/%1/name" ).arg( hash ) ) );
       }
       break;
     }

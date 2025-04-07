@@ -1009,8 +1009,7 @@ QVariantMap QgsRelationEditorConfigWidget::config()
     { { "buttons", qgsFlagValueToKeys( buttons ) },
       { "show_first_feature", mShowFirstFeature->isChecked() },
       { "allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry->isChecked() },
-      { "filter_expression", mFilterExpression->toPlainText() }
-    }
+      { "filter_expression", mFilterExpression->toPlainText() } }
   );
 }
 

@@ -69,8 +69,7 @@ QString QgsExportToPostgresqlAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm exports a vector layer to a PostgreSQL "
                       "database, creating a new table.\n\n"
                       "Prior to this a connection between QGIS and the PostgreSQL "
-                      "database has to be created (for example through the QGIS Browser panel)."
-  );
+                      "database has to be created (for example through the QGIS Browser panel)." );
 }
 
 QString QgsExportToPostgresqlAlgorithm::shortDescription() const

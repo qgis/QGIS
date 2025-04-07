@@ -77,8 +77,7 @@ QString QgsGridAlgorithm::shortHelpString() const
                       "this CRS. The top-left point (minX, maxY) is used as the reference point. "
                       "That means that, at that point, an element is guaranteed to be placed. "
                       "Unless the width and height of the selected extent is a multiple of the "
-                      "selected spacing, that is not true for the other points that define that extent."
-  );
+                      "selected spacing, that is not true for the other points that define that extent." );
 }
 
 QgsGridAlgorithm *QgsGridAlgorithm::createInstance() const

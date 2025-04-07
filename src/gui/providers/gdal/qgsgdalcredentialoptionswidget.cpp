@@ -620,8 +620,7 @@ void QgsGdalCredentialOptionsWidget::modelOptionsChanged()
           "OSS_SECRET_ACCESS_KEY",
           "OSS_ACCESS_KEY_ID",
           "SWIFT_AUTH_TOKEN",
-          "SWIFT_KEY"
-        } )
+          "SWIFT_KEY" } )
   {
     if ( !options.value( key ).toString().isEmpty() )
     {

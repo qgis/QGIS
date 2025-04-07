@@ -1,7 +1,7 @@
 """A custom storage for QgsAuthManager that stores the authentication
-   configurations in memory.
+configurations in memory.
 
-   WARNING: For testing purposes only.
+WARNING: For testing purposes only.
 
 """
 

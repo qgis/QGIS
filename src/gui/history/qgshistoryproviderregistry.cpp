@@ -323,8 +323,7 @@ void QgsHistoryProviderRegistry::createTables()
                                        "xml TEXT,"
                                        "timestamp DATETIME);"
                                        "CREATE INDEX provider_index ON history(provider_id);"
-                                       "CREATE INDEX timestamp_index ON history(timestamp);"
-  );
+                                       "CREATE INDEX timestamp_index ON history(timestamp);" );
 
   runEmptyQuery( query );
 }

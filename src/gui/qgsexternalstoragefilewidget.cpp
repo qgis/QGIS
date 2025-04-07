@@ -140,10 +140,7 @@ void QgsExternalStorageFileWidget::addFileWidgetScope()
 QgsExpressionContextScope *QgsExternalStorageFileWidget::createFileWidgetScope()
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "FileWidget" ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable(
-    QStringLiteral( FILEPATH_VARIABLE ),
-    QString(), true, false, tr( "User selected absolute filepath" )
-  ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( FILEPATH_VARIABLE ), QString(), true, false, tr( "User selected absolute filepath" ) ) );
   return scope;
 }
 

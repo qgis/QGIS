@@ -67,14 +67,7 @@ void TestQgsMeshLayerInterpolator::testExportRasterBand()
   meshLayer.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 27700 ) );
 
   std::unique_ptr<QgsRasterBlock> block;
-  block.reset( QgsMeshUtils::exportRasterBlock(
-    meshLayer,
-    index,
-    meshLayer.crs(),
-    QgsProject::instance()->transformContext(),
-    100,
-    meshLayer.extent()
-  ) );
+  block.reset( QgsMeshUtils::exportRasterBlock( meshLayer, index, meshLayer.crs(), QgsProject::instance()->transformContext(), 100, meshLayer.extent() ) );
 
   QVERIFY( block );
 
@@ -108,14 +101,7 @@ void TestQgsMeshLayerInterpolator::testExportRasterBand()
 
   index = QgsMeshDatasetIndex( 1, 0 );
 
-  block.reset( QgsMeshUtils::exportRasterBlock(
-    meshLayer,
-    index,
-    meshLayer.crs(),
-    QgsProject::instance()->transformContext(),
-    100,
-    meshLayer.extent()
-  ) );
+  block.reset( QgsMeshUtils::exportRasterBlock( meshLayer, index, meshLayer.crs(), QgsProject::instance()->transformContext(), 100, meshLayer.extent() ) );
 
   QVERIFY( block );
 

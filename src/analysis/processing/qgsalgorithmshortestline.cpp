@@ -63,8 +63,7 @@ QString QgsShortestLineAlgorithm::shortHelpString() const
                       "This algorithm uses purely Cartesian calculations for distance, "
                       "and does not consider geodetic or ellipsoid properties when "
                       "determining feature proximity. The measurement and output coordinate "
-                      "system is based on the coordinate system of the source layer."
-  );
+                      "system is based on the coordinate system of the source layer." );
 }
 
 QgsShortestLineAlgorithm *QgsShortestLineAlgorithm::createInstance() const

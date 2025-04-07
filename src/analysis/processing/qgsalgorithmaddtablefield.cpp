@@ -101,8 +101,7 @@ void QgsAddTableFieldAlgorithm::initParameters( const QVariantMap & )
 
   auto fieldTypes = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Field type" ), typeStrings, false, 0 );
   fieldTypes->setMetadata(
-    { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "icons" ), icons } } ) } } )
-    }
+    { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "icons" ), icons } } ) } } ) }
   );
   addParameter( fieldTypes.release() );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Field length" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 1, 255 ) );

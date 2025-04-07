@@ -200,8 +200,7 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
         { { QStringLiteral( "type" ), QVariant::fromValue( ResultType::Feature ) },
           { QStringLiteral( "feature_id" ), f.id() },
           { QStringLiteral( "layer_id" ), mLayerId },
-          { QStringLiteral( "layer_is_spatial" ), mLayerIsSpatial }
-        }
+          { QStringLiteral( "layer_is_spatial" ), mLayerIsSpatial } }
       ) );
       result.icon = mLayerIcon;
       result.score = static_cast<double>( searchString.length() ) / result.displayString.size();
@@ -255,8 +254,7 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       { { QStringLiteral( "type" ), QVariant::fromValue( ResultType::Feature ) },
         { QStringLiteral( "feature_id" ), f.id() },
         { QStringLiteral( "layer_id" ), mLayerId },
-        { QStringLiteral( "layer_is_spatial" ), mLayerIsSpatial }
-      }
+        { QStringLiteral( "layer_is_spatial" ), mLayerIsSpatial } }
     ) );
     result.icon = mLayerIcon;
     result.score = static_cast<double>( searchString.length() ) / result.displayString.size();

@@ -106,9 +106,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       QVERIFY( vlMultiLine->isValid() );
       QgsFeature multi( vlMultiLine->dataProvider()->fields(), 1 );
       multi.setAttribute( QStringLiteral( "pk" ), 1 );
-      multi.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-        "MultiLineString ((10 0, 14 0),(11 1, 11 0.5),(14 -2, 14 2))"
-      ) ) );
+      multi.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiLineString ((10 0, 14 0),(11 1, 11 0.5),(14 -2, 14 2))" ) ) );
 
       vlMultiLine->dataProvider()->addFeatures( QgsFeatureList() << multi );
 
@@ -123,14 +121,10 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       QVERIFY( vlLineZ->isValid() );
       QgsFeature linez( vlLineZ->dataProvider()->fields(), 1 );
       linez.setAttribute( QStringLiteral( "pk" ), 1 );
-      linez.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-        "LineStringZ (3 5 5, 2 6 10)"
-      ) ) );
+      linez.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineStringZ (3 5 5, 2 6 10)" ) ) );
       QgsFeature linez2( vlLineZ->dataProvider()->fields(), 2 );
       linez2.setAttribute( QStringLiteral( "pk" ), 2 );
-      linez2.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-        "LineStringZ (0 5 100, 3 8 200)"
-      ) ) );
+      linez2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineStringZ (0 5 100, 3 8 200)" ) ) );
 
       vlLineZ->dataProvider()->addFeatures( QgsFeatureList() << linez << linez2 );
 

@@ -480,9 +480,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
       //expand all the toplevel items
       for ( int i = 0; i < numTopLevelItems; ++i )
       {
-        mTablesTreeView->expand( proxyModel()->mapFromSource(
-          mTableModel->indexFromItem( mTableModel->invisibleRootItem()->child( i ) )
-        ) );
+        mTablesTreeView->expand( proxyModel()->mapFromSource( mTableModel->indexFromItem( mTableModel->invisibleRootItem()->child( i ) ) ) );
       }
     }
   }

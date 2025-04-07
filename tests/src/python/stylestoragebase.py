@@ -1,4 +1,4 @@
-""""Base test for provider style DB storage
+""" "Base test for provider style DB storage
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

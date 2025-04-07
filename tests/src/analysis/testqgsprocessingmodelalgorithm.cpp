@@ -2678,8 +2678,7 @@ void TestQgsProcessingModelAlgorithm::modelChildOrderWithVariables()
   c1.setAlgorithmId( QStringLiteral( "native:stringconcatenation" ) );
   // a parameter source from an expression which isn't coming from another child algorithm
   c1.setParameterSources(
-    { { QStringLiteral( "INPUT_2" ), { QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@a_parameter || 'x'" ) ) } }
-    }
+    { { QStringLiteral( "INPUT_2" ), { QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@a_parameter || 'x'" ) ) } } }
   );
   model.addChildAlgorithm( c1 );
 
@@ -2687,8 +2686,7 @@ void TestQgsProcessingModelAlgorithm::modelChildOrderWithVariables()
   c2.setChildId( QStringLiteral( "c2" ) );
   c2.setAlgorithmId( QStringLiteral( "native:stringconcatenation" ) );
   c2.setParameterSources(
-    { { QStringLiteral( "INPUT_1" ), { QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c1_CONCATENATION || 'x'" ) ) } }
-    }
+    { { QStringLiteral( "INPUT_1" ), { QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c1_CONCATENATION || 'x'" ) ) } } }
   );
   model.addChildAlgorithm( c2 );
 

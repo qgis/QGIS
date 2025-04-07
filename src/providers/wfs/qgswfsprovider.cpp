@@ -2013,9 +2013,7 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
     {
       if ( geometryAttribute.isEmpty() )
       {
-        geomType = QgsWkbTypes::multiType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType(
-          OGR_L_GetGeomType( hLayer )
-        ) );
+        geomType = QgsWkbTypes::multiType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_L_GetGeomType( hLayer ) ) );
 
         QString qFieldXPath = QString::fromUtf8( fieldXPath );
         if ( fieldName.endsWith( QLatin1String( "_abstractgeometricprimitive" ) ) && strstr( fieldXPath, "/gml:Point" ) )

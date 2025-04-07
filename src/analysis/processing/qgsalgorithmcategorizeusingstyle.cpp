@@ -92,8 +92,7 @@ QString QgsCategorizeUsingStyleAlgorithm::shortHelpString() const
                       "Optionally, non-alphanumeric characters in both the category value and symbol name can be ignored "
                       "while performing the match. This allows for greater tolerance when matching categories to symbols.\n\n"
                       "If desired, tables can also be output containing lists of the categories which could not be matched "
-                      "to symbols, and symbols which were not matched to categories."
-  );
+                      "to symbols, and symbols which were not matched to categories." );
 }
 
 QString QgsCategorizeUsingStyleAlgorithm::shortDescription() const

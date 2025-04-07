@@ -81,20 +81,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
     }
     else
     {
-      result.tiles.push_back( TileBand {
-        tilePtr->tileId,
-        tilePtr->srid,
-        tilePtr->extent,
-        tilePtr->upperLeftX,
-        tilePtr->upperLeftY,
-        tilePtr->width,
-        tilePtr->height,
-        tilePtr->scaleX,
-        tilePtr->scaleY,
-        tilePtr->skewX,
-        tilePtr->skewY,
-        tilePtr->bandData( request.bandNo )
-      } );
+      result.tiles.push_back( TileBand { tilePtr->tileId, tilePtr->srid, tilePtr->extent, tilePtr->upperLeftX, tilePtr->upperLeftY, tilePtr->width, tilePtr->height, tilePtr->scaleX, tilePtr->scaleY, tilePtr->skewX, tilePtr->skewY, tilePtr->bandData( request.bandNo ) } );
       result.extent.combineExtentWith( tilePtr->extent );
     }
     return true;
@@ -144,20 +131,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
       }
       else // Add to result
       {
-        result.tiles.push_back( TileBand {
-          tilePtr->tileId,
-          tilePtr->srid,
-          tilePtr->extent,
-          tilePtr->upperLeftX,
-          tilePtr->upperLeftY,
-          tilePtr->width,
-          tilePtr->height,
-          tilePtr->scaleX,
-          tilePtr->scaleY,
-          tilePtr->skewX,
-          tilePtr->skewY,
-          tilePtr->bandData( request.bandNo )
-        } );
+        result.tiles.push_back( TileBand { tilePtr->tileId, tilePtr->srid, tilePtr->extent, tilePtr->upperLeftX, tilePtr->upperLeftY, tilePtr->width, tilePtr->height, tilePtr->scaleX, tilePtr->scaleY, tilePtr->skewX, tilePtr->skewY, tilePtr->bandData( request.bandNo ) } );
         result.extent.combineExtentWith( tilePtr->extent );
       }
     }
@@ -357,20 +331,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
       }
       mSpatialIndexes[cacheKey]->insert( tile.get(), tile->extent );
 
-      response.tiles.push_back( TileBand {
-        tile->tileId,
-        tile->srid,
-        tile->extent,
-        tile->upperLeftX,
-        tile->upperLeftY,
-        tile->width,
-        tile->height,
-        tile->scaleX,
-        tile->scaleY,
-        tile->skewX,
-        tile->skewY,
-        tile->bandData( request.bandNo )
-      } );
+      response.tiles.push_back( TileBand { tile->tileId, tile->srid, tile->extent, tile->upperLeftX, tile->upperLeftY, tile->width, tile->height, tile->scaleX, tile->scaleY, tile->skewX, tile->skewY, tile->bandData( request.bandNo ) } );
 
       response.extent.combineExtentWith( tile->extent );
 

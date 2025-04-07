@@ -564,8 +564,7 @@ bool QgsAfsSharedData::addAttributeIndex( const QString &adminUrl, int attribute
   indexJson << QVariantMap(
     { { QStringLiteral( "name" ), QStringLiteral( "%1_index" ).arg( name ) },
       { QStringLiteral( "fields" ), name },
-      { QStringLiteral( "description" ), name }
-    }
+      { QStringLiteral( "description" ), name } }
   );
 
 

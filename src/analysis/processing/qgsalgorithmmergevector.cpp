@@ -133,8 +133,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     if ( outputType != Qgis::WkbType::Unknown && outputType != Qgis::WkbType::NoGeometry )
     {
       if ( QgsWkbTypes::geometryType( outputType ) != QgsWkbTypes::geometryType( layerWkbType ) )
-        throw QgsProcessingException( QObject::tr( "All layers must have same geometry type! Encountered a %1 layer when expecting a %2 layer." )
-                                        .arg( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( layerWkbType ) ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( outputType ) ) ) );
+        throw QgsProcessingException( QObject::tr( "All layers must have same geometry type! Encountered a %1 layer when expecting a %2 layer." ).arg( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( layerWkbType ) ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( outputType ) ) ) );
 
       if ( QgsWkbTypes::hasM( layerWkbType ) && !QgsWkbTypes::hasM( outputType ) )
       {

@@ -573,8 +573,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   leProjectGlobalCrs->setCrs( QgsCoordinateReferenceSystem( defaultProjectCrs ) );
   leProjectGlobalCrs->setMessage(
     tr( "<h1>Default projection for new projects</h1>"
-        "Select a projection that should be used for new projects that are created in QGIS."
-    )
+        "Select a projection that should be used for new projects that are created in QGIS." )
   );
 
   const QgsGui::ProjectCrsBehavior projectCrsBehavior = mSettings->enumValue( QStringLiteral( "/projections/newProjectCrsBehavior" ), QgsGui::UseCrsOfFirstLayerAdded, QgsSettings::App );

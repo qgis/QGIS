@@ -948,9 +948,7 @@ Qgis::WkbType QgsHanaConnection::getColumnGeometryType( const QString &querySour
     ResultSetRef rsGeomInfo = stmt->executeQuery( QgsHanaUtils::toUtf16( sql ) );
     while ( rsGeomInfo->next() )
     {
-      Qgis::WkbType geomType = QgsWkbTypes::singleType( QgsHanaUtils::toWkbType(
-        rsGeomInfo->getString( 1 ), rsGeomInfo->getInt( 2 ), rsGeomInfo->getInt( 3 )
-      ) );
+      Qgis::WkbType geomType = QgsWkbTypes::singleType( QgsHanaUtils::toWkbType( rsGeomInfo->getString( 1 ), rsGeomInfo->getInt( 2 ), rsGeomInfo->getInt( 3 ) ) );
       if ( geomType == Qgis::WkbType::Unknown )
         continue;
       if ( ret == Qgis::WkbType::Unknown )

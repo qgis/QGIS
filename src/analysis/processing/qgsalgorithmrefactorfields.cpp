@@ -130,12 +130,7 @@ bool QgsRefactorFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters
       expression.setAreaUnits( context.areaUnit() );
       if ( expression.hasParserError() )
       {
-        throw QgsProcessingException( QObject::tr( "Parser error for field \"%1\" with expression \"%2\": %3" )
-                                        .arg(
-                                          name,
-                                          expressionString,
-                                          expression.parserErrorString()
-                                        ) );
+        throw QgsProcessingException( QObject::tr( "Parser error for field \"%1\" with expression \"%2\": %3" ).arg( name, expressionString, expression.parserErrorString() ) );
       }
       mExpressions.append( expression );
     }

@@ -447,8 +447,7 @@ void TestQgsGeoreferencer::testTransformImageWithExistingGeoreference()
     { QgsPointXY( 783414, 3350122 ),
       QgsPointXY( 791344, 3349795 ),
       QgsPointXY( 783077, 3340937 ),
-      QgsPointXY( 791134, 3341401 )
-    }
+      QgsPointXY( 791134, 3341401 ) }
   );
 
   QCOMPARE( pixelCoords.size(), 4 );

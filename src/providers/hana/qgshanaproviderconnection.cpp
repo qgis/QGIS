@@ -421,8 +421,7 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsHanaProviderConnection::
   };
   const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tablesWithFilter( schema, TableFlags(), layerFilter ) };
   if ( constTables.empty() )
-    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
-                                            .arg( table, schema ) );
+    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" ).arg( table, schema ) );
   return constTables[0];
 }
 
@@ -1872,8 +1871,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
           QStringLiteral( "YEAR" ),
           QStringLiteral( "YTAB" ),
           QStringLiteral( "ZONE" ),
-        }
-      },
+        } },
       { Qgis::SqlKeywordCategory::Aggregate,
         {
           QStringLiteral( "AUTO_CORR" ),
@@ -1897,8 +1895,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
           QStringLiteral( "VAR" ),
           QStringLiteral( "VAR_POP" ),
           QStringLiteral( "VAR_SAMP" ),
-        }
-      },
+        } },
       { Qgis::SqlKeywordCategory::Math,
         {
           QStringLiteral( "ABS" ),
@@ -1933,8 +1930,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
           QStringLiteral( "SQRT" ),
           QStringLiteral( "TAN" ),
           QStringLiteral( "TANH" ),
-        }
-      },
+        } },
       { Qgis::SqlKeywordCategory::Geospatial,
         {
           QStringLiteral( "ST_AlphaShape" ),
@@ -2037,9 +2033,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
           QStringLiteral( "ST_YMin" ),
           QStringLiteral( "ST_ZMax" ),
           QStringLiteral( "ST_ZMin" ),
-        }
-      }
-    }
+        } } }
   );
 }
 

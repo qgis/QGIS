@@ -306,7 +306,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
         queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
       }
       else // Read line i + 1 and put it into scanline 3
-        // Overwrite from input, skip first and last
+      // Overwrite from input, skip first and last
       {
         if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
         {

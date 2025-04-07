@@ -202,8 +202,7 @@ json QgsServerOgcApiHandler::schema( const QgsServerApiContext &context ) const
 json QgsServerOgcApiHandler::link( const QgsServerApiContext &context, const QgsServerOgcApi::Rel &linkType, const QgsServerOgcApi::ContentType contentType, const std::string &title ) const
 {
   json l {
-    { "href", href( context, "/", QgsServerOgcApi::contentTypeToExtension( contentType ) )
-    },
+    { "href", href( context, "/", QgsServerOgcApi::contentTypeToExtension( contentType ) ) },
     { "rel", QgsServerOgcApi::relToString( linkType ) },
     { "type", QgsServerOgcApi::mimeType( contentType ) },
     { "title", title != "" ? title : linkTitle() },
@@ -545,8 +544,7 @@ json QgsServerOgcApiHandler::defaultResponse()
 {
   static json defRes = {
     { "description", "An error occurred." },
-    { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/exception" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } }
-    }
+    { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/exception" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } }
   };
   return defRes;
 }

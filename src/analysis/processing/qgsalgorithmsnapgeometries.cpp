@@ -86,8 +86,7 @@ void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto tolParam = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), 10.0, QStringLiteral( "INPUT" ), false, 0.00000001 );
   tolParam->setMetadata(
-    { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "decimals" ), 8 } } ) } } )
-    }
+    { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "decimals" ), 8 } } ) } } ) }
   );
   addParameter( tolParam.release() );
 

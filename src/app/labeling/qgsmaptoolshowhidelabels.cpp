@@ -262,10 +262,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer *vlayer, QgsFeat
   QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 2 );
   QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.asWkt(), 2 );
 
-  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest()
-                                                  .setFilterRect( selectGeomTrans.boundingBox() )
-                                                  .setFlags( Qgis::FeatureRequestFlag::NoGeometry | Qgis::FeatureRequestFlag::ExactIntersect )
-                                                  .setNoAttributes() );
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectGeomTrans.boundingBox() ).setFlags( Qgis::FeatureRequestFlag::NoGeometry | Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
 
   QgsFeature f;
   while ( fit.nextFeature( f ) )

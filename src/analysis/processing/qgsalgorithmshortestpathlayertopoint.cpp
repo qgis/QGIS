@@ -182,8 +182,7 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
 
     if ( tree.at( idxEnd ) == -1 )
     {
-      feedback->reportError( QObject::tr( "There is no route from start point (%1) to end point (%2)." )
-                               .arg( originalPoint.toString(), endPoint.toString() ) );
+      feedback->reportError( QObject::tr( "There is no route from start point (%1) to end point (%2)." ).arg( originalPoint.toString(), endPoint.toString() ) );
       feat.clearGeometry();
       attributes = sourceAttributes.value( i );
       attributes.append( originalPoint.toString() );

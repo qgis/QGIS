@@ -1,5 +1,4 @@
-"""Fixer for import of generated UIs
-"""
+"""Fixer for import of generated UIs"""
 
 # Local imports
 from lib2to3 import fixer_base

@@ -144,11 +144,7 @@ QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &paramet
     {
       // transfer B3DM RTC center to GLTF CESIUM_RTC extension
       tinygltf::Value::Object cesiumRtc;
-      cesiumRtc["center"] = tinygltf::Value( tinygltf::Value::Array {
-        tinygltf::Value( b3dmContent.rtcCenter.x() ),
-        tinygltf::Value( b3dmContent.rtcCenter.y() ),
-        tinygltf::Value( b3dmContent.rtcCenter.z() )
-      } );
+      cesiumRtc["center"] = tinygltf::Value( tinygltf::Value::Array { tinygltf::Value( b3dmContent.rtcCenter.x() ), tinygltf::Value( b3dmContent.rtcCenter.y() ), tinygltf::Value( b3dmContent.rtcCenter.z() ) } );
 
       model.extensions["CESIUM_RTC"] = tinygltf::Value( cesiumRtc );
       model.extensionsRequired.emplace_back( "CESIUM_RTC" );

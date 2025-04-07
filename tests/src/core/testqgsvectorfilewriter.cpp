@@ -487,13 +487,7 @@ void TestQgsVectorFileWriter::prepareWriteAsVectorFormat()
   options.driverName = "GPKG";
   options.layerName = "test";
   QString newFilename;
-  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3(
-    &ml,
-    fileName,
-    ml.transformContext(),
-    options, nullptr,
-    &newFilename
-  ) );
+  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3( &ml, fileName, ml.transformContext(), options, nullptr, &newFilename ) );
 
   QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
   QCOMPARE( newFilename, fileName );
@@ -520,13 +514,7 @@ void TestQgsVectorFileWriter::testTextFieldLength()
   options.driverName = "GPKG";
   options.layerName = "test";
   QString newFilename;
-  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3(
-    &vl,
-    fileName,
-    vl.transformContext(),
-    options, nullptr,
-    &newFilename
-  ) );
+  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3( &vl, fileName, vl.transformContext(), options, nullptr, &newFilename ) );
   QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
   QCOMPARE( newFilename, fileName );
   const QgsVectorLayer vl2( QStringLiteral( "%1|layername=test" ).arg( fileName ), "src_test", "ogr" );
@@ -556,13 +544,7 @@ void TestQgsVectorFileWriter::testExportArrayToGpkg()
   options.driverName = "GPKG";
   options.layerName = "test";
   QString newFilename;
-  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3(
-    &vl,
-    fileName,
-    vl.transformContext(),
-    options, nullptr,
-    &newFilename
-  ) );
+  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3( &vl, fileName, vl.transformContext(), options, nullptr, &newFilename ) );
   QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
   QCOMPARE( newFilename, fileName );
   const QgsVectorLayer vl2( QStringLiteral( "%1|layername=test" ).arg( fileName ), "src_test", "ogr" );
@@ -611,14 +593,9 @@ void TestQgsVectorFileWriter::_testExportToGpx( const QString &geomTypeName, con
   options.layerName = inputLayerName;
   options.layerOptions = layerOptions;
   QString outLayerName;
-  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3(
-    &vl,
-    fileName,
-    vl.transformContext(),
-    options, nullptr,
-    nullptr, // newFilename
-    &outLayerName
-  ) );
+  const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3( &vl, fileName, vl.transformContext(), options, nullptr,
+                                                                                            nullptr, // newFilename
+                                                                                            &outLayerName ) );
   QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
   QCOMPARE( outLayerName, expectedLayerName );
   const QgsVectorLayer vl2( QStringLiteral( "%1|layername=%2" ).arg( fileName ).arg( outLayerName ), "src_test", "ogr" );

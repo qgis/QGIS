@@ -190,8 +190,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
             { "city", a.city.toStdString() },
             { "country", a.country.toStdString() },
             { "postalCode", a.postalCode.toStdString() },
-            { "administrativeArea", a.administrativeArea.toStdString() }
-          }
+            { "administrativeArea", a.administrativeArea.toStdString() } }
         );
       }
       jContacts.push_back( jContact );
@@ -210,8 +209,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
           { "type", l.type.toStdString() },
           { "mimeType", l.mimeType.toStdString() },
           { "format", l.format.toStdString() },
-          { "size", l.size.toStdString() }
-        }
+          { "size", l.size.toStdString() } }
       );
     }
     return jLinks;

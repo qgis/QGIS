@@ -1225,10 +1225,7 @@ void topolTest::fillFeatureMap( QgsVectorLayer *layer, const QgsRectangle &exten
   }
   else
   {
-    fit = layer->getFeatures( QgsFeatureRequest()
-                                .setFilterRect( extent )
-                                .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
-                                .setNoAttributes() );
+    fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
   }
 
   QgsFeature f;
@@ -1251,10 +1248,7 @@ void topolTest::fillFeatureList( QgsVectorLayer *layer, const QgsRectangle &exte
   }
   else
   {
-    fit = layer->getFeatures( QgsFeatureRequest()
-                                .setFilterRect( extent )
-                                .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
-                                .setNoAttributes() );
+    fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
   }
 
   QgsFeature f;
@@ -1279,10 +1273,7 @@ QgsSpatialIndex *topolTest::createIndex( QgsVectorLayer *layer, const QgsRectang
   }
   else
   {
-    fit = layer->getFeatures( QgsFeatureRequest()
-                                .setFilterRect( extent )
-                                .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
-                                .setNoAttributes() );
+    fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
   }
 
 

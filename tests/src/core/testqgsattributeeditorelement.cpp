@@ -108,8 +108,7 @@ void TestQgsAttributeEditorElement::testLabelFontAndColor()
     { QColor( Qt::GlobalColor::darkCyan ),
       font0,
       true,
-      true
-    }
+      true }
   );
 
   container->addChildElement( field2 );

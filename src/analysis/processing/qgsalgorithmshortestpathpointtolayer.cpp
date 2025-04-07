@@ -185,8 +185,7 @@ QVariantMap QgsShortestPathPointToLayerAlgorithm::processAlgorithm( const QVaria
     idxEnd = graph->findVertex( snappedPoint );
     if ( tree.at( idxEnd ) == -1 )
     {
-      feedback->reportError( QObject::tr( "There is no route from start point (%1) to end point (%2)." )
-                               .arg( startPoint.toString(), originalPoint.toString() ) );
+      feedback->reportError( QObject::tr( "There is no route from start point (%1) to end point (%2)." ).arg( startPoint.toString(), originalPoint.toString() ) );
       feat.clearGeometry();
       attributes = sourceAttributes.value( i );
       attributes.append( QVariant() );

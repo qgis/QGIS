@@ -307,9 +307,7 @@ void QgsMeshLayerProperties::apply()
   mStaticDatasetWidget->apply();
   bool needEmitRendererChanged = mMeshLayer->temporalProperties()->isActive() == mStaticDatasetGroupBox->isChecked();
   mMeshLayer->temporalProperties()->setIsActive( !mStaticDatasetGroupBox->isChecked() );
-  mMeshLayer->setTemporalMatchingMethod( static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>(
-    mComboBoxTemporalDatasetMatchingMethod->currentData().toInt()
-  ) );
+  mMeshLayer->setTemporalMatchingMethod( static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>( mComboBoxTemporalDatasetMatchingMethod->currentData().toInt() ) );
   static_cast<QgsMeshLayerTemporalProperties *>(
     mMeshLayer->temporalProperties()
   )

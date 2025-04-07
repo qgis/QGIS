@@ -1032,8 +1032,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       localDir = QDir( localDir ).canonicalPath();
     }
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%3'>%4</a></td></tr>"
-    )
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%3'>%4</a></td></tr>" )
               .arg( tr( "Installed version" ), QDir::toNativeSeparators( localDir ), QUrl::fromLocalFile( localDir ).toString(), ver );
   }
 
@@ -1065,8 +1064,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
       }
     }
 
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
-    )
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>" )
               .arg( tr( "Available version (stable)" ), downloadUrl, metadata->value( QStringLiteral( "version_available_stable" ) ), dateUpdatedStr );
   }
 
@@ -1087,8 +1085,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
         dateUpdatedStr += tr( "updated at %1" ).arg( QLocale().toString( dateUpdated, dateTimeFormat ) );
     }
 
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
-    )
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>" )
               .arg( tr( "Available version (experimental)" ), downloadUrl, metadata->value( QStringLiteral( "version_available_experimental" ) ), dateUpdatedStr );
   }
 

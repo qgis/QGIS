@@ -119,11 +119,7 @@ void TestQgsVectorTileLayer::initTestCase()
   const double pointSize = Qgis::DEFAULT_POINT_SIZE;
 
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
-  rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle(
-    polygonFillColor, polygonStrokeColor, polygonStrokeWidth,
-    lineStrokeColor, lineStrokeWidth,
-    pointFillColor, pointStrokeColor, pointSize
-  ) );
+  rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle( polygonFillColor, polygonStrokeColor, polygonStrokeWidth, lineStrokeColor, lineStrokeWidth, pointFillColor, pointStrokeColor, pointSize ) );
   mLayer->setRenderer( rend ); // takes ownership
 }
 
@@ -200,11 +196,7 @@ void TestQgsVectorTileLayer::test_labeling()
 
   // use a different renderer to make the labels stand out more
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
-  rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle(
-    Qt::transparent, Qt::white, Qgis::DEFAULT_LINE_WIDTH * 2,
-    Qt::transparent, 0,
-    Qt::transparent, Qt::transparent, 0
-  ) );
+  rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle( Qt::transparent, Qt::white, Qgis::DEFAULT_LINE_WIDTH * 2, Qt::transparent, 0, Qt::transparent, Qt::transparent, 0 ) );
   mLayer->setRenderer( rend ); // takes ownership
 
   mMapSettings->setExtent( mLayer->extent() );
