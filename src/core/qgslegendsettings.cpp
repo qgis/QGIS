@@ -25,6 +25,8 @@ QgsLegendSettings::QgsLegendSettings()
   , mWmsLegendSize( 50, 25 )
   , mRasterStrokeColor( Qt::black )
 {
+  mStyleMap.resize( static_cast< int >( QgsLegendStyle::SymbolLabel ) + 1 );
+
   rstyle( QgsLegendStyle::Title ).setMargin( QgsLegendStyle::Bottom, 3.5 );
   rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Top, 3 );
   rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Top, 3 );
