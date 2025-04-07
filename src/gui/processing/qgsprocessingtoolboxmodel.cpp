@@ -458,7 +458,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
           else if ( isFavoriteNode )
             return tr( "Favorites" );
           else if ( isParameterGroupNode )
-            return tr( "Inputs parameters" );
+            return tr( "Input parameters" );
           else
             return QVariant();
 
@@ -479,7 +479,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       else if ( groupNode )
         return groupNode->name();
       else if ( isParameterGroupNode )
-        return tr( "Inputs parameters used in the modeler" );
+        return tr( "Input parameters used in the modeler" );
       else
         return QVariant();
     }
