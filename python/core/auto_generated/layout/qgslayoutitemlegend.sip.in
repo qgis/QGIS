@@ -576,6 +576,61 @@ The stroke is only drawn if
 .. seealso:: :py:func:`setRasterStrokeColor`
 %End
 
+    double autoWrapLinesAfter() const;
+%Docstring
+Returns the maximum line length allowed before lines of text in the
+legend will be automatically word wrapped.
+
+Units are retrieved via
+:py:func:`~QgsLayoutItemLegend.autoWrapLinesUnit`.
+
+If the returned value is 0, then no automatic wrapping will occur.
+
+.. seealso:: :py:func:`setAutoWrapLinesAfter`
+
+.. seealso:: :py:func:`autoWrapLinesUnit`
+
+.. versionadded:: 3.44
+%End
+
+    void setAutoWrapLinesAfter( double length );
+%Docstring
+Sets the maximum line ``length`` allowed before lines of text in the
+legend will be automatically word wrapped.
+
+Units are set via :py:func:`~QgsLayoutItemLegend.setAutoWrapLinesUnit`.
+
+If ``length`` is 0, then no automatic wrapping will occur.
+
+.. seealso:: :py:func:`autoWrapLinesAfter`
+
+.. seealso:: :py:func:`setAutoWrapLinesUnit`
+
+.. versionadded:: 3.44
+%End
+
+    Qgis::RenderUnit autoWrapLinesUnit() const;
+%Docstring
+Returns the units used for the automatic maximum line length wrapping.
+
+.. seealso:: :py:func:`autoWrapLinesAfter`
+
+.. seealso:: :py:func:`setAutoWrapLinesUnit`
+
+.. versionadded:: 3.44
+%End
+
+    void setAutoWrapLinesUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` used for the automatic maximum line length wrapping.
+
+.. seealso:: :py:func:`setAutoWrapLinesAfter`
+
+.. seealso:: :py:func:`autoWrapLinesUnit`
+
+.. versionadded:: 3.44
+%End
+
     void setLinkedMap( QgsLayoutItemMap *map );
 %Docstring
 Sets the ``map`` to associate with the legend.

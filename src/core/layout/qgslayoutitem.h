@@ -280,6 +280,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoLegendGroupFont, //!< Legend group font
       UndoLegendLayerFont, //!< Legend layer font
       UndoLegendItemFont, //!< Legend item font
+      UndoLegendAutoWrapAfter, //!< Legend auto wrap lines after distance. \since QGIS 3.44
       UndoScaleBarLineWidth, //!< Scalebar line width
       UndoScaleBarSegmentSize, //!< Scalebar segment size
       UndoScaleBarSegmentsLeft, //!< Scalebar segments left

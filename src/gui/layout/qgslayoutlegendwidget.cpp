@@ -125,6 +125,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mIconLabelSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mIconLabelSpaceSpinBox_valueChanged );
   connect( mBoxSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mBoxSpaceSpinBox_valueChanged );
   connect( mColumnSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged );
+  connect( mMaxWidthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::maxWidthChanged );
   connect( mCheckBoxAutoUpdate, &QCheckBox::stateChanged, this, [=]( int state ) { mCheckBoxAutoUpdate_stateChanged( state ); } );
   connect( mCheckboxResizeContents, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mCheckboxResizeContents_toggled );
   connect( mRasterStrokeGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutLegendWidget::mRasterStrokeGroupBox_toggled );
@@ -175,6 +176,9 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   mSpaceBelowSubgroupHeadingSpinBox->setClearValue( 0 );
   mSubgroupSideSpinBox->setClearValue( 0 );
   mSymbolSideSpaceSpinBox->setClearValue( 0 );
+
+  mMaxWidthSpinBox->setShowClearButton( true );
+  mMaxWidthSpinBox->setClearValue( 0, tr( "Disabled" ) );
 
   // setup icons
   mAddToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
@@ -310,6 +314,8 @@ void QgsLayoutLegendWidget::setGuiElements()
   mSymbolSideSpaceSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Left ) );
   mBoxSpaceSpinBox->setValue( mLegend->boxSpace() );
   mColumnSpaceSpinBox->setValue( mLegend->columnSpace() );
+
+  mMaxWidthSpinBox->setValue( mLegend->autoWrapLinesAfter() );
 
   mRasterStrokeGroupBox->setChecked( mLegend->drawRasterStroke() );
   mRasterStrokeWidthSpinBox->setValue( mLegend->rasterStrokeWidth() );
@@ -738,6 +744,18 @@ void QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged( double d )
   {
     mLegend->beginCommand( tr( "Change Column Space" ), QgsLayoutItem::UndoLegendColumnSpace );
     mLegend->setColumnSpace( d );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsLayoutLegendWidget::maxWidthChanged( double width )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Change Legend Wrapping" ), QgsLayoutItem::UndoLegendAutoWrapAfter );
+    mLegend->setAutoWrapLinesAfter( width );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -1356,6 +1374,7 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mLayerFontButton->blockSignals( b );
   mItemFontButton->blockSignals( b );
   mWrapCharLineEdit->blockSignals( b );
+  mMaxWidthSpinBox->blockSignals( b );
 }
 
 void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const QModelIndex &previous )

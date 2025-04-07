@@ -638,6 +638,26 @@ void QgsLayoutItemLegend::setRasterStrokeWidth( double width )
   mSettings.setRasterStrokeWidth( width );
 }
 
+double QgsLayoutItemLegend::autoWrapLinesAfter() const
+{
+  return mSettings.autoWrapLinesAfter();
+}
+
+void QgsLayoutItemLegend::setAutoWrapLinesAfter( double length )
+{
+  mSettings.setAutoWrapLinesAfter( length );
+}
+
+Qgis::RenderUnit QgsLayoutItemLegend::autoWrapLinesUnit() const
+{
+  return mSettings.autoWrapLinesUnit();
+}
+
+void QgsLayoutItemLegend::setAutoWrapLinesUnit( Qgis::RenderUnit unit )
+{
+  mSettings.setAutoWrapLinesUnit( unit );
+}
+
 void QgsLayoutItemLegend::updateLegend()
 {
   adjustBoxSize();
@@ -669,6 +689,15 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
   legendElem.setAttribute( QStringLiteral( "rasterBorder" ), mSettings.drawRasterStroke() );
   legendElem.setAttribute( QStringLiteral( "rasterBorderColor" ), QgsColorUtils::colorToString( mSettings.rasterStrokeColor() ) );
   legendElem.setAttribute( QStringLiteral( "rasterBorderWidth" ), QString::number( mSettings.rasterStrokeWidth() ) );
+
+  if ( mSettings.autoWrapLinesAfter() > 0 )
+  {
+    legendElem.setAttribute( QStringLiteral( "autoWrapLinesAfter" ), mSettings.autoWrapLinesAfter() );
+  }
+  if ( mSettings.autoWrapLinesUnit() != Qgis::RenderUnit::Millimeters )
+  {
+    legendElem.setAttribute( QStringLiteral( "autoWrapLinesAfterUnit" ), QgsUnitTypes::encodeUnit( mSettings.autoWrapLinesUnit() ) );
+  }
 
   legendElem.setAttribute( QStringLiteral( "wmsLegendWidth" ), QString::number( mSettings.wmsLegendSize().width() ) );
   legendElem.setAttribute( QStringLiteral( "wmsLegendHeight" ), QString::number( mSettings.wmsLegendSize().height() ) );
@@ -809,6 +838,9 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   mSettings.setDrawRasterStroke( itemElem.attribute( QStringLiteral( "rasterBorder" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
   mSettings.setRasterStrokeColor( QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "rasterBorderColor" ), QStringLiteral( "0,0,0" ) ) ) );
   mSettings.setRasterStrokeWidth( itemElem.attribute( QStringLiteral( "rasterBorderWidth" ), QStringLiteral( "0" ) ).toDouble() );
+
+  mSettings.setAutoWrapLinesAfter( itemElem.attribute( QStringLiteral( "autoWrapLinesAfter" ), QStringLiteral( "0" ) ).toDouble() );
+  mSettings.setAutoWrapLinesUnit( QgsUnitTypes::decodeRenderUnit( itemElem.attribute( QStringLiteral( "autoWrapLinesAfterUnit" ), QStringLiteral( "MM" ) ) ) );
 
   mSettings.setWrapChar( itemElem.attribute( QStringLiteral( "wrapChar" ) ) );
 

@@ -93,14 +93,22 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
 
   const QgsTextDocument textDocument = QgsTextDocument::fromTextAndFormat( lines, f );
   // cppcheck-suppress autoVariables
-  ctx->textDocument = &textDocument;
 
   std::optional< QgsScopedRenderContextScaleToPixels > scaleToPx( *ctx->context );
   const double textScaleFactor = QgsTextRenderer::calculateScaleFactorForFormat( *ctx->context, f );
 
-  const QgsTextDocumentMetrics textDocumentMetrics = QgsTextDocumentMetrics::calculateMetrics( textDocument, f, *ctx->context, textScaleFactor );
+  QgsTextDocumentRenderContext documentContext;
+
+  if ( settings.autoWrapLinesAfter() > 0 )
+  {
+    documentContext.setMaximumWidth( ctx->context->convertToPainterUnits( settings.autoWrapLinesAfter(), settings.autoWrapLinesUnit() ) );
+    documentContext.setFlags( Qgis::TextRendererFlag::WrapLines );
+  }
+
+  const QgsTextDocumentMetrics textDocumentMetrics = QgsTextDocumentMetrics::calculateMetrics( textDocument, f, *ctx->context, textScaleFactor, documentContext );
   // cppcheck-suppress autoVariables
   ctx->textDocumentMetrics = &textDocumentMetrics;
+  ctx->textDocument = &textDocumentMetrics.document();
   scaleToPx.reset();
 
   // itemHeight here is not really item height, it is only for symbol
