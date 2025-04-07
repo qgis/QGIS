@@ -648,16 +648,6 @@ void QgsLayoutItemLegend::setAutoWrapLinesAfter( double length )
   mSettings.setAutoWrapLinesAfter( length );
 }
 
-Qgis::RenderUnit QgsLayoutItemLegend::autoWrapLinesUnit() const
-{
-  return mSettings.autoWrapLinesUnit();
-}
-
-void QgsLayoutItemLegend::setAutoWrapLinesUnit( Qgis::RenderUnit unit )
-{
-  mSettings.setAutoWrapLinesUnit( unit );
-}
-
 void QgsLayoutItemLegend::updateLegend()
 {
   adjustBoxSize();
@@ -693,10 +683,6 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
   if ( mSettings.autoWrapLinesAfter() > 0 )
   {
     legendElem.setAttribute( QStringLiteral( "autoWrapLinesAfter" ), mSettings.autoWrapLinesAfter() );
-  }
-  if ( mSettings.autoWrapLinesUnit() != Qgis::RenderUnit::Millimeters )
-  {
-    legendElem.setAttribute( QStringLiteral( "autoWrapLinesAfterUnit" ), QgsUnitTypes::encodeUnit( mSettings.autoWrapLinesUnit() ) );
   }
 
   legendElem.setAttribute( QStringLiteral( "wmsLegendWidth" ), QString::number( mSettings.wmsLegendSize().width() ) );
@@ -840,7 +826,6 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   mSettings.setRasterStrokeWidth( itemElem.attribute( QStringLiteral( "rasterBorderWidth" ), QStringLiteral( "0" ) ).toDouble() );
 
   mSettings.setAutoWrapLinesAfter( itemElem.attribute( QStringLiteral( "autoWrapLinesAfter" ), QStringLiteral( "0" ) ).toDouble() );
-  mSettings.setAutoWrapLinesUnit( QgsUnitTypes::decodeRenderUnit( itemElem.attribute( QStringLiteral( "autoWrapLinesAfterUnit" ), QStringLiteral( "MM" ) ) ) );
 
   mSettings.setWrapChar( itemElem.attribute( QStringLiteral( "wrapChar" ) ) );
 

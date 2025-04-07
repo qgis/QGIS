@@ -101,7 +101,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
 
   if ( settings.autoWrapLinesAfter() > 0 )
   {
-    documentContext.setMaximumWidth( ctx->context->convertToPainterUnits( settings.autoWrapLinesAfter(), settings.autoWrapLinesUnit() ) );
+    documentContext.setMaximumWidth( ctx->context->convertToPainterUnits( settings.autoWrapLinesAfter(), Qgis::RenderUnit::Millimeters ) );
     documentContext.setFlags( Qgis::TextRendererFlag::WrapLines );
   }
 
