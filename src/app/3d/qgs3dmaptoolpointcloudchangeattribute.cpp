@@ -150,7 +150,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
 
   // QtConcurrent requires std::function, bare lambdas lead to compile errors.
   std::function mapFn =
-    [this, &searchPolygon, &mapToPixel3D, index, &elevationProperties, renderer3D, mapExtent](
+    [this, &searchPolygon, &mapToPixel3D, index = std::move( index ), &elevationProperties, renderer3D, mapExtent](
       const QgsPointCloudNodeId &n
     ) {
       const QVector<int> pts = selectedPointsInNode( searchPolygon, n, mapToPixel3D, index, mapExtent, elevationProperties, renderer3D );
@@ -164,7 +164,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
     result.insert( pts );
   };
 
-  SelectedPoints result = QtConcurrent::blockingMappedReduced<SelectedPoints>( nodes, mapFn, reduceFn );
+  SelectedPoints result = QtConcurrent::blockingMappedReduced<SelectedPoints>( nodes, std::move( mapFn ), std::move( reduceFn ) );
   return result;
 }
 
