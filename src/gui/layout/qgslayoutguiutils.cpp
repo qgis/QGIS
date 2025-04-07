@@ -231,7 +231,9 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
         break;
     }
 
+    label->beginCommand( QObject::tr( "Resize to Text" ) );
     label->adjustSizeToText( reference );
+    label->endCommand();
   } );
 
   registry->addLayoutItemGuiMetadata( labelItemMetadata.release() );
