@@ -37,7 +37,7 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
   QgsPointCloudIndex index = mLayer->index();
   QgsPointCloudEditingIndex *editIndex = static_cast<QgsPointCloudEditingIndex *>( index.get() );
 
-  std::function mapFn = [editIndex, attribute, index]( std::pair<const QgsPointCloudNodeId &, const QVector<int> &> pair )
+  std::function mapFn = [editIndex, attribute, index = std::move( index )]( std::pair<const QgsPointCloudNodeId &, const QVector<int> &> pair )
   {
     QgsPointCloudNodeId n = pair.first;
     auto &points = pair.second;
@@ -84,7 +84,7 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
 
   mPerNodeData = QtConcurrent::blockingMappedReduced<QHash<QgsPointCloudNodeId, PerNodeData>>(
                    nodesAndPoints.keyValueBegin(), nodesAndPoints.keyValueEnd(),
-                   mapFn, reduceFn
+                   std::move( mapFn ), std::move( reduceFn )
                  );
 }
 
