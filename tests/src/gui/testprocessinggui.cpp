@@ -108,25 +108,65 @@
 #include "qgsgeometrywidget.h"
 
 
-class TestParamType : public QgsProcessingParameterDefinition
+class TestParamDefinition : public QgsProcessingParameterDefinition
 {
   public:
-    TestParamType( const QString &type, const QString &name, const QVariant &defaultValue = QVariant() )
+    TestParamDefinition( const QString &type, const QString &name, const QVariant &defaultValue = QVariant() )
       : QgsProcessingParameterDefinition( name, name, defaultValue )
       , mType( type )
     {}
-
     QString mType;
 
     QgsProcessingParameterDefinition *clone() const override
     {
-      return new TestParamType( mType, name() );
+      return new TestParamDefinition( mType, name() );
     }
 
     QString type() const override { return mType; }
     QString valueAsPythonString( const QVariant &, QgsProcessingContext & ) const override { return QString(); }
     QString asScriptCode() const override { return QString(); }
 };
+
+
+class TestParameterType : public QgsProcessingParameterType
+{
+    // QgsProcessingParameterType interface
+  public:
+    TestParameterType( const QString &type )
+      : mType( type )
+    {}
+    QString mType;
+
+    QgsProcessingParameterDefinition *create( const QString &name ) const override
+    {
+      return new QgsProcessingParameterString( name );
+    }
+
+    QString description() const override
+    {
+      return QStringLiteral( "Dummy Parameter Description" );
+    }
+
+    QString name() const override
+    {
+      return QStringLiteral( "Dummy Parameter Type" );
+    }
+
+    QString id() const override
+    {
+      return mType;
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList();
+    }
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList();
+    }
+};
+
 
 class TestWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper // clazy:exclude=missing-qobject-macro
 {
@@ -480,56 +520,66 @@ void TestProcessingGui::testFilterAlgorithmConfig()
 
 void TestProcessingGui::testWrapperFactoryRegistry()
 {
-  QgsProcessingGuiRegistry registry;
+  QgsProcessingGuiRegistry guiRegistry;
 
-  TestParamType numParam( QStringLiteral( "num" ), QStringLiteral( "num" ) );
-  TestParamType stringParam( QStringLiteral( "str" ), QStringLiteral( "str" ) );
+  TestParamDefinition numParam( QStringLiteral( "num" ), QStringLiteral( "num" ) );
+  TestParamDefinition stringParam( QStringLiteral( "str" ), QStringLiteral( "str" ) );
 
-  QVERIFY( !registry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard ) );
+  TestParameterType *numParamType = new TestParameterType( QStringLiteral( "num" ) );
+  TestParameterType *stringParamType = new TestParameterType( QStringLiteral( "str" ) );
+
+  QVERIFY( !guiRegistry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard ) );
 
   TestWidgetFactory *factory = new TestWidgetFactory( QStringLiteral( "str" ) );
-  QVERIFY( registry.addParameterWidgetFactory( factory ) );
+  QVERIFY( guiRegistry.addParameterWidgetFactory( factory ) );
 
   // duplicate type not allowed
   TestWidgetFactory *factory2 = new TestWidgetFactory( QStringLiteral( "str" ) );
-  QVERIFY( !registry.addParameterWidgetFactory( factory2 ) );
+  QVERIFY( !guiRegistry.addParameterWidgetFactory( factory2 ) );
   delete factory2;
 
-  QgsAbstractProcessingParameterWidgetWrapper *wrapper = registry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard );
+  // Register parameter type for createParameterWidgetWrapper
+  QVERIFY( QgsApplication::processingRegistry()->addParameterType( numParamType ) );
+  QVERIFY( QgsApplication::processingRegistry()->addParameterType( stringParamType ) );
+
+  QgsAbstractProcessingParameterWidgetWrapper *wrapper = guiRegistry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard );
   QVERIFY( !wrapper );
-  wrapper = registry.createParameterWidgetWrapper( &stringParam, QgsProcessingGui::Standard );
+  wrapper = guiRegistry.createParameterWidgetWrapper( &stringParam, QgsProcessingGui::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "str" ) );
   delete wrapper;
 
   TestWidgetFactory *factory3 = new TestWidgetFactory( QStringLiteral( "num" ) );
-  QVERIFY( registry.addParameterWidgetFactory( factory3 ) );
+  QVERIFY( guiRegistry.addParameterWidgetFactory( factory3 ) );
 
-  wrapper = registry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard );
+  wrapper = guiRegistry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "num" ) );
   delete wrapper;
 
   // creating wrapper using metadata
-  TestParamType customParam( QStringLiteral( "custom" ), QStringLiteral( "custom" ) );
-  wrapper = registry.createParameterWidgetWrapper( &customParam, QgsProcessingGui::Standard );
+  TestParamDefinition customParam( QStringLiteral( "custom" ), QStringLiteral( "custom" ) );
+  wrapper = guiRegistry.createParameterWidgetWrapper( &customParam, QgsProcessingGui::Standard );
   QVERIFY( !wrapper );
   customParam.setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "str" ) } } ) }
   } );
-  wrapper = registry.createParameterWidgetWrapper( &customParam, QgsProcessingGui::Standard );
+  wrapper = guiRegistry.createParameterWidgetWrapper( &customParam, QgsProcessingGui::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "custom" ) );
   delete wrapper;
 
   // removing
-  registry.removeParameterWidgetFactory( nullptr );
+  guiRegistry.removeParameterWidgetFactory( nullptr );
   TestWidgetFactory *factory4 = new TestWidgetFactory( QStringLiteral( "xxxx" ) );
-  registry.removeParameterWidgetFactory( factory4 );
-  registry.removeParameterWidgetFactory( factory );
-  wrapper = registry.createParameterWidgetWrapper( &stringParam, QgsProcessingGui::Standard );
+  guiRegistry.removeParameterWidgetFactory( factory4 );
+  guiRegistry.removeParameterWidgetFactory( factory );
+  QgsApplication::processingRegistry()->removeParameterType( numParamType );
+  QgsApplication::processingRegistry()->removeParameterType( stringParamType );
+
+  wrapper = guiRegistry.createParameterWidgetWrapper( &stringParam, QgsProcessingGui::Standard );
   QVERIFY( !wrapper );
 
-  wrapper = registry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard );
+  wrapper = guiRegistry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "num" ) );
   delete wrapper;
@@ -537,7 +587,7 @@ void TestProcessingGui::testWrapperFactoryRegistry()
 
 void TestProcessingGui::testWrapperGeneral()
 {
-  TestParamType param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
+  TestParamDefinition param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
   param.setAdditionalExpressionContextVariables( QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
   QgsProcessingBooleanWidgetWrapper wrapper( &param );
   QCOMPARE( wrapper.type(), QgsProcessingGui::Standard );
@@ -570,12 +620,12 @@ void TestProcessingGui::testWrapperGeneral()
   delete l;
 
   // check that created widget starts with default value
-  param = TestParamType( QStringLiteral( "boolean" ), QStringLiteral( "bool" ), true );
+  param = TestParamDefinition( QStringLiteral( "boolean" ), QStringLiteral( "bool" ), true );
   QgsProcessingBooleanWidgetWrapper trueDefault( &param );
   w = trueDefault.createWrappedWidget( context );
   QVERIFY( trueDefault.widgetValue().toBool() );
   delete w;
-  param = TestParamType( QStringLiteral( "boolean" ), QStringLiteral( "bool" ), false );
+  param = TestParamDefinition( QStringLiteral( "boolean" ), QStringLiteral( "bool" ), false );
   QgsProcessingBooleanWidgetWrapper falseDefault( &param );
   w = falseDefault.createWrappedWidget( context );
   QVERIFY( !falseDefault.widgetValue().toBool() );
@@ -735,7 +785,7 @@ void TestProcessingGui::testModelerWrapper()
   QgsProcessingModelParameter bool1( "p1" );
   model.addModelParameter( new QgsProcessingParameterBoolean( "p1", "desc" ), bool1 );
   QgsProcessingModelParameter testParam( "p2" );
-  model.addModelParameter( new TestParamType( "test_type", "p2" ), testParam );
+  model.addModelParameter( new TestParamDefinition( "test_type", "p2" ), testParam );
   QgsProcessingModelParameter testDestParam( "p3" );
   model.addModelParameter( new QgsProcessingParameterFileDestination( "test_dest", "p3" ), testDestParam );
   QgsProcessingModelParameter testLayerParam( "p4" );
@@ -744,30 +794,34 @@ void TestProcessingGui::testModelerWrapper()
   model.addModelParameter( new QgsProcessingParameterMapLayer( "p5", "test_layer2", QVariant(), true ), testLayerParam );
 
   // try to create a parameter widget, no factories registered
-  QgsProcessingGuiRegistry registry;
+  QgsProcessingGuiRegistry guiRegistry;
+
   QgsProcessingContext context;
-  QVERIFY( !registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p2" ), context ) );
+  QVERIFY( !guiRegistry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p2" ), context ) );
+
+  // register parameter type for createModelerParameterWidget
+  QgsApplication::processingRegistry()->addParameterType( new TestParameterType( "test_type" ) );
 
   // register factory
   TestWidgetFactory *factory = new TestWidgetFactory( QStringLiteral( "test_type" ) );
-  QVERIFY( registry.addParameterWidgetFactory( factory ) );
-  QgsProcessingModelerParameterWidget *w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p2" ), context );
+  QVERIFY( guiRegistry.addParameterWidgetFactory( factory ) );
+  QgsProcessingModelerParameterWidget *w = guiRegistry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p2" ), context );
   QVERIFY( w );
   delete w;
 
-  w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p1" ), context );
+  w = guiRegistry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p1" ), context );
   QVERIFY( w );
   // should default to static value
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   delete w;
 
-  w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p4" ), context );
+  w = guiRegistry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p4" ), context );
   QVERIFY( w );
   // a layer parameter should default to "model input" type
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
   delete w;
   // but an optionl layer parameter should NOT -- we don't want to autofill values for optional layers by default
-  w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p5" ), context );
+  w = guiRegistry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p5" ), context );
   QVERIFY( w );
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   delete w;
@@ -815,6 +869,7 @@ void TestProcessingGui::testModelerWrapper()
 
   // populate sources and re-try
   // w->populateSources( QStringList() << QStringLiteral( "boolean" ), QStringList() << QStringLiteral( "outputVector" ), QList<int>() );
+  qDebug() << "set source 1";
   w->populateSources( new QgsProcessingParameterBoolean( "dummyname", "dummy desc" ) );
 
   // model input
@@ -823,6 +878,7 @@ void TestProcessingGui::testModelerWrapper()
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().parameterName(), QStringLiteral( "p1" ) );
 
 
+  qDebug() << "set source 2";
   w->populateSources( new QgsProcessingParameterMapLayer( "dummyname", "dummy desc" ) );
 
   // alg output
@@ -873,7 +929,7 @@ void TestProcessingGui::testModelerWrapper()
 
 void TestProcessingGui::testHiddenWrapper()
 {
-  TestParamType param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
+  TestParamDefinition param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
 
   QgsProcessingHiddenWidgetWrapper wrapper( &param );
   QSignalSpy spy( &wrapper, &QgsProcessingHiddenWidgetWrapper::widgetValueHasChanged );
@@ -900,7 +956,7 @@ void TestProcessingGui::testHiddenWrapper()
 
 void TestProcessingGui::testBooleanWrapper()
 {
-  TestParamType param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
+  TestParamDefinition param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
 
   // standard wrapper
   QgsProcessingBooleanWidgetWrapper wrapper( &param );
