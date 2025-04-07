@@ -157,6 +157,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   {
     QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, painter )
                                : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+    context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
     const QSizeF size = legendRenderer.minimumSize( &context );
     if ( mForceResize )
@@ -236,6 +237,7 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
                         : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, context.renderContext().scaleFactor() * 25.4 );
 
   rc.expressionContext().appendScopes( createExpressionContext().takeScopes() );
+  rc.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
   const QgsScopedQPainterState painterState( painter );
 
@@ -281,6 +283,7 @@ void QgsLayoutItemLegend::adjustBoxSize()
 
   QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, nullptr ) :
                              QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
+  context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
   QgsLegendRenderer legendRenderer = createRenderer();
   const QSizeF size = legendRenderer.minimumSize( &context );
