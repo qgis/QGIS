@@ -1954,8 +1954,7 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         legend.setTitle("")
         layout.addLayoutItem(legend)
 
-        legend.setAutoWrapLinesAfter(200)
-        legend.setAutoWrapLinesUnit(Qgis.RenderUnit.Points)
+        legend.setAutoWrapLinesAfter(70.5556)
 
         legend.setStyleFont(
             QgsLegendStyle.Style.Title, QgsFontUtils.getStandardTestFont("Bold", 16)

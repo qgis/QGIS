@@ -534,54 +534,28 @@ class CORE_EXPORT QgsLegendSettings
     void setJsonRenderFlags( const Qgis::LegendJsonRenderFlags &jsonRenderFlags );
 
     /**
-     * Returns the maximum line length allowed before lines of text in the legend
+     * Returns the maximum line length (in millimeters) allowed before lines of text in the legend
      * will be automatically word wrapped.
-     *
-     * Units are retrieved via autoWrapLinesUnit().
      *
      * If the returned value is 0, then no automatic wrapping will occur.
      *
      * \see setAutoWrapLinesAfter()
-     * \see autoWrapLinesUnit()
      *
      * \since QGIS 3.44
      */
     double autoWrapLinesAfter() const { return mAutoWrapLinesAfter; }
 
     /**
-     * Sets the maximum line \a length allowed before lines of text in the legend
+     * Sets the maximum line \a length (in millimeters) allowed before lines of text in the legend
      * will be automatically word wrapped.
-     *
-     * Units are set via setAutoWrapLinesUnit().
      *
      * If \a length is 0, then no automatic wrapping will occur.
      *
      * \see autoWrapLinesAfter()
-     * \see setAutoWrapLinesUnit()
      *
      * \since QGIS 3.44
      */
     void setAutoWrapLinesAfter( double length ) { mAutoWrapLinesAfter = length; }
-
-    /**
-     * Returns the units used for the automatic maximum line length wrapping.
-     *
-     * \see autoWrapLinesAfter()
-     * \see setAutoWrapLinesUnit()
-     *
-     * \since QGIS 3.44
-     */
-    Qgis::RenderUnit autoWrapLinesUnit() const { return mAutoWrapLinesUnit; }
-
-    /**
-     * Sets the \a unit used for the automatic maximum line length wrapping.
-     *
-     * \see setAutoWrapLinesAfter()
-     * \see autoWrapLinesUnit()
-     *
-     * \since QGIS 3.44
-     */
-    void setAutoWrapLinesUnit( Qgis::RenderUnit unit ) { mAutoWrapLinesUnit = unit; }
 
   private:
 
@@ -593,7 +567,6 @@ class CORE_EXPORT QgsLegendSettings
     QString mWrapChar;
 
     double mAutoWrapLinesAfter = 0;
-    Qgis::RenderUnit mAutoWrapLinesUnit = Qgis::RenderUnit::Millimeters;
 
     //! Space between item box and contents
     qreal mBoxSpace = 2;
