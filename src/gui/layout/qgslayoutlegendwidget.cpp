@@ -249,6 +249,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
 
   registerDataDefinedButton( mLegendTitleDDBtn, QgsLayoutObject::DataDefinedProperty::LegendTitle );
   registerDataDefinedButton( mColumnsDDBtn, QgsLayoutObject::DataDefinedProperty::LegendColumnCount );
+  registerDataDefinedButton( mLegendAutoWrapWidthDDBtn, QgsLayoutObject::DataDefinedProperty::LegendAutoWrapWidth );
 
   setGuiElements();
 

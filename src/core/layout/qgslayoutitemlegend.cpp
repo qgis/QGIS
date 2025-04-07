@@ -1029,6 +1029,16 @@ void QgsLayoutItemLegend::refreshDataDefinedProperty( const QgsLayoutObject::Dat
       forceUpdate = true;
     }
   }
+  if ( property == QgsLayoutObject::DataDefinedProperty::LegendAutoWrapWidth || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  {
+    bool ok = false;
+    const double width = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::LegendAutoWrapWidth, context, mSettings.autoWrapLinesAfter(), &ok );
+    if ( ok && width >= 0 )
+    {
+      mSettings.setAutoWrapLinesAfter( width );
+      forceUpdate = true;
+    }
+  }
   if ( forceUpdate )
   {
     adjustBoxSize();
