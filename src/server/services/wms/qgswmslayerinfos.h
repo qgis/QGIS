@@ -42,15 +42,6 @@ class QgsWmsLayerInfos
     //! WMS layer name
     QString name;
 
-    //! WMS layer title
-    QString title;
-
-    //! WMS layer abstract
-    QString abstract;
-
-    //! WMS layer keywords
-    QStringList keywords;
-
     //! WMS layer WGS84 bounding rectangle (can be empty)
     QgsRectangle wgs84BoundingRect;
 
@@ -77,18 +68,6 @@ class QgsWmsLayerInfos
 
     //! WMS layer minimum scale (if negative, no maximum scale is defined)
     double minScale = -1.0;
-
-    //! WMS layer dataUrl
-    QString dataUrl;
-
-    //! WMS layer attribution
-    QString attribution;
-
-    //! WMS layer attribution URL
-    QString attributionUrl;
-
-    //! WMS layer metadata URLs
-    QList<QgsMapLayerServerProperties::MetadataUrl> metadataUrls;
 
     //! QGIS layer type
     Qgis::LayerType type;

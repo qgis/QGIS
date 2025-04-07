@@ -31,6 +31,32 @@ bool QgsServerMetadataUrlProperties::MetadataUrl::operator==( const QgsServerMet
          format == other.format;
 }
 
+bool QgsServerMetadataUrlProperties::operator==( const QgsServerMetadataUrlProperties &other ) const
+{
+  return mMetadataUrls == other.mMetadataUrls;
+}
+
+bool QgsServerMetadataUrlProperties::operator!=( const QgsServerMetadataUrlProperties &other ) const
+{
+  return !( *this == other );
+}
+
+bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator==( const WmsDimensionInfo &other ) const
+{
+  return name == other.name
+         && fieldName == other.fieldName
+         && endFieldName == other.endFieldName
+         && units == other.units
+         && unitSymbol == other.unitSymbol
+         && defaultDisplayType == other.defaultDisplayType
+         && referenceValue == other.referenceValue;
+}
+
+bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator!=( const WmsDimensionInfo &other ) const
+{
+  return !( *this == other );
+}
+
 void QgsServerMetadataUrlProperties::copyTo( QgsServerMetadataUrlProperties *properties ) const
 {
   properties->setMetadataUrls( metadataUrls() );
@@ -75,6 +101,16 @@ void QgsServerMetadataUrlProperties::writeXml( QDomNode &layer_node, QDomDocumen
 }
 
 // QgsServerWmsDimensionProperties
+
+bool QgsServerWmsDimensionProperties::operator==( const QgsServerWmsDimensionProperties &other ) const
+{
+  return mWmsDimensions == other.mWmsDimensions;
+}
+
+bool QgsServerWmsDimensionProperties::operator!=( const QgsServerWmsDimensionProperties &other ) const
+{
+  return !( *this == other );
+}
 
 void QgsServerWmsDimensionProperties::copyTo( QgsServerWmsDimensionProperties *properties ) const
 {
@@ -137,7 +173,7 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
   reset();
 
   // Apply only for vector layers
-  if ( layer()->type() != Qgis::LayerType::Vector )
+  if ( !layer() || layer()->type() != Qgis::LayerType::Vector )
     return;
 
   const QgsFields fields = static_cast<const QgsVectorLayer *>( layer() )->fields();
@@ -232,6 +268,27 @@ void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *propertie
   properties->setAttributionUrl( mAttributionUrl );
   properties->setLegendUrl( mLegendUrl );
   properties->setLegendUrlFormat( mLegendUrlFormat );
+}
+
+bool QgsMapLayerServerProperties::operator==( const QgsMapLayerServerProperties &other ) const
+{
+  return QgsServerMetadataUrlProperties::operator==( other )
+         && QgsServerWmsDimensionProperties::operator==( other )
+         && mShortName == other.mShortName
+         && mTitle == other.mTitle
+         && mAbstract == other.mAbstract
+         && mKeywordList == other.mKeywordList
+         && mDataUrl == other.mDataUrl
+         && mDataUrlFormat == other.mDataUrlFormat
+         && mAttribution == other.mAttribution
+         && mAttributionUrl == other.mAttributionUrl
+         && mLegendUrl == other.mLegendUrl
+         && mLegendUrlFormat == other.mLegendUrlFormat;
+}
+
+bool QgsMapLayerServerProperties::operator!=( const QgsMapLayerServerProperties &other ) const
+{
+  return !( *this == other );
 }
 
 void QgsMapLayerServerProperties::reset() // cppcheck-suppress duplInheritedMember
