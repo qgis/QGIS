@@ -21,7 +21,7 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'November 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
-
+from typing import TypeAlias
 from PyQt@QT_VERSION_MAJOR@.QtCore import QT_VERSION
 from PyQt@QT_VERSION_MAJOR@.QtGui import *
 
@@ -45,9 +45,9 @@ QColor.__repr__ = __qcolor_repr__
 
 if (QT_VERSION < 0x060000):
   from PyQt5.QtWidgets import QAction as _QAction, QActionGroup as _QActionGroup, QShortcut as _QShortcut
-  QAction = _QAction
-  QActionGroup = _QActionGroup
-  QShortcut = _QShortcut
+  QAction: TypeAlias = _QAction
+  QActionGroup: TypeAlias = _QActionGroup
+  QShortcut: TypeAlias = _QShortcut
 
 
 if @QT_VERSION_MAJOR@ == 6:
