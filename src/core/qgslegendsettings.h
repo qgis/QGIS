@@ -579,7 +579,7 @@ class CORE_EXPORT QgsLegendSettings
     QColor mRasterStrokeColor;
     double mRasterStrokeWidth = 0.0;
 
-    QMap<QgsLegendStyle::Style, QgsLegendStyle> mStyleMap;
+    QVector<QgsLegendStyle> mStyleMap;
 
     //! Conversion ratio between millimeters and map units - for symbols with size given in map units
     double mMmPerMapUnit = 1;
