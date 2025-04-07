@@ -100,7 +100,7 @@ def initMenusAndToolbars():
     defaultMenuEntries.update(
         {
             "qgis:checkvalidity": geometryToolsMenu,
-            "qgis:exportaddgeometrycolumns": geometryToolsMenu,
+            "native:exportaddgeometrycolumns": geometryToolsMenu,
             "native:centroids": geometryToolsMenu,
             "native:delaunaytriangulation": geometryToolsMenu,
             "native:voronoipolygons": geometryToolsMenu,
