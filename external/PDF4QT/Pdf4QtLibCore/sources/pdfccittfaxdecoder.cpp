@@ -24,7 +24,7 @@ namespace pdf
 {
 
 template<char... Digits>
-constexpr uint8_t operator "" _bitlength()
+constexpr uint8_t operator ""_bitlength()
 {
     return sizeof...(Digits);
 }
