@@ -51,9 +51,9 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
      * Set the from socket
      * 
      * In the case the user started dragging from an already linked input socket 
-     * We need to figure out, which is the output socket used as the source at the other side of the link.
+     * we need to figure out, which is the output socket used as the source at the other side of the link.
      * 
-     * This is used when the user disconnect a a link or relink to another input socket 
+     * This is used when the user disconnects a a link or relinks to another input socket 
      */
     void setFromSocket( QgsModelDesignerSocketGraphicItem *socket );
 
