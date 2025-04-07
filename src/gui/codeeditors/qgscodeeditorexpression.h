@@ -56,9 +56,6 @@ class GUI_EXPORT QgsCodeEditorExpression : public QgsCodeEditor
      */
     void setFields( const QgsFields &fields );
 
-    /**
-     * Toggles comments for selected lines.
-     */
     void toggleComment() override;
 
   protected:
