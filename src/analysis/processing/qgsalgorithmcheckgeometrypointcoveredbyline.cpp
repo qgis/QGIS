@@ -52,7 +52,7 @@ QString QgsGeometryCheckPointCoveredByLineAlgorithm::groupId() const
 
 QString QgsGeometryCheckPointCoveredByLineAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm check if the points in the input layer are covered by a line in the selected line layers.\n"
+  return QObject::tr( "This algorithm checks if the points in the input layer are covered by a line in the selected line layers.\n"
                       "A point not covered by a line is an error." );
 }
 
