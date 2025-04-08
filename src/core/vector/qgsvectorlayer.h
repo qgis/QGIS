@@ -1405,11 +1405,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_INVOKABLE Qgis::GeometryOperationResult addPart( const QgsPointSequence &ring ) SIP_PYNAME( addPartV2 );
 
     /**
-     * \note available in Python as addCurvedPart
+     * Adds a new ring to a multipart feature.
+     *
      * \note Calls to addPart() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
+     *
+     * \note available in Python as addCurvedPart
      */
     Q_INVOKABLE Qgis::GeometryOperationResult addPart( QgsCurve *ring SIP_TRANSFER ) SIP_PYNAME( addCurvedPart );
 

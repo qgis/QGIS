@@ -713,14 +713,12 @@ class CORE_EXPORT QgsFeatureRenderer
     double mReferenceScale = -1.0;
 
     /**
-     * \note this function is used to convert old sizeScale expressions to symbol
-     * level DataDefined size
+     * Converts old sizeScale expressions to symbol level data defined sizes.
      */
     static void convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field );
 
     /**
-     * \note this function is used to convert old rotations expressions to symbol
-     * level DataDefined angle
+     * Converts old rotation expressions to symbol level data defined angles.
      */
     static void convertSymbolRotation( QgsSymbol *symbol, const QString &field );
 
