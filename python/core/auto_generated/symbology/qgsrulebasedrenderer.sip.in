@@ -133,9 +133,8 @@ to be applied.
 
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 %Docstring
-.. note::
-
-   available in Python bindings as symbol2
+Returns a list of the symbols used by this rule and all children of this
+rule.
 %End
 
         QgsLegendSymbolList legendSymbolItems( int currentLevel = -1 ) const;

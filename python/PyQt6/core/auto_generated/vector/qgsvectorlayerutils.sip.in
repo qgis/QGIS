@@ -320,8 +320,8 @@ Tests whether a field is editable for a particular ``feature``.
 
     static bool fieldIsReadOnly( const QgsVectorLayer *layer, int fieldIndex );
 %Docstring
-:return: ``True`` if the field at index ``fieldIndex`` from ``layer`` is
-         editable, ``False`` if the field is read only.
+Returns ``True`` if the field at index ``fieldIndex`` from ``layer`` is
+editable, ``False`` if the field is read only.
 
 If this function returns ``True`` then the editability of the field may
 still vary feature by feature. See
@@ -347,9 +347,11 @@ on edit" capabilities.
 
     static QString getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature );
 %Docstring
-:return: a descriptive string for a ``feature``, suitable for displaying
-         to the user. The definition is taken from the
-         ``displayExpression`` property of ``layer``.
+Returns a descriptive string for a ``feature``, suitable for displaying
+to the user.
+
+The definition is taken from the ``displayExpression`` property of
+``layer``.
 
 .. versionadded:: 3.12
 %End
@@ -363,10 +365,11 @@ on edit" capabilities.
 
     static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context /Out/, QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags() );
 %Docstring
-:return: ``True`` if at least one feature of the ``fids`` on ``layer``
-         is connected as parent in at least one composition relation of
-         the ``project`` or contains joins, where cascade delete is set.
-         Details about cascading effects will be written to ``context``.
+Returns ``True`` if at least one feature of the ``fids`` on ``layer`` is
+connected as parent in at least one composition relation of the
+``project`` or contains joins, where cascade delete is set.
+
+Details about cascading effects will be written to ``context``.
 
 .. versionadded:: 3.14
 %End

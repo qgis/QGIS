@@ -87,14 +87,14 @@ Returns a string representation of an HTTP request ``method``.
 
     QUrl url() const;
 %Docstring
-:return: the request url as seen by QGIS server
+Returns the request URL as seen by QGIS server.
 
-.. seealso:: :py:func:`originalUrl` for the unrewritten url as seen by the web server, by default the two are equal
+.. seealso:: :py:func:`originalUrl` for the unrewritten URL as seen by the web server, by default the two are equal
 %End
 
     QgsServerRequest::Method method() const;
 %Docstring
-:return: the request method
+Returns the request method.
 %End
 
     QgsServerRequest::Parameters parameters() const;

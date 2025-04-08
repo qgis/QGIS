@@ -974,17 +974,18 @@ Returns the name used by the provider to identify the dataset
 
     bool isVector() const;
 %Docstring
-:return: whether the dataset group is vector
+Return ``True`` if the dataset group is vector.
 %End
 
     int datasetGroupIndex() const;
 %Docstring
-:return: the dataset group index
+Returns the dataset group index.
 %End
 
     bool isEnabled() const;
 %Docstring
-:return: whether the item is enabled, that is if it is displayed in view
+Returns ``True`` if the item is enabled, i.e. if it is displayed in
+view.
 %End
 
     void setIsEnabled( bool isEnabled );
@@ -996,12 +997,12 @@ Sets whether the item is enabled, that is if it is displayed in view
 
     QString defaultName() const;
 %Docstring
-:return: the default name
+Returns the default name.
 %End
 
     QgsMeshDatasetGroup::Type datasetGroupType() const;
 %Docstring
-:return: the dataset group type
+Returns the dataset group type.
 
 .. versionadded:: 3.16
 %End

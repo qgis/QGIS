@@ -1138,7 +1138,20 @@ and any displacement required to align with the marker's anchor point.
                        double &offsetX, double &offsetY,
                        const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const /PyName=markerOffset2/;
 %Docstring
+Calculates the required marker offset, including both the symbol offset
+and any displacement required to align with the marker's anchor point.
 
+:param context: symbol render context
+:param width: marker width
+:param height: marker height
+:param widthUnit: unit for marker width
+:param heightUnit: unit for marker height
+:param offsetX: will be set to required horizontal offset (in painter
+                units)
+:param offsetY: will be set to required vertical offset (in painter
+                units)
+:param widthMapUnitScale: map unit scale for marker width
+:param heightMapUnitScale: map unit scale for marker height
 %End
 
     static QPointF _rotatedOffset( QPointF offset, double angle );

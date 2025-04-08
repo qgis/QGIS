@@ -319,7 +319,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
 
     /**
-     * \returns TRUE if the field at index \a fieldIndex from \a layer
+     * Returns TRUE if the field at index \a fieldIndex from \a layer
      * is editable, FALSE if the field is read only.
      *
      * If this function returns TRUE then the editability of the field may still vary feature by
@@ -359,8 +359,10 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QgsMaskedLayers symbolLayerMasks( const QgsVectorLayer * ) SIP_SKIP;
 
     /**
-     * \returns a descriptive string for a \a feature, suitable for displaying to the user.
-     *         The definition is taken from the ``displayExpression`` property of \a layer.
+     * Returns a descriptive string for a \a feature, suitable for displaying to the user.
+     *
+     * The definition is taken from the ``displayExpression`` property of \a layer.
+     *
      * \since QGIS 3.12
      */
     static QString getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature );
@@ -377,8 +379,9 @@ class CORE_EXPORT QgsVectorLayerUtils
     Q_DECLARE_FLAGS( CascadedFeatureFlags, CascadedFeatureFlag )
 
     /**
-     * \returns TRUE if at least one feature of the \a fids on \a layer is connected as parent in at
+     * Returns TRUE if at least one feature of the \a fids on \a layer is connected as parent in at
      * least one composition relation of the \a project or contains joins, where cascade delete is set.
+     *
      * Details about cascading effects will be written to \a context.
      * \since QGIS 3.14
      */

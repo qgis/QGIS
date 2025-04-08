@@ -1081,7 +1081,8 @@ Returns the zoom in factor.
 
     const QList<double> &zoomResolutions() const;
 %Docstring
-:return: List of resolutions to which to "snap to" when zooming the map
+Returns the list of resolutions to which to "snap to" when zooming the
+map.
 
 .. seealso:: :py:func:`setZoomResolutions`
 

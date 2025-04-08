@@ -31,17 +31,17 @@ registered at runtime for a given service name.
 
     virtual QString name() const = 0;
 %Docstring
-:return: the name of the service
+Returns the name of the service.
 %End
 
     virtual QString version() const = 0;
 %Docstring
-:return: the version of the service
+Returns the version of the service.
 %End
 
     virtual void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) = 0;
 %Docstring
-Execute the requests and set result in :py:class:`QgsServerRequest`
+Executes the requests and sets result in :py:class:`QgsServerRequest`.
 %End
 };
 

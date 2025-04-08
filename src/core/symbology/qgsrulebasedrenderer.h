@@ -183,7 +183,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         bool needsGeometry() const;
 
-        //! \note available in Python bindings as symbol2
+        /**
+         * Returns a list of the symbols used by this rule and all children of this rule.
+         */
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 
         QgsLegendSymbolList legendSymbolItems( int currentLevel = -1 ) const;

@@ -513,7 +513,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
                                       const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle,
                                       double strokeWidth = -1, double size = -1 );
 
-    //! \note available in Python as wellKnownMarkerFromSld2
+    /**
+     * Extracts properties from an SLD marker definition.
+     */
     static bool wellKnownMarkerFromSld( QDomElement &element,
                                         QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
                                         double &strokeWidth, double &size ) SIP_PYNAME( wellKnownMarkerFromSld2 );

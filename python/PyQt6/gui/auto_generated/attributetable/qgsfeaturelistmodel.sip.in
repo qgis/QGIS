@@ -78,6 +78,8 @@ Returns the current state of null value injection
 
     bool setDisplayExpression( const QString &expression );
 %Docstring
+Sets the display expression.
+
 :param expression: A :py:class:`QgsExpression` compatible string.
 
 :return: ``True`` if the expression could be set, ``False`` if there was

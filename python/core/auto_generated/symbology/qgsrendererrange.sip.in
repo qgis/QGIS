@@ -221,7 +221,8 @@ Encapsulates the formatting for a :py:class:`QgsRendererRange` label.
 
     QString labelForRange( double lower, double upper ) const /PyName=labelForLowerUpper/;
 %Docstring
-
+Returns the label to use for a range with the specified ``lower`` and
+``upper`` bounds.
 %End
     QString labelForRange( const QgsRendererRange &range ) const;
     QString formatNumber( double value ) const;
