@@ -263,6 +263,12 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
      */
     QString filterExpression() const { return mFilterExpression; };
 
+    /**
+     * Bodge to take selected feature categories into account in the applied
+     * filter when the "Reload the table" icon is clicked.
+     */
+    void refreshFilteredFeatures() { startTimedReloadVisible(); }
+
   signals:
 
     /**
