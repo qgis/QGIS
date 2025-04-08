@@ -1513,6 +1513,7 @@ def convert_type(cpp_type: str) -> str:
 
     cpp_type = cpp_type.replace("static ", "")
     cpp_type = cpp_type.replace("const ", "")
+    cpp_type = cpp_type.replace(" *", "")
 
     # Handle templates
     template_match = re.match(r"(\w+)\s*<\s*(.+)\s*>", cpp_type)

@@ -8,7 +8,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsRuleBasedRenderer.RenderLevel.__attribute_docs__ = {'jobs': 'List of jobs to render, owned by this object.'}
-    QgsRuleBasedRenderer.RenderLevel.__annotations__ = {'jobs': 'List[QgsRuleBasedRenderer.RenderJob *]'}
+    QgsRuleBasedRenderer.RenderLevel.__annotations__ = {'jobs': 'List[QgsRuleBasedRenderer.RenderJob]'}
     QgsRuleBasedRenderer.RenderLevel.__doc__ = """Render level: a list of jobs to be drawn at particular level for a QgsRuleBasedRenderer."""
     QgsRuleBasedRenderer.RenderLevel.__group__ = ['symbology']
 except (NameError, AttributeError):
