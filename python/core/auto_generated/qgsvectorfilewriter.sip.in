@@ -296,7 +296,7 @@ Write contents of vector layer to an (OGR supported) vector format
                              This parameter allows for conversion of
                              geometryless tables to null geometries, etc
                              (added in QGIS 2.14)
-:param forceMulti: set to ``True`` to force creation of multi*
+:param forceMulti: set to ``True`` to force creation of multipart
                    geometries (added in QGIS 2.14)
 :param includeZ: set to ``True`` to include z dimension in output. This
                  option is only valid if overrideGeometryType is set.
@@ -305,7 +305,9 @@ Write contents of vector layer to an (OGR supported) vector format
                    skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
 
-:return: - errorMessage: the error message text, if an error occurs
+:return: - QgsVectorFileWriter.WriterError.NoError in case of success,
+           or error code in case of error
+         - errorMessage: the error message text, if an error occurs
            while writing the layer
 
 .. deprecated:: 3.40
@@ -358,7 +360,7 @@ Writes a layer out to a vector file.
                              This parameter allows for conversion of
                              geometryless tables to null geometries, etc
                              (added in QGIS 2.14)
-:param forceMulti: set to ``True`` to force creation of multi*
+:param forceMulti: set to ``True`` to force creation of multipart
                    geometries (added in QGIS 2.14)
 :param includeZ: set to ``True`` to include z dimension in output. This
                  option is only valid if overrideGeometryType is set.
@@ -367,7 +369,9 @@ Writes a layer out to a vector file.
                    skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
 
-:return: - errorMessage: the error message text, if an error occurs
+:return: - QgsVectorFileWriter.WriterError.NoError in case of success,
+           or error code in case of error
+         - errorMessage: the error message text, if an error occurs
            while writing the layer
 
 .. deprecated:: 3.40
@@ -457,7 +461,9 @@ Writes a layer out to a vector file.
 :param newFilename: QString pointer which will contain the new file name
                     created (in case it is different to fileName).
 
-:return: - errorMessage: the error message text, if an error occurs
+:return: - QgsVectorFileWriter.WriterError.NoError in case of success,
+           or error code in case of error
+         - errorMessage: the error message text, if an error occurs
            while writing the layer
 
 .. deprecated:: 3.40
