@@ -39,6 +39,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSink,
     QgsProcessingException,
     QgsSpatialIndex,
+    QgsProcessingAlgorithm,
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -73,6 +74,9 @@ class HubDistanceLines(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagDeprecated
 
     def initAlgorithm(self, config=None):
         self.units = [

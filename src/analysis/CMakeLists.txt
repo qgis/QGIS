@@ -164,6 +164,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmgpsbabeltools.cpp
   processing/qgsalgorithmgrid.cpp
   processing/qgsalgorithmhillshade.cpp
+  processing/qgsalgorithmhubdistance.cpp
   processing/qgsalgorithmimportphotos.cpp
   processing/qgsalgorithminterpolatepoint.cpp
   processing/qgsalgorithmintersection.cpp
