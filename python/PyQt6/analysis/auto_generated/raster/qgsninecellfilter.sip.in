@@ -54,8 +54,8 @@ mOutputFile
 :param feedback: feedback object that receives update and that is
                  checked for cancellation.
 
-:return: QgsNineCellFilter.Success in case of success or error value on
-         failure.
+:return: QgsNineCellFilter.Result.Success in case of success or error
+         value on failure.
 %End
 
     double cellSizeX() const;
