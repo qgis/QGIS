@@ -33,8 +33,7 @@ Default constructor
 
     QgsHttpHeaders httpHeaders() const;
 %Docstring
-:return: build a new ``:py:class:`QgsHttpHeaders``` according to data in
-         the UI
+Returns the headers as defined in the widget.
 %End
 
     void setHeaders( const QgsHttpHeaders &headers );

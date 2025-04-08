@@ -248,7 +248,7 @@ class CORE_EXPORT QgsProviderRegistry
 
     /**
      * Lists stored layer styles in the provider defined by \a providerKey and \a uri
-     * \returns -1 if not implemented by provider, otherwise number of styles stored
+     * \returns ``-1`` if not implemented by provider, otherwise number of styles stored
      * \since QGIS 3.10
      */
     int listStyles( const QString &providerKey,

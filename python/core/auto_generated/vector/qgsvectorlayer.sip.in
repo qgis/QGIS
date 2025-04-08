@@ -1414,12 +1414,16 @@ Adds a new part polygon to a multipart feature
 
     Qgis::GeometryOperationResult addPart( QgsCurve *ring /Transfer/ ) /PyName=addCurvedPart/;
 %Docstring
+Adds a new ring to a multipart feature.
+
 .. note::
 
    Calls to :py:func:`~QgsVectorLayer.addPart` are only valid for layers in which edits have been enabled
    by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
+
+
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
