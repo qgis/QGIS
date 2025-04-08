@@ -45,6 +45,7 @@
 #include "qgsalgorithmcentroid.h"
 #include "qgsalgorithmcheckgeometryangle.h"
 #include "qgsalgorithmcheckgeometryarea.h"
+#include "qgsalgorithmfixgeometrydeletefeatures.h"
 #include "qgsalgorithmfixgeometryarea.h"
 #include "qgsalgorithmfixgeometryhole.h"
 #include "qgsalgorithmfixgeometrymissingvertex.h"
@@ -593,6 +594,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPolygonsToLinesAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByIntervalAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByCountAlgorithm() );
+  addAlgorithm( new QgsFixGeometryDeleteFeaturesAlgorithm() );
   addAlgorithm( new QgsFixGeometryAngleAlgorithm() );
   addAlgorithm( new QgsFixGeometryAreaAlgorithm() );
   addAlgorithm( new QgsFixGeometryHoleAlgorithm() );

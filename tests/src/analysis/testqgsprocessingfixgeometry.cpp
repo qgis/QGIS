@@ -39,6 +39,9 @@ class TestQgsProcessingFixGeometry : public QgsTest
     void fixAreaAlg_data();
     void fixAreaAlg();
 
+    void fixDeleteFeaturesAlg_data();
+    void fixDeleteFeaturesAlg();
+
     void fixHoleAlg();
     void fixMissingVertexAlg();
 
@@ -355,6 +358,94 @@ void TestQgsProcessingFixGeometry::fixMissingVertexAlg()
   QVERIFY( outputLayer->isValid() );
 
   QCOMPARE( outputLayer->featureCount(), 6 );
+  QCOMPARE( reportLayer->featureCount(), reportList.count() );
+  int idx = 1;
+  for ( const QString &expectedReport : reportList )
+  {
+    const QgsFeature reportFeature = reportLayer->getFeature( idx );
+    QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
+    idx++;
+  }
+}
+
+void TestQgsProcessingFixGeometry::fixDeleteFeaturesAlg_data()
+{
+  const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+  QTest::addColumn<QgsVectorLayer *>( "sourceLayer" );
+  QTest::addColumn<QgsVectorLayer *>( "errorsLayer" );
+  QTest::addColumn<QStringList>( "reportList" );
+
+  QTest::newRow( "Points" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "point_layer.shp" ), QStringLiteral( "point layer" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_features.gpkg|layername=points_to_delete" ), QStringLiteral( "points to delete" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" ) );
+
+  QTest::newRow( "Lines" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), QStringLiteral( "line layer" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_features.gpkg|layername=lines_to_delete" ), QStringLiteral( "lines to delete" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" ) );
+
+  QTest::newRow( "Polygons" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygon layer" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_features.gpkg|layername=polygons_to_delete" ), QStringLiteral( "polygons to delete" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" ) );
+}
+
+void TestQgsProcessingFixGeometry::fixDeleteFeaturesAlg()
+{
+  QFETCH( QgsVectorLayer *, sourceLayer );
+  QFETCH( QgsVectorLayer *, errorsLayer );
+  QFETCH( QStringList, reportList );
+
+  QVERIFY( sourceLayer->isValid() );
+  QVERIFY( errorsLayer->isValid() );
+
+  const std::unique_ptr<QgsProcessingAlgorithm> alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometrydeletefeatures" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( sourceLayer->source() ) ) );
+  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+  parameters.insert( QStringLiteral( "ERRORS" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( errorsLayer->source() ) ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "REPORT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  auto context = std::make_unique<QgsProcessingContext>();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  QVERIFY( reportLayer->isValid() );
+  QVERIFY( outputLayer->isValid() );
+
+  QCOMPARE( outputLayer->featureCount(), sourceLayer->featureCount() - reportList.count() );
   QCOMPARE( reportLayer->featureCount(), reportList.count() );
   int idx = 1;
   for ( const QString &expectedReport : reportList )
