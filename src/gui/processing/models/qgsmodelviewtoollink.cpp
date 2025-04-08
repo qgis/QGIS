@@ -206,29 +206,29 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
         case Qgis::ProcessingModelChildParameterSource::ChildOutput:
         {
           oldSource = source;
-          QgsProcessingModelChildAlgorithm *_alg;
+          QgsProcessingModelChildAlgorithm *algSource;
           // This is not so nice to have the UI tangled gotta think of a better abstraction later
           // Loop trought all items to get the output socket
           for ( QGraphicsItem *item : items )
           {
             if ( QgsModelDesignerSocketGraphicItem *outputSocket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
             {
-              if ( ( _alg = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputSocket->component() ) ) )
+              if ( ( algSource = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputSocket->component() ) ) )
               {
-                if ( source.outputChildId() != _alg->childId() || outputSocket->isInput() )
+                if ( source.outputChildId() != algSource->childId() || outputSocket->isInput() )
                 {
                   continue;
                 }
-                int outputIndexForSourceName = QgsProcessingUtils::outputDefinitionIndex( _alg->algorithm(), source.outputName() );
+                int outputIndexForSourceName = QgsProcessingUtils::outputDefinitionIndex( algSource->algorithm(), source.outputName() );
                 if ( outputSocket->index() == outputIndexForSourceName )
                 {
                   mFromSocket = outputSocket;
                   view()->beginCommand( tr( "Edit link" ) );
                 }
               }
-              else if ( QgsProcessingModelParameter *_param = dynamic_cast<QgsProcessingModelParameter *>( outputSocket->component() ) )
+              else if ( auto modelParamSource = dynamic_cast<QgsProcessingModelParameter *>( outputSocket->component() ) )
               {
-                if ( source.parameterName() == _param->parameterName() )
+                if ( source.parameterName() == modelParamSource->parameterName() )
                 {
                   mFromSocket = outputSocket;
                   view()->beginCommand( tr( "Edit link" ) );
@@ -250,19 +250,19 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
 
           //Get Socket from Source alg / source parameter
           QgsModelComponentGraphicItem *item = nullptr;
-          int socket_index = -1;
+          int socketIndex = -1;
           if ( oldSource.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput )
           {
             item = scene()->childAlgorithmItem( oldSource.outputChildId() );
-            socket_index = QgsProcessingUtils::outputDefinitionIndex( _alg->algorithm(), source.outputName() );
+            socketIndex = QgsProcessingUtils::outputDefinitionIndex( algSource->algorithm(), source.outputName() );
           }
           else if ( oldSource.source() == Qgis::ProcessingModelChildParameterSource::ModelParameter )
           {
             item = scene()->parameterItem( source.parameterName() );
-            socket_index = 0;
+            socketIndex = 0;
           }
 
-          mFromSocket = item->outSocketAt( socket_index );
+          mFromSocket = item->outSocketAt( socketIndex );
         }
 
 
