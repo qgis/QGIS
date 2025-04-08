@@ -57,7 +57,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     /**
      * Starts the calculation, reads from mInputFile and stores the result in mOutputFile
      * \param feedback feedback object that receives update and that is checked for cancellation.
-     * \returns QgsNineCellFilter::Success in case of success or error value on failure.
+     * \returns QgsNineCellFilter::Result::Success in case of success or error value on failure.
      */
     Result processRaster( QgsFeedback *feedback = nullptr );
 
@@ -132,7 +132,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     /**
      * \brief processRasterCPU executes the computation on the CPU
      * \param feedback instance of QgsFeedback, to allow for progress monitoring and cancellation
-     * \returns QgsNineCellFilter::Success in case of success or error value on failure
+     * \returns QgsNineCellFilter::Result::Success in case of success or error value on failure
      */
     Result processRasterCPU( QgsFeedback *feedback = nullptr );
 
@@ -142,7 +142,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
      * \brief processRasterGPU executes the computation on the GPU
      * \param source path to the OpenCL source file
      * \param feedback instance of QgsFeedback, to allow for progress monitoring and cancellation
-     * \returns QgsNineCellFilter::Success in case of success or error value on failure
+     * \returns QgsNineCellFilter::Result::Success in case of success or error value on failure
      */
     Result processRasterGPU( const QString &source, QgsFeedback *feedback = nullptr );
 
