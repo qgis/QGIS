@@ -229,7 +229,9 @@ class CORE_DEPRECATED_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED
     bool trimTrailingZeroes() const { return mTrimTrailingZeroes; }
     void setTrimTrailingZeroes( bool trimTrailingZeroes ) { mTrimTrailingZeroes = trimTrailingZeroes; }
 
-    //! \note labelForLowerUpper in Python bindings
+    /**
+     * Returns the label to use for a range with the specified \a lower and \a upper bounds.
+     */
     QString labelForRange( double lower, double upper ) const SIP_PYNAME( labelForLowerUpper );
     QString labelForRange( const QgsRendererRange &range ) const;
     QString formatNumber( double value ) const;

@@ -26,6 +26,8 @@ map - this is useful for content based legend.
 
     QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
 %Docstring
+Constructor for QgsMapHitTest.
+
 :param settings: Map settings used to evaluate symbols
 :param polygon: Polygon geometry to refine the hit test
 :param layerFilterExpression: Expression string for each layer id to

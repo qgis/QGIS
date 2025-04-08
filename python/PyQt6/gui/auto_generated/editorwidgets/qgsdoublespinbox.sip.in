@@ -128,7 +128,7 @@ called.
 
     bool isCleared() const;
 %Docstring
-:return: ``True`` if the value is equal to the clear value.
+Returns ``True`` if the value is equal to the clear value.
 
 .. seealso:: :py:func:`clearValue`
 

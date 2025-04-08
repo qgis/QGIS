@@ -1013,7 +1013,19 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      */
     void markerOffset( QgsSymbolRenderContext &context, double width, double height, double &offsetX, double &offsetY ) const SIP_PYNAME( markerOffsetWithWidthAndHeight );
 
-    //! \note available in Python bindings as markerOffset2
+    /**
+     * Calculates the required marker offset, including both the symbol offset
+     * and any displacement required to align with the marker's anchor point.
+     * \param context symbol render context
+     * \param width marker width
+     * \param height marker height
+     * \param widthUnit unit for marker width
+     * \param heightUnit unit for marker height
+     * \param offsetX will be set to required horizontal offset (in painter units)
+     * \param offsetY will be set to required vertical offset (in painter units)
+     * \param widthMapUnitScale map unit scale for marker width
+     * \param heightMapUnitScale map unit scale for marker height
+     */
     void markerOffset( QgsSymbolRenderContext &context, double width, double height,
                        Qgis::RenderUnit widthUnit, Qgis::RenderUnit heightUnit,
                        double &offsetX, double &offsetY,

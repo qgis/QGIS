@@ -56,7 +56,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     //! Returns the raster shader
     QgsRasterShader *shader() { return mShader.get(); }
 
-    //! \note available in Python as constShader
+    //! Returns the raster shader
     const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
 
     bool canCreateRasterAttributeTable( ) const override;

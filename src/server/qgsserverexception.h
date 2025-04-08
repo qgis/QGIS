@@ -49,7 +49,7 @@ class SERVER_EXPORT QgsServerException
     QgsServerException( const QString &message, int responseCode = 500 );
 
     /**
-     * \returns the return HTTP response code associated with this exception
+     * Returns the return HTTP response code associated with this exception.
      */
     int responseCode() const { return mResponseCode; }
 

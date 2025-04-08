@@ -1002,6 +1002,28 @@ def process_doxygen_line(line: str) -> str:
     return f"{line}\n"
 
 
+def validate_docstring(docstring: str):
+    """
+    Validates a docstring, raising a fatal error if it fails
+    """
+    if docstring.strip().startswith(".. note::"):
+        exit_with_error(
+            "Documentation must not start with a \\note directive. Add at least a brief description before any \\note."
+        )
+    if docstring.strip().startswith(".. warning::"):
+        exit_with_error(
+            "Documentation must not start with a \\warning directive. Add at least a brief description before any \\warning."
+        )
+    if docstring.strip().startswith(":return:"):
+        exit_with_error(
+            "Documentation must not start with a \\returns directive. Add at least a brief description before \\returns."
+        )
+    if docstring.strip().startswith(":param"):
+        exit_with_error(
+            "Documentation must not start with a \\param directive. Add at least a brief description before \\param."
+        )
+
+
 def detect_and_remove_following_body_or_initializerlist():
     global CONTEXT
 
@@ -2077,6 +2099,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
         CONTEXT.current_line += "\n{\n"
         if CONTEXT.comment.strip():
+            validate_docstring(CONTEXT.comment)
             # find out how long the first paragraph in the class docstring is.
             paragraphs = split_to_paragraphs(CONTEXT.comment)
 
@@ -3180,6 +3203,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         else:
             dbg_info("writing comment")
             if CONTEXT.comment.strip():
+                validate_docstring(CONTEXT.comment)
                 dbg_info("comment non-empty")
                 doc_prepend = (
                     "@DOCSTRINGSTEMPLATE@" if CONTEXT.comment_template_docstring else ""

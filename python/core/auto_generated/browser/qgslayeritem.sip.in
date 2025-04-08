@@ -127,7 +127,7 @@ Returns icon for point cloud layer
 %End
     virtual QString layerName() const;
 %Docstring
-:return: the layer name
+Returns the layer name
 %End
     virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
 

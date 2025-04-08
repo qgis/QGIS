@@ -148,6 +148,8 @@ class CORE_EXPORT QgsSettingsTreeNode
   private:
 
     /**
+     * Default constructor for QgsSettingsTreeNode.
+     *
      * \note This is not available in Python bindings. Use method createNode on an existing tree node.
      * \see QgsSettingsTree.createPluginTreeNode
      */
@@ -251,6 +253,8 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
     friend class QgsSettingsTreeNode;
 
     /**
+     * Constructor for QgsSettingsTreeNamedListNode.
+     *
      * \note This is not available in Python bindings. Use method createNamedListNode on an existing tree node.
      * \see QgsSettingsTree.createPluginTreeNode
      */

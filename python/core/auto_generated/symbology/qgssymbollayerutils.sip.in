@@ -547,7 +547,7 @@ type PNG, JPEG or GIF.
                                         QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
                                         double &strokeWidth, double &size ) /PyName=wellKnownMarkerFromSld2/;
 %Docstring
-
+Extracts properties from an SLD marker definition.
 %End
 
     static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,

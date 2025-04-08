@@ -39,17 +39,17 @@ class CORE_EXPORT QgsEditorWidgetSetup
     QgsEditorWidgetSetup() = default;
 
     /**
-     * \returns the widget type to use
+     * Returns the widget type to use.
      */
     QString type() const { return mType; }
 
     /**
-     * \returns the widget configuration to used
+     * Returns the widget configuration.
      */
     QVariantMap config() const { return mConfig; }
 
     /**
-     * \returns TRUE if there is no widget configured.
+     * Returns TRUE if there is no widget configured.
      */
     bool isNull() const { return mType.isEmpty(); }
 

@@ -47,6 +47,8 @@ class CORE_EXPORT QgsMapHitTest
     typedef QMap<QString, QString> LayerFilterExpression;
 
     /**
+     * Constructor for QgsMapHitTest.
+     *
      * \param settings Map settings used to evaluate symbols
      * \param polygon Polygon geometry to refine the hit test
      * \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
