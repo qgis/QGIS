@@ -18,16 +18,12 @@ A dialog for configuring a WMS group.
 #include "qgsgroupwmsdatadialog.h"
 %End
   public:
- QgsGroupWmsDataDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags ) /Deprecated="Since 3.44. Use constructor which has a server properties parameter."/;
+    QgsGroupWmsDataDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor
 
 :param parent: parent widget
 :param fl: dialog window flags
-
-.. deprecated:: 3.44
-
-   Use constructor which has a server properties parameter.
 %End
 
     QgsGroupWmsDataDialog( const QgsMapLayerServerProperties &serverProperties, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );

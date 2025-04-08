@@ -35,10 +35,8 @@ class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMS
      * Constructor
      * \param parent parent widget
      * \param fl dialog window flags
-     *
-     * \deprecated QGIS 3.44. Use constructor which has a server properties parameter.
      */
-    Q_DECL_DEPRECATED QgsGroupWmsDataDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags ) SIP_DEPRECATED;
+    QgsGroupWmsDataDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     /**
      * Constructor
