@@ -1589,6 +1589,11 @@ void QgsVectorLayerProperties::optionsStackedWidget_CurrentChanged( int index )
     // store any edited attribute form field configuration to prevent loss of edits when adding/removing fields and/or joins
     mAttributesFormPropertiesDialog->store();
   }
+  else if ( index == mOptStackedWidget->indexOf( mOptsPage_AttributesForm ) )
+  {
+    // Refresh actions in Available Widgets panel
+    mAttributesFormPropertiesDialog->initAvailableWidgetsActions();
+  }
 
   resizeAlltabs( index );
 }

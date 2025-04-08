@@ -518,28 +518,8 @@ void QgsAttributesAvailableWidgetsModel::populate()
   // Load form actions
 
   auto itemActions = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::WidgetType, QStringLiteral( "Actions" ), tr( "Actions" ) );
-  const QList<QgsAction> actions { mLayer->actions()->actions() };
-
-  for ( const auto &action : std::as_const( actions ) )
-  {
-    if ( action.isValid() && action.runable() && ( action.actionScopes().contains( QStringLiteral( "Feature" ) ) || action.actionScopes().contains( QStringLiteral( "Layer" ) ) ) )
-    {
-      const QString actionTitle { action.shortTitle().isEmpty() ? action.name() : action.shortTitle() };
-
-      QgsAttributesFormData::AttributeFormItemData itemData = QgsAttributesFormData::AttributeFormItemData();
-      itemData.setShowLabel( true );
-
-      auto itemAction = std::make_unique< QgsAttributesFormItem >();
-      itemAction->setData( ItemIdRole, action.id().toString() );
-      itemAction->setData( ItemTypeRole, QgsAttributesFormData::Action );
-      itemAction->setData( ItemNameRole, actionTitle );
-      itemAction->setData( ItemDataRole, itemData );
-
-      itemActions->addChild( std::move( itemAction ) );
-    }
-  }
-
   mRootItem->addChild( std::move( itemActions ) );
+  populateActionItems();
 
   // Other widgets
 
@@ -568,6 +548,57 @@ void QgsAttributesAvailableWidgetsModel::populate()
   mRootItem->addChild( std::move( itemOtherWidgets ) );
 
   endResetModel();
+}
+
+void QgsAttributesAvailableWidgetsModel::populateLayerActions()
+{
+  QModelIndex actionsIndex = actionContainer();
+  QgsAttributesFormItem *itemActions = itemForIndex( actionsIndex );
+
+  beginRemoveRows( actionsIndex, 0, itemActions->childCount() );
+  itemActions->deleteChildren();
+  endRemoveRows();
+
+  int count = 0;
+  const QList<QgsAction> actions { mLayer->actions()->actions() };
+  for ( const auto &action : std::as_const( actions ) )
+  {
+    if ( action.isValid() && action.runable() && ( action.actionScopes().contains( QStringLiteral( "Feature" ) ) || action.actionScopes().contains( QStringLiteral( "Layer" ) ) ) )
+    {
+      count++;
+    }
+  }
+
+  beginInsertRows( actionsIndex, 0, count );
+  populateActionItems();
+  endInsertRows();
+}
+
+void QgsAttributesAvailableWidgetsModel::populateActionItems()
+{
+  const QList<QgsAction> actions { mLayer->actions()->actions() };
+
+  QModelIndex actionsIndex = actionContainer();
+  QgsAttributesFormItem *itemActions = itemForIndex( actionsIndex );
+
+  for ( const auto &action : std::as_const( actions ) )
+  {
+    if ( action.isValid() && action.runable() && ( action.actionScopes().contains( QStringLiteral( "Feature" ) ) || action.actionScopes().contains( QStringLiteral( "Layer" ) ) ) )
+    {
+      const QString actionTitle { action.shortTitle().isEmpty() ? action.name() : action.shortTitle() };
+
+      QgsAttributesFormData::AttributeFormItemData itemData = QgsAttributesFormData::AttributeFormItemData();
+      itemData.setShowLabel( true );
+
+      auto itemAction = std::make_unique< QgsAttributesFormItem >();
+      itemAction->setData( ItemIdRole, action.id().toString() );
+      itemAction->setData( ItemTypeRole, QgsAttributesFormData::Action );
+      itemAction->setData( ItemNameRole, actionTitle );
+      itemAction->setData( ItemDataRole, itemData );
+
+      itemActions->addChild( std::move( itemAction ) );
+    }
+  }
 }
 
 QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int role ) const
@@ -724,6 +755,18 @@ QModelIndex QgsAttributesAvailableWidgetsModel::relationContainer() const
     const int row = 1;
     QgsAttributesFormItem *item = mRootItem->child( row );
     if ( item && item->name() == QLatin1String( "Relations" ) && item->type() == QgsAttributesFormData::WidgetType )
+      return createIndex( row, 0, item );
+  }
+  return QModelIndex();
+}
+
+QModelIndex QgsAttributesAvailableWidgetsModel::actionContainer() const
+{
+  if ( mRootItem->childCount() > 2 )
+  {
+    const int row = 2;
+    QgsAttributesFormItem *item = mRootItem->child( row );
+    if ( item && item->name() == QLatin1String( "Actions" ) && item->type() == QgsAttributesFormData::WidgetType )
       return createIndex( row, 0, item );
   }
   return QModelIndex();

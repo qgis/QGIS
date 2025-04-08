@@ -94,6 +94,11 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void initInitPython();
     void initSuppressCombo();
 
+    /**
+     * Refresh layer actions in the Available Widgets view
+     */
+    void initAvailableWidgetsActions();
+
     QgsExpressionContext createExpressionContext() const override;
 
   protected:

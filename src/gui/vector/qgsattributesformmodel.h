@@ -640,12 +640,30 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
     QModelIndex relationContainer() const;
 
     /**
+     * Returns the action container in this model, expected to be placed at the third top-level row.
+     *
+     * If there is no action container set, an invalid index is returned.
+     */
+    QModelIndex actionContainer() const;
+
+    /**
      * Returns the model index that corresponds to the field with the given \a fieldName.
      */
     QModelIndex fieldModelIndex( const QString &fieldName ) const;
 
   public slots:
     void populate() override;
+
+    /**
+     * Refresh layer actions in the model to keep an updated action list.
+     */
+    void populateLayerActions();
+
+  private:
+    /**
+     * Refresh action items in the model.
+     */
+    void populateActionItems();
 };
 
 
