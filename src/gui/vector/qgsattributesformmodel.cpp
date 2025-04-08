@@ -519,7 +519,7 @@ void QgsAttributesAvailableWidgetsModel::populate()
 
   auto itemActions = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::WidgetType, QStringLiteral( "Actions" ), tr( "Actions" ) );
   mRootItem->addChild( std::move( itemActions ) );
-  populateActionItems();
+  populateActionItems( mLayer->actions()->actions() );
 
   // Other widgets
 
@@ -550,7 +550,7 @@ void QgsAttributesAvailableWidgetsModel::populate()
   endResetModel();
 }
 
-void QgsAttributesAvailableWidgetsModel::populateLayerActions()
+void QgsAttributesAvailableWidgetsModel::populateLayerActions( const QList< QgsAction > actions )
 {
   QModelIndex actionsIndex = actionContainer();
   QgsAttributesFormItem *itemActions = itemForIndex( actionsIndex );
@@ -560,7 +560,6 @@ void QgsAttributesAvailableWidgetsModel::populateLayerActions()
   endRemoveRows();
 
   int count = 0;
-  const QList<QgsAction> actions { mLayer->actions()->actions() };
   for ( const auto &action : std::as_const( actions ) )
   {
     if ( action.isValid() && action.runable() && ( action.actionScopes().contains( QStringLiteral( "Feature" ) ) || action.actionScopes().contains( QStringLiteral( "Layer" ) ) ) )
@@ -570,14 +569,12 @@ void QgsAttributesAvailableWidgetsModel::populateLayerActions()
   }
 
   beginInsertRows( actionsIndex, 0, count );
-  populateActionItems();
+  populateActionItems( actions );
   endInsertRows();
 }
 
-void QgsAttributesAvailableWidgetsModel::populateActionItems()
+void QgsAttributesAvailableWidgetsModel::populateActionItems( const QList<QgsAction> actions )
 {
-  const QList<QgsAction> actions { mLayer->actions()->actions() };
-
   QModelIndex actionsIndex = actionContainer();
   QgsAttributesFormItem *itemActions = itemForIndex( actionsIndex );
 

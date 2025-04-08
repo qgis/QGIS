@@ -1592,7 +1592,10 @@ void QgsVectorLayerProperties::optionsStackedWidget_CurrentChanged( int index )
   else if ( index == mOptStackedWidget->indexOf( mOptsPage_AttributesForm ) )
   {
     // Refresh actions in Available Widgets panel
-    mAttributesFormPropertiesDialog->initAvailableWidgetsActions();
+    if ( mActionDialog )
+    {
+      mAttributesFormPropertiesDialog->initAvailableWidgetsActions( mActionDialog->actions() );
+    }
   }
 
   resizeAlltabs( index );

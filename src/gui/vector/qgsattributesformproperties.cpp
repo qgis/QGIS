@@ -165,9 +165,9 @@ void QgsAttributesFormProperties::initSuppressCombo()
   mFormSuppressCmbBx->setCurrentIndex( mFormSuppressCmbBx->findData( QVariant::fromValue( mLayer->editFormConfig().suppress() ) ) );
 }
 
-void QgsAttributesFormProperties::initAvailableWidgetsActions()
+void QgsAttributesFormProperties::initAvailableWidgetsActions( const QList< QgsAction > actions )
 {
-  mAvailableWidgetsModel->populateLayerActions();
+  mAvailableWidgetsModel->populateLayerActions( actions );
 }
 
 QgsExpressionContext QgsAttributesFormProperties::createExpressionContext() const

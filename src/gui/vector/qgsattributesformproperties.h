@@ -21,6 +21,7 @@
 
 #include "ui_qgsattributesformproperties.h"
 #include "qgis_gui.h"
+#include "qgsaction.h"
 #include "qgsattributesformmodel.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgspropertycollection.h"
@@ -96,8 +97,10 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     /**
      * Refresh layer actions in the Available Widgets view
+     *
+     * \param actions Up-to-date list of actions
      */
-    void initAvailableWidgetsActions();
+    void initAvailableWidgetsActions( const QList< QgsAction > actions );
 
     QgsExpressionContext createExpressionContext() const override;
 

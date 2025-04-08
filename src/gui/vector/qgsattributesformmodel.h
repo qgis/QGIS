@@ -19,6 +19,7 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
+#include "qgsaction.h"
 #include "qgsaddtaborgroup.h"
 #include "qgsattributeeditorelement.h"
 #include "qgsoptionalexpression.h"
@@ -656,14 +657,18 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
 
     /**
      * Refresh layer actions in the model to keep an updated action list.
+     *
+     * \param actions Up-to-date list of actions
      */
-    void populateLayerActions();
+    void populateLayerActions( const QList< QgsAction > actions );
 
   private:
     /**
      * Refresh action items in the model.
+     *
+     * \param actions Up-to-date list of actions
      */
-    void populateActionItems();
+    void populateActionItems( const QList<QgsAction> actions );
 };
 
 
