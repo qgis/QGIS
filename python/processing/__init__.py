@@ -70,7 +70,7 @@ def run(
     :param feedback: Processing feedback object
     :param context: Processing context object
     :param is_child_algorithm: Set to True if this algorithm is being run as part of a larger algorithm,
-    i.e. it is a sub-part of an algorithm which calls other Processing algorithms.
+                               i.e. it is a sub-part of an algorithm which calls other Processing algorithms.
 
     :return: algorithm results as a dictionary, or None if execution failed
 
