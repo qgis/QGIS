@@ -819,6 +819,8 @@ class CORE_EXPORT QgsSymbol
     bool canCauseArtifactsBetweenAdjacentTiles() const;
 
     /**
+     * Sets the vector \a layer associated with the symbol.
+     *
      * \note the layer will be NULLPTR after stopRender
      * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
      */

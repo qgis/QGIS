@@ -988,17 +988,17 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     QString providerName() const;
 
     /**
-     * \return whether the dataset group is vector
+     * Return TRUE if the dataset group is vector.
      */
     bool isVector() const;
 
     /**
-     * \return the dataset group index
+     * Returns the dataset group index.
      */
     int datasetGroupIndex() const;
 
     /**
-     * \return whether the item is enabled, that is if it is displayed in view
+     * Returns TRUE if the item is enabled, i.e. if it is displayed in view.
      */
     bool isEnabled() const;
 
@@ -1009,12 +1009,12 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     void setIsEnabled( bool isEnabled );
 
     /**
-     * \return the default name
+     * Returns the default name.
      */
     QString defaultName() const;
 
     /**
-     * \return the dataset group type
+     * Returns the dataset group type.
      *
      * \since QGIS 3.16
      */

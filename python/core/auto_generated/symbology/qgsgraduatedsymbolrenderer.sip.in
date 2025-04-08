@@ -76,13 +76,19 @@ Returns a list of all ranges used in the classification.
     bool updateRangeRenderState( int rangeIndex, bool render );
 
     void addClass( QgsSymbol *symbol );
+%Docstring
+Adds a class to the renderer, with the specified ``symbol``.
+%End
+
     void addClass( const QgsRendererRange &range ) /PyName=addClassRange/;
 %Docstring
-
+Adds a class to the renderer, with the specified ``range``.
 %End
+
     void addClass( double lower, double upper ) /PyName=addClassLowerUpper/;
 %Docstring
-
+Adds a class to the renderer, with the specified ``lower`` and ``upper``
+bounds.
 %End
 
     void addBreak( double breakValue, bool updateSymbols = true );

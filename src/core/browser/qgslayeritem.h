@@ -135,7 +135,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconVectorTile();
     //! Returns icon for point cloud layer
     static QIcon iconPointCloud();
-    //! \returns the layer name
+    //! Returns the layer name
     virtual QString layerName() const { return name(); }
     QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 

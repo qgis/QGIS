@@ -80,10 +80,19 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     bool updateRangeLowerValue( int rangeIndex, double value );
     bool updateRangeRenderState( int rangeIndex, bool render );
 
+    /**
+     * Adds a class to the renderer, with the specified \a symbol.
+     */
     void addClass( QgsSymbol *symbol );
-    //! \note available in Python bindings as addClassRange
+
+    /**
+     * Adds a class to the renderer, with the specified \a range.
+     */
     void addClass( const QgsRendererRange &range ) SIP_PYNAME( addClassRange );
-    //! \note available in Python bindings as addClassLowerUpper
+
+    /**
+     * Adds a class to the renderer, with the specified \a lower and \a upper bounds.
+     */
     void addClass( double lower, double upper ) SIP_PYNAME( addClassLowerUpper );
 
     /**

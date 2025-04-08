@@ -193,7 +193,7 @@ insert a ``key`` with the specific ``value``
 
     QList<QString> keys() const;
 %Docstring
-:return: the list of all http header keys
+Returns the list of all HTTP header keys.
 %End
 
     QString toSpacedString() const;

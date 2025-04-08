@@ -842,6 +842,8 @@ layers returned ``True``.
 
  void setLayer( const QgsVectorLayer *layer ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
+Sets the vector ``layer`` associated with the symbol.
+
 .. note::
 
    the layer will be ``None`` after stopRender

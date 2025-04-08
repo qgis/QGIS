@@ -206,7 +206,7 @@ class CORE_EXPORT QgsHttpHeaders
     void insert( const QString &key, const QVariant &value );
 
     /**
-     * \return the list of all http header keys
+     * Returns the list of all HTTP header keys.
      */
     QList<QString> keys() const;
 

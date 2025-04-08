@@ -30,7 +30,7 @@ Constructor
 
     int responseCode() const;
 %Docstring
-:return: the return HTTP response code associated with this exception
+Returns the return HTTP response code associated with this exception.
 %End
 
     virtual QByteArray formatResponse( QString &responseFormat /Out/ ) const;

@@ -160,6 +160,8 @@ Registers a child nodes
   private:
     QgsSettingsTreeNode();
 %Docstring
+Default constructor for QgsSettingsTreeNode.
+
 .. note::
 
    This is not available in Python bindings. Use method createNode on an existing tree node.
@@ -282,6 +284,8 @@ Init the nodes with the specific ``options``
   private:
     QgsSettingsTreeNamedListNode();
 %Docstring
+Constructor for QgsSettingsTreeNamedListNode.
+
 .. note::
 
    This is not available in Python bindings. Use method createNamedListNode on an existing tree node.

@@ -125,7 +125,8 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     double clearValue() const;
 
     /**
-     * \returns TRUE if the value is equal to the clear value.
+     * Returns TRUE if the value is equal to the clear value.
+     *
      * \see clearValue()
      *
      * \since QGIS 3.42
