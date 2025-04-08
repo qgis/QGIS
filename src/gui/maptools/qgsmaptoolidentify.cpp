@@ -391,23 +391,29 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
 
   QMap<QString, QString> derivedGeometry;
 
-  QgsPointXY vertexPoint = layer->snapOnElement( QgsMesh::Vertex, point, searchRadius );
+  QgsPointXY vertexPoint;
+  const int vertexId = layer->closestElement( QgsMesh::Vertex, point, searchRadius, vertexPoint );
   if ( !vertexPoint.isEmpty() )
   {
+    derivedGeometry.insert( tr( "Snapped Vertex Index" ), QLocale().toString( vertexId ) );
     derivedGeometry.insert( tr( "Snapped Vertex Position X" ), QLocale().toString( vertexPoint.x() ) );
     derivedGeometry.insert( tr( "Snapped Vertex Position Y" ), QLocale().toString( vertexPoint.y() ) );
   }
 
-  QgsPointXY faceCentroid = layer->snapOnElement( QgsMesh::Face, point, searchRadius );
+  QgsPointXY faceCentroid;
+  const int faceId = layer->closestElement( QgsMesh::Face, point, searchRadius, faceCentroid );
   if ( !faceCentroid.isEmpty() )
   {
+    derivedGeometry.insert( tr( "Face Index" ), QLocale().toString( faceId ) );
     derivedGeometry.insert( tr( "Face Centroid X" ), QLocale().toString( faceCentroid.x() ) );
     derivedGeometry.insert( tr( "Face Centroid Y" ), QLocale().toString( faceCentroid.y() ) );
   }
 
-  QgsPointXY pointOnEdge = layer->snapOnElement( QgsMesh::Edge, point, searchRadius );
+  QgsPointXY pointOnEdge;
+  const int edgeId = layer->closestElement( QgsMesh::Edge, point, searchRadius, pointOnEdge );
   if ( !pointOnEdge.isEmpty() )
   {
+    derivedGeometry.insert( tr( "Edge Index" ), QLocale().toString( edgeId ) );
     derivedGeometry.insert( tr( "Point on Edge X" ), QLocale().toString( pointOnEdge.x() ) );
     derivedGeometry.insert( tr( "Point on Edge Y" ), QLocale().toString( pointOnEdge.y() ) );
   }
