@@ -736,18 +736,12 @@ common base class properties in the DOM ``element``.
 
     static void convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field );
 %Docstring
-.. note::
-
-   this function is used to convert old sizeScale expressions to symbol
-   level DataDefined size
+Converts old sizeScale expressions to symbol level data defined sizes.
 %End
 
     static void convertSymbolRotation( QgsSymbol *symbol, const QString &field );
 %Docstring
-.. note::
-
-   this function is used to convert old rotations expressions to symbol
-   level DataDefined angle
+Converts old rotation expressions to symbol level data defined angles.
 %End
 
 

@@ -243,8 +243,8 @@ Returns list of data item providers of the provider
 Lists stored layer styles in the provider defined by ``providerKey`` and
 ``uri``
 
-:return: - 1 if not implemented by provider, otherwise number of styles
-           stored
+:return: ``-1`` if not implemented by provider, otherwise number of
+         styles stored
 
 .. versionadded:: 3.10
 %End

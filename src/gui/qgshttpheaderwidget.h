@@ -46,7 +46,7 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
     ~QgsHttpHeaderWidget();
 
     /**
-     * \return build a new \a QgsHttpHeaders according to data in the UI
+     * Returns the headers as defined in the widget.
      */
     QgsHttpHeaders httpHeaders() const;
 
