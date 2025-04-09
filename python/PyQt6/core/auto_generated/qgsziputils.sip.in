@@ -37,7 +37,7 @@ Unzip a zip file in an output directory.
          - files: The absolute path of unzipped files
 %End
 
-  bool zip( const QString &zip, const QStringList &files );
+  bool zip( const QString &zip, const QStringList &files, bool overwrite = false );
 %Docstring
 Zip the list of files in the zip file. If the zip file already exists or is
 empty, an error is returned. If an input file does not exist, an error is
@@ -45,8 +45,9 @@ also returned.
 
 :param zip: The zip filename
 :param files: The absolute path to files to embed within the zip
+:param overwrite: Set to ``True`` to allow overwriting existing files
+                  (since QGIS 3.44)
 %End
-
 
 
 

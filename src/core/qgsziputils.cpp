@@ -132,7 +132,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
   return true;
 }
 
-bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
+bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files, bool overwrite )
 {
   if ( zipFilename.isEmpty() )
   {
@@ -142,7 +142,7 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
 
   int rc = 0;
   const QByteArray zipFileNamePtr = zipFilename.toUtf8();
-  struct zip *z = zip_open( zipFileNamePtr.constData(), ZIP_CREATE, &rc );
+  struct zip *z = zip_open( zipFileNamePtr.constData(), overwrite ? ( ZIP_CREATE | ZIP_TRUNCATE ) : ZIP_CREATE, &rc );
 
   if ( rc == ZIP_ER_OK && z )
   {
