@@ -16,6 +16,7 @@
 
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
+#include "qgspostgresutils.h"
 
 #include "qgsreadwritecontext.h"
 
@@ -45,24 +46,6 @@ static bool _parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage:
   return true;
 }
 
-
-static bool _projectsTableExists( QgsPostgresConn &conn, const QString &schemaName )
-{
-  QString tableName( "qgis_projects" );
-  QString sql( QStringLiteral( "SELECT COUNT(*) FROM information_schema.tables WHERE table_name=%1 and table_schema=%2" )
-                 .arg( QgsPostgresConn::quotedValue( tableName ), QgsPostgresConn::quotedValue( schemaName ) )
-  );
-  QgsPostgresResult res( conn.PQexec( sql ) );
-
-  if ( !res.result() )
-  {
-    return false;
-  }
-
-  return res.PQgetvalue( 0, 0 ).toInt() > 0;
-}
-
-
 QStringList QgsPostgresProjectStorage::listProjects( const QString &uri )
 {
   QStringList lst;
@@ -75,7 +58,7 @@ QStringList QgsPostgresProjectStorage::listProjects( const QString &uri )
   if ( !conn )
     return lst;
 
-  if ( _projectsTableExists( *conn, projectUri.schemaName ) )
+  if ( QgsPostgresUtils::projectsTableExists( conn, projectUri.schemaName ) )
   {
     QString sql( QStringLiteral( "SELECT name FROM %1.qgis_projects" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ) ) );
     QgsPostgresResult result( conn->PQexec( sql ) );
@@ -112,7 +95,7 @@ bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *devi
     return false;
   }
 
-  if ( !_projectsTableExists( *conn, projectUri.schemaName ) )
+  if ( !QgsPostgresUtils::projectsTableExists( conn, projectUri.schemaName ) )
   {
     context.pushMessage( QObject::tr( "Table qgis_projects does not exist or it is not accessible." ), Qgis::MessageLevel::Critical );
     QgsPostgresConnPool::instance()->releaseConnection( conn );
@@ -161,12 +144,9 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
     return false;
   }
 
-  if ( !_projectsTableExists( *conn, projectUri.schemaName ) )
+  if ( !QgsPostgresUtils::projectsTableExists( conn, projectUri.schemaName ) )
   {
-    // try to create projects table
-    QString sql = QStringLiteral( "CREATE TABLE %1.qgis_projects(name TEXT PRIMARY KEY, metadata JSONB, content BYTEA)" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ) );
-    QgsPostgresResult res( conn->PQexec( sql ) );
-    if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+    if ( !QgsPostgresUtils::createProjectsTable( conn, projectUri.schemaName ) )
     {
       QString errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( projectUri.connInfo.username() );
       context.pushMessage( errCause, Qgis::MessageLevel::Critical );
@@ -213,7 +193,7 @@ bool QgsPostgresProjectStorage::removeProject( const QString &uri )
     return false;
 
   bool removed = false;
-  if ( _projectsTableExists( *conn, projectUri.schemaName ) )
+  if ( QgsPostgresUtils::projectsTableExists( conn, projectUri.schemaName ) )
   {
     QString sql( QStringLiteral( "DELETE FROM %1.qgis_projects WHERE name = %2" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) ) );
     QgsPostgresResult res( conn->PQexec( sql ) );
