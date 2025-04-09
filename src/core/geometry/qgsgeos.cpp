@@ -1588,7 +1588,15 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
       const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( context, geos );
       unsigned int nPoints = 0;
       GEOSCoordSeq_getSize_r( context, cs, &nPoints );
-      return nPoints > 0 ? std::unique_ptr<QgsAbstractGeometry>( coordSeqPoint( cs, 0, hasZ, hasM ).clone() ) : nullptr;
+      if ( nPoints == 0 )
+      {
+        return nullptr;
+      }
+      // Since GEOS 3.13, Points with NAN coordinates are not considered empty anymore
+      // See: https://github.com/libgeos/geos/pull/927
+      // Handle this change by checking if QgsPoint is empty
+      const QgsPoint point = coordSeqPoint( cs, 0, hasZ, hasM );
+      return !point.isEmpty() ? std::unique_ptr<QgsAbstractGeometry>( point.clone() ) : nullptr;
     }
     case GEOS_LINESTRING:
     {
