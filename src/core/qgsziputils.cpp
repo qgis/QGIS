@@ -194,7 +194,7 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
   }
   else
   {
-    QgsMessageLog::logMessage( QObject::tr( "Error creating zip archive '%1': %2" ).arg( zipFilename, zip_strerror( z ) ) );
+    QgsMessageLog::logMessage( QObject::tr( "Error creating zip archive '%1': %2" ).arg( zipFilename, z ? zip_strerror( z ) : zipFilename ) );
     return false;
   }
 
