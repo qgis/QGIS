@@ -1745,6 +1745,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
     return d->mIsValid;
   }
 
+  // try to match to a known authority
   if ( d->hasPj() )
   {
     // try 1 - maybe we can directly grab the auth name and code from the crs already?
@@ -1759,20 +1760,20 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
 
     if ( !authName.isEmpty() && !authCode.isEmpty() )
     {
-      if ( loadFromAuthCode( authName, authCode ) )
+      QgsCoordinateReferenceSystem fromAuthCode;
+      if ( fromAuthCode.loadFromAuthCode( authName, authCode ) )
       {
+        *this = fromAuthCode;
         locker.changeMode( QgsReadWriteLocker::Write );
         if ( !sDisableWktCache )
           sWktCache()->insert( wkt, *this );
         return d->mIsValid;
       }
     }
-    else
-    {
-      // Still a valid CRS, just not a known one
-      d->mIsValid = true;
-      d->mDescription = QString( proj_get_name( d->threadLocalProjObject() ) );
-    }
+
+    // Still a valid CRS, just not a known one
+    d->mIsValid = true;
+    d->mDescription = QString( proj_get_name( d->threadLocalProjObject() ) );
     setMapUnits();
   }
 
