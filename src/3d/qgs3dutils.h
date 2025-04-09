@@ -389,6 +389,12 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.44
      */
     static QgsCameraPose lineSegmentToCameraPose( const QgsVector3D &startPoint, const QgsVector3D &endPoint, const QgsDoubleRange &elevationRange, float fieldOfView, const QgsVector3D &worldOrigin );
+
+    /**
+     * Returns new camera object with copied properties.
+     * \since QGIS 3.44
+     */
+    static std::unique_ptr<Qt3DRender::QCamera> copyCamera( Qt3DRender::QCamera *cam ) SIP_SKIP;
 };
 
 #endif // QGS3DUTILS_H
