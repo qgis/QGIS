@@ -49,6 +49,9 @@
 #include <QOpenGLFunctions>
 #include <Qt3DLogic/QFrameAction>
 
+#if !defined(Q_OS_MAC)
+#include <GL/gl.h>
+#endif
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QBuffer>
