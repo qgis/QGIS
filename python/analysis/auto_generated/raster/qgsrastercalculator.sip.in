@@ -51,7 +51,7 @@ Performs raster layer calculations.
 #include "qgsrastercalculator.h"
 %End
   public:
-    enum Result
+    enum class Result
     {
       Success,
       CreateOutputError,
@@ -143,9 +143,9 @@ Starts the calculation and writes a new raster.
 The optional ``feedback`` argument can be used for progress reporting
 and cancellation support.
 
-:return: QgsRasterCalculator.Success in case of success. If an error is
-         encountered then a description of the error can be obtained by
-         calling :py:func:`~QgsRasterCalculator.lastError`.
+:return: QgsRasterCalculator.Result.Success in case of success. If an
+         error is encountered then a description of the error can be
+         obtained by calling :py:func:`~QgsRasterCalculator.lastError`.
 %End
 
     QString lastError() const;

@@ -187,17 +187,17 @@ QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &p
   mLayers.clear();
   switch ( result )
   {
-    case QgsRasterCalculator::CreateOutputError:
+    case QgsRasterCalculator::Result::CreateOutputError:
       throw QgsProcessingException( QObject::tr( "Error creating output file." ) );
-    case QgsRasterCalculator::InputLayerError:
+    case QgsRasterCalculator::Result::InputLayerError:
       throw QgsProcessingException( QObject::tr( "Error reading input layer." ) );
-    case QgsRasterCalculator::ParserError:
+    case QgsRasterCalculator::Result::ParserError:
       throw QgsProcessingException( QObject::tr( "Error parsing formula." ) );
-    case QgsRasterCalculator::MemoryError:
+    case QgsRasterCalculator::Result::MemoryError:
       throw QgsProcessingException( QObject::tr( "Error allocating memory for result." ) );
-    case QgsRasterCalculator::BandError:
+    case QgsRasterCalculator::Result::BandError:
       throw QgsProcessingException( QObject::tr( "Invalid band number for input." ) );
-    case QgsRasterCalculator::CalculationError:
+    case QgsRasterCalculator::Result::CalculationError:
       throw QgsProcessingException( QObject::tr( "Error occurred while performing calculation." ) );
     default:
       break;
@@ -327,17 +327,17 @@ QVariantMap QgsRasterCalculatorModelerAlgorithm::processAlgorithm( const QVarian
   mLayers.clear();
   switch ( result )
   {
-    case QgsRasterCalculator::CreateOutputError:
+    case QgsRasterCalculator::Result::CreateOutputError:
       throw QgsProcessingException( QObject::tr( "Error creating output file." ) );
-    case QgsRasterCalculator::InputLayerError:
+    case QgsRasterCalculator::Result::InputLayerError:
       throw QgsProcessingException( QObject::tr( "Error reading input layer." ) );
-    case QgsRasterCalculator::ParserError:
+    case QgsRasterCalculator::Result::ParserError:
       throw QgsProcessingException( QObject::tr( "Error parsing formula." ) );
-    case QgsRasterCalculator::MemoryError:
+    case QgsRasterCalculator::Result::MemoryError:
       throw QgsProcessingException( QObject::tr( "Error allocating memory for result." ) );
-    case QgsRasterCalculator::BandError:
+    case QgsRasterCalculator::Result::BandError:
       throw QgsProcessingException( QObject::tr( "Invalid band number for input." ) );
-    case QgsRasterCalculator::CalculationError:
+    case QgsRasterCalculator::Result::CalculationError:
       throw QgsProcessingException( QObject::tr( "Error occurred while performing calculation." ) );
     default:
       break;
