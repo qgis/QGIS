@@ -1041,11 +1041,11 @@ personal qgis.db)
 
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that ``False`` if we did
-           not manage to save the default metadata.
+         - resultFlag: ``False`` if we did not manage to save the
+           default metadata.
 %End
 
-    QString saveNamedMetadata( const QString &uri, bool &resultFlag );
+    QString saveNamedMetadata( const QString &uri, bool &resultFlag /Out/ );
 %Docstring
 Save the current metadata of this layer as a named metadata (either as a
 .qmd file on disk or as a record in the users style table in their
@@ -1055,10 +1055,10 @@ personal qgis.db)
             attempt will be made to see if this is a file and save to
             that, if that fails the qgis.db metadata table will be used
             to create a metadata entry who's key matches the URI.
-:param resultFlag: a reference to a flag that will be set to ``False``
-                   if we did not manage to save the default metadata.
 
-:return: a QString with any status messages
+:return: - a QString with any status messages
+         - resultFlag: ``False`` if we did not manage to save the
+           default metadata.
 %End
 
 
@@ -1074,21 +1074,22 @@ qgis.db)
             to see if there is a metadata who's key matches the URI.
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that ``False`` if we did
-           not manage to load the default metadata.
+         - resultFlag: ``False`` if we did not manage to load the
+           default metadata.
 %End
 
 
-    virtual QString loadDefaultMetadata( bool &resultFlag );
+    virtual QString loadDefaultMetadata( bool &resultFlag /Out/ );
 %Docstring
 Retrieve the default metadata for this layer if one exists (either as a
 .qmd file on disk or as a record in the users metadata table in their
 personal qgis.db)
 
-:param resultFlag: a reference to a flag that will be set to ``False``
-                   if we did not manage to load the default metadata.
 
-:return: a QString with any status messages
+
+:return: - a QString with any status messages
+         - resultFlag: ``False`` if we did not manage to load the
+           default metadata.
 %End
 
     bool loadNamedMetadataFromDatabase( const QString &db, const QString &uri, QString &qmd );
@@ -1134,8 +1135,8 @@ personal qgis.db)
 
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that ``False`` if we did
-           not manage to load the default style.
+         - resultFlag: ``False`` if we did not manage to load the
+           default style.
 
 .. seealso:: :py:func:`loadNamedStyle`
 %End
@@ -1156,8 +1157,8 @@ qgis.db)
               QGIS 3.38)
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that ``False`` if we did
-           not manage to load the default style.
+         - resultFlag: ``False`` if we did not manage to load the
+           default style.
 
 .. seealso:: :py:func:`loadDefaultStyle`
 %End
@@ -1232,8 +1233,8 @@ qgis.db)
 :param categories: the style categories to be saved (since QGIS 3.26)
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that ``False`` if we did
-           not manage to save the default style.
+         - resultFlag: ``False`` if we did not manage to save the
+           default style.
 
 .. seealso:: :py:func:`loadNamedStyle`
 
@@ -1249,8 +1250,8 @@ qgis.db)
 
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that ``False`` if we did
-           not manage to save the default style.
+         - resultFlag: ``False`` if we did not manage to save the
+           default style.
 
 .. seealso:: :py:func:`loadNamedStyle`
 
@@ -1272,21 +1273,20 @@ qgis.db)
 :param categories: the style categories to be saved.
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that ``False`` if we did
-           not manage to save the default style.
+         - resultFlag: ``False`` if we did not manage to save the
+           default style.
 
 .. seealso:: :py:func:`saveDefaultStyle`
 %End
 
-    virtual QString saveSldStyle( const QString &uri, bool &resultFlag ) const;
+    virtual QString saveSldStyle( const QString &uri, bool &resultFlag /Out/ ) const;
 %Docstring
 Saves the properties of this layer to an SLD format file.
 
 :param uri: uri of destination for exported SLD file.
-:param resultFlag: a reference to a flag that will be set to ``False``
-                   if the SLD file could not be generated
 
-:return: a string with any status or error messages
+:return: - a string with any status or error messages
+         - resultFlag: ``False`` if the SLD file could not be generated
 
 .. seealso:: :py:func:`loadSldStyle`
 
@@ -1300,23 +1300,21 @@ Saves the properties of this layer to an SLD format file.
 :param exportContext: SLD export context
 
 :return: - a string with any status or error messages
-         - resultFlag: a reference to a flag that ``False`` if the SLD
-           file could not be generated
+         - resultFlag: ``False`` if the SLD file could not be generated
 
 .. seealso:: :py:func:`loadSldStyle`
 
 .. versionadded:: 3.30
 %End
 
-    virtual QString loadSldStyle( const QString &uri, bool &resultFlag );
+    virtual QString loadSldStyle( const QString &uri, bool &resultFlag /Out/ );
 %Docstring
 Attempts to style the layer using the formatting from an SLD type file.
 
 :param uri: uri of source SLD file
-:param resultFlag: a reference to a flag that will be set to ``False``
-                   if the SLD file could not be loaded
 
-:return: a string with any status or error messages
+:return: - a string with any status or error messages
+         - resultFlag: ``False`` if the SLD file could not be loaded
 
 .. seealso:: :py:func:`saveSldStyle`
 %End
