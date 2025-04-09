@@ -773,6 +773,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
 
   QDomElement catElem = catsElem.firstChildElement();
   int i = 0;
+  QSet<QString> usedUuids;
   while ( !catElem.isNull() )
   {
     if ( catElem.tagName() == QLatin1String( "category" ) )
@@ -801,10 +802,15 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
       QString label = catElem.attribute( QStringLiteral( "label" ) );
       bool render = catElem.attribute( QStringLiteral( "render" ) ) != QLatin1String( "false" );
       QString uuid = catElem.attribute( QStringLiteral( "uuid" ), QString::number( i++ ) );
+      while ( usedUuids.contains( uuid ) )
+      {
+        uuid = QUuid::createUuid().toString();
+      }
       if ( symbolMap.contains( symbolName ) )
       {
         QgsSymbol *symbol = symbolMap.take( symbolName );
         cats.append( QgsRendererCategory( value, symbol, label, render, uuid ) );
+        usedUuids << uuid;
       }
     }
     catElem = catElem.nextSiblingElement();
