@@ -901,7 +901,7 @@ namespace QgsWms
       }
 
       //grid space x / y
-      if ( cMapParams.mGridX > 0 && cMapParams.mGridY > 0 )
+      if ( cMapParams.mGridX >= 0 && cMapParams.mGridY >= 0 )
       {
         map->grid()->setIntervalX( static_cast<double>( cMapParams.mGridX ) );
         map->grid()->setIntervalY( static_cast<double>( cMapParams.mGridY ) );

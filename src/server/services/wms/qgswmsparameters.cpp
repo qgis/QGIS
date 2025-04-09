@@ -1748,7 +1748,7 @@ namespace QgsWms
       gridy = wmsParam.toDouble();
     }
 
-    if ( gridx != -1 && gridy != -1 )
+    if ( gridx >= 0 && gridy >= 0 )
     {
       param.mGridX = gridx;
       param.mGridY = gridy;
