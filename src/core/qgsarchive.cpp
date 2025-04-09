@@ -70,7 +70,7 @@ bool QgsArchive::zip( const QString &filename )
   const QString tempPath = tmpFilePath.fileName();
 
   // zip content
-  if ( ! QgsZipUtils::zip( tempPath, mFiles ) )
+  if ( ! QgsZipUtils::zip( tempPath, mFiles, true ) )
   {
     const QString err = QObject::tr( "Unable to zip content" );
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );
