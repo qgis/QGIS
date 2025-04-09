@@ -80,8 +80,8 @@ struct QgsLineVertexData
     Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Absolute;
     Qgis::AltitudeBinding altBinding = Qgis::AltitudeBinding::Vertex;
     float baseHeight = 0;
-    Qgs3DRenderContext renderContext; // used for altitude clamping
-    QgsVector3D origin;               // all coordinates are relative to this origin (e.g. center of the chunk)
+    Qgs3DRenderContext renderContext;   // used for altitude clamping
+    QgsVector3D origin;                 // all coordinates are relative to this origin (e.g. center of the chunk)
     bool geocentricCoordinates = false; // whether input coordinates are geocentric (i.e. Z can't be interpreted as elevation)
 
     QgsLineVertexData();
