@@ -1165,3 +1165,17 @@ QgsCameraPose Qgs3DUtils::lineSegmentToCameraPose( const QgsVector3D &startPoint
 
   return cameraPose;
 }
+
+std::unique_ptr<Qt3DRender::QCamera> Qgs3DUtils::copyCamera( Qt3DRender::QCamera *cam )
+{
+  std::unique_ptr<Qt3DRender::QCamera> copy = std::make_unique<Qt3DRender::QCamera>();
+  copy->setPosition( cam->position() );
+  copy->setViewCenter( cam->viewCenter() );
+  copy->setUpVector( cam->upVector() );
+  copy->setProjectionMatrix( cam->projectionMatrix() );
+  copy->setNearPlane( cam->nearPlane() );
+  copy->setFarPlane( cam->farPlane() );
+  copy->setAspectRatio( cam->aspectRatio() );
+  copy->setFieldOfView( cam->fieldOfView() );
+  return copy;
+}

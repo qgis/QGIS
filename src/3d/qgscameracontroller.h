@@ -395,7 +395,7 @@ class _3D_EXPORT QgsCameraController : public QObject
 
 #ifndef SIP_RUN
     //! Converts screen point to world position
-    bool screenPointToWorldPos( QPoint position, Qt3DRender::QCamera *cameraBefore, double &depth, QVector3D &worldPosition );
+    bool screenPointToWorldPos( QPoint position, double &depth, QVector3D &worldPosition );
 #endif
 
     // Moves given point (in ECEF) by specified lat/lon angle difference (in degrees) and returns new ECEF point
@@ -421,6 +421,8 @@ class _3D_EXPORT QgsCameraController : public QObject
     // -1 when unset
     // TODO: Change to std::optional<double>
     double mDepthBufferNonVoidAverage = -1;
+    // nullptr when !mDepthBufferIsReady
+    std::unique_ptr<Qt3DRender::QCamera> mDepthBufferCamera;
 
     std::unique_ptr<Qt3DRender::QCamera> mCameraBefore;
 

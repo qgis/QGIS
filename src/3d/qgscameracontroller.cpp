@@ -445,7 +445,7 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
   }
 }
 
-bool QgsCameraController::screenPointToWorldPos( QPoint position, Qt3DRender::QCamera *mCameraBefore, double &depth, QVector3D &worldPosition )
+bool QgsCameraController::screenPointToWorldPos( QPoint position, double &depth, QVector3D &worldPosition )
 {
   depth = sampleDepthBuffer( position.x(), position.y() );
 
@@ -456,7 +456,7 @@ bool QgsCameraController::screenPointToWorldPos( QPoint position, Qt3DRender::QC
     depth = depthBufferNonVoidAverage();
   }
 
-  worldPosition = Qgs3DUtils::screenPointToWorldPos( position, depth, mScene->engine()->size(), mCameraBefore );
+  worldPosition = Qgs3DUtils::screenPointToWorldPos( position, depth, mScene->engine()->size(), mDepthBufferCamera.get() );
   if ( !std::isfinite( worldPosition.x() ) || !std::isfinite( worldPosition.y() ) || !std::isfinite( worldPosition.z() ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "screenPointToWorldPos: position is NaN or Inf. This should not happen." ), 2 );
@@ -500,7 +500,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     {
       double depth;
       QVector3D worldPosition;
-      if ( screenPointToWorldPos( mClickPoint, mCameraBefore.get(), depth, worldPosition ) )
+      if ( screenPointToWorldPos( mClickPoint, depth, worldPosition ) )
       {
         mRotationCenter = worldPosition;
         mRotationDistanceFromCenter = ( mRotationCenter - mCameraBefore->position() ).length();
@@ -531,7 +531,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     {
       double depth;
       QVector3D worldPosition;
-      if ( screenPointToWorldPos( mClickPoint, mCameraBefore.get(), depth, worldPosition ) )
+      if ( screenPointToWorldPos( mClickPoint, depth, worldPosition ) )
       {
         mDragDepth = depth;
         mDragPoint = worldPosition;
@@ -588,7 +588,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     {
       double depth;
       QVector3D worldPosition;
-      if ( screenPointToWorldPos( mClickPoint, mCameraBefore.get(), depth, worldPosition ) )
+      if ( screenPointToWorldPos( mClickPoint, depth, worldPosition ) )
       {
         mDragPoint = worldPosition;
         mDragPointCalculated = true;
@@ -664,7 +664,7 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
   {
     double depth;
     QVector3D worldPosition;
-    if ( !screenPointToWorldPos( mClickPoint, mCameraBefore.get(), depth, worldPosition ) )
+    if ( !screenPointToWorldPos( mClickPoint, depth, worldPosition ) )
       return;
 
     mDragDepth = depth;
@@ -678,7 +678,7 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
   if ( newDepth == 1 )
     return; // the mouse is somewhere in the void...
 
-  const QVector3D newWorldPosition = Qgs3DUtils::screenPointToWorldPos( QPoint( mouse->x(), mouse->y() ), newDepth, mScene->engine()->size(), mCameraBefore.get() );
+  const QVector3D newWorldPosition = Qgs3DUtils::screenPointToWorldPos( QPoint( mouse->x(), mouse->y() ), newDepth, mScene->engine()->size(), mDepthBufferCamera.get() );
   if ( !std::isfinite( newWorldPosition.x() ) || !std::isfinite( newWorldPosition.y() ) || !std::isfinite( newWorldPosition.z() ) )
     return;
 
@@ -727,7 +727,7 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
   {
     double depth;
     QVector3D worldPosition;
-    if ( screenPointToWorldPos( mMousePos, mCameraBefore.get(), depth, worldPosition ) )
+    if ( screenPointToWorldPos( mMousePos, depth, worldPosition ) )
     {
       mZoomPoint = worldPosition;
       mZoomPointCalculated = true;
@@ -1322,6 +1322,12 @@ void QgsCameraController::depthBufferCaptured( const QImage &depthImage )
   mDepthBufferIsReady = true;
   mDepthBufferNonVoidAverage = -1;
 
+  // To read distances from the captured depth buffer, we need to know the
+  // camera parameters it was rendered with. This seems like the closest
+  // place to save them, though I have no idea if they can't be changed
+  // between the rendering and now anyway...
+  mDepthBufferCamera = Qgs3DUtils::copyCamera( mCamera );
+
   if ( mCurrentOperation == MouseOperation::ZoomWheel )
   {
     handleTerrainNavigationWheelZoom();
@@ -1365,17 +1371,9 @@ void QgsCameraController::setMouseParameters( const MouseOperation &newOperation
   if ( mCurrentOperation != MouseOperation::None && mCurrentOperation != MouseOperation::RotationCamera )
   {
     mMousePressViewCenter = mCameraPose.centerPoint() + mOrigin;
+    mCameraBefore = Qgs3DUtils::copyCamera( mCamera );
 
     emit requestDepthBufferCapture();
-
-    mCameraBefore->setPosition( mCamera->position() );
-    mCameraBefore->setViewCenter( mCamera->viewCenter() );
-    mCameraBefore->setUpVector( mCamera->upVector() );
-    mCameraBefore->setProjectionMatrix( mCamera->projectionMatrix() );
-    mCameraBefore->setNearPlane( mCamera->nearPlane() );
-    mCameraBefore->setFarPlane( mCamera->farPlane() );
-    mCameraBefore->setAspectRatio( mCamera->aspectRatio() );
-    mCameraBefore->setFieldOfView( mCamera->fieldOfView() );
   }
 }
 
