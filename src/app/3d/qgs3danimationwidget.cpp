@@ -114,7 +114,7 @@ void Qgs3DAnimationWidget::setDefaultAnimation()
   Qgs3DAnimationSettings::Keyframes kf;
   Qgs3DAnimationSettings::Keyframe f1, f2;
   f1.time = 0;
-  f1.point = mCameraController->lookingAtPoint();
+  f1.point = mCameraController->lookingAtMapPoint();
   f1.dist = mCameraController->distance();
   f1.pitch = mCameraController->pitch();
   f1.yaw = mCameraController->yaw();
@@ -235,7 +235,7 @@ void Qgs3DAnimationWidget::onSliderValueChanged()
     cboKeyframe->setCurrentIndex( 0 );
 
   const Qgs3DAnimationSettings::Keyframe kf = mAnimationSettings->interpolate( sliderTime->value() / 100. );
-  mCameraController->setLookingAtPoint( kf.point, kf.dist, kf.pitch, kf.yaw );
+  mCameraController->setLookingAtMapPoint( kf.point, kf.dist, kf.pitch, kf.yaw );
 }
 
 void Qgs3DAnimationWidget::onCameraChanged()
@@ -246,7 +246,7 @@ void Qgs3DAnimationWidget::onCameraChanged()
   // update keyframe's camera position/rotation
   const int i = cboKeyframe->currentIndex();
   Qgs3DAnimationSettings::Keyframe kf = cboKeyframe->itemData( i, Qt::UserRole + 1 ).value<Qgs3DAnimationSettings::Keyframe>();
-  kf.point = mCameraController->lookingAtPoint();
+  kf.point = mCameraController->lookingAtMapPoint();
   kf.dist = mCameraController->distance();
   kf.pitch = mCameraController->pitch();
   kf.yaw = mCameraController->yaw();
@@ -269,7 +269,7 @@ void Qgs3DAnimationWidget::onKeyframeChanged()
   const Qgs3DAnimationSettings::Keyframe kf = cboKeyframe->itemData( cboKeyframe->currentIndex(), Qt::UserRole + 1 ).value<Qgs3DAnimationSettings::Keyframe>();
 
   whileBlocking( sliderTime )->setValue( kf.time * 100 );
-  mCameraController->setLookingAtPoint( kf.point, kf.dist, kf.pitch, kf.yaw );
+  mCameraController->setLookingAtMapPoint( kf.point, kf.dist, kf.pitch, kf.yaw );
 }
 
 int Qgs3DAnimationWidget::findIndexForKeyframe( float time )
@@ -316,7 +316,7 @@ void Qgs3DAnimationWidget::onAddKeyframe()
 
   Qgs3DAnimationSettings::Keyframe kf;
   kf.time = t;
-  kf.point = mCameraController->lookingAtPoint();
+  kf.point = mCameraController->lookingAtMapPoint();
   kf.dist = mCameraController->distance();
   kf.pitch = mCameraController->pitch();
   kf.yaw = mCameraController->yaw();
