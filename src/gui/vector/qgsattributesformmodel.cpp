@@ -382,6 +382,32 @@ int QgsAttributesFormModel::columnCount( const QModelIndex & ) const
   return 1;
 }
 
+bool QgsAttributesFormModel::indexLessThan( const QModelIndex &a, const QModelIndex &b ) const
+{
+  const QVector<int> pathA = rootToLeafPath( itemForIndex( a ) );
+  const QVector<int> pathB = rootToLeafPath( itemForIndex( b ) );
+
+  for ( int i = 0; i < std::min( pathA.size(), pathB.size() ); i++ )
+  {
+    if ( pathA.at( i ) != pathB.at( i ) )
+    {
+      return pathA.at( i ) < pathB.at( i );
+    }
+  }
+
+  return pathA.size() < pathB.size();
+}
+
+QVector<int> QgsAttributesFormModel::rootToLeafPath( QgsAttributesFormItem *item ) const
+{
+  QVector<int> path;
+  if ( item != mRootItem.get() )
+  {
+    path << rootToLeafPath( item->parent() ) << item->row();
+  }
+  return path;
+}
+
 QModelIndex QgsAttributesFormModel::index( int row, int column, const QModelIndex &parent ) const
 {
   if ( !hasIndex( row, column, parent ) )
@@ -715,7 +741,10 @@ QMimeData *QgsAttributesAvailableWidgetsModel::mimeData( const QModelIndexList &
 
   // Sort indexes since their order reflects selection order
   QModelIndexList sortedIndexes = indexes;
-  std::sort( sortedIndexes.begin(), sortedIndexes.end() );
+
+  std::sort( sortedIndexes.begin(), sortedIndexes.end(), [this]( const QModelIndex &a, const QModelIndex &b ) {
+    return indexLessThan( a, b );
+  } );
 
   for ( const QModelIndex &index : std::as_const( sortedIndexes ) )
   {
@@ -1259,7 +1288,9 @@ QMimeData *QgsAttributesFormLayoutModel::mimeData( const QModelIndexList &indexe
   QDataStream stream( &encoded, QIODevice::WriteOnly );
 
   // Sort indexes since their order reflects selection order
-  std::sort( curatedIndexes.begin(), curatedIndexes.end() );
+  std::sort( curatedIndexes.begin(), curatedIndexes.end(), [this]( const QModelIndex &a, const QModelIndex &b ) {
+    return indexLessThan( a, b );
+  } );
 
   for ( const QModelIndex &index : std::as_const( curatedIndexes ) )
   {

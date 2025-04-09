@@ -23,6 +23,8 @@
 #include "modeltest.h"
 #endif
 
+#include <QMimeData>
+
 
 class TestQgsAttributesFormModel : public QObject
 {
@@ -35,6 +37,7 @@ class TestQgsAttributesFormModel : public QObject
     void cleanup();         // will be called after every testfunction.
     void testAttributesFormItem();
     void testAvailableWidgetsModel();
+    void testAvailableWidgetsModelIndexOderInDragAndDrop();
     void testFormLayoutModel();
     void testInvalidRelationInAvailableWidgets();
     void testInvalidRelationInFormLayout();
@@ -326,6 +329,98 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModel()
   QVERIFY( otherWidgetsIndex.isValid() );
   QCOMPARE( availableWidgetsModel.rowCount( otherWidgetsIndex ), 4 );
   QCOMPARE( otherWidgetsIndex.row(), 3 );
+}
+
+void TestQgsAttributesFormModel::testAvailableWidgetsModelIndexOderInDragAndDrop()
+{
+  // We test the QMimeData object to check that indexes are returned
+  // in the expected order for GUI actions like Drag and Drop
+
+  setUpProjectWithRelation();
+
+  QgsAttributesAvailableWidgetsModel availableWidgetsModel( mLayer, mProject );
+
+#ifdef ENABLE_MODELTEST
+  new ModelTest( &availableWidgetsModel, this ); // for model validity checking
+#endif
+
+  QCOMPARE( availableWidgetsModel.columnCount(), 1 );
+  QCOMPARE( availableWidgetsModel.rowCount(), 0 );
+  QVERIFY( !availableWidgetsModel.hasChildren() );
+  QCOMPARE( availableWidgetsModel.headerData( 0, Qt::Orientation::Horizontal, Qt::DisplayRole ), tr( "Available Widgets" ) );
+  QVERIFY( availableWidgetsModel.mimeTypes().size() == 1 );
+  QCOMPARE( availableWidgetsModel.mimeTypes(), QStringList() << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+
+  // Add data to the model
+  availableWidgetsModel.populate();
+
+  QCOMPARE( availableWidgetsModel.columnCount(), 1 );
+  QCOMPARE( availableWidgetsModel.rowCount(), 4 );
+  QVERIFY( availableWidgetsModel.hasChildren() );
+
+  // Select all fields and see they are stored in a proper order in the mimeData
+  QModelIndexList indexes;
+  QStringList expectedItemIds;
+  QModelIndex fields = availableWidgetsModel.fieldContainer();
+
+  for ( int i = 0; i < availableWidgetsModel.rowCount( fields ); i++ )
+  {
+    QModelIndex index = availableWidgetsModel.index( i, 0, fields );
+    indexes << index;
+
+    expectedItemIds << index.data( QgsAttributesFormModel::ItemIdRole ).toString();
+  }
+
+  QMimeData *data = availableWidgetsModel.mimeData( indexes );
+  QByteArray itemData = data->data( QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+  QDataStream stream( &itemData, QIODevice::ReadOnly );
+  QStringList obtainedItemIds;
+
+  while ( !stream.atEnd() )
+  {
+    QString itemId;
+    int itemTypeInt;
+    QString itemName;
+    stream >> itemId >> itemTypeInt >> itemName;
+
+    obtainedItemIds << itemId;
+  }
+  QCOMPARE( obtainedItemIds, expectedItemIds );
+
+  // Select a field and a relation and see they are stored in a proper order in the mimeData
+  indexes.clear();
+  expectedItemIds.clear();
+  obtainedItemIds.clear();
+
+  QModelIndex relations = availableWidgetsModel.relationContainer();
+  QCOMPARE( availableWidgetsModel.rowCount( relations ), 1 );
+
+  // Add indexes backwards to add some complexity :)
+  QModelIndex tmpIndex = availableWidgetsModel.index( 0, 0, relations );
+  indexes << tmpIndex;
+  expectedItemIds << tmpIndex.data( QgsAttributesFormModel::ItemIdRole ).toString();
+
+  tmpIndex = availableWidgetsModel.index( availableWidgetsModel.rowCount( fields ) - 1, 0, fields );
+  indexes << tmpIndex;
+  // Fields item is above the relations one, so it is expected first
+  expectedItemIds.insert( 0, tmpIndex.data( QgsAttributesFormModel::ItemIdRole ).toString() );
+
+  data = availableWidgetsModel.mimeData( indexes );
+  itemData = data->data( QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+  QDataStream stream2 = QDataStream( &itemData, QIODevice::ReadOnly );
+
+  while ( !stream2.atEnd() )
+  {
+    QString itemId;
+    int itemTypeInt;
+    QString itemName;
+    stream2 >> itemId >> itemTypeInt >> itemName;
+
+    obtainedItemIds << itemId;
+  }
+  // Note: this one would fail with the default std::sort
+  // (i.e., without our auxiliary function indexLessThan)
+  QCOMPARE( obtainedItemIds, expectedItemIds );
 }
 
 void TestQgsAttributesFormModel::testFormLayoutModel()

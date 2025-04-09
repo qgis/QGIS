@@ -591,6 +591,26 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
      */
     QgsAttributesFormItem *itemForIndex( const QModelIndex &index ) const;
 
+    /**
+     * Auxiliary function to sort indexes, returning true if index \a a is less than index \a b.
+     *
+     * Regardless of items depth, an index nearer to the root (imagine all items in a top-down
+     * flat list) should be returned first when sorting.
+     *
+     * For instance, index 0-19-2 (where 0 is the grandparent position and 19 the parent position)
+     * will be less than index 1-0.
+     *
+     * \see rootToLeafPath()
+     */
+    bool indexLessThan( const QModelIndex &a, const QModelIndex &b ) const;
+
+    /**
+     * Returns a QVector of iterative positions from root item to the given \a item.
+     *
+     * \see indexLessThan()
+     */
+    QVector<int> rootToLeafPath( QgsAttributesFormItem *item ) const;
+
     std::unique_ptr< QgsAttributesFormItem > mRootItem;
     QgsVectorLayer *mLayer;
     QgsProject *mProject;
@@ -773,7 +793,7 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, QgsAttributesFormItem *parent, const int position = -1 );
 
     /**
-     * Creates a list of indexes filtering children whose parents are already included.
+     * Creates a list of indexes filtering out children whose parents are already included.
      *
      * This discards redundant indexes before creating MimeData, because a parent will
      * include all its children, grandchildren, great-grandchildren, etc.
