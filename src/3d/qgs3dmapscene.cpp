@@ -1242,6 +1242,12 @@ void Qgs3DMapScene::onOriginChanged()
     transform->setOrigin( mMap.origin() );
   }
 
+  const QList<QgsGeoTransform *> rubberBandGeoTransforms = mEngine->frameGraph()->rubberBandsRootEntity()->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : rubberBandGeoTransforms )
+  {
+    transform->setOrigin( mMap.origin() );
+  }
+
   const QgsVector3D oldOrigin = mCameraController->origin();
   mCameraController->setOrigin( mMap.origin() );
 
