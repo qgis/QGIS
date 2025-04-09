@@ -481,7 +481,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   QgsRectangle rect = currentCrs.bounds();
   QString extentString = tr( "Extent not known" );
   mAreaCanvas->setPreviewRect( rect );
-  if ( !qgsDoubleNear( rect.area(), 0.0 ) )
+  if ( !rect.isNull() && !rect.isEmpty() )
   {
     extentString = QStringLiteral( "%1, %2, %3, %4" )
                      .arg( rect.xMinimum(), 0, 'f', 2 )
