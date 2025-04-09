@@ -47,6 +47,7 @@ class Qgs3DMapSettings;
 class QgsBillboardGeometry;
 class QgsMarkerSymbol;
 class QgsPoint3DBillboardMaterial;
+class QgsGeoTransform;
 
 namespace Qt3DCore
 {
@@ -239,6 +240,10 @@ class _3D_EXPORT QgsRubberBand3D
     Qt3DCore::QEntity *mLineEntity = nullptr;    // owned by parentEntity (from constructor)
     Qt3DCore::QEntity *mPolygonEntity = nullptr; // owned by parentEntity (from constructor)
     Qt3DCore::QEntity *mMarkerEntity = nullptr;  // owned by parentEntity (from constructor)
+
+    QgsGeoTransform *mLineTransform = nullptr;
+    QgsGeoTransform *mPolygonTransform = nullptr;
+    QgsGeoTransform *mMarkerTransform = nullptr;
 
     // all these are owned by mPolygonEntity
     QgsTessellatedPolygonGeometry *mPolygonGeometry = nullptr;
