@@ -27,10 +27,15 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: 🔨 Uninstall system cmake
+        shell: bash
+        run: |
+          choco uninstall cmake.install
+
       - name: 🐩 Install CMake and Ninja
         uses: lukka/get-cmake@latest
         with:
-          cmakeVersion: 3.29.6
+          cmakeVersion: 3.31.6
 
       - name: 🧽 Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@v1
