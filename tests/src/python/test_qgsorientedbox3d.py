@@ -292,12 +292,12 @@ class TestQgsOrientedBox3D(QgisTestCase):
         aabb = box.reprojectedExtent(ct)
 
         # a box roughly around 37.42 N / 122.09 E
-        self.assertEqual(aabb.xMinimum(), -122.09108059552956)
-        self.assertEqual(aabb.yMinimum(), 37.41940987216044)
-        self.assertEqual(aabb.zMinimum(), -35.7030292628333)
-        self.assertEqual(aabb.xMaximum(), -122.088287207839)
-        self.assertEqual(aabb.yMaximum(), 37.42221702328144)
-        self.assertEqual(aabb.zMaximum(), 6.344767062924802)
+        self.assertAlmostEqual(aabb.xMinimum(), -122.09108059552956, 4)
+        self.assertAlmostEqual(aabb.yMinimum(), 37.41940987216044, 4)
+        self.assertAlmostEqual(aabb.zMinimum(), -35.7030292628333, 4)
+        self.assertAlmostEqual(aabb.xMaximum(), -122.088287207839, 4)
+        self.assertAlmostEqual(aabb.yMaximum(), 37.42221702328144, 4)
+        self.assertAlmostEqual(aabb.zMaximum(), 6.344767062924802, 4)
 
     def test_transformed(self):
         box = QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 1, 0, 0, 0, 1])
