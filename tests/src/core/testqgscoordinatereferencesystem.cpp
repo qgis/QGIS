@@ -751,6 +751,123 @@ void TestQgsCoordinateReferenceSystem::fromWkt()
   myCrs = QgsCoordinateReferenceSystem::fromWkt( R"""(PROJCRS["some locally made crs",BASEGEOGCRS["unknown",DATUM["Unknown based on WGS84 ellipsoid",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1],ID["EPSG",7030]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8901]]],CONVERSION["unknown",METHOD["Hotine Oblique Mercator (variant B)",ID["EPSG",9815]],PARAMETER["Latitude of projection centre",47.2,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8811]],PARAMETER["Longitude of projection centre",9,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8812]],PARAMETER["Azimuth of initial line",39.4,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8813]],PARAMETER["Angle from Rectified to Skew Grid",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8814]],PARAMETER["Scale factor on initial line",1,SCALEUNIT["unity",1],ID["EPSG",8815]],PARAMETER["Easting at projection centre",750,LENGTHUNIT["metre",1],ID["EPSG",8816]],PARAMETER["Northing at projection centre",250,LENGTHUNIT["metre",1],ID["EPSG",8817]]],CS[Cartesian,2],AXIS["(E)",east,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["(N)",north,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]]]])""" );
   QVERIFY( myCrs.isValid() );
   QCOMPARE( myCrs.description(), QStringLiteral( "some locally made crs" ) );
+
+
+  // wkt with ID set, but not a known one:
+  myCrs = QgsCoordinateReferenceSystem::fromWkt( R"""(GEODCRS["IAU_2015MoonXYZ",
+  DATUM["Moon(2015)-Sphere",
+    ELLIPSOID["Moon(2015)-Sphere",1737400,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],
+  CS[Cartesian,3],
+  AXIS["(X)",geocentricX,ORDER[1],LENGTHUNIT["metre",1]],
+  AXIS["(Y)",geocentricY,ORDER[2],LENGTHUNIT["metre",1]],
+  AXIS["(Z)",geocentricZ,ORDER[3],LENGTHUNIT["metre",1]],
+  ID["IAU",30000,2015]
+])""" );
+  QVERIFY( myCrs.isValid() );
+  // we should ignore the authid from the WKT, it is not a valid one
+  QCOMPARE( myCrs.authid(), QString() );
+  QCOMPARE( myCrs.description(), QStringLiteral( "IAU_2015MoonXYZ" ) );
+  QCOMPARE( myCrs.type(), Qgis::CrsType::Geocentric );
+  QCOMPARE( myCrs.celestialBodyName(), QStringLiteral( "Moon" ) );
+
+  // retrieve from cache
+  QgsCoordinateReferenceSystem fromCache = QgsCoordinateReferenceSystem::fromWkt( R"""(GEODCRS["IAU_2015MoonXYZ",
+  DATUM["Moon(2015)-Sphere",
+    ELLIPSOID["Moon(2015)-Sphere",1737400,0,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],
+  CS[Cartesian,3],
+  AXIS["(X)",geocentricX,ORDER[1],LENGTHUNIT["metre",1]],
+  AXIS["(Y)",geocentricY,ORDER[2],LENGTHUNIT["metre",1]],
+  AXIS["(Z)",geocentricZ,ORDER[3],LENGTHUNIT["metre",1]],
+  ID["IAU",30000,2015]
+])""" );
+  QCOMPARE( fromCache, myCrs );
+
+  // wkt with ID set, but not a known one:
+  myCrs = QgsCoordinateReferenceSystem::fromWkt( R"""(PROJCRS["RGF93 v2b / Lambert-LSBB",
+    BASEGEOGCRS["RGF93 v2b",
+        DATUM["Reseau Geodesique Francais 1993 v2b",
+            ELLIPSOID["GRS 1980",6378137,298.257222101,
+                LENGTHUNIT["metre",1]]],
+        PRIMEM["Greenwich",0,
+            ANGLEUNIT["degree",0.0174532925199433]],
+        ID["EPSG",9782]],
+    CONVERSION["Lambert-LSBB",
+        METHOD["Lambert Conic Conformal (1SP)",
+            ID["EPSG",9801]],
+        PARAMETER["Latitude of natural origin",43.93333333333333,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8801]],
+        PARAMETER["Longitude of natural origin",5.475000,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8802]],
+        PARAMETER["Scale factor at natural origin",1.00008468,
+            SCALEUNIT["unity",1],
+            ID["EPSG",8805]],
+        PARAMETER["False easting",10000,
+            LENGTHUNIT["metre",1],
+            ID["EPSG",8806]],
+        PARAMETER["False northing",70000,
+            LENGTHUNIT["metre",1],
+            ID["EPSG",8807]]],
+    CS[Cartesian,2],
+        AXIS["easting (X)",east,
+            ORDER[1],
+            LENGTHUNIT["metre",1]],
+        AXIS["northing (Y)",north,
+            ORDER[2],
+            LENGTHUNIT["metre",1]],
+    USAGE[
+        SCOPE["Engineering survey, topographic mapping."],
+        AREA["France - onshore and offshore, mainland and Corsica."],
+        BBOX[43,4,45,6]],
+    ID["EPSG",100001]])""" );
+  QVERIFY( myCrs.isValid() );
+  // we should ignore the authid from the WKT, it is not a valid one
+  QCOMPARE( myCrs.authid(), QString() );
+  QCOMPARE( myCrs.description(), QStringLiteral( "RGF93 v2b / Lambert-LSBB" ) );
+  QCOMPARE( myCrs.type(), Qgis::CrsType::Projected );
+  QCOMPARE( myCrs.celestialBodyName(), QStringLiteral( "Earth" ) );
+
+  // retrieve from cache
+  fromCache = QgsCoordinateReferenceSystem::fromWkt( R"""(PROJCRS["RGF93 v2b / Lambert-LSBB",
+    BASEGEOGCRS["RGF93 v2b",
+        DATUM["Reseau Geodesique Francais 1993 v2b",
+            ELLIPSOID["GRS 1980",6378137,298.257222101,
+                LENGTHUNIT["metre",1]]],
+        PRIMEM["Greenwich",0,
+            ANGLEUNIT["degree",0.0174532925199433]],
+        ID["EPSG",9782]],
+    CONVERSION["Lambert-LSBB",
+        METHOD["Lambert Conic Conformal (1SP)",
+            ID["EPSG",9801]],
+        PARAMETER["Latitude of natural origin",43.93333333333333,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8801]],
+        PARAMETER["Longitude of natural origin",5.475000,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8802]],
+        PARAMETER["Scale factor at natural origin",1.00008468,
+            SCALEUNIT["unity",1],
+            ID["EPSG",8805]],
+        PARAMETER["False easting",10000,
+            LENGTHUNIT["metre",1],
+            ID["EPSG",8806]],
+        PARAMETER["False northing",70000,
+            LENGTHUNIT["metre",1],
+            ID["EPSG",8807]]],
+    CS[Cartesian,2],
+        AXIS["easting (X)",east,
+            ORDER[1],
+            LENGTHUNIT["metre",1]],
+        AXIS["northing (Y)",north,
+            ORDER[2],
+            LENGTHUNIT["metre",1]],
+    USAGE[
+        SCOPE["Engineering survey, topographic mapping."],
+        AREA["France - onshore and offshore, mainland and Corsica."],
+        BBOX[43,4,45,6]],
+    ID["EPSG",100001]])""" );
+  QCOMPARE( fromCache, myCrs );
 }
 
 void TestQgsCoordinateReferenceSystem::wktCache()
