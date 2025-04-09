@@ -48,13 +48,15 @@ class CORE_EXPORT QgsZipUtils
     static bool unzip( const QString &zip, const QString &dir, QStringList &files SIP_OUT, bool checkConsistency = true );
 
     /**
-     * Zip the list of files in the zip file. If the zip file already exists or is
-     * empty, an error is returned. If an input file does not exist, an error is
-     * also returned.
+     * Zip the list of files in the zip file.
+     *
+     * If the zip file already exists (and \a overwrite is FALSE) or is empty, an error is returned.
+     * If an input file does not exist, an error is also returned.
      * \param zip The zip filename
      * \param files The absolute path to files to embed within the zip
+     * \param overwrite Set to TRUE to allow overwriting existing files (since QGIS 3.44)
      */
-    static bool zip( const QString &zip, const QStringList &files );
+    static bool zip( const QString &zip, const QStringList &files, bool overwrite = false );
 
     /**
      * Decodes gzip byte stream, returns TRUE on success. Useful for reading vector tiles.
