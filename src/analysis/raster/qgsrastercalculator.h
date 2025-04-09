@@ -75,7 +75,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
 {
   public:
     //! Result of the calculation
-    enum Result
+    enum class Result : int
     {
       Success = 0,           //!< Calculation successful
       CreateOutputError = 1, //!< Error creating output data file
@@ -149,7 +149,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      *
      * The optional \a feedback argument can be used for progress reporting and cancellation support.
      *
-     * \returns QgsRasterCalculator::Success in case of success. If an error is encountered then
+     * \returns QgsRasterCalculator::Result::Success in case of success. If an error is encountered then
      * a description of the error can be obtained by calling lastError().
     */
     Result processCalculation( QgsFeedback *feedback = nullptr );
