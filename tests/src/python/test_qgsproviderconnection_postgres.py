@@ -13,11 +13,14 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtCore import QTemporaryDir, QMetaType
 from qgis.core import (
     Qgis,
     QgsAbstractDatabaseProviderConnection,
+    QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
+    QgsField,
+    QgsFields,
     QgsProviderConnectionException,
     QgsProviderRegistry,
     QgsRasterLayer,
@@ -886,6 +889,57 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         self.assertEqual(res_ds.schema(), "dest_schema")
         self.assertEqual(res_ds.geometryColumn(), "geometry")
         self.assertEqual(res_ds.keyColumn(), "pk,pk2")
+
+    def test_create_layer_w_roles(self):
+        """
+        Test layer creation with roles
+        """
+
+        uriUserWithrole = (
+            self.uri
+            + " user=qgis_test_user password=qgis_test_user_password session_role=qgis_test_group"
+        )
+        uriOtherUserWithrole = (
+            self.uri
+            + " user=qgis_test_another_user password=qgis_test_another_user_password session_role=qgis_test_group"
+        )
+        uriUnprivilegedUser = (
+            self.uri
+            + " user=qgis_test_unprivileged_user password=qgis_test_unprivileged_user_password"
+        )
+        schema = "qgis_test"
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        connUserWithrole = md.createConnection(uriUserWithrole, {})
+        self.assertTrue(connUserWithrole)
+
+        connOtherUserWithrole = md.createConnection(uriOtherUserWithrole, {})  # spellok
+        self.assertTrue(connOtherUserWithrole)  # spellok
+
+        connUnprivilegedUser = md.createConnection(uriUnprivilegedUser, {})
+        self.assertTrue(connUnprivilegedUser)
+
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.layer_w_role;
+        """
+
+        connUserWithrole.executeSql(sql)
+
+        fields = QgsFields()
+        fields.append(QgsField("test", QMetaType.Type.QString))
+        crs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
+
+        connUserWithrole.createVectorTable(
+            schema, "layer_w_role", fields, QgsWkbTypes.Type.Point, crs, False, {}
+        )
+        table_names = self._table_names(connUserWithrole.tables(schema))
+        self.assertIn("layer_w_role", table_names)
+
+        table_names = self._table_names(connOtherUserWithrole.tables(schema))  # spellok
+        self.assertIn("layer_w_role", table_names)
+
+        table_names = self._table_names(connUnprivilegedUser.tables(schema))
+        self.assertNotIn("layer_w_role", table_names)
 
 
 if __name__ == "__main__":
