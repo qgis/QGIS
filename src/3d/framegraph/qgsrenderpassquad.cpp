@@ -45,11 +45,17 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <QVector3D>
 
 QgsRenderPassQuad::QgsRenderPassQuad( Qt3DRender::QLayer *layer, QNode *parent )
-  : Qt3DCore::QEntity( parent )
+  : Qt3DCore::QEntity() // Qt3D bug: if we set the parent in the super constructor
+                        // the entity is not attached properly. We attach it at the constructor end.
 {
   Qt3DQGeometry *geom = new Qt3DQGeometry( this );
   Qt3DQAttribute *positionAttribute = new Qt3DQAttribute( this );
-  const QVector<float> vert = { -1.0f, -1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ -1.0f, 1.0f, 0.0f, /**/ -1.0f, 1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ 1.0f, 1.0f, 0.0f };
+  const QVector<float> vert = { -1.0f, -1.0f, 0.0f, //
+                                1.0f, -1.0f, 0.0f,  //
+                                -1.0f, 1.0f, 0.0f,  //
+                                -1.0f, 1.0f, 0.0f,  //
+                                1.0f, -1.0f, 0.0f,  //
+                                1.0f, 1.0f, 0.0f };
 
   const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
   Qt3DQBuffer *vertexBuffer = nullptr;
@@ -100,4 +106,6 @@ QgsRenderPassQuad::QgsRenderPassQuad( Qt3DRender::QLayer *layer, QNode *parent )
   addComponent( mMaterial );
 
   addComponent( layer );
+
+  setParent( parent ); // Needed!
 }
