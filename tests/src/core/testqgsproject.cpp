@@ -16,6 +16,7 @@
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QThread>
 
 #include "qgsapplication.h"
 #include "qgsmarkersymbollayer.h"
@@ -109,9 +110,13 @@ void TestQgsProject::testDirtySet()
 {
   QgsProject p;
   bool dirtySet = false;
-  connect( &p, &QgsProject::dirtySet, [&] { dirtySet = true; } );
+  auto connection = std::make_unique<QMetaObject::Connection>();
+  auto connectionPtr = connection.get();
+  *connectionPtr = connect( &p, &QgsProject::dirtySet, [&] { dirtySet = true; } );
   p.setDirty( true );
+  QThread::usleep( 500 ); // wait for event loop to catch up
   QVERIFY( dirtySet );
+  disconnect( *connectionPtr );
 }
 
 void TestQgsProject::testReadPath()
