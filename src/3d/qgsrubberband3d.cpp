@@ -416,13 +416,7 @@ void QgsRubberBand3D::moveLastPoint( const QgsPoint &pt )
 void QgsRubberBand3D::updateGeometry()
 {
   // figure out a reasonable origin for the coordinates to keep them as small as possible
-  QgsBox3D box;
-  QgsVertexIterator vit = mGeometry.vertices();
-  while ( vit.hasNext() )
-  {
-    const QgsPoint pt = vit.next();
-    box.combineWith( pt.x(), pt.y(), pt.z() );
-  }
+  const QgsBox3D box = mGeometry.constGet()->boundingBox3D();
   QgsVector3D dataOrigin = box.isNull() ? mMapSettings->origin() : box.center();
 
   QgsLineVertexData lineData;
