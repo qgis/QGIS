@@ -460,6 +460,11 @@ QgsRectangle Qgs3DMapSettings::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  if ( sceneMode() == Qgis::SceneMode::Globe )
+  {
+    QgsDebugError( QStringLiteral( "extent() should not be used with globe!" ) );
+  }
+
   return mExtent;
 }
 
@@ -469,6 +474,11 @@ void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
 
   if ( extent == mExtent )
     return;
+
+  if ( sceneMode() == Qgis::SceneMode::Globe )
+  {
+    QgsDebugError( QStringLiteral( "setExtent() should not be used with globe!" ) );
+  }
 
   mExtent = extent;
   const QgsPointXY center = mExtent.center();

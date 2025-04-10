@@ -89,6 +89,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   spinScreenError->setClearValue( 3 );
   spinGroundError->setClearValue( 1 );
   terrainElevationOffsetSpinBox->setClearValue( 0.0 );
+  terrainElevationOffsetSpinBox->setEnabled( map->sceneMode() == Qgis::SceneMode::Local );
   edlStrengthSpinBox->setClearValue( 1000 );
   edlDistanceSpinBox->setClearValue( 1 );
 
@@ -96,10 +97,13 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   cboTerrainLayer->setFilters( Qgis::LayerFilter::RasterLayer );
 
   cboTerrainType->addItem( tr( "Flat Terrain" ), QgsTerrainGenerator::Flat );
-  cboTerrainType->addItem( tr( "DEM (Raster Layer)" ), QgsTerrainGenerator::Dem );
-  cboTerrainType->addItem( tr( "Online" ), QgsTerrainGenerator::Online );
-  cboTerrainType->addItem( tr( "Mesh" ), QgsTerrainGenerator::Mesh );
-  cboTerrainType->addItem( tr( "Quantized Mesh" ), QgsTerrainGenerator::QuantizedMesh );
+  if ( map->sceneMode() == Qgis::SceneMode::Local )
+  {
+    cboTerrainType->addItem( tr( "DEM (Raster Layer)" ), QgsTerrainGenerator::Dem );
+    cboTerrainType->addItem( tr( "Online" ), QgsTerrainGenerator::Online );
+    cboTerrainType->addItem( tr( "Mesh" ), QgsTerrainGenerator::Mesh );
+    cboTerrainType->addItem( tr( "Quantized Mesh" ), QgsTerrainGenerator::QuantizedMesh );
+  }
 
   groupTerrain->setChecked( mMap->terrainRenderingEnabled() );
 
@@ -219,6 +223,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mSync3DTo2DCheckbox->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   mVisualizeExtentCheckBox->setChecked( map->viewFrustumVisualizationEnabled() );
 
+  // none of the 2d/3d canvas sync options supported by globe yet
+  groupBox->setVisible( map->sceneMode() == Qgis::SceneMode::Local );
+
   // ==================
   // Page: Advanced
 
@@ -240,6 +247,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   {
     groupExtent->setMapCanvas( mMainCanvas );
   }
+  groupExtent->setVisible( map->sceneMode() == Qgis::SceneMode::Local );
 
   // checkbox to display the extent in the 2D Map View
   mShowExtentIn2DViewCheckbox = new QCheckBox( tr( "Show in 2D map view" ) );
@@ -258,8 +266,11 @@ Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
 
 void Qgs3DMapConfigWidget::apply()
 {
-  mMap->setExtent( groupExtent->outputExtent() );
-  mMap->setShowExtentIn2DView( mShowExtentIn2DViewCheckbox->isChecked() );
+  if ( mMap->sceneMode() == Qgis::SceneMode::Local )
+  {
+    mMap->setExtent( groupExtent->outputExtent() );
+    mMap->setShowExtentIn2DView( mShowExtentIn2DViewCheckbox->isChecked() );
+  }
 
   const QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
 
@@ -374,7 +385,7 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
   labelTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh || genType == QgsTerrainGenerator::QuantizedMesh );
   cboTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh || genType == QgsTerrainGenerator::QuantizedMesh );
   groupMeshTerrainShading->setVisible( genType == QgsTerrainGenerator::Mesh );
-  groupTerrainShading->setVisible( genType != QgsTerrainGenerator::Mesh );
+  groupTerrainShading->setVisible( mMap->sceneMode() == Qgis::SceneMode::Local && genType != QgsTerrainGenerator::Mesh );
 
   QgsMapLayer *oldTerrainLayer = cboTerrainLayer->currentLayer();
   if ( cboTerrainType->currentData() == QgsTerrainGenerator::Dem )
