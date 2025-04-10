@@ -101,6 +101,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
   {
     QgsEventTracing::ScopedEvent _trace( QStringLiteral( "PointCloud" ), QStringLiteral( "Qgs3DMapToolPointCloudChangeAttribute::searchPoints, looking for affected nodes" ) );
     QgsPointCloudIndex index = layer->index();
+    const QList<QVector4D> clipPlanes = mCanvas->scene()->clipPlaneEquations();
     QQueue<QgsPointCloudNodeId> queue;
     queue.append( index.root() );
     while ( !queue.empty() )
@@ -125,13 +126,33 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
       const QgsBox3D box( extentMin3D.x(), extentMin3D.y(), extentMin3D.z(), extentMax3D.x(), extentMax3D.y(), extentMax3D.z() );
       // check whether the hull intersects the search polygon
       const QgsGeometry hull = box3DToPolygonInScreenSpace( box, mapToPixel3D );
-      if ( searchPolygon.intersects( hull.constGet() ) )
+      if ( !searchPolygon.intersects( hull.constGet() ) )
+        continue;
+
+      // check whether no one clip plane excludes the whole node
+      bool allCornersClipped = false;
+      for ( const QVector4D &plane : clipPlanes )
       {
-        nodes.append( node.id() );
-        for ( const QgsPointCloudNodeId &child : node.children() )
+        bool isClipped = true;
+        for ( double x : { bounds.xMinimum(), bounds.xMaximum() } )
+          for ( double y : { bounds.yMinimum(), bounds.yMaximum() } )
+            for ( double z : { bounds.zMinimum(), bounds.zMaximum() } )
+              isClipped = isClipped && pointIsClipped( mapToPixel3D.origin, { plane }, x, y, z );
+        // This half-space excludes all of the node's corners, so it excludes
+        // the whole node.
+        if ( isClipped )
         {
-          queue.append( child );
+          allCornersClipped = true;
+          break;
         }
+      }
+      if ( allCornersClipped )
+        continue;
+
+      nodes.append( node.id() );
+      for ( const QgsPointCloudNodeId &child : node.children() )
+      {
+        queue.append( child );
       }
     }
   }
@@ -167,6 +188,22 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
 
   SelectedPoints result = QtConcurrent::blockingMappedReduced<SelectedPoints>( nodes, std::move( mapFn ), std::move( reduceFn ) );
   return result;
+}
+
+bool Qgs3DMapToolPointCloudChangeAttribute::pointIsClipped( const QgsVector3D &mapOrigin, const QList<QVector4D> &clipPlanes, double x, double y, double z )
+{
+  if ( clipPlanes.size() > 0 )
+  {
+    const QgsVector3D pointInWorldCoords = Qgs3DUtils::mapToWorldCoordinates( QgsVector3D( x, y, z ), mapOrigin );
+    for ( const QVector4D &clipPlane : clipPlanes )
+    {
+      // we manually calculate the dot product here so we save resources on some transformation
+      const double distance = clipPlane.x() * pointInWorldCoords.x() + clipPlane.y() * pointInWorldCoords.y() + clipPlane.z() * pointInWorldCoords.z() + clipPlane.w();
+      if ( distance < 0 )
+        return true;
+    }
+  }
+  return false;
 }
 
 QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const QgsGeos &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudIndex pcIndex, QgsRectangle mapExtent, QgsPointCloudLayerElevationProperties &elevationProperties, QgsAbstract3DRenderer *renderer3D )
@@ -276,28 +313,6 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
     if ( !mapExtent.contains( x, y ) )
       continue;
 
-    // check if clipped
-    if ( clipPlanes.size() > 0 )
-    {
-      bool isClipped = false;
-      const QgsVector3D pointInWorldCoords = Qgs3DUtils::mapToWorldCoordinates( QgsVector3D( x, y, z ), mCanvas->mapSettings()->origin() );
-      for ( const QVector4D &clipPlane : clipPlanes )
-      {
-        // we manually calculate the dot product here so we save resources on some transformation
-        const double distance = clipPlane.x() * pointInWorldCoords.x() + clipPlane.y() * pointInWorldCoords.y() + clipPlane.z() * pointInWorldCoords.z() + clipPlane.w();
-        if ( distance < 0 )
-        {
-          isClipped = true;
-          break;
-        }
-      }
-      if ( isClipped )
-      {
-        continue;
-      }
-    }
-
-
     // project to screen (map coords -> world coords -> clip coords -> NDC -> screen coords)
     bool isInFrustum;
     const QPointF ptScreen = mapToPixel3D.transform( x, y, z, &isInFrustum );
@@ -308,10 +323,13 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
     pt.setX( ptScreen.x() );
     pt.setY( ptScreen.y() );
 
-    if ( searchPolygon.intersects( &pt ) )
-    {
-      selected.append( i );
-    }
+    if ( !searchPolygon.intersects( &pt ) )
+      continue;
+
+    if ( pointIsClipped( mapToPixel3D.origin, clipPlanes, x, y, z ) )
+      continue;
+
+    selected.append( i );
   }
   return selected;
 }
