@@ -142,14 +142,16 @@ void TestQgsProcessingModel::testModel()
 #endif
 
   QCOMPARE( model.columnCount(), 1 );
-  QCOMPARE( model.rowCount(), 2 );
+  QCOMPARE( model.rowCount(), 3 );
   QVERIFY( model.hasChildren() );
   QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "Recently used" ) );
   QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "Favorites" ) );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "Input parameters" ) );
   QCOMPARE( model.rowCount( model.index( 0, 0, QModelIndex() ) ), 0 );
   QVERIFY( !model.providerForIndex( model.index( 0, 0, QModelIndex() ) ) );
   QVERIFY( !model.providerForIndex( model.index( 1, 0, QModelIndex() ) ) );
   QVERIFY( !model.providerForIndex( model.index( 2, 0, QModelIndex() ) ) );
+  QVERIFY( !model.providerForIndex( model.index( 3, 0, QModelIndex() ) ) );
   QVERIFY( !model.indexForProvider( nullptr ).isValid() );
   QVERIFY( model.index2node( QModelIndex() ) ); // root node
   QCOMPARE( model.index2node( QModelIndex() )->nodeType(), QgsProcessingToolboxModelNode::NodeType::Group );
@@ -159,45 +161,47 @@ void TestQgsProcessingModel::testModel()
   // add a provider
   DummyProvider *p1 = new DummyProvider( "p1", "provider1" );
   registry.addProvider( p1 );
-  QCOMPARE( model.rowCount(), 3 );
+  QCOMPARE( model.rowCount(), 4 );
   QVERIFY( model.hasChildren() );
 
   QVERIFY( model.index( 0, 0, QModelIndex() ).isValid() );
   QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "Recently used" ) );
   QVERIFY( model.index( 1, 0, QModelIndex() ).isValid() );
   QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "Favorites" ) );
-  QCOMPARE( model.providerForIndex( model.index( 2, 0, QModelIndex() ) ), p1 );
-  QVERIFY( !model.providerForIndex( model.index( 3, 0, QModelIndex() ) ) );
-  QCOMPARE( model.indexForProvider( p1->id() ), model.index( 2, 0, QModelIndex() ) );
+  QVERIFY( model.index( 2, 0, QModelIndex() ).isValid() );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "Input parameters" ) );
+  QCOMPARE( model.providerForIndex( model.index( 3, 0, QModelIndex() ) ), p1 );
+  QVERIFY( !model.providerForIndex( model.index( 4, 0, QModelIndex() ) ) );
+  QCOMPARE( model.indexForProvider( p1->id() ), model.index( 3, 0, QModelIndex() ) );
   QVERIFY( !model.indexForProvider( nullptr ).isValid() );
-  QCOMPARE( model.rowCount( model.index( 2, 0, QModelIndex() ) ), 0 );
-  QVERIFY( !model.hasChildren( model.index( 2, 0, QModelIndex() ) ) );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "long name provider1" ) );
-  QVERIFY( !model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).isValid() );
-  QVERIFY( !model.data( model.index( 3, 0, QModelIndex() ), Qt::ToolTipRole ).isValid() );
+  QCOMPARE( model.rowCount( model.index( 3, 0, QModelIndex() ) ), 0 );
+  QVERIFY( !model.hasChildren( model.index( 3, 0, QModelIndex() ) ) );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "long name provider1" ) );
+  QVERIFY( !model.data( model.index( 4, 0, QModelIndex() ), Qt::DisplayRole ).isValid() );
+  QVERIFY( !model.data( model.index( 4, 0, QModelIndex() ), Qt::ToolTipRole ).isValid() );
 
   // second provider
   DummyProvider *p2 = new DummyProvider( "p2", "provider2" );
   registry.addProvider( p2 );
-  QCOMPARE( model.rowCount(), 4 );
+  QCOMPARE( model.rowCount(), 5 );
   QVERIFY( model.hasChildren() );
 
-  QVERIFY( model.index( 3, 0, QModelIndex() ).isValid() );
-  QCOMPARE( model.providerForIndex( model.index( 2, 0, QModelIndex() ) ), p1 );
-  QCOMPARE( model.providerForIndex( model.index( 3, 0, QModelIndex() ) ), p2 );
-  QVERIFY( !model.providerForIndex( model.index( 4, 0, QModelIndex() ) ) );
-  QCOMPARE( model.indexForProvider( p1->id() ), model.index( 2, 0, QModelIndex() ) );
-  QCOMPARE( model.indexForProvider( p2->id() ), model.index( 3, 0, QModelIndex() ) );
+  QVERIFY( model.index( 4, 0, QModelIndex() ).isValid() );
+  QCOMPARE( model.providerForIndex( model.index( 3, 0, QModelIndex() ) ), p1 );
+  QCOMPARE( model.providerForIndex( model.index( 4, 0, QModelIndex() ) ), p2 );
+  QVERIFY( !model.providerForIndex( model.index( 5, 0, QModelIndex() ) ) );
+  QCOMPARE( model.indexForProvider( p1->id() ), model.index( 3, 0, QModelIndex() ) );
+  QCOMPARE( model.indexForProvider( p2->id() ), model.index( 4, 0, QModelIndex() ) );
   QVERIFY( !model.indexForProvider( nullptr ).isValid() );
   QVERIFY( !model.hasChildren( model.index( 3, 0, QModelIndex() ) ) );
 
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "long name provider1" ) );
-  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
-  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "long name provider2" ) );
-  QVERIFY( !model.data( model.index( 4, 0, QModelIndex() ), Qt::DisplayRole ).isValid() );
-  QVERIFY( !model.data( model.index( 4, 0, QModelIndex() ), Qt::ToolTipRole ).isValid() );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "long name provider1" ) );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "long name provider2" ) );
+  QVERIFY( !model.data( model.index( 5, 0, QModelIndex() ), Qt::DisplayRole ).isValid() );
+  QVERIFY( !model.data( model.index( 5, 0, QModelIndex() ), Qt::ToolTipRole ).isValid() );
 
   // provider with algs and groups
   DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group1", Qgis::ProcessingAlgorithmFlag::HideFromModeler, QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc a" ) );
@@ -205,18 +209,18 @@ void TestQgsProcessingModel::testModel()
   DummyProvider *p3 = new DummyProvider( "p3", "provider3", QList<QgsProcessingAlgorithm *>() << a1 << a2 );
   registry.addProvider( p3 );
 
-  QCOMPARE( model.rowCount(), 5 );
+  QCOMPARE( model.rowCount(), 6 );
   QVERIFY( model.hasChildren() );
-  QVERIFY( model.index( 4, 0, QModelIndex() ).isValid() );
-  QCOMPARE( model.providerForIndex( model.index( 4, 0, QModelIndex() ) ), p3 );
-  QCOMPARE( model.indexForProvider( p1->id() ), model.index( 2, 0, QModelIndex() ) );
-  QCOMPARE( model.indexForProvider( p2->id() ), model.index( 3, 0, QModelIndex() ) );
-  QCOMPARE( model.indexForProvider( p3->id() ), model.index( 4, 0, QModelIndex() ) );
-  QCOMPARE( model.rowCount( model.index( 3, 0, QModelIndex() ) ), 0 );
-  QCOMPARE( model.rowCount( model.index( 4, 0, QModelIndex() ) ), 2 );
-  QVERIFY( !model.hasChildren( model.index( 3, 0, QModelIndex() ) ) );
-  QVERIFY( model.hasChildren( model.index( 4, 0, QModelIndex() ) ) );
-  QModelIndex providerIndex = model.index( 4, 0, QModelIndex() );
+  QVERIFY( model.index( 5, 0, QModelIndex() ).isValid() );
+  QCOMPARE( model.providerForIndex( model.index( 5, 0, QModelIndex() ) ), p3 );
+  QCOMPARE( model.indexForProvider( p1->id() ), model.index( 3, 0, QModelIndex() ) );
+  QCOMPARE( model.indexForProvider( p2->id() ), model.index( 4, 0, QModelIndex() ) );
+  QCOMPARE( model.indexForProvider( p3->id() ), model.index( 5, 0, QModelIndex() ) );
+  QCOMPARE( model.rowCount( model.index( 4, 0, QModelIndex() ) ), 0 );
+  QCOMPARE( model.rowCount( model.index( 5, 0, QModelIndex() ) ), 2 );
+  QVERIFY( !model.hasChildren( model.index( 4, 0, QModelIndex() ) ) );
+  QVERIFY( model.hasChildren( model.index( 5, 0, QModelIndex() ) ) );
+  QModelIndex providerIndex = model.index( 5, 0, QModelIndex() );
   QVERIFY( !model.providerForIndex( model.index( 2, 0, providerIndex ) ) );
   QVERIFY( !model.providerForIndex( model.index( 3, 0, providerIndex ) ) );
 
@@ -272,7 +276,7 @@ void TestQgsProcessingModel::testModel()
   DummyAlgorithm *a7 = new DummyAlgorithm( "a7", "group2" );
   DummyProvider *p5 = new DummyProvider( "p5", "provider5", QList<QgsProcessingAlgorithm *>() << a5 << a6 << a7 );
   registry.addProvider( p5 );
-  QCOMPARE( model.rowCount(), 7 );
+  QCOMPARE( model.rowCount(), 8 );
   QModelIndex p5ProviderIndex = model.indexForProvider( p5->id() );
   QCOMPARE( model.rowCount( p5ProviderIndex ), 3 );
 
@@ -290,7 +294,7 @@ void TestQgsProcessingModel::testModel()
 
   // reload provider
   p5->refreshAlgorithms();
-  QCOMPARE( model.rowCount(), 7 );
+  QCOMPARE( model.rowCount(), 8 );
   p5ProviderIndex = model.indexForProvider( p5->id() );
   QCOMPARE( model.rowCount( p5ProviderIndex ), 3 );
 
@@ -357,12 +361,12 @@ void TestQgsProcessingModel::testModel()
 
   // remove a provider
   registry.removeProvider( p1 );
-  QCOMPARE( model.rowCount(), 6 );
+  QCOMPARE( model.rowCount(), 7 );
   QVERIFY( model.index( 0, 0, QModelIndex() ).isValid() );
-  QCOMPARE( model.providerForIndex( model.index( 2, 0, QModelIndex() ) ), p2 );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
+  QCOMPARE( model.providerForIndex( model.index( 3, 0, QModelIndex() ) ), p2 );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
   registry.removeProvider( p5 );
-  QCOMPARE( model.rowCount(), 5 );
+  QCOMPARE( model.rowCount(), 6 );
   recentIndex = model.index( 0, 0, QModelIndex() );
   QCOMPARE( model.rowCount( recentIndex ), 1 );
   QCOMPARE( model.data( model.index( 0, 0, recentIndex ), static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p4:a3" ) );
@@ -370,9 +374,9 @@ void TestQgsProcessingModel::testModel()
   QCOMPARE( model.rowCount( favoriteIndex ), 1 );
   QCOMPARE( model.data( model.index( 0, 0, favoriteIndex ), static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p4:a3" ) );
   registry.removeProvider( p2 );
-  QCOMPARE( model.rowCount(), 4 );
+  QCOMPARE( model.rowCount(), 5 );
   registry.removeProvider( p3 );
-  QCOMPARE( model.rowCount(), 3 );
+  QCOMPARE( model.rowCount(), 4 );
   recentIndex = model.index( 0, 0, QModelIndex() );
   QCOMPARE( model.rowCount( recentIndex ), 1 );
   favoriteIndex = model.index( 1, 0, QModelIndex() );
@@ -382,7 +386,7 @@ void TestQgsProcessingModel::testModel()
   QCOMPARE( model.rowCount( recentIndex ), 0 );
   favoriteIndex = model.index( 1, 0, QModelIndex() );
   QCOMPARE( model.rowCount( favoriteIndex ), 0 );
-  QCOMPARE( model.rowCount(), 2 );
+  QCOMPARE( model.rowCount(), 3 );
   QCOMPARE( model.columnCount(), 1 );
   QVERIFY( model.hasChildren() );
   QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "Recently used" ) );
@@ -401,10 +405,12 @@ void TestQgsProcessingModel::testModel()
   DummyProvider *qgisP = new DummyProvider( "qgis", "qgis_provider", QList<QgsProcessingAlgorithm *>() << qgisA1 << qgisA2 << qgisA3 << qgisA4 );
   registry2.addProvider( qgisP );
 
-  QCOMPARE( model2.rowCount(), 3 );
-  group1Index = model2.index( 0, 0 );
-  group2Index = model2.index( 1, 0 );
-  const QModelIndex group3Index = model2.index( 2, 0 );
+  QCOMPARE( model2.rowCount(), 4 );
+  QModelIndex paramIndex = model2.index( 0, 0 );
+  group1Index = model2.index( 1, 0 );
+  group2Index = model2.index( 2, 0 );
+  const QModelIndex group3Index = model2.index( 3, 0 );
+  QCOMPARE( model2.data( paramIndex, Qt::DisplayRole ).toString(), QStringLiteral( "Input parameters" ) );
   QCOMPARE( model2.data( group1Index, Qt::DisplayRole ).toString(), QStringLiteral( "group1" ) );
   QCOMPARE( model2.data( group2Index, Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
   QCOMPARE( model2.data( group3Index, Qt::DisplayRole ).toString(), QStringLiteral( "group3" ) );
@@ -439,8 +445,9 @@ void TestQgsProcessingModel::testProxyModel()
   DummyProvider *p2 = new DummyProvider( "p1", "provider1", QList<QgsProcessingAlgorithm *>() << a2 );
   registry.addProvider( p2 );
 
-  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
-  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "Input parameters" ) );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
 
   // top level groups come first
   DummyAlgorithm *qgisA1 = new DummyAlgorithm( "a1", "group2", Qgis::ProcessingAlgorithmFlag::HideFromModeler );
@@ -448,13 +455,13 @@ void TestQgsProcessingModel::testProxyModel()
   DummyProvider *qgisP = new DummyProvider( "qgis", "qgis_provider", QList<QgsProcessingAlgorithm *>() << qgisA1 << qgisA2 );
   registry.addProvider( qgisP );
 
-  QModelIndex group1Index = model.index( 0, 0, QModelIndex() );
-  QModelIndex group2Index = model.index( 1, 0, QModelIndex() );
+  QModelIndex group1Index = model.index( 1, 0, QModelIndex() );
+  QModelIndex group2Index = model.index( 2, 0, QModelIndex() );
   QCOMPARE( model.data( group1Index, Qt::DisplayRole ).toString(), QStringLiteral( "group1" ) );
   QCOMPARE( model.data( group2Index, Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
-  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
-  QCOMPARE( model.rowCount(), 4 );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
+  QCOMPARE( model.rowCount(), 5 );
 
   QModelIndex alg1Index = model.index( 0, 0, group2Index );
   QCOMPARE( model.data( alg1Index, Qt::DisplayRole ).toString(), QStringLiteral( "a1" ) );
@@ -463,8 +470,9 @@ void TestQgsProcessingModel::testProxyModel()
 
   // empty providers/groups should not be shown
   model.setFilters( QgsProcessingToolboxProxyModel::Filter::Modeler );
-  group1Index = model.index( 0, 0, QModelIndex() );
-  QCOMPARE( model.rowCount(), 1 );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "Input parameters" ) );
+  group1Index = model.index( 1, 0, QModelIndex() );
+  QCOMPARE( model.rowCount(), 2 );
   QCOMPARE( model.rowCount( group1Index ), 1 );
   QCOMPARE( model.data( group1Index, Qt::DisplayRole ).toString(), QStringLiteral( "group1" ) );
   QCOMPARE( model.data( model.index( 0, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "a2" ) );
@@ -474,7 +482,7 @@ void TestQgsProcessingModel::testProxyModel()
   QCOMPARE( model.rowCount( group2Index ), 1 );
   QCOMPARE( model.data( group2Index, Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
   QCOMPARE( model.rowCount( group2Index ), 1 );
-  QCOMPARE( model.data( model.index( 0, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "a1" ) );
+  QCOMPARE( model.data( model.index( 0, 0, group2Index ), Qt::DisplayRole ).toString(), QStringLiteral( "a1" ) );
 
   // test filter strings
   model.setFilters( QgsProcessingToolboxProxyModel::Filters() );
@@ -555,11 +563,11 @@ void TestQgsProcessingModel::testProxyModel()
   QCOMPARE( model.data( model.index( 0, 0, group2Index ), static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p2:a1" ) );
 
   model.setFilterString( QString() );
-  QCOMPARE( model.rowCount(), 4 );
+  QCOMPARE( model.rowCount(), 5 );
 
   // check sort order of recent algorithms
   recentLog.push( QStringLiteral( "p2:a1" ) );
-  QCOMPARE( model.rowCount(), 5 );
+  QCOMPARE( model.rowCount(), 6 );
   const QModelIndex recentIndex = model.index( 0, 0, QModelIndex() );
   QCOMPARE( model.data( recentIndex, Qt::DisplayRole ).toString(), QStringLiteral( "Recently used" ) );
   QCOMPARE( model.rowCount( recentIndex ), 1 );
@@ -581,7 +589,7 @@ void TestQgsProcessingModel::testProxyModel()
 
   // check sort order of favorite algorithms
   favoriteManager.add( QStringLiteral( "p2:a1" ) );
-  QCOMPARE( model.rowCount(), 6 );
+  QCOMPARE( model.rowCount(), 7 );
   const QModelIndex favoriteIndex = model.index( 1, 0, QModelIndex() );
   QCOMPARE( model.data( favoriteIndex, Qt::DisplayRole ).toString(), QStringLiteral( "Favorites" ) );
   QCOMPARE( model.rowCount( favoriteIndex ), 1 );
@@ -606,12 +614,12 @@ void TestQgsProcessingModel::testProxyModel()
   QCOMPARE( model.data( model.index( 2, 0, favoriteIndex ), static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p1:a2" ) );
 
   // inactive provider - should not be visible
-  QCOMPARE( model.rowCount(), 6 );
+  QCOMPARE( model.rowCount(), 7 );
   DummyAlgorithm *qgisA31 = new DummyAlgorithm( "a3", "group1" );
   DummyProvider *p3 = new DummyProvider( "p3", "provider3", QList<QgsProcessingAlgorithm *>() << qgisA31 );
   p3->mActive = false;
   registry.addProvider( p3 );
-  QCOMPARE( model.rowCount(), 6 );
+  QCOMPARE( model.rowCount(), 7 );
 }
 
 void TestQgsProcessingModel::testView()
@@ -638,14 +646,14 @@ void TestQgsProcessingModel::testView()
   DummyProvider *p2 = new DummyProvider( "p1", "provider1", QList<QgsProcessingAlgorithm *>() << a2 );
   registry.addProvider( p2 );
 
-  QModelIndex provider1Index = view.model()->index( 0, 0, QModelIndex() );
+  QModelIndex provider1Index = view.model()->index( 1, 0, QModelIndex() );
   QVERIFY( !view.algorithmForIndex( provider1Index ) );
   QModelIndex group2Index = view.model()->index( 0, 0, provider1Index );
   QCOMPARE( view.model()->data( group2Index, Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
   QVERIFY( !view.algorithmForIndex( group2Index ) );
   QModelIndex alg2Index = view.model()->index( 0, 0, group2Index );
   QCOMPARE( view.algorithmForIndex( alg2Index )->id(), QStringLiteral( "p1:a2" ) );
-  QModelIndex provider2Index = view.model()->index( 1, 0, QModelIndex() );
+  QModelIndex provider2Index = view.model()->index( 2, 0, QModelIndex() );
   QVERIFY( !view.algorithmForIndex( provider2Index ) );
   QCOMPARE( view.model()->data( provider2Index, Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
   group2Index = view.model()->index( 0, 0, provider2Index );
@@ -656,8 +664,10 @@ void TestQgsProcessingModel::testView()
   // empty providers/groups should not be shown
   view.setFilters( QgsProcessingToolboxProxyModel::Filter::Modeler );
   QCOMPARE( view.filters(), QgsProcessingToolboxProxyModel::Filter::Modeler );
-  QCOMPARE( view.model()->rowCount(), 1 );
-  provider2Index = view.model()->index( 0, 0, QModelIndex() );
+  QCOMPARE( view.model()->rowCount(), 2 );
+  QVERIFY( view.model()->index( 0, 0, QModelIndex() ).isValid() );
+  QVERIFY( view.model()->index( 1, 0, QModelIndex() ).isValid() );
+  provider2Index = view.model()->index( 1, 0, QModelIndex() );
   QCOMPARE( view.model()->data( provider2Index, Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
   QCOMPARE( view.model()->rowCount( provider2Index ), 1 );
   group2Index = view.model()->index( 0, 0, provider2Index );
@@ -687,7 +697,7 @@ void TestQgsProcessingModel::testView()
   view.setFilterString( QString() );
 
   // selected algorithm
-  provider1Index = view.model()->index( 0, 0, QModelIndex() );
+  provider1Index = view.model()->index( 1, 0, QModelIndex() );
   view.selectionModel()->clear();
   QVERIFY( !view.selectedAlgorithm() );
   view.selectionModel()->select( provider1Index, QItemSelectionModel::ClearAndSelect );
@@ -698,6 +708,13 @@ void TestQgsProcessingModel::testView()
   alg2Index = view.model()->index( 0, 0, group2Index );
   view.selectionModel()->select( alg2Index, QItemSelectionModel::ClearAndSelect );
   QCOMPARE( view.selectedAlgorithm()->id(), QStringLiteral( "p1:a2" ) );
+
+  // selected model parameter
+  QModelIndex paramGroupIndex = view.model()->index( 0, 0, QModelIndex() );
+  QModelIndex paramIndex = view.model()->index( 0, 0, paramGroupIndex );
+  view.selectionModel()->clear();
+  view.selectionModel()->select( paramIndex, QItemSelectionModel::ClearAndSelect );
+  QCOMPARE( view.selectedParameterType()->id(), QStringLiteral( "alignrasterlayers" ) ); //First parameter in the list right now update as needed
 
   // when a filter string removes the selected algorithm, the next matching algorithm should be auto-selected
   view.setFilterString( QStringLiteral( "p2:a1" ) );
@@ -711,6 +728,7 @@ void TestQgsProcessingModel::testView()
   QVERIFY( view.mModel );
   QVERIFY( view.mToolboxModel );
   QCOMPARE( view.mModel->toolboxModel(), view.mToolboxModel );
+  qDebug() << "here10!";
 }
 
 void TestQgsProcessingModel::testKnownIssues()
@@ -724,7 +742,7 @@ void TestQgsProcessingModel::testKnownIssues()
   DummyProvider *p = new DummyProvider( "p3", "provider3", QList<QgsProcessingAlgorithm *>() << a1 << a2 );
   registry.addProvider( p );
 
-  QModelIndex providerIndex = model.index( 2, 0, QModelIndex() );
+  QModelIndex providerIndex = model.index( 3, 0, QModelIndex() );
   QModelIndex group1Index = model.index( 0, 0, providerIndex );
   QCOMPARE( model.data( model.index( 0, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "a1" ) );
   QVERIFY( model.data( model.index( 0, 0, group1Index ), Qt::ToolTipRole ).toString().contains( QStringLiteral( "known issues" ) ) );
@@ -734,7 +752,7 @@ void TestQgsProcessingModel::testKnownIssues()
   QCOMPARE( model.data( model.index( 1, 0, group1Index ), Qt::ForegroundRole ).value<QBrush>().color().name(), QStringLiteral( "#000000" ) );
 
   QgsProcessingToolboxProxyModel proxyModel( nullptr, &registry, &recentLog, &favoriteManager );
-  providerIndex = proxyModel.index( 0, 0, QModelIndex() );
+  providerIndex = proxyModel.index( 1, 0, QModelIndex() );
   group1Index = proxyModel.index( 0, 0, providerIndex );
   // by default known issues are filtered out
   QCOMPARE( proxyModel.rowCount( group1Index ), 1 );
