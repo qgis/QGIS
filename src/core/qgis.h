@@ -4412,6 +4412,7 @@ class CORE_EXPORT Qgis
       Symbol, //!< Symbol icon (excluding label)
       SymbolLabel, //!< Symbol label (excluding icon)
     };
+    // !!! WARNING: If adding new values to this enum, make sure you update QgsLegendSettings constructor accordingly!!
     Q_ENUM( LegendComponent )
 
     /**
