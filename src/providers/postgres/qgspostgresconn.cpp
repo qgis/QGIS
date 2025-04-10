@@ -1137,12 +1137,24 @@ bool QgsPostgresConn::supportedLayersPrivate( QVector<QgsPostgresLayerProperty> 
   return true;
 }
 
-bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas )
+bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas, const QStringList &restrictToSchemas )
 {
   schemas.clear();
   QgsPostgresResult result;
 
-  QString sql = QStringLiteral( "SELECT nspname, pg_get_userbyid(nspowner), pg_catalog.obj_description(oid) FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema' ORDER BY nspname" );
+  QString additionalFilter;
+  if ( !restrictToSchemas.empty() )
+  {
+    QStringList schemaIn;
+    schemaIn.reserve( restrictToSchemas.size() );
+    for ( const QString &schema : restrictToSchemas )
+    {
+      schemaIn.append( quotedString( schema ) );
+    }
+    additionalFilter = QStringLiteral( "nspname IN (%1)" ).arg( schemaIn.join( ',' ) );
+  }
+
+  const QString sql = QStringLiteral( "SELECT nspname, pg_get_userbyid(nspowner), pg_catalog.obj_description(oid) FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema' %1ORDER BY nspname" ).arg( !additionalFilter.isEmpty() ? QStringLiteral( "AND (%1) " ).arg( additionalFilter ) : QString() );
 
   result = LoggedPQexec( QStringLiteral( "QgsPostgresConn" ), sql );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
@@ -1151,7 +1163,9 @@ bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas )
     return false;
   }
 
-  for ( int idx = 0; idx < result.PQntuples(); idx++ )
+  const int resultSize = result.PQntuples();
+  schemas.reserve( resultSize );
+  for ( int idx = 0; idx < resultSize; idx++ )
   {
     QgsPostgresSchemaProperty schema;
     schema.name = result.PQgetvalue( idx, 0 );
@@ -2800,6 +2814,12 @@ bool QgsPostgresConn::allowRasterOverviewTables( const QString &connName )
   return settings.value( "/PostgreSQL/connections/" + connName + "/allowRasterOverviewTables", true ).toBool();
 }
 
+QString QgsPostgresConn::restrictToSchema( const QString &connName )
+{
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "/PostgreSQL/connections/" ) + connName + QStringLiteral( "/schema" ) ).toString();
+}
+
 void QgsPostgresConn::deleteConnection( const QString &connName )
 {
   QgsSettings settings;
@@ -2825,6 +2845,7 @@ void QgsPostgresConn::deleteConnection( const QString &connName )
   settings.remove( key + "/dontResolveType" );
   settings.remove( key + "/session_role" );
   settings.remove( key + "/allowRasterOverviewTables" );
+  settings.remove( key + "/schema" );
   settings.remove( key );
 }
 
@@ -2853,7 +2874,7 @@ void QgsPostgresConn::duplicateConnection( const QString &src, const QString &ds
   settings.setValue( newKey + QStringLiteral( "/savePassword" ), settings.value( key + QStringLiteral( "/savePassword" ) ).toString() );
   settings.setValue( newKey + QStringLiteral( "/authcfg" ), settings.value( key + QStringLiteral( "/authcfg" ) ).toString() );
   settings.setValue( newKey + QStringLiteral( "/allowRasterOverviewTables" ), settings.value( key + QStringLiteral( "/allowRasterOverviewTables" ) ).toString() );
-
+  settings.setValue( newKey + QStringLiteral( "/schema" ), settings.value( key + QStringLiteral( "/schema" ) ).toString() );
   settings.sync();
 }
 

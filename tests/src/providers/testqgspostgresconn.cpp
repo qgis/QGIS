@@ -16,11 +16,12 @@
 #include "qgsconfig.h"
 #include <QObject>
 
-#include <qgspostgresconn.h>
-#include <qgsfields.h>
-#include <qgspostgresprovider.h>
-#include <qgsdatasourceuri.h>
+#include "qgspostgresconn.h"
+#include "qgsfields.h"
+#include "qgspostgresprovider.h"
+#include "qgsdatasourceuri.h"
 #include "qgspostgresutils.h"
+#include "qgscolumntypethread.h"
 
 // Helper function for QCOMPARE
 char *toString( const QgsPostgresGeometryColumnType &t )
@@ -176,12 +177,13 @@ class TestQgsPostgresConn : public QObject
         false,      // searchGeometryColumnsOnly
         false,      // searchPublicOnly
         false,      // allowGeometrylessTables
+        false,      // allowRasterOverviewTables
         "qgis_test" // schema
       );
       QVERIFY( success );
 
       // Test no duplicates are reported by supportedLayers
-      for ( const auto &l : layers )
+      for ( const QgsPostgresLayerProperty &l : std::as_const( layers ) )
       {
         const QString key = QString( "%1.%2.%3" ).arg( l.schemaName, l.tableName, l.geometryColName );
         const auto i = layersMap.find( key );
@@ -197,6 +199,7 @@ class TestQgsPostgresConn : public QObject
           );
         }
         layersMap.insert( key, l );
+        QCOMPARE( l.schemaName, QStringLiteral( "qgis_test" ) );
       }
 
       // Test qgis_test.TopoLayer1.topogeom
@@ -209,6 +212,34 @@ class TestQgsPostgresConn : public QObject
       QCOMPARE( lit->geometryColName, "topogeom" );
       QCOMPARE( lit->geometryColType, SctTopoGeometry );
       // TODO: add more tests
+    }
+
+    void testGetSchemas()
+    {
+      QGSTEST_NEED_PGTEST_DB();
+
+      QgsPostgresConn *conn = getConnection();
+      QVERIFY( conn );
+
+      QList<QgsPostgresSchemaProperty> schemas;
+      conn->getSchemas( schemas );
+
+      QList<QgsPostgresSchemaProperty> filteredSchemas;
+      std::copy_if( schemas.constBegin(), schemas.constEnd(), std::back_inserter( filteredSchemas ), []( const QgsPostgresSchemaProperty &schema ) {
+        return schema.name == QLatin1String( "qgis_test" );
+      } );
+      QCOMPARE( filteredSchemas.size(), 1 );
+      filteredSchemas.clear();
+      std::copy_if( schemas.constBegin(), schemas.constEnd(), std::back_inserter( filteredSchemas ), []( const QgsPostgresSchemaProperty &schema ) {
+        return schema.name == QLatin1String( "public" );
+      } );
+      QCOMPARE( filteredSchemas.size(), 1 );
+
+      // restrict to matching schemas
+      schemas.clear();
+      conn->getSchemas( schemas, { QStringLiteral( "qgis_test" ) } );
+      QCOMPARE( schemas.size(), 1 );
+      QCOMPARE( schemas.at( 0 ).name, QStringLiteral( "qgis_test" ) );
     }
 
     void connectDb()

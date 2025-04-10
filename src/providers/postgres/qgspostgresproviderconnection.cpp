@@ -46,6 +46,7 @@ const QStringList QgsPostgresProviderConnection::CONFIGURATION_PARAMETERS = {
   QStringLiteral( "metadataInDatabase" ),
   QStringLiteral( "session_role" ),
   QStringLiteral( "allowRasterOverviewTables" ),
+  QStringLiteral( "schema" ),
 };
 
 const QString QgsPostgresProviderConnection::SETTINGS_BASE_KEY = QStringLiteral( "/PostgreSQL/connections/" );

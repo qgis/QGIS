@@ -405,9 +405,10 @@ class QgsPostgresConn : public QObject
     /**
      * Gets the list of database schemas
      * \param schemas list to store schemas in
+     * \param restrictToSchemas optional list of schemas to filter to results to. If set, only schemas from this list will be included in the results.
      * \returns true if schemas where fetched successfully
      */
-    bool getSchemas( QList<QgsPostgresSchemaProperty> &schemas );
+    bool getSchemas( QList<QgsPostgresSchemaProperty> &schemas, const QStringList &restrictToSchemas = QStringList() );
 
     /**
      * Determine type and srid of a layer from data (possibly estimated)
@@ -480,6 +481,7 @@ class QgsPostgresConn : public QObject
     static void deleteConnection( const QString &connName );
     static bool allowMetadataInDatabase( const QString &connName );
     static bool allowRasterOverviewTables( const QString &connName );
+    static QString restrictToSchema( const QString &connName );
 
     /**
      * Duplicates \a src connection settings to a new \a dst connection.

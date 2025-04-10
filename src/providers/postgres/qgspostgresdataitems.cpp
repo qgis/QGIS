@@ -55,7 +55,9 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
   }
 
   QList<QgsPostgresSchemaProperty> schemas;
-  bool ok = conn->getSchemas( schemas );
+  const QString restrictToSchema = QgsPostgresConn::restrictToSchema( mName );
+  const bool ok = conn->getSchemas( schemas, !restrictToSchema.isEmpty() ? QStringList { restrictToSchema } : QStringList {} );
+
   QgsPostgresConnPool::instance()->releaseConnection( conn );
 
   if ( !ok )
@@ -64,8 +66,7 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
     return items;
   }
 
-  const auto constSchemas = schemas;
-  for ( const QgsPostgresSchemaProperty &schema : constSchemas )
+  for ( const QgsPostgresSchemaProperty &schema : std::as_const( schemas ) )
   {
     QgsPGSchemaItem *schemaItem = new QgsPGSchemaItem( this, mName, schema.name, mPath + '/' + schema.name );
     if ( !schema.description.isEmpty() )
