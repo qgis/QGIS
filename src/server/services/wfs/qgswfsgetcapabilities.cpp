@@ -491,14 +491,14 @@ namespace QgsWfs
       }
 
       //create DefaultSRS element
-      const QString defaultSrs = layer->crs().authid();
+      const QString defaultSrs = layer->crs().toOgcUrn();
       QDomElement srsElem = doc.createElement( QStringLiteral( "DefaultSRS" ) );
       const QDomText srsText = doc.createTextNode( defaultSrs );
       srsElem.appendChild( srsText );
       layerElem.appendChild( srsElem );
 
       //create OtherSRS elements
-      const QStringList outputCrsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
+      const QStringList outputCrsList = QgsServerProjectUtils::wmsOutputCrsListAsOgcUrn( *project );
       for ( const QString &crs : outputCrsList )
       {
         if ( crs == defaultSrs )
