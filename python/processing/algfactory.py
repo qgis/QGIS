@@ -433,7 +433,7 @@ class ProcessingAlgFactory:
     def output(self, type, *args, **kwargs):
         """
         Define a output parameter for this algorithm using @alg.output.
-        Apart from `type` this method will take all arguments and pass them though to the correct `QgsProcessingOutputDefinition ` type.
+        Apart from `type` this method will take all arguments and pass them though to the correct `QgsProcessingOutputDefinition` type.
 
         Types:
 
