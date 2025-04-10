@@ -20,7 +20,6 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgsapplication.h"
-#include "qgsdockwidget.h"
 
 #include <QFile>
 #include <QDateTime>
@@ -164,7 +163,7 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
 
   const QString prefix = QStringLiteral( "<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>" )
                            .arg( color.name(), QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
-  QString cleanedMessage = message;
+  QString cleanedMessage = message.toHtmlEscaped();
   if ( mMessageLoggedCount == MESSAGE_COUNT_LIMIT )
     cleanedMessage = tr( "Message log truncated" );
 
