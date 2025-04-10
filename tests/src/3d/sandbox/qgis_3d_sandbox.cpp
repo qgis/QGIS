@@ -43,7 +43,7 @@
 #include <QScreen>
 #include <QToolBar>
 
-void initCanvas3D( Qgs3DMapCanvas *canvas )
+void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe )
 {
   QgsLayerTree *root = QgsProject::instance()->layerTreeRoot();
   const QList<QgsMapLayer *> visibleLayers = root->checkedLayers();
@@ -55,16 +55,14 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
     QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   }
 
-  QgsMapSettings ms;
-  ms.setDestinationCrs( QgsProject::instance()->crs() );
-  ms.setLayers( visibleLayers );
-  QgsRectangle fullExtent = QgsProject::instance()->viewSettings()->fullExtent();
-
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  map->setCrs( QgsProject::instance()->crs() );
+  map->setCrs( isGlobe ? QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ) : QgsProject::instance()->crs() );
   map->setLayers( visibleLayers );
 
-  map->setExtent( fullExtent );
+  if ( map->sceneMode() == Qgis::SceneMode::Local )
+  {
+    map->setExtent( QgsProject::instance()->viewSettings()->fullExtent() );
+  }
 
   Qgs3DAxisSettings axis;
   axis.setMode( Qgs3DAxisSettings::Mode::Off );
@@ -96,10 +94,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
 
   canvas->setMapSettings( map );
 
-  QgsRectangle extent = fullExtent;
-  extent.scale( 1.3 );
-  const float dist = static_cast<float>( std::max( extent.width(), extent.height() ) );
-  canvas->setViewFromTop( extent.center(), dist * 2, 0 );
+  canvas->resetView();
 
   QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, canvas, [canvas] {
     qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount();
@@ -179,7 +174,15 @@ int main( int argc, char *argv[] )
     return 1;
   }
 
-  const QString projectFile = argv[1];
+  int argNum = 1;
+  bool isGlobe = false;
+  if ( QString( argv[argNum] ) == QStringLiteral( "--globe" ) )
+  {
+    isGlobe = true;
+    ++argNum;
+  }
+
+  const QString projectFile = argv[argNum];
   const bool res = QgsProject::instance()->read( projectFile );
   if ( !res )
   {
@@ -188,7 +191,7 @@ int main( int argc, char *argv[] )
   }
 
   Qgs3DMapCanvas *canvas = new Qgs3DMapCanvas;
-  initCanvas3D( canvas );
+  initCanvas3D( canvas, isGlobe );
 
   // set up the UI
   QWidget *windowWidget = new QWidget;
