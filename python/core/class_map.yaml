@@ -19725,8 +19725,8 @@ QgsZipItem.itemFromPath: src/core/browser/qgszipitem.h#L77
 QgsZipItem.mimeUris: src/core/browser/qgszipitem.h#L57
 QgsZipItem.vsiPrefix: src/core/browser/qgszipitem.h#L66
 QgsZipItem: src/core/browser/qgszipitem.h#L29
-QgsZipUtils.files: src/core/qgsziputils.h#L88
+QgsZipUtils.files: src/core/qgsziputils.h#L90
 QgsZipUtils.isZipFile: src/core/qgsziputils.h#L38
 QgsZipUtils.unzip: src/core/qgsziputils.h#L48
-QgsZipUtils.zip: src/core/qgsziputils.h#L57
+QgsZipUtils.zip: src/core/qgsziputils.h#L59
 QgsZipUtils: src/core/qgsziputils.h#L28
