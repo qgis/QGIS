@@ -59,12 +59,10 @@ class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
     void connectToLayersRepaintRequest();
 
   private:
-
     std::unique_ptr<QgsGlobeMapUpdateJobFactory> mUpdateJobFactory;
 
     //! layers that are currently being used for map rendering (and thus being watched for renderer updates)
     QList<QgsMapLayer *> mLayers;
-
 };
 
 

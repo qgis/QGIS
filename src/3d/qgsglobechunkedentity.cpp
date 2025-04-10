@@ -433,7 +433,7 @@ class QgsGlobeMapUpdateJob : public QgsChunkQueueJob
       Q_ASSERT( materials.count() == 1 );
       QVector<Qt3DRender::QAbstractTextureImage *> texImages = materials[0]->texture()->textureImages();
       Q_ASSERT( texImages.count() == 1 );
-      QgsTerrainTextureImage* terrainTexImage = qobject_cast<QgsTerrainTextureImage*>( texImages[0] );
+      QgsTerrainTextureImage *terrainTexImage = qobject_cast<QgsTerrainTextureImage *>( texImages[0] );
       Q_ASSERT( terrainTexImage );
 
       connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [=]( int jobId, const QImage &image ) {
@@ -443,7 +443,7 @@ class QgsGlobeMapUpdateJob : public QgsChunkQueueJob
           mJobId = -1;
           emit finished();
         }
-      });
+      } );
       mJobId = textureGenerator->render( terrainTexImage->imageExtent(), node->tileId(), terrainTexImage->imageDebugText() );
     }
 
@@ -479,7 +479,6 @@ class QgsGlobeMapUpdateJobFactory : public QgsChunkQueueJobFactory
   private:
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
 };
-
 
 
 // ---------------
@@ -570,7 +569,7 @@ void QgsGlobeEntity::invalidateMapImages()
     if ( mActiveNodes.contains( node ) )
       continue;
     if ( !node->parent() )
-      continue;   // skip root node because it is not proper QEntity with data
+      continue; // skip root node because it is not proper QEntity with data
     inactiveNodes << node;
   }
 
