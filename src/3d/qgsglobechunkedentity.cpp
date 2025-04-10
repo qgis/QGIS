@@ -48,6 +48,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdistancearea.h"
+#include "qgseventtracing.h"
 #include "qgsgeotransform.h"
 #include "qgsraycastingutils_p.h"
 #include "qgsterraintextureimage_p.h"
@@ -419,9 +420,86 @@ class QgsGlobeChunkLoaderFactory : public QgsChunkLoaderFactory
 // ---------------
 
 
+//! Handles asynchronous updates of globe's map images when layers change
+class QgsGlobeMapUpdateJob : public QgsChunkQueueJob
+{
+  public:
+    QgsGlobeMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node )
+      : QgsChunkQueueJob( node )
+      , mTextureGenerator( textureGenerator )
+    {
+      // extract our terrain texture image from the 3D entity
+      QVector<Qt3DExtras::QTextureMaterial *> materials = node->entity()->componentsOfType<Qt3DExtras::QTextureMaterial>();
+      Q_ASSERT( materials.count() == 1 );
+      QVector<Qt3DRender::QAbstractTextureImage *> texImages = materials[0]->texture()->textureImages();
+      Q_ASSERT( texImages.count() == 1 );
+      QgsTerrainTextureImage* terrainTexImage = qobject_cast<QgsTerrainTextureImage*>( texImages[0] );
+      Q_ASSERT( terrainTexImage );
+
+      connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [=]( int jobId, const QImage &image ) {
+        if ( mJobId == jobId )
+        {
+          terrainTexImage->setImage( image );
+          mJobId = -1;
+          emit finished();
+        }
+      });
+      mJobId = textureGenerator->render( terrainTexImage->imageExtent(), node->tileId(), terrainTexImage->imageDebugText() );
+    }
+
+    void cancel() override
+    {
+      if ( mJobId != -1 )
+        mTextureGenerator->cancelJob( mJobId );
+    }
+
+  private:
+    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
+    int mJobId;
+};
+
+
+// ---------------
+
+
+//! Factory for map update jobs
+class QgsGlobeMapUpdateJobFactory : public QgsChunkQueueJobFactory
+{
+  public:
+    explicit QgsGlobeMapUpdateJobFactory( Qgs3DMapSettings *mapSettings )
+    {
+      mTextureGenerator = new QgsTerrainTextureGenerator( *mapSettings );
+    }
+
+    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override
+    {
+      return new QgsGlobeMapUpdateJob( mTextureGenerator, chunk );
+    }
+
+  private:
+    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
+};
+
+
+
+// ---------------
+
+
 QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings )
   : QgsChunkedEntity( mapSettings, mapSettings->terrainSettings()->maximumScreenError(), new QgsGlobeChunkLoaderFactory( mapSettings ), true )
 {
+  connect( mapSettings, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, [=] {
+    setShowBoundingBoxes( mapSettings->showTerrainBoundingBoxes() );
+  } );
+  connect( mapSettings, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsGlobeEntity::invalidateMapImages );
+  connect( mapSettings, &Qgs3DMapSettings::showLabelsChanged, this, &QgsGlobeEntity::invalidateMapImages );
+  connect( mapSettings, &Qgs3DMapSettings::layersChanged, this, &QgsGlobeEntity::onLayersChanged );
+  connect( mapSettings, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsGlobeEntity::invalidateMapImages );
+  connect( mapSettings, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsGlobeEntity::invalidateMapImages );
+
+  connectToLayersRepaintRequest();
+
+  mUpdateJobFactory.reset( new QgsGlobeMapUpdateJobFactory( mapSettings ) );
 }
 
 QgsGlobeEntity::~QgsGlobeEntity()
@@ -472,5 +550,54 @@ QVector<QgsRayCastingUtils::RayHit> QgsGlobeEntity::rayIntersection( const QgsRa
   return result;
 }
 
+
+void QgsGlobeEntity::invalidateMapImages()
+{
+  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Invalidate textures" ) );
+
+  // handle active nodes
+
+  updateNodes( mActiveNodes, mUpdateJobFactory.get() );
+
+  // handle inactive nodes afterwards
+
+  QList<QgsChunkNode *> inactiveNodes;
+  const QList<QgsChunkNode *> descendants = mRootNode->descendants();
+  for ( QgsChunkNode *node : descendants )
+  {
+    if ( !node->entity() )
+      continue;
+    if ( mActiveNodes.contains( node ) )
+      continue;
+    if ( !node->parent() )
+      continue;   // skip root node because it is not proper QEntity with data
+    inactiveNodes << node;
+  }
+
+  updateNodes( inactiveNodes, mUpdateJobFactory.get() );
+
+  setNeedsUpdate( true );
+}
+
+void QgsGlobeEntity::onLayersChanged()
+{
+  connectToLayersRepaintRequest();
+  invalidateMapImages();
+}
+
+void QgsGlobeEntity::connectToLayersRepaintRequest()
+{
+  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  {
+    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsGlobeEntity::invalidateMapImages );
+  }
+
+  mLayers = mMapSettings->layers();
+
+  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  {
+    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsGlobeEntity::invalidateMapImages );
+  }
+}
 
 /// @endcond
