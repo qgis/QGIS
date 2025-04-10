@@ -39,6 +39,7 @@ class TestQgsAttributesFormModel : public QObject
     void testAvailableWidgetsModel();
     void testAvailableWidgetsModelIndexOderInDragAndDrop();
     void testFormLayoutModel();
+    void testFormLayoutModelOrphanFields();
     void testInvalidRelationInAvailableWidgets();
     void testInvalidRelationInFormLayout();
 
@@ -581,6 +582,64 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
 
   formLayoutModel.setData( staffIndex, newStaffAlias, QgsAttributesFormModel::ItemIdRole );
   QCOMPARE( staffIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), newStaffAlias );
+}
+
+void TestQgsAttributesFormModel::testFormLayoutModelOrphanFields()
+{
+  setUpProjectWithRelation();
+
+  QgsAttributesFormLayoutModel formLayoutModel( mLayer, mProject );
+  QModelIndex rootIndex = QModelIndex();
+
+#ifdef ENABLE_MODELTEST
+  new ModelTest( &formLayoutModel, this ); // for model validity checking
+#endif
+
+  QCOMPARE( formLayoutModel.columnCount(), 1 );
+  QCOMPARE( formLayoutModel.rowCount(), 0 );
+  QVERIFY( !formLayoutModel.hasChildren() );
+  QCOMPARE( formLayoutModel.headerData( 0, Qt::Orientation::Horizontal, Qt::DisplayRole ), tr( "Form Layout" ) );
+  QVERIFY( formLayoutModel.mimeTypes().size() == 2 );
+  QCOMPARE( formLayoutModel.mimeTypes(), QStringList() << QStringList() << QStringLiteral( "application/x-qgsattributesformlayoutelement" ) << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+
+  // Add data to the model
+  formLayoutModel.populate();
+
+  QCOMPARE( formLayoutModel.columnCount(), 1 );
+  QCOMPARE( formLayoutModel.rowCount(), 1 );
+  QVERIFY( formLayoutModel.hasChildren() );
+
+  // Check top-level item
+  const QModelIndex containerIndex = formLayoutModel.index( 0, 0, rootIndex );
+  QVERIFY( containerIndex.isValid() );
+  QCOMPARE( containerIndex.row(), 0 );
+  QCOMPARE( formLayoutModel.data( containerIndex, Qt::DisplayRole ).toString(), QLatin1String( "tab" ) );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( formLayoutModel.data( containerIndex, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Container );
+  QCOMPARE( formLayoutModel.rowCount( containerIndex ), 7 );
+
+  // Check last field (Pilots)
+  const int fieldPosition = 5;
+  QModelIndex fieldIndex = formLayoutModel.index( fieldPosition, 0, containerIndex );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( formLayoutModel.data( fieldIndex, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
+  QCOMPARE( formLayoutModel.data( fieldIndex, Qt::DisplayRole ).toString(), QLatin1String( "Pilots" ) );
+  QCOMPARE( formLayoutModel.data( fieldIndex, Qt::ToolTipRole ).toString(), QLatin1String( "Pilots" ) );
+
+  // Remove field Pilots (even without committing, which reproduces
+  // the scenario of removing a field in Layer Properties without saving,
+  // and then going back to Attributes Form page)
+  mLayer->startEditing();
+  const bool deleted = mLayer->deleteAttribute( mLayer->fields().indexOf( QLatin1String( "Pilots" ) ) );
+  QVERIFY( deleted );
+
+  // Check field Pilots'data changes after layer field removal
+  QCOMPARE( formLayoutModel.rowCount( containerIndex ), 7 );
+  fieldIndex = formLayoutModel.index( fieldPosition, 0, containerIndex );
+  QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( formLayoutModel.data( fieldIndex, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
+  QCOMPARE( formLayoutModel.data( fieldIndex, Qt::DisplayRole ).toString(), QLatin1String( "Pilots" ) );
+  QCOMPARE( formLayoutModel.data( fieldIndex, Qt::ToolTipRole ).toString(), QLatin1String( "Invalid field" ) );
+
+  const bool discarded = mLayer->rollBack();
+  QVERIFY( discarded );
 }
 
 void TestQgsAttributesFormModel::testInvalidRelationInAvailableWidgets()

@@ -1058,6 +1058,12 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
   if ( !item )
     return QVariant();
 
+  // Fields may be present in the form layout configuration
+  // even if their corresponding layer fields were deleted.
+  // Make those stand out from existent ones.
+  const int fieldIndex = mLayer->fields().indexOf( item->name() );
+  const bool invalidField = fieldIndex == -1;
+
   // Relations may be broken due to missing layers or references.
   // Make those stand out from valid ones.
   bool invalidRelation = false;
@@ -1092,7 +1098,14 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
     {
       if ( item->type() == QgsAttributesFormData::Field )
       {
-        return item->name();
+        if ( invalidField )
+        {
+          return tr( "Invalid field" );
+        }
+        else
+        {
+          return item->name();
+        }
       }
 
       if ( item->type() == QgsAttributesFormData::Relation && invalidRelation )
@@ -1120,9 +1133,13 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
 
     case Qt::ForegroundRole:
     {
-      if ( showAliases() && item->type() == QgsAttributesFormData::Field )
+      if ( item->type() == QgsAttributesFormData::Field )
       {
-        if ( item->displayName().isEmpty() )
+        if ( invalidField )
+        {
+          return QBrush( QColor( 255, 0, 0 ) );
+        }
+        else if ( showAliases() && item->displayName().isEmpty() )
         {
           return QBrush( QColor( Qt::lightGray ) );
         }
@@ -1138,9 +1155,9 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
 
     case Qt::FontRole:
     {
-      if ( showAliases() && item->type() == QgsAttributesFormData::Field )
+      if ( item->type() == QgsAttributesFormData::Field )
       {
-        if ( item->displayName().isEmpty() )
+        if ( !invalidField && showAliases() && item->displayName().isEmpty() )
         {
           QFont font = QFont();
           font.setItalic( true );
