@@ -95,6 +95,8 @@ void TestQgsPdalProvider::filters()
   QVERIFY( metadataFilters.contains( "*.las" ) );
   QVERIFY( metadataFilters.contains( "*.LAZ" ) );
   QVERIFY( metadataFilters.contains( "*.LAS" ) );
+  QVERIFY( metadataFilters.contains( "*.txt" ) );
+  QVERIFY( metadataFilters.contains( "*.TXT" ) );
 
   QCOMPARE( metadata->filters( Qgis::FileFilterType::Vector ), QString() );
 
@@ -103,6 +105,8 @@ void TestQgsPdalProvider::filters()
   QVERIFY( registryPointCloudFilters.contains( "*.las" ) );
   QVERIFY( registryPointCloudFilters.contains( "*.LAZ" ) );
   QVERIFY( registryPointCloudFilters.contains( "*.LAS" ) );
+  QVERIFY( metadataFilters.contains( "*.txt" ) );
+  QVERIFY( metadataFilters.contains( "*.TXT" ) );
 }
 
 void TestQgsPdalProvider::encodeUri()
