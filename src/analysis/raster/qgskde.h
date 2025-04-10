@@ -39,7 +39,7 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
 {
   public:
     //! Kernel shape type
-    enum KernelShape
+    enum class KernelShape : int
     {
       KernelQuartic = 0,  //!< Quartic kernel
       KernelTriangular,   //!< Triangular kernel
@@ -49,14 +49,14 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     };
 
     //! Output values type
-    enum OutputValues
+    enum class OutputValues : int
     {
       OutputRaw = 0, //!< Output the raw KDE values
       OutputScaled,  //!< Output mathematically correct scaled values
     };
 
     //! Result of operation
-    enum Result
+    enum class Result : int
     {
       Success,           //!< Operation completed successfully
       DriverError,       //!< Could not open the driver for the specified format
@@ -174,6 +174,5 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other );
 #endif
 };
-
 
 #endif // QGSKDE_H

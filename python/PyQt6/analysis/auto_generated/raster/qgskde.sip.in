@@ -22,7 +22,7 @@ layer.
 #include "qgskde.h"
 %End
   public:
-    enum KernelShape /BaseType=IntEnum/
+    enum class KernelShape /BaseType=IntEnum/
     {
       KernelQuartic,
       KernelTriangular,
@@ -31,13 +31,13 @@ layer.
       KernelEpanechnikov,
     };
 
-    enum OutputValues /BaseType=IntEnum/
+    enum class OutputValues /BaseType=IntEnum/
     {
       OutputRaw,
       OutputScaled,
     };
 
-    enum Result /BaseType=IntEnum/
+    enum class Result /BaseType=IntEnum/
     {
       Success,
       DriverError,
@@ -117,7 +117,6 @@ Finalises the output file. Must be called after adding all features via
   private:
     QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other );
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
