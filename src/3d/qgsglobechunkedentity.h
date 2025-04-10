@@ -34,6 +34,9 @@
 
 #include "qgschunkedentity.h"
 
+class QgsMapLayer;
+class QgsGlobeMapUpdateJobFactory;
+
 
 /**
  * 3D chunked entity implementation to generate globe mesh with constant elevation
@@ -47,6 +50,21 @@ class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
     ~QgsGlobeEntity();
 
     QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
+
+  private slots:
+    void invalidateMapImages();
+    void onLayersChanged();
+
+  private:
+    void connectToLayersRepaintRequest();
+
+  private:
+
+    std::unique_ptr<QgsGlobeMapUpdateJobFactory> mUpdateJobFactory;
+
+    //! layers that are currently being used for map rendering (and thus being watched for renderer updates)
+    QList<QgsMapLayer *> mLayers;
+
 };
 
 
