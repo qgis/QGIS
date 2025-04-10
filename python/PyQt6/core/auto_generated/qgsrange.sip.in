@@ -425,17 +425,6 @@ range is empty and ``other`` is not, the range is changed and set to
 
 
 typedef QgsTemporalRange< QDate > QgsDateRange;
-@DOCSTRINGSTEMPLATE@%Docstring
-@DOCSTRINGSTEMPLATE@:py:class:`QgsRange` which stores a range of dates.
-@DOCSTRINGSTEMPLATE@ @DOCSTRINGSTEMPLATE@Invalid QDates as the beginning
-or end are permitted. In this case, @DOCSTRINGSTEMPLATE@the bound is
-considered to be infinite. E.g. QgsDateRange(QDate(),QDate(2017,1,1))
-@DOCSTRINGSTEMPLATE@is treated as a range containing all dates before
-2017-1-1. @DOCSTRINGSTEMPLATE@QgsDateRange(QDate(2017,1,1),QDate()) is
-treated as a range containing all dates after 2017-1-1.
-@DOCSTRINGSTEMPLATE@ @DOCSTRINGSTEMPLATE@.. seealso::
-:py:class:`QgsDateTimeRange`
-@DOCSTRINGSTEMPLATE@%End
 
 
 typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
