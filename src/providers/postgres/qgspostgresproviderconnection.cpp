@@ -833,6 +833,10 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
     {
       settings.setValue( p, configuration().value( p ) );
     }
+    else
+    {
+      settings.remove( p );
+    }
   }
   settings.endGroup();
   settings.endGroup();
