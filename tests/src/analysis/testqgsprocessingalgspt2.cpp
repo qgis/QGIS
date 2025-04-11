@@ -415,9 +415,9 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPdfMultiple()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QVERIFY( QFile::exists( outputPdfDir + "/output_1.pdf" ) );
-  QVERIFY( QFile::exists( outputPdfDir + "/output_2.pdf" ) );
-  QVERIFY( QFile::exists( outputPdfDir + "/output_3.pdf" ) );
+  QVERIFY( QFile::exists( outputPdfDir + "/output_01.pdf" ) );
+  QVERIFY( QFile::exists( outputPdfDir + "/output_02.pdf" ) );
+  QVERIFY( QFile::exists( outputPdfDir + "/output_03.pdf" ) );
 }
 
 void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
