@@ -261,6 +261,9 @@
         <property name="echoMode">
          <enum>QLineEdit::Normal</enum>
         </property>
+        <property name="placeholderText">
+         <string>Limit to tables from specific schema</string>
+        </property>
        </widget>
       </item>
       <item row="7" column="0" colspan="2">
