@@ -53,7 +53,7 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
   }
 
   QList<QgsPostgresSchemaProperty> schemas;
-  const QString restrictToSchema = QgsPostgresConn::schemaToRestrict( mName );
+  const QString restrictToSchema = QgsPostgresConn::publicSchemaOnly( mName ) ? QStringLiteral( "public" ) : QgsPostgresConn::schemaToRestrict( mName );
   const bool ok = conn->getSchemas( schemas, !restrictToSchema.isEmpty() ? QStringList { restrictToSchema } : QStringList {} );
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
