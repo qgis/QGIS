@@ -51,6 +51,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
   connect( txtHost, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
   connect( txtPort, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
   connect( txtDatabase, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
+  connect( cb_publicSchemaOnly, &QCheckBox::toggled, txtSchema, &QgsFilterLineEdit::setDisabled );
 
   cbxSSLmode->addItem( tr( "disable" ), QgsDataSourceUri::SslDisable );
   cbxSSLmode->addItem( tr( "allow" ), QgsDataSourceUri::SslAllow );

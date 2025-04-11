@@ -192,7 +192,41 @@
       <string>Database Details</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="9" column="1">
+      <item row="3" column="0" colspan="2">
+       <widget class="QCheckBox" name="cb_allowGeometrylessTables">
+        <property name="text">
+         <string>Also list tables with no geometry</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="2">
+       <widget class="QCheckBox" name="cb_projectsInDatabase">
+        <property name="text">
+         <string>Allow saving/loading QGIS projects in the database</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QCheckBox" name="cb_geometryColumnsOnly">
+        <property name="toolTip">
+         <string>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</string>
+        </property>
+        <property name="text">
+         <string>Only show layers in the layer registries</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QCheckBox" name="cb_dontResolveType">
+        <property name="text">
+         <string>Don't resolve type of unrestricted columns (GEOMETRY)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
        <spacer name="verticalSpacer_2">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -205,14 +239,21 @@
         </property>
        </spacer>
       </item>
-      <item row="8" column="0">
+      <item row="6" column="0" colspan="2">
+       <widget class="QCheckBox" name="cb_metadataInDatabase">
+        <property name="text">
+         <string>Allow saving/loading QGIS layer metadata in the database</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
        <widget class="QLabel" name="TextLabel3_5">
         <property name="text">
          <string>Schema</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="1">
+      <item row="9" column="1">
        <widget class="QgsFilterLineEdit" name="txtSchema">
         <property name="toolTip">
          <string>If specified, only tables from the matching schema will be fetched and listed for the provider</string>
@@ -226,20 +267,6 @@
        <widget class="QCheckBox" name="cb_allowRasterOverviewTables">
         <property name="text">
          <string>Also list raster overview tables</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0" colspan="2">
-       <widget class="QCheckBox" name="cb_metadataInDatabase">
-        <property name="text">
-         <string>Allow saving/loading QGIS layer metadata in the database</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" colspan="2">
-       <widget class="QCheckBox" name="cb_projectsInDatabase">
-        <property name="text">
-         <string>Allow saving/loading QGIS projects in the database</string>
         </property>
        </widget>
       </item>
@@ -262,40 +289,13 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QCheckBox" name="cb_allowGeometrylessTables">
-        <property name="text">
-         <string>Also list tables with no geometry</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
+      <item row="8" column="0" colspan="2">
        <widget class="QCheckBox" name="cb_publicSchemaOnly">
         <property name="toolTip">
          <string>When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)</string>
         </property>
         <property name="text">
          <string>Only look in the 'public' schema</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QCheckBox" name="cb_dontResolveType">
-        <property name="text">
-         <string>Don't resolve type of unrestricted columns (GEOMETRY)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QCheckBox" name="cb_geometryColumnsOnly">
-        <property name="toolTip">
-         <string>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</string>
-        </property>
-        <property name="text">
-         <string>Only show layers in the layer registries</string>
         </property>
        </widget>
       </item>
@@ -346,12 +346,13 @@
   <tabstop>btnConnect</tabstop>
   <tabstop>cb_geometryColumnsOnly</tabstop>
   <tabstop>cb_dontResolveType</tabstop>
-  <tabstop>cb_publicSchemaOnly</tabstop>
   <tabstop>cb_allowGeometrylessTables</tabstop>
   <tabstop>cb_useEstimatedMetadata</tabstop>
   <tabstop>cb_projectsInDatabase</tabstop>
   <tabstop>cb_metadataInDatabase</tabstop>
   <tabstop>cb_allowRasterOverviewTables</tabstop>
+  <tabstop>cb_publicSchemaOnly</tabstop>
+  <tabstop>txtSchema</tabstop>
  </tabstops>
  <resources/>
  <connections>
