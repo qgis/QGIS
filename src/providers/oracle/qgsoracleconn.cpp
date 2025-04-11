@@ -1015,7 +1015,7 @@ bool QgsOracleConn::userTablesOnly( const QString &connName )
   return settings.value( QStringLiteral( "/Oracle/connections/" ) + connName + QStringLiteral( "/userTablesOnly" ), false ).toBool();
 }
 
-QString QgsOracleConn::restrictToSchema( const QString &connName )
+QString QgsOracleConn::schemaToRestrict( const QString &connName )
 {
   QgsSettings settings;
   return settings.value( QStringLiteral( "/Oracle/connections/" ) + connName + QStringLiteral( "/schema" ) ).toString();

@@ -481,7 +481,7 @@ class QgsPostgresConn : public QObject
     static void deleteConnection( const QString &connName );
     static bool allowMetadataInDatabase( const QString &connName );
     static bool allowRasterOverviewTables( const QString &connName );
-    static QString restrictToSchema( const QString &connName );
+    static QString schemaToRestrict( const QString &connName );
 
     /**
      * Duplicates \a src connection settings to a new \a dst connection.
