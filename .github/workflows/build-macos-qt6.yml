@@ -176,8 +176,8 @@ jobs:
           mkdir -p arm64
           gtar --strip-components=5 -zxf ./artifacts/qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-arm64-osx-dynamic-release/qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-arm64-osx-dynamic-release.tar.gz -C arm64
 
-          wget https://raw.githubusercontent.com/m-kuhn/lipo-dir-merge/refs/heads/main/lipo-dir-merge.py
-          python lipo-dir-merge.py x64 arm64 universal
+          pip install lipomerge
+          lipomerge ./x64 ./arm64 universal
 
       - name: Create dmg
         run: |
