@@ -3536,6 +3536,9 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
   }
 #endif
 
+  // clone the share because the feature subset differs (and thus also the feature count etc)
+  mShared = mShared->clone();
+
   // Update datasource uri too
   mUri.setSql( theSQL );
   // Update yet another copy of the uri. Why are there 3 copies of the
