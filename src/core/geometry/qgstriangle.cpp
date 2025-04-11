@@ -361,6 +361,11 @@ QgsCurve *QgsTriangle::boundary() const
   return mExteriorRing->clone();
 }
 
+QgsPoint QgsTriangle::vertexAt( QgsVertexId id ) const
+{
+  return QgsPolygon::vertexAt( id );
+}
+
 QgsPoint QgsTriangle::vertexAt( int atVertex ) const
 {
   if ( isEmpty() )

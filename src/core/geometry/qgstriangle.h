@@ -101,11 +101,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
 
     // inherited: double pointDistanceToBoundary( double x, double y ) const;
 
-
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
-#endif
+    // override QgsPolygon method to avoid unwanted overloaded-virtual warning caused by int variant of vertexAt defined below
+    QgsPoint vertexAt( QgsVertexId id ) const override;
 
     /**
      *  Returns coordinates of a vertex.
@@ -113,9 +110,6 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *  \returns Coordinates of the vertex or empty QgsPoint on error (\a atVertex < 0 or > 3).
      */
     QgsPoint vertexAt( int atVertex ) const SIP_HOLDGIL;
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
 
     /**
      * Returns the three lengths of the triangle.
