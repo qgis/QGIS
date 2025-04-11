@@ -22,6 +22,8 @@ __copyright__ = "(C) 2016, Médéric Ribreux"
 from processing.tools.system import getTempFilename
 from grassprovider.grass_utils import GrassUtils
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """Verify if we have the right parameters"""
@@ -30,12 +32,14 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     raster = alg.parameterAsString(parameters, "raster", context)
 
     if rules and txtrules:
-        return False, alg.tr(
-            "You need to set either a rules file or write directly the rules!"
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            "You need to set either a rules file or write directly the rules!",
         )
     elif (rules and raster) or (txtrules and raster):
-        return False, alg.tr(
-            "You need to set either rules or a raster from which to copy categories!"
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            "You need to set either rules or a raster from which to copy categories!",
         )
 
     return True, None

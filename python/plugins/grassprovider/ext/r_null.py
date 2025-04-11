@@ -19,6 +19,8 @@ __author__ = "Médéric Ribreux"
 __date__ = "February 2016"
 __copyright__ = "(C) 2016, Médéric Ribreux"
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """Verify if we have the right parameters"""
@@ -27,8 +29,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     ):
         return True, None
 
-    return False, alg.tr(
-        "You need to set at least 'setnull' or 'null' parameters for this algorithm!"
+    return False, QCoreApplication.translate(
+        "GrassAlgorithmExt",
+        "You need to set at least 'setnull' or 'null' parameters for this algorithm!",
     )
 
 

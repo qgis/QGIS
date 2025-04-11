@@ -33,7 +33,7 @@ class MessageBarProgress(QgsProcessingFeedback):
 
         self.msg = []
         self.progressMessageBar = iface.messageBar().createMessage(
-            self.tr("Executing algorithm <i>{}</i>".format(algname if algname else ""))
+            self.tr("Executing algorithm <i>{}</i>").format(algname if algname else "")
         )
         self.progress = QProgressBar()
         self.progressChanged.connect(self.set_progress_bar_value)
