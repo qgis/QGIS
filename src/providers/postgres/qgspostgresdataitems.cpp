@@ -29,8 +29,6 @@
 #include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 
-#include <QMessageBox>
-#include <climits>
 
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -55,7 +53,9 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
   }
 
   QList<QgsPostgresSchemaProperty> schemas;
-  bool ok = conn->getSchemas( schemas );
+  const QString restrictToSchema = QgsPostgresConn::publicSchemaOnly( mName ) ? QStringLiteral( "public" ) : QgsPostgresConn::schemaToRestrict( mName );
+  const bool ok = conn->getSchemas( schemas, !restrictToSchema.isEmpty() ? QStringList { restrictToSchema } : QStringList {} );
+
   QgsPostgresConnPool::instance()->releaseConnection( conn );
 
   if ( !ok )
@@ -64,8 +64,7 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
     return items;
   }
 
-  const auto constSchemas = schemas;
-  for ( const QgsPostgresSchemaProperty &schema : constSchemas )
+  for ( const QgsPostgresSchemaProperty &schema : std::as_const( schemas ) )
   {
     QgsPGSchemaItem *schemaItem = new QgsPGSchemaItem( this, mName, schema.name, mPath + '/' + schema.name );
     if ( !schema.description.isEmpty() )
@@ -140,17 +139,17 @@ QString QgsPGLayerItem::createUri()
   const QgsSettings &settings = QgsSettings();
   QString basekey = QStringLiteral( "/PostgreSQL/connections/%1" ).arg( connName );
 
-  QStringList defPk( settings.value(
-                               QStringLiteral( "%1/keys/%2/%3" ).arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
-                               QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
+  const QStringList defPk( settings.value(
+                                     QStringLiteral( "%1/keys/%2/%3" ).arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
+                                     QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
   )
-                       .toStringList() );
+                             .toStringList() );
 
   const bool useEstimatedMetadata = QgsPostgresConn::useEstimatedMetadata( connName );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
 
   QStringList cols;
-  for ( const auto &col : defPk )
+  for ( const QString &col : defPk )
   {
     cols << QgsPostgresConn::quotedIdentifier( col );
   }
@@ -187,7 +186,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   }
 
   QVector<QgsPostgresLayerProperty> layerProperties;
-  const bool ok = conn->supportedLayers( layerProperties, QgsPostgresConn::geometryColumnsOnly( mConnectionName ), QgsPostgresConn::publicSchemaOnly( mConnectionName ), QgsPostgresConn::allowGeometrylessTables( mConnectionName ), QgsPostgresConn::allowRasterOverviewTables( mConnectionName ), mName );
+  const bool ok = conn->supportedLayers( layerProperties, QgsPostgresConn::geometryColumnsOnly( mConnectionName ), QgsPostgresConn::allowGeometrylessTables( mConnectionName ), QgsPostgresConn::allowRasterOverviewTables( mConnectionName ), mName );
 
   if ( !ok )
   {
@@ -350,7 +349,7 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
       default:
         if ( !layerProperty.geometryColName.isEmpty() )
         {
-          QgsDebugMsgLevel( QStringLiteral( "Adding layer item %1.%2 without type constraint as geometryless table" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ), 2 );
+          QgsDebugMsgLevel( QStringLiteral( "Adding layer item %1.%2 without type constraint as geometryless table" ).arg( layerProperty.schemaName, layerProperty.tableName ), 2 );
         }
         layerType = Qgis::BrowserLayerType::TableLayer;
         tip = tr( "as geometryless table" );

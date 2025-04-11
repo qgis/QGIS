@@ -559,7 +559,7 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
     el.setAttribute( QStringLiteral( "allowGeometrylessTables" ), settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
     el.setAttribute( QStringLiteral( "geometryColumnsOnly" ), settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
     el.setAttribute( QStringLiteral( "publicOnly" ), settings.value( path + "/publicOnly", "0" ).toString() );
-
+    el.setAttribute( QStringLiteral( "schema" ), settings.value( path + "/schema" ).toString() );
     el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
 
     if ( settings.value( path + "/saveUsername", "false" ).toString() == QLatin1String( "true" ) )
@@ -1182,6 +1182,7 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
     settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
     settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
     settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
+    settings.setValue( QStringLiteral( "/schema" ), child.attribute( QStringLiteral( "schema" ) ) );
     settings.endGroup();
 
     child = child.nextSiblingElement();

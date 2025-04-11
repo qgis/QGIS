@@ -386,13 +386,12 @@ class QgsPostgresConn : public QObject
      * \param layers list to store layers in
      * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
-     * \param searchPublicOnly
      * \param allowGeometrylessTables
      * \param allowRasterOverviewTables list raster layer overviews
      * \param schema restrict layers to layers within specified schema
      * \returns true if layers were fetched successfully
      */
-    bool supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly = true, bool searchPublicOnly = true, bool allowGeometrylessTables = false, bool allowRasterOverviewTables = false, const QString &schema = QString() );
+    bool supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly = true, bool allowGeometrylessTables = false, bool allowRasterOverviewTables = false, const QString &schema = QString() );
 
     /**
      * Get the information about a supported layer
@@ -405,9 +404,10 @@ class QgsPostgresConn : public QObject
     /**
      * Gets the list of database schemas
      * \param schemas list to store schemas in
+     * \param restrictToSchemas optional list of schemas to filter to results to. If set, only schemas from this list will be included in the results.
      * \returns true if schemas where fetched successfully
      */
-    bool getSchemas( QList<QgsPostgresSchemaProperty> &schemas );
+    bool getSchemas( QList<QgsPostgresSchemaProperty> &schemas, const QStringList &restrictToSchemas = QStringList() );
 
     /**
      * Determine type and srid of a layer from data (possibly estimated)
@@ -423,14 +423,13 @@ class QgsPostgresConn : public QObject
      * Gets information about the spatial tables
      * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
-     * \param searchPublicOnly
      * \param allowGeometrylessTables
      * \param allowRasterOverviewTables list raster layer overviews
      * \param schema restrict tables to those within specified schema
      * \param name restrict tables to those with specified name
      * \returns true if tables were successfully queried
      */
-    bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool allowRasterOverviewTables = false, const QString &schema = QString(), const QString &name = QString() );
+    bool getTableInfo( bool searchGeometryColumnsOnly, bool allowGeometrylessTables, bool allowRasterOverviewTables = false, const QString &schema = QString(), const QString &name = QString() );
 
     qint64 getBinaryInt( QgsPostgresResult &queryResult, int row, int col );
 
@@ -480,6 +479,7 @@ class QgsPostgresConn : public QObject
     static void deleteConnection( const QString &connName );
     static bool allowMetadataInDatabase( const QString &connName );
     static bool allowRasterOverviewTables( const QString &connName );
+    static QString schemaToRestrict( const QString &connName );
 
     /**
      * Duplicates \a src connection settings to a new \a dst connection.
@@ -550,14 +550,13 @@ class QgsPostgresConn : public QObject
      * \param layers list to store layers in
      * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
-     * \param searchPublicOnly
      * \param allowGeometrylessTables
      * \param allowRasterOverviewTables list raster layer overviews
      * \param schema restrict layers to layers within specified schema
      * \param table restrict tables to those with specified table
      * \returns true if layers were fetched successfully
      */
-    bool supportedLayersPrivate( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly = true, bool searchPublicOnly = true, bool allowGeometrylessTables = false, bool allowRasterOverviewTables = false, const QString &schema = QString(), const QString &table = QString() );
+    bool supportedLayersPrivate( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly = true, bool allowGeometrylessTables = false, bool allowRasterOverviewTables = false, const QString &schema = QString(), const QString &table = QString() );
 
     //! List of the supported layers
     QVector<QgsPostgresLayerProperty> mLayersSupported;

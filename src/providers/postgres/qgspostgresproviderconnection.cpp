@@ -46,6 +46,7 @@ const QStringList QgsPostgresProviderConnection::CONFIGURATION_PARAMETERS = {
   QStringLiteral( "metadataInDatabase" ),
   QStringLiteral( "session_role" ),
   QStringLiteral( "allowRasterOverviewTables" ),
+  QStringLiteral( "schema" ),
 };
 
 const QString QgsPostgresProviderConnection::SETTINGS_BASE_KEY = QStringLiteral( "/PostgreSQL/connections/" );
@@ -257,7 +258,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
     }
     else
     {
-      ok = conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, false, schema );
+      ok = conn->supportedLayers( properties, false, aspatial, false, schema );
     }
 
     if ( !ok )
@@ -831,6 +832,10 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
     if ( configuration().contains( p ) )
     {
       settings.setValue( p, configuration().value( p ) );
+    }
+    else
+    {
+      settings.remove( p );
     }
   }
   settings.endGroup();

@@ -620,13 +620,24 @@ void QgsMssqlProviderConnection::store( const QString &name ) const
     {
       settings.setValue( param, dsUri.param( param ) == QLatin1String( "true" ) || dsUri.param( param ) == '1' );
     }
+    else
+    {
+      settings.remove( param );
+    }
   }
 
   // From configuration
   const auto config { configuration().keys() };
   for ( const auto &p : config )
   {
-    settings.setValue( p, configuration().value( p ) == QLatin1String( "true" ) || configuration().value( p ) == '1' );
+    if ( configuration().contains( p ) )
+    {
+      settings.setValue( p, configuration().value( p ) == QLatin1String( "true" ) || configuration().value( p ) == '1' );
+    }
+    else
+    {
+      settings.remove( p );
+    }
   }
 
   settings.endGroup();

@@ -241,7 +241,7 @@ class QgsOracleConn : public QObject
     static void setSelectedConnection( const QString &connName );
     static QgsDataSourceUri connUri( const QString &connName );
     static bool userTablesOnly( const QString &connName );
-    static QString restrictToSchema( const QString &connName );
+    static QString schemaToRestrict( const QString &connName );
     static bool geometryColumnsOnly( const QString &connName );
     static bool allowGeometrylessTables( const QString &connName );
     static bool allowProjectsInDatabase( const QString &connName );

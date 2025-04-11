@@ -188,7 +188,7 @@ QVector<QgsDataItem *> QgsOracleConnectionItem::createChildren()
 
   if ( !mColumnTypeTask )
   {
-    mColumnTypeTask = new QgsOracleColumnTypeTask( mName, QgsOracleConn::restrictToSchema( mName ),
+    mColumnTypeTask = new QgsOracleColumnTypeTask( mName, QgsOracleConn::schemaToRestrict( mName ),
                                                    /* useEstimatedMetadata */ true, QgsOracleConn::allowGeometrylessTables( mName ) );
 
     connect( mColumnTypeTask, &QgsOracleColumnTypeTask::setLayerType, this, &QgsOracleConnectionItem::setLayerType );

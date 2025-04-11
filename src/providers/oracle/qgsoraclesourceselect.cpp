@@ -396,7 +396,7 @@ void QgsOracleSourceSelect::btnConnect_clicked()
   mIsConnected = true;
   mTablesTreeDelegate->setConnectionInfo( uri );
 
-  mColumnTypeTask = new QgsOracleColumnTypeTask( cmbConnections->currentText(), QgsOracleConn::restrictToSchema( cmbConnections->currentText() ), uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() );
+  mColumnTypeTask = new QgsOracleColumnTypeTask( cmbConnections->currentText(), QgsOracleConn::schemaToRestrict( cmbConnections->currentText() ), uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() );
 
   connect( mColumnTypeTask, &QgsOracleColumnTypeTask::setLayerType, this, &QgsOracleSourceSelect::setLayerType );
   connect( mColumnTypeTask, &QgsTask::taskCompleted, this, &QgsOracleSourceSelect::columnTaskFinished );
