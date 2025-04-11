@@ -87,3 +87,13 @@ void QgsGroupWmsDataDialog::accept()
   mMapLayerServerPropertiesWidget->save();
   QDialog::accept();
 }
+
+bool QgsGroupWmsDataDialog::hasTimeDimension() const
+{
+  return mComputeTimeDimension->checkState() == Qt::Checked;
+}
+
+void QgsGroupWmsDataDialog::setHasTimeDimension( bool hasTimeDimension )
+{
+  mComputeTimeDimension->setCheckState( hasTimeDimension ? Qt::Checked : Qt::Unchecked );
+}

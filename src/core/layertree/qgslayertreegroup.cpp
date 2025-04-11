@@ -20,7 +20,6 @@
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
 #include "qgsgrouplayer.h"
-#include "qgspainting.h"
 
 #include <QDomElement>
 #include <QStringList>
@@ -40,6 +39,7 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup &other )
   , mChangingChildVisibility( other.mChangingChildVisibility )
   , mMutuallyExclusive( other.mMutuallyExclusive )
   , mMutuallyExclusiveChildIndex( other.mMutuallyExclusiveChildIndex )
+  , mWmsHasTimeDimension( other.mWmsHasTimeDimension )
   , mGroupLayer( other.mGroupLayer )
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
 {
@@ -370,6 +370,8 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( const QDomElement &element, const
 
   groupNode->setIsMutuallyExclusive( isMutuallyExclusive, mutuallyExclusiveChildIndex );
 
+  groupNode->mWmsHasTimeDimension = element.attribute( QStringLiteral( "wms-has-time-dimension" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );
+
   groupNode->mGroupLayer = QgsMapLayerRef( element.attribute( QStringLiteral( "groupLayer" ) ) );
 
   readLegacyServerProperties( groupNode );
@@ -426,6 +428,12 @@ void QgsLayerTreeGroup::writeXml( QDomElement &parentElement, const QgsReadWrite
     elem.setAttribute( QStringLiteral( "mutually-exclusive" ), QStringLiteral( "1" ) );
     elem.setAttribute( QStringLiteral( "mutually-exclusive-child" ), mMutuallyExclusiveChildIndex );
   }
+
+  if ( mWmsHasTimeDimension )
+  {
+    elem.setAttribute( QStringLiteral( "wms-has-time-dimension" ), QStringLiteral( "1" ) );
+  }
+
   elem.setAttribute( QStringLiteral( "groupLayer" ), mGroupLayer.layerId );
 
   writeCommonXml( elem );
@@ -685,4 +693,14 @@ QgsMapLayerServerProperties *QgsLayerTreeGroup::serverProperties()
 const QgsMapLayerServerProperties *QgsLayerTreeGroup::serverProperties() const
 {
   return mServerProperties.get();
+}
+
+void QgsLayerTreeGroup::setHasWmsTimeDimension( const bool hasWmsTimeDimension )
+{
+  mWmsHasTimeDimension = hasWmsTimeDimension;
+}
+
+bool QgsLayerTreeGroup::hasWmsTimeDimension() const
+{
+  return mWmsHasTimeDimension;
 }
