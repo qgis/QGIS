@@ -45,8 +45,7 @@ also returned.
 
 :param zip: The zip filename
 :param files: The absolute path to files to embed within the zip
-:param overwrite: Set to ``True`` to allow overwriting existing files
-                  (since QGIS 3.44)
+:param overwrite: Set to ``True`` to allow overwriting existing files (since QGIS 3.44)
 %End
 
 
