@@ -29,7 +29,7 @@
 #include <QPushButton>
 
 /**
- * \brief Class to describe editor data contained within a QgsAttributesFormModel.
+ * \brief Describes editor data contained in a QgsAttributesFormModel.
  *
  * \warning Not part of stable API and may change in future QGIS releases.
  * \ingroup gui
@@ -78,6 +78,7 @@ class GUI_EXPORT QgsAttributesFormData
         QString mComment;
         Qgis::FieldDomainSplitPolicy mSplitPolicy = Qgis::FieldDomainSplitPolicy::Duplicate;
         Qgis::FieldDuplicatePolicy mDuplicatePolicy = Qgis::FieldDuplicatePolicy::Duplicate;
+        Qgis::FieldDomainMergePolicy mMergePolicy = Qgis::FieldDomainMergePolicy::DefaultValue;
 
         operator QVariant();
     };
@@ -114,7 +115,7 @@ class GUI_EXPORT QgsAttributesFormData
     };
 
     /**
-     * \brief Main class to store and transfer editor data contained within a QgsAttributesFormModel.
+     * \brief Main class to store and transfer editor data contained in a QgsAttributesFormModel.
      *
      * \ingroup gui
      * \note Prior to QGIS 3.44 this was available as QgsAttributesFormProperties::DnDTreeItemData
@@ -365,7 +366,7 @@ class GUI_EXPORT QgsAttributesFormData
 
 
 /**
- * \brief Class to hold parent-child relations as well as item data contained within a QgsAttributesFormModel.
+ * \brief Holds parent-child relations as well as item data contained in a QgsAttributesFormModel.
  *
  * \warning Not part of stable API and may change in future QGIS releases.
  * \ingroup gui
@@ -618,7 +619,7 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
 
 
 /**
- * \brief Class for available widgets when configuring attributes forms.
+ * \brief Manages available widgets when configuring attributes forms.
  *
  * \warning Not part of stable API and may change in future QGIS releases.
  * \ingroup gui
@@ -693,7 +694,7 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
 
 
 /**
- * \brief Class for form layouts when configuring attributes forms via drag and drop designer.
+ * \brief Manages form layouts when configuring attributes forms via drag and drop designer.
  *
  * \warning Not part of stable API and may change in future QGIS releases.
  * \ingroup gui

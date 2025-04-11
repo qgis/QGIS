@@ -50,7 +50,7 @@ class QgsAttributeWidgetEdit;
 class QgsAttributesFormBaseView;
 
 /**
- * \brief Class to create a panel to configure attributes forms.
+ * \brief Creates panels to configure attributes forms.
  *
  * \warning Not part of stable API and may change in future QGIS releases.
  * \ingroup gui

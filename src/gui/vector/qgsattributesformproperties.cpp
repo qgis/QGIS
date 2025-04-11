@@ -1608,6 +1608,11 @@ void QgsAttributesFormProperties::copyWidgetConfiguration()
   duplicatePolicyElement.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.duplicatePolicy() ) );
   documentElement.appendChild( duplicatePolicyElement );
 
+  // Merge policy
+  QDomElement mergePolicyElement = doc.createElement( QStringLiteral( "mergePolicy" ) );
+  mergePolicyElement.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.mergePolicy() ) );
+  documentElement.appendChild( mergePolicyElement );
+
   // Default expressions
   QDomElement defaultElem = doc.createElement( QStringLiteral( "default" ) );
   defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValueDefinition().expression() );
@@ -1703,6 +1708,14 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
 
   // // Get base config from target item and ovewrite settings when possible
   // FieldConfig config = item->data( 0, FieldConfigRole ).value<FieldConfig>();
+
+    // Merge policy
+    const QDomElement mergePolicyElement = docElem.firstChildElement( QStringLiteral( "mergePolicy" ) );
+    if ( !mergePolicyElement.isNull() )
+    {
+      const Qgis::FieldDomainMergePolicy policy = qgsEnumKeyToValue( mergePolicyElement.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainMergePolicy::DefaultValue );
+      config.mMergePolicy = policy;
+    }
 
     // Default expressions
     const QDomElement defaultElement = docElem.firstChildElement( QStringLiteral( "default" ) );

@@ -47,6 +47,7 @@ QgsAttributesFormData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx 
   mEditorWidgetConfig = setup.config();
   mSplitPolicy = layer->fields().at( idx ).splitPolicy();
   mDuplicatePolicy = layer->fields().at( idx ).duplicatePolicy();
+  mMergePolicy = layer->fields().at( idx ).mergePolicy();
 }
 
 QgsAttributesFormData::FieldConfig::operator QVariant()
