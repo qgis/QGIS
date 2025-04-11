@@ -43,21 +43,21 @@ z-Value can be an attribute or the z-coordinates in case of 3D types.
 #include "qgsinterpolator.h"
 %End
   public:
-    enum SourceType /BaseType=IntEnum/
+    enum class SourceType /BaseType=IntEnum/
     {
       SourcePoints,
       SourceStructureLines,
       SourceBreakLines,
     };
 
-    enum ValueSource /BaseType=IntEnum/
+    enum class ValueSource /BaseType=IntEnum/
     {
       ValueAttribute,
       ValueZ,
       ValueM,
     };
 
-    enum Result /BaseType=IntEnum/
+    enum class Result /BaseType=IntEnum/
     {
       Success,
       Canceled,
