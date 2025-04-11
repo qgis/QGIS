@@ -184,7 +184,7 @@ void QgsPgNewConnection::accept()
   configuration.insert( "metadataInDatabase", cb_metadataInDatabase->isChecked() );
   configuration.insert( "session_role", txtSessionRole->text() );
   configuration.insert( "allowRasterOverviewTables", cb_allowRasterOverviewTables->isChecked() );
-  if ( !txtSchema->text().trimmed().isEmpty() )
+  if ( !cb_publicSchemaOnly->isChecked() && !txtSchema->text().trimmed().isEmpty() )
   {
     configuration.insert( "schema", txtSchema->text().trimmed() );
   }

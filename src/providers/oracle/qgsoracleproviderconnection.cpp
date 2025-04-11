@@ -326,6 +326,10 @@ void QgsOracleProviderConnection::store( const QString &name ) const
     {
       settings.setValue( param, dsUri.param( param ) );
     }
+    else
+    {
+      settings.remove( param );
+    }
   }
 
   // From configuration
@@ -334,6 +338,10 @@ void QgsOracleProviderConnection::store( const QString &name ) const
     if ( configuration().contains( p ) )
     {
       settings.setValue( p, configuration().value( p ) );
+    }
+    else
+    {
+      settings.remove( p );
     }
   }
   settings.endGroup();
