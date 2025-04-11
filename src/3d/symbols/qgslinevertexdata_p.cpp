@@ -145,7 +145,7 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
     }
     else
     {
-      float z = Qgs3DUtils::clampAltitude( p, altClamping, altBinding, baseHeight + extraHeightOffset, centroid, renderContext );
+      const float z = Qgs3DUtils::clampAltitude( p, altClamping, altBinding, baseHeight + extraHeightOffset, centroid, renderContext );
       vertices << QVector3D( static_cast<float>( p.x() - origin.x() ), static_cast<float>( p.y() - origin.y() ), static_cast<float>( z - origin.z() ) );
     }
     indexes << vertices.count() - 1;

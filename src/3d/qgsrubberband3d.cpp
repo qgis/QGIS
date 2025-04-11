@@ -417,7 +417,7 @@ void QgsRubberBand3D::updateGeometry()
 {
   // figure out a reasonable origin for the coordinates to keep them as small as possible
   const QgsBox3D box = mGeometry.constGet()->boundingBox3D();
-  QgsVector3D dataOrigin = box.isNull() ? mMapSettings->origin() : box.center();
+  const QgsVector3D dataOrigin = box.isNull() ? mMapSettings->origin() : box.center();
 
   QgsLineVertexData lineData;
   lineData.withAdjacency = true;
@@ -461,7 +461,7 @@ void QgsRubberBand3D::updateGeometry()
     {
       // TODO: tessellator should handle origins with non-zero Z to make
       // things work well in large scenes
-      QgsVector3D polygonOrigin( mMapSettings->origin().x(), mMapSettings->origin().y(), 0 );
+      const QgsVector3D polygonOrigin( mMapSettings->origin().x(), mMapSettings->origin().y(), 0 );
       QgsTessellator tessellator( polygonOrigin.x(), polygonOrigin.y(), true );
       tessellator.setOutputZUp( true );
       tessellator.addPolygon( *polygon, 0 );
