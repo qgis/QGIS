@@ -51,7 +51,7 @@ class QgsPostgresSharedData
     void setFieldSupportsEnumValues( int index, bool isSupported );
 
   protected:
-    QMutex mMutex; //!< Access to all data members is guarded by the mutex
+    mutable QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
     long long mFeaturesCounted = -1; //!< Number of features in the layer
 
