@@ -29,8 +29,6 @@
 #include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 
-#include <QMessageBox>
-#include <climits>
 
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -141,17 +139,17 @@ QString QgsPGLayerItem::createUri()
   const QgsSettings &settings = QgsSettings();
   QString basekey = QStringLiteral( "/PostgreSQL/connections/%1" ).arg( connName );
 
-  QStringList defPk( settings.value(
-                               QStringLiteral( "%1/keys/%2/%3" ).arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
-                               QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
+  const QStringList defPk( settings.value(
+                                     QStringLiteral( "%1/keys/%2/%3" ).arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
+                                     QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
   )
-                       .toStringList() );
+                             .toStringList() );
 
   const bool useEstimatedMetadata = QgsPostgresConn::useEstimatedMetadata( connName );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
 
   QStringList cols;
-  for ( const auto &col : defPk )
+  for ( const QString &col : defPk )
   {
     cols << QgsPostgresConn::quotedIdentifier( col );
   }
@@ -351,7 +349,7 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
       default:
         if ( !layerProperty.geometryColName.isEmpty() )
         {
-          QgsDebugMsgLevel( QStringLiteral( "Adding layer item %1.%2 without type constraint as geometryless table" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ), 2 );
+          QgsDebugMsgLevel( QStringLiteral( "Adding layer item %1.%2 without type constraint as geometryless table" ).arg( layerProperty.schemaName, layerProperty.tableName ), 2 );
         }
         layerType = Qgis::BrowserLayerType::TableLayer;
         tip = tr( "as geometryless table" );
