@@ -53,11 +53,11 @@ void QgsGeomColumnTypeThread::run()
   mStopped = false;
 
   const bool dontResolveType = QgsPostgresConn::dontResolveType( mName );
-  const QString schemaToRestrict = QgsPostgresConn::schemaToRestrict( mName );
+  const QString schemaToRestrict = QgsPostgresConn::publicSchemaOnly( mName ) ? QStringLiteral( "public" ) : QgsPostgresConn::schemaToRestrict( mName );
 
   emit progressMessage( tr( "Retrieving tables of %1…" ).arg( mName ) );
   QVector<QgsPostgresLayerProperty> layerProperties;
-  if ( !mConn->supportedLayers( layerProperties, QgsPostgresConn::geometryColumnsOnly( mName ), QgsPostgresConn::publicSchemaOnly( mName ), mAllowGeometrylessTables, false, schemaToRestrict ) || layerProperties.isEmpty() )
+  if ( !mConn->supportedLayers( layerProperties, QgsPostgresConn::geometryColumnsOnly( mName ), mAllowGeometrylessTables, false, schemaToRestrict ) || layerProperties.isEmpty() )
   {
     QgsPostgresConnPool::instance()->releaseConnection( mConn );
     mConn = nullptr;

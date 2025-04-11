@@ -21,7 +21,6 @@
 #include "qgspostgresprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgspostgresutils.h"
-#include "qgscolumntypethread.h"
 
 // Helper function for QCOMPARE
 char *toString( const QgsPostgresGeometryColumnType &t )
@@ -175,7 +174,6 @@ class TestQgsPostgresConn : public QObject
       const bool success = conn->supportedLayers(
         layers,
         false,      // searchGeometryColumnsOnly
-        false,      // searchPublicOnly
         false,      // allowGeometrylessTables
         false,      // allowRasterOverviewTables
         "qgis_test" // schema
