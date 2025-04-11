@@ -3725,6 +3725,9 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
   }
 #endif
 
+  // clone the share because the feature subset differs (and thus also the feature count etc)
+  mShared = mShared->clone();
+
   // Update datasource uri too
   mUri.setSql( theSQL );
   // Update yet another copy of the uri. Why are there 3 copies of the
@@ -5878,6 +5881,19 @@ void QgsPostgresSharedData::ensureFeaturesCountedAtLeast( long long fetched )
     QgsDebugMsgLevel( QStringLiteral( "feature count adjusted from %1 to %2" ).arg( mFeaturesCounted ).arg( fetched ), 2 );
     mFeaturesCounted = fetched;
   }
+}
+
+std::shared_ptr<QgsPostgresSharedData> QgsPostgresSharedData::clone() const
+{
+  QMutexLocker locker( &mMutex );
+
+  auto copy = std::make_shared<QgsPostgresSharedData>();
+  copy->mFeaturesCounted = mFeaturesCounted;
+  copy->mFidCounter = mFidCounter;
+  copy->mKeyToFid = mKeyToFid;
+  copy->mFidToKey = mFidToKey;
+  copy->mFieldSupportsEnumValues = mFieldSupportsEnumValues;
+  return copy;
 }
 
 long long QgsPostgresSharedData::featuresCounted()
