@@ -107,11 +107,11 @@ void TestQgsProject::cleanupTestCase()
 
 void TestQgsProject::testDirtySet()
 {
-  QgsProject p;
-  bool dirtySet = false;
-  connect( &p, &QgsProject::dirtySet, [&] { dirtySet = true; } );
-  p.setDirty( true );
-  QVERIFY( dirtySet );
+  QgsProject *project = new QgsProject();
+  QSignalSpy dirtySpySet( project, &QgsProject::dirtySet );
+  project->setDirty( true );
+  QVERIFY( dirtySpySet.count() == 1 );
+  project->deleteLater();
 }
 
 void TestQgsProject::testReadPath()
