@@ -68,5 +68,5 @@ void QgsLayerNotesDialog::setNotes( const QString &notes )
 
 QString QgsLayerNotesDialog::notes() const
 {
-  return mEditor->toHtml();
+  return !mEditor->textEdit()->toPlainText().trimmed().isEmpty() ? mEditor->toHtml() : QString();
 }
