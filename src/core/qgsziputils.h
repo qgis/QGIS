@@ -53,9 +53,9 @@ namespace QgsZipUtils
    * also returned.
    * \param zip The zip filename
    * \param files The absolute path to files to embed within the zip
+   * \param overwrite Set to TRUE to allow overwriting existing files (since QGIS 3.44)
    */
-  CORE_EXPORT bool zip( const QString &zip, const QStringList &files );
-
+  CORE_EXPORT bool zip( const QString &zip, const QStringList &files, bool overwrite = false );
 
   /**
    * Decodes gzip byte stream, returns TRUE on success. Useful for reading vector tiles.
