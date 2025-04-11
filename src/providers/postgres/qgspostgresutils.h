@@ -30,6 +30,9 @@ class QgsPostgresSharedData
   public:
     QgsPostgresSharedData() = default;
 
+    //! Creates a deep copy of this shared data
+    std::shared_ptr<QgsPostgresSharedData> clone() const;
+
     long long featuresCounted();
     void setFeaturesCounted( long long count );
     void addFeaturesCounted( long long diff );
