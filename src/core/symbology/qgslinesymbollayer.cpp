@@ -2626,7 +2626,7 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
   if ( !gapElem.isNull() )
   {
     bool ok;
-    double d = gapElem.firstChild().nodeValue().toDouble( &ok );
+    double d = gapElem.firstChild().firstChild().nodeValue().toDouble( &ok );
     if ( ok )
       interval = d;
   }
