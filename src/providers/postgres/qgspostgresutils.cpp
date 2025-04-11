@@ -45,6 +45,8 @@ void QgsPostgresSharedData::ensureFeaturesCountedAtLeast( long long fetched )
 
 std::shared_ptr<QgsPostgresSharedData> QgsPostgresSharedData::clone() const
 {
+  QMutexLocker locker( &mMutex );
+
   auto copy = std::make_shared<QgsPostgresSharedData>();
   copy->mFeaturesCounted = mFeaturesCounted;
   copy->mFidCounter = mFidCounter;
