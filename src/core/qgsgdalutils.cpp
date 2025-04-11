@@ -529,13 +529,13 @@ char **QgsGdalUtils::papszFromStringList( const QStringList &list )
   return papszRetList;
 }
 
-QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOptions, const QString &format )
+QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &creationOptions, const QString &format )
 {
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
   if ( ! myGdalDriver )
     return QStringLiteral( "invalid GDAL driver" );
 
-  char **papszOptions = papszFromStringList( createOptions );
+  char **papszOptions = papszFromStringList( creationOptions );
   // get error string?
   const int ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
   CSLDestroy( papszOptions );

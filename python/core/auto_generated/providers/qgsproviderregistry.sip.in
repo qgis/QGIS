@@ -109,6 +109,7 @@ Returns the provider capabilities
 %End
 
 
+
     QgsRasterDataProvider *createRasterDataProvider(
       const QString &providerKey,
       const QString &uri,

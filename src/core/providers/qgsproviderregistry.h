@@ -160,6 +160,8 @@ class CORE_EXPORT QgsProviderRegistry
      */
     SIP_SKIP Qgis::VectorExportResult createEmptyLayer( const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerName );
 
+    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+
     /**
      * Creates new instance of raster data provider
      *

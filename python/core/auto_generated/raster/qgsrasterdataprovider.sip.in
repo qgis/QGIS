@@ -452,6 +452,7 @@ editing mode in order to allow write operations.
 :return: ``True`` on success
 %End
 
+
     static QgsRasterDataProvider *create( const QString &providerKey,
                                           const QString &uri,
                                           const QString &format, int nBands,
@@ -526,6 +527,7 @@ Encodes the URI starting from the struct .
 
    since QGIS 3.22
 %End
+
 
     virtual QString validateCreationOptions( const QStringList &createOptions, const QString &format );
 %Docstring

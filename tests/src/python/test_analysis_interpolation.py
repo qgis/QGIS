@@ -95,7 +95,7 @@ class TestInterpolation(QgisTestCase):
         self.assertFalse(os.path.exists(tfw_file))
 
         writer = QgsGridFileWriter(interpolator, output_file, extent, cols, rows)
-        writer.setCreateOptions(["TFW=yes"])
+        writer.setCreationOptions(["TFW=yes"])
         writer.writeFile()
 
         checker = QgsRasterChecker()
@@ -178,7 +178,7 @@ class TestInterpolation(QgisTestCase):
         self.assertFalse(os.path.exists(tfw_file))
 
         writer = QgsGridFileWriter(interpolator, output_file, extent, cols, rows)
-        writer.setCreateOptions(["TFW=yes"])
+        writer.setCreationOptions(["TFW=yes"])
         writer.writeFile()
 
         ok = checker.runTest(

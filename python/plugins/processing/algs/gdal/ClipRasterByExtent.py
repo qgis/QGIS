@@ -47,6 +47,7 @@ class ClipRasterByExtent(GdalAlgorithm):
     OVERCRS = "OVERCRS"
     NODATA = "NODATA"
     OPTIONS = "OPTIONS"
+    CREATION_OPTIONS = "CREATION_OPTIONS"
     DATA_TYPE = "DATA_TYPE"
     EXTRA = "EXTRA"
     OUTPUT = "OUTPUT"
@@ -95,6 +96,8 @@ class ClipRasterByExtent(GdalAlgorithm):
             )
         )
 
+        # backwards compatibility parameter
+        # TODO QGIS 4: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),
@@ -102,10 +105,25 @@ class ClipRasterByExtent(GdalAlgorithm):
             optional=True,
         )
         options_param.setFlags(
-            options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+            options_param.flags() | QgsProcessingParameterDefinition.Flag.Hidden
         )
         options_param.setMetadata({"widget_wrapper": {"widget_type": "rasteroptions"}})
         self.addParameter(options_param)
+
+        creation_options_param = QgsProcessingParameterString(
+            self.CREATION_OPTIONS,
+            self.tr("Additional creation options"),
+            defaultValue="",
+            optional=True,
+        )
+        creation_options_param.setFlags(
+            creation_options_param.flags()
+            | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+        )
+        creation_options_param.setMetadata(
+            {"widget_wrapper": {"widget_type": "rasteroptions"}}
+        )
+        self.addParameter(creation_options_param)
 
         dataType_param = QgsProcessingParameterEnum(
             self.DATA_TYPE,
@@ -210,6 +228,10 @@ class ClipRasterByExtent(GdalAlgorithm):
         arguments.append("-of")
         arguments.append(output_format)
 
+        options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
+        # handle backwards compatibility parameter OPTIONS
+        if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
+            options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
 

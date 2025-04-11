@@ -995,9 +995,9 @@ QgsRasterDataProvider *QgsRasterFileWriter::createPartProvider( const QgsRectang
   geoTransform[4] = 0.0;
   geoTransform[5] = -mup;
 
-  // perhaps we need a separate createOptions for tiles ?
+  // perhaps we need a separate creationOptions for tiles ?
 
-  QgsRasterDataProvider *destProvider = QgsRasterDataProvider::create( mOutputProviderKey, outputFile, mOutputFormat, nBands, type, iterCols, iterRows, geoTransform, crs, mCreateOptions );
+  QgsRasterDataProvider *destProvider = QgsRasterDataProvider::create( mOutputProviderKey, outputFile, mOutputFormat, nBands, type, iterCols, iterRows, geoTransform, crs, mCreationOptions );
 
   // TODO: return provider and report error
   return destProvider;
@@ -1018,10 +1018,10 @@ QgsRasterDataProvider *QgsRasterFileWriter::initOutput( int nCols, int nRows, co
     // TODO enable "use existing", has no effect for now, because using Create() in gdal provider
     // should this belong in provider? should also test that source provider is gdal
     if ( mBuildPyramidsFlag == -4 && mOutputProviderKey == "gdal" && mOutputFormat.compare( QLatin1String( "gtiff" ), Qt::CaseInsensitive ) == 0 )
-      mCreateOptions << "COPY_SRC_OVERVIEWS=YES";
+      mCreationOptions << "COPY_SRC_OVERVIEWS=YES";
 #endif
 
-    QgsRasterDataProvider *destProvider = QgsRasterDataProvider::create( mOutputProviderKey, mOutputUrl, mOutputFormat, nBands, type, nCols, nRows, geoTransform, crs, mCreateOptions );
+    QgsRasterDataProvider *destProvider = QgsRasterDataProvider::create( mOutputProviderKey, mOutputUrl, mOutputFormat, nBands, type, nCols, nRows, geoTransform, crs, mCreationOptions );
 
     if ( !destProvider )
     {

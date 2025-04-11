@@ -519,6 +519,8 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     virtual bool createDatabase( const QString &uri, QString &errorMessage SIP_OUT );
 
+    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+
     /**
      * Creates a new instance of the raster data provider.
      * \since QGIS 3.10

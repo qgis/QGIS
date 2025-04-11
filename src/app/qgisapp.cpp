@@ -6161,7 +6161,7 @@ void QgisApp::showRasterCalculator()
   {
     //invoke analysis library
     QgsRasterCalculator rc( d.formulaString(), d.outputFile(), d.outputFormat(), d.outputRectangle(), d.outputCrs(), d.numberOfColumns(), d.numberOfRows(), QgsRasterCalculatorEntry::rasterEntries(), QgsProject::instance()->transformContext() );
-    rc.setCreateOptions( d.createOptions() );
+    rc.setCreationOptions( d.creationOptions() );
 
     QProgressDialog p( tr( "Calculating raster expression…" ), tr( "Abort" ), 0, 0 );
     p.setWindowTitle( tr( "Raster calculator" ) );
@@ -8040,7 +8040,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   {
     return QString();
   }
-  fileWriter.setCreateOptions( d.createOptions() );
+  fileWriter.setCreationOptions( d.creationOptions() );
 
   fileWriter.setBuildPyramidsFlag( d.buildPyramidsFlag() );
   fileWriter.setPyramidsList( d.pyramidsList() );

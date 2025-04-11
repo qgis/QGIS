@@ -71,7 +71,7 @@ mOutputFile
     double outputNodataValue() const;
     void setOutputNodataValue( double value );
 
-    void setCreationOptions( const QStringList &list );
+    void setCreationOptions( const QStringList &options );
 %Docstring
 Sets a list of data source creation options to use when creating the
 output raster file.

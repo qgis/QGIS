@@ -47,6 +47,7 @@ class viewshed(GdalAlgorithm):
     TARGET_HEIGHT = "TARGET_HEIGHT"
     MAX_DISTANCE = "MAX_DISTANCE"
     OPTIONS = "OPTIONS"
+    CREATION_OPTIONS = "CREATION_OPTIONS"
     EXTRA = "EXTRA"
     OUTPUT = "OUTPUT"
 
@@ -96,6 +97,8 @@ class viewshed(GdalAlgorithm):
             )
         )
 
+        # backwards compatibility parameter
+        # TODO QGIS 4: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),
@@ -103,10 +106,25 @@ class viewshed(GdalAlgorithm):
             optional=True,
         )
         options_param.setFlags(
-            options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+            options_param.flags() | QgsProcessingParameterDefinition.Flag.Hidden
         )
         options_param.setMetadata({"widget_wrapper": {"widget_type": "rasteroptions"}})
         self.addParameter(options_param)
+
+        creation_options_param = QgsProcessingParameterString(
+            self.CREATION_OPTIONS,
+            self.tr("Additional creation options"),
+            defaultValue="",
+            optional=True,
+        )
+        creation_options_param.setFlags(
+            creation_options_param.flags()
+            | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+        )
+        creation_options_param.setMetadata(
+            {"widget_wrapper": {"widget_type": "rasteroptions"}}
+        )
+        self.addParameter(creation_options_param)
 
         extra_param = QgsProcessingParameterString(
             self.EXTRA,
@@ -168,7 +186,10 @@ class viewshed(GdalAlgorithm):
             QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]),
         ]
 
-        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
+        # handle backwards compatibility parameter OPTIONS
+        if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
+            options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
 
