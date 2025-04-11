@@ -72,7 +72,7 @@ class ANALYSIS_EXPORT QgsInterpolator
 {
   public:
     //! Describes the type of input data
-    enum SourceType
+    enum class SourceType : int
     {
       SourcePoints,         //!< Point source
       SourceStructureLines, //!< Structure lines
@@ -80,7 +80,7 @@ class ANALYSIS_EXPORT QgsInterpolator
     };
 
     //! Source for interpolated values from features
-    enum ValueSource
+    enum class ValueSource : int
     {
       ValueAttribute, //!< Take value from feature's attribute
       ValueZ,         //!< Use feature's geometry Z values for interpolation
@@ -88,7 +88,7 @@ class ANALYSIS_EXPORT QgsInterpolator
     };
 
     //! Result of an interpolation operation
-    enum Result
+    enum class Result : int
     {
       Success = 0,          //!< Operation was successful
       Canceled,             //!< Operation was manually canceled
@@ -102,11 +102,11 @@ class ANALYSIS_EXPORT QgsInterpolator
         //! Feature source
         QgsFeatureSource *source = nullptr;
         //! Source for feature values to interpolate
-        QgsInterpolator::ValueSource valueSource = QgsInterpolator::ValueAttribute;
+        QgsInterpolator::ValueSource valueSource = QgsInterpolator::ValueSource::ValueAttribute;
         //! Index of feature attribute to use for interpolation
         int interpolationAttribute = -1;
         //! Source type
-        QgsInterpolator::SourceType sourceType = SourcePoints;
+        QgsInterpolator::SourceType sourceType = QgsInterpolator::SourceType::SourcePoints;
 
         /**
        * Coordinate transform context.

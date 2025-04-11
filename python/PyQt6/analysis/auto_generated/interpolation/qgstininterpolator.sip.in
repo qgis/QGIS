@@ -20,13 +20,13 @@ Interpolation in a triangular irregular network.
 #include "qgstininterpolator.h"
 %End
   public:
-    enum TinInterpolation /BaseType=IntEnum/
+    enum class TinInterpolation /BaseType=IntEnum/
     {
       Linear,
       CloughTocher,
     };
 
-    QgsTinInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TinInterpolation interpolation = Linear, QgsFeedback *feedback = 0 );
+    QgsTinInterpolator( const QList<QgsInterpolator::LayerData> &inputData, QgsTinInterpolator::TinInterpolation interpolation = QgsTinInterpolator::TinInterpolation::Linear, QgsFeedback *feedback = 0 );
 %Docstring
 Constructor for QgsTinInterpolator. The ``feedback`` object specifies an
 optional :py:class:`QgsFeedback` object for progress reports and

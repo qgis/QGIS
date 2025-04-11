@@ -121,7 +121,7 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation : public QgsTriangulation
     //! Association to an interpolator object
     TriangleInterpolator *mTriangleInterpolator = nullptr;
     //! Member to store the behavior in case of crossing forced segments
-    QgsTriangulation::ForcedCrossBehavior mForcedCrossBehavior = QgsTriangulation::DeleteFirst;
+    QgsTriangulation::ForcedCrossBehavior mForcedCrossBehavior = QgsTriangulation::ForcedCrossBehavior::DeleteFirst;
     //! Inserts an edge and makes sure, everything is OK with the storage of the edge. The number of the HalfEdge is returned
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
     //! Inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure
