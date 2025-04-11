@@ -466,7 +466,7 @@ void QgsRichTextEditor::textLink( bool checked )
   mergeFormatOnWordOrSelection( format );
 }
 
-void QgsRichTextEditor::textStyle( int )
+void QgsRichTextEditor::textStyle( int index )
 {
   QTextCursor cursor = mTextEdit->textCursor();
   cursor.beginEditBlock();
@@ -480,7 +480,7 @@ void QgsRichTextEditor::textStyle( int )
   cursor.setCharFormat( format );
   mTextEdit->setCurrentCharFormat( format );
 
-  const ParagraphItems style = static_cast<ParagraphItems>( mParagraphStyleCombo->currentData().toInt() );
+  const ParagraphItems style = static_cast<ParagraphItems>( mParagraphStyleCombo->itemData( index ).toInt() );
 
   switch ( style )
   {
@@ -642,19 +642,19 @@ void QgsRichTextEditor::fontChanged( const QFont &f )
   mActionItalic->setChecked( f.italic() );
   mActionUnderline->setChecked( f.underline() );
   mActionStrikeOut->setChecked( f.strikeOut() );
-  if ( f.pointSize() == mFontSizeH1 )
+  if ( f.bold() && f.pointSize() == mFontSizeH1 )
   {
     mParagraphStyleCombo->setCurrentIndex( ParagraphHeading1 );
   }
-  else if ( f.pointSize() == mFontSizeH2 )
+  else if ( f.bold() && f.pointSize() == mFontSizeH2 )
   {
     mParagraphStyleCombo->setCurrentIndex( ParagraphHeading2 );
   }
-  else if ( f.pointSize() == mFontSizeH3 )
+  else if ( f.bold() && f.pointSize() == mFontSizeH3 )
   {
     mParagraphStyleCombo->setCurrentIndex( ParagraphHeading3 );
   }
-  else if ( f.pointSize() == mFontSizeH4 )
+  else if ( f.bold() && f.pointSize() == mFontSizeH4 )
   {
     mParagraphStyleCombo->setCurrentIndex( ParagraphHeading4 );
   }
