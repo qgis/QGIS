@@ -2814,7 +2814,7 @@ bool QgsPostgresConn::allowRasterOverviewTables( const QString &connName )
   return settings.value( "/PostgreSQL/connections/" + connName + "/allowRasterOverviewTables", true ).toBool();
 }
 
-QString QgsPostgresConn::restrictToSchema( const QString &connName )
+QString QgsPostgresConn::schemaToRestrict( const QString &connName )
 {
   QgsSettings settings;
   return settings.value( QStringLiteral( "/PostgreSQL/connections/" ) + connName + QStringLiteral( "/schema" ) ).toString();
