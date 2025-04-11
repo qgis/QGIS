@@ -80,6 +80,16 @@ Starts a macro command, containing a group of interactions in the view.
 Ends a macro command, containing a group of interactions in the view.
 %End
 
+    void beginCommand( const QString &text );
+%Docstring
+Starts a single undo command
+%End
+
+    void endCommand();
+%Docstring
+Ends a single undo command
+%End
+
 
     enum ClipboardOperation /BaseType=IntEnum/
     {
@@ -168,12 +178,12 @@ Emitted when a macro command containing a group of interactions in the
 view has ended.
 %End
 
-    void beginCommand( const QString &text );
+    void commandBegun( const QString &text );
 %Docstring
 Emitted when an undo command is started in the view.
 %End
 
-    void endCommand();
+    void commandEnded();
 %Docstring
 Emitted when an undo command in the view has ended.
 %End

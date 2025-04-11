@@ -106,8 +106,6 @@ class GUI_EXPORT QgsProcessingFieldMapWidgetWrapper : public QgsAbstractProcessi
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
     const QgsVectorLayer *linkedVectorLayer() const override;
 
