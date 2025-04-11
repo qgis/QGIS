@@ -108,6 +108,7 @@ directly. Returns always ``False``.
 
 
 
+    virtual QgsPoint vertexAt( QgsVertexId id ) const;
 
 
     QgsPoint vertexAt( int atVertex ) const /HoldGIL/;
