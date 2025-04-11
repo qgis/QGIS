@@ -466,7 +466,7 @@ void QgsRichTextEditor::textLink( bool checked )
   mergeFormatOnWordOrSelection( format );
 }
 
-void QgsRichTextEditor::textStyle( int )
+void QgsRichTextEditor::textStyle( int index )
 {
   QTextCursor cursor = mTextEdit->textCursor();
   cursor.beginEditBlock();
@@ -480,7 +480,7 @@ void QgsRichTextEditor::textStyle( int )
   cursor.setCharFormat( format );
   mTextEdit->setCurrentCharFormat( format );
 
-  const ParagraphItems style = static_cast<ParagraphItems>( mParagraphStyleCombo->currentData().toInt() );
+  const ParagraphItems style = static_cast<ParagraphItems>( mParagraphStyleCombo->itemData( index ).toInt() );
 
   switch ( style )
   {
