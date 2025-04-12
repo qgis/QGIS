@@ -3262,6 +3262,44 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         vl.setSubsetString('"pk" = 3')
         self.assertGreaterEqual(vl.featureCount(), 1)
 
+    def testFeatureCountOnTable(self):
+        """
+        Test feature count on table
+        """
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=',
+            "test",
+            "postgres",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 5)
+        # pk's are 1,2,3,4,5
+        vl.setSubsetString('"pk" > 3')
+        # so 4 and 5
+        self.assertEqual(vl.featureCount(), 2)
+        vl.setSubsetString('"pk" < 3')
+        # so 1 and 3
+        self.assertEqual(vl.featureCount(), 2)
+        # now dublicate it
+        dup_vl = vl.clone()
+        self.assertTrue(dup_vl.isValid())
+        # still 1 and 3
+        self.assertEqual(dup_vl.featureCount(), 2)
+        dup_vl.setSubsetString(None)
+        # so all 1,2,3,4,5
+        self.assertEqual(dup_vl.featureCount(), 5)
+        # testing regression of issue https://github.com/qgis/QGIS/issues/60926
+        # and the original layer still 1 and 3
+        self.assertEqual(vl.featureCount(), 2)
+        # and changing again vl filter
+        vl.setSubsetString('"pk" > 1')
+        # and dup_vl filter
+        dup_vl.setSubsetString('"pk" < 2')
+        # vl has 4 and dup_vl has 1
+        self.assertEqual(vl.featureCount(), 4)
+        self.assertEqual(dup_vl.featureCount(), 1)
+
     def testFeatureCountEstimatedOnView(self):
         """
         Test feature count on view when estimated data is enabled
