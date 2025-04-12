@@ -474,7 +474,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       case Qgis::DataType::ARGB32:
       case Qgis::DataType::ARGB32_Premultiplied:
       case Qgis::DataType::UnknownDataType:
-        return BandError;
+        return QgsRasterCalculator::Result::BandError;
     }
     entry.bufferSize = entry.dataSize * mNumOutputColumns;
     entry.index = refCounter;
