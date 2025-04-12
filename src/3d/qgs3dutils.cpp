@@ -46,7 +46,7 @@
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
 
-#if !defined(Q_OS_MAC)
+#if !defined( Q_OS_MAC )
 #include <GL/gl.h>
 #endif
 
