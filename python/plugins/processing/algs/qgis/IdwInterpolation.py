@@ -166,7 +166,7 @@ class IdwInterpolation(QgisAlgorithm):
             data.transformContext = context.transformContext()
             layers.append(layer)
 
-            data.valueSource = int(v[1])
+            data.valueSource = QgsInterpolator.ValueSource(int(v[1]))
             data.interpolationAttribute = int(v[2])
             if (
                 data.valueSource == QgsInterpolator.ValueSource.ValueAttribute
@@ -178,12 +178,7 @@ class IdwInterpolation(QgisAlgorithm):
                     ).format(i + 1)
                 )
 
-            if v[3] == "0":
-                data.sourceType = QgsInterpolator.SourceType.SourcePoints
-            elif v[3] == "1":
-                data.sourceType = QgsInterpolator.SourceType.SourceStructureLines
-            else:
-                data.sourceType = QgsInterpolator.SourceType.SourceBreakLines
+            data.sourceType = QgsInterpolator.SourceType(int(v[3]))
             layerData.append(data)
 
         interpolator = QgsIDWInterpolator(layerData)
