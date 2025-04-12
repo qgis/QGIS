@@ -80,7 +80,7 @@ QStringList QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, c
 
     std::shared_ptr<PreparedLayer> preparedLayer( new PreparedLayer() );
     preparedLayer->expression = expression;
-    preparedLayer->context = context;
+    preparedLayer->context = std::move( context );
     preparedLayer->layerId = layer->id();
     preparedLayer->layerName = layer->name();
     preparedLayer->featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );

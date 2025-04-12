@@ -58,7 +58,7 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
         connectionNames << item->name();
       }
       QPointer<QgsDataItem> firstParent( items.at( 0 )->parent() );
-      deleteConnectionsPrivate( connectionNames, deleteConnection, firstParent );
+      deleteConnectionsPrivate( connectionNames, deleteConnection, std::move( firstParent ) );
     }
 
     /**

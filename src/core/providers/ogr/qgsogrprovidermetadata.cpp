@@ -702,7 +702,7 @@ QgsTransaction *QgsOgrProviderMetadata::createTransaction( const QString &connSt
     return nullptr;
   }
 
-  return new QgsOgrTransaction( connString, ds );
+  return new QgsOgrTransaction( connString, std::move( ds ) );
 }
 
 QgsGeoPackageProjectStorage *gGeoPackageProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()

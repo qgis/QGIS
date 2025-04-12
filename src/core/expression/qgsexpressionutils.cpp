@@ -102,9 +102,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
     const QList< QgsMapLayerStore * > stores = context->layerStores();
     for ( QgsMapLayerStore *store : stores )
     {
-
-      QPointer< QgsMapLayerStore > storePointer( store );
-      auto findLayerInStoreFunction = [ storePointer, &ml, identifier ]
+      auto findLayerInStoreFunction = [ storePointer = QPointer< QgsMapLayerStore >( store ), &ml, identifier ]
       {
         if ( QgsMapLayerStore *store = storePointer.data() )
         {
@@ -147,7 +145,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
   if ( QThread::currentThread() == qApp->thread() )
     getMapLayerFromProjectInstance();
   else
-    QMetaObject::invokeMethod( qApp, getMapLayerFromProjectInstance, Qt::BlockingQueuedConnection );
+    QMetaObject::invokeMethod( qApp, std::move( getMapLayerFromProjectInstance ), Qt::BlockingQueuedConnection );
 #endif
 
   return ml;
@@ -199,8 +197,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
   }
   if ( ml )
   {
-    QPointer< QgsMapLayer > layerPointer( ml );
-    auto runFunction = [ layerPointer, &function, &foundLayer ]
+    auto runFunction = [ layerPointer = QPointer< QgsMapLayer >( ml ), &function, &foundLayer ]
     {
       if ( QgsMapLayer *layer = layerPointer.data() )
       {
@@ -215,7 +212,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     if ( QThread::currentThread() == ml->thread() )
       runFunction();
     else
-      QMetaObject::invokeMethod( ml, runFunction, Qt::BlockingQueuedConnection );
+      QMetaObject::invokeMethod( ml, std::move( runFunction ), Qt::BlockingQueuedConnection );
 
     return;
   }
@@ -282,7 +279,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
       if ( QThread::currentThread() == store->thread() )
         findLayerInStoreFunction();
       else
-        QMetaObject::invokeMethod( store, findLayerInStoreFunction, Qt::BlockingQueuedConnection );
+        QMetaObject::invokeMethod( store, std::move( findLayerInStoreFunction ), Qt::BlockingQueuedConnection );
 
       if ( foundLayer )
         return;

@@ -415,7 +415,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
 
 QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
 {
-  return execSqlPrivate( sql, resolveTypes, feedback, pgconn ).rows();
+  return execSqlPrivate( sql, resolveTypes, feedback, std::move( pgconn ) ).rows();
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const

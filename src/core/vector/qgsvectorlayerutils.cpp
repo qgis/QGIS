@@ -709,7 +709,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSour
 {
   std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
 
-  auto getFeatureSource = [ layer, &featureSource, feedback ]
+  auto getFeatureSource = [ layer = std::move( layer ), &featureSource, feedback ]
   {
     Q_ASSERT( QThread::currentThread() == qApp->thread() || feedback );
     QgsVectorLayer *lyr = layer.data();
