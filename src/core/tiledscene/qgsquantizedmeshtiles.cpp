@@ -404,6 +404,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
   vertexAccessor.bufferView = 0;
   vertexAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
   vertexAccessor.count = vertexBuffer.data.size() / sizeof( float ) / 3;
+  const std::size_t vertexAccessorCount = vertexAccessor.count;
   vertexAccessor.type = TINYGLTF_TYPE_VEC3;
   vertexAccessor.minValues = std::move( coordMinimums );
   vertexAccessor.maxValues = std::move( coordMaximums );
@@ -531,7 +532,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     tinygltf::Accessor textureCoordAccessor;
     textureCoordAccessor.bufferView = model.bufferViews.size() - 1;
     textureCoordAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
-    textureCoordAccessor.count = vertexAccessor.count;
+    textureCoordAccessor.count = vertexAccessorCount;
     textureCoordAccessor.type = TINYGLTF_TYPE_VEC2;
     textureCoordAccessor.minValues = { texCoordMinimums[0], texCoordMinimums[1] };
     textureCoordAccessor.maxValues = { texCoordMaximums[0], texCoordMaximums[1] };
