@@ -1,25 +1,61 @@
 # The following has been generated automatically from src/analysis/interpolation/qgsinterpolator.h
 # monkey patching scoped based enum
-QgsInterpolator.SourceType.SourcePoints.__doc__ = "Point source"
-QgsInterpolator.SourceType.SourceStructureLines.__doc__ = "Structure lines"
-QgsInterpolator.SourceType.SourceBreakLines.__doc__ = "Break lines"
+QgsInterpolator.SourcePoints = QgsInterpolator.SourceType.Points
+QgsInterpolator.SourceType.SourcePoints = QgsInterpolator.SourceType.Points
+QgsInterpolator.SourcePoints.is_monkey_patched = True
+QgsInterpolator.SourcePoints.__doc__ = "Point source"
+QgsInterpolator.SourceStructureLines = QgsInterpolator.SourceType.StructureLines
+QgsInterpolator.SourceType.SourceStructureLines = QgsInterpolator.SourceType.StructureLines
+QgsInterpolator.SourceStructureLines.is_monkey_patched = True
+QgsInterpolator.SourceStructureLines.__doc__ = "Structure lines"
+QgsInterpolator.SourceBreakLines = QgsInterpolator.SourceType.BreakLines
+QgsInterpolator.SourceType.SourceBreakLines = QgsInterpolator.SourceType.BreakLines
+QgsInterpolator.SourceBreakLines.is_monkey_patched = True
+QgsInterpolator.SourceBreakLines.__doc__ = "Break lines"
 QgsInterpolator.SourceType.__doc__ = """Describes the type of input data
 
-* ``SourcePoints``: Point source
-* ``SourceStructureLines``: Structure lines
-* ``SourceBreakLines``: Break lines
+* ``Points``: Point source
+
+  Available as ``QgsInterpolator.SourcePoints`` in older QGIS releases.
+
+* ``StructureLines``: Structure lines
+
+  Available as ``QgsInterpolator.SourceStructureLines`` in older QGIS releases.
+
+* ``BreakLines``: Break lines
+
+  Available as ``QgsInterpolator.SourceBreakLines`` in older QGIS releases.
+
 
 """
 # --
 # monkey patching scoped based enum
-QgsInterpolator.ValueSource.ValueAttribute.__doc__ = "Take value from feature's attribute"
-QgsInterpolator.ValueSource.ValueZ.__doc__ = "Use feature's geometry Z values for interpolation"
-QgsInterpolator.ValueSource.ValueM.__doc__ = "Use feature's geometry M values for interpolation"
+QgsInterpolator.ValueAttribute = QgsInterpolator.ValueSource.Attribute
+QgsInterpolator.ValueSource.ValueAttribute = QgsInterpolator.ValueSource.Attribute
+QgsInterpolator.ValueAttribute.is_monkey_patched = True
+QgsInterpolator.ValueAttribute.__doc__ = "Take value from feature's attribute"
+QgsInterpolator.ValueZ = QgsInterpolator.ValueSource.Z
+QgsInterpolator.ValueSource.ValueZ = QgsInterpolator.ValueSource.Z
+QgsInterpolator.ValueZ.is_monkey_patched = True
+QgsInterpolator.ValueZ.__doc__ = "Use feature's geometry Z values for interpolation"
+QgsInterpolator.ValueM = QgsInterpolator.ValueSource.M
+QgsInterpolator.ValueSource.ValueM = QgsInterpolator.ValueSource.M
+QgsInterpolator.ValueM.is_monkey_patched = True
+QgsInterpolator.ValueM.__doc__ = "Use feature's geometry M values for interpolation"
 QgsInterpolator.ValueSource.__doc__ = """Source for interpolated values from features
 
-* ``ValueAttribute``: Take value from feature's attribute
-* ``ValueZ``: Use feature's geometry Z values for interpolation
-* ``ValueM``: Use feature's geometry M values for interpolation
+* ``Attribute``: Take value from feature's attribute
+
+  Available as ``QgsInterpolator.ValueAttribute`` in older QGIS releases.
+
+* ``Z``: Use feature's geometry Z values for interpolation
+
+  Available as ``QgsInterpolator.ValueZ`` in older QGIS releases.
+
+* ``M``: Use feature's geometry M values for interpolation
+
+  Available as ``QgsInterpolator.ValueM`` in older QGIS releases.
+
 
 """
 # --

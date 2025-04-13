@@ -24,17 +24,17 @@ layer.
   public:
     enum class KernelShape
     {
-      KernelQuartic,
-      KernelTriangular,
-      KernelUniform,
-      KernelTriweight,
-      KernelEpanechnikov,
+      Quartic,
+      Triangular,
+      Uniform,
+      Triweight,
+      Epanechnikov,
     };
 
     enum class OutputValues
     {
-      OutputRaw,
-      OutputScaled,
+      Raw,
+      Scaled,
     };
 
     enum class Result

@@ -1,27 +1,69 @@
 # The following has been generated automatically from src/analysis/raster/qgskde.h
 # monkey patching scoped based enum
-QgsKernelDensityEstimation.KernelShape.KernelQuartic.__doc__ = "Quartic kernel"
-QgsKernelDensityEstimation.KernelShape.KernelTriangular.__doc__ = "Triangular kernel"
-QgsKernelDensityEstimation.KernelShape.KernelUniform.__doc__ = "Uniform (flat) kernel"
-QgsKernelDensityEstimation.KernelShape.KernelTriweight.__doc__ = "Triweight kernel"
-QgsKernelDensityEstimation.KernelShape.KernelEpanechnikov.__doc__ = "Epanechnikov kernel"
+QgsKernelDensityEstimation.KernelQuartic = QgsKernelDensityEstimation.KernelShape.Quartic
+QgsKernelDensityEstimation.KernelShape.KernelQuartic = QgsKernelDensityEstimation.KernelShape.Quartic
+QgsKernelDensityEstimation.KernelQuartic.is_monkey_patched = True
+QgsKernelDensityEstimation.KernelQuartic.__doc__ = "Quartic kernel"
+QgsKernelDensityEstimation.KernelTriangular = QgsKernelDensityEstimation.KernelShape.Triangular
+QgsKernelDensityEstimation.KernelShape.KernelTriangular = QgsKernelDensityEstimation.KernelShape.Triangular
+QgsKernelDensityEstimation.KernelTriangular.is_monkey_patched = True
+QgsKernelDensityEstimation.KernelTriangular.__doc__ = "Triangular kernel"
+QgsKernelDensityEstimation.KernelUniform = QgsKernelDensityEstimation.KernelShape.Uniform
+QgsKernelDensityEstimation.KernelShape.KernelUniform = QgsKernelDensityEstimation.KernelShape.Uniform
+QgsKernelDensityEstimation.KernelUniform.is_monkey_patched = True
+QgsKernelDensityEstimation.KernelUniform.__doc__ = "Uniform (flat) kernel"
+QgsKernelDensityEstimation.KernelTriweight = QgsKernelDensityEstimation.KernelShape.Triweight
+QgsKernelDensityEstimation.KernelShape.KernelTriweight = QgsKernelDensityEstimation.KernelShape.Triweight
+QgsKernelDensityEstimation.KernelTriweight.is_monkey_patched = True
+QgsKernelDensityEstimation.KernelTriweight.__doc__ = "Triweight kernel"
+QgsKernelDensityEstimation.KernelEpanechnikov = QgsKernelDensityEstimation.KernelShape.Epanechnikov
+QgsKernelDensityEstimation.KernelShape.KernelEpanechnikov = QgsKernelDensityEstimation.KernelShape.Epanechnikov
+QgsKernelDensityEstimation.KernelEpanechnikov.is_monkey_patched = True
+QgsKernelDensityEstimation.KernelEpanechnikov.__doc__ = "Epanechnikov kernel"
 QgsKernelDensityEstimation.KernelShape.__doc__ = """Kernel shape type
 
-* ``KernelQuartic``: Quartic kernel
-* ``KernelTriangular``: Triangular kernel
-* ``KernelUniform``: Uniform (flat) kernel
-* ``KernelTriweight``: Triweight kernel
-* ``KernelEpanechnikov``: Epanechnikov kernel
+* ``Quartic``: Quartic kernel
+
+  Available as ``QgsKernelDensityEstimation.KernelQuartic`` in older QGIS releases.
+
+* ``Triangular``: Triangular kernel
+
+  Available as ``QgsKernelDensityEstimation.KernelTriangular`` in older QGIS releases.
+
+* ``Uniform``: Uniform (flat) kernel
+
+  Available as ``QgsKernelDensityEstimation.KernelUniform`` in older QGIS releases.
+
+* ``Triweight``: Triweight kernel
+
+  Available as ``QgsKernelDensityEstimation.KernelTriweight`` in older QGIS releases.
+
+* ``Epanechnikov``: Epanechnikov kernel
+
+  Available as ``QgsKernelDensityEstimation.KernelEpanechnikov`` in older QGIS releases.
+
 
 """
 # --
 # monkey patching scoped based enum
-QgsKernelDensityEstimation.OutputValues.OutputRaw.__doc__ = "Output the raw KDE values"
-QgsKernelDensityEstimation.OutputValues.OutputScaled.__doc__ = "Output mathematically correct scaled values"
+QgsKernelDensityEstimation.OutputRaw = QgsKernelDensityEstimation.OutputValues.Raw
+QgsKernelDensityEstimation.OutputValues.OutputRaw = QgsKernelDensityEstimation.OutputValues.Raw
+QgsKernelDensityEstimation.OutputRaw.is_monkey_patched = True
+QgsKernelDensityEstimation.OutputRaw.__doc__ = "Output the raw KDE values"
+QgsKernelDensityEstimation.OutputScaled = QgsKernelDensityEstimation.OutputValues.Scaled
+QgsKernelDensityEstimation.OutputValues.OutputScaled = QgsKernelDensityEstimation.OutputValues.Scaled
+QgsKernelDensityEstimation.OutputScaled.is_monkey_patched = True
+QgsKernelDensityEstimation.OutputScaled.__doc__ = "Output mathematically correct scaled values"
 QgsKernelDensityEstimation.OutputValues.__doc__ = """Output values type
 
-* ``OutputRaw``: Output the raw KDE values
-* ``OutputScaled``: Output mathematically correct scaled values
+* ``Raw``: Output the raw KDE values
+
+  Available as ``QgsKernelDensityEstimation.OutputRaw`` in older QGIS releases.
+
+* ``Scaled``: Output mathematically correct scaled values
+
+  Available as ``QgsKernelDensityEstimation.OutputScaled`` in older QGIS releases.
+
 
 """
 # --

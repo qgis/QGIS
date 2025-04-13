@@ -263,19 +263,19 @@ double QgsKernelDensityEstimation::calculateKernelValue( const double distance, 
 {
   switch ( shape )
   {
-    case QgsKernelDensityEstimation::KernelShape::KernelTriangular:
+    case QgsKernelDensityEstimation::KernelShape::Triangular:
       return triangularKernel( distance, bandwidth, outputType );
 
-    case QgsKernelDensityEstimation::KernelShape::KernelUniform:
+    case QgsKernelDensityEstimation::KernelShape::Uniform:
       return uniformKernel( distance, bandwidth, outputType );
 
-    case QgsKernelDensityEstimation::KernelShape::KernelQuartic:
+    case QgsKernelDensityEstimation::KernelShape::Quartic:
       return quarticKernel( distance, bandwidth, outputType );
 
-    case QgsKernelDensityEstimation::KernelShape::KernelTriweight:
+    case QgsKernelDensityEstimation::KernelShape::Triweight:
       return triweightKernel( distance, bandwidth, outputType );
 
-    case QgsKernelDensityEstimation::KernelShape::KernelEpanechnikov:
+    case QgsKernelDensityEstimation::KernelShape::Epanechnikov:
       return epanechnikovKernel( distance, bandwidth, outputType );
   }
   return 0; //no warnings
@@ -294,7 +294,7 @@ double QgsKernelDensityEstimation::uniformKernel( const double distance, const d
   Q_UNUSED( distance )
   switch ( outputType )
   {
-    case QgsKernelDensityEstimation::OutputValues::OutputScaled:
+    case QgsKernelDensityEstimation::OutputValues::Scaled:
     {
       // Normalizing constant
       const double k = 2. / ( M_PI * bandwidth );
@@ -302,7 +302,7 @@ double QgsKernelDensityEstimation::uniformKernel( const double distance, const d
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 0.5 / bandwidth );
     }
-    case QgsKernelDensityEstimation::OutputValues::OutputRaw:
+    case QgsKernelDensityEstimation::OutputValues::Raw:
       return 1.0;
   }
   return 0.0; // NO warnings!!!!!
@@ -312,7 +312,7 @@ double QgsKernelDensityEstimation::quarticKernel( const double distance, const d
 {
   switch ( outputType )
   {
-    case QgsKernelDensityEstimation::OutputValues::OutputScaled:
+    case QgsKernelDensityEstimation::OutputValues::Scaled:
     {
       // Normalizing constant
       const double k = 16. / ( 5. * M_PI * std::pow( bandwidth, 2 ) );
@@ -320,7 +320,7 @@ double QgsKernelDensityEstimation::quarticKernel( const double distance, const d
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 15. / 16. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );
     }
-    case QgsKernelDensityEstimation::OutputValues::OutputRaw:
+    case QgsKernelDensityEstimation::OutputValues::Raw:
       return std::pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );
   }
   return 0.0; //no, seriously, I told you NO WARNINGS!
@@ -330,7 +330,7 @@ double QgsKernelDensityEstimation::triweightKernel( const double distance, const
 {
   switch ( outputType )
   {
-    case QgsKernelDensityEstimation::OutputValues::OutputScaled:
+    case QgsKernelDensityEstimation::OutputValues::Scaled:
     {
       // Normalizing constant
       const double k = 128. / ( 35. * M_PI * std::pow( bandwidth, 2 ) );
@@ -338,7 +338,7 @@ double QgsKernelDensityEstimation::triweightKernel( const double distance, const
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 35. / 32. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 3 );
     }
-    case QgsKernelDensityEstimation::OutputValues::OutputRaw:
+    case QgsKernelDensityEstimation::OutputValues::Raw:
       return std::pow( 1. - std::pow( distance / bandwidth, 2 ), 3 );
   }
   return 0.0; // this is getting ridiculous... don't you ever listen to a word I say?
@@ -348,7 +348,7 @@ double QgsKernelDensityEstimation::epanechnikovKernel( const double distance, co
 {
   switch ( outputType )
   {
-    case QgsKernelDensityEstimation::OutputValues::OutputScaled:
+    case QgsKernelDensityEstimation::OutputValues::Scaled:
     {
       // Normalizing constant
       const double k = 8. / ( 3. * M_PI * std::pow( bandwidth, 2 ) );
@@ -356,7 +356,7 @@ double QgsKernelDensityEstimation::epanechnikovKernel( const double distance, co
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 3. / 4. ) * ( 1. - std::pow( distance / bandwidth, 2 ) );
     }
-    case QgsKernelDensityEstimation::OutputValues::OutputRaw:
+    case QgsKernelDensityEstimation::OutputValues::Raw:
       return ( 1. - std::pow( distance / bandwidth, 2 ) );
   }
 
@@ -367,7 +367,7 @@ double QgsKernelDensityEstimation::triangularKernel( const double distance, cons
 {
   switch ( outputType )
   {
-    case QgsKernelDensityEstimation::OutputValues::OutputScaled:
+    case QgsKernelDensityEstimation::OutputValues::Scaled:
     {
       // Normalizing constant. In this case it's calculated a little different
       // due to the inclusion of the non-standard "decay" parameter
@@ -385,7 +385,7 @@ double QgsKernelDensityEstimation::triangularKernel( const double distance, cons
         return ( 1. - ( 1. - mDecay ) * ( distance / bandwidth ) );
       }
     }
-    case QgsKernelDensityEstimation::OutputValues::OutputRaw:
+    case QgsKernelDensityEstimation::OutputValues::Raw:
       return ( 1. - ( 1. - mDecay ) * ( distance / bandwidth ) );
   }
   return 0.0; // ....
