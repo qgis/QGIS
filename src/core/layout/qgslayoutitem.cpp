@@ -1367,7 +1367,8 @@ QPointF QgsLayoutItem::positionAtReferencePoint( const QgsLayoutItem::ReferenceP
 QgsLayoutPoint QgsLayoutItem::topLeftToReferencePoint( const QgsLayoutPoint &point ) const
 {
   const QPointF topLeft = mLayout->convertToLayoutUnits( point );
-  const QPointF refPoint = topLeft + itemPositionAtReferencePoint( mReferencePoint, rect().size() );
+  const QPointF anchorPoint = mapToScene( itemPositionAtReferencePoint( mReferencePoint, rect().size() ) );
+  const QPointF refPoint = anchorPoint - mapFromScene( topLeft );
   return mLayout->convertFromLayoutUnits( refPoint, point.units() );
 }
 
