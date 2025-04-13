@@ -7761,6 +7761,8 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
           }
         }
       }
+
+      QgsProject::instance()->setDirty( true );
     }
   }
 }
