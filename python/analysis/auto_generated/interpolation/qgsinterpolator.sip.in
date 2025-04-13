@@ -45,16 +45,16 @@ z-Value can be an attribute or the z-coordinates in case of 3D types.
   public:
     enum class SourceType
     {
-      SourcePoints,
-      SourceStructureLines,
-      SourceBreakLines,
+      Points,
+      StructureLines,
+      BreakLines,
     };
 
     enum class ValueSource
     {
-      ValueAttribute,
-      ValueZ,
-      ValueM,
+      Attribute,
+      Z,
+      M,
     };
 
     enum class Result

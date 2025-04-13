@@ -115,12 +115,12 @@ void QgsTinInterpolator::initialize()
       QgsAttributeList attList;
       switch ( layer.valueSource )
       {
-        case QgsInterpolator::ValueSource::ValueAttribute:
+        case QgsInterpolator::ValueSource::Attribute:
           attList.push_back( layer.interpolationAttribute );
           break;
 
-        case QgsInterpolator::ValueSource::ValueM:
-        case QgsInterpolator::ValueSource::ValueZ:
+        case QgsInterpolator::ValueSource::M:
+        case QgsInterpolator::ValueSource::Z:
           break;
       }
 
@@ -181,7 +181,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
   bool attributeConversionOk = false;
   switch ( source )
   {
-    case QgsInterpolator::ValueSource::ValueAttribute:
+    case QgsInterpolator::ValueSource::Attribute:
     {
       QVariant attributeVariant = f.attribute( attr );
       if ( QgsVariantUtils::isNull( attributeVariant ) ) //attribute not found, something must be wrong (e.g. NULL value)
@@ -196,13 +196,13 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
       break;
     }
 
-    case QgsInterpolator::ValueSource::ValueM:
+    case QgsInterpolator::ValueSource::M:
       if ( !g.constGet()->isMeasure() )
         return 3;
       else
         break;
 
-    case QgsInterpolator::ValueSource::ValueZ:
+    case QgsInterpolator::ValueSource::Z:
       if ( !g.constGet()->is3D() )
         return 3;
       else
@@ -211,15 +211,15 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
 
   switch ( type )
   {
-    case QgsInterpolator::SourceType::SourcePoints:
+    case QgsInterpolator::SourceType::Points:
     {
       if ( addPointsFromGeometry( g, source, attributeValue ) != 0 )
         return -1;
       break;
     }
 
-    case QgsInterpolator::SourceType::SourceBreakLines:
-    case QgsInterpolator::SourceType::SourceStructureLines:
+    case QgsInterpolator::SourceType::BreakLines:
+    case QgsInterpolator::SourceType::StructureLines:
     {
       switch ( QgsWkbTypes::geometryType( g.wkbType() ) )
       {
@@ -292,21 +292,21 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
             {
               switch ( source )
               {
-                case QgsInterpolator::ValueSource::ValueAttribute:
+                case QgsInterpolator::ValueSource::Attribute:
                   if ( point.is3D() )
                     point.setZ( attributeValue );
                   else
                     point.addZValue( attributeValue );
                   break;
 
-                case QgsInterpolator::ValueSource::ValueM:
+                case QgsInterpolator::ValueSource::M:
                   if ( point.is3D() )
                     point.setZ( point.m() );
                   else
                     point.addZValue( point.m() );
                   break;
 
-                case QgsInterpolator::ValueSource::ValueZ:
+                case QgsInterpolator::ValueSource::Z:
                   break;
               }
             }
@@ -335,15 +335,15 @@ int QgsTinInterpolator::addPointsFromGeometry( const QgsGeometry &g, QgsInterpol
     double z = 0;
     switch ( source )
     {
-      case QgsInterpolator::ValueSource::ValueAttribute:
+      case QgsInterpolator::ValueSource::Attribute:
         z = attributeValue;
         break;
 
-      case QgsInterpolator::ValueSource::ValueZ:
+      case QgsInterpolator::ValueSource::Z:
         z = p.z();
         break;
 
-      case QgsInterpolator::ValueSource::ValueM:
+      case QgsInterpolator::ValueSource::M:
         z = p.m();
         break;
     }
