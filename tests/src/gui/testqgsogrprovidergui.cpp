@@ -81,7 +81,7 @@ void TestQgsOgrProviderGui::cleanupTestCase()
 
 void TestQgsOgrProviderGui::testGpkgDataItemRename()
 {
-  QTemporaryFile f( QStringLiteral( "qgis-XXXXXX.gpkg" ) );
+  QTemporaryFile f( QDir::temp().absoluteFilePath( QStringLiteral( "qgis-XXXXXX.gpkg" ) ) );
   f.open();
   f.close();
   const QString fileName { f.fileName() };
