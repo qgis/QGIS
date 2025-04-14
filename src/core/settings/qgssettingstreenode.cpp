@@ -151,7 +151,7 @@ void QgsSettingsTreeNamedListNode::initNamedList( const Qgis::SettingsTreeNodeOp
   if ( options.testFlag( Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting ) )
   {
     // this must be done before completing the key
-    mSelectedItemSetting = new QgsSettingsEntryString( QStringLiteral( "%1/selected" ).arg( mCompleteKey ), nullptr );
+    mSelectedItemSetting = std::make_unique<QgsSettingsEntryString>( QStringLiteral( "%1/selected" ).arg( mCompleteKey ), nullptr );
   }
 
   mNamedNodesCount = mParent->namedNodesCount() + 1;
@@ -161,7 +161,7 @@ void QgsSettingsTreeNamedListNode::initNamedList( const Qgis::SettingsTreeNodeOp
 
 QgsSettingsTreeNamedListNode::~QgsSettingsTreeNamedListNode()
 {
-  delete mSelectedItemSetting;
+
 }
 
 

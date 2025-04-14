@@ -496,8 +496,8 @@ class CORE_EXPORT QgsSettings : public QObject
   private:
     void init();
     QString sanitizeKey( const QString &key ) const;
-    QSettings *mUserSettings = nullptr;
-    QSettings *mGlobalSettings = nullptr;
+    std::unique_ptr<QSettings> mUserSettings;
+    std::unique_ptr<QSettings> mGlobalSettings;
     bool mUsingGlobalArray = false;
     Q_DISABLE_COPY( QgsSettings )
 
