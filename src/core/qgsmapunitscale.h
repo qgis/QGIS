@@ -49,6 +49,13 @@ class CORE_EXPORT QgsMapUnitScale
     {}
 
     /**
+     * Returns TRUE if the scale is null, i.e. it is a default constructed QgsMapUnitScale.
+     *
+     * \since QGIS 3.44
+     */
+    bool isNull() const;
+
+    /**
      * The minimum scale, or 0.0 if unset.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      */
