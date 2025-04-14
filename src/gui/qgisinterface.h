@@ -1508,6 +1508,19 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void setGpsPanelConnection( QgsGpsConnection *connection SIP_TRANSFER ) = 0;
 
     /**
+     * Creates a feature from the current GPS track.
+     *
+     * The geometry type of the feature is determined by the layer set via
+     * QgsProjectGpsSettings::destinationLayer().
+     *
+     * The created geometry will be automatically commited depending on the
+     * status of QgsProjectGpsSettings::automaticallyCommitFeatures().
+     *
+     * \since QGIS 3.44
+     */
+    virtual void createFeatureFromGpsTrack() = 0;
+
+    /**
      * Sets whether changes to the active layer should be temporarily
      * blocked.
      *
