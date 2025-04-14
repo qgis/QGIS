@@ -1767,8 +1767,24 @@ void TestQgsCoordinateReferenceSystem::isDynamic()
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( crs.isDynamic() );
 
-  // ETRS89 (generic), using datum ensemble
-  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4258" ) );
+  // Test generic geodetic CRS using datum ensemble
+  QVERIFY( crs.createFromWkt( QStringLiteral( R"""(GEOGCRS["test",
+    ENSEMBLE["test",
+             MEMBER["member1"],
+        MEMBER["member2"],
+        ELLIPSOID["GRS 1980",6378137,298.257222101,
+            LENGTHUNIT["metre",1]],
+        ENSEMBLEACCURACY[0.1]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS["geodetic latitude (Lat)",north,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433]],
+        AXIS["geodetic longitude (Lon)",east,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433]]])""" ) ) );
+  QVERIFY( crs.isValid() );
   QVERIFY( !crs.isDynamic() );
 
   QVERIFY( crs.createFromWkt( QStringLiteral( R"""(GEOGCS["WGS 84",
