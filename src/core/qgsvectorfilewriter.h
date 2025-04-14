@@ -870,8 +870,12 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      */
     bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, Qgis::DistanceUnit outputUnit = Qgis::DistanceUnit::Meters );
 
-    //! \note not available in Python bindings
-    QMap<int, int> attrIdxToOgrIdx() const SIP_SKIP { return mAttrIdxToOgrIdx; }
+    /**
+     * Returns the map of original source field index to output file field index.
+     *
+     * \since QGIS 3.44
+     */
+    QMap<int, int> sourceFieldIndexToWriterFieldIndex() const { return mAttrIdxToOgrIdx; }
 
     //! Close opened shapefile for writing
     ~QgsVectorFileWriter() override;
