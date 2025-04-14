@@ -256,7 +256,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * \see createOptions()
      * \deprecated QGIS 3.44. Use setCreationOptions() instead.
      */
-    Q_DECL_DEPRECATED void setCreateOptions( const QStringList &list ) { setCreationOptions( list ); }
+    Q_DECL_DEPRECATED void setCreateOptions( const QStringList &list ) SIP_DEPRECATED { setCreationOptions( list ); }
 
     /**
      * Returns the list of data source creation options which will be used when
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * \see setCreateOptions()
      * \deprecated QGIS 3.44. Use creationOptions() instead.
      */
-    Q_DECL_DEPRECATED QStringList createOptions() const { return creationOptions(); }
+    Q_DECL_DEPRECATED QStringList createOptions() const SIP_DEPRECATED { return creationOptions(); }
 
     /**
      * Returns the list of data source creation options which will be used when
