@@ -1646,30 +1646,43 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
             ],
         )
 
-
     def test_legend_key_xml_parsing(self):
         okParse = True
         rulekey = "{8cc43156-d554-4cb6-8bf5-aa74d055dacc}"
         ruelbasedXMLStyle = """<qgis>\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" forceraster=\"0\" type=\"RuleRenderer\">\n<rules key=\"{75fa86c9-0336-4235-b295-544194a5c414}\">\n<rule symbol=\"0\" key=\"{37d62599-06d0-4f70-8996-520623f0a007}\" label=\"7.000000000000000\" filter=\"&quot;Value&quot; = 7\"/>\n<rule symbol=\"1\" key=\"{881bd2c8-a632-4ab7-a906-143eb403cff3}\" label=\"8.000000000000000\" filter=\"&quot;Value&quot; = 8\"/>\n<rule symbol=\"2\" key=\"{6b3054a7-8ad5-48a3-9f09-0b759b5473d6}\" label=\"10.000000000000000\" filter=\"&quot;Value&quot; = 10\"/>\n<rule symbol=\"3\" key=\"{8cc43156-d554-4cb6-8bf5-aa74d055dacc}\" label=\"11.000000000000000\" filter=\"&quot;Value&quot; = 11\"/>\n<rule symbol=\"4\" key=\"{4e9b594f-ee10-4021-adf7-7208e5495a52}\" label=\"12.000000000000000\" filter=\"&quot;Value&quot; = 12\"/>\n<rule symbol=\"5\" key=\"{b77192d5-2218-460b-ae8e-61afcd2552c0}\" label=\"13.000000000000000\" filter=\"&quot;Value&quot; = 13\"/>\n<rule symbol=\"6\" key=\"{8a4b0ee3-e765-43fb-9d94-195263ca9d61}\" label=\"20.000000000000000\" filter=\"&quot;Value&quot; = 20\"/>\n<rule symbol=\"7\" key=\"{f7571cc2-2fa4-4b54-a20a-90c881cad65f}\" filter=\"ELSE\"/>\n</rules>\n</renderer-v2>\n</qgis>\n"""
         catkey = "{c2523d40-d130-46be-b86a-11fb5d0ef631}"
-        categorizedStyle="""<qgis>\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" attr=\"Name\" forceraster=\"0\" type=\"categorizedSymbol\">\n<categories>\n<category symbol=\"0\" uuid=\"{306b9ccc-ecc0-4bb0-bb3d-7935687c6794}\" value=\"Dam\" label=\"Dam\" render=\"true\" type=\"string\"/>\n<category symbol=\"1\" uuid=\"{c2523d40-d130-46be-b86a-11fb5d0ef631}\" value=\"Lake\" label=\"Lake\" render=\"true\" type=\"string\"/>\n<category symbol=\"2\" uuid=\"{807bc60b-2b22-4810-8443-e4a1e39153ca}\" value=\"NULL\" label=\"\" render=\"true\" type=\"NULL\"/>\n</categories>\n</renderer-v2>\n</qgis>\n"""
+        categorizedStyle = """<qgis>\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" attr=\"Name\" forceraster=\"0\" type=\"categorizedSymbol\">\n<categories>\n<category symbol=\"0\" uuid=\"{306b9ccc-ecc0-4bb0-bb3d-7935687c6794}\" value=\"Dam\" label=\"Dam\" render=\"true\" type=\"string\"/>\n<category symbol=\"1\" uuid=\"{c2523d40-d130-46be-b86a-11fb5d0ef631}\" value=\"Lake\" label=\"Lake\" render=\"true\" type=\"string\"/>\n<category symbol=\"2\" uuid=\"{807bc60b-2b22-4810-8443-e4a1e39153ca}\" value=\"NULL\" label=\"\" render=\"true\" type=\"NULL\"/>\n</categories>\n</renderer-v2>\n</qgis>\n"""
         gradkey = "{b2693a6e-1752-4ad4-b641-eee6d0a030bd}"
-        graduatedStyle="""<qgis>\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" attr=\"Staff\" forceraster=\"0\" graduatedMethod=\"GraduatedColor\" type=\"graduatedSymbol\">\n<ranges>\n<range lower=\"1.000000000000000\" upper=\"2.000000000000000\" symbol=\"0\" uuid=\"{e7c76e0f-0f61-4b28-ba5c-78ae8e0028d6}\" label=\"1 - 2\" render=\"true\"/>\n<range lower=\"2.000000000000000\" upper=\"2.000000000000000\" symbol=\"1\" uuid=\"{71fea840-23d1-4fcd-b706-4b236e1cc814}\" label=\"2 - 2\" render=\"true\"/>\n<range lower=\"2.000000000000000\" upper=\"3.000000000000000\" symbol=\"2\" uuid=\"{b2693a6e-1752-4ad4-b641-eee6d0a030bd}\" label=\"2 - 3\" render=\"true\"/>\n<range lower=\"3.000000000000000\" upper=\"5.000000000000000\" symbol=\"3\" uuid=\"{70d1e0d8-012a-4187-900d-7fd17b4ab49a}\" label=\"3 - 5\" render=\"true\"/>\n<range lower=\"5.000000000000000\" upper=\"7.000000000000000\" symbol=\"4\" uuid=\"{07d7010c-d53a-423c-8d15-811553447b3e}\" label=\"5 - 7\" render=\"true\"/>\n</ranges>\n</renderer-v2>\n</qgis>\n"""
+        graduatedStyle = """<qgis>\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" attr=\"Staff\" forceraster=\"0\" graduatedMethod=\"GraduatedColor\" type=\"graduatedSymbol\">\n<ranges>\n<range lower=\"1.000000000000000\" upper=\"2.000000000000000\" symbol=\"0\" uuid=\"{e7c76e0f-0f61-4b28-ba5c-78ae8e0028d6}\" label=\"1 - 2\" render=\"true\"/>\n<range lower=\"2.000000000000000\" upper=\"2.000000000000000\" symbol=\"1\" uuid=\"{71fea840-23d1-4fcd-b706-4b236e1cc814}\" label=\"2 - 2\" render=\"true\"/>\n<range lower=\"2.000000000000000\" upper=\"3.000000000000000\" symbol=\"2\" uuid=\"{b2693a6e-1752-4ad4-b641-eee6d0a030bd}\" label=\"2 - 3\" render=\"true\"/>\n<range lower=\"3.000000000000000\" upper=\"5.000000000000000\" symbol=\"3\" uuid=\"{70d1e0d8-012a-4187-900d-7fd17b4ab49a}\" label=\"3 - 5\" render=\"true\"/>\n<range lower=\"5.000000000000000\" upper=\"7.000000000000000\" symbol=\"4\" uuid=\"{07d7010c-d53a-423c-8d15-811553447b3e}\" label=\"5 - 7\" render=\"true\"/>\n</ranges>\n</renderer-v2>\n</qgis>\n"""
         nestkey = "{6a03fc3a-7a9b-4ad9-9a62-801c478e70e9}"
-        nestedStyle="""<qgis>\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" forceraster=\"0\" type=\"mergedFeatureRenderer\">\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" forceraster=\"0\" type=\"RuleRenderer\">\n<rules key=\"{a16a507a-fa80-4545-bd69-74de0fff2332}\">\n<rule symbol=\"0\" key=\"{eb32d7a1-2c35-4918-986d-0f68f0817e1c}\" label=\"Dam\" filter=\"&quot;Name&quot; = 'Dam'\"/>\n<rule symbol=\"1\" key=\"{1af1b498-60f9-43db-9164-12729c9aa503}\" label=\"Lake\" filter=\"&quot;Name&quot; = 'Lake'\"/>\n<rule symbol=\"2\" key=\"{6a03fc3a-7a9b-4ad9-9a62-801c478e70e9}\" filter=\"ELSE\"/>\n</rules>\n</renderer-v2>\n</renderer-v2>\n</qgis>\n"""
-        ruleExpression = QgsSymbolLayerUtils.legendKeyToExpression(rulekey,ruelbasedXMLStyle,okParse)
-        self.assertTrue( okParse )
-        self.assertEqual( ruleExpression, "&quot;Value&quot; = 11")
-        catExpression = QgsSymbolLayerUtils.legendKeyToExpression(catkey,categorizedStyle,okParse)
-        self.assertTrue( okParse )
-        self.assertEqual( catExpression, "&quot;Name&quot; = \'Lake\'")
-        gradExpression = QgsSymbolLayerUtils.legendKeyToExpression(gradkey,graduatedStyle,okParse)
-        self.assertTrue( okParse )
-        self.assertEqual( gradExpression, "(&quot;Staff&quot; >= 3.000000000000000) AND (&quot;Staff&quot; <= 5.000000000000000)")
-        nestedExpression = QgsSymbolLayerUtils.legendKeyToExpression(nestkey,nestedStyle,okParse)
-        self.assertTrue( okParse )
-        self.assertEqual( nestedExpression, "NOT((&quot;Name&quot; = 'Lake') AND (&quot;Name&quot; = 'Dam'))")
+        nestedStyle = """<qgis>\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" forceraster=\"0\" type=\"mergedFeatureRenderer\">\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" forceraster=\"0\" type=\"RuleRenderer\">\n<rules key=\"{a16a507a-fa80-4545-bd69-74de0fff2332}\">\n<rule symbol=\"0\" key=\"{eb32d7a1-2c35-4918-986d-0f68f0817e1c}\" label=\"Dam\" filter=\"&quot;Name&quot; = 'Dam'\"/>\n<rule symbol=\"1\" key=\"{1af1b498-60f9-43db-9164-12729c9aa503}\" label=\"Lake\" filter=\"&quot;Name&quot; = 'Lake'\"/>\n<rule symbol=\"2\" key=\"{6a03fc3a-7a9b-4ad9-9a62-801c478e70e9}\" filter=\"ELSE\"/>\n</rules>\n</renderer-v2>\n</renderer-v2>\n</qgis>\n"""
+        ruleExpression = QgsSymbolLayerUtils.legendKeyToExpression(
+            rulekey, ruelbasedXMLStyle, okParse
+        )
+        self.assertTrue(okParse)
+        self.assertEqual(ruleExpression, "&quot;Value&quot; = 11")
+        catExpression = QgsSymbolLayerUtils.legendKeyToExpression(
+            catkey, categorizedStyle, okParse
+        )
+        self.assertTrue(okParse)
+        self.assertEqual(catExpression, "&quot;Name&quot; = 'Lake'")
+        gradExpression = QgsSymbolLayerUtils.legendKeyToExpression(
+            gradkey, graduatedStyle, okParse
+        )
+        self.assertTrue(okParse)
+        self.assertEqual(
+            gradExpression,
+            "(&quot;Staff&quot; >= 3.000000000000000) AND (&quot;Staff&quot; <= 5.000000000000000)",
+        )
+        nestedExpression = QgsSymbolLayerUtils.legendKeyToExpression(
+            nestkey, nestedStyle, okParse
+        )
+        self.assertTrue(okParse)
+        self.assertEqual(
+            nestedExpression,
+            "NOT((&quot;Name&quot; = 'Lake') AND (&quot;Name&quot; = 'Dam'))",
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
