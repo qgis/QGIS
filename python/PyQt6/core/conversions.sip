@@ -2105,7 +2105,7 @@ template<TYPE>
         int state;
 
         QString *t1 = reinterpret_cast<QString *>(sipConvertToType(t1obj, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-        int t2 = PyLong_AsLong(t1obj);
+        int t2 = PyLong_AsLong(t2obj);
 
         if (*sipIsErr)
         {
