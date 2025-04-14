@@ -126,13 +126,25 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
       exit( 2 );
     }
 
+
+    // See QgisApp::read3DMapViewSettings for necessary steps
+    QgsReadWriteContext readWriteContext;
+    readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
+    Qgs3DMapSettings *map = new Qgs3DMapSettings;
+    map->readXml( viewXml.firstChildElement( QStringLiteral( "qgis3d" ) ), readWriteContext );
+    map->resolveReferences( *QgsProject::instance() );
+
+    map->setTransformContext( QgsProject::instance()->transformContext() );
+    map->setPathResolver( QgsProject::instance()->pathResolver() );
+    map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
+    map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
+
+    canvas->setMapSettings( map );
+
+    QDomElement elemCamera = viewXml.firstChildElement( QStringLiteral( "camera" ) );
+    if ( !elemCamera.isNull() )
     {
-      QgsReadWriteContext readWriteContext;
-      readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
-      Qgs3DMapSettings *map = new Qgs3DMapSettings;
-      map->readXml( viewXml.firstChildElement( QStringLiteral( "qgis3d" ) ), readWriteContext );
-      map->resolveReferences( *QgsProject::instance() );
-      canvas->setMapSettings( map );
+      canvas->cameraController()->readXml( elemCamera );
     }
   }
 
