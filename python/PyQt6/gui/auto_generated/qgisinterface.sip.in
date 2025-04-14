@@ -1864,6 +1864,20 @@ registered within the :py:func:`QgsApplication.gpsConnectionRegistry()`.
 .. versionadded:: 3.16
 %End
 
+    virtual void createFeatureFromGpsTrack() = 0;
+%Docstring
+Creates a feature from the current GPS track.
+
+The geometry type of the feature is determined by the layer set via
+:py:func:`QgsProjectGpsSettings.destinationLayer()`.
+
+The created geometry will be automatically commited depending on the
+status of
+:py:func:`QgsProjectGpsSettings.automaticallyCommitFeatures()`.
+
+.. versionadded:: 3.44
+%End
+
     virtual void blockActiveLayerChanges( bool blocked ) = 0;
 %Docstring
 Sets whether changes to the active layer should be temporarily blocked.
