@@ -194,9 +194,9 @@ class InterpolationDataWidget(BASE, WIDGET):
                     continue
 
                 interpolationAttribute = item.text(1)
-                interpolationSource = QgsInterpolator.ValueSource.ValueAttribute
+                interpolationSource = QgsInterpolator.ValueSource.Attribute
                 if interpolationAttribute == "Z_COORD":
-                    interpolationSource = QgsInterpolator.ValueSource.ValueZ
+                    interpolationSource = QgsInterpolator.ValueSource.Z
                     fieldIndex = -1
                 else:
                     fieldIndex = layer.fields().indexFromName(interpolationAttribute)
@@ -206,11 +206,11 @@ class InterpolationDataWidget(BASE, WIDGET):
                 )
                 inputTypeName = comboBox.currentText()
                 if inputTypeName == self.tr("Points"):
-                    inputType = QgsInterpolator.SourceType.SourcePoints
+                    inputType = QgsInterpolator.SourceType.Points
                 elif inputTypeName == self.tr("Structure lines"):
-                    inputType = QgsInterpolator.SourceType.SourceStructureLines
+                    inputType = QgsInterpolator.SourceType.StructureLines
                 else:
-                    inputType = QgsInterpolator.SourceType.SourceBreakLines
+                    inputType = QgsInterpolator.SourceType.BreakLines
 
                 layers += "{}::~::{:d}::~::{:d}::~::{:d}::|::".format(
                     layer.source(), interpolationSource, fieldIndex, inputType

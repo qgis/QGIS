@@ -83,33 +83,33 @@ class Heatmap(QgisAlgorithm):
             [
                 (
                     self.tr("Quartic"),
-                    QgsKernelDensityEstimation.KernelShape.KernelQuartic,
+                    QgsKernelDensityEstimation.KernelShape.Quartic,
                 ),
                 (
                     self.tr("Triangular"),
-                    QgsKernelDensityEstimation.KernelShape.KernelTriangular,
+                    QgsKernelDensityEstimation.KernelShape.Triangular,
                 ),
                 (
                     self.tr("Uniform"),
-                    QgsKernelDensityEstimation.KernelShape.KernelUniform,
+                    QgsKernelDensityEstimation.KernelShape.Uniform,
                 ),
                 (
                     self.tr("Triweight"),
-                    QgsKernelDensityEstimation.KernelShape.KernelTriweight,
+                    QgsKernelDensityEstimation.KernelShape.Triweight,
                 ),
                 (
                     self.tr("Epanechnikov"),
-                    QgsKernelDensityEstimation.KernelShape.KernelEpanechnikov,
+                    QgsKernelDensityEstimation.KernelShape.Epanechnikov,
                 ),
             ]
         )
 
         self.OUTPUT_VALUES = OrderedDict(
             [
-                (self.tr("Raw"), QgsKernelDensityEstimation.OutputValues.OutputRaw),
+                (self.tr("Raw"), QgsKernelDensityEstimation.OutputValues.Raw),
                 (
                     self.tr("Scaled"),
-                    QgsKernelDensityEstimation.OutputValues.OutputScaled,
+                    QgsKernelDensityEstimation.OutputValues.Scaled,
                 ),
             ]
         )
