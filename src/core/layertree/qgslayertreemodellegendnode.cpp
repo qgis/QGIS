@@ -959,7 +959,6 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
 
   if ( vl )
   {
-
     QgsExpressionContext contextCopy = QgsExpressionContext( context );
     QgsExpressionContextScope *symbolScope = createSymbolScope();
     contextCopy.appendScope( symbolScope );
@@ -984,9 +983,9 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
       return eLabel;
     }
   }
+
   return mLabel;
 }
-
 
 QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
 {
@@ -1032,8 +1031,6 @@ QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
 
   return scope;
 }
-
-
 
 // -------------------------------------------------------------------------
 
