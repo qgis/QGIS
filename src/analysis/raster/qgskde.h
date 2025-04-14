@@ -41,18 +41,18 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     //! Kernel shape type
     enum class KernelShape : int
     {
-      KernelQuartic = 0,  //!< Quartic kernel
-      KernelTriangular,   //!< Triangular kernel
-      KernelUniform,      //!< Uniform (flat) kernel
-      KernelTriweight,    //!< Triweight kernel
-      KernelEpanechnikov, //!< Epanechnikov kernel
+      Quartic SIP_MONKEYPATCH_COMPAT_NAME( KernelQuartic ) = 0,       //!< Quartic kernel
+      Triangular SIP_MONKEYPATCH_COMPAT_NAME( KernelTriangular ),     //!< Triangular kernel
+      Uniform SIP_MONKEYPATCH_COMPAT_NAME( KernelUniform ),           //!< Uniform (flat) kernel
+      Triweight SIP_MONKEYPATCH_COMPAT_NAME( KernelTriweight ),       //!< Triweight kernel
+      Epanechnikov SIP_MONKEYPATCH_COMPAT_NAME( KernelEpanechnikov ), //!< Epanechnikov kernel
     };
 
     //! Output values type
     enum class OutputValues : int
     {
-      OutputRaw = 0, //!< Output the raw KDE values
-      OutputScaled,  //!< Output mathematically correct scaled values
+      Raw SIP_MONKEYPATCH_COMPAT_NAME( OutputRaw ) = 0,   //!< Output the raw KDE values
+      Scaled SIP_MONKEYPATCH_COMPAT_NAME( OutputScaled ), //!< Output mathematically correct scaled values
     };
 
     //! Result of operation

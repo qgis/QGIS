@@ -169,7 +169,7 @@ class IdwInterpolation(QgisAlgorithm):
             data.valueSource = QgsInterpolator.ValueSource(int(v[1]))
             data.interpolationAttribute = int(v[2])
             if (
-                data.valueSource == QgsInterpolator.ValueSource.ValueAttribute
+                data.valueSource == QgsInterpolator.ValueSource.Attribute
                 and data.interpolationAttribute == -1
             ):
                 raise QgsProcessingException(

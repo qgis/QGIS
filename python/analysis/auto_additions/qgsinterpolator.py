@@ -5,9 +5,18 @@ QgsInterpolator.SourceType.SourceStructureLines.__doc__ = "Structure lines"
 QgsInterpolator.SourceType.SourceBreakLines.__doc__ = "Break lines"
 QgsInterpolator.SourceType.__doc__ = """Describes the type of input data
 
-* ``SourcePoints``: Point source
-* ``SourceStructureLines``: Structure lines
-* ``SourceBreakLines``: Break lines
+* ``Points``: Point source
+
+  Available as ``QgsInterpolator.SourcePoints`` in older QGIS releases.
+
+* ``StructureLines``: Structure lines
+
+  Available as ``QgsInterpolator.SourceStructureLines`` in older QGIS releases.
+
+* ``BreakLines``: Break lines
+
+  Available as ``QgsInterpolator.SourceBreakLines`` in older QGIS releases.
+
 
 """
 # --
@@ -17,9 +26,18 @@ QgsInterpolator.ValueSource.ValueZ.__doc__ = "Use feature's geometry Z values fo
 QgsInterpolator.ValueSource.ValueM.__doc__ = "Use feature's geometry M values for interpolation"
 QgsInterpolator.ValueSource.__doc__ = """Source for interpolated values from features
 
-* ``ValueAttribute``: Take value from feature's attribute
-* ``ValueZ``: Use feature's geometry Z values for interpolation
-* ``ValueM``: Use feature's geometry M values for interpolation
+* ``Attribute``: Take value from feature's attribute
+
+  Available as ``QgsInterpolator.ValueAttribute`` in older QGIS releases.
+
+* ``Z``: Use feature's geometry Z values for interpolation
+
+  Available as ``QgsInterpolator.ValueZ`` in older QGIS releases.
+
+* ``M``: Use feature's geometry M values for interpolation
+
+  Available as ``QgsInterpolator.ValueM`` in older QGIS releases.
+
 
 """
 # --

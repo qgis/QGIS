@@ -243,7 +243,7 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
         }
       }
 
-    mTriangulation->addLine( linePoints, QgsInterpolator::SourceType::SourceBreakLines );
+    mTriangulation->addLine( linePoints, QgsInterpolator::SourceType::BreakLines );
   }
 }
 

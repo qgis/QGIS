@@ -7,11 +7,26 @@ QgsKernelDensityEstimation.KernelShape.KernelTriweight.__doc__ = "Triweight kern
 QgsKernelDensityEstimation.KernelShape.KernelEpanechnikov.__doc__ = "Epanechnikov kernel"
 QgsKernelDensityEstimation.KernelShape.__doc__ = """Kernel shape type
 
-* ``KernelQuartic``: Quartic kernel
-* ``KernelTriangular``: Triangular kernel
-* ``KernelUniform``: Uniform (flat) kernel
-* ``KernelTriweight``: Triweight kernel
-* ``KernelEpanechnikov``: Epanechnikov kernel
+* ``Quartic``: Quartic kernel
+
+  Available as ``QgsKernelDensityEstimation.KernelQuartic`` in older QGIS releases.
+
+* ``Triangular``: Triangular kernel
+
+  Available as ``QgsKernelDensityEstimation.KernelTriangular`` in older QGIS releases.
+
+* ``Uniform``: Uniform (flat) kernel
+
+  Available as ``QgsKernelDensityEstimation.KernelUniform`` in older QGIS releases.
+
+* ``Triweight``: Triweight kernel
+
+  Available as ``QgsKernelDensityEstimation.KernelTriweight`` in older QGIS releases.
+
+* ``Epanechnikov``: Epanechnikov kernel
+
+  Available as ``QgsKernelDensityEstimation.KernelEpanechnikov`` in older QGIS releases.
+
 
 """
 # --
@@ -20,8 +35,14 @@ QgsKernelDensityEstimation.OutputValues.OutputRaw.__doc__ = "Output the raw KDE 
 QgsKernelDensityEstimation.OutputValues.OutputScaled.__doc__ = "Output mathematically correct scaled values"
 QgsKernelDensityEstimation.OutputValues.__doc__ = """Output values type
 
-* ``OutputRaw``: Output the raw KDE values
-* ``OutputScaled``: Output mathematically correct scaled values
+* ``Raw``: Output the raw KDE values
+
+  Available as ``QgsKernelDensityEstimation.OutputRaw`` in older QGIS releases.
+
+* ``Scaled``: Output mathematically correct scaled values
+
+  Available as ``QgsKernelDensityEstimation.OutputScaled`` in older QGIS releases.
+
 
 """
 # --
