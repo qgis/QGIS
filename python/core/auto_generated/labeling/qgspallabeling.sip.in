@@ -164,6 +164,8 @@ Contains settings for how a map layer will be labeled.
       AllowDegradedPlacement,
       OverlapHandling,
 
+      LabelMarginDistance,
+
       // (data defined only)
       Show,
       AlwaysShow

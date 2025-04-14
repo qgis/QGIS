@@ -256,6 +256,8 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { static_cast< int >( QgsPalLayerSettings::Property::AllowDegradedPlacement ), QgsPropertyDefinition( "AllowDegradedPlacement", QObject::tr( "Allow inferior fallback placements" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::OverlapHandling ), QgsPropertyDefinition( "OverlapHandling", QgsPropertyDefinition::DataTypeString, QObject::tr( "Overlap handing" ), QObject::tr( "string " ) + "[<b>Prevent</b>|<b>AllowIfNeeded</b>|<b>AlwaysAllow</b>]", origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::MaximumDistance ), QgsPropertyDefinition( "MaximumDistance", QObject::tr( "Maximum distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
+
+    { static_cast< int >( QgsPalLayerSettings::Property::LabelMarginDistance ), QgsPropertyDefinition( "LabelMarginDistance", QObject::tr( "Minimum distance to other labels" ), QgsPropertyDefinition::DoublePositive, origin ) },
   };
 }
 
@@ -1183,6 +1185,11 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   mThinningSettings.setMinimumFeatureSize( renderingElem.attribute( QStringLiteral( "minFeatureSize" ) ).toDouble() );
   mThinningSettings.setLimitNumberLabelsEnabled( renderingElem.attribute( QStringLiteral( "limitNumLabels" ), QStringLiteral( "0" ) ).toInt() );
   mThinningSettings.setMaximumNumberLabels( renderingElem.attribute( QStringLiteral( "maxNumLabels" ), QStringLiteral( "2000" ) ).toInt() );
+
+  mThinningSettings.setLabelMarginDistance( placementElem.attribute( QStringLiteral( "labelMarginDistance" ), QStringLiteral( "0" ) ).toDouble() );
+  mThinningSettings.setLabelMarginDistanceUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "labelMarginDistanceUnit" ) ) ) );
+  mThinningSettings.setLabelMarginDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "labelMarginDistanceMapUnitScale" ) ) ) );
+
   mObstacleSettings.setIsObstacle( renderingElem.attribute( QStringLiteral( "obstacle" ), QStringLiteral( "1" ) ).toInt() );
   mObstacleSettings.setFactor( renderingElem.attribute( QStringLiteral( "obstacleFactor" ), QStringLiteral( "1" ) ).toDouble() );
   mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( renderingElem.attribute( QStringLiteral( "obstacleType" ), QString::number( static_cast< int >( QgsLabelObstacleSettings::ObstacleType::PolygonInterior ) ) ).toUInt() ) );
@@ -1348,6 +1355,20 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   renderingElem.setAttribute( QStringLiteral( "minFeatureSize" ), mThinningSettings.minimumFeatureSize() );
   renderingElem.setAttribute( QStringLiteral( "limitNumLabels" ), mThinningSettings.limitNumberOfLabelsEnabled() );
   renderingElem.setAttribute( QStringLiteral( "maxNumLabels" ), mThinningSettings.maximumNumberLabels() );
+
+  if ( mThinningSettings.labelMarginDistance() > 0 )
+  {
+    placementElem.setAttribute( QStringLiteral( "labelMarginDistance" ), mThinningSettings.labelMarginDistance() );
+  }
+  if ( mThinningSettings.labelMarginDistanceUnit() != Qgis::RenderUnit::Millimeters )
+  {
+    placementElem.setAttribute( QStringLiteral( "labelMarginDistanceUnit" ), QgsUnitTypes::encodeUnit( mThinningSettings.labelMarginDistanceUnit() ) );
+  }
+  if ( !mThinningSettings.labelMarginDistanceMapUnitScale().isNull() )
+  {
+    placementElem.setAttribute( QStringLiteral( "labelMarginDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mThinningSettings.labelMarginDistanceMapUnitScale() ) );
+  }
+
   renderingElem.setAttribute( QStringLiteral( "obstacle" ), mObstacleSettings.isObstacle() );
   renderingElem.setAttribute( QStringLiteral( "obstacleFactor" ), mObstacleSettings.factor() );
   renderingElem.setAttribute( QStringLiteral( "obstacleType" ), static_cast< unsigned int >( mObstacleSettings.type() ) );
@@ -2963,6 +2984,15 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   {
     labelFeature->setOuterBounds( outerBounds );
   }
+
+  QgsLabelFeatureThinningSettings thinning;
+  if ( featureThinningSettings.labelMarginDistance() > 0 )
+  {
+    thinning.setLabelMarginDistance( context.convertToMapUnits( featureThinningSettings.labelMarginDistance(),
+                                     featureThinningSettings.labelMarginDistanceUnit(),
+                                     featureThinningSettings.labelMarginDistanceMapUnitScale() ) );
+  }
+  ( *labelFeature ).setThinningSettings( thinning );
 
   //set label's visual margin so that top visual margin is the leading, and bottom margin is the font's descent
   //this makes labels align to the font's baseline or highest character

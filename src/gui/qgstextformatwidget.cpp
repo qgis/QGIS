@@ -260,6 +260,7 @@ void QgsTextFormatWidget::initWidget()
   mMaximumDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mRepeatDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mOverrunDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mLabelMarginUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mLineHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Percentage << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mTabDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Percentage << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mFontLineHeightSpinBox->setClearValue( 100.0 );
@@ -518,6 +519,8 @@ void QgsTextFormatWidget::initWidget()
           << mRepeatDistanceUnitWidget
           << mOverrunDistanceSpinBox
           << mOverrunDistanceUnitWidget
+          << mLabelMarginSpinBox
+          << mLabelMarginUnitWidget
           << mScaleBasedVisibilityChkBx
           << mMaxScaleWidget
           << mMinScaleWidget
@@ -937,6 +940,8 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mRepeatDistanceDDBtn, QgsPalLayerSettings::Property::RepeatDistance );
   registerDataDefinedButton( mRepeatDistanceUnitDDBtn, QgsPalLayerSettings::Property::RepeatDistanceUnit );
   registerDataDefinedButton( mOverrunDistanceDDBtn, QgsPalLayerSettings::Property::OverrunDistance );
+
+  registerDataDefinedButton( mLabelMarginDDBtn, QgsPalLayerSettings::Property::LabelMarginDistance );
 
   // data defined-only
   registerDataDefinedButton( mCoordXDDBtn, QgsPalLayerSettings::Property::PositionX );

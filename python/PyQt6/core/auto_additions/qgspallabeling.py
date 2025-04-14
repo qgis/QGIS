@@ -354,6 +354,9 @@ QgsPalLayerSettings.AllowDegradedPlacement.__doc__ = "Allow degraded label place
 QgsPalLayerSettings.OverlapHandling = QgsPalLayerSettings.Property.OverlapHandling
 QgsPalLayerSettings.OverlapHandling.is_monkey_patched = True
 QgsPalLayerSettings.OverlapHandling.__doc__ = "Overlap handling technique \n.. versionadded:: 3.26"
+QgsPalLayerSettings.LabelMarginDistance = QgsPalLayerSettings.Property.LabelMarginDistance
+QgsPalLayerSettings.LabelMarginDistance.is_monkey_patched = True
+QgsPalLayerSettings.LabelMarginDistance.__doc__ = "Minimum distance from labels for this feature to other labels \n.. versionadded:: 3.44"
 QgsPalLayerSettings.Show = QgsPalLayerSettings.Property.Show
 QgsPalLayerSettings.Show.is_monkey_patched = True
 QgsPalLayerSettings.Show.__doc__ = ""
@@ -500,6 +503,10 @@ QgsPalLayerSettings.Property.__doc__ = """Data definable properties.
 * ``OverlapHandling``: Overlap handling technique
 
   .. versionadded:: 3.26
+
+* ``LabelMarginDistance``: Minimum distance from labels for this feature to other labels
+
+  .. versionadded:: 3.44
 
 * ``Show``: 
 * ``AlwaysShow``: 

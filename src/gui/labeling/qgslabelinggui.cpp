@@ -446,6 +446,10 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mOverrunDistanceUnitWidget->setUnit( mSettings.lineSettings().overrunDistanceUnit() );
   mOverrunDistanceUnitWidget->setMapUnitScale( mSettings.lineSettings().overrunDistanceMapUnitScale() );
 
+  mLabelMarginSpinBox->setValue( mSettings.thinningSettings().labelMarginDistance() );
+  mLabelMarginUnitWidget->setUnit( mSettings.thinningSettings().labelMarginDistanceUnit() );
+  mLabelMarginUnitWidget->setMapUnitScale( mSettings.thinningSettings().labelMarginDistanceMapUnitScale() );
+
   mPrioritySlider->setValue( mSettings.priority );
   mChkNoObstacle->setChecked( mSettings.obstacleSettings().isObstacle() );
 
@@ -627,6 +631,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.lineSettings().setOverrunDistance( mOverrunDistanceSpinBox->value() );
   lyr.lineSettings().setOverrunDistanceUnit( mOverrunDistanceUnitWidget->unit() );
   lyr.lineSettings().setOverrunDistanceMapUnitScale( mOverrunDistanceUnitWidget->getMapUnitScale() );
+
+  lyr.thinningSettings().setLabelMarginDistance( mLabelMarginSpinBox->value() );
+  lyr.thinningSettings().setLabelMarginDistanceUnit( mLabelMarginUnitWidget->unit() );
+  lyr.thinningSettings().setLabelMarginDistanceMapUnitScale( mLabelMarginUnitWidget->getMapUnitScale() );
 
   lyr.priority = mPrioritySlider->value();
 

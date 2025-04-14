@@ -83,6 +83,84 @@ labelled.
 .. seealso:: :py:func:`minimumFeatureSize`
 %End
 
+    double labelMarginDistance() const;
+%Docstring
+Returns the minimum distance to other labels (i.e. the minimum
+space/margin around labels).
+
+Units are specified through
+:py:func:`~QgsLabelThinningSettings.labelMarginDistanceUnit`.
+
+.. seealso:: :py:func:`setLabelMarginDistance`
+
+.. seealso:: :py:func:`labelMarginDistanceUnit`
+
+.. versionadded:: 3.44
+%End
+
+    void setLabelMarginDistance( double distance );
+%Docstring
+Sets the minimum ``distance`` to other labels (i.e. the minimum
+space/margin around labels).
+
+Units are specified through
+:py:func:`~QgsLabelThinningSettings.setLabelMarginDistanceUnit`.
+
+.. seealso:: :py:func:`labelMarginDistance`
+
+.. seealso:: :py:func:`setLabelMarginDistanceUnit`
+
+.. versionadded:: 3.44
+%End
+
+    void setLabelMarginDistanceUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the minimum distance to other labels.
+
+.. seealso:: :py:func:`labelMarginDistanceUnit`
+
+.. seealso:: :py:func:`setLabelMarginDistance`
+
+.. versionadded:: 3.44
+%End
+
+    Qgis::RenderUnit labelMarginDistanceUnit() const;
+%Docstring
+Returns the units for the minimum distance to other labels.
+
+.. seealso:: :py:func:`setLabelMarginDistanceUnit`
+
+.. seealso:: :py:func:`labelMarginDistance`
+
+.. versionadded:: 3.44
+%End
+
+    void setLabelMarginDistanceMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the minimum distance to other labels.
+
+.. seealso:: :py:func:`labelMarginDistanceMapUnitScale`
+
+.. seealso:: :py:func:`labelMarginDistanceUnit`
+
+.. seealso:: :py:func:`setLabelMarginDistance`
+
+.. versionadded:: 3.44
+%End
+
+    const QgsMapUnitScale &labelMarginDistanceMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the minimum distance to other labels.
+
+.. seealso:: :py:func:`setLabelMarginDistanceMapUnitScale`
+
+.. seealso:: :py:func:`labelMarginDistanceUnit`
+
+.. seealso:: :py:func:`labelMarginDistance`
+
+.. versionadded:: 3.44
+%End
+
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 %Docstring
 Updates the thinning settings to respect any data defined properties set
@@ -90,6 +168,7 @@ within the specified ``properties`` collection.
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
