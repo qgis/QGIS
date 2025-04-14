@@ -58,7 +58,7 @@ bool QgsVectorTileMVTDecoder::decode( const QgsVectorTileRawData &rawTileData )
       mLayerNameToIndex[sourceId][layerName] = layerNum;
     }
 
-    tiles[sourceId] = tile;
+    tiles[sourceId] = std::move( tile );
 
   }
 

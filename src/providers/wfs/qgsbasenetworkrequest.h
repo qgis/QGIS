@@ -168,7 +168,7 @@ class _DownloaderThread : public QThread
   public:
     _DownloaderThread( std::function<void()> function, QObject *parent = nullptr )
       : QThread( parent )
-      , mFunction( function )
+      , mFunction( std::move( function ) )
     {
     }
 

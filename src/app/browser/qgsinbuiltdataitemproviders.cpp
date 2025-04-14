@@ -1316,10 +1316,9 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
       if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddField ) )
       {
         QAction *addColumnAction = new QAction( tr( "Add New Field…" ), menu );
-        QPointer<QgsDataItem> itemPtr { item };
         const QSet<QString> illegalFieldNames = conn->illegalFieldNames();
 
-        connect( addColumnAction, &QAction::triggered, fieldsItem, [md, fieldsItem, context, itemPtr, menu, illegalFieldNames] {
+        connect( addColumnAction, &QAction::triggered, fieldsItem, [md, fieldsItem, context, itemPtr = QPointer<QgsDataItem> { item }, menu, illegalFieldNames] {
           std::unique_ptr<QgsVectorLayer> layer { fieldsItem->layer() };
           if ( layer )
           {
@@ -2175,9 +2174,7 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
         QMenu *createFieldDomainMenu = new QMenu( tr( "New Field Domain" ), menu );
         menu->addMenu( createFieldDomainMenu );
 
-        QPointer<QgsDataItem> itemWeakPointer( item );
-
-        auto createDomain = [context, itemWeakPointer, md, connectionUri]( Qgis::FieldDomainType type ) {
+        auto createDomain = [context, itemWeakPointer = QPointer<QgsDataItem>( item ), md, connectionUri]( Qgis::FieldDomainType type ) {
           QgsFieldDomainDialog dialog( type, QgisApp::instance() );
           dialog.setWindowTitle( tr( "New Field Domain" ) );
           if ( dialog.exec() )
@@ -2580,9 +2577,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       {
         QAction *createRelationshipAction = new QAction( tr( "New Relationship…" ), menu );
 
-        QPointer<QgsDataItem> itemWeakPointer( item );
-
-        connect( createRelationshipAction, &QAction::triggered, this, [=] {
+        connect( createRelationshipAction, &QAction::triggered, this, [itemWeakPointer = QPointer<QgsDataItem>( item ), context, md, connectionUri] {
           std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
 
           if ( conn->tables().isEmpty() )

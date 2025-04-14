@@ -223,7 +223,7 @@ QStringList QgsMssqlConnection::schemas( const QString &uri, QString *errorMessa
   // connect to database
   std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
 
-  return schemas( db, errorMessage );
+  return schemas( std::move( db ), errorMessage );
 }
 
 QStringList QgsMssqlConnection::schemas( std::shared_ptr<QgsMssqlDatabase> db, QString *errorMessage )

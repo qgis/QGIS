@@ -256,7 +256,7 @@ void QgsMaskingWidget::apply()
 }
 
 SymbolLayerVisitor::SymbolLayerVisitor( SymbolLayerVisitor::SymbolLayerCallback callback )
-  : mCallback( callback )
+  : mCallback( std::move( callback ) )
 {}
 
 bool SymbolLayerVisitor::visitEnter( const QgsStyleEntityVisitorInterface::Node &node )

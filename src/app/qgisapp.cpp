@@ -8050,7 +8050,6 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
 
   bool tileMode = d.tileMode();
   bool addToCanvas = d.addToCanvas();
-  QPointer<QgsRasterLayer> rlWeakPointer( rasterLayer );
   QString outputLayerName = d.outputLayerName();
   QString outputFormat = d.outputFormat();
 
@@ -8058,7 +8057,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
 
   // when writer is successful:
 
-  connect( writerTask, &QgsRasterFileWriterTask::writeComplete, this, [this, tileMode, addToCanvas, rlWeakPointer, outputLayerName, outputFormat]( const QString &newFilename ) {
+  connect( writerTask, &QgsRasterFileWriterTask::writeComplete, this, [this, tileMode, addToCanvas, rlWeakPointer = QPointer<QgsRasterLayer>( rasterLayer ), outputLayerName, outputFormat]( const QString &newFilename ) {
     QString fileName = newFilename;
     if ( tileMode )
     {

@@ -614,8 +614,8 @@ void PointSet::offsetCurveByDistance( double distance )
       GEOSCoordSeq_getY_r( geosctxt, coordSeq, i, &newY[i] );
     }
     nbPoints = newNbPoints;
-    x = newX;
-    y = newY;
+    x = std::move( newX );
+    y = std::move( newY );
   }
   catch ( GEOSException &e )
   {

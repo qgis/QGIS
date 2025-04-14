@@ -953,7 +953,7 @@ void QgsBackgroundCachedFeatureIterator::copyFeature( const QgsFeature &srcFeatu
 QgsBackgroundCachedFeatureSource::QgsBackgroundCachedFeatureSource(
   std::shared_ptr<QgsBackgroundCachedSharedData> shared
 )
-  : mShared( shared )
+  : mShared( std::move( shared ) )
 {
 }
 

@@ -1429,7 +1429,7 @@ bool LoadLayerFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpr
     if ( QThread::currentThread() == store->thread() )
       loadLayer();
     else
-      QMetaObject::invokeMethod( store, loadLayer, Qt::BlockingQueuedConnection );
+      QMetaObject::invokeMethod( store, std::move( loadLayer ), Qt::BlockingQueuedConnection );
 
     return res;
   }

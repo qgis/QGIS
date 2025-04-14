@@ -314,9 +314,7 @@ void QgsMssqlNewConnection::onCurrentDataBaseChange()
   if ( listDatabase->currentItem() )
     databaseName = listDatabase->currentItem()->text();
 
-  std::shared_ptr<QgsMssqlDatabase> db = getDatabase();
-
-  QStringList schemasList = QgsMssqlConnection::schemas( db, nullptr );
+  QStringList schemasList = QgsMssqlConnection::schemas( getDatabase(), nullptr );
   int i = 0;
   while ( i < schemasList.count() )
   {

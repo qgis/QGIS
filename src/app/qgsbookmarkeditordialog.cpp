@@ -29,7 +29,7 @@
 #include "qgsmapcanvas.h"
 #include "qgshelp.h"
 
-QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inProject, QWidget *parent, QgsMapCanvas *mapCanvas )
+QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( const QgsBookmark &bookmark, bool inProject, QWidget *parent, QgsMapCanvas *mapCanvas )
   : QDialog( parent )
   , mBookmark( bookmark )
   , mInProject( inProject )
