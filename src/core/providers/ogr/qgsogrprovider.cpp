@@ -354,7 +354,7 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
     return static_cast<Qgis::VectorExportResult>( error );
   }
 
-  QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
+  QMap<int, int> attrIdxMap = writer->sourceFieldIndexToWriterFieldIndex();
   writer.reset();
 
   {
