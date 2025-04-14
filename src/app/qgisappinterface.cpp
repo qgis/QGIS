@@ -1016,6 +1016,11 @@ void QgisAppInterface::createFeatureFromGpsTrack()
   qgis->mGpsDigitizing->createFeature();
 }
 
+void QgisAppInterface::setGpsTrackLineSymbol( QgsLineSymbol *symbol )
+{
+  qgis->setGpsTrackLineSymbol( symbol );
+}
+
 QList<QgsMapDecoration *> QgisAppInterface::activeDecorations()
 {
   return qgis->activeDecorations();

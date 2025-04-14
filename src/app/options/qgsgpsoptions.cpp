@@ -339,10 +339,10 @@ void QgsGpsOptionsWidget::apply()
 
   if ( QgsSymbol *lineSymbol = mTrackLineStyleButton->symbol() )
   {
-    QDomDocument doc;
-    const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "gps-track-symbol" ), lineSymbol, doc, QgsReadWriteContext() );
-    doc.appendChild( elem );
-    QgsAppGpsDigitizing::settingTrackLineSymbol->setValue( doc.toString( 0 ) );
+    if ( lineSymbol->type() == Qgis::SymbolType::Line )
+    {
+      QgsAppGpsDigitizing::setGpsTrackLineSymbol( static_cast<QgsLineSymbol *>( lineSymbol ) );
+    }
   }
 
   QgsGpsConnection::settingsGpsSerialDevice->setValue( mCboDevices->currentData().toString() );

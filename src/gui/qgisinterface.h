@@ -49,6 +49,7 @@ class QgsLayerTreeGroup;
 class QgsLayout;
 class QgsMasterLayoutInterface;
 class QgsLayoutDesignerInterface;
+class QgsLineSymbol;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapLayerConfigWidgetFactory;
@@ -1519,6 +1520,15 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.44
      */
     virtual void createFeatureFromGpsTrack() = 0;
+
+    /**
+     * Sets the line \a symbol of the GPS track and changes the QgsAppGpsDigitizing::settingTrackLineSymbol setting.
+     *
+     * If there is a current GPS track, its appearance is updated according to the symbol.
+     *
+     * \since QGIS 3.44
+     */
+    virtual void setGpsTrackLineSymbol( QgsLineSymbol *symbol ) = 0;
 
     /**
      * Sets whether changes to the active layer should be temporarily

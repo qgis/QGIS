@@ -1878,6 +1878,17 @@ status of
 .. versionadded:: 3.44
 %End
 
+    virtual void setGpsTrackLineSymbol( QgsLineSymbol *symbol ) = 0;
+%Docstring
+Sets the line ``symbol`` of the GPS track and changes the
+:py:class:`QgsAppGpsDigitizing`.settingTrackLineSymbol setting.
+
+If there is a current GPS track, its appearance is updated according to
+the symbol.
+
+.. versionadded:: 3.44
+%End
+
     virtual void blockActiveLayerChanges( bool blocked ) = 0;
 %Docstring
 Sets whether changes to the active layer should be temporarily blocked.
