@@ -21,10 +21,9 @@
 
 void QgsLabelThinningSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {
-  Q_UNUSED( properties )
-  Q_UNUSED( context )
-
-  // temporarily avoid warnings
-  const int unused = 1;
-  ( void )unused;
+  if ( properties.isActive( QgsPalLayerSettings::Property::LabelMarginDistance ) )
+  {
+    context.setOriginalValueVariable( mLabelMarginDistance );
+    mLabelMarginDistance = properties.valueAsDouble( QgsPalLayerSettings::Property::LabelMarginDistance, context, mLabelMarginDistance );
+  }
 }

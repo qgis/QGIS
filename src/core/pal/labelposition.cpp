@@ -31,13 +31,11 @@
 #include "costcalculator.h"
 #include "feature.h"
 #include "labelposition.h"
-#include "geomfunction.h"
 #include "qgsgeos.h"
 #include "qgsgeometryutils_base.h"
 #include "qgslabelingenginerule.h"
 #include "qgsmessagelog.h"
 #include <cmath>
-#include <cfloat>
 
 using namespace pal;
 
@@ -464,6 +462,12 @@ QgsRectangle LabelPosition::boundingBoxForCandidateConflicts( Pal *pal ) const
 
   QgsRectangle bounds = outerBoundingBox();
   mBoundsForConflictIndex = bounds;
+
+  const double labelMarginDistance = feature->feature()->thinningSettings().labelMarginDistance();
+  if ( labelMarginDistance > 0 )
+  {
+    mBoundsForConflictIndex.grow( labelMarginDistance );
+  }
 
   const QList< QgsAbstractLabelingEngineRule * > rules = pal->rules();
   for ( QgsAbstractLabelingEngineRule *rule : rules )

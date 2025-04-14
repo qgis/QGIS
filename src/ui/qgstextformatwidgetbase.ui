@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>521</width>
-    <height>629</height>
+    <width>629</width>
+    <height>961</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -109,7 +109,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>499</width>
+               <width>607</width>
                <height>300</height>
               </rect>
              </property>
@@ -519,7 +519,7 @@
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>8</number>
+                 <number>7</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -2732,7 +2732,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>471</width>
+                       <width>424</width>
                        <height>731</height>
                       </rect>
                      </property>
@@ -4060,9 +4060,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
-                       <width>435</width>
-                       <height>1784</height>
+                       <y>-627</y>
+                       <width>578</width>
+                       <height>1884</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5269,6 +5269,65 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
+                       <widget class="QgsCollapsibleGroupBox" name="mLabelMarginGroupBox">
+                        <property name="title">
+                         <string>Label Spacing</string>
+                        </property>
+                        <layout class="QGridLayout" name="gridLayout_52">
+                         <item row="2" column="1">
+                          <widget class="QgsUnitSelectionWidget" name="mLabelMarginUnitWidget" native="true">
+                           <property name="focusPolicy">
+                            <enum>Qt::StrongFocus</enum>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="0">
+                          <widget class="QLabel" name="label_54">
+                           <property name="text">
+                            <string>Margin around labels</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="1">
+                          <widget class="QgsDoubleSpinBox" name="mLabelMarginSpinBox">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="specialValueText">
+                            <string>No margin</string>
+                           </property>
+                           <property name="decimals">
+                            <number>4</number>
+                           </property>
+                           <property name="maximum">
+                            <double>999999999.000000000000000</double>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="2">
+                          <widget class="QgsPropertyOverrideButton" name="mLabelMarginDDBtn">
+                           <property name="text">
+                            <string>…</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="0" colspan="3">
+                          <widget class="QLabel" name="label_55">
+                           <property name="text">
+                            <string>Prevents other labels from being placed closer than specified margin distance to labels from this layer.</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
                        <widget class="QFrame" name="mPlacementMaxCharAngleFrame">
                         <layout class="QGridLayout" name="gridLayout_22">
                          <property name="leftMargin">
@@ -5868,7 +5927,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>471</width>
+                       <width>578</width>
                        <height>865</height>
                       </rect>
                      </property>
@@ -7097,6 +7156,9 @@ This limit is inclusive, that means the label will be displayed on this scale.</
   <tabstop>mOverrunDistanceSpinBox</tabstop>
   <tabstop>mOverrunDistanceDDBtn</tabstop>
   <tabstop>mLineAnchorSettingsButton</tabstop>
+  <tabstop>mLabelMarginSpinBox</tabstop>
+  <tabstop>mLabelMarginDDBtn</tabstop>
+  <tabstop>mLabelMarginUnitWidget</tabstop>
   <tabstop>mMaxCharAngleInDSpinBox</tabstop>
   <tabstop>mMaxCharAngleOutDSpinBox</tabstop>
   <tabstop>mMaxCharAngleDDBtn</tabstop>
@@ -7156,6 +7218,9 @@ This limit is inclusive, that means the label will be displayed on this scale.</
   <tabstop>mMaximumDistanceSpnBx</tabstop>
   <tabstop>mMaximumDistanceDDBtn</tabstop>
   <tabstop>mPrioritizationComboBox</tabstop>
+  <tabstop>mOverrunDistanceUnitWidget_2</tabstop>
+  <tabstop>mOverrunDistanceSpinBox_2</tabstop>
+  <tabstop>mOverrunDistanceDDBtn_2</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
