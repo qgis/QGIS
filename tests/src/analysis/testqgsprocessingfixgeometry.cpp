@@ -39,6 +39,9 @@ class TestQgsProcessingFixGeometry : public QgsTest
     void fixAreaAlg_data();
     void fixAreaAlg();
 
+    void fixDuplicateNodesAlg_data();
+    void fixDuplicateNodesAlg();
+
     void fixHoleAlg();
     void fixMissingVertexAlg();
 
@@ -167,6 +170,101 @@ void TestQgsProcessingFixGeometry::fixAngleAlg()
     int nbVertices = 0;
     QgsFeature feat;
     outputLayer->getFeatures( QgsFeatureRequest( QString( "\"fid\" = %1" ).arg( it.key() ) ) ).nextFeature( feat );
+    QgsVertexIterator vit = feat.geometry().vertices();
+    while ( vit.hasNext() )
+    {
+      vit.next();
+      nbVertices++;
+    }
+    QCOMPARE( nbVertices, it.value() );
+  }
+}
+
+void TestQgsProcessingFixGeometry::fixDuplicateNodesAlg_data()
+{
+  const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+
+  //create a line layer that will be used in tests
+  QTest::addColumn<QgsVectorLayer *>( "sourceLayer" );
+  QTest::addColumn<QgsVectorLayer *>( "errorsLayer" );
+  QTest::addColumn<QStringList>( "reportList" );
+  QTest::addColumn<QMap<QString, int>>( "finalVertexCount" );
+
+  QMap<QString, int> linesFinalVertexCount;
+  linesFinalVertexCount.insert( "6", 2 );
+  linesFinalVertexCount.insert( "0", 9 );
+
+  QMap<QString, int> polygonsFinalVertexCount;
+  polygonsFinalVertexCount.insert( "4", 5 );
+
+  QTest::newRow( "Lines" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "remove_duplicated_nodes.gpkg|layername=errors_layer_line" ), QStringLiteral( "lines vertex to delete" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << QStringLiteral( "Delete duplicate node" )
+         << QStringLiteral( "Delete duplicate node" )
+         << QStringLiteral( "Delete duplicate node" ) )
+    << linesFinalVertexCount;
+
+  QTest::newRow( "Polygon" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "remove_duplicated_nodes.gpkg|layername=errors_layer_polygon" ), QStringLiteral( "polygons vertex to delete" ), QStringLiteral( "ogr" ) )
+    << ( QStringList() << QStringLiteral( "Delete duplicate node" ) )
+    << polygonsFinalVertexCount;
+}
+
+void TestQgsProcessingFixGeometry::fixDuplicateNodesAlg()
+{
+  using QMapQStringInt = QMap<QString, int>;
+  QFETCH( QgsVectorLayer *, sourceLayer );
+  QFETCH( QgsVectorLayer *, errorsLayer );
+  QFETCH( QStringList, reportList );
+  QFETCH( QMapQStringInt, finalVertexCount );
+
+  QVERIFY( sourceLayer->isValid() );
+  QVERIFY( errorsLayer->isValid() );
+
+  const std::unique_ptr<QgsProcessingAlgorithm> alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometryduplicatenodes" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( sourceLayer->source() ) ) );
+  parameters.insert( QStringLiteral( "ERRORS" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( errorsLayer->source() ) ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "REPORT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  auto context = std::make_unique<QgsProcessingContext>();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  QVERIFY( reportLayer->isValid() );
+  QVERIFY( outputLayer->isValid() );
+
+  QCOMPARE( outputLayer->featureCount(), sourceLayer->featureCount() );
+  QCOMPARE( reportLayer->featureCount(), reportList.count() );
+  int idx = 1;
+  for ( const QString &expectedReport : reportList )
+  {
+    const QgsFeature reportFeature = reportLayer->getFeature( idx );
+    QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
+    idx++;
+  }
+
+  // Verification of vertex number
+  for ( auto it = finalVertexCount.constBegin(); it != finalVertexCount.constEnd(); ++it )
+  {
+    int nbVertices = 0;
+    QgsFeature feat;
+    outputLayer->getFeatures( QgsFeatureRequest( QString( "\"id\" = %1" ).arg( it.key() ) ) ).nextFeature( feat );
     QgsVertexIterator vit = feat.geometry().vertices();
     while ( vit.hasNext() )
     {

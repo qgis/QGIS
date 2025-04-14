@@ -62,6 +62,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcellstatistics.cpp
   processing/qgsalgorithmcentroid.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
+  processing/qgsalgorithmfixgeometryduplicatenodes.cpp
   processing/qgsalgorithmfixgeometryangle.cpp
   processing/qgsalgorithmcheckgeometryhole.cpp
   processing/qgsalgorithmfixgeometryhole.cpp
