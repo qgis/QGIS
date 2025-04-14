@@ -432,6 +432,8 @@ Returns the WMS output CRS list.
 :return: the WMS output CRS list.
 %End
 
+    QStringList wmsOutputCrsListAsOgcUrn( const QgsProject &project );
+
     static QgsRectangle wmsExtent( const QgsProject &project );
 %Docstring
 Returns the WMS Extent restriction.
