@@ -604,6 +604,14 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
       QSet< QString > usedAlternativeNames;
 #endif
+
+      const QString ogrFidColumnName { OGR_L_GetFIDColumn( mLayer ) };
+      const int fidNameIndex = OGR_FD_GetFieldIndex( defn, ogrFidColumnName.toUtf8() );
+      // if native fid column in created layer matches an attribute from the user-specified fields, we'll be
+      // promoting that to a real attribute.
+      const bool promoteFidColumnToAttribute = !ogrFidColumnName.isEmpty() && fidNameIndex < 0 && fields.lookupField( ogrFidColumnName ) >= 0;
+      int offsetRoomForFid = promoteFidColumnToAttribute ? 1 : 0;
+
       for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
         QgsField attrField = fields.at( fldIdx );
@@ -995,6 +1003,20 @@ void QgsVectorFileWriter::init( QString vectorFileName,
                                   QString::fromUtf8( CPLGetLastErrorMsg() ) );
             mError = ErrAttributeCreationFailed;
             return;
+          }
+        }
+
+        if ( promoteFidColumnToAttribute )
+        {
+          if ( ogrFidColumnName.compare( attrField.name(), Qt::CaseInsensitive ) == 0 )
+          {
+            ogrIdx = 0;
+            offsetRoomForFid = 0;
+          }
+          else
+          {
+            // shuffle to make space for fid column
+            ogrIdx += offsetRoomForFid;
           }
         }
 
