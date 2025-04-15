@@ -77,7 +77,7 @@ class GUI_EXPORT QgsCodeEditorDockWidget : public QWidget
     void visibilityChanged( bool isVisible );
 
   private:
-    QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
+    std::unique_ptr<QgsDockableWidgetHelper> mDockableWidgetHelper;
     QToolButton *mDockToggleButton = nullptr;
 };
 

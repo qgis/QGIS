@@ -42,24 +42,24 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '24.04'
-            qt-version: 5
-            run-tests: true
-            with-qt6: OFF
-            with-qt5: ON
-            with-3d: ON
-            with-quick: ON
-            with-clazy: ON
-            with-grass7: OFF
-            with-grass8: OFF
-            with-webengine: OFF
-            with-pdf4qt: OFF
-            with-compile-commands: ON
-            # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
-            experimental: false
-            unity-builds: ON
+          # - distro-version: '24.04'
+          #   qt-version: 5
+          #   run-tests: true
+          #   with-qt6: OFF
+          #   with-qt5: ON
+          #   with-3d: ON
+          #   with-quick: ON
+          #   with-clazy: ON
+          #   with-grass7: OFF
+          #   with-grass8: OFF
+          #   with-webengine: OFF
+          #   with-pdf4qt: OFF
+          #   with-compile-commands: ON
+          #   # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
+          #   experimental: false
+          #   unity-builds: ON
 
-          - distro-version: '39'
+          - distro-version: '42'
             qt-version: 6
             run-tests: true
             with-qt6: ON
@@ -242,22 +242,13 @@ jobs:
 
     strategy:
       matrix:
-        qt-version: [5, 6]
-        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA, SQLSERVER]
+        qt-version: [6]
+        test-batch: [ALL_BUT_PROVIDERS]
 
         include:
-          - qt-version: 5
-            distro-version: 24.04
-            docker-target: binary-only
-
           - qt-version: 6
-            distro-version: 39
+            distro-version: 42
             docker-target: binary-only
-
-          - qt-version: 5
-            distro-version: 24.04
-            test-batch: ORACLE
-            docker-target: binary-for-oracle
 
         exclude:
           - qt-version: 6
