@@ -459,15 +459,19 @@ QgsRectangle LabelPosition::outerBoundingBox() const
 
 QgsRectangle LabelPosition::boundingBoxForCandidateConflicts( Pal *pal ) const
 {
+  if ( !mBoundsForConflictIndex.isNull() )
+    return mBoundsForConflictIndex;
+
   QgsRectangle bounds = outerBoundingBox();
-  QgsRectangle bufferedBounds = bounds;
+  mBoundsForConflictIndex = bounds;
+
   const QList< QgsAbstractLabelingEngineRule * > rules = pal->rules();
   for ( QgsAbstractLabelingEngineRule *rule : rules )
   {
     const QgsRectangle modifiedBounds = rule->modifyCandidateConflictSearchBoundingBox( bounds );
-    bufferedBounds.combineExtentWith( modifiedBounds );
+    mBoundsForConflictIndex.combineExtentWith( modifiedBounds );
   }
-  return bufferedBounds;
+  return mBoundsForConflictIndex;
 }
 
 bool LabelPosition::outerBoundingBoxIntersects( const LabelPosition *other ) const

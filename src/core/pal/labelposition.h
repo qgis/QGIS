@@ -423,6 +423,8 @@ namespace pal
       geos::unique_ptr mOuterBoundsGeos;
       const GEOSPreparedGeometry *mPreparedOuterBoundsGeos = nullptr;
 
+      mutable QgsRectangle mBoundsForConflictIndex;
+
       double mCost;
       bool mHasObstacleConflict;
       bool mHasHardConflict = false;
