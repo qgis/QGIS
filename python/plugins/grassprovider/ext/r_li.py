@@ -24,6 +24,8 @@ from qgis.core import QgsProcessingParameterString
 from processing.tools.system import isWindows, mkdir, getTempFilename
 from grassprovider.grass_utils import GrassUtils
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 import os
 
 # for MS-Windows users who have MBCS chars in their name:
@@ -58,8 +60,9 @@ def checkMovingWindow(alg, parameters, context, outputTxt=False):
     configTxt = alg.parameterAsString(parameters, "config_txt", context)
     config = alg.parameterAsString(parameters, "config", context)
     if configTxt and config:
-        return False, alg.tr(
-            "You need to set either inline configuration or a configuration file!"
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            "You need to set either inline configuration or a configuration file!",
         )
 
     # Verify that configuration is in moving window
@@ -76,13 +79,15 @@ def checkMovingWindow(alg, parameters, context, outputTxt=False):
                     movingWindow = True
 
     if not movingWindow and not outputTxt:
-        return False, alg.tr(
-            'Your configuration needs to be a "moving window" configuration!'
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            'Your configuration needs to be a "moving window" configuration!',
         )
 
     if movingWindow and outputTxt:
-        return False, alg.tr(
-            'Your configuration needs to be a non "moving window" configuration!'
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            'Your configuration needs to be a non "moving window" configuration!',
         )
 
     return True, None

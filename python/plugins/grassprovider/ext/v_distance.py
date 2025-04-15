@@ -21,6 +21,8 @@ __copyright__ = "(C) 2016, Médéric Ribreux"
 
 from qgis.core import QgsProcessingParameterDefinition
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """Verify if we have the right parameters"""
@@ -28,8 +30,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     uploads = alg.parameterAsEnums(parameters, "upload", context)
     columns = alg.parameterAsFields(parameters, "column", context)
     if len(columns) != len(uploads):
-        return False, alg.tr(
-            "The number of columns and the number of upload parameters should be equal!"
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt",
+            "The number of columns and the number of upload parameters should be equal!",
         )
 
     return True, None
