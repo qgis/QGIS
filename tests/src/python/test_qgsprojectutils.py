@@ -11,6 +11,11 @@ __date__ = "2021-07"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 
+import tempfile
+import glob
+import shutil
+from pathlib import Path
+
 from qgis.core import (
     QgsCoordinateTransformContext,
     QgsGroupLayer,
@@ -115,14 +120,23 @@ class TestQgsProjectUtils(QgisTestCase):
         self.assertFalse(QgsProjectUtils.updateLayerPath(p, "aaa", "bbb"))
 
         # replace shapefile path
+
+        ## copy files to temp directory
+        tempDir = tempfile.TemporaryDirectory()
+        tempDirPath = Path(tempDir.name).as_posix()
+        for file in glob.glob(unitTestDataPath() + "/points.*"):
+            shutil.copy(file, tempDirPath)
+        shutil.copy(unitTestDataPath() + "/mixed_layers.gpkg", tempDirPath)
+
+        ## apply update layer path
         self.assertTrue(
             QgsProjectUtils.updateLayerPath(
                 p,
                 unitTestDataPath() + "/points.shp",
-                unitTestDataPath() + "/points22.shp",
+                tempDirPath + "/points.shp",
             )
         )
-        self.assertEqual(layer1.source(), unitTestDataPath() + "/points22.shp")
+        self.assertEqual(layer1.source(), tempDirPath + "/points.shp")
         self.assertEqual(
             gpkg1.source(), unitTestDataPath() + "/mixed_layers.gpkg|layername=lines"
         )
@@ -138,7 +152,7 @@ class TestQgsProjectUtils(QgisTestCase):
             QgsProjectUtils.updateLayerPath(
                 p,
                 unitTestDataPath() + "/points.shp",
-                unitTestDataPath() + "/points22.shp",
+                tempDirPath + "/points.shp",
             )
         )
 
@@ -147,28 +161,28 @@ class TestQgsProjectUtils(QgisTestCase):
             QgsProjectUtils.updateLayerPath(
                 p,
                 unitTestDataPath() + "/mixed_layers.gpkg",
-                unitTestDataPath() + "/mixed_layers22.gpkg",
+                tempDirPath + "/mixed_layers.gpkg",
             )
         )
-        self.assertEqual(layer1.source(), unitTestDataPath() + "/points22.shp")
+        self.assertEqual(layer1.source(), tempDirPath + "/points.shp")
         self.assertEqual(
-            gpkg1.source(), unitTestDataPath() + "/mixed_layers22.gpkg|layername=lines"
+            gpkg1.source(), tempDirPath + "/mixed_layers.gpkg|layername=lines"
         )
         self.assertEqual(
-            gpkg2.source(), unitTestDataPath() + "/mixed_layers22.gpkg|layername=points"
+            gpkg2.source(), tempDirPath + "/mixed_layers.gpkg|layername=points"
         )
-        self.assertEqual(
-            rl.source(), f"GPKG:{unitTestDataPath()}/mixed_layers22.gpkg:band1"
-        )
+        self.assertEqual(rl.source(), f"GPKG:{tempDirPath}/mixed_layers.gpkg:band1")
         self.assertEqual(memory_layer.source(), old_memory_source)
         # should return false if we call again, no more matching paths
         self.assertFalse(
             QgsProjectUtils.updateLayerPath(
                 p,
                 unitTestDataPath() + "/mixed_layers.gpkg",
-                unitTestDataPath() + "/mixed_layers22.gpkg",
+                tempDirPath + "/mixed_layers.gpkg",
             )
         )
+
+        tempDir.cleanup()
 
     def test_layer_is_contained_in_group_layer(self):
         p = QgsProject()

@@ -138,7 +138,7 @@ bool QgsMapLayerUtils::updateLayerSourcePath( QgsMapLayer *layer, const QString 
   parts.insert( QStringLiteral( "path" ), newPath );
   const QString newUri = QgsProviderRegistry::instance()->encodeUri( layer->providerType(), parts );
   layer->setDataSource( newUri, layer->name(), layer->providerType() );
-  return true;
+  return layer->isValid();
 }
 
 QList<QgsMapLayer *> QgsMapLayerUtils::sortLayersByType( const QList<QgsMapLayer *> &layers, const QList<Qgis::LayerType> &order )
