@@ -62,12 +62,12 @@ void TestQgsDockWidget::testSignals()
   QApplication::setActiveWindow( w ); //required for focus events
   QgsDockWidget *d = new QgsDockWidget( w );
 
+  w->show();
+
   QSignalSpy spyClosedStateChanged( d, SIGNAL( closedStateChanged( bool ) ) );
   const QSignalSpy spyClosed( d, SIGNAL( closed() ) );
   QSignalSpy spyOpenedStateChanged( d, SIGNAL( openedStateChanged( bool ) ) );
   const QSignalSpy spyOpened( d, SIGNAL( opened() ) );
-
-  w->show();
 
   d->show();
   QCOMPARE( spyClosedStateChanged.count(), 1 );
