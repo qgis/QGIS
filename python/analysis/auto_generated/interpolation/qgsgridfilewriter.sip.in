@@ -42,22 +42,22 @@ cancellation support
 :return: 0 in case of success
 %End
 
-    void setCreateOptions( const QStringList &list );
+    void setCreationOptions( const QStringList &options );
 %Docstring
 Sets a list of data source creation options to use when creating the
 output raster file.
 
-.. seealso:: :py:func:`createOptions`
+.. seealso:: :py:func:`creationOptions`
 
 .. versionadded:: 3.44
 %End
 
-    QStringList createOptions() const;
+    QStringList creationOptions() const;
 %Docstring
 Returns the list of data source creation options which will be used when
 creating the output raster file.
 
-.. seealso:: :py:func:`setCreateOptions`
+.. seealso:: :py:func:`setCreationOptions`
 
 .. versionadded:: 3.44
 %End

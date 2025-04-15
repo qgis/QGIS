@@ -49,6 +49,7 @@ class warp(GdalAlgorithm):
     NODATA = "NODATA"
     TARGET_RESOLUTION = "TARGET_RESOLUTION"
     OPTIONS = "OPTIONS"
+    CREATION_OPTIONS = "CREATION_OPTIONS"
     RESAMPLING = "RESAMPLING"
     DATA_TYPE = "DATA_TYPE"
     TARGET_EXTENT = "TARGET_EXTENT"
@@ -133,6 +134,8 @@ class warp(GdalAlgorithm):
             )
         )
 
+        # backwards compatibility parameter
+        # TODO QGIS 4: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),
@@ -140,10 +143,25 @@ class warp(GdalAlgorithm):
             optional=True,
         )
         options_param.setFlags(
-            options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+            options_param.flags() | QgsProcessingParameterDefinition.Flag.Hidden
         )
         options_param.setMetadata({"widget_wrapper": {"widget_type": "rasteroptions"}})
         self.addParameter(options_param)
+
+        creation_options_param = QgsProcessingParameterString(
+            self.CREATION_OPTIONS,
+            self.tr("Additional creation options"),
+            defaultValue="",
+            optional=True,
+        )
+        creation_options_param.setFlags(
+            creation_options_param.flags()
+            | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+        )
+        creation_options_param.setMetadata(
+            {"widget_wrapper": {"widget_type": "rasteroptions"}}
+        )
+        self.addParameter(creation_options_param)
 
         dataType_param = QgsProcessingParameterEnum(
             self.DATA_TYPE,
@@ -302,7 +320,10 @@ class warp(GdalAlgorithm):
         arguments.append("-of")
         arguments.append(output_format)
 
-        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
+        # handle backwards compatibility parameter OPTIONS
+        if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
+            options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
 

@@ -55,7 +55,7 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
     int numberOfRows() const;
 
     //! Raster creation options
-    QStringList createOptions() const;
+    QStringList creationOptions() const;
 
     /**
      * Extract raster layer information from the current project

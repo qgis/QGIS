@@ -27,8 +27,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>919</width>
-        <height>500</height>
+        <width>913</width>
+        <height>502</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -80,9 +80,9 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>0</y>
-                 <width>504</width>
-                 <height>326</height>
+                 <y>-153</y>
+                 <width>493</width>
+                 <height>334</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_3">
@@ -233,7 +233,7 @@
                  </widget>
                 </item>
                 <item row="8" column="0" colspan="2">
-                 <widget class="QgsCollapsibleGroupBox" name="mCreateOptionsGroupBox">
+                 <widget class="QgsCollapsibleGroupBox" name="mCreationOptionsGroupBox">
                   <property name="title">
                    <string>Create Options</string>
                   </property>
@@ -260,7 +260,7 @@
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QgsRasterFormatSaveOptionsWidget" name="mCreateOptionsWidget" native="true"/>
+                    <widget class="QgsRasterFormatSaveOptionsWidget" name="mCreationOptionsWidget" native="true"/>
                    </item>
                   </layout>
                  </widget>

@@ -258,21 +258,51 @@ Returns the maximum tile height (in pixels) for tiled outputs.
 .. seealso:: :py:func:`tiledMode`
 %End
 
-    void setCreateOptions( const QStringList &list );
+
+ void setCreateOptions( const QStringList &list ) /Deprecated="Since 3.44. Use setCreationOptions() instead."/;
 %Docstring
 Sets a list of data source creation options to use when creating the
 output raster file.
 
 .. seealso:: :py:func:`createOptions`
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRasterFileWriter.setCreationOptions` instead.
 %End
 
-    QStringList createOptions() const;
+ QStringList createOptions() const /Deprecated="Since 3.44. Use creationOptions() instead."/;
 %Docstring
 Returns the list of data source creation options which will be used when
 creating the output raster file.
 
 .. seealso:: :py:func:`setCreateOptions`
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRasterFileWriter.creationOptions` instead.
 %End
+
+    QStringList creationOptions() const;
+%Docstring
+Returns the list of data source creation options which will be used when
+creating the output raster file.
+
+.. seealso:: :py:func:`setCreationOptions`
+
+.. versionadded:: 3.44
+%End
+
+    void setCreationOptions( const QStringList &options );
+%Docstring
+Sets a list of data source creation options to use when creating the
+output raster file.
+
+.. seealso:: :py:func:`creationOptions`
+
+.. versionadded:: 3.44
+%End
+
 
     void setPyramidsConfigOptions( const QStringList &list );
 %Docstring

@@ -48,6 +48,7 @@ class retile(GdalAlgorithm):
     FORMAT = "FORMAT"
     RESAMPLING = "RESAMPLING"
     OPTIONS = "OPTIONS"
+    CREATION_OPTIONS = "CREATION_OPTIONS"
     EXTRA = "EXTRA"
     DATA_TYPE = "DATA_TYPE"
     DELIMITER = "DELIMITER"
@@ -145,14 +146,35 @@ class retile(GdalAlgorithm):
                 optional=True,
             ),
         ]
+
+        # backwards compatibility parameter
+        # TODO QGIS 4: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),
             defaultValue="",
             optional=True,
         )
+        options_param.setFlags(
+            options_param.flags() | QgsProcessingParameterDefinition.Flag.Hidden
+        )
         options_param.setMetadata({"widget_wrapper": {"widget_type": "rasteroptions"}})
-        params.append(options_param)
+        self.addParameter(options_param)
+
+        creation_options_param = QgsProcessingParameterString(
+            self.CREATION_OPTIONS,
+            self.tr("Additional creation options"),
+            defaultValue="",
+            optional=True,
+        )
+        creation_options_param.setFlags(
+            creation_options_param.flags()
+            | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+        )
+        creation_options_param.setMetadata(
+            {"widget_wrapper": {"widget_type": "rasteroptions"}}
+        )
+        self.addParameter(creation_options_param)
 
         params.append(
             QgsProcessingParameterString(
@@ -253,7 +275,10 @@ class retile(GdalAlgorithm):
 
         arguments.append("-ot " + self.TYPES[data_type])
 
-        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
+        # handle backwards compatibility parameter OPTIONS
+        if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
+            options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
 

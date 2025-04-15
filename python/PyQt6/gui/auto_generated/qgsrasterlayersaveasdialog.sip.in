@@ -75,7 +75,19 @@ Name of the output layer within GeoPackage file
 %End
     QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs();
-    QStringList createOptions() const;
+
+ QStringList createOptions() const;
+%Docstring
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRasterLayerSaveAsDialog.creationOptions` instead.
+%End
+    QStringList creationOptions() const;
+%Docstring
+Raster creation options set for the output layer.
+
+.. versionadded:: 3.44
+%End
     QgsRectangle outputRectangle() const;
     QgsRasterRangeList noData() const;
 
