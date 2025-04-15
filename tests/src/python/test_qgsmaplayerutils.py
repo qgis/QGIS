@@ -142,14 +142,19 @@ class TestQgsMapLayerUtils(QgisTestCase):
         self.assertFalse(QgsMapLayerUtils.updateLayerSourcePath(None, ""))
         self.assertFalse(QgsMapLayerUtils.updateLayerSourcePath(None, "aaaaa"))
 
+        ## copy files to temp directory
+        tempDir = tempfile.TemporaryDirectory()
+        tempDirPath = Path(tempDir.name)
+        for file in glob.glob(unitTestDataPath() + "/points.*"):
+            shutil.copy(file, tempDirPath)
+        shutil.copy(unitTestDataPath() + "/mixed_layers.gpkg", tempDirPath)
+
         # shapefile
         layer1 = QgsVectorLayer(unitTestDataPath() + "/points.shp", "l1")
         self.assertTrue(
-            QgsMapLayerUtils.updateLayerSourcePath(
-                layer1, unitTestDataPath() + "/points22.shp"
-            )
+            QgsMapLayerUtils.updateLayerSourcePath(layer1, tempDirPath + "/points.shp")
         )
-        self.assertEqual(layer1.source(), unitTestDataPath() + "/points22.shp")
+        self.assertEqual(layer1.source(), tempDirPath + "/points.shp")
 
         # geopackage with layers
         layer1 = QgsVectorLayer(
@@ -157,35 +162,33 @@ class TestQgsMapLayerUtils(QgisTestCase):
         )
         self.assertTrue(
             QgsMapLayerUtils.updateLayerSourcePath(
-                layer1, unitTestDataPath() + "/mixed_layers22.gpkg"
+                layer1, tempDirPath + "/mixed_layers.gpkg"
             )
         )
         self.assertEqual(
-            layer1.source(), unitTestDataPath() + "/mixed_layers22.gpkg|layername=lines"
+            layer1.source(), tempDirPath + "/mixed_layers.gpkg|layername=lines"
         )
         layer2 = QgsVectorLayer(
             unitTestDataPath() + "/mixed_layers.gpkg|layername=points", "l1"
         )
         self.assertTrue(
             QgsMapLayerUtils.updateLayerSourcePath(
-                layer2, unitTestDataPath() + "/mixed_layers22.gpkg"
+                layer2, tempDirPath + "/mixed_layers.gpkg"
             )
         )
         self.assertEqual(
             layer2.source(),
-            unitTestDataPath() + "/mixed_layers22.gpkg|layername=points",
+            tempDirPath + "/mixed_layers.gpkg|layername=points",
         )
 
         # raster layer from gpkg
         rl = QgsRasterLayer(f"GPKG:{unitTestDataPath()}/mixed_layers.gpkg:band1")
         self.assertTrue(
             QgsMapLayerUtils.updateLayerSourcePath(
-                rl, unitTestDataPath() + "/mixed_layers22.gpkg"
+                rl, tempDirPath + "/mixed_layers.gpkg"
             )
         )
-        self.assertEqual(
-            rl.source(), f"GPKG:{unitTestDataPath()}/mixed_layers22.gpkg:band1"
-        )
+        self.assertEqual(rl.source(), f"GPKG:{tempDirPath}/mixed_layers.gpkg:band1")
 
         # a layer from a provider which doesn't use file based paths
         layer = QgsVectorLayer("Point?field=x:string", "my layer", "memory")
@@ -193,10 +196,12 @@ class TestQgsMapLayerUtils(QgisTestCase):
         self.assertTrue(layer.isValid())
         self.assertFalse(
             QgsMapLayerUtils.updateLayerSourcePath(
-                layer, unitTestDataPath() + "/mixed_layers22.gpkg"
+                layer, tempDirPath + "/mixed_layers.gpkg"
             )
         )
         self.assertEqual(layer.source(), old_source)
+
+        tempDir.cleanup()
 
     def test_sort_layers_by_type(self):
         vl1 = QgsVectorLayer("Point?field=x:string", "vector 1", "memory")
