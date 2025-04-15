@@ -32,7 +32,7 @@
 #include "qgscurvepolygon.h"
 #include "qgsmultisurface.h"
 
-QgsTinInterpolator::QgsTinInterpolator( const QList<LayerData> &inputData, TinInterpolation interpolation, QgsFeedback *feedback )
+QgsTinInterpolator::QgsTinInterpolator( const QList<LayerData> &inputData, QgsTinInterpolator::TinInterpolation interpolation, QgsFeedback *feedback )
   : QgsInterpolator( inputData )
   , mIsInitialized( false )
   , mFeedback( feedback )
@@ -80,7 +80,7 @@ void QgsTinInterpolator::setTriangulationSink( QgsFeatureSink *sink )
 void QgsTinInterpolator::initialize()
 {
   QgsDualEdgeTriangulation *dualEdgeTriangulation = new QgsDualEdgeTriangulation( 100000 );
-  if ( mInterpolation == CloughTocher )
+  if ( mInterpolation == QgsTinInterpolator::TinInterpolation::CloughTocher )
   {
     NormVecDecorator *dec = new NormVecDecorator();
     dec->addTriangulation( dualEdgeTriangulation );
@@ -115,12 +115,12 @@ void QgsTinInterpolator::initialize()
       QgsAttributeList attList;
       switch ( layer.valueSource )
       {
-        case QgsInterpolator::ValueAttribute:
+        case QgsInterpolator::ValueSource::Attribute:
           attList.push_back( layer.interpolationAttribute );
           break;
 
-        case QgsInterpolator::ValueM:
-        case QgsInterpolator::ValueZ:
+        case QgsInterpolator::ValueSource::M:
+        case QgsInterpolator::ValueSource::Z:
           break;
       }
 
@@ -143,7 +143,7 @@ void QgsTinInterpolator::initialize()
     }
   }
 
-  if ( mInterpolation == CloughTocher )
+  if ( mInterpolation == QgsTinInterpolator::TinInterpolation::CloughTocher )
   {
     NormVecDecorator *dec = dynamic_cast<NormVecDecorator *>( mTriangulation );
     if ( dec )
@@ -181,7 +181,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
   bool attributeConversionOk = false;
   switch ( source )
   {
-    case ValueAttribute:
+    case QgsTinInterpolator::ValueSource::Attribute:
     {
       QVariant attributeVariant = f.attribute( attr );
       if ( QgsVariantUtils::isNull( attributeVariant ) ) //attribute not found, something must be wrong (e.g. NULL value)
@@ -196,13 +196,13 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
       break;
     }
 
-    case ValueM:
+    case QgsTinInterpolator::ValueSource::M:
       if ( !g.constGet()->isMeasure() )
         return 3;
       else
         break;
 
-    case ValueZ:
+    case QgsTinInterpolator::ValueSource::Z:
       if ( !g.constGet()->is3D() )
         return 3;
       else
@@ -212,15 +212,15 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
 
   switch ( type )
   {
-    case SourcePoints:
+    case QgsTinInterpolator::SourceType::Points:
     {
       if ( addPointsFromGeometry( g, source, attributeValue ) != 0 )
         return -1;
       break;
     }
 
-    case SourceBreakLines:
-    case SourceStructureLines:
+    case QgsTinInterpolator::SourceType::BreakLines:
+    case QgsTinInterpolator::SourceType::StructureLines:
     {
       switch ( QgsWkbTypes::geometryType( g.wkbType() ) )
       {
@@ -293,21 +293,21 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
             {
               switch ( source )
               {
-                case ValueAttribute:
+                case QgsTinInterpolator::ValueSource::Attribute:
                   if ( point.is3D() )
                     point.setZ( attributeValue );
                   else
                     point.addZValue( attributeValue );
                   break;
 
-                case ValueM:
+                case QgsTinInterpolator::ValueSource::M:
                   if ( point.is3D() )
                     point.setZ( point.m() );
                   else
                     point.addZValue( point.m() );
                   break;
 
-                case ValueZ:
+                case QgsTinInterpolator::ValueSource::Z:
                   break;
               }
             }
@@ -336,15 +336,15 @@ int QgsTinInterpolator::addPointsFromGeometry( const QgsGeometry &g, ValueSource
     double z = 0;
     switch ( source )
     {
-      case ValueAttribute:
+      case QgsTinInterpolator::ValueSource::Attribute:
         z = attributeValue;
         break;
 
-      case ValueZ:
+      case QgsTinInterpolator::ValueSource::Z:
         z = p.z();
         break;
 
-      case ValueM:
+      case QgsTinInterpolator::ValueSource::M:
         z = p.m();
         break;
     }

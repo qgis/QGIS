@@ -6174,7 +6174,7 @@ void QgisApp::showRasterCalculator()
     QgsRasterCalculator::Result res = rc.processCalculation( &feedback );
     switch ( res )
     {
-      case QgsRasterCalculator::Success:
+      case QgsRasterCalculator::Result::Success:
         if ( d.addLayerToProject() )
         {
           addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QStringLiteral( "gdal" ) );
@@ -6182,30 +6182,30 @@ void QgisApp::showRasterCalculator()
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "Calculation complete." ), Qgis::MessageLevel::Success );
         break;
 
-      case QgsRasterCalculator::CreateOutputError:
+      case QgsRasterCalculator::Result::CreateOutputError:
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "Could not create destination file." ), Qgis::MessageLevel::Critical );
         break;
 
-      case QgsRasterCalculator::InputLayerError:
+      case QgsRasterCalculator::Result::InputLayerError:
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "Could not read input layer." ), Qgis::MessageLevel::Critical );
         break;
 
-      case QgsRasterCalculator::Canceled:
+      case QgsRasterCalculator::Result::Canceled:
         break;
 
-      case QgsRasterCalculator::ParserError:
+      case QgsRasterCalculator::Result::ParserError:
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "Could not parse raster formula." ), Qgis::MessageLevel::Critical );
         break;
 
-      case QgsRasterCalculator::MemoryError:
+      case QgsRasterCalculator::Result::MemoryError:
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "Insufficient memory available for operation." ), Qgis::MessageLevel::Critical );
         break;
 
-      case QgsRasterCalculator::BandError:
+      case QgsRasterCalculator::Result::BandError:
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "Invalid band number for input layer." ), Qgis::MessageLevel::Critical );
         break;
 
-      case QgsRasterCalculator::CalculationError:
+      case QgsRasterCalculator::Result::CalculationError:
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "An error occurred while performing the calculation." ), Qgis::MessageLevel::Critical );
         break;
     }

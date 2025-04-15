@@ -22,22 +22,22 @@ layer.
 #include "qgskde.h"
 %End
   public:
-    enum KernelShape
+    enum class KernelShape
     {
-      KernelQuartic,
-      KernelTriangular,
-      KernelUniform,
-      KernelTriweight,
-      KernelEpanechnikov,
+      Quartic,
+      Triangular,
+      Uniform,
+      Triweight,
+      Epanechnikov,
     };
 
-    enum OutputValues
+    enum class OutputValues
     {
-      OutputRaw,
-      OutputScaled,
+      Raw,
+      Scaled,
     };
 
-    enum Result
+    enum class Result
     {
       Success,
       DriverError,
