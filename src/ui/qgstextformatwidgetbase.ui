@@ -326,7 +326,7 @@
              <enum>QTabWidget::Rounded</enum>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>8</number>
             </property>
             <property name="iconSize">
              <size>
@@ -4060,9 +4060,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-627</y>
+                       <y>-718</y>
                        <width>578</width>
-                       <height>1884</height>
+                       <height>1963</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5323,6 +5323,56 @@ font-style: italic;</string>
                             <bool>true</bool>
                            </property>
                           </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QgsCollapsibleGroupBox" name="mObstaclesGroupBox_2">
+                        <property name="title">
+                         <string>Duplicate Labels</string>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_24">
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_33" stretch="0,0,0,0">
+                           <item>
+                            <widget class="QCheckBox" name="mChkNoDuplicates">
+                             <property name="enabled">
+                              <bool>true</bool>
+                             </property>
+                             <property name="text">
+                              <string>Avoid duplicate labels</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QgsPropertyOverrideButton" name="mNoDuplicatesDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="horizontalSpacer_24">
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>40</width>
+                               <height>20</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                           <item>
+                            <widget class="QPushButton" name="mDuplicateSettingsButton">
+                             <property name="text">
+                              <string>Settings…</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
                          </item>
                         </layout>
                        </widget>
@@ -7159,6 +7209,9 @@ This limit is inclusive, that means the label will be displayed on this scale.</
   <tabstop>mLabelMarginSpinBox</tabstop>
   <tabstop>mLabelMarginDDBtn</tabstop>
   <tabstop>mLabelMarginUnitWidget</tabstop>
+  <tabstop>mChkNoDuplicates</tabstop>
+  <tabstop>mNoDuplicatesDDBtn</tabstop>
+  <tabstop>mDuplicateSettingsButton</tabstop>
   <tabstop>mMaxCharAngleInDSpinBox</tabstop>
   <tabstop>mMaxCharAngleOutDSpinBox</tabstop>
   <tabstop>mMaxCharAngleDDBtn</tabstop>
@@ -7218,9 +7271,6 @@ This limit is inclusive, that means the label will be displayed on this scale.</
   <tabstop>mMaximumDistanceSpnBx</tabstop>
   <tabstop>mMaximumDistanceDDBtn</tabstop>
   <tabstop>mPrioritizationComboBox</tabstop>
-  <tabstop>mOverrunDistanceUnitWidget_2</tabstop>
-  <tabstop>mOverrunDistanceSpinBox_2</tabstop>
-  <tabstop>mOverrunDistanceDDBtn_2</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

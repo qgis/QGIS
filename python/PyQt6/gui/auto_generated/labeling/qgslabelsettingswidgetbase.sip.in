@@ -23,12 +23,12 @@ properties, such as label placement settings.
 #include "qgslabelsettingswidgetbase.h"
 %End
   public:
-    QgsLabelSettingsWidgetBase( QWidget *parent /TransferThis/ = 0, QgsVectorLayer *vl = 0 );
+    QgsLabelSettingsWidgetBase( QWidget *parent /TransferThis/ = 0, QgsMapLayer *vl = 0 );
 %Docstring
 Constructor for QgsLabelSettingsWidgetBase.
 
 :param parent: parent widget
-:param vl: associated vector layer
+:param vl: associated map layer
 %End
 
     virtual void setContext( const QgsSymbolWidgetContext &context );

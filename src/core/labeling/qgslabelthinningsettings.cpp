@@ -26,4 +26,14 @@ void QgsLabelThinningSettings::updateDataDefinedProperties( const QgsPropertyCol
     context.setOriginalValueVariable( mLabelMarginDistance );
     mLabelMarginDistance = properties.valueAsDouble( QgsPalLayerSettings::Property::LabelMarginDistance, context, mLabelMarginDistance );
   }
+  if ( properties.isActive( QgsPalLayerSettings::Property::RemoveDuplicateLabels ) )
+  {
+    context.setOriginalValueVariable( mAllowDuplicateRemoval );
+    mAllowDuplicateRemoval = properties.valueAsBool( QgsPalLayerSettings::Property::RemoveDuplicateLabels, context, mAllowDuplicateRemoval );
+  }
+  if ( properties.isActive( QgsPalLayerSettings::Property::RemoveDuplicateLabelDistance ) )
+  {
+    context.setOriginalValueVariable( mMinDistanceToDuplicate );
+    mMinDistanceToDuplicate = properties.valueAsDouble( QgsPalLayerSettings::Property::RemoveDuplicateLabelDistance, context, mMinDistanceToDuplicate );
+  }
 }

@@ -30,6 +30,7 @@
 #include "callouts/qgscalloutwidget.h"
 #include "qgslabelobstaclesettingswidget.h"
 #include "qgslabellineanchorwidget.h"
+#include "qgslabelremoveduplicatesettingswidget.h"
 #include "qgsprojectstylesettings.h"
 #include "qgsgui.h"
 #include "qgsmeshlayer.h"
@@ -231,6 +232,48 @@ void QgsLabelingGui::showLineAnchorSettings()
   }
 }
 
+void QgsLabelingGui::showDuplicateSettings()
+{
+  QgsExpressionContext context = createExpressionContext();
+
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  symbolContext.setMapCanvas( mMapCanvas );
+
+  QgsLabelRemoveDuplicatesSettingsWidget *widget = new QgsLabelRemoveDuplicatesSettingsWidget( nullptr, mLayer );
+  widget->setDataDefinedProperties( mDataDefinedProperties );
+  widget->setSettings( mThinningSettings );
+  auto vectorLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+  widget->setGeometryType( vectorLayer ? vectorLayer->geometryType() : Qgis::GeometryType::Unknown );
+  widget->setContext( symbolContext );
+
+  auto applySettings = [=] {
+    mThinningSettings = widget->settings();
+    const QgsPropertyCollection obstacleDataDefinedProperties = widget->dataDefinedProperties();
+    widget->updateDataDefinedProperties( mDataDefinedProperties );
+    emit widgetChanged();
+  };
+
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [=] {
+      applySettings();
+    } );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsLabelSettingsWidgetDialog dialog( widget, this );
+    if ( dialog.exec() )
+    {
+      applySettings();
+    }
+    // reactivate button's window
+    activateWindow();
+  }
+}
+
 QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, Qgis::GeometryType geomType )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, layer )
   , mMode( NoLabels )
@@ -324,6 +367,7 @@ void QgsLabelingGui::init()
   connect( mGeometryGeneratorType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::validateGeometryGeneratorExpression );
   connect( mObstacleSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingGui::showObstacleSettings );
   connect( mLineAnchorSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingGui::showLineAnchorSettings );
+  connect( mDuplicateSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingGui::showDuplicateSettings );
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
@@ -446,14 +490,19 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mOverrunDistanceUnitWidget->setUnit( mSettings.lineSettings().overrunDistanceUnit() );
   mOverrunDistanceUnitWidget->setMapUnitScale( mSettings.lineSettings().overrunDistanceMapUnitScale() );
 
-  mLabelMarginSpinBox->setValue( mSettings.thinningSettings().labelMarginDistance() );
-  mLabelMarginUnitWidget->setUnit( mSettings.thinningSettings().labelMarginDistanceUnit() );
-  mLabelMarginUnitWidget->setMapUnitScale( mSettings.thinningSettings().labelMarginDistanceMapUnitScale() );
+  mThinningSettings = mSettings.thinningSettings();
+
+  mLabelMarginSpinBox->setValue( mThinningSettings.labelMarginDistance() );
+  mLabelMarginUnitWidget->setUnit( mThinningSettings.labelMarginDistanceUnit() );
+  mLabelMarginUnitWidget->setMapUnitScale( mThinningSettings.labelMarginDistanceMapUnitScale() );
 
   mPrioritySlider->setValue( mSettings.priority );
   mChkNoObstacle->setChecked( mSettings.obstacleSettings().isObstacle() );
 
   mObstacleSettings = mSettings.obstacleSettings();
+
+  mChkNoDuplicates->setChecked( mThinningSettings.allowDuplicateRemoval() );
+
   mLineSettings = mSettings.lineSettings();
 
   chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
@@ -463,9 +512,9 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mPrioritizationComboBox->setCurrentIndex( mPrioritizationComboBox->findData( QVariant::fromValue( mSettings.placementSettings().prioritization() ) ) );
 
   chkMergeLines->setChecked( mSettings.lineSettings().mergeLines() );
-  mMinSizeSpinBox->setValue( mSettings.thinningSettings().minimumFeatureSize() );
-  mLimitLabelChkBox->setChecked( mSettings.thinningSettings().limitNumberOfLabelsEnabled() );
-  mLimitLabelSpinBox->setValue( mSettings.thinningSettings().maximumNumberLabels() );
+  mMinSizeSpinBox->setValue( mThinningSettings.minimumFeatureSize() );
+  mLimitLabelChkBox->setChecked( mThinningSettings.limitNumberOfLabelsEnabled() );
+  mLimitLabelSpinBox->setValue( mThinningSettings.maximumNumberLabels() );
 
   // direction symbol(s)
   mDirectSymbChkBx->setChecked( mSettings.lineSettings().addDirectionSymbol() );
@@ -632,9 +681,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.lineSettings().setOverrunDistanceUnit( mOverrunDistanceUnitWidget->unit() );
   lyr.lineSettings().setOverrunDistanceMapUnitScale( mOverrunDistanceUnitWidget->getMapUnitScale() );
 
-  lyr.thinningSettings().setLabelMarginDistance( mLabelMarginSpinBox->value() );
-  lyr.thinningSettings().setLabelMarginDistanceUnit( mLabelMarginUnitWidget->unit() );
-  lyr.thinningSettings().setLabelMarginDistanceMapUnitScale( mLabelMarginUnitWidget->getMapUnitScale() );
+  mThinningSettings.setLabelMarginDistance( mLabelMarginSpinBox->value() );
+  mThinningSettings.setLabelMarginDistanceUnit( mLabelMarginUnitWidget->unit() );
+  mThinningSettings.setLabelMarginDistanceMapUnitScale( mLabelMarginUnitWidget->getMapUnitScale() );
 
   lyr.priority = mPrioritySlider->value();
 
@@ -645,6 +694,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.lineSettings().setAnchorType( mLineSettings.anchorType() );
   lyr.lineSettings().setAnchorClipping( mLineSettings.anchorClipping() );
   lyr.lineSettings().setAnchorTextPoint( mLineSettings.anchorTextPoint() );
+
+  mThinningSettings.setAllowDuplicateRemoval( mChkNoDuplicates->isChecked() );
 
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.placementSettings().setOverlapHandling( static_cast<Qgis::LabelOverlapHandling>( mComboOverlapHandling->currentData().toInt() ) );
@@ -684,10 +735,12 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   // lyr.maxCurvedCharAngleOut must be negative, but it is shown as positive spinbox in GUI
   lyr.maxCurvedCharAngleOut = -mMaxCharAngleOutDSpinBox->value();
 
+  mThinningSettings.setMinimumFeatureSize( mMinSizeSpinBox->value() );
+  mThinningSettings.setLimitNumberLabelsEnabled( mLimitLabelChkBox->isChecked() );
+  mThinningSettings.setMaximumNumberLabels( mLimitLabelSpinBox->value() );
 
-  lyr.thinningSettings().setMinimumFeatureSize( mMinSizeSpinBox->value() );
-  lyr.thinningSettings().setLimitNumberLabelsEnabled( mLimitLabelChkBox->isChecked() );
-  lyr.thinningSettings().setMaximumNumberLabels( mLimitLabelSpinBox->value() );
+  lyr.setThinningSettings( mThinningSettings );
+
   lyr.fontLimitPixelSize = mFontLimitPixelChkBox->isChecked();
   lyr.fontMinPixelSize = mFontMinPixelSpinBox->value();
   lyr.fontMaxPixelSize = mFontMaxPixelSpinBox->value();

@@ -357,6 +357,12 @@ QgsPalLayerSettings.OverlapHandling.__doc__ = "Overlap handling technique \n.. v
 QgsPalLayerSettings.LabelMarginDistance = QgsPalLayerSettings.Property.LabelMarginDistance
 QgsPalLayerSettings.LabelMarginDistance.is_monkey_patched = True
 QgsPalLayerSettings.LabelMarginDistance.__doc__ = "Minimum distance from labels for this feature to other labels \n.. versionadded:: 3.44"
+QgsPalLayerSettings.RemoveDuplicateLabels = QgsPalLayerSettings.Property.RemoveDuplicateLabels
+QgsPalLayerSettings.RemoveDuplicateLabels.is_monkey_patched = True
+QgsPalLayerSettings.RemoveDuplicateLabels.__doc__ = "Whether this feature can cause removal of duplicate labels \n.. versionadded:: 3.44"
+QgsPalLayerSettings.RemoveDuplicateLabelDistance = QgsPalLayerSettings.Property.RemoveDuplicateLabelDistance
+QgsPalLayerSettings.RemoveDuplicateLabelDistance.is_monkey_patched = True
+QgsPalLayerSettings.RemoveDuplicateLabelDistance.__doc__ = "Minimum distance from labels for this feature to other labels with duplicate text \n.. versionadded:: 3.44"
 QgsPalLayerSettings.Show = QgsPalLayerSettings.Property.Show
 QgsPalLayerSettings.Show.is_monkey_patched = True
 QgsPalLayerSettings.Show.__doc__ = ""
@@ -505,6 +511,14 @@ QgsPalLayerSettings.Property.__doc__ = """Data definable properties.
   .. versionadded:: 3.26
 
 * ``LabelMarginDistance``: Minimum distance from labels for this feature to other labels
+
+  .. versionadded:: 3.44
+
+* ``RemoveDuplicateLabels``: Whether this feature can cause removal of duplicate labels
+
+  .. versionadded:: 3.44
+
+* ``RemoveDuplicateLabelDistance``: Minimum distance from labels for this feature to other labels with duplicate text
 
   .. versionadded:: 3.44
 
