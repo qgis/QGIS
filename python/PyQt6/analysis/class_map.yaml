@@ -201,9 +201,9 @@ QgsGraphVertex.incomingEdges: src/analysis/network/qgsgraph.h#L103
 QgsGraphVertex.outgoingEdges: src/analysis/network/qgsgraph.h#L109
 QgsGraphVertex.point: src/analysis/network/qgsgraph.h#L114
 QgsGraphVertex: src/analysis/network/qgsgraph.h#L88
-QgsGridFileWriter.createOptions: src/analysis/interpolation/qgsgridfilewriter.h#L70
+QgsGridFileWriter.creationOptions: src/analysis/interpolation/qgsgridfilewriter.h#L70
 QgsGridFileWriter.noDataValue: src/analysis/interpolation/qgsgridfilewriter.h#L86
-QgsGridFileWriter.setCreateOptions: src/analysis/interpolation/qgsgridfilewriter.h#L62
+QgsGridFileWriter.setCreationOptions: src/analysis/interpolation/qgsgridfilewriter.h#L62
 QgsGridFileWriter.setNoDataValue: src/analysis/interpolation/qgsgridfilewriter.h#L78
 QgsGridFileWriter.writeFile: src/analysis/interpolation/qgsgridfilewriter.h#L54
 QgsGridFileWriter: src/analysis/interpolation/qgsgridfilewriter.h#L35
@@ -295,11 +295,11 @@ QgsRasterCalcNode.setRight: src/analysis/raster/qgsrastercalcnode.h#L108
 QgsRasterCalcNode.toString: src/analysis/raster/qgsrastercalcnode.h#L125
 QgsRasterCalcNode.type: src/analysis/raster/qgsrastercalcnode.h#L96
 QgsRasterCalcNode: src/analysis/raster/qgsrastercalcnode.h#L38
-QgsRasterCalculator.createOptions: src/analysis/raster/qgsrastercalculator.h#L177
+QgsRasterCalculator.creationOptions: src/analysis/raster/qgsrastercalculator.h#L177
 QgsRasterCalculator.lastError: src/analysis/raster/qgsrastercalculator.h#L161
 QgsRasterCalculator.noDataValue: src/analysis/raster/qgsrastercalculator.h#L193
 QgsRasterCalculator.processCalculation: src/analysis/raster/qgsrastercalculator.h#L155
-QgsRasterCalculator.setCreateOptions: src/analysis/raster/qgsrastercalculator.h#L169
+QgsRasterCalculator.setCreationOptions: src/analysis/raster/qgsrastercalculator.h#L169
 QgsRasterCalculator.setNoDataValue: src/analysis/raster/qgsrastercalculator.h#L185
 QgsRasterCalculator: src/analysis/raster/qgsrastercalculator.h#L74
 QgsRasterCalculatorEntry: src/analysis/raster/qgsrastercalculator.h#L39
