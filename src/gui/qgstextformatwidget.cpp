@@ -590,7 +590,8 @@ void QgsTextFormatWidget::initWidget()
           << mHtmlFormattingCheckBox
           << mPrioritizationComboBox
           << mTabDistanceUnitWidget
-          << mTabStopDistanceSpin;
+          << mTabStopDistanceSpin
+          << mChkNoDuplicates;
 
   connectValueChanged( widgets );
 
@@ -992,6 +993,8 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mCalloutDrawDDBtn, QgsPalLayerSettings::Property::CalloutDraw );
 
   registerDataDefinedButton( mLabelAllPartsDDBtn, QgsPalLayerSettings::Property::LabelAllParts );
+
+  registerDataDefinedButton( mNoDuplicatesDDBtn, QgsPalLayerSettings::Property::RemoveDuplicateLabels );
 }
 
 void QgsTextFormatWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key )

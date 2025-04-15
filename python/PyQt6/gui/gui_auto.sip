@@ -369,6 +369,7 @@
 %Include auto_generated/labeling/qgslabellineanchorwidget.sip
 %Include auto_generated/labeling/qgslabelobstaclesettingswidget.sip
 %Include auto_generated/labeling/qgslabelsettingswidgetbase.sip
+%Include auto_generated/labeling/qgslabelremoveduplicatesettingswidget.sip
 %Include auto_generated/labeling/qgstabpositionwidget.sip
 %Include auto_generated/layertree/qgscustomlayerorderwidget.sip
 %Include auto_generated/layertree/qgslayertreeembeddedconfigwidget.sip

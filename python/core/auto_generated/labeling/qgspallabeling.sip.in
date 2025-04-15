@@ -165,6 +165,8 @@ Contains settings for how a map layer will be labeled.
       OverlapHandling,
 
       LabelMarginDistance,
+      RemoveDuplicateLabels,
+      RemoveDuplicateLabelDistance,
 
       // (data defined only)
       Show,
