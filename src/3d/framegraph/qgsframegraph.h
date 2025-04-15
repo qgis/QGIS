@@ -84,9 +84,6 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Returns the main camera
     Qt3DRender::QCamera *mainCamera() { return mMainCamera; }
 
-    //! Returns the root entity
-    Qt3DCore::QEntity *rootEntity() { return mRootEntity; }
-
     //! Returns the postprocessing entity
     QgsPostprocessingEntity *postprocessingEntity() { return mPostprocessingEntity; }
 
