@@ -125,7 +125,7 @@ void Problem::reduce()
 
                 return true;
               } );
-              lp2->removeFromIndex( mAllCandidatesIndex );
+              lp2->removeFromIndex( mAllCandidatesIndex, pal );
             }
 
             mCandidateCountForFeature[feature] = candidateIndex + 1;
@@ -231,7 +231,7 @@ void Problem::init_sol_falp()
       ignoreLabel( conflict, list, mAllCandidatesIndex );
     }
 
-    mActiveCandidatesIndex.insert( lp, lp->outerBoundingBox() );
+    lp->insertIntoIndex( mActiveCandidatesIndex, pal );
   }
 
   if ( mDisplayAll )
@@ -268,7 +268,7 @@ void Problem::init_sol_falp()
         }
         mSol.activeLabelIds[i] = retainedLabel->getId();
 
-        retainedLabel->insertIntoIndex( mActiveCandidatesIndex );
+        retainedLabel->insertIntoIndex( mActiveCandidatesIndex, pal );
 
       }
     }
@@ -523,12 +523,12 @@ inline Chain *Problem::chain( int seed )
 
       if ( et->old_label != -1 )
       {
-        mLabelPositions.at( et->old_label )->removeFromIndex( mActiveCandidatesIndex );
+        mLabelPositions.at( et->old_label )->removeFromIndex( mActiveCandidatesIndex, pal );
       }
 
       if ( et->new_label != -1 )
       {
-        mLabelPositions.at( et->new_label )->insertIntoIndex( mActiveCandidatesIndex );
+        mLabelPositions.at( et->new_label )->insertIntoIndex( mActiveCandidatesIndex, pal );
       }
 
 
@@ -545,12 +545,12 @@ inline Chain *Problem::chain( int seed )
 
     if ( et->new_label != -1 )
     {
-      mLabelPositions.at( et->new_label )->removeFromIndex( mActiveCandidatesIndex );
+      mLabelPositions.at( et->new_label )->removeFromIndex( mActiveCandidatesIndex, pal );
     }
 
     if ( et->old_label != -1 )
     {
-      mLabelPositions.at( et->old_label )->insertIntoIndex( mActiveCandidatesIndex );
+      mLabelPositions.at( et->old_label )->insertIntoIndex( mActiveCandidatesIndex, pal );
     }
   }
 
@@ -605,7 +605,7 @@ void Problem::chainSearch( QgsRenderContext & )
         if ( mSol.activeLabelIds[fid] >= 0 )
         {
           LabelPosition *old = mLabelPositions[ mSol.activeLabelIds[fid] ].get();
-          old->removeFromIndex( mActiveCandidatesIndex );
+          old->removeFromIndex( mActiveCandidatesIndex, pal );
 
           const QgsRectangle searchBounds = old->boundingBoxForCandidateConflicts( pal );
           mAllCandidatesIndex.intersects( searchBounds, [&ok, old, this]( const LabelPosition * lp ) ->bool
@@ -623,7 +623,7 @@ void Problem::chainSearch( QgsRenderContext & )
 
         if ( mSol.activeLabelIds[fid] >= 0 )
         {
-          mLabelPositions.at( lid )->insertIntoIndex( mActiveCandidatesIndex );
+          mLabelPositions.at( lid )->insertIntoIndex( mActiveCandidatesIndex, pal );
         }
 
         ok[fid] = false;

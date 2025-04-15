@@ -266,7 +266,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       {
         for ( std::unique_ptr< LabelPosition > &candidate : candidates )
         {
-          candidate->insertIntoIndex( allCandidatesFirstRound );
+          candidate->insertIntoIndex( allCandidatesFirstRound, this );
           candidate->setGlobalId( mNextCandidateId++ );
         }
 
@@ -290,7 +290,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
         if ( featurePart->feature()->allowDegradedPlacement() )
         {
           // if we are allowing degraded placements, we throw the default candidate in too
-          unplacedPosition->insertIntoIndex( allCandidatesFirstRound );
+          unplacedPosition->insertIntoIndex( allCandidatesFirstRound, this );
           unplacedPosition->setGlobalId( mNextCandidateId++ );
           candidates.emplace_back( std::move( unplacedPosition ) );
 
@@ -562,7 +562,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       // add all candidates into a rtree (to speed up conflicts searching)
       for ( std::unique_ptr< LabelPosition > &candidate : feat->candidates )
       {
-        candidate->insertIntoIndex( prob->allCandidatesIndex() );
+        candidate->insertIntoIndex( prob->allCandidatesIndex(), this );
         candidate->setProblemIds( static_cast< int >( featureIndex ), currentLabelPositionIndex++ );
       }
       features.emplace_back( std::move( feat ) );

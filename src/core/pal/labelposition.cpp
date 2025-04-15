@@ -512,14 +512,14 @@ void LabelPosition::setHasHardObstacleConflict( bool conflicts )
     mNextPart->setHasHardObstacleConflict( conflicts );
 }
 
-void LabelPosition::removeFromIndex( PalRtree<LabelPosition> &index )
+void LabelPosition::removeFromIndex( PalRtree<LabelPosition> &index, Pal *pal )
 {
-  index.remove( this, outerBoundingBox() );
+  index.remove( this, boundingBoxForCandidateConflicts( pal ) );
 }
 
-void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index )
+void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index, Pal *pal )
 {
-  index.insert( this, outerBoundingBox() );
+  index.insert( this, boundingBoxForCandidateConflicts( pal ) );
 }
 
 const GEOSGeometry *LabelPosition::multiPartGeom() const
