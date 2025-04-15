@@ -1,0 +1,59 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/labeling/qgslabelremoveduplicatesettingswidget.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsLabelRemoveDuplicatesSettingsWidget : QgsLabelSettingsWidgetBase
+{
+%Docstring(signature="appended")
+A widget for customising label duplicate removal settings.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgslabelremoveduplicatesettingswidget.h"
+%End
+  public:
+    QgsLabelRemoveDuplicatesSettingsWidget( QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
+%Docstring
+Constructor for QgsLabelRemoveDuplicatesSettingsWidget.
+
+:param parent: parent widget
+:param layer: associated layer
+%End
+
+    void setSettings( const QgsLabelThinningSettings &settings );
+%Docstring
+Sets the thinning ``settings`` to show in the widget.
+
+.. seealso:: :py:func:`settings`
+%End
+
+    QgsLabelThinningSettings settings() const;
+%Docstring
+Returns the thinning settings defined by the widget.
+
+.. seealso:: :py:func:`setSettings`
+%End
+
+    virtual void setGeometryType( Qgis::GeometryType type );
+
+
+    virtual void updateDataDefinedProperties( QgsPropertyCollection &properties );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/labeling/qgslabelremoveduplicatesettingswidget.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
