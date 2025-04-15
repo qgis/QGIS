@@ -1538,7 +1538,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc, const QB
     QgsFields fieldsGMLAS;
     Qgis::WkbType geomTypeGMLAS;
     QString errorMsgGMLAS;
-    if ( readAttributesFromSchemaWithGMLAS( response, prefixedTypename, geometryAttributeGMLAS, fieldsGMLAS, geomTypeGMLAS, geometryMaybeMissing, errorMsgGMLAS ) )
+    if ( readAttributesFromSchemaWithGMLAS( response, prefixedTypename, geometryAttributeGMLAS, fieldsGMLAS, geomTypeGMLAS, geometryMaybeMissing, errorMsgGMLAS ) && ( fields.size() == 0 || fields.size() == fieldsGMLAS.size() ) )
     {
       geometryAttribute = geometryAttributeGMLAS;
       fields = fieldsGMLAS;
