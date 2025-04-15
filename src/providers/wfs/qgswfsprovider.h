@@ -208,13 +208,13 @@ class QgsWFSProvider final : public QgsVectorDataProvider
      * The method gives back the name of
      * the geometry attribute and the thematic attributes with their types.
     */
-    bool describeFeatureType( QString &geometryAttribute, QgsFields &fields, Qgis::WkbType &geomType, bool &geometryMaybeMissing );
+    bool describeFeatureType( QString &geometryAttribute, QgsFields &fields, QgsFields &fieldsWithoutGMLAS, Qgis::WkbType &geomType, bool &geometryMaybeMissing );
 
     /**
      * For a given typename, reads the name of the geometry attribute, the
      * thematic attributes and their types from a dom document. Returns true in case of success.
     */
-    bool readAttributesFromSchema( QDomDocument &schemaDoc, const QByteArray &response, bool singleLayerContext, const QString &prefixedTypename, QString &geometryAttribute, QgsFields &fields, Qgis::WkbType &geomType, bool &geometryMaybeMissing, QString &errorMsg );
+    bool readAttributesFromSchema( QDomDocument &schemaDoc, const QByteArray &response, bool singleLayerContext, const QString &prefixedTypename, QString &geometryAttribute, QgsFields &fields, QgsFields &fieldsWithoutGMLAS, Qgis::WkbType &geomType, bool &geometryMaybeMissing, QString &errorMsg );
 
     //helper methods for WFS-T
 

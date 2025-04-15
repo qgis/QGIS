@@ -194,6 +194,9 @@ class QgsBackgroundCachedSharedData
     //! Attribute fields of the layer
     QgsFields mFields;
 
+    //! Attribute fields of the layer, without using the GMLAS driver
+    QgsFields mFieldsWithoutGMLAS;
+
     //! Source CRS
     QgsCoordinateReferenceSystem mSourceCrs;
 

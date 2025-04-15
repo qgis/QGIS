@@ -138,7 +138,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     //fetch attributes of layer and type of its geometry attribute
     //WBC 111221: extracting geometry type here instead of getFeature allows successful
     //layer creation even when no features are retrieved (due to, e.g., BBOX or FILTER)
-    if ( !describeFeatureType( mShared->mGeometryAttribute, mShared->mFields, mShared->mWKBType, mGeometryMaybeMissing ) )
+    if ( !describeFeatureType( mShared->mGeometryAttribute, mShared->mFields, mShared->mFieldsWithoutGMLAS, mShared->mWKBType, mGeometryMaybeMissing ) )
     {
       mValid = false;
       return;
@@ -599,17 +599,17 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   for ( const QString &typeName : std::as_const( typenameList ) )
   {
     QString geometryAttribute;
-    QgsFields fields;
+    QgsFields fields, fieldsWithoutGMLAS;
     Qgis::WkbType geomType;
     bool geometryMaybeMissing;
     if ( !readAttributesFromSchema( describeFeatureDocument, response,
-                                    /* singleLayerContext = */ typenameList.size() == 1, typeName, geometryAttribute, fields, geomType, geometryMaybeMissing, errorMsg ) )
+                                    /* singleLayerContext = */ typenameList.size() == 1, typeName, geometryAttribute, fields, fieldsWithoutGMLAS, geomType, geometryMaybeMissing, errorMsg ) )
     {
       errorMsg = tr( "Analysis of DescribeFeatureType response failed for url %1, typeName %2: %3" ).arg( dataSourceUri(), typeName, errorMsg );
       return false;
     }
 
-    mapTypenameToFields[typeName] = fields;
+    mapTypenameToFields[typeName] = fieldsWithoutGMLAS;
     mapTypenameToGeometryAttribute[typeName] = geometryAttribute;
 
     if ( typeName == mShared->mURI.typeName() )
@@ -617,7 +617,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
       mShared->mGeometryAttribute = geometryAttribute;
       mShared->mWKBType = geomType;
       mGeometryMaybeMissing = geometryMaybeMissing;
-      mThisTypenameFields = fields;
+      mThisTypenameFields = fieldsWithoutGMLAS;
     }
   }
 
@@ -789,11 +789,11 @@ bool QgsWFSProvider::setLayerPropertiesListFromDescribeFeature( QDomDocument &de
   for ( const QString &typeName : typenameList )
   {
     QString geometryAttribute;
-    QgsFields fields;
+    QgsFields fields, fieldsWithoutGMLAS;
     Qgis::WkbType geomType;
     bool geometryMaybeMissing;
     if ( !readAttributesFromSchema( describeFeatureDocument, response,
-                                    /* singleLayerContext = */ typenameList.size() == 1, typeName, geometryAttribute, fields, geomType, geometryMaybeMissing, errorMsg ) )
+                                    /* singleLayerContext = */ typenameList.size() == 1, typeName, geometryAttribute, fields, fieldsWithoutGMLAS, geomType, geometryMaybeMissing, errorMsg ) )
     {
       errorMsg = tr( "Analysis of DescribeFeatureType response failed for url %1, typeName %2: %3" ).arg( dataSourceUri(), typeName, errorMsg );
       return false;
@@ -1092,7 +1092,12 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     for ( int i = 0; i < nAttrs; ++i )
     {
       const QVariant &value = featureAttributes.at( i );
-      if ( value.isValid() && !QgsVariantUtils::isNull( value ) )
+      if ( value.isValid() && !QgsVariantUtils::isNull( value ) &&
+           // Check that the field corresponds to a "simple" field in the case where
+           // we got the definition from the GMLAS driver that captures attributes,
+           // and nested content. Ideally we should built XML attributes and sub-elements
+           // but that would be much more involved...
+           mShared->mFieldsWithoutGMLAS.lookupField( mShared->mFields.at( i ).name() ) >= 0 )
       {
         QDomElement fieldElem = transactionDoc.createElementNS( mApplicationNamespace, mShared->mFields.at( i ).name() );
         QDomText fieldText = transactionDoc.createTextNode( convertToXML( value ) );
@@ -1370,25 +1375,32 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     for ( ; attMapIt != attIt.value().constEnd(); ++attMapIt )
     {
       QString fieldName = mShared->mFields.at( attMapIt.key() ).name();
-      QDomElement propertyElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Property" ) );
-
-      QDomElement nameElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Name" ) );
-      QDomText nameText = transactionDoc.createTextNode( namespacePrefix + fieldName );
-      nameElem.appendChild( nameText );
-      propertyElem.appendChild( nameElem );
-
-      QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Value" ) );
-
-      if ( attMapIt.value().isValid() && !QgsVariantUtils::isNull( attMapIt.value() ) )
+      // Check that the field corresponds to a "simple" field in the case where
+      // we got the definition from the GMLAS driver that captures attributes,
+      // and nested content. Ideally we should built XML attributes and sub-elements
+      // but that would be much more involved...
+      if ( mShared->mFieldsWithoutGMLAS.lookupField( fieldName ) >= 0 )
       {
-        // WFS does not support :nil='true'
-        // if value is NULL, do not add value element
-        QDomText valueText = transactionDoc.createTextNode( convertToXML( attMapIt.value() ) );
-        valueElem.appendChild( valueText );
-        propertyElem.appendChild( valueElem );
-      }
+        QDomElement propertyElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Property" ) );
 
-      updateElem.appendChild( propertyElem );
+        QDomElement nameElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Name" ) );
+        QDomText nameText = transactionDoc.createTextNode( namespacePrefix + fieldName );
+        nameElem.appendChild( nameText );
+        propertyElem.appendChild( nameElem );
+
+        QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Value" ) );
+
+        if ( attMapIt.value().isValid() && !QgsVariantUtils::isNull( attMapIt.value() ) )
+        {
+          // WFS does not support :nil='true'
+          // if value is NULL, do not add value element
+          QDomText valueText = transactionDoc.createTextNode( convertToXML( attMapIt.value() ) );
+          valueElem.appendChild( valueText );
+          propertyElem.appendChild( valueElem );
+        }
+
+        updateElem.appendChild( propertyElem );
+      }
     }
 
     //Filter
@@ -1487,7 +1499,7 @@ void QgsWFSProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
   mShared = qobject_cast<QgsWFSProvider *>( source )->mShared;
 };
 
-bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields &fields, Qgis::WkbType &geomType, bool &geometryMaybeMissing )
+bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields &fields, QgsFields &fieldsWithoutGMLAS, Qgis::WkbType &geomType, bool &geometryMaybeMissing )
 {
   fields.clear();
 
@@ -1513,7 +1525,7 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
   }
 
   if ( !readAttributesFromSchema( describeFeatureDocument, response,
-                                  /* singleLayerContext = */ true, mShared->mURI.typeName(), geometryAttribute, fields, geomType, geometryMaybeMissing, errorMsg ) )
+                                  /* singleLayerContext = */ true, mShared->mURI.typeName(), geometryAttribute, fields, fieldsWithoutGMLAS, geomType, geometryMaybeMissing, errorMsg ) )
   {
     QgsDebugMsgLevel( response, 4 );
     QgsMessageLog::logMessage( tr( "Analysis of DescribeFeatureType response failed for url %1: %2" ).arg( dataSourceUri(), errorMsg ), tr( "WFS" ) );
@@ -1527,11 +1539,12 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
 }
 
 
-bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc, const QByteArray &response, bool singleLayerContext, const QString &prefixedTypename, QString &geometryAttribute, QgsFields &fields, Qgis::WkbType &geomType, bool &geometryMaybeMissing, QString &errorMsg )
+bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc, const QByteArray &response, bool singleLayerContext, const QString &prefixedTypename, QString &geometryAttribute, QgsFields &fields, QgsFields &fieldsWithoutGMLAS, Qgis::WkbType &geomType, bool &geometryMaybeMissing, QString &errorMsg )
 {
   geometryMaybeMissing = false;
   bool mayTryWithGMLAS = false;
   bool ret = readAttributesFromSchemaWithoutGMLAS( schemaDoc, prefixedTypename, geometryAttribute, fields, geomType, errorMsg, mayTryWithGMLAS );
+  fieldsWithoutGMLAS = fields;
   if ( singleLayerContext && mayTryWithGMLAS && GDALGetDriverByName( "GMLAS" ) )
   {
     QString geometryAttributeGMLAS;
