@@ -199,6 +199,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     /**
      * Registers a new the render view \a renderView with name \a name.
      *
+     * \a topNode is where the new renderview will be attached to. If nullptr then it will be attached to the moin viewport.
      * Will take ownership of the renderView.
      * \since QGIS 3.44
      */
