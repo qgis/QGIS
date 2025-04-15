@@ -39,6 +39,9 @@ class TestQgsProcessingFixGeometry : public QgsTest
     void fixAreaAlg_data();
     void fixAreaAlg();
 
+    void fixGapAlg_data();
+    void fixGapAlg();
+
     void fixHoleAlg();
     void fixMissingVertexAlg();
 
@@ -269,6 +272,97 @@ void TestQgsProcessingFixGeometry::fixAreaAlg()
     idx++;
   }
 }
+
+void TestQgsProcessingFixGeometry::fixGapAlg_data()
+{
+  //create a line layer that will be used in tests
+  QTest::addColumn<QStringList>( "reportList" );
+  QTest::addColumn<int>( "featureCount" );
+  QTest::addColumn<int>( "method" );
+
+  QTest::newRow( "Add to longest shared edge" )
+    << ( QStringList()
+         << QStringLiteral( "Add to longest shared edge" )
+         << QStringLiteral( "Add to longest shared edge" )
+         << QStringLiteral( "Add to longest shared edge" )
+         << QStringLiteral( "Add to longest shared edge" )
+         << QStringLiteral( "Add to longest shared edge" ) )
+    << 6
+    << 0;
+
+  QTest::newRow( "Create new feature" )
+    << ( QStringList()
+         << QStringLiteral( "Create new feature" )
+         << QStringLiteral( "Create new feature" )
+         << QStringLiteral( "Create new feature" )
+         << QStringLiteral( "Create new feature" )
+         << QStringLiteral( "Create new feature" ) )
+    << 11
+    << 1;
+
+  QTest::newRow( "Add to largest neighbouring area" )
+    << ( QStringList()
+         << QStringLiteral( "Add to largest neighbouring area" )
+         << QStringLiteral( "Add to largest neighbouring area" )
+         << QStringLiteral( "Add to largest neighbouring area" )
+         << QStringLiteral( "Add to largest neighbouring area" )
+         << QStringLiteral( "Add to largest neighbouring area" ) )
+    << 6
+    << 2;
+}
+
+void TestQgsProcessingFixGeometry::fixGapAlg()
+{
+  const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+  QgsVectorLayer sourceLayer = QgsVectorLayer( testDataDir.absoluteFilePath( "gap_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer gapsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "fix_gap.gpkg|layername=gaps" ), QStringLiteral( "gaps" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer neighborsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "fix_gap.gpkg|layername=neighbors" ), QStringLiteral( "neighbors" ), QStringLiteral( "ogr" ) );
+  QVERIFY( sourceLayer.isValid() );
+  QVERIFY( gapsLayer.isValid() );
+  QVERIFY( neighborsLayer.isValid() );
+
+  QFETCH( QStringList, reportList );
+  QFETCH( int, method );
+  QFETCH( int, featureCount );
+
+  const std::unique_ptr<QgsProcessingAlgorithm> alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometrygap" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( &sourceLayer ) );
+  parameters.insert( QStringLiteral( "NEIGHBORS" ), QVariant::fromValue( &neighborsLayer ) );
+  parameters.insert( QStringLiteral( "GAPS" ), QVariant::fromValue( &gapsLayer ) );
+  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+  parameters.insert( QStringLiteral( "METHOD" ), method );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "REPORT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  auto context = std::make_unique<QgsProcessingContext>();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  QVERIFY( reportLayer->isValid() );
+  QVERIFY( outputLayer->isValid() );
+
+  QCOMPARE( outputLayer->featureCount(), featureCount );
+  QCOMPARE( reportLayer->featureCount(), reportList.count() );
+  int idx = 1;
+  for ( const QString &expectedReport : reportList )
+  {
+    const QgsFeature reportFeature = reportLayer->getFeature( idx );
+    QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
+    idx++;
+  }
+}
+
 
 void TestQgsProcessingFixGeometry::fixHoleAlg()
 {
