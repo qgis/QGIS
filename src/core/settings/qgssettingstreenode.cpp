@@ -144,6 +144,7 @@ void QgsSettingsTreeNode::init( QgsSettingsTreeNode *parent, const QString &key 
   mCompleteKey = QDir::cleanPath( QStringLiteral( "%1/%2" ).arg( parent->completeKey(), key ) ) + '/';
 }
 
+QgsSettingsTreeNamedListNode::QgsSettingsTreeNamedListNode() = default;
 
 void QgsSettingsTreeNamedListNode::initNamedList( const Qgis::SettingsTreeNodeOptions &options )
 {
