@@ -18,6 +18,8 @@
 #include "qgsdatadefinedsizelegend.h"
 #include "qgssymbol.h"
 
+QgsLegendSymbolItem::QgsLegendSymbolItem() = default;
+
 QgsLegendSymbolItem::QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable, int scaleMinDenom, int scaleMaxDenom, int level, const QString &parentRuleKey )
   : mSymbol( symbol ? symbol->clone() : nullptr )
   , mLabel( label )

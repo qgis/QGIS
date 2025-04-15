@@ -36,7 +36,7 @@ class CORE_EXPORT QgsLegendSymbolItem
 {
   public:
 
-    QgsLegendSymbolItem() = default;
+    QgsLegendSymbolItem();
 
     /**
      * Construct item. Does not take ownership of symbol (makes internal clone)

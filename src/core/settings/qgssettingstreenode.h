@@ -258,7 +258,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
      * \note This is not available in Python bindings. Use method createNamedListNode on an existing tree node.
      * \see QgsSettingsTree.createPluginTreeNode
      */
-    QgsSettingsTreeNamedListNode() = default SIP_FORCE;
+    QgsSettingsTreeNamedListNode() SIP_FORCE;
 
     QgsSettingsTreeNamedListNode( const QgsSettingsTreeNamedListNode &other ) = delete;
 
