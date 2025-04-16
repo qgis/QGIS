@@ -25,42 +25,43 @@
 
 ///@cond PRIVATE
 
-auto QgsGeometryCheckMissingVertexAlgorithm::name() const -> QString
+QString QgsGeometryCheckMissingVertexAlgorithm::name() const
 {
   return QStringLiteral( "checkgeometrymissingvertex" );
 }
 
-auto QgsGeometryCheckMissingVertexAlgorithm::displayName() const -> QString
+QString QgsGeometryCheckMissingVertexAlgorithm::displayName() const
 {
   return QObject::tr( "Check geometry (Missing Vertex)" );
 }
 
-auto QgsGeometryCheckMissingVertexAlgorithm::tags() const -> QStringList
+QStringList QgsGeometryCheckMissingVertexAlgorithm::tags() const
 {
   return QObject::tr( "check,geometry,missing,vertex" ).split( ',' );
 }
 
-auto QgsGeometryCheckMissingVertexAlgorithm::group() const -> QString
+QString QgsGeometryCheckMissingVertexAlgorithm::group() const
 {
   return QObject::tr( "Check geometry" );
 }
 
-auto QgsGeometryCheckMissingVertexAlgorithm::groupId() const -> QString
+QString QgsGeometryCheckMissingVertexAlgorithm::groupId() const
 {
   return QStringLiteral( "checkgeometry" );
 }
 
-auto QgsGeometryCheckMissingVertexAlgorithm::shortHelpString() const -> QString
+QString QgsGeometryCheckMissingVertexAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm checks for missing vertices along polygon junctions." );
+  return QObject::tr( "This algorithm checks for missing vertices along polygon junctions.\n"
+                      "Missing vertices are errors." );
 }
 
-auto QgsGeometryCheckMissingVertexAlgorithm::flags() const -> Qgis::ProcessingAlgorithmFlags
+Qgis::ProcessingAlgorithmFlags QgsGeometryCheckMissingVertexAlgorithm::flags() const
 {
   return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
 }
 
-auto QgsGeometryCheckMissingVertexAlgorithm::createInstance() const -> QgsGeometryCheckMissingVertexAlgorithm *
+QgsGeometryCheckMissingVertexAlgorithm *QgsGeometryCheckMissingVertexAlgorithm::createInstance() const
 {
   return new QgsGeometryCheckMissingVertexAlgorithm();
 }
@@ -76,25 +77,33 @@ void QgsGeometryCheckMissingVertexAlgorithm::initAlgorithm( const QVariantMap &c
       QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
     )
   );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterField(
+    QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
+  ) );
 
   // outputs
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink(
+    QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), Qgis::ProcessingSourceType::VectorPoint
+  ) );
+  addParameter( new QgsProcessingParameterFeatureSink(
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon
+  ) );
 
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
+  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+  );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( tolerance.release() );
 }
 
-auto QgsGeometryCheckMissingVertexAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) -> bool
+bool QgsGeometryCheckMissingVertexAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
 
   return true;
 }
 
-auto QgsGeometryCheckMissingVertexAlgorithm::outputFields() -> QgsFields
+QgsFields QgsGeometryCheckMissingVertexAlgorithm::outputFields()
 {
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "gc_layerid" ), QMetaType::QString ) );
@@ -108,12 +117,13 @@ auto QgsGeometryCheckMissingVertexAlgorithm::outputFields() -> QgsFields
   return fields;
 }
 
-
-auto QgsGeometryCheckMissingVertexAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) -> QVariantMap
+QVariantMap QgsGeometryCheckMissingVertexAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;
   QString dest_errors;
-  QgsProcessingFeatureSource *input = parameterAsSource( parameters, QStringLiteral( "INPUT" ), context );
+  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !input )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
   int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
@@ -137,19 +147,20 @@ auto QgsGeometryCheckMissingVertexAlgorithm::processAlgorithm( const QVariantMap
 
   QgsProject *project = QgsProject::instance();
 
-  const std::unique_ptr<QgsGeometryCheckContext> checkContext = std::make_unique<QgsGeometryCheckContext>( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  const QgsGeometryMissingVertexCheck check( checkContext.get(), QVariantMap() );
+  const QgsGeometryMissingVertexCheck check( &checkContext, QVariantMap() );
 
   multiStepFeedback.setCurrentStep( 1 );
   feedback->setProgressText( QObject::tr( "Preparing features…" ) );
   QMap<QString, QgsFeaturePool *> featurePools;
-  QgsVectorLayer *inputLayer = input->materialize( QgsFeatureRequest() );
-  featurePools.insert( inputLayer->id(), new QgsVectorDataProviderFeaturePool( inputLayer ) );
+  std::unique_ptr<QgsVectorLayer> inputLayer( input->materialize( QgsFeatureRequest() ) );
+  QgsVectorDataProviderFeaturePool featurePool = QgsVectorDataProviderFeaturePool( inputLayer.get() );
+  featurePools.insert( inputLayer->id(), &featurePool );
 
   multiStepFeedback.setCurrentStep( 2 );
   feedback->setProgressText( QObject::tr( "Collecting errors…" ) );
