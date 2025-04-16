@@ -16,6 +16,9 @@
   "examples": [{
     "expression": "raster_value('dem', 1, make_point(1,1))",
     "returns": "25"
+  },{
+    "expression": "raster_value('ndvi', 2, @layer_cursor_point)",
+    "returns": "25"
   }],
   "tags": ["provided", "point", "raster", "found"]
 }
