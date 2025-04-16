@@ -111,7 +111,6 @@ QgsRasterBlock *QgsRasterNuller::block( int bandNo, QgsRectangle  const &extent,
       {
         isNoData = true;
       }
-      outputBlock->setValue( i, j, inputBlock->value( i, j ) );
       if ( isNoData )
       {
         outputBlock->setIsNoData( i, j );
