@@ -120,6 +120,14 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
       ENABLED = 1,
       DISABLED = 2,
     };
+
+    //! Index of mComboWfsFeatureMode
+    enum class WfsFeatureModeIndex
+    {
+      DEFAULT = 0,
+      SIMPLE_FEATURES = 1,
+      COMPLEX_FEATURES = 2,
+    };
 #endif
 
     /**

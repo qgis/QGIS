@@ -15,6 +15,7 @@
 
 #include "QtGlobal"
 
+#include "qgsmessagelog.h"
 #include "qgswfsconstants.h"
 #include "qgswfsdatasourceuri.h"
 
@@ -192,7 +193,8 @@ QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const
     QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE,
     QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER,
     QgsWFSConstants::URI_PARAM_SQL,
-    QgsWFSConstants::URI_PARAM_HTTPMETHOD
+    QgsWFSConstants::URI_PARAM_HTTPMETHOD,
+    QgsWFSConstants::URI_PARAM_FEATURE_MODE,
   };
 
   QSet<QString> l_unknownParamKeys;
@@ -495,6 +497,24 @@ bool QgsWFSDataSourceURI::skipInitialGetFeature() const
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE ) )
     return false;
   return mURI.param( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE ).toUpper() == QLatin1String( "TRUE" );
+}
+
+QgsWFSDataSourceURI::FeatureMode QgsWFSDataSourceURI::featureMode() const
+{
+  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_FEATURE_MODE ) )
+    return FeatureMode::DEFAULT;
+  const QString val = mURI.param( QgsWFSConstants::URI_PARAM_FEATURE_MODE );
+  if ( val == QLatin1String( "default" ) )
+    return FeatureMode::DEFAULT;
+  else if ( val == QLatin1String( "simpleFeatures" ) )
+    return FeatureMode::SIMPLE_FEATURES;
+  else if ( val == QLatin1String( "complexFeatures" ) )
+    return FeatureMode::COMPLEX_FEATURES;
+  else
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Unknown value for featureMode URI parameter '%1'" ).arg( val ), QObject::tr( "WFS" ) );
+    return FeatureMode::DEFAULT;
+  }
 }
 
 QString QgsWFSDataSourceURI::build( const QString &baseUri, const QString &typeName, const QString &crsString, const QString &sql, const QString &filter, bool restrictToCurrentViewExtent )

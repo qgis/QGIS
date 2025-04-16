@@ -8757,6 +8757,40 @@ Can't recognize service requested.
         got_f = [f for f in vl.getFeatures()]
         self.assertEqual(len(got_f), 1)
 
+        # Test the various values of featureMode URI parameter
+        with MessageLogger("WFS") as logger:
+            vl = QgsVectorLayer(
+                "url='http://"
+                + endpoint
+                + "' typename='ps:ProtectedSite' version='2.0.0' skipInitialGetFeature='true' featureMode='simpleFeatures'",
+                "test",
+                "WFS",
+            )
+            self.assertFalse(vl.isValid())
+            self.assertEqual(len(logger.messages()), 1, logger.messages())
+            self.assertIn(
+                "It is probably a schema for Complex Features",
+                logger.messages()[0].decode("UTF-8"),
+            )
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='ps:ProtectedSite' version='2.0.0' skipInitialGetFeature='true' featureMode='complexFeatures'",
+            "test",
+            "WFS",
+        )
+        self.assertTrue(vl.isValid())
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='ps:ProtectedSite' version='2.0.0' skipInitialGetFeature='true' featureMode='default'",
+            "test",
+            "WFS",
+        )
+        self.assertTrue(vl.isValid())
+
 
 class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
     """
