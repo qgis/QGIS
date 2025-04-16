@@ -1531,7 +1531,11 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc, const QB
   geometryMaybeMissing = false;
   bool mayTryWithGMLAS = false;
   bool ret = readAttributesFromSchemaWithoutGMLAS( schemaDoc, prefixedTypename, geometryAttribute, fields, geomType, errorMsg, mayTryWithGMLAS );
-  if ( singleLayerContext && mayTryWithGMLAS && GDALGetDriverByName( "GMLAS" ) )
+
+  // Only consider GMLAS / ComplexFeatures mode if FeatureMode=DEFAULT and there
+  // is no edition capabilities, or if explicitly requested.
+  // Cf https://github.com/qgis/QGIS/pull/61493
+  if ( ( ( mShared->mURI.featureMode() == QgsWFSDataSourceURI::FeatureMode::DEFAULT && ( mCapabilities & Qgis::VectorProviderCapability::AddFeatures ) == 0 ) || mShared->mURI.featureMode() == QgsWFSDataSourceURI::FeatureMode::COMPLEX_FEATURES ) && singleLayerContext && mayTryWithGMLAS && GDALGetDriverByName( "GMLAS" ) )
   {
     QString geometryAttributeGMLAS;
     QgsFields fieldsGMLAS;
