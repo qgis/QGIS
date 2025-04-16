@@ -117,14 +117,12 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
   mSubsectionsSymbolButton->setDefaultSymbol( QgsProfilePlotRenderer::defaultSubSectionsSymbol().release() );
 
-  connect( mSubsectionsActivateCheck, &QCheckBox::toggled, this, [=] {
+  connect( mSubsectionsActivateCheck, &QGroupBox::toggled, this, [=] {
     if ( !mProfile || mBlockChanges )
       return;
 
     const bool subsectionsActivated = mSubsectionsActivateCheck->isChecked();
     mProfile->beginCommand( tr( "Change Profile Subsection Indicator" ), QgsLayoutItem::UndoElevationProfileSubsectionLines );
-    mSubsectionsSymbolButton->setEnabled( subsectionsActivated );
-    mSubsectionsSymbolLabel->setEnabled( subsectionsActivated );
     std::unique_ptr<QgsLineSymbol> subSectionsSymbol( subsectionsActivated ? mSubsectionsSymbolButton->clonedSymbol<QgsLineSymbol>() : nullptr );
     mProfile->setSubsectionsSymbol( subSectionsSymbol.release() );
 
@@ -651,8 +649,6 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
 
   const QgsLineSymbol *subSectionsSymbol = canvas->subsectionsSymbol() ? canvas->subsectionsSymbol() : nullptr;
   const bool subSectionsEnabled = static_cast< bool >( subSectionsSymbol );
-  mSubsectionsSymbolLabel->setEnabled( subSectionsEnabled );
-  mSubsectionsSymbolButton->setEnabled( subSectionsEnabled );
   mSubsectionsActivateCheck->setChecked( subSectionsEnabled );
   if ( subSectionsSymbol )
   {
