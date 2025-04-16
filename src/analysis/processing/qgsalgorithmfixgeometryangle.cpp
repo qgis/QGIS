@@ -25,32 +25,32 @@
 
 ///@cond PRIVATE
 
-auto QgsFixGeometryAngleAlgorithm::name() const -> QString
+QString QgsFixGeometryAngleAlgorithm::name() const
 {
   return QStringLiteral( "fixgeometryangle" );
 }
 
-auto QgsFixGeometryAngleAlgorithm::displayName() const -> QString
+QString QgsFixGeometryAngleAlgorithm::displayName() const
 {
   return QObject::tr( "Fix geometry (Angle)" );
 }
 
-auto QgsFixGeometryAngleAlgorithm::tags() const -> QStringList
+QStringList QgsFixGeometryAngleAlgorithm::tags() const
 {
   return QObject::tr( "delete,vertex,fix,angle" ).split( ',' );
 }
 
-auto QgsFixGeometryAngleAlgorithm::group() const -> QString
+QString QgsFixGeometryAngleAlgorithm::group() const
 {
   return QObject::tr( "Fix geometry" );
 }
 
-auto QgsFixGeometryAngleAlgorithm::groupId() const -> QString
+QString QgsFixGeometryAngleAlgorithm::groupId() const
 {
   return QStringLiteral( "fixgeometry" );
 }
 
-auto QgsFixGeometryAngleAlgorithm::shortHelpString() const -> QString
+QString QgsFixGeometryAngleAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm deletes vertices based on an error layer from the "
                       "check angle algorithm.\n"
@@ -58,7 +58,7 @@ auto QgsFixGeometryAngleAlgorithm::shortHelpString() const -> QString
                       "the duplicate vertex is deleted to keep a single vertex and preserve topology." );
 }
 
-auto QgsFixGeometryAngleAlgorithm::createInstance() const -> QgsFixGeometryAngleAlgorithm *
+QgsFixGeometryAngleAlgorithm *QgsFixGeometryAngleAlgorithm::createInstance() const
 {
   return new QgsFixGeometryAngleAlgorithm();
 }
@@ -68,44 +68,48 @@ void QgsFixGeometryAngleAlgorithm::initAlgorithm( const QVariantMap &configurati
   Q_UNUSED( configuration )
 
   // Inputs
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) )
-  );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) )
-  );
+  addParameter( new QgsProcessingParameterFeatureSource(
+    QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
+  ) );
+  addParameter( new QgsProcessingParameterFeatureSource(
+    QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Field of original feature unique identifier" ),
     QStringLiteral( "id" ), QStringLiteral( "ERRORS" )
-  )
-  );
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "PART_IDX" ), QObject::tr( "Field of part index" ),
     QStringLiteral( "gc_partidx" ), QStringLiteral( "ERRORS" ),
     Qgis::ProcessingFieldParameterDataType::Numeric
-  )
-  );
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "RING_IDX" ), QObject::tr( "Field of ring index" ),
     QStringLiteral( "gc_ringidx" ), QStringLiteral( "ERRORS" ),
     Qgis::ProcessingFieldParameterDataType::Numeric
-  )
-  );
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "VERTEX_IDX" ), QObject::tr( "Field of vertex index" ),
     QStringLiteral( "gc_vertidx" ), QStringLiteral( "ERRORS" ),
     Qgis::ProcessingFieldParameterDataType::Numeric
-  )
-  );
+  ) );
 
   // Outputs
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink(
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
+  ) );
+  addParameter( new QgsProcessingParameterFeatureSink(
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+  ) );
 
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
+  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+  );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( tolerance.release() );
 }
 
-auto QgsFixGeometryAngleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) -> QVariantMap
+QVariantMap QgsFixGeometryAngleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )
@@ -140,7 +144,9 @@ auto QgsFixGeometryAngleAlgorithm::processAlgorithm( const QVariantMap &paramete
     throw QgsProcessingException( QObject::tr( "Field %1 does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 
   QString dest_output;
-  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, input->fields(), input->wkbType(), input->sourceCrs() ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
+    parameters, QStringLiteral( "OUTPUT" ), context, dest_output, input->fields(), input->wkbType(), input->sourceCrs()
+  ) );
   if ( !sink_output )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -148,23 +154,25 @@ auto QgsFixGeometryAngleAlgorithm::processAlgorithm( const QVariantMap &paramete
   QgsFields reportFields = errors->fields();
   reportFields.append( QgsField( QStringLiteral( "report" ), QMetaType::QString ) );
   reportFields.append( QgsField( QStringLiteral( "error_fixed" ), QMetaType::Bool ) );
-  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink( parameters, QStringLiteral( "REPORT" ), context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs() ) );
+  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink(
+    parameters, QStringLiteral( "REPORT" ), context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs()
+  ) );
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
   const QgsProject *project = QgsProject::instance();
-  auto checkContext = std::make_unique<QgsGeometryCheckContext>( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
   QStringList messages;
   QVariantMap configurationCheck;
 
   // maximum limit, we know that every feature to process is an error (otherwise it is not treated and marked as obsolete)
   configurationCheck.insert( "minAngle", std::numeric_limits<double>::max() );
-  const QgsGeometryAngleCheck check( checkContext.get(), configurationCheck );
+  const QgsGeometryAngleCheck check( &checkContext, configurationCheck );
 
-  QgsVectorLayer *fixedLayer = input->materialize( QgsFeatureRequest() );
-  std::unique_ptr<QgsFeaturePool> featurePool = std::make_unique<QgsVectorDataProviderFeaturePool>( fixedLayer );
+  std::unique_ptr<QgsVectorLayer> fixedLayer( input->materialize( QgsFeatureRequest() ) );
+  QgsVectorDataProviderFeaturePool featurePool = QgsVectorDataProviderFeaturePool( fixedLayer.get() );
   QMap<QString, QgsFeaturePool *> featurePools;
-  featurePools.insert( fixedLayer->id(), featurePool.get() );
+  featurePools.insert( fixedLayer->id(), &featurePool );
 
   QgsFeature errorFeature, inputFeature, testDuplicateIdFeature;
   QgsFeatureIterator errorFeaturesIt = errors->getFeatures();
@@ -202,7 +210,7 @@ auto QgsFixGeometryAngleAlgorithm::processAlgorithm( const QVariantMap &paramete
     {
       QgsGeometryCheckError checkError = QgsGeometryCheckError(
         &check,
-        QgsGeometryCheckerUtils::LayerFeature( featurePool.get(), inputFeature, checkContext.get(), false ),
+        QgsGeometryCheckerUtils::LayerFeature( &featurePool, inputFeature, &checkContext, false ),
         errorFeature.geometry().asPoint(),
         QgsVertexId(
           errorFeature.attribute( partIdxFieldName ).toInt(),
@@ -216,7 +224,12 @@ auto QgsFixGeometryAngleAlgorithm::processAlgorithm( const QVariantMap &paramete
       QgsGeometryCheck::Changes changes;
       check.fixError( featurePools, &checkError, QgsGeometryAngleCheck::ResolutionMethod::DeleteNode, QMap<QString, int>(), changes );
       changesList << changes;
-      reportFeature.setAttributes( errorFeature.attributes() << checkError.resolutionMessage() << ( checkError.status() == QgsGeometryCheckError::StatusFixed ) );
+
+      QString resolutionMessage = checkError.resolutionMessage();
+      if ( checkError.status() == QgsGeometryCheckError::StatusObsolete )
+        resolutionMessage = QObject::tr( "Error is obsolete" );
+
+      reportFeature.setAttributes( errorFeature.attributes() << resolutionMessage << ( checkError.status() == QgsGeometryCheckError::StatusFixed ) );
     }
 
     if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
@@ -246,14 +259,14 @@ auto QgsFixGeometryAngleAlgorithm::processAlgorithm( const QVariantMap &paramete
   return outputs;
 }
 
-auto QgsFixGeometryAngleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) -> bool
+bool QgsFixGeometryAngleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
 
   return true;
 }
 
-auto QgsFixGeometryAngleAlgorithm::flags() const -> Qgis::ProcessingAlgorithmFlags
+Qgis::ProcessingAlgorithmFlags QgsFixGeometryAngleAlgorithm::flags() const
 {
   return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
 }
