@@ -385,7 +385,7 @@ QgsLineSymbol *QgsProfilePlotRenderer::subsectionsSymbol()
 void QgsProfilePlotRenderer::renderSubsectionsIndicator( QgsRenderContext &context, const QRectF &plotArea, double distanceMin, double distanceMax, double zMin, double zMax )
 {
   QgsCurve *profileCurve = mRequest.profileCurve();
-  if ( !profileCurve || profileCurve->length() < 3 || !mSubsectionsSymbol )
+  if ( !profileCurve || profileCurve->numPoints() < 3 || !mSubsectionsSymbol )
     return;
 
   QTransform transform = computeRenderTransform( plotArea.width(), plotArea.height(), distanceMin, distanceMax, zMin, zMax );
