@@ -639,6 +639,12 @@ Returns the capabilities supported by the writer.
 Adds a ``feature`` to the currently opened data source, using the style from a specified ``renderer``.
 %End
 
+    QMap<int, int> sourceFieldIndexToWriterFieldIndex() const;
+%Docstring
+Returns the map of original source field index to output file field index.
+
+.. versionadded:: 3.44
+%End
 
     ~QgsVectorFileWriter();
 
