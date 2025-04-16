@@ -44,7 +44,9 @@
 #include "qgssettingsentryimpl.h"
 #include "qgsruntimeprofiler.h"
 #include "qgslabelingenginerule.h"
-
+#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<10 )
+#include "qgsmessagelog.h"
+#endif
 #include <cfloat>
 #include <list>
 
