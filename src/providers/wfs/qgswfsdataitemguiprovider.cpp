@@ -123,6 +123,8 @@ void QgsWfsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
   QgsOwsConnection::settingsHeaders->setValue( QgsOwsConnection::settingsHeaders->value( detailsParameters ), newDetailsParameters );
 
+  QgsOwsConnection::settingsWfsFeatureMode->setValue( QgsOwsConnection::settingsWfsFeatureMode->value( detailsParameters ), newDetailsParameters );
+
   item->parent()->refreshConnections();
 }
 
