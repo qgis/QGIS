@@ -193,7 +193,7 @@ Units are specified through
 
 .. seealso:: :py:func:`minimumDistanceToDuplicate`
 
-.. seealso:: :py:func:`setMinimumDistanceToDuplicateUnits`
+.. seealso:: :py:func:`setMinimumDistanceToDuplicateUnit`
 
 .. versionadded:: 3.44
 %End

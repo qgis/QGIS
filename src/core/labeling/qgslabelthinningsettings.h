@@ -171,7 +171,7 @@ class CORE_EXPORT QgsLabelThinningSettings
      * \note This setting is only respected if allowDuplicateRemoval() is TRUE.
      *
      * \see minimumDistanceToDuplicate()
-     * \see setMinimumDistanceToDuplicateUnits()
+     * \see setMinimumDistanceToDuplicateUnit()
      *
      * \since QGIS 3.44
      */
