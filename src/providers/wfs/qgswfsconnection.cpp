@@ -63,7 +63,11 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
   if ( settingsWfsFeatureMode->exists( detailsParameters ) )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_FEATURE_MODE ); // setParam allow for duplicates!
-    mUri.setParam( QgsWFSConstants::URI_PARAM_FEATURE_MODE, settingsWfsFeatureMode->value( detailsParameters ) );
+    const QString featureMode = settingsWfsFeatureMode->value( detailsParameters );
+    if ( featureMode != QLatin1String( "default" ) )
+    {
+      mUri.setParam( QgsWFSConstants::URI_PARAM_FEATURE_MODE, featureMode );
+    }
   }
 
   QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( QString( mUri.uri() ) ), 4 );
