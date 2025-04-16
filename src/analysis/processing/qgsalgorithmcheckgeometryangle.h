@@ -22,7 +22,6 @@
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
-#include "qgsfeaturepool.h"
 
 ///@cond PRIVATE
 
@@ -45,7 +44,6 @@ class QgsGeometryCheckAngleAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    QgsFeaturePool *createFeaturePool( QgsVectorLayer *layer ) const;
     static QgsFields outputFields();
     int mTolerance { 8 };
 };
