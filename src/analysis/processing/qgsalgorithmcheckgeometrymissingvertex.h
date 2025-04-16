@@ -42,9 +42,9 @@ class QgsGeometryCheckMissingVertexAlgorithm : public QgsProcessingAlgorithm
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    static QgsFields outputFields();
 
   private:
+    static QgsFields outputFields();
     int mTolerance { 8 };
 };
 
