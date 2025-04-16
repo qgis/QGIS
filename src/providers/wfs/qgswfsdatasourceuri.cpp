@@ -502,18 +502,18 @@ bool QgsWFSDataSourceURI::skipInitialGetFeature() const
 QgsWFSDataSourceURI::FeatureMode QgsWFSDataSourceURI::featureMode() const
 {
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_FEATURE_MODE ) )
-    return FeatureMode::DEFAULT;
+    return FeatureMode::Default;
   const QString val = mURI.param( QgsWFSConstants::URI_PARAM_FEATURE_MODE );
   if ( val == QLatin1String( "default" ) )
-    return FeatureMode::DEFAULT;
+    return FeatureMode::Default;
   else if ( val == QLatin1String( "simpleFeatures" ) )
-    return FeatureMode::SIMPLE_FEATURES;
+    return FeatureMode::SimpleFeatures;
   else if ( val == QLatin1String( "complexFeatures" ) )
-    return FeatureMode::COMPLEX_FEATURES;
+    return FeatureMode::ComplexFeatures;
   else
   {
     QgsMessageLog::logMessage( QObject::tr( "Unknown value for featureMode URI parameter '%1'" ).arg( val ), QObject::tr( "WFS" ) );
-    return FeatureMode::DEFAULT;
+    return FeatureMode::Default;
   }
 }
 

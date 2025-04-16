@@ -138,9 +138,9 @@ class QgsWFSDataSourceURI
     //! How to analyze DescribeFeatureType response
     enum class FeatureMode
     {
-      DEFAULT,          //! If the server supports transaction, same as SIMPLE_FEATURE. Otherwise COMPLEX_FEATURE
-      SIMPLE_FEATURES,  //! Analyze DescribeFeatureType response with QGIS built-in Simple Feature analyzer
-      COMPLEX_FEATURES, //! Analyze DescribeFeatureType response with OGR GMLAS Complex Feature analyzer
+      Default,         //! If the server supports transaction, same as SIMPLE_FEATURE. Otherwise COMPLEX_FEATURE
+      SimpleFeatures,  //! Analyze DescribeFeatureType response with QGIS built-in Simple Feature analyzer
+      ComplexFeatures, //! Analyze DescribeFeatureType response with OGR GMLAS Complex Feature analyzer
     };
 
     //! Returns how to analyze DescribeFeatureType response.
