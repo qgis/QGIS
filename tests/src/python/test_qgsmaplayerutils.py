@@ -11,6 +11,11 @@ __date__ = "2021-05"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 
+import tempfile
+import glob
+import shutil
+from pathlib import Path
+
 from qgis.core import (
     QgsAnnotationLayer,
     QgsCoordinateReferenceSystem,
@@ -144,7 +149,7 @@ class TestQgsMapLayerUtils(QgisTestCase):
 
         ## copy files to temp directory
         tempDir = tempfile.TemporaryDirectory()
-        tempDirPath = Path(tempDir.name)
+        tempDirPath = Path(tempDir.name).as_posix()
         for file in glob.glob(unitTestDataPath() + "/points.*"):
             shutil.copy(file, tempDirPath)
         shutil.copy(unitTestDataPath() + "/mixed_layers.gpkg", tempDirPath)

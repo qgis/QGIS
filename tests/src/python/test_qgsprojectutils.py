@@ -123,7 +123,7 @@ class TestQgsProjectUtils(QgisTestCase):
 
         ## copy files to temp directory
         tempDir = tempfile.TemporaryDirectory()
-        tempDirPath = Path(tempDir.name)
+        tempDirPath = Path(tempDir.name).as_posix()
         for file in glob.glob(unitTestDataPath() + "/points.*"):
             shutil.copy(file, tempDirPath)
         shutil.copy(unitTestDataPath() + "/mixed_layers.gpkg", tempDirPath)
