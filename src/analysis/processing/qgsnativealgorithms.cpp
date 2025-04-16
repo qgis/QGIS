@@ -128,6 +128,7 @@
 #include "qgsalgorithmfieldcalculator.h"
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfillnodata.h"
+#include "qgsalgorithmfillsinkswangliu.h"
 #include "qgsalgorithmfilter.h"
 #include "qgsalgorithmfilterbygeometry.h"
 #include "qgsalgorithmfiltervertices.h"
@@ -442,6 +443,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFieldCalculatorAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFillNoDataAlgorithm() );
+  addAlgorithm( new QgsFillSinksWangLiuAlgorithm() );
   addAlgorithm( new QgsFilterAlgorithm() );
   addAlgorithm( new QgsFilterByGeometryAlgorithm() );
   addAlgorithm( new QgsFilterByLayerTypeAlgorithm() );
