@@ -48,6 +48,7 @@
 #include "qgsalgorithmfixgeometryarea.h"
 #include "qgsalgorithmfixgeometryhole.h"
 #include "qgsalgorithmfixgeometrymissingvertex.h"
+#include "qgsalgorithmcheckgeometrylinelayerintersection.h"
 #include "qgsalgorithmcheckgeometryhole.h"
 #include "qgsalgorithmcheckgeometrymissingvertex.h"
 #include "qgsalgorithmclip.h"
@@ -338,6 +339,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsGeometryCheckAreaAlgorithm() );
   addAlgorithm( new QgsGeometryCheckHoleAlgorithm() );
   addAlgorithm( new QgsGeometryCheckMissingVertexAlgorithm() );
+  addAlgorithm( new QgsGeometryCheckLineLayerIntersectionAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
   addAlgorithm( new QgsCollectAlgorithm() );
   addAlgorithm( new QgsCombineStylesAlgorithm() );
