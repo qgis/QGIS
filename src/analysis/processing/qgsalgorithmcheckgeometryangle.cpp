@@ -25,42 +25,43 @@
 
 ///@cond PRIVATE
 
-auto QgsGeometryCheckAngleAlgorithm::name() const -> QString
+QString QgsGeometryCheckAngleAlgorithm::name() const
 {
   return QStringLiteral( "checkgeometryangle" );
 }
 
-auto QgsGeometryCheckAngleAlgorithm::displayName() const -> QString
+QString QgsGeometryCheckAngleAlgorithm::displayName() const
 {
   return QObject::tr( "Check geometry (Angle)" );
 }
 
-auto QgsGeometryCheckAngleAlgorithm::tags() const -> QStringList
+QStringList QgsGeometryCheckAngleAlgorithm::tags() const
 {
   return QObject::tr( "check,geometry,angle" ).split( ',' );
 }
 
-auto QgsGeometryCheckAngleAlgorithm::group() const -> QString
+QString QgsGeometryCheckAngleAlgorithm::group() const
 {
   return QObject::tr( "Check geometry" );
 }
 
-auto QgsGeometryCheckAngleAlgorithm::groupId() const -> QString
+QString QgsGeometryCheckAngleAlgorithm::groupId() const
 {
   return QStringLiteral( "checkgeometry" );
 }
 
-auto QgsGeometryCheckAngleAlgorithm::shortHelpString() const -> QString
+QString QgsGeometryCheckAngleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm checks the angles of line or polygon geometries." );
+  return QObject::tr( "This algorithm checks the angles of line or polygon geometries.\n"
+                      "Angles below the minimum angle are errors." );
 }
 
-auto QgsGeometryCheckAngleAlgorithm::flags() const -> Qgis::ProcessingAlgorithmFlags
+Qgis::ProcessingAlgorithmFlags QgsGeometryCheckAngleAlgorithm::flags() const
 {
   return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
 }
 
-auto QgsGeometryCheckAngleAlgorithm::createInstance() const -> QgsGeometryCheckAngleAlgorithm *
+QgsGeometryCheckAngleAlgorithm *QgsGeometryCheckAngleAlgorithm::createInstance() const
 {
   return new QgsGeometryCheckAngleAlgorithm();
 }
@@ -76,27 +77,36 @@ void QgsGeometryCheckAngleAlgorithm::initAlgorithm( const QVariantMap &configura
       QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
     )
   );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MIN_ANGLE" ), QObject::tr( "min angle" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0, 180.0 ) );
+  addParameter( new QgsProcessingParameterField(
+    QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
+  ) );
+  addParameter( new QgsProcessingParameterNumber(
+    QStringLiteral( "MIN_ANGLE" ), QObject::tr( "Minimum angle" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0, 180.0
+  ) );
 
   // outputs
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  addParameter( new QgsProcessingParameterFeatureSink(
+    QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), Qgis::ProcessingSourceType::VectorPoint
+  ) );
+  addParameter( new QgsProcessingParameterFeatureSink(
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
+  ) );
 
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
+  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+  );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( tolerance.release() );
 }
 
-auto QgsGeometryCheckAngleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) -> bool
+bool QgsGeometryCheckAngleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
 
   return true;
 }
 
-
-auto QgsGeometryCheckAngleAlgorithm::outputFields() -> QgsFields
+QgsFields QgsGeometryCheckAngleAlgorithm::outputFields()
 {
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "gc_layerid" ), QMetaType::QString ) );
@@ -110,12 +120,13 @@ auto QgsGeometryCheckAngleAlgorithm::outputFields() -> QgsFields
   return fields;
 }
 
-
-auto QgsGeometryCheckAngleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) -> QVariantMap
+QVariantMap QgsGeometryCheckAngleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;
   QString dest_errors;
-  QgsProcessingFeatureSource *input = parameterAsSource( parameters, QStringLiteral( "INPUT" ), context );
+  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !input )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
   int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
@@ -127,11 +138,15 @@ auto QgsGeometryCheckAngleAlgorithm::processAlgorithm( const QVariantMap &parame
   QgsFields fields = outputFields();
   fields.append( uniqueIdField );
 
-  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs() ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
+    parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs()
+  ) );
   if ( !sink_output )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink( parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs() ) );
+  const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
+    parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
+  ) );
   if ( !sink_errors )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "ERRORS" ) ) );
 
@@ -139,7 +154,7 @@ auto QgsGeometryCheckAngleAlgorithm::processAlgorithm( const QVariantMap &parame
 
   const QgsProject *project = QgsProject::instance();
 
-  const std::unique_ptr<QgsGeometryCheckContext> checkContext = std::make_unique<QgsGeometryCheckContext>( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
@@ -149,14 +164,15 @@ auto QgsGeometryCheckAngleAlgorithm::processAlgorithm( const QVariantMap &parame
 
   QVariantMap configurationCheck;
   configurationCheck.insert( "minAngle", minAngle );
-  const QgsGeometryAngleCheck check( checkContext.get(), configurationCheck );
+  const QgsGeometryAngleCheck check( &checkContext, configurationCheck );
 
   multiStepFeedback.setCurrentStep( 1 );
   feedback->setProgressText( QObject::tr( "Preparing features…" ) );
   QMap<QString, QgsFeaturePool *> featurePools;
 
-  QgsVectorLayer *inputLayer = input->materialize( QgsFeatureRequest() );
-  featurePools.insert( inputLayer->id(), new QgsVectorDataProviderFeaturePool( inputLayer ) );
+  std::unique_ptr<QgsVectorLayer> inputLayer( input->materialize( QgsFeatureRequest() ) );
+  QgsVectorDataProviderFeaturePool featurePool = QgsVectorDataProviderFeaturePool( inputLayer.get() );
+  featurePools.insert( inputLayer->id(), &featurePool );
 
   multiStepFeedback.setCurrentStep( 2 );
   feedback->setProgressText( QObject::tr( "Collecting errors…" ) );
