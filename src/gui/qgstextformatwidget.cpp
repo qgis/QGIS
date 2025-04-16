@@ -115,6 +115,11 @@ void QgsTextFormatWidget::initWidget()
   mRenderingItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/render.svg" ) ) );
   mRenderingItem->setToolTip( tr( "Rendering" ) );
 
+#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10 )
+  mDuplicatesStackedWidget->setCurrentWidget( mDuplicatesNotAvailableWidget );
+  mLabelSpacingStackedWidget->setCurrentWidget( mLabelSpacingNotAvailableWidget );
+#endif
+
   mLabelingOptionsListWidget->addItem( mTextItem );
   mLabelingOptionsListWidget->addItem( mFormattingItem );
   mLabelingOptionsListWidget->addItem( mBufferItem );
