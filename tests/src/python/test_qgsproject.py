@@ -713,7 +713,7 @@ class TestQgsProject(QgisTestCase):
         QgsProject.instance().removeAllMapLayers()
 
         # test no crash with empty registry
-        QgsProject.instance().removeMapLayersById(["bad"])
+        QgsProject.instance().removeMapLayers(["bad"])
         QgsProject.instance().removeMapLayers([None])
 
         l1 = createLayer("test")
@@ -724,30 +724,30 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(QgsProject.instance().count(), 3)
 
         # remove bad layers
-        QgsProject.instance().removeMapLayersById(["bad"])
+        QgsProject.instance().removeMapLayers(["bad"])
         self.assertEqual(QgsProject.instance().count(), 3)
         QgsProject.instance().removeMapLayers([None])
         self.assertEqual(QgsProject.instance().count(), 3)
 
         # remove valid layers
         l1_id = l1.id()
-        QgsProject.instance().removeMapLayersById([l1_id])
+        QgsProject.instance().removeMapLayers([l1_id])
         self.assertEqual(QgsProject.instance().count(), 2)
         # double remove
-        QgsProject.instance().removeMapLayersById([l1_id])
+        QgsProject.instance().removeMapLayers([l1_id])
         self.assertEqual(QgsProject.instance().count(), 2)
 
         # test that layer has been deleted
         self.assertTrue(sip.isdeleted(l1))
 
         # remove multiple
-        QgsProject.instance().removeMapLayersById([l2.id(), l3.id()])
+        QgsProject.instance().removeMapLayers([l2.id(), l3.id()])
         self.assertEqual(QgsProject.instance().count(), 0)
         self.assertTrue(sip.isdeleted(l2))
 
         # try removing a layer not in the registry
         l4 = createLayer("test4")
-        QgsProject.instance().removeMapLayersById([l4.id()])
+        QgsProject.instance().removeMapLayers([l4.id()])
         self.assertFalse(sip.isdeleted(l4))
 
     # fails on qt5 due to removeMapLayers list type conversion - needs a PyName alias
@@ -835,7 +835,7 @@ class TestQgsProject(QgisTestCase):
         # remove layers
         l1_id = l1.id()
         l2_id = l2.id()
-        QgsProject.instance().removeMapLayersById([l1_id, l2_id])
+        QgsProject.instance().removeMapLayers([l1_id, l2_id])
         self.assertEqual(QgsProject.instance().count(), 0)
 
     def test_removeMapLayerByLayer(self):
@@ -925,7 +925,7 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(QgsProject.instance().count(), 3)
 
         # remove 2 layers at once
-        QgsProject.instance().removeMapLayersById([l2.id(), l3.id()])
+        QgsProject.instance().removeMapLayers([l2.id(), l3.id()])
         self.assertEqual(len(layers_will_be_removed_spy), 2)
         self.assertEqual(len(layer_will_be_removed_spy_str), 3)
         self.assertEqual(len(layer_will_be_removed_spy_layer), 3)
@@ -944,7 +944,7 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(remove_all_spy), 1)
 
         # remove some layers which aren't in the registry
-        QgsProject.instance().removeMapLayersById(["asdasd"])
+        QgsProject.instance().removeMapLayers(["asdasd"])
         self.assertEqual(len(layers_will_be_removed_spy), 3)
         self.assertEqual(len(layer_will_be_removed_spy_str), 4)
         self.assertEqual(len(layer_will_be_removed_spy_layer), 4)
@@ -966,7 +966,7 @@ class TestQgsProject(QgisTestCase):
 
         reg = QgsProject.instance()
         # Should not segfault
-        reg.removeMapLayersById(["not_exists"])
+        reg.removeMapLayers(["not_exists"])
         reg.removeMapLayer("not_exists2")
 
         # check also that the removal of an unexistent layer does not insert a null layer
