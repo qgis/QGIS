@@ -48,8 +48,7 @@ class TestQgsProcessingCheckGeometry : public QgsTest
     void selfIntersectionAlg_data();
     void selfIntersectionAlg();
 
-    void duplicateAlg_data();
-    void duplicateAlg();
+    void dangleAlg();
 
     void areaAlg();
     void holeAlg();
@@ -391,27 +390,15 @@ void TestQgsProcessingCheckGeometry::selfIntersectionAlg()
   QCOMPARE( errorsLayer->featureCount(), expectedErrorCount );
 }
 
-void TestQgsProcessingCheckGeometry::duplicateAlg_data()
+void TestQgsProcessingCheckGeometry::dangleAlg()
 {
-  QTest::addColumn<QgsVectorLayer *>( "layerToTest" );
-  QTest::addColumn<int>( "expectedErrorCount" );
-  QTest::newRow( "Point layer" ) << mPointLayer << 1;
-  QTest::newRow( "Line layer" ) << mLineLayer << 1;
-  QTest::newRow( "Polygon layer" ) << mPolygonLayer << 1;
-}
-
-void TestQgsProcessingCheckGeometry::duplicateAlg()
-{
-  QFETCH( QgsVectorLayer *, layerToTest );
-  QFETCH( int, expectedErrorCount );
-
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryduplicate" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrydangle" ) )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layerToTest ) );
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mLineLayer ) );
   parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
   parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
@@ -428,8 +415,8 @@ void TestQgsProcessingCheckGeometry::duplicateAlg()
   std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
-  QCOMPARE( outputLayer->featureCount(), expectedErrorCount );
-  QCOMPARE( errorsLayer->featureCount(), expectedErrorCount );
+  QCOMPARE( outputLayer->featureCount(), 6 );
+  QCOMPARE( errorsLayer->featureCount(), 6 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingCheckGeometry )
