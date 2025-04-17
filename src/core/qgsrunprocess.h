@@ -78,7 +78,7 @@ class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
     // Deletes the instance of the class
     void die();
 
-    QProcess *mProcess = nullptr;
+    std::unique_ptr<QProcess> mProcess;
     QgsMessageOutput *mOutput = nullptr;
     QString mCommand;
 
