@@ -41,7 +41,7 @@ QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
   //If the data type is larger than 16-bit do not generate a lookup table
   if ( mRasterDataTypeRange <= 65535.0 )
   {
-    mLookupTable = new int[static_cast <int>( mRasterDataTypeRange + 1 )];
+    mLookupTable = std::make_unique<int[]>( static_cast <int>( mRasterDataTypeRange + 1 ) );
   }
 }
 
@@ -60,13 +60,13 @@ QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement &ce
   //If the data type is larger than 16-bit do not generate a lookup table
   if ( mRasterDataTypeRange <= 65535.0 )
   {
-    mLookupTable = new int[static_cast <int>( mRasterDataTypeRange + 1 )];
+    mLookupTable = std::make_unique<int[]>( static_cast <int>( mRasterDataTypeRange + 1 ) );
   }
 }
 
 QgsContrastEnhancement::~QgsContrastEnhancement()
 {
-  delete [] mLookupTable;
+
 }
 
 int QgsContrastEnhancement::enhanceContrast( double value )

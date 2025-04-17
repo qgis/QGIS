@@ -292,7 +292,6 @@ Constructor for QgsSettingsTreeNamedListNode.
 
 .. seealso:: :py:func:`QgsSettingsTree.createPluginTreeNode`
 %End
-    QgsSettingsTreeNamedListNode( const QgsSettingsTreeNamedListNode &other );
 };
 
 /************************************************************************
