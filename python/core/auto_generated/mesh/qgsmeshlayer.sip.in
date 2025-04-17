@@ -30,10 +30,10 @@ different data types. It does not yet support editing transactions.
 The main data providers supported by QGIS are listed below.
 
 Mesh data providers
--------------------
+===================
 
 Memory data providerType (mesh_memory)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------
 
 The memory data provider is used to construct in memory data, for
 example scratch data. There is no inherent persistent storage of the
@@ -56,7 +56,7 @@ to create mesh with one quad and one triangle
       scratchLayer = QgsMeshLayer(uri, "My Scratch layer", "mesh_memory")
 
 MDAL data provider (mdal)
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------
 
 Accesses data using the MDAL drivers
 (https://github.com/lutraconsulting/MDAL). The url is the MDAL
