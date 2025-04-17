@@ -38,6 +38,14 @@ class GUI_EXPORT QgsDatabaseQueryHistoryWidget : public QgsHistoryWidget
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsDatabaseQueryHistoryWidget, with the specified \a parent widget.
+     *
+     * If \a backends is specified then the widget will be filtered to only matching backends.
+     *
+     * If no \a registry is specified then the singleton QgsHistoryProviderRegistry from QgsGui::historyProviderRegistry()
+     * will be used.
+     */
     QgsDatabaseQueryHistoryWidget( Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile, QgsHistoryProviderRegistry *registry = nullptr, const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(), QWidget *parent = nullptr );
 
     /**
