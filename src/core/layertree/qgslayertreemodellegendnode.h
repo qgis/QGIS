@@ -809,7 +809,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
 
   private:
     void cacheImage() const;
-    QgsDataDefinedSizeLegend *mSettings = nullptr;
+    std::unique_ptr<QgsDataDefinedSizeLegend> mSettings;
     mutable QImage mImage;
 };
 
