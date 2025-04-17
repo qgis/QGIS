@@ -61,6 +61,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcellstatistics.cpp
   processing/qgsalgorithmcentroid.cpp
+  processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmfixgeometryangle.cpp
   processing/qgsalgorithmcheckgeometryhole.cpp
@@ -70,6 +71,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcheckgeometryarea.cpp
   processing/qgsalgorithmfixgeometryarea.cpp
   processing/qgsalgorithmcheckgeometrymultipart.cpp
+  processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp
+  processing/qgsalgorithmcheckgeometrycontained.cpp
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconcavehull.cpp
   processing/qgsalgorithmconditionalbranch.cpp

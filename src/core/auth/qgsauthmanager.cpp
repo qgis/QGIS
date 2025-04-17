@@ -838,8 +838,8 @@ void QgsAuthManager::setScheduledAuthDatabaseErase( bool scheduleErase )
   {
     if ( !mScheduledDbEraseTimer )
     {
-      mScheduledDbEraseTimer = new QTimer( this );
-      connect( mScheduledDbEraseTimer, &QTimer::timeout, this, &QgsAuthManager::tryToStartDbErase );
+      mScheduledDbEraseTimer = std::make_unique<QTimer>( this );
+      connect( mScheduledDbEraseTimer.get(), &QTimer::timeout, this, &QgsAuthManager::tryToStartDbErase );
       mScheduledDbEraseTimer->start( mScheduledDbEraseRequestWait * 1000 );
     }
     else if ( !mScheduledDbEraseTimer->isActive() )
@@ -3324,8 +3324,7 @@ QgsAuthManager::~QgsAuthManager()
     if ( authConn.isValid() && authConn.isOpen() )
       authConn.close();
   }
-  delete mScheduledDbEraseTimer;
-  mScheduledDbEraseTimer = nullptr;
+
   QSqlDatabase::removeDatabase( QStringLiteral( "authentication.configs" ) );
 }
 
@@ -4164,4 +4163,3 @@ QgsAuthConfigurationStorage *QgsAuthManager::firstStorageWithCapability( Qgis::A
   QgsAuthConfigurationStorageRegistry *storageRegistry = authConfigurationStorageRegistry();
   return storageRegistry->firstReadyStorageWithCapability( capability );
 }
-
