@@ -17,6 +17,7 @@
 #include "qgsnativealgorithms.h"
 #include "qgsprocessingregistry.h"
 #include "qgstest.h"
+#include "qgswkbtypes.h"
 #include "qgsvectorlayer.h"
 
 class TestQgsProcessingFixGeometry : public QgsTest
@@ -35,6 +36,9 @@ class TestQgsProcessingFixGeometry : public QgsTest
 
     void fixAngleAlg_data();
     void fixAngleAlg();
+
+    void fixMultipartAlg_data();
+    void fixMultipartAlg();
 
     void fixAreaAlg_data();
     void fixAreaAlg();
@@ -185,6 +189,83 @@ void TestQgsProcessingFixGeometry::fixAngleAlg()
     }
     QCOMPARE( nbVertices, it.value() );
   }
+}
+
+void TestQgsProcessingFixGeometry::fixMultipartAlg_data()
+{
+  const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+
+  QTest::addColumn<QgsVectorLayer *>( "sourceLayer" );
+  QTest::addColumn<QgsVectorLayer *>( "errorsLayer" );
+  QTest::addColumn<QStringList>( "reportList" );
+
+  QStringList linesReportList;
+  for ( int i = 0; i < 8; i++ )
+    linesReportList << QStringLiteral( "Convert to single part feature" );
+  QTest::newRow( "Lines" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "strict_multipart.gpkg|layername=lines_to_fix" ), QStringLiteral( "lines fo fix" ), QStringLiteral( "ogr" ) )
+    << linesReportList;
+
+  QStringList polygonsReportList;
+  for ( int i = 0; i < 24; i++ )
+    polygonsReportList << QStringLiteral( "Convert to single part feature" );
+  QTest::newRow( "Polygons" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygon" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "strict_multipart.gpkg|layername=polygons_to_fix" ), QStringLiteral( "polygons fo fix" ), QStringLiteral( "ogr" ) )
+    << polygonsReportList;
+}
+
+void TestQgsProcessingFixGeometry::fixMultipartAlg()
+{
+  QFETCH( QgsVectorLayer *, sourceLayer );
+  QFETCH( QgsVectorLayer *, errorsLayer );
+  QFETCH( QStringList, reportList );
+
+  QVERIFY( sourceLayer->isValid() );
+  QVERIFY( errorsLayer->isValid() );
+
+  const std::unique_ptr<QgsProcessingAlgorithm> alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometrymultipart" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( sourceLayer->source() ) ) );
+  parameters.insert( QStringLiteral( "ERRORS" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( errorsLayer->source() ) ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "REPORT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  auto context = std::make_unique<QgsProcessingContext>();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  QVERIFY( reportLayer->isValid() );
+  QVERIFY( outputLayer->isValid() );
+
+  QCOMPARE( outputLayer->featureCount(), sourceLayer->featureCount() );
+  QCOMPARE( reportLayer->featureCount(), reportList.count() );
+  int idx = 1;
+  for ( const QString &expectedReport : reportList )
+  {
+    const QgsFeature reportFeature = reportLayer->getFeature( idx );
+    QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
+    idx++;
+  }
+
+  // Verification of multipart type
+  QSet<QVariant> singleTypeIds = reportLayer->uniqueValues( reportLayer->fields().indexFromName( QStringLiteral( "id" ) ) );
+  QgsFeatureIterator it = outputLayer->getFeatures();
+  QgsFeature feat;
+  while ( it.nextFeature( feat ) )
+    QCOMPARE( QgsWkbTypes::isSingleType( feat.geometry().wkbType() ), singleTypeIds.contains( feat.attribute( QStringLiteral( "id" ) ) ) );
 }
 
 void TestQgsProcessingFixGeometry::fixAreaAlg_data()
