@@ -582,7 +582,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // Set to true if object has to be deleted when possible (nothing running in threads)
     bool mDeferredDelete = false;
-    QFutureWatcher< QVector <QgsDataItem *> > *mFutureWatcher = nullptr;
+    std::unique_ptr<QFutureWatcher<QVector<QgsDataItem *> >> mFutureWatcher;
     // number of items currently in loading (populating) state
     static QgsAnimatedIcon *sPopulatingIcon;
 };

@@ -125,10 +125,29 @@ class CORE_EXPORT QgsRasterBlock
       return typeSize( mDataType );
     }
 
-    //! Returns TRUE if data type is numeric
+    /**
+     * Returns TRUE if a data type is numeric.
+     *
+     * \see typeIsComplex()
+     * \see typeIsColor()
+     */
     static bool typeIsNumeric( Qgis::DataType type );
 
-    //! Returns TRUE if data type is color
+    /**
+     * Returns TRUE if a data type is a complex number type.
+     *
+     * \see typeIsNumeric()
+     * \see typeIsColor()
+     * \since QGIS 3.44
+     */
+    static bool typeIsComplex( Qgis::DataType type );
+
+    /**
+     * Returns TRUE if a data type is a color type.
+     *
+     * \see typeIsNumeric()
+     * \see typeIsComplex()
+     */
     static bool typeIsColor( Qgis::DataType type );
 
     //! Returns data type
@@ -527,6 +546,50 @@ class CORE_EXPORT QgsRasterBlock
       const int nodata = 0x80 >> bit;
       mNoDataBitmap[byte] = mNoDataBitmap[byte] & ~nodata;
     }
+
+#ifndef SIP_RUN
+    /**
+     * Fills the whole block with a constant \a value.
+     *
+     * This method only applies to numeric raster blocks, not color blocks.
+     *
+     * \returns TRUE on success
+     * \since QGIS 3.44
+    */
+    bool fill( double value );
+#else
+
+    /**
+     * Fills the whole block with a constant \a value.
+     *
+     * This method only applies to numeric raster blocks, not color blocks or complex number data types.
+     *
+     * \throws ValueError if the block is an empty, non-numeric or complex number type raster block.
+     * \since QGIS 3.44
+    */
+    void fill( double value );
+    % MethodCode
+    if ( !QgsRasterBlock::typeIsNumeric( sipCpp->dataType() ) )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot fill a block with %1 data type" ).arg( qgsEnumValueToKey( sipCpp->dataType() ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( QgsRasterBlock::typeIsComplex( sipCpp->dataType() ) )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot fill a block with %1 complex data type" ).arg( qgsEnumValueToKey( sipCpp->dataType() ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( sipCpp->isEmpty() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot fill an empty block" ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->fill( a0 );
+    }
+    % End
+#endif
 
     /**
      * Gets access to raw data.
