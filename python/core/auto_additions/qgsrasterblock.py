@@ -2,6 +2,7 @@
 try:
     QgsRasterBlock.typeSize = staticmethod(QgsRasterBlock.typeSize)
     QgsRasterBlock.typeIsNumeric = staticmethod(QgsRasterBlock.typeIsNumeric)
+    QgsRasterBlock.typeIsComplex = staticmethod(QgsRasterBlock.typeIsComplex)
     QgsRasterBlock.typeIsColor = staticmethod(QgsRasterBlock.typeIsColor)
     QgsRasterBlock.typeWithNoDataValue = staticmethod(QgsRasterBlock.typeWithNoDataValue)
     QgsRasterBlock.valueBytes = staticmethod(QgsRasterBlock.valueBytes)

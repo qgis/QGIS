@@ -996,7 +996,7 @@ class CORE_EXPORT QgsPalLayerSettings
     //! Property collection for data defined label settings
     QgsPropertyCollection mDataDefinedProperties;
 
-    QgsExpression *expression = nullptr;
+    std::unique_ptr<QgsExpression> expression;
 
     std::unique_ptr< QFontDatabase > mFontDB;
 

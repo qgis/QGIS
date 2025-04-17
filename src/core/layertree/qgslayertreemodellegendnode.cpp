@@ -1492,13 +1492,13 @@ QImage QgsWmsLegendNode::getLegendGraphicBlocking() const
 
 QgsDataDefinedSizeLegendNode::QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-  , mSettings( new QgsDataDefinedSizeLegend( settings ) )
+  , mSettings( std::make_unique<QgsDataDefinedSizeLegend>( settings ) )
 {
 }
 
 QgsDataDefinedSizeLegendNode::~QgsDataDefinedSizeLegendNode()
 {
-  delete mSettings;
+
 }
 
 QVariant QgsDataDefinedSizeLegendNode::data( int role ) const
