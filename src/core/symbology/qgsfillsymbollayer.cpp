@@ -609,7 +609,7 @@ QgsGradientFillSymbolLayer::QgsGradientFillSymbolLayer( const QColor &color, con
 
 QgsGradientFillSymbolLayer::~QgsGradientFillSymbolLayer()
 {
-  delete mGradientRamp;
+
 }
 
 QgsSymbolLayer *QgsGradientFillSymbolLayer::create( const QVariantMap &props )
@@ -703,8 +703,7 @@ Qgis::SymbolLayerFlags QgsGradientFillSymbolLayer::flags() const
 
 void QgsGradientFillSymbolLayer::setColorRamp( QgsColorRamp *ramp )
 {
-  delete mGradientRamp;
-  mGradientRamp = ramp;
+  mGradientRamp.reset( ramp );
 }
 
 QString QgsGradientFillSymbolLayer::layerType() const
@@ -717,7 +716,7 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
   if ( !dataDefinedProperties().hasActiveProperties() && !mReferencePoint1IsCentroid && !mReferencePoint2IsCentroid )
   {
     //shortcut
-    applyGradient( context, mBrush, mColor, mColor2,  mGradientColorType, mGradientRamp, mGradientType, mCoordinateMode,
+    applyGradient( context, mBrush, mColor, mColor2,  mGradientColorType, mGradientRamp.get(), mGradientType, mCoordinateMode,
                    mGradientSpread, mReferencePoint1, mReferencePoint2, mAngle );
     return;
   }
@@ -874,7 +873,7 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
   }
 
   //update gradient with data defined values
-  applyGradient( context, mBrush, color, color2,  mGradientColorType, mGradientRamp, gradientType, coordinateMode,
+  applyGradient( context, mBrush, color, color2,  mGradientColorType, mGradientRamp.get(), gradientType, coordinateMode,
                  spread, QPointF( refPoint1X, refPoint1Y ), QPointF( refPoint2X, refPoint2Y ), angle );
 }
 

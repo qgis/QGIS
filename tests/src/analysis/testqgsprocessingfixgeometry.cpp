@@ -39,6 +39,15 @@ class TestQgsProcessingFixGeometry : public QgsTest
     void fixAreaAlg_data();
     void fixAreaAlg();
 
+    void fixDeleteFeaturesAlg_data();
+    void fixDeleteFeaturesAlg();
+    
+    void fixGapAlg_data();
+    void fixGapAlg();
+    
+    void fixSelfIntersectionAlg_data();
+    void fixSelfIntersectionAlg();
+
     void fixHoleAlg();
     void fixOverlapAlg();
     void fixMissingVertexAlg();
@@ -271,6 +280,200 @@ void TestQgsProcessingFixGeometry::fixAreaAlg()
   }
 }
 
+void TestQgsProcessingFixGeometry::fixGapAlg_data()
+{
+  //create a line layer that will be used in tests
+  QTest::addColumn<QStringList>( "reportList" );
+  QTest::addColumn<int>( "featureCount" );
+  QTest::addColumn<int>( "method" );
+
+  QTest::newRow( "Add to longest shared edge" )
+    << ( QStringList()
+         << QStringLiteral( "Add to longest shared edge" )
+         << QStringLiteral( "Add to longest shared edge" )
+         << QStringLiteral( "Add to longest shared edge" )
+         << QStringLiteral( "Add to longest shared edge" )
+         << QStringLiteral( "Add to longest shared edge" ) )
+    << 6
+    << 0;
+
+  QTest::newRow( "Create new feature" )
+    << ( QStringList()
+         << QStringLiteral( "Create new feature" )
+         << QStringLiteral( "Create new feature" )
+         << QStringLiteral( "Create new feature" )
+         << QStringLiteral( "Create new feature" )
+         << QStringLiteral( "Create new feature" ) )
+    << 11
+    << 1;
+
+  QTest::newRow( "Add to largest neighbouring area" )
+    << ( QStringList()
+         << QStringLiteral( "Add to largest neighbouring area" )
+         << QStringLiteral( "Add to largest neighbouring area" )
+         << QStringLiteral( "Add to largest neighbouring area" )
+         << QStringLiteral( "Add to largest neighbouring area" )
+         << QStringLiteral( "Add to largest neighbouring area" ) )
+    << 6
+    << 2;
+}
+
+void TestQgsProcessingFixGeometry::fixGapAlg()
+{
+  const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+  QgsVectorLayer sourceLayer = QgsVectorLayer( testDataDir.absoluteFilePath( "gap_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer gapsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "fix_gap.gpkg|layername=gaps" ), QStringLiteral( "gaps" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer neighborsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "fix_gap.gpkg|layername=neighbors" ), QStringLiteral( "neighbors" ), QStringLiteral( "ogr" ) );
+  QVERIFY( sourceLayer.isValid() );
+  QVERIFY( gapsLayer.isValid() );
+  QVERIFY( neighborsLayer.isValid() );
+
+  QFETCH( QStringList, reportList );
+  QFETCH( int, method );
+  QFETCH( int, featureCount );
+
+  const std::unique_ptr<QgsProcessingAlgorithm> alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometrygap" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( &sourceLayer ) );
+  parameters.insert( QStringLiteral( "NEIGHBORS" ), QVariant::fromValue( &neighborsLayer ) );
+  parameters.insert( QStringLiteral( "GAPS" ), QVariant::fromValue( &gapsLayer ) );
+  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+  parameters.insert( QStringLiteral( "METHOD" ), method );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "REPORT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  auto context = std::make_unique<QgsProcessingContext>();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  QVERIFY( reportLayer->isValid() );
+  QVERIFY( outputLayer->isValid() );
+
+  QCOMPARE( outputLayer->featureCount(), featureCount );
+  QCOMPARE( reportLayer->featureCount(), reportList.count() );
+  int idx = 1;
+  for ( const QString &expectedReport : reportList )
+  {
+    const QgsFeature reportFeature = reportLayer->getFeature( idx );
+    QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
+    idx++;
+  }
+}
+
+void TestQgsProcessingFixGeometry::fixSelfIntersectionAlg_data()
+{
+  const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+
+  //create a line layer that will be used in tests
+  QTest::addColumn<QgsVectorLayer *>( "sourceLayer" );
+  QTest::addColumn<QgsVectorLayer *>( "errorsLayer" );
+  QTest::addColumn<QStringList>( "reportList" );
+  QTest::addColumn<int>( "method" );
+  QTest::addColumn<int>( "expectedOutputFeatureCount" );
+
+  QTest::newRow( "(lines) Split feature into a multi-object feature" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), QStringLiteral( "line layer" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "split_self_intersections.gpkg|layername=lines_to_split" ), QStringLiteral( "lines to split" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << "Split feature into a multi-object feature"
+         << "Split feature into a multi-object feature"
+         << "Error is obsolete" )
+    << 0
+    << 9;
+
+  QTest::newRow( "(lines) Split feature into multiple single-object features" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), QStringLiteral( "line layer" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "split_self_intersections.gpkg|layername=lines_to_split" ), QStringLiteral( "lines to split" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << "Split feature into multiple single-object features"
+         << "Split feature into multiple single-object features"
+         << "Error is obsolete" )
+    << 1
+    << 11;
+
+  QTest::newRow( "(polygons) Split feature into a multi-object feature" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygon_line layer" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "split_self_intersections.gpkg|layername=polygons_to_split" ), QStringLiteral( "polygons to split" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << "Split feature into a multi-object feature"
+         << "Split feature into a multi-object feature" )
+    << 0
+    << 25;
+
+  QTest::newRow( "(lines) Split feature into multiple single-object features" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygon layer" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "split_self_intersections.gpkg|layername=polygons_to_split" ), QStringLiteral( "polygons to split" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << "Split feature into multiple single-object features"
+         << "Split feature into multiple single-object features" )
+    << 1
+    << 27;
+
+  // QTest::newRow( "Split feature into multiple single-object features" )
+  //   << new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygon layer" ), QStringLiteral( "ogr" ) )
+  //   << new QgsVectorLayer( mDataDir.absoluteFilePath( "split_self_intersections.gpkg|layername=polygons_to_split" ), QStringLiteral( "polygons to split" ), QStringLiteral( "ogr" ) )
+  //   << ( QStringList() << "" )
+  //   << 1;
+}
+
+void TestQgsProcessingFixGeometry::fixSelfIntersectionAlg()
+{
+  QFETCH( QgsVectorLayer *, sourceLayer );
+  QFETCH( QgsVectorLayer *, errorsLayer );
+  QFETCH( QStringList, reportList );
+  QFETCH( int, method );
+  QFETCH( int, expectedOutputFeatureCount );
+
+  QVERIFY( sourceLayer->isValid() );
+  QVERIFY( errorsLayer->isValid() );
+
+  const std::unique_ptr<QgsProcessingAlgorithm> alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometryselfintersection" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( sourceLayer ) );
+  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+  parameters.insert( QStringLiteral( "ERRORS" ), QVariant::fromValue( errorsLayer ) );
+  parameters.insert( QStringLiteral( "METHOD" ), method );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "REPORT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  auto context = std::make_unique<QgsProcessingContext>();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  QVERIFY( reportLayer->isValid() );
+  QVERIFY( outputLayer->isValid() );
+
+  QCOMPARE( outputLayer->featureCount(), expectedOutputFeatureCount );
+  QCOMPARE( reportLayer->featureCount(), reportList.count() );
+  int idx = 1;
+  for ( const QString &expectedReport : reportList )
+  {
+    const QgsFeature reportFeature = reportLayer->getFeature( idx );
+    QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
+    idx++;
+  }
+}
+
 void TestQgsProcessingFixGeometry::fixHoleAlg()
 {
   const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
@@ -405,6 +608,94 @@ void TestQgsProcessingFixGeometry::fixMissingVertexAlg()
   QVERIFY( outputLayer->isValid() );
 
   QCOMPARE( outputLayer->featureCount(), 6 );
+  QCOMPARE( reportLayer->featureCount(), reportList.count() );
+  int idx = 1;
+  for ( const QString &expectedReport : reportList )
+  {
+    const QgsFeature reportFeature = reportLayer->getFeature( idx );
+    QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
+    idx++;
+  }
+}
+
+void TestQgsProcessingFixGeometry::fixDeleteFeaturesAlg_data()
+{
+  const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+  QTest::addColumn<QgsVectorLayer *>( "sourceLayer" );
+  QTest::addColumn<QgsVectorLayer *>( "errorsLayer" );
+  QTest::addColumn<QStringList>( "reportList" );
+
+  QTest::newRow( "Points" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "point_layer.shp" ), QStringLiteral( "point layer" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_features.gpkg|layername=points_to_delete" ), QStringLiteral( "points to delete" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" ) );
+
+  QTest::newRow( "Lines" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), QStringLiteral( "line layer" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_features.gpkg|layername=lines_to_delete" ), QStringLiteral( "lines to delete" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" ) );
+
+  QTest::newRow( "Polygons" )
+    << new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygon layer" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_features.gpkg|layername=polygons_to_delete" ), QStringLiteral( "polygons to delete" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" )
+         << QStringLiteral( "Feature deleted" ) );
+}
+
+void TestQgsProcessingFixGeometry::fixDeleteFeaturesAlg()
+{
+  QFETCH( QgsVectorLayer *, sourceLayer );
+  QFETCH( QgsVectorLayer *, errorsLayer );
+  QFETCH( QStringList, reportList );
+
+  QVERIFY( sourceLayer->isValid() );
+  QVERIFY( errorsLayer->isValid() );
+
+  const std::unique_ptr<QgsProcessingAlgorithm> alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometrydeletefeatures" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( sourceLayer->source() ) ) );
+  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+  parameters.insert( QStringLiteral( "ERRORS" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( errorsLayer->source() ) ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "REPORT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  auto context = std::make_unique<QgsProcessingContext>();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  QVERIFY( reportLayer->isValid() );
+  QVERIFY( outputLayer->isValid() );
+
+  QCOMPARE( outputLayer->featureCount(), sourceLayer->featureCount() - reportList.count() );
   QCOMPARE( reportLayer->featureCount(), reportList.count() );
   int idx = 1;
   for ( const QString &expectedReport : reportList )

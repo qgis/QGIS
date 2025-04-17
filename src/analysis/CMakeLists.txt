@@ -61,15 +61,35 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcellstatistics.cpp
   processing/qgsalgorithmcentroid.cpp
+  processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmfixgeometryoverlap.cpp
+  processing/qgsalgorithmfixgeometrydeletefeatures.cpp
   processing/qgsalgorithmfixgeometryangle.cpp
+  processing/qgsalgorithmfixgeometryselfintersection.cpp
+  processing/qgsalgorithmfixgeometrygap.cpp
   processing/qgsalgorithmcheckgeometryhole.cpp
   processing/qgsalgorithmfixgeometryhole.cpp
   processing/qgsalgorithmcheckgeometrymissingvertex.cpp
   processing/qgsalgorithmfixgeometrymissingvertex.cpp
   processing/qgsalgorithmcheckgeometryarea.cpp
   processing/qgsalgorithmfixgeometryarea.cpp
+  processing/qgsalgorithmcheckgeometrylineintersection.cpp
+  processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp
+  processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp
+  processing/qgsalgorithmcheckgeometrypointinpolygon.cpp
+  processing/qgsalgorithmcheckgeometrygap.cpp
+  processing/qgsalgorithmcheckgeometrysliverpolygon.cpp
+  processing/qgsalgorithmcheckgeometryselfcontact.cpp
+  processing/qgsalgorithmcheckgeometryoverlap.cpp
+  processing/qgsalgorithmcheckgeometryfollowboundaries.cpp
+  processing/qgsalgorithmcheckgeometryduplicatenodes.cpp
+  processing/qgsalgorithmcheckgeometrydangle.cpp
+  processing/qgsalgorithmcheckgeometryduplicate.cpp
+  processing/qgsalgorithmcheckgeometryselfintersection.cpp
+  processing/qgsalgorithmcheckgeometrymultipart.cpp
+  processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp
+  processing/qgsalgorithmcheckgeometrycontained.cpp
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconcavehull.cpp
   processing/qgsalgorithmconditionalbranch.cpp
