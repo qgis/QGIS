@@ -45,10 +45,10 @@ class TestQgsProcessingFixGeometry : public QgsTest
 
     void fixDeleteFeaturesAlg_data();
     void fixDeleteFeaturesAlg();
-    
+
     void fixGapAlg_data();
     void fixGapAlg();
-    
+
     void fixSelfIntersectionAlg_data();
     void fixSelfIntersectionAlg();
 
