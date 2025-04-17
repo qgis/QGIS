@@ -3940,6 +3940,9 @@ void QgsGdalProvider::initBaseDataset()
         case GDT_Int16:
         case GDT_UInt32:
         case GDT_Int32:
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+        case GDT_Float16:
+#endif
         case GDT_Float32:
         case GDT_CInt16:
           myGdalDataType = GDT_Float32;
@@ -3953,6 +3956,10 @@ void QgsGdalProvider::initBaseDataset()
 #endif
           myGdalDataType = GDT_Float64;
           break;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+        case GDT_CFloat16:
+          break;
+#endif
         case GDT_CFloat64:
           break;
       }
