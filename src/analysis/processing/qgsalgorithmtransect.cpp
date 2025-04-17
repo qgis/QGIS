@@ -63,6 +63,11 @@ void QgsTransectAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( angle.release() );
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SIDE" ), QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false ) );
+
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "INTERVAL" ), QObject::tr( "Fixed sampling interval" ), Qgis::ProcessingNumberParameterType::Double, 10.0, false, 0 ) );
+
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FIXED_DISTANCE" ), QObject::tr( "Use fixed interval sampling (ignore original vertices)" ), false ) );
+
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Transect" ), Qgis::ProcessingSourceType::VectorLine ) );
 }
 
@@ -110,6 +115,11 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
   if ( dynamicLength )
     lengthProperty = parameters.value( QStringLiteral( "LENGTH" ) ).value<QgsProperty>();
 
+  const bool fixedDist = parameterAsBool( parameters, QStringLiteral( "FIXED_DISTANCE" ), context );
+  double interval = 0.0;
+  if ( fixedDist )
+    interval = parameterAsDouble( parameters, QStringLiteral( "INTERVAL" ), context );
+
   if ( orientation == QgsTransectAlgorithm::Both )
     length /= 2.0;
 
@@ -146,7 +156,6 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
   const double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
   QgsFeature feat;
 
-
   while ( features.nextFeature( feat ) )
   {
     current++;
@@ -175,24 +184,60 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
 
     inputGeometry.convertToMultiType();
     const QgsMultiLineString *multiLine = static_cast<const QgsMultiLineString *>( inputGeometry.constGet() );
-    for ( int id = 0; id < multiLine->numGeometries(); ++id )
+
+    for ( int part = 0; part < multiLine->numGeometries(); ++part )
     {
-      const QgsLineString *line = multiLine->lineStringN( id );
-      QgsAbstractGeometry::vertex_iterator it = line->vertices_begin();
-      while ( it != line->vertices_end() )
+      const QgsLineString *lineString = multiLine->lineStringN( part );
+      if ( !lineString )
+        continue;
+
+      QgsLineString line = *lineString;
+      std::vector<QgsPoint> samplingPoints;
+
+      // Determine sampling points based on mode (fixed distance or vertices)
+      if ( fixedDist )
       {
-        const QgsVertexId vertexId = it.vertexId();
-        const int i = vertexId.vertex;
+        double totalLength = line.length();
+        for ( double d = 0; d <= totalLength; d += interval )
+        {
+          QgsPoint *pt = line.interpolatePoint( d );
+          samplingPoints.push_back( *pt );
+        }
+      }
+      else
+      {
+        for ( auto it = line.vertices_begin(); it != line.vertices_end(); ++it )
+          samplingPoints.push_back( *it );
+      }
+
+      for ( int i = 0; i < static_cast<int>( samplingPoints.size() ); ++i )
+      {
+        const QgsPoint &pt = samplingPoints[i];
+        double azimuth = 0;
+
+        if ( fixedDist )
+        {
+          QgsPoint segPt;
+          QgsVertexId vid;
+          line.closestSegment( pt, segPt, vid, nullptr, Qgis::DEFAULT_SEGMENT_EPSILON );
+          QgsVertexId prev( vid.part, vid.ring, vid.vertex - 1 );
+          azimuth = line.vertexAt( prev ).azimuth( line.vertexAt( vid ) ) * M_PI / 180.0;
+        }
+        else
+        {
+          azimuth = line.vertexAngle( QgsVertexId( part, 0, i ) );
+        }
+
         QgsFeature outFeat;
         QgsAttributes attrs = feat.attributes();
-        attrs << current << number << i + 1 << evaluatedAngle << ( ( orientation == QgsTransectAlgorithm::Both ) ? evaluatedLength * 2 : evaluatedLength ) << orientation;
+        attrs << current << number << i + 1 << evaluatedAngle
+              << ( ( orientation == QgsTransectAlgorithm::Both ) ? evaluatedLength * 2 : evaluatedLength )
+              << static_cast<int>( orientation );
         outFeat.setAttributes( attrs );
-        const double angleAtVertex = line->vertexAngle( vertexId );
-        outFeat.setGeometry( calcTransect( *it, angleAtVertex, evaluatedLength, orientation, evaluatedAngle ) );
+        outFeat.setGeometry( calcTransect( pt, azimuth, evaluatedLength, orientation, evaluatedAngle ) );
         if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
         number++;
-        it++;
       }
     }
   }
@@ -203,7 +248,6 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
 }
-
 
 QgsGeometry QgsTransectAlgorithm::calcTransect( const QgsPoint &point, const double angleAtVertex, const double length, const QgsTransectAlgorithm::Side orientation, const double angle )
 {
