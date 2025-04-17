@@ -52,7 +52,6 @@ PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
 PyQgsServerWMSGetFeatureInfo
-PyQgsServerWMSGetMap
 PyQgsServerAccessControlWFSTransactional
 PyQgsServerWFS
 ProcessingQgisAlgorithmsTestPt2
