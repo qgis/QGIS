@@ -53,6 +53,7 @@ struct QgsWFSConstants
     static const QString URI_PARAM_GEOMETRY_TYPE_FILTER;
     static const QString URI_PARAM_SQL;
     static const QString URI_PARAM_HTTPMETHOD;
+    static const QString URI_PARAM_FEATURE_MODE;
 
     //
     static const QString VERSION_AUTO;
