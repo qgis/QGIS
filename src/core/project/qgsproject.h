@@ -1000,7 +1000,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns pointer to the helper class that synchronizes map layer registry with layer tree
      */
-    QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
+    QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge.get(); }
 
     /**
      * Returns pointer to the project's map theme collection.
@@ -2410,7 +2410,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QString mErrorMessage;
 
-    QgsProjectBadLayerHandler *mBadLayerHandler = nullptr;
+    std::unique_ptr<QgsProjectBadLayerHandler> mBadLayerHandler;
 
     /**
      * Embedded layers which are defined in other projects. Key: layer id,
@@ -2422,7 +2422,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsSnappingConfig mSnappingConfig;
     Qgis::AvoidIntersectionsMode mAvoidIntersectionsMode = Qgis::AvoidIntersectionsMode::AllowIntersections;
 
-    QgsRelationManager *mRelationManager = nullptr;
+    std::unique_ptr<QgsRelationManager> mRelationManager;
 
     std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
     std::unique_ptr<QgsLayoutManager> mLayoutManager;
@@ -2444,9 +2444,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsProjectGpsSettings *mGpsSettings = nullptr;
 
-    QgsLayerTree *mRootGroup = nullptr;
+    std::unique_ptr<QgsLayerTree> mRootGroup;
 
-    QgsLayerTreeRegistryBridge *mLayerTreeRegistryBridge = nullptr;
+    std::unique_ptr<QgsLayerTreeRegistryBridge> mLayerTreeRegistryBridge;
 
     QgsAnnotationLayer *mMainAnnotationLayer = nullptr;
 

@@ -100,11 +100,11 @@ void QgsPostgresProjectStorageDialog::populateSchemas()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( uri, false ) );
   if ( !conn )
   {
     QApplication::restoreOverrideCursor();
-    QMessageBox::critical( this, tr( "Error" ), tr( "Connection failed" ) + "\n" + uri.connectionInfo( false ) );
+    QMessageBox::critical( this, tr( "Error" ), tr( "Connection failed" ) + "\n" + QgsPostgresConn::connectionInfo( uri, false ) );
     return;
   }
 
