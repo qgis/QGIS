@@ -49,6 +49,7 @@
 #include "qgsalgorithmfixgeometryarea.h"
 #include "qgsalgorithmfixgeometryhole.h"
 #include "qgsalgorithmfixgeometrymissingvertex.h"
+#include "qgsalgorithmcheckgeometrylinelayerintersection.h"
 #include "qgsalgorithmcheckgeometrypointcoveredbyline.h"
 #include "qgsalgorithmcheckgeometryhole.h"
 #include "qgsalgorithmcheckgeometrymissingvertex.h"
@@ -354,6 +355,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsGeometryCheckAreaAlgorithm() );
   addAlgorithm( new QgsGeometryCheckHoleAlgorithm() );
   addAlgorithm( new QgsGeometryCheckMissingVertexAlgorithm() );
+  addAlgorithm( new QgsGeometryCheckLineLayerIntersectionAlgorithm() );
   addAlgorithm( new QgsGeometryCheckPointCoveredByLineAlgorithm() );
   addAlgorithm( new QgsGeometryCheckPointInPolygonAlgorithm() );
   addAlgorithm( new QgsGeometryCheckGapAlgorithm() );
