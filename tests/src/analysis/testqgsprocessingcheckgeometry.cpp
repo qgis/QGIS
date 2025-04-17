@@ -44,7 +44,7 @@ class TestQgsProcessingCheckGeometry : public QgsTest
 
     void segmentLengthAlg_data();
     void segmentLengthAlg();
-    
+
     void areaAlg();
     void holeAlg();
     void missingVertexAlg();
