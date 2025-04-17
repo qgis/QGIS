@@ -74,8 +74,9 @@ Sets the path ``prefix`` where the control images are kept.
 
     void setRenderedImage( const QString &renderedImagePath );
 %Docstring
-Set the path to the rendered image. If this is not set or set to null
-QString, an image will be rendered based on the provided mapsettings
+Set the path to the rendered image. If this is not set or set to an
+empty string, an image will be rendered based on the provided
+mapsettings
 
 :param renderedImagePath: A path to the rendered image with which
                           control images will be compared

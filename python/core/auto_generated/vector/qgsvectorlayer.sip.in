@@ -1078,7 +1078,7 @@ Sets the string (typically sql) used to define a subset of the layer
 %Docstring
 Returns the string (typically sql) used to define a subset of the layer.
 
-:return: The subset string or null QString if not implemented by the
+:return: The subset string or an empty string if not implemented by the
          provider
 %End
 

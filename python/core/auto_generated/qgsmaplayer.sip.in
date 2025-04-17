@@ -1020,7 +1020,7 @@ A convenience function to capitalize and format a layer ``name``.
 Retrieve the metadata URI for this layer (either as a .qmd file on disk
 or as a record in the users style table in their personal qgis.db)
 
-:return: a QString with the metadata file name
+:return: a string with the metadata file name
 %End
 
     void exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const;
@@ -1029,7 +1029,7 @@ Export the current metadata of this layer as named metadata in a
 QDomDocument
 
 :param doc: the target QDomDocument
-:param errorMsg: this QString will be initialized on error
+:param errorMsg: will be set to a descriptive message if an error occurs
 %End
 
     virtual QString saveDefaultMetadata( bool &resultFlag /Out/ );
@@ -1040,7 +1040,7 @@ personal qgis.db)
 
 
 
-:return: - a QString with any status messages
+:return: - a string with any status messages
          - resultFlag: ``False`` if we did not manage to save the
            default metadata.
 %End
@@ -1056,7 +1056,7 @@ personal qgis.db)
             that, if that fails the qgis.db metadata table will be used
             to create a metadata entry who's key matches the URI.
 
-:return: - a QString with any status messages
+:return: - a string with any status messages
          - resultFlag: ``False`` if we did not manage to save the
            default metadata.
 %End
@@ -1073,7 +1073,7 @@ qgis.db)
             if that fails the qgis.db metadata table will be consulted
             to see if there is a metadata who's key matches the URI.
 
-:return: - a QString with any status messages
+:return: - a string with any status messages
          - resultFlag: ``False`` if we did not manage to load the
            default metadata.
 %End
@@ -1087,7 +1087,7 @@ personal qgis.db)
 
 
 
-:return: - a QString with any status messages
+:return: - a string with any status messages
          - resultFlag: ``False`` if we did not manage to load the
            default metadata.
 %End
@@ -1108,7 +1108,8 @@ Retrieve a named metadata for this layer from a sqlite database.
 Import the metadata of this layer from a QDomDocument
 
 :param document: source QDomDocument
-:param errorMessage: this QString will be initialized on error
+:param errorMessage: will be set to a descriptive message if an error
+                     occurs
 
 :return: ``True`` on success
 %End
@@ -1118,7 +1119,7 @@ Import the metadata of this layer from a QDomDocument
 Retrieve the style URI for this layer (either as a .qml file on disk or
 as a record in the users style table in their personal qgis.db)
 
-:return: a QString with the style file name
+:return: a string with the style file name
 
 .. seealso:: :py:func:`loadNamedStyle`
 
@@ -1134,7 +1135,7 @@ personal qgis.db)
 
 
 
-:return: - a QString with any status messages
+:return: - a string with any status messages
          - resultFlag: ``False`` if we did not manage to load the
            default style.
 
@@ -1156,7 +1157,7 @@ qgis.db)
 :param flags: flags controlling how the style should be loaded (since
               QGIS 3.38)
 
-:return: - a QString with any status messages
+:return: - a string with any status messages
          - resultFlag: ``False`` if we did not manage to load the
            default style.
 
@@ -1183,8 +1184,8 @@ Import the properties of this layer from a QDomDocument
 :param categories: the style categories to import
 
 :return: - ``True`` on success
-         - errorMsg: this QString will be initialized on error during
-           the execution of readSymbology
+         - errorMsg: a descriptive message if an error occurs during the
+           execution of :py:func:`~QgsMapLayer.readSymbology`
 %End
 
     virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg /Out/, const QgsReadWriteContext &context = QgsReadWriteContext(),
@@ -1197,7 +1198,7 @@ Export the properties of this layer as named style in a QDomDocument
 :param categories: the style categories to export during the execution
                    of writeSymbology
 
-:return: this QString will be initialized on error
+:return: a descriptive message if an error occurs
 %End
 
 
@@ -1206,8 +1207,8 @@ Export the properties of this layer as named style in a QDomDocument
 Export the properties of this layer as SLD style in a QDomDocument
 
 :param doc: the target QDomDocument
-:param errorMsg: this QString will be initialized on error during the
-                 execution of writeSymbology
+:param errorMsg: will be set to a descriptive message if an error occurs
+                 during the execution of writeSymbology
 
 .. seealso:: :py:func:`exportSldStyleV2`
 %End
@@ -1217,8 +1218,9 @@ Export the properties of this layer as SLD style in a QDomDocument
 Export the properties of this layer as SLD style in a QDomDocument
 
 :param doc: the target QDomDocument
-:param errorMsg: this QString will be initialized on error during the
-                 execution of writeSymbology
+:param errorMsg: will be set to a descriptive message if an error occurs
+                 during the execution of
+                 :py:func:`~QgsMapLayer.writeSymbology`
 :param exportContext: SLD export context
 
 .. versionadded:: 3.30
@@ -1232,7 +1234,7 @@ qgis.db)
 
 :param categories: the style categories to be saved (since QGIS 3.26)
 
-:return: - a QString with any status messages
+:return: - a string with any status messages
          - resultFlag: ``False`` if we did not manage to save the
            default style.
 
@@ -1249,7 +1251,7 @@ qgis.db)
 
 
 
-:return: - a QString with any status messages
+:return: - a string with any status messages
          - resultFlag: ``False`` if we did not manage to save the
            default style.
 
@@ -1272,7 +1274,7 @@ qgis.db)
             create a style entry who's key matches the URI.
 :param categories: the style categories to be saved.
 
-:return: - a QString with any status messages
+:return: - a string with any status messages
          - resultFlag: ``False`` if we did not manage to save the
            default style.
 

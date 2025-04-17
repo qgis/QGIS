@@ -56,7 +56,7 @@ class SERVER_EXPORT QgsServerException
     /**
      * Formats the exception for sending to client
      *
-     * \param responseFormat QString to store the content type of the response format.
+     * \param responseFormat will be set to the content type of the response format.
      * \returns QByteArray The formatted response.
      *
      * The default implementation returns text/xml format.

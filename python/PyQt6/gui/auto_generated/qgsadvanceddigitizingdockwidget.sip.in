@@ -597,7 +597,7 @@ Set the X value on the widget. Can be used to set constraints by
 external widgets.
 
 :param mode: What type of interaction to emulate
-:param value: The value (as a QString, as it could be an expression)
+:param value: The value (as a string, as it could be an expression)
 
 .. note::
 
@@ -612,7 +612,7 @@ Set the Y value on the widget. Can be used to set constraints by
 external widgets.
 
 :param mode: What type of interaction to emulate
-:param value: The value (as a QString, as it could be an expression)
+:param value: The value (as a string, as it could be an expression)
 
 .. note::
 
@@ -627,7 +627,7 @@ Set the Z value on the widget. Can be used to set constraints by
 external widgets.
 
 :param mode: What type of interaction to emulate
-:param value: The value (as a QString, as it could be an expression)
+:param value: The value (as a string, as it could be an expression)
 
 .. note::
 
@@ -642,7 +642,7 @@ Set the M value on the widget. Can be used to set constraints by
 external widgets.
 
 :param mode: What type of interaction to emulate
-:param value: The value (as a QString, as it could be an expression)
+:param value: The value (as a string, as it could be an expression)
 
 .. note::
 
@@ -657,7 +657,7 @@ Set the angle value on the widget. Can be used to set constraints by
 external widgets.
 
 :param mode: What type of interaction to emulate
-:param value: The value (as a QString, as it could be an expression)
+:param value: The value (as a string, as it could be an expression)
 
 .. note::
 
@@ -672,7 +672,7 @@ Set the distance value on the widget. Can be used to set constraints by
 external widgets.
 
 :param mode: What type of interaction to emulate
-:param value: The value (as a QString, as it could be an expression)
+:param value: The value (as a string, as it could be an expression)
 
 .. note::
 

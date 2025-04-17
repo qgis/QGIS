@@ -65,10 +65,10 @@ class QgsAbstractMeshLayerLabeling;
  * \subsection mesh_memory Memory data providerType (mesh_memory)
  *
  * The memory data provider is used to construct in memory data, for example scratch
- * data. There is no inherent persistent storage of the data. The data source uri is constructed.
- * Data can be populated by setMesh(const QString &vertices, const QString &faces), where
- * vertices and faces is comma separated coordinates and connections for mesh.
- * E.g. to create mesh with one quad and one triangle
+ * data. There is no inherent persistent storage of the data. The data source uri is
+ * constructed where vertices and faces are comma separated coordinates and connections
+ * for the mesh.
+ * E.g. to create a mesh with one quad and one triangle
  *
  * \code{py}
  *  uri = "1.0, 2.0 \n" \

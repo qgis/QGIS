@@ -183,7 +183,7 @@ Examples are char, int, double, blob, geometry, etc. The type is stored
 exactly as the data store reports it, with no attempt to standardize the
 value.
 
-:return: QString containing the field type
+:return: string containing the field type
 %End
 
     int length() const /HoldGIL/;

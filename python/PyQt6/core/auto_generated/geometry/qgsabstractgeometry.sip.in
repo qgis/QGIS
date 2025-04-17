@@ -341,7 +341,7 @@ Returns a GML3 representation of the geometry.
 
     QString asJson( int precision = 17 );
 %Docstring
-Returns a GeoJSON representation of the geometry as a QString.
+Returns a GeoJSON representation of the geometry as a string.
 
 :param precision: number of decimal places for coordinates
 

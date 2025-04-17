@@ -102,7 +102,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     //! Convert the definition into a QUrl
     QUrl toUrl() const;
 
-    //! Convert into a QString that can be read by the virtual layer provider
+    //! Converts the definition into a QString that can be read by the virtual layer provider
     QString toString() const;
 
     //! Add a live layer source layer

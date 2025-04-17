@@ -38,11 +38,11 @@ Returns \verbatim <legend> \endverbatim tag used in QGIS 2.2 and below
 
     static QString checkStateToXml( Qt::CheckState state );
 %Docstring
-Convert Qt.CheckState to QString
+Convert Qt.CheckState to string
 %End
     static Qt::CheckState checkStateFromXml( const QString &txt );
 %Docstring
-Convert QString to Qt.CheckState
+Convert string to Qt.CheckState
 %End
 
     static bool layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes, bool ignoreLayersWhichCannotBeToggled = false );

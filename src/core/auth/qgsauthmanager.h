@@ -497,15 +497,26 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     ////////////////// Generic settings ///////////////////////
 
-    //! Store an authentication setting (stored as string via QVariant( value ).toString() )
+    /**
+     * Stores an authentication setting.
+     *
+     * The \a value will be stored as a string, using QVariant::toString().
+     *
+     * \see authSetting()
+     */
     bool storeAuthSetting( const QString &key, const QVariant &value, bool encrypt = false );
 
     /**
-     * \brief authSetting get an authentication setting (retrieved as string and returned as QVariant( QString ))
+     * Returns a previously set authentication setting.
+     *
+     * The value will be retrieved as a string, regardless of the value type used when calling storeAuthSetting().
+     *
      * \param key setting key
      * \param defaultValue
      * \param decrypt if the value needs decrypted
-     * \return QVariant( QString ) authentication setting
+     * \returns authentication setting string
+     *
+     * \see storeAuthSetting()
      */
     QVariant authSetting( const QString &key, const QVariant &defaultValue = QVariant(), bool decrypt = false );
 

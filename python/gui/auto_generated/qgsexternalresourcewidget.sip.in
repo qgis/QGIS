@@ -157,7 +157,7 @@ property is set to :py:class:`QgsFileWidget`.RelativeDefaultPath.
     void setStorageType( const QString &storageType );
 %Docstring
 Set ``storageType`` storage type unique identifier as defined in
-:py:class:`QgsExternalStorageRegistry` or null QString if there is no
+:py:class:`QgsExternalStorageRegistry` or an empty string if there is no
 storage defined, only file selection.
 
 .. seealso:: :py:func:`storageType`
@@ -168,8 +168,8 @@ storage defined, only file selection.
     QString storageType() const;
 %Docstring
 Returns storage type unique identifier as defined in
-:py:class:`QgsExternalStorageRegistry`. Returns null QString if there is
-no storage defined, only file selection.
+:py:class:`QgsExternalStorageRegistry`. Returns an empty string if there
+is no storage defined, only file selection.
 
 .. seealso:: :py:func:`setStorageType`
 

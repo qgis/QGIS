@@ -582,9 +582,13 @@ Returns whether this machine uses big or little endian
 Returns a css style sheet for reports, the ``styleSheetType`` argument
 determines what type of stylesheet is supported by the widget.
 
-Typically you will use this method by doing: QString myStyle =
-:py:func:`QgsApplication.reportStyleSheet()`;
-textBrowserReport->:py:func:`~QgsApplication.document`->setDefaultStyleSheet(myStyle);
+Typically you will use this method by calling:
+
+.. code-block:: python
+
+     report_style = QgsApplication.reportStyleSheet()
+     text_browser_report.document().setDefaultStyleSheet(report_style)
+
 if you are using a :py:class:`QgsWebView` you will need to manually
 inject the CSS into a head -> script tag instead.
 

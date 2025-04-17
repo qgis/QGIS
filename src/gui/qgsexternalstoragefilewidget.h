@@ -60,7 +60,7 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
 
     /**
      * Set \a storageType storage type unique identifier as defined in QgsExternalStorageRegistry or
-     * null QString if there is no storage defined.
+     * an empty QString if there is no storage defined.
      * If no external storage has been defined, QgsExternalStorageFileWidget will only update file path according to
      * selected files.
      * \see storageType
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
 
     /**
      * Returns storage type unique identifier as defined in QgsExternalStorageRegistry.
-     * Returns null QString if there is no storage defined, only file selection.
+     * Returns an empty QString if there is no storage defined, only file selection.
      * \see setStorageType
      * \since QGIS 3.22
      */

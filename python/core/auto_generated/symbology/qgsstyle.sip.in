@@ -293,7 +293,7 @@ Adds a new tag and returns the tag's id
 Adds a new smartgroup to the database and returns the id.
 
 :param name: is the name of the new Smart Group to be added
-:param op: is the operator between the conditions; AND/OR as QString
+:param op: is the operator between the conditions; AND/OR as string
 :param matchTag: list of strings to match within tags
 :param noMatchTag: list of strings to exclude matches from tags
 :param matchName: list of string to match within names
@@ -473,7 +473,7 @@ Tags the symbol with the tags in the list
 Applies the given tags to the given symbol or colorramp
 
 :param type: is either SymbolEntity or ColorrampEntity
-:param symbol: is the name of the symbol or colorramp as QString
+:param symbol: is the name of the symbol or colorramp as string
 :param tags: is the list of the tags that are to be applied as
              QStringList
 
@@ -653,7 +653,7 @@ the database.
 %Docstring
 Adds the symbol to the database with tags.
 
-:param name: is the name of the symbol as QString
+:param name: is the name of the symbol as string
 :param symbol: is the pointer to the new :py:class:`QgsSymbol` being
                saved
 :param favorite: is a boolean value to specify whether the symbol should
@@ -668,7 +668,7 @@ Adds the symbol to the database with tags.
 %Docstring
 Adds the colorramp to the database.
 
-:param name: is the name of the colorramp as QString
+:param name: is the name of the colorramp as string
 :param ramp: is the pointer to the new :py:class:`QgsColorRamp` being
              saved
 :param favorite: is a boolean value to specify whether the colorramp

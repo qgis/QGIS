@@ -114,9 +114,10 @@ class SERVER_EXPORT QgsRequestHandler
     int statusCode() const;
 
     /**
-     * Returns the parsed parameters as a key-value pair, to modify
-     * a parameter setParameter( const QString &key, const QString &value)
-     * and removeParameter(const QString &key) must be used
+     * Returns the parsed parameters as a key-value pair.
+     *
+     * \see setParameter()
+     * \see removeParameter()
      */
     QMap<QString, QString> parameterMap() const;
 

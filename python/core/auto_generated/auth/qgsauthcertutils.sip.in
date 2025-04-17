@@ -125,7 +125,7 @@ Returns non-encrypted key from a PEM or DER formatted file
 
 :param keypath: File path to private key
 :param keypass: Passphrase for private key
-:param algtype: QString to set with resolved algorithm type
+:param algtype: string to set with resolved algorithm type
 %End
 
     static QList<QSslCertificate> certsFromString( const QString &pemtext );

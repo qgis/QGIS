@@ -136,9 +136,11 @@ Returns the response http status code
 
     QMap<QString, QString> parameterMap() const;
 %Docstring
-Returns the parsed parameters as a key-value pair, to modify a parameter
-setParameter( const QString &key, const QString &value) and
-removeParameter(const QString &key) must be used
+Returns the parsed parameters as a key-value pair.
+
+.. seealso:: :py:func:`setParameter`
+
+.. seealso:: :py:func:`removeParameter`
 %End
 
     void setParameter( const QString &key, const QString &value );
