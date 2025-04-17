@@ -172,9 +172,14 @@ the given string. E.g.
 
 .. code-block:: python
 
+     # directly constructing using a known authority:id pair
      crs_from_authid = QgsCoordinateReferenceSystem("EPSG:27700")
-     crs_from_proj = QgsCoordinateReferenceSystem("+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
-     crs_from_wkt = QgsCoordinateReferenceSystem('PROJCS["Arc 1950 / UTM zone 36S",GEOGCS["Arc 1950...')
+
+     # constructing from a proj string, note the 'PROJ:' prefix
+     crs_from_proj = QgsCoordinateReferenceSystem("PROJ:+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+
+     # constructing from a WKT string, note the 'WKT:' prefix
+     crs_from_wkt = QgsCoordinateReferenceSystem('WKT:PROJCS["Arc 1950 / UTM zone 36S",GEOGCS["Arc 1950...')
 
 Creation of CRS object involves some queries in a local SQLite database,
 which may be potentially expensive. Consequently, CRS creation methods
