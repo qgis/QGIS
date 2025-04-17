@@ -26,8 +26,7 @@ Runs the dialog and creates a layer matching the dialog parameters.
 If the ``initialPath`` argument is specified, then the dialog will
 default to the specified filename.
 
-:return: fileName on success, empty string use aborted, QString() if
-         creation failed
+:return: fileName on success, empty string if aborted or creation failed
 
 .. deprecated:: 3.4.5
 

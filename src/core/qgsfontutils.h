@@ -84,7 +84,7 @@ class CORE_EXPORT QgsFontUtils
      * \param fontstyle The style to try and switch the font to
      * \param fallback If no matching fontstyle found for font, assign most similar or first style found to font
      * \returns Whether the font was updated (also returns TRUE if the requested style matches font's current style)
-     * \note This is a more featured replacement for a Qt 4.8+ function: void QFont::setStyleName ( const QString & styleName )
+     * \note This is a more featured replacement for a Qt 4.8+ function: void QFont::setStyleName().
      */
     static bool updateFontViaStyle( QFont &f, const QString &fontstyle, bool fallback = false );
 

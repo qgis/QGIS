@@ -1120,7 +1120,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns the string (typically sql) used to define a subset of the layer.
-     * \returns The subset string or null QString if not implemented by the provider
+     * \returns The subset string or an empty QString if not implemented by the provider
      */
     virtual QString subsetString() const;
 

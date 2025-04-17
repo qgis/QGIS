@@ -198,8 +198,8 @@ Gets list of columns referenced by the expression.
     QSet<QString> referencedVariables() const;
 %Docstring
 Returns a list of all variables which are used in this expression. If
-the list contains a NULL QString, there is a variable name used which is
-determined at runtime.
+the list contains an empty string, there is a variable name used which
+is determined at runtime.
 
 .. note::
 

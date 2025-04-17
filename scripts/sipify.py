@@ -815,6 +815,7 @@ def process_doxygen_line(line: str) -> str:
     line = re.sub(r"^\s+", "", line)
     line = re.sub(r"\\a (.+?)\b", r"``\1``", line)
     line = re.sub(r" \\ref\b", "", line)
+    line = re.sub(r"\bqstring\b(?!:)", "string", line, flags=re.IGNORECASE)
     line = line.replace("::", ".")
     line = re.sub(r"\bnullptr\b", "None", line)
 

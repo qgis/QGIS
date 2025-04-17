@@ -204,7 +204,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 
     /**
      * Returns the string used to define a subset of the layer.
-     * \returns The subset string or null QString if not implemented by the provider
+     * \returns The subset string or an empty QString if not implemented by the provider
      *
      * \since QGIS 3.26
      */

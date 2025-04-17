@@ -47,8 +47,7 @@ class QgsSettingsProxy;
  * - Default Value
  *
  * The path to the Global Settings storage can be set before constructing the QgsSettings
- * objects, with a static call to:
- * static bool setGlobalSettingsPath( QString path );
+ * objects, with a static call to setGlobalSettingsPath().
  *
  * QgsSettings provides some shortcuts to get/set namespaced settings from/to a specific section:
  *

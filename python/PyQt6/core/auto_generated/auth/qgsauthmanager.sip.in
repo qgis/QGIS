@@ -517,20 +517,27 @@ Provider call to update a QNetworkProxy with an authentication config
 
     bool storeAuthSetting( const QString &key, const QVariant &value, bool encrypt = false );
 %Docstring
-Store an authentication setting (stored as string via QVariant( value
-).toString() )
+Stores an authentication setting.
+
+The ``value`` will be stored as a string, using QVariant.toString().
+
+.. seealso:: :py:func:`authSetting`
 %End
 
     QVariant authSetting( const QString &key, const QVariant &defaultValue = QVariant(), bool decrypt = false );
 %Docstring
-authSetting get an authentication setting (retrieved as string and
-returned as QVariant( QString ))
+Returns a previously set authentication setting.
+
+The value will be retrieved as a string, regardless of the value type
+used when calling :py:func:`~QgsAuthManager.storeAuthSetting`.
 
 :param key: setting key
 :param defaultValue: 
 :param decrypt: if the value needs decrypted
 
-:return: QVariant( QString ) authentication setting
+:return: authentication setting string
+
+.. seealso:: :py:func:`storeAuthSetting`
 %End
 
     bool existsAuthSetting( const QString &key );

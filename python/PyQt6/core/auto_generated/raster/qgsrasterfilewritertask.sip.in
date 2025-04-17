@@ -80,7 +80,7 @@ if the task is canceled). The writing ``error`` will be reported.
 
 .. deprecated:: 3.10
 
-   Use errorOccurred(int, const QString&).
+   Use the signal with the errorMessage string instead.
 %End
 
     void errorOccurred( int error, const QString &errorMessage );

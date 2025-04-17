@@ -46,16 +46,16 @@ auto-save collapsed or checked states.
 
 Holding Alt modifier key when toggling collapsed state will synchronize
 the toggling across other collapsible group boxes with the same
-syncGroup QString value.
+syncGroup string value.
 
 Holding Shift modifier key when attempting to toggle collapsed state
 will expand current group box, then collapse any others with the same
-syncGroup QString value.
+syncGroup string value.
 
 .. note::
 
    To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
-   bool collapsed, QString syncGroup, bool scrollOnExpand
+   bool collapsed, string syncGroup, bool scrollOnExpand
 %End
 
 %TypeHeaderCode
@@ -156,18 +156,18 @@ settings based on the widget and its parent names.
 
 Holding Alt modifier key when toggling collapsed state will synchronize
 the toggling across other collapsible group boxes with the same
-syncGroup QString value
+syncGroup string value
 
 Holding Shift modifier key when attempting to toggle collapsed state
 will expand current group box, then collapse any others with the same
-syncGroup QString value
+syncGroup string value
 
 .. seealso:: :py:class:`QgsCollapsibleGroupBoxBasic` which does not auto-save states
 
 .. note::
 
    To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the properties palette:
-   bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
+   bool collapsed, bool saveCollapsedState, bool saveCheckedState, string syncGroup
 %End
 
 %TypeHeaderCode

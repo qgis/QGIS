@@ -346,7 +346,7 @@ Sets the string used to define a subset of the point cloud.
 %Docstring
 Returns the string used to define a subset of the point cloud.
 
-:return: The subset string or null QString if not implemented by the
+:return: The subset string or empty string if not implemented by the
          provider
 
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.subsetString`

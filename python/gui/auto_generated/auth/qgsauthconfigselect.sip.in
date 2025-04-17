@@ -89,7 +89,8 @@ Construct wrapper dialog for select widget to edit an authcfg in a data
 source URI
 
 :param parent: Parent widget
-:param datauri: URI QString with of without an authcfg=ID string
+:param datauri: URI string optionally containing a ``authcfg=ID``
+                substring
 :param dataprovider: The key of the calling layer provider, if
                      applicable
 %End

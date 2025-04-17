@@ -285,8 +285,8 @@ Write contents of vector layer to an (OGR supported) vector format
 :param datasourceOptions: list of OGR data source creation options
 :param layerOptions: list of OGR layer creation options
 :param skipAttributeCreation: only write geometries
-:param newFilename: QString pointer which will contain the new file name
-                    created (in case it is different to fileName).
+:param newFilename: will be set to the new file name created (in case it
+                    is different to fileName).
 :param symbologyExport: symbology to export
 :param symbologyScale: scale of symbology
 :param filterExtent: if not ``None``, only features intersecting the
@@ -349,8 +349,8 @@ Writes a layer out to a vector file.
 :param datasourceOptions: list of OGR data source creation options
 :param layerOptions: list of OGR layer creation options
 :param skipAttributeCreation: only write geometries
-:param newFilename: QString pointer which will contain the new file name
-                    created (in case it is different to fileName).
+:param newFilename: will be set to the new file name created (in case it
+                    is different to fileName).
 :param symbologyExport: symbology to export
 :param symbologyScale: scale of symbology
 :param filterExtent: if not ``None``, only features intersecting the
@@ -458,8 +458,8 @@ Writes a layer out to a vector file.
 :param layer: source layer to write
 :param fileName: file name to write to
 :param options: options.
-:param newFilename: QString pointer which will contain the new file name
-                    created (in case it is different to fileName).
+:param newFilename: will be set to the new file name created (in case it
+                    is different to fileName).
 
 :return: - QgsVectorFileWriter.WriterError.NoError in case of success,
            or error code in case of error

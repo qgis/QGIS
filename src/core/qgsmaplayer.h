@@ -1091,7 +1091,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Export the current metadata of this layer as named metadata in a QDomDocument
      * \param doc the target QDomDocument
-     * \param errorMsg this QString will be initialized on error
+     * \param errorMsg will be set to a descriptive message if an error occurs
      */
     void exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const;
 
@@ -1163,7 +1163,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Import the metadata of this layer from a QDomDocument
      * \param document source QDomDocument
-     * \param errorMessage this QString will be initialized on error
+     * \param errorMessage will be set to a descriptive message if an error occurs
      * \returns TRUE on success
      */
     bool importNamedMetadata( QDomDocument &document, QString &errorMessage );
@@ -1225,8 +1225,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Import the properties of this layer from a QDomDocument
      * \param doc source QDomDocument
-     * \param errorMsg this QString will be initialized on error
-     * during the execution of readSymbology
+     * \param errorMsg will be set to a descriptive message if an error occurs
+     * during the execution of readSymbology()
      * \param categories the style categories to import
      * \returns TRUE on success
      */
@@ -1236,7 +1236,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Export the properties of this layer as named style in a QDomDocument
      * \param doc the target QDomDocument
-     * \param errorMsg this QString will be initialized on error
+     * \param errorMsg will be set to a descriptive message if an error occurs
      * \param context read write context
      * \param categories the style categories to export
      * during the execution of writeSymbology
@@ -1248,7 +1248,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Export the properties of this layer as SLD style in a QDomDocument
      * \param doc the target QDomDocument
-     * \param errorMsg this QString will be initialized on error
+     * \param errorMsg will be set to a descriptive message if an error occurs
      * during the execution of writeSymbology
      * \see exportSldStyleV2()
      */
@@ -1257,8 +1257,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Export the properties of this layer as SLD style in a QDomDocument
      * \param doc the target QDomDocument
-     * \param errorMsg this QString will be initialized on error
-     *                 during the execution of writeSymbology
+     * \param errorMsg will be set to a descriptive message if an error occurs during the execution of writeSymbology()
      * \param exportContext SLD export context
      * \since QGIS 3.30
      */

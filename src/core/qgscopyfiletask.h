@@ -38,7 +38,7 @@ class CORE_EXPORT QgsCopyFileTask : public QgsTask
     bool run() override;
 
     /**
-     * Returns errorString if an error occurred, else returns null QString
+     * Returns errorString if an error occurred, else returns an empty QString
      */
     const QString &errorString() const;
 

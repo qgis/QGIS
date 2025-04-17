@@ -332,7 +332,7 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Returns a list of all variables which are used in this expression.
-     * If the list contains a NULL QString, there is a variable name used
+     * If the list contains an empty QString, there is a variable name used
      * which is determined at runtime.
      *
      * \note In contrast to the referencedColumns() function this method

@@ -106,7 +106,8 @@ Convert the definition into a QUrl
 
     QString toString() const;
 %Docstring
-Convert into a QString that can be read by the virtual layer provider
+Converts the definition into a string that can be read by the virtual
+layer provider
 %End
 
     void addSource( const QString &name, const QString &ref );

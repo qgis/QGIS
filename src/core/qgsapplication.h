@@ -577,9 +577,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns a css style sheet for reports, the \a styleSheetType argument
      * determines what type of stylesheet is supported by the widget.
      *
-     * Typically you will use this method by doing:
-     * QString myStyle = QgsApplication::reportStyleSheet();
-     * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
+     * Typically you will use this method by calling:
+     *
+     * \code{.py}
+     * report_style = QgsApplication.reportStyleSheet()
+     * text_browser_report.document().setDefaultStyleSheet(report_style)
+     * \endcode
+     *
      * if you are using a QgsWebView you will need to manually inject
      * the CSS into a head -> script tag instead.
      *

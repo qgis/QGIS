@@ -319,7 +319,7 @@ Returns the root settings path used to store shortcut customization.
     QString objectSettingKey( QObject *object ) const;
 %Docstring
 Returns the full settings key matching the QShortcut or QAction Return
-an empty QString if the QObject is not registered
+an empty string if the QObject is not registered
 
 .. versionadded:: 3.30
 %End
