@@ -305,16 +305,6 @@ class QgsPostgresConn : public QObject
      */
     bool setSessionRole( const QString &sessionRole );
 
-    /**
-     * Resets the current user identifier of the current PostgreSQL session
-     * to the current session user identifier (user used to log in)
-     *
-     * \returns TRUE if successful
-     *
-     * \since QGIS 3.28.0
-     */
-    bool resetSessionRole();
-
     //! run a query and free result buffer
     bool PQexecNR( const QString &query, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
@@ -480,6 +470,7 @@ class QgsPostgresConn : public QObject
     static bool allowMetadataInDatabase( const QString &connName );
     static bool allowRasterOverviewTables( const QString &connName );
     static QString schemaToRestrict( const QString &connName );
+    static QString sessionRole( const QString &connName );
 
     /**
      * Duplicates \a src connection settings to a new \a dst connection.
@@ -494,6 +485,17 @@ class QgsPostgresConn : public QObject
     QgsCoordinateReferenceSystem sridToCrs( int srsId );
 
     int crsToSrid( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Returns the connection part of the \a uri URI.
+     *
+     * If set, add session_role to the connection information. This method should be used instead of
+     * QgsDataSourceUri::connectionInfo()
+     *
+     * \param expandAuthCfg TRUE if returned URI must be updated with authentication information
+     * \since QGIS 3.44
+     */
+    static QString connectionInfo( const QgsDataSourceUri &uri, const bool expandAuthCfg = true );
 
   private:
     int mRef;

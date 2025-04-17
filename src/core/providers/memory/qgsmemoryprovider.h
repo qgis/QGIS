@@ -96,7 +96,7 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
     QgsFeatureId mNextFeatureId;
 
     // indexing
-    QgsSpatialIndex *mSpatialIndex = nullptr;
+    std::unique_ptr<QgsSpatialIndex> mSpatialIndex;
 
     QString mSubsetString;
 
