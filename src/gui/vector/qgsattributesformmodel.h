@@ -578,6 +578,20 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
      */
     QModelIndex firstRecursiveMatchingModelIndex( const QgsAttributesFormData::AttributesFormItemType &itemType, const QString &itemId ) const;
 
+    /**
+     * Returns whether field aliases are preferred over field names as item text.
+     *
+     * \see setShowAliases()
+     */
+    bool showAliases() const;
+
+    /**
+     * Sets whether field aliases should be preferred over field names as item text.
+     *
+     * \see showAliases()
+     */
+    void setShowAliases( bool show );
+
   public slots:
     /**
      * Populates the model with initial data read from the layer.
@@ -615,6 +629,8 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
     std::unique_ptr< QgsAttributesFormItem > mRootItem;
     QgsVectorLayer *mLayer;
     QgsProject *mProject;
+
+    bool mShowAliases = false;
 };
 
 
@@ -765,20 +781,6 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
      */
     void insertChild( const QModelIndex &parent, int row, const QString &itemId, QgsAttributesFormData::AttributesFormItemType itemType, const QString &itemName );
 
-    /**
-     * Returns whether field aliases are preferred over field names as item text.
-     *
-     * \see setShowAliases()
-     */
-    bool showAliases() const;
-
-    /**
-     * Sets whether field aliases should be preferred over field names as item text.
-     *
-     * \see showAliases()
-     */
-    void setShowAliases( bool show );
-
   public slots:
     void populate() override;
 
@@ -802,8 +804,6 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
      * \param indexes Input list of indexes, potentially with redundant indexes.
      */
     QModelIndexList curateIndexesForMimeData( const QModelIndexList &indexes ) const;
-
-    bool mShowAliases = false;
 };
 
 Q_DECLARE_METATYPE( QgsAttributesFormData::RelationEditorConfiguration )

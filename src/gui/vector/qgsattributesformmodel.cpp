@@ -449,6 +449,17 @@ QModelIndex QgsAttributesFormModel::firstRecursiveMatchingModelIndex( const QgsA
   return item ? createIndex( item->row(), 0, item ) : QModelIndex();
 }
 
+bool QgsAttributesFormModel::showAliases() const
+{
+  return mShowAliases;
+}
+
+void QgsAttributesFormModel::setShowAliases( bool show )
+{
+  mShowAliases = show;
+  emit dataChanged( QModelIndex(), QModelIndex(), QVector<int>() << Qt::DisplayRole << Qt::ForegroundRole << Qt::FontRole );
+}
+
 
 QgsAttributesAvailableWidgetsModel::QgsAttributesAvailableWidgetsModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent )
   : QgsAttributesFormModel( layer, project, parent )
@@ -502,6 +513,7 @@ void QgsAttributesAvailableWidgetsModel::populate()
     item->setData( ItemFieldConfigRole, cfg );
     item->setData( ItemNameRole, field.name() );
     item->setData( ItemIdRole, field.name() ); // Field names act as ids
+    item->setData( ItemDisplayRole, field.alias() );
     item->setData( ItemTypeRole, QgsAttributesFormData::Field );
     item->setData( ItemDataRole, itemData );
     item->setIcon( fields.iconForField( i, true ) );
@@ -646,6 +658,11 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
   {
     case Qt::DisplayRole:
     {
+      if ( !showAliases() && item->type() == QgsAttributesFormData::Field )
+      {
+        return item->name();
+      }
+
       return item->displayName().isEmpty() ? item->name() : item->displayName();
     }
 
@@ -682,6 +699,14 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
 
     case Qt::ForegroundRole:
     {
+      if ( item->type() == QgsAttributesFormData::Field )
+      {
+        if ( showAliases() && item->displayName().isEmpty() )
+        {
+          return QBrush( QColor( Qt::lightGray ) );
+        }
+      }
+
       if ( item->type() == QgsAttributesFormData::Relation && invalidRelation )
       {
         return QBrush( QColor( 255, 0, 0 ) );
@@ -690,11 +715,26 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
       return QVariant();
     }
 
+    case Qt::FontRole:
+    {
+      if ( item->type() == QgsAttributesFormData::Field )
+      {
+        if ( showAliases() && item->displayName().isEmpty() )
+        {
+          QFont font = QFont();
+          font.setItalic( true );
+          return font;
+        }
+      }
+      return QVariant();
+    }
+
     case ItemDataRole:
     case ItemFieldConfigRole:
     case ItemNameRole:
     case ItemTypeRole:
     case ItemIdRole:
+    case ItemDisplayRole:
       return item->data( role );
 
     default:
@@ -932,6 +972,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
 
       editorItem->setData( ItemIdRole, relation.id() );
       editorItem->setData( ItemNameRole, relation.name() );
+      editorItem->setData( ItemDisplayRole, relationEditorConfig.label );
       editorItem->setData( ItemTypeRole, QgsAttributesFormData::Relation );
       editorItem->setData( ItemDataRole, itemData );
 
@@ -1055,6 +1096,9 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
   if ( !index.isValid() )
     return QVariant();
 
+  if ( role == ItemFieldConfigRole ) // This model doesn't store data for that role
+    return false;
+
   QgsAttributesFormItem *item = itemForIndex( index );
   if ( !item )
     return QVariant();
@@ -1077,11 +1121,6 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
   {
     case Qt::DisplayRole:
     {
-      if ( !showAliases() && item->type() == QgsAttributesFormData::Field )
-      {
-        return item->name();
-      }
-
       if ( item->type() == QgsAttributesFormData::Relation && invalidRelation )
       {
         // Invalid relations can have an id, if that's the case, we have a name.
@@ -1090,6 +1129,11 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
         {
           return tr( "Invalid relation" );
         }
+      }
+
+      if ( !showAliases() && ( item->type() == QgsAttributesFormData::Field || item->type() == QgsAttributesFormData::Relation ) )
+      {
+        return item->name();
       }
 
       return item->displayName().isEmpty() ? item->name() : item->displayName();
@@ -1146,9 +1190,16 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
         }
       }
 
-      if ( item->type() == QgsAttributesFormData::Relation && invalidRelation )
+      if ( item->type() == QgsAttributesFormData::Relation )
       {
-        return QBrush( QColor( 255, 0, 0 ) );
+        if ( invalidRelation )
+        {
+          return QBrush( QColor( 255, 0, 0 ) );
+        }
+        else if ( showAliases() && item->displayName().isEmpty() )
+        {
+          return QBrush( QColor( Qt::lightGray ) );
+        }
       }
 
       return QVariant();
@@ -1165,11 +1216,21 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
           return font;
         }
       }
+
+      if ( item->type() == QgsAttributesFormData::Relation )
+      {
+        if ( !invalidRelation && showAliases() && item->displayName().isEmpty() )
+        {
+          QFont font = QFont();
+          font.setItalic( true );
+          return font;
+        }
+      }
+
       return QVariant();
     }
 
     case ItemDataRole:
-    case ItemFieldConfigRole:
     case ItemNameRole:
     case ItemIdRole:
     case ItemTypeRole:
@@ -1604,15 +1665,4 @@ void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int r
 
   itemForIndex( parent )->insertChild( row, std::move( item ) );
   endInsertRows();
-}
-
-bool QgsAttributesFormLayoutModel::showAliases() const
-{
-  return mShowAliases;
-}
-
-void QgsAttributesFormLayoutModel::setShowAliases( bool show )
-{
-  mShowAliases = show;
-  emit dataChanged( QModelIndex(), QModelIndex(), QVector<int>() << Qt::DisplayRole << Qt::ForegroundRole << Qt::FontRole );
 }

@@ -140,11 +140,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void updatedFields();
 
   private:
-    /**
-     * Gets the index that was previously selected to store configuration when changing item selection.
-     */
-    QModelIndex previousIndex( const QgsAttributesFormBaseView *view, const QItemSelection &deselected ) const;
-
     //! this will clean the right panel
     void clearAttributeTypeFrame();
 

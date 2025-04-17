@@ -38,7 +38,7 @@
 #include "qgshelp.h"
 #include "qgsxmlutils.h"
 
-const QgsSettingsEntryBool *QgsAttributesFormProperties::settingShowAliases = new QgsSettingsEntryBool( QStringLiteral( "show-aliases" ), sTreeAttributesForm, false, QStringLiteral( "Whether to show aliases (true) or names (false) in the Form Layout panel." ) );
+const QgsSettingsEntryBool *QgsAttributesFormProperties::settingShowAliases = new QgsSettingsEntryBool( QStringLiteral( "show-aliases" ), sTreeAttributesForm, false, QStringLiteral( "Whether to show aliases (true) or names (false) in both the Available Widgets and the Form Layout panels." ) );
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -129,6 +129,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsView()
   mAvailableWidgetsView->setDragDropMode( QAbstractItemView::DragDropMode::DragOnly );
 
   mAvailableWidgetsModel->populate();
+  mAvailableWidgetsModel->setShowAliases( settingShowAliases->value() );
   mAvailableWidgetsView->expandAll();
 }
 
@@ -342,7 +343,10 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
 
   QModelIndex index = mAvailableWidgetsModel->fieldModelIndex( fieldName );
   if ( index.isValid() )
+  {
     mAvailableWidgetsModel->setData( index, QVariant::fromValue<QgsAttributesFormData::FieldConfig>( cfg ), QgsAttributesFormModel::ItemFieldConfigRole );
+    mAvailableWidgetsModel->setData( index, mAttributeTypeDialog->alias(), QgsAttributesFormModel::ItemDisplayRole );
+  }
 
   // Save alias to each matching field item in Form Layout model
   mFormLayoutModel->updateAliasForFieldItems( fieldName, mAttributeTypeDialog->alias() );
@@ -375,6 +379,7 @@ void QgsAttributesFormProperties::storeAttributeWidgetEdit( const QModelIndex &i
   {
     QgsAttributesFormData::RelationEditorConfiguration config = mAttributeWidgetEdit->updatedRelationConfiguration();
     itemData.setRelationEditorConfiguration( config );
+    mFormLayoutModel->setData( index, config.label, QgsAttributesFormLayoutModel::ItemDisplayRole );
   }
   mFormLayoutModel->setData( index, itemData, QgsAttributesFormLayoutModel::ItemDataRole );
 }
@@ -447,17 +452,16 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
   mAttributeTypeFrame->layout()->addWidget( mAttributeContainerEdit );
 }
 
-void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelection &, const QItemSelection &deselected )
+void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelection &, const QItemSelection & )
 {
   disconnect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
-  QModelIndex index = previousIndex( mAvailableWidgetsView, deselected );
 
-  // Get corresponding index in Form Layout
-  if ( index.isValid() )
+  QModelIndex index;
+  if ( mFormLayoutView->selectionModel()->selectedRows( 0 ).count() == 1 )
   {
-    const auto itemType = static_cast< QgsAttributesFormData::AttributesFormItemType >( index.data( QgsAttributesFormLayoutModel::ItemTypeRole ).toInt() );
-    const QString itemId = index.data( QgsAttributesFormLayoutModel::ItemIdRole ).toString();
-    index = mFormLayoutModel->firstRecursiveMatchingModelIndex( itemType, itemId );
+    // Go to the form layout view and store the single-selected index, as
+    // it will be used to store its current settings before being deselected
+    index = mFormLayoutView->selectionModel()->selectedIndexes().at( 0 );
   }
 
   loadAttributeSpecificEditor( mAvailableWidgetsView, mFormLayoutView, index );
@@ -468,24 +472,19 @@ void QgsAttributesFormProperties::onFormLayoutSelectionChanged( const QItemSelec
 {
   // when the selection changes in the DnD layout, sync the main tree
   disconnect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
-  QModelIndex index = previousIndex( mFormLayoutView, deselected );
-  loadAttributeSpecificEditor( mFormLayoutView, mAvailableWidgetsView, index );
-  connect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
-}
-
-QModelIndex QgsAttributesFormProperties::previousIndex( const QgsAttributesFormBaseView *view, const QItemSelection &deselected ) const
-{
   QModelIndex index;
   if ( deselected.indexes().count() == 1 )
   {
     index = deselected.indexes().at( 0 );
   }
-  else if ( deselected.indexes().count() == 0 && view->selectionModel()->selectedIndexes().count() == 2 )
+  else if ( deselected.indexes().count() == 0 && mFormLayoutView->selectionModel()->selectedIndexes().count() == 2 )
   {
     // There was 1 selected, it was not deselected, but instead a new item was added to selection
-    index = view->selectionModel()->selectedIndexes().at( 0 );
+    index = mFormLayoutView->selectionModel()->selectedIndexes().at( 0 );
   }
-  return index;
+
+  loadAttributeSpecificEditor( mFormLayoutView, mAvailableWidgetsView, index );
+  connect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
 }
 
 void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesFormBaseView *emitter, QgsAttributesFormBaseView *receiver, QModelIndex &deselectedFormLayoutIndex )
@@ -616,6 +615,7 @@ void QgsAttributesFormProperties::onInvertSelectionButtonClicked( bool checked )
 void QgsAttributesFormProperties::toggleShowAliases( bool checked )
 {
   settingShowAliases->setValue( checked );
+  mAvailableWidgetsModel->setShowAliases( checked );
   mFormLayoutModel->setShowAliases( checked );
 }
 
@@ -678,7 +678,6 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mAddContainerButton->setVisible( false );
       mRemoveLayoutItemButton->setVisible( false );
       mInvertSelectionButton->setVisible( false );
-      mShowAliasesButton->setVisible( false );
       break;
 
     case Qgis::AttributeFormLayout::DragAndDrop:
@@ -687,7 +686,6 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mAddContainerButton->setVisible( true );
       mRemoveLayoutItemButton->setVisible( true );
       mInvertSelectionButton->setVisible( true );
-      mShowAliasesButton->setVisible( true );
       break;
 
     case Qgis::AttributeFormLayout::UiFile:
@@ -697,7 +695,6 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mAddContainerButton->setVisible( false );
       mRemoveLayoutItemButton->setVisible( false );
       mInvertSelectionButton->setVisible( false );
-      mShowAliasesButton->setVisible( false );
       break;
   }
 
@@ -1541,6 +1538,7 @@ void QgsAttributesFormProperties::updatedFields()
     if ( fieldConfigs.contains( fieldName ) )
     {
       mAvailableWidgetsModel->setData( index, fieldConfigs[fieldName], QgsAttributesFormModel::ItemFieldConfigRole );
+      mAvailableWidgetsModel->setData( index, fieldConfigs[fieldName].mAlias, QgsAttributesFormModel::ItemDisplayRole );
     }
   }
 }
