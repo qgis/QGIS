@@ -1386,7 +1386,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see removeMapLayer()
      * \see removeAllMapLayers()
      */
+#if QT_VERSION < QT_VERSION_CHECK( 6, 4, 0 )
+    void removeMapLayers( const QStringList &layerIds );
+#else
     void removeMapLayers( const QStringList &layerIds ) SIP_PYNAME( removeMapLayersById );
+#endif
 
     /**
      * \brief

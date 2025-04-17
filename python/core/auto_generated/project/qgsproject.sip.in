@@ -1343,7 +1343,7 @@ should use :py:func:`~QgsProject.addMapLayers` instead.
 .. seealso:: :py:func:`addMapLayers`
 %End
 
-    void removeMapLayers( const QStringList &layerIds ) /PyName=removeMapLayersById/;
+    void removeMapLayers( const QStringList &layerIds );
 %Docstring
 Remove a set of layers from the registry by layer ID.
 
@@ -1360,6 +1360,7 @@ has ownership of any layers these layers will also be deleted.
 
 .. seealso:: :py:func:`removeAllMapLayers`
 %End
+    void removeMapLayers( const QStringList &layerIds ) /PyName=removeMapLayersById/;
 
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
