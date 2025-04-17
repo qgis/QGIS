@@ -80,7 +80,7 @@
       <item row="0" column="0" colspan="3">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Labels with the exact same text (including case) will not be placed if they are closer then this distance.</string>
+         <string>Labels with the exact same text (including case) will not be placed if they are closer than this distance.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
