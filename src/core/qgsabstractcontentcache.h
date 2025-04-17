@@ -180,6 +180,18 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
      */
     static bool isBase64Data( const QString &path );
 
+    /**
+     * Invalidates a cache entry for the specified \a path.
+     *
+     * If an entry exists for the given \a path, it will be removed from the cache.
+     *
+     * \param path The path of the cache entry to invalidate.
+     * \returns TRUE if an entry was invalidated, FALSE otherwise.
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool invalidateCacheEntry( const QString &path );
+
   signals:
 
     /**
@@ -258,6 +270,25 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     ~QgsAbstractContentCache() override
     {
       qDeleteAll( mEntryLookup );
+    }
+
+    bool invalidateCacheEntry( const QString &path ) override
+    {
+      const QMutexLocker locker( &mMutex );
+
+      const QList<T *> entries = mEntryLookup.values( path );
+      if ( entries.isEmpty() )
+        return false;
+
+      for ( T *entry : entries )
+      {
+        takeEntryFromList( entry );
+        mEntryLookup.remove( path, entry );
+        mTotalSize -= entry->dataSize();
+        delete entry;
+      }
+
+      return true;
     }
 
   protected:
