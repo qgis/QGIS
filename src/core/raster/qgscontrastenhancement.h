@@ -244,7 +244,7 @@ class CORE_EXPORT QgsContrastEnhancement
     bool mEnhancementDirty = false;
 
     //! \brief Pointer to the lookup table
-    int *mLookupTable = nullptr;
+    std::unique_ptr<int[]> mLookupTable;
 
     //! \brief User defineable minimum value for the band, used for enhanceContrasting
     double mMinimumValue;
