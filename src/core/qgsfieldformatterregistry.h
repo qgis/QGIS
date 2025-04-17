@@ -95,7 +95,7 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
 
   private:
     QHash<QString, QgsFieldFormatter *> mFieldFormatters;
-    QgsFieldFormatter *mFallbackFieldFormatter = nullptr;
+    std::unique_ptr<QgsFieldFormatter> mFallbackFieldFormatter;
     mutable QReadWriteLock mLock;
 };
 
