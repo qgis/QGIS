@@ -51,6 +51,7 @@
 #include "qgsalgorithmfixgeometrymissingvertex.h"
 #include "qgsalgorithmcheckgeometryhole.h"
 #include "qgsalgorithmcheckgeometrymissingvertex.h"
+#include "qgsalgorithmcheckgeometryselfcontact.h"
 #include "qgsalgorithmcheckgeometryoverlap.h"
 #include "qgsalgorithmcheckgeometryfollowboundaries.h"
 #include "qgsalgorithmcheckgeometryduplicatenodes.h"
@@ -349,6 +350,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsGeometryCheckAreaAlgorithm() );
   addAlgorithm( new QgsGeometryCheckHoleAlgorithm() );
   addAlgorithm( new QgsGeometryCheckMissingVertexAlgorithm() );
+  addAlgorithm( new QgsGeometryCheckSelfContactAlgorithm() );
   addAlgorithm( new QgsGeometryCheckOverlapAlgorithm() );
   addAlgorithm( new QgsGeometryCheckFollowBoundariesAlgorithm() );
   addAlgorithm( new QgsGeometryCheckDuplicateNodesAlgorithm() );
