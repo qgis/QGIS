@@ -89,6 +89,11 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   cmbVersion->addItem( tr( "OGC API - Features" ) );
   connect( cmbVersion, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewHttpConnection::wfsVersionCurrentIndexChanged );
 
+  mComboWfsFeatureMode->clear();
+  mComboWfsFeatureMode->addItem( tr( "Default" ), QStringLiteral( "default" ) );
+  mComboWfsFeatureMode->addItem( tr( "Simple Features" ), QStringLiteral( "simpleFeatures" ) );
+  mComboWfsFeatureMode->addItem( tr( "Complex Features" ), QStringLiteral( "complexFeatures" ) );
+
   mComboHttpMethod->addItem( QStringLiteral( "GET" ), QVariant::fromValue( Qgis::HttpMethod::Get ) );
   mComboHttpMethod->addItem( QStringLiteral( "POST" ), QVariant::fromValue( Qgis::HttpMethod::Post ) );
   mComboHttpMethod->setCurrentIndex( mComboHttpMethod->findData( QVariant::fromValue( Qgis::HttpMethod::Get ) ) );
@@ -356,6 +361,9 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   else
     cmbFeaturePaging->setCurrentIndex( static_cast<int>( QgsNewHttpConnection::WfsFeaturePagingIndex::DEFAULT ) );
 
+  const QString wfsFeatureMode = QgsOwsConnection::settingsWfsFeatureMode->value( detailsParameters );
+  mComboWfsFeatureMode->setCurrentIndex( std::max( mComboWfsFeatureMode->findData( wfsFeatureMode ), 0 ) );
+
   mComboHttpMethod->setCurrentIndex( mComboHttpMethod->findData( QVariant::fromValue( QgsOwsConnection::settingsPreferredHttpMethod->value( detailsParameters ) ) ) );
   txtPageSize->setText( QgsOwsConnection::settingsPagesize->value( detailsParameters ) );
 }
@@ -475,6 +483,9 @@ void QgsNewHttpConnection::accept()
         break;
     }
     QgsOwsConnection::settingsPagingEnabled->setValue( pagingEnabled, detailsParameters );
+
+    const QString featureMode = mComboWfsFeatureMode->currentData().toString();
+    QgsOwsConnection::settingsWfsFeatureMode->setValue( featureMode, detailsParameters );
   }
 
   QStringList credentialsParameters = { mServiceName.toLower(), newConnectionName };

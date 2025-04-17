@@ -77,12 +77,31 @@ Data type size in bytes.
 
     static bool typeIsNumeric( Qgis::DataType type );
 %Docstring
-Returns ``True`` if data type is numeric
+Returns ``True`` if a data type is numeric.
+
+.. seealso:: :py:func:`typeIsComplex`
+
+.. seealso:: :py:func:`typeIsColor`
+%End
+
+    static bool typeIsComplex( Qgis::DataType type );
+%Docstring
+Returns ``True`` if a data type is a complex number type.
+
+.. seealso:: :py:func:`typeIsNumeric`
+
+.. seealso:: :py:func:`typeIsColor`
+
+.. versionadded:: 3.44
 %End
 
     static bool typeIsColor( Qgis::DataType type );
 %Docstring
-Returns ``True`` if data type is color
+Returns ``True`` if a data type is a color type.
+
+.. seealso:: :py:func:`typeIsNumeric`
+
+.. seealso:: :py:func:`typeIsComplex`
 %End
 
     Qgis::DataType dataType() const  /HoldGIL/;
@@ -344,6 +363,41 @@ to flag it as having valid data using this method. This method has no
 effect for raster blocks with an explicit no data value set.
 
 :param index: data matrix index (long type in Python)
+%End
+
+
+    void fill( double value );
+%Docstring
+Fills the whole block with a constant ``value``.
+
+This method only applies to numeric raster blocks, not color blocks or
+complex number data types.
+
+:raises ValueError: if the block is an empty, non-numeric or complex
+                    number type raster block.
+
+.. versionadded:: 3.44
+%End
+%MethodCode
+    if ( !QgsRasterBlock::typeIsNumeric( sipCpp->dataType() ) )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot fill a block with %1 data type" ).arg( qgsEnumValueToKey( sipCpp->dataType() ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( QgsRasterBlock::typeIsComplex( sipCpp->dataType() ) )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot fill a block with %1 complex data type" ).arg( qgsEnumValueToKey( sipCpp->dataType() ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( sipCpp->isEmpty() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot fill an empty block" ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->fill( a0 );
+    }
 %End
 
     QByteArray data() const;
