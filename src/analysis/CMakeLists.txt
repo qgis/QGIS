@@ -70,6 +70,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfixgeometrymissingvertex.cpp
   processing/qgsalgorithmcheckgeometryarea.cpp
   processing/qgsalgorithmfixgeometryarea.cpp
+  processing/qgsalgorithmcheckgeometryoverlap.cpp
   processing/qgsalgorithmcheckgeometryfollowboundaries.cpp
   processing/qgsalgorithmcheckgeometryduplicatenodes.cpp
   processing/qgsalgorithmcheckgeometrydangle.cpp
