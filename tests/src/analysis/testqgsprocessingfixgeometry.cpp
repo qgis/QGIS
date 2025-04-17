@@ -49,6 +49,7 @@ class TestQgsProcessingFixGeometry : public QgsTest
     void fixSelfIntersectionAlg();
 
     void fixHoleAlg();
+    void fixOverlapAlg();
     void fixMissingVertexAlg();
 
   private:
@@ -514,6 +515,55 @@ void TestQgsProcessingFixGeometry::fixHoleAlg()
   {
     const QgsFeature reportFeature = reportLayer->getFeature( idx );
     QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
+    idx++;
+  }
+}
+
+void TestQgsProcessingFixGeometry::fixOverlapAlg()
+{
+  const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+  QgsVectorLayer sourceLayer = QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer errorsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "remove_overlaps.gpkg|layername=overlap_errors" ), QString(), QStringLiteral( "ogr" ) );
+  QVERIFY( sourceLayer.isValid() );
+  QVERIFY( errorsLayer.isValid() );
+  const QStringList reportList = QStringList()
+                                 << QStringLiteral( "Remove overlapping area from neighboring polygon with shortest shared edge" )
+                                 << QStringLiteral( "Remove overlapping area from neighboring polygon with shortest shared edge" );
+
+  const std::unique_ptr<QgsProcessingAlgorithm> alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometryoverlap" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( &sourceLayer ) );
+  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+  parameters.insert( QStringLiteral( "OVERLAP_FEATURE_UNIQUE_IDX" ), "gc_overlap_feature_id" );
+  parameters.insert( QStringLiteral( "ERRORS" ), QVariant::fromValue( &errorsLayer ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "REPORT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  auto context = std::make_unique<QgsProcessingContext>();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  QVERIFY( reportLayer->isValid() );
+  QVERIFY( outputLayer->isValid() );
+
+  QCOMPARE( outputLayer->featureCount(), 25 );
+  QCOMPARE( reportLayer->featureCount(), reportList.count() );
+  int idx = 1;
+  for ( const QString &expectedReport : reportList )
+  {
+    const QgsFeature reportFeature = reportLayer->getFeature( idx );
+    QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
+
     idx++;
   }
 }

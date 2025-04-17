@@ -50,6 +50,7 @@
 #include "qgsalgorithmfixgeometrydeletefeatures.h"
 #include "qgsalgorithmfixgeometrygap.h"
 #include "qgsalgorithmfixgeometryarea.h"
+#include "qgsalgorithmfixgeometryoverlap.h"
 #include "qgsalgorithmfixgeometryhole.h"
 #include "qgsalgorithmfixgeometrymissingvertex.h"
 #include "qgsalgorithmcheckgeometrylinelayerintersection.h"
@@ -630,6 +631,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPolygonsToLinesAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByIntervalAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByCountAlgorithm() );
+  addAlgorithm( new QgsFixGeometryOverlapAlgorithm() );
   addAlgorithm( new QgsFixGeometryDeleteFeaturesAlgorithm() );
   addAlgorithm( new QgsFixGeometryAngleAlgorithm() );
   addAlgorithm( new QgsFixGeometrySelfIntersectionAlgorithm() );
