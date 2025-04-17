@@ -35,6 +35,7 @@
 class QgsCodeEditorWidget;
 class QgsCodeEditorSQL;
 class QgsQueryResultPanelWidget;
+class QgsDatabaseQueryHistoryWidget;
 
 ///@cond private
 
@@ -228,9 +229,11 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
     void saveQuery( bool saveAs );
     void setHasChanged( bool hasChanged );
     void populatePresetQueryMenu();
+    void showHistoryPanel( bool show );
 
   private:
     QgsQueryResultPanelWidget *mQueryWidget = nullptr;
+    QPointer< QgsDatabaseQueryHistoryWidget > mHistoryWidget;
 
     QMenu *mPresetQueryMenu = nullptr;
 

@@ -32,6 +32,8 @@
 #include "qgsstoredquerymanager.h"
 #include "qgsproject.h"
 #include "qgsnewnamedialog.h"
+#include "qgshistorywidget.h"
+#include "qgsdbqueryhistoryprovider.h"
 
 #include <QClipboard>
 #include <QShortcut>
@@ -691,6 +693,8 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   connect( mQueryWidget->codeEditorWidget(), &QgsCodeEditorWidget::searchBarToggled, mActionFindReplace, &QAction::setChecked );
   connect( mQueryWidget->sqlEditor(), &QgsCodeEditor::modificationChanged, this, &QgsQueryResultWidget::setHasChanged );
 
+  connect( mActionShowHistory, &QAction::toggled, this, &QgsQueryResultWidget::showHistoryPanel );
+
   connect( mActionClear, &QAction::triggered, this, [=] {
     mQueryWidget->sqlEditor()->setText( QString() );
     mActionUndo->setEnabled( false );
@@ -711,6 +715,11 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 
 QgsQueryResultWidget::~QgsQueryResultWidget()
 {
+  if ( mHistoryWidget )
+  {
+    mPanelStack->closePanel( mHistoryWidget );
+    mHistoryWidget->deleteLater();
+  }
 }
 
 void QgsQueryResultWidget::setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options )
@@ -1019,6 +1028,33 @@ void QgsQueryResultWidget::storeCurrentQuery( Qgis::QueryStorageBackend backend 
     QgsProject::instance()->setDirty();
   }
 }
+
+
+void QgsQueryResultWidget::showHistoryPanel( bool show )
+{
+  if ( show )
+  {
+    mHistoryWidget = new QgsDatabaseQueryHistoryWidget();
+    mHistoryWidget->setPanelTitle( tr( "SQL History" ) );
+    mPanelStack->showPanel( mHistoryWidget );
+    connect( mHistoryWidget, &QgsPanelWidget::panelAccepted, this, [this] { whileBlocking( mActionShowHistory )->setChecked( false ); } );
+    connect( mHistoryWidget, &QgsDatabaseQueryHistoryWidget::sqlTriggered, this, [this]( const QString &connectionUri, const QString &provider, const QString &sql ) {
+      Q_UNUSED( connectionUri );
+      Q_UNUSED( provider );
+
+      mQueryWidget->sqlEditor()->setText( sql );
+      mActionUndo->setEnabled( false );
+      mActionRedo->setEnabled( false );
+      mHistoryWidget->acceptPanel();
+    } );
+  }
+  else if ( mHistoryWidget )
+  {
+    mPanelStack->closePanel( mHistoryWidget );
+    mHistoryWidget->deleteLater();
+  }
+}
+
 
 ///@cond private
 
