@@ -14,6 +14,7 @@ set(QGIS_APP_SRCS
   qgsappauthrequesthandler.cpp
   qgsappbrowserproviders.cpp
   qgsappcoordinateoperationhandlers.cpp
+  qgsappdbutils.cpp
   qgsapplayertreeviewmenuprovider.cpp
   qgsappwindowmanager.cpp
   qgsappscreenshots.cpp

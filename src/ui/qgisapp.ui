@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1368</width>
-     <height>30</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -418,6 +418,12 @@
     </property>
     <addaction name="mActionShowMeshCalculator"/>
    </widget>
+   <widget class="QMenu" name="mDatabaseMenu">
+    <property name="title">
+     <string>&amp;Database</string>
+    </property>
+    <addaction name="mActionQueryHistory"/>
+   </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
@@ -426,6 +432,7 @@
    <addaction name="mPluginMenu"/>
    <addaction name="mVectorMenu"/>
    <addaction name="mRasterMenu"/>
+   <addaction name="mDatabaseMenu"/>
    <addaction name="mMeshMenu"/>
    <addaction name="mHelpMenu"/>
   </widget>
@@ -905,7 +912,7 @@
     <string>Ctrl+Q</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::QuitRole</enum>
+    <enum>QAction::QuitRole</enum>
    </property>
   </action>
   <action name="mActionUndo">
@@ -1897,7 +1904,7 @@ Note : Segment snapping must be enabled in the snapping Toolbar</string>
     <string>&amp;Options…</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="mActionCustomProjection">
@@ -1918,7 +1925,7 @@ Note : Segment snapping must be enabled in the snapping Toolbar</string>
     <string>Keyboard Shortcuts…</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="mActionLocalHistogramStretch">
@@ -1988,7 +1995,7 @@ Note : Segment snapping must be enabled in the snapping Toolbar</string>
     <string>About</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::AboutRole</enum>
+    <enum>QAction::AboutRole</enum>
    </property>
   </action>
   <action name="mActionSponsors">
@@ -3389,6 +3396,17 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="text">
     <string>New 3D &amp;Globe View</string>
+   </property>
+  </action>
+  <action name="mActionQueryHistory">
+   <property name="text">
+    <string>Query History…</string>
+   </property>
+   <property name="toolTip">
+    <string>Database Query History</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
  </widget>
