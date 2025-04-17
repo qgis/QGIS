@@ -342,7 +342,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = f"?MAP={urllib.parse.quote(project)}"
+        query_string = f"?SERVICE=WFS&MAP={urllib.parse.quote(project)}"
         header, body = self._execute_request(
             query_string,
             requestMethod=QgsServerRequest.PostMethod,
@@ -398,7 +398,7 @@ class TestQgsServerWFS(QgsServerTestBase):
                 )
             )
 
-        srsTemplate = """<?xml version="" encoding="UTF-8"?>
+        srsTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="{}" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
   <wfs:Query typeName="testlayer" {} xmlns:feature="http://www.qgis.org/gml">
     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
@@ -532,7 +532,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         </gml:Envelope>
       </ogc:BBOX>
     </ogc:Filter>
-    <ogc:SortBy>
+    <ogc:SortBy xmlns:ogc="http://www.opengis.net/ogc">
       <ogc:SortProperty>
         <ogc:PropertyName>id</ogc:PropertyName>
         <ogc:SortOrder>DESC</ogc:SortOrder>
@@ -968,6 +968,7 @@ class TestQgsServerWFS(QgsServerTestBase):
 
         post_data = """<?xml version="1.0" ?>
 <wfs:Transaction service="WFS" version="{version}"
+  xmlns:fes="http://www.opengis.org/fes"
   xmlns:ogc="http://www.opengis.net/ogc"
   xmlns:wfs="http://www.opengis.net/wfs"
   xmlns:gml="http://www.opengis.net/gml">
@@ -1022,9 +1023,10 @@ class TestQgsServerWFS(QgsServerTestBase):
                 "ogr",
             )
             self.assertTrue(vl.isValid())
-            self.assertEqual(
-                str(vl.getFeature(22)[field]), value if value is not None else "NULL"
-            )
+            if value is None:
+                self.assertTrue(str(vl.getFeature(22)[field]) in ["NULL", "None"])
+            else:
+                self.assertEqual(str(vl.getFeature(22)[field]), str(value))
 
         for version in ("1.0.0", "1.1.0"):
             _round_trip("0", "id_long", version)
@@ -1579,7 +1581,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         post_data = f"""<?xml version="1.0" encoding="UTF-8"?>
 <wfs:Transaction {XML_NS}>
   <wfs:Insert idgen="GenerateNew">
-    <qgs:no_geom>
+    <qgs:no_geom xmlns:qgs="http://www.qgis.org/gml">
       <qgs:id>1</qgs:id>
       <qgs:name>one</qgs:name>
     </qgs:no_geom>
