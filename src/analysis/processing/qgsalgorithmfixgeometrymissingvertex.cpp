@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfixgeometrymissingvertex.h"
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrymissingvertexcheck.h"
 #include "qgsvectordataproviderfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
@@ -23,38 +24,38 @@
 
 ///@cond PRIVATE
 
-auto QgsFixGeometryMissingVertexAlgorithm::name() const -> QString
+QString QgsFixGeometryMissingVertexAlgorithm::name() const
 {
   return QStringLiteral( "fixgeometrymissingvertex" );
 }
 
-auto QgsFixGeometryMissingVertexAlgorithm::displayName() const -> QString
+QString QgsFixGeometryMissingVertexAlgorithm::displayName() const
 {
   return QObject::tr( "Fix geometry (Missing Vertex)" );
 }
 
-auto QgsFixGeometryMissingVertexAlgorithm::tags() const -> QStringList
+QStringList QgsFixGeometryMissingVertexAlgorithm::tags() const
 {
   return QObject::tr( "fix,missing,vertex,polygons" ).split( ',' );
 }
 
-auto QgsFixGeometryMissingVertexAlgorithm::group() const -> QString
+QString QgsFixGeometryMissingVertexAlgorithm::group() const
 {
   return QObject::tr( "Fix geometry" );
 }
 
-auto QgsFixGeometryMissingVertexAlgorithm::groupId() const -> QString
+QString QgsFixGeometryMissingVertexAlgorithm::groupId() const
 {
   return QStringLiteral( "fixgeometry" );
 }
 
-auto QgsFixGeometryMissingVertexAlgorithm::shortHelpString() const -> QString
+QString QgsFixGeometryMissingVertexAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm adds the missing vertices along polygons junctions, "
                       "based on an error layer from the check missing vertex algorithm." );
 }
 
-auto QgsFixGeometryMissingVertexAlgorithm::createInstance() const -> QgsFixGeometryMissingVertexAlgorithm *
+QgsFixGeometryMissingVertexAlgorithm *QgsFixGeometryMissingVertexAlgorithm::createInstance() const
 {
   return new QgsFixGeometryMissingVertexAlgorithm();
 }
@@ -64,45 +65,49 @@ void QgsFixGeometryMissingVertexAlgorithm::initAlgorithm( const QVariantMap &con
   Q_UNUSED( configuration )
 
   // Inputs
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) )
-  );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) )
-  );
+  addParameter( new QgsProcessingParameterFeatureSource(
+    QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
+  ) );
+  addParameter( new QgsProcessingParameterFeatureSource(
+    QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
+  ) );
 
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Field of original feature unique identifier" ),
     QStringLiteral( "id" ), QStringLiteral( "ERRORS" )
-  )
-  );
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "PART_IDX" ), QObject::tr( "Field of part index" ),
     QStringLiteral( "gc_partidx" ), QStringLiteral( "ERRORS" ),
     Qgis::ProcessingFieldParameterDataType::Numeric
-  )
-  );
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "RING_IDX" ), QObject::tr( "Field of ring index" ),
     QStringLiteral( "gc_ringidx" ), QStringLiteral( "ERRORS" ),
     Qgis::ProcessingFieldParameterDataType::Numeric
-  )
-  );
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "VERTEX_IDX" ), QObject::tr( "Field of vertex index" ),
     QStringLiteral( "gc_vertidx" ), QStringLiteral( "ERRORS" ),
     Qgis::ProcessingFieldParameterDataType::Numeric
-  )
-  );
+  ) );
 
   // Outputs
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink(
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon
+  ) );
+  addParameter( new QgsProcessingParameterFeatureSink(
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+  ) );
 
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
+  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+  );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( tolerance.release() );
 }
 
-auto QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) -> QVariantMap
+QVariantMap QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )
@@ -137,7 +142,9 @@ auto QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVariantMap &
     throw QgsProcessingException( QObject::tr( "Field %1 does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 
   QString dest_output;
-  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, input->fields(), input->wkbType(), input->sourceCrs() ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
+    parameters, QStringLiteral( "OUTPUT" ), context, dest_output, input->fields(), input->wkbType(), input->sourceCrs()
+  ) );
   if ( !sink_output )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -145,20 +152,22 @@ auto QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVariantMap &
   QgsFields reportFields = errors->fields();
   reportFields.append( QgsField( QStringLiteral( "report" ), QMetaType::QString ) );
   reportFields.append( QgsField( QStringLiteral( "error_fixed" ), QMetaType::Bool ) );
-  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink( parameters, QStringLiteral( "REPORT" ), context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs() ) );
+  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink(
+    parameters, QStringLiteral( "REPORT" ), context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs()
+  ) );
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
   const QgsProject *project = QgsProject::instance();
-  auto checkContext = std::make_unique<QgsGeometryCheckContext>( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
   QStringList messages;
 
-  const QgsGeometryMissingVertexCheck check( checkContext.get(), QVariantMap() );
+  const QgsGeometryMissingVertexCheck check( &checkContext, QVariantMap() );
 
-  QgsVectorLayer *fixedLayer = input->materialize( QgsFeatureRequest() );
-  std::unique_ptr<QgsFeaturePool> featurePool = std::make_unique<QgsVectorDataProviderFeaturePool>( fixedLayer, false );
+  std::unique_ptr<QgsVectorLayer> fixedLayer( input->materialize( QgsFeatureRequest() ) );
+  QgsVectorDataProviderFeaturePool featurePool = QgsVectorDataProviderFeaturePool( fixedLayer.get(), false );
   QMap<QString, QgsFeaturePool *> featurePools;
-  featurePools.insert( fixedLayer->id(), featurePool.get() );
+  featurePools.insert( fixedLayer->id(), &featurePool );
 
   QgsFeature errorFeature, inputFeature, testDuplicateIdFeature;
   QgsFeatureIterator errorFeaturesIt = errors->getFeatures();
@@ -197,7 +206,7 @@ auto QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVariantMap &
     {
       QgsGeometryCheckError checkError = QgsGeometryCheckError(
         &check,
-        QgsGeometryCheckerUtils::LayerFeature( featurePool.get(), inputFeature, checkContext.get(), false ),
+        QgsGeometryCheckerUtils::LayerFeature( &featurePool, inputFeature, &checkContext, false ),
         errorFeature.geometry().asPoint(),
         QgsVertexId(
           errorFeature.attribute( partIdxFieldName ).toInt(),
@@ -205,13 +214,18 @@ auto QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVariantMap &
           errorFeature.attribute( vertexIdxFieldName ).toInt()
         )
       );
-      for ( auto changes : changesList )
+      for ( QgsGeometryCheck::Changes changes : changesList )
         checkError.handleChanges( changes );
 
       QgsGeometryCheck::Changes changes;
       check.fixError( featurePools, &checkError, QgsGeometryMissingVertexCheck::ResolutionMethod::AddMissingVertex, QMap<QString, int>(), changes );
       changesList << changes;
-      reportFeature.setAttributes( errorFeature.attributes() << checkError.resolutionMessage() << ( checkError.status() == QgsGeometryCheckError::StatusFixed ) );
+
+      QString resolutionMessage = checkError.resolutionMessage();
+      if ( checkError.status() == QgsGeometryCheckError::StatusObsolete )
+        resolutionMessage = QObject::tr( "Error is obsolete" );
+
+      reportFeature.setAttributes( errorFeature.attributes() << resolutionMessage << ( checkError.status() == QgsGeometryCheckError::StatusFixed ) );
     }
 
     if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
@@ -241,14 +255,14 @@ auto QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVariantMap &
   return outputs;
 }
 
-auto QgsFixGeometryMissingVertexAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) -> bool
+bool QgsFixGeometryMissingVertexAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
 
   return true;
 }
 
-auto QgsFixGeometryMissingVertexAlgorithm::flags() const -> Qgis::ProcessingAlgorithmFlags
+Qgis::ProcessingAlgorithmFlags QgsFixGeometryMissingVertexAlgorithm::flags() const
 {
   return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
 }
