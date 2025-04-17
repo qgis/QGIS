@@ -1464,7 +1464,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_Filter_OGC")
 
         # empty filter
-        filter = '(<ogc:Filter xmlns="http://www.opengis.net/ogc">' "</ogc:Filter>)"
+        filter = '(<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' "</ogc:Filter>)"
         qs = "?" + "&".join(
             [
                 "%s=%s" % i
