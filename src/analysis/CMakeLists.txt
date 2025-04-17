@@ -70,6 +70,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfixgeometrymissingvertex.cpp
   processing/qgsalgorithmcheckgeometryarea.cpp
   processing/qgsalgorithmfixgeometryarea.cpp
+  processing/qgsalgorithmcheckgeometrylineintersection.cpp
   processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp
   processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp
   processing/qgsalgorithmcheckgeometrypointinpolygon.cpp
