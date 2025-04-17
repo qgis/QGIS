@@ -46,6 +46,7 @@
 #include "qgsalgorithmcheckgeometrysegmentlength.h"
 #include "qgsalgorithmcheckgeometryangle.h"
 #include "qgsalgorithmcheckgeometryarea.h"
+#include "qgsalgorithmfixgeometryselfintersection.h"
 #include "qgsalgorithmfixgeometrydeletefeatures.h"
 #include "qgsalgorithmfixgeometrygap.h"
 #include "qgsalgorithmfixgeometryarea.h"
@@ -631,6 +632,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDensifyGeometriesByCountAlgorithm() );
   addAlgorithm( new QgsFixGeometryDeleteFeaturesAlgorithm() );
   addAlgorithm( new QgsFixGeometryAngleAlgorithm() );
+  addAlgorithm( new QgsFixGeometrySelfIntersectionAlgorithm() );
   addAlgorithm( new QgsFixGeometryGapAlgorithm() );
   addAlgorithm( new QgsFixGeometryAreaAlgorithm() );
   addAlgorithm( new QgsFixGeometryHoleAlgorithm() );

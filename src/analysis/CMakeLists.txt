@@ -65,6 +65,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmfixgeometrydeletefeatures.cpp
   processing/qgsalgorithmfixgeometryangle.cpp
+  processing/qgsalgorithmfixgeometryselfintersection.cpp
   processing/qgsalgorithmfixgeometrygap.cpp
   processing/qgsalgorithmcheckgeometryhole.cpp
   processing/qgsalgorithmfixgeometryhole.cpp
