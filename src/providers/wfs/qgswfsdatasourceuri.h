@@ -135,6 +135,17 @@ class QgsWFSDataSourceURI
     //! Returns authorization parameters
     const QgsAuthorizationSettings &auth() const { return mAuth; }
 
+    //! How to analyze DescribeFeatureType response
+    enum class FeatureMode
+    {
+      Default,         //! If the server supports transaction, same as SIMPLE_FEATURE. Otherwise COMPLEX_FEATURE
+      SimpleFeatures,  //! Analyze DescribeFeatureType response with QGIS built-in Simple Feature analyzer
+      ComplexFeatures, //! Analyze DescribeFeatureType response with OGR GMLAS Complex Feature analyzer
+    };
+
+    //! Returns how to analyze DescribeFeatureType response.
+    FeatureMode featureMode() const;
+
     //! Builds a derived uri from a base uri
     static QString build( const QString &uri, const QString &typeName, const QString &crsString = QString(), const QString &sql = QString(), const QString &filter = QString(), bool restrictToCurrentViewExtent = false );
 

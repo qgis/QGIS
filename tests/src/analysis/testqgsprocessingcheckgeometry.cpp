@@ -34,6 +34,9 @@ class TestQgsProcessingCheckGeometry : public QgsTest
     void init() {}          // will be called before each testfunction is executed.
     void cleanup() {}       // will be called after every testfunction.
 
+    void containedAlg_data();
+    void containedAlg();
+    
     void degeneratePolygonAlg();
 
     void angleAlg_data();
@@ -46,6 +49,7 @@ class TestQgsProcessingCheckGeometry : public QgsTest
   private:
     QgsVectorLayer *mLineLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
+    QgsVectorLayer *mPointLayer = nullptr;
 };
 
 void TestQgsProcessingCheckGeometry::initTestCase()
@@ -73,6 +77,12 @@ void TestQgsProcessingCheckGeometry::initTestCase()
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPolygonLayer );
   QVERIFY( mPolygonLayer->isValid() );
+
+  //create a point layer that will be used in tests
+  mPointLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "point_layer.shp" ), QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  // Register the layer with the registry
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointLayer );
+  QVERIFY( mPointLayer->isValid() );
 }
 
 void TestQgsProcessingCheckGeometry::cleanupTestCase()
@@ -219,6 +229,48 @@ void TestQgsProcessingCheckGeometry::missingVertexAlg()
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 5 );
   QCOMPARE( errorsLayer->featureCount(), 5 );
+}
+
+void TestQgsProcessingCheckGeometry::containedAlg_data()
+{
+  QTest::addColumn<QgsVectorLayer *>( "layerToTest" );
+  QTest::addColumn<int>( "expectedErrorCount" );
+  QTest::newRow( "Point layer" ) << mPointLayer << 2;
+  QTest::newRow( "Line layer with selection" ) << mLineLayer << 1;
+  QTest::newRow( "Polygon layer" ) << mPolygonLayer << 1;
+}
+
+void TestQgsProcessingCheckGeometry::containedAlg()
+{
+  QFETCH( QgsVectorLayer *, layerToTest );
+  QFETCH( int, expectedErrorCount );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrycontained" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layerToTest ) );
+  parameters.insert( QStringLiteral( "POLYGONS" ), QList<QVariant>() << QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( QStringLiteral( "UNIQUE_ID" ), QStringLiteral( "id" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  QVERIFY( outputLayer->isValid() );
+  QVERIFY( errorsLayer->isValid() );
+  QCOMPARE( outputLayer->featureCount(), expectedErrorCount );
+  QCOMPARE( errorsLayer->featureCount(), expectedErrorCount );
 }
 
 void TestQgsProcessingCheckGeometry::degeneratePolygonAlg()
