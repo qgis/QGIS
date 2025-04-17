@@ -48,6 +48,9 @@ class TestQgsProcessingCheckGeometry : public QgsTest
     void selfIntersectionAlg_data();
     void selfIntersectionAlg();
 
+    void duplicateNodesAlg_data();
+    void duplicateNodesAlg();
+
     void dangleAlg();
 
     void followBoundariesAlg();
@@ -419,6 +422,46 @@ void TestQgsProcessingCheckGeometry::dangleAlg()
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 6 );
   QCOMPARE( errorsLayer->featureCount(), 6 );
+}
+
+void TestQgsProcessingCheckGeometry::duplicateNodesAlg_data()
+{
+  QTest::addColumn<QgsVectorLayer *>( "layerToTest" );
+  QTest::addColumn<int>( "expectedErrorCount" );
+  QTest::newRow( "Line layer" ) << mLineLayer << 3;
+  QTest::newRow( "Polygon layer" ) << mPolygonLayer << 1;
+}
+
+void TestQgsProcessingCheckGeometry::duplicateNodesAlg()
+{
+  QFETCH( QgsVectorLayer *, layerToTest );
+  QFETCH( int, expectedErrorCount );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryduplicatenodes" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layerToTest ) );
+  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  QVERIFY( outputLayer->isValid() );
+  QVERIFY( errorsLayer->isValid() );
+  QCOMPARE( outputLayer->featureCount(), expectedErrorCount );
+  QCOMPARE( errorsLayer->featureCount(), expectedErrorCount );
 }
 
 void TestQgsProcessingCheckGeometry::followBoundariesAlg()
