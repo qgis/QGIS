@@ -234,7 +234,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
 QgsMemoryProvider::~QgsMemoryProvider()
 {
-  delete mSpatialIndex;
+
 }
 
 QString QgsMemoryProvider::providerKey()
@@ -789,7 +789,7 @@ bool QgsMemoryProvider::createSpatialIndex()
 {
   if ( !mSpatialIndex )
   {
-    mSpatialIndex = new QgsSpatialIndex();
+    mSpatialIndex = std::make_unique<QgsSpatialIndex>();
 
     // add existing features to index
     for ( QgsFeatureMap::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )

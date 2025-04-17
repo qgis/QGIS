@@ -596,10 +596,6 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
   {
     qWarning( "stopRender was not called on QgsPalLayerSettings object!" );
   }
-
-  // pal layer is deleted internally in PAL
-
-  delete expression;
 }
 
 
@@ -613,9 +609,9 @@ QgsExpression *QgsPalLayerSettings::getLabelExpression()
 {
   if ( !expression )
   {
-    expression = new QgsExpression( fieldName );
+    expression = std::make_unique<QgsExpression>( fieldName );
   }
-  return expression;
+  return expression.get();
 }
 
 Qgis::AngleUnit QgsPalLayerSettings::rotationUnit() const
