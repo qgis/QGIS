@@ -36,7 +36,7 @@ class TestQgsProcessingCheckGeometry : public QgsTest
 
     void containedAlg_data();
     void containedAlg();
-    
+
     void degeneratePolygonAlg();
 
     void angleAlg_data();
