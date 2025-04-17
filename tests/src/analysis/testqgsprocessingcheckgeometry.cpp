@@ -62,6 +62,8 @@ class TestQgsProcessingCheckGeometry : public QgsTest
 
     void sliverPolygonAlg();
 
+    void gapAlg();
+
     void areaAlg();
     void holeAlg();
     void missingVertexAlg();
@@ -604,6 +606,90 @@ void TestQgsProcessingCheckGeometry::sliverPolygonAlg()
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 2 );
   QCOMPARE( errorsLayer->featureCount(), 2 );
+}
+
+void TestQgsProcessingCheckGeometry::gapAlg()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrygap" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+  QgsVectorLayer *gapLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "gap_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+
+  std::unique_ptr<QgsVectorLayer> allowedGapsLayer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "allowedGaps" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( allowedGapsLayer.get() );
+  QgsFeature allowedGap;
+
+  // First test: without allowed gaps
+  {
+    QVariantMap parameters;
+    parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( gapLayer ) );
+    parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+    parameters.insert( QStringLiteral( "GAP_THRESHOLD" ), 0.01 );
+    parameters.insert( QStringLiteral( "NEIGHBORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+    parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+    parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+    bool ok = false;
+    QgsProcessingFeedback feedback;
+    std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+    QVariantMap results;
+    results = alg->run( parameters, *context, &feedback, &ok );
+    QVERIFY( ok );
+
+    std::unique_ptr<QgsVectorLayer> neighborsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "NEIGHBORS" ) ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+    QVERIFY( neighborsLayer->isValid() );
+    QVERIFY( outputLayer->isValid() );
+    QVERIFY( errorsLayer->isValid() );
+    QCOMPARE( neighborsLayer->featureCount(), 15 );
+    QCOMPARE( outputLayer->featureCount(), 5 );
+    QCOMPARE( errorsLayer->featureCount(), 5 );
+
+    // keep an output feature for next test
+    QVERIFY( outputLayer->getFeatures().nextFeature( allowedGap ) );
+  }
+
+  // Second test: with one allowed gap
+  {
+    // Add an allowed gap
+    allowedGap.setFields( allowedGapsLayer->fields(), true );
+    QVERIFY( allowedGapsLayer->startEditing() );
+    QVERIFY( allowedGapsLayer->addFeature( allowedGap ) );
+    QVERIFY( allowedGapsLayer->commitChanges() );
+
+    QVariantMap parameters;
+    parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( gapLayer ) );
+    parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
+    parameters.insert( QStringLiteral( "GAP_THRESHOLD" ), 0.01 );
+    parameters.insert( QStringLiteral( "ALLOWED_GAPS_LAYER" ), QVariant::fromValue( allowedGapsLayer.get() ) );
+    parameters.insert( QStringLiteral( "ALLOWED_GAPS_BUFFER" ), 0.01 );
+    parameters.insert( QStringLiteral( "NEIGHBORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+    parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+    parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+    bool ok = false;
+    QgsProcessingFeedback feedback;
+    std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+    QVariantMap results;
+    results = alg->run( parameters, *context, &feedback, &ok );
+    QVERIFY( ok );
+
+    std::unique_ptr<QgsVectorLayer> neighborsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "NEIGHBORS" ) ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+    QVERIFY( neighborsLayer->isValid() );
+    QVERIFY( outputLayer->isValid() );
+    QVERIFY( errorsLayer->isValid() );
+    QCOMPARE( neighborsLayer->featureCount(), 11 );
+    QCOMPARE( outputLayer->featureCount(), 4 );
+    QCOMPARE( errorsLayer->featureCount(), 4 );
+  }
 }
 
 QGSTEST_MAIN( TestQgsProcessingCheckGeometry )
