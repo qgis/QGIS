@@ -46,17 +46,17 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
   if ( !arguments.isEmpty() )
     arguments.removeFirst();
 
-  mProcess = new QProcess;
+  mProcess = std::make_unique<QProcess>();
 
   if ( capture )
   {
-    connect( mProcess, &QProcess::errorOccurred, this, &QgsRunProcess::processError );
-    connect( mProcess, &QProcess::readyReadStandardOutput, this, &QgsRunProcess::stdoutAvailable );
-    connect( mProcess, &QProcess::readyReadStandardError, this, &QgsRunProcess::stderrAvailable );
+    connect( mProcess.get(), &QProcess::errorOccurred, this, &QgsRunProcess::processError );
+    connect( mProcess.get(), &QProcess::readyReadStandardOutput, this, &QgsRunProcess::stdoutAvailable );
+    connect( mProcess.get(), &QProcess::readyReadStandardError, this, &QgsRunProcess::stderrAvailable );
     // We only care if the process has finished if we are capturing
     // the output from the process, hence this connect() call is
     // inside the capture if() statement.
-    connect( mProcess, static_cast < void ( QProcess::* )( int,  QProcess::ExitStatus ) >( &QProcess::finished ), this, &QgsRunProcess::processExit );
+    connect( mProcess.get(), static_cast < void ( QProcess::* )( int,  QProcess::ExitStatus ) >( &QProcess::finished ), this, &QgsRunProcess::processExit );
 
     // Use QgsMessageOutput for displaying output to user
     // It will delete itself when the dialog box is closed.
@@ -91,7 +91,7 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
 
 QgsRunProcess::~QgsRunProcess()
 {
-  delete mProcess;
+
 }
 
 void QgsRunProcess::die()
@@ -151,10 +151,10 @@ void QgsRunProcess::dialogGone()
 
   mOutput = nullptr;
 
-  disconnect( mProcess, &QProcess::errorOccurred, this, &QgsRunProcess::processError );
-  disconnect( mProcess, &QProcess::readyReadStandardOutput, this, &QgsRunProcess::stdoutAvailable );
-  disconnect( mProcess, &QProcess::readyReadStandardError, this, &QgsRunProcess::stderrAvailable );
-  disconnect( mProcess, static_cast < void ( QProcess::* )( int, QProcess::ExitStatus ) >( &QProcess::finished ), this, &QgsRunProcess::processExit );
+  disconnect( mProcess.get(), &QProcess::errorOccurred, this, &QgsRunProcess::processError );
+  disconnect( mProcess.get(), &QProcess::readyReadStandardOutput, this, &QgsRunProcess::stdoutAvailable );
+  disconnect( mProcess.get(), &QProcess::readyReadStandardError, this, &QgsRunProcess::stderrAvailable );
+  disconnect( mProcess.get(), static_cast < void ( QProcess::* )( int, QProcess::ExitStatus ) >( &QProcess::finished ), this, &QgsRunProcess::processExit );
 
   die();
 }

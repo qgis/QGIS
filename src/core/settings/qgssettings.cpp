@@ -43,7 +43,7 @@ void QgsSettings::init()
 {
   if ( ! sGlobalSettingsPath()->isEmpty() )
   {
-    mGlobalSettings = new QSettings( *sGlobalSettingsPath(), QSettings::IniFormat );
+    mGlobalSettings = std::make_unique<QSettings>( *sGlobalSettingsPath(), QSettings::IniFormat );
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     mGlobalSettings->setIniCodec( "UTF-8" );
 #endif
@@ -53,40 +53,38 @@ void QgsSettings::init()
 
 QgsSettings::QgsSettings( const QString &organization, const QString &application, QObject *parent )
 {
-  mUserSettings = new QSettings( organization, application, parent );
+  mUserSettings = std::make_unique<QSettings>( organization, application, parent );
   init();
 }
 
 QgsSettings::QgsSettings( QSettings::Scope scope, const QString &organization,
                           const QString &application, QObject *parent )
 {
-  mUserSettings = new QSettings( scope, organization, application, parent );
+  mUserSettings = std::make_unique<QSettings>( scope, organization, application, parent );
   init();
 }
 
 QgsSettings::QgsSettings( QSettings::Format format, QSettings::Scope scope,
                           const QString &organization, const QString &application, QObject *parent )
 {
-  mUserSettings = new QSettings( format, scope, organization, application, parent );
+  mUserSettings = std::make_unique<QSettings>( format, scope, organization, application, parent );
   init();
 }
 
 QgsSettings::QgsSettings( const QString &fileName, QSettings::Format format, QObject *parent )
 {
-  mUserSettings = new QSettings( fileName, format, parent );
+  mUserSettings = std::make_unique<QSettings>( fileName, format, parent );
   init();
 }
 
 QgsSettings::QgsSettings( QObject *parent )
 {
-  mUserSettings = new QSettings( parent );
+  mUserSettings = std::make_unique<QSettings>( parent );
   init();
 }
 
 QgsSettings::~QgsSettings()
 {
-  delete mUserSettings;
-  delete mGlobalSettings;
 }
 
 

@@ -1019,7 +1019,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     int mPassTries = 0;
     bool mAuthDisabled = false;
     QString mAuthDisabledMessage;
-    QTimer *mScheduledDbEraseTimer = nullptr;
+    std::unique_ptr<QTimer> mScheduledDbEraseTimer;
     bool mScheduledDbErase = false;
     int mScheduledDbEraseRequestWait = 3 ; // in seconds
     bool mScheduledDbEraseRequestEmitted = false;

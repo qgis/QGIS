@@ -45,5 +45,6 @@ const QString QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE( QStringLitera
 const QString QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER( QStringLiteral( "geometryTypeFilter" ) );
 const QString QgsWFSConstants::URI_PARAM_SQL( QStringLiteral( "sql" ) );
 const QString QgsWFSConstants::URI_PARAM_HTTPMETHOD( QStringLiteral( "httpMethod" ) );
+const QString QgsWFSConstants::URI_PARAM_FEATURE_MODE( QStringLiteral( "featureMode" ) );
 
 const QString QgsWFSConstants::VERSION_AUTO( QStringLiteral( "auto" ) );
