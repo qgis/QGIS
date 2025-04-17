@@ -36,7 +36,7 @@ Usage:
            # examine the result
 
 Three Value Logic
------------------
+=================
 
 Similarly to SQL, this class supports three-value logic:
 true/false/unknown. Unknown value may be a result of operations with
@@ -48,14 +48,14 @@ represented as 1/0 integer, unknown value is represented the same way as
 NULL values: NULL QVariant.
 
 Performance
------------
+===========
 
 For better performance with many evaluations you may first call
 prepare(fields) function to find out indices of columns and then
 repeatedly call evaluate(feature).
 
 Type conversion
----------------
+===============
 
 Operators and functions that expect arguments to be of a particular type
 automatically convert the arguments to that type, e.g. sin('2.1') will
@@ -67,7 +67,7 @@ numeric comparison in case both operators are numeric (int/double) or
 they can be converted to numeric types.
 
 Implicit sharing
-----------------
+================
 
 This class is implicitly shared, copying has a very low overhead. It is
 normally preferable to call `QgsExpression( otherExpression )` instead
