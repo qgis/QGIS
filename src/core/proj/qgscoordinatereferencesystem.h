@@ -178,8 +178,14 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * \section crs_construct_and_copy Object Construction and Copying
  *
- * The easiest way of creating CRS instances is to use QgsCoordinateReferenceSystem(const QString&)
- * constructor that automatically recognizes definition format from the given string.
+ * The easiest way of creating CRS instances is to use the string argument
+ * constructor, which automatically recognizes the definition format from the given string. E.g.
+ *
+ * \code{.py}
+ * crs_from_authid = QgsCoordinateReferenceSystem("EPSG:27700")
+ * crs_from_proj = QgsCoordinateReferenceSystem("+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+ * crs_from_wkt = QgsCoordinateReferenceSystem('PROJCS["Arc 1950 / UTM zone 36S",GEOGCS["Arc 1950...')
+ * \endcode
  *
  * Creation of CRS object involves some queries in a local SQLite database, which may
  * be potentially expensive. Consequently, CRS creation methods use an internal cache to avoid
