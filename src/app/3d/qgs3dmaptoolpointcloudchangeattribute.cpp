@@ -192,16 +192,13 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
 
 bool Qgs3DMapToolPointCloudChangeAttribute::pointIsClipped( const QgsVector3D &mapOrigin, const QList<QVector4D> &clipPlanes, double x, double y, double z )
 {
-  if ( clipPlanes.size() > 0 )
+  const QgsVector3D pointInWorldCoords = Qgs3DUtils::mapToWorldCoordinates( QgsVector3D( x, y, z ), mapOrigin );
+  for ( const QVector4D &clipPlane : clipPlanes )
   {
-    const QgsVector3D pointInWorldCoords = Qgs3DUtils::mapToWorldCoordinates( QgsVector3D( x, y, z ), mapOrigin );
-    for ( const QVector4D &clipPlane : clipPlanes )
-    {
-      // we manually calculate the dot product here so we save resources on some transformation
-      const double distance = clipPlane.x() * pointInWorldCoords.x() + clipPlane.y() * pointInWorldCoords.y() + clipPlane.z() * pointInWorldCoords.z() + clipPlane.w();
-      if ( distance < 0 )
-        return true;
-    }
+    // we manually calculate the dot product here so we save resources on some transformation
+    const double distance = clipPlane.x() * pointInWorldCoords.x() + clipPlane.y() * pointInWorldCoords.y() + clipPlane.z() * pointInWorldCoords.z() + clipPlane.w();
+    if ( distance < 0 )
+      return true;
   }
   return false;
 }
@@ -283,6 +280,7 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
 
   QgsPoint pt;
   const QList<QVector4D> clipPlanes = mCanvas->scene()->clipPlaneEquations();
+  const bool haveClipPlanes = !clipPlanes.isEmpty();
 
   for ( int i = 0; i < block->pointCount(); ++i )
   {
@@ -323,10 +321,10 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
     pt.setX( ptScreen.x() );
     pt.setY( ptScreen.y() );
 
-    if ( !searchPolygon.intersects( &pt ) )
+    if ( haveClipPlanes && pointIsClipped( mapToPixel3D.origin, clipPlanes, x, y, z ) )
       continue;
 
-    if ( pointIsClipped( mapToPixel3D.origin, clipPlanes, x, y, z ) )
+    if ( !searchPolygon.intersects( &pt ) )
       continue;
 
     selected.append( i );
