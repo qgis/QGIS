@@ -81,7 +81,7 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
 
     if ( res.PQresultStatus() != PGRES_TUPLES_OK )
     {
-      throw QgsProviderConnectionException( QObject::tr( "Error while fetching metadata from %1: %2" ).arg( dsUri.connectionInfo( false ), res.PQresultErrorMessage() ) );
+      throw QgsProviderConnectionException( QObject::tr( "Error while fetching metadata from %1: %2" ).arg( QgsPostgresConn::connectionInfo( dsUri, false ), res.PQresultErrorMessage() ) );
     }
 
     for ( int row = 0; row < res.PQntuples(); ++row )
@@ -132,7 +132,7 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
   }
   else
   {
-    throw QgsProviderConnectionException( QObject::tr( "Connection to database %1 failed" ).arg( dsUri.connectionInfo( false ) ) );
+    throw QgsProviderConnectionException( QObject::tr( "Connection to database %1 failed" ).arg( QgsPostgresConn::connectionInfo( dsUri, false ) ) );
   }
   return results;
 }
