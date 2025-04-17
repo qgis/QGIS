@@ -53,7 +53,6 @@ PyQgsSettings
 PyQgsSettingsEntry
 PyQgsServerWMSGetMap
 PyQgsServerAccessControlWFSTransactional
-PyQgsServerWFS
 ProcessingQgisAlgorithmsTestPt2
 ProcessingQgisAlgorithmsTestPt4
 ProcessingGdalAlgorithmsVectorTest
