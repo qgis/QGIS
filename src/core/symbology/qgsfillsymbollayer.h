@@ -277,7 +277,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
      * \see setColorRamp()
      * \see gradientColorType()
      */
-    QgsColorRamp *colorRamp() { return mGradientRamp; }
+    QgsColorRamp *colorRamp() { return mGradientRamp.get(); }
 
     /**
      * Sets the color ramp used for the gradient fill. This is only
@@ -448,7 +448,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     Qgis::GradientColorSource mGradientColorType;
     QColor mColor2;
-    QgsColorRamp *mGradientRamp = nullptr;
+    std::unique_ptr<QgsColorRamp> mGradientRamp;
     Qgis::GradientType mGradientType;
     Qgis::SymbolCoordinateReference mCoordinateMode;
     Qgis::GradientSpread mGradientSpread;
