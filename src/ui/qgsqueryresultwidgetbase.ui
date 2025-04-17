@@ -53,6 +53,7 @@
        <addaction name="mActionFindReplace"/>
        <addaction name="separator"/>
        <addaction name="mActionClear"/>
+       <addaction name="mActionShowHistory"/>
       </widget>
      </item>
      <item>
@@ -203,6 +204,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="mActionShowHistory">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>History</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
  </widget>

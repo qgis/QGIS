@@ -21,8 +21,38 @@
 
 #include "qgshistoryprovider.h"
 #include "qgshistoryentrynode.h"
+#include "qgshistorywidget.h"
 
 #define SIP_NO_FILE
+
+/**
+ * Custom QgsHistoryWidget for use with the database query provider.
+ *
+ * \ingroup gui
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.44
+ */
+class GUI_EXPORT QgsDatabaseQueryHistoryWidget : public QgsHistoryWidget
+{
+    Q_OBJECT
+
+  public:
+    QgsDatabaseQueryHistoryWidget( Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile, QgsHistoryProviderRegistry *registry = nullptr, const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(), QWidget *parent = nullptr );
+
+    /**
+     * Causes the widget to emit the sqlTriggered() signal.
+     */
+    void emitSqlTriggered( const QString &connectionUri, const QString &provider, const QString &sql );
+
+  signals:
+
+    /**
+     * Emitted when the user has triggered a previously executed SQL statement in the widget.
+     */
+    void sqlTriggered( const QString &connectionUri, const QString &provider, const QString &sql );
+};
+
 
 /**
  * History provider for operations database queries.
