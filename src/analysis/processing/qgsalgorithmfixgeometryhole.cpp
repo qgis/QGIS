@@ -25,38 +25,37 @@
 
 ///@cond PRIVATE
 
-auto QgsFixGeometryHoleAlgorithm::name() const -> QString
+QString QgsFixGeometryHoleAlgorithm::name() const
 {
   return QStringLiteral( "fixgeometryhole" );
 }
 
-auto QgsFixGeometryHoleAlgorithm::displayName() const -> QString
+QString QgsFixGeometryHoleAlgorithm::displayName() const
 {
   return QObject::tr( "Fix geometry (Hole)" );
 }
 
-auto QgsFixGeometryHoleAlgorithm::tags() const -> QStringList
+QStringList QgsFixGeometryHoleAlgorithm::tags() const
 {
   return QObject::tr( "delete,fix,hole" ).split( ',' );
 }
 
-auto QgsFixGeometryHoleAlgorithm::group() const -> QString
+QString QgsFixGeometryHoleAlgorithm::group() const
 {
   return QObject::tr( "Fix geometry" );
 }
 
-auto QgsFixGeometryHoleAlgorithm::groupId() const -> QString
+QString QgsFixGeometryHoleAlgorithm::groupId() const
 {
   return QStringLiteral( "fixgeometry" );
 }
 
-auto QgsFixGeometryHoleAlgorithm::shortHelpString() const -> QString
+QString QgsFixGeometryHoleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm deletes holes based on an error layer from the "
-                      "check holes algorithm.\n" );
+  return QObject::tr( "This algorithm deletes holes based on an error layer from the check holes algorithm.\n" );
 }
 
-auto QgsFixGeometryHoleAlgorithm::createInstance() const -> QgsFixGeometryHoleAlgorithm *
+QgsFixGeometryHoleAlgorithm *QgsFixGeometryHoleAlgorithm::createInstance() const
 {
   return new QgsFixGeometryHoleAlgorithm();
 }
@@ -66,44 +65,48 @@ void QgsFixGeometryHoleAlgorithm::initAlgorithm( const QVariantMap &configuratio
   Q_UNUSED( configuration )
 
   // Inputs
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) )
-  );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) )
-  );
+  addParameter( new QgsProcessingParameterFeatureSource(
+    QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
+  ) );
+  addParameter( new QgsProcessingParameterFeatureSource(
+    QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Field of original feature unique identifier" ),
     QStringLiteral( "id" ), QStringLiteral( "ERRORS" )
-  )
-  );
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "PART_IDX" ), QObject::tr( "Field of part index" ),
     QStringLiteral( "gc_partidx" ), QStringLiteral( "ERRORS" ),
     Qgis::ProcessingFieldParameterDataType::Numeric
-  )
-  );
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "RING_IDX" ), QObject::tr( "Field of ring index" ),
     QStringLiteral( "gc_ringidx" ), QStringLiteral( "ERRORS" ),
     Qgis::ProcessingFieldParameterDataType::Numeric
-  )
-  );
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "VERTEX_IDX" ), QObject::tr( "Field of vertex index" ),
     QStringLiteral( "gc_vertidx" ), QStringLiteral( "ERRORS" ),
     Qgis::ProcessingFieldParameterDataType::Numeric
-  )
-  );
+  ) );
 
   // Outputs
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink(
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
+  ) );
+  addParameter( new QgsProcessingParameterFeatureSink(
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+  ) );
 
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
+  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+  );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( tolerance.release() );
 }
 
-auto QgsFixGeometryHoleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) -> QVariantMap
+QVariantMap QgsFixGeometryHoleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )
@@ -151,15 +154,15 @@ auto QgsFixGeometryHoleAlgorithm::processAlgorithm( const QVariantMap &parameter
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
   const QgsProject *project = QgsProject::instance();
-  auto checkContext = std::make_unique<QgsGeometryCheckContext>( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
   QStringList messages;
 
-  const QgsGeometryHoleCheck check( checkContext.get(), QVariantMap() );
+  const QgsGeometryHoleCheck check( &checkContext, QVariantMap() );
 
-  QgsVectorLayer *fixedLayer = input->materialize( QgsFeatureRequest() );
-  std::unique_ptr<QgsFeaturePool> featurePool = std::make_unique<QgsVectorDataProviderFeaturePool>( fixedLayer );
+  std::unique_ptr<QgsVectorLayer> fixedLayer( input->materialize( QgsFeatureRequest() ) );
+  QgsVectorDataProviderFeaturePool featurePool = QgsVectorDataProviderFeaturePool( fixedLayer.get() );
   QMap<QString, QgsFeaturePool *> featurePools;
-  featurePools.insert( fixedLayer->id(), featurePool.get() );
+  featurePools.insert( fixedLayer->id(), &featurePool );
 
   QgsFeature errorFeature, inputFeature, testDuplicateIdFeature;
   QgsFeatureIterator errorFeaturesIt = errors->getFeatures();
@@ -197,7 +200,7 @@ auto QgsFixGeometryHoleAlgorithm::processAlgorithm( const QVariantMap &parameter
     {
       QgsGeometryCheckError checkError = QgsGeometryCheckError(
         &check,
-        QgsGeometryCheckerUtils::LayerFeature( featurePool.get(), inputFeature, checkContext.get(), false ),
+        QgsGeometryCheckerUtils::LayerFeature( &featurePool, inputFeature, &checkContext, false ),
         errorFeature.geometry().asPoint(),
         QgsVertexId(
           errorFeature.attribute( partIdxFieldName ).toInt(),
@@ -211,7 +214,12 @@ auto QgsFixGeometryHoleAlgorithm::processAlgorithm( const QVariantMap &parameter
       QgsGeometryCheck::Changes changes;
       check.fixError( featurePools, &checkError, QgsGeometryHoleCheck::ResolutionMethod::RemoveHoles, QMap<QString, int>(), changes );
       changesList << changes;
-      reportFeature.setAttributes( errorFeature.attributes() << checkError.resolutionMessage() << ( checkError.status() == QgsGeometryCheckError::StatusFixed ) );
+
+      QString resolutionMessage = checkError.resolutionMessage();
+      if ( checkError.status() == QgsGeometryCheckError::StatusObsolete )
+        resolutionMessage = QObject::tr( "Error is obsolete" );
+
+      reportFeature.setAttributes( errorFeature.attributes() << resolutionMessage << ( checkError.status() == QgsGeometryCheckError::StatusFixed ) );
     }
 
     if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
@@ -241,14 +249,14 @@ auto QgsFixGeometryHoleAlgorithm::processAlgorithm( const QVariantMap &parameter
   return outputs;
 }
 
-auto QgsFixGeometryHoleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) -> bool
+bool QgsFixGeometryHoleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
 
   return true;
 }
 
-auto QgsFixGeometryHoleAlgorithm::flags() const -> Qgis::ProcessingAlgorithmFlags
+Qgis::ProcessingAlgorithmFlags QgsFixGeometryHoleAlgorithm::flags() const
 {
   return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
 }
