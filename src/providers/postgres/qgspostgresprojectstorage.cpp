@@ -71,7 +71,7 @@ QStringList QgsPostgresProjectStorage::listProjects( const QString &uri )
   if ( !projectUri.valid )
     return lst;
 
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( projectUri.connInfo, false ) );
   if ( !conn )
     return lst;
 
@@ -105,10 +105,10 @@ bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *devi
     return false;
   }
 
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( projectUri.connInfo, false ) );
   if ( !conn )
   {
-    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.connInfo.connectionInfo( false ), Qgis::MessageLevel::Critical );
+    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + QgsPostgresConn::connectionInfo( projectUri.connInfo, false ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -154,10 +154,10 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
     return false;
   }
 
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( projectUri.connInfo, false ) );
   if ( !conn )
   {
-    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.connInfo.connectionInfo( false ), Qgis::MessageLevel::Critical );
+    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + QgsPostgresConn::connectionInfo( projectUri.connInfo, false ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -208,7 +208,7 @@ bool QgsPostgresProjectStorage::removeProject( const QString &uri )
   if ( !projectUri.valid )
     return false;
 
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( projectUri.connInfo, false ) );
   if ( !conn )
     return false;
 
@@ -232,7 +232,7 @@ bool QgsPostgresProjectStorage::readProjectStorageMetadata( const QString &uri, 
   if ( !projectUri.valid )
     return false;
 
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( projectUri.connInfo, false ) );
   if ( !conn )
     return false;
 
