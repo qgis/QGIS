@@ -46,6 +46,7 @@
 #include "qgsalgorithmcheckgeometrysegmentlength.h"
 #include "qgsalgorithmcheckgeometryangle.h"
 #include "qgsalgorithmcheckgeometryarea.h"
+#include "qgsalgorithmfixgeometrygap.h"
 #include "qgsalgorithmfixgeometryarea.h"
 #include "qgsalgorithmfixgeometryhole.h"
 #include "qgsalgorithmfixgeometrymissingvertex.h"
@@ -628,6 +629,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDensifyGeometriesByIntervalAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByCountAlgorithm() );
   addAlgorithm( new QgsFixGeometryAngleAlgorithm() );
+  addAlgorithm( new QgsFixGeometryGapAlgorithm() );
   addAlgorithm( new QgsFixGeometryAreaAlgorithm() );
   addAlgorithm( new QgsFixGeometryHoleAlgorithm() );
   addAlgorithm( new QgsFixGeometryMissingVertexAlgorithm() );

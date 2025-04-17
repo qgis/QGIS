@@ -64,6 +64,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmfixgeometryangle.cpp
+  processing/qgsalgorithmfixgeometrygap.cpp
   processing/qgsalgorithmcheckgeometryhole.cpp
   processing/qgsalgorithmfixgeometryhole.cpp
   processing/qgsalgorithmcheckgeometrymissingvertex.cpp
