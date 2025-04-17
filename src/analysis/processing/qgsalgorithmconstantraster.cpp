@@ -201,65 +201,7 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
 
   //prepare raw data depending on raster data type
   QgsRasterBlock block( rasterDataType, cols, 1 );
-  switch ( typeId )
-  {
-    case 0:
-    {
-      std::vector<quint8> byteRow( cols );
-      std::fill( byteRow.begin(), byteRow.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &byteRow[0], QgsRasterBlock::typeSize( Qgis::DataType::Byte ) * cols ) );
-      break;
-    }
-    case 1:
-    {
-      std::vector<qint16> int16Row( cols );
-      std::fill( int16Row.begin(), int16Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &int16Row[0], QgsRasterBlock::typeSize( Qgis::DataType::Int16 ) * cols ) );
-      break;
-    }
-    case 2:
-    {
-      std::vector<quint16> uInt16Row( cols );
-      std::fill( uInt16Row.begin(), uInt16Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &uInt16Row[0], QgsRasterBlock::typeSize( Qgis::DataType::UInt16 ) * cols ) );
-      break;
-    }
-    case 3:
-    {
-      std::vector<qint32> int32Row( cols );
-      std::fill( int32Row.begin(), int32Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &int32Row[0], QgsRasterBlock::typeSize( Qgis::DataType::Int32 ) * cols ) );
-      break;
-    }
-    case 4:
-    {
-      std::vector<quint32> uInt32Row( cols );
-      std::fill( uInt32Row.begin(), uInt32Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &uInt32Row[0], QgsRasterBlock::typeSize( Qgis::DataType::UInt32 ) * cols ) );
-      break;
-    }
-    case 5:
-    {
-      std::vector<float> float32Row( cols );
-      std::fill( float32Row.begin(), float32Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &float32Row[0], QgsRasterBlock::typeSize( Qgis::DataType::Float32 ) * cols ) );
-      break;
-    }
-    case 6:
-    {
-      std::vector<double> float64Row( cols );
-      std::fill( float64Row.begin(), float64Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &float64Row[0], QgsRasterBlock::typeSize( Qgis::DataType::Float64 ) * cols ) );
-      break;
-    }
-    default:
-    {
-      std::vector<float> float32Row( cols );
-      std::fill( float32Row.begin(), float32Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &float32Row[0], QgsRasterBlock::typeSize( Qgis::DataType::Float32 ) * cols ) );
-      break;
-    }
-  }
+  block.fill( value );
 
   const double step = rows > 0 ? 100.0 / rows : 1;
 
