@@ -93,9 +93,13 @@ Hides the result table and shows the error ``title`` and ``message`` in
 the message bar or in the SQL error panel is ``isSqlError`` is set.
 %End
 
-    void tokensReady( const QStringList &tokens );
+ void tokensReady( const QStringList &tokens ) /Deprecated="Since 3.44. , has no effect"/;
 %Docstring
 Triggered when the threaded API fetcher has new ``tokens`` to add.
+
+.. deprecated:: 3.44
+
+   , has no effect
 %End
 
     void copyResults();
@@ -136,6 +140,7 @@ Emitted when the first batch of results has been fetched.
 
 
 };
+
 
 class QgsQueryResultDialog : QDialog
 {
