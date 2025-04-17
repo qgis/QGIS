@@ -678,6 +678,10 @@ void QgsAttributeTableDialog::mActionSaveEdits_triggered()
 
 void QgsAttributeTableDialog::mActionReload_triggered()
 {
+  // New call: Refresh the list of features, accounting for active categories
+  mMainView->refreshFilteredFeatures();
+
+  // Existing call
   mMainView->masterModel()->layer()->reload();
 }
 
