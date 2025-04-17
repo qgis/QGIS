@@ -45,8 +45,8 @@ class TestQgsProcessingCheckGeometry : public QgsTest
     void segmentLengthAlg_data();
     void segmentLengthAlg();
 
-    void multipartAlg_data();
-    void multipartAlg();
+    void selfIntersectionAlg_data();
+    void selfIntersectionAlg();
 
     void areaAlg();
     void holeAlg();
@@ -349,20 +349,20 @@ void TestQgsProcessingCheckGeometry::segmentLengthAlg()
   QCOMPARE( errorsLayer->featureCount(), expectedErrorCount );
 }
 
-void TestQgsProcessingCheckGeometry::multipartAlg_data()
+void TestQgsProcessingCheckGeometry::selfIntersectionAlg_data()
 {
   QTest::addColumn<QgsVectorLayer *>( "layerToTest" );
   QTest::addColumn<int>( "expectedErrorCount" );
-  QTest::newRow( "Line layer" ) << mLineLayer << 8;
-  QTest::newRow( "Polygon layer" ) << mPolygonLayer << 24;
+  QTest::newRow( "Line layer" ) << mLineLayer << 3;
+  QTest::newRow( "Polygon layer" ) << mPolygonLayer << 2;
 }
 
-void TestQgsProcessingCheckGeometry::multipartAlg()
+void TestQgsProcessingCheckGeometry::selfIntersectionAlg()
 {
   QFETCH( QgsVectorLayer *, layerToTest );
   QFETCH( int, expectedErrorCount );
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrymultipart" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryselfintersection" ) )
   );
   QVERIFY( alg != nullptr );
 

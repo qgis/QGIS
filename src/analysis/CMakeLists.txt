@@ -70,6 +70,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfixgeometrymissingvertex.cpp
   processing/qgsalgorithmcheckgeometryarea.cpp
   processing/qgsalgorithmfixgeometryarea.cpp
+  processing/qgsalgorithmcheckgeometryselfintersection.cpp
   processing/qgsalgorithmcheckgeometrymultipart.cpp
   processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp
   processing/qgsalgorithmcheckgeometrycontained.cpp
