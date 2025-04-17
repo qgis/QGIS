@@ -51,7 +51,6 @@ PyQgsSymbolLayerReadSld
 PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
-PyQgsServerWMSGetFeatureInfo
 PyQgsServerWMSGetMap
 PyQgsServerAccessControlWFSTransactional
 PyQgsServerWFS
