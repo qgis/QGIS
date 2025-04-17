@@ -38,6 +38,7 @@ class QValidator;
 
 class QgisAppInterface;
 class QgisAppStyleSheet;
+class QgsAppDbUtils;
 class QgsAnnotation;
 class QgsMapCanvasAnnotationItem;
 class QgsAuthManager;
@@ -1284,6 +1285,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Update project menu with the project templates
     void updateProjectFromTemplates();
+
+    //! Returns pointer to the application database utilities
+    QgsAppDbUtils *dbUtils();
 
     /**
      *
@@ -2535,8 +2539,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *mFeatureActionMenu = nullptr;
     //! Popup menu
     QMenu *mPopupMenu = nullptr;
-    //! Top level database menu
-    QMenu *mDatabaseMenu = nullptr;
     //! Top level web menu
     QMenu *mWebMenu = nullptr;
 
@@ -2771,6 +2773,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsScopedDevToolWidgetFactory mDocumentationWidgetFactory;
 
     std::vector<QgsScopedOptionsWidgetFactory> mOptionWidgetFactories;
+    std::unique_ptr< QgsAppDbUtils > mAppDbUtils;
 
     QMap<QString, QToolButton *> mAnnotationItemGroupToolButtons;
     QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar

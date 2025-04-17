@@ -157,22 +157,21 @@ class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
       {
         queryHistoryWidget->emitSqlTriggered( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(), mEntry.entry.value( QStringLiteral( "provider" ) ).toString(), mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
       }
-      else
-      {
-        mProvider->emitOpenSqlDialog( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(), mEntry.entry.value( QStringLiteral( "provider" ) ).toString(), mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
-      }
       return true;
     }
 
-    void populateContextMenu( QMenu *menu, const QgsHistoryWidgetContext & ) override
+    void populateContextMenu( QMenu *menu, const QgsHistoryWidgetContext &context ) override
     {
-      QAction *executeAction = new QAction(
-        QObject::tr( "Execute SQL Command…" ), menu
-      );
-      QObject::connect( executeAction, &QAction::triggered, menu, [=] {
-        mProvider->emitOpenSqlDialog( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(), mEntry.entry.value( QStringLiteral( "provider" ) ).toString(), mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
-      } );
-      menu->addAction( executeAction );
+      if ( QgsDatabaseQueryHistoryWidget *queryHistoryWidget = qobject_cast< QgsDatabaseQueryHistoryWidget * >( context.historyWidget() ) )
+      {
+        QAction *executeAction = new QAction(
+          QObject::tr( "Execute SQL Command…" ), menu
+        );
+        QObject::connect( executeAction, &QAction::triggered, menu, [=] {
+          queryHistoryWidget->emitSqlTriggered( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(), mEntry.entry.value( QStringLiteral( "provider" ) ).toString(), mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
+        } );
+        menu->addAction( executeAction );
+      }
 
       QAction *copyAction = new QAction(
         QObject::tr( "Copy SQL Command" ), menu
@@ -218,12 +217,6 @@ void QgsDatabaseQueryHistoryProvider::updateNodeForEntry( QgsHistoryEntryNode *n
     dbNode->setEntry( entry );
   }
 }
-
-void QgsDatabaseQueryHistoryProvider::emitOpenSqlDialog( const QString &connectionUri, const QString &provider, const QString &sql )
-{
-  emit openSqlDialog( connectionUri, provider, sql );
-}
-
 
 //
 // QgsDatabaseQueryHistoryWidget
