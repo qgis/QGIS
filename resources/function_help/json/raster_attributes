@@ -16,6 +16,9 @@
   "examples": [{
     "expression": "raster_attributes('vegetation', 1, raster_value('vegetation', 1, make_point(1,1)))",
     "returns": "{'class': 'Vegetated', 'subclass': 'Trees'}"
+  }, {
+    "expression": "raster_attributes('vegetation', 1, raster_value('vegetation', 1, @layer_cursor_point))",
+    "returns": "{'class': 'Vegetated', 'subclass': 'Trees'}"
   }],
   "tags": ["provider", "point", "raster", "found", "attributes"]
 }
