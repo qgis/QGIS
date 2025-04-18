@@ -427,7 +427,7 @@ QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, con
   mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
 }
 
-QString QgsPGProjectItem::uriWithNewName( const QString newProjectName )
+QString QgsPGProjectItem::uriWithNewName( const QString &newProjectName )
 {
   QgsPostgresProjectUri postgresProjectUri( mProjectUri );
   postgresProjectUri.projectName = newProjectName;
