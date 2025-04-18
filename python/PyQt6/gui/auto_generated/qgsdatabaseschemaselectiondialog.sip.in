@@ -12,7 +12,8 @@
 class QgsDatabaseSchemaSelectionDialog : QDialog
 {
 %Docstring(signature="appended")
-Dialog which displays selection of a schema for a specific database connection.
+Dialog which displays selection of a schema for a specific database 
+connection.
 
 .. warning::
 
@@ -27,7 +28,8 @@ Dialog which displays selection of a schema for a specific database connection.
   public:
     explicit QgsDatabaseSchemaSelectionDialog( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDatabaseSchemaSelectionDialog, for the specified ``connection``.
+Constructor for QgsDatabaseSchemaSelectionDialog, for the specified 
+``connection``.
 
 Ownership of ``connection`` is transferred.
 %End
