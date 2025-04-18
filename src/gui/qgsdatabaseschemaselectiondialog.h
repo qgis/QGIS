@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * \brief The QgsDatabaseSchemaSelectionDialog class is a dialog which displays selection of schema for a specific database connection.
+ * \brief Dialog which displays selection of schema for a specific database connection.
  *
  * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation.
  *
