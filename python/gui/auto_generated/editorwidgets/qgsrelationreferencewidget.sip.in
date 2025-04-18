@@ -176,6 +176,13 @@ Set the current form feature (from the referencing layer)
 .. versionadded:: 3.10
 %End
 
+    void setParentFormFeature( const QgsFeature &parentFormFeature );
+%Docstring
+Set the current parent form feature
+
+.. versionadded:: 3.42.2
+%End
+
     QString referencedLayerDataSource() const;
 %Docstring
 Returns the public data source of the referenced layer
