@@ -144,31 +144,31 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
   {
     // Create a map to store the field name and its index in input2
     QMap<int, QString> fieldIndexMap;
-  
+
     // Populate the map with the index of each field in input2
     for ( int i = 0; i < input2->fields().count(); ++i )
     {
-        fieldIndexMap.insert(i, input2->fields().at(i).name());
+      fieldIndexMap.insert( i, input2->fields().at( i ).name() );
     }
-  
+
     // Sort the fieldsToCopy based on their position in input2
     QStringList sortedFields = fieldsToCopy;
-    std::sort(sortedFields.begin(), sortedFields.end(), [&fieldIndexMap](const QString& a, const QString& b) {
-        int indexA = fieldIndexMap.key(a);
-        int indexB = fieldIndexMap.key(b);
-        return indexA < indexB;
-    });
-  
+    std::sort( sortedFields.begin(), sortedFields.end(), [&fieldIndexMap]( const QString &a, const QString &b ) {
+      int indexA = fieldIndexMap.key( a );
+      int indexB = fieldIndexMap.key( b );
+      return indexA < indexB;
+    } );
+
     // Copy sorted field names
     fields2Indices.reserve( sortedFields.count() );
     for ( const QString &field : sortedFields )
     {
-        const int index = input2->fields().lookupField( field );
-        if ( index >= 0 )
-        {
-            fields2Indices << index;
-            outFields2.append( input2->fields().at( index ) );
-        }
+      const int index = input2->fields().lookupField( field );
+      if ( index >= 0 )
+      {
+        fields2Indices << index;
+        outFields2.append( input2->fields().at( index ) );
+      }
     }
   }
 
