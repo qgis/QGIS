@@ -12,7 +12,7 @@
 class QgsDatabaseSchemaSelectionDialog : QDialog
 {
 %Docstring(signature="appended")
-Dialog which displays selection of schema for a specific database connection.
+Dialog which displays selection of a schema for a specific database connection.
 
 .. warning::
 
