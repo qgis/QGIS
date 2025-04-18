@@ -99,6 +99,12 @@ class Qgs3DMapToolPointCloudChangeAttribute : public Qgs3DMapTool
     QVector<int> selectedPointsInNode( const QgsGeos &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudIndex index, QgsRectangle mapExtent, QgsPointCloudLayerElevationProperties &elevationProperties, QgsAbstract3DRenderer *renderer3D );
 
     QgsGeometry box3DToPolygonInScreenSpace( const QgsBox3D &box, const MapToPixel3D &mapToPixel3D );
+
+    /**
+     * Returns whether point is outside the intersection of half-spaces defined
+     * by clip planes.
+     */
+    bool pointIsClipped( const QgsVector3D &mapOrigin, const QList<QVector4D> &clipPlanes, double x, double y, double z );
 };
 
 #endif // QGS3DMAPTOOLPOINTCLOUDCHANGEATTRIBUTE_H

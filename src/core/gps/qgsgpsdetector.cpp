@@ -156,8 +156,14 @@ void QgsGpsDetector::advance()
       mBaudIndex = mBaudList.size() - 1;
 
       QStringList gpsParams = mPortList.at( mPortIndex ).first.split( ':' );
+      if ( gpsParams.size() < 3 )
+      {
+        QgsDebugError( QStringLiteral( "If the port name contains a colon, then it should have more than one colon (e.g., host:port:device). Port name: %1" ).arg( mPortList.at( mPortIndex ).first ) );
+        emit detectionFailed();
+        deleteLater();
+        return;
+      }
 
-      Q_ASSERT( gpsParams.size() >= 3 );
       QgsDebugMsgLevel( QStringLiteral( "Connecting to GPSD device %1" ).arg( gpsParams.join( ',' ) ), 2 );
 
       mConn = std::make_unique< QgsGpsdConnection >( gpsParams[0], gpsParams[1].toShort(), gpsParams[2] );

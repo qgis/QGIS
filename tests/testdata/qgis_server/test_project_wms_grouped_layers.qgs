@@ -37,7 +37,7 @@
         <customproperties/>
       </layer-tree-layer>
     </layer-tree-group>
-    <layer-tree-layer providerKey="gdal" expanded="1" checked="Qt::Checked" id="osm_85c8eb94_b6fa_437b_b91a_7816ef2e2243" name="osm" source="GPKG:/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wms_grouped_layers.gpkg:osm">
+    <layer-tree-layer providerKey="gdal" expanded="1" checked="Qt::Checked" id="osm_85c8eb94_b6fa_437b_b91a_7816ef2e2243" name="osm" source="GPKG:./test_project_wms_grouped_layers.gpkg:osm">
       <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0">

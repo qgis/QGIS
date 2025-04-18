@@ -77,9 +77,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-694</y>
+        <y>-127</y>
         <width>548</width>
-        <height>1439</height>
+        <height>1515</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -149,33 +149,23 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="collapsibleGroupboxSubsections">
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mSubsectionsActivateCheck">
          <property name="title">
-          <string>Subsections Indicator</string>
+          <string>Show Subsections Indicator</string>
          </property>
-         <layout class="QGridLayout" name="gridLayoutSubsections">
-          <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="mSubsectionsActivateCheck">
-            <property name="text">
-             <string>Show Subsections Indicator</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayoutSubsections" columnstretch="1,2">
+          <item row="0" column="0">
            <widget class="QLabel" name="mSubsectionsSymbolLabel">
             <property name="text">
              <string>Lines</string>
             </property>
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="0" column="1">
            <widget class="QgsSymbolButton" name="mSubsectionsSymbolButton">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -849,18 +839,19 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mCheckControlledByAtlas</tabstop>
   <tabstop>mSpinTolerance</tabstop>
   <tabstop>mDDBtnTolerance</tabstop>
-  <tabstop>mCheckControlledByAtlas</tabstop>
   <tabstop>mSubsectionsActivateCheck</tabstop>
   <tabstop>mSubsectionsSymbolButton</tabstop>
-  <tabstop>mSpinMinElevation</tabstop>
   <tabstop>mSpinMinDistance</tabstop>
-  <tabstop>mSpinMaxDistance</tabstop>
-  <tabstop>mSpinMaxElevation</tabstop>
   <tabstop>mDDBtnMinDistance</tabstop>
+  <tabstop>mSpinMaxDistance</tabstop>
   <tabstop>mDDBtnMaxDistance</tabstop>
+  <tabstop>mSpinMinElevation</tabstop>
   <tabstop>mDDBtnMinElevation</tabstop>
+  <tabstop>mSpinMaxElevation</tabstop>
+  <tabstop>mDDBtnMaxElevation</tabstop>
   <tabstop>mDistanceUnitCombo</tabstop>
   <tabstop>mDistanceAxisMajorIntervalSpin</tabstop>
   <tabstop>mDDBtnDistanceMajorInterval</tabstop>
@@ -893,7 +884,6 @@
   <tabstop>mDDBtnRightMargin</tabstop>
   <tabstop>mSpinBottomMargin</tabstop>
   <tabstop>mDDBtnBottomMargin</tabstop>
-  <tabstop>mDDBtnMaxElevation</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
