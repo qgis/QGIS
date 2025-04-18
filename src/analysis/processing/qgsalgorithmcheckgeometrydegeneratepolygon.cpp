@@ -79,7 +79,7 @@ void QgsGeometryCheckDegeneratePolygonAlgorithm::initAlgorithm( const QVariantMa
     QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
@@ -128,8 +128,6 @@ QVariantMap QgsGeometryCheckDegeneratePolygonAlgorithm::processAlgorithm( const 
   std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
     parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs()
   ) );
-  if ( !sink_output )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
     parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
@@ -189,7 +187,7 @@ QVariantMap QgsGeometryCheckDegeneratePolygonAlgorithm::processAlgorithm( const 
     f.setAttributes( attrs );
 
     f.setGeometry( error->geometry() );
-    if ( !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
+    if ( sink_output && !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     f.setGeometry( error->geometry().centroid() );
@@ -208,7 +206,8 @@ QVariantMap QgsGeometryCheckDegeneratePolygonAlgorithm::processAlgorithm( const 
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
+  if ( sink_output )
+    outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
   outputs.insert( QStringLiteral( "ERRORS" ), dest_errors );
 
   return outputs;
