@@ -175,7 +175,7 @@ QVariantMap QgsGeometryCheckSelfIntersectionAlgorithm::processAlgorithm( const Q
   long i = 0;
   feedback->setProgress( 0.0 );
 
-  for ( QgsGeometryCheckError *error : checkErrors )
+  for ( const QgsGeometryCheckError *error : checkErrors )
   {
     const QgsGeometryCheckErrorSingle *singleError = dynamic_cast<const QgsGeometryCheckErrorSingle *>( error );
     if ( !singleError )

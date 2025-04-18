@@ -165,7 +165,7 @@ QVariantMap QgsGeometryCheckDegeneratePolygonAlgorithm::processAlgorithm( const 
   long i = 0;
   feedback->setProgress( 0.0 );
 
-  for ( QgsGeometryCheckError *error : checkErrors )
+  for ( const QgsGeometryCheckError *error : checkErrors )
   {
     if ( feedback->isCanceled() )
     {
