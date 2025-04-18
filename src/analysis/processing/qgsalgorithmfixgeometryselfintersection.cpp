@@ -199,7 +199,7 @@ QVariantMap QgsFixGeometrySelfIntersectionAlgorithm::processAlgorithm( const QVa
   const QgsGeometrySelfIntersectionCheck check( &checkContext, QVariantMap() );
 
   multiStepFeedback.setCurrentStep( 1 );
-  multiStepFeedback.setProgressText( QObject::tr( "Peparing features..." ) );
+  multiStepFeedback.setProgressText( QObject::tr( "Preparing features..." ) );
   std::unique_ptr<QgsVectorLayer> fixedLayer( input->materialize( QgsFeatureRequest() ) );
   QgsVectorDataProviderFeaturePool featurePool = QgsVectorDataProviderFeaturePool( fixedLayer.get(), false );
   QMap<QString, QgsFeaturePool *> featurePools;
