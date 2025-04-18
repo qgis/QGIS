@@ -172,6 +172,14 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
     }
   }
 
+  if ( !prefix.isEmpty() )
+  {
+    for ( int i = 0; i < outFields2.count(); ++i )
+    {
+      outFields2.rename( i, prefix + outFields2[i].name() );
+    }
+  }
+
   const QgsAttributeList fields2Fetch = fields2Indices;
 
   QgsFields outFields = QgsProcessingUtils::combineFields( input->fields(), outFields2 );
