@@ -208,6 +208,9 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   multiStepFeedback.setProgressText( QObject::tr( "Fixing errors..." ) );
   while ( gapsFeaturesIt.nextFeature( gapFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     reportFeature.setGeometry( gapFeature.geometry().centroid() );
@@ -272,6 +275,9 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   QgsFeatureIterator fixedFeaturesIt = fixedLayer->getFeatures();
   while ( fixedFeaturesIt.nextFeature( fixedFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )

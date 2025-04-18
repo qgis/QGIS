@@ -137,6 +137,9 @@ QVariantMap QgsFixGeometryDeleteFeaturesAlgorithm::processAlgorithm( const QVari
   QgsFeatureIterator inputFeaturesIt = input->getFeatures();
   while ( inputFeaturesIt.nextFeature( inputFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     feedback->setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
 
