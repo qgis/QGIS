@@ -196,7 +196,7 @@ QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariant
   feedback->setProgress( 0.0 );
 
   QVariantList uniqueIds;
-  for ( QgsGeometryCheckError *error : checkErrors )
+  for ( const QgsGeometryCheckError *error : checkErrors )
   {
     if ( feedback->isCanceled() )
     {

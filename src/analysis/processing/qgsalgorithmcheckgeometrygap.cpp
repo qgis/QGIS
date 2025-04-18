@@ -212,12 +212,12 @@ QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &p
   long long i = 0;
   feedback->setProgress( 0.0 );
 
-  for ( QgsGeometryCheckError *error : checkErrors )
+  for ( const QgsGeometryCheckError *error : checkErrors )
   {
     if ( feedback->isCanceled() )
       break;
 
-    QgsGeometryGapCheckError *gapError = dynamic_cast<QgsGeometryGapCheckError *>( error );
+    const QgsGeometryGapCheckError *gapError = dynamic_cast<const QgsGeometryGapCheckError *>( error );
     if ( !gapError )
       break;
 
