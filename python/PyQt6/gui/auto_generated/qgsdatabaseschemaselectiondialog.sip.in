@@ -12,7 +12,7 @@
 class QgsDatabaseSchemaSelectionDialog : QDialog
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDatabaseSchemaSelectionDialog` class is a dialog which displays selection of schema for a specific database connection.
+Dialog which displays selection of schema for a specific database connection.
 
 .. warning::
 
