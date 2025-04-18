@@ -30,7 +30,7 @@ QgsDatabaseSchemaSelectionDialog::QgsDatabaseSchemaSelectionDialog( QgsAbstractD
   mCboSchema = new QgsDatabaseSchemaComboBox( connection, this );
   mCboSchema->setAllowEmptySchema( false );
 
-  layout->addRow( "Select Schema", mCboSchema );
+  layout->addRow( tr( "Select Schema" ), mCboSchema );
 
   mButtonBox = new QDialogButtonBox( this );
   mButtonBox->setOrientation( Qt::Horizontal );

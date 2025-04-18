@@ -764,7 +764,7 @@ void QgsPostgresDataItemGuiProvider::handleImportVector( QgsPGConnectionItem *co
 void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
 {
   QgsSettings settings;
-  QString defaultPath = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
+  const QString defaultPath = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
 
   const Qgis::ProjectFileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
   const QString qgisProjectExt = tr( "QGIS Project Formats" ) + ( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgz ? " (*.qgz *.QGZ *.qgs *.QGS)" : " (*.qgs *.QGS *.qgz *.QGZ)" );
@@ -811,7 +811,7 @@ void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *proj
     fullPath.setFile( fullPath.filePath() + ".qgs" );
   }
 
-  QgsProject project = QgsProject();
+  QgsProject project;
   project.read( projectItem->path() );
   project.setFileName( fullPath.filePath() );
   const bool result = project.write();
@@ -836,10 +836,10 @@ void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectIte
     return;
   }
 
-  QString newUri = projectItem->uriWithNewName( dlg.name() );
+  const QString newUri = projectItem->uriWithNewName( dlg.name() );
 
   // read the project, set title and new filename
-  QgsProject project = QgsProject();
+  QgsProject project;
   project.read( projectItem->path() );
   project.setTitle( dlg.name() );
   project.setFileName( newUri );
@@ -908,7 +908,7 @@ void QgsPostgresDataItemGuiProvider::duplicateProject( QgsPGProjectItem *project
   const QString newUri = projectItem->uriWithNewName( dlg.name() );
 
   // read the project, set title and new filename
-  QgsProject project = QgsProject();
+  QgsProject project;
   project.read( projectItem->path() );
   project.setTitle( dlg.name() );
   project.setFileName( newUri );
