@@ -134,6 +134,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
 
     QgsLabelObstacleSettings mObstacleSettings;
     QgsLabelLineSettings mLineSettings;
+    QgsLabelThinningSettings mThinningSettings;
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -142,6 +143,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void updateCalloutWidget( QgsCallout *callout );
     void showObstacleSettings();
     void showLineAnchorSettings();
+    void showDuplicateSettings();
 };
 
 class GUI_EXPORT QgsLabelSettingsDialog : public QDialog

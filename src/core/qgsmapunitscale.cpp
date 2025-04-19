@@ -17,6 +17,16 @@
 #include "qgsmapunitscale.h"
 #include "qgsrendercontext.h"
 
+bool QgsMapUnitScale::isNull() const
+{
+  return qgsDoubleNear( minScale, 0 )
+         && qgsDoubleNear( maxScale, 0 )
+         && !minSizeMMEnabled
+         && qgsDoubleNear( minSizeMM, 0 )
+         && !maxSizeMMEnabled
+         && qgsDoubleNear( maxSizeMM, 0 );
+}
+
 double QgsMapUnitScale::computeMapUnitsPerPixel( const QgsRenderContext &c ) const
 {
   double mup = c.mapToPixel().mapUnitsPerPixel();

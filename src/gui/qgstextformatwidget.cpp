@@ -115,6 +115,11 @@ void QgsTextFormatWidget::initWidget()
   mRenderingItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/render.svg" ) ) );
   mRenderingItem->setToolTip( tr( "Rendering" ) );
 
+#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10 )
+  mDuplicatesStackedWidget->setCurrentWidget( mDuplicatesNotAvailableWidget );
+  mLabelSpacingStackedWidget->setCurrentWidget( mLabelSpacingNotAvailableWidget );
+#endif
+
   mLabelingOptionsListWidget->addItem( mTextItem );
   mLabelingOptionsListWidget->addItem( mFormattingItem );
   mLabelingOptionsListWidget->addItem( mBufferItem );
@@ -260,6 +265,7 @@ void QgsTextFormatWidget::initWidget()
   mMaximumDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mRepeatDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mOverrunDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mLabelMarginUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mLineHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Percentage << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mTabDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Percentage << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mFontLineHeightSpinBox->setClearValue( 100.0 );
@@ -518,6 +524,8 @@ void QgsTextFormatWidget::initWidget()
           << mRepeatDistanceUnitWidget
           << mOverrunDistanceSpinBox
           << mOverrunDistanceUnitWidget
+          << mLabelMarginSpinBox
+          << mLabelMarginUnitWidget
           << mScaleBasedVisibilityChkBx
           << mMaxScaleWidget
           << mMinScaleWidget
@@ -587,7 +595,8 @@ void QgsTextFormatWidget::initWidget()
           << mHtmlFormattingCheckBox
           << mPrioritizationComboBox
           << mTabDistanceUnitWidget
-          << mTabStopDistanceSpin;
+          << mTabStopDistanceSpin
+          << mChkNoDuplicates;
 
   connectValueChanged( widgets );
 
@@ -938,6 +947,8 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mRepeatDistanceUnitDDBtn, QgsPalLayerSettings::Property::RepeatDistanceUnit );
   registerDataDefinedButton( mOverrunDistanceDDBtn, QgsPalLayerSettings::Property::OverrunDistance );
 
+  registerDataDefinedButton( mLabelMarginDDBtn, QgsPalLayerSettings::Property::LabelMarginDistance );
+
   // data defined-only
   registerDataDefinedButton( mCoordXDDBtn, QgsPalLayerSettings::Property::PositionX );
   registerDataDefinedButton( mCoordYDDBtn, QgsPalLayerSettings::Property::PositionY );
@@ -987,6 +998,8 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mCalloutDrawDDBtn, QgsPalLayerSettings::Property::CalloutDraw );
 
   registerDataDefinedButton( mLabelAllPartsDDBtn, QgsPalLayerSettings::Property::LabelAllParts );
+
+  registerDataDefinedButton( mNoDuplicatesDDBtn, QgsPalLayerSettings::Property::RemoveDuplicateLabels );
 }
 
 void QgsTextFormatWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key )

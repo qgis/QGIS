@@ -25,6 +25,7 @@
 #include "qgslabellinesettings.h"
 #include "qgsfeature.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslabelthinningsettings.h"
 
 namespace pal
 {
@@ -602,6 +603,20 @@ class CORE_EXPORT QgsLabelFeature
     void setObstacleSettings( const QgsLabelObstacleSettings &settings );
 
     /**
+      * Returns the thinning settings for this label.
+      * \see setThinningSettings()
+      * \since QGIS 3.44
+      */
+    const QgsLabelFeatureThinningSettings &thinningSettings() const { return mThinningSettings; }
+
+    /**
+      * Sets the thinning \a settings for this label.
+      * \see thinningSettings()
+      * \since QGIS 3.44
+      */
+    void setThinningSettings( const QgsLabelFeatureThinningSettings &settings ) { mThinningSettings = settings; }
+
+    /**
      * Returns the original layer CRS of the feature associated with the label.
      *
      * \see setOriginalFeatureCrs()
@@ -768,7 +783,8 @@ class CORE_EXPORT QgsLabelFeature
 
     bool mLabelAllParts = false;
 
-    QgsLabelObstacleSettings mObstacleSettings{};
+    QgsLabelObstacleSettings mObstacleSettings;
+    QgsLabelFeatureThinningSettings mThinningSettings;
 
     QgsPointXY mAnchorPosition;
 

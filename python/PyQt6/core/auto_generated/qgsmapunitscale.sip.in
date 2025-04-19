@@ -36,6 +36,14 @@ Constructor for QgsMapUnitScale
                  1000.0 for a 1:1000 map.
 %End
 
+    bool isNull() const;
+%Docstring
+Returns ``True`` if the scale is null, i.e. it is a default constructed
+QgsMapUnitScale.
+
+.. versionadded:: 3.44
+%End
+
     double minScale;
 
     double maxScale;

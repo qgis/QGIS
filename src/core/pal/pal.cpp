@@ -44,7 +44,9 @@
 #include "qgssettingsentryimpl.h"
 #include "qgsruntimeprofiler.h"
 #include "qgslabelingenginerule.h"
-
+#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<10 )
+#include "qgsmessagelog.h"
+#endif
 #include <cfloat>
 #include <list>
 
@@ -266,7 +268,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       {
         for ( std::unique_ptr< LabelPosition > &candidate : candidates )
         {
-          candidate->insertIntoIndex( allCandidatesFirstRound );
+          candidate->insertIntoIndex( allCandidatesFirstRound, this );
           candidate->setGlobalId( mNextCandidateId++ );
         }
 
@@ -290,7 +292,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
         if ( featurePart->feature()->allowDegradedPlacement() )
         {
           // if we are allowing degraded placements, we throw the default candidate in too
-          unplacedPosition->insertIntoIndex( allCandidatesFirstRound );
+          unplacedPosition->insertIntoIndex( allCandidatesFirstRound, this );
           unplacedPosition->setGlobalId( mNextCandidateId++ );
           candidates.emplace_back( std::move( unplacedPosition ) );
 
@@ -562,7 +564,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       // add all candidates into a rtree (to speed up conflicts searching)
       for ( std::unique_ptr< LabelPosition > &candidate : feat->candidates )
       {
-        candidate->insertIntoIndex( prob->allCandidatesIndex() );
+        candidate->insertIntoIndex( prob->allCandidatesIndex(), this );
         candidate->setProblemIds( static_cast< int >( featureIndex ), currentLabelPositionIndex++ );
       }
       features.emplace_back( std::move( feat ) );
@@ -768,12 +770,41 @@ bool Pal::candidatesAreConflicting( const LabelPosition *lp1, const LabelPositio
     return *it;
 
   bool res = false;
-  for ( QgsAbstractLabelingEngineRule *rule : mRules )
+
+  const double labelMarginDistance = std::max(
+                                       lp1->getFeaturePart()->feature()->thinningSettings().labelMarginDistance(),
+                                       lp2->getFeaturePart()->feature()->thinningSettings().labelMarginDistance()
+                                     );
+
+  if ( labelMarginDistance > 0 )
   {
-    if ( rule->candidatesAreConflicting( lp1, lp2 ) )
+    GEOSContextHandle_t geosctxt = QgsGeosContext::get();
+    try
     {
-      res = true;
-      break;
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+      if ( GEOSPreparedDistanceWithin_r( geosctxt, lp1->preparedMultiPartGeom(), lp2->multiPartGeom(), labelMarginDistance ) )
+      {
+        res = true;
+      }
+#else
+      QgsMessageLog::logMessage( QStringLiteral( "label margin distance requires GEOS 3.10+" ) );
+#endif
+    }
+    catch ( GEOSException &e )
+    {
+      QgsDebugError( QStringLiteral( "GEOS exception: %1" ).arg( e.what() ) );
+    }
+  }
+
+  if ( !res )
+  {
+    for ( QgsAbstractLabelingEngineRule *rule : mRules )
+    {
+      if ( rule->candidatesAreConflicting( lp1, lp2 ) )
+      {
+        res = true;
+        break;
+      }
     }
   }
 
