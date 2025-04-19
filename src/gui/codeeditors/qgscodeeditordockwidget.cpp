@@ -24,7 +24,7 @@ QgsCodeEditorDockWidget::QgsCodeEditorDockWidget( const QString &dockId, bool us
   if ( usePersistentWidget )
     options.setFlag( QgsDockableWidgetHelper::Option::PermanentWidget );
 
-  mDockableWidgetHelper = new QgsDockableWidgetHelper(
+  mDockableWidgetHelper = std::make_unique<QgsDockableWidgetHelper>(
     tr( "Code Editor" ),
     this,
     QgsDockableWidgetHelper::sOwnerWindow,
@@ -38,16 +38,15 @@ QgsCodeEditorDockWidget::QgsCodeEditorDockWidget( const QString &dockId, bool us
 
   mDockToggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   mDockToggleButton->setToolTip( tr( "Dock Code Editor" ) );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [=]() {
+  connect( mDockableWidgetHelper.get(), &QgsDockableWidgetHelper::closed, this, [=]() {
     close();
   } );
 
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::visibilityChanged, this, &QgsCodeEditorDockWidget::visibilityChanged );
+  connect( mDockableWidgetHelper.get(), &QgsDockableWidgetHelper::visibilityChanged, this, &QgsCodeEditorDockWidget::visibilityChanged );
 }
 
 QgsCodeEditorDockWidget::~QgsCodeEditorDockWidget()
 {
-  delete mDockableWidgetHelper;
 }
 
 void QgsCodeEditorDockWidget::setTitle( const QString &title )
