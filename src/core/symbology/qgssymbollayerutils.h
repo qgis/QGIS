@@ -1006,10 +1006,10 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Returns the expression representing the symbol key based on a style string.
-     * 
+     *
      * \since QGIS 3.44
      */
-    static QString legendKeyToExpression( const QString &style, const QString &ikey, bool *ok );
+    static QString legendKeyToExpression( const QString &style, const QString &ikey, bool &ok );
 
     ///@cond PRIVATE
 #ifndef SIP_RUN
@@ -1039,18 +1039,18 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Extract symbol scale limitations if any are defined.
-     * 
+     *
      *  \since QGIS 3.44
      */
-    static QString getStyleNodeMinMax( const QDomNode & ruleNode );
+    static QString getStyleNodeMinMax( const QDomNode &ruleNode );
 
     /**
      * Returns the expression representing all the conditions for rendering the given symbol key.
      * \ see legendKeyToExpression
-     * 
+     *
      *  \since QGIS 3.44
      */
-    static QString ruleNodeExpression( const QDomNode & node, const QString & key );
+    static QString ruleNodeExpression( const QDomNode &node, const QString &key );
 
 };
 

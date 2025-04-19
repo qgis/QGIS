@@ -41,7 +41,6 @@
 #include "qgstextdocument.h"
 #include "qgstextdocumentmetrics.h"
 #include "qgsmaplayerstyle.h"
-#include "qgssymbollayerutils.h"
 
 #include <QBuffer>
 #include <optional>
@@ -996,7 +995,6 @@ QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
   if ( mLayerNode )
   {
     QString symbolExp;
-    QMap<QString, QString> modelstyles = model()->layerStyleOverrides();
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
     if ( vl )
@@ -1018,7 +1016,7 @@ QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
         if ( modelstyles.contains( vl->id() ) )
         {
           QString styleString = modelstyles.value( vl->id() );
-          QString parsedExpression = QgsSymbolLayerUtils::legendKeyToExpression( styleString, mItem.ruleKey(), &ok );
+          QString parsedExpression = QgsSymbolLayerUtils::legendKeyToExpression( styleString, mItem.ruleKey(), ok );
           if ( parsedExpression.length() > 1 || ok )
             symbolExp = parsedExpression;
         }

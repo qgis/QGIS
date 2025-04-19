@@ -1145,6 +1145,13 @@ then all clip geometries for the symbol layer will be returned.
 .. versionadded:: 3.38
 %End
 
+    static QString legendKeyToExpression( const QString &style, const QString &ikey, bool &ok );
+%Docstring
+Returns the expression representing the symbol key based on a style
+string.
+
+.. versionadded:: 3.44
+%End
 
 };
 

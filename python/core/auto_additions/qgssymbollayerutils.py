@@ -165,6 +165,7 @@ try:
     QgsSymbolLayerUtils.resetSymbolLayerIds = staticmethod(QgsSymbolLayerUtils.resetSymbolLayerIds)
     QgsSymbolLayerUtils.clearSymbolLayerMasks = staticmethod(QgsSymbolLayerUtils.clearSymbolLayerMasks)
     QgsSymbolLayerUtils.collectSymbolLayerClipGeometries = staticmethod(QgsSymbolLayerUtils.collectSymbolLayerClipGeometries)
+    QgsSymbolLayerUtils.legendKeyToExpression = staticmethod(QgsSymbolLayerUtils.legendKeyToExpression)
     QgsSymbolLayerUtils.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

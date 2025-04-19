@@ -1026,7 +1026,7 @@ static QVariant fcnAggregateGeneric( Qgis::Aggregate aggregate, const QVariantLi
     }
     evaluatedVar = context->variable( varName );
     if ( evaluatedVar.userType() == qMetaTypeId< QgsGeometry >() )
-      evalVars.append( evaluatedVar.value<QgsGeometry>().asWkt(7) );
+      evalVars.append( evaluatedVar.value<QgsGeometry>().asWkt( 7 ) );
     else
       evalVars.append( evaluatedVar.toString() );
   }
@@ -1039,7 +1039,7 @@ static QVariant fcnAggregateGeneric( Qgis::Aggregate aggregate, const QVariantLi
   }
   else
   {
-    cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5:%8" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy ,evalVars );
+    cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5:%8" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy, evalVars );
   }
 
   if ( context->hasCachedValue( cacheKey ) )
