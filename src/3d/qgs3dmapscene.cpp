@@ -72,6 +72,8 @@
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsdebugtextureentity.h"
+
 #include "qgslinematerial_p.h"
 #include "qgs3dsceneexporter.h"
 #include "qgs3dmapexportsettings.h"
@@ -86,6 +88,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsshadowrenderview.h"
 #include "qgsforwardrenderview.h"
+#include "qgsdebugtexturerenderview.h"
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 
@@ -1020,12 +1023,12 @@ void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()
 
 void Qgs3DMapScene::onDebugShadowMapSettingsChanged()
 {
-  mEngine->frameGraph()->setupShadowMapDebugging( mMap.debugShadowMapEnabled(), mMap.debugShadowMapCorner(), mMap.debugShadowMapSize() );
+  mEngine->frameGraph()->updateDebugShadowMapSettings( mMap );
 }
 
 void Qgs3DMapScene::onDebugDepthMapSettingsChanged()
 {
-  mEngine->frameGraph()->setupDepthMapDebugging( mMap.debugDepthMapEnabled(), mMap.debugDepthMapCorner(), mMap.debugDepthMapSize() );
+  mEngine->frameGraph()->updateDebugDepthMapSettings( mMap );
 }
 
 void Qgs3DMapScene::onDebugOverlayEnabledChanged()
