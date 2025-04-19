@@ -319,6 +319,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsBrowserGuiModel *browserModel() override;
     QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() override;
     void setGpsPanelConnection( QgsGpsConnection *connection ) override;
+    void createFeatureFromGpsTrack() override;
+    void setGpsTrackLineSymbol( QgsLineSymbol *symbol ) override;
     QList<QgsMapDecoration *> activeDecorations() override;
     QgsUserProfileManager *userProfileManager() override;
     void blockActiveLayerChanges( bool blocked ) override;

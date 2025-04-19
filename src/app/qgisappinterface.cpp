@@ -47,6 +47,7 @@
 #include "qgsmessagebar.h"
 #include "qgsappmaptools.h"
 #include "qgspointcloudlayer.h"
+#include "qgsappgpsdigitizing.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
@@ -1008,6 +1009,16 @@ QgsLayerTreeRegistryBridge::InsertionPoint QgisAppInterface::layerTreeInsertionP
 void QgisAppInterface::setGpsPanelConnection( QgsGpsConnection *connection )
 {
   qgis->setGpsPanelConnection( connection );
+}
+
+void QgisAppInterface::createFeatureFromGpsTrack()
+{
+  qgis->mGpsDigitizing->createFeature();
+}
+
+void QgisAppInterface::setGpsTrackLineSymbol( QgsLineSymbol *symbol )
+{
+  qgis->setGpsTrackLineSymbol( symbol );
 }
 
 QList<QgsMapDecoration *> QgisAppInterface::activeDecorations()

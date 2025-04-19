@@ -5056,6 +5056,15 @@ void QgisApp::setGpsPanelConnection( QgsGpsConnection *connection )
   mGpsConnection->setConnection( connection );
 }
 
+void QgisApp::setGpsTrackLineSymbol( QgsLineSymbol *symbol )
+{
+  if ( symbol )
+  {
+    mGpsDigitizing->setGpsTrackLineSymbol( symbol );
+    mGpsDigitizing->updateTrackAppearance();
+  }
+}
+
 QgsAppGpsSettingsMenu *QgisApp::gpsSettingsMenu()
 {
   return mGpsSettingsMenu;
