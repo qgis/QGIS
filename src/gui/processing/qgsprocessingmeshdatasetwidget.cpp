@@ -266,19 +266,6 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::setMeshLayerWrapperValue( cons
     mWidget->setMeshLayer( meshLayer, layerFromProject );
 }
 
-QStringList QgsProcessingMeshDatasetGroupsWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList() << QgsProcessingParameterMeshDatasetGroups::typeName()
-                       << QgsProcessingParameterString::typeName()
-                       << QgsProcessingParameterNumber::typeName();
-}
-
-QStringList QgsProcessingMeshDatasetGroupsWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputString::typeName()
-                       << QgsProcessingOutputNumber::typeName();
-}
-
 QWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidget() SIP_FACTORY
 {
   mWidget = new QgsProcessingMeshDatasetGroupsWidget( nullptr, static_cast<const QgsProcessingParameterMeshDatasetGroups *>( parameterDefinition() ) );
@@ -420,20 +407,6 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::setDatasetGroupIndexesWrapperVal
     datasetGroupsIndexes << variantIndex.toInt();
 
   mWidget->setDatasetGroupIndexes( datasetGroupsIndexes );
-}
-
-QStringList QgsProcessingMeshDatasetTimeWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterMeshDatasetTime::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterDateTime::typeName();
-}
-
-QStringList QgsProcessingMeshDatasetTimeWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName();
 }
 
 QWidget *QgsProcessingMeshDatasetTimeWidgetWrapper::createWidget()

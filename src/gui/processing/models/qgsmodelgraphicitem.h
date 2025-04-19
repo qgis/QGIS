@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgsmodelcomponentgraphicitem.h"
 #include <QGraphicsObject>
 #include <QPicture>
 
@@ -70,6 +71,12 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
 #endif
 
     /**
+     * Returns the button's position.
+     */
+    QPointF position() const { return mPosition; };
+
+
+    /**
      * Sets the button's \a position.
      */
     void setPosition( const QPointF &position );
@@ -91,12 +98,12 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
      * Sets the \a picture to render for the button graphics.
      */
     void setPicture( const QPicture &picture );
+    bool mHoverState = false;
 
   private:
     QPicture mPicture;
     QPointF mPosition;
     QSizeF mSize;
-    bool mHoverState = false;
 };
 
 
@@ -138,6 +145,64 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
     QPicture mPlusPicture;
     QPicture mMinusPicture;
     bool mFolded = false;
+};
+
+
+/**
+ * \ingroup gui
+ * \brief A socket allowing linking component together.
+ * \warning Not stable API
+ * \since QGIS 3.44
+ */
+class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlatButtonGraphicItem
+{
+    Q_OBJECT
+  public:
+    /**
+     * Constructor for QgsModelDesignerSocketGraphicItem, with the specified \a parent item.
+     *
+     * The \a index argument specifies whether the input or output index of this socket inside the component
+     * And the \a edge argument specifies if it's an input socket( Qt::Edge::TopEdge ) or output ( Qt::Edge::BottomEdge )
+     *
+     * The sockets will be rendered at the specified \a position
+     */
+    QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent SIP_TRANSFERTHIS, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size = QSizeF( 11, 11 ) );
+
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
+    /**
+     * Returns the index of this socket in either QgsModelDesignerSocketGraphicItem::mInSockets 
+     * or QgsModelDesignerSocketGraphicItem::mOutSockets array
+     */
+    int index() const { return mIndex; };
+
+    /**
+     * Returns on which edge this socket is:
+     *  * Qt::Edge::TopEdge for input socket
+     *  * Qt::Edge::BottomEdge for output socket
+     */
+    Qt::Edge edge() const { return mEdge; };
+
+    /**
+     * Returns whether the socket is an input socket or not
+     * 
+     * Convenient function around mEdge member
+     */
+    bool isInput() const { return mEdge == Qt::TopEdge; };
+
+    /** Return the component associated to the socket */
+    QgsProcessingModelComponent *component() { return mComponent; };
+
+    /** Return the parent graphic item associated to the socket */
+    QgsModelComponentGraphicItem *componentItem() { return mComponentItem; };
+
+  signals:
+
+
+  private:
+    QgsModelComponentGraphicItem *mComponentItem = nullptr;
+    QgsProcessingModelComponent *mComponent = nullptr;
+    int mIndex = -1;
+    Qt::Edge mEdge = Qt::Edge::TopEdge;
 };
 
 ///@endcond

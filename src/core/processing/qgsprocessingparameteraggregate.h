@@ -110,6 +110,18 @@ class CORE_EXPORT QgsProcessingParameterTypeAggregate : public QgsProcessingPara
     {
       return QStringList() << QObject::tr( "list[dict]: list of aggregate definitions as dictionaries" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterAggregate::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList();
+    }
+
 };
 
 ///@endcond

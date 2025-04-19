@@ -18,6 +18,7 @@
 
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
+#include "qgsprocessingoutputs.h"
 #include "qgsmeshdataset.h"
 
 /**
@@ -122,6 +123,19 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProces
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "list[int]: list of dataset group indexes, see QgsProcessingParameterMeshDatasetGroups docs" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList() << QgsProcessingParameterMeshDatasetGroups::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterNumber::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList() << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputNumber::typeName();
     }
 };
 
@@ -254,6 +268,20 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessin
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "dict{}: dictionary, see QgsProcessingParameterMeshDatasetTime docs" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterMeshDatasetTime::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterDateTime::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName();
     }
 };
 

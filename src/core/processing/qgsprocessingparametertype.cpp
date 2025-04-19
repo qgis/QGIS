@@ -36,3 +36,18 @@ QStringList QgsProcessingParameterType::acceptedStringValues() const
 {
   return QStringList();
 }
+
+QStringList QgsProcessingParameterType::acceptedParameterTypes() const
+{
+  return QStringList();
+}
+
+QStringList QgsProcessingParameterType::acceptedOutputTypes() const
+{
+  return QStringList();
+}
+
+QList<int> QgsProcessingParameterType::acceptedDataTypes( const QgsProcessingParameterDefinition * ) const
+{
+  return QList<int>();
+}

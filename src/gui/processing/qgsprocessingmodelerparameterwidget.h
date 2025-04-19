@@ -107,7 +107,8 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      * The \a compatibleDataTypes list corresponds to the compatible data types
      * from QgsProcessing::SourceType.
      */
-    void populateSources( const QStringList &compatibleParameterTypes, const QStringList &compatibleOutputTypes, const QList<int> &compatibleDataTypes );
+
+    void populateSources( const QgsProcessingParameterDefinition *param );
 
     /**
      * Set the expected expression format \a text, which is shown in the expression builder dialog for the widget
@@ -236,7 +237,6 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     QgsFilterLineEdit *mModelOutputName = nullptr;
 
     QList<Qgis::ProcessingModelChildParameterSource> mLimitedSources;
-
     friend class TestProcessingGui;
 };
 
