@@ -28,6 +28,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsproject.h"
 
 
 // ---------------------------------------------------------------------------
@@ -281,7 +282,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     {
       QgsPostgresProjectUri projectUri( postUri );
       projectUri.projectName = projectName;
-      items.append( new QgsProjectItem( this, projectName, QgsPostgresProjectStorage::encodeUri( projectUri ) ) );
+      items.append( new QgsPGProjectItem( this, projectName, projectUri ) );
     }
   }
 
@@ -418,4 +419,17 @@ QgsDataItem *QgsPostgresDataItemProvider::createDataItem( const QString &pathIn,
 bool QgsPGSchemaItem::layerCollection() const
 {
   return true;
+}
+
+QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri postgresProjectUri )
+  : QgsProjectItem( parent, name, QgsPostgresProjectStorage::encodeUri( postgresProjectUri ), QStringLiteral( "postgres" ) ), mProjectUri( postgresProjectUri )
+{
+  mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
+}
+
+QString QgsPGProjectItem::uriWithNewName( const QString &newProjectName )
+{
+  QgsPostgresProjectUri postgresProjectUri( mProjectUri );
+  postgresProjectUri.projectName = newProjectName;
+  return QgsPostgresProjectStorage::encodeUri( postgresProjectUri );
 }
