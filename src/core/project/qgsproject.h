@@ -1386,9 +1386,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see removeMapLayer()
      * \see removeAllMapLayers()
      */
+#if QT_VERSION < QT_VERSION_CHECK( 6, 4, 0 )
     void removeMapLayers( const QStringList &layerIds );
-
-    //TODO QGIS 4.0 - add PyName alias to avoid list type conversion error
+#else
+    void removeMapLayers( const QStringList &layerIds ) SIP_PYNAME( removeMapLayersById );
+#endif
 
     /**
      * \brief

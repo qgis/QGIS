@@ -825,6 +825,19 @@ class TestQgsProject(QgisTestCase):
         QgsProject.instance().removeMapLayer(l3.id())
         self.assertFalse(sip.isdeleted(l3))
 
+        # ==== do it again with list
+        l1 = createLayer("test")
+        l2 = createLayer("test2")
+
+        QgsProject.instance().addMapLayers([l1, l2])
+        self.assertEqual(QgsProject.instance().count(), 2)
+
+        # remove layers
+        l1_id = l1.id()
+        l2_id = l2.id()
+        QgsProject.instance().removeMapLayers([l1_id, l2_id])
+        self.assertEqual(QgsProject.instance().count(), 0)
+
     def test_removeMapLayerByLayer(self):
         """test removing a map layer by layer"""
         QgsProject.instance().removeAllMapLayers()

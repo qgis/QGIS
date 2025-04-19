@@ -298,6 +298,19 @@ QgsDxfExport.NoSymbology = Qgis.FeatureSymbologyExport.NoSymbology
 QgsDxfExport.FeatureSymbology = Qgis.FeatureSymbologyExport.PerFeature
 QgsDxfExport.SymbolLayerSymbology = Qgis.FeatureSymbologyExport.PerSymbolLayer
 
+# Monkey patch QgsProject
+# improve support for Qt6 by calling explicite function according the parameter type
+removeMapLayersByObject = QgsProject.removeMapLayers
+
+def _removeMapLayers( self, layers: _typing.List ):
+  if layers:
+    if isinstance(layers[0],str):
+      self.removeMapLayersById(layers)
+    else:
+      removeMapLayersByObject(self, layers)
+
+QgsProject.removeMapLayers = _removeMapLayers
+
 # Maintain class name API
 QgsBox3d = QgsBox3D
 QgsMesh3dAveragingMethod = QgsMesh3DAveragingMethod

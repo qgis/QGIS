@@ -1360,7 +1360,7 @@ has ownership of any layers these layers will also be deleted.
 
 .. seealso:: :py:func:`removeAllMapLayers`
 %End
-
+    void removeMapLayers( const QStringList &layerIds ) /PyName=removeMapLayersById/;
 
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
