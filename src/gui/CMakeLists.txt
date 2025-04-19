@@ -35,6 +35,7 @@ set(QGIS_GUI_SRCS
   vector/qgsattributeactiondialog.cpp
   vector/qgsattributeactionpropertiesdialog.cpp
   vector/qgsattributesforminitcode.cpp
+  vector/qgsattributesformmodel.cpp
   vector/qgsattributesformproperties.cpp
   vector/qgsdiagramproperties.cpp
   vector/qgsdiagramwidget.cpp
@@ -1522,6 +1523,7 @@ set(QGIS_GUI_HDRS
   vector/qgsattributeactiondialog.h
   vector/qgsattributeactionpropertiesdialog.h
   vector/qgsattributesforminitcode.h
+  vector/qgsattributesformmodel.h
   vector/qgsattributesformproperties.h
   vector/qgsdiagramproperties.h
   vector/qgsdiagramwidget.h

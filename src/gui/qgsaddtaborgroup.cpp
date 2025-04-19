@@ -22,13 +22,12 @@
 #include "qgssettings.h"
 #include "qgshelp.h"
 
-#include <QTreeWidgetItem>
 #include <QComboBox>
 #include <QRadioButton>
 
-QgsAddAttributeFormContainerDialog::QgsAddAttributeFormContainerDialog( QgsVectorLayer *lyr, const QList<ContainerPair> &existingContainerList, QTreeWidgetItem *currentTab, QWidget *parent )
+QgsAddAttributeFormContainerDialog::QgsAddAttributeFormContainerDialog( QgsVectorLayer *layer, const QList<ContainerPair> &existingContainerList, QModelIndex &currentItemIndex, QWidget *parent )
   : QDialog( parent )
-  , mLayer( lyr )
+  , mLayer( layer )
   , mExistingContainers( existingContainerList )
 {
   setupUi( this );
@@ -46,9 +45,9 @@ QgsAddAttributeFormContainerDialog::QgsAddAttributeFormContainerDialog( QgsVecto
     for ( const ContainerPair &container : std::as_const( mExistingContainers ) )
     {
       mParentCombo->addItem( container.first, i );
-      if ( container.second == currentTab )
+      if ( currentItemIndex.isValid() && container.second == currentItemIndex )
       {
-        mParentCombo->setCurrentIndex( i );
+        mParentCombo->setCurrentIndex( i + 1 ); // Take empty item into account
         mTypeCombo->setCurrentIndex( mTypeCombo->findData( QVariant::fromValue( Qgis::AttributeEditorContainerType::GroupBox ) ) );
       }
       ++i;
@@ -70,13 +69,13 @@ QString QgsAddAttributeFormContainerDialog::name()
   return mName->text();
 }
 
-QTreeWidgetItem *QgsAddAttributeFormContainerDialog::parentContainerItem()
+QModelIndex QgsAddAttributeFormContainerDialog::parentContainerItem() const
 {
   if ( containerType() == Qgis::AttributeEditorContainerType::Tab )
-    return nullptr;
+    return QModelIndex();
 
   if ( !mParentCombo->currentData().isValid() )
-    return nullptr;
+    return QModelIndex();
 
   const ContainerPair tab = mExistingContainers.at( mParentCombo->currentData().toInt() );
   return tab.second;
