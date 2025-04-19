@@ -30,10 +30,12 @@
 #include "qgsproviderutils.h"
 #include "qgsthreadingutils.h"
 #include "qgscopcpointcloudindex.h"
+#include "qgsproviderregistry.h"
 
 #include <pdal/Options.hpp>
 #include <pdal/StageFactory.hpp>
 #include <pdal/Reader.hpp>
+#include <pdal/Writer.hpp>
 
 #include <QQueue>
 #include <QFileInfo>
@@ -98,17 +100,21 @@ QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
   return QgsPointCloudAttributeCollection();
 }
 
-static QString _outEptDir( const QString &filename )
+static QString _outEptDir( const QString &uri )
 {
-  const QFileInfo fi( filename );
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( "pdal", uri );
+  const QString inputPath = parts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo fi( inputPath );
   const QDir directory = fi.absoluteDir();
   const QString outputDir = QStringLiteral( "%1/ept_%2" ).arg( directory.absolutePath() ).arg( fi.completeBaseName() );
   return outputDir;
 }
 
-static QString _outCopcFile( const QString &filename )
+static QString _outCopcFile( const QString &uri )
 {
-  const QFileInfo fi( filename );
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( "pdal", uri );
+  const QString inputPath = parts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo fi( inputPath );
   const QDir directory = fi.absoluteDir();
   const QString outputFile = QStringLiteral( "%1/%2.copc.laz" ).arg( directory.absolutePath() ).arg( fi.completeBaseName() );
   return outputFile;
@@ -127,9 +133,11 @@ void QgsPdalProvider::generateIndex()
     return;
   }
 
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( "pdal", dataSourceUri() );
+  const QString inputPath = parts.value( QStringLiteral( "path" ) ).toString();
   const QString outputPath = _outCopcFile( dataSourceUri() );
 
-  QgsPdalIndexingTask *generationTask = new QgsPdalIndexingTask( dataSourceUri(), outputPath, QFileInfo( dataSourceUri() ).fileName() );
+  QgsPdalIndexingTask *generationTask = new QgsPdalIndexingTask( inputPath, outputPath, QFileInfo( inputPath ).fileName() );
 
   connect( generationTask, &QgsPdalIndexingTask::taskTerminated, this, &QgsPdalProvider::onGenerateIndexFailed );
   connect( generationTask, &QgsPdalIndexingTask::taskCompleted, this, &QgsPdalProvider::onGenerateIndexFinished );
@@ -286,20 +294,84 @@ bool QgsPdalProvider::load( const QString &uri )
 
   try
   {
+    QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( "pdal", uri );
+    const QString inputPath = parts.value( QStringLiteral( "path" ) ).toString();
+    const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
     pdal::StageFactory stageFactory;
-    const std::string driver( stageFactory.inferReaderDriver( uri.toStdString() ) );
+    const std::string driver( stageFactory.inferReaderDriver( inputPath.toStdString() ) );
     if ( driver.empty() )
-      throw pdal::pdal_error( "No driver for " + uri.toStdString() );
+      throw pdal::pdal_error( "No read driver for " + inputPath.toStdString() );
 
     if ( pdal::Reader *reader = dynamic_cast<pdal::Reader *>( stageFactory.createStage( driver ) ) )
     {
+      QString crsWkt;
       {
         pdal::Options options;
-        options.add( pdal::Option( "filename", uri.toStdString() ) );
+        options.add( pdal::Option( "filename", inputPath.toStdString() ) );
+        for ( const QString &option : openOptions )
+        {
+          QStringList optionParsed = option.split( "=" );
+          const QString optionName = optionParsed[0];
+          QString optionValue = optionParsed[1];
+          if ( optionName == "separator" )
+          {
+            // The separator is stored as an integer.
+            // Convert it to its ascii representation.
+            optionValue = static_cast<char>( optionValue.toInt() );
+          }
+          else if ( optionName == "override_srs" )
+          {
+            crsWkt = optionValue;
+          }
+          options.add( pdal::Option( optionName.toStdString(), optionValue.toStdString() ) );
+        }
         reader->setOptions( std::move( options ) );
       }
       pdal::PointTable table;
-      reader->prepare( table );
+      if ( openOptions.isEmpty() )
+      {
+        // no options, the reader can directly be used
+        reader->prepare( table );
+      }
+      else
+      {
+        try
+        {
+          // the options cannot be used by Untwine to create a COPC file.
+          // In that case, based on the options, create a new file which can be used by Untwine.
+          const QFileInfo inputPathInfo( inputPath );
+          const QString convertedFileName = QStringLiteral( "%1_converted.%2" ).arg( inputPathInfo.baseName(), inputPathInfo.completeSuffix() );
+          const QString convertedPath = inputPathInfo.absolutePath() + QDir::separator() + convertedFileName;
+          pdal::StageFactory writeStageFactory;
+          const std::string writeDriver( stageFactory.inferWriterDriver( convertedPath.toStdString() ) );
+          if ( writeDriver.empty() )
+          {
+            throw pdal::pdal_error( "No write driver for " + convertedPath.toStdString() );
+          }
+
+          if ( pdal::Writer *writer = dynamic_cast<pdal::Writer *>( writeStageFactory.createStage( writeDriver ) ) )
+          {
+            // Save to a new file
+            pdal::Options writeOptions;
+            writeOptions.add( pdal::Option( "filename", convertedPath.toStdString() ) );
+            writer->setOptions( std::move( writeOptions ) );
+            writer->setInput( *reader );
+            writer->prepare( table );
+            writer->execute( table );
+
+            // Update the uri to use the new generated file
+            QVariantMap newUriParts = QgsProviderRegistry::instance()->decodeUri( "pdal", dataSourceUri() );
+            newUriParts["path"] = convertedPath;
+            const QString updatedUri = QgsProviderRegistry::instance()->encodeUri( "pdal", newUriParts );
+            setDataSourceUri( updatedUri );
+          }
+        }
+        catch ( const pdal::pdal_error &error )
+        {
+          const QString errorString = QStringLiteral( "Unable to convert '%1'. Reason: %2" ).arg( inputPath, error.what() );
+          QgsDebugError( errorString );
+        }
+      }
 
       const std::string tableMetadata = pdal::Utils::toJSON( table.metadata() );
       const QVariantMap readerMetadata = QgsJsonUtils::parseJson( tableMetadata ).toMap().value( QStringLiteral( "root" ) ).toMap();
@@ -317,8 +389,13 @@ bool QgsPdalProvider::load( const QString &uri )
       mPointCount = quickInfo.m_pointCount;
 
       // projection
-      const QString wkt = QString::fromStdString( quickInfo.m_srs.getWKT() );
-      mCrs = QgsCoordinateReferenceSystem::fromWkt( wkt );
+      // if the crs was not overriden via options
+      // load if from the metadata instead.
+      if ( crsWkt.isEmpty() )
+      {
+        crsWkt = QString::fromStdString( quickInfo.m_srs.getWKT() );
+      }
+      mCrs.createFromUserInput( crsWkt );
 
       // attribute names
       for ( auto &dim : quickInfo.m_dimNames )
@@ -376,9 +453,32 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsPdalProviderMetadata::capab
 
 QVariantMap QgsPdalProviderMetadata::decodeUri( const QString &uri ) const
 {
-  const QString path = uri;
+  QString path = uri;
+  QStringList openOptions;
+
+  if ( path.contains( '|' ) )
+  {
+    const thread_local QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
+    while ( true )
+    {
+      const QRegularExpressionMatch match = openOptionRegex.match( path );
+      if ( match.hasMatch() )
+      {
+        openOptions << match.captured( 1 );
+        path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
   QVariantMap uriComponents;
   uriComponents.insert( QStringLiteral( "path" ), path );
+  if ( !openOptions.isEmpty() )
+    uriComponents.insert( QStringLiteral( "openOptions" ), openOptions );
+
   return uriComponents;
 }
 
@@ -462,7 +562,16 @@ QList<Qgis::LayerType> QgsPdalProviderMetadata::supportedLayerTypes() const
 QString QgsPdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();
-  return path;
+  QString uri = path;
+
+  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+  for ( const QString &openOption : openOptions )
+  {
+    uri += QLatin1String( "|option:" );
+    uri += openOption;
+  }
+
+  return uri;
 }
 
 void QgsPdalProviderMetadata::buildSupportedPointCloudFileFilterAndExtensions()

@@ -62,11 +62,13 @@ class TestQgsPdalProvider : public QgsTest
     void brokenPath();
     void validLayer();
     void testTextReader();
+    void testTextReaderWithOptions();
     void testCopcGenerationLasFile();
     void testCopcGenerationTextFile();
 
   private:
     QString mTestDataDir;
+    QString mTempDir;
 };
 
 //runs before all tests
@@ -77,11 +79,16 @@ void TestQgsPdalProvider::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+
+  mTempDir = QDir::tempPath() + QDir::separator() + "pdal" + QDir::separator();
+  QVERIFY( QDir().mkdir( mTempDir ) );
 }
 
 //runs after all tests
 void TestQgsPdalProvider::cleanupTestCase()
 {
+  QDir( mTempDir ).removeRecursively();
+
   QgsApplication::exitQgis();
 }
 
@@ -95,6 +102,8 @@ void TestQgsPdalProvider::filters()
   QVERIFY( metadataFilters.contains( "*.las" ) );
   QVERIFY( metadataFilters.contains( "*.LAZ" ) );
   QVERIFY( metadataFilters.contains( "*.LAS" ) );
+  QVERIFY( metadataFilters.contains( "*.txt" ) );
+  QVERIFY( metadataFilters.contains( "*.TXT" ) );
 
   QCOMPARE( metadata->filters( Qgis::FileFilterType::Vector ), QString() );
 
@@ -103,6 +112,8 @@ void TestQgsPdalProvider::filters()
   QVERIFY( registryPointCloudFilters.contains( "*.las" ) );
   QVERIFY( registryPointCloudFilters.contains( "*.LAZ" ) );
   QVERIFY( registryPointCloudFilters.contains( "*.LAS" ) );
+  QVERIFY( metadataFilters.contains( "*.txt" ) );
+  QVERIFY( metadataFilters.contains( "*.TXT" ) );
 }
 
 void TestQgsPdalProvider::encodeUri()
@@ -110,9 +121,23 @@ void TestQgsPdalProvider::encodeUri()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "pdal" ) );
   QVERIFY( metadata );
 
+  // only path
   QVariantMap parts;
   parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/point_clouds/cloud.las" ) );
   QCOMPARE( metadata->encodeUri( parts ), QStringLiteral( "/home/point_clouds/cloud.las" ) );
+
+  // uri with empty options
+  QVariantMap partsWithEmptyOptions;
+  partsWithEmptyOptions.insert( QStringLiteral( "path" ), QStringLiteral( "/home/point_clouds/cloud.txt" ) );
+  partsWithEmptyOptions.insert( QStringLiteral( "openOptions" ), QStringList() );
+  QCOMPARE( metadata->encodeUri( partsWithEmptyOptions ), QStringLiteral( "/home/point_clouds/cloud.txt" ) );
+
+  // uri with options
+  QVariantMap partsWithOptions;
+  const QStringList options = { "separator=59", "skip=2" };
+  partsWithOptions.insert( QStringLiteral( "path" ), QStringLiteral( "/home/point_clouds/cloud.txt" ) );
+  partsWithOptions.insert( QStringLiteral( "openOptions" ), options );
+  QCOMPARE( metadata->encodeUri( partsWithOptions ), QStringLiteral( "/home/point_clouds/cloud.txt|option:separator=59|option:skip=2" ) );
 }
 
 void TestQgsPdalProvider::decodeUri()
@@ -122,6 +147,13 @@ void TestQgsPdalProvider::decodeUri()
 
   const QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/cloud.las" ) );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/cloud.las" ) );
+  QCOMPARE( parts.value( QStringLiteral( "openOptions" ) ).toStringList(), QStringList() );
+
+  // uri with options
+  const QVariantMap partsWithOptions = metadata->decodeUri( QStringLiteral( "/home/point_clouds/cloud.txt|option:separator=59|option:skip=2" ) );
+  QCOMPARE( partsWithOptions.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/cloud.txt" ) );
+  const QStringList expectedOptions = { "separator=59", "skip=2" };
+  QCOMPARE( partsWithOptions.value( QStringLiteral( "openOptions" ) ).toStringList(), expectedOptions );
 }
 
 void TestQgsPdalProvider::layerTypesForUri()
@@ -247,6 +279,97 @@ void TestQgsPdalProvider::testTextReader()
 
   QCOMPARE( layer->dataProvider()->pointCount(), 320 );
   QCOMPARE( layer->pointCount(), 320 );
+}
+
+void TestQgsPdalProvider::testTextReaderWithOptions()
+{
+  QgsPointCloudLayer::LayerOptions layerOptions;
+  layerOptions.skipIndexGeneration = true;
+
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "pdal" ) );
+  QVERIFY( metadata );
+
+  // Test option skip
+  QVariantMap uriPartsSkip;
+  const QStringList openOptionsSkip = { "skip=2" };
+  const QString pathSkip = mTestDataDir + QStringLiteral( "point_clouds/text/cloud_skip.txt" );
+  const QString pathSkipCopy = mTempDir + "cloud_skip.txt";
+  QVERIFY( QFile::copy( pathSkip, pathSkipCopy ) );
+  uriPartsSkip.insert( QStringLiteral( "path" ), pathSkipCopy );
+  uriPartsSkip.insert( QStringLiteral( "openOptions" ), openOptionsSkip );
+  const QString uriSkip = metadata->encodeUri( uriPartsSkip );
+
+  auto layerSkip = std::make_unique<QgsPointCloudLayer>(
+    uriSkip,
+    QStringLiteral( "layer" ),
+    QStringLiteral( "pdal" ),
+    layerOptions
+  );
+  QVERIFY( layerSkip->isValid() );
+  QCOMPARE( layerSkip->crs().authid(), "" );
+  QGSCOMPARENEAR( layerSkip->extent().xMinimum(), 473850.0, 0.1 );
+  QGSCOMPARENEAR( layerSkip->extent().yMinimum(), 6375000.0, 0.1 );
+  QGSCOMPARENEAR( layerSkip->extent().xMaximum(), 476550.0, 0.1 );
+  QGSCOMPARENEAR( layerSkip->extent().yMaximum(), 6375000.0, 0.1 );
+  QCOMPARE( layerSkip->dataProvider()->polygonBounds().asWkt( 0 ), QStringLiteral( "Polygon ((473850 6375000, 476550 6375000, 476550 6375000, 473850 6375000, 473850 6375000))" ) );
+
+  QCOMPARE( layerSkip->dataProvider()->pointCount(), 37 );
+  QCOMPARE( layerSkip->pointCount(), 37 );
+
+  // text file with semicolon as separator
+  QVariantMap uriPartsSemiColon;
+  const QStringList openOptionsSemiColon = { "separator=59" };
+  const QString pathSemiColon = mTestDataDir + QStringLiteral( "point_clouds/text/cloud_semicolon.txt" );
+  const QString pathSemiColonTmp = mTempDir + "cloud_semicolon.txt";
+  QVERIFY( QFile::copy( pathSemiColon, pathSemiColonTmp ) );
+  uriPartsSemiColon.insert( QStringLiteral( "path" ), pathSemiColonTmp );
+  uriPartsSemiColon.insert( QStringLiteral( "openOptions" ), openOptionsSemiColon );
+  const QString uriSemiColon = metadata->encodeUri( uriPartsSemiColon );
+
+  auto layerSemiColon = std::make_unique<QgsPointCloudLayer>(
+    uriSemiColon,
+    QStringLiteral( "layer" ),
+    QStringLiteral( "pdal" ),
+    layerOptions
+  );
+  QVERIFY( layerSemiColon->isValid() );
+
+  QCOMPARE( layerSemiColon->crs().authid(), "" );
+  QGSCOMPARENEAR( layerSemiColon->extent().xMinimum(), 473850.0, 0.1 );
+  QGSCOMPARENEAR( layerSemiColon->extent().yMinimum(), 6374925.0, 0.1 );
+  QGSCOMPARENEAR( layerSemiColon->extent().xMaximum(), 488625.0, 0.1 );
+  QGSCOMPARENEAR( layerSemiColon->extent().yMaximum(), 6375000.0, 0.1 );
+  QCOMPARE( layerSemiColon->dataProvider()->polygonBounds().asWkt( 0 ), QStringLiteral( "Polygon ((473850 6374925, 488625 6374925, 488625 6375000, 473850 6375000, 473850 6374925))" ) );
+
+  QCOMPARE( layerSemiColon->dataProvider()->pointCount(), 320 );
+  QCOMPARE( layerSemiColon->pointCount(), 320 );
+
+  // override crs
+  QVariantMap uriPartsOverrideCrs;
+  const QStringList openOptionsOverrideCrs = { "override_srs=EPSG:2154" };
+  const QString pathOverrideCrs = mTestDataDir + QStringLiteral( "point_clouds/text/cloud.txt" );
+  const QString pathOverrideCrsTmp = mTempDir + "cloud.txt";
+  QVERIFY( QFile::copy( pathOverrideCrs, pathOverrideCrsTmp ) );
+  uriPartsOverrideCrs.insert( QStringLiteral( "path" ), pathOverrideCrsTmp );
+  uriPartsOverrideCrs.insert( QStringLiteral( "openOptions" ), openOptionsOverrideCrs );
+  const QString uriOverrideCrs = metadata->encodeUri( uriPartsOverrideCrs );
+  auto layerOverrideCrs = std::make_unique<QgsPointCloudLayer>(
+    uriOverrideCrs,
+    QStringLiteral( "layer" ),
+    QStringLiteral( "pdal" ),
+    layerOptions
+  );
+  QVERIFY( layerOverrideCrs->isValid() );
+
+  QCOMPARE( layerOverrideCrs->crs().authid(), "EPSG:2154" );
+  QGSCOMPARENEAR( layerOverrideCrs->extent().xMinimum(), 473850.0, 0.1 );
+  QGSCOMPARENEAR( layerOverrideCrs->extent().yMinimum(), 6374925.0, 0.1 );
+  QGSCOMPARENEAR( layerOverrideCrs->extent().xMaximum(), 488625.0, 0.1 );
+  QGSCOMPARENEAR( layerOverrideCrs->extent().yMaximum(), 6375000.0, 0.1 );
+  QCOMPARE( layerOverrideCrs->dataProvider()->polygonBounds().asWkt( 0 ), QStringLiteral( "Polygon ((473850 6374925, 488625 6374925, 488625 6375000, 473850 6375000, 473850 6374925))" ) );
+
+  QCOMPARE( layerOverrideCrs->dataProvider()->pointCount(), 320 );
+  QCOMPARE( layerOverrideCrs->pointCount(), 320 );
 }
 
 void TestQgsPdalProvider::testCopcGenerationLasFile()
