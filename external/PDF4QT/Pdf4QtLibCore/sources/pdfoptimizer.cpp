@@ -194,7 +194,7 @@ bool PDFOptimizer::performDereferenceSimpleObjects()
 
     PDFExecutionPolicy::execute(PDFExecutionPolicy::Scope::Unknown, objects.begin(), objects.end(), processEntry);
     m_storage.setObjects(qMove(objects));
-    Q_EMIT optimizationProgress(tr("Simple objects dereferenced and embedded: %1").arg(counter));
+    Q_EMIT optimizationProgress(tr("Simple objects dereferenced and embedded: %1").arg(counter.load()));
 
     return false;
 }
@@ -213,7 +213,7 @@ bool PDFOptimizer::performRemoveNullObjects()
 
     PDFExecutionPolicy::execute(PDFExecutionPolicy::Scope::Unknown, objects.begin(), objects.end(), processEntry);
     m_storage.setObjects(qMove(objects));
-    Q_EMIT optimizationProgress(tr("Null objects entries from dictionaries removed: %1").arg(counter));
+    Q_EMIT optimizationProgress(tr("Null objects entries from dictionaries removed: %1").arg(counter.load()));
 
     return false;
 }
@@ -238,7 +238,7 @@ bool PDFOptimizer::performRemoveUnusedObjects()
 
     PDFExecutionPolicy::execute(PDFExecutionPolicy::Scope::Unknown, range.begin(), range.end(), processEntry);
     m_storage.setObjects(qMove(objects));
-    Q_EMIT optimizationProgress(tr("Unused objects removed: %1").arg(counter));
+    Q_EMIT optimizationProgress(tr("Unused objects removed: %1").arg(counter.load()));
 
     return counter > 0;
 }
@@ -311,7 +311,7 @@ bool PDFOptimizer::performMergeIdenticalObjects()
     }
 
     m_storage.setObjects(qMove(objects));
-    Q_EMIT optimizationProgress(tr("Identical objects merged: %1").arg(counter));
+    Q_EMIT optimizationProgress(tr("Identical objects merged: %1").arg(counter.load()));
 
     return counter > 0;
 }
@@ -457,7 +457,7 @@ bool PDFOptimizer::performRecompressFlateStreams()
 
     PDFExecutionPolicy::execute(PDFExecutionPolicy::Scope::Unknown, objects.begin(), objects.end(), processEntry);
     m_storage.setObjects(qMove(objects));
-    Q_EMIT optimizationProgress(tr("Bytes saved by recompressing stream: %1").arg(bytesSaved));
+    Q_EMIT optimizationProgress(tr("Bytes saved by recompressing stream: %1").arg(bytesSaved.load()));
 
     return false;
 }

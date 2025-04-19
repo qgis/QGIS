@@ -183,6 +183,11 @@ endif()
 target_include_directories(Pdf4QtLibCore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sources)
 target_include_directories(Pdf4QtLibCore PUBLIC ${CMAKE_BINARY_DIR}/${INSTALL_INCLUDEDIR})
 
+# Workaround to suppress CLANG error on unused private field
+set_source_files_properties(sources/pdfdocumentwriter.cpp PROPERTIES COMPILE_FLAGS "-Wno-unused-private-field")
+# Workaround to suppress deprecation warning
+set_source_files_properties(sources/pdfccittfaxdecoder.cpp PROPERTIES COMPILE_FLAGS "-Wno-deprecated-literal-operator")
+
 set_target_properties(Pdf4QtLibCore PROPERTIES
                       VERSION ${PDF4QT_VERSION}
                       SOVERSION ${PDF4QT_VERSION}
