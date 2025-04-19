@@ -147,6 +147,7 @@ following parameters (note that parameter keys are case sensitive):
 - IgnoreAxisOrientation=1: to ignore EPSG axis order for WFS 1.1 or 2.0
 - InvertAxisOrientation=1: to invert axis order
 - hideDownloadProgressDialog=1: to hide the download progress dialog
+- featureMode=default/simpleFeatures/complexFeatures (QGIS >= 3.44)
 
 The ‘filter’ key value can either be a QGIS expression or an OGC XML
 filter. If the value is set to a QGIS expression the driver will turn it

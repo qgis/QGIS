@@ -60,6 +60,16 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
     mUri.setParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES, settingsPreferCoordinatesForWfsT11->value( detailsParameters ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   }
 
+  if ( settingsWfsFeatureMode->exists( detailsParameters ) )
+  {
+    mUri.removeParam( QgsWFSConstants::URI_PARAM_FEATURE_MODE ); // setParam allow for duplicates!
+    const QString featureMode = settingsWfsFeatureMode->value( detailsParameters );
+    if ( featureMode != QLatin1String( "default" ) )
+    {
+      mUri.setParam( QgsWFSConstants::URI_PARAM_FEATURE_MODE, featureMode );
+    }
+  }
+
   QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( QString( mUri.uri() ) ), 4 );
 }
 
