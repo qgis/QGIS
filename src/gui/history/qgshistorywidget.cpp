@@ -32,6 +32,7 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   , mContext( context )
 {
   setupUi( this );
+  mContext.setHistoryWidget( this );
 
   mModel = new QgsHistoryEntryModel( providerId, backends, registry, mContext, this );
   mProxyModel = new QgsHistoryEntryProxyModel( this );

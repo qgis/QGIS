@@ -24,3 +24,13 @@ QgsMessageBar *QgsHistoryWidgetContext::messageBar() const
 {
   return mMessageBar;
 }
+
+void QgsHistoryWidgetContext::setHistoryWidget( QgsHistoryWidget *widget )
+{
+  mHistoryWidget = widget;
+}
+
+QgsHistoryWidget *QgsHistoryWidgetContext::historyWidget() const
+{
+  return mHistoryWidget;
+}

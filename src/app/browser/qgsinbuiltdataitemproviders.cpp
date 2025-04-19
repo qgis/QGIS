@@ -1648,10 +1648,6 @@ QWidget *QgsFieldItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataI
 
 QgsDatabaseItemGuiProvider::QgsDatabaseItemGuiProvider()
 {
-  if ( QgsDatabaseQueryHistoryProvider *historyProvider = qobject_cast<QgsDatabaseQueryHistoryProvider *>( QgsGui::historyProviderRegistry()->providerById( QStringLiteral( "dbquery" ) ) ) )
-  {
-    connect( historyProvider, &QgsDatabaseQueryHistoryProvider::openSqlDialog, this, &QgsDatabaseItemGuiProvider::openSqlDialogGeneric );
-  }
 }
 
 QString QgsDatabaseItemGuiProvider::name()

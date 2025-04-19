@@ -209,6 +209,7 @@
 #include "qgsabstractmaptoolhandler.h"
 #include "qgsappauthrequesthandler.h"
 #include "qgsappbrowserproviders.h"
+#include "qgsappdbutils.h"
 #include "qgsapplayertreeviewmenuprovider.h"
 #include "qgsapplication.h"
 #include "qgsappsslerrorhandler.h"
@@ -1433,8 +1434,11 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsFieldItemGuiProvider() );
   QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsFieldDomainItemGuiProvider() );
   QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsRelationshipItemGuiProvider() );
-  QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsDatabaseItemGuiProvider() );
   QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsStacDataItemGuiProvider() );
+
+  mAppDbUtils = std::make_unique< QgsAppDbUtils >();
+  mAppDbUtils->setup();
+  connect( mActionQueryHistory, &QAction::triggered, mAppDbUtils.get(), &QgsAppDbUtils::showQueryHistory );
 
   QShortcut *showBrowserDock = new QShortcut( QKeySequence( tr( "Ctrl+2" ) ), this );
   connect( showBrowserDock, &QShortcut::activated, mBrowserWidget, &QgsDockWidget::toggleUserVisible );
@@ -3438,9 +3442,8 @@ void QgisApp::createMenus()
 #endif
 
   // Database Menu
-  // don't add it yet, wait for a plugin
-  mDatabaseMenu = new QMenu( tr( "&Database" ), menuBar() );
   mDatabaseMenu->setObjectName( QStringLiteral( "mDatabaseMenu" ) );
+
   // Web Menu
   // don't add it yet, wait for a plugin
   mWebMenu = new QMenu( tr( "&Web" ), menuBar() );
@@ -5377,8 +5380,12 @@ void QgisApp::updateProjectFromTemplates()
   // add <blank> entry, which loads a blank template (regardless of "default template")
   if ( settings.value( QStringLiteral( "qgis/newProjectDefault" ), QVariant( false ) ).toBool() )
     mProjectFromTemplateMenu->addAction( tr( "< Blank >" ) );
+}
 
-} // QgisApp::updateProjectFromTemplates
+QgsAppDbUtils *QgisApp::dbUtils()
+{
+  return mAppDbUtils.get();
+}
 
 void QgisApp::saveWindowState()
 {

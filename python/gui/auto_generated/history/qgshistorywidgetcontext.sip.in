@@ -39,6 +39,24 @@ Returns the message bar associated with the widget.
 .. seealso:: :py:func:`setMessageBar`
 %End
 
+    void setHistoryWidget( QgsHistoryWidget *widget );
+%Docstring
+Sets the parent history ``widget``.
+
+.. seealso:: :py:func:`historyWidget`
+
+.. versionadded:: 3.44
+%End
+
+    QgsHistoryWidget *historyWidget() const;
+%Docstring
+Returns the parent histroy widget.
+
+.. seealso:: :py:func:`setHistoryWidget`
+
+.. versionadded:: 3.44
+%End
+
 };
 
 /************************************************************************
