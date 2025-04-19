@@ -1823,6 +1823,8 @@ void QgsIdentifyResultsDialog::clear()
     delete curve;
   mPlotCurves.clear();
 
+  mFeatures.clear();
+
   mExpressionContextScope = QgsExpressionContextScope();
 
   // keep it visible but disabled, it can switch from disabled/enabled
