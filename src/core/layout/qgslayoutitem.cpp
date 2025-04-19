@@ -1371,11 +1371,11 @@ QgsLayoutPoint QgsLayoutItem::topLeftToReferencePoint( const QgsLayoutPoint &poi
   QPointF refPoint;
   if ( mItemRotation != 0 && mReferencePoint != ReferencePoint::UpperLeft )
   {
-   refPoint = mapToScene( anchorPoint ) - mapFromScene( topLeft );
+    refPoint = mapToScene( anchorPoint ) - mapFromScene( topLeft );
   }
   else
     refPoint = topLeft + anchorPoint;
-return mLayout->convertFromLayoutUnits( refPoint, point.units() );
+  return mLayout->convertFromLayoutUnits( refPoint, point.units() );
 }
 
 bool QgsLayoutItem::writePropertiesToElement( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const
