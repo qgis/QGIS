@@ -39,7 +39,7 @@ for root_dir in python python/PyQt6; do
         if [[ -f $root_dir/${module}/auto_additions/${pyfile}.temp ]]; then
           outdiff2=$(diff $root_dir/${module}/auto_additions/${pyfile} $root_dir/${module}/auto_additions/${pyfile}.temp)
           if [[ -n "$outdiff2" ]]; then
-            echo " *** Python addition file not up to date: $root_dir/$sipfile"
+            echo " *** Python addition file not up to date: $root_dir/$pyfile"
             echo " $outdiff2 "
             code=1
           fi
