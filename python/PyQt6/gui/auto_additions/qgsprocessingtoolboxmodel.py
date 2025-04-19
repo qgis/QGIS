@@ -12,10 +12,18 @@ QgsProcessingToolboxModelNode.NodeAlgorithm = QgsProcessingToolboxModelNode.Node
 QgsProcessingToolboxModelNode.NodeType.NodeAlgorithm = QgsProcessingToolboxModelNode.NodeType.Algorithm
 QgsProcessingToolboxModelNode.NodeAlgorithm.is_monkey_patched = True
 QgsProcessingToolboxModelNode.NodeAlgorithm.__doc__ = "Algorithm node"
+QgsProcessingToolboxModelNode.NodeParameter = QgsProcessingToolboxModelNode.NodeType.Parameter
+QgsProcessingToolboxModelNode.NodeType.NodeParameter = QgsProcessingToolboxModelNode.NodeType.Parameter
+QgsProcessingToolboxModelNode.NodeParameter.is_monkey_patched = True
+QgsProcessingToolboxModelNode.NodeParameter.__doc__ = "Parameter node, since QGIS 3.44"
 QgsProcessingToolboxModelNode.NodeRecent = QgsProcessingToolboxModelNode.NodeType.Recent
 QgsProcessingToolboxModelNode.NodeType.NodeRecent = QgsProcessingToolboxModelNode.NodeType.Recent
 QgsProcessingToolboxModelNode.NodeRecent.is_monkey_patched = True
 QgsProcessingToolboxModelNode.NodeRecent.__doc__ = "Recent algorithms node"
+QgsProcessingToolboxModelNode.NodeParameterGroup = QgsProcessingToolboxModelNode.NodeType.ParameterGroup
+QgsProcessingToolboxModelNode.NodeType.NodeParameterGroup = QgsProcessingToolboxModelNode.NodeType.ParameterGroup
+QgsProcessingToolboxModelNode.NodeParameterGroup.is_monkey_patched = True
+QgsProcessingToolboxModelNode.NodeParameterGroup.__doc__ = "Parameter group node since QGIS 3.44"
 QgsProcessingToolboxModelNode.Favorite = QgsProcessingToolboxModelNode.NodeType.Favorite
 QgsProcessingToolboxModelNode.Favorite.is_monkey_patched = True
 QgsProcessingToolboxModelNode.Favorite.__doc__ = "Favorites algorithms node, since QGIS 3.40"
@@ -33,9 +41,17 @@ QgsProcessingToolboxModelNode.NodeType.__doc__ = """Enumeration of possible mode
 
   Available as ``QgsProcessingToolboxModelNode.NodeAlgorithm`` in older QGIS releases.
 
+* ``Parameter``: Parameter node, since QGIS 3.44
+
+  Available as ``QgsProcessingToolboxModelNode.NodeParameter`` in older QGIS releases.
+
 * ``Recent``: Recent algorithms node
 
   Available as ``QgsProcessingToolboxModelNode.NodeRecent`` in older QGIS releases.
+
+* ``ParameterGroup``: Parameter group node since QGIS 3.44
+
+  Available as ``QgsProcessingToolboxModelNode.NodeParameterGroup`` in older QGIS releases.
 
 * ``Favorite``: Favorites algorithms node, since QGIS 3.40
 
@@ -72,6 +88,10 @@ QgsProcessingToolboxModel.RoleProviderFlags = QgsProcessingToolboxModel.CustomRo
 QgsProcessingToolboxModel.Roles.RoleProviderFlags = QgsProcessingToolboxModel.CustomRole.ProviderFlags
 QgsProcessingToolboxModel.RoleProviderFlags.is_monkey_patched = True
 QgsProcessingToolboxModel.RoleProviderFlags.__doc__ = "Returns the node's provider flags"
+QgsProcessingToolboxModel.RoleParameterTypeId = QgsProcessingToolboxModel.CustomRole.ParameterTypeId
+QgsProcessingToolboxModel.Roles.RoleParameterTypeId = QgsProcessingToolboxModel.CustomRole.ParameterTypeId
+QgsProcessingToolboxModel.RoleParameterTypeId.is_monkey_patched = True
+QgsProcessingToolboxModel.RoleParameterTypeId.__doc__ = "Untranslated parameter type unique identifier for parameter nodes"
 QgsProcessingToolboxModel.CustomRole.__doc__ = """Custom model roles.
 
 .. note::
@@ -107,6 +127,10 @@ QgsProcessingToolboxModel.CustomRole.__doc__ = """Custom model roles.
 * ``ProviderFlags``: Returns the node's provider flags
 
   Available as ``QgsProcessingToolboxModel.RoleProviderFlags`` in older QGIS releases.
+
+* ``ParameterTypeId``: Untranslated parameter type unique identifier for parameter nodes
+
+  Available as ``QgsProcessingToolboxModel.RoleParameterTypeId`` in older QGIS releases.
 
 
 """
@@ -176,6 +200,11 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelParameterGroupNode.__overridden_methods__ = ['nodeType']
+    QgsProcessingToolboxModelParameterGroupNode.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
     QgsProcessingToolboxModelProviderNode.__overridden_methods__ = ['nodeType']
     QgsProcessingToolboxModelProviderNode.__group__ = ['processing']
 except (NameError, AttributeError):
@@ -188,6 +217,11 @@ except (NameError, AttributeError):
 try:
     QgsProcessingToolboxModelAlgorithmNode.__overridden_methods__ = ['nodeType']
     QgsProcessingToolboxModelAlgorithmNode.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsProcessingToolboxModelParameterNode.__overridden_methods__ = ['nodeType']
+    QgsProcessingToolboxModelParameterNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
