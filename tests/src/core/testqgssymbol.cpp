@@ -68,6 +68,7 @@ class TestQgsSymbol : public QgsTest
     void testParseColor();
     void testParseColorList();
     void symbolProperties();
+    void saveAndLoadMarkerLineToSld();
 
     //
     // Regression Testing
@@ -456,6 +457,36 @@ void TestQgsSymbol::symbolProperties()
 
   delete fillSymbol;
   delete fillSymbol2;
+}
+
+void TestQgsSymbol::saveAndLoadMarkerLineToSld()
+{
+  QString sldFileName( mTestDataDir + "symbol_layer/QgsMarkerLineSymbolLayerMultiplePlacements.sld" );
+
+  //create a symbol and convert it's first layer to a marker line symbol layer
+  bool defaultLoadedFlag = false;
+  QgsFeatureRenderer *renderer = mpLinesLayer->renderer();
+  QgsRenderContext renderContext;
+  QgsSymbol *symbol = renderer->symbols( renderContext ).at( 0 );
+  QgsMarkerLineSymbolLayer *symbolLayer = static_cast<QgsMarkerLineSymbolLayer *>( symbol->symbolLayer( 0 ) );
+
+  //change the placement options
+  symbolLayer->setPlaceOnEveryPart( false );
+  Qgis::MarkerLinePlacements placements;
+  placements.setFlag( Qgis::MarkerLinePlacement::Interval, true );
+  placements.setFlag( Qgis::MarkerLinePlacement::CentralPoint, true );
+  placements.setFlag( Qgis::MarkerLinePlacement::CurvePoint, true );
+  placements.setFlag( Qgis::MarkerLinePlacement::FirstVertex, true );
+
+  symbolLayer->setPlacements( placements );
+
+  //save to sld
+  mpLinesLayer->saveSldStyle( sldFileName, defaultLoadedFlag );
+
+  //load from sld
+  mpLinesLayer->loadSldStyle( sldFileName, defaultLoadedFlag );
+  QVERIFY( symbolLayer->placements() == placements );
+  QVERIFY( symbolLayer->placeOnEveryPart() == false );
 }
 
 void TestQgsSymbol::regression24954()
