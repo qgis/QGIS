@@ -67,6 +67,7 @@ class TestQgsImageCache : public QgsTest
     void preseedAnimation();
     void cmykImage();
     void htmlDataUrl();
+    void invalidateCacheEntry();
 };
 
 
@@ -526,6 +527,34 @@ void TestQgsImageCache::htmlDataUrl()
   QCOMPARE( size.height(), 60 );
 }
 
+void TestQgsImageCache::invalidateCacheEntry()
+{
+  QgsImageCache cache;
+  bool inCache = false;
+
+  const QString tempImagePath = QDir::tempPath() + "/test_sample_image.png";
+  const QString originalImage = TEST_DATA_DIR + QStringLiteral( "/sample_image.png" );
+  if ( QFileInfo::exists( tempImagePath ) )
+    QFile::remove( tempImagePath );
+  QFile::copy( originalImage, tempImagePath );
+
+  bool invalidated_initial = cache.invalidateCacheEntry( tempImagePath );
+  QVERIFY( !invalidated_initial );
+
+  QImage img = cache.pathAsImage( tempImagePath, QSize( 200, 200 ), true, 1.0, inCache );
+  QVERIFY( !img.isNull() );
+  QVERIFY( inCache );
+
+  bool invalidated = cache.invalidateCacheEntry( tempImagePath );
+  QVERIFY( invalidated );
+
+  bool invalidated_twice = cache.invalidateCacheEntry( tempImagePath );
+  QVERIFY( !invalidated_twice );
+
+  img = cache.pathAsImage( tempImagePath, QSize( 200, 200 ), true, 1.0, inCache );
+  QVERIFY( !img.isNull() );
+  QVERIFY( inCache );
+}
 
 QGSTEST_MAIN( TestQgsImageCache )
 #include "testqgsimagecache.moc"

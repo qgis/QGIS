@@ -10,7 +10,7 @@ try:
     QgsAbstractContentCacheBase.parseBase64DataUrl = staticmethod(QgsAbstractContentCacheBase.parseBase64DataUrl)
     QgsAbstractContentCacheBase.parseEmbeddedStringData = staticmethod(QgsAbstractContentCacheBase.parseEmbeddedStringData)
     QgsAbstractContentCacheBase.isBase64Data = staticmethod(QgsAbstractContentCacheBase.isBase64Data)
-    QgsAbstractContentCacheBase.__virtual_methods__ = ['checkReply', 'onRemoteContentFetched']
+    QgsAbstractContentCacheBase.__virtual_methods__ = ['invalidateCacheEntry', 'checkReply', 'onRemoteContentFetched']
     QgsAbstractContentCacheBase.__signal_arguments__ = {'remoteContentFetched': ['url: str']}
 except (NameError, AttributeError):
     pass
