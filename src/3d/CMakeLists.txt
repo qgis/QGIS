@@ -62,6 +62,7 @@ set(QGIS_3D_SRCS
   lights/qgspointlightsettings.cpp
 
   materials/qgsabstractmaterialsettings.cpp
+  materials/qgsglobematerial.cpp
   materials/qgsgoochmaterialsettings.cpp
   materials/qgsmaterial.cpp
   materials/qgsmaterialregistry.cpp
@@ -177,6 +178,7 @@ set(QGIS_3D_HDRS
   lights/qgspointlightsettings.h
 
   materials/qgsabstractmaterialsettings.h
+  materials/qgsglobematerial.h
   materials/qgsgoochmaterialsettings.h
   materials/qgsmaterial.h
   materials/qgsmaterialregistry.h
