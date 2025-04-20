@@ -5796,14 +5796,18 @@ QString QgsSymbolLayerUtils::ruleNodeExpression( const QDomNode &node, const QSt
 QString QgsSymbolLayerUtils::legendKeyToExpression( const QString &style, const QString &ikey, bool &ok )
 {
   QDomDocument styleDoc = QDomDocument();
-  ok = styleDoc.setContent( style );
-
-  if ( !ok )
-  {
-    return QString();
-  }
+  styleDoc.setContent( style );
 
   QDomNodeList renders = styleDoc.elementsByTagName( "renderer-v2" );
+  if ( renders.length() == 0 )
+  {
+    ok = false;
+    return QString();
+  }
+  else
+  {
+    ok = true;
+  }
   QDomNode render = renders.item( 0 );
   if ( render.isNull() )
     return QString();
