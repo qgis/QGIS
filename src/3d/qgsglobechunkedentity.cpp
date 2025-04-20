@@ -40,7 +40,6 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QTextureImage>
-#include <Qt3DExtras/QTextureMaterial>
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
@@ -50,6 +49,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include "qgsdistancearea.h"
 #include "qgseventtracing.h"
 #include "qgsgeotransform.h"
+#include "qgsglobematerial.h"
 #include "qgsraycastingutils_p.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintexturegenerator_p.h"
@@ -200,7 +200,7 @@ static Qt3DCore::QEntity *makeGlobeMesh( double lonMin, double lonMax, double la
   texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
 
-  Qt3DExtras::QTextureMaterial *material = new Qt3DExtras::QTextureMaterial( entity );
+  QgsGlobeMaterial *material = new QgsGlobeMaterial( entity );
   material->setTexture( texture );
 
   QgsGeoTransform *geoTransform = new QgsGeoTransform( entity );
@@ -429,7 +429,7 @@ class QgsGlobeMapUpdateJob : public QgsChunkQueueJob
       , mTextureGenerator( textureGenerator )
     {
       // extract our terrain texture image from the 3D entity
-      QVector<Qt3DExtras::QTextureMaterial *> materials = node->entity()->componentsOfType<Qt3DExtras::QTextureMaterial>();
+      QVector<QgsGlobeMaterial *> materials = node->entity()->componentsOfType<QgsGlobeMaterial>();
       Q_ASSERT( materials.count() == 1 );
       QVector<Qt3DRender::QAbstractTextureImage *> texImages = materials[0]->texture()->textureImages();
       Q_ASSERT( texImages.count() == 1 );
