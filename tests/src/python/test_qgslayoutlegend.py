@@ -1313,7 +1313,9 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
             sublegend.model().refreshLayerLegend(legendlayer)
 
         self.assertTrue(
-            self.render_layout_check("composer_legend_theme_expression_scope", layout, allowed_mismatch=3500)
+            self.render_layout_check(
+                "composer_legend_theme_expression_scope", layout, allowed_mismatch=3500
+            )
         )
 
         QgsProject.instance().clear()
