@@ -2598,8 +2598,8 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
   bool placeOnEveryPart = true;
   Qgis::MarkerLinePlacements placements;
 
-  QMultiMap<QString, QString> vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( element );
-  for ( QMultiMap<QString, QString>::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
+  QgsStringMultimap vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( element );
+  for ( QgsStringMultimap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
   {
     if ( it.key() == QLatin1String( "placement" ) )
     {

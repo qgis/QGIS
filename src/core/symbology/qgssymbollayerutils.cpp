@@ -1905,8 +1905,8 @@ bool QgsSymbolLayerUtils::needEllipseMarker( QDomElement &element )
   if ( graphicElem.isNull() )
     return false;
 
-  QMultiMap<QString, QString> vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( graphicElem );
-  for ( QMultiMap<QString, QString>::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
+  QgsStringMultimap vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( graphicElem );
+  for ( QgsStringMultimap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
   {
     if ( it.key() == QLatin1String( "widthHeightFactor" ) )
     {

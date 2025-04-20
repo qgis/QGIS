@@ -19,8 +19,6 @@ typedef QMap<QString, QgsTextFormat > QgsTextFormatMap;
 typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
 
 
-typedef QMultiMap<QString, QString> QgsSmartConditionMap;
-
 
 class QgsStyle : QObject
 {
@@ -1015,9 +1013,9 @@ Returns the smart groups map with id as key and name as value
 Returns the smart groups list
 %End
 
-    QgsSmartConditionMap smartgroup( int id );
+    QgsStringMultimap smartgroup( int id );
 %Docstring
-Returns the :py:class:`QgsSmartConditionMap` for the given id
+Returns the :py:class:`QgsStringMultimap` for the given id
 %End
 
     QString smartgroupOperator( int id );

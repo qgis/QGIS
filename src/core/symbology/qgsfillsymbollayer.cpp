@@ -4632,8 +4632,8 @@ QgsSymbolLayer *QgsPointPatternFillSymbolLayer::createFromSld( QDomElement &elem
 
   // Set distance X and Y from vendor options, or from Size if no vendor options are set
   bool distanceFromVendorOption { false };
-  QMultiMap<QString, QString> vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( element );
-  for ( QMultiMap<QString, QString>::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
+  QgsStringMultimap vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( element );
+  for ( QgsStringMultimap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
   {
     // Legacy
     if ( it.key() == QLatin1String( "distance" ) )

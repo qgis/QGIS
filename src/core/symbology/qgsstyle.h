@@ -58,26 +58,6 @@ typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
  */
 #define QGSCLIPBOARD_STYLE_MIME "application/qgis.style"
 
-/**
- * \ingroup core
- *  A multimap to hold the smart group conditions as constraint and parameter pairs.
- *  Both the key and the value of the map are QString. The key is the constraint of the condition and the value is the parameter which is applied for the constraint.
- *
- *  The supported constraints are:
- *  tag -> symbol has the tag matching the parameter
- *  !tag -> symbol doesn't have the tag matching the parameter
- *  name -> symbol has a part of its name matching the parameter
- *  !name -> symbol doesn't have any part of the name matching the parameter
- *
- *  Example Usage:
- *  QgsSmartConditionMap conditions;
- *  conditions.insert( "tag", "red" ); // adds the condition: Symbol has the tag red
- *  conditions.insert( "!name", "way" ); // add the condition: Symbol doesn't have any part of its name matching `way`
- *
- *  \note This is a Multimap, which means it will contain multiple values for the same key.
- */
-typedef QMultiMap<QString, QString> QgsSmartConditionMap;
-
 
 /**
  * \ingroup core
@@ -360,7 +340,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      * \note Not available from Python bindings
      */
-    int addSmartgroup( const QString &name, const QString &op, const QgsSmartConditionMap &conditions ) SIP_SKIP;
+    int addSmartgroup( const QString &name, const QString &op, const QgsStringMultimap &conditions ) SIP_SKIP;
 
     /**
      * Adds a new smartgroup to the database and returns the id.
@@ -983,8 +963,8 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Returns the smart groups list
     QStringList smartgroupNames() const;
 
-    //! Returns the QgsSmartConditionMap for the given id
-    QgsSmartConditionMap smartgroup( int id );
+    //! Returns the QgsStringMultimap for the given id
+    QgsStringMultimap smartgroup( int id );
 
     /**
      * Returns the operator for the smartgroup.

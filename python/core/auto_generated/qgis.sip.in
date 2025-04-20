@@ -3783,6 +3783,8 @@ empty string if the path is not associated with a vsi prefix.
  const long GEO_EPSG_CRS_ID;
 
 
+typedef QMultiMap<QString, QString> QgsStringMultimap;
+
 typedef unsigned long long qgssize;
 
 

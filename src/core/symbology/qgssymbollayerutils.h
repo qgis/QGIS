@@ -581,7 +581,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QgsStringMap getSvgParameterList( QDomElement &element );
 
     static QDomElement createVendorOptionElement( QDomDocument &doc, const QString &name, const QString &value );
-    static QMultiMap<QString, QString> getVendorOptionList( QDomElement &element );
+    static QgsStringMultimap getVendorOptionList( QDomElement &element );
 
     //! Parses the properties from XML and returns a map
     static QVariantMap parseProperties( const QDomElement &element );

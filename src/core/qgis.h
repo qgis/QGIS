@@ -6781,6 +6781,26 @@ Q_DECL_DEPRECATED const long GEO_EPSG_CRS_ID = 4326;
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
 /**
+ * \ingroup core
+ *  A multimap with a key/value pair of QStrings. When used to hold the smart group conditions,
+ *  the key is the constraint of the condition and the value is the parameter which is applied for the constraint.
+ *
+ *  The supported constraints are:
+ *  tag -> symbol has the tag matching the parameter
+ *  !tag -> symbol doesn't have the tag matching the parameter
+ *  name -> symbol has a part of its name matching the parameter
+ *  !name -> symbol doesn't have any part of the name matching the parameter
+ *
+ *  Example Usage:
+ *  QgsStringMultimap conditions;
+ *  conditions.insert( "tag", "red" ); // adds the condition: Symbol has the tag red
+ *  conditions.insert( "!name", "way" ); // add the condition: Symbol doesn't have any part of its name matching `way`
+ *
+ *  \note This is a Multimap, which means it will contain multiple values for the same key.
+ */
+typedef QMultiMap<QString, QString> QgsStringMultimap;
+
+/**
  * Qgssize is used instead of size_t, because size_t is stdlib type, unknown
  *  by SIP, and it would be hard to define size_t correctly in SIP.
  *  Currently used "unsigned long long" was introduced in C++11 (2011)
