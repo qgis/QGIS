@@ -89,6 +89,11 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   cmbVersion->addItem( tr( "OGC API - Features" ) );
   connect( cmbVersion, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewHttpConnection::wfsVersionCurrentIndexChanged );
 
+  mComboWfsFeatureMode->clear();
+  mComboWfsFeatureMode->addItem( tr( "Default" ), QStringLiteral( "default" ) );
+  mComboWfsFeatureMode->addItem( tr( "Simple Features" ), QStringLiteral( "simpleFeatures" ) );
+  mComboWfsFeatureMode->addItem( tr( "Complex Features" ), QStringLiteral( "complexFeatures" ) );
+
   cmbFeaturePaging->clear();
   cmbFeaturePaging->addItem( tr( "Default (trust server capabilities)" ) );
   cmbFeaturePaging->addItem( tr( "Enabled" ) );
@@ -347,6 +352,9 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   else
     cmbFeaturePaging->setCurrentIndex( static_cast<int>( QgsNewHttpConnection::WfsFeaturePagingIndex::DEFAULT ) );
 
+  const QString wfsFeatureMode = QgsOwsConnection::settingsWfsFeatureMode->value( detailsParameters );
+  mComboWfsFeatureMode->setCurrentIndex( std::max( mComboWfsFeatureMode->findData( wfsFeatureMode ), 0 ) );
+
   txtPageSize->setText( QgsOwsConnection::settingsPagesize->value( detailsParameters ) );
 }
 
@@ -464,6 +472,9 @@ void QgsNewHttpConnection::accept()
         break;
     }
     QgsOwsConnection::settingsPagingEnabled->setValue( pagingEnabled, detailsParameters );
+
+    const QString featureMode = mComboWfsFeatureMode->currentData().toString();
+    QgsOwsConnection::settingsWfsFeatureMode->setValue( featureMode, detailsParameters );
   }
 
   QStringList credentialsParameters = { mServiceName.toLower(), newConnectionName };
