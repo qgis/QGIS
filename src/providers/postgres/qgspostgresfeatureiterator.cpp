@@ -999,7 +999,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
 //  ------------------
 
 QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider *p )
-  : mConnInfo( p->mUri.connectionInfo( false ) )
+  : mConnInfo( QgsPostgresConn::connectionInfo( p->mUri, false ) )
   , mGeometryColumn( p->mGeometryColumn )
   , mBoundingBoxColumn( p->mBoundingBoxColumn )
   , mSqlWhereClause( p->filterWhereClause() )

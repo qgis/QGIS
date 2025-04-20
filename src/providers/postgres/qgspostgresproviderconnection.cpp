@@ -82,7 +82,7 @@ QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &nam
 }
 
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration )
-  : QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
+  : QgsAbstractDatabaseProviderConnection( QgsPostgresConn::connectionInfo( uri, false ), configuration )
 {
   mProviderKey = QStringLiteral( "postgres" );
   setDefaultCapabilities();
@@ -164,6 +164,7 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema, co
   {
     newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
   }
+
   QMap<int, int> map;
   QString errCause;
   QString createdLayerUri;
@@ -218,7 +219,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
   QString errCause;
   // TODO: set flags from the connection if flags argument is 0
   const QgsDataSourceUri dsUri { uri() };
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ), -1, false, feedback );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( dsUri, false ), -1, false, feedback );
   if ( feedback && feedback->isCanceled() )
     return {};
 
@@ -407,7 +408,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
 {
   if ( !pgconn )
   {
-    pgconn = std::make_shared<QgsPoolPostgresConn>( QgsDataSourceUri( uri() ).connectionInfo( false ) );
+    pgconn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
   }
 
   std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator = std::make_shared<QgsPostgresProviderResultIterator>( resolveTypes );
@@ -754,7 +755,7 @@ QStringList QgsPostgresProviderConnection::schemas() const
   QStringList schemas;
   QString errCause;
   const QgsDataSourceUri dsUri { uri() };
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( dsUri, false ) );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection failed: %1" ).arg( uri() );
@@ -830,7 +831,7 @@ QIcon QgsPostgresProviderConnection::icon() const
 QList<QgsVectorDataProvider::NativeType> QgsPostgresProviderConnection::nativeTypes() const
 {
   QList<QgsVectorDataProvider::NativeType> types;
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsDataSourceUri { uri() }.connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( QgsDataSourceUri { uri() }, false ) );
   if ( conn )
   {
     types = conn->nativeTypes();
