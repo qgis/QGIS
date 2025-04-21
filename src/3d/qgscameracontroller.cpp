@@ -678,17 +678,30 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
     mDragPointCalculated = true;
   }
 
-  const QgsVector3D mapPressPos = QgsVector3D( mDragPoint ) + mOrigin;
-
-  double newDepth = sampleDepthBuffer( mouse->x(), mouse->y() );
-  if ( newDepth == 1 )
-    return; // the mouse is somewhere in the void...
-
-  const QVector3D newWorldPosition = Qgs3DUtils::screenPointToWorldPos( QPoint( mouse->x(), mouse->y() ), newDepth, mScene->engine()->size(), mDepthBufferCamera.get() );
-  if ( !std::isfinite( newWorldPosition.x() ) || !std::isfinite( newWorldPosition.y() ) || !std::isfinite( newWorldPosition.z() ) )
+  const QgsVector3D mapStartPos = QgsVector3D( mDragPoint ) + mOrigin;
+  // Approximate the globe as a sphere with a center in mOrigin and of radius
+  // the same as at mapStartPos.
+  const double sphereRadius = mapStartPos.length();
+  // Find the intersection of this sphere and the ray from the current clicked point.
+  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mouse->x(), mouse->y() ), mScene->engine()->size(), mCameraBefore.get() );
+  const QgsVector3D rayOriginShifted = QgsVector3D( ray.origin() ) + mOrigin;
+  // From equations of ray and sphere
+  const double quadA = QVector3D::dotProduct( ray.direction(), ray.direction() );
+  const double quadB = 2 * QgsVector3D::dotProduct( ray.direction(), rayOriginShifted );
+  const double quadC = QgsVector3D::dotProduct( rayOriginShifted, rayOriginShifted ) - sphereRadius * sphereRadius;
+  const double disc = quadB * quadB - 4 * quadA * quadC;
+  if ( disc < 0 )
+    // Ray misses sphere
     return;
-
-  const QgsVector3D newMapPos = QgsVector3D( newWorldPosition ) + mOrigin;
+  // Distance to intersection along ray (take smaller root, closer to camera)
+  const double rayDist = ( -quadB - sqrt( disc ) ) / ( 2 * quadA );
+  if ( rayDist < 0 )
+  {
+    QgsDebugError( QStringLiteral( "Sphere intersection result negative, cancelling move" ) );
+    return;
+  }
+  QVector3D sphereIntersection = ray.origin() + ( float ) rayDist * ray.direction();
+  const QgsVector3D newMapPos = QgsVector3D( sphereIntersection ) + mOrigin;
 
   // now that we have old and new mouse position in ECEF coordinates,
   // let's figure out the difference in lat/lon angles and update the center point
@@ -696,7 +709,7 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
   QgsVector3D oldLatLon, newLatLon;
   try
   {
-    oldLatLon = mGlobeCrsToLatLon.transform( mapPressPos );
+    oldLatLon = mGlobeCrsToLatLon.transform( mapStartPos );
     newLatLon = mGlobeCrsToLatLon.transform( newMapPos );
   }
   catch ( const QgsCsException & )
@@ -710,6 +723,7 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
 
   const QgsVector3D newVC = moveGeocentricPoint( mMousePressViewCenter, latDiff, lonDiff );
   const QgsVector3D newVCWorld = newVC - mOrigin;
+
   mCameraPose.setCenterPoint( newVCWorld );
   updateCameraFromPose();
 }
