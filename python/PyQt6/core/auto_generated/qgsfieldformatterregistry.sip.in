@@ -9,7 +9,6 @@
 
 
 
-
 class QgsFieldFormatterRegistry : QObject
 {
 %Docstring(signature="appended")
