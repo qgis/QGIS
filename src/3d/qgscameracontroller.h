@@ -416,6 +416,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     //! click point for a rotation or a translation
     QPoint mClickPoint;
 
+    // false when no depth buffer captured or new capture requested and not yet done.
     bool mDepthBufferIsReady = false;
     QImage mDepthBufferImage;
     // -1 when unset
