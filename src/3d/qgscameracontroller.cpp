@@ -26,6 +26,7 @@
 #include <QDomDocument>
 #include <Qt3DRender/QCamera>
 #include <Qt3DInput>
+#include <QStringLiteral>
 #include <cmath>
 
 #include "qgslogger.h"
@@ -265,6 +266,11 @@ void QgsCameraController::readXml( const QDomElement &elem )
 
 double QgsCameraController::sampleDepthBuffer( int px, int py )
 {
+  if ( !mDepthBufferIsReady )
+  {
+    QgsDebugError( QStringLiteral( "Asked to sample depth buffer, but depth buffer not ready!" ) );
+  }
+
   double depth = 1;
 
   if ( QWindow *win = window() )
