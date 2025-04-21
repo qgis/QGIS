@@ -1666,3 +1666,69 @@ void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int r
   itemForIndex( parent )->insertChild( row, std::move( item ) );
   endInsertRows();
 }
+
+
+QgsAttributesFormProxyModel::QgsAttributesFormProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+}
+
+void QgsAttributesFormProxyModel::setAttributesFormSourceModel( QgsAttributesFormModel *model )
+{
+  mModel = model;
+  QSortFilterProxyModel::setSourceModel( mModel );
+}
+
+const QString QgsAttributesFormProxyModel::filterText() const
+{
+  return mFilterText;
+}
+
+void QgsAttributesFormProxyModel::setFilterText( const QString &filterText )
+{
+  // Since we want to allow refreshing the filter when, e.g.,
+  // users swtich to aliases, then we allow this method to be
+  // executed even if previous and new filters are equal
+
+  mFilterText = filterText.trimmed();
+  invalidate();
+}
+
+bool QgsAttributesFormProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+{
+  if ( mFilterText.isEmpty() )
+    return true;
+
+  QModelIndex sourceIndex = sourceModel()->index( sourceRow, 0, sourceParent );
+  if ( !sourceIndex.isValid() )
+    return false;
+
+  // If display matches, accept it before any other checks
+  if ( sourceIndex.data( Qt::DisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
+    return true;
+
+  const auto itemType = static_cast< QgsAttributesFormData::AttributesFormItemType >( sourceIndex.data( QgsAttributesFormModel::ItemTypeRole ).toInt() );
+  if ( itemType == QgsAttributesFormData::Container || itemType == QgsAttributesFormData::WidgetType )
+  {
+    // Container is accepted if any of their children is accepted
+    for ( int i = 0; i < sourceModel()->rowCount( sourceIndex ); i++ )
+    {
+      if ( filterAcceptsRow( i, sourceIndex ) )
+        return true;
+    }
+  }
+  else
+  {
+    // Child is accepted if any of its parents is accepted
+    QModelIndex parent = sourceIndex.parent();
+    while ( parent.isValid() )
+    {
+      if ( parent.data( Qt::DisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
+        return true;
+
+      parent = parent.parent();
+    }
+  }
+
+  return false;
+}
