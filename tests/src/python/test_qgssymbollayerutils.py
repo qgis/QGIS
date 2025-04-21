@@ -1656,30 +1656,30 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         nestkey = "{6a03fc3a-7a9b-4ad9-9a62-801c478e70e9}"
         nestedStyle = """<qgis>\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" forceraster=\"0\" type=\"mergedFeatureRenderer\">\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" forceraster=\"0\" type=\"RuleRenderer\">\n<rules key=\"{a16a507a-fa80-4545-bd69-74de0fff2332}\">\n<rule symbol=\"0\" key=\"{eb32d7a1-2c35-4918-986d-0f68f0817e1c}\" label=\"Dam\" filter=\"&quot;Name&quot; = 'Dam'\"/>\n<rule symbol=\"1\" key=\"{1af1b498-60f9-43db-9164-12729c9aa503}\" label=\"Lake\" filter=\"&quot;Name&quot; = 'Lake'\"/>\n<rule symbol=\"2\" key=\"{6a03fc3a-7a9b-4ad9-9a62-801c478e70e9}\" filter=\"ELSE\"/>\n</rules>\n</renderer-v2>\n</renderer-v2>\n</qgis>\n"""
         ruleExpression, okParse = QgsSymbolLayerUtils.legendKeyToExpression(
-            rulekey, ruelbasedXMLStyle
+            ruelbasedXMLStyle, rulekey
         )
         self.assertTrue(okParse)
-        self.assertEqual(ruleExpression, "&quot;Value&quot; = 11")
+        self.assertEqual(ruleExpression, '"Value" = 11')
         catExpression, okParse = QgsSymbolLayerUtils.legendKeyToExpression(
-            catkey, categorizedStyle
+            categorizedStyle, catkey
         )
         self.assertTrue(okParse)
-        self.assertEqual(catExpression, "&quot;Name&quot; = 'Lake'")
+        self.assertEqual(catExpression, '"Name" = \'Lake\'')
         gradExpression, okParse = QgsSymbolLayerUtils.legendKeyToExpression(
-            gradkey, graduatedStyle
+            graduatedStyle, gradkey
         )
         self.assertTrue(okParse)
         self.assertEqual(
             gradExpression,
-            "(&quot;Staff&quot; >= 3.000000000000000) AND (&quot;Staff&quot; <= 5.000000000000000)",
+            '("Staff" >= 2.000000000000000) AND ("Staff" <= 3.000000000000000)',
         )
         nestedExpression, okParse = QgsSymbolLayerUtils.legendKeyToExpression(
-            nestkey, nestedStyle
+            nestedStyle, nestkey
         )
         self.assertTrue(okParse)
         self.assertEqual(
             nestedExpression,
-            "NOT((&quot;Name&quot; = 'Lake') AND (&quot;Name&quot; = 'Dam'))",
+            'NOT(("Name" = \'Dam\') OR ("Name" = \'Lake\'))',
         )
 
 
