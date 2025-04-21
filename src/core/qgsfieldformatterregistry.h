@@ -16,16 +16,16 @@
 #ifndef QGSFIELDKITREGISTRY_H
 #define QGSFIELDKITREGISTRY_H
 
+#include <memory>
 #include <QHash>
 #include <QString>
 #include <QObject>
+#include <QReadWriteLock>
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgsfieldformatter.h"
 
-#include <QReadWriteLock>
-
-class QgsFieldFormatter;
 class QgsVectorLayer;
 
 /**
