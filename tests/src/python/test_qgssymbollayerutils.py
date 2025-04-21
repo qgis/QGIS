@@ -1664,7 +1664,7 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
             categorizedStyle, catkey
         )
         self.assertTrue(okParse)
-        self.assertEqual(catExpression, '"Name" = \'Lake\'')
+        self.assertEqual(catExpression, "\"Name\" = 'Lake'")
         gradExpression, okParse = QgsSymbolLayerUtils.legendKeyToExpression(
             graduatedStyle, gradkey
         )
@@ -1679,7 +1679,7 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         self.assertTrue(okParse)
         self.assertEqual(
             nestedExpression,
-            'NOT(("Name" = \'Dam\') OR ("Name" = \'Lake\'))',
+            "NOT((\"Name\" = 'Dam') OR (\"Name\" = 'Lake'))",
         )
 
 
