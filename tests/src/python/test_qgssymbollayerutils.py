@@ -1655,17 +1655,17 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         graduatedStyle = """<qgis>\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" attr=\"Staff\" forceraster=\"0\" graduatedMethod=\"GraduatedColor\" type=\"graduatedSymbol\">\n<ranges>\n<range lower=\"1.000000000000000\" upper=\"2.000000000000000\" symbol=\"0\" uuid=\"{e7c76e0f-0f61-4b28-ba5c-78ae8e0028d6}\" label=\"1 - 2\" render=\"true\"/>\n<range lower=\"2.000000000000000\" upper=\"2.000000000000000\" symbol=\"1\" uuid=\"{71fea840-23d1-4fcd-b706-4b236e1cc814}\" label=\"2 - 2\" render=\"true\"/>\n<range lower=\"2.000000000000000\" upper=\"3.000000000000000\" symbol=\"2\" uuid=\"{b2693a6e-1752-4ad4-b641-eee6d0a030bd}\" label=\"2 - 3\" render=\"true\"/>\n<range lower=\"3.000000000000000\" upper=\"5.000000000000000\" symbol=\"3\" uuid=\"{70d1e0d8-012a-4187-900d-7fd17b4ab49a}\" label=\"3 - 5\" render=\"true\"/>\n<range lower=\"5.000000000000000\" upper=\"7.000000000000000\" symbol=\"4\" uuid=\"{07d7010c-d53a-423c-8d15-811553447b3e}\" label=\"5 - 7\" render=\"true\"/>\n</ranges>\n</renderer-v2>\n</qgis>\n"""
         nestkey = "{6a03fc3a-7a9b-4ad9-9a62-801c478e70e9}"
         nestedStyle = """<qgis>\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" forceraster=\"0\" type=\"mergedFeatureRenderer\">\n<renderer-v2 symbollevels=\"0\" referencescale=\"-1\" enableorderby=\"0\" forceraster=\"0\" type=\"RuleRenderer\">\n<rules key=\"{a16a507a-fa80-4545-bd69-74de0fff2332}\">\n<rule symbol=\"0\" key=\"{eb32d7a1-2c35-4918-986d-0f68f0817e1c}\" label=\"Dam\" filter=\"&quot;Name&quot; = 'Dam'\"/>\n<rule symbol=\"1\" key=\"{1af1b498-60f9-43db-9164-12729c9aa503}\" label=\"Lake\" filter=\"&quot;Name&quot; = 'Lake'\"/>\n<rule symbol=\"2\" key=\"{6a03fc3a-7a9b-4ad9-9a62-801c478e70e9}\" filter=\"ELSE\"/>\n</rules>\n</renderer-v2>\n</renderer-v2>\n</qgis>\n"""
-        ruleExpression,okParse = QgsSymbolLayerUtils.legendKeyToExpression(
+        ruleExpression, okParse = QgsSymbolLayerUtils.legendKeyToExpression(
             rulekey, ruelbasedXMLStyle
         )
         self.assertTrue(okParse)
         self.assertEqual(ruleExpression, "&quot;Value&quot; = 11")
-        catExpression,okParse = QgsSymbolLayerUtils.legendKeyToExpression(
+        catExpression, okParse = QgsSymbolLayerUtils.legendKeyToExpression(
             catkey, categorizedStyle
         )
         self.assertTrue(okParse)
         self.assertEqual(catExpression, "&quot;Name&quot; = 'Lake'")
-        gradExpression,okParse = QgsSymbolLayerUtils.legendKeyToExpression(
+        gradExpression, okParse = QgsSymbolLayerUtils.legendKeyToExpression(
             gradkey, graduatedStyle
         )
         self.assertTrue(okParse)
@@ -1673,7 +1673,7 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
             gradExpression,
             "(&quot;Staff&quot; >= 3.000000000000000) AND (&quot;Staff&quot; <= 5.000000000000000)",
         )
-        nestedExpression,okParse = QgsSymbolLayerUtils.legendKeyToExpression(
+        nestedExpression, okParse = QgsSymbolLayerUtils.legendKeyToExpression(
             nestkey, nestedStyle
         )
         self.assertTrue(okParse)
