@@ -35,9 +35,21 @@ commands)
 Execute a Python statement
 %End
 
+    static bool runFile( const QString &filename, const QString &messageOnError = QString() );
+%Docstring
+Execute a Python ``filename``, showing an error message if one occurred.
+
+:return: true if no error occurred
+%End
+
     static bool eval( const QString &command, QString &result /Out/ );
 %Docstring
 Eval a Python statement
+%End
+
+    static bool setArgv( const QStringList &arguments, const QString &messageOnError = QString() );
+%Docstring
+Set sys.argv
 %End
 
     static void setInstance( QgsPythonRunner *runner /Transfer/ );
@@ -56,8 +68,24 @@ Protected constructor: can be instantiated only from children
     virtual ~QgsPythonRunner();
 
     virtual bool runCommand( QString command, QString messageOnError = QString() ) = 0;
+%Docstring
+Runs the given statement.
+%End
+
+    virtual bool runFileCommand( const QString &filename, const QString &messageOnError = QString() ) = 0;
+%Docstring
+Runs the code from the given file.
+%End
 
     virtual bool evalCommand( QString command, QString &result ) = 0;
+%Docstring
+Evaluates the given expression, producing a result.
+%End
+
+    virtual bool setArgvCommand( const QStringList &arguments, const QString &messageOnError = QString() ) = 0;
+%Docstring
+Sets sys.argv to the given arguments.
+%End
 
 };
 
