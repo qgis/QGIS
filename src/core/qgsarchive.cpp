@@ -64,10 +64,7 @@ void QgsArchive::clear()
 
 bool QgsArchive::zip( const QString &filename )
 {
-  QTemporaryFile tmpFilePath( QDir::temp().absoluteFilePath( QStringLiteral( "qgis-project-XXXXXX.zip" ) ) );
-  tmpFilePath.open();
-  tmpFilePath.close();
-  const QString tempPath = tmpFilePath.fileName();
+  const QString tempPath( QDir::temp().absoluteFilePath( QStringLiteral( "qgis-project-XXXXXX.zip" ) ) );
 
   // zip content
   if ( ! QgsZipUtils::zip( tempPath, mFiles, true ) )
