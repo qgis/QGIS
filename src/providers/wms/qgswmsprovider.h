@@ -446,9 +446,9 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
     {
-        TileImage( const QRectF &r, const QImage &i, bool smooth )
+        TileImage( const QRect &r, const QImage &i, bool smooth )
           : rect( r ), img( i ), smooth( smooth ) {}
-        QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
+        QRect rect;  //!< Destination rectangle for a tile (in screen coordinates)
         QImage img;  //!< Cached tile to be drawn
         bool smooth; //!< Whether to use antialiasing/smooth transforms when rendering tile
     } TileImage;
