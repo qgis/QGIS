@@ -97,7 +97,7 @@ class GUI_EXPORT QgsConnectionsApiFetcher : public QObject
 
 /**
  * \ingroup gui
- * \brief The QgsQueryResultWidget class allows users to enter and run an SQL query on a
+ * \brief A widget which allows users to enter and run an SQL query on a
  * DB connection (an instance of QgsAbstractDatabaseProviderConnection).
  *
  * Query results are displayed in a table view.
@@ -249,16 +249,12 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
 
 /**
  * \ingroup gui
- * \brief The QgsQueryResultWidget class allows users to enter and run an SQL query on a
+ * \brief A panel widget which allows users to enter and run an SQL query on a
  * DB connection (an instance of QgsAbstractDatabaseProviderConnection).
  *
- * Query results are displayed in a table view.
- * Query execution and result fetching can be interrupted by pressing the "Stop" push button.
- *
- * The widget supports a few QueryWidgetMode modes that pre-configure the widget appearance to
- * be used in different contexts like when updating the SQL of an existing query layer.
- *
  * \note the ownership of the connection is transferred to the widget.
+ *
+ * \see QgsQueryResultWidget
  *
  * \since QGIS 3.22
  */

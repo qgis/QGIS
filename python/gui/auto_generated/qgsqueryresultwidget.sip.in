@@ -15,8 +15,8 @@
 class QgsQueryResultWidget : QWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsQueryResultWidget` class allows users to enter and run
-an SQL query on a DB connection (an instance of
+A widget which allows users to enter and run an SQL query on a DB
+connection (an instance of
 :py:class:`QgsAbstractDatabaseProviderConnection`).
 
 Query results are displayed in a table view. Query execution and result

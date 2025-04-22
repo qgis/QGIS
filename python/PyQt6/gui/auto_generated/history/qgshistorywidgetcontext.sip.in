@@ -50,7 +50,7 @@ Sets the parent history ``widget``.
 
     QgsHistoryWidget *historyWidget() const;
 %Docstring
-Returns the parent histroy widget.
+Returns the parent history widget.
 
 .. seealso:: :py:func:`setHistoryWidget`
 
