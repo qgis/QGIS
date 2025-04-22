@@ -301,11 +301,20 @@ QgsWmsProvider::~QgsWmsProvider()
 }
 
 //! Returns the destination extent in image coordinate of a tile image defined by its extent
-static QRectF destinationRect( const QgsRectangle &destinationExtent, const QRectF &tileImageExtent, int imagePixelWidth )
+static QRect destinationRect( const QgsRectangle &destinationExtent, const QRectF &tileImageExtent, int imagePixelWidth )
 {
-  double cr = destinationExtent.width() / imagePixelWidth;
+  const double mapUnitsPerPixel = destinationExtent.width() / imagePixelWidth;
 
-  return QRectF( ( tileImageExtent.left() - destinationExtent.xMinimum() ) / cr, ( destinationExtent.yMaximum() - tileImageExtent.bottom() ) / cr, tileImageExtent.width() / cr, tileImageExtent.height() / cr );
+  // note -- we round to exact pixel boundaries here, as we know that we'll always be drawing the
+  // tiles using a painter with a pixel-based image device. We always expand out the rect to the nearest
+  // pixel (instead of shrinking), in order to avoid any chance of visible gaps between tiles
+
+  const double left = std::floor( ( tileImageExtent.left() - destinationExtent.xMinimum() ) / mapUnitsPerPixel );
+  const double right = std::ceil( ( tileImageExtent.right() - destinationExtent.xMinimum() ) / mapUnitsPerPixel );
+  const double top = std::floor( ( destinationExtent.yMaximum() - tileImageExtent.bottom() ) / mapUnitsPerPixel );
+  const double bottom = std::ceil( ( destinationExtent.yMaximum() - tileImageExtent.top() ) / mapUnitsPerPixel );
+
+  return QRect( left, top, right - left, bottom - top );
 }
 
 QgsWmsProvider *QgsWmsProvider::clone() const
@@ -736,7 +745,7 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
     if ( !QgsTileCache::tile( r.url, localImage ) )
       continue;
 
-    QRectF dst = destinationRect( viewExtent, r.rect, imageWidth );
+    const QRect dst = destinationRect( viewExtent, r.rect, imageWidth );
     otherResTiles << TileImage( dst, localImage, false );
 
     // see if there are any missing rects that are completely covered by this tile
@@ -989,7 +998,7 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
           }
         }
 
-        const QRectF dst = destinationRect( effectiveViewExtent, r.rect, image->width() );
+        const QRect dst = destinationRect( effectiveViewExtent, r.rect, image->width() );
 
         // if image size is "close enough" to destination size, don't smooth it out. Instead try for pixel-perfect placement!
         bool disableSmoothing = mConverter || ( qgsDoubleNear( dst.width(), tm->tileWidth, 2 ) && qgsDoubleNear( dst.height(), tm->tileHeight, 2 ) );
@@ -4609,7 +4618,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
           mEffectiveViewExtent = initializeBufferedImage( mViewExtent, mSourceResolution, mImage );
         }
 
-        const QRectF dst = destinationRect( mEffectiveViewExtent, r, mImage->width() );
+        const QRect dst = destinationRect( mEffectiveViewExtent, r, mImage->width() );
 
         QPainter p( mImage );
         // if image size is "close enough" to destination size, don't smooth it out. Instead try for pixel-perfect placement!
