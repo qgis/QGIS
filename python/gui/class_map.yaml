@@ -3544,6 +3544,11 @@ QgsLabelObstacleSettingsWidget.setSettings: src/gui/labeling/qgslabelobstacleset
 QgsLabelObstacleSettingsWidget.settings: src/gui/labeling/qgslabelobstaclesettingswidget.h#L55
 QgsLabelObstacleSettingsWidget.updateDataDefinedProperties: src/gui/labeling/qgslabelobstaclesettingswidget.h#L59
 QgsLabelObstacleSettingsWidget: src/gui/labeling/qgslabelobstaclesettingswidget.h#L31
+QgsLabelRemoveDuplicatesSettingsWidget.setGeometryType: src/gui/labeling/qgslabelremoveduplicatesettingswidget.h#L57
+QgsLabelRemoveDuplicatesSettingsWidget.setSettings: src/gui/labeling/qgslabelremoveduplicatesettingswidget.h#L48
+QgsLabelRemoveDuplicatesSettingsWidget.settings: src/gui/labeling/qgslabelremoveduplicatesettingswidget.h#L55
+QgsLabelRemoveDuplicatesSettingsWidget.updateDataDefinedProperties: src/gui/labeling/qgslabelremoveduplicatesettingswidget.h#L59
+QgsLabelRemoveDuplicatesSettingsWidget: src/gui/labeling/qgslabelremoveduplicatesettingswidget.h#L31
 QgsLabelSettingsWidgetBase.auxiliaryFieldCreated: src/gui/labeling/qgslabelsettingswidgetbase.h#L101
 QgsLabelSettingsWidgetBase.changed: src/gui/labeling/qgslabelsettingswidgetbase.h#L96
 QgsLabelSettingsWidgetBase.context: src/gui/labeling/qgslabelsettingswidgetbase.h#L60
