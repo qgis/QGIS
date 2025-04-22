@@ -811,7 +811,7 @@ static QgsRectangle initializeBufferedImage( const QgsRectangle &viewExtent, dou
   return QgsRectangle( viewExtent.xMinimum() - 2 * resolution, viewExtent.yMinimum() - 2 * resolution, viewExtent.xMinimum() + ( image->width() - 2 ) * resolution, viewExtent.yMinimum() + ( image->height() - 2 ) * resolution );
 }
 
-QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRectangle &effectiveViewExtent, double &sourceResolution, QgsRasterBlockFeedback *feedback )
+QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRectangle &effectiveViewExtent, double &sourceResolution, QgsRasterBlockFeedback *feedback )
 {
   if ( qApp && qApp->thread() == QThread::currentThread() )
   {
@@ -820,9 +820,11 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
 
   // compose the URL query string for the WMS server.
 
-  QImage *image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
-  image->fill( 0 );
+  QImage image( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
+  if ( image.isNull() )
+    return image;
 
+  image.fill( 0 );
 
   const QSize maxTileSize { maximumTileSize() };
 
@@ -834,7 +836,7 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
     QUrl url = createRequestUrlWMS( viewExtent, pixelWidth, pixelHeight );
 
     // cache some details for if the user wants to do an identifyAsHtml() later
-    QgsWmsImageDownloadHandler handler( dataSourceUri(), url, mSettings.authorization(), image, feedback );
+    QgsWmsImageDownloadHandler handler( dataSourceUri(), url, mSettings.authorization(), &image, feedback );
     handler.downloadBlocking();
   }
   else
@@ -994,11 +996,11 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
           if ( sourceResolution < 0 )
           {
             sourceResolution = r.rect.width() / localImage.width();
-            effectiveViewExtent = initializeBufferedImage( viewExtent, sourceResolution, image );
+            effectiveViewExtent = initializeBufferedImage( viewExtent, sourceResolution, &image );
           }
         }
 
-        const QRect dst = destinationRect( effectiveViewExtent, r.rect, image->width() );
+        const QRect dst = destinationRect( effectiveViewExtent, r.rect, image.width() );
 
         // if image size is "close enough" to destination size, don't smooth it out. Instead try for pixel-perfect placement!
         bool disableSmoothing = mConverter || ( qgsDoubleNear( dst.width(), tm->tileWidth, 2 ) && qgsDoubleNear( dst.height(), tm->tileHeight, 2 ) );
@@ -1021,7 +1023,7 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
 
     int t0 = t.elapsed();
     // draw other res tiles if preview
-    QPainter p( image );
+    QPainter p( &image );
     if ( feedback && feedback->isPreviewOnly() && missing.count() > 0 )
     {
       // some tiles are still missing, so let's see if we have any cached tiles
@@ -1038,9 +1040,9 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
       // first we check lower resolution tiles: one level back, then two levels back (if there is still some area not covered),
       // finally (in the worst case we use one level higher resolution tiles). This heuristic should give
       // good overviews while not spending too much time drawing cached tiles from resolutions far away.
-      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, 1, lowerResTiles, feedback );
-      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, 2, lowerResTiles2, feedback );
-      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, -1, higherResTiles, feedback );
+      fetchOtherResTiles( tileMode, effectiveViewExtent, pixelWidth, missing, tm->tres, 1, lowerResTiles, feedback );
+      fetchOtherResTiles( tileMode, effectiveViewExtent, pixelWidth, missing, tm->tres, 2, lowerResTiles2, feedback );
+      fetchOtherResTiles( tileMode, effectiveViewExtent, pixelWidth, missing, tm->tres, -1, higherResTiles, feedback );
 
       if ( feedback && feedback->isCanceled() )
       {
@@ -1120,7 +1122,7 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
         mSettings.authorization(),
         mTileReqNo,
         requestsFinal,
-        image,
+        &image,
         effectiveViewExtent,
         sourceResolution,
         mSettings.mSmoothPixmapTransform,
@@ -1158,37 +1160,37 @@ bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle const &viewExtent, int 
   // TODO: optimize to avoid writing to QImage
   QgsRectangle effectiveExtent;
   double sourceResolution = -1;
-  std::unique_ptr<QImage> image( draw( viewExtent, pixelWidth, pixelHeight, effectiveExtent, sourceResolution, feedback ) );
-  if ( !image ) // should not happen
+  const QImage image( draw( viewExtent, pixelWidth, pixelHeight, effectiveExtent, sourceResolution, feedback ) );
+  if ( image.isNull() ) // should not happen
   {
     QgsMessageLog::logMessage( tr( "image is NULL" ), tr( "WMS" ) );
     return false;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "image height = %1 bytesPerLine = %2" ).arg( image->height() ).arg( image->bytesPerLine() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "image height = %1 bytesPerLine = %2" ).arg( image.height() ).arg( image.bytesPerLine() ), 3 );
   size_t pixelsCount;
   if ( mConverter && mProviderResamplingEnabled )
-    pixelsCount = static_cast<size_t>( image->width() ) * image->height();
+    pixelsCount = static_cast<size_t>( image.width() ) * image.height();
   else
     pixelsCount = static_cast<size_t>( pixelWidth ) * pixelHeight;
 
   size_t myExpectedSize = pixelsCount * 4;
-  size_t myImageSize = image->height() * image->bytesPerLine();
+  size_t myImageSize = image.height() * image.bytesPerLine();
   if ( myExpectedSize != myImageSize ) // should not happen
   {
     QgsMessageLog::logMessage( tr( "unexpected image size" ), tr( "WMS" ) );
     return false;
   }
 
-  uchar *ptr = image->bits();
+  const uchar *ptr = image.bits();
   if ( ptr )
   {
     // If image is too large, ptr can be NULL
-    if ( mConverter && ( image->format() == QImage::Format_ARGB32 || image->format() == QImage::Format_RGB32 ) )
+    if ( mConverter && ( image.format() == QImage::Format_ARGB32 || image.format() == QImage::Format_RGB32 ) )
     {
       std::vector<float> data;
       data.resize( pixelsCount );
-      const QRgb *inputPtr = reinterpret_cast<const QRgb *>( image->constBits() );
+      const QRgb *inputPtr = reinterpret_cast<const QRgb *>( image.constBits() );
       float *outputPtr = data.data();
       for ( size_t i = 0; i < pixelsCount; ++i )
       {
@@ -1207,7 +1209,7 @@ bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle const &viewExtent, int 
         else
           alg = QgsGdalUtils::gdalResamplingAlgorithm( mZoomedOutResamplingMethod );
 
-        gdal::dataset_unique_ptr gdalDsInput = QgsGdalUtils::blockToSingleBandMemoryDataset( image->width(), image->height(), effectiveExtent, data.data(), GDT_Float32 );
+        gdal::dataset_unique_ptr gdalDsInput = QgsGdalUtils::blockToSingleBandMemoryDataset( image.width(), image.height(), effectiveExtent, data.data(), GDT_Float32 );
         gdal::dataset_unique_ptr gdalDsOutput = QgsGdalUtils::blockToSingleBandMemoryDataset( pixelWidth, pixelHeight, viewExtent, block, GDT_Float32 );
         return QgsGdalUtils::resampleSingleBandRaster( gdalDsInput.get(), gdalDsOutput.get(), alg, nullptr );
       }
