@@ -308,7 +308,7 @@ void QgsKMeansClusteringAlgorithm::initAdditionalCenters( std::vector<Feature> &
     distances[j] = points[j].point.sqrDist( centers[0] );
   }
 
-  for ( std::size_t j = 1; j < initializedCenters; j++ )
+  for ( int j = 1; j < initializedCenters; j++ )
   {
     distances[j] = -1;
   }
