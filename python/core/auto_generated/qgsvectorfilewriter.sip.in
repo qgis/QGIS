@@ -678,7 +678,8 @@ from a specified ``renderer``.
 
     QMap<int, int> sourceFieldIndexToWriterFieldIndex() const;
 %Docstring
-Returns the map of original source field index to output file field index.
+Returns the map of original source field index to output file field
+index.
 
 .. versionadded:: 3.44
 %End
