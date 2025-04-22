@@ -72,7 +72,7 @@ QString QgsKMeansClusteringAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Calculates the 2D distance based k-means cluster number for each input feature.\n\n"
                       "If input geometries are lines or polygons, the clustering is based on the centroid of the feature.\n\n"
-                      "Intialization of the cluster centers can be done using either the farthest points method or the k-means++ method.");
+                      "Intialization of the cluster centers can be done using either the farthest points method or the k-means++ method." );
 }
 
 QgsKMeansClusteringAlgorithm *QgsKMeansClusteringAlgorithm::createInstance() const
@@ -286,17 +286,17 @@ void QgsKMeansClusteringAlgorithm::initCentersPlusPlus( std::vector<Feature> &po
   }
 
   // randomly select the first point
-  std::random_device rd;  
-  std::mt19937 gen(rd()); 
+  std::random_device rd;
+  std::mt19937 gen( rd() );
   // uniform distribution between 0 and n-1
-  std::uniform_int_distribution<> distrib(0, n - 1);
-  int p1 = distrib(gen);
+  std::uniform_int_distribution<> distrib( 0, n - 1 );
+  int p1 = distrib( gen );
 
   centers[0] = points[p1].point;
   initAdditionalCenters( points, centers, k, 1 );
 }
 
-void QgsKMeansClusteringAlgorithm::initAdditionalCenters( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, const int k, const int initializedCenters)
+void QgsKMeansClusteringAlgorithm::initAdditionalCenters( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, const int k, const int initializedCenters )
 {
   const std::size_t n = points.size();
   // array of minimum distance to a point from accepted cluster centers
