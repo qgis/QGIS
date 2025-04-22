@@ -13240,10 +13240,21 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
 
   int i = 1;
   const QList<QString> usedCanvasNames = QgsProject::instance()->viewsManager()->get3DViewsNames();
-  QString uniqueName = name.isEmpty() ? tr( "3D Map %1" ).arg( i ) : name;
+  QString baseName;
+  switch ( sceneMode )
+  {
+    case Qgis::SceneMode::Local:
+      baseName = tr( "3D Map %1" );
+      break;
+    case Qgis::SceneMode::Globe:
+      baseName = tr( "3D Globe %1" );
+      break;
+  }
+
+  QString uniqueName = name.isEmpty() ? baseName.arg( i ) : name;
   while ( usedCanvasNames.contains( uniqueName ) )
   {
-    uniqueName = tr( "3D Map %1" ).arg( ++i );
+    uniqueName = baseName.arg( ++i );
   }
 
   Qgs3DMapCanvasWidget *canvasWidget = createNew3DMapCanvasDock( uniqueName, false );
