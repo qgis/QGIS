@@ -244,9 +244,16 @@ void QgsCameraController::setCameraPose( const QgsCameraPose &camPose, bool forc
 QDomElement QgsCameraController::writeXml( QDomDocument &doc ) const
 {
   QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
-  elemCamera.setAttribute( QStringLiteral( "x" ), mCameraPose.centerPoint().x() );
-  elemCamera.setAttribute( QStringLiteral( "y" ), mCameraPose.centerPoint().z() );
-  elemCamera.setAttribute( QStringLiteral( "elev" ), mCameraPose.centerPoint().y() );
+  QgsVector3D centerPoint;
+  if ( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Local )
+    centerPoint = mCameraPose.centerPoint();
+  else if ( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
+    // Save center point in map coordinates, since our world origin won't be
+    // the same on loading
+    centerPoint = mCameraPose.centerPoint() + mOrigin;
+  elemCamera.setAttribute( QStringLiteral( "x" ), centerPoint.x() );
+  elemCamera.setAttribute( QStringLiteral( "y" ), centerPoint.z() );
+  elemCamera.setAttribute( QStringLiteral( "elev" ), centerPoint.y() );
   elemCamera.setAttribute( QStringLiteral( "dist" ), mCameraPose.distanceFromCenterPoint() );
   elemCamera.setAttribute( QStringLiteral( "pitch" ), mCameraPose.pitchAngle() );
   elemCamera.setAttribute( QStringLiteral( "yaw" ), mCameraPose.headingAngle() );
@@ -261,7 +268,10 @@ void QgsCameraController::readXml( const QDomElement &elem )
   const float dist = elem.attribute( QStringLiteral( "dist" ) ).toFloat();
   const float pitch = elem.attribute( QStringLiteral( "pitch" ) ).toFloat();
   const float yaw = elem.attribute( QStringLiteral( "yaw" ) ).toFloat();
-  setLookingAtPoint( QgsVector3D( x, elev, y ), dist, pitch, yaw );
+  QgsVector3D centerPoint( x, elev, y );
+  if ( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
+    centerPoint = centerPoint - mOrigin;
+  setLookingAtPoint( centerPoint, dist, pitch, yaw );
 }
 
 double QgsCameraController::sampleDepthBuffer( int px, int py )
