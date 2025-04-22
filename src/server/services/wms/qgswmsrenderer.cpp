@@ -3560,7 +3560,17 @@ namespace QgsWms
           QString errorMsg;
           if ( !filterXml.setContent( filter.mFilter, true, &errorMsg ) )
           {
-            throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, QStringLiteral( "Filter string rejected. Error message: %1. The XML string was: %2" ).arg( errorMsg, filter.mFilter ) );
+            // ugly fix to work with Qt6 when namespace is missing. This trick is not needed for Qt5 as it is more tolerant in this case.
+            bool shouldThrow = true;
+            if ( errorMsg.contains( "Namespace prefix \'fes\' not declared" ) )
+            {
+              QString filtStr = filter.mFilter;
+              filtStr.replace( "<fes:Filter", "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\"" );
+              shouldThrow = !filterXml.setContent( filtStr, true, &errorMsg );
+            }
+
+            if ( shouldThrow )
+              throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, QStringLiteral( "Filter string rejected. Error message: %1. The XML string was: %2" ).arg( errorMsg, filter.mFilter ) );
           }
           QDomElement filterElem = filterXml.firstChildElement();
           std::unique_ptr<QgsExpression> filterExp( QgsOgcUtils::expressionFromOgcFilter( filterElem, filter.mVersion, filteredLayer ) );
