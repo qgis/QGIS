@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmkmeansclustering.h"
 #include <unordered_map>
+#include <random>
 
 ///@cond PRIVATE
 
@@ -52,6 +53,11 @@ void QgsKMeansClusteringAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CLUSTERS" ), QObject::tr( "Number of clusters" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1 ) );
 
+  QStringList initializationMethods;
+  initializationMethods << QObject::tr( "Farthest points" )
+                        << QObject::tr( "K-means++" );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), initializationMethods, false, 0, false ) );
+
   auto fieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Cluster field name" ), QStringLiteral( "CLUSTER_ID" ) );
   fieldNameParam->setFlags( fieldNameParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( fieldNameParam.release() );
@@ -65,7 +71,8 @@ void QgsKMeansClusteringAlgorithm::initAlgorithm( const QVariantMap & )
 QString QgsKMeansClusteringAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Calculates the 2D distance based k-means cluster number for each input feature.\n\n"
-                      "If input geometries are lines or polygons, the clustering is based on the centroid of the feature." );
+                      "If input geometries are lines or polygons, the clustering is based on the centroid of the feature.\n\n"
+                      "Intialization of the cluster centers can be done using either the farthest points method or the k-means++ method.");
 }
 
 QgsKMeansClusteringAlgorithm *QgsKMeansClusteringAlgorithm::createInstance() const
@@ -80,6 +87,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   int k = parameterAsInt( parameters, QStringLiteral( "CLUSTERS" ), context );
+  int initializationMethod = parameterAsInt( parameters, QStringLiteral( "METHOD" ), context );
 
   QgsFields outputFields = source->fields();
   QgsFields newFields;
@@ -148,8 +156,18 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
     // cluster centers
     std::vector<QgsPointXY> centers( k );
+    switch ( initializationMethod )
+    {
+      case 0: // farthest points
+        initCentersFarthestPoints( clusterFeatures, centers, k, feedback );
+        break;
+      case 1: // k-means++
+        initCentersPlusPlus( clusterFeatures, centers, k );
+        break;
+      default:
+        break;
+    }
 
-    initClusters( clusterFeatures, centers, k, feedback );
     calculateKMeans( clusterFeatures, centers, k, feedback );
   }
 
@@ -198,7 +216,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
 // ported from https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/lwkmeans.c
 
-void QgsKMeansClusteringAlgorithm::initClusters( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, const int k, QgsProcessingFeedback *feedback )
+void QgsKMeansClusteringAlgorithm::initCentersFarthestPoints( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, const int k, QgsProcessingFeedback *feedback )
 {
   const std::size_t n = points.size();
   if ( n == 0 )
@@ -251,50 +269,81 @@ void QgsKMeansClusteringAlgorithm::initClusters( std::vector<Feature> &points, s
   centers[1] = points[p2].point;
 
   if ( k > 2 )
-  {
-    // array of minimum distance to a point from accepted cluster centers
-    std::vector<double> distances( n );
+    initAdditionalCenters( points, centers, k, 2 );
+}
 
-    // initialize array with distance to first object
+void QgsKMeansClusteringAlgorithm::initCentersPlusPlus( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, const int k )
+{
+  const std::size_t n = points.size();
+  if ( n == 0 )
+    return;
+
+  if ( n == 1 )
+  {
+    for ( int i = 0; i < k; i++ )
+      centers[i] = points[0].point;
+    return;
+  }
+
+  // randomly select the first point
+  std::random_device rd;  
+  std::mt19937 gen(rd()); 
+  // uniform distribution between 0 and n-1
+  std::uniform_int_distribution<> distrib(0, n - 1);
+  int p1 = distrib(gen);
+
+  centers[0] = points[p1].point;
+  initAdditionalCenters( points, centers, k, 1 );
+}
+
+void QgsKMeansClusteringAlgorithm::initAdditionalCenters( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, const int k, const int initializedCenters)
+{
+  const std::size_t n = points.size();
+  // array of minimum distance to a point from accepted cluster centers
+  std::vector<double> distances( n );
+
+  // initialize array with distance to first object
+  for ( std::size_t j = 0; j < n; j++ )
+  {
+    distances[j] = points[j].point.sqrDist( centers[0] );
+  }
+
+  for ( std::size_t j = 1; j < initializedCenters; j++ )
+  {
+    distances[j] = -1;
+  }
+
+  // loop i on clusters, initializedCenters
+  for ( int i = initializedCenters; i < k; i++ )
+  {
+    std::size_t candidateCenter = 0;
+    double maxDistance = std::numeric_limits<double>::lowest();
+
+    // loop j on points
     for ( std::size_t j = 0; j < n; j++ )
     {
-      distances[j] = points[j].point.sqrDist( centers[0] );
-    }
-    distances[p1] = -1;
-    distances[p2] = -1;
+      // accepted clusters are already marked with distance = -1
+      if ( distances[j] < 0 )
+        continue;
 
-    // loop i on clusters, skip 0 and 1 as found already
-    for ( int i = 2; i < k; i++ )
-    {
-      std::size_t candidateCenter = 0;
-      double maxDistance = std::numeric_limits<double>::lowest();
+      // update minimal distance with previously accepted cluster
+      distances[j] = std::min( points[j].point.sqrDist( centers[i - 1] ), distances[j] );
 
-      // loop j on points
-      for ( std::size_t j = 0; j < n; j++ )
+      // greedily take a point that's farthest from any of accepted clusters
+      if ( distances[j] > maxDistance )
       {
-        // accepted clusters are already marked with distance = -1
-        if ( distances[j] < 0 )
-          continue;
-
-        // update minimal distance with previously accepted cluster
-        distances[j] = std::min( points[j].point.sqrDist( centers[i - 1] ), distances[j] );
-
-        // greedily take a point that's farthest from any of accepted clusters
-        if ( distances[j] > maxDistance )
-        {
-          candidateCenter = j;
-          maxDistance = distances[j];
-        }
+        candidateCenter = j;
+        maxDistance = distances[j];
       }
-
-      // checked earlier by counting entries on input, just in case
-      Q_ASSERT( maxDistance >= 0 );
-
-      // accept candidate to centers
-      distances[candidateCenter] = -1;
-      // copy the point coordinates into the initial centers array
-      centers[i] = points[candidateCenter].point;
     }
+
+    // checked earlier by counting entries on input, just in case
+    Q_ASSERT( maxDistance >= 0 );
+
+    // accept candidate to centers
+    distances[candidateCenter] = -1;
+    // copy the point coordinates into the initial centers array
+    centers[i] = points[candidateCenter].point;
   }
 }
 

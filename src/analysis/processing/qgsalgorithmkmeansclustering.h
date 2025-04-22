@@ -57,7 +57,9 @@ class ANALYSIS_EXPORT QgsKMeansClusteringAlgorithm : public QgsProcessingAlgorit
         int cluster = -1;
     };
 
-    static void initClusters( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, int k, QgsProcessingFeedback *feedback );
+    static void initCentersFarthestPoints( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, int k, QgsProcessingFeedback *feedback );
+    static void initCentersPlusPlus( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, const int k );
+    static void initAdditionalCenters( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, const int k, const int initializedCenters);
     static void calculateKMeans( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, int k, QgsProcessingFeedback *feedback );
     static void findNearest( std::vector<Feature> &points, const std::vector<QgsPointXY> &centers, int k, bool &changed );
     static void updateMeans( const std::vector<Feature> &points, std::vector<QgsPointXY> &centers, std::vector<uint> &weights, int k );
