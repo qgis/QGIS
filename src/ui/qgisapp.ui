@@ -3399,6 +3399,10 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
   </action>
   <action name="mActionQueryHistory">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconQueryHistory.svg</normaloff>:/images/themes/default/mIconQueryHistory.svg</iconset>
+   </property>
    <property name="text">
     <string>Query History…</string>
    </property>

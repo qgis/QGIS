@@ -210,6 +210,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconQueryHistory.svg</normaloff>:/images/themes/default/mIconQueryHistory.svg</iconset>
+   </property>
    <property name="text">
     <string>History</string>
    </property>
