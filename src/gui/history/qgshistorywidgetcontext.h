@@ -56,7 +56,7 @@ class GUI_EXPORT QgsHistoryWidgetContext
     void setHistoryWidget( QgsHistoryWidget *widget );
 
     /**
-     * Returns the parent histroy widget.
+     * Returns the parent history widget.
      *
      * \see setHistoryWidget()
      * \since QGIS 3.44
