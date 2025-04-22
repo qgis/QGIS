@@ -116,6 +116,7 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     void nativeAlgsRasterSize();
 
     void defineProjection();
+    void checkValidity();
 
   private:
     QString mPointLayerPath;
@@ -2353,6 +2354,64 @@ void TestQgsProcessingAlgsPt2::defineProjection()
   QVERIFY( prjFile.exists() );
   QFile qpjFile( tmpPath.filePath( QStringLiteral( "points.qpj" ) ) );
   QVERIFY( !qpjFile.exists() );
+}
+
+void TestQgsProcessingAlgsPt2::checkValidity()
+{
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:4326&field=int_f:int" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON ((0 0, 2 2, 0 2, 2 0, 0 0))" ) ) );
+  QVERIFY( f.isValid() );
+  layer->dataProvider()->addFeature( f );
+
+  f.setAttributes( QgsAttributes() << 2 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((1.1 1.1, 1.1 2.1, 2.1 2.1, 2.1 1.1, 1.1 1.1))" ) ) );
+  QVERIFY( f.isValid() );
+  layer->dataProvider()->addFeature( f );
+  QCOMPARE( layer->featureCount(), 2 );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkvalidity" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT_LAYER" ), QVariant::fromValue( layer.get() ) );
+  parameters.insert( QStringLiteral( "VALID_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "INVALID_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "ERROR_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  // QGIS method
+  parameters.insert( QStringLiteral( "METHOD" ), 1 );
+
+  bool ok = false;
+  auto context = std::make_unique<QgsProcessingContext>();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsVectorLayer *invalidLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "INVALID_OUTPUT" ) ).toString() ) );
+  QCOMPARE( invalidLayer->fields().at( invalidLayer->fields().size() - 1 ).name(), QStringLiteral( "_errors" ) );
+  QCOMPARE( invalidLayer->featureCount(), 1 );
+  QgsFeatureIterator it = invalidLayer->getFeatures();
+  it.nextFeature( f );
+  QCOMPARE( f.attributes(), QgsAttributes() << 1 << QStringLiteral( "segments 0 and 2 of line 0 intersect at 1, 1" ) );
+
+  // GEOS method
+  parameters.insert( QStringLiteral( "METHOD" ), 2 );
+
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  invalidLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "INVALID_OUTPUT" ) ).toString() ) );
+  QCOMPARE( invalidLayer->fields().at( invalidLayer->fields().size() - 1 ).name(), QStringLiteral( "_errors" ) );
+  QCOMPARE( invalidLayer->featureCount(), 1 );
+  it = invalidLayer->getFeatures();
+  it.nextFeature( f );
+  QCOMPARE( f.attributes(), QgsAttributes() << 1 << QStringLiteral( "Self-intersection" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )

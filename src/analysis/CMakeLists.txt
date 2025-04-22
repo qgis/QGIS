@@ -63,6 +63,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcentroid.cpp
   processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
+  processing/qgsalgorithmcheckvalidity.cpp
   processing/qgsalgorithmfixgeometryduplicatenodes.cpp
   processing/qgsalgorithmfixgeometrymultipart.cpp
   processing/qgsalgorithmfixgeometryoverlap.cpp
