@@ -367,7 +367,7 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     //! In case of MBTiles layer, setup capabilities from its metadata
     bool setupMBTilesCapabilities( const QString &uri );
 
-    QImage *draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRectangle &effectiveExtent, double &sourceResolution, QgsRasterBlockFeedback *feedback );
+    QImage draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRectangle &effectiveExtent, double &sourceResolution, QgsRasterBlockFeedback *feedback );
 
     /**
      * Try to get best extent for the layer in given CRS. Returns true on success, false otherwise (layer not found, invalid CRS, transform failed)
