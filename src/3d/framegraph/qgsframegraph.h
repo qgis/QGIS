@@ -44,13 +44,13 @@ class QgsCameraController;
 class QgsRectangle;
 class QgsPostprocessingEntity;
 class QgsAmbientOcclusionRenderEntity;
-class QgsPreviewQuad;
 class QgsAmbientOcclusionBlurEntity;
 class QgsAbstractRenderView;
 class QgsForwardRenderView;
 class QgsShadowRenderView;
 class QgsDepthRenderView;
 class QgsShadowSettings;
+class QgsDebugTextureEntity;
 
 #define SIP_NO_FILE
 
@@ -81,11 +81,9 @@ class QgsFrameGraph : public Qt3DCore::QEntity
      */
     Qt3DRender::QTexture2D *blurredAmbientOcclusionFactorMap() { return mAmbientOcclusionBlurTexture; }
 
-    //! Returns a layer object used to indicate that an entity is to be rendered during the preview textures rendering pass
-    Qt3DRender::QLayer *previewLayer() { return mPreviewLayer; }
-
     //! Returns the main camera
     Qt3DRender::QCamera *mainCamera() { return mMainCamera; }
+
     //! Returns the postprocessing entity
     QgsPostprocessingEntity *postprocessingEntity() { return mPostprocessingEntity; }
 
@@ -151,15 +149,9 @@ class QgsFrameGraph : public Qt3DCore::QEntity
 
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
-    //! Adds an preview entity that shows a texture in real time for debugging purposes
-    QgsPreviewQuad *addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters = QVector<Qt3DRender::QParameter *>() );
 
     //! Sets eye dome lighting shading related settings
     void setupEyeDomeLighting( bool enabled, double strength, int distance );
-    //! Sets the shadow map debugging view port
-    void setupShadowMapDebugging( bool enabled, Qt::Corner corner, double size );
-    //! Sets the depth map debugging view port
-    void setupDepthMapDebugging( bool enabled, Qt::Corner corner, double size );
     //! Sets the size of the buffers used for rendering
     void setSize( QSize s );
 
@@ -207,10 +199,11 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     /**
      * Registers a new the render view \a renderView with name \a name.
      *
+     * \a topNode is where the new renderview will be attached to. If nullptr then it will be attached to the main viewport.
      * Will take ownership of the renderView.
      * \since QGIS 3.44
      */
-    bool registerRenderView( std::unique_ptr<QgsAbstractRenderView> renderView, const QString &name );
+    bool registerRenderView( std::unique_ptr<QgsAbstractRenderView> renderView, const QString &name, Qt3DRender::QFrameGraphNode *topNode = nullptr );
 
     /**
      * Unregisters the render view named \a name, if any
@@ -260,10 +253,23 @@ class QgsFrameGraph : public Qt3DCore::QEntity
      */
     void updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources );
 
+    /**
+     * Updates settings for shadows debug map
+     * \since QGIS 3.44
+     */
+    void updateDebugShadowMapSettings( const Qgs3DMapSettings &settings );
+
+    /**
+     * Updates settings for depth debug map
+     * \since QGIS 3.44
+     */
+    void updateDebugDepthMapSettings( const Qgs3DMapSettings &settings );
+
     static const QString FORWARD_RENDERVIEW;
     static const QString SHADOW_RENDERVIEW;
     static const QString AXIS3D_RENDERVIEW;
     static const QString DEPTH_RENDERVIEW;
+    static const QString DEBUG_RENDERVIEW;
 
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
@@ -312,14 +318,10 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     double mEyeDomeLightingStrength = 1000.0;
     int mEyeDomeLightingDistance = 1;
 
-    QgsPreviewQuad *mDebugShadowMapPreviewQuad = nullptr;
-    QgsPreviewQuad *mDebugDepthMapPreviewQuad = nullptr;
-
     QVector3D mLightDirection = QVector3D( 0.0, -1.0f, 0.0f );
 
     Qt3DCore::QEntity *mRootEntity = nullptr;
 
-    Qt3DRender::QLayer *mPreviewLayer = nullptr;
     Qt3DRender::QLayer *mRubberBandsLayer = nullptr;
 
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
@@ -328,11 +330,14 @@ class QgsFrameGraph : public Qt3DCore::QEntity
 
     Qt3DCore::QEntity *mRubberBandsRootEntity = nullptr;
 
-    QVector<QgsPreviewQuad *> mPreviewQuads;
+    //! shadow texture debugging
+    QgsDebugTextureEntity *mShadowTextureDebugging = nullptr;
+    //! depth texture debugging
+    QgsDebugTextureEntity *mDepthTextureDebugging = nullptr;
 
     void constructShadowRenderPass();
     void constructForwardRenderPass();
-    Qt3DRender::QFrameGraphNode *constructTexturesPreviewPass();
+    void constructDebugTexturePass( Qt3DRender::QFrameGraphNode *topNode = nullptr );
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
     void constructDepthRenderPass();
     Qt3DRender::QFrameGraphNode *constructAmbientOcclusionRenderPass();

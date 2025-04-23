@@ -36,7 +36,6 @@
 #include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QViewport>
-#include "qgsabstractrenderview.h"
 #include "qgsshadowrenderview.h"
 #include "qgsforwardrenderview.h"
 

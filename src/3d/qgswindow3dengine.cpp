@@ -16,13 +16,14 @@
 #include "qgswindow3dengine.h"
 #include "moc_qgswindow3dengine.cpp"
 
+#include "qgsframegraph.h"
+
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 
 #include "qgsabstractrenderview.h"
 #include "qgs3dmapcanvas.h"
 
-#include "qgsframegraph.h"
 #include "qgsshadowrenderview.h"
 #include "qgsforwardrenderview.h"
 
