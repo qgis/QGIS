@@ -214,6 +214,9 @@ void QgsColorButton::mousePressEvent( QMouseEvent *e )
 
 bool QgsColorButton::colorFromMimeData( const QMimeData *mimeData, QColor &resultColor )
 {
+  if ( !mimeData )
+    return false;
+
   bool hasAlpha = false;
   QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( mimeData, hasAlpha );
 
