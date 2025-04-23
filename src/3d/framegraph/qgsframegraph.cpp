@@ -404,10 +404,7 @@ bool QgsFrameGraph::registerRenderView( std::unique_ptr<QgsAbstractRenderView> r
   if ( mRenderViewMap.find( name ) == mRenderViewMap.end() )
   {
     mRenderViewMap[name] = std::move( renderView );
-    if ( topNode )
-      mRenderViewMap[name]->topGraphNode()->setParent( topNode );
-    else
-      mRenderViewMap[name]->topGraphNode()->setParent( mMainViewPort );
+    mRenderViewMap[name]->topGraphNode()->setParent( topNode ? topNode : mMainViewPort );
     mRenderViewMap[name]->updateWindowResize( mSize.width(), mSize.height() );
     out = true;
   }
