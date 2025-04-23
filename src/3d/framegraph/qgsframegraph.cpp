@@ -484,8 +484,9 @@ void QgsFrameGraph::updateDebugShadowMapSettings( const Qgs3DMapSettings &settin
 
   if ( mShadowTextureDebugging )
   {
+    mShadowTextureDebugging->setEnabled( settings.debugShadowMapEnabled() );
     if ( settings.debugShadowMapEnabled() )
-      mShadowTextureDebugging->onSettingsChanged( settings.debugShadowMapEnabled(), settings.debugShadowMapCorner(), settings.debugShadowMapSize() );
+      mShadowTextureDebugging->setPosition( settings.debugShadowMapCorner(), settings.debugShadowMapSize() );
     else
     {
       delete mShadowTextureDebugging;
@@ -507,8 +508,9 @@ void QgsFrameGraph::updateDebugDepthMapSettings( const Qgs3DMapSettings &setting
 
   if ( mDepthTextureDebugging )
   {
+    mDepthTextureDebugging->setEnabled( settings.debugDepthMapEnabled() );
     if ( settings.debugDepthMapEnabled() )
-      mDepthTextureDebugging->onSettingsChanged( settings.debugDepthMapEnabled(), settings.debugDepthMapCorner(), settings.debugDepthMapSize() );
+      mDepthTextureDebugging->setPosition( settings.debugDepthMapCorner(), settings.debugDepthMapSize() );
     else
     {
       delete mDepthTextureDebugging;
