@@ -60,10 +60,14 @@ class TestQgsTiles(QgisTestCase):
         self.assertEqual(range.startRow(), 3)
         self.assertEqual(range.endRow(), 4)
         self.assertTrue(range.isValid())
+        self.assertEqual(range.count(), 4)
+        range = QgsTileRange(1, 10, 3, 6)
+        self.assertEqual(range.count(), 40)
 
         # invalid range
         range = QgsTileRange()
         self.assertFalse(range.isValid())
+        self.assertEqual(range.count(), 0)
 
     def testQgsTileMatrix(self):
         matrix = QgsTileMatrix.fromCustomDef(

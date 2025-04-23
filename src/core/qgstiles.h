@@ -114,6 +114,13 @@ class CORE_EXPORT QgsTileRange
     //! Returns index of the last row in the range
     int endRow() const { return mEndRow; }
 
+    /**
+     * Returns the total number of tiles in the range.
+     *
+     * \since QGIS 3.44
+     */
+    int count() const { return isValid() ? ( mEndRow - mStartRow + 1 ) * ( mEndColumn - mStartColumn + 1 ) : 0; }
+
   private:
     int mStartColumn = -1;
     int mEndColumn = -1;
