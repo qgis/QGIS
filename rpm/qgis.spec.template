@@ -56,11 +56,7 @@ BuildRequires:  desktop-file-utils
 
 # Geo stuff
 BuildRequires:  gdal-devel
-%if 0%{?fedora} >= 37
 BuildRequires:  python3-gdal
-%else
-BuildRequires:  gdal-python3
-%endif
 BuildRequires:  geos-devel
 BuildRequires:  gsl-devel
 BuildRequires:  libspatialite-devel
@@ -171,11 +167,7 @@ Provides:       %{name}-python = %{combinedversion}-%{release}
 Provides:       %{name}-python%{?_isa} = %{combinedversion}-%{release}
 Summary:        Python integration and plug-ins for QGIS
 Requires:       %{name}%{?_isa} = %{combinedversion}-%{release}
-%if 0%{?fedora} >= 37
 Requires:       python3-gdal
-%else
-Requires:       gdal-python3
-%endif
 Requires:       gdal-python-tools
 Requires:       python3-jinja2
 Requires:       python3-OWSLib
@@ -226,13 +218,8 @@ gzip ChangeLog
       -D QGIS_MANUAL_SUBDIR=/share/man \
       -D QGIS_CGIBIN_SUBDIR=%{_libexecdir}/%{name} \
       -D WITH_BINDINGS:BOOL=TRUE \
-%if 0%{?fedora} >= 36
       -D WITH_GRASS8:BOOL=TRUE \
       -D GRASS_PREFIX8=%{grass_prefix} \
-%else
-      -D WITH_GRASS7:BOOL=TRUE \
-      -D GRASS_PREFIX7=%{grass_prefix} \
-%endif
       -D WITH_CUSTOM_WIDGETS:BOOL=TRUE \
       -D BINDINGS_GLOBAL_INSTALL:BOOL=TRUE \
       -D ENABLE_TESTS:BOOL=FALSE \
