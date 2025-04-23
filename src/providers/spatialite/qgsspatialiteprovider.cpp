@@ -4639,7 +4639,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
             const auto jObj = QgsJsonUtils::jsonFromVariant( val );
             if ( !jObj.is_array() )
             {
-              throw json::parse_error::create( 0, 0, tr( "JSON value must be an array" ).toStdString() );
+              throw json::parse_error::create( 0, 0, tr( "JSON value must be an array" ).toStdString(), &jObj );
             }
             jRepr = QString::fromStdString( jObj.dump() );
             sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ), QgsSqliteUtils::quotedString( jRepr ) );
