@@ -398,7 +398,11 @@ QList<QgsLayoutItem *> QgsLayoutView::pasteItems( QgsLayoutView::PasteMode mode 
   QList<QgsLayoutItem *> pastedItems;
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
-  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  const QMimeData *mimeData = clipboard->mimeData();
+  if ( !mimeData )
+    return {};
+
+  if ( doc.setContent( mimeData->data( QStringLiteral( "text/xml" ) ) ) )
   {
     QDomElement docElem = doc.documentElement();
     if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
@@ -439,7 +443,11 @@ QList<QgsLayoutItem *> QgsLayoutView::pasteItems( QPointF layoutPoint )
   QList<QgsLayoutItem *> pastedItems;
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
-  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  const QMimeData *mimeData = clipboard->mimeData();
+  if ( !mimeData )
+    return {};
+
+  if ( doc.setContent( mimeData->data( QStringLiteral( "text/xml" ) ) ) )
   {
     QDomElement docElem = doc.documentElement();
     if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
@@ -458,7 +466,11 @@ bool QgsLayoutView::hasItemsInClipboard() const
 {
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
-  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  const QMimeData *mimeData = clipboard->mimeData();
+  if ( !mimeData )
+    return false;
+
+  if ( doc.setContent( mimeData->data( QStringLiteral( "text/xml" ) ) ) )
   {
     QDomElement docElem = doc.documentElement();
     if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )

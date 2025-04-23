@@ -785,6 +785,9 @@ void QgsFontButton::setMode( Mode mode )
 
 bool QgsFontButton::formatFromMimeData( const QMimeData *mimeData, QgsTextFormat &resultFormat ) const
 {
+  if ( !mimeData )
+    return false;
+
   bool ok = false;
   resultFormat = QgsTextFormat::fromMimeData( mimeData, &ok );
   return ok;
@@ -792,6 +795,9 @@ bool QgsFontButton::formatFromMimeData( const QMimeData *mimeData, QgsTextFormat
 
 bool QgsFontButton::fontFromMimeData( const QMimeData *mimeData, QFont &resultFont ) const
 {
+  if ( !mimeData )
+    return false;
+
   bool ok = false;
   resultFont = QgsFontUtils::fromMimeData( mimeData, &ok );
   return ok;
