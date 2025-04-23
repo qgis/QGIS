@@ -311,10 +311,10 @@ static QRect destinationRect( const QgsRectangle &destinationExtent, const QRect
   // tiles using a painter with a pixel-based image device. We always expand out the rect to the nearest
   // pixel (instead of shrinking), in order to avoid any chance of visible gaps between tiles
 
-  const double left = std::floor( ( tileImageExtent.left() - destinationExtent.xMinimum() ) / mapUnitsPerPixel );
-  const double right = std::ceil( ( tileImageExtent.right() - destinationExtent.xMinimum() ) / mapUnitsPerPixel );
-  const double top = std::floor( ( destinationExtent.yMaximum() - tileImageExtent.bottom() ) / mapUnitsPerPixel );
-  const double bottom = std::ceil( ( destinationExtent.yMaximum() - tileImageExtent.top() ) / mapUnitsPerPixel );
+  const int left = static_cast< int >( std::floor( ( tileImageExtent.left() - destinationExtent.xMinimum() ) / mapUnitsPerPixel ) );
+  const int right = static_cast< int >( std::ceil( ( tileImageExtent.right() - destinationExtent.xMinimum() ) / mapUnitsPerPixel ) );
+  const int top = static_cast< int >( std::floor( ( destinationExtent.yMaximum() - tileImageExtent.bottom() ) / mapUnitsPerPixel ) );
+  const int bottom = static_cast< int >( std::ceil( ( destinationExtent.yMaximum() - tileImageExtent.top() ) / mapUnitsPerPixel ) );
 
   return QRect( left, top, right - left, bottom - top );
 }
@@ -1167,7 +1167,7 @@ bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle const &viewExtent, int 
     pixelsCount = static_cast<size_t>( pixelWidth ) * pixelHeight;
 
   size_t myExpectedSize = pixelsCount * 4;
-  size_t myImageSize = image.height() * image.bytesPerLine();
+  size_t myImageSize = static_cast< size_t >( image.height() ) * image.bytesPerLine();
   if ( myExpectedSize != myImageSize ) // should not happen
   {
     QgsMessageLog::logMessage( tr( "unexpected image size" ), tr( "WMS" ) );
