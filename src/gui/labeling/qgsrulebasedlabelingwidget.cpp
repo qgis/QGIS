@@ -228,6 +228,9 @@ void QgsRuleBasedLabelingWidget::copy()
 void QgsRuleBasedLabelingWidget::paste()
 {
   const QMimeData *mime = QApplication::clipboard()->mimeData();
+  if ( !mime )
+    return;
+
   QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
   QModelIndex index;
   if ( indexlist.isEmpty() )
