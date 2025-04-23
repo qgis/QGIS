@@ -103,6 +103,13 @@ Returns index of the first row in the range
 Returns index of the last row in the range
 %End
 
+    int count() const;
+%Docstring
+Returns the total number of tiles in the range.
+
+.. versionadded:: 3.44
+%End
+
 };
 
 
