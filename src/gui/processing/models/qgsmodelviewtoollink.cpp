@@ -22,6 +22,7 @@
 #include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewtoolselect.h"
 #include "qgsmodelgraphicsview.h"
 #include <QScrollBar>
 
@@ -170,7 +171,12 @@ bool QgsModelViewToolLink::allowItemInteraction()
 
 void QgsModelViewToolLink::activate()
 {
-  mPreviousViewTool = view()->tool();
+  QgsModelViewTool *tool = view()->tool();
+  // Make sure we always return to the select tool and not a temporary tool.
+  if ( dynamic_cast<QgsModelViewToolSelect *>( tool ) )
+  {
+    mPreviousViewTool = tool;
+  }
 
   QPointF rubberStartPos = mFromSocket->mapToScene( mFromSocket->position() );
   mBezierRubberBand->start( rubberStartPos, Qt::KeyboardModifiers() );
