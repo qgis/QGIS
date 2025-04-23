@@ -24,7 +24,6 @@
 #include "qgsabstractrenderview.h"
 #include "qgs3dmapcanvas.h"
 
-#include "qgsframegraph.h"
 #include "qgsshadowrenderview.h"
 #include "qgsforwardrenderview.h"
 
