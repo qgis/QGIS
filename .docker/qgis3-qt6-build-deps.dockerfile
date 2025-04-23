@@ -112,6 +112,7 @@ RUN dnf -y install \
     python3-gdal \
     python3-nose2 \
     python3-psycopg2 \
-    python3-pyyaml
+    python3-pyyaml \
+    python3-shapely
 
 FROM binary-only
