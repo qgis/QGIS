@@ -327,6 +327,22 @@ A null rectangle is also an empty rectangle.
 .. seealso:: :py:func:`setNull`
 %End
 
+    bool isMaximal() const;
+%Docstring
+Test if the rectangle is the maximal possible rectangle.
+
+A rectangle is considered maximal if all boundaries are either at their
+maximum possible values or are infinite values.
+
+.. seealso:: :py:func:`isFinite`
+
+.. seealso:: :py:func:`isNull`
+
+.. seealso:: :py:func:`isEmpty`
+
+.. versionadded:: 3.44
+%End
+
     QString asWktCoordinates() const;
 %Docstring
 Returns a string representation of the rectangle in WKT format.
@@ -364,6 +380,12 @@ Returns the rectangle as a polygon.
 %Docstring
 Returns ``True`` if the rectangle has finite boundaries. Will return
 ``False`` if any of the rectangle boundaries are NaN or Inf.
+
+.. seealso:: :py:func:`isMaximal`
+
+.. seealso:: :py:func:`isNull`
+
+.. seealso:: :py:func:`isEmpty`
 %End
 
     void invert();
