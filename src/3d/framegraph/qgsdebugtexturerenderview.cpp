@@ -14,15 +14,8 @@
  ***************************************************************************/
 
 #include "qgsdebugtexturerenderview.h"
-#include <Qt3DRender/QCamera>
 #include <Qt3DRender/QLayerFilter>
 #include <Qt3DRender/QLayer>
-#include <Qt3DRender/QRenderTargetSelector>
-#include <Qt3DRender/QRenderTarget>
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QClearBuffers>
-#include <Qt3DRender/qsubtreeenabler.h>
-#include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QRenderStateSet>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QCullFace>
@@ -46,14 +39,14 @@ Qt3DRender::QLayer *QgsDebugTextureRenderView::debugLayer() const
 
 void QgsDebugTextureRenderView::buildRenderPass()
 {
-  Qt3DRender::QLayerFilter *peviewLayerFilter = new Qt3DRender::QLayerFilter( mRendererEnabler );
-  peviewLayerFilter->addLayer( mLayer );
+  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( mRendererEnabler );
+  layerFilter->addLayer( mLayer );
 
-  Qt3DRender::QRenderStateSet *mPreviewRenderStateSet = new Qt3DRender::QRenderStateSet( peviewLayerFilter );
-  Qt3DRender::QDepthTest *mPreviewDepthTest = new Qt3DRender::QDepthTest;
-  mPreviewDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
-  mPreviewRenderStateSet->addRenderState( mPreviewDepthTest );
-  Qt3DRender::QCullFace *mPreviewCullFace = new Qt3DRender::QCullFace;
-  mPreviewCullFace->setMode( Qt3DRender::QCullFace::NoCulling );
-  mPreviewRenderStateSet->addRenderState( mPreviewCullFace );
+  Qt3DRender::QRenderStateSet *renderStateSet = new Qt3DRender::QRenderStateSet( layerFilter );
+  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
+  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
+  renderStateSet->addRenderState( depthTest );
+  Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+  cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+  renderStateSet->addRenderState( cullFace );
 }

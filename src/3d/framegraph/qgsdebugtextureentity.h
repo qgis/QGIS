@@ -43,10 +43,11 @@ class QgsDebugTextureEntity : public QgsRenderPassQuad
     QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
 
     //! Sets the texture debugging parameters
-    void onSettingsChanged( bool enabled, Qt::Corner corner, double size );
+    void setPosition( Qt::Corner corner, double size );
 
+  private:
     //! Sets the view port of the quad
-    void setViewPort( const QPointF &centerTexCoords, const QSizeF &sizeTexCoords );
+    void setViewport( const QPointF &centerTexCoords, const QSizeF &sizeTexCoords );
 
   protected:
     Qt3DRender::QParameter *mTextureParameter = nullptr;
