@@ -207,6 +207,12 @@ QVariantMap QgsGeometryCheckHoleAlgorithm::processAlgorithm( const QVariantMap &
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
   }
 
+  // cleanup memory of the pointed data
+  for ( const QgsGeometryCheckError *error : checkErrors )
+  {
+    delete error;
+  }
+
   QVariantMap outputs;
   if ( sink_output )
     outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
