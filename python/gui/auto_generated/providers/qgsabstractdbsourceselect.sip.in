@@ -27,6 +27,15 @@ Base class for database source widget selectors.
 Constructor
 %End
 
+    virtual const QString settingPath() const;
+%Docstring
+Returns the setting path of the derived source select
+
+:return: setting path
+
+.. versionadded:: 3.40
+%End
+
   protected:
     void init( QgsAbstractDbTableModel *model, QItemDelegate *delegate = 0 );
 %Docstring
@@ -38,6 +47,13 @@ Sets the source model for the table and optionally a delegate
 Returns the proxy model used to filter the results
 %End
 
+
+    void storeSettings();
+%Docstring
+Stores the settings made in the gui
+
+.. versionadded:: 3.40
+%End
 
   protected slots:
 

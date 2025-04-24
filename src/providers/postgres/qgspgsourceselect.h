@@ -77,6 +77,8 @@ class QgsPgSourceSelect : public QgsAbstractDbSourceSelect
     //! Data source URI
     QgsDataSourceUri dataSourceUri();
 
+    const QString settingPath() const override { return QStringLiteral( "Windows/PgSourceSelect" ); }
+
   signals:
     void addGeometryColumn( const QgsPostgresLayerProperty & );
     void progressMessage( const QString & );

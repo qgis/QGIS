@@ -20,6 +20,7 @@ email                : sherman at mrcc.com
 #include "moc_qgspgsourceselect.cpp"
 
 #include "qgslogger.h"
+#include "qgssettings.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsapplication.h"
 #include "qgspostgresprovider.h"
@@ -193,6 +194,8 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   }
 }
 
+const QString QgsPgSourceSelect::SETTINGS_BASE_KEY = QStringLiteral( "Windows/PgSourceSelect/" );
+
 QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
@@ -229,11 +232,11 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   QgsSettings settings;
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/PgSourceSelect/HoldDialogOpen" ), false ).toBool() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_BASE_KEY ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "%1columnWidths/%2" ).arg( SETTINGS_BASE_KEY, i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 }
 
@@ -329,12 +332,14 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/PgSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  settings.setValue( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_BASE_KEY ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "%1columnWidths/%1" ).arg( SETTINGS_BASE_KEY, i ), mTablesTreeView->columnWidth( i ) );
   }
+  //store general settings in base class
+  storeSettings();
 }
 
 void QgsPgSourceSelect::populateConnectionList()

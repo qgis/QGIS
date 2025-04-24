@@ -69,6 +69,8 @@ class QgsOgrDbSourceSelect : public QgsAbstractDbSourceSelect
     //! Open file selector to add new connection
     static bool newConnection( QWidget *parent );
 
+    static const QString SETTINGS_BASE_KEY;
+    const QString settingPath() const override { return SETTINGS_BASE_KEY.arg( mOgrDriverName ); }
 
   public slots:
 

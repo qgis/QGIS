@@ -37,6 +37,15 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
     //! Constructor
     QgsAbstractDbSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
+    /**
+     * Returns the setting path of the derived source select
+     *
+     * \returns setting path
+     *
+     * \since QGIS 3.40
+     */
+    virtual const QString settingPath() const { return QString(); }
+
   protected:
     //! Sets the source model for the table and optionally a delegate
     void init( QgsAbstractDbTableModel *model, QItemDelegate *delegate = nullptr );
@@ -45,6 +54,13 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
     QSortFilterProxyModel *proxyModel() { return mProxyModel; }
 
     QPushButton *mBuildQueryButton = nullptr;
+
+    /**
+     * Stores the settings made in the gui
+     *
+     * \since QGIS 3.40
+     */
+    void storeSettings();
 
   protected slots:
 
