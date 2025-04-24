@@ -43,28 +43,30 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 
 #include "qgs3dutils.h"
 #include "qgsdirectionallightsettings.h"
+#include "qgsshadowsettings.h"
 #include "qgsframegraph.h"
 #include "qgsshadowrenderview.h"
 #include "qgsforwardrenderview.h"
 #include "qgsambientocclusionrenderview.h"
 
-QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent )
+QgsPostprocessingEntity::QgsPostprocessingEntity( const QgsShadowRenderView &shadowRenderView,       //
+                                                  const QgsForwardRenderView &forwardRenderView,     //
+                                                  const QgsAmbientOcclusionRenderView &aoRenderView, //
+                                                  Qt3DRender::QLayer *layer,                         //
+                                                  QNode *parent )
   : QgsRenderPassQuad( layer, parent )
 {
-  QgsShadowRenderView &shadowRenderView = frameGraph->shadowRenderView();
-  QgsForwardRenderView &forwardRenderView = frameGraph->forwardRenderView();
-  QgsAmbientOcclusionRenderView &aoRenderView = frameGraph->ambientOcclusionRenderView();
-
   mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), forwardRenderView.colorTexture() );
   mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), forwardRenderView.depthTexture() );
   mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), shadowRenderView.mapTexture() );
   mAmbientOcclusionTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), aoRenderView.blurredFactorMapTexture() );
+
   mMaterial->addParameter( mColorTextureParameter );
   mMaterial->addParameter( mDepthTextureParameter );
   mMaterial->addParameter( mShadowMapParameter );
   mMaterial->addParameter( mAmbientOcclusionTextureParameter );
 
-  mMainCamera = frameGraph->mainCamera();
+  mMainCamera = forwardRenderView.mainCamera();
   mLightCamera = shadowRenderView.lightCamera();
 
   mFarPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "farPlane" ), mMainCamera->farPlane() );
@@ -151,14 +153,15 @@ void QgsPostprocessingEntity::setupDirectionalLight( QVector3D position, QVector
   mLightDirection->setValue( QVariant::fromValue( direction.normalized() ) );
 }
 
-void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance )
+void QgsPostprocessingEntity::updateShadowSettings( const QgsShadowSettings &shadowSettings, const QgsDirectionalLightSettings &light )
 {
   float minX, maxX, minY, maxY, minZ, maxZ;
   QVector3D lookingAt = mMainCamera->viewCenter();
   const float d = 2 * ( mMainCamera->position() - mMainCamera->viewCenter() ).length();
 
   const QVector3D lightDirection = light.direction().toVector3D().normalized();
-  Qgs3DUtils::calculateViewExtent( mMainCamera, maximumShadowRenderingDistance, lookingAt.z(), minX, maxX, minY, maxY, minZ, maxZ );
+  Qgs3DUtils::calculateViewExtent( mMainCamera, static_cast<float>( shadowSettings.maximumShadowRenderingDistance() ), //
+                                   lookingAt.z(), minX, maxX, minY, maxY, minZ, maxZ );
 
   lookingAt = QVector3D( 0.5f * ( minX + maxX ), 0.5f * ( minY + maxY ), mMainCamera->viewCenter().z() );
   const QVector3D lightPosition = lookingAt + QVector3D( 0.0f, 0.0f, d );
@@ -176,6 +179,7 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
 
   setupShadowRenderingExtent( minX, maxX, minY, maxY );
   setupDirectionalLight( lightPosition, lightDirection );
+  setShadowBias( shadowSettings.shadowBias() );
 }
 
 void QgsPostprocessingEntity::setShadowRenderingEnabled( bool enabled )
@@ -183,9 +187,15 @@ void QgsPostprocessingEntity::setShadowRenderingEnabled( bool enabled )
   mRenderShadowsParameter->setValue( QVariant::fromValue( enabled ? 1 : 0 ) );
 }
 
-void QgsPostprocessingEntity::setShadowBias( float shadowBias )
+void QgsPostprocessingEntity::setShadowBias( double shadowBias )
 {
   mShadowBiasParameter->setValue( QVariant::fromValue( shadowBias ) );
+}
+
+void QgsPostprocessingEntity::updateEyeDomeSettings( const Qgs3DMapSettings &settings )
+{
+  setEyeDomeLightingStrength( settings.eyeDomeLightingStrength() );
+  setEyeDomeLightingDistance( settings.eyeDomeLightingDistance() );
 }
 
 void QgsPostprocessingEntity::setEyeDomeLightingEnabled( bool enabled )

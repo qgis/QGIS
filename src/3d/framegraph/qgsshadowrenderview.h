@@ -74,7 +74,7 @@ class QgsShadowRenderView : public QgsAbstractRenderView
     virtual void setEnabled( bool enable ) override;
 
     //! Returns the light camera
-    Qt3DRender::QCamera *lightCamera() { return mLightCamera; }
+    Qt3DRender::QCamera *lightCamera() const { return mLightCamera; }
 
     //! Returns shadow depth texture
     Qt3DRender::QTexture2D *mapTexture() const;
