@@ -1,6 +1,6 @@
-"""QGIS Unit tests for the AMS provider.
+"""QGIS Unit tests for the XYZ provider.
 
-From build dir, run: ctest -R PyQgsAMSProvider -V
+From build dir, run: ctest -R PyQgsXyzProvider -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
