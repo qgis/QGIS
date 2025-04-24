@@ -63,6 +63,7 @@ class QgsLightSource;
 class QgsOverlayTextureEntity;
 class QgsOverlayTextureRenderView;
 class QgsPostprocessingEntity;
+class QgsPostprocessingRenderView;
 class QgsRectangle;
 class QgsShadowRenderView;
 class QgsShadowSettings;
@@ -93,9 +94,6 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 
     //! Returns the main camera
     Qt3DRender::QCamera *mainCamera() { return mMainCamera; }
-
-    //! Returns the postprocessing entity
-    QgsPostprocessingEntity *postprocessingEntity() { return mPostprocessingEntity; }
 
     //! Returns entity for all rubber bands (to show them always on top)
     Qt3DCore::QEntity *rubberBandsRootEntity() { return mRubberBandsRootEntity; }
@@ -241,6 +239,12 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     QgsHighlightsRenderView &highlightsRenderView();
 
     /**
+     * Returns post processing renderview
+     * \since QGIS 4.2
+     */
+    QgsPostprocessingRenderView &postprocessingRenderView();
+
+    /**
      * Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources
      * \since QGIS 3.44
      */
@@ -285,6 +289,8 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     //! Ambient occlusion render view name
     static const QString AMBIENT_OCCLUSION_RENDERVIEW;
     static const QString BLOOM_RENDERVIEW;
+    //! Postprocessing render view name
+    static const QString POSTPROC_RENDERVIEW;
     static const QString HIGHLIGHTS_RENDERVIEW;
 
   private:
@@ -325,8 +331,6 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 
     Qt3DRender::QLayer *mRubberBandsLayer = nullptr;
 
-    QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
-
     Qt3DCore::QEntity *mRubberBandsRootEntity = nullptr;
 
     //! depth texture debugging
@@ -336,21 +340,17 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     void constructForwardRenderPass();
     void constructHighlightsPass();
     void constructOverlayTexturePass( Qt3DRender::QFrameGraphNode *topNode = nullptr );
-    Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
+    void constructPostprocessingPass( Qt3DRender::QFrameGraphNode *topNode = nullptr );
     void constructDepthRenderPass();
     void constructAmbientOcclusionRenderPass();
     void constructBloomRenderPass();
     Qt3DRender::QFrameGraphNode *constructRubberBandsPass();
     void constructMsaaBlitNodes();
 
-    Qt3DRender::QFrameGraphNode *constructSubPostPassForProcessing();
-    Qt3DRender::QFrameGraphNode *constructSubPostPassForRenderCapture();
-
     void constructThumbnailCapturePass();
     void updateThumbnailTextureSize();
     void onThumbnailCaptureCompleted( Qt3DRender::QRenderCaptureReply *reply );
 
-    bool mRenderCaptureEnabled = false;
     bool mMsaaEnabled = false;
     bool mMsaaBlitConfigured = false;
     Qt3DRender::QBlitFramebuffer *mMsaaBlitNode = nullptr;
