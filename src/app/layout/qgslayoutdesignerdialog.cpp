@@ -3848,6 +3848,9 @@ void QgsLayoutDesignerDialog::paste()
   // give custom paste handlers first shot at processing this
   QClipboard *clipboard = QApplication::clipboard();
   const QMimeData *data = clipboard->mimeData();
+  if ( !data )
+    return;
+
   const QVector<QPointer<QgsLayoutCustomDropHandler>> handlers = QgisApp::instance()->customLayoutDropHandlers();
   bool handled = false;
   for ( QgsLayoutCustomDropHandler *handler : handlers )

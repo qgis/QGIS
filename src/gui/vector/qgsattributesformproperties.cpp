@@ -2071,7 +2071,11 @@ void QgsAttributesFormProperties::onContextMenuRequested( QPoint point )
   if ( itemData.type() == DnDTreeItemData::Field )
   {
     const QClipboard *clipboard = QApplication::clipboard();
-    const bool pasteEnabled = clipboard->mimeData()->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelementclipboard" ) );
+    const QMimeData *mimeData = clipboard->mimeData();
+    if ( !mimeData )
+      return;
+
+    const bool pasteEnabled = mimeData->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelementclipboard" ) );
     mActionPasteWidgetConfiguration->setEnabled( pasteEnabled );
     mAvailableWidgetsTreeContextMenu->popup( globalPos );
   }
@@ -2197,7 +2201,11 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
 
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
-  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "application/x-qgsattributetabledesignerelementclipboard" ) ) ) )
+  const QMimeData *mimeData = clipboard->mimeData();
+  if ( !mimeData )
+    return;
+
+  if ( doc.setContent( mimeData->data( QStringLiteral( "application/x-qgsattributetabledesignerelementclipboard" ) ) ) )
   {
     QDomElement docElem = doc.documentElement();
     if ( docElem.tagName() != QLatin1String( "FormWidgetClipboard" ) )

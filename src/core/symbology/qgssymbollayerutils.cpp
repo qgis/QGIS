@@ -3653,6 +3653,9 @@ QMimeData *QgsSymbolLayerUtils::colorToMimeData( const QColor &color )
 
 QColor QgsSymbolLayerUtils::colorFromMimeData( const QMimeData *mimeData, bool &hasAlpha )
 {
+  if ( !mimeData )
+    return QColor();
+
   //attempt to read color data directly from mime
   if ( mimeData->hasColor() )
   {
@@ -3681,6 +3684,9 @@ QColor QgsSymbolLayerUtils::colorFromMimeData( const QMimeData *mimeData, bool &
 
 QgsNamedColorList QgsSymbolLayerUtils::colorListFromMimeData( const QMimeData *data )
 {
+  if ( !data )
+    return {};
+
   QgsNamedColorList mimeColors;
 
   //prefer xml format

@@ -607,7 +607,10 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
 
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
-  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  const QMimeData *mimeData = clipboard->mimeData();
+  if ( !mimeData )
+    return;
+  if ( doc.setContent( mimeData->data( QStringLiteral( "text/xml" ) ) ) )
   {
     QDomElement docElem = doc.documentElement();
     QVariantMap res = QgsXmlUtils::readVariant( docElem ).toMap();
