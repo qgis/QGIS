@@ -340,6 +340,25 @@ bool QgsFrameGraph::isRenderViewEnabled( const QString &name )
   return mRenderViewMap[name] != nullptr && mRenderViewMap[name]->isEnabled();
 }
 
+void QgsFrameGraph::updateAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &settings )
+{
+  QgsAmbientOcclusionRenderView &aoRenderView = ambientOcclusionRenderView();
+
+  aoRenderView.setRadius( settings.radius() );
+  aoRenderView.setIntensity( settings.intensity() );
+  aoRenderView.setThreshold( settings.threshold() );
+  aoRenderView.setEnabled( settings.isEnabled() );
+
+  mPostprocessingEntity->setAmbientOcclusionEnabled( settings.isEnabled() );
+}
+
+void QgsFrameGraph::updateEyeDomeSettings( const Qgs3DMapSettings &settings )
+{
+  mPostprocessingEntity->setEyeDomeLightingEnabled( settings.eyeDomeLightingEnabled() );
+  mPostprocessingEntity->setEyeDomeLightingStrength( settings.eyeDomeLightingStrength() );
+  mPostprocessingEntity->setEyeDomeLightingDistance( settings.eyeDomeLightingDistance() );
+}
+
 void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources )
 {
   if ( shadowSettings.renderShadows() )
@@ -447,13 +466,6 @@ void QgsFrameGraph::setClearColor( const QColor &clearColor )
 void QgsFrameGraph::setFrustumCullingEnabled( bool enabled )
 {
   forwardRenderView().setFrustumCullingEnabled( enabled );
-}
-
-void QgsFrameGraph::setupEyeDomeLighting( bool enabled, double strength, int distance )
-{
-  mPostprocessingEntity->setEyeDomeLightingEnabled( enabled );
-  mPostprocessingEntity->setEyeDomeLightingStrength( strength );
-  mPostprocessingEntity->setEyeDomeLightingDistance( distance );
 }
 
 void QgsFrameGraph::setSize( QSize s )

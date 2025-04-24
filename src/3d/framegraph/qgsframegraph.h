@@ -50,6 +50,7 @@ class QgsDepthRenderView;
 class QgsShadowSettings;
 class QgsDebugTextureEntity;
 class QgsAmbientOcclusionRenderView;
+class QgsAmbientOcclusionSettings;
 
 #define SIP_NO_FILE
 
@@ -95,8 +96,6 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
 
-    //! Sets eye dome lighting shading related settings
-    void setupEyeDomeLighting( bool enabled, double strength, int distance );
     //! Sets the size of the buffers used for rendering
     void setSize( QSize s );
 
@@ -209,6 +208,18 @@ class QgsFrameGraph : public Qt3DCore::QEntity
      * \since QGIS 3.44
      */
     void updateDebugDepthMapSettings( const Qgs3DMapSettings &settings );
+
+    /**
+     * Updates settings for ambient occlusion
+     * \since QGIS 3.44
+     */
+    void updateAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &settings );
+
+    /**
+     * Updates settings for eye dome lighting
+     * \since QGIS 3.44
+     */
+    void updateEyeDomeSettings( const Qgs3DMapSettings &settings );
 
     static const QString FORWARD_RENDERVIEW;
     static const QString SHADOW_RENDERVIEW;
