@@ -180,7 +180,7 @@ class TinInterpolation(QgisAlgorithm):
             if not crs.isValid():
                 crs = layer.sourceCrs()
 
-            data.valueSource = int(v[1])
+            data.valueSource = QgsInterpolator.ValueSource(int(v[1]))
             data.interpolationAttribute = int(v[2])
             if (
                 data.valueSource == QgsInterpolator.ValueSource.ValueAttribute

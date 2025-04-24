@@ -166,7 +166,7 @@ class IdwInterpolation(QgisAlgorithm):
             data.transformContext = context.transformContext()
             layers.append(layer)
 
-            data.valueSource = int(v[1])
+            data.valueSource = QgsInterpolator.ValueSource(int(v[1]))
             data.interpolationAttribute = int(v[2])
             if (
                 data.valueSource == QgsInterpolator.ValueSource.ValueAttribute
