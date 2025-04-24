@@ -120,6 +120,10 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mMessageBar = new QgsMessageBar();
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   gridLayout->addWidget( mMessageBar, 0, 0 );
+
+  // Assign initial size to splitter widgets. By doing so, we can
+  // show an eventual horizontal scrollbar in the right-hand side panel
+  splitter->setSizes( { widget->minimumSizeHint().width(), 600 } );
 }
 
 void QgsAttributesFormProperties::init()
@@ -696,6 +700,11 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mAddContainerButton->setVisible( false );
       mRemoveLayoutItemButton->setVisible( false );
       mInvertSelectionButton->setVisible( false );
+
+      // Workaround to match the alignment of the
+      // Available Widgets panel with the horizontal row
+      // holding the search box (when Form Layout disappears)
+      searchBarLayout->setContentsMargins( 0, 0, 6, 0 );
       break;
 
     case Qgis::AttributeFormLayout::DragAndDrop:
@@ -704,6 +713,9 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mAddContainerButton->setVisible( true );
       mRemoveLayoutItemButton->setVisible( true );
       mInvertSelectionButton->setVisible( true );
+
+      // Match again the alignment of the tree view panels
+      searchBarLayout->setContentsMargins( 0, 0, 0, 0 );
       break;
 
     case Qgis::AttributeFormLayout::UiFile:
@@ -713,6 +725,11 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mAddContainerButton->setVisible( false );
       mRemoveLayoutItemButton->setVisible( false );
       mInvertSelectionButton->setVisible( false );
+
+      // Workaround to match the alignment of the
+      // Available Widgets panel with the horizontal row
+      // holding the search box (when Form Layout disappears)
+      searchBarLayout->setContentsMargins( 0, 0, 6, 0 );
       break;
   }
 

@@ -140,7 +140,7 @@ Use this function to add extra logic to your forms.</string>
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QWidget" name="widget" native="true">
-      <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,1,0">
+      <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0,0">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -154,7 +154,7 @@ Use this function to add extra logic to your forms.</string>
         <number>0</number>
        </property>
        <item row="0" column="0" colspan="2">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <layout class="QHBoxLayout" name="searchBarLayout">
          <item>
           <widget class="QgsFilterLineEdit" name="mSearchLineEdit">
            <property name="sizePolicy">
@@ -230,7 +230,7 @@ Use this function to add extra logic to your forms.</string>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>20</width>
+             <width>0</width>
              <height>40</height>
             </size>
            </property>
@@ -241,7 +241,7 @@ Use this function to add extra logic to your forms.</string>
        <item row="1" column="0">
         <widget class="QWidget" name="mAvailableWidgetsWidget" native="true">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -257,7 +257,7 @@ Use this function to add extra logic to your forms.</string>
        <item row="1" column="1">
         <widget class="QWidget" name="mFormLayoutWidget" native="true">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -273,11 +273,11 @@ Use this function to add extra logic to your forms.</string>
       </layout>
      </widget>
      <widget class="QgsScrollArea" name="scrollArea_2">
-      <property name="minimumSize">
-       <size>
-        <width>600</width>
-        <height>0</height>
-       </size>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
       <property name="widgetResizable">
        <bool>true</bool>
@@ -287,13 +287,19 @@ Use this function to add extra logic to your forms.</string>
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>598</width>
-         <height>492</height>
+         <width>87</width>
+         <height>488</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
          <widget class="QWidget" name="mAttributeTypeFrame" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <layout class="QGridLayout" name="gridLayout_2"/>
          </widget>
         </item>
