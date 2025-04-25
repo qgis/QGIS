@@ -27,7 +27,7 @@ Base class for database source widget selectors.
 Constructor
 %End
 
-    virtual const QString settingPath() const;
+    virtual QString settingPath() const;
 %Docstring
 Returns the setting path of the derived source select
 

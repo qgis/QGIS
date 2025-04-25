@@ -37,7 +37,6 @@ class QgsSpatiaLiteTableModel : public QgsAbstractDbTableModel
     QgsSpatiaLiteTableModel( QObject *parent = nullptr );
 
     QStringList columns() const override;
-    //! Returns defaultSearchColumn if nothing is stored
     int defaultSearchColumn() const override;
     bool searchableColumn( int column ) const override;
 

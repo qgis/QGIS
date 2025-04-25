@@ -76,8 +76,7 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
 
     void reset() override;
 
-    static const QString SETTINGS_BASE_KEY;
-    const QString settingPath() const override { return SETTINGS_BASE_KEY; }
+    QString settingPath() const override;
 
   signals:
     void addGeometryColumn( const QgsMssqlLayerProperty & );

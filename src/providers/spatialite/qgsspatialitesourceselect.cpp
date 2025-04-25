@@ -44,7 +44,7 @@ email                : a.furieri@lqt.it
 #define strcasecmp( a, b ) stricmp( a, b )
 #endif
 
-const QString QgsSpatiaLiteSourceSelect::SETTINGS_BASE_KEY = QStringLiteral( "Windows/SpatiaLiteSourceSelect/" );
+static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "Windows/SpatiaLiteSourceSelect/" );
 
 QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
@@ -60,7 +60,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSpatiaLiteSourceSelect::showHelp );
 
   const QgsSettings settings;
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_BASE_KEY ), false ).toBool() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH ), false ).toBool() );
 
   setWindowTitle( tr( "Add SpatiaLite Layer(s)" ) );
   btnEdit->hide(); // hide the edit button
@@ -91,7 +91,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
 QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_BASE_KEY ), mHoldDialogOpen->isChecked() );
+  settings.setValue( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH ), mHoldDialogOpen->isChecked() );
   //store general settings in base class
   storeSettings();
 }
@@ -462,6 +462,11 @@ void QgsSpatiaLiteSourceSelect::dbChanged()
   // Remember which database was selected.
   QgsSettings settings;
   settings.setValue( QStringLiteral( "SpatiaLite/connections/selected" ), cmbConnections->currentText() );
+}
+
+QString QgsSpatiaLiteSourceSelect::settingPath() const
+{
+  return SETTINGS_WINDOWS_PATH;
 }
 
 void QgsSpatiaLiteSourceSelect::refresh()

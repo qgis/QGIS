@@ -140,7 +140,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
     model->setData( index, le->text() );
 }
 
-const QString QgsMssqlSourceSelect::SETTINGS_BASE_KEY = QStringLiteral( "Windows/MSSQLSourceSelect/" );
+static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "Windows/MSSQLSourceSelect/" );
 
 QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
@@ -177,11 +177,11 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   const QgsSettings settings;
   mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "%sHoldDialogOpen" ).arg( SETTINGS_BASE_KEY ), false ).toBool() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "%1columnWidths/%2" ).arg( SETTINGS_BASE_KEY, i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "%1columnWidths/%2" ).arg( SETTINGS_WINDOWS_PATH, i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 
   cbxAllowGeometrylessTables->setDisabled( true );
@@ -286,11 +286,11 @@ QgsMssqlSourceSelect::~QgsMssqlSourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_BASE_KEY ), mHoldDialogOpen->isChecked() );
+  settings.setValue( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "%1columnWidths/%2" ).arg( SETTINGS_BASE_KEY, i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "%1columnWidths/%2" ).arg( SETTINGS_WINDOWS_PATH, i ), mTablesTreeView->columnWidth( i ) );
   }
   //store general settings in base class
   storeSettings();
@@ -534,6 +534,11 @@ QString QgsMssqlSourceSelect::connectionInfo()
 void QgsMssqlSourceSelect::reset()
 {
   mTablesTreeView->clearSelection();
+}
+
+QString QgsMssqlSourceSelect::settingPath() const
+{
+  return SETTINGS_WINDOWS_PATH;
 }
 
 void QgsMssqlSourceSelect::refresh()

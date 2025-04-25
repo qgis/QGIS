@@ -60,8 +60,8 @@ class QgsSpatiaLiteSourceSelect : public QgsAbstractDbSourceSelect
     QString connectionInfo();
     // Store the selected database
     void dbChanged();
-    static const QString SETTINGS_BASE_KEY;
-    const QString settingPath() const override { return SETTINGS_BASE_KEY; }
+
+    QString settingPath() const override;
 
   public slots:
 

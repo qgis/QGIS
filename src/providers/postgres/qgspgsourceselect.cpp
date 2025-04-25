@@ -194,7 +194,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   }
 }
 
-const QString QgsPgSourceSelect::SETTINGS_BASE_KEY = QStringLiteral( "Windows/PgSourceSelect/" );
+static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "Windows/PgSourceSelect/" );
 
 QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
@@ -232,11 +232,11 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   QgsSettings settings;
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_BASE_KEY ), false ).toBool() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "%1columnWidths/%2" ).arg( SETTINGS_BASE_KEY, i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "%1columnWidths/%2" ).arg( SETTINGS_WINDOWS_PATH, i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 }
 
@@ -332,11 +332,11 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_BASE_KEY ), mHoldDialogOpen->isChecked() );
+  settings.setValue( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "%1columnWidths/%1" ).arg( SETTINGS_BASE_KEY, i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "%1columnWidths/%1" ).arg( SETTINGS_WINDOWS_PATH, i ), mTablesTreeView->columnWidth( i ) );
   }
   //store general settings in base class
   storeSettings();
@@ -495,6 +495,11 @@ QString QgsPgSourceSelect::connectionInfo( bool expandAuthCfg )
 QgsDataSourceUri QgsPgSourceSelect::dataSourceUri()
 {
   return mDataSrcUri;
+}
+
+QString QgsPgSourceSelect::settingPath() const
+{
+  return SETTINGS_WINDOWS_PATH;
 }
 
 void QgsPgSourceSelect::refresh()
