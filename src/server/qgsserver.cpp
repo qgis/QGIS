@@ -484,14 +484,16 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         // TODO: QGIS 4 fix the OWS services and treat them as APIs
         if ( !response.feedback() || !response.feedback()->isCanceled() )
         {
-          if ( params.service().isEmpty() ) 
+          if ( params.service().isEmpty() )
           {
             QgsServerApi *api = sServiceRegistry->apiForRequest( request );
-            if ( api ) 
+            if ( api )
             {
-                const QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
-                api->executeRequest( context );
-            } else {
+              const QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
+              api->executeRequest( context );
+            }
+            else
+            {
               throw QgsOgcServiceException(
                 QStringLiteral( "Service configuration error" ),
                 QStringLiteral( "Service unknown or unsupported. Current supported services "

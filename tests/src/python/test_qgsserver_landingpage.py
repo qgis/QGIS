@@ -209,7 +209,8 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
             self.assertEqual(
                 self.strip_version_xmlns(bytes(response.body())),
                 self.strip_version_xmlns(
-                    b'<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
+                    b'<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n'
+                ),
             )
 
         _test_error("http://server.qgis.org/index.json")
