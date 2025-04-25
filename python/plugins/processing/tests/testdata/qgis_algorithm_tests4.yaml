@@ -2542,6 +2542,18 @@ tests:
       OUTPUT:
         name: expected/nearest_field_subset_unordered.gml
         type: vector
+        compare:
+          fields:
+            distance:
+              precision: 5
+            feature_x:
+              precision: 5
+            nearest_x:
+              precision: 5
+            feature_y:
+              precision: 5
+            nearest_y:
+              precision: 5
 
   - name: Generate XYZ tiles (Directory)
     algorithm: qgis:tilesxyzdirectory
@@ -3262,8 +3274,8 @@ tests:
         name: expected/join_attributes_table_issue_47650.gml
         type: vector
 
-  - algorithm: native:joinbyattributes
-    name: Join by nearest ordered field subet
+  - algorithm: native:joinattributestable
+    name: Join by attribute ordered field subet
     params:
       DISCARD_NONMATCHING: true
       FIELD: id
@@ -3287,8 +3299,8 @@ tests:
         type: vector
 
 
-  - algorithm: native:joinbyattributes
-    name: Join by nearest unordered field subset
+  - algorithm: native:joinattributestable
+    name: Join by attribute unordered field subset
     params:
       DISCARD_NONMATCHING: true
       FIELD: id
