@@ -320,6 +320,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 
   mAttributeTypeDialog->setDefaultValueExpression( mLayer->defaultValueDefinition( index ).expression() );
   mAttributeTypeDialog->setApplyDefaultValueOnUpdate( mLayer->defaultValueDefinition( index ).applyOnUpdate() );
+  mAttributeTypeDialog->setReplaceNullWithDefaultValue( mLayer->defaultValueDefinition( index ).replaceNullValue() );
 
   mAttributeTypeDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
@@ -421,7 +422,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   cfg.mMergePolicy = mAttributeTypeDialog->mergePolicy();
 
   const int fieldIndex = mAttributeTypeDialog->fieldIdx();
-  mLayer->setDefaultValueDefinition( fieldIndex, QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
+  mLayer->setDefaultValueDefinition( fieldIndex, QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate(), mAttributeTypeDialog->replaceNullWithDefaultValue() ) );
 
   const QString fieldName = mLayer->fields().at( fieldIndex ).name();
 

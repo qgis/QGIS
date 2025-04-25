@@ -265,13 +265,23 @@
         </layout>
        </widget>
       </item>
-      <item row="8" column="0" colspan="2">
+      <item row="8" column="0">
        <widget class="QCheckBox" name="mApplyDefaultValueOnUpdateCheckBox">
         <property name="toolTip">
          <string>&lt;p&gt;With this option checked, the default value will not only be used when the feature is first created, but also whenever a feature's attribute or geometry is changed.&lt;/p&gt;&lt;p&gt;This is often useful for a last_modified timestamp or to record the username that last modified the feature.&lt;/p&gt;</string>
         </property>
         <property name="text">
          <string>Apply default value on update</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QCheckBox" name="mReplaceNullValueCheckBox">
+        <property name="toolTip">
+         <string>&amp;lt;p&amp;gt;Use the default value to replace the &quot;NULL&quot; value which is always available when no default  value is defined.&amp;lt;/p&amp;gt;</string>
+        </property>
+        <property name="text">
+         <string>Replace &quot;NULL&quot; value</string>
         </property>
        </widget>
       </item>

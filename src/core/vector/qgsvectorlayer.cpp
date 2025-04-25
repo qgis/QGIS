@@ -2615,10 +2615,11 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         QString field = defaultElem.attribute( QStringLiteral( "field" ), QString() );
         QString expression = defaultElem.attribute( QStringLiteral( "expression" ), QString() );
         bool applyOnUpdate = defaultElem.attribute( QStringLiteral( "applyOnUpdate" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );
+        bool replaceNullValue = defaultElem.attribute( QStringLiteral( "replaceNullValue" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );
         if ( field.isEmpty() || expression.isEmpty() )
           continue;
 
-        mDefaultExpressionMap.insert( field, QgsDefaultValue( expression, applyOnUpdate ) );
+        mDefaultExpressionMap.insert( field, QgsDefaultValue( expression, applyOnUpdate, replaceNullValue ) );
       }
     }
 
@@ -3192,6 +3193,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
       defaultElem.setAttribute( QStringLiteral( "field" ), field.name() );
       defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValueDefinition().expression() );
       defaultElem.setAttribute( QStringLiteral( "applyOnUpdate" ), field.defaultValueDefinition().applyOnUpdate() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+      defaultElem.setAttribute( QStringLiteral( "replaceNullValue" ), field.defaultValueDefinition().replaceNullValue() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
       defaultsElem.appendChild( defaultElem );
     }
     node.appendChild( defaultsElem );
