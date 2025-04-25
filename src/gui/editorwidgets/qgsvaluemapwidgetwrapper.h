@@ -56,6 +56,7 @@ class GUI_EXPORT QgsValueMapWidgetWrapper : public QgsEditorWidgetWrapper
   public:
     QVariant value() const override;
     void showIndeterminateState() override;
+    QComboBox *comboBox();
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;

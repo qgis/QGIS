@@ -57,6 +57,7 @@
 #include "qgstexteditwrapper.h"
 #include "qgsfieldmodel.h"
 #include "qgscollapsiblegroupbox.h"
+#include "qgsvaluemapwidgetwrapper.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -1568,7 +1569,36 @@ void QgsAttributeForm::synchronizeState()
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-    if ( eww )
+    QgsValueMapWidgetWrapper *vmww = qobject_cast<QgsValueMapWidgetWrapper *>( eww );
+    if ( vmww )
+    {
+      if ( vmww->comboBox()->count() == 0 ) //comboBox()->currentIndex() == -1
+      {
+        ww->setEnabled( false );
+        vmww->comboBox()->setToolTip( tr( "No value set in value map configuration" ) );
+        if ( vmww->constraintResult() == QgsEditorWidgetWrapper::ConstraintResultFailSoft )
+          vmww->comboBox()->setStyleSheet("QComboBox { background-color: rgba(255, 200, 45, 0.3); }");
+        isEditable = false;
+      }
+      // else if ( vmww->comboBox()->currentIndex() == -1 )
+      //   vmww->comboBox()->setCurrentIndex( 0 );
+      else if ( vmww->comboBox()->count() == 1 )
+      {
+        ww->setEnabled( false );
+        vmww->comboBox()->setToolTip( tr( "No other value set in value map configuration" ) );
+        if ( vmww->constraintResult() == QgsEditorWidgetWrapper::ConstraintResultFailSoft )
+          vmww->comboBox()->setStyleSheet("QComboBox { background-color: rgba(255, 200, 45, 0.3); }");
+        isEditable = true;
+      }
+      else
+      {
+        vmww->comboBox()->setToolTip( QString() );
+        ww->setEnabled( true );
+        if ( vmww->constraintResult() == QgsEditorWidgetWrapper::ConstraintResultFailSoft )
+          vmww->comboBox()->setStyleSheet("QComboBox { background-color: rgba(255, 200, 45, 0.3); }");
+      }
+    }
+    else if ( eww )
     {
       const QList<QgsAttributeFormEditorWidget *> formWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
 

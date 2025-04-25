@@ -91,13 +91,6 @@
    <item row="3" column="0" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="addNullButton">
-       <property name="text">
-        <string>Add &quot;NULL&quot; value</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="removeSelectedButton">
        <property name="text">
         <string>Remove Selected</string>
@@ -125,7 +118,6 @@
   <tabstop>loadFromLayerButton</tabstop>
   <tabstop>loadFromCSVButton</tabstop>
   <tabstop>tableWidget</tabstop>
-  <tabstop>addNullButton</tabstop>
   <tabstop>removeSelectedButton</tabstop>
  </tabstops>
  <resources/>

@@ -40,6 +40,11 @@ QVariant QgsValueMapWidgetWrapper::value() const
   if ( v == QgsValueMapFieldFormatter::NULL_VALUE )
     v = QgsVariantUtils::createNullVariant( field().type() );
 
+  //to avoid non-displayed null value when table has value(s), but no null/default
+  if( mComboBox )
+    if (mComboBox->currentIndex() == -1 && mComboBox->count() > 0)
+       mComboBox->setCurrentIndex( 0 );
+
   return v;
 }
 
@@ -49,6 +54,11 @@ void QgsValueMapWidgetWrapper::showIndeterminateState()
   {
     whileBlocking( mComboBox )->setCurrentIndex( -1 );
   }
+}
+
+QComboBox *QgsValueMapWidgetWrapper::comboBox()
+{
+  return mComboBox;
 }
 
 QWidget *QgsValueMapWidgetWrapper::createWidget( QWidget *parent )
@@ -88,13 +98,34 @@ void QgsValueMapWidgetWrapper::updateValues( const QVariant &value, const QVaria
   {
     if ( mComboBox->findData( v ) == -1 )
     {
-      if ( QgsVariantUtils::isNull( value ) )
+      QMap constraintAndStrength = layer()->fieldConstraintsAndStrength( fieldIdx() );
+      auto notNullIt = constraintAndStrength.find( QgsFieldConstraints::ConstraintNotNull );
+      bool notNullHard = false;
+      if( notNullIt != constraintAndStrength.end() )
+        notNullHard = ( notNullIt.value() == QgsFieldConstraints::ConstraintStrengthHard );
+      if ( QgsVariantUtils::isNull( value ) && !notNullHard )
       {
-        mComboBox->addItem( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ), v );
+        //add null value option if value is null
+        if( mComboBox->findText( QgsApplication::nullRepresentation().prepend( '(' ).append( ')')) == -1 )
+        {
+          mComboBox->addItem( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ), v );
+        }
       }
       else
       {
-        mComboBox->addItem( QString( v ).prepend( '(' ).append( ')' ), v );
+        //add the not null value
+        if ( !QgsVariantUtils::isNull( value ) && v != "" )
+        {
+          mComboBox->addItem( QString( v ).prepend( '(' ).append( ')' ), v );
+        }
+        //add additional null value option
+        if ( !layer()->defaultValueDefinition( fieldIdx() ).replaceNullValue() && !notNullHard )
+        {
+          if( mComboBox->findText( QgsApplication::nullRepresentation().prepend( '(' ).append( ')')) == -1 )
+          {
+            mComboBox->addItem( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ), QgsValueMapFieldFormatter::NULL_VALUE );
+          }
+        }
       }
     }
     mComboBox->setCurrentIndex( mComboBox->findData( v ) );
