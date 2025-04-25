@@ -99,7 +99,7 @@ def initMenusAndToolbars():
     geometryToolsMenu = vectorMenu + "/" + Processing.tr("G&eometry Tools")
     defaultMenuEntries.update(
         {
-            "qgis:checkvalidity": geometryToolsMenu,
+            "native:checkvalidity": geometryToolsMenu,
             "native:exportaddgeometrycolumns": geometryToolsMenu,
             "native:centroids": geometryToolsMenu,
             "native:delaunaytriangulation": geometryToolsMenu,
