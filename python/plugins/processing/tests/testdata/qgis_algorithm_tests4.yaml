@@ -2554,6 +2554,27 @@ tests:
         name: expected/join_to_nearest_no_matches.gml
         type: vector
 
+  - algorithm: native:joinbynearest
+    name: Join by nearest field unordered
+    params:
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      INPUT_2:
+        name: airports.gml|layername=airports
+        type: vector
+      NEIGHBORS: 1
+      PREFIX: ''
+      FIELDS_TO_COPY:
+      - USE
+      - NAME
+      - fk_region
+      - ELEV
+    results:
+      OUTPUT:
+        name: expected/nearest_field_subset_unordered.gml
+        type: vector
+
   - name: Generate XYZ tiles (Directory)
     algorithm: qgis:tilesxyzdirectory
     project: ../../../../../tests/testdata/xyztiles.qgs
@@ -3273,4 +3294,52 @@ tests:
         name: expected/join_attributes_table_issue_47650.gml
         type: vector
 
+  - algorithm: native:joinbyattributes
+    name: Join by nearest ordered field subet
+    params:
+      DISCARD_NONMATCHING: true
+      FIELD: id
+      FIELDS_TO_COPY:
+      - fid
+      - fk_region
+      - ELEV
+      - NAME
+      FIELD_2: ID
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      INPUT_2:
+        name: airports.gml|layername=airports
+        type: vector
+      METHOD: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_attributes_subset_ordered.gml
+        type: vector
+
+
+  - algorithm: native:joinbyattributes
+    name: Join by nearest unordered field subset
+    params:
+      DISCARD_NONMATCHING: true
+      FIELD: id
+      FIELDS_TO_COPY:
+      - ELEV
+      - NAME
+      - fk_region
+      - fid
+      FIELD_2: ID
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      INPUT_2:
+        name: airports.gml|layername=airports
+        type: vector
+      METHOD: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_attributes_subset_unordered.gml
+        type: vector
 # See ../README.md for a description of the file format
