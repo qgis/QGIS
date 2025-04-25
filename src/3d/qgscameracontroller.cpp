@@ -244,12 +244,17 @@ QDomElement QgsCameraController::writeXml( QDomDocument &doc ) const
 {
   QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
   QgsVector3D centerPoint;
-  if ( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Local )
-    centerPoint = mCameraPose.centerPoint();
-  else if ( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
-    // Save center point in map coordinates, since our world origin won't be
-    // the same on loading
-    centerPoint = mCameraPose.centerPoint() + mOrigin;
+  switch ( mScene->mapSettings()->sceneMode() )
+  {
+    case Qgis::SceneMode::Local:
+      centerPoint = mCameraPose.centerPoint();
+      break;
+    case Qgis::SceneMode::Globe:
+      // Save center point in map coordinates, since our world origin won't be
+      // the same on loading
+      centerPoint = mCameraPose.centerPoint() + mOrigin;
+      break;
+  }
   elemCamera.setAttribute( QStringLiteral( "x" ), centerPoint.x() );
   elemCamera.setAttribute( QStringLiteral( "y" ), centerPoint.z() );
   elemCamera.setAttribute( QStringLiteral( "elev" ), centerPoint.y() );
