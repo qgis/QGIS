@@ -860,7 +860,7 @@ void QgsExpression::buildVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "zoom_level" ), QCoreApplication::translate( "variable_help", "Vector tile zoom level of the map that is being rendered (derived from the current map scale). Normally in interval [0, 20]." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "vector_tile_zoom" ), QCoreApplication::translate( "variable_help", "Exact vector tile zoom level of the map that is being rendered (derived from the current map scale). Normally in interval [0, 20]. Unlike @zoom_level, this variable is a floating point value which can be used to interpolate values between two integer zoom levels." ) );
 
-  sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row respecting order of features from data source." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row. For attribute table data it's respecting order of features from data source and index starts at 1, otherwise index starts from 0." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "column_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current column." ) );
