@@ -50,6 +50,7 @@ namespace Qt3DRender
 class QgsAmbientOcclusionRenderView : public QgsAbstractRenderView
 {
   public:
+    //! Default constructor
     QgsAmbientOcclusionRenderView( const QString &viewName, Qt3DRender::QCamera *mainCamera, QSize mSize, Qt3DRender::QTexture2D *forwardDepthTexture, Qt3DCore::QEntity *rootSceneEntity );
 
     //! Delegates to QgsAmbientOcclusionRenderEntity::setIntensity
