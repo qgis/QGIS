@@ -31,10 +31,10 @@ void QgsPointCloudAttributeStatistics::cumulateStatistics( const QgsPointCloudAt
   minimum = std::min( minimum, stats.minimum );
   maximum = std::max( maximum, stats.maximum );
 
-  double newMean = ( mean * count + stats.mean * stats.count ) / ( count + stats.count );
-  double delta1 = newMean - mean;
+  const double newMean = ( mean * count + stats.mean * stats.count ) / ( count + stats.count );
+  const double delta1 = newMean - mean;
   const double variance1 = stDev * stDev * ( count - 1 ) + count * delta1 * delta1;
-  double delta2 = newMean - stats.mean;
+  const double delta2 = newMean - stats.mean;
   const double variance2 = stats.stDev * stats.stDev * ( stats.count - 1 ) + stats.count * delta2 * delta2;
   const double variance = ( variance1 + variance2 ) / ( count + stats.count );
   stDev = std::sqrt( variance );
@@ -44,9 +44,7 @@ void QgsPointCloudAttributeStatistics::cumulateStatistics( const QgsPointCloudAt
 
   for ( auto it = stats.classCount.constBegin(); it != stats.classCount.constEnd(); it++ )
   {
-    int c = classCount.value( it.key(), 0 );
-    c += it.value();
-    classCount[ it.key() ] = c;
+    classCount[ it.key() ] += it.value();
   }
 }
 
