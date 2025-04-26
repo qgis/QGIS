@@ -704,11 +704,8 @@ QRadioButton::indicator:hover
 /* ==================================================================================== */
 
 QGroupBox {
-    border:1px solid rgba(0,0,0,0);
-}
-
-QGroupBox[title^=""] {
     padding-top: 1.05em;
+    border:1px solid rgba(0,0,0,0);
 }
 
 QGroupBox::title { 
