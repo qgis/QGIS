@@ -41,9 +41,9 @@ QVariant QgsValueMapWidgetWrapper::value() const
     v = QgsVariantUtils::createNullVariant( field().type() );
 
   //to avoid non-displayed null value when table has value(s), but no null/default
-  if( mComboBox )
-    if (mComboBox->currentIndex() == -1 && mComboBox->count() > 0)
-       mComboBox->setCurrentIndex( 0 );
+  if ( mComboBox )
+    if ( mComboBox->currentIndex() == -1 && mComboBox->count() > 0 )
+      mComboBox->setCurrentIndex( 0 );
 
   return v;
 }
@@ -101,12 +101,12 @@ void QgsValueMapWidgetWrapper::updateValues( const QVariant &value, const QVaria
       QMap constraintAndStrength = layer()->fieldConstraintsAndStrength( fieldIdx() );
       auto notNullIt = constraintAndStrength.find( QgsFieldConstraints::ConstraintNotNull );
       bool notNullHard = false;
-      if( notNullIt != constraintAndStrength.end() )
+      if ( notNullIt != constraintAndStrength.end() )
         notNullHard = ( notNullIt.value() == QgsFieldConstraints::ConstraintStrengthHard );
       if ( QgsVariantUtils::isNull( value ) && !notNullHard )
       {
         //add null value option if value is null
-        if( mComboBox->findText( QgsApplication::nullRepresentation().prepend( '(' ).append( ')')) == -1 )
+        if ( mComboBox->findText( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ) ) == -1 )
         {
           mComboBox->addItem( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ), v );
         }
@@ -121,7 +121,7 @@ void QgsValueMapWidgetWrapper::updateValues( const QVariant &value, const QVaria
         //add additional null value option
         if ( !layer()->defaultValueDefinition( fieldIdx() ).replaceNullValue() && !notNullHard )
         {
-          if( mComboBox->findText( QgsApplication::nullRepresentation().prepend( '(' ).append( ')')) == -1 )
+          if ( mComboBox->findText( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ) ) == -1 )
           {
             mComboBox->addItem( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ), QgsValueMapFieldFormatter::NULL_VALUE );
           }

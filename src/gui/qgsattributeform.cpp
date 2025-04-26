@@ -1577,7 +1577,7 @@ void QgsAttributeForm::synchronizeState()
         ww->setEnabled( false );
         vmww->comboBox()->setToolTip( tr( "No value set in value map configuration" ) );
         if ( vmww->constraintResult() == QgsEditorWidgetWrapper::ConstraintResultFailSoft )
-          vmww->comboBox()->setStyleSheet("QComboBox { background-color: rgba(255, 200, 45, 0.3); }");
+          vmww->comboBox()->setStyleSheet( "QComboBox { background-color: rgba(255, 200, 45, 0.3); }" );
         isEditable = false;
       }
       // else if ( vmww->comboBox()->currentIndex() == -1 )
@@ -1587,7 +1587,7 @@ void QgsAttributeForm::synchronizeState()
         ww->setEnabled( false );
         vmww->comboBox()->setToolTip( tr( "No other value set in value map configuration" ) );
         if ( vmww->constraintResult() == QgsEditorWidgetWrapper::ConstraintResultFailSoft )
-          vmww->comboBox()->setStyleSheet("QComboBox { background-color: rgba(255, 200, 45, 0.3); }");
+          vmww->comboBox()->setStyleSheet( "QComboBox { background-color: rgba(255, 200, 45, 0.3); }" );
         isEditable = true;
       }
       else
@@ -1595,7 +1595,7 @@ void QgsAttributeForm::synchronizeState()
         vmww->comboBox()->setToolTip( QString() );
         ww->setEnabled( true );
         if ( vmww->constraintResult() == QgsEditorWidgetWrapper::ConstraintResultFailSoft )
-          vmww->comboBox()->setStyleSheet("QComboBox { background-color: rgba(255, 200, 45, 0.3); }");
+          vmww->comboBox()->setStyleSheet( "QComboBox { background-color: rgba(255, 200, 45, 0.3); }" );
       }
     }
     else if ( eww )

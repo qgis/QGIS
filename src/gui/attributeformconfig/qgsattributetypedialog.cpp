@@ -546,7 +546,6 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
   mDefaultPreviewLabel->setText( "<i>" + previewText + "</i>" );
 
   mReplaceNullValueCheckBox->setEnabled( true );
-
 }
 
 void QgsAttributeTypeDialog::updateSplitPolicyLabel()
