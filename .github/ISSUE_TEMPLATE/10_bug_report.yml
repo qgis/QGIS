@@ -38,8 +38,7 @@ body:
     attributes:
       label: Versions
       description: |
-        In the QGIS Help menu -> About, click in the table, Ctrl+A and then Ctrl+C. Finally paste here.
-        Do not make a screenshot.
+        In the QGIS Help menu -> About, click on the "Copy to Clipboard" button, then paste here.
     validations:
       required: true
 
