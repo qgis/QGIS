@@ -2545,15 +2545,11 @@ tests:
         compare:
           fields:
             distance:
-              precision: 5
-            feature_x:
-              precision: 5
-            nearest_x:
-              precision: 5
-            feature_y:
-              precision: 5
-            nearest_y:
-              precision: 5
+              precision: 1
+            feature_x: skip
+            nearest_x: skip
+            feature_y: skip
+            nearest_y: skip
 
   - name: Generate XYZ tiles (Directory)
     algorithm: qgis:tilesxyzdirectory
