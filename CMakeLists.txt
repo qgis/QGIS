@@ -44,6 +44,7 @@ else()
   message(STATUS "Building with system libraries --")
 endif()
 
+
 if(WITH_VCPKG)
   if(WIN32)
     list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/tools/python3/Scripts/")
@@ -1101,6 +1102,14 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
 # write a marker with source directory path into the output's bin directory
 # if run from the build directory QGIS will detect it and alter the paths
 file(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgisbuildpath.txt "${CMAKE_SOURCE_DIR}\n${QGIS_OUTPUT_DIRECTORY}")
+
+# Write the qgis.env file to the bin folder to allow running qgis.exe correctly from build folder
+if(WITH_VCPKG)
+  if(WIN32)
+    set(VCPKG_TARGET_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}")
+    configure_file(${CMAKE_SOURCE_DIR}/ms-windows/dev/qgis.env.in ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgis.env @ONLY)
+  endif()
+endif()
 
 # manual page - makes sense only on unix systems
 if (UNIX AND NOT APPLE)
