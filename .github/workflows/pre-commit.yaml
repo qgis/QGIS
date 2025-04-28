@@ -55,7 +55,7 @@ jobs:
             MODIFIED_FILES=$(git diff --name-only $BASE_SHA $HEAD_SHA | tr '\n' ' ')
             echo "Modified files: ${MODIFIED_FILES}"
             if [ -n "$MODIFIED_FILES" ]; then
-                pre-commit run --files "${MODIFIED_FILES}" || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
+                pre-commit run --files ${MODIFIED_FILES} || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
             else
                 echo "No modified files detected. Skipping pre-commit checks."
             fi
