@@ -32,20 +32,20 @@ jobs:
         id: pre-commit
         run: |
             if [ "${{ github.event_name }}" == "pull_request" ]; then
-              echo "BASE_SHA=${{ github.event.pull_request.base.sha }}" >> $GITHUB_ENV
-              echo "HEAD_SHA=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
+              echo "BASE_SHA=${{ github.event.pull_request.base.sha }}" >> "${GITHUB_ENV}"
+              echo "HEAD_SHA=${{ github.event.pull_request.head.sha }}" >> "${GITHUB_ENV}"
             else
               if [ -z "${{ github.event.before }}" ]; then
-                echo "BASE_SHA=$(git rev-list --max-parents=0 HEAD)" >> $GITHUB_ENV
+                echo "BASE_SHA=$(git rev-list --max-parents=0 HEAD)" >> "${GITHUB_ENV}"
               else
-                echo "BASE_SHA=${{ github.event.before }}" >> $GITHUB_ENV
+                echo "BASE_SHA=${{ github.event.before }}" >> "${GITHUB_ENV}"
               fi
-              echo "HEAD_SHA=${{ github.sha }}" >> $GITHUB_ENV
+              echo "HEAD_SHA=${{ github.sha }}" >> "${GITHUB_ENV}"
             fi
             MODIFIED_FILES=$(git diff --name-only ${BASE_SHA} ${HEAD_SHA} | tr '\n' ' ')
             if [ -n "$MODIFIED_FILES" ]; then
-                echo "Modified files: $MODIFIED_FILES"
-                pre-commit run --files $MODIFIED_FILES || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
+                echo "Modified files: ${MODIFIED_FILES}"
+                pre-commit run --files "${MODIFIED_FILES}" || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
             else
                 pre-commit run --all-files || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
             fi
