@@ -128,7 +128,8 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
 
 QgsLocator *QgsLocatorWidget::locator()
 {
-  return mModelBridge->locator();
+  return mModelBridge->locator()
+    ;
 }
 
 void QgsLocatorWidget::setMapCanvas( QgsMapCanvas *canvas )
