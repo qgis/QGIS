@@ -55,7 +55,7 @@ jobs:
             git push
 
       - name: Create a new branch for pre-commit fixes
-        if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
         run: |
             git config --global user.name "github-actions[bot]"
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -97,7 +97,7 @@ jobs:
                 console.log(`Created PR: ${pr.html_url}`);
 
       - name: Comment on PR if pre-commit failed
-        if: failure() && github.event_name == 'pull_request'
+        if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
