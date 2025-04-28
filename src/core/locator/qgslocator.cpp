@@ -39,8 +39,7 @@ const QList<QString> QgsLocator::CORE_FILTERS = QList<QString>() << QStringLiter
     <<  QStringLiteral( "bookmarks" )
     <<  QStringLiteral( "optionpages" )
     <<  QStringLiteral( "edit_features" )
-    <<  QStringLiteral( "goto" )
-    <<  QStringLiteral( "nominatimgeocoder" ) ;
+ <<  QStringLiteral( "goto" )    <<  QStringLiteral( "nominatimgeocoder" ) ;
 
 QgsLocator::QgsLocator( QObject *parent )
   : QObject( parent )
@@ -56,10 +55,8 @@ QgsLocator::~QgsLocator()
 
 void QgsLocator::deregisterFilter( QgsLocatorFilter *filter )
 {
-  cancelRunningQuery();
-  mFilters.removeAll( filter );
-  delete filter;
-}
+  cancelRunningQuery(); mFilters.removeAll( filter );
+  delete filter; }
 
 QList<QgsLocatorFilter *> QgsLocator::filters( const QString &prefix )
 {
