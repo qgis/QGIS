@@ -93,16 +93,16 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { data: comments } = await github.rest.pulls.listComments({
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: context.issue.number
+              issue_number: context.issue.number
             });
 
             const existingComment = comments.find(comment => comment.body.includes("⚠️ Pre-commit checks failed."));
             if (!existingComment) {
-              await github.rest.pulls.createComment({
-                pull_number: context.issue.number,
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: "⚠️ Pre-commit checks failed. You can fix issues locally by running `pre-commit run --all-files`. Alternatively, comment `/fix-precommit` on this pull request, and I will attempt to auto-fix and open a new pull request for you."
