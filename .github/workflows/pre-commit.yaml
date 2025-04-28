@@ -13,6 +13,7 @@ jobs:
     permissions:
       pull-requests: write
       contents: write
+      issues: write
 
     steps:
       - uses: actions/checkout@v4
