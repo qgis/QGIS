@@ -1107,7 +1107,7 @@ file(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgisbuildpath.txt "${CMAK
 if(WITH_VCPKG)
   if(WIN32)
     set(VCPKG_TARGET_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}")
-    configure_file(${CMAKE_SOURCE_DIR}/ms-windows/dev/qgis.env.in ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgis.env @ONLY)
+    configure_file(${CMAKE_SOURCE_DIR}/ms-windows/dev/qgis.env.in ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgis.env)
   endif()
 endif()
 
