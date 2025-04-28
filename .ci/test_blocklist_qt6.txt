@@ -38,7 +38,6 @@ PyQgsAuthenticationSystem
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
 PyQgsElevationProfileCanvas
-PyQgsProject
 PyQgsFloatingWidget
 PyQgsLayoutHtml
 PyQgsMapBoxGlStyleConverter
