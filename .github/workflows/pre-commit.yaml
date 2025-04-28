@@ -47,10 +47,64 @@ jobs:
             fi
 
       - name: Auto-commit fixes
-        if: failure() && ( github.event_name == 'push' || ( github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository ) )
+        if: failure() && github.event_name == 'push'
         run: |
             git config --global user.name "github-actions[bot]"
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git add .
             git commit -m "auto-fix pre-commit issues" || echo "No changes to commit"
             git push
+
+      - name: Listen for `/fix-precommit` comment
+        if: failure() && github.event_name == 'issue_comment' && github.event.comment.body == '/fix-precommit' && github.event.issue.pull_request
+        uses: actions/github-script@v7
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            script: |
+                const pullRequest = await github.rest.pulls.get({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: context.issue.number
+                });
+
+                const branchName = `fix/pre-commit-fixes-${context.issue.number}`;
+                await github.rest.git.createRef({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    ref: `refs/heads/${branchName}`,
+                    sha: pullRequest.data.head.sha
+                });
+
+                const { data: pr } = await github.rest.pulls.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    head: branchName,
+                    base: pullRequest.data.base.ref,
+                    title: 'Auto-fix pre-commit issues',
+                    body: 'This PR fixes pre-commit errors automatically.',
+                    maintainer_can_modify: true
+                });
+
+                console.log(`Created PR: ${pr.html_url}`);
+
+      - name: Comment on PR if pre-commit failed
+        if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+
+            const existingComment = comments.find(comment => comment.body.includes("⚠️ Pre-commit checks failed."));
+            if (!existingComment) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: "⚠️ Pre-commit checks failed. You can fix issues locally by running `pre-commit run --all-files`. Alternatively, comment `/fix-precommit` on this pull request, and I will attempt to auto-fix and open a new pull request for you."
+              });
+            }
