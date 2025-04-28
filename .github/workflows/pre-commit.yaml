@@ -20,6 +20,11 @@ jobs:
         with:
           fetch-depth: 200
 
+      - name: Fetch pull request head commit
+        if: github.event_name == 'pull_request_target'
+        run: |
+          git fetch --depth=200 origin ${{ github.event.pull_request.head.ref }}:refs/remotes/origin/${{ github.event.pull_request.head.ref }}
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -32,8 +37,8 @@ jobs:
         id: pre-commit
         run: |
             if [ "${{ github.event_name }}" == "pull_request_target" ]; then
-              BASE_SHA=$(git merge-base ${{ github.event.pull_request.base.ref }} HEAD)
-              HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+              BASE_SHA="origin/${{ github.event.pull_request.base.ref }}"
+              HEAD_SHA="origin/${{ github.event.pull_request.head.ref }}"
             else
               if [ -z "${{ github.event.before }}" ]; then
                 BASE_SHA=$(git rev-list --max-parents=0 HEAD)
@@ -42,7 +47,7 @@ jobs:
               fi
               HEAD_SHA=${{ github.sha }}
             fi
-            MODIFIED_FILES=$(git diff --name-only ${BASE_SHA} ${HEAD_SHA} | tr '\n' ' ')
+            MODIFIED_FILES=$(git diff --name-only $BASE_SHA $HEAD_SHA | tr '\n' ' ')
             echo "Modified files: ${MODIFIED_FILES}"
             if [ -n "$MODIFIED_FILES" ]; then
                 pre-commit run --files "${MODIFIED_FILES}" || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
