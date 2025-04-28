@@ -15,6 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 200
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -26,8 +27,14 @@ jobs:
       - name: Run pre-commit checks
         id: pre-commit
         run: |
-            BEFORE_SHA=${{ github.event.before || 'HEAD~1' }}
-            MODIFIED_FILES=$(git diff --name-only ${BEFORE_SHA} ${{ github.sha }} | tr '\n' ' ')
+            if [ "${{ github.event_name }}" == "pull_request" ]; then
+              echo "BASE_SHA=${{ github.event.pull_request.base.sha }}" >> $GITHUB_ENV
+              echo "HEAD_SHA=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
+            else
+              echo "BASE_SHA=${{ github.event.before }}" >> $GITHUB_ENV
+              echo "HEAD_SHA=${{ github.sha }}" >> $GITHUB_ENV
+            fi
+            MODIFIED_FILES=$(git diff --name-only ${BASE_SHA} ${HEAD_SHA} | tr '\n' ' ')
             if [ -n "$MODIFIED_FILES" ]; then
                 pre-commit run --files $MODIFIED_FILES || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
             else
