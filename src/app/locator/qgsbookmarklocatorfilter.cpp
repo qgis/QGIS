@@ -38,9 +38,11 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
   QMapIterator<QString, QModelIndex> i( bookmarkMap );
 
   while ( i.hasNext() )
-  {     i.next();
+  {
+    i.next();
 
-    if ( feedback->isCanceled() )  return;
+    if ( feedback->isCanceled() )
+      return;
 
     const QString name = i.key();
     const QModelIndex index = i.value();
@@ -56,8 +58,7 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
       continue;
     }
 
-    result.score = 
-      fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( result.displayString, string );
 
     if ( result.score > 0 )
       emit resultFetched( result );
