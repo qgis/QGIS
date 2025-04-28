@@ -1373,6 +1373,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
                               bool addToLegend = true,
                               bool takeOwnership SIP_PYARGREMOVE = true );
 
+#ifndef SIP_RUN
     /**
      * \brief
      * Remove a set of layers from the registry by layer ID.
@@ -1404,6 +1405,62 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see removeAllMapLayers()
      */
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
+#else
+
+    /**
+     * \brief
+     * Remove a set of layers from the registry.
+     *
+     * The specified layers will be removed from the registry. If the registry has ownership
+     * of any layers these layers will also be deleted.
+     *
+     * \param layers list of layers or list of layer IDs of the layers to remove
+     *
+     * \note As a side-effect the QgsProject instance is marked dirty.
+     * \see removeMapLayer()
+     * \see removeAllMapLayers()
+     */
+    void removeMapLayers( SIP_PYOBJECT layers SIP_TYPEHINT( Union[List[QgsVectorLayer], List[str]] ) );
+    % MethodCode
+    if ( !PyList_Check( a0 ) )
+    {
+      sipIsErr = 1;
+      PyErr_SetString( PyExc_TypeError, "Expected a list of layers or layers IDs" );
+    }
+    else if ( PyList_GET_SIZE( a0 ) )
+    {
+      PyObject *firstLayerPyObj = PyList_GetItem( a0, 0 );
+      if ( firstLayerPyObj )
+      {
+        int state;
+        if ( sipCanConvertToType( firstLayerPyObj, sipType_QgsMapLayer, SIP_NOT_NONE ) )
+        {
+          const sipTypeDef *qlist_type = sipFindType( "QList<QgsMapLayer *>" );
+          QList<QgsMapLayer *> *layersList = reinterpret_cast<QList<QgsMapLayer *> *>( sipConvertToType( a0, qlist_type, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+          if ( !sipIsErr )
+          {
+            sipCpp->removeMapLayers( *layersList );
+          }
+          sipReleaseType( layersList, qlist_type, state );
+        }
+        else if ( sipCanConvertToType( firstLayerPyObj, sipType_QString, SIP_NOT_NONE ) )
+        {
+          QStringList *layersId = reinterpret_cast<QStringList *>( sipConvertToType( a0, sipType_QStringList, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+          if ( !sipIsErr )
+          {
+            sipCpp->removeMapLayers( *layersId );
+          }
+          sipReleaseType( layersId, sipType_QStringList, state );
+        }
+        else
+        {
+          sipIsErr = 1;
+          PyErr_SetString( PyExc_TypeError, "Expected a list of layers or layers IDs" );
+        }
+      }
+    }
+    % End
+#endif
 
     /**
      * \brief

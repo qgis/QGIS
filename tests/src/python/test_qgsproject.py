@@ -750,9 +750,6 @@ class TestQgsProject(QgisTestCase):
         QgsProject.instance().removeMapLayers([l4.id()])
         self.assertFalse(sip.isdeleted(l4))
 
-    # fails on qt5 due to removeMapLayers list type conversion - needs a PyName alias
-    # added to removeMapLayers for QGIS 3.0
-    @QgisTestCase.expectedFailure(QT_VERSION_STR[0] == "5")
     def test_removeMapLayersByLayer(self):
         """test removing map layers by layer"""
         QgsProject.instance().removeAllMapLayers()
@@ -824,6 +821,65 @@ class TestQgsProject(QgisTestCase):
         l3 = createLayer("test3")
         QgsProject.instance().removeMapLayer(l3.id())
         self.assertFalse(sip.isdeleted(l3))
+
+        # ==== do it again with list
+        l1 = createLayer("test")
+        l2 = createLayer("test2")
+
+        QgsProject.instance().addMapLayers([l1, l2])
+        self.assertEqual(QgsProject.instance().count(), 2)
+
+        # remove - empty list
+        # nothing happens
+        QgsProject.instance().removeMapLayers([])
+        self.assertEqual(QgsProject.instance().count(), 2)
+
+        # remove layers
+        l1_id = l1.id()
+        l2_id = l2.id()
+        QgsProject.instance().removeMapLayers([l1_id, l2_id])
+        self.assertEqual(QgsProject.instance().count(), 0)
+
+        # mix list and list ids
+        # this should not work
+        l5 = createLayer("test5")
+        l6 = createLayer("test6")
+        l7 = createLayer("test7")
+
+        QgsProject.instance().addMapLayers([l5, l6, l7])
+        self.assertEqual(QgsProject.instance().count(), 3)
+        with self.assertRaises(TypeError):
+            QgsProject.instance().removeMapLayers(["test6", l5])
+        self.assertEqual(QgsProject.instance().count(), 3)
+
+        with self.assertRaises(TypeError):
+            QgsProject.instance().removeMapLayers([l5, l6, "test7"])
+        self.assertEqual(QgsProject.instance().count(), 3)
+
+        # remove vector and raster layers
+        r0 = QgsVectorLayer("points.shp", "points", "ogr")
+        r1 = QgsVectorLayer("lines.shp", "lines", "ogr")
+        r2 = QgsRasterLayer("landsat_4326.tif", "landsat", "gdal")
+        self.assertTrue(QgsProject.instance().addMapLayers([r0, r1, r2]))
+        self.assertEqual(QgsProject.instance().count(), 6)
+        QgsProject.instance().removeMapLayers([r0, r1, l7])
+        self.assertEqual(QgsProject.instance().count(), 3)
+
+        # try to remove with wrong layer names
+        QgsProject.instance().removeMapLayers(["test20", "test21"])
+        self.assertEqual(QgsProject.instance().count(), 3)
+
+        # try to remove only one layer
+        # this should not work
+        with self.assertRaises(TypeError):
+            QgsProject.instance().removeMapLayers(l5)
+        self.assertEqual(QgsProject.instance().count(), 3)
+
+        # try to remove with a list of int
+        # this should not work
+        with self.assertRaises(TypeError):
+            QgsProject.instance().removeMapLayers([4, 5, 6])
+        self.assertEqual(QgsProject.instance().count(), 3)
 
     def test_removeMapLayerByLayer(self):
         """test removing a map layer by layer"""

@@ -39,7 +39,6 @@ PyQgsCodeEditor
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
 PyQgsElevationProfileCanvas
-PyQgsProject
 PyQgsFloatingWidget
 PyQgsLayoutHtml
 PyQgsMapBoxGlStyleConverter
