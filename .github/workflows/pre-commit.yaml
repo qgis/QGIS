@@ -5,9 +5,7 @@ on: [pull_request, push]
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
+
     steps:
       - uses: actions/checkout@v4
         with:
