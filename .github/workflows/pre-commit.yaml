@@ -1,7 +1,7 @@
 name: Pre-commit checks
 
 on:
-  pull_request:
+  pull_request_target:
   push:
   issue_comment:
     types: [created]
@@ -109,9 +109,6 @@ jobs:
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                headers: {
-                  authorization: `token ${{ secrets.GITHUB_TOKEN }}`
-                },
                 body: "⚠️ Pre-commit checks failed. You can fix issues locally by running `pre-commit run --all-files`. Alternatively, comment `/fix-precommit` on this pull request, and I will attempt to auto-fix and open a new pull request for you."
               });
             }
