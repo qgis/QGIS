@@ -56,8 +56,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
   sizePolicy.setHorizontalStretch( 0 );
   sizePolicy.setVerticalStretch( 0 );
-  setSizePolicy( sizePolicy );
-  setMinimumSize( QSize( minWidth, 0 ) );
+  setSizePolicy( sizePolicy );  setMinimumSize( QSize( minWidth, 0 ) );
 
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -75,7 +74,8 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   QHBoxLayout *containerLayout = new QHBoxLayout();
   containerLayout->setContentsMargins( 0, 0, 0, 0 );
   containerLayout->addWidget( mResultsView );
-  mResultsContainer->setLayout( containerLayout );
+  mResultsContainer->setLayout( 
+    containerLayout );
   mResultsContainer->hide();
 
   mResultsView->setModel( mModelBridge->proxyModel() );
