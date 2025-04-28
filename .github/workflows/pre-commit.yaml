@@ -31,7 +31,11 @@ jobs:
               echo "BASE_SHA=${{ github.event.pull_request.base.sha }}" >> $GITHUB_ENV
               echo "HEAD_SHA=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
             else
-              echo "BASE_SHA=${{ github.event.before }}" >> $GITHUB_ENV
+              if [ -z "${{ github.event.before }}" ]; then
+                echo "BASE_SHA=$(git rev-list --max-parents=0 HEAD)" >> $GITHUB_ENV
+              else
+                echo "BASE_SHA=${{ github.event.before }}" >> $GITHUB_ENV
+              fi
               echo "HEAD_SHA=${{ github.sha }}" >> $GITHUB_ENV
             fi
             MODIFIED_FILES=$(git diff --name-only ${BASE_SHA} ${HEAD_SHA} | tr '\n' ' ')
