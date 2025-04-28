@@ -89,8 +89,8 @@ QVariantMap QgsClimbAlgorithm::processAlgorithm( const QVariantMap &parameters, 
   QgsFields newFields;
   newFields.append( QgsField( QStringLiteral( "climb" ), QMetaType::Type::Double ) );
   newFields.append( QgsField( QStringLiteral( "descent" ), QMetaType::Type::Double ) );
-  newFields.append( QgsField( QStringLiteral( "min_elev" ), QMetaType::Type::Double ) );
-  newFields.append( QgsField( QStringLiteral( "max_elev" ), QMetaType::Type::Double ) );
+  newFields.append( QgsField( QStringLiteral( "minelev" ), QMetaType::Type::Double ) );
+  newFields.append( QgsField( QStringLiteral( "maxelev" ), QMetaType::Type::Double ) );
   outputFields = QgsProcessingUtils::combineFields( outputFields, newFields );
 
   QString dest;
@@ -189,8 +189,14 @@ QVariantMap QgsClimbAlgorithm::processAlgorithm( const QVariantMap &parameters, 
 
   sink->finalize();
 
-  feedback->pushInfo( QObject::tr( "The following features do not have geometry: %1" ).arg( noGeometry.join( QStringLiteral( ", " ) ) ) );
-  feedback->pushInfo( QObject::tr( "The following points do not have Z value: %1" ).arg( noZValue.join( QStringLiteral( ", " ) ) ) );
+  if ( !noGeometry.empty() )
+  {
+    feedback->pushInfo( QObject::tr( "The following features do not have geometry: %1" ).arg( noGeometry.join( QStringLiteral( ", " ) ) ) );
+  }
+  if ( !noZValue.empty() )
+  {
+    feedback->pushInfo( QObject::tr( "The following points do not have Z value: %1" ).arg( noZValue.join( QStringLiteral( ", " ) ) ) );
+  }
 
   QVariantMap results;
   results.insert( QStringLiteral( "OUTPUT" ), dest );
