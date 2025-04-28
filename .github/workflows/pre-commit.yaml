@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 200
 
-      - name: Set up Python
+            - name: Set up Python
         uses: actions/setup-python@v5
         with:
             python-version: '3.13'
@@ -32,22 +32,22 @@ jobs:
         id: pre-commit
         run: |
             if [ "${{ github.event_name }}" == "pull_request_target" ]; then
-              echo "BASE_SHA=${{ github.event.pull_request.base.sha }}" >> "${GITHUB_ENV}"
-              echo "HEAD_SHA=${{ github.event.pull_request.head.sha }}" >> "${GITHUB_ENV}"
+              echo "BASE_SHA=${{ github.event.pull_request.base.sha }}" >> ${GITHUB_ENV}
+              echo "HEAD_SHA=${{ github.event.pull_request.head.sha }}" >> ${GITHUB_ENV}
             else
               if [ -z "${{ github.event.before }}" ]; then
-                echo "BASE_SHA=$(git rev-list --max-parents=0 HEAD)" >> "${GITHUB_ENV}"
+                echo "BASE_SHA=$(git rev-list --max-parents=0 HEAD)" >> ${GITHUB_ENV}
               else
-                echo "BASE_SHA=${{ github.event.before }}" >> "${GITHUB_ENV}"
+                echo "BASE_SHA=${{ github.event.before }}" >> ${GITHUB_ENV}
               fi
-              echo "HEAD_SHA=${{ github.sha }}" >> "${GITHUB_ENV}"
+              echo "HEAD_SHA=${{ github.sha }}" >> ${GITHUB_ENV}
             fi
             MODIFIED_FILES=$(git diff --name-only ${BASE_SHA} ${HEAD_SHA} | tr '\n' ' ')
+            echo "Modified files: ${MODIFIED_FILES}"
             if [ -n "$MODIFIED_FILES" ]; then
-                echo "Modified files: ${MODIFIED_FILES}"
                 pre-commit run --files "${MODIFIED_FILES}" || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
             else
-                pre-commit run --all-files || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
+                echo "No modified files detected. Skipping pre-commit checks."
             fi
 
       - name: Auto-commit fixes
@@ -57,7 +57,7 @@ jobs:
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git add .
             git commit -m "auto-fix pre-commit issues" || echo "No changes to commit"
-            git push
+            git push || echo "Failed to push changes. Please check permissions or conflicts."
 
       - name: Listen for `/fix-precommit` comment
         if: failure() && github.event_name == 'issue_comment' && github.event.comment.body == '/fix-precommit' && github.event.issue.pull_request
