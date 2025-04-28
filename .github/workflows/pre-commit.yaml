@@ -35,7 +35,7 @@ jobs:
             fi
 
       - name: Auto-commit fixes
-        if: failure() && github.event.pull_request.head.repo.full_name == github.repository && github.event_name != 'issue_comment'
+        if: failure() && github.event_name == 'push'
         run: |
             git config --global user.name "github-actions[bot]"
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
