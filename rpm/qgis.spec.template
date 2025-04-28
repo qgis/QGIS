@@ -105,6 +105,7 @@ BuildRequires:  qca-qt5-ossl
 BuildRequires:  qscintilla-qt5-devel
 
 # Qt5 stuff
+BuildRequires:  cmake(Qt5WebEngine)
 BuildRequires:  qt5-qtlocation-devel
 BuildRequires:  qt5-qtmultimedia-devel
 BuildRequires:  qt5-qtsvg-devel
@@ -117,6 +118,12 @@ BuildRequires:  qt5-qtbase-private-devel
 
 # Qwt stuff
 BuildRequires:  qwt-qt5-devel
+
+# PDF4QT
+BuildRequires:  pkgconfig(freetype2)
+BuildRequires:  pkgconfig(lcms2)
+BuildRequires:  pkgconfig(libjpeg)
+BuildRequires:  pkgconfig(libopenjp2)
 
 # GDAL must be explicit. It is required by some raster tools
 # like Warp (Reproject) which relies on gdalwarp
@@ -202,6 +209,9 @@ Please refer to %{name}-server-README.fedora for details!
 # Remove executable permissions from source code files
 find . \( -name "*.cpp" -o -name "*.h" \) -type f -perm /111 -execdir chmod -x {} \+
 
+# Move installation of libPdf4QtLibCore.so from /usr/usr/lib/ to /usr/lib64
+sed -i 's|PDF4QT_INSTALL_LIB_DIR usr/${PDF4QT_INSTALL_LIB_DIR_IMPL}|PDF4QT_INSTALL_LIB_DIR %{_libdir}|' external/PDF4QT/CMakeLists.txt
+
 # Readme file for QGIS server configuration HTTPD and Nginx example
 install -pm0644 %{SOURCE1} .
 install -pm0644 %{SOURCE2} .
@@ -225,7 +235,9 @@ gzip ChangeLog
       -D ENABLE_TESTS:BOOL=FALSE \
       -D WITH_EPT:BOOL=TRUE \
       -D WITH_PDAL:BOOL=TRUE \
+      -D WITH_PDF4QT:BOOL=TRUE \
       -D WITH_QSPATIALITE:BOOL=TRUE \
+      -D WITH_QTWEBENGINE:BOOL=TRUE \
       -D WITH_SERVER:BOOL=TRUE \
       -D WITH_3D:BOOL=TRUE \
       -D USE_OPENCL:BOOL=TRUE \
@@ -266,6 +278,7 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 %{_libdir}/lib%{name}_core.so.*
 %{_libdir}/lib%{name}_gui.so.*
 %{_libdir}/lib%{name}_3d.so.*
+%{_libdir}/libPdf4QtLibCore.so*
 %{_libdir}/%{name}/
 %{?_qt5_plugindir}/sqldrivers/libqsqlspatialite.so
 %{_bindir}/%{name}
