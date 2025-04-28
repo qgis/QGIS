@@ -46,8 +46,7 @@ bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &s
 }
 
 double QgsLocatorFilter::fuzzyScore( const QString &candidate, const QString &search )
-{
-  return QgsStringUtils::fuzzyScore( candidate, search );
+{  return QgsStringUtils::fuzzyScore( candidate, search );
 }
 
 bool QgsLocatorFilter::enabled() const
@@ -85,8 +84,7 @@ QString QgsLocatorFilter::activePrefix() const
   // do not change this to isEmpty!
   // if any issue with an in-built locator filter
   // do not forget to add it in QgsLocator::CORE_FILTERS
-  if ( mActivePrefifx.isNull() )
-    return prefix();
+  if ( mActivePrefifx.isNull() ) return prefix();
   else
     return mActivePrefifx;
 }
