@@ -31,7 +31,7 @@ jobs:
       - name: Run pre-commit checks
         id: pre-commit
         run: |
-            if [ "${{ github.event_name }}" == "pull_request" ]; then
+            if [ "${{ github.event_name }}" == "pull_request_target" ]; then
               echo "BASE_SHA=${{ github.event.pull_request.base.sha }}" >> "${GITHUB_ENV}"
               echo "HEAD_SHA=${{ github.event.pull_request.head.sha }}" >> "${GITHUB_ENV}"
             else
