@@ -32,15 +32,15 @@ jobs:
         id: pre-commit
         run: |
             if [ "${{ github.event_name }}" == "pull_request_target" ]; then
-              echo "BASE_SHA=${{ github.event.pull_request.base.sha }}" >> ${GITHUB_ENV}
-              echo "HEAD_SHA=${{ github.event.pull_request.head.sha }}" >> ${GITHUB_ENV}
+              BASE_SHA=${{ github.event.pull_request.base.sha }}
+              HEAD_SHA=${{ github.event.pull_request.head.sha }}
             else
               if [ -z "${{ github.event.before }}" ]; then
-                echo "BASE_SHA=$(git rev-list --max-parents=0 HEAD)" >> ${GITHUB_ENV}
+                echo "BASE_SHA=$(git rev-list --max-parents=0 HEAD)
               else
-                echo "BASE_SHA=${{ github.event.before }}" >> ${GITHUB_ENV}
+                echo "BASE_SHA=${{ github.event.before }}
               fi
-              echo "HEAD_SHA=${{ github.sha }}" >> ${GITHUB_ENV}
+              echo "HEAD_SHA=${{ github.sha }}
             fi
             MODIFIED_FILES=$(git diff --name-only ${BASE_SHA} ${HEAD_SHA} | tr '\n' ' ')
             echo "Modified files: ${MODIFIED_FILES}"
