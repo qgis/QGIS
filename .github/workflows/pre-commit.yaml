@@ -40,9 +40,10 @@ jobs:
             fi
             MODIFIED_FILES=$(git diff --name-only ${BASE_SHA} ${HEAD_SHA} | tr '\n' ' ')
             if [ -n "$MODIFIED_FILES" ]; then
+                echo "Modified files: $MODIFIED_FILES"
                 pre-commit run --files $MODIFIED_FILES || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
             else
-                pre-commit run --all-files
+                pre-commit run --all-files || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
             fi
 
       - name: Auto-commit fixes
