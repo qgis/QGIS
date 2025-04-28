@@ -20,11 +20,6 @@ jobs:
         with:
           fetch-depth: 200
 
-      - name: Fetch base branch
-        if: github.event_name == 'pull_request_target'
-        run: |
-          git fetch --depth=200 origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -37,7 +32,7 @@ jobs:
         id: pre-commit
         run: |
             if [ "${{ github.event_name }}" == "pull_request_target" ]; then
-              BASE_SHA="origin/${{ github.event.pull_request.base.ref }}"
+              BASE_SHA=$(git merge-base ${{ github.event.pull_request.base.ref }} HEAD)
               HEAD_SHA="${{ github.event.pull_request.head.sha }}"
             else
               if [ -z "${{ github.event.before }}" ]; then
