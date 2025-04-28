@@ -26,11 +26,11 @@ jobs:
       - name: Run pre-commit checks
         id: pre-commit
         run: |
-            MODIFIED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | tr '\n' ' ')
-            if [ -n "$MODIFIED_FILES" ]; then
-                pre-commit run --files $MODIFIED_FILES || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
-            else
+            if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
                 pre-commit run --all-files
+            else
+                MODIFIED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | tr '\n' ' ')
+                pre-commit run --files $MODIFIED_FILES || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
             fi
 
       - name: Auto-commit fixes
@@ -40,10 +40,10 @@ jobs:
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git add .
             git commit -m "auto-fix pre-commit issues" || echo "No changes to commit"
-            git push
+            git push -u origin HEAD:${{ github.head_ref }} || echo "No changes to push"
 
       - name: Create a new branch for pre-commit fixes
-        if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
         run: |
             git config --global user.name "github-actions[bot]"
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
