@@ -36,11 +36,11 @@ jobs:
               HEAD_SHA=${{ github.event.pull_request.head.sha }}
             else
               if [ -z "${{ github.event.before }}" ]; then
-                echo "BASE_SHA=$(git rev-list --max-parents=0 HEAD)
+                BASE_SHA=$(git rev-list --max-parents=0 HEAD)
               else
-                echo "BASE_SHA=${{ github.event.before }}
+                BASE_SHA=${{ github.event.before }}
               fi
-              echo "HEAD_SHA=${{ github.sha }}
+              HEAD_SHA=${{ github.sha }}
             fi
             MODIFIED_FILES=$(git diff --name-only ${BASE_SHA} ${HEAD_SHA} | tr '\n' ' ')
             echo "Modified files: ${MODIFIED_FILES}"
