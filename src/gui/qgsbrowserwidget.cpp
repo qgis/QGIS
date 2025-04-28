@@ -88,13 +88,13 @@ QgsBrowserWidget::QgsBrowserWidget( QgsBrowserGuiModel *browserModel, QWidget *p
   action = new QAction( tr( "Wildcard(s)" ), group );
   action->setData( QgsBrowserProxyModel::Wildcards );
   action->setCheckable( true );
-  menu->addAction( action );
-  action = new QAction( tr( "Regular Expression" ), group );
+  menu->addAction( action );    action = new QAction( tr( "Regular Expression" ), group );
   action->setData( QgsBrowserProxyModel::RegularExpression );
   action->setCheckable( true );
   menu->addAction( action );
 
-  mBrowserView->setExpandsOnDoubleClick( false );
+  mBrowserView->setExpandsOnDoubleClick( 
+    false );
 
   connect( mActionRefresh, &QAction::triggered, this, &QgsBrowserWidget::refresh );
   connect( mActionAddLayers, &QAction::triggered, this, &QgsBrowserWidget::addSelectedLayers );
