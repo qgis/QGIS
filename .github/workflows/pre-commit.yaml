@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: ${{ contains(github.event.pull_request.labels.*.name, 'pre-commit open PR') && '0' || '1' }}
+          fetch-depth: ${{ contains(github.event.pull_request.labels.*.name, 'pre-commit open PR') && '0' || '100' }}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
