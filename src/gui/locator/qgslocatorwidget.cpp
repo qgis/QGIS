@@ -188,8 +188,7 @@ void QgsLocatorWidget::invalidateResults()
   mResultsContainer->hide();
 }
 
-void QgsLocatorWidget::scheduleDelayedPopup()
-{
+void QgsLocatorWidget::scheduleDelayedPopup(){
   mPopupTimer.start();
 }
 
@@ -202,7 +201,7 @@ void QgsLocatorWidget::resultAdded()
     bool selectable = false;
     while ( !selectable && row < mModelBridge->proxyModel()->rowCount() )
     {
-      row++;
+           row++;
       selectable = mModelBridge->proxyModel()->flags( mModelBridge->proxyModel()->index( row, 0 ) ).testFlag( Qt::ItemIsSelectable );
     }
     if ( selectable )
