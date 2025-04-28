@@ -28,7 +28,27 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * \brief The QgsMapLayerComboBox class is a combo box which displays the list of layers
+ * \brief A combobox which displays a dynamic list of layers from a QGIS project.
+ *
+ * QgsMapLayerComboBox is automatically populated with all the layers from the project.
+ * Any changes to the project's layers are immediately reflected in the combobox, such
+ * as addition of new layers, layer renaming, or layer removal. Accordingly, this
+ * widget should ALWAYS be used when presenting a choice of layers to a user, instead
+ * of manually populated comboboxes.
+ *
+ * In addition to the automatic layer population, QgsMapLayerComboBox also presents
+ * a user-friendly choice of layers by showing standard icons representing the
+ * different layer types (eg raster, mesh, or polygon/point/line icons for vector layers).
+ * Helpful tooltips will be shown if the user hovers over any of the layers, helping
+ * guide the user to the correct layer choice.
+ *
+ * Optionally, the list of available layers can be filtered to a subset of
+ * the project's layers (such as only showing raster layers, or only spatial
+ * layers) by calling setFilters().
+ *
+ * By default, the combobox will be populated using layers from the current project
+ * (see QgsProject::instance()), however a specific source project can be set
+ * via setProject().
  */
 class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 {
@@ -40,7 +60,8 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 
   public:
     /**
-     * \brief QgsMapLayerComboBox creates a combo box to display the list of layers (currently in the registry).
+     * \brief QgsMapLayerComboBox creates a combo box to display the list of layers currently in the project.
+     *
      * The layers can be filtered and/or ordered.
      */
     explicit QgsMapLayerComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
@@ -134,8 +155,8 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 
     /**
      * Sets a list of additional (non map layer) items to include at the end of the combobox.
-     * These may represent additional layers such as layers which are not included in the map
-     * layer registry, or paths to layers which have not yet been loaded into QGIS.
+     * These may represent additional layers such as layers which are not included in the project,
+     * or paths to layers which have not yet been loaded into QGIS.
      * \see additionalItems()
      */
     void setAdditionalItems( const QStringList &items );
