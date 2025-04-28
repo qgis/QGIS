@@ -46,6 +46,3 @@ repos:
         always_run: true
         pass_filenames: false
 
-ci:
-  autofix_prs: true
-  autoupdate_schedule: quarterly
