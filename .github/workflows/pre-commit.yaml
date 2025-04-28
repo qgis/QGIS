@@ -1,0 +1,79 @@
+name: Pre-commit checks
+
+on: [pull_request, push]
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ contains(github.event.pull_request.labels.*.name, 'pre-commit open PR') && '0' || '1' }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+            python-version: '3.x'
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Run pre-commit checks
+        id: pre-commit
+        run: |
+            MODIFIED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | tr '\n' ' ')
+            if [ -n "$MODIFIED_FILES" ]; then
+                pre-commit run --files $MODIFIED_FILES || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
+            else
+                pre-commit run --all-files
+            fi
+
+      - name: Auto-commit fixes
+        if: failure() && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add .
+            git commit -m "auto-fix pre-commit issues" || echo "No changes to commit"
+            git push
+
+      - name: Create a new branch for pre-commit fixes
+        if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && contains(github.event.pull_request.labels.*.name, 'pre-commit open PR')
+        run: |
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git checkout -b fix/pre-commit-fixes-${{ github.event.pull_request.number }}
+            git add .
+            git commit -m "auto-fix pre-commit issues"
+            git push -f --set-upstream origin fix/pre-commit-fixes-${{ github.event.pull_request.number }}
+
+      - name: Comment on PR if pre-commit failed
+        if: failure() && github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'pre-commit open PR')
+        uses: actions/github-script@v7
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            script: |
+                github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: "⚠️ Pre-commit checks failed. You can fix issues locally by running `pre-commit run --all-files`. Alternatively, add the label `pre-commit open PR` to this pull request, and I will attempt to auto-fix and open a new pull request for you."
+                })
+
+      - name: Open PR
+        if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && contains(github.event.pull_request.labels.*.name, 'pre-commit open PR')
+        uses: actions/github-script@v7
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            script: |
+                const { data: pr } = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                head: 'fix/pre-commit-fixes-${{ github.event.pull_request.number }}',
+                base: '${{ github.event.pull_request.base.ref }}',
+                title: 'Auto-fix pre-commit issues',
+                body: 'This PR fixes pre-commit errors automatically.',
+                maintainer_can_modify: true
+                });
