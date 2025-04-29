@@ -53,7 +53,7 @@ jobs:
 
             echo "Modified files: $MODIFIED_FILES"
             FILES=""
-            for file in $MODIFIED_FILES; do
+            echo "$MODIFIED_FILES" | while IFS= read -r file; do
               FILES="$FILES --files $file"
             done
             pre-commit run $FILES || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
