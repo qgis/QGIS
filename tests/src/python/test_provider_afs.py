@@ -1226,6 +1226,99 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         f = vl.getFeature(0)
         self.assertTrue(f.isValid())
 
+    def testNoCrs(self):
+        """Test retrieval of features in their original service CRS"""
+
+        endpoint = self.basetestpath + "/oid_fake_qgis_http_endpoint"
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer.\n","geometryType":"esriGeometryPoint","copyrightText":"","parentLayer":{"id":0,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+        {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null}],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}"""
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+        {
+         "objectIdFieldName": "OBJECTID1",
+         "objectIds": [
+          5,
+          3,
+          1,
+          2,
+          4
+         ]
+        }
+        """
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint,
+                "/query?f=json&objectIds=5,3,1,2,4&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+        {
+         "displayFieldName": "LABEL",
+         "geometryType": "esriGeometryPoint",
+         "spatialReference": {
+          "wkid": 4326,
+          "latestWkid": 4326
+         },
+         "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID1","domain":null},
+          {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+          {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null},
+          {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
+         "features": [
+          {
+           "attributes": {
+            "OBJECTID1": 5,
+            "pk": 5,
+            "cnt": -200,
+            "name": null
+           },
+           "geometry": {
+            "x": -71.123,
+            "y": 78.23
+           }
+          }
+         ]
+        }"""
+            )
+
+        # Create test layer
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "'",
+            "test",
+            "arcgisfeatureserver",
+        )
+        self.assertTrue(vl.isValid())
+
+        f = vl.getFeature(0)
+        self.assertTrue(f.isValid())
+
     def testDateTime(self):
         """Test that datetime fields work correctly"""
 
