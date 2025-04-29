@@ -20,11 +20,6 @@ jobs:
         with:
           fetch-depth: 200
 
-      - name: Fetch head commit for PRs from forks
-        if: github.event_name == 'pull_request_target'
-        run: |
-          git fetch --depth=200 origin pull/${{ github.event.pull_request.number }}/head:pr-head
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -38,7 +33,7 @@ jobs:
         run: |
             if [ "${{ github.event_name }}" == "pull_request_target" ]; then
               BASE_SHA="${{ github.event.pull_request.base.sha }}"
-              HEAD_SHA="pr-head"
+              HEAD_SHA="${{ github.event.pull_request.head.sha }}"
             else
               if [ -z "${{ github.event.before }}" ]; then
                 BASE_SHA=$(git rev-list --max-parents=0 HEAD)
