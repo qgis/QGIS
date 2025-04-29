@@ -20,6 +20,16 @@ jobs:
         with:
           fetch-depth: 200
 
+      - name: Fetch base branch
+        if: github.event_name == 'pull_request_target'
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
+
+      - name: Fetch head commit for PRs from forks
+        if: github.event_name == 'pull_request_target'
+        run: |
+          git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -28,34 +38,62 @@ jobs:
       - name: Install pre-commit
         run: pip install pre-commit
 
+      - name: List modified files
+        id: modified-files
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            let files = [];
+      
+            if (context.eventName === 'pull_request') {
+              const prNumber = context.payload.pull_request.number;
+              const response = await github.rest.pulls.listFiles({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+              });
+              files = response.data.map(f => f.filename);
+            } else if (context.eventName === 'push') {
+              const before = context.payload.before;
+              const after = context.payload.after;
+              const response = await github.rest.repos.compareCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                base: before,
+                head: after,
+              });
+              files = response.data.files.map(f => f.filename);
+            } else {
+              core.setFailed(`Unsupported event: ${context.eventName}`);
+            }
+      
+            console.log("Modified files:", files);
+            core.setOutput('files', files.join(' '));
+      
+
       - name: Run pre-commit checks
         id: pre-commit
         run: |
-            if [ "${{ github.event_name }}" == "pull_request_target" ]; then
-              BASE_SHA="${{ github.event.pull_request.base.sha }}"
-              HEAD_SHA="${{ github.event.pull_request.head.sha }}"
-            else
-              if [ -z "${{ github.event.before }}" ]; then
-                BASE_SHA=$(git rev-list --max-parents=0 HEAD)
-              else
-                BASE_SHA=${{ github.event.before }}
-              fi
-              HEAD_SHA=${{ github.sha }}
-            fi
+            pre-commit run --files ${{ steps.modified-files.outputs.files }} || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
 
-            echo "BASE_SHA: $BASE_SHA"
-            echo "HEAD_SHA: $HEAD_SHA"
-
-            pre-commit run --from-ref $BASE_SHA --to-ref $HEAD_SHA || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
-
-      - name: Auto-commit fixes
-        if: failure() && github.event_name == 'push'
+      - name: Commit fixes
+        if: failure()
         run: |
             git config --global user.name "github-actions[bot]"
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git add .
             git commit -m "auto-fix pre-commit issues" || echo "No changes to commit"
-            git push || echo "Failed to push changes. Please check permissions or conflicts."
+
+      - name: Auto-commit fixes
+        if: failure() && github.event_name == 'push'
+        run: git push || echo "Failed to push changes. Please check permissions or conflicts."
+
+      - name: Push fixes to new branch
+        if: failure() && github.event_name == 'issue_comment' && github.event.comment.body == '/fix-precommit' && github.event.issue.pull_request
+        run: |
+              git checkout -b fix/pre-commit-${{ github.event.pull_request.head.sha }}
+              git push origin fix/pre-commit-${{ github.event.pull_request.head.sha }}
 
       - name: Listen for `/fix-precommit` comment
         if: failure() && github.event_name == 'issue_comment' && github.event.comment.body == '/fix-precommit' && github.event.issue.pull_request
@@ -63,31 +101,21 @@ jobs:
         with:
             github-token: ${{ secrets.GITHUB_TOKEN }}
             script: |
-                const pullRequest = await github.rest.pulls.get({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    pull_number: context.issue.number
-                });
+                const forkOwner = context.payload.pull_request.head.repo.owner.login;
+                const forkRepo = context.payload.pull_request.head.repo.name;
+                const forkBranch = context.payload.pull_request.head.ref;
+                const baseRepoOwner = context.repo.owner;
+                const baseRepoName = context.repo.repo;
+                const headBranch = `fix/pre-commit-${context.payload.pull_request.head.sha}`;
 
-                const branchName = `fix/pre-commit-fixes-${context.issue.number}`;
-                await github.rest.git.createRef({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    ref: `refs/heads/${branchName}`,
-                    sha: pullRequest.data.head.sha
+                await github.rest.pulls.create({
+                    owner: forkOwner,
+                    repo: forkRepo,
+                    title: "Auto-fix: Pre-commit issues",
+                    head: `${baseRepoOwner}:${headBranch}`,
+                    base: forkBranch,
+                    body: "This PR attempts to fix pre-commit issues automatically.",
                 });
-
-                const { data: pr } = await github.rest.pulls.create({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    head: branchName,
-                    base: pullRequest.data.base.ref,
-                    title: 'Auto-fix pre-commit issues',
-                    body: 'This PR fixes pre-commit errors automatically.',
-                    maintainer_can_modify: true
-                });
-
-                console.log(`Created PR: ${pr.html_url}`);
 
       - name: Comment on PR if pre-commit failed
         if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
