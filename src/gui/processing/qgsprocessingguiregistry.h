@@ -20,7 +20,6 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgsprocessinggui.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include <QList>
 #include <QMap>
@@ -114,7 +113,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \since QGIS 3.4
      */
-    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) SIP_FACTORY;
+    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) SIP_FACTORY;
 
     /**
      * Creates a new modeler parameter widget for the given \a parameter. This widget allows

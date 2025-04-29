@@ -6672,6 +6672,25 @@ Qgis.ProcessingLogLevel.__doc__ = """Logging level for algorithms to use when pu
 """
 # --
 Qgis.ProcessingLogLevel.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProcessingMode.Standard.__doc__ = "Standard (single-run) algorithm mode"
+Qgis.ProcessingMode.Batch.__doc__ = "Batch processing mode"
+Qgis.ProcessingMode.Modeler.__doc__ = "Modeler mode"
+Qgis.ProcessingMode.__doc__ = """Types of modes which Processing widgets can be created for.
+
+.. note::
+
+   Prior to QGIS 3.44 this was available as :py:class:`QgsProcessingGui`.WidgetType
+
+.. versionadded:: 3.44
+
+* ``Standard``: Standard (single-run) algorithm mode
+* ``Batch``: Batch processing mode
+* ``Modeler``: Modeler mode
+
+"""
+# --
+Qgis.ProcessingMode.baseClass = Qgis
 QgsProcessingFeatureSourceDefinition.Flag = Qgis.ProcessingFeatureSourceDefinitionFlag
 # monkey patching scoped based enum
 QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck = Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck

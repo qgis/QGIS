@@ -109,14 +109,14 @@ void QgsProcessingParameterWidgetContext::setModel( QgsProcessingModelAlgorithm 
 // QgsAbstractProcessingParameterWidgetWrapper
 //
 
-QgsAbstractProcessingParameterWidgetWrapper::QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QObject *parent )
+QgsAbstractProcessingParameterWidgetWrapper::QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QObject *parent )
   : QObject( parent )
   , mType( type )
   , mParameterDefinition( parameter )
 {
 }
 
-QgsProcessingGui::WidgetType QgsAbstractProcessingParameterWidgetWrapper::type() const
+Qgis::ProcessingMode QgsAbstractProcessingParameterWidgetWrapper::type() const
 {
   return mType;
 }
@@ -228,11 +228,11 @@ QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()
 {
   switch ( mType )
   {
-    case QgsProcessingGui::Batch:
+    case Qgis::ProcessingMode::Batch:
       return nullptr;
 
-    case QgsProcessingGui::Standard:
-    case QgsProcessingGui::Modeler:
+    case Qgis::ProcessingMode::Standard:
+    case Qgis::ProcessingMode::Modeler:
     {
       QString description = mParameterDefinition->description();
       if ( parameterDefinition()->flags() & Qgis::ProcessingParameterFlag::Optional )
@@ -257,8 +257,8 @@ void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<Qg
 {
   switch ( mType )
   {
-    case QgsProcessingGui::Batch:
-    case QgsProcessingGui::Standard:
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Standard:
     {
       if ( parameterDefinition()->isDynamic() )
       {
@@ -275,7 +275,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<Qg
       break;
     }
 
-    case QgsProcessingGui::Modeler:
+    case Qgis::ProcessingMode::Modeler:
       break;
   }
 }
@@ -474,7 +474,7 @@ QgsExpressionContext QgsProcessingGuiUtils::createExpressionContext( QgsProcessi
 }
 ///@endcond
 
-QgsProcessingHiddenWidgetWrapper::QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QObject *parent )
+QgsProcessingHiddenWidgetWrapper::QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QObject *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
 }

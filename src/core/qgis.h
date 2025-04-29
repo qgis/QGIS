@@ -3527,6 +3527,21 @@ class CORE_EXPORT Qgis
     Q_ENUM( ProcessingLogLevel )
 
     /**
+     * Types of modes which Processing widgets can be created for.
+     *
+     * \note Prior to QGIS 3.44 this was available as QgsProcessingGui::WidgetType
+     *
+     * \since QGIS 3.44
+     */
+    enum class ProcessingMode
+    {
+      Standard, //!< Standard (single-run) algorithm mode
+      Batch, //!< Batch processing mode
+      Modeler, //!< Modeler mode
+    };
+    Q_ENUM( ProcessingMode )
+
+    /**
      * Flags which control behavior for a Processing feature source.
      *
      * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSourceDefinition::Flag

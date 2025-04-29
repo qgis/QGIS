@@ -886,7 +886,7 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
 
   for ( const QgsProcessingParameterDefinition *def : mClassificationMethod->parameterDefinitions() )
   {
-    QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, QgsProcessingGui::Standard );
+    QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, Qgis::ProcessingMode::Standard );
     mParametersLayout->addRow( ppww->createWrappedLabel(), ppww->createWrappedWidget( context ) );
 
     QVariant value = mClassificationMethod->parameterValues().value( def->name(), def->defaultValueForGui() );

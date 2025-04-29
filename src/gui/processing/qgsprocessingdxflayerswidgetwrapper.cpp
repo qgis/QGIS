@@ -287,7 +287,7 @@ void QgsProcessingDxfLayersWidget::updateSummaryText()
 // QgsProcessingDxfLayersWidgetWrapper
 //
 
-QgsProcessingDxfLayersWidgetWrapper::QgsProcessingDxfLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+QgsProcessingDxfLayersWidgetWrapper::QgsProcessingDxfLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
 }
@@ -297,7 +297,7 @@ QString QgsProcessingDxfLayersWidgetWrapper::parameterType() const
   return QgsProcessingParameterDxfLayers::typeName();
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingDxfLayersWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingDxfLayersWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
 {
   return new QgsProcessingDxfLayersWidgetWrapper( parameter, type );
 }

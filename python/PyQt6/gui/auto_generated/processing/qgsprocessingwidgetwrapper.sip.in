@@ -246,13 +246,13 @@ they are constructed through the central registry, via calls to
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-    QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QObject *parent /TransferThis/ = 0 );
+    QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAbstractProcessingParameterWidgetWrapper, for the
 specified ``parameter`` definition and dialog ``type``.
 %End
 
-    QgsProcessingGui::WidgetType type() const;
+    Qgis::ProcessingMode type() const;
 %Docstring
 Returns the dialog type for which widgets and labels will be created by
 this wrapper.
@@ -491,7 +491,7 @@ Returns the type string for the parameter type the factory is associated
 with.
 %End
 
-    virtual QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) = 0 /Factory/;
+    virtual QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) = 0 /Factory/;
 %Docstring
 Creates a new widget wrapper for the specified ``parameter`` definition.
 
@@ -647,7 +647,7 @@ does not provide a graphical widget, yet still implements the
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-    QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QObject *parent /TransferThis/ = 0 );
+    QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingHiddenWidgetWrapper, for the specified
 ``parameter`` definition and dialog ``type``.

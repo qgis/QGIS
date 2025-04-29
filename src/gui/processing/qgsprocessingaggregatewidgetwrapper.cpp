@@ -252,7 +252,7 @@ QgsProcessingParameterDefinition *QgsProcessingAggregateParameterDefinitionWidge
 // QgsProcessingAggregateWidgetWrapper
 //
 
-QgsProcessingAggregateWidgetWrapper::QgsProcessingAggregateWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+QgsProcessingAggregateWidgetWrapper::QgsProcessingAggregateWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
 }
@@ -262,7 +262,7 @@ QString QgsProcessingAggregateWidgetWrapper::parameterType() const
   return QgsProcessingParameterAggregate::typeName();
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingAggregateWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingAggregateWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
 {
   return new QgsProcessingAggregateWidgetWrapper( parameter, type );
 }
@@ -290,8 +290,8 @@ void QgsProcessingAggregateWidgetWrapper::postInitialize( const QList<QgsAbstrac
   QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
   switch ( type() )
   {
-    case QgsProcessingGui::Standard:
-    case QgsProcessingGui::Batch:
+    case Qgis::ProcessingMode::Standard:
+    case Qgis::ProcessingMode::Batch:
     {
       for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
       {
@@ -307,7 +307,7 @@ void QgsProcessingAggregateWidgetWrapper::postInitialize( const QList<QgsAbstrac
       break;
     }
 
-    case QgsProcessingGui::Modeler:
+    case Qgis::ProcessingMode::Modeler:
       break;
   }
 }

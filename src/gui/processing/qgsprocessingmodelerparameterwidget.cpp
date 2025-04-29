@@ -76,7 +76,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
 
   mStackedWidget = new QStackedWidget();
 
-  mStaticWidgetWrapper.reset( QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( mParameterDefinition, QgsProcessingGui::Modeler ) );
+  mStaticWidgetWrapper.reset( QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( mParameterDefinition, Qgis::ProcessingMode::Modeler ) );
   if ( mStaticWidgetWrapper )
   {
     QWidget *widget = mStaticWidgetWrapper->createWrappedWidget( context );

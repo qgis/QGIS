@@ -153,7 +153,7 @@ void QgsProcessingGuiRegistry::removeParameterWidgetFactory( QgsProcessingParame
   delete factory;
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
 {
   if ( !parameter )
     return nullptr;

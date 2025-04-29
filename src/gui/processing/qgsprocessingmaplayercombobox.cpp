@@ -40,7 +40,7 @@
 
 ///@cond PRIVATE
 
-QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QWidget( parent )
   , mParameter( parameter->clone() )
 {
@@ -53,7 +53,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   layout->setAlignment( mCombo, Qt::AlignTop );
 
   int iconSize = QgsGuiUtils::scaleIconSize( 24 );
-  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == QgsProcessingGui::Standard )
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == Qgis::ProcessingMode::Standard )
   {
     mIterateButton = new QToolButton();
     mIterateButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconIterate.svg" ) ) );
@@ -114,7 +114,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
 
   Qgis::LayerFilters filters = Qgis::LayerFilters();
 
-  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == QgsProcessingGui::Standard )
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == Qgis::ProcessingMode::Standard )
   {
     mUseSelectionCheckBox = new QCheckBox( tr( "Selected features only" ) );
     mUseSelectionCheckBox->setChecked( false );
