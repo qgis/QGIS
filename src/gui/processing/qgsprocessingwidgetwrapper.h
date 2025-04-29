@@ -82,6 +82,7 @@ class GUI_EXPORT QgsProcessingParametersGenerator
     enum class Flag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SkipDefaultValueParameters = 1 << 0, //!< Parameters which are unchanged from their default values should not be included
+      SkipValidation = 1 << 1,             //!< Skip validation of parameters. \since QGIS 3.44
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

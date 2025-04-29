@@ -1,11 +1,16 @@
 # The following has been generated automatically from src/gui/processing/qgsprocessingwidgetwrapper.h
 # monkey patching scoped based enum
 QgsProcessingParametersGenerator.Flag.SkipDefaultValueParameters.__doc__ = "Parameters which are unchanged from their default values should not be included"
+QgsProcessingParametersGenerator.Flag.SkipValidation.__doc__ = "Skip validation of parameters. \n.. versionadded:: 3.44"
 QgsProcessingParametersGenerator.Flag.__doc__ = """Flags controlling parameter generation.
 
 .. versionadded:: 3.24
 
 * ``SkipDefaultValueParameters``: Parameters which are unchanged from their default values should not be included
+* ``SkipValidation``: Skip validation of parameters.
+
+  .. versionadded:: 3.44
+
 
 """
 # --

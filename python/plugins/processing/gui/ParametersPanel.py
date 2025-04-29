@@ -219,6 +219,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
         include_default = not (
             flags & QgsProcessingParametersGenerator.Flag.SkipDefaultValueParameters
         )
+        validate = not (flags & QgsProcessingParametersGenerator.Flag.SkipValidation)
         parameters = {}
         for p, v in self.extra_parameters.items():
             parameters[p] = v
@@ -251,7 +252,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 if param.defaultValue() != value or include_default:
                     parameters[param.name()] = value
 
-                if not param.checkValueIsAcceptable(value):
+                if validate and not param.checkValueIsAcceptable(value):
                     raise AlgorithmDialogBase.InvalidParameterValue(param, widget)
             else:
                 if self.in_place and param.name() == "OUTPUT":
@@ -276,9 +277,12 @@ class ParametersPanel(QgsProcessingParametersWidget):
                     parameters[param.name()] = value
 
                     context = createContext()
-                    ok, error = param.isSupportedOutputValue(value, context)
-                    if not ok:
-                        raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
+                    if validate:
+                        ok, error = param.isSupportedOutputValue(value, context)
+                        if not ok:
+                            raise AlgorithmDialogBase.InvalidOutputExtension(
+                                widget, error
+                            )
 
         return self.algorithm().preprocessParameters(parameters)
 
