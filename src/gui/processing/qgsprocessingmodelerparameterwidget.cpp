@@ -412,10 +412,9 @@ void QgsProcessingModelerParameterWidget::updateUi()
   mChildOutputCombo->setCurrentIndex( currentIndex );
 }
 
-void QgsProcessingModelerParameterWidget::populateSources( const QgsProcessingParameterDefinition *param )
+void QgsProcessingModelerParameterWidget::populateSources( const QStringList &compatibleParameterTypes, const QStringList &compatibleOutputTypes, const QList<int> &compatibleDataTypes )
 {
-  const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( param->type() );
-  const QgsProcessingModelChildParameterSources sources = mModel->availableSourcesForChild( mChildId, paramType->acceptedParameterTypes(), paramType->acceptedOutputTypes(), paramType->acceptedDataTypes( param ) );
+  QgsProcessingModelChildParameterSources sources = mModel->availableSourcesForChild( mChildId, compatibleParameterTypes, compatibleOutputTypes, compatibleDataTypes );
 
   for ( const QgsProcessingModelChildParameterSource &source : sources )
   {

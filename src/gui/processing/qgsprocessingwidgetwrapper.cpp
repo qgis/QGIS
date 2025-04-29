@@ -16,14 +16,17 @@
  ***************************************************************************/
 
 
+#include "qgsapplication.h"
+#include "models/qgsprocessingmodelalgorithm.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsprocessingmodelerparameterwidget.h"
+#include "qgsprocessingparameters.h"
+#include "qgsprocessingparametertype.h"
+#include "qgsprocessingregistry.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "moc_qgsprocessingwidgetwrapper.cpp"
-#include "qgsprocessingparameters.h"
-#include "qgsprocessingmodelerparameterwidget.h"
 #include "qgspropertyoverridebutton.h"
-#include "qgsexpressioncontext.h"
-#include "models/qgsprocessingmodelalgorithm.h"
-#include "qgsexpressioncontextutils.h"
 #include <QLabel>
 #include <QHBoxLayout>
 
@@ -366,7 +369,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
 QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterface::createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context )
 {
   auto widget = std::make_unique<QgsProcessingModelerParameterWidget>( model, childId, parameter, context );
-  widget->populateSources( parameter );
+  widget->populateSources( compatibleParameterTypes(), compatibleOutputTypes(), compatibleDataTypes( parameter ) );
   widget->setExpressionHelpText( modelerExpressionFormatString() );
 
   if ( parameter->isDestination() )
@@ -380,6 +383,30 @@ QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterfac
 QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingParameterWidgetFactoryInterface::createParameterDefinitionWidget( QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm * )
 {
   return nullptr;
+}
+
+QStringList QgsProcessingParameterWidgetFactoryInterface::compatibleParameterTypes() const
+{
+  const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( parameterType() );
+  if ( !paramType )
+    return QStringList();
+  return paramType->acceptedParameterTypes();
+}
+
+QStringList QgsProcessingParameterWidgetFactoryInterface::compatibleOutputTypes() const
+{
+  const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( parameterType() );
+  if ( !paramType )
+    return QStringList();
+  return paramType->acceptedOutputTypes();
+}
+
+QList<int> QgsProcessingParameterWidgetFactoryInterface::compatibleDataTypes( const QgsProcessingParameterDefinition *parameter ) const
+{
+  const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( parameterType() );
+  if ( !paramType )
+    return QList<int>();
+  return paramType->acceptedDataTypes( parameter );
 }
 
 QString QgsProcessingParameterWidgetFactoryInterface::modelerExpressionFormatString() const

@@ -552,6 +552,63 @@ configurable when users add it as an input to their graphical models.
 %End
 
   protected:
+    virtual QStringList compatibleParameterTypes() const;
+%Docstring
+Returns a list of compatible Processing parameter types for inputs for
+this parameter.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list
+corresponds to the various available values for
+:py:func:`QgsProcessingParameterDefinition.type()`.
+
+Subclasses should return a list of all
+:py:func:`QgsProcessingParameterDefinition.type()` values which can be
+used as input values for the parameter.
+
+.. seealso:: :py:func:`compatibleOutputTypes`
+
+.. seealso:: :py:func:`compatibleDataTypes`
+%End
+
+    virtual QStringList compatibleOutputTypes() const;
+%Docstring
+Returns a list of compatible Processing output types for inputs for this
+parameter.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list
+corresponds to the various available values for
+:py:func:`QgsProcessingOutputDefinition.type()`.
+
+Subclasses should return a list of all
+:py:func:`QgsProcessingOutputDefinition.type()` values which can be used
+as values for the parameter.
+
+.. seealso:: :py:func:`compatibleParameterTypes`
+
+.. seealso:: :py:func:`compatibleDataTypes`
+%End
+
+    virtual QList<int> compatibleDataTypes( const QgsProcessingParameterDefinition *parameter ) const;
+%Docstring
+Returns a list of compatible Processing data types for inputs for this
+widget for the specified ``parameter``.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list
+corresponds to the various available values from
+:py:class:`QgsProcessing`.SourceType.
+
+Subclasses should return a list of all
+:py:class:`QgsProcessing`.SourceType values which can be used as values
+for the parameter.
+
+.. seealso:: :py:func:`compatibleParameterTypes`
+
+.. seealso:: :py:func:`compatibleOutputTypes`
+%End
+
     virtual QString modelerExpressionFormatString() const;
 %Docstring
 Returns the expected expression format string for expression results for

@@ -107,8 +107,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      * The \a compatibleDataTypes list corresponds to the compatible data types
      * from QgsProcessing::SourceType.
      */
-
-    void populateSources( const QgsProcessingParameterDefinition *param );
+    void populateSources( const QStringList &compatibleParameterTypes, const QStringList &compatibleOutputTypes, const QList<int> &compatibleDataTypes );
 
     /**
      * Set the expected expression format \a text, which is shown in the expression builder dialog for the widget

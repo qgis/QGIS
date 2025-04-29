@@ -65,8 +65,7 @@ Registers a Processing context ``generator`` class that will be used to
 retrieve a Processing context for the widget when required.
 %End
 
-
-    void populateSources( const QgsProcessingParameterDefinition *param );
+    void populateSources( const QStringList &compatibleParameterTypes, const QStringList &compatibleOutputTypes, const QList<int> &compatibleDataTypes );
 %Docstring
 Populates the widget with available sources for the parameter's value,
 e.g. adding the available child algorithm outputs and model input
