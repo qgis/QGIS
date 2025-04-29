@@ -88,6 +88,7 @@ from qgis.gui import (
     QgsFindFilesByPatternDialog,
     QgsExpressionBuilderDialog,
     QgsPanelWidget,
+    QgsAbstractProcessingParameterWidgetWrapper,
 )
 from qgis.utils import iface
 
@@ -857,10 +858,21 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         is_cpp_wrapper = not issubclass(wrapper.__class__, WidgetWrapper)
         if is_cpp_wrapper:
             widget = wrapper.createWrappedWidget(context)
+            wrapper.widgetValueHasChanged.connect(self.parameterChanged)
         else:
             widget = wrapper.widget
 
         self.tblParameters.setCellWidget(row, column, widget)
+
+    def rowForWrapper(self, wrapper) -> Optional[int]:
+        """
+        Returns the row number corresponding to the specified wrapper
+        """
+        for row, row_wrappers in enumerate(self.wrappers):
+            for col, cell_wrapper in enumerate(row_wrappers):
+                if cell_wrapper == wrapper:
+                    return row
+        return None
 
     def addFillRow(self):
         self.tblParameters.setRowCount(1)
@@ -945,6 +957,44 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                 self.tblParameters.setColumnHidden(
                     self.parameter_to_column[param.name()], not checked
                 )
+
+    def parameterChanged(self):
+        """
+        Called when a parameter value is changed in the panel
+        """
+        wrapper: QgsAbstractProcessingParameterWidgetWrapper = self.sender()
+        row_number = self.rowForWrapper(wrapper)
+        if row_number is None:
+            return
+
+        context = dataobjects.createContext()
+
+        row_values, ok = self.parametersForRow(
+            row_number, context, QgsProject.instance(), False
+        )
+        if not ok:
+            return
+
+        default_values = self.alg.autogenerateParameterValues(
+            row_values, wrapper.parameterDefinition().name(), Qgis.ProcessingMode.Batch
+        )
+        for param in self.alg.parameterDefinitions():
+            if param.isDestination():
+                continue
+            if param.name() in default_values:
+                column = self.parameter_to_column[param.name()]
+                value = default_values[param.name()]
+                wrapper = self.wrappers[row_number][column]
+                wrapper.setParameterValue(value, context)
+
+        for out in self.alg.destinationParameterDefinitions():
+            if out.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
+                continue
+            if out.name() in default_values:
+                column = self.parameter_to_column[out.name()]
+                value = default_values[out.name()]
+                widget = self.tblParameters.cellWidget(row_number + 1, column)
+                widget.setValue(value)
 
     def valueForParameter(self, row, parameter_name):
         """
