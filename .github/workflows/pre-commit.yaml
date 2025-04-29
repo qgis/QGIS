@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 200
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,23 +28,19 @@ jobs:
       - name: Install pre-commit
         run: pip install pre-commit
 
-      - name: Run pre-commit checks
+      - name: Run pre-commit
         run: |
             if [ "${{ github.event_name }}" == "pull_request_target" ]; then
               git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
               git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
-              MODIFIED_FILES=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }} pr-head)
+              MODIFIED_FILES=($(git diff --name-only origin/${{ github.event.pull_request.base.ref }} pr-head))
             elif [ "${{ github.event_name }}" == "push" ]; then
-              MODIFIED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+              MODIFIED_FILES=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }}))
             else
               echo "Unsupported event: ${{ github.event_name }}"
               exit 1
             fi
-
-            echo "Modified files: $MODIFIED_FILES"
-            FILES=$(echo "$MODIFIED_FILES" | awk '{printf "--files %s ", $0}')
-            echo "Files to check: $FILES"
-            pre-commit run $FILES || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
+            pre-commit run --files "${MODIFIED_FILES[@]}" || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
 
       - name: Commit fixes
         if: failure()
