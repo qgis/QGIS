@@ -75,13 +75,13 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
     //! Enumeration of possible model node types
     enum class NodeType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingToolboxModelNode, NodeType ) : int
     {
-      Provider SIP_MONKEYPATCH_COMPAT_NAME( NodeProvider ) = 0,         //!< Provider node
-      Group SIP_MONKEYPATCH_COMPAT_NAME( NodeGroup ),                   //!< Group node
-      Algorithm SIP_MONKEYPATCH_COMPAT_NAME( NodeAlgorithm ),           //!< Algorithm node
-      Parameter SIP_MONKEYPATCH_COMPAT_NAME( NodeParameter ),           //!< Parameter node, since QGIS 3.44
-      Recent SIP_MONKEYPATCH_COMPAT_NAME( NodeRecent ),                 //!< Recent algorithms node
-      ParameterGroup SIP_MONKEYPATCH_COMPAT_NAME( NodeParameterGroup ), //!< Parameter group node since QGIS 3.44
-      Favorite,                                                         //!< Favorites algorithms node, since QGIS 3.40
+      Provider SIP_MONKEYPATCH_COMPAT_NAME( NodeProvider ) = 0, //!< Provider node
+      Group SIP_MONKEYPATCH_COMPAT_NAME( NodeGroup ),           //!< Group node
+      Algorithm SIP_MONKEYPATCH_COMPAT_NAME( NodeAlgorithm ),   //!< Algorithm node
+      Recent SIP_MONKEYPATCH_COMPAT_NAME( NodeRecent ),         //!< Recent algorithms node
+      Parameter,                                                //!< Parameter node, \since QGIS 3.44
+      ParameterGroup,                                           //!< Parameter group node \since QGIS 3.44
+      Favorite,                                                 //!< Favorites algorithms node, \since QGIS 3.40
     };
     Q_ENUM( NodeType )
     // *INDENT-ON*
@@ -355,7 +355,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
       AlgorithmShortDescription SIP_MONKEYPATCH_COMPAT_NAME( RoleAlgorithmShortDescription ), //!< Short algorithm description, for algorithm nodes
       AlgorithmTags SIP_MONKEYPATCH_COMPAT_NAME( RoleAlgorithmTags ),                         //!< List of algorithm tags, for algorithm nodes
       ProviderFlags SIP_MONKEYPATCH_COMPAT_NAME( RoleProviderFlags ),                         //!< Returns the node's provider flags
-      ParameterTypeId SIP_MONKEYPATCH_COMPAT_NAME( RoleParameterTypeId ),                     //!< Untranslated parameter type unique identifier for parameter nodes
+      ParameterTypeId,                                                                        //!< Untranslated parameter type unique identifier for parameter nodes \since QGIS 3.44
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -434,13 +434,17 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      * Returns the algorithm which corresponds to a given \a index, or
      * NULLPTR if the index does not represent an algorithm.
      *
-     * \see isAlgorithm()
+     * \see isParameter()
      * \see providerForIndex()
+     * \since QGIS 3.44  
      */
     const QgsProcessingParameterType *parameterTypeForIndex( const QModelIndex &index ) const;
 
     /**
      * Returns TRUE if \a index corresponds to a parameter.
+     * 
+     * \see parameterTypeForIndex()
+     * \since QGIS 3.44
      */
     bool isParameter( const QModelIndex &index ) const;
 

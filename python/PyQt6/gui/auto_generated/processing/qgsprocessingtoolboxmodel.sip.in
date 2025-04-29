@@ -56,8 +56,8 @@ Abstract base class for nodes contained within a
       Provider,
       Group,
       Algorithm,
-      Parameter,
       Recent,
+      Parameter,
       ParameterGroup,
       Favorite,
     };
@@ -430,14 +430,20 @@ Returns ``True`` if ``index`` corresponds to an algorithm.
 Returns the algorithm which corresponds to a given ``index``, or
 ``None`` if the index does not represent an algorithm.
 
-.. seealso:: :py:func:`isAlgorithm`
+.. seealso:: :py:func:`isParameter`
 
 .. seealso:: :py:func:`providerForIndex`
+
+.. versionadded:: 3.44
 %End
 
     bool isParameter( const QModelIndex &index ) const;
 %Docstring
 Returns ``True`` if ``index`` corresponds to a parameter.
+
+.. seealso:: :py:func:`parameterTypeForIndex`
+
+.. versionadded:: 3.44
 %End
 
     QModelIndex indexForProvider( const QString &providerId ) const;
