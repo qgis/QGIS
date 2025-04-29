@@ -131,6 +131,8 @@ used as input values for the parameter.
 .. seealso:: :py:func:`acceptedOutputTypes`
 
 .. seealso:: :py:func:`acceptedDataTypes`
+
+.. versionadded:: 3.44
 %End
 
     virtual QStringList acceptedOutputTypes() const = 0;
@@ -150,6 +152,8 @@ as values for the parameter.
 .. seealso:: :py:func:`acceptedParameterTypes`
 
 .. seealso:: :py:func:`acceptedDataTypes`
+
+.. versionadded:: 3.44
 %End
 
     virtual QList<int> acceptedDataTypes( const QgsProcessingParameterDefinition *parameter ) const;
@@ -169,6 +173,8 @@ for the parameter.
 .. seealso:: :py:func:`acceptedParameterTypes`
 
 .. seealso:: :py:func:`acceptedOutputTypes`
+
+.. versionadded:: 3.44
 %End
 
 };

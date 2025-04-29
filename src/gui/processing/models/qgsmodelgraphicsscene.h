@@ -120,11 +120,15 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     /**
      * Returns the graphic item corresponding to the specified child algorithm
+     * 
+     * \since QGIS 3.44
      */
     QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
 
     /**
      * Returns the QgsModelComponentGraphicItem corresponding to the specified child algorithm
+     * 
+     * \since QGIS 3.44
      */
     QgsModelComponentGraphicItem *parameterItem( const QString &name );
 
@@ -172,6 +176,8 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     /**
      * Requests a complete rebuild of a model by emitting the according signal
+     * 
+     * \since QGIS 3.44
      */
     void requestRebuildRequired();
 

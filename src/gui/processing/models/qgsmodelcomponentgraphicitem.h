@@ -239,6 +239,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Returns the output socket graphics items at the specified \a index.
      * 
      * May return NULLPTR if no corresponding output socket exists.
+     * \since QGIS 3.44
      */
     QgsModelDesignerSocketGraphicItem *outSocketAt( int index ) const;
 

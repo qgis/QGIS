@@ -527,10 +527,12 @@ The ``indentSize`` arguments specifies the size of indented lines.
 
     QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QgsProcessingParameterDefinition *param ) const;
 %Docstring
-Returns a list of possible sources which can be used for the parameters
+Returns a list of possible sources which can be used for the parameter
 ``param`` for a child ``childId`` algorithm in the model
 
 The source compatibilibity is deducted from the parameter type
+
+.. versionadded:: 3.44
 %End
 
     QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QStringList &parameterTypes = QStringList(),

@@ -214,7 +214,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
           oldSource = source;
           QgsProcessingModelChildAlgorithm *algSource;
           // This is not so nice to have the UI tangled gotta think of a better abstraction later
-          // Loop trought all items to get the output socket
+          // Loop through all items to get the output socket
           for ( QGraphicsItem *item : items )
           {
             if ( QgsModelDesignerSocketGraphicItem *outputSocket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )

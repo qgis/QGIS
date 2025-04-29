@@ -133,6 +133,7 @@ class CORE_EXPORT QgsProcessingParameterType
      *
      * \see acceptedOutputTypes()
      * \see acceptedDataTypes()
+     * \since QGIS 3.44
      */
     virtual QStringList acceptedParameterTypes() const = 0;
 
@@ -149,6 +150,7 @@ class CORE_EXPORT QgsProcessingParameterType
      *
      * \see acceptedParameterTypes()
      * \see acceptedDataTypes()
+     * \since QGIS 3.44
      */
     virtual QStringList acceptedOutputTypes() const = 0;
 
@@ -165,6 +167,7 @@ class CORE_EXPORT QgsProcessingParameterType
      *
      * \see acceptedParameterTypes()
      * \see acceptedOutputTypes()
+     * \since QGIS 3.44
      */
     virtual QList<int> acceptedDataTypes( const QgsProcessingParameterDefinition *parameter ) const;
 

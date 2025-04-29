@@ -129,7 +129,7 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
       {
         if ( QgsModelDesignerSocketGraphicItem *socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
         {
-          // Start link tool"
+          // Start link tool
           mLinkTool->setFromSocket( socket );
           view()->setTool( mLinkTool.get() );
         }

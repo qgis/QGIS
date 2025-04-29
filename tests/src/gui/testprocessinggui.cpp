@@ -868,8 +868,6 @@ void TestProcessingGui::testModelerWrapper()
   QCOMPARE( w->mSourceButton->toolTip(), QStringLiteral( "Algorithm Output" ) );
 
   // populate sources and re-try
-  // w->populateSources( QStringList() << QStringLiteral( "boolean" ), QStringList() << QStringLiteral( "outputVector" ), QList<int>() );
-  qDebug() << "set source 1";
   w->populateSources( new QgsProcessingParameterBoolean( "dummyname", "dummy desc" ) );
 
   // model input
@@ -878,7 +876,6 @@ void TestProcessingGui::testModelerWrapper()
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().parameterName(), QStringLiteral( "p1" ) );
 
 
-  qDebug() << "set source 2";
   w->populateSources( new QgsProcessingParameterMapLayer( "dummyname", "dummy desc" ) );
 
   // alg output

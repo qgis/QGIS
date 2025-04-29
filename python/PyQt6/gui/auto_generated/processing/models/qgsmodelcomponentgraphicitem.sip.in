@@ -198,6 +198,8 @@ Returns the best link point to use for a link originating at a specified
 Returns the output socket graphics items at the specified ``index``.
 
 May return ``None`` if no corresponding output socket exists.
+
+.. versionadded:: 3.44
 %End
 
 

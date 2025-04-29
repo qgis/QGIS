@@ -430,6 +430,7 @@ class CORE_EXPORT QgsProcessingUtils
     /**
      * Returns the index of the output matching \a name for a specified \a algorithm.
      * Matching is done in a case-insensitive manner.
+     * \since QGIS 3.44
      */
     static int outputDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) SIP_HOLDGIL;
 

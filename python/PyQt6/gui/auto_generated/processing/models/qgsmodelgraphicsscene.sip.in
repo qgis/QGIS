@@ -112,12 +112,16 @@ Returns the graphic item corresponding to the specified group box
     QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
 %Docstring
 Returns the graphic item corresponding to the specified child algorithm
+
+.. versionadded:: 3.44
 %End
 
     QgsModelComponentGraphicItem *parameterItem( const QString &name );
 %Docstring
 Returns the :py:class:`QgsModelComponentGraphicItem` corresponding to
 the specified child algorithm
+
+.. versionadded:: 3.44
 %End
 
     void selectAll();
@@ -168,6 +172,8 @@ full details (``longMessage``).
     void requestRebuildRequired();
 %Docstring
 Requests a complete rebuild of a model by emitting the according signal
+
+.. versionadded:: 3.44
 %End
 
   signals:

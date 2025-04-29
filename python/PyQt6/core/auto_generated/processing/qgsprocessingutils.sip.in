@@ -450,6 +450,8 @@ Returns a HTML formatted version of the help text encoded in a variant
 %Docstring
 Returns the index of the output matching ``name`` for a specified
 ``algorithm``. Matching is done in a case-insensitive manner.
+
+.. versionadded:: 3.44
 %End
 
     static QString convertToCompatibleFormat( const QgsVectorLayer *layer,
