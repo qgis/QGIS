@@ -75,6 +75,25 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
 
     /**
      * Retrieves all matching objects from the specified layer URL.
+     *
+     * \param layerurl
+     * \param authcfg
+     * \param objectIds
+     * \param crs override CRS for retrieved features. If empty, features will be retrieved in their original CRS (i.e. the original representation from the
+     * service). If set, then the service will be asked to transform the features from their original representation to the matching CRS. Since the exact transformation
+     * which will be used by the service is unknown, is it highly recommended to leave this argument empty and handle any transformations on the client (QGIS) side instead.
+     * The string must be value of the form "auth:code". Only the code portion will be used, and passed to the service as a integer only. It is assumed that the backend
+     * has the same CRS definition for the code as the proj database, and if this is not the case then an unexpected transformation will occur.
+     * \param fetchGeometry
+     * \param fetchAttributes
+     * \param fetchM
+     * \param fetchZ
+     * \param filterRect
+     * \param errorTitle
+     * \param errorText
+     * \param requestHeaders
+     * \param feedback
+     * \param urlPrefix
      */
     static QVariantMap getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
                                    bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
