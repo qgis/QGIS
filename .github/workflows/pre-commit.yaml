@@ -52,7 +52,7 @@ jobs:
             fi
 
             echo "Modified files: $MODIFIED_FILES"
-            pre-commit run --files $($MODIFIES_FILES | tr '\n' ' ')  || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
+            pre-commit run --files $(echo "$MODIFIED_FILES" | tr '\n' ' ') || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
 
       - name: Commit fixes
         if: failure()
