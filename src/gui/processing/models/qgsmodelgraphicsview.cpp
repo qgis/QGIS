@@ -62,7 +62,9 @@ QgsModelGraphicsView::~QgsModelGraphicsView()
 
 void QgsModelGraphicsView::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( event->mimeData()->hasText() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) ) )
+  if ( event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) )
+       || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ) )
+       || event->mimeData()->hasText() )
     event->acceptProposedAction();
   else
     event->ignore();
@@ -83,6 +85,18 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
     } );
     event->accept();
   }
+  else if ( event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ) ) )
+  {
+    QByteArray data = event->mimeData()->data( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ) );
+    QDataStream stream( &data, QIODevice::ReadOnly );
+    QString paramTypeId;
+    stream >> paramTypeId;
+
+    QTimer::singleShot( 0, this, [this, dropPoint, paramTypeId] {
+      emit inputDropped( paramTypeId, dropPoint );
+    } );
+    event->accept();
+  }
   else if ( event->mimeData()->hasText() )
   {
     const QString itemId = event->mimeData()->text();
@@ -99,7 +113,9 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
 
 void QgsModelGraphicsView::dragMoveEvent( QDragMoveEvent *event )
 {
-  if ( event->mimeData()->hasText() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) ) )
+  if ( event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) )
+       || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ) )
+       || event->mimeData()->hasText() )
     event->acceptProposedAction();
   else
     event->ignore();
