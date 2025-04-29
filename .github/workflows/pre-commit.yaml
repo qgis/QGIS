@@ -40,6 +40,7 @@ jobs:
               echo "Unsupported event: ${{ github.event_name }}"
               exit 1
             fi
+            echo "Modified files: ${MODIFIED_FILES[@]}"
             pre-commit run --files "${MODIFIED_FILES[@]}" || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
 
       - name: Commit fixes
