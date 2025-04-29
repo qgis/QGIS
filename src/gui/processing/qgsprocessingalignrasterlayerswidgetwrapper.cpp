@@ -272,7 +272,7 @@ void QgsProcessingAlignRasterLayersWidget::updateSummaryText()
 // QgsProcessingAlignRasterLayersWidgetWrapper
 //
 
-QgsProcessingAlignRasterLayersWidgetWrapper::QgsProcessingAlignRasterLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+QgsProcessingAlignRasterLayersWidgetWrapper::QgsProcessingAlignRasterLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
 }
@@ -282,7 +282,7 @@ QString QgsProcessingAlignRasterLayersWidgetWrapper::parameterType() const
   return QgsProcessingParameterAlignRasterLayers::typeName();
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingAlignRasterLayersWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingAlignRasterLayersWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
 {
   return new QgsProcessingAlignRasterLayersWidgetWrapper( parameter, type );
 }

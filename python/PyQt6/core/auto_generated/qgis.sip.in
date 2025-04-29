@@ -2032,6 +2032,13 @@ The development version
       ModelDebug,
     };
 
+    enum class ProcessingMode
+    {
+      Standard,
+      Batch,
+      Modeler,
+    };
+
     enum class ProcessingFeatureSourceDefinitionFlag /BaseType=IntFlag/
     {
       OverrideDefaultGeometryCheck,

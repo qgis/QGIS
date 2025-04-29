@@ -47,7 +47,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     /**
      * Constructor for QgsProcessingMapLayerComboBox, with the specified \a parameter definition.
      */
-    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
 
     ~QgsProcessingMapLayerComboBox() override;
 
