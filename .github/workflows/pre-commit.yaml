@@ -40,37 +40,20 @@ jobs:
 
       - name: List modified files
         id: modified-files
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            let files = [];
-      
-            if (context.eventName === 'pull_request') {
-              const prNumber = context.payload.pull_request.number;
-              const response = await github.rest.pulls.listFiles({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber,
-              });
-              files = response.data.map(f => f.filename);
-            } else if (context.eventName === 'push') {
-              const before = context.payload.before;
-              const after = context.payload.after;
-              const response = await github.rest.repos.compareCommits({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                base: before,
-                head: after,
-              });
-              files = response.data.files.map(f => f.filename);
-            } else {
-              core.setFailed(`Unsupported event: ${context.eventName}`);
-            }
-      
-            console.log("Modified files:", files);
-            core.setOutput('files', files.join(' '));
-      
+        run: |
+            if [ "${{ github.event_name }}" == "pull_request_target" ]; then
+              git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
+              git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
+              MODIFIED_FILES=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }} pr-head)
+            elif [ "${{ github.event_name }}" == "push" ]; then
+              MODIFIED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+            else
+              echo "Unsupported event: ${{ github.event_name }}"
+              exit 1
+            fi
+
+            echo "Modified files: $MODIFIED_FILES"
+            echo "::set-output name=files::$MODIFIED_FILES"
 
       - name: Run pre-commit checks
         id: pre-commit
