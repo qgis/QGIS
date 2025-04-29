@@ -7067,14 +7067,14 @@ void QgisApp::saveMapAsImage()
 {
   QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, activeDecorations(), QgsProject::instance()->annotationManager()->annotations() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
-  dlg->show();
+  dlg->exec();
 } // saveMapAsImage
 
 void QgisApp::saveMapAsPdf()
 {
   QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, activeDecorations(), QgsProject::instance()->annotationManager()->annotations(), QgsMapSaveDialog::Pdf );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
-  dlg->show();
+  dlg->exec();
 } // saveMapAsPdf
 
 //overloaded version of the above function
