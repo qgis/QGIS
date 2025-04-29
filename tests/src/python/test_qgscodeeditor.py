@@ -12,8 +12,8 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 
 import sys
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QColor, QFont
+from qgis.PyQt.QtCore import QT_VERSION_STR, QCoreApplication
+from qgis.PyQt.QtGui import QColor, QFontDatabase
 from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgsCodeEditor, QgsCodeEditorColorScheme
 import unittest
@@ -128,8 +128,14 @@ class TestQgsCodeEditor(QgisTestCase):
         )
 
     def testFontFamily(self):
-        f = QgsCodeEditor().getMonospaceFont()
-        self.assertTrue(f.styleHint() & QFont.StyleHint.Monospace)
+        # check that the font is monospace
+        font = QgsCodeEditor().getMonospaceFont()
+        if int(QT_VERSION_STR.split(".")[0]) >= 6:
+            font_db = QFontDatabase
+        else:
+            font_db = QFontDatabase()
+
+        self.assertTrue(font_db.isFixedPitch(font.family(), font_db.styleString(font)))
 
         QgsSettings().setValue(
             "codeEditor/fontfamily", getTestFont().family(), QgsSettings.Section.Gui
