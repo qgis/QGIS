@@ -20,16 +20,6 @@ jobs:
         with:
           fetch-depth: 200
 
-      - name: Fetch base branch
-        if: github.event_name == 'pull_request_target'
-        run: |
-          git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
-
-      - name: Fetch head commit for PRs from forks
-        if: github.event_name == 'pull_request_target'
-        run: |
-          git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -56,6 +46,7 @@ jobs:
             echo "$MODIFIED_FILES" | while IFS= read -r file; do
               FILES="$FILES --files $file"
             done
+            echo "Files to check: $FILES"
             pre-commit run $FILES || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
 
       - name: Commit fixes
