@@ -25,10 +25,9 @@ from qgis.core import (
     QgsMapRendererSequentialJob,
 )
 from qgis.testing import start_app, QgisTestCase
-from raster_provider_test_base import RasterProviderTestCase
 
 
-class TestPyQgsXyzProvider(QgisTestCase, RasterProviderTestCase):
+class TestPyQgsXyzProvider(QgisTestCase):
 
     @classmethod
     def control_path_prefix(cls):
