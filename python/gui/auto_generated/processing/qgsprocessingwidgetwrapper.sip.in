@@ -51,6 +51,7 @@ processing algorithms.
     enum class Flag
     {
       SkipDefaultValueParameters,
+      SkipValidation,
     };
     typedef QFlags<QgsProcessingParametersGenerator::Flag> Flags;
 
