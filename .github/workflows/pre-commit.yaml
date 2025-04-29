@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 200
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -42,10 +42,7 @@ jobs:
             fi
 
             echo "Modified files: $MODIFIED_FILES"
-            FILES=""
-            echo "$MODIFIED_FILES" | while IFS= read -r file; do
-              FILES="$FILES --files $file"
-            done
+            FILES=$(echo "$MODIFIED_FILES" | awk '{printf "--files %s ", $0}')
             echo "Files to check: $FILES"
             pre-commit run $FILES || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
 
