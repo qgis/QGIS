@@ -55,9 +55,6 @@ class GUI_EXPORT QgsProcessingRasterOptionsWidgetWrapper : public QgsAbstractPro
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
-
   private:
     QLineEdit *mLineEdit = nullptr;
     QgsRasterFormatSaveOptionsWidget *mOptionsWidget = nullptr;

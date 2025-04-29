@@ -552,7 +552,7 @@ configurable when users add it as an input to their graphical models.
 %End
 
   protected:
-    virtual QStringList compatibleParameterTypes() const = 0;
+    virtual QStringList compatibleParameterTypes() const;
 %Docstring
 Returns a list of compatible Processing parameter types for inputs for
 this parameter.
@@ -571,7 +571,7 @@ used as input values for the parameter.
 .. seealso:: :py:func:`compatibleDataTypes`
 %End
 
-    virtual QStringList compatibleOutputTypes() const = 0;
+    virtual QStringList compatibleOutputTypes() const;
 %Docstring
 Returns a list of compatible Processing output types for inputs for this
 parameter.

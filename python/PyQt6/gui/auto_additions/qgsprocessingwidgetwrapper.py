@@ -20,8 +20,8 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsProcessingParameterWidgetFactoryInterface.__virtual_methods__ = ['createModelerWidgetWrapper', 'createParameterDefinitionWidget', 'compatibleDataTypes', 'modelerExpressionFormatString', 'defaultModelSource']
-    QgsProcessingParameterWidgetFactoryInterface.__abstract_methods__ = ['parameterType', 'createWidgetWrapper', 'compatibleParameterTypes', 'compatibleOutputTypes']
+    QgsProcessingParameterWidgetFactoryInterface.__virtual_methods__ = ['createModelerWidgetWrapper', 'createParameterDefinitionWidget', 'compatibleParameterTypes', 'compatibleOutputTypes', 'compatibleDataTypes', 'modelerExpressionFormatString', 'defaultModelSource']
+    QgsProcessingParameterWidgetFactoryInterface.__abstract_methods__ = ['parameterType', 'createWidgetWrapper']
     QgsProcessingParameterWidgetFactoryInterface.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

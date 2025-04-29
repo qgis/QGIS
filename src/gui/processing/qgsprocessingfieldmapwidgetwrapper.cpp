@@ -385,17 +385,6 @@ QVariant QgsProcessingFieldMapWidgetWrapper::widgetValue() const
   return mPanel ? mPanel->value() : QVariant();
 }
 
-QStringList QgsProcessingFieldMapWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterFieldMapping::typeName();
-}
-
-QStringList QgsProcessingFieldMapWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList();
-}
-
 QString QgsProcessingFieldMapWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "an array of map items, each containing a 'name', 'type' and 'expression' values (and optional 'length' and 'precision' values)." );

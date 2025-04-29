@@ -126,9 +126,6 @@ class GUI_EXPORT QgsProcessingDxfLayersWidgetWrapper : public QgsAbstractProcess
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
-
   private:
     QgsProcessingDxfLayersWidget *mPanel = nullptr;
 

@@ -89,8 +89,6 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidgetWrapper : public QgsAbstrac
     void setMeshLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *wrapper );
 
   protected:
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
     QWidget *createWidget() override;
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
@@ -187,8 +185,6 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidgetWrapper : public QgsAbstractP
     void setDatasetGroupIndexesWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *wrapper );
 
   protected:
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
     QWidget *createWidget() override;
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;

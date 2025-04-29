@@ -119,6 +119,58 @@ class CORE_EXPORT QgsProcessingParameterType
      * \since QGIS 3.8
      */
     virtual QStringList acceptedStringValues() const;
+
+    /**
+     * Returns a list of compatible Processing parameter types for inputs
+     * for this parameter type.
+     *
+     * In order to determine the available sources for the parameter in a model
+     * the types returned by this method are checked. The returned list corresponds to the
+     * various available values for QgsProcessingParameterDefinition::type().
+     *
+     * Subclasses should return a list of all QgsProcessingParameterDefinition::type()
+     * values which can be used as input values for the parameter.
+     *
+     * \see acceptedOutputTypes()
+     * \see acceptedDataTypes()
+     * \since QGIS 3.44
+     */
+    virtual QStringList acceptedParameterTypes() const = 0;
+
+    /**
+     * Returns a list of compatible Processing output types for inputs
+     * for this parameter type.
+     *
+     * In order to determine the available sources for the parameter in a model
+     * the types returned by this method are checked. The returned list corresponds to the
+     * various available values for QgsProcessingOutputDefinition::type().
+     *
+     * Subclasses should return a list of all QgsProcessingOutputDefinition::type()
+     * values which can be used as values for the parameter.
+     *
+     * \see acceptedParameterTypes()
+     * \see acceptedDataTypes()
+     * \since QGIS 3.44
+     */
+    virtual QStringList acceptedOutputTypes() const = 0;
+
+    /**
+     * Returns a list of compatible Processing data types for inputs
+     * for this parameter type for the specified \a parameter.
+     *
+     * In order to determine the available sources for the parameter in a model
+     * the types returned by this method are checked. The returned list corresponds
+     * to the various available values from QgsProcessing::SourceType.
+     *
+     * Subclasses should return a list of all QgsProcessing::SourceType
+     * values which can be used as values for the parameter.
+     *
+     * \see acceptedParameterTypes()
+     * \see acceptedOutputTypes()
+     * \since QGIS 3.44
+     */
+    virtual QList<int> acceptedDataTypes( const QgsProcessingParameterDefinition *parameter ) const;
+
 };
 
 #endif // QGSPROCESSINGPARAMETERTYPE_H

@@ -236,7 +236,6 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     QgsFilterLineEdit *mModelOutputName = nullptr;
 
     QList<Qgis::ProcessingModelChildParameterSource> mLimitedSources;
-
     friend class TestProcessingGui;
 };
 

@@ -367,17 +367,6 @@ QVariant QgsProcessingAggregateWidgetWrapper::widgetValue() const
   return mPanel ? mPanel->value() : QVariant();
 }
 
-QStringList QgsProcessingAggregateWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterAggregate::typeName();
-}
-
-QStringList QgsProcessingAggregateWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList();
-}
-
 QString QgsProcessingAggregateWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "an array of map items, each containing a 'name', 'type', 'aggregate' and 'input' value (and optional 'length' and 'precision' values)." );

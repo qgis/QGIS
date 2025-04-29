@@ -119,6 +119,20 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QgsModelComponentGraphicItem *groupBoxItem( const QString &uuid );
 
     /**
+     * Returns the graphic item corresponding to the specified child algorithm
+     * 
+     * \since QGIS 3.44
+     */
+    QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
+
+    /**
+     * Returns the QgsModelComponentGraphicItem corresponding to the specified child algorithm
+     * 
+     * \since QGIS 3.44
+     */
+    QgsModelComponentGraphicItem *parameterItem( const QString &name );
+
+    /**
      * Selects all the components in the scene.
      */
     void selectAll();
@@ -159,6 +173,13 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      * Shows a warning message, allowing users to click a button to see the full details (\a longMessage).
      */
     void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::MessageLevel::Warning ) const;
+
+    /**
+     * Requests a complete rebuild of a model by emitting the according signal
+     * 
+     * \since QGIS 3.44
+     */
+    void requestRebuildRequired();
 
   signals:
 

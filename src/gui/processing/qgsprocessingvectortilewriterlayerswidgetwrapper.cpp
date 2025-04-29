@@ -343,14 +343,4 @@ QVariant QgsProcessingVectorTileWriterLayersWidgetWrapper::widgetValue() const
   return mPanel ? mPanel->value() : QVariant();
 }
 
-QStringList QgsProcessingVectorTileWriterLayersWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList();
-}
-
-QStringList QgsProcessingVectorTileWriterLayersWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList();
-}
-
 /// @endcond

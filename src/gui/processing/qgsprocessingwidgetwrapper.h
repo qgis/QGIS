@@ -591,7 +591,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * \see compatibleOutputTypes()
      * \see compatibleDataTypes()
      */
-    virtual QStringList compatibleParameterTypes() const = 0;
+    virtual QStringList compatibleParameterTypes() const;
 
     /**
      * Returns a list of compatible Processing output types for inputs
@@ -607,7 +607,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * \see compatibleParameterTypes()
      * \see compatibleDataTypes()
      */
-    virtual QStringList compatibleOutputTypes() const = 0;
+    virtual QStringList compatibleOutputTypes() const;
 
     /**
      * Returns a list of compatible Processing data types for inputs

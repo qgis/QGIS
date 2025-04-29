@@ -103,31 +103,4 @@ QVariant QgsProcessingRasterOptionsWidgetWrapper::widgetValue() const
     return QVariant();
 }
 
-QStringList QgsProcessingRasterOptionsWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterAuthConfig::typeName()
-         << QgsProcessingParameterNumber::typeName()
-         << QgsProcessingParameterDistance::typeName()
-         << QgsProcessingParameterArea::typeName()
-         << QgsProcessingParameterVolume::typeName()
-         << QgsProcessingParameterDuration::typeName()
-         << QgsProcessingParameterScale::typeName()
-         << QgsProcessingParameterFile::typeName()
-         << QgsProcessingParameterField::typeName()
-         << QgsProcessingParameterExpression::typeName()
-         << QgsProcessingParameterCoordinateOperation::typeName()
-         << QgsProcessingParameterProviderConnection::typeName();
-}
-
-QStringList QgsProcessingRasterOptionsWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputNumber::typeName()
-                       << QgsProcessingOutputVariant::typeName()
-                       << QgsProcessingOutputFile::typeName()
-                       << QgsProcessingOutputFolder::typeName()
-                       << QgsProcessingOutputString::typeName();
-}
-
 /// @endcond

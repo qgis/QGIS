@@ -65,6 +65,7 @@ try:
     QgsProcessingUtils.tempFolder = staticmethod(QgsProcessingUtils.tempFolder)
     QgsProcessingUtils.generateTempFilename = staticmethod(QgsProcessingUtils.generateTempFilename)
     QgsProcessingUtils.formatHelpMapAsHtml = staticmethod(QgsProcessingUtils.formatHelpMapAsHtml)
+    QgsProcessingUtils.outputDefinitionIndex = staticmethod(QgsProcessingUtils.outputDefinitionIndex)
     QgsProcessingUtils.convertToCompatibleFormat = staticmethod(QgsProcessingUtils.convertToCompatibleFormat)
     QgsProcessingUtils.convertToCompatibleFormatAndLayerName = staticmethod(QgsProcessingUtils.convertToCompatibleFormatAndLayerName)
     QgsProcessingUtils.combineFields = staticmethod(QgsProcessingUtils.combineFields)
