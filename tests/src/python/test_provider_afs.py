@@ -1263,7 +1263,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         """Test retrieval of features in their original service CRS"""
 
         endpoint = self.basetestpath + "/oid_fake_qgis_http_endpoint"
-        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+        with open(sanitize(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
         {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -1284,9 +1284,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            self.sanitize_local_url(
-                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
-            ),
+            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"),
             "wb",
         ) as f:
             f.write(
@@ -1305,7 +1303,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            self.sanitize_local_url(
+            sanitize(
                 endpoint,
                 "/query?f=json&objectIds=5,3,1,2,4&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
