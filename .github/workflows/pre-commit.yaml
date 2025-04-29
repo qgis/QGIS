@@ -38,8 +38,7 @@ jobs:
       - name: Install pre-commit
         run: pip install pre-commit
 
-      - name: List modified files
-        id: modified-files
+      - name: Run pre-commit checks
         run: |
             if [ "${{ github.event_name }}" == "pull_request_target" ]; then
               git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
@@ -53,12 +52,7 @@ jobs:
             fi
 
             echo "Modified files: $MODIFIED_FILES"
-            echo "::set-output name=files::$MODIFIED_FILES"
-
-      - name: Run pre-commit checks
-        id: pre-commit
-        run: |
-            pre-commit run --files ${{ steps.modified-files.outputs.files }} || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
+            pre-commit run --files $($MODIFIES_FILES | tr '\n' ' ')  || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
 
       - name: Commit fixes
         if: failure()
