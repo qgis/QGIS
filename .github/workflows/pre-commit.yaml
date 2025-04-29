@@ -20,11 +20,6 @@ jobs:
         with:
           fetch-depth: 200
 
-      - name: Fetch base branch
-        if: github.event_name == 'pull_request_target'
-        run: |
-          git fetch --depth=200 origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
-
       - name: Fetch head commit for PRs from forks
         if: github.event_name == 'pull_request_target'
         run: |
@@ -42,7 +37,7 @@ jobs:
         id: pre-commit
         run: |
             if [ "${{ github.event_name }}" == "pull_request_target" ]; then
-              BASE_SHA="origin/${{ github.event.pull_request.base.ref }}"
+              BASE_SHA="${{ github.event.pull_request.base.sha }}"
               HEAD_SHA="pr-head"
             else
               if [ -z "${{ github.event.before }}" ]; then
@@ -52,6 +47,10 @@ jobs:
               fi
               HEAD_SHA=${{ github.sha }}
             fi
+
+            echo "BASE_SHA: $BASE_SHA"
+            echo "HEAD_SHA: $HEAD_SHA"
+
             pre-commit run --from-ref $BASE_SHA --to-ref $HEAD_SHA || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
 
       - name: Auto-commit fixes
