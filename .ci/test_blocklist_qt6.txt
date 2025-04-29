@@ -35,7 +35,6 @@ PyQgsStyleStorageMssql
 # To be fixed
 PyQgsAnnotation
 PyQgsAuthenticationSystem
-PyQgsCodeEditor
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
 PyQgsElevationProfileCanvas
