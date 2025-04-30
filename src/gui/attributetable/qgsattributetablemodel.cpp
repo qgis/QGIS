@@ -93,7 +93,7 @@ bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
 
 bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid, int fieldIdx ) const
 {
-  QgsDebugMsgLevel( QStringLiteral( "loading feature %1 with field %2" ).arg( fid, fieldIdx ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "loading feature %1 with field %2" ).arg( fid ).arg( fieldIdx ), 3 );
 
   if ( mLayerCache->cacheSubsetOfAttributes().contains( fieldIdx ) )
   {
