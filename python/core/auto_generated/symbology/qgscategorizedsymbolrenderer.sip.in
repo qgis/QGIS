@@ -127,10 +127,22 @@ Returns a string representing the categories settings, used for
 debugging purposes only.
 %End
 
-    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+ void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Converts the category to a matching SLD rule, within the specified DOM
 document and ``element``.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    bool toSld( QDomDocument &doc, QDomElement &element, const QString &classAttribute, QgsSldExportContext &context ) const;
+%Docstring
+Converts the category to a matching SLD rule, within the specified DOM
+document and ``element``.
+
+.. versionadded:: 3.44
 %End
 
     SIP_PYOBJECT __repr__();
@@ -192,7 +204,9 @@ calling :py:func:`~QgsCategorizedSymbolRenderer.addCategory`.
 
     virtual QgsCategorizedSymbolRenderer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QString filter( const QgsFields &fields = QgsFields() );

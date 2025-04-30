@@ -60,6 +60,7 @@
 #include "qgsunittypes.h"
 #include "qgsgeometrypaintdevice.h"
 #include "qgspainting.h"
+#include "qgssldexportcontext.h"
 
 QgsPropertiesDefinition QgsSymbol::sPropertyDefinitions;
 
@@ -1368,15 +1369,30 @@ QString QgsSymbol::dump() const
 
 void QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  const QVariantMap oldProps = context.extraProperties();
+  QVariantMap props = oldProps;
+  //TODO move these to proper getters/setters in QgsSldExportContext
   props[ QStringLiteral( "alpha" )] = QString::number( opacity() );
   double scaleFactor = 1.0;
   props[ QStringLiteral( "uom" )] = QgsSymbolLayerUtils::encodeSldUom( outputUnit(), &scaleFactor );
   props[ QStringLiteral( "uomScale" )] = ( !qgsDoubleNear( scaleFactor, 1.0 ) ? qgsDoubleToString( scaleFactor ) : QString() );
 
+  context.setExtraProperties( props );
+  bool result = true;
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    ( *it )->toSld( doc, element, props );
+    if ( !( *it )->toSld( doc, element, context ) )
+      result = false;
   }
+  context.setExtraProperties( oldProps );
+  return result;
 }
 
 QgsSymbolLayerList QgsSymbol::cloneLayers() const

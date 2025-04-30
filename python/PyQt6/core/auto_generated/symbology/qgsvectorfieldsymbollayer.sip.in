@@ -74,8 +74,9 @@ Creates the symbol layer
 
     virtual bool usesMapUnits() const;
 
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );

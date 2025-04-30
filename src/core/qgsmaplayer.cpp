@@ -2097,11 +2097,21 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag, Style
 
 void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
 {
-
-  return exportSldStyleV2( doc, errorMsg, QgsSldExportContext() );
+  QgsSldExportContext exportContext;
+  doc = exportSldStyleV3( exportContext );
+  if ( !exportContext.errors().empty() )
+    errorMsg = exportContext.errors().join( "\n" );
 }
 
-void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const QgsSldExportContext &exportContext ) const
+void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, QgsSldExportContext &exportContext ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  doc = exportSldStyleV3( exportContext );
+  if ( !exportContext.errors().empty() )
+    errorMsg = exportContext.errors().join( "\n" );
+}
+
+QDomDocument QgsMapLayer::exportSldStyleV3( QgsSldExportContext &exportContext ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -2114,9 +2124,9 @@ void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const 
   const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( this );
   if ( !vlayer && !rlayer )
   {
-    errorMsg = tr( "Could not save symbology because:\n%1" )
-               .arg( tr( "Only vector and raster layers are supported" ) );
-    return;
+    exportContext.pushError( tr( "Could not save symbology because:\n%1" )
+                             .arg( tr( "Only vector and raster layers are supported" ) ) );
+    return myDocument;
   }
 
   // Create the root element
@@ -2152,11 +2162,12 @@ void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const 
     root.appendChild( layerNode );
   }
 
-  QVariantMap props;
+  QVariantMap props = exportContext.extraProperties();
 
   QVariant context;
   context.setValue( exportContext );
 
+  // TODO -- move this to proper members of QgsSldExportContext
   props[ QStringLiteral( "SldExportContext" ) ] = context;
 
   if ( hasScaleBasedVisibility() )
@@ -2164,26 +2175,24 @@ void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const 
     props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( mMinScale );
     props[ QStringLiteral( "scaleMaxDenom" ) ] = QString::number( mMaxScale );
   }
+  exportContext.setExtraProperties( props );
 
   if ( vlayer )
   {
-    if ( !vlayer->writeSld( layerNode, myDocument, errorMsg, props ) )
+    if ( !vlayer->writeSld( layerNode, myDocument, exportContext ) )
     {
-      errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
-      return;
+      return myDocument;
     }
   }
-
-  if ( rlayer )
+  else if ( rlayer )
   {
-    if ( !rlayer->writeSld( layerNode, myDocument, errorMsg, props ) )
+    if ( !rlayer->writeSld( layerNode, myDocument, exportContext ) )
     {
-      errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
-      return;
+      return myDocument;
     }
   }
 
-  doc = myDocument;
+  return myDocument;
 }
 
 QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
@@ -2193,7 +2202,7 @@ QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
   return saveSldStyleV2( resultFlag, context );
 }
 
-QString QgsMapLayer::saveSldStyleV2( bool &resultFlag, const QgsSldExportContext &exportContext ) const
+QString QgsMapLayer::saveSldStyleV2( bool &resultFlag, QgsSldExportContext &exportContext ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -2239,18 +2248,15 @@ QString QgsMapLayer::saveSldStyleV2( bool &resultFlag, const QgsSldExportContext
     // now construct the file name for our .sld style file
     const QString myFileName = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".sld";
 
-    QString errorMsg;
-    QDomDocument myDocument;
-
     QgsSldExportContext context { exportContext };
     context.setExportFilePath( myFileName );
 
-    mlayer->exportSldStyleV2( myDocument, errorMsg, context );
+    QDomDocument myDocument = mlayer->exportSldStyleV3( context );
 
-    if ( !errorMsg.isNull() )
+    if ( !context.errors().empty() )
     {
       resultFlag = false;
-      return errorMsg;
+      return context.errors().join( '\n' );
     }
 
     QFile myFile( myFileName );
@@ -2629,7 +2635,7 @@ void QgsMapLayer::saveStyleToDatabase( const QString &name, const QString &descr
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QString sldStyle, qmlStyle;
-  QDomDocument qmlDocument, sldDocument;
+  QDomDocument qmlDocument;
   QgsReadWriteContext context;
   exportNamedStyle( qmlDocument, msgError, context, categories );
   if ( !msgError.isNull() )
@@ -2638,8 +2644,9 @@ void QgsMapLayer::saveStyleToDatabase( const QString &name, const QString &descr
   }
   qmlStyle = qmlDocument.toString();
 
-  this->exportSldStyle( sldDocument, msgError );
-  if ( !msgError.isNull() )
+  QgsSldExportContext sldContext;
+  QDomDocument sldDocument = this->exportSldStyleV3( sldContext );
+  if ( !sldContext.errors().empty() )
   {
     return;
   }

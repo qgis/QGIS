@@ -1250,18 +1250,29 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param doc the target QDomDocument
      * \param errorMsg will be set to a descriptive message if an error occurs
      * during the execution of writeSymbology
-     * \see exportSldStyleV2()
+     * \deprecated QGIS 3.44. Use exportSldStyleV3() instead.
      */
-    virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg ) const;
+    Q_DECL_DEPRECATED virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg ) const SIP_DEPRECATED;
 
     /**
      * Export the properties of this layer as SLD style in a QDomDocument
      * \param doc the target QDomDocument
      * \param errorMsg will be set to a descriptive message if an error occurs during the execution of writeSymbology()
      * \param exportContext SLD export context
-     * \since QGIS 3.30
+     * \deprecated QGIS 3.44. Use exportSldStyleV3() instead.
      */
-    virtual void exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const QgsSldExportContext &exportContext ) const;
+    Q_DECL_DEPRECATED virtual void exportSldStyleV2( QDomDocument &doc, QString &errorMsg, QgsSldExportContext &exportContext ) const SIP_DEPRECATED;
+
+    /**
+     * Export the properties of this layer as SLD style in a QDomDocument.
+     *
+     * Errors and warnings raised during the conversion should be retrieved from \a exportContext.
+     *
+     * \param exportContext SLD export context
+     *
+     * \since QGIS 3.44
+     */
+    virtual QDomDocument exportSldStyleV3( QgsSldExportContext &exportContext ) const;
 
     /**
      * Save the properties of this layer as the default style
@@ -1327,7 +1338,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see loadSldStyle()
      * \since QGIS 3.30
      */
-    virtual QString saveSldStyleV2( bool &resultFlag SIP_OUT, const QgsSldExportContext &exportContext ) const;
+    virtual QString saveSldStyleV2( bool &resultFlag SIP_OUT, QgsSldExportContext &exportContext ) const;
 
     /**
      * Attempts to style the layer using the formatting from an SLD type file.

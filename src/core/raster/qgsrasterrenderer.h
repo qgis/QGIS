@@ -208,9 +208,15 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     /**
      * Used from subclasses to create SLD Rule elements following SLD v1.0 specs
-     * \since QGIS 3.6
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
     */
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+    Q_DECL_DEPRECATED virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const SIP_DEPRECATED;
+
+    /**
+     * Used from subclasses to create SLD Rule elements following SLD v1.0 specs
+     * \since QGIS 3.44
+    */
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     /**
      * Accepts the specified symbology \a visitor, causing it to visit all symbols associated
