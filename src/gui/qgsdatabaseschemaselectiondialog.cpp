@@ -41,7 +41,7 @@ QgsDatabaseSchemaSelectionDialog::QgsDatabaseSchemaSelectionDialog( QgsAbstractD
   layout->addWidget( mButtonBox );
 }
 
-QString QgsDatabaseSchemaSelectionDialog::selectedSchema()
+QString QgsDatabaseSchemaSelectionDialog::selectedSchema() const
 {
   return mCboSchema->currentSchema();
 }
