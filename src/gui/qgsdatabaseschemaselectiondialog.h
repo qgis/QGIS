@@ -44,10 +44,10 @@ class GUI_EXPORT QgsDatabaseSchemaSelectionDialog : public QDialog
     /**
      * Returns the name of the current schema selected in the combo box.
      */
-    QString selectedSchema();
+    QString selectedSchema() const;
 
   private:
-    QDialogButtonBox *mButtonBox;
+    QDialogButtonBox *mButtonBox = nullptr;
     QgsDatabaseSchemaComboBox *mCboSchema = nullptr;
 };
 #endif // QGSDATABASESCHEMASELECTIONDIALOG_H

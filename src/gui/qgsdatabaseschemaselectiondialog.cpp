@@ -23,14 +23,14 @@
 QgsDatabaseSchemaSelectionDialog::QgsDatabaseSchemaSelectionDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
   : QDialog( parent )
 {
-  setWindowTitle( tr( "Select schema" ) );
+  setWindowTitle( tr( "Select Schema" ) );
 
   QFormLayout *layout = new QFormLayout( this );
 
   mCboSchema = new QgsDatabaseSchemaComboBox( connection, this );
   mCboSchema->setAllowEmptySchema( false );
 
-  layout->addRow( tr( "Select Schema" ), mCboSchema );
+  layout->addRow( tr( "Select schema" ), mCboSchema );
 
   mButtonBox = new QDialogButtonBox( this );
   mButtonBox->setOrientation( Qt::Horizontal );
