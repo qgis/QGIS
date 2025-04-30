@@ -92,14 +92,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   connect( pbnSelectEditForm, &QToolButton::clicked, this, &QgsAttributesFormProperties::pbnSelectEditForm_clicked );
   connect( mTbInitCode, &QPushButton::clicked, this, &QgsAttributesFormProperties::mTbInitCode_clicked );
 
-  connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, this, [this]( const QString &filterText ) {
-    static_cast< QgsAttributesAvailableWidgetsView *>( mAvailableWidgetsView )->setFilterText( filterText );
-    mAvailableWidgetsView->expandAll();
-
-    static_cast< QgsAttributesFormLayoutView *>( mFormLayoutView )->setFilterText( filterText );
-    mFormLayoutView->expandAll();
-  } );
-
+  connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsAttributesFormProperties::updateFilteredItems );
 
   connect( mLayer, &QgsVectorLayer::updatedFields, this, [this] {
     if ( !mBlockUpdates )
@@ -635,10 +628,8 @@ void QgsAttributesFormProperties::toggleShowAliases( bool checked )
   mFormLayoutModel->setShowAliases( checked );
 
   // When toggling aliases we need to refresh the filter
-  // so that items are reevaluated immediately. A single
-  // invalidate() leaves out other logic (e.g., expanding
-  // nodes), so we play safe and trigger textChanged()
-  emit mSearchLineEdit->textChanged( mSearchLineEdit->text() );
+  // so that items are reevaluated immediately.
+  updateFilteredItems( mSearchLineEdit->text() );
 }
 
 void QgsAttributesFormProperties::addContainer()
@@ -974,11 +965,6 @@ void QgsAttributesFormLayoutView::setModel( QAbstractItemModel *model )
   const auto *formLayoutModel = static_cast< QgsAttributesFormLayoutModel * >( mModel->sourceModel() );
   connect( formLayoutModel, &QgsAttributesFormLayoutModel::externalItemDropped, this, &QgsAttributesFormLayoutView::handleExternalDroppedItem );
   connect( formLayoutModel, &QgsAttributesFormLayoutModel::internalItemDropped, this, &QgsAttributesFormLayoutView::handleInternalDroppedItem );
-}
-
-QgsAttributesFormProxyModel *QgsAttributesFormLayoutView::formLayoutProxyModel() const
-{
-  return mModel;
 }
 
 
@@ -1582,6 +1568,15 @@ void QgsAttributesFormProperties::updatedFields()
       mAvailableWidgetsModel->setData( index, fieldConfigs[fieldName].mAlias, QgsAttributesFormModel::ItemDisplayRole );
     }
   }
+}
+
+void QgsAttributesFormProperties::updateFilteredItems( const QString &filterText )
+{
+  static_cast< QgsAttributesAvailableWidgetsView *>( mAvailableWidgetsView )->setFilterText( filterText );
+  mAvailableWidgetsView->expandAll();
+
+  static_cast< QgsAttributesFormLayoutView *>( mFormLayoutView )->setFilterText( filterText );
+  mFormLayoutView->expandAll();
 }
 
 void QgsAttributesFormProperties::onContextMenuRequested( QPoint point )
