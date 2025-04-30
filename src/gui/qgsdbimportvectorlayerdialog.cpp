@@ -249,6 +249,9 @@ void QgsDbImportVectorLayerDialog::setSourceLayer( QgsVectorLayer *layer )
   mFieldsView->setSourceLayer( mSourceLayer );
   mFieldsView->setSourceFields( mSourceLayer->fields() );
   mFieldsView->setDestinationFields( mSourceLayer->fields() );
+
+  const bool selectedFeatures = mSourceLayer->selectedFeatureCount() > 0;
+  mSourceLayerOnlySelected->setEnabled( selectedFeatures );
 }
 
 void QgsDbImportVectorLayerDialog::loadFieldsFromLayer()
@@ -370,6 +373,11 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
   if ( mExtentGroupBox->isEnabled() && mExtentGroupBox->isChecked() )
   {
     exportOptions.setExtent( QgsReferencedRectangle( mExtentGroupBox->outputExtent(), mExtentGroupBox->outputCrs() ) );
+  }
+
+  if ( mSourceLayerOnlySelected->isEnabled() && mSourceLayerOnlySelected->isChecked() )
+  {
+    exportOptions.setSelectedOnly( true );
   }
 
   const QList<QgsFieldMappingModel::Field> fieldMapping = mFieldsView->mapping();
