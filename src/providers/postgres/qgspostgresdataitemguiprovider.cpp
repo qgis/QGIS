@@ -844,16 +844,16 @@ void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectIte
   project.setTitle( dlg.name() );
   project.setFileName( newUri );
 
-  if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectItem->name(), projectItem->schemaName() ) )
+  // write project to the database
+  const bool success = project.write();
+  if ( !success )
   {
     notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     return;
   }
 
-  // write project to the database
-  const bool success = project.write();
-  if ( !success )
+  if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectItem->name(), projectItem->schemaName() ) )
   {
     notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
