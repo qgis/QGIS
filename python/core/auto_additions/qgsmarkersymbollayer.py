@@ -12,7 +12,7 @@ except (NameError, AttributeError):
 try:
     QgsSimpleMarkerSymbolLayer.create = staticmethod(QgsSimpleMarkerSymbolLayer.create)
     QgsSimpleMarkerSymbolLayer.createFromSld = staticmethod(QgsSimpleMarkerSymbolLayer.createFromSld)
-    QgsSimpleMarkerSymbolLayer.__overridden_methods__ = ['layerType', 'flags', 'startRender', 'renderPoint', 'properties', 'clone', 'writeSldMarker', 'ogrFeatureStyle', 'writeDxf', 'setOutputUnit', 'outputUnit', 'setMapUnitScale', 'mapUnitScale', 'usesMapUnits', 'bounds', 'fillColor', 'setFillColor', 'setColor', 'color', 'strokeColor', 'setStrokeColor', 'draw']
+    QgsSimpleMarkerSymbolLayer.__overridden_methods__ = ['layerType', 'flags', 'startRender', 'renderPoint', 'properties', 'clone', 'toSld', 'writeSldMarker', 'ogrFeatureStyle', 'writeDxf', 'setOutputUnit', 'outputUnit', 'setMapUnitScale', 'mapUnitScale', 'usesMapUnits', 'bounds', 'fillColor', 'setFillColor', 'setColor', 'color', 'strokeColor', 'setStrokeColor', 'draw']
     QgsSimpleMarkerSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
@@ -26,7 +26,7 @@ try:
     QgsSvgMarkerSymbolLayer.create = staticmethod(QgsSvgMarkerSymbolLayer.create)
     QgsSvgMarkerSymbolLayer.createFromSld = staticmethod(QgsSvgMarkerSymbolLayer.createFromSld)
     QgsSvgMarkerSymbolLayer.resolvePaths = staticmethod(QgsSvgMarkerSymbolLayer.resolvePaths)
-    QgsSvgMarkerSymbolLayer.__overridden_methods__ = ['layerType', 'flags', 'startRender', 'stopRender', 'renderPoint', 'properties', 'usesMapUnits', 'clone', 'writeSldMarker', 'fillColor', 'setFillColor', 'strokeColor', 'setStrokeColor', 'setOutputUnit', 'outputUnit', 'setMapUnitScale', 'mapUnitScale', 'writeDxf', 'bounds', 'prepareExpressions', 'usedAttributes']
+    QgsSvgMarkerSymbolLayer.__overridden_methods__ = ['layerType', 'flags', 'startRender', 'stopRender', 'renderPoint', 'properties', 'usesMapUnits', 'clone', 'toSld', 'writeSldMarker', 'fillColor', 'setFillColor', 'strokeColor', 'setStrokeColor', 'setOutputUnit', 'outputUnit', 'setMapUnitScale', 'mapUnitScale', 'writeDxf', 'bounds', 'prepareExpressions', 'usedAttributes']
     QgsSvgMarkerSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
@@ -41,7 +41,7 @@ try:
     QgsFontMarkerSymbolLayer.create = staticmethod(QgsFontMarkerSymbolLayer.create)
     QgsFontMarkerSymbolLayer.createFromSld = staticmethod(QgsFontMarkerSymbolLayer.createFromSld)
     QgsFontMarkerSymbolLayer.resolveFonts = staticmethod(QgsFontMarkerSymbolLayer.resolveFonts)
-    QgsFontMarkerSymbolLayer.__overridden_methods__ = ['layerType', 'flags', 'startRender', 'stopRender', 'renderPoint', 'properties', 'clone', 'writeSldMarker', 'usesMapUnits', 'setOutputUnit', 'strokeColor', 'setStrokeColor', 'bounds']
+    QgsFontMarkerSymbolLayer.__overridden_methods__ = ['layerType', 'flags', 'startRender', 'stopRender', 'renderPoint', 'properties', 'clone', 'toSld', 'writeSldMarker', 'usesMapUnits', 'setOutputUnit', 'strokeColor', 'setStrokeColor', 'bounds']
     QgsFontMarkerSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

@@ -63,8 +63,9 @@ the symbol is transferred to the renderer.
 
     virtual QgsSingleSymbolRenderer *clone() const /Factory/;
 
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;

@@ -22,6 +22,7 @@
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorutils.h"
+#include "qgssldexportcontext.h"
 
 #include <QPainter>
 #include <QSet>
@@ -419,26 +420,42 @@ QgsEllipseSymbolLayer *QgsEllipseSymbolLayer::clone() const
 
 void QgsEllipseSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsEllipseSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
   QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PointSymbolizer" ) );
+  const QVariantMap props = context.extraProperties();
   if ( !props.value( QStringLiteral( "uom" ), QString() ).toString().isEmpty() )
     symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ).toString() );
   element.appendChild( symbolizerElem );
 
   // <Geometry>
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString() );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString(), context );
 
-  writeSldMarker( doc, symbolizerElem, props );
+  return writeSldMarker( doc, symbolizerElem, context );
 }
 
 void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  writeSldMarker( doc, element, context );
+}
+
+bool QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
 {
   // <Graphic>
   QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
   element.appendChild( graphicElem );
 
+  const QVariantMap props = context.extraProperties();
   const double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mStrokeWidth, mStrokeWidthUnit, props );
   const double symbolWidth = QgsSymbolLayerUtils::rescaleUom( mSymbolWidth, mSymbolWidthUnit, props );
-  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, encodeShape( mShape ), mColor, mStrokeColor, mStrokeStyle, strokeWidth, symbolWidth );
+  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, encodeShape( mShape ), mColor, mStrokeColor, mStrokeStyle, context, strokeWidth, symbolWidth );
 
   // <Rotation>
   const QgsProperty ddRotation = mDataDefinedProperties.property( QgsSymbolLayer::Property::Angle );
@@ -475,7 +492,7 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
       angleFunc = QString::number( angle + mAngle );
     }
   }
-  QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
+  QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc, context );
 
   // <Displacement>
   const QPointF offset = QgsSymbolLayerUtils::rescaleUom( mOffset, mOffsetUnit, props );
@@ -485,6 +502,7 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   const double widthHeightFactor = mSymbolWidth / mSymbolHeight;
   const QDomElement factorElem = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "widthHeightFactor" ), QString::number( widthHeightFactor ) );
   graphicElem.appendChild( factorElem );
+  return true;
 }
 
 QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )

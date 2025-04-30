@@ -574,8 +574,19 @@ class CORE_EXPORT QgsSymbol
 
     /**
      * Converts the symbol to a SLD representation.
+     *
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const SIP_DEPRECATED;
+
+    /**
+     * Converts the symbol to a SLD representation.
+     *
+     * Returns TRUE if the symbol was successfully converted.
+     *
+     * \since QGIS 3.44
+     */
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     /**
      * Returns the units to use for sizes and widths within the symbol. Individual

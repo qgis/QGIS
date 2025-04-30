@@ -168,7 +168,8 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     QList<int> usesBands() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
      * \brief Refreshes the renderer according to the \a min and \a max values associated with the \a extent.

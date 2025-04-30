@@ -282,9 +282,20 @@ Sets if this rule is active
 clone this rule, return new instance
 %End
 
-        void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+ void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
-Saves the symbol layer as SLD
+Saves the symbol layer as SLD.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+        bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+%Docstring
+Saves the rule to SLD.
+
+.. versionadded:: 3.44
 %End
 
         static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
@@ -519,7 +530,9 @@ there could be more symbols for a feature
     virtual QgsRuleBasedRenderer *clone() const /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;

@@ -33,6 +33,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgssldexportcontext.h"
 
 #include <QDomElement>
 #include <QDomDocument>
@@ -356,6 +357,19 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, Qgis::Geo
   return r;
 }
 
+void QgsFeatureRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsFeatureRenderer::toSld( QDomDocument &, QDomElement &, QgsSldExportContext &context ) const
+{
+  context.pushError( QObject::tr( "Vector %1 renderer cannot be converted to SLD" ).arg( type() ) );
+  return false;
+}
+
 QSet<QString> QgsFeatureRenderer::legendKeys() const
 {
   // build up a list of unique legend keys
@@ -378,7 +392,10 @@ QDomElement QgsFeatureRenderer::writeSld( QDomDocument &doc, const QString &styl
   userStyleElem.appendChild( nameElem );
 
   QDomElement featureTypeStyleElem = doc.createElement( QStringLiteral( "se:FeatureTypeStyle" ) );
-  toSld( doc, featureTypeStyleElem, props );
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+
+  toSld( doc, featureTypeStyleElem, context );
   userStyleElem.appendChild( featureTypeStyleElem );
 
   return userStyleElem;

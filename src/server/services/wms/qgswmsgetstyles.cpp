@@ -29,7 +29,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsserverresponse.h"
-
+#include "qgssldexportcontext.h"
 
 namespace QgsWms
 {
@@ -119,10 +119,12 @@ namespace QgsWms
           QDomElement featureTypeStyleElem = myDocument.createElement( QStringLiteral( "se:FeatureTypeStyle" ) );
           userStyleElem.appendChild( featureTypeStyleElem );
 
-          vlayer->renderer()->toSld( myDocument, featureTypeStyleElem, props );
+          QgsSldExportContext exportContext;
+          exportContext.setExtraProperties( props );
+          vlayer->renderer()->toSld( myDocument, featureTypeStyleElem, exportContext );
           if ( vlayer->labelsEnabled() )
           {
-            vlayer->labeling()->toSld( featureTypeStyleElem, props );
+            vlayer->labeling()->toSld( featureTypeStyleElem, exportContext );
           }
 
           namedLayerNode.appendChild( userStyleElem );

@@ -22,7 +22,7 @@
 #include "qgsrastertransparency.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgscolorramplegendnode.h"
-
+#include "qgssldexportcontext.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
@@ -355,13 +355,20 @@ QList<int> QgsSingleBandPseudoColorRenderer::usesBands() const
 
 void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
   // create base structure
-  QgsRasterRenderer::toSld( doc, element, props );
+  QgsRasterRenderer::toSld( doc, element, context );
 
   // look for RasterSymbolizer tag
   const QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
   if ( elements.size() == 0 )
-    return;
+    return false;
 
   // there SHOULD be only one
   QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
@@ -387,7 +394,7 @@ void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &el
   QString rampType = QStringLiteral( "ramp" );
   const QgsColorRampShader *rampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
   if ( !rampShader )
-    return;
+    return false;
 
   switch ( rampShader->colorRampType() )
   {
@@ -425,6 +432,7 @@ void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &el
       colorMapEntryElem.setAttribute( QStringLiteral( "opacity" ), QString::number( classDataIt->color.alphaF() ) );
     }
   }
+  return true;
 }
 
 bool QgsSingleBandPseudoColorRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
@@ -532,3 +540,4 @@ bool QgsSingleBandPseudoColorRenderer::refresh( const QgsRectangle &extent, cons
 
   return refreshed;
 }
+

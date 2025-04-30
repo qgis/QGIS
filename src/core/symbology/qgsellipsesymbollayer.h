@@ -77,9 +77,10 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void stopRender( QgsSymbolRenderContext &context ) override;
     QgsEllipseSymbolLayer *clone() const override SIP_FACTORY;
     QVariantMap properties() const override;
-
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
+    Q_DECL_DEPRECATED void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
 
