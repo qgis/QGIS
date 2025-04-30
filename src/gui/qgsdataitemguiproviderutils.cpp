@@ -88,6 +88,7 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::unique_ptr<Qg
   const QString destSchema = dialog.schema();
   const QString destTableName = dialog.tableName();
   const QString tableComment = dialog.tableComment();
+  const bool createSpatialIndex = dialog.createSpatialIndex();
 
   auto pushError = [shortTitle, longTitle, context]( const QString &error ) {
     QgsMessageBarItem *item = new QgsMessageBarItem( shortTitle, QObject::tr( "Import failed." ), Qgis::MessageLevel::Warning, 0, nullptr );
@@ -103,8 +104,8 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::unique_ptr<Qg
   };
 
   // when export is successful:
-  QObject::connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connectionContext, [onSuccessfulCompletion, connectionUri, longTitle, pushError, connectionProvider, destSchema, destTableName, tableComment, shortTitle, context]() {
-    if ( !tableComment.isEmpty() )
+  QObject::connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connectionContext, [onSuccessfulCompletion, connectionUri, longTitle, pushError, connectionProvider, destSchema, destTableName, tableComment, createSpatialIndex, shortTitle, context]() {
+    if ( !tableComment.isEmpty() || createSpatialIndex )
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection;
       try
@@ -118,14 +119,30 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::unique_ptr<Qg
         return;
       }
 
-      try
+      if ( !tableComment.isEmpty() )
       {
-        connection->setTableComment( destSchema, destTableName, tableComment );
+        try
+        {
+          connection->setTableComment( destSchema, destTableName, tableComment );
+        }
+        catch ( QgsProviderConnectionException &e )
+        {
+          pushError( QObject::tr( "Failed to set new table comment!\n\n" ) + e.what() );
+          return;
+        }
       }
-      catch ( QgsProviderConnectionException &e )
+
+      if ( createSpatialIndex )
       {
-        pushError( QObject::tr( "Failed to set new table comment!\n\n" ) + e.what() );
-        return;
+        try
+        {
+          connection->createSpatialIndex( destSchema, destTableName );
+        }
+        catch ( QgsProviderConnectionException &e )
+        {
+          pushError( QObject::tr( "Failed to create spatial index for new table!\n\n" ) + e.what() );
+          return;
+        }
       }
     }
 
@@ -168,6 +185,7 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::uni
   const QString destSchema = dialog.schema();
   const QString destTableName = dialog.tableName();
   const QString tableComment = dialog.tableComment();
+  const bool createSpatialIndex = dialog.createSpatialIndex();
 
   auto pushError = [shortTitle, longTitle, context]( const QString &error ) {
     QgsMessageBarItem *item = new QgsMessageBarItem( shortTitle, QObject::tr( "Import failed." ), Qgis::MessageLevel::Warning, 0, nullptr );
@@ -183,8 +201,8 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::uni
   };
 
   // when export is successful:
-  QObject::connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connectionContext, [onSuccessfulCompletion, connectionUri, longTitle, pushError, connectionProvider, destSchema, destTableName, tableComment, shortTitle, context]() {
-    if ( !tableComment.isEmpty() )
+  QObject::connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connectionContext, [onSuccessfulCompletion, connectionUri, longTitle, pushError, connectionProvider, destSchema, destTableName, tableComment, createSpatialIndex, shortTitle, context]() {
+    if ( !tableComment.isEmpty() || createSpatialIndex )
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection;
       try
@@ -198,14 +216,30 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::uni
         return;
       }
 
-      try
+      if ( !tableComment.isEmpty() )
       {
-        connection->setTableComment( destSchema, destTableName, tableComment );
+        try
+        {
+          connection->setTableComment( destSchema, destTableName, tableComment );
+        }
+        catch ( QgsProviderConnectionException &e )
+        {
+          pushError( QObject::tr( "Failed to set new table comment!\n\n" ) + e.what() );
+          return;
+        }
       }
-      catch ( QgsProviderConnectionException &e )
+
+      if ( createSpatialIndex )
       {
-        pushError( QObject::tr( "Failed to set new table comment!\n\n" ) + e.what() );
-        return;
+        try
+        {
+          connection->createSpatialIndex( destSchema, destTableName );
+        }
+        catch ( QgsProviderConnectionException &e )
+        {
+          pushError( QObject::tr( "Failed to create spatial index for new table!\n\n" ) + e.what() );
+          return;
+        }
       }
     }
 

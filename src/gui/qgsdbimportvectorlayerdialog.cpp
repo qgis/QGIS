@@ -103,6 +103,21 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
     mEditComment = nullptr;
   }
 
+  const bool supportsSpatialIndex = mConnection->tableImportCapabilities().testFlag( Qgis::DatabaseProviderTableImportCapability::CreateSpatialIndex );
+  if ( !supportsSpatialIndex )
+  {
+    delete mChkSpatialIndex;
+    mChkSpatialIndex = nullptr;
+  }
+
+  const bool convertFieldnamesToLowercase = mConnection->tableImportCapabilities().testFlag( Qgis::DatabaseProviderTableImportCapability::ConvertFielnamesToLowercase );
+  if ( !convertFieldnamesToLowercase )
+  {
+    delete mChkLowercaseFieldNames;
+    mChkLowercaseFieldNames = nullptr;
+  }
+
+
   mExtentGroupBox->setTitleBase( tr( "Filter by Extent" ) );
   mExtentGroupBox->setCheckable( true );
   mExtentGroupBox->setChecked( false );
@@ -330,6 +345,11 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
     allProviderOptions.insert( QStringLiteral( "overwrite" ), true );
   }
 
+  if ( mChkLowercaseFieldNames->isChecked() && mConnection->providerKey() == QStringLiteral( "postgres" ) )
+  {
+    allProviderOptions.insert( QStringLiteral( "lowercaseFieldNames" ), true );
+  }
+
   // This flag tells to the provider that field types do not need conversion -- we have already
   // explicitly set all fields to provider-specific field types and we do not need to treat
   // them as generic/different provider fields
@@ -380,4 +400,13 @@ void QgsDbImportVectorLayerDialog::sourceLayerComboChanged()
     return;
 
   setSourceLayer( qobject_cast< QgsVectorLayer * >( mSourceLayerComboBox->currentLayer() ) );
+}
+
+bool QgsDbImportVectorLayerDialog::createSpatialIndex() const
+{
+  if ( mChkSpatialIndex )
+  {
+    return mChkSpatialIndex->isChecked();
+  }
+  return false;
 }

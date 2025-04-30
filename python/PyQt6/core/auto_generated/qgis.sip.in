@@ -2955,6 +2955,8 @@ The development version
     {
       SetGeometryColumnName,
       SetPrimaryKeyName,
+      CreateSpatialIndex,
+      ConvertFielnamesToLowercase,
     };
     typedef QFlags<Qgis::DatabaseProviderTableImportCapability> DatabaseProviderTableImportCapabilities;
 

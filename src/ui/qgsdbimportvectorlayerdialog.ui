@@ -90,10 +90,13 @@
       <string>Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" columnstretch="1,2">
-      <item row="3" column="0">
-       <widget class="QLabel" name="mLabelComment">
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="mChkSpatialIndex">
         <property name="text">
-         <string>Comment</string>
+         <string>Create Spatial Index</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -111,6 +114,23 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="1">
+       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="mLabelComment">
+        <property name="text">
+         <string>Comment</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="mEditPrimaryKey"/>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="mLabelPrimaryKey">
         <property name="text">
@@ -121,9 +141,6 @@
       <item row="1" column="1">
        <widget class="QLineEdit" name="mEditGeometryColumnName"/>
       </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="mEditPrimaryKey"/>
-      </item>
       <item row="2" column="0">
        <widget class="QLabel" name="mLabelDestinationCrs">
         <property name="text">
@@ -131,10 +148,10 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
+      <item row="5" column="0">
+       <widget class="QCheckBox" name="mChkLowercaseFieldNames">
+        <property name="text">
+         <string>Convert Field Names to Lowercase</string>
         </property>
        </widget>
       </item>

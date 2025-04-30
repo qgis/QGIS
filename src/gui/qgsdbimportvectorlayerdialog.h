@@ -82,6 +82,11 @@ class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsD
     void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
+     * Returns if spatial index should be created for the imported layer.
+     */
+    bool createSpatialIndex() const;
+
+    /**
      * Creates a new exporter task to match the settings defined in the dialog.
      */
     std::unique_ptr<QgsVectorLayerExporterTask> createExporterTask( const QVariantMap &extraProviderOptions = QVariantMap() );
