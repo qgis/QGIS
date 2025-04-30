@@ -17,7 +17,6 @@
 #include "moc_qgsmodelviewtoollink.cpp"
 #include "qgsprocessingmodelerparameterwidget.h"
 #include "qgsprocessingmodelalgorithm.h"
-#include "qgsgui.h"
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsmodelgraphicsscene.h"
@@ -212,15 +211,16 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
         case Qgis::ProcessingModelChildParameterSource::ChildOutput:
         {
           oldSource = source;
-          QgsProcessingModelChildAlgorithm *algSource;
+          QgsProcessingModelChildAlgorithm *algSource = nullptr;
           // This is not so nice to have the UI tangled gotta think of a better abstraction later
           // Loop through all items to get the output socket
           for ( QGraphicsItem *item : items )
           {
             if ( QgsModelDesignerSocketGraphicItem *outputSocket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
             {
-              if ( ( algSource = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputSocket->component() ) ) )
+              if ( auto childAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputSocket->component() ) )
               {
+                algSource = childAlgorithm;
                 if ( source.outputChildId() != algSource->childId() || outputSocket->isInput() )
                 {
                   continue;
@@ -240,6 +240,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
                   view()->beginCommand( tr( "Edit link" ) );
                 }
               }
+              break;
             }
           }
 
@@ -259,6 +260,11 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
           int socketIndex = -1;
           if ( oldSource.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput )
           {
+            if ( !algSource )
+            {
+              QgsDebugError( QStringLiteral( "algSource not set, aborting!" ) );
+              return;
+            }
             item = scene()->childAlgorithmItem( oldSource.outputChildId() );
             socketIndex = QgsProcessingUtils::outputDefinitionIndex( algSource->algorithm(), source.outputName() );
           }
@@ -268,12 +274,20 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
             socketIndex = 0;
           }
 
+          if ( !item )
+          {
+            QgsDebugError( QStringLiteral( "item not set, aborting!" ) );
+            return;
+          }
+
           mFromSocket = item->outSocketAt( socketIndex );
         }
-
-
         break;
-        default:
+
+        case Qgis::ProcessingModelChildParameterSource::StaticValue:
+        case Qgis::ProcessingModelChildParameterSource::Expression:
+        case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+        case Qgis::ProcessingModelChildParameterSource::ModelOutput:
           continue;
       }
 
