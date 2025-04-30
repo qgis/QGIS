@@ -139,6 +139,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     void updatedFields();
 
+    void updateFilteredItems( const QString &filterText );
+
   private:
     //! this will clean the right panel
     void clearAttributeTypeFrame();
@@ -290,9 +292,6 @@ class GUI_EXPORT QgsAttributesFormLayoutView : public QgsAttributesFormBaseView
 
     //! Overridden setModel() from base class. Only QgsAttributesFormProxyModel is an acceptable model.
     void setModel( QAbstractItemModel *model ) override;
-
-    //! Access the underlying QgsAttributesFormLayoutModel model
-    QgsAttributesFormProxyModel *formLayoutProxyModel() const;
 
   protected:
     // Drag and drop support (to handle internal moves)
