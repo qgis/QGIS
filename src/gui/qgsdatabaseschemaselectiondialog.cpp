@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QFormLayout>
 #include <QApplication>
 #include <QMessageBox>
+#include <QGridLayout>
+#include <QLabel>
 
 #include "qgsdatabaseschemaselectiondialog.h"
 #include "moc_qgsdatabaseschemaselectiondialog.cpp"
@@ -25,12 +26,13 @@ QgsDatabaseSchemaSelectionDialog::QgsDatabaseSchemaSelectionDialog( QgsAbstractD
 {
   setWindowTitle( tr( "Select Schema" ) );
 
-  QFormLayout *layout = new QFormLayout( this );
+  QGridLayout *layout = new QGridLayout( this );
 
   mCboSchema = new QgsDatabaseSchemaComboBox( connection, this );
   mCboSchema->setAllowEmptySchema( false );
 
-  layout->addRow( tr( "Select schema" ), mCboSchema );
+  layout->addWidget( new QLabel( tr( "Select schema" ) ), 0, 0 );
+  layout->addWidget( mCboSchema, 0, 1 );
 
   mButtonBox = new QDialogButtonBox( this );
   mButtonBox->setOrientation( Qt::Horizontal );
@@ -38,7 +40,7 @@ QgsDatabaseSchemaSelectionDialog::QgsDatabaseSchemaSelectionDialog( QgsAbstractD
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsDatabaseSchemaSelectionDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsDatabaseSchemaSelectionDialog::accept );
 
-  layout->addWidget( mButtonBox );
+  layout->addWidget( mButtonBox, 1, 0, 2, 0 );
 }
 
 QString QgsDatabaseSchemaSelectionDialog::selectedSchema() const
