@@ -34,10 +34,6 @@ Constructor for QgsRasterRenderer.
 
     virtual QgsRasterRenderer *clone() const = 0 /Factory/;
 
-%Docstring
-QgsRasterRenderer cannot be copied. Use
-:py:func:`~QgsRasterRenderer.clone` instead.
-%End
 
     virtual int bandCount() const;
 
