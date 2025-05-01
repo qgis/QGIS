@@ -16,9 +16,6 @@
  ***************************************************************************/
 
 #include "qgsalgorithmconvertgeometrytype.h"
-#include "qgslinestring.h"
-#include "qgsmultipoint.h"
-#include "qgspolygon.h"
 
 ///@cond PRIVATE
 
@@ -169,126 +166,12 @@ const QVector< QgsGeometry > QgsConvertGeometryTypeAlgorithm::convertGeometry( c
   {
     geometries << geom.centroid();
   }
-  else if ( typeIndex == 1 )
+  else
   {
-    geometries = convertToNodes( geom );
-  }
-  else if ( typeIndex == 2 )
-  {
-    geometries = convertToLineStrings( geom );
-  }
-  else if ( typeIndex == 3 )
-  {
-    geometries = convertToMultiLineStrings( geom );
-  }
-  else if ( typeIndex == 4 )
-  {
-    geometries = convertToPolygon( geom, outputWkbType );
+    geometries = geom.coerceToType( outputWkbType );
   }
 
   return geometries;
-}
-
-const QVector< QgsGeometry > QgsConvertGeometryTypeAlgorithm::convertToNodes( const QgsGeometry &geom )
-{
-  auto mp = std::make_unique< QgsMultiPoint >();
-  for ( auto vertex = geom.vertices_begin(); vertex != geom.vertices_end(); ++vertex )
-  {
-    mp->addGeometry( ( *vertex ).clone() );
-  }
-  return QVector< QgsGeometry >() << QgsGeometry( std::move( mp ) );
-}
-
-const QVector< QgsGeometry > QgsConvertGeometryTypeAlgorithm::convertToLineStrings( const QgsGeometry &geom )
-{
-  const Qgis::WkbType wkbType = geom.wkbType();
-  if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Point )
-  {
-    throw QgsProcessingException( QObject::tr( "Cannot convert from %1 to LineStrings" ).arg( QgsWkbTypes::displayString( wkbType ) ) );
-  }
-  else if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Line )
-  {
-    if ( QgsWkbTypes::isMultiType( wkbType ) )
-    {
-      return geom.asGeometryCollection();
-    }
-    else // line to line
-    {
-      return QVector< QgsGeometry >() << geom;
-    }
-  }
-  else // polygons to lines
-  {
-    // boundary gives us a (multi)line string of exterior + interior rings
-    QgsGeometry boundary = QgsGeometry( geom.constGet()->boundary() );
-    // boundary is multipart, return as singleparts
-    return boundary.asGeometryCollection();
-  }
-}
-
-const QVector< QgsGeometry > QgsConvertGeometryTypeAlgorithm::convertToMultiLineStrings( const QgsGeometry &geom )
-{
-  const Qgis::WkbType wkbType = geom.wkbType();
-  if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Point )
-  {
-    throw QgsProcessingException( QObject::tr( "Cannot convert from %1 to MultiLineStrings" ).arg( QgsWkbTypes::displayString( wkbType ) ) );
-  }
-  else if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Line )
-  {
-    if ( QgsWkbTypes::isMultiType( wkbType ) )
-    {
-      return QVector< QgsGeometry >() << geom;
-    }
-    else // line to multilinestring
-    {
-      QgsGeometry g( geom.constGet()->clone() );
-      g.convertToMultiType();
-      return QVector< QgsGeometry >() << g;
-    }
-  }
-  else // polygons to multilinestring
-  {
-    // boundary gives us a (multi)line string of exterior + interior rings
-    return QVector< QgsGeometry >() << QgsGeometry( geom.constGet()->boundary() );
-  }
-}
-
-const QVector< QgsGeometry > QgsConvertGeometryTypeAlgorithm::convertToPolygon( const QgsGeometry &geom, const Qgis::WkbType outputWkbType )
-{
-  const Qgis::WkbType wkbType = geom.wkbType();
-  if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Point && geom.constGet()->nCoordinates() < 3 )
-  {
-    throw QgsProcessingException( QObject::tr( "Cannot convert from %1 to Polygon" ).arg( QgsWkbTypes::displayString( wkbType ) ) );
-  }
-  else if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Point )
-  {
-    // multipoint with at least 3 points
-    QVector< QgsPoint > points;
-    points.reserve( geom.constGet()->nCoordinates() );
-    for ( auto vertex = geom.vertices_begin(); vertex != geom.vertices_end(); ++vertex )
-    {
-      points << *vertex;
-    }
-    QgsLineString lineString( points );
-    lineString.close();
-    auto polygon = std::make_unique< QgsPolygon >( &lineString );
-    return QVector< QgsGeometry >() << QgsGeometry( std::move( polygon ) );
-  }
-  else if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Line )
-  {
-    return geom.coerceToType( outputWkbType );
-  }
-  else // polygon
-  {
-    if ( QgsWkbTypes::isMultiType( wkbType ) )
-    {
-      return geom.asGeometryCollection();
-    }
-    else
-    {
-      return QVector< QgsGeometry >() << geom;
-    }
-  }
 }
 
 ///@endcond

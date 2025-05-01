@@ -46,10 +46,6 @@ class QgsConvertGeometryTypeAlgorithm : public QgsProcessingAlgorithm
 
   private:
     const QVector< QgsGeometry > convertGeometry( const QgsGeometry &geom, const int typeIndex, const Qgis::WkbType outputWkbType );
-    const QVector< QgsGeometry > convertToNodes( const QgsGeometry &geom );
-    const QVector< QgsGeometry > convertToLineStrings( const QgsGeometry &geom );
-    const QVector< QgsGeometry > convertToMultiLineStrings( const QgsGeometry &geom );
-    const QVector< QgsGeometry > convertToPolygon( const QgsGeometry &geom, const Qgis::WkbType outputWkbType );
 };
 
 ///@endcond PRIVATE
