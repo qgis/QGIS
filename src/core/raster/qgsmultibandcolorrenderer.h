@@ -64,7 +64,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      * \see greenContrastEnhancement()
      * \see blueContrastEnhancement()
      */
-    const QgsContrastEnhancement *redContrastEnhancement() const { return mRedContrastEnhancement; }
+    const QgsContrastEnhancement *redContrastEnhancement() const;
 
     /**
      * Sets the contrast enhancement to use for the red channel.
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      * \see redContrastEnhancement()
      * \see blueContrastEnhancement()
      */
-    const QgsContrastEnhancement *greenContrastEnhancement() const { return mGreenContrastEnhancement; }
+    const QgsContrastEnhancement *greenContrastEnhancement() const;
 
     /**
      * Sets the contrast enhancement to use for the green channel.
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      * \see redContrastEnhancement()
      * \see greenContrastEnhancement()
      */
-    const QgsContrastEnhancement *blueContrastEnhancement() const { return mBlueContrastEnhancement; }
+    const QgsContrastEnhancement *blueContrastEnhancement() const;
 
     /**
      * Sets the contrast enhancement to use for the blue channel.
@@ -130,13 +130,13 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     const QgsMultiBandColorRenderer &operator=( const QgsMultiBandColorRenderer & );
 #endif
 
-    int mRedBand;
-    int mGreenBand;
-    int mBlueBand;
+    int mRedBand = 1;
+    int mGreenBand = 1;
+    int mBlueBand = 1;
 
-    QgsContrastEnhancement *mRedContrastEnhancement = nullptr;
-    QgsContrastEnhancement *mGreenContrastEnhancement = nullptr;
-    QgsContrastEnhancement *mBlueContrastEnhancement = nullptr;
+    std::unique_ptr< QgsContrastEnhancement > mRedContrastEnhancement;
+    std::unique_ptr< QgsContrastEnhancement > mGreenContrastEnhancement;
+    std::unique_ptr< QgsContrastEnhancement > mBlueContrastEnhancement;
 
 };
 
