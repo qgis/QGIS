@@ -2267,6 +2267,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         r"operator(=|<<|>>|->)\s*\(", CONTEXT.current_line
     ):
         dbg_info("skip operator")
+        CONTEXT.comment = ""
         detect_and_remove_following_body_or_initializerlist()
         continue
 
@@ -3020,6 +3021,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         r"^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+([*&])?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( const)?)\s*= delete;(\s*//.*)?$",
         CONTEXT.current_line,
     ):
+        dbg_info(f"removing deleted function {CONTEXT.current_line}")
         CONTEXT.comment = ""
         continue
 
