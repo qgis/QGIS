@@ -89,7 +89,6 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
   private slots:
     void copySelectionToClipboard();
     void vCellChanged( int row, int column );
-    void addNullButtonPushed();
     void removeSelectedButtonPushed();
     void loadFromLayerButtonPushed();
     void loadFromCSVButtonPushed();
