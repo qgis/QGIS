@@ -267,7 +267,7 @@ class TestQgsValueMapEditWidget(QgisTestCase):
         self.assertTrue(layer.isValid())
         QgsProject.instance().addMapLayer(layer)
 
-        config = {"map": [{"AAAAA": "a"}, {"BBBB": "b"}]}
+        config = {"map": [{"AAAAA": "a"}, {"BBBB": "b"}], "AllowNull": False}
         wrapper = QgsGui.editorWidgetRegistry().create(
             "ValueMap", layer, 0, config, None, None
         )
@@ -300,9 +300,7 @@ class TestQgsValueMapEditWidget(QgisTestCase):
         self.assertTrue(layer.isValid())
         QgsProject.instance().addMapLayer(layer)
 
-        config = {
-            "map": [{"AAAAA": "a"}, {"BBBB": "b"}, {"nothing": self.VALUEMAP_NULL_TEXT}]
-        }
+        config = {"map": [{"AAAAA": "a"}, {"BBBB": "b"}], "AllowNull": True}
         wrapper = QgsGui.editorWidgetRegistry().create(
             "ValueMap", layer, 0, config, None, None
         )
@@ -324,7 +322,7 @@ class TestQgsValueMapEditWidget(QgisTestCase):
         # set to value NOT in the map, should not be lost
         wrapper.setValues(NULL, [])
         self.assertEqual(wrapper.value(), NULL)
-        self.assertEqual(widget.currentText(), "nothing")
+        self.assertEqual(widget.currentText(), "(NULL)")
 
         QgsProject.instance().removeAllMapLayers()
 
