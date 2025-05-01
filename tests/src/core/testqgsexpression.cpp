@@ -470,7 +470,7 @@ class TestQgsExpression : public QObject
       QTest::addColumn<QString>( "dump" );
       QTest::addColumn<QVariant>( "result" );
 
-      QTest::newRow( "toint alias" ) << "toint(3.2)" << false << "to_int(3.2)" << QVariant( 3 );
+      QTest::newRow( "toint alias" ) << "toint(3.2)" << false << "to_int(3.20000000000000018)" << QVariant( 3 );
       QTest::newRow( "int to double" ) << "toreal(3)" << false << "to_real(3)" << QVariant( 3. );
       QTest::newRow( "int to text" ) << "tostring(6)" << false << "to_string(6)" << QVariant( "6" );
     }
@@ -6021,6 +6021,32 @@ class TestQgsExpression : public QObject
           }
         }
       }
+    }
+
+    void testDumpLiteralNode_data()
+    {
+      QTest::addColumn<QVariant>( "value" );
+      QTest::addColumn<QString>( "expected" );
+      QTest::newRow( "int 1" ) << QVariant( 1 ) << QStringLiteral( "1" );
+      QTest::newRow( "int 11231234" ) << QVariant( 11231234 ) << QStringLiteral( "11231234" );
+      QTest::newRow( "int -11231234" ) << QVariant( -11231234 ) << QStringLiteral( "-11231234" );
+      QTest::newRow( "double 11.5" ) << QVariant( 11.5 ) << QStringLiteral( "11.5" );
+      QTest::newRow( "double -11.5" ) << QVariant( -11.5 ) << QStringLiteral( "-11.5" );
+      QTest::newRow( "double 3972047.39999999990686774" ) << QVariant( 3972047.39999999990686774 ) << QStringLiteral( "3972047.39999999990686774" );
+      QTest::newRow( "string abc" ) << QVariant( QStringLiteral( "abc" ) ) << QStringLiteral( "'abc'" );
+      QTest::newRow( "bool TRUE" ) << QVariant( true ) << QStringLiteral( "TRUE" );
+      QTest::newRow( "bool FALSE" ) << QVariant( false ) << QStringLiteral( "FALSE" );
+      QTest::newRow( "date" ) << QVariant( QDate( 2020, 5, 12 ) ) << QStringLiteral( "'2020-05-12'" );
+      QTest::newRow( "time" ) << QVariant( QTime( 9, 5, 12 ) ) << QStringLiteral( "'09:05:12'" );
+      QTest::newRow( "datetime" ) << QVariant( QDateTime( QDate( 2020, 5, 12 ), QTime( 9, 5, 12 ), Qt::UTC ) ) << QStringLiteral( "'2020-05-12T09:05:12Z'" );
+    }
+
+    void testDumpLiteralNode()
+    {
+      QFETCH( QVariant, value );
+      QFETCH( QString, expected );
+
+      QCOMPARE( QgsExpressionNodeLiteral( value ).dump(), expected );
     }
 };
 
