@@ -34,7 +34,11 @@ class GUI_EXPORT QgsRasterSingleColorRendererWidget : public QgsRasterRendererWi
 {
     Q_OBJECT
   public:
-    //! Constructs the widget
+    /**
+     * Constructor for QgsRasterSingleColorRendererWidget.
+     * \param layer associated raster layer
+     * \param extent current canvas extent
+     */
     QgsRasterSingleColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
     //! Widget creation function (use by the renderer registry)
