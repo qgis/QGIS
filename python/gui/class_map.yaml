@@ -1966,6 +1966,9 @@ QgsDatabaseSchemaComboBox.setAllowEmptySchema: src/gui/qgsdatabaseschemacombobox
 QgsDatabaseSchemaComboBox.setConnectionName: src/gui/qgsdatabaseschemacombobox.h#L105
 QgsDatabaseSchemaComboBox.setSchema: src/gui/qgsdatabaseschemacombobox.h#L98
 QgsDatabaseSchemaComboBox: src/gui/qgsdatabaseschemacombobox.h#L51
+QgsDatabaseSchemaSelectionDialog.QgsDatabaseSchemaSelectionDialog: src/gui/qgsdatabaseschemaselectiondialog.h#L42
+QgsDatabaseSchemaSelectionDialog.selectedSchema: src/gui/qgsdatabaseschemaselectiondialog.h#L47
+QgsDatabaseSchemaSelectionDialog: src/gui/qgsdatabaseschemaselectiondialog.h#L33
 QgsDatabaseTableComboBox.QgsDatabaseTableComboBox: src/gui/qgsdatabasetablecombobox.h#L64
 QgsDatabaseTableComboBox.QgsDatabaseTableComboBox: src/gui/qgsdatabasetablecombobox.h#L73
 QgsDatabaseTableComboBox.allowEmptyTable: src/gui/qgsdatabasetablecombobox.h#L85
