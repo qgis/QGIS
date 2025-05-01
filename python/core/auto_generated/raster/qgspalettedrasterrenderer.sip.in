@@ -75,10 +75,6 @@ Constructor for QgsPalettedRasterRenderer.
 
     virtual QgsPalettedRasterRenderer *clone() const /Factory/;
 
-%Docstring
-QgsPalettedRasterRenderer cannot be copied. Use
-:py:func:`~QgsPalettedRasterRenderer.clone` instead.
-%End
     virtual Qgis::RasterRendererFlags flags() const;
 
 
