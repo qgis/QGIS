@@ -21,8 +21,9 @@ Renderer for multiband images with the color components
 %End
   public:
     QgsMultiBandColorRenderer( QgsRasterInterface *input, int redBand, int greenBand, int blueBand,
-                               QgsContrastEnhancement *redEnhancement = 0, QgsContrastEnhancement *greenEnhancement = 0,
-                               QgsContrastEnhancement *blueEnhancement = 0 );
+                               QgsContrastEnhancement *redEnhancement /Transfer/ = 0,
+                               QgsContrastEnhancement *greenEnhancement /Transfer/ = 0,
+                               QgsContrastEnhancement *blueEnhancement /Transfer/ = 0 );
     ~QgsMultiBandColorRenderer();
 
 
