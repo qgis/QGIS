@@ -22,7 +22,14 @@ Abstract base class for widgets which configure a
 #include "qgsrasterrendererwidget.h"
 %End
   public:
+
     QgsRasterRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent );
+%Docstring
+Constructor for QgsRasterRendererWidget.
+
+:param layer: associated raster layer
+:param extent: current canvas extent
+%End
 
     virtual QgsRasterRenderer *renderer() = 0 /Factory/;
 %Docstring

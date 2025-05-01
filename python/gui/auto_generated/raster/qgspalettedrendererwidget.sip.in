@@ -20,6 +20,12 @@ class QgsPalettedRendererWidget : QgsRasterRendererWidget
 %End
   public:
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
+%Docstring
+Constructor for :py:class:`QgsSingleBandPseudoColorRendererWidget`.
+
+:param layer: associated raster layer
+:param extent: current canvas extent
+%End
     ~QgsPalettedRendererWidget();
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
 

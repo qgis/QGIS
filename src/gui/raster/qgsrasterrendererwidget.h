@@ -42,6 +42,12 @@ class GUI_EXPORT QgsRasterRendererWidget : public QWidget
 
   public:
     //TODO QGIS 4.0 - remove extent parameter, replace with map canvas parameter
+
+    /**
+     * Constructor for QgsRasterRendererWidget.
+     * \param layer associated raster layer
+     * \param extent current canvas extent
+     */
     QgsRasterRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
       : mRasterLayer( layer )
       , mExtent( extent )
