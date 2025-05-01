@@ -35,6 +35,11 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget : public QgsRasterRendererWidge
 {
     Q_OBJECT
   public:
+    /**
+     * Constructor for QgsSingleBandGrayRendererWidget.
+     * \param layer associated raster layer
+     * \param extent current canvas extent
+     */
     QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleBandGrayRendererWidget( layer, extent ); }
