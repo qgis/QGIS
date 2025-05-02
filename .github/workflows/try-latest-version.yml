@@ -88,13 +88,6 @@ jobs:
                   repo: context.repo.repo,
                   body: comment
                 })
-                  
-              github.rest.issues.addLabels({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  labels: ['Feedback']
-              })
               }
             else if ( compareSemanticVersions(user_version, LATEST_LTR_RELEASE) === 0 ) {
               console.log("Debug: user is already running latest LTR version")
@@ -109,13 +102,6 @@ jobs:
                   repo: context.repo.repo,
                   body: comment
                 })
-
-              github.rest.issues.addLabels({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  labels: ['Feedback']
-              })
             }
             else {
               console.log("Debug: pass, the user is running a supported version so do nothing")
