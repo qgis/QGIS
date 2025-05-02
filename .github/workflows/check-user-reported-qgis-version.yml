@@ -64,6 +64,7 @@ jobs:
             var LATEST_STABLE_RELEASE = {QGIS_VERSION_STABLE_PATCH}
 
             // Match qgis version reported e.g : "3.40.0-Bratislava"
+            // More exemple here : https://regex101.com/r/AA7Wju/2
             var regex = /(\d)\.(\d{2})\.(\d*)-[A-Z]{1}[a-z]+/
 
             var m = ISSUE_BODY.match(regex)
