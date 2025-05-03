@@ -81,14 +81,8 @@
       "iteratorClosed(QgsAbstractFeatureIterator *it)",
       "iteratorOpened(QgsAbstractFeatureIterator *it)"
     ],
-    "QgsAbstractGeometry": [
-      "QgsAbstractGeometry(const QgsAbstractGeometry &geom)"
-    ],
     "QgsAbstractLabelProvider": [
       "Flag"
-    ],
-    "QgsActionMenu": [
-      "reinit()"
     ],
     "QgsAdvancedDigitizingCanvasItem": [
       "QgsAdvancedDigitizingCanvasItem(QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget)"
@@ -161,14 +155,11 @@
       "execute()"
     ],
     "QgsAttributeTableModel": [
-      "Role",
-      "finished()",
       "idToIndex(QgsFeatureId id) const",
       "idToIndexList(QgsFeatureId id) const"
     ],
     "QgsAttributeTableView": [
       "_q_selectRow(int row)",
-      "finished()",
       "repaintRequested()",
       "repaintRequested(const QModelIndexList &indexes)",
       "selectRow(int row)",
@@ -197,24 +188,17 @@
       "updateButtons()"
     ],
     "QgsAttributesFormProperties::DnDTreeItemData": [
-      "DnDTreeItemData()=default",
       "DnDTreeItemData(Type type, const QString &name, const QString &displayName, const QColor &backgroundColor=QColor())",
       "Type",
       "backgroundColor() const",
       "columnCount() const",
       "displayName() const",
-      "htmlElementEditorConfiguration() const",
       "name() const",
       "operator QVariant()",
-      "qmlElementEditorConfiguration() const",
-      "relationEditorConfiguration() const",
       "setBackgroundColor(const QColor &backgroundColor)",
       "setColumnCount(int count)",
       "setDisplayName(const QString &displayName)",
-      "setHtmlElementEditorConfiguration(HtmlElementEditorConfiguration htmlElementEditorConfiguration)",
       "setName(const QString &name)",
-      "setQmlElementEditorConfiguration(QmlElementEditorConfiguration qmlElementEditorConfiguration)",
-      "setRelationEditorConfiguration(RelationEditorConfiguration relationEditorConfiguration)",
       "setShowLabel(bool showLabel)",
       "setType(Type type)",
       "showLabel() const",
@@ -236,7 +220,6 @@
       "QgsBrightnessContrastFilter(QgsRasterInterface *input=nullptr)"
     ],
     "QgsBrowserModel": [
-      "ItemDataRole",
       "beginInsertItems(QgsDataItem *parent, int first, int last)",
       "beginRemoveItems(QgsDataItem *parent, int first, int last)",
       "endInsertItems()",
@@ -302,7 +285,6 @@
     "QgsCollapsibleGroupBox": [
       "QgsCollapsibleGroupBox(QWidget *parent=nullptr, QgsSettings *settings=nullptr)",
       "QgsCollapsibleGroupBox(const QString &title, QWidget *parent=nullptr, QgsSettings *settings=nullptr)",
-      "init()",
       "saveCheckedState()",
       "saveCollapsedState()",
       "saveKey() const",
@@ -314,7 +296,6 @@
       "checkClicked(bool ckd)",
       "checkToggled(bool ckd)",
       "clearModifiers()",
-      "init()",
       "titleRect() const",
       "toggleCollapsed()",
       "updateStyle()"
@@ -331,15 +312,10 @@
     "QgsColorSwatchDelegate": [
       "QgsColorSwatchDelegate(QWidget *parent=nullptr)"
     ],
-    "QgsCompoundCurve": [
-      "QgsCompoundCurve(const QgsCompoundCurve &curve)"
-    ],
     "QgsConditionalStyle": [
-      "QgsConditionalStyle(const QString &rule)",
-      "QgsConditionalStyle(const QgsConditionalStyle &other)"
+      "QgsConditionalStyle(const QString &rule)"
     ],
     "QgsConnectionPoolGroup": [
-      "QgsConnectionPoolGroup(const QString &ci)",
       "initTimer(QObject *parent)",
       "invalidateConnections()",
       "onConnectionExpired()",
@@ -357,14 +333,12 @@
       "operator>>(unsigned int &v) const"
     ],
     "QgsContrastEnhancement": [
-      "QgsContrastEnhancement(const QgsContrastEnhancement &ce)",
       "contrastEnhancementAlgorithm() const",
       "readXml(const QDomElement &elem)",
       "writeXml(QDomDocument &doc, QDomElement &parentElem) const"
     ],
     "QgsContrastEnhancementFunction": [
-      "QgsContrastEnhancementFunction(Qgis::DataType, double, double)",
-      "QgsContrastEnhancementFunction(const QgsContrastEnhancementFunction &f)"
+      "QgsContrastEnhancementFunction(Qgis::DataType, double, double)"
     ],
     "QgsCptCityAllRampsItem": [
       "QgsCptCityAllRampsItem(QgsCptCityDataItem *parent, const QString &name, const QVector< QgsCptCityDataItem * > &items)"
@@ -386,7 +360,6 @@
       "initArchive(const QString &archiveName, const QString &archiveBaseDir)",
       "initArchives(bool loadAll=false)",
       "initDefaultArchive()",
-      "isEmpty()",
       "rootItems() const",
       "selectionItems() const",
       "setBaseDir(const QString &dirName)"
@@ -401,9 +374,6 @@
       "endInsertItems()",
       "endRemoveItems()",
       "findItem(QgsCptCityDataItem *item, QgsCptCityDataItem *parent=nullptr) const",
-      "refresh(const QModelIndex &index=QModelIndex())",
-      "refresh(const QString &path)",
-      "reload()",
       "removeRootItems()"
     ],
     "QgsCptCityCollectionItem": [
@@ -440,32 +410,16 @@
     "QgsCptCityDataItem": [
       "QgsCptCityDataItem(QgsCptCityDataItem::Type type, QgsCptCityDataItem *parent, const QString &name, const QString &path)",
       "Type",
-      "acceptDrop()",
-      "addChildItem(QgsCptCityDataItem *child, bool refresh=false)",
-      "beginInsertItems(QgsCptCityDataItem *parent, int first, int last)",
-      "beginRemoveItems(QgsCptCityDataItem *parent, int first, int last)",
       "children() const",
-      "createChildren()",
-      "deleteChildItem(QgsCptCityDataItem *child)",
-      "endInsertItems()",
-      "endRemoveItems()",
-      "equal(const QgsCptCityDataItem *other)",
-      "findItem(QVector< QgsCptCityDataItem * > items, QgsCptCityDataItem *item)",
-      "handleDrop(const QMimeData *, Qt::DropAction)",
       "hasChildren()",
       "icon()",
       "icon(QSize size)",
       "info() const",
-      "isPopulated()",
       "isValid()",
-      "leafCount() const",
       "name() const",
-      "paramWidget()",
       "parent() const",
       "path() const",
-      "populate()",
       "refresh()",
-      "removeChildItem(QgsCptCityDataItem *child)",
       "rowCount()",
       "setIcon(const QIcon &icon)",
       "setParent(QgsCptCityDataItem *parent)",
@@ -487,9 +441,6 @@
     ],
     "QgsCredentials": [
       "getMasterPassword(QString &password, bool stored=false)"
-    ],
-    "QgsCurvePolygon": [
-      "QgsCurvePolygon(const QgsCurvePolygon &p)"
     ],
     "QgsDartMeasurement": [
       "QgsDartMeasurement(const QString &name, Type type, const QString &value)",
@@ -513,14 +464,9 @@
       "QgsDataDefinedWidthDialog(const QList< QgsSymbol * > &symbolList, QgsVectorLayer *layer)"
     ],
     "QgsDataItem": [
-      "beginInsertItems(QgsDataItem *parent, int first, int last)",
-      "beginRemoveItems(QgsDataItem *parent, int first, int last)",
       "children() const",
       "childrenCreated()",
-      "dataChanged(QgsDataItem *item)",
       "deleteLater(QVector< QgsDataItem * > &items)",
-      "endInsertItems()",
-      "endRemoveItems()",
       "findItem(QVector< QgsDataItem * > items, QgsDataItem *item)",
       "hasChildren()",
       "icon()",
@@ -560,7 +506,6 @@
       "setData(const QgsDetailedItemData &data)"
     ],
     "QgsDiagram": [
-      "QgsDiagram(const QgsDiagram &other)",
       "clearCache()"
     ],
     "QgsDiagramLayerSettings": [
@@ -575,7 +520,6 @@
       "mDiagramAttributesTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)",
       "mDiagramStackedWidget_currentChanged(int index)",
       "mDiagramTypeComboBox_currentIndexChanged(int index)",
-      "mEngineSettingsButton_clicked()",
       "mFindMaximumValueButton_clicked()",
       "mRemoveCategoryPushButton_clicked()",
       "scalingTypeChanged()",
@@ -584,17 +528,12 @@
       "updatePlacementWidgets()"
     ],
     "QgsDiagramRenderer": [
-      "QgsDiagramRenderer(const QgsDiagramRenderer &other)",
       "diagram() const",
       "rendererName() const =0",
       "setDiagram(QgsDiagram *d)"
     ],
     "QgsDiagramSettings": [
       "LabelPlacementMethod"
-    ],
-    "QgsDiagramWidget": [
-      "mDiagramTypeComboBox_currentIndexChanged(int index)",
-      "showEngineConfigDialog()"
     ],
     "QgsDial": [
       "setMaximum(const QVariant &max)",
@@ -639,9 +578,6 @@
     ],
     "QgsEffectDrawModeComboBox": [
       "QgsEffectDrawModeComboBox(QWidget *parent SIP_TRANSFERTHIS=nullptr)"
-    ],
-    "QgsEffectStack": [
-      "QgsEffectStack(const QgsEffectStack &other)"
     ],
     "QgsEllipseSymbolLayer": [
       "createFromSld(QDomElement &element)",
@@ -720,7 +656,6 @@
     "QgsFeatureListViewDelegate": [
       "Element",
       "QgsFeatureListViewDelegate(QgsFeatureListModel *listModel, QObject *parent=nullptr)",
-      "editButtonClicked(QModelIndex &index)",
       "positionToElement(QPoint pos)",
       "setCurrentFeatureEdited(bool state)",
       "setEditSelectionModel(QItemSelectionModel *editSelectionModel)",
@@ -753,9 +688,6 @@
     "QgsFieldValidator": [
       "QgsFieldValidator(QObject *parent, const QgsField &field, const QString &defaultValue, const QString &dateFormat=\"yyyy-MM-dd\")",
       "dateFormat() const"
-    ],
-    "QgsFields": [
-      "FieldOrigin"
     ],
     "QgsFillSymbol": [
       "setAngle(double angle) const"
@@ -791,8 +723,6 @@
       "ResolutionMethod",
       "factoryCheckType()",
       "factoryCompatibleGeometryTypes()",
-      "factoryDescription()",
-      "factoryId()",
       "factoryIsCompatible(QgsVectorLayer *layer)"
     ],
     "QgsGeometryChecker": [
@@ -810,7 +740,6 @@
     ],
     "QgsGeometryCheckerUtils": [
       "canDeleteVertex(const QgsAbstractGeometry *geom, int iPart, int iRing)",
-      "createGeomEngine(const QgsAbstractGeometry *geometry, double tolerance)",
       "filter1DTypes(QgsAbstractGeometry *geom)",
       "getGeomPart(QgsAbstractGeometry *geom, int partIdx)",
       "getGeomPart(const QgsAbstractGeometry *geom, int partIdx)",
@@ -818,9 +747,6 @@
       "pointOnLine(const QgsPoint &p, const QgsLineString *line, double tol, bool excludeExtremities=false)",
       "polygonRings(const QgsPolygon *polygon)",
       "sharedEdgeLength(const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol)"
-    ],
-    "QgsGeometryCollection": [
-      "QgsGeometryCollection(const QgsGeometryCollection &c)"
     ],
     "QgsGeometryContainedCheck": [
       "QgsGeometryContainedCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
@@ -973,9 +899,7 @@
       "intersection() const"
     ],
     "QgsGeometrySliverPolygonCheck": [
-      "QgsGeometrySliverPolygonCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
-      "factoryDescription()",
-      "factoryId()"
+      "QgsGeometrySliverPolygonCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"
     ],
     "QgsGeometryTypeCheck": [
       "QgsGeometryTypeCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration, int allowedTypes)",
@@ -989,22 +913,12 @@
       "addError(const QgsGeometry::Error &)",
       "stop()"
     ],
-    "QgsGeos": [
-      "coordSeqPoint(const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM)",
-      "fromGeosPolygon(const GEOSGeometry *geos)",
-      "getGEOSHandler()"
-    ],
-    "QgsGlowEffect": [
-      "QgsGlowEffect(const QgsGlowEffect &other)"
-    ],
     "QgsGlowWidget": [
       "QgsGlowWidget(QWidget *parent=nullptr)",
       "create()"
     ],
     "QgsGml": [
-      "QgsGml(const QString &typeName, const QString &geometryAttribute, const QgsFields &fields)",
-      "dataReadProgress(int progress)",
-      "totalStepsUpdate(int totalSteps)"
+      "QgsGml(const QString &typeName, const QString &geometryAttribute, const QgsFields &fields)"
     ],
     "QgsGmlFeatureClass": [
       "QgsGmlFeatureClass(const QString &name, const QString &path)",
@@ -1020,12 +934,10 @@
       "connectionList() const"
     ],
     "QgsGpsDetector": [
-      "QgsGpsDetector(const QString &portName)",
       "advance()",
       "availablePorts()",
       "connDestroyed(QObject *)",
-      "detected(const QgsGpsInformation &)",
-      "detectionFailed()"
+      "detected(const QgsGpsInformation &)"
     ],
     "QgsGpsdConnection": [
       "QgsGpsdConnection(const QString &host, qint16 port, const QString &device)"
@@ -1039,7 +951,6 @@
     ],
     "QgsGraduatedSymbolRenderer": [
       "QgsGraduatedSymbolRenderer(const QString &attrName=QString(), const QgsRangeList &ranges=QgsRangeList())",
-      "addClass(QgsSymbol *symbol)",
       "deleteAllClasses()",
       "deleteClass(int idx)",
       "sortByLabel(Qt::SortOrder order=Qt::AscendingOrder)",
@@ -1145,20 +1056,16 @@
       "iconTable()"
     ],
     "QgsLayerPropertiesWidget": [
-      "changeLayer(QgsSymbolLayer *)",
-      "changed()",
       "emitSignalChanged()",
       "layerTypeChanged()",
       "populateLayerTypes()",
       "updateSymbolLayerWidget(QgsSymbolLayer *layer)"
     ],
     "QgsLayerTreeGroup": [
-      "QgsLayerTreeGroup(const QgsLayerTreeGroup &other)",
       "nodeVisibilityChanged(QgsLayerTreeNode *node)"
     ],
     "QgsLayerTreeLayer": [
       "QgsLayerTreeLayer(QgsMapLayer *layer)",
-      "QgsLayerTreeLayer(const QgsLayerTreeLayer &other)",
       "attachToLayer()"
     ],
     "QgsLayerTreeMapCanvasBridge": [
@@ -1209,9 +1116,6 @@
       "setUserLabel(const QString &userLabel)",
       "userLabel() const"
     ],
-    "QgsLayerTreeNode": [
-      "QgsLayerTreeNode(const QgsLayerTreeNode &other)"
-    ],
     "QgsLayerTreeRegistryBridge": [
       "groupRemovedChildren()",
       "groupWillRemoveChildren(QgsLayerTreeNode *node, int indexFrom, int indexTo)",
@@ -1252,9 +1156,6 @@
       "zoomToGroup()",
       "zoomToGroup(QgsMapCanvas *canvas)",
       "zoomToLayers(QgsMapCanvas *canvas, const QList< QgsMapLayer * > &layers)"
-    ],
-    "QgsLegendSymbolItem": [
-      "QgsLegendSymbolItem(const QgsLegendSymbolItem &other)"
     ],
     "QgsLinePatternFillSymbolLayer": [
       "ogrFeatureStyleWidth(double widthScaleFactor) const"
@@ -1348,12 +1249,7 @@
     ],
     "QgsMapSettings": [
       "mapToPixel() const",
-      "readXml(QDomNode &node)",
-      "updateDerived()",
-      "writeXml(QDomNode &node, QDomDocument &doc)"
-    ],
-    "QgsMapThemeCollection": [
-      "setProject(QgsProject *project)"
+      "updateDerived()"
     ],
     "QgsMapToolAdvancedDigitizing": [
       "cadDockWidget() const"
@@ -1364,14 +1260,7 @@
     "QgsMapToolIdentify": [
       "IdentifyMode",
       "Type",
-      "changedRasterResults(QList< QgsMapToolIdentify::IdentifyResult > &)",
-      "formatChanged(QgsRasterLayer *layer)",
-      "identifyMessage(const QString &)",
-      "identifyProgress(int, int)"
-    ],
-    "QgsMapToolIdentifyFeature": [
-      "featureIdentified(QgsFeatureId)",
-      "featureIdentified(const QgsFeature &)"
+      "formatChanged(QgsRasterLayer *layer)"
     ],
     "QgsMarkerLineSymbolLayerWidget": [
       "setInterval(double val)",
@@ -1417,9 +1306,6 @@
       "selectAllGroups()",
       "syncToLayer(QgsMeshLayer *layer)"
     ],
-    "QgsMeshDatasetGroupTreeWidget": [
-      "datasetGroupAdded()"
-    ],
     "QgsMeshRendererMeshSettingsWidget": [
       "MeshType"
     ],
@@ -1441,22 +1327,13 @@
       "isUriList(const QMimeData *data)"
     ],
     "QgsMultiBandColorRenderer": [
-      "QgsMultiBandColorRenderer(QgsRasterInterface *input, int redBand, int greenBand, int blueBand, QgsContrastEnhancement *redEnhancement=nullptr, QgsContrastEnhancement *greenEnhancement=nullptr, QgsContrastEnhancement *blueEnhancement=nullptr)",
-      "blueBand() const",
-      "create(const QDomElement &elem, QgsRasterInterface *input)",
-      "greenBand() const",
-      "redBand() const",
-      "setBlueBand(int band)",
-      "setGreenBand(int band)",
-      "setRedBand(int band)"
+      "create(const QDomElement &elem, QgsRasterInterface *input)"
     ],
     "QgsMultiBandColorRendererWidget": [
-      "QgsMultiBandColorRendererWidget(QgsRasterLayer *layer, const QgsRectangle &extent=QgsRectangle())",
       "create(QgsRasterLayer *layer, const QgsRectangle &extent)"
     ],
     "QgsNetworkAccessManager": [
-      "QgsNetworkAccessManager(QObject *parent=nullptr)",
-      "requestTimedOut(QNetworkReply *)"
+      "QgsNetworkAccessManager(QObject *parent=nullptr)"
     ],
     "QgsNewNameDialog": [
       "fullNames(const QString &name, const QStringList &extensions)",
@@ -1487,9 +1364,6 @@
       "updateWindowTitle()",
       "warnAboutMissingObjects()"
     ],
-    "QgsPaintEffect": [
-      "QgsPaintEffect(const QgsPaintEffect &other)"
-    ],
     "QgsPaintEffectWidget": [
       "QgsPaintEffectWidget(QWidget *parent=nullptr)"
     ],
@@ -1497,14 +1371,10 @@
       "fixEngineFlags(QPaintEngine *engine)",
       "fixFlags()"
     ],
-    "QgsPalLayerSettings": [
-      "QgsPalLayerSettings(const QgsPalLayerSettings &s)"
-    ],
     "QgsPalettedRasterRenderer": [
       "create(const QDomElement &elem, QgsRasterInterface *input)"
     ],
     "QgsPalettedRendererWidget": [
-      "QgsPalettedRendererWidget(QgsRasterLayer *layer, const QgsRectangle &extent=QgsRectangle())",
       "create(QgsRasterLayer *layer, const QgsRectangle &extent)"
     ],
     "QgsPenCapStyleComboBox": [
@@ -1603,8 +1473,7 @@
     "QgsRasterFormatSaveOptionsWidget": [
       "QgsRasterFormatSaveOptionsWidget(QWidget *parent SIP_TRANSFERTHIS=nullptr, const QString &format=\"GTiff\", QgsRasterFormatSaveOptionsWidget::Type type=Default, const QString &provider=\"gdal\")",
       "Type",
-      "apply()",
-      "optionsChanged()"
+      "apply()"
     ],
     "QgsRasterInterface": [
       "QgsRasterInterface(QgsRasterInterface *input=nullptr)",
@@ -1622,7 +1491,6 @@
       "CrsState",
       "Mode",
       "ResolutionState",
-      "creationOptions() const",
       "hideFormat()",
       "hideOutput()",
       "maximumTileSizeX() const",
@@ -1644,7 +1512,6 @@
     ],
     "QgsRasterMatrix": [
       "OneArgOperator",
-      "QgsRasterMatrix(const QgsRasterMatrix &m)",
       "TwoArgOperator",
       "acosinus()",
       "asinus()",
@@ -1693,11 +1560,9 @@
       "configOptions() const",
       "createOptionsWidget()",
       "overviewList() const",
-      "overviewListChanged()",
       "resamplingMethod() const",
       "setRasterFileName(const QString &file)",
-      "setRasterLayer(QgsRasterLayer *rasterLayer)",
-      "someValueChanged()"
+      "setRasterLayer(QgsRasterLayer *rasterLayer)"
     ],
     "QgsRasterRenderer": [
       "alphaBand() const",
@@ -1706,15 +1571,7 @@
       "setRasterTransparency(QgsRasterTransparency *t)",
       "usesTransparency() const"
     ],
-    "QgsRasterRendererRegistry": [
-      "entries() const",
-      "insert(const QgsRasterRendererRegistryEntry &entry)",
-      "insertWidgetFunction(const QString &rendererName, QgsRasterRendererWidgetCreateFunc func)",
-      "rendererData(const QString &rendererName, QgsRasterRendererRegistryEntry &data) const",
-      "renderersList() const"
-    ],
     "QgsRasterRendererWidget": [
-      "QgsRasterRendererWidget(QgsRasterLayer *layer, const QgsRectangle &extent)",
       "max(int index=0)",
       "min(int index=0)",
       "selectedBand(int index=0)",
@@ -1769,17 +1626,6 @@
       "setControlPathSuffix(const QString &name)",
       "setElapsedTimeTarget(int target)",
       "setMapSettings(const QgsMapSettings &mapSettings)"
-    ],
-    "QgsRenderContext": [
-      "QgsRenderContext(const QgsRenderContext &rh)"
-    ],
-    "QgsRendererCategory": [
-      "swap(QgsRendererCategory &other)"
-    ],
-    "QgsRendererRange": [
-      "QgsRendererRange(const QgsRendererRange &range)",
-      "operator<(const QgsRendererRange &other) const",
-      "swap(QgsRendererRange &other)"
     ],
     "QgsRendererRangeLabelFormat": [
       "QgsRendererRangeLabelFormat(const QString &format, int precision=4, bool trimTrailingZeroes=false)",
@@ -1923,12 +1769,9 @@
       "contrastEnhancement() const",
       "create(const QDomElement &elem, QgsRasterInterface *input)",
       "gradient() const",
-      "grayBand() const",
-      "setGradient(Gradient gradient)",
-      "setGrayBand(int band)"
+      "setGradient(Gradient gradient)"
     ],
     "QgsSingleBandGrayRendererWidget": [
-      "QgsSingleBandGrayRendererWidget(QgsRasterLayer *layer, const QgsRectangle &extent=QgsRectangle())",
       "create(QgsRasterLayer *layer, const QgsRectangle &extent)"
     ],
     "QgsSingleBandPseudoColorRenderer": [
@@ -1958,8 +1801,7 @@
     ],
     "QgsSmartGroupCondition": [
       "QgsSmartGroupCondition(int id, QWidget *parent=nullptr)",
-      "destruct()",
-      "removed(int)"
+      "destruct()"
     ],
     "QgsSmartGroupEditorDialog": [
       "QgsSmartGroupEditorDialog(QgsStyle *style, QWidget *parent=nullptr)"
@@ -1967,9 +1809,6 @@
     "QgsSnappingUtils": [
       "IndexingStrategy",
       "mapSettings() const"
-    ],
-    "QgsSocketMonitoringThread": [
-      "run()"
     ],
     "QgsSourceFieldsProperties": [
       "AttrColumns",
@@ -2020,8 +1859,7 @@
     ],
     "QgsSvgSelectorWidget": [
       "currentSvgPath() const",
-      "populateList()",
-      "svgSelected(const QString &path)"
+      "populateList()"
     ],
     "QgsSymbolLayer": [
       "drawPreviewIcon(QgsSymbolRenderContext &context, QSize size)=0",
@@ -2038,11 +1876,8 @@
     "QgsSymbolLayerUtils": [
       "clearSymbolMap(QgsSymbolMap &symbols)",
       "createDisplacementElement(QDomDocument &doc, QDomElement &element, QPointF offset)",
-      "createFillLayerFromSld(QDomElement &element)",
       "createFunctionElement(QDomDocument &doc, QDomElement &element, const QString &function)",
       "createGeometryElement(QDomDocument &doc, QDomElement &element, const QString &geomFunc)",
-      "createLineLayerFromSld(QDomElement &element)",
-      "createMarkerLayerFromSld(QDomElement &element)",
       "createOnlineResourceElement(QDomDocument &doc, QDomElement &element, const QString &path, const QString &format)",
       "createOpacityElement(QDomDocument &doc, QDomElement &element, const QString &alphaFunc)",
       "createRotationElement(QDomDocument &doc, QDomElement &element, const QString &rotationFunc)",
@@ -2128,12 +1963,10 @@
       "moveLayerDown()",
       "moveLayerUp()",
       "removeLayer()",
-      "symbolModified()",
       "updateLayerPreview()",
       "updatePreview()"
     ],
     "QgsSymbolsListWidget": [
-      "changed()",
       "clipFeaturesToggled(bool checked)",
       "setLineWidth(double width)",
       "setMarkerAngle(double angle)",
@@ -2163,9 +1996,6 @@
     "QgsUniqueValuesConfigDlg": [
       "QgsUniqueValuesConfigDlg(QgsVectorLayer *vl, int fieldIdx, QWidget *parent=nullptr)"
     ],
-    "QgsUnitSelectionWidget": [
-      "changed()"
-    ],
     "QgsValueMapConfigDlg": [
       "QgsValueMapConfigDlg(QgsVectorLayer *vl, int fieldIdx, QWidget *parent)"
     ],
@@ -2175,9 +2005,6 @@
     ],
     "QgsValueRelationSearchWidgetWrapper": [
       "value() const"
-    ],
-    "QgsVectorDataProvider": [
-      "convertValue(QVariant::Type type, const QString &value)"
     ],
     "QgsVectorFieldSymbolLayer": [
       "AngleOrientation",
@@ -2233,16 +2060,6 @@
     ],
     "QgsVectorLayerEditBuffer": [
       "QgsVectorLayerEditBuffer(QgsVectorLayer *layer)",
-      "attributeAdded(int idx)",
-      "attributeDeleted(int idx)",
-      "attributeValueChanged(QgsFeatureId fid, int idx, const QVariant &)",
-      "committedAttributeValuesChanges(const QString &layerId, const QgsChangedAttributesMap &changedAttributesValues)",
-      "committedAttributesAdded(const QString &layerId, const QList< QgsField > &addedAttributes)",
-      "committedFeaturesAdded(const QString &layerId, const QgsFeatureList &addedFeatures)",
-      "committedFeaturesRemoved(const QString &layerId, const QgsFeatureIds &deletedFeatureIds)",
-      "committedGeometriesChanges(const QString &layerId, const QgsGeometryMap &changedGeometries)",
-      "featureAdded(QgsFeatureId fid)",
-      "featureDeleted(QgsFeatureId fid)",
       "undoIndexChanged(int index)",
       "updateLayerFields()"
     ],
@@ -2304,9 +2121,6 @@
       "getZipFileList()",
       "iconZip()"
     ],
-    "pal::FeaturePart": [
-      "FeaturePart(const FeaturePart &other)"
-    ],
     "pal::GeomFunction": [
       "cross_product(double x1, double y1, double x2, double y2, double x3, double y3)",
       "findLineCircleIntersection(double cx, double cy, double radius, double x1, double y1, double x2, double y2, double &xRes, double &yRes)"
@@ -2316,18 +2130,12 @@
       "getNumOverlaps() const",
       "getPartId() const",
       "getProblemFeatureId() const",
-      "getQuadrant() const",
-      "getReversed() const",
       "getUpsideDown() const",
       "getWidth() const",
       "resetNumOverlaps()",
       "setPartId(int id)"
     ],
-    "pal::Pal": [
-      "FnIsCanceled)(void *ctx)"
-    ],
     "pal::PointSet": [
-      "PointSet(const PointSet &ps)",
       "PointSet(double x, double y)",
       "PointSet(int nbPoints, double *x, double *y)",
       "createGeosGeom() const",
@@ -2354,8 +2162,7 @@
       "upheap(int key)"
     ],
     "pal::Problem": [
-      "init_sol_falp()",
-      "reduce()"
+      "init_sol_falp()"
     ],
     "pal::Util": [
       "unmulti(const GEOSGeometry *the_geom)"
@@ -2619,7 +2426,6 @@
     "QgsDataProvider",
     "QgsDataSourceManagerDialog",
     "QgsDataSourceUri",
-    "QgsDatabaseFilterProxyModel",
     "QgsDateTimeEdit",
     "QgsDateTimeEditConfig",
     "QgsDateTimeEditFactory",
@@ -2926,7 +2732,6 @@
     "QgsLayoutConfigObject",
     "QgsLayoutCustomDropHandler",
     "QgsLayoutDesignerInterface",
-    "QgsLayoutEffect",
     "QgsLayoutExporter",
     "QgsLayoutFrame",
     "QgsLayoutGridSettings",
@@ -3077,7 +2882,6 @@
     "QgsMapRendererQImageJob",
     "QgsMapRendererSequentialJob",
     "QgsMapRendererTask",
-    "QgsMapServiceException",
     "QgsMapSettings",
     "QgsMapSettingsUtils",
     "QgsMapThemeCollection",
@@ -3406,7 +3210,6 @@
     "QgsRendererMetadata",
     "QgsRendererPropertiesDialog",
     "QgsRendererRange",
-    "QgsRendererRangeLabelFormat",
     "QgsRendererRasterPropertiesWidget",
     "QgsRendererRegistry",
     "QgsRendererRulePropsDialog",
@@ -3460,7 +3263,6 @@
     "QgsScopeLogger",
     "QgsScopedExpressionFunction",
     "QgsScrollArea",
-    "QgsSearchQueryBuilder",
     "QgsSearchWidgetToolButton",
     "QgsSearchWidgetWrapper",
     "QgsSensorGuiMetadata",
@@ -3533,7 +3335,6 @@
     "QgsStyleGroupSelectionDialog",
     "QgsStyleManagerDialog",
     "QgsStyleSaveDialog",
-    "QgsSublayersDialog",
     "QgsSubstitutionListDialog",
     "QgsSubstitutionListWidget",
     "QgsSurface",
@@ -3733,18 +3534,9 @@
     "pal::InternalException::NoLabelPosition",
     "pal::InternalException::UnknownGeometry",
     "pal::InternalException::WrongGeometry",
-    "pal::LabelInfo",
     "pal::LabelPosition",
     "pal::Layer",
     "pal::Pal",
-    "pal::PalException",
-    "pal::PalException::FeatureExists",
-    "pal::PalException::LayerExists",
-    "pal::PalException::NotImplemented",
-    "pal::PalException::UnknownFeature",
-    "pal::PalException::UnknownLayer",
-    "pal::PalException::ValueNotInRange",
-    "pal::PalStat",
     "pal::PointSet",
     "pal::PriorityQueue",
     "pal::Problem",
