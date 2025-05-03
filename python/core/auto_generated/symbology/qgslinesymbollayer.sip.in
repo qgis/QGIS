@@ -1072,7 +1072,7 @@ Creates a new QgsMarkerLineSymbolLayer from an SLD XML DOM ``element``.
 
     virtual QgsMarkerLineSymbolLayer *clone() const /Factory/;
 
- virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated="Since 3.40. Use setPlacements() instead."/;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
 
     virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 

@@ -142,7 +142,7 @@ Returns the raster band used for rendering the raster.
 
     virtual QList<int> usesBands() const;
 
- virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated="Since 3.38. Use inputBand() instead."/;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
 
     virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
