@@ -1104,11 +1104,11 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
 file(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgisbuildpath.txt "${CMAKE_SOURCE_DIR}\n${QGIS_OUTPUT_DIRECTORY}")
 
 # Write the qgis.env file to the bin folder to allow running qgis.exe correctly from build folder
-if(WITH_VCPKG)
-  if(WIN32)
+# and find the SDK installed folders. Only runs when VCPKG_APPLOCAL_DEPS=OFF because ON means it is packaged together
+if(WITH_VCPKG AND NOT VCPKG_APPLOCAL_DEPS AND WIN32)
+  # Used in the env.in file to setup the correct paths to the SDK folder
     set(VCPKG_TARGET_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}")
     configure_file("${CMAKE_SOURCE_DIR}/ms-windows/dev/qgis.env.in" "${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgis.env")
-  endif()
 endif()
 
 # manual page - makes sense only on unix systems
