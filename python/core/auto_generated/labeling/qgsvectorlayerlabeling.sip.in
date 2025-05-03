@@ -206,7 +206,7 @@ Set pal settings (takes ownership).
 
     virtual bool requiresAdvancedEffects() const;
 
- virtual void toSld( QDomNode &parent, const QVariantMap &props ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+ virtual void toSld( QDomNode &parent, const QVariantMap &props ) const /Deprecated/;
 
     virtual bool toSld( QDomNode &parent, QgsSldExportContext &context ) const;
 

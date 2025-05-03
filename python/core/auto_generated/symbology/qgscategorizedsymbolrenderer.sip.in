@@ -204,7 +204,7 @@ calling :py:func:`~QgsCategorizedSymbolRenderer.addCategory`.
 
     virtual QgsCategorizedSymbolRenderer *clone() const /Factory/;
 
- virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
 
     virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 

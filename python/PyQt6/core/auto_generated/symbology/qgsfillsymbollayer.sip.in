@@ -1387,7 +1387,7 @@ versa when writing. Used internally when reading/writing symbols.
 
     virtual QgsSVGFillSymbolLayer *clone() const /Factory/;
 
- virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated="Since 3.40. Use sizeMapUnitScale() instead."/;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
 
     virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
@@ -1687,7 +1687,7 @@ caller takes ownership of the returned object.
 
     virtual QgsLinePatternFillSymbolLayer *clone() const /Factory/;
 
- virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated="Since 3.40. Use sizeMapUnitScale() instead."/;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
 
     virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
@@ -1993,7 +1993,7 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QgsPointPatternFillSymbolLayer *clone() const /Factory/;
 
- virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated="Since 3.40. Use sizeMapUnitScale() instead."/;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
 
     virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
@@ -2908,7 +2908,7 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QgsCentroidFillSymbolLayer *clone() const /Factory/;
 
- virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated="Since 3.40. Use sizeMapUnitScale() instead."/;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
 
     virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
