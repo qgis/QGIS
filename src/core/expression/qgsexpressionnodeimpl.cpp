@@ -1530,7 +1530,7 @@ QString QgsExpressionNodeLiteral::valueAsString() const
     case QMetaType::Type::Int:
       return QString::number( mValue.toInt() );
     case QMetaType::Type::Double:
-      return QString::number( mValue.toDouble() );
+      return qgsDoubleToString( mValue.toDouble() );
     case QMetaType::Type::LongLong:
       return QString::number( mValue.toLongLong() );
     case QMetaType::Type::QString:
