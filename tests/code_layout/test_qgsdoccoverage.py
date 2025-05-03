@@ -10,19 +10,17 @@ __author__ = "Nyall Dawson"
 __date__ = "01/02/2015"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
+import json
 import os
 import sys
+
+from pathlib import Path
 
 try:
     from qgis.static_testing import unittest
 except ImportError:
     import unittest
 
-from acceptable_missing_doc import (
-    ACCEPTABLE_MISSING_ADDED_NOTE,
-    ACCEPTABLE_MISSING_BRIEF,
-    ACCEPTABLE_MISSING_DOCS,
-)
 from doxygen_parser import DoxygenParser
 from termcolor import colored
 
@@ -42,11 +40,16 @@ class TestQgsDocCoverage(unittest.TestCase):
         print("CTEST_FULL_OUTPUT")
         prefixPath = os.environ["QGIS_PREFIX_PATH"]
         docPath = os.path.join(prefixPath, "..", "doc", "api", "xml")
+
+        doc_test_config_file = Path(__file__).parent / "doc_test.json"
+        with open(doc_test_config_file) as f:
+            doc_test_config = json.loads(f.read())
+
         parser = DoxygenParser(
             docPath,
-            ACCEPTABLE_MISSING_DOCS,
-            ACCEPTABLE_MISSING_ADDED_NOTE,
-            ACCEPTABLE_MISSING_BRIEF,
+            doc_test_config["acceptable_missing_doc"],
+            doc_test_config["acceptable_missing_added_note"],
+            doc_test_config["acceptable_missing_brief"],
         )
 
         coverage = 100.0 * parser.documented_members / parser.documentable_members
