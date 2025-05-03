@@ -39,12 +39,7 @@ QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterInterface *input,
 {
 }
 
-QgsMultiBandColorRenderer::~QgsMultiBandColorRenderer()
-{
-  delete mRedContrastEnhancement;
-  delete mGreenContrastEnhancement;
-  delete mBlueContrastEnhancement;
-}
+QgsMultiBandColorRenderer::~QgsMultiBandColorRenderer() = default;
 
 QgsMultiBandColorRenderer *QgsMultiBandColorRenderer::clone() const
 {
@@ -74,20 +69,36 @@ Qgis::RasterRendererFlags QgsMultiBandColorRenderer::flags() const
 
 void QgsMultiBandColorRenderer::setRedContrastEnhancement( QgsContrastEnhancement *ce )
 {
-  delete mRedContrastEnhancement;
-  mRedContrastEnhancement = ce;
+  if ( ce == mRedContrastEnhancement.get() )
+    return;
+
+  mRedContrastEnhancement.reset( ce );
+}
+
+const QgsContrastEnhancement *QgsMultiBandColorRenderer::greenContrastEnhancement() const
+{
+  return mGreenContrastEnhancement.get();
 }
 
 void QgsMultiBandColorRenderer::setGreenContrastEnhancement( QgsContrastEnhancement *ce )
 {
-  delete mGreenContrastEnhancement;
-  mGreenContrastEnhancement = ce;
+  if ( ce == mGreenContrastEnhancement.get() )
+    return;
+
+  mGreenContrastEnhancement.reset( ce );
+}
+
+const QgsContrastEnhancement *QgsMultiBandColorRenderer::blueContrastEnhancement() const
+{
+  return mBlueContrastEnhancement.get();
 }
 
 void QgsMultiBandColorRenderer::setBlueContrastEnhancement( QgsContrastEnhancement *ce )
 {
-  delete mBlueContrastEnhancement;
-  mBlueContrastEnhancement = ce;
+  if ( ce == mBlueContrastEnhancement.get() )
+    return;
+
+  mBlueContrastEnhancement.reset( ce );
 }
 
 QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
@@ -400,6 +411,11 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   return outputBlock.release();
 }
 
+const QgsContrastEnhancement *QgsMultiBandColorRenderer::redContrastEnhancement() const
+{
+  return mRedContrastEnhancement.get();
+}
+
 void QgsMultiBandColorRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   if ( parentElem.isNull() )
@@ -559,9 +575,9 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   static QStringList tags { QStringLiteral( "sld:RedChannel" ), QStringLiteral( "sld:GreenChannel" ), QStringLiteral( "sld:BlueChannel" ) };
 
   QList<QgsContrastEnhancement *> contrastEnhancements;
-  contrastEnhancements.append( mRedContrastEnhancement );
-  contrastEnhancements.append( mGreenContrastEnhancement );
-  contrastEnhancements.append( mBlueContrastEnhancement );
+  contrastEnhancements.append( mRedContrastEnhancement.get() );
+  contrastEnhancements.append( mGreenContrastEnhancement.get() );
+  contrastEnhancements.append( mBlueContrastEnhancement.get() );
 
   const QList<int> bands = usesBands();
   QList<int>::const_iterator bandIt = bands.constBegin();

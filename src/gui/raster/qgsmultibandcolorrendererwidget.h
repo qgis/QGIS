@@ -38,6 +38,11 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget : public QgsRasterRendererWidge
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsMultiBandColorRendererWidget.
+     * \param layer associated raster layer
+     * \param extent current canvas extent
+     */
     QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsMultiBandColorRendererWidget( layer, extent ); }
 
