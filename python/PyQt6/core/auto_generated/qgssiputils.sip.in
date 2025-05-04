@@ -27,6 +27,8 @@ Returns ``True`` if an object is currently owned by Python.
 
 If ``False`` is returned, then the object is currently owned by another
 object (e.g. a c++ class).
+
+.. seealso:: :py:func:`verifyIsPyOwned`
 %End
 %MethodCode
     if ( sipIsOwnedByPython( ( sipSimpleWrapper * )a0Wrapper ) )
@@ -36,6 +38,22 @@ object (e.g. a c++ class).
     else
     {
       sipRes = false;
+    }
+%End
+
+    static void verifyIsPyOwned( SIP_PYOBJECT /GetWrapper/, const QString &message );
+%Docstring
+Checks that an object is currently owned by Python.
+
+:raises QgsOwnershipException: if object is not owned by Python.
+
+.. seealso:: :py:func:`isPyOwned`
+%End
+%MethodCode
+    if ( !sipIsOwnedByPython( ( sipSimpleWrapper * )a0Wrapper ) )
+    {
+      PyErr_SetString( sipException_QgsOwnershipException, a1->toUtf8().constData() );
+      sipIsErr = 1;
     }
 %End
 

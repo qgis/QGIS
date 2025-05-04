@@ -37,6 +37,7 @@ class CORE_EXPORT QgsSipUtils
      *
      * If FALSE is returned, then the object is currently owned by another
      * object (e.g. a c++ class).
+     * \see verifyIsPyOwned()
      */
     static bool isPyOwned( SIP_PYOBJECT SIP_GETWRAPPER );
     % MethodCode
@@ -47,6 +48,21 @@ class CORE_EXPORT QgsSipUtils
     else
     {
       sipRes = false;
+    }
+    % End
+
+    /**
+     * Checks that an object is currently owned by Python.
+     *
+     * \throws QgsOwnershipException if object is not owned by Python.
+     * \see isPyOwned()
+     */
+    static void verifyIsPyOwned( SIP_PYOBJECT SIP_GETWRAPPER, const QString &message );
+    % MethodCode
+    if ( !sipIsOwnedByPython( ( sipSimpleWrapper * )a0Wrapper ) )
+    {
+      PyErr_SetString( sipException_QgsOwnershipException, a1->toUtf8().constData() );
+      sipIsErr = 1;
     }
     % End
 #endif
