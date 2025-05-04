@@ -16558,6 +16558,8 @@ QgsSingleSymbolRenderer.symbols: src/core/symbology/qgssinglesymbolrenderer.h#L8
 QgsSingleSymbolRenderer.toSld: src/core/symbology/qgssinglesymbolrenderer.h#L67
 QgsSingleSymbolRenderer.toSld: src/core/symbology/qgssinglesymbolrenderer.h#L68
 QgsSingleSymbolRenderer: src/core/symbology/qgssinglesymbolrenderer.h#L30
+QgsSipUtils.isPyOwned: src/core/qgssiputils.h#L41
+QgsSipUtils: src/core/qgssiputils.h#L30
 QgsSizeScaleTransformer.clone: src/core/qgspropertytransformer.h#L479
 QgsSizeScaleTransformer.exponent: src/core/qgspropertytransformer.h#L548
 QgsSizeScaleTransformer.fromExpression: src/core/qgspropertytransformer.h#L492
