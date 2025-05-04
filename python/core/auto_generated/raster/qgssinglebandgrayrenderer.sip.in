@@ -32,10 +32,6 @@ Raster renderer pipe for single band gray.
 
     virtual QgsSingleBandGrayRenderer *clone() const /Factory/;
 
-%Docstring
-QgsSingleBandGrayRenderer cannot be copied. Use
-:py:func:`~QgsSingleBandGrayRenderer.clone` instead.
-%End
     virtual Qgis::RasterRendererFlags flags() const;
 
 
