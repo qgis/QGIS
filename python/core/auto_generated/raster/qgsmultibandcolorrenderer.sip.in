@@ -45,10 +45,6 @@ Constructor for QgsMultiBandColorRenderer.
 
     virtual QgsMultiBandColorRenderer *clone() const /Factory/;
 
-%Docstring
-QgsMultiBandColorRenderer cannot be copied. Use
-:py:func:`~QgsMultiBandColorRenderer.clone` instead.
-%End
     virtual Qgis::RasterRendererFlags flags() const;
 
 

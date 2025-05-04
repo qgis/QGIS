@@ -40,10 +40,6 @@ Constructor
 
     virtual QgsInvertedPolygonRenderer *clone() const /Factory/;
 
-%Docstring
-Direct copies are forbidden. Use
-:py:func:`~QgsInvertedPolygonRenderer.clone` instead.
-%End
 
     virtual QString dump() const;
 

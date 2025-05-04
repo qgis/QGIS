@@ -350,10 +350,6 @@ colors in the dataset
 
     virtual QString symbolType() const;
 
-%Docstring
-QgsRgbPointCloud3DSymbol cannot be copied - use
-:py:func:`~QgsRgbPointCloud3DSymbol.clone` instead
-%End
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
 
