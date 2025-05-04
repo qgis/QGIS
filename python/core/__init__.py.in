@@ -610,6 +610,7 @@ QgsProcessingException.__doc__ = "Custom exception class for processing related 
 QgsProviderConnectionException.__doc__ = "Custom exception class for provider connection related exceptions."
 QgsNotSupportedException.__doc__ = "Custom exception class which is raised when an operation is not supported."
 QgsSettingsException.__doc__ = "Custom exception class for settings related exceptions."
+QgsOwnershipException.__doc__ = "Custom exception class for object ownership exceptions."
 QgsException.__doc__ = "Defines a QGIS exception class."
 
 try:
