@@ -3589,13 +3589,15 @@ for class_name, doc_string in CONTEXT.struct_docstrings.items():
 
 for class_name, methods_with_transfer in CONTEXT.methods_with_transfer.items():
     for method, arguments in methods_with_transfer.items():
+        wrapped_method_name = class_name.replace(".", "_") + "_" + method
+        original_method_name = class_name + "." + method
         template = f"""import functools as _functools
-    __wrapped_{class_name}_{method} = {class_name}.{method}
-    def __{class_name}_{method}_wrapper(self, arg):
+    __wrapped_{wrapped_method_name} = {original_method_name}
+    def __{wrapped_method_name}_wrapper(self, arg):
         __tracebackhide__ = True
         QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
-        return __wrapped_{class_name}_{method}(self, arg)
-    {class_name}.{method} = _functools.update_wrapper(__{class_name}_{method}_wrapper, {class_name}.{method})
+        return __wrapped_{wrapped_method_name}(self, arg)
+    {original_method_name} = _functools.update_wrapper(__{wrapped_method_name}_wrapper, {original_method_name})
 """
         class_additions[class_name].append(template)
 

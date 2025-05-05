@@ -37,20 +37,20 @@ try:
     QgsRuleBasedRenderer.Rule.createFromSld = staticmethod(QgsRuleBasedRenderer.Rule.createFromSld)
     QgsRuleBasedRenderer.Rule.create = staticmethod(QgsRuleBasedRenderer.Rule.create)
     import functools as _functools
-    __wrapped_QgsRuleBasedRenderer.Rule_setSymbol = QgsRuleBasedRenderer.Rule.setSymbol
-    def __QgsRuleBasedRenderer.Rule_setSymbol_wrapper(self, arg):
+    __wrapped_QgsRuleBasedRenderer_Rule_setSymbol = QgsRuleBasedRenderer.Rule.setSymbol
+    def __QgsRuleBasedRenderer_Rule_setSymbol_wrapper(self, arg):
         __tracebackhide__ = True
         QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
-        return __wrapped_QgsRuleBasedRenderer.Rule_setSymbol(self, arg)
-    QgsRuleBasedRenderer.Rule.setSymbol = _functools.update_wrapper(__QgsRuleBasedRenderer.Rule_setSymbol_wrapper, QgsRuleBasedRenderer.Rule.setSymbol)
+        return __wrapped_QgsRuleBasedRenderer_Rule_setSymbol(self, arg)
+    QgsRuleBasedRenderer.Rule.setSymbol = _functools.update_wrapper(__QgsRuleBasedRenderer_Rule_setSymbol_wrapper, QgsRuleBasedRenderer.Rule.setSymbol)
 
     import functools as _functools
-    __wrapped_QgsRuleBasedRenderer.Rule_appendChild = QgsRuleBasedRenderer.Rule.appendChild
-    def __QgsRuleBasedRenderer.Rule_appendChild_wrapper(self, arg):
+    __wrapped_QgsRuleBasedRenderer_Rule_appendChild = QgsRuleBasedRenderer.Rule.appendChild
+    def __QgsRuleBasedRenderer_Rule_appendChild_wrapper(self, arg):
         __tracebackhide__ = True
         QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
-        return __wrapped_QgsRuleBasedRenderer.Rule_appendChild(self, arg)
-    QgsRuleBasedRenderer.Rule.appendChild = _functools.update_wrapper(__QgsRuleBasedRenderer.Rule_appendChild_wrapper, QgsRuleBasedRenderer.Rule.appendChild)
+        return __wrapped_QgsRuleBasedRenderer_Rule_appendChild(self, arg)
+    QgsRuleBasedRenderer.Rule.appendChild = _functools.update_wrapper(__QgsRuleBasedRenderer_Rule_appendChild_wrapper, QgsRuleBasedRenderer.Rule.appendChild)
 
     QgsRuleBasedRenderer.Rule.__group__ = ['symbology']
 except (NameError, AttributeError):

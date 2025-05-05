@@ -10,12 +10,12 @@ except (NameError, AttributeError):
 try:
     QgsSQLStatement.NodeList.__virtual_methods__ = ['dump']
     import functools as _functools
-    __wrapped_QgsSQLStatement.NodeList_append = QgsSQLStatement.NodeList.append
-    def __QgsSQLStatement.NodeList_append_wrapper(self, arg):
+    __wrapped_QgsSQLStatement_NodeList_append = QgsSQLStatement.NodeList.append
+    def __QgsSQLStatement_NodeList_append_wrapper(self, arg):
         __tracebackhide__ = True
         QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
-        return __wrapped_QgsSQLStatement.NodeList_append(self, arg)
-    QgsSQLStatement.NodeList.append = _functools.update_wrapper(__QgsSQLStatement.NodeList_append_wrapper, QgsSQLStatement.NodeList.append)
+        return __wrapped_QgsSQLStatement_NodeList_append(self, arg)
+    QgsSQLStatement.NodeList.append = _functools.update_wrapper(__QgsSQLStatement_NodeList_append_wrapper, QgsSQLStatement.NodeList.append)
 
 except (NameError, AttributeError):
     pass
@@ -58,12 +58,12 @@ except (NameError, AttributeError):
 try:
     QgsSQLStatement.NodeSelectedColumn.__overridden_methods__ = ['nodeType', 'dump', 'accept', 'clone']
     import functools as _functools
-    __wrapped_QgsSQLStatement.NodeSelectedColumn_NodeSelectedColumn = QgsSQLStatement.NodeSelectedColumn.NodeSelectedColumn
-    def __QgsSQLStatement.NodeSelectedColumn_NodeSelectedColumn_wrapper(self, arg):
+    __wrapped_QgsSQLStatement_NodeSelectedColumn_NodeSelectedColumn = QgsSQLStatement.NodeSelectedColumn.NodeSelectedColumn
+    def __QgsSQLStatement_NodeSelectedColumn_NodeSelectedColumn_wrapper(self, arg):
         __tracebackhide__ = True
         QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
-        return __wrapped_QgsSQLStatement.NodeSelectedColumn_NodeSelectedColumn(self, arg)
-    QgsSQLStatement.NodeSelectedColumn.NodeSelectedColumn = _functools.update_wrapper(__QgsSQLStatement.NodeSelectedColumn_NodeSelectedColumn_wrapper, QgsSQLStatement.NodeSelectedColumn.NodeSelectedColumn)
+        return __wrapped_QgsSQLStatement_NodeSelectedColumn_NodeSelectedColumn(self, arg)
+    QgsSQLStatement.NodeSelectedColumn.NodeSelectedColumn = _functools.update_wrapper(__QgsSQLStatement_NodeSelectedColumn_NodeSelectedColumn_wrapper, QgsSQLStatement.NodeSelectedColumn.NodeSelectedColumn)
 
 except (NameError, AttributeError):
     pass
@@ -86,36 +86,36 @@ except (NameError, AttributeError):
 try:
     QgsSQLStatement.NodeSelect.__overridden_methods__ = ['nodeType', 'dump', 'accept', 'clone']
     import functools as _functools
-    __wrapped_QgsSQLStatement.NodeSelect_setJoins = QgsSQLStatement.NodeSelect.setJoins
-    def __QgsSQLStatement.NodeSelect_setJoins_wrapper(self, arg):
+    __wrapped_QgsSQLStatement_NodeSelect_setJoins = QgsSQLStatement.NodeSelect.setJoins
+    def __QgsSQLStatement_NodeSelect_setJoins_wrapper(self, arg):
         __tracebackhide__ = True
         QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
-        return __wrapped_QgsSQLStatement.NodeSelect_setJoins(self, arg)
-    QgsSQLStatement.NodeSelect.setJoins = _functools.update_wrapper(__QgsSQLStatement.NodeSelect_setJoins_wrapper, QgsSQLStatement.NodeSelect.setJoins)
+        return __wrapped_QgsSQLStatement_NodeSelect_setJoins(self, arg)
+    QgsSQLStatement.NodeSelect.setJoins = _functools.update_wrapper(__QgsSQLStatement_NodeSelect_setJoins_wrapper, QgsSQLStatement.NodeSelect.setJoins)
 
     import functools as _functools
-    __wrapped_QgsSQLStatement.NodeSelect_appendJoin = QgsSQLStatement.NodeSelect.appendJoin
-    def __QgsSQLStatement.NodeSelect_appendJoin_wrapper(self, arg):
+    __wrapped_QgsSQLStatement_NodeSelect_appendJoin = QgsSQLStatement.NodeSelect.appendJoin
+    def __QgsSQLStatement_NodeSelect_appendJoin_wrapper(self, arg):
         __tracebackhide__ = True
         QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
-        return __wrapped_QgsSQLStatement.NodeSelect_appendJoin(self, arg)
-    QgsSQLStatement.NodeSelect.appendJoin = _functools.update_wrapper(__QgsSQLStatement.NodeSelect_appendJoin_wrapper, QgsSQLStatement.NodeSelect.appendJoin)
+        return __wrapped_QgsSQLStatement_NodeSelect_appendJoin(self, arg)
+    QgsSQLStatement.NodeSelect.appendJoin = _functools.update_wrapper(__QgsSQLStatement_NodeSelect_appendJoin_wrapper, QgsSQLStatement.NodeSelect.appendJoin)
 
     import functools as _functools
-    __wrapped_QgsSQLStatement.NodeSelect_setWhere = QgsSQLStatement.NodeSelect.setWhere
-    def __QgsSQLStatement.NodeSelect_setWhere_wrapper(self, arg):
+    __wrapped_QgsSQLStatement_NodeSelect_setWhere = QgsSQLStatement.NodeSelect.setWhere
+    def __QgsSQLStatement_NodeSelect_setWhere_wrapper(self, arg):
         __tracebackhide__ = True
         QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
-        return __wrapped_QgsSQLStatement.NodeSelect_setWhere(self, arg)
-    QgsSQLStatement.NodeSelect.setWhere = _functools.update_wrapper(__QgsSQLStatement.NodeSelect_setWhere_wrapper, QgsSQLStatement.NodeSelect.setWhere)
+        return __wrapped_QgsSQLStatement_NodeSelect_setWhere(self, arg)
+    QgsSQLStatement.NodeSelect.setWhere = _functools.update_wrapper(__QgsSQLStatement_NodeSelect_setWhere_wrapper, QgsSQLStatement.NodeSelect.setWhere)
 
     import functools as _functools
-    __wrapped_QgsSQLStatement.NodeSelect_setOrderBy = QgsSQLStatement.NodeSelect.setOrderBy
-    def __QgsSQLStatement.NodeSelect_setOrderBy_wrapper(self, arg):
+    __wrapped_QgsSQLStatement_NodeSelect_setOrderBy = QgsSQLStatement.NodeSelect.setOrderBy
+    def __QgsSQLStatement_NodeSelect_setOrderBy_wrapper(self, arg):
         __tracebackhide__ = True
         QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
-        return __wrapped_QgsSQLStatement.NodeSelect_setOrderBy(self, arg)
-    QgsSQLStatement.NodeSelect.setOrderBy = _functools.update_wrapper(__QgsSQLStatement.NodeSelect_setOrderBy_wrapper, QgsSQLStatement.NodeSelect.setOrderBy)
+        return __wrapped_QgsSQLStatement_NodeSelect_setOrderBy(self, arg)
+    QgsSQLStatement.NodeSelect.setOrderBy = _functools.update_wrapper(__QgsSQLStatement_NodeSelect_setOrderBy_wrapper, QgsSQLStatement.NodeSelect.setOrderBy)
 
 except (NameError, AttributeError):
     pass
