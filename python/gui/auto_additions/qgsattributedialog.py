@@ -2,10 +2,11 @@
 try:
     QgsAttributeDialog.__overridden_methods__ = ['event', 'showEvent', 'createActionContext', 'accept', 'reject']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsAttributeDialog_setExtraContextScope = QgsAttributeDialog.setExtraContextScope
     def __QgsAttributeDialog_setExtraContextScope_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsAttributeDialog_setExtraContextScope(self, arg)
     QgsAttributeDialog.setExtraContextScope = _functools.update_wrapper(__QgsAttributeDialog_setExtraContextScope_wrapper, QgsAttributeDialog.setExtraContextScope)
 

@@ -4,18 +4,20 @@ try:
     QgsAttributeForm.__overridden_methods__ = ['eventFilter']
     QgsAttributeForm.__signal_arguments__ = {'widgetValueChanged': ['attribute: str', 'value: object', 'attributeChanged: bool'], 'featureSaved': ['feature: QgsFeature'], 'filterExpressionSet': ['expression: str', 'type: QgsAttributeForm.FilterType'], 'modeChanged': ['mode: QgsAttributeEditorContext.Mode'], 'zoomToFeatures': ['filter: str'], 'flashFeatures': ['filter: str'], 'openFilteredFeaturesAttributeTable': ['filter: str']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsAttributeForm_addInterface = QgsAttributeForm.addInterface
     def __QgsAttributeForm_addInterface_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsAttributeForm_addInterface(self, arg)
     QgsAttributeForm.addInterface = _functools.update_wrapper(__QgsAttributeForm_addInterface_wrapper, QgsAttributeForm.addInterface)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsAttributeForm_setExtraContextScope = QgsAttributeForm.setExtraContextScope
     def __QgsAttributeForm_setExtraContextScope_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsAttributeForm_setExtraContextScope(self, arg)
     QgsAttributeForm.setExtraContextScope = _functools.update_wrapper(__QgsAttributeForm_setExtraContextScope_wrapper, QgsAttributeForm.setExtraContextScope)
 

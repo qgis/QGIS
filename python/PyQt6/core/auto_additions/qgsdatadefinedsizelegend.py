@@ -12,26 +12,29 @@ except (NameError, AttributeError):
 try:
     QgsDataDefinedSizeLegend.readXml = staticmethod(QgsDataDefinedSizeLegend.readXml)
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsDataDefinedSizeLegend_setSymbol = QgsDataDefinedSizeLegend.setSymbol
     def __QgsDataDefinedSizeLegend_setSymbol_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsDataDefinedSizeLegend_setSymbol(self, arg)
     QgsDataDefinedSizeLegend.setSymbol = _functools.update_wrapper(__QgsDataDefinedSizeLegend_setSymbol_wrapper, QgsDataDefinedSizeLegend.setSymbol)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsDataDefinedSizeLegend_setLineSymbol = QgsDataDefinedSizeLegend.setLineSymbol
     def __QgsDataDefinedSizeLegend_setLineSymbol_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsDataDefinedSizeLegend_setLineSymbol(self, arg)
     QgsDataDefinedSizeLegend.setLineSymbol = _functools.update_wrapper(__QgsDataDefinedSizeLegend_setLineSymbol_wrapper, QgsDataDefinedSizeLegend.setLineSymbol)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsDataDefinedSizeLegend_setSizeScaleTransformer = QgsDataDefinedSizeLegend.setSizeScaleTransformer
     def __QgsDataDefinedSizeLegend_setSizeScaleTransformer_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsDataDefinedSizeLegend_setSizeScaleTransformer(self, arg)
     QgsDataDefinedSizeLegend.setSizeScaleTransformer = _functools.update_wrapper(__QgsDataDefinedSizeLegend_setSizeScaleTransformer_wrapper, QgsDataDefinedSizeLegend.setSizeScaleTransformer)
 

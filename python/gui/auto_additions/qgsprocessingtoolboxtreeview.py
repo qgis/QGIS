@@ -2,10 +2,11 @@
 try:
     QgsProcessingToolboxTreeView.__overridden_methods__ = ['keyPressEvent']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsProcessingToolboxTreeView_setToolboxProxyModel = QgsProcessingToolboxTreeView.setToolboxProxyModel
     def __QgsProcessingToolboxTreeView_setToolboxProxyModel_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsProcessingToolboxTreeView_setToolboxProxyModel(self, arg)
     QgsProcessingToolboxTreeView.setToolboxProxyModel = _functools.update_wrapper(__QgsProcessingToolboxTreeView_setToolboxProxyModel_wrapper, QgsProcessingToolboxTreeView.setToolboxProxyModel)
 

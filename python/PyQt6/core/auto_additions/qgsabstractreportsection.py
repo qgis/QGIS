@@ -15,26 +15,29 @@ try:
     QgsAbstractReportSection.__abstract_methods__ = ['type', 'description', 'icon', 'clone']
     QgsAbstractReportSection.__overridden_methods__ = ['count', 'filePath', 'layout', 'beginRender', 'next', 'endRender']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsAbstractReportSection_setHeader = QgsAbstractReportSection.setHeader
     def __QgsAbstractReportSection_setHeader_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsAbstractReportSection_setHeader(self, arg)
     QgsAbstractReportSection.setHeader = _functools.update_wrapper(__QgsAbstractReportSection_setHeader_wrapper, QgsAbstractReportSection.setHeader)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsAbstractReportSection_setFooter = QgsAbstractReportSection.setFooter
     def __QgsAbstractReportSection_setFooter_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsAbstractReportSection_setFooter(self, arg)
     QgsAbstractReportSection.setFooter = _functools.update_wrapper(__QgsAbstractReportSection_setFooter_wrapper, QgsAbstractReportSection.setFooter)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsAbstractReportSection_appendChild = QgsAbstractReportSection.appendChild
     def __QgsAbstractReportSection_appendChild_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsAbstractReportSection_appendChild(self, arg)
     QgsAbstractReportSection.appendChild = _functools.update_wrapper(__QgsAbstractReportSection_appendChild_wrapper, QgsAbstractReportSection.appendChild)
 

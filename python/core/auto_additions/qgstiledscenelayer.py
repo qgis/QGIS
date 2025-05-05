@@ -10,10 +10,11 @@ try:
     QgsTiledSceneLayer.__virtual_methods__ = ['readStyle', 'writeStyle', 'loadDefaultStyle']
     QgsTiledSceneLayer.__overridden_methods__ = ['clone', 'extent', 'dataProvider', 'readXml', 'writeXml', 'readSymbology', 'writeSymbology', 'setTransformContext', 'encodedSource', 'decodedSource', 'htmlMetadata', 'createMapRenderer', 'loadDefaultMetadata', 'elevationProperties']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsTiledSceneLayer_setRenderer = QgsTiledSceneLayer.setRenderer
     def __QgsTiledSceneLayer_setRenderer_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsTiledSceneLayer_setRenderer(self, arg)
     QgsTiledSceneLayer.setRenderer = _functools.update_wrapper(__QgsTiledSceneLayer_setRenderer_wrapper, QgsTiledSceneLayer.setRenderer)
 

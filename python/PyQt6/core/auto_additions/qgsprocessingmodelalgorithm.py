@@ -9,10 +9,11 @@ try:
     QgsProcessingModelAlgorithm.safeName = staticmethod(QgsProcessingModelAlgorithm.safeName)
     QgsProcessingModelAlgorithm.__overridden_methods__ = ['initAlgorithm', 'flags', 'name', 'displayName', 'group', 'groupId', 'icon', 'svgIconPath', 'shortHelpString', 'shortDescription', 'helpUrl', 'canExecute', 'asPythonCommand', 'createExpressionContext', 'createInstance', 'processAlgorithm']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsProcessingModelAlgorithm_updateModelParameter = QgsProcessingModelAlgorithm.updateModelParameter
     def __QgsProcessingModelAlgorithm_updateModelParameter_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsProcessingModelAlgorithm_updateModelParameter(self, arg)
     QgsProcessingModelAlgorithm.updateModelParameter = _functools.update_wrapper(__QgsProcessingModelAlgorithm_updateModelParameter_wrapper, QgsProcessingModelAlgorithm.updateModelParameter)
 

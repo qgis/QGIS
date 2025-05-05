@@ -4,18 +4,20 @@ try:
     QgsElevationProfileCanvas.__overridden_methods__ = ['crs', 'toMapCoordinates', 'toCanvasCoordinates', 'resizeEvent', 'paintEvent', 'panContentsBy', 'centerPlotOn', 'scalePlot', 'snapToPlot', 'zoomToRect', 'wheelZoom', 'mouseMoveEvent', 'refresh']
     QgsElevationProfileCanvas.__signal_arguments__ = {'activeJobCountChanged': ['count: int'], 'canvasPointHovered': ['point: QgsPointXY', 'profilePoint: QgsProfilePoint']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsElevationProfileCanvas_setProfileCurve = QgsElevationProfileCanvas.setProfileCurve
     def __QgsElevationProfileCanvas_setProfileCurve_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsElevationProfileCanvas_setProfileCurve(self, arg)
     QgsElevationProfileCanvas.setProfileCurve = _functools.update_wrapper(__QgsElevationProfileCanvas_setProfileCurve_wrapper, QgsElevationProfileCanvas.setProfileCurve)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsElevationProfileCanvas_setSubsectionsSymbol = QgsElevationProfileCanvas.setSubsectionsSymbol
     def __QgsElevationProfileCanvas_setSubsectionsSymbol_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsElevationProfileCanvas_setSubsectionsSymbol(self, arg)
     QgsElevationProfileCanvas.setSubsectionsSymbol = _functools.update_wrapper(__QgsElevationProfileCanvas_setSubsectionsSymbol_wrapper, QgsElevationProfileCanvas.setSubsectionsSymbol)
 

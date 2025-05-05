@@ -13,18 +13,20 @@ try:
     QgsVectorTileLayer.__virtual_methods__ = ['encodedSource', 'decodedSource']
     QgsVectorTileLayer.__overridden_methods__ = ['clone', 'dataProvider', 'createMapRenderer', 'readXml', 'writeXml', 'readSymbology', 'writeSymbology', 'setTransformContext', 'loadDefaultStyle', 'properties', 'loadDefaultMetadata', 'htmlMetadata']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsVectorTileLayer_setRenderer = QgsVectorTileLayer.setRenderer
     def __QgsVectorTileLayer_setRenderer_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsVectorTileLayer_setRenderer(self, arg)
     QgsVectorTileLayer.setRenderer = _functools.update_wrapper(__QgsVectorTileLayer_setRenderer_wrapper, QgsVectorTileLayer.setRenderer)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsVectorTileLayer_setLabeling = QgsVectorTileLayer.setLabeling
     def __QgsVectorTileLayer_setLabeling_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsVectorTileLayer_setLabeling(self, arg)
     QgsVectorTileLayer.setLabeling = _functools.update_wrapper(__QgsVectorTileLayer_setLabeling_wrapper, QgsVectorTileLayer.setLabeling)
 

@@ -7,10 +7,11 @@ except (NameError, AttributeError):
 try:
     QgsFieldDomainItem.__overridden_methods__ = ['icon']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsFieldDomainItem_QgsFieldDomainItem = QgsFieldDomainItem.QgsFieldDomainItem
     def __QgsFieldDomainItem_QgsFieldDomainItem_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsFieldDomainItem_QgsFieldDomainItem(self, arg)
     QgsFieldDomainItem.QgsFieldDomainItem = _functools.update_wrapper(__QgsFieldDomainItem_QgsFieldDomainItem_wrapper, QgsFieldDomainItem.QgsFieldDomainItem)
 

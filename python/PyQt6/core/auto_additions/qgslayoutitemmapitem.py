@@ -15,10 +15,11 @@ try:
     QgsLayoutItemMapItemStack.__virtual_methods__ = ['writeXml', 'finalizeRestoreFromXml']
     QgsLayoutItemMapItemStack.__abstract_methods__ = ['readXml']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsLayoutItemMapItemStack_addItem = QgsLayoutItemMapItemStack.addItem
     def __QgsLayoutItemMapItemStack_addItem_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsLayoutItemMapItemStack_addItem(self, arg)
     QgsLayoutItemMapItemStack.addItem = _functools.update_wrapper(__QgsLayoutItemMapItemStack_addItem_wrapper, QgsLayoutItemMapItemStack.addItem)
 

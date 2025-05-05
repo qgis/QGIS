@@ -65,18 +65,20 @@ try:
     QgsMapLayer.__abstract_methods__ = ['clone', 'createMapRenderer', 'readSymbology', 'writeSymbology', 'setTransformContext']
     QgsMapLayer.__signal_arguments__ = {'beforeResolveReferences': ['project: QgsProject'], 'statusChanged': ['status: str'], 'idChanged': ['id: str'], 'repaintRequested': ['deferredUpdate: bool = False'], 'blendModeChanged': ['blendMode: QPainter.CompositionMode'], 'opacityChanged': ['opacity: float'], 'autoRefreshIntervalChanged': ['interval: int'], 'styleLoaded': ['categories: QgsMapLayer.StyleCategories'], 'customPropertyChanged': ['key: str']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsMapLayer_setLegend = QgsMapLayer.setLegend
     def __QgsMapLayer_setLegend_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsMapLayer_setLegend(self, arg)
     QgsMapLayer.setLegend = _functools.update_wrapper(__QgsMapLayer_setLegend_wrapper, QgsMapLayer.setLegend)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsMapLayer_setRenderer3D = QgsMapLayer.setRenderer3D
     def __QgsMapLayer_setRenderer3D_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsMapLayer_setRenderer3D(self, arg)
     QgsMapLayer.setRenderer3D = _functools.update_wrapper(__QgsMapLayer_setRenderer3D_wrapper, QgsMapLayer.setRenderer3D)
 

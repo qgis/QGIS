@@ -3,10 +3,11 @@ try:
     QgsMaskMarkerSymbolLayer.create = staticmethod(QgsMaskMarkerSymbolLayer.create)
     QgsMaskMarkerSymbolLayer.__overridden_methods__ = ['clone', 'subSymbol', 'setSubSymbol', 'usedAttributes', 'hasDataDefinedProperties', 'properties', 'layerType', 'startRender', 'stopRender', 'renderPoint', 'bounds', 'usesMapUnits', 'setOutputUnit', 'color', 'drawPreviewIcon', 'masks']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsMaskMarkerSymbolLayer_setSubSymbol = QgsMaskMarkerSymbolLayer.setSubSymbol
     def __QgsMaskMarkerSymbolLayer_setSubSymbol_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsMaskMarkerSymbolLayer_setSubSymbol(self, arg)
     QgsMaskMarkerSymbolLayer.setSubSymbol = _functools.update_wrapper(__QgsMaskMarkerSymbolLayer_setSubSymbol_wrapper, QgsMaskMarkerSymbolLayer.setSubSymbol)
 

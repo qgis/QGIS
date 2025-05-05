@@ -80,18 +80,20 @@ try:
     QgsDiagramSettings.__attribute_docs__ = {'sizeType': 'Diagram size unit', 'sizeScale': 'Diagram size unit scale', 'lineSizeUnit': 'Line unit index', 'lineSizeScale': 'Line unit scale', 'opacity': 'Opacity, from 0 (transparent) to 1.0 (opaque)', 'rotationOffset': 'Rotation offset, in degrees clockwise from horizontal.', 'maximumScale': 'The maximum map scale (i.e. most "zoomed in" scale) at which the diagrams will be visible.\nThe scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.\nA scale of 0 indicates no maximum scale visibility.\n\n.. seealso:: :py:func:`minimumScale`', 'minimumScale': 'The minimum map scale (i.e. most "zoomed out" scale) at which the diagrams will be visible.\nThe scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.\nA scale of 0 indicates no minimum scale visibility.\n\n.. seealso:: :py:func:`maximumScale`', 'minimumSize': 'Scale diagrams smaller than mMinimumSize to mMinimumSize'}
     QgsDiagramSettings.__annotations__ = {'sizeType': 'Qgis.RenderUnit', 'sizeScale': 'QgsMapUnitScale', 'lineSizeUnit': 'Qgis.RenderUnit', 'lineSizeScale': 'QgsMapUnitScale', 'opacity': float, 'rotationOffset': float, 'maximumScale': float, 'minimumScale': float, 'minimumSize': float}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsDiagramSettings_setAxisLineSymbol = QgsDiagramSettings.setAxisLineSymbol
     def __QgsDiagramSettings_setAxisLineSymbol_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsDiagramSettings_setAxisLineSymbol(self, arg)
     QgsDiagramSettings.setAxisLineSymbol = _functools.update_wrapper(__QgsDiagramSettings_setAxisLineSymbol_wrapper, QgsDiagramSettings.setAxisLineSymbol)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsDiagramSettings_setPaintEffect = QgsDiagramSettings.setPaintEffect
     def __QgsDiagramSettings_setPaintEffect_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsDiagramSettings_setPaintEffect(self, arg)
     QgsDiagramSettings.setPaintEffect = _functools.update_wrapper(__QgsDiagramSettings_setPaintEffect_wrapper, QgsDiagramSettings.setPaintEffect)
 
@@ -107,10 +109,11 @@ try:
     QgsDiagramRenderer.__virtual_methods__ = ['sizeMapUnits', 'referencedFields', 'renderDiagram', 'legendItems']
     QgsDiagramRenderer.__abstract_methods__ = ['clone', 'rendererName', 'diagramAttributes', 'diagramSettings', 'readXml', 'writeXml', 'diagramSize']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsDiagramRenderer_diagram = QgsDiagramRenderer.diagram
     def __QgsDiagramRenderer_diagram_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsDiagramRenderer_diagram(self, arg)
     QgsDiagramRenderer.diagram = _functools.update_wrapper(__QgsDiagramRenderer_diagram_wrapper, QgsDiagramRenderer.diagram)
 
@@ -123,10 +126,11 @@ except (NameError, AttributeError):
 try:
     QgsLinearlyInterpolatedDiagramRenderer.__overridden_methods__ = ['clone', 'diagramSettings', 'diagramAttributes', 'referencedFields', 'rendererName', 'readXml', 'writeXml', 'legendItems', 'diagramSize']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsLinearlyInterpolatedDiagramRenderer_setDataDefinedSizeLegend = QgsLinearlyInterpolatedDiagramRenderer.setDataDefinedSizeLegend
     def __QgsLinearlyInterpolatedDiagramRenderer_setDataDefinedSizeLegend_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsLinearlyInterpolatedDiagramRenderer_setDataDefinedSizeLegend(self, arg)
     QgsLinearlyInterpolatedDiagramRenderer.setDataDefinedSizeLegend = _functools.update_wrapper(__QgsLinearlyInterpolatedDiagramRenderer_setDataDefinedSizeLegend_wrapper, QgsLinearlyInterpolatedDiagramRenderer.setDataDefinedSizeLegend)
 
@@ -135,10 +139,11 @@ except (NameError, AttributeError):
 try:
     QgsStackedDiagramRenderer.__overridden_methods__ = ['clone', 'sizeMapUnits', 'renderDiagram', 'diagramSettings', 'diagramAttributes', 'rendererName', 'readXml', 'writeXml', 'legendItems', 'diagramSize']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsStackedDiagramRenderer_addRenderer = QgsStackedDiagramRenderer.addRenderer
     def __QgsStackedDiagramRenderer_addRenderer_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsStackedDiagramRenderer_addRenderer(self, arg)
     QgsStackedDiagramRenderer.addRenderer = _functools.update_wrapper(__QgsStackedDiagramRenderer_addRenderer_wrapper, QgsStackedDiagramRenderer.addRenderer)
 
@@ -146,10 +151,11 @@ except (NameError, AttributeError):
     pass
 try:
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsDiagramLayerSettings_setRenderer = QgsDiagramLayerSettings.setRenderer
     def __QgsDiagramLayerSettings_setRenderer_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsDiagramLayerSettings_setRenderer(self, arg)
     QgsDiagramLayerSettings.setRenderer = _functools.update_wrapper(__QgsDiagramLayerSettings_setRenderer_wrapper, QgsDiagramLayerSettings.setRenderer)
 

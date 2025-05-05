@@ -4,10 +4,11 @@ try:
     QgsFieldExpressionWidget.__overridden_methods__ = ['changeEvent', 'eventFilter']
     QgsFieldExpressionWidget.__signal_arguments__ = {'fieldChanged': ['fieldName: str', 'isValid: bool']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsFieldExpressionWidget_appendScope = QgsFieldExpressionWidget.appendScope
     def __QgsFieldExpressionWidget_appendScope_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsFieldExpressionWidget_appendScope(self, arg)
     QgsFieldExpressionWidget.appendScope = _functools.update_wrapper(__QgsFieldExpressionWidget_appendScope_wrapper, QgsFieldExpressionWidget.appendScope)
 

@@ -4,10 +4,11 @@ try:
     QgsLayoutPageCollection.__overridden_methods__ = ['stringType', 'layout', 'writeXml', 'readXml']
     QgsLayoutPageCollection.__signal_arguments__ = {'pageAboutToBeRemoved': ['pageNumber: int']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsLayoutPageCollection_addPage = QgsLayoutPageCollection.addPage
     def __QgsLayoutPageCollection_addPage_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsLayoutPageCollection_addPage(self, arg)
     QgsLayoutPageCollection.addPage = _functools.update_wrapper(__QgsLayoutPageCollection_addPage_wrapper, QgsLayoutPageCollection.addPage)
 

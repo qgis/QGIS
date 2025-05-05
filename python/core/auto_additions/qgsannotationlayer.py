@@ -11,18 +11,20 @@ except (NameError, AttributeError):
 try:
     QgsAnnotationLayer.__overridden_methods__ = ['properties', 'clone', 'createMapRenderer', 'extent', 'setTransformContext', 'readXml', 'writeXml', 'writeSymbology', 'readSymbology', 'writeStyle', 'readStyle', 'isEditable', 'supportsEditing', 'dataProvider', 'htmlMetadata', 'resolveReferences']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsAnnotationLayer_addItem = QgsAnnotationLayer.addItem
     def __QgsAnnotationLayer_addItem_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsAnnotationLayer_addItem(self, arg)
     QgsAnnotationLayer.addItem = _functools.update_wrapper(__QgsAnnotationLayer_addItem_wrapper, QgsAnnotationLayer.addItem)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsAnnotationLayer_setPaintEffect = QgsAnnotationLayer.setPaintEffect
     def __QgsAnnotationLayer_setPaintEffect_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsAnnotationLayer_setPaintEffect(self, arg)
     QgsAnnotationLayer.setPaintEffect = _functools.update_wrapper(__QgsAnnotationLayer_setPaintEffect_wrapper, QgsAnnotationLayer.setPaintEffect)
 

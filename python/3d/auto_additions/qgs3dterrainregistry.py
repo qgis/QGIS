@@ -6,10 +6,11 @@ except (NameError, AttributeError):
     pass
 try:
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_Qgs3DTerrainRegistry_addType = Qgs3DTerrainRegistry.addType
     def __Qgs3DTerrainRegistry_addType_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_Qgs3DTerrainRegistry_addType(self, arg)
     Qgs3DTerrainRegistry.addType = _functools.update_wrapper(__Qgs3DTerrainRegistry_addType_wrapper, Qgs3DTerrainRegistry.addType)
 

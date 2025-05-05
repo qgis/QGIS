@@ -4,10 +4,11 @@ try:
     QgsLayerTreeView.__overridden_methods__ = ['setModel', 'contextMenuEvent', 'mouseDoubleClickEvent', 'mouseReleaseEvent', 'keyPressEvent', 'dragEnterEvent', 'dragMoveEvent', 'dropEvent', 'resizeEvent']
     QgsLayerTreeView.__signal_arguments__ = {'currentLayerChanged': ['layer: QgsMapLayer'], 'datasetsDropped': ['event: QDropEvent'], 'contextMenuAboutToShow': ['menu: QMenu']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsLayerTreeView_setMenuProvider = QgsLayerTreeView.setMenuProvider
     def __QgsLayerTreeView_setMenuProvider_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsLayerTreeView_setMenuProvider(self, arg)
     QgsLayerTreeView.setMenuProvider = _functools.update_wrapper(__QgsLayerTreeView_setMenuProvider_wrapper, QgsLayerTreeView.setMenuProvider)
 

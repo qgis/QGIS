@@ -61,10 +61,11 @@ except (NameError, AttributeError):
 try:
     QgsLayoutGuideCollection.__overridden_methods__ = ['stringType', 'layout', 'rowCount', 'columnCount', 'data', 'setData', 'flags', 'headerData', 'removeRows', 'writeXml', 'readXml']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsLayoutGuideCollection_addGuide = QgsLayoutGuideCollection.addGuide
     def __QgsLayoutGuideCollection_addGuide_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsLayoutGuideCollection_addGuide(self, arg)
     QgsLayoutGuideCollection.addGuide = _functools.update_wrapper(__QgsLayoutGuideCollection_addGuide_wrapper, QgsLayoutGuideCollection.addGuide)
 

@@ -6,10 +6,11 @@ try:
     QgsClassificationMethod.__virtual_methods__ = ['icon', 'writeXml', 'readXml', 'valuesRequired']
     QgsClassificationMethod.__abstract_methods__ = ['clone', 'name', 'id']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsClassificationMethod_addParameter = QgsClassificationMethod.addParameter
     def __QgsClassificationMethod_addParameter_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsClassificationMethod_addParameter(self, arg)
     QgsClassificationMethod.addParameter = _functools.update_wrapper(__QgsClassificationMethod_addParameter_wrapper, QgsClassificationMethod.addParameter)
 

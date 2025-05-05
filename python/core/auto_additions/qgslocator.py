@@ -4,10 +4,11 @@ try:
     QgsLocator.__annotations__ = {'CORE_FILTERS': 'List[str]'}
     QgsLocator.__signal_arguments__ = {'foundResult': ['result: QgsLocatorResult']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsLocator_registerFilter = QgsLocator.registerFilter
     def __QgsLocator_registerFilter_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsLocator_registerFilter(self, arg)
     QgsLocator.registerFilter = _functools.update_wrapper(__QgsLocator_registerFilter_wrapper, QgsLocator.registerFilter)
 

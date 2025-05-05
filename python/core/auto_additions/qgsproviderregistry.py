@@ -8,18 +8,20 @@ except (NameError, AttributeError):
 try:
     QgsProviderRegistry.instance = staticmethod(QgsProviderRegistry.instance)
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsProviderRegistry_registerUnusableUriHandler = QgsProviderRegistry.registerUnusableUriHandler
     def __QgsProviderRegistry_registerUnusableUriHandler_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsProviderRegistry_registerUnusableUriHandler(self, arg)
     QgsProviderRegistry.registerUnusableUriHandler = _functools.update_wrapper(__QgsProviderRegistry_registerUnusableUriHandler_wrapper, QgsProviderRegistry.registerUnusableUriHandler)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsProviderRegistry_registerProvider = QgsProviderRegistry.registerProvider
     def __QgsProviderRegistry_registerProvider_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsProviderRegistry_registerProvider(self, arg)
     QgsProviderRegistry.registerProvider = _functools.update_wrapper(__QgsProviderRegistry_registerProvider_wrapper, QgsProviderRegistry.registerProvider)
 

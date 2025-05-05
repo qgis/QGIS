@@ -10,10 +10,11 @@ try:
     QgsHistoryProviderRegistry.userHistoryDbPath = staticmethod(QgsHistoryProviderRegistry.userHistoryDbPath)
     QgsHistoryProviderRegistry.__signal_arguments__ = {'entryAdded': ['id: int', 'entry: QgsHistoryEntry', 'backend: Qgis.HistoryProviderBackend'], 'entryUpdated': ['id: int', 'entry: Dict[str, object]', 'backend: Qgis.HistoryProviderBackend'], 'historyCleared': ['backend: Qgis.HistoryProviderBackend', 'providerId: str']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsHistoryProviderRegistry_addProvider = QgsHistoryProviderRegistry.addProvider
     def __QgsHistoryProviderRegistry_addProvider_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsHistoryProviderRegistry_addProvider(self, arg)
     QgsHistoryProviderRegistry.addProvider = _functools.update_wrapper(__QgsHistoryProviderRegistry_addProvider_wrapper, QgsHistoryProviderRegistry.addProvider)
 

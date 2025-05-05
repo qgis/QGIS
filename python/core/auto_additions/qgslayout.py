@@ -5,18 +5,20 @@ try:
     QgsLayout.__overridden_methods__ = ['createExpressionContext', 'createCommand']
     QgsLayout.__signal_arguments__ = {'selectedItemChanged': ['selected: QgsLayoutItem'], 'backgroundTaskCountChanged': ['total: int'], 'itemAdded': ['item: QgsLayoutItem']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsLayout_addLayoutItem = QgsLayout.addLayoutItem
     def __QgsLayout_addLayoutItem_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsLayout_addLayoutItem(self, arg)
     QgsLayout.addLayoutItem = _functools.update_wrapper(__QgsLayout_addLayoutItem_wrapper, QgsLayout.addLayoutItem)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsLayout_addMultiFrame = QgsLayout.addMultiFrame
     def __QgsLayout_addMultiFrame_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsLayout_addMultiFrame(self, arg)
     QgsLayout.addMultiFrame = _functools.update_wrapper(__QgsLayout_addMultiFrame_wrapper, QgsLayout.addMultiFrame)
 

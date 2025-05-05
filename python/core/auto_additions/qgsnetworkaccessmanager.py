@@ -17,10 +17,11 @@ try:
     QgsNetworkAccessManager.__overridden_methods__ = ['createRequest']
     QgsNetworkAccessManager.__signal_arguments__ = {'requestAboutToBeCreated': ['request: QgsNetworkRequestParameters'], 'requestCreated': ['request: QgsNetworkRequestParameters'], 'finished': ['reply: QgsNetworkReplyContent'], 'requestTimedOut': ['reply: QNetworkReply'], 'downloadProgress': ['requestId: int', 'bytesReceived: int', 'bytesTotal: int'], 'requestRequiresAuth': ['requestId: int', 'realm: str'], 'requestAuthDetailsAdded': ['requestId: int', 'realm: str', 'user: str', 'password: str'], 'requestEncounteredSslErrors': ['requestId: int', 'errors: List[QSslError]'], 'cookiesChanged': ['cookies: List[QNetworkCookie]']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsNetworkAccessManager_insertProxyFactory = QgsNetworkAccessManager.insertProxyFactory
     def __QgsNetworkAccessManager_insertProxyFactory_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsNetworkAccessManager_insertProxyFactory(self, arg)
     QgsNetworkAccessManager.insertProxyFactory = _functools.update_wrapper(__QgsNetworkAccessManager_insertProxyFactory_wrapper, QgsNetworkAccessManager.insertProxyFactory)
 

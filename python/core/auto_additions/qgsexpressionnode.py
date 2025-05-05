@@ -16,10 +16,11 @@ except (NameError, AttributeError):
 try:
     QgsExpressionNode.NodeList.__virtual_methods__ = ['dump']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsExpressionNode_NodeList_append = QgsExpressionNode.NodeList.append
     def __QgsExpressionNode_NodeList_append_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsExpressionNode_NodeList_append(self, arg)
     QgsExpressionNode.NodeList.append = _functools.update_wrapper(__QgsExpressionNode_NodeList_append_wrapper, QgsExpressionNode.NodeList.append)
 

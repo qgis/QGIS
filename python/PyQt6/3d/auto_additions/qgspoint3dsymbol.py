@@ -5,10 +5,11 @@ try:
     QgsPoint3DSymbol.shapeToString = staticmethod(QgsPoint3DSymbol.shapeToString)
     QgsPoint3DSymbol.__overridden_methods__ = ['type', 'clone', 'writeXml', 'readXml', 'compatibleGeometryTypes', 'setDefaultPropertiesFromLayer']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsPoint3DSymbol_setMaterialSettings = QgsPoint3DSymbol.setMaterialSettings
     def __QgsPoint3DSymbol_setMaterialSettings_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsPoint3DSymbol_setMaterialSettings(self, arg)
     QgsPoint3DSymbol.setMaterialSettings = _functools.update_wrapper(__QgsPoint3DSymbol_setMaterialSettings_wrapper, QgsPoint3DSymbol.setMaterialSettings)
 

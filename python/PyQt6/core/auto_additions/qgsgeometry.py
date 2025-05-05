@@ -24,26 +24,29 @@ try:
     QgsGeometry.createGeometryEngine = staticmethod(QgsGeometry.createGeometryEngine)
     QgsGeometry.convertPointList = staticmethod(QgsGeometry.convertPointList)
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsGeometry_QgsGeometry = QgsGeometry.QgsGeometry
     def __QgsGeometry_QgsGeometry_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsGeometry_QgsGeometry(self, arg)
     QgsGeometry.QgsGeometry = _functools.update_wrapper(__QgsGeometry_QgsGeometry_wrapper, QgsGeometry.QgsGeometry)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsGeometry_set = QgsGeometry.set
     def __QgsGeometry_set_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsGeometry_set(self, arg)
     QgsGeometry.set = _functools.update_wrapper(__QgsGeometry_set_wrapper, QgsGeometry.set)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsGeometry_addRing = QgsGeometry.addRing
     def __QgsGeometry_addRing_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsGeometry_addRing(self, arg)
     QgsGeometry.addRing = _functools.update_wrapper(__QgsGeometry_addRing_wrapper, QgsGeometry.addRing)
 

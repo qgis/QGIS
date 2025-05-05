@@ -9,10 +9,11 @@ try:
     QgsAnnotationItemGuiRegistry.__attribute_docs__ = {'typeAdded': 'Emitted whenever a new item type is added to the registry, with the\nspecified ``metadataId``.\n'}
     QgsAnnotationItemGuiRegistry.__signal_arguments__ = {'typeAdded': ['metadataId: int']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsAnnotationItemGuiRegistry_addAnnotationItemGuiMetadata = QgsAnnotationItemGuiRegistry.addAnnotationItemGuiMetadata
     def __QgsAnnotationItemGuiRegistry_addAnnotationItemGuiMetadata_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsAnnotationItemGuiRegistry_addAnnotationItemGuiMetadata(self, arg)
     QgsAnnotationItemGuiRegistry.addAnnotationItemGuiMetadata = _functools.update_wrapper(__QgsAnnotationItemGuiRegistry_addAnnotationItemGuiMetadata_wrapper, QgsAnnotationItemGuiRegistry.addAnnotationItemGuiMetadata)
 

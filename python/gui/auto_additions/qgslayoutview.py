@@ -4,10 +4,11 @@ try:
     QgsLayoutView.__overridden_methods__ = ['mousePressEvent', 'mouseReleaseEvent', 'mouseMoveEvent', 'mouseDoubleClickEvent', 'wheelEvent', 'keyPressEvent', 'keyReleaseEvent', 'resizeEvent', 'scrollContentsBy', 'dragEnterEvent', 'paintEvent']
     QgsLayoutView.__signal_arguments__ = {'layoutSet': ['layout: QgsLayout'], 'toolSet': ['tool: QgsLayoutViewTool'], 'cursorPosChanged': ['layoutPoint: QPointF'], 'pageChanged': ['page: int'], 'statusMessage': ['message: str'], 'itemFocused': ['item: QgsLayoutItem']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsLayoutView_setMenuProvider = QgsLayoutView.setMenuProvider
     def __QgsLayoutView_setMenuProvider_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsLayoutView_setMenuProvider(self, arg)
     QgsLayoutView.setMenuProvider = _functools.update_wrapper(__QgsLayoutView_setMenuProvider_wrapper, QgsLayoutView.setMenuProvider)
 

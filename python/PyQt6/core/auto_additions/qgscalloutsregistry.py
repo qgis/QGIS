@@ -2,10 +2,11 @@
 try:
     QgsCalloutRegistry.defaultCallout = staticmethod(QgsCalloutRegistry.defaultCallout)
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsCalloutRegistry_addCalloutType = QgsCalloutRegistry.addCalloutType
     def __QgsCalloutRegistry_addCalloutType_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsCalloutRegistry_addCalloutType(self, arg)
     QgsCalloutRegistry.addCalloutType = _functools.update_wrapper(__QgsCalloutRegistry_addCalloutType_wrapper, QgsCalloutRegistry.addCalloutType)
 

@@ -31,10 +31,11 @@ enum.
 # --
 try:
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsEditFormConfig_addTab = QgsEditFormConfig.addTab
     def __QgsEditFormConfig_addTab_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsEditFormConfig_addTab(self, arg)
     QgsEditFormConfig.addTab = _functools.update_wrapper(__QgsEditFormConfig_addTab_wrapper, QgsEditFormConfig.addTab)
 

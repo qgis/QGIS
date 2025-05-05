@@ -12,18 +12,20 @@ try:
     QgsMeshLayer.__overridden_methods__ = ['dataProvider', 'clone', 'extent', 'createMapRenderer', 'createProfileGenerator', 'readSymbology', 'writeSymbology', 'writeStyle', 'readStyle', 'encodedSource', 'decodedSource', 'readXml', 'writeXml', 'temporalProperties', 'elevationProperties', 'reload', 'subLayers', 'htmlMetadata', 'isEditable', 'supportsEditing', 'isModified', 'setTransformContext']
     QgsMeshLayer.__signal_arguments__ = {'activeScalarDatasetGroupChanged': ['index: int'], 'activeVectorDatasetGroupChanged': ['index: int']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsMeshLayer_addDatasets = QgsMeshLayer.addDatasets
     def __QgsMeshLayer_addDatasets_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsMeshLayer_addDatasets(self, arg)
     QgsMeshLayer.addDatasets = _functools.update_wrapper(__QgsMeshLayer_addDatasets_wrapper, QgsMeshLayer.addDatasets)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsMeshLayer_setLabeling = QgsMeshLayer.setLabeling
     def __QgsMeshLayer_setLabeling_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsMeshLayer_setLabeling(self, arg)
     QgsMeshLayer.setLabeling = _functools.update_wrapper(__QgsMeshLayer_setLabeling_wrapper, QgsMeshLayer.setLabeling)
 

@@ -8,10 +8,11 @@ try:
     QgsPythonRunner.setInstance = staticmethod(QgsPythonRunner.setInstance)
     QgsPythonRunner.__abstract_methods__ = ['runCommand', 'runFileCommand', 'evalCommand', 'setArgvCommand']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsPythonRunner_setInstance = QgsPythonRunner.setInstance
     def __QgsPythonRunner_setInstance_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsPythonRunner_setInstance(self, arg)
     QgsPythonRunner.setInstance = _functools.update_wrapper(__QgsPythonRunner_setInstance_wrapper, QgsPythonRunner.setInstance)
 

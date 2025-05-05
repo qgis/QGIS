@@ -2,10 +2,11 @@
 try:
     QgsSymbolLayerRegistry.defaultSymbolLayer = staticmethod(QgsSymbolLayerRegistry.defaultSymbolLayer)
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsSymbolLayerRegistry_addSymbolLayerType = QgsSymbolLayerRegistry.addSymbolLayerType
     def __QgsSymbolLayerRegistry_addSymbolLayerType_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsSymbolLayerRegistry_addSymbolLayerType(self, arg)
     QgsSymbolLayerRegistry.addSymbolLayerType = _functools.update_wrapper(__QgsSymbolLayerRegistry_addSymbolLayerType_wrapper, QgsSymbolLayerRegistry.addSymbolLayerType)
 

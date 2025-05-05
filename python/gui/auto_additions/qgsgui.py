@@ -36,10 +36,11 @@ try:
     QgsGui.findScreenAt = staticmethod(QgsGui.findScreenAt)
     QgsGui.hasWebEngine = staticmethod(QgsGui.hasWebEngine)
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsGui_setWindowManager = QgsGui.setWindowManager
     def __QgsGui_setWindowManager_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsGui_setWindowManager(self, arg)
     QgsGui.setWindowManager = _functools.update_wrapper(__QgsGui_setWindowManager_wrapper, QgsGui.setWindowManager)
 

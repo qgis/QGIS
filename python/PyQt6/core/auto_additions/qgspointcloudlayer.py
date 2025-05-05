@@ -27,10 +27,11 @@ try:
     QgsPointCloudLayer.__overridden_methods__ = ['clone', 'extent', 'createMapRenderer', 'createProfileGenerator', 'dataProvider', 'supportsEditing', 'isEditable', 'isModified', 'readXml', 'writeXml', 'readSymbology', 'writeSymbology', 'setTransformContext', 'encodedSource', 'decodedSource', 'htmlMetadata', 'elevationProperties']
     QgsPointCloudLayer.__signal_arguments__ = {'raiseError': ['msg: str'], 'statisticsCalculationStateChanged': ['state: QgsPointCloudLayer.PointCloudStatisticsCalculationState'], 'chunkAttributeValuesChanged': ['n: QgsPointCloudNodeId']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsPointCloudLayer_setRenderer = QgsPointCloudLayer.setRenderer
     def __QgsPointCloudLayer_setRenderer_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsPointCloudLayer_setRenderer(self, arg)
     QgsPointCloudLayer.setRenderer = _functools.update_wrapper(__QgsPointCloudLayer_setRenderer_wrapper, QgsPointCloudLayer.setRenderer)
 

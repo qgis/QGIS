@@ -146,6 +146,7 @@ class Context:
         if (
             len(self.current_method_args) == 1
             and "/Transfer" in self.current_method_args[0]
+            and "QgisInterface" not in self.current_fully_qualified_class_name()
         ):
             self.methods_with_transfer[self.current_fully_qualified_class_name()][
                 self.current_method_name
@@ -3592,10 +3593,11 @@ for class_name, methods_with_transfer in CONTEXT.methods_with_transfer.items():
         wrapped_method_name = class_name.replace(".", "_") + "_" + method
         original_method_name = class_name + "." + method
         template = f"""import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_{wrapped_method_name} = {original_method_name}
     def __{wrapped_method_name}_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_{wrapped_method_name}(self, arg)
     {original_method_name} = _functools.update_wrapper(__{wrapped_method_name}_wrapper, {original_method_name})
 """

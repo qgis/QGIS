@@ -3,10 +3,11 @@ try:
     QgsPointCloudRendererRegistry.defaultRenderer = staticmethod(QgsPointCloudRendererRegistry.defaultRenderer)
     QgsPointCloudRendererRegistry.classificationAttributeCategories = staticmethod(QgsPointCloudRendererRegistry.classificationAttributeCategories)
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsPointCloudRendererRegistry_addRenderer = QgsPointCloudRendererRegistry.addRenderer
     def __QgsPointCloudRendererRegistry_addRenderer_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsPointCloudRendererRegistry_addRenderer(self, arg)
     QgsPointCloudRendererRegistry.addRenderer = _functools.update_wrapper(__QgsPointCloudRendererRegistry_addRenderer_wrapper, QgsPointCloudRendererRegistry.addRenderer)
 

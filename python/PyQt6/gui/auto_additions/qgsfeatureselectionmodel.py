@@ -4,10 +4,11 @@ try:
     QgsFeatureSelectionModel.__virtual_methods__ = ['isSelected', 'selectFeatures', 'setFeatureSelectionManager']
     QgsFeatureSelectionModel.__overridden_methods__ = ['select']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsFeatureSelectionModel_setFeatureSelectionManager = QgsFeatureSelectionModel.setFeatureSelectionManager
     def __QgsFeatureSelectionModel_setFeatureSelectionManager_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsFeatureSelectionModel_setFeatureSelectionManager(self, arg)
     QgsFeatureSelectionModel.setFeatureSelectionManager = _functools.update_wrapper(__QgsFeatureSelectionModel_setFeatureSelectionManager_wrapper, QgsFeatureSelectionModel.setFeatureSelectionManager)
 

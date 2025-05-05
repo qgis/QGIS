@@ -532,10 +532,11 @@ try:
     QgsPalLayerSettings.__annotations__ = {'drawLabels': bool, 'fieldName': str, 'isExpression': bool, 'previewBkgrdColor': 'QColor', 'substitutions': 'QgsStringReplacementCollection', 'useSubstitutions': bool, 'wrapChar': str, 'autoWrapLength': int, 'useMaxLineLengthForAutoWrap': bool, 'multilineAlign': 'Qgis.LabelMultiLineAlignment', 'formatNumbers': bool, 'decimals': int, 'plusSign': bool, 'placement': 'Qgis.LabelPlacement', 'centroidWhole': bool, 'centroidInside': bool, 'fitInPolygonOnly': bool, 'dist': float, 'distUnits': 'Qgis.RenderUnit', 'distMapUnitScale': 'QgsMapUnitScale', 'offsetType': 'Qgis.LabelOffsetType', 'repeatDistance': float, 'repeatDistanceUnit': 'Qgis.RenderUnit', 'repeatDistanceMapUnitScale': 'QgsMapUnitScale', 'xOffset': float, 'yOffset': float, 'offsetUnits': 'Qgis.RenderUnit', 'labelOffsetMapUnitScale': 'QgsMapUnitScale', 'angleOffset': float, 'preserveRotation': bool, 'maxCurvedCharAngleIn': float, 'maxCurvedCharAngleOut': float, 'priority': int, 'scaleVisibility': bool, 'maximumScale': float, 'minimumScale': float, 'fontLimitPixelSize': bool, 'fontMinPixelSize': int, 'fontMaxPixelSize': int, 'upsidedownLabels': 'Qgis.UpsideDownLabelHandling', 'labelPerPart': bool, 'zIndex': float, 'geometryGenerator': str, 'geometryGeneratorType': 'Qgis.GeometryType', 'geometryGeneratorEnabled': bool, 'layerType': 'Qgis.GeometryType'}
     QgsPalLayerSettings.labelSettingsPreviewPixmap = staticmethod(QgsPalLayerSettings.labelSettingsPreviewPixmap)
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsPalLayerSettings_setCallout = QgsPalLayerSettings.setCallout
     def __QgsPalLayerSettings_setCallout_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsPalLayerSettings_setCallout(self, arg)
     QgsPalLayerSettings.setCallout = _functools.update_wrapper(__QgsPalLayerSettings_setCallout_wrapper, QgsPalLayerSettings.setCallout)
 

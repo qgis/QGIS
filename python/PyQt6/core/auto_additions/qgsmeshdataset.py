@@ -23,18 +23,20 @@ except (NameError, AttributeError):
     pass
 try:
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsMeshDatasetGroupTreeItem_appendChild = QgsMeshDatasetGroupTreeItem.appendChild
     def __QgsMeshDatasetGroupTreeItem_appendChild_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsMeshDatasetGroupTreeItem_appendChild(self, arg)
     QgsMeshDatasetGroupTreeItem.appendChild = _functools.update_wrapper(__QgsMeshDatasetGroupTreeItem_appendChild_wrapper, QgsMeshDatasetGroupTreeItem.appendChild)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsMeshDatasetGroupTreeItem_removeChild = QgsMeshDatasetGroupTreeItem.removeChild
     def __QgsMeshDatasetGroupTreeItem_removeChild_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsMeshDatasetGroupTreeItem_removeChild(self, arg)
     QgsMeshDatasetGroupTreeItem.removeChild = _functools.update_wrapper(__QgsMeshDatasetGroupTreeItem_removeChild_wrapper, QgsMeshDatasetGroupTreeItem.removeChild)
 

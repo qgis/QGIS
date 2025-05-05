@@ -4,10 +4,11 @@ try:
     QgsMapCanvas.__overridden_methods__ = ['createExpressionContext', 'event', 'keyPressEvent', 'keyReleaseEvent', 'mouseDoubleClickEvent', 'mouseMoveEvent', 'mousePressEvent', 'mouseReleaseEvent', 'wheelEvent', 'resizeEvent', 'paintEvent', 'dragEnterEvent', 'viewportEvent', 'dropEvent', 'showEvent']
     QgsMapCanvas.__signal_arguments__ = {'xyCoordinates': ['p: QgsPointXY'], 'scaleChanged': ['scale: float'], 'scaleLockChanged': ['locked: bool'], 'rotationChanged': ['rotation: float'], 'magnificationChanged': ['magnification: float'], 'renderComplete': ['painter: QPainter'], 'keyPressed': ['e: QKeyEvent'], 'keyReleased': ['e: QKeyEvent'], 'mapToolSet': ['newTool: QgsMapTool', 'oldTool: QgsMapTool'], 'selectionChanged': ['layer: QgsMapLayer'], 'zoomLastStatusChanged': ['available: bool'], 'zoomNextStatusChanged': ['available: bool'], 'currentLayerChanged': ['layer: QgsMapLayer'], 'themeChanged': ['theme: str'], 'messageEmitted': ['title: str', 'message: str', 'level: Qgis.MessageLevel = Qgis.MessageLevel.Info'], 'renderErrorOccurred': ['error: str', 'layer: QgsMapLayer'], 'panDistanceBearingChanged': ['distance: float', 'unit: Qgis.DistanceUnit', 'bearing: float'], 'tapAndHoldGestureOccurred': ['mapPoint: QgsPointXY', 'gesture: QTapAndHoldGesture'], 'contextMenuAboutToShow': ['menu: QMenu', 'event: QgsMapMouseEvent']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsMapCanvas_setMapController = QgsMapCanvas.setMapController
     def __QgsMapCanvas_setMapController_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsMapCanvas_setMapController(self, arg)
     QgsMapCanvas.setMapController = _functools.update_wrapper(__QgsMapCanvas_setMapController_wrapper, QgsMapCanvas.setMapController)
 

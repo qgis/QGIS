@@ -9,10 +9,11 @@ try:
     QgsLayoutItemGuiRegistry.__attribute_docs__ = {'typeAdded': 'Emitted whenever a new item type is added to the registry, with the\nspecified ``metadataId``.\n'}
     QgsLayoutItemGuiRegistry.__signal_arguments__ = {'typeAdded': ['metadataId: int']}
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsLayoutItemGuiRegistry_addLayoutItemGuiMetadata = QgsLayoutItemGuiRegistry.addLayoutItemGuiMetadata
     def __QgsLayoutItemGuiRegistry_addLayoutItemGuiMetadata_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsLayoutItemGuiRegistry_addLayoutItemGuiMetadata(self, arg)
     QgsLayoutItemGuiRegistry.addLayoutItemGuiMetadata = _functools.update_wrapper(__QgsLayoutItemGuiRegistry_addLayoutItemGuiMetadata_wrapper, QgsLayoutItemGuiRegistry.addLayoutItemGuiMetadata)
 

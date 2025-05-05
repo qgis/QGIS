@@ -4,10 +4,11 @@ try:
     QgsProcessingProvider.__virtual_methods__ = ['icon', 'svgIconPath', 'flags', 'helpId', 'longName', 'versionInfo', 'canBeActivated', 'warningMessage', 'isActive', 'supportedOutputRasterLayerExtensions', 'supportedOutputVectorLayerExtensions', 'supportedOutputPointCloudLayerExtensions', 'supportedOutputVectorTileLayerExtensions', 'supportedOutputTableExtensions', 'isSupportedOutputValue', 'defaultVectorFileExtension', 'defaultRasterFileExtension', 'defaultPointCloudFileExtension', 'defaultVectorTileFileExtension', 'supportsNonFileBasedOutput', 'load', 'unload']
     QgsProcessingProvider.__abstract_methods__ = ['id', 'name', 'loadAlgorithms']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsProcessingProvider_addAlgorithm = QgsProcessingProvider.addAlgorithm
     def __QgsProcessingProvider_addAlgorithm_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsProcessingProvider_addAlgorithm(self, arg)
     QgsProcessingProvider.addAlgorithm = _functools.update_wrapper(__QgsProcessingProvider_addAlgorithm_wrapper, QgsProcessingProvider.addAlgorithm)
 

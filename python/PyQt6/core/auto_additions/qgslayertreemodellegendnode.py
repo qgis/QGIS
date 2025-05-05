@@ -69,18 +69,20 @@ except (NameError, AttributeError):
 try:
     QgsSymbolLegendNode.__overridden_methods__ = ['flags', 'data', 'setData', 'drawSymbol', 'exportSymbolToJson', 'setEmbeddedInParent', 'setUserLabel', 'isScaleOK', 'invalidateMapBasedData']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsSymbolLegendNode_setSymbol = QgsSymbolLegendNode.setSymbol
     def __QgsSymbolLegendNode_setSymbol_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsSymbolLegendNode_setSymbol(self, arg)
     QgsSymbolLegendNode.setSymbol = _functools.update_wrapper(__QgsSymbolLegendNode_setSymbol_wrapper, QgsSymbolLegendNode.setSymbol)
 
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsSymbolLegendNode_setCustomSymbol = QgsSymbolLegendNode.setCustomSymbol
     def __QgsSymbolLegendNode_setCustomSymbol_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsSymbolLegendNode_setCustomSymbol(self, arg)
     QgsSymbolLegendNode.setCustomSymbol = _functools.update_wrapper(__QgsSymbolLegendNode_setCustomSymbol_wrapper, QgsSymbolLegendNode.setCustomSymbol)
 

@@ -28,10 +28,11 @@ QgsMesh3DSymbol.ZValueType.__doc__ = """How to render the Z value of the mesh
 try:
     QgsMesh3DSymbol.__overridden_methods__ = ['type', 'clone', 'writeXml', 'readXml']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsMesh3DSymbol_setMaterialSettings = QgsMesh3DSymbol.setMaterialSettings
     def __QgsMesh3DSymbol_setMaterialSettings_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsMesh3DSymbol_setMaterialSettings(self, arg)
     QgsMesh3DSymbol.setMaterialSettings = _functools.update_wrapper(__QgsMesh3DSymbol_setMaterialSettings_wrapper, QgsMesh3DSymbol.setMaterialSettings)
 

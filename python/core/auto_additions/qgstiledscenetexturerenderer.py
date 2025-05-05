@@ -4,10 +4,11 @@ try:
     QgsTiledSceneTextureRenderer.createDefaultFillSymbol = staticmethod(QgsTiledSceneTextureRenderer.createDefaultFillSymbol)
     QgsTiledSceneTextureRenderer.__overridden_methods__ = ['type', 'clone', 'save', 'flags', 'renderTriangle', 'renderLine', 'startRender', 'stopRender']
     import functools as _functools
+    from qgis.core import QgsSipUtils as _QgsSipUtils
     __wrapped_QgsTiledSceneTextureRenderer_setFillSymbol = QgsTiledSceneTextureRenderer.setFillSymbol
     def __QgsTiledSceneTextureRenderer_setFillSymbol_wrapper(self, arg):
         __tracebackhide__ = True
-        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        _QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
         return __wrapped_QgsTiledSceneTextureRenderer_setFillSymbol(self, arg)
     QgsTiledSceneTextureRenderer.setFillSymbol = _functools.update_wrapper(__QgsTiledSceneTextureRenderer_setFillSymbol_wrapper, QgsTiledSceneTextureRenderer.setFillSymbol)
 
