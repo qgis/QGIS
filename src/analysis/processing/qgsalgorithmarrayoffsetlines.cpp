@@ -172,10 +172,10 @@ QgsFeatureList QgsCreateArrayOffsetLinesAlgorithm::processFeature( const QgsFeat
 
 QgsFields QgsCreateArrayOffsetLinesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields output = inputFields;
-  output.append( QgsField( QStringLiteral( "instance" ), QMetaType::Type::Int ) );
-  output.append( QgsField( QStringLiteral( "offset" ), QMetaType::Type::Double ) );
-  return output;
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "instance" ), QMetaType::Type::Int ) );
+  newFields.append( QgsField( QStringLiteral( "offset" ), QMetaType::Type::Double ) );
+  return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
 QgsFeatureSink::SinkFlags QgsCreateArrayOffsetLinesAlgorithm::sinkFlags() const

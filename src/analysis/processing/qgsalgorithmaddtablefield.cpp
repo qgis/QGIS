@@ -119,14 +119,21 @@ QgsFields QgsAddTableFieldAlgorithm::outputFields( const QgsFields &inputFields 
   return outFields;
 }
 
-bool QgsAddTableFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+bool QgsAddTableFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   const QString name = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
   const int type = parameterAsInt( parameters, QStringLiteral( "FIELD_TYPE" ), context );
   const int length = parameterAsInt( parameters, QStringLiteral( "FIELD_LENGTH" ), context );
   const int precision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
   const QString alias = parameterAsString( parameters, QStringLiteral( "FIELD_ALIAS" ), context );
   const QString comment = parameterAsString( parameters, QStringLiteral( "FIELD_COMMENT" ), context );
+
+  if ( source->fields().lookupField( name ) >= 0 )
+  {
+    feedback->reportError( QObject::tr( "Field with the same name already exists" ) );
+    return false;
+  }
 
   mField.setName( name );
   mField.setLength( length );
