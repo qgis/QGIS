@@ -37,6 +37,11 @@ QgsAbstractContentCacheBase::QgsAbstractContentCacheBase( QObject *parent )
   : QObject( parent )
 {}
 
+bool QgsAbstractContentCacheBase::invalidateCacheEntry( const QString &path )
+{
+  Q_UNUSED( path );
+  return false;
+}
 
 void QgsAbstractContentCacheBase::onRemoteContentFetched( const QString &, bool )
 {
