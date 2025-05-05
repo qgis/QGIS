@@ -168,7 +168,7 @@ const QVector< QgsGeometry > QgsConvertGeometryTypeAlgorithm::convertGeometry( c
   }
   else
   {
-    geometries = geom.coerceToType( outputWkbType );
+    geometries = geom.coerceToType( outputWkbType, 0, 0, false );
   }
 
   return geometries;
