@@ -3568,6 +3568,7 @@ namespace QgsWms
 #else
           QXmlStreamReader xmlReader( filter.mFilter );
           xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( QStringLiteral( "fes" ), QStringLiteral( "http://www.opengis.net/fes/2.0" ) ) );
+          xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( QStringLiteral( "ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) ) );
           if ( QDomDocument::ParseResult result = filterXml.setContent( &xmlReader, QDomDocument::ParseOption::UseNamespaceProcessing ); !result )
           {
             throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, QStringLiteral( "Filter string rejected. Error %1:%2 : %3. The XML string was: %4" ).arg( QString::number( result.errorLine ), QString::number( result.errorColumn ), result.errorMessage, filter.mFilter ) );
