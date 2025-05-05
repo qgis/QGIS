@@ -254,6 +254,9 @@ void QgsFilteredTableWidget::onTableWidgetCustomContextMenuRequested( const QPoi
   disconnect( actionTableWidgetDeselectAll, &QAction::triggered, nullptr, nullptr );
   actionTableWidgetSelectAll->deleteLater();
   actionTableWidgetDeselectAll->deleteLater();
+
+  // destory menu
+  tableWidgetMenu->deleteLater();
 }
 
 void QgsFilteredTableWidget::onTableWidgetMenuActionSelectAllTriggered()
