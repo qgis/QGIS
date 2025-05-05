@@ -1555,7 +1555,11 @@ void QgsAttributesFormProperties::onContextMenuRequested( QPoint point )
   if ( itemType == QgsAttributesFormData::Field )
   {
     const QClipboard *clipboard = QApplication::clipboard();
-    const bool pasteEnabled = clipboard->mimeData()->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelementclipboard" ) );
+    const QMimeData *mimeData = clipboard->mimeData();
+    if ( !mimeData )
+      return;
+
+    const bool pasteEnabled = mimeData->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelementclipboard" ) );
     mActionPasteWidgetConfiguration->setEnabled( pasteEnabled );
     mAvailableWidgetsContextMenu->popup( globalPos );
   }
@@ -1677,35 +1681,91 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
   const QString fieldName = index.data( QgsAttributesFormModel::ItemNameRole ).toString();
   const int fieldIndex = mLayer->fields().indexOf( fieldName );
 
-  // if ( fieldIndex < 0 )
-  //   return;
+  if ( fieldIndex < 0 )
+    return;
 
   // Get base config from target item and ovewrite settings when possible
   auto config = index.data( QgsAttributesFormModel::ItemFieldConfigRole ).value< QgsAttributesFormData::FieldConfig >();
 
-  // QDomDocument doc;
-  // QClipboard *clipboard = QApplication::clipboard();
-  // if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "application/x-qgsattributetabledesignerelementclipboard" ) ) ) )
-  // {
-  //   QDomElement docElem = doc.documentElement();
-  //   if ( docElem.tagName() != QLatin1String( "FormWidgetClipboard" ) )
-  //     return;
+  QDomDocument doc;
+  QClipboard *clipboard = QApplication::clipboard();
+  const QMimeData *mimeData = clipboard->mimeData();
+  if ( !mimeData )
+    return;
+
+  if ( doc.setContent( mimeData->data( QStringLiteral( "application/x-qgsattributetabledesignerelementclipboard" ) ) ) )
+  {
+    QDomElement docElem = doc.documentElement();
+    if ( docElem.tagName() != QLatin1String( "FormWidgetClipboard" ) )
+      return;
 
     // When pasting, the target item has already been selected and
     // has triggered attribute type dialog loading. Therefore, we'll
     // only overwrite GUI settings instead of destroying and recreating
     // the whole dialog.
 
-  // QTreeWidgetItem *item = mAvailableWidgetsTree->selectedItems().at( 0 );
+    // Editor widget configuration
+    const QDomElement fieldWidgetElement = docElem.firstChildElement( QStringLiteral( "editWidget" ) );
+    if ( !fieldWidgetElement.isNull() )
+    {
+      const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
 
-  // const QString fieldName = item->data( 0, TreeItemNameRole ).toString();
-  // const int fieldIndex = mLayer->fields().indexOf( fieldName );
+      // Only paste if source editor widget type is supported by target field
+      const QgsEditorWidgetFactory *factory = QgsGui::editorWidgetRegistry()->factory( widgetType );
+      if ( factory->supportsField( mLayer, fieldIndex ) )
+      {
+        const QDomElement configElement = fieldWidgetElement.firstChildElement( QStringLiteral( "config" ) );
+        if ( !configElement.isNull() )
+        {
+          const QDomElement optionsElem = configElement.childNodes().at( 0 ).toElement();
+          QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
+          QgsReadWriteContext context;
+          // translate widget configuration strings
+          if ( widgetType == QStringLiteral( "ValueRelation" ) )
+          {
+            optionsMap[QStringLiteral( "Value" )] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( mLayer->id(), fieldName ), optionsMap[QStringLiteral( "Value" )].toString() );
+          }
+          if ( widgetType == QStringLiteral( "ValueMap" ) )
+          {
+            if ( optionsMap[QStringLiteral( "map" )].canConvert<QList<QVariant>>() )
+            {
+              QList<QVariant> translatedValueList;
+              const QList<QVariant> valueList = optionsMap[QStringLiteral( "map" )].toList();
+              for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+              {
+                QMap<QString, QVariant> translatedValueMap;
+                QString translatedKey = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuemapdescriptions" ).arg( mLayer->id(), fieldName ), valueList[i].toMap().constBegin().key() );
+                translatedValueMap.insert( translatedKey, valueList[i].toMap().constBegin().value() );
+                translatedValueList.append( translatedValueMap );
+              }
+              optionsMap.insert( QStringLiteral( "map" ), translatedValueList );
+            }
+          }
+          config.mEditorWidgetType = widgetType;
+          config.mEditorWidgetConfig = optionsMap;
+        }
+      }
+      else
+      {
+        mMessageBar->pushMessage( QString(), tr( "Unable to paste widget configuration. The target field (%1) does not support the %2 widget type." ).arg( fieldName, widgetType ), Qgis::MessageLevel::Warning );
+      }
+    }
 
-  // if ( fieldIndex < 0 )
-  //   return;
+    // Split policy
+    const QDomElement splitPolicyElement = docElem.firstChildElement( QStringLiteral( "splitPolicy" ) );
+    if ( !splitPolicyElement.isNull() )
+    {
+      const Qgis::FieldDomainSplitPolicy policy = qgsEnumKeyToValue( splitPolicyElement.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainSplitPolicy::Duplicate );
+      config.mSplitPolicy = policy;
+    }
 
-  // // Get base config from target item and ovewrite settings when possible
-  // FieldConfig config = item->data( 0, FieldConfigRole ).value<FieldConfig>();
+    // Duplicate policy
+    const QDomElement duplicatePolicyElement = docElem.firstChildElement( QStringLiteral( "duplicatePolicy" ) );
+    if ( !duplicatePolicyElement.isNull() )
+    {
+      const Qgis::FieldDuplicatePolicy policy = qgsEnumKeyToValue( duplicatePolicyElement.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDuplicatePolicy::Duplicate );
+      config.mDuplicatePolicy = policy;
+    }
 
     // Merge policy
     const QDomElement mergePolicyElement = docElem.firstChildElement( QStringLiteral( "mergePolicy" ) );
@@ -1803,11 +1863,6 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
         const int verticalStretch = displayElement.attribute( QStringLiteral( "verticalStretch" ), QStringLiteral( "0" ) ).toInt();
         QgsAttributeEditorElement::LabelStyle style;
         style.readXml( displayElement );
-
-  //     fieldConstraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, static_cast< QgsFieldConstraints::ConstraintStrength >( uniqueStrength ) );
-  //     fieldConstraints.setConstraintStrength( QgsFieldConstraints::ConstraintNotNull, static_cast< QgsFieldConstraints::ConstraintStrength >( notNullStrength ) );
-  //     fieldConstraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, static_cast< QgsFieldConstraints::ConstraintStrength >( expStrength ) );
-  //   }
 
         // Update current GUI controls
         mAttributeWidgetEdit->setShowLabel( showLabel );
