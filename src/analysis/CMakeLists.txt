@@ -186,6 +186,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmergelines.cpp
   processing/qgsalgorithmmeshsurfacetopolygon.cpp
   processing/qgsalgorithmmergevector.cpp
+  processing/qgsalgorithmminimumboundinggeometry.cpp
   processing/qgsalgorithmminimumenclosingcircle.cpp
   processing/qgsalgorithmmultidifference.cpp
   processing/qgsalgorithmmultiintersection.cpp

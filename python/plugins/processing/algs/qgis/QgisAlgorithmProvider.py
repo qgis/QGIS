@@ -38,7 +38,6 @@ from .IdwInterpolation import IdwInterpolation
 from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
 from .MeanAndStdDevPlot import MeanAndStdDevPlot
-from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .PointDistance import PointDistance
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
@@ -95,7 +94,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             KNearestConcaveHull(),
             LinesToPolygons(),
             MeanAndStdDevPlot(),
-            MinimumBoundingGeometry(),
             PointDistance(),
             PointsDisplacement(),
             PointsFromLines(),
