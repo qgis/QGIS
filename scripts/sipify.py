@@ -133,6 +133,8 @@ class Context:
         self.signal_arguments = defaultdict(dict)
         self.deprecated_message = None
         self.method_py_name: Optional[str] = None
+        self.current_method_args = []
+        self.methods_with_transfer = defaultdict(dict)
 
     def reset_method_state(self):
         """
@@ -141,6 +143,15 @@ class Context:
         self.comment = ""
         self.deprecated_message = ""
         self.return_type = ""
+        if (
+            len(self.current_method_args) == 1
+            and "/Transfer" in self.current_method_args[0]
+        ):
+            self.methods_with_transfer[self.current_fully_qualified_class_name()][
+                self.current_method_name
+            ] = self.current_method_args[:]
+
+        self.current_method_args = []
 
     def current_fully_qualified_class_name(self) -> str:
         return ".".join(
@@ -1390,7 +1401,6 @@ def fix_annotations(line):
         r"\bSIP_OUT\b": "/Out/",
         r"\bSIP_RELEASEGIL\b": "/ReleaseGIL/",
         r"\bSIP_HOLDGIL\b": "/HoldGIL/",
-        r"\bSIP_TRANSFER\b": "/Transfer/",
         r"\bSIP_TRANSFERBACK\b": "/TransferBack/",
         r"\bSIP_TRANSFERTHIS\b": "/TransferThis/",
         r"\bSIP_GETWRAPPER\b": "/GetWrapper/",
@@ -1414,6 +1424,8 @@ def fix_annotations(line):
 
     for _pattern, replacement in replacements.items():
         line = re.sub(_pattern, replacement, line)
+
+    line = re.sub(r"SIP_TRANSFER;", "/Transfer/;", line)
 
     # Combine multiple annotations
     while True:
@@ -1455,6 +1467,48 @@ def fix_annotations(line):
             line = remove_sip_pyargremove(line)
 
         line = re.sub(r"\(\s+\)", "()", line)
+
+    if "SIP_TRANSFER" in line:
+        # Split the string into function signature and body
+        dbg_info(f"processing transfer for {line}")
+        signature_split = re.match(r"([^=]*?)\((.*)\)([^,]*)", line)
+
+        is_single_line = False
+        if signature_split and signature_split.group(3):
+            prefix, arguments, suffix = signature_split.groups()
+            prefix += "( "
+            suffix = " )" + suffix
+            dbg_info("match 1")
+            is_single_line = True
+        else:
+            signature_split = re.match(r"(\s*)([^=]*)\)(.*)", line)
+            if signature_split:
+                prefix, arguments, suffix = signature_split.groups()
+                suffix = " )" + suffix
+                dbg_info("match 2")
+            else:
+                signature_split = re.match(r"([^=]*?)\((.*),", line)
+                if signature_split:
+                    prefix, arguments = signature_split.groups()
+                    prefix += "( "
+                    suffix = ","
+                    dbg_info("match 3")
+                else:
+                    signature_split = re.match(r"(\s*)(.*?)(\s*(?:,|\);))?$", line)
+                    prefix, arguments, suffix = signature_split.groups()
+                    suffix = suffix or ""
+                    dbg_info("match 4")
+
+        arguments_list = split_args(arguments)
+
+        arguments_list = [
+            a.replace("SIP_TRANSFER", "/Transfer/").replace("( )", "()")
+            for a in arguments_list
+        ]
+        CONTEXT.current_method_args.extend(arguments_list)
+        remaining_args = ", ".join(arguments_list)
+        line = f"{prefix}{remaining_args}{suffix}"
+        dbg_info(f"processed transfer to {line}")
 
     line = re.sub(r"SIP_FORCE", "", line)
     line = re.sub(r"SIP_DOC_TEMPLATE", "", line)
@@ -3533,6 +3587,19 @@ for class_name, signal_arguments in CONTEXT.signal_arguments.items():
 for class_name, doc_string in CONTEXT.struct_docstrings.items():
     class_additions[class_name].append(f'{class_name}.__doc__ = """{doc_string}"""')
 
+for class_name, methods_with_transfer in CONTEXT.methods_with_transfer.items():
+    for method, arguments in methods_with_transfer.items():
+        template = f"""import functools as _functools
+    __wrapped_{class_name}_{method} = {class_name}.{method}
+    def __{class_name}_{method}_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_{class_name}_{method}(self, arg)
+    {class_name}.{method} = _functools.update_wrapper(__{class_name}_{method}_wrapper, {class_name}.{method})
+"""
+        class_additions[class_name].append(template)
+
+
 group_match = re.match("^.*src/[a-z0-9_]+/(.*?)/[^/]+$", CONTEXT.header_file)
 if group_match:
     groups = list(
@@ -3548,6 +3615,7 @@ for _class, additions in class_additions.items():
         CONTEXT.output_python.append(
             f"try:\n{this_class_additions}\nexcept (NameError, AttributeError):\n    pass\n"
         )
+
 
 if args.python_output and CONTEXT.output_python:
 
