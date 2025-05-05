@@ -43,13 +43,13 @@ class QgsCustomDropHandler;
 class QgsCustomProjectOpenHandler;
 class QgsLayoutCustomDropHandler;
 class QgsFeature;
+class QgsGpsToolsInterface;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayerTreeGroup;
 class QgsLayout;
 class QgsMasterLayoutInterface;
 class QgsLayoutDesignerInterface;
-class QgsLineSymbol;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapLayerConfigWidgetFactory;
@@ -104,6 +104,11 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
 
     virtual QgsLayerTreeView *layerTreeView() = 0;
+
+    /**
+     * Returns an interface to allow plugins to use QGIS GPS tools.
+     */
+    virtual QgsGpsToolsInterface *gpsTools() = 0;
 
     /**
      * Add action to context menu for layers in the layer tree.
@@ -1504,31 +1509,10 @@ class GUI_EXPORT QgisInterface : public QObject
      * Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
      * is automatically registered within the QgsApplication::gpsConnectionRegistry().
      *
+     * \deprecated QGIS 3.44. Use the method from gpsTools() instead.
      * \since QGIS 3.16
      */
-    virtual void setGpsPanelConnection( QgsGpsConnection *connection SIP_TRANSFER ) = 0;
-
-    /**
-     * Creates a feature from the current GPS track.
-     *
-     * The geometry type of the feature is determined by the layer set via
-     * QgsProjectGpsSettings::destinationLayer().
-     *
-     * The created geometry will be automatically commited depending on the
-     * status of QgsProjectGpsSettings::automaticallyCommitFeatures().
-     *
-     * \since QGIS 3.44
-     */
-    virtual void createFeatureFromGpsTrack() = 0;
-
-    /**
-     * Sets the line \a symbol of the GPS track and changes the QgsAppGpsDigitizing::settingTrackLineSymbol setting.
-     *
-     * If there is a current GPS track, its appearance is updated according to the symbol.
-     *
-     * \since QGIS 3.44
-     */
-    virtual void setGpsTrackLineSymbol( QgsLineSymbol *symbol ) = 0;
+    Q_DECL_DEPRECATED virtual void setGpsPanelConnection( QgsGpsConnection *connection SIP_TRANSFER ) = 0 SIP_DEPRECATED;
 
     /**
      * Sets whether changes to the active layer should be temporarily

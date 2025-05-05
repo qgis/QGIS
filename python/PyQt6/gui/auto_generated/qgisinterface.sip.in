@@ -40,6 +40,11 @@ could provide their own implementation to be able to use plugins.
 
     virtual QgsLayerTreeView *layerTreeView() = 0;
 
+    virtual QgsGpsToolsInterface *gpsTools() = 0;
+%Docstring
+Returns an interface to allow plugins to use QGIS GPS tools.
+%End
+
     virtual void addCustomActionForLayerType( QAction *action, QString menu, Qgis::LayerType type, bool allLayers ) = 0;
 %Docstring
 Add action to context menu for layers in the layer tree. If allLayers is
@@ -1853,7 +1858,7 @@ efficient than creating a new browser model for every use.
 .. versionadded:: 3.4
 %End
 
-    virtual void setGpsPanelConnection( QgsGpsConnection *connection /Transfer/ ) = 0;
+ virtual void setGpsPanelConnection( QgsGpsConnection *connection /Transfer/ ) = 0 /Deprecated="Since 3.44. Use the method from gpsTools() instead."/;
 %Docstring
 Sets a GPS ``connection`` to use within the GPS Panel widget.
 
@@ -1861,32 +1866,10 @@ Any existing GPS connection used by the widget will be disconnect and
 replaced with this connection. The connection is automatically
 registered within the :py:func:`QgsApplication.gpsConnectionRegistry()`.
 
+.. deprecated:: 3.44
+
+   Use the method from :py:func:`~QgisInterface.gpsTools` instead.
 .. versionadded:: 3.16
-%End
-
-    virtual void createFeatureFromGpsTrack() = 0;
-%Docstring
-Creates a feature from the current GPS track.
-
-The geometry type of the feature is determined by the layer set via
-:py:func:`QgsProjectGpsSettings.destinationLayer()`.
-
-The created geometry will be automatically commited depending on the
-status of
-:py:func:`QgsProjectGpsSettings.automaticallyCommitFeatures()`.
-
-.. versionadded:: 3.44
-%End
-
-    virtual void setGpsTrackLineSymbol( QgsLineSymbol *symbol ) = 0;
-%Docstring
-Sets the line ``symbol`` of the GPS track and changes the
-:py:class:`QgsAppGpsDigitizing`.settingTrackLineSymbol setting.
-
-If there is a current GPS track, its appearance is updated according to
-the symbol.
-
-.. versionadded:: 3.44
 %End
 
     virtual void blockActiveLayerChanges( bool blocked ) = 0;

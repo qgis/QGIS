@@ -52,6 +52,7 @@
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
   , pluginManagerIface( _qgis->pluginManager() )
+  , mGpsToolsIface()
 {
   // connect signals
   connect( qgis, &QgisApp::activeLayerChanged, this, &QgisInterface::currentLayerChanged );
@@ -75,6 +76,11 @@ QgsPluginManagerInterface *QgisAppInterface::pluginManagerInterface()
 QgsLayerTreeView *QgisAppInterface::layerTreeView()
 {
   return qgis->layerTreeView();
+}
+
+QgsGpsToolsInterface *QgisAppInterface::gpsTools()
+{
+  return &mGpsToolsIface;
 }
 
 void QgisAppInterface::addCustomActionForLayerType( QAction *action, QString menu, Qgis::LayerType type, bool allLayers )
@@ -1009,16 +1015,6 @@ QgsLayerTreeRegistryBridge::InsertionPoint QgisAppInterface::layerTreeInsertionP
 void QgisAppInterface::setGpsPanelConnection( QgsGpsConnection *connection )
 {
   qgis->setGpsPanelConnection( connection );
-}
-
-void QgisAppInterface::createFeatureFromGpsTrack()
-{
-  qgis->mGpsDigitizing->createFeature();
-}
-
-void QgisAppInterface::setGpsTrackLineSymbol( QgsLineSymbol *symbol )
-{
-  qgis->setGpsTrackLineSymbol( symbol );
 }
 
 QList<QgsMapDecoration *> QgisAppInterface::activeDecorations()

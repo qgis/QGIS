@@ -59,7 +59,6 @@ class QgsFeatureStore;
 class QgsGeometry;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
-class QgsLineSymbol;
 class QgsLayout;
 class QgsMasterLayoutInterface;
 class QgsLayoutCustomDropHandler;
@@ -937,13 +936,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setGpsPanelConnection( QgsGpsConnection *connection );
 
     /**
-     * Sets the line \a symbol of the GPS track and changes the QgsAppGpsDigitizing::settingTrackLineSymbol setting.
-     *
-     * If there is a current GPS track, its appearance is updated according to the symbol.
+     * Access the GPS digitizing object. This will be an instance of {\see QgsAppGpsDigitizing}
+     * \returns The GPS digitizing instance.
      *
      * \since QGIS 3.44
      */
-    void setGpsTrackLineSymbol( QgsLineSymbol *symbol );
+    QgsAppGpsDigitizing *gpsDigitizing();
 
     /**
      * Returns the GPS settings menu;
