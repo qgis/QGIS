@@ -69,13 +69,6 @@ qgis:listuniquevalues: >
 qgis:meanandstandarddeviationplot: >
   This algorithm creates a box plot with mean and standard deviation values.
 
-qgis:minimumboundinggeometry: >
-  This algorithm creates geometries which enclose the features from an input layer.
-
-  Numerous enclosing geometry types are supported, including bounding boxes (envelopes), oriented rectangles, circles and convex hulls.
-
-  Optionally, the features can be grouped by a field. If set, this causes the output layer to contain one feature per grouped value with a minimal geometry covering just the features with matching values.
-
 qgis:pointsdisplacement: >
   Offsets nearby point features by moving nearby points by a preset amount to minimize overlapping features.
 

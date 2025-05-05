@@ -170,6 +170,7 @@
 #include "qgsalgorithmmergelines.h"
 #include "qgsalgorithmmergevector.h"
 #include "qgsalgorithmmeshsurfacetopolygon.h"
+#include "qgsalgorithmminimumboundinggeometry.h"
 #include "qgsalgorithmminimumenclosingcircle.h"
 #include "qgsalgorithmmultidifference.h"
 #include "qgsalgorithmmultiintersection.h"
@@ -509,6 +510,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMeshExportCrossSection() );
   addAlgorithm( new QgsMeshExportTimeSeries() );
   addAlgorithm( new QgsMeshSurfaceToPolygonAlgorithm() );
+  addAlgorithm( new QgsMinimumBoundingGeometryAlgorithm() );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultiDifferenceAlgorithm() );
   addAlgorithm( new QgsMultiIntersectionAlgorithm() );
