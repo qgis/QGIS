@@ -2,6 +2,14 @@
 try:
     QgsMeshTerrainSettings.create = staticmethod(QgsMeshTerrainSettings.create)
     QgsMeshTerrainSettings.__overridden_methods__ = ['clone', 'type', 'readXml', 'writeXml', 'resolveReferences', 'equals']
+    import functools as _functools
+    __wrapped_QgsMeshTerrainSettings_setSymbol = QgsMeshTerrainSettings.setSymbol
+    def __QgsMeshTerrainSettings_setSymbol_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsMeshTerrainSettings_setSymbol(self, arg)
+    QgsMeshTerrainSettings.setSymbol = _functools.update_wrapper(__QgsMeshTerrainSettings_setSymbol_wrapper, QgsMeshTerrainSettings.setSymbol)
+
     QgsMeshTerrainSettings.__group__ = ['terrain']
 except (NameError, AttributeError):
     pass

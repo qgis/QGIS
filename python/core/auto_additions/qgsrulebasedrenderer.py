@@ -22,12 +22,36 @@ try:
     QgsRuleBasedRenderer.convertFromRenderer = staticmethod(QgsRuleBasedRenderer.convertFromRenderer)
     QgsRuleBasedRenderer.convertToDataDefinedSymbology = staticmethod(QgsRuleBasedRenderer.convertToDataDefinedSymbology)
     QgsRuleBasedRenderer.__overridden_methods__ = ['symbolForFeature', 'flags', 'renderFeature', 'startRender', 'canSkipRender', 'stopRender', 'filter', 'usedAttributes', 'filterNeedsGeometry', 'clone', 'toSld', 'symbols', 'save', 'legendSymbolItemsCheckable', 'legendSymbolItemChecked', 'checkLegendSymbolItem', 'legendKeyToExpression', 'setLegendSymbolItem', 'legendSymbolItems', 'dump', 'willRenderFeature', 'symbolsForFeature', 'originalSymbolsForFeature', 'legendKeysForFeature', 'capabilities', 'accept']
+    import functools as _functools
+    __wrapped_QgsRuleBasedRenderer_QgsRuleBasedRenderer = QgsRuleBasedRenderer.QgsRuleBasedRenderer
+    def __QgsRuleBasedRenderer_QgsRuleBasedRenderer_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsRuleBasedRenderer_QgsRuleBasedRenderer(self, arg)
+    QgsRuleBasedRenderer.QgsRuleBasedRenderer = _functools.update_wrapper(__QgsRuleBasedRenderer_QgsRuleBasedRenderer_wrapper, QgsRuleBasedRenderer.QgsRuleBasedRenderer)
+
     QgsRuleBasedRenderer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
     QgsRuleBasedRenderer.Rule.createFromSld = staticmethod(QgsRuleBasedRenderer.Rule.createFromSld)
     QgsRuleBasedRenderer.Rule.create = staticmethod(QgsRuleBasedRenderer.Rule.create)
+    import functools as _functools
+    __wrapped_QgsRuleBasedRenderer.Rule_setSymbol = QgsRuleBasedRenderer.Rule.setSymbol
+    def __QgsRuleBasedRenderer.Rule_setSymbol_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsRuleBasedRenderer.Rule_setSymbol(self, arg)
+    QgsRuleBasedRenderer.Rule.setSymbol = _functools.update_wrapper(__QgsRuleBasedRenderer.Rule_setSymbol_wrapper, QgsRuleBasedRenderer.Rule.setSymbol)
+
+    import functools as _functools
+    __wrapped_QgsRuleBasedRenderer.Rule_appendChild = QgsRuleBasedRenderer.Rule.appendChild
+    def __QgsRuleBasedRenderer.Rule_appendChild_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsRuleBasedRenderer.Rule_appendChild(self, arg)
+    QgsRuleBasedRenderer.Rule.appendChild = _functools.update_wrapper(__QgsRuleBasedRenderer.Rule_appendChild_wrapper, QgsRuleBasedRenderer.Rule.appendChild)
+
     QgsRuleBasedRenderer.Rule.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

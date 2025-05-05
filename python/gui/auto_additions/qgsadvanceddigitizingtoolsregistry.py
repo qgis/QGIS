@@ -3,3 +3,14 @@ try:
     QgsAdvancedDigitizingToolAbstractMetadata.__virtual_methods__ = ['createTool']
 except (NameError, AttributeError):
     pass
+try:
+    import functools as _functools
+    __wrapped_QgsAdvancedDigitizingToolsRegistry_addTool = QgsAdvancedDigitizingToolsRegistry.addTool
+    def __QgsAdvancedDigitizingToolsRegistry_addTool_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsAdvancedDigitizingToolsRegistry_addTool(self, arg)
+    QgsAdvancedDigitizingToolsRegistry.addTool = _functools.update_wrapper(__QgsAdvancedDigitizingToolsRegistry_addTool_wrapper, QgsAdvancedDigitizingToolsRegistry.addTool)
+
+except (NameError, AttributeError):
+    pass

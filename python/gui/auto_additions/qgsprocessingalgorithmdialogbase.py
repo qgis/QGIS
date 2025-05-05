@@ -17,6 +17,30 @@ try:
     QgsProcessingAlgorithmDialogBase.__virtual_methods__ = ['setParameters', 'resetAdditionalGui', 'blockAdditionalControlsWhileRunning', 'isFinalized', 'finished', 'runAlgorithm', 'algExecuted']
     QgsProcessingAlgorithmDialogBase.__overridden_methods__ = ['reject', 'closeEvent']
     QgsProcessingAlgorithmDialogBase.__signal_arguments__ = {'algorithmAboutToRun': ['context: QgsProcessingContext'], 'algorithmFinished': ['successful: bool', 'result: Dict[str, object]']}
+    import functools as _functools
+    __wrapped_QgsProcessingAlgorithmDialogBase_setAlgorithm = QgsProcessingAlgorithmDialogBase.setAlgorithm
+    def __QgsProcessingAlgorithmDialogBase_setAlgorithm_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsProcessingAlgorithmDialogBase_setAlgorithm(self, arg)
+    QgsProcessingAlgorithmDialogBase.setAlgorithm = _functools.update_wrapper(__QgsProcessingAlgorithmDialogBase_setAlgorithm_wrapper, QgsProcessingAlgorithmDialogBase.setAlgorithm)
+
+    import functools as _functools
+    __wrapped_QgsProcessingAlgorithmDialogBase_setMainWidget = QgsProcessingAlgorithmDialogBase.setMainWidget
+    def __QgsProcessingAlgorithmDialogBase_setMainWidget_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsProcessingAlgorithmDialogBase_setMainWidget(self, arg)
+    QgsProcessingAlgorithmDialogBase.setMainWidget = _functools.update_wrapper(__QgsProcessingAlgorithmDialogBase_setMainWidget_wrapper, QgsProcessingAlgorithmDialogBase.setMainWidget)
+
+    import functools as _functools
+    __wrapped_QgsProcessingAlgorithmDialogBase_setCurrentTask = QgsProcessingAlgorithmDialogBase.setCurrentTask
+    def __QgsProcessingAlgorithmDialogBase_setCurrentTask_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsProcessingAlgorithmDialogBase_setCurrentTask(self, arg)
+    QgsProcessingAlgorithmDialogBase.setCurrentTask = _functools.update_wrapper(__QgsProcessingAlgorithmDialogBase_setCurrentTask_wrapper, QgsProcessingAlgorithmDialogBase.setCurrentTask)
+
     QgsProcessingAlgorithmDialogBase.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

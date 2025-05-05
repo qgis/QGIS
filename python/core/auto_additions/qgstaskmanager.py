@@ -20,5 +20,13 @@ except (NameError, AttributeError):
     pass
 try:
     QgsTaskWithSerialSubTasks.__overridden_methods__ = ['cancel', 'run']
+    import functools as _functools
+    __wrapped_QgsTaskWithSerialSubTasks_addSubTask = QgsTaskWithSerialSubTasks.addSubTask
+    def __QgsTaskWithSerialSubTasks_addSubTask_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsTaskWithSerialSubTasks_addSubTask(self, arg)
+    QgsTaskWithSerialSubTasks.addSubTask = _functools.update_wrapper(__QgsTaskWithSerialSubTasks_addSubTask_wrapper, QgsTaskWithSerialSubTasks.addSubTask)
+
 except (NameError, AttributeError):
     pass

@@ -6,6 +6,22 @@ try:
     QgsRasterLayer.lastModified = staticmethod(QgsRasterLayer.lastModified)
     QgsRasterLayer.__virtual_methods__ = ['setOpacity', 'opacity', 'subsetString', 'setSubsetString']
     QgsRasterLayer.__overridden_methods__ = ['clone', 'createProfileGenerator', 'dataProvider', 'reload', 'createMapRenderer', 'isSpatial', 'htmlMetadata', 'properties', 'subLayers', 'setLayerOrder', 'setSubLayerVisibility', 'timestamp', 'accept', 'temporalProperties', 'elevationProperties', 'setTransformContext', 'readSymbology', 'readStyle', 'readXml', 'writeSymbology', 'writeStyle', 'writeXml', 'encodedSource', 'decodedSource']
+    import functools as _functools
+    __wrapped_QgsRasterLayer_setRenderer = QgsRasterLayer.setRenderer
+    def __QgsRasterLayer_setRenderer_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsRasterLayer_setRenderer(self, arg)
+    QgsRasterLayer.setRenderer = _functools.update_wrapper(__QgsRasterLayer_setRenderer_wrapper, QgsRasterLayer.setRenderer)
+
+    import functools as _functools
+    __wrapped_QgsRasterLayer_setLabeling = QgsRasterLayer.setLabeling
+    def __QgsRasterLayer_setLabeling_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsRasterLayer_setLabeling(self, arg)
+    QgsRasterLayer.setLabeling = _functools.update_wrapper(__QgsRasterLayer_setLabeling_wrapper, QgsRasterLayer.setLabeling)
+
     QgsRasterLayer.__group__ = ['raster']
 except (NameError, AttributeError):
     pass

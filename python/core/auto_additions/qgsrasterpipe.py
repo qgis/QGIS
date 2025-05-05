@@ -13,6 +13,14 @@ QgsRasterPipe.Property.__doc__ = """Data definable properties.
 # --
 try:
     QgsRasterPipe.propertyDefinitions = staticmethod(QgsRasterPipe.propertyDefinitions)
+    import functools as _functools
+    __wrapped_QgsRasterPipe_set = QgsRasterPipe.set
+    def __QgsRasterPipe_set_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsRasterPipe_set(self, arg)
+    QgsRasterPipe.set = _functools.update_wrapper(__QgsRasterPipe_set_wrapper, QgsRasterPipe.set)
+
     QgsRasterPipe.__group__ = ['raster']
 except (NameError, AttributeError):
     pass

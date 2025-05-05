@@ -2,6 +2,14 @@
 QgsColorRampLegendNodeSettings.MinimumToMaximum = QgsColorRampLegendNodeSettings.Direction.MinimumToMaximum
 QgsColorRampLegendNodeSettings.MaximumToMinimum = QgsColorRampLegendNodeSettings.Direction.MaximumToMinimum
 try:
+    import functools as _functools
+    __wrapped_QgsColorRampLegendNodeSettings_setNumericFormat = QgsColorRampLegendNodeSettings.setNumericFormat
+    def __QgsColorRampLegendNodeSettings_setNumericFormat_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsColorRampLegendNodeSettings_setNumericFormat(self, arg)
+    QgsColorRampLegendNodeSettings.setNumericFormat = _functools.update_wrapper(__QgsColorRampLegendNodeSettings_setNumericFormat_wrapper, QgsColorRampLegendNodeSettings.setNumericFormat)
+
     QgsColorRampLegendNodeSettings.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass

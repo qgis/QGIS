@@ -17,6 +17,30 @@ except (NameError, AttributeError):
     pass
 try:
     QgsRgbPointCloud3DSymbol.__overridden_methods__ = ['symbolType', 'clone', 'writeXml', 'readXml', 'byteStride']
+    import functools as _functools
+    __wrapped_QgsRgbPointCloud3DSymbol_setRedContrastEnhancement = QgsRgbPointCloud3DSymbol.setRedContrastEnhancement
+    def __QgsRgbPointCloud3DSymbol_setRedContrastEnhancement_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsRgbPointCloud3DSymbol_setRedContrastEnhancement(self, arg)
+    QgsRgbPointCloud3DSymbol.setRedContrastEnhancement = _functools.update_wrapper(__QgsRgbPointCloud3DSymbol_setRedContrastEnhancement_wrapper, QgsRgbPointCloud3DSymbol.setRedContrastEnhancement)
+
+    import functools as _functools
+    __wrapped_QgsRgbPointCloud3DSymbol_setGreenContrastEnhancement = QgsRgbPointCloud3DSymbol.setGreenContrastEnhancement
+    def __QgsRgbPointCloud3DSymbol_setGreenContrastEnhancement_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsRgbPointCloud3DSymbol_setGreenContrastEnhancement(self, arg)
+    QgsRgbPointCloud3DSymbol.setGreenContrastEnhancement = _functools.update_wrapper(__QgsRgbPointCloud3DSymbol_setGreenContrastEnhancement_wrapper, QgsRgbPointCloud3DSymbol.setGreenContrastEnhancement)
+
+    import functools as _functools
+    __wrapped_QgsRgbPointCloud3DSymbol_setBlueContrastEnhancement = QgsRgbPointCloud3DSymbol.setBlueContrastEnhancement
+    def __QgsRgbPointCloud3DSymbol_setBlueContrastEnhancement_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsRgbPointCloud3DSymbol_setBlueContrastEnhancement(self, arg)
+    QgsRgbPointCloud3DSymbol.setBlueContrastEnhancement = _functools.update_wrapper(__QgsRgbPointCloud3DSymbol_setBlueContrastEnhancement_wrapper, QgsRgbPointCloud3DSymbol.setBlueContrastEnhancement)
+
     QgsRgbPointCloud3DSymbol.__group__ = ['symbols']
 except (NameError, AttributeError):
     pass

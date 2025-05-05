@@ -12,6 +12,54 @@ try:
     QgsVectorLayer.__virtual_methods__ = ['hasMapTips', 'dataProvider', 'setDependencies', 'dependencies', 'wkbType', 'sourceCrs', 'sourceName', 'readXml', 'writeXml', 'encodedSource', 'decodedSource', 'resolveReferences', 'readSld', 'hasFeatures', 'loadDefaultStyle', 'setSubsetString', 'subsetString', 'addFeature', 'isEditable', 'isSpatial', 'reload', 'createMapRenderer', 'extent', 'sourceExtent', 'extent3D', 'sourceExtent3D', 'fields', 'deleteAttribute', 'addFeatures', 'uniqueValues', 'minimumValue', 'maximumValue', 'htmlMetadata', 'createExpressionContext', 'createExpressionContextScope', 'updateExtents', 'setExtent', 'setExtent3D']
     QgsVectorLayer.__overridden_methods__ = ['clone', 'selectionProperties', 'temporalProperties', 'elevationProperties', 'createProfileGenerator', 'isModified', 'supportsEditing', 'setTransformContext', 'hasSpatialIndex', 'accept']
     QgsVectorLayer.__signal_arguments__ = {'selectionChanged': ['selected: QgsFeatureIds', 'deselected: QgsFeatureIds', 'clearAndSelect: bool'], 'beforeCommitChanges': ['stopEditing: bool'], 'attributeAdded': ['idx: int'], 'beforeAddingExpressionField': ['fieldName: str'], 'attributeDeleted': ['idx: int'], 'beforeRemovingExpressionField': ['idx: int'], 'featureAdded': ['fid: QgsFeatureId'], 'featureDeleted': ['fid: QgsFeatureId'], 'featuresDeleted': ['fids: QgsFeatureIds'], 'attributeValueChanged': ['fid: QgsFeatureId', 'idx: int', 'value: object'], 'geometryChanged': ['fid: QgsFeatureId', 'geometry: QgsGeometry'], 'committedAttributesDeleted': ['layerId: str', 'deletedAttributes: QgsAttributeList'], 'committedAttributesAdded': ['layerId: str', 'addedAttributes: List[QgsField]'], 'committedFeaturesAdded': ['layerId: str', 'addedFeatures: QgsFeatureList'], 'committedFeaturesRemoved': ['layerId: str', 'deletedFeatureIds: QgsFeatureIds'], 'committedAttributeValuesChanges': ['layerId: str', 'changedAttributesValues: QgsChangedAttributesMap'], 'committedGeometriesChanges': ['layerId: str', 'changedGeometries: QgsGeometryMap'], 'labelingFontNotFound': ['layer: QgsVectorLayer', 'fontfamily: str'], 'featureBlendModeChanged': ['blendMode: QPainter.CompositionMode'], 'editCommandStarted': ['text: str'], 'readCustomSymbology': ['element: QDomElement', 'errorMessage: str'], 'raiseError': ['msg: str']}
+    import functools as _functools
+    __wrapped_QgsVectorLayer_setDiagramRenderer = QgsVectorLayer.setDiagramRenderer
+    def __QgsVectorLayer_setDiagramRenderer_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsVectorLayer_setDiagramRenderer(self, arg)
+    QgsVectorLayer.setDiagramRenderer = _functools.update_wrapper(__QgsVectorLayer_setDiagramRenderer_wrapper, QgsVectorLayer.setDiagramRenderer)
+
+    import functools as _functools
+    __wrapped_QgsVectorLayer_setRenderer = QgsVectorLayer.setRenderer
+    def __QgsVectorLayer_setRenderer_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsVectorLayer_setRenderer(self, arg)
+    QgsVectorLayer.setRenderer = _functools.update_wrapper(__QgsVectorLayer_setRenderer_wrapper, QgsVectorLayer.setRenderer)
+
+    import functools as _functools
+    __wrapped_QgsVectorLayer_addFeatureRendererGenerator = QgsVectorLayer.addFeatureRendererGenerator
+    def __QgsVectorLayer_addFeatureRendererGenerator_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsVectorLayer_addFeatureRendererGenerator(self, arg)
+    QgsVectorLayer.addFeatureRendererGenerator = _functools.update_wrapper(__QgsVectorLayer_addFeatureRendererGenerator_wrapper, QgsVectorLayer.addFeatureRendererGenerator)
+
+    import functools as _functools
+    __wrapped_QgsVectorLayer_setAuxiliaryLayer = QgsVectorLayer.setAuxiliaryLayer
+    def __QgsVectorLayer_setAuxiliaryLayer_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsVectorLayer_setAuxiliaryLayer(self, arg)
+    QgsVectorLayer.setAuxiliaryLayer = _functools.update_wrapper(__QgsVectorLayer_setAuxiliaryLayer_wrapper, QgsVectorLayer.setAuxiliaryLayer)
+
+    import functools as _functools
+    __wrapped_QgsVectorLayer_addPart = QgsVectorLayer.addPart
+    def __QgsVectorLayer_addPart_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsVectorLayer_addPart(self, arg)
+    QgsVectorLayer.addPart = _functools.update_wrapper(__QgsVectorLayer_addPart_wrapper, QgsVectorLayer.addPart)
+
+    import functools as _functools
+    __wrapped_QgsVectorLayer_setLabeling = QgsVectorLayer.setLabeling
+    def __QgsVectorLayer_setLabeling_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsVectorLayer_setLabeling(self, arg)
+    QgsVectorLayer.setLabeling = _functools.update_wrapper(__QgsVectorLayer_setLabeling_wrapper, QgsVectorLayer.setLabeling)
+
     QgsVectorLayer.__group__ = ['vector']
 except (NameError, AttributeError):
     pass

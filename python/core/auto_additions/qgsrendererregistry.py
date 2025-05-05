@@ -11,6 +11,14 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    import functools as _functools
+    __wrapped_QgsRendererRegistry_addRenderer = QgsRendererRegistry.addRenderer
+    def __QgsRendererRegistry_addRenderer_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsRendererRegistry_addRenderer(self, arg)
+    QgsRendererRegistry.addRenderer = _functools.update_wrapper(__QgsRendererRegistry_addRenderer_wrapper, QgsRendererRegistry.addRenderer)
+
     QgsRendererRegistry.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

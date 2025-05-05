@@ -50,5 +50,13 @@ try:
     QgsGui.sampleColor = staticmethod(QgsGui.sampleColor)
     QgsGui.findScreenAt = staticmethod(QgsGui.findScreenAt)
     QgsGui.hasWebEngine = staticmethod(QgsGui.hasWebEngine)
+    import functools as _functools
+    __wrapped_QgsGui_setWindowManager = QgsGui.setWindowManager
+    def __QgsGui_setWindowManager_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsGui_setWindowManager(self, arg)
+    QgsGui.setWindowManager = _functools.update_wrapper(__QgsGui_setWindowManager_wrapper, QgsGui.setWindowManager)
+
 except (NameError, AttributeError):
     pass

@@ -7,6 +7,14 @@ except (NameError, AttributeError):
     pass
 try:
     QgsHistoryEntryGroup.__virtual_methods__ = ['childCount']
+    import functools as _functools
+    __wrapped_QgsHistoryEntryGroup_addChild = QgsHistoryEntryGroup.addChild
+    def __QgsHistoryEntryGroup_addChild_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsHistoryEntryGroup_addChild(self, arg)
+    QgsHistoryEntryGroup.addChild = _functools.update_wrapper(__QgsHistoryEntryGroup_addChild_wrapper, QgsHistoryEntryGroup.addChild)
+
     QgsHistoryEntryGroup.__group__ = ['history']
 except (NameError, AttributeError):
     pass

@@ -31,14 +31,38 @@ try:
     QgsSymbol._getPolygonRing = staticmethod(QgsSymbol._getPolygonRing)
     QgsSymbol._getPolygon = staticmethod(QgsSymbol._getPolygon)
     QgsSymbol.__abstract_methods__ = ['clone']
+    import functools as _functools
+    __wrapped_QgsSymbol_appendSymbolLayer = QgsSymbol.appendSymbolLayer
+    def __QgsSymbol_appendSymbolLayer_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsSymbol_appendSymbolLayer(self, arg)
+    QgsSymbol.appendSymbolLayer = _functools.update_wrapper(__QgsSymbol_appendSymbolLayer_wrapper, QgsSymbol.appendSymbolLayer)
+
+    import functools as _functools
+    __wrapped_QgsSymbol_setBufferSettings = QgsSymbol.setBufferSettings
+    def __QgsSymbol_setBufferSettings_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsSymbol_setBufferSettings(self, arg)
+    QgsSymbol.setBufferSettings = _functools.update_wrapper(__QgsSymbol_setBufferSettings_wrapper, QgsSymbol.setBufferSettings)
+
     QgsSymbol.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
-    QgsSymbolAnimationSettings.__group__ = ['symbology']
+    import functools as _functools
+    __wrapped_QgsSymbolBufferSettings_setFillSymbol = QgsSymbolBufferSettings.setFillSymbol
+    def __QgsSymbolBufferSettings_setFillSymbol_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsSymbolBufferSettings_setFillSymbol(self, arg)
+    QgsSymbolBufferSettings.setFillSymbol = _functools.update_wrapper(__QgsSymbolBufferSettings_setFillSymbol_wrapper, QgsSymbolBufferSettings.setFillSymbol)
+
+    QgsSymbolBufferSettings.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
-    QgsSymbolBufferSettings.__group__ = ['symbology']
+    QgsSymbolAnimationSettings.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

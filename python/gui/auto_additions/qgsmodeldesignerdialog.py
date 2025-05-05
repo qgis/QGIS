@@ -14,6 +14,22 @@ QgsModelDesignerDialog.SaveAction.__doc__ = """Save action.
 try:
     QgsModelDesignerDialog.__abstract_methods__ = ['repaintModel', 'addAlgorithm', 'addInput', 'exportAsScriptAlgorithm', 'saveModel', 'createExecutionDialog']
     QgsModelDesignerDialog.__overridden_methods__ = ['closeEvent']
+    import functools as _functools
+    __wrapped_QgsModelDesignerDialog_setModel = QgsModelDesignerDialog.setModel
+    def __QgsModelDesignerDialog_setModel_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsModelDesignerDialog_setModel(self, arg)
+    QgsModelDesignerDialog.setModel = _functools.update_wrapper(__QgsModelDesignerDialog_setModel_wrapper, QgsModelDesignerDialog.setModel)
+
+    import functools as _functools
+    __wrapped_QgsModelDesignerDialog_setModelScene = QgsModelDesignerDialog.setModelScene
+    def __QgsModelDesignerDialog_setModelScene_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsModelDesignerDialog_setModelScene(self, arg)
+    QgsModelDesignerDialog.setModelScene = _functools.update_wrapper(__QgsModelDesignerDialog_setModelScene_wrapper, QgsModelDesignerDialog.setModelScene)
+
     QgsModelDesignerDialog.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass

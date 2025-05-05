@@ -2,6 +2,14 @@
 try:
     QgsLayerTreeGroup.readXml = staticmethod(QgsLayerTreeGroup.readXml)
     QgsLayerTreeGroup.__overridden_methods__ = ['name', 'setName', 'writeXml', 'dump', 'clone', 'resolveReferences', 'setItemVisibilityCheckedRecursive']
+    import functools as _functools
+    __wrapped_QgsLayerTreeGroup_addChildNode = QgsLayerTreeGroup.addChildNode
+    def __QgsLayerTreeGroup_addChildNode_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsLayerTreeGroup_addChildNode(self, arg)
+    QgsLayerTreeGroup.addChildNode = _functools.update_wrapper(__QgsLayerTreeGroup_addChildNode_wrapper, QgsLayerTreeGroup.addChildNode)
+
     QgsLayerTreeGroup.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass

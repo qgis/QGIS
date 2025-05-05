@@ -13,6 +13,14 @@ try:
     QgsVectorLayerExporterTask.withLayerOwnership = staticmethod(QgsVectorLayerExporterTask.withLayerOwnership)
     QgsVectorLayerExporterTask.__overridden_methods__ = ['cancel', 'run', 'finished']
     QgsVectorLayerExporterTask.__signal_arguments__ = {'errorOccurred': ['error: Qgis.VectorExportResult', 'errorMessage: str']}
+    import functools as _functools
+    __wrapped_QgsVectorLayerExporterTask_withLayerOwnership = QgsVectorLayerExporterTask.withLayerOwnership
+    def __QgsVectorLayerExporterTask_withLayerOwnership_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsVectorLayerExporterTask_withLayerOwnership(self, arg)
+    QgsVectorLayerExporterTask.withLayerOwnership = _functools.update_wrapper(__QgsVectorLayerExporterTask_withLayerOwnership_wrapper, QgsVectorLayerExporterTask.withLayerOwnership)
+
     QgsVectorLayerExporterTask.__group__ = ['vector']
 except (NameError, AttributeError):
     pass

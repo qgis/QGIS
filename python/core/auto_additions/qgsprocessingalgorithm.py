@@ -16,6 +16,14 @@ try:
     QgsProcessingAlgorithm.writeFeatureError = staticmethod(QgsProcessingAlgorithm.writeFeatureError)
     QgsProcessingAlgorithm.__virtual_methods__ = ['shortDescription', 'tags', 'shortHelpString', 'helpString', 'helpUrl', 'documentationFlags', 'icon', 'svgIconPath', 'group', 'groupId', 'flags', 'canExecute', 'checkParameterValues', 'preprocessParameters', 'autogenerateParameterValues', 'sinkProperties', 'createCustomParametersWidget', 'createExpressionContext', 'validateInputCrs', 'asPythonCommand', 'asQgisProcessCommand', 'asMap', 'supportInPlaceEdit', 'prepareAlgorithm', 'postProcessAlgorithm']
     QgsProcessingAlgorithm.__abstract_methods__ = ['name', 'displayName', 'createInstance', 'initAlgorithm', 'processAlgorithm']
+    import functools as _functools
+    __wrapped_QgsProcessingAlgorithm_addOutput = QgsProcessingAlgorithm.addOutput
+    def __QgsProcessingAlgorithm_addOutput_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsProcessingAlgorithm_addOutput(self, arg)
+    QgsProcessingAlgorithm.addOutput = _functools.update_wrapper(__QgsProcessingAlgorithm_addOutput_wrapper, QgsProcessingAlgorithm.addOutput)
+
     QgsProcessingAlgorithm.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

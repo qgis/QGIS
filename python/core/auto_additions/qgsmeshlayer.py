@@ -11,6 +11,22 @@ try:
     QgsMeshLayer.__virtual_methods__ = ['loadDefaultStyle']
     QgsMeshLayer.__overridden_methods__ = ['dataProvider', 'clone', 'extent', 'createMapRenderer', 'createProfileGenerator', 'readSymbology', 'writeSymbology', 'writeStyle', 'readStyle', 'encodedSource', 'decodedSource', 'readXml', 'writeXml', 'temporalProperties', 'elevationProperties', 'reload', 'subLayers', 'htmlMetadata', 'isEditable', 'supportsEditing', 'isModified', 'setTransformContext']
     QgsMeshLayer.__signal_arguments__ = {'activeScalarDatasetGroupChanged': ['index: int'], 'activeVectorDatasetGroupChanged': ['index: int']}
+    import functools as _functools
+    __wrapped_QgsMeshLayer_addDatasets = QgsMeshLayer.addDatasets
+    def __QgsMeshLayer_addDatasets_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsMeshLayer_addDatasets(self, arg)
+    QgsMeshLayer.addDatasets = _functools.update_wrapper(__QgsMeshLayer_addDatasets_wrapper, QgsMeshLayer.addDatasets)
+
+    import functools as _functools
+    __wrapped_QgsMeshLayer_setLabeling = QgsMeshLayer.setLabeling
+    def __QgsMeshLayer_setLabeling_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsMeshLayer_setLabeling(self, arg)
+    QgsMeshLayer.setLabeling = _functools.update_wrapper(__QgsMeshLayer_setLabeling_wrapper, QgsMeshLayer.setLabeling)
+
     QgsMeshLayer.__group__ = ['mesh']
 except (NameError, AttributeError):
     pass

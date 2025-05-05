@@ -8,6 +8,14 @@ QgsArrowSymbolLayer.ArrowRightHalf = QgsArrowSymbolLayer.ArrowType.ArrowRightHal
 try:
     QgsArrowSymbolLayer.create = staticmethod(QgsArrowSymbolLayer.create)
     QgsArrowSymbolLayer.__overridden_methods__ = ['clone', 'subSymbol', 'setSubSymbol', 'usedAttributes', 'hasDataDefinedProperties', 'usesMapUnits', 'setOutputUnit', 'properties', 'layerType', 'startRender', 'stopRender', 'startFeatureRender', 'stopFeatureRender', 'renderPolyline', 'setColor', 'color', 'canCauseArtifactsBetweenAdjacentTiles']
+    import functools as _functools
+    __wrapped_QgsArrowSymbolLayer_setSubSymbol = QgsArrowSymbolLayer.setSubSymbol
+    def __QgsArrowSymbolLayer_setSubSymbol_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsArrowSymbolLayer_setSubSymbol(self, arg)
+    QgsArrowSymbolLayer.setSubSymbol = _functools.update_wrapper(__QgsArrowSymbolLayer_setSubSymbol_wrapper, QgsArrowSymbolLayer.setSubSymbol)
+
     QgsArrowSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

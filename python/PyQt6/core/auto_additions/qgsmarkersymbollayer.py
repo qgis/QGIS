@@ -19,6 +19,14 @@ except (NameError, AttributeError):
 try:
     QgsFilledMarkerSymbolLayer.create = staticmethod(QgsFilledMarkerSymbolLayer.create)
     QgsFilledMarkerSymbolLayer.__overridden_methods__ = ['layerType', 'startRender', 'stopRender', 'startFeatureRender', 'stopFeatureRender', 'properties', 'clone', 'subSymbol', 'setSubSymbol', 'estimateMaxBleed', 'usedAttributes', 'hasDataDefinedProperties', 'setColor', 'color', 'usesMapUnits', 'setOutputUnit', 'draw']
+    import functools as _functools
+    __wrapped_QgsFilledMarkerSymbolLayer_setSubSymbol = QgsFilledMarkerSymbolLayer.setSubSymbol
+    def __QgsFilledMarkerSymbolLayer_setSubSymbol_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsFilledMarkerSymbolLayer_setSubSymbol(self, arg)
+    QgsFilledMarkerSymbolLayer.setSubSymbol = _functools.update_wrapper(__QgsFilledMarkerSymbolLayer_setSubSymbol_wrapper, QgsFilledMarkerSymbolLayer.setSubSymbol)
+
     QgsFilledMarkerSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

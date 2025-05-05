@@ -1,6 +1,14 @@
 # The following has been generated automatically from src/core/vector/qgsvectorlayerundocommand.h
 try:
     QgsVectorLayerUndoCommand.__overridden_methods__ = ['id', 'mergeWith']
+    import functools as _functools
+    __wrapped_QgsVectorLayerUndoCommand_QgsVectorLayerUndoCommand = QgsVectorLayerUndoCommand.QgsVectorLayerUndoCommand
+    def __QgsVectorLayerUndoCommand_QgsVectorLayerUndoCommand_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsVectorLayerUndoCommand_QgsVectorLayerUndoCommand(self, arg)
+    QgsVectorLayerUndoCommand.QgsVectorLayerUndoCommand = _functools.update_wrapper(__QgsVectorLayerUndoCommand_QgsVectorLayerUndoCommand_wrapper, QgsVectorLayerUndoCommand.QgsVectorLayerUndoCommand)
+
     QgsVectorLayerUndoCommand.__group__ = ['vector']
 except (NameError, AttributeError):
     pass

@@ -623,6 +623,22 @@ except (NameError, AttributeError):
 try:
     QgsSymbolLayer.__virtual_methods__ = ['flags', 'color', 'setColor', 'setStrokeColor', 'strokeColor', 'setFillColor', 'fillColor', 'startFeatureRender', 'stopFeatureRender', 'toSld', 'ogrFeatureStyle', 'subSymbol', 'setSubSymbol', 'isCompatibleWithSymbol', 'canCauseArtifactsBetweenAdjacentTiles', 'estimateMaxBleed', 'setOutputUnit', 'outputUnit', 'usesMapUnits', 'setMapUnitScale', 'mapUnitScale', 'usedAttributes', 'setDataDefinedProperty', 'writeDxf', 'dxfWidth', 'dxfSize', 'dxfOffset', 'dxfColor', 'dxfAngle', 'dxfCustomDashPattern', 'dxfPenStyle', 'dxfBrushColor', 'dxfBrushStyle', 'prepareExpressions', 'hasDataDefinedProperties', 'masks', 'prepareMasks']
     QgsSymbolLayer.__abstract_methods__ = ['layerType', 'startRender', 'stopRender', 'clone', 'properties', 'drawPreviewIcon']
+    import functools as _functools
+    __wrapped_QgsSymbolLayer_setSubSymbol = QgsSymbolLayer.setSubSymbol
+    def __QgsSymbolLayer_setSubSymbol_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsSymbolLayer_setSubSymbol(self, arg)
+    QgsSymbolLayer.setSubSymbol = _functools.update_wrapper(__QgsSymbolLayer_setSubSymbol_wrapper, QgsSymbolLayer.setSubSymbol)
+
+    import functools as _functools
+    __wrapped_QgsSymbolLayer_setPaintEffect = QgsSymbolLayer.setPaintEffect
+    def __QgsSymbolLayer_setPaintEffect_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsSymbolLayer_setPaintEffect(self, arg)
+    QgsSymbolLayer.setPaintEffect = _functools.update_wrapper(__QgsSymbolLayer_setPaintEffect_wrapper, QgsSymbolLayer.setPaintEffect)
+
     QgsSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

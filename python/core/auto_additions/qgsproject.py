@@ -28,6 +28,30 @@ try:
     QgsProject.setInstance = staticmethod(QgsProject.setInstance)
     QgsProject.__overridden_methods__ = ['createExpressionContext', 'createExpressionContextScope', 'translate']
     QgsProject.__signal_arguments__ = {'readProject': ['document: QDomDocument'], 'readProjectWithContext': ['document: QDomDocument', 'context: QgsReadWriteContext'], 'writeProject': ['document: QDomDocument'], 'readMapLayer': ['mapLayer: QgsMapLayer', 'layerNode: QDomElement'], 'writeMapLayer': ['mapLayer: QgsMapLayer', 'layerElem: QDomElement', 'doc: QDomDocument'], 'readVersionMismatchOccurred': ['fileVersion: str'], 'layerLoaded': ['i: int', 'n: int'], 'loadingLayer': ['layerName: str'], 'loadingLayerMessageReceived': ['layerName: str', 'messages: List[QgsReadWriteContext.ReadWriteMessage]'], 'nonIdentifiableLayersChanged': ['nonIdentifiableLayers: List[str]'], 'snappingConfigChanged': ['config: QgsSnappingConfig'], 'ellipsoidChanged': ['ellipsoid: str'], 'missingDatumTransforms': ['missingTransforms: List[str]'], 'layersWillBeRemoved': ['layers: List[QgsMapLayer]'], 'layerWillBeRemoved': ['layer: QgsMapLayer'], 'layersRemoved': ['layerIds: List[str]'], 'layerRemoved': ['layerId: str'], 'layersAdded': ['layers: List[QgsMapLayer]'], 'layerWasAdded': ['layer: QgsMapLayer'], 'legendLayersAdded': ['layers: List[QgsMapLayer]'], 'isDirtyChanged': ['dirty: bool']}
+    import functools as _functools
+    __wrapped_QgsProject_setBadLayerHandler = QgsProject.setBadLayerHandler
+    def __QgsProject_setBadLayerHandler_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsProject_setBadLayerHandler(self, arg)
+    QgsProject.setBadLayerHandler = _functools.update_wrapper(__QgsProject_setBadLayerHandler_wrapper, QgsProject.setBadLayerHandler)
+
+    import functools as _functools
+    __wrapped_QgsProject_addMapLayers = QgsProject.addMapLayers
+    def __QgsProject_addMapLayers_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsProject_addMapLayers(self, arg)
+    QgsProject.addMapLayers = _functools.update_wrapper(__QgsProject_addMapLayers_wrapper, QgsProject.addMapLayers)
+
+    import functools as _functools
+    __wrapped_QgsProject_addMapLayer = QgsProject.addMapLayer
+    def __QgsProject_addMapLayer_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsProject_addMapLayer(self, arg)
+    QgsProject.addMapLayer = _functools.update_wrapper(__QgsProject_addMapLayer_wrapper, QgsProject.addMapLayer)
+
     QgsProject.__group__ = ['project']
 except (NameError, AttributeError):
     pass

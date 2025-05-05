@@ -42,6 +42,14 @@ QgsProjectStyleDatabaseProxyModel.Filters.baseClass = QgsProjectStyleDatabasePro
 Filters = QgsProjectStyleDatabaseProxyModel  # dirty hack since SIP seems to introduce the flags in module
 try:
     QgsProjectStyleSettings.__attribute_docs__ = {'styleDatabasesChanged': 'Emitted whenever the set of style databases associated with the project\nis changed.\n'}
+    import functools as _functools
+    __wrapped_QgsProjectStyleSettings_setProjectStyle = QgsProjectStyleSettings.setProjectStyle
+    def __QgsProjectStyleSettings_setProjectStyle_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsProjectStyleSettings_setProjectStyle(self, arg)
+    QgsProjectStyleSettings.setProjectStyle = _functools.update_wrapper(__QgsProjectStyleSettings_setProjectStyle_wrapper, QgsProjectStyleSettings.setProjectStyle)
+
     QgsProjectStyleSettings.__group__ = ['project']
 except (NameError, AttributeError):
     pass

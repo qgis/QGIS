@@ -1,6 +1,14 @@
 # The following has been generated automatically from src/core/callouts/qgscalloutsregistry.h
 try:
     QgsCalloutRegistry.defaultCallout = staticmethod(QgsCalloutRegistry.defaultCallout)
+    import functools as _functools
+    __wrapped_QgsCalloutRegistry_addCalloutType = QgsCalloutRegistry.addCalloutType
+    def __QgsCalloutRegistry_addCalloutType_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsCalloutRegistry_addCalloutType(self, arg)
+    QgsCalloutRegistry.addCalloutType = _functools.update_wrapper(__QgsCalloutRegistry_addCalloutType_wrapper, QgsCalloutRegistry.addCalloutType)
+
     QgsCalloutRegistry.__group__ = ['callouts']
 except (NameError, AttributeError):
     pass

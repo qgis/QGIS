@@ -39,6 +39,14 @@ QgsLayoutManagerProxyModel.Filter.__or__ = lambda flag1, flag2: QgsLayoutManager
 try:
     QgsLayoutManager.__attribute_docs__ = {'layoutAboutToBeAdded': 'Emitted when a layout is about to be added to the manager\n', 'layoutAdded': 'Emitted when a layout has been added to the manager\n', 'layoutRemoved': 'Emitted when a layout was removed from the manager\n', 'layoutAboutToBeRemoved': 'Emitted when a layout is about to be removed from the manager\n', 'layoutRenamed': 'Emitted when a layout is renamed\n'}
     QgsLayoutManager.__signal_arguments__ = {'layoutAboutToBeAdded': ['name: str'], 'layoutAdded': ['name: str'], 'layoutRemoved': ['name: str'], 'layoutAboutToBeRemoved': ['name: str'], 'layoutRenamed': ['layout: QgsMasterLayoutInterface', 'newName: str']}
+    import functools as _functools
+    __wrapped_QgsLayoutManager_addLayout = QgsLayoutManager.addLayout
+    def __QgsLayoutManager_addLayout_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsLayoutManager_addLayout(self, arg)
+    QgsLayoutManager.addLayout = _functools.update_wrapper(__QgsLayoutManager_addLayout_wrapper, QgsLayoutManager.addLayout)
+
     QgsLayoutManager.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

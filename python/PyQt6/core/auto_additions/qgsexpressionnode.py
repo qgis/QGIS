@@ -24,6 +24,14 @@ except (NameError, AttributeError):
     pass
 try:
     QgsExpressionNode.NodeList.__virtual_methods__ = ['dump']
+    import functools as _functools
+    __wrapped_QgsExpressionNode.NodeList_append = QgsExpressionNode.NodeList.append
+    def __QgsExpressionNode.NodeList_append_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsExpressionNode.NodeList_append(self, arg)
+    QgsExpressionNode.NodeList.append = _functools.update_wrapper(__QgsExpressionNode.NodeList_append_wrapper, QgsExpressionNode.NodeList.append)
+
     QgsExpressionNode.NodeList.__group__ = ['expression']
 except (NameError, AttributeError):
     pass

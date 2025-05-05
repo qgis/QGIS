@@ -26,6 +26,14 @@ try:
     QgsPointCloudLayer.__virtual_methods__ = ['readStyle', 'writeStyle', 'loadDefaultStyle']
     QgsPointCloudLayer.__overridden_methods__ = ['clone', 'extent', 'createMapRenderer', 'createProfileGenerator', 'dataProvider', 'supportsEditing', 'isEditable', 'isModified', 'readXml', 'writeXml', 'readSymbology', 'writeSymbology', 'setTransformContext', 'encodedSource', 'decodedSource', 'htmlMetadata', 'elevationProperties']
     QgsPointCloudLayer.__signal_arguments__ = {'raiseError': ['msg: str'], 'statisticsCalculationStateChanged': ['state: QgsPointCloudLayer.PointCloudStatisticsCalculationState'], 'chunkAttributeValuesChanged': ['n: QgsPointCloudNodeId']}
+    import functools as _functools
+    __wrapped_QgsPointCloudLayer_setRenderer = QgsPointCloudLayer.setRenderer
+    def __QgsPointCloudLayer_setRenderer_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsPointCloudLayer_setRenderer(self, arg)
+    QgsPointCloudLayer.setRenderer = _functools.update_wrapper(__QgsPointCloudLayer_setRenderer_wrapper, QgsPointCloudLayer.setRenderer)
+
     QgsPointCloudLayer.__group__ = ['pointcloud']
 except (NameError, AttributeError):
     pass

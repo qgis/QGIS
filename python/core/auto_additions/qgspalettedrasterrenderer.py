@@ -21,6 +21,14 @@ try:
     QgsPalettedRasterRenderer.classDataToString = staticmethod(QgsPalettedRasterRenderer.classDataToString)
     QgsPalettedRasterRenderer.classDataFromRaster = staticmethod(QgsPalettedRasterRenderer.classDataFromRaster)
     QgsPalettedRasterRenderer.__overridden_methods__ = ['clone', 'flags', 'block', 'canCreateRasterAttributeTable', 'inputBand', 'setInputBand', 'writeXml', 'legendSymbologyItems', 'createLegendNodes', 'usesBands', 'toSld', 'accept']
+    import functools as _functools
+    __wrapped_QgsPalettedRasterRenderer_setSourceColorRamp = QgsPalettedRasterRenderer.setSourceColorRamp
+    def __QgsPalettedRasterRenderer_setSourceColorRamp_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsPalettedRasterRenderer_setSourceColorRamp(self, arg)
+    QgsPalettedRasterRenderer.setSourceColorRamp = _functools.update_wrapper(__QgsPalettedRasterRenderer_setSourceColorRamp_wrapper, QgsPalettedRasterRenderer.setSourceColorRamp)
+
     QgsPalettedRasterRenderer.__group__ = ['raster']
 except (NameError, AttributeError):
     pass

@@ -120,6 +120,14 @@ try:
     QgsSimpleLineCallout.create = staticmethod(QgsSimpleLineCallout.create)
     QgsSimpleLineCallout.__virtual_methods__ = ['createCalloutLine']
     QgsSimpleLineCallout.__overridden_methods__ = ['type', 'clone', 'properties', 'readProperties', 'startRender', 'stopRender', 'referencedFields', 'draw']
+    import functools as _functools
+    __wrapped_QgsSimpleLineCallout_setLineSymbol = QgsSimpleLineCallout.setLineSymbol
+    def __QgsSimpleLineCallout_setLineSymbol_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsSimpleLineCallout_setLineSymbol(self, arg)
+    QgsSimpleLineCallout.setLineSymbol = _functools.update_wrapper(__QgsSimpleLineCallout_setLineSymbol_wrapper, QgsSimpleLineCallout.setLineSymbol)
+
     QgsSimpleLineCallout.__group__ = ['callouts']
 except (NameError, AttributeError):
     pass
@@ -138,6 +146,22 @@ except (NameError, AttributeError):
 try:
     QgsBalloonCallout.create = staticmethod(QgsBalloonCallout.create)
     QgsBalloonCallout.__overridden_methods__ = ['type', 'clone', 'properties', 'readProperties', 'startRender', 'stopRender', 'referencedFields', 'draw']
+    import functools as _functools
+    __wrapped_QgsBalloonCallout_setFillSymbol = QgsBalloonCallout.setFillSymbol
+    def __QgsBalloonCallout_setFillSymbol_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsBalloonCallout_setFillSymbol(self, arg)
+    QgsBalloonCallout.setFillSymbol = _functools.update_wrapper(__QgsBalloonCallout_setFillSymbol_wrapper, QgsBalloonCallout.setFillSymbol)
+
+    import functools as _functools
+    __wrapped_QgsBalloonCallout_setMarkerSymbol = QgsBalloonCallout.setMarkerSymbol
+    def __QgsBalloonCallout_setMarkerSymbol_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsBalloonCallout_setMarkerSymbol(self, arg)
+    QgsBalloonCallout.setMarkerSymbol = _functools.update_wrapper(__QgsBalloonCallout_setMarkerSymbol_wrapper, QgsBalloonCallout.setMarkerSymbol)
+
     QgsBalloonCallout.__group__ = ['callouts']
 except (NameError, AttributeError):
     pass

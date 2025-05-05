@@ -30,6 +30,14 @@ enum.
 """
 # --
 try:
+    import functools as _functools
+    __wrapped_QgsEditFormConfig_addTab = QgsEditFormConfig.addTab
+    def __QgsEditFormConfig_addTab_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsEditFormConfig_addTab(self, arg)
+    QgsEditFormConfig.addTab = _functools.update_wrapper(__QgsEditFormConfig_addTab_wrapper, QgsEditFormConfig.addTab)
+
     QgsEditFormConfig.__group__ = ['editform']
 except (NameError, AttributeError):
     pass

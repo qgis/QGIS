@@ -20,6 +20,22 @@ try:
     QgsFeatureRenderer.convertSymbolRotation = staticmethod(QgsFeatureRenderer.convertSymbolRotation)
     QgsFeatureRenderer.__virtual_methods__ = ['originalSymbolForFeature', 'legendKeysForFeature', 'startRender', 'stopRender', 'canSkipRender', 'filter', 'usesEmbeddedSymbols', 'filterNeedsGeometry', 'renderFeature', 'dump', 'capabilities', 'flags', 'symbols', 'save', 'writeSld', 'toSld', 'legendSymbolItemsCheckable', 'legendSymbolItemChecked', 'checkLegendSymbolItem', 'setLegendSymbolItem', 'legendKeyToExpression', 'legendSymbolItems', 'createLegendNodes', 'legendClassificationAttribute', 'willRenderFeature', 'symbolsForFeature', 'originalSymbolsForFeature', 'modifyRequestExtent', 'setEmbeddedRenderer', 'accept']
     QgsFeatureRenderer.__abstract_methods__ = ['symbolForFeature', 'usedAttributes', 'clone']
+    import functools as _functools
+    __wrapped_QgsFeatureRenderer_setPaintEffect = QgsFeatureRenderer.setPaintEffect
+    def __QgsFeatureRenderer_setPaintEffect_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsFeatureRenderer_setPaintEffect(self, arg)
+    QgsFeatureRenderer.setPaintEffect = _functools.update_wrapper(__QgsFeatureRenderer_setPaintEffect_wrapper, QgsFeatureRenderer.setPaintEffect)
+
+    import functools as _functools
+    __wrapped_QgsFeatureRenderer_setEmbeddedRenderer = QgsFeatureRenderer.setEmbeddedRenderer
+    def __QgsFeatureRenderer_setEmbeddedRenderer_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsFeatureRenderer_setEmbeddedRenderer(self, arg)
+    QgsFeatureRenderer.setEmbeddedRenderer = _functools.update_wrapper(__QgsFeatureRenderer_setEmbeddedRenderer_wrapper, QgsFeatureRenderer.setEmbeddedRenderer)
+
     QgsFeatureRenderer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

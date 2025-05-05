@@ -10,6 +10,14 @@ except (NameError, AttributeError):
 try:
     QgsRasterLayerSimpleLabeling.create = staticmethod(QgsRasterLayerSimpleLabeling.create)
     QgsRasterLayerSimpleLabeling.__overridden_methods__ = ['type', 'clone', 'save', 'accept', 'requiresAdvancedEffects', 'multiplyOpacity', 'isInScaleRange']
+    import functools as _functools
+    __wrapped_QgsRasterLayerSimpleLabeling_setNumericFormat = QgsRasterLayerSimpleLabeling.setNumericFormat
+    def __QgsRasterLayerSimpleLabeling_setNumericFormat_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsRasterLayerSimpleLabeling_setNumericFormat(self, arg)
+    QgsRasterLayerSimpleLabeling.setNumericFormat = _functools.update_wrapper(__QgsRasterLayerSimpleLabeling_setNumericFormat_wrapper, QgsRasterLayerSimpleLabeling.setNumericFormat)
+
     QgsRasterLayerSimpleLabeling.__group__ = ['raster']
 except (NameError, AttributeError):
     pass

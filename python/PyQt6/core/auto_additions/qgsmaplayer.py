@@ -64,5 +64,21 @@ try:
     QgsMapLayer.__virtual_methods__ = ['properties', 'dataProvider', 'setOpacity', 'opacity', 'reload', 'extent', 'extent3D', 'subLayers', 'setLayerOrder', 'setSubLayerVisibility', 'supportsEditing', 'isEditable', 'isModified', 'isSpatial', 'isTemporary', 'resolveReferences', 'listStylesInDatabase', 'getStyleFromDatabase', 'deleteStyleFromDatabase', 'saveStyleToDatabase', 'loadNamedStyle', 'error', 'metadataUri', 'saveDefaultMetadata', 'loadNamedMetadata', 'loadDefaultMetadata', 'styleURI', 'loadDefaultStyle', 'loadNamedStyleFromDatabase', 'importNamedStyle', 'exportNamedStyle', 'exportSldStyle', 'exportSldStyleV2', 'exportSldStyleV3', 'saveDefaultStyle', 'saveNamedStyle', 'saveSldStyle', 'saveSldStyleV2', 'loadSldStyle', 'readSld', 'readSymbology', 'readStyle', 'writeSymbology', 'writeStyle', 'setMetadata', 'htmlMetadata', 'timestamp', 'dependencies', 'accept', 'selectionProperties', 'temporalProperties', 'elevationProperties', 'hasMapTips', 'setDependencies', 'setExtent', 'setExtent3D', 'readXml', 'writeXml', 'encodedSource', 'decodedSource']
     QgsMapLayer.__abstract_methods__ = ['clone', 'createMapRenderer', 'readSymbology', 'writeSymbology', 'setTransformContext']
     QgsMapLayer.__signal_arguments__ = {'beforeResolveReferences': ['project: QgsProject'], 'statusChanged': ['status: str'], 'idChanged': ['id: str'], 'repaintRequested': ['deferredUpdate: bool = False'], 'blendModeChanged': ['blendMode: QPainter.CompositionMode'], 'opacityChanged': ['opacity: float'], 'autoRefreshIntervalChanged': ['interval: int'], 'styleLoaded': ['categories: QgsMapLayer.StyleCategories'], 'customPropertyChanged': ['key: str']}
+    import functools as _functools
+    __wrapped_QgsMapLayer_setLegend = QgsMapLayer.setLegend
+    def __QgsMapLayer_setLegend_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsMapLayer_setLegend(self, arg)
+    QgsMapLayer.setLegend = _functools.update_wrapper(__QgsMapLayer_setLegend_wrapper, QgsMapLayer.setLegend)
+
+    import functools as _functools
+    __wrapped_QgsMapLayer_setRenderer3D = QgsMapLayer.setRenderer3D
+    def __QgsMapLayer_setRenderer3D_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsMapLayer_setRenderer3D(self, arg)
+    QgsMapLayer.setRenderer3D = _functools.update_wrapper(__QgsMapLayer_setRenderer3D_wrapper, QgsMapLayer.setRenderer3D)
+
 except (NameError, AttributeError):
     pass

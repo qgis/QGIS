@@ -2,6 +2,14 @@
 try:
     QgsProjectElevationProperties.__attribute_docs__ = {'changed': 'Emitted when the elevation properties change.\n', 'elevationRangeChanged': "Emitted when the project's elevation ``is`` changed.\n\n.. note::\n\n   This is a manual, use-set property, and does not necessarily\n   coincide with the elevation ranges for individual layers in the project.\n\n.. seealso:: :py:func:`elevationRange`\n\n.. seealso:: :py:func:`setElevationRange`\n\n.. versionadded:: 3.38\n"}
     QgsProjectElevationProperties.__signal_arguments__ = {'elevationRangeChanged': ['range: QgsDoubleRange']}
+    import functools as _functools
+    __wrapped_QgsProjectElevationProperties_setTerrainProvider = QgsProjectElevationProperties.setTerrainProvider
+    def __QgsProjectElevationProperties_setTerrainProvider_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsProjectElevationProperties_setTerrainProvider(self, arg)
+    QgsProjectElevationProperties.setTerrainProvider = _functools.update_wrapper(__QgsProjectElevationProperties_setTerrainProvider_wrapper, QgsProjectElevationProperties.setTerrainProvider)
+
     QgsProjectElevationProperties.__group__ = ['project']
 except (NameError, AttributeError):
     pass

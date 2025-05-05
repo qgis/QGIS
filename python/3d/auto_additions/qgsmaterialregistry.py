@@ -5,6 +5,14 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    import functools as _functools
+    __wrapped_QgsMaterialRegistry_addMaterialSettingsType = QgsMaterialRegistry.addMaterialSettingsType
+    def __QgsMaterialRegistry_addMaterialSettingsType_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsMaterialRegistry_addMaterialSettingsType(self, arg)
+    QgsMaterialRegistry.addMaterialSettingsType = _functools.update_wrapper(__QgsMaterialRegistry_addMaterialSettingsType_wrapper, QgsMaterialRegistry.addMaterialSettingsType)
+
     QgsMaterialRegistry.__group__ = ['materials']
 except (NameError, AttributeError):
     pass

@@ -56,6 +56,14 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    import functools as _functools
+    __wrapped_QgsCptCityCollectionItem_childrenRamps = QgsCptCityCollectionItem.childrenRamps
+    def __QgsCptCityCollectionItem_childrenRamps_wrapper(self, arg):
+        __tracebackhide__ = True
+        QgsSipUtils.verifyIsPyOwned(arg, 'you dont have ownership')
+        return __wrapped_QgsCptCityCollectionItem_childrenRamps(self, arg)
+    QgsCptCityCollectionItem.childrenRamps = _functools.update_wrapper(__QgsCptCityCollectionItem_childrenRamps_wrapper, QgsCptCityCollectionItem.childrenRamps)
+
     QgsCptCityCollectionItem.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
