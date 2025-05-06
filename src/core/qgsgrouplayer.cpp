@@ -40,13 +40,13 @@ QgsGroupLayer::QgsGroupLayer( const QString &name, const LayerOptions &options )
 
   QgsDataProvider::ProviderOptions providerOptions;
   providerOptions.transformContext = options.transformContext;
-  mDataProvider = new QgsGroupLayerDataProvider( providerOptions, Qgis::DataProviderReadFlags() );
+  mDataProvider = std::make_unique<QgsGroupLayerDataProvider>( providerOptions, Qgis::DataProviderReadFlags() );
 }
 
 QgsGroupLayer::~QgsGroupLayer()
 {
   emit willBeDeleted();
-  delete mDataProvider;
+
 }
 
 QgsGroupLayer *QgsGroupLayer::clone() const
@@ -226,14 +226,14 @@ QgsDataProvider *QgsGroupLayer::dataProvider()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mDataProvider;
+  return mDataProvider.get();
 }
 
 const QgsDataProvider *QgsGroupLayer::dataProvider() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mDataProvider;
+  return mDataProvider.get();
 }
 
 QString QgsGroupLayer::htmlMetadata() const

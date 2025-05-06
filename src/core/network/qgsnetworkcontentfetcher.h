@@ -121,7 +121,7 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
   private:
 
     QString mAuthCfg;
-    QNetworkReply *mReply = nullptr;
+    std::unique_ptr<QNetworkReply> mReply;
 
     bool mContentLoaded = false;
 
