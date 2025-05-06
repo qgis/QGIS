@@ -1788,6 +1788,8 @@ std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerUtils::createMarkerLayerFromSld(
     l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SvgMarker" ), element );
   else if ( needEllipseMarker( element ) )
     l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "EllipseMarker" ), element );
+  else if ( needRasterMarker( element ) )
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "RasterMarker" ), element );
   else
     l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SimpleMarker" ), element );
 
@@ -1828,12 +1830,10 @@ bool QgsSymbolLayerUtils::hasExternalGraphicV2( QDomElement &element, const QStr
   {
     return true;
   }
-#if 0
   else if ( !inlineContentElem.isNull() )
   {
-    return false; // not implemented yet
+    return true;
   }
-#endif
   else
   {
     return false;
@@ -1898,6 +1898,12 @@ bool QgsSymbolLayerUtils::needFontMarker( QDomElement &element )
 bool QgsSymbolLayerUtils::needSvgMarker( QDomElement &element )
 {
   return hasExternalGraphicV2( element, QStringLiteral( "image/svg+xml" ) );
+}
+
+bool QgsSymbolLayerUtils::needRasterMarker( QDomElement &element )
+{
+  // any external graphic except SVGs are considered rasters
+  return hasExternalGraphicV2( element, QString() ) && !needSvgMarker( element );
 }
 
 bool QgsSymbolLayerUtils::needEllipseMarker( QDomElement &element )
