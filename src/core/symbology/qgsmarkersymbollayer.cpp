@@ -30,7 +30,6 @@
 #include "qgsfontmanager.h"
 #include "qgscolorutils.h"
 #include "qgspainting.h"
-#include "qgsmessagelog.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
@@ -3066,51 +3065,22 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
 
 QgsSymbolLayer *QgsRasterMarkerSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsMessageLog::logMessage( "AAA" );
-  std::cout << "AAA";
-
   QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )
     return nullptr;
   
-  QDomElement debugElem = element.firstChildElement();
-
-  QgsMessageLog::logMessage( QStringLiteral("*****") );
-  if ( debugElem.isNull() ){
-    QgsMessageLog::logMessage( QStringLiteral( "empty ?!" ) );
-    return nullptr;
-  } else {
-    QgsMessageLog::logMessage( debugElem.tagName() );
-  }
-
-  QgsMessageLog::logMessage( "BBB" );
-  std::cout << "BBB";
-
   QDomElement extGraphElem = graphicElem.firstChildElement( QStringLiteral( "ExternalGraphic" ) );
   if ( extGraphElem.isNull() )
     return nullptr;
   
-  QgsMessageLog::logMessage( "CCC" );
-  std::cout << "CCC";
-
   QDomElement onlineResElem = extGraphElem.firstChildElement( QStringLiteral( "OnlineResource" ) );
   if ( onlineResElem.isNull() )
     return nullptr;
 
-  QgsMessageLog::logMessage( "DDD" );
-  std::cout << "DDD";
-
   QString url = onlineResElem.attribute("href", "");
 
-
   QgsRasterMarkerSymbolLayer *m = new QgsRasterMarkerSymbolLayer( url );
-  // m->setOutputUnit( sldUnitSize );
-  // m->setColor( color );
-  // m->setStrokeColor( strokeColor );
-  // m->setAngle( angle );
-  // m->setOffset( offset );
-  // m->setStrokeStyle( strokeStyle );
-  // m->setStrokeWidth( strokeWidth );
+  // TODO: parse other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
   return m;
 }
 
@@ -3518,30 +3488,30 @@ void QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
   // <Graphic>
   QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
   element.appendChild( graphicElem );
-  
+
   // <ExternalGraphic>
   QDomElement extGraphElem = doc.createElement( QStringLiteral( "se:ExternalGraphic" ) );  
   graphicElem.appendChild( extGraphElem );
-  
+
   QDomElement onlineResElem = doc.createElement( QStringLiteral( "se:OnlineResource" ) );
   QString url = mPath;
+
+  // TODO: unsure if/how we can find the original image's mime type... for now let's use something generic
+  QString mimeType = QStringLiteral("application/octet-stream" );
+
+  // convert from QGIS's embeded file syntax to standard data uri
   if( mPath.startsWith( QStringLiteral("base64:") ) ) {
-    url.replace( QStringLiteral("base64:"),  QStringLiteral("data:;base64,") ); 
+    url.replace( QStringLiteral("base64:"), QStringLiteral("data:%1;base64,").arg(mimeType) ); 
   }
   onlineResElem.setAttribute( QStringLiteral("xlink:href"), url );
   onlineResElem.setAttribute( QStringLiteral("xlink:type"), QStringLiteral("simple") );
   extGraphElem.appendChild( onlineResElem );
-  
+
   QDomElement formatElem = doc.createElement( QStringLiteral( "se:Format" ) );
-  formatElem.appendChild( doc.createTextNode( QStringLiteral("application/octet-stream") ) );
+  formatElem.appendChild( doc.createTextNode( mimeType ) );
   extGraphElem.appendChild( formatElem );
 
-  // <Rotation>
-  // Not implemented
-  // <Opacity>
-  // Not implemented
-  // <Size>
-  // Not implemented
+  // TODO: write other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
 }
 
 //////////

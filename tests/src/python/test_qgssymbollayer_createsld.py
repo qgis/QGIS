@@ -268,23 +268,6 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertStrokeWidth(root, 2, 1)
         self.assertStaticDisplacement(root, 5, 10)
 
-    def testDEBUGOUTPUT(self):
-        # docker run -it --rm -v $(pwd):/QGIS -e DISPLAY=$DISPLAY -v /mnt/d/sitglibertor_volumes/files/SIPV_ICA_ARBRE_ISOLE.sld:/DEBUG/SIPV_ICA_ARBRE_ISOLE.sld -v /tmp/.X11-unix:/tmp/.X11-unix -w /QGIS/build -e PYTHONPATH=/QGIS/build/output/python -e LD_LIBRARY_PATH=/QGIS/build/output/lib $BUILD_IMAGE python3 /QGIS/tests/src/python/test_qgssymbollayer_createsld.py
-        # docker run -it --rm -v $(pwd):/QGIS -e DISPLAY=$DISPLAY -v /mnt/d/sitglibertor_volumes/files/SIPV_ICA_ARBRE_ISOLE.sld:/DEBUG/SIPV_ICA_ARBRE_ISOLE.sld -v /tmp/.X11-unix:/tmp/.X11-unix -w /QGIS/build $BUILD_IMAGE ./output/bin/qgis
-
-        maplayer = QgsVectorLayer("Point", "addfeat", "memory")
-        symbollayer = QgsRasterMarkerSymbolLayer(
-            path="https://picsum.photos/seed/yaya/64"
-            # path="base64:iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-        )
-        symbol = QgsMarkerSymbol([symbollayer])
-        # symbol.setAngle(45)
-        # symbol.setDataDefinedAngle(QgsProperty.fromExpression("OBJECTID * 2"))
-        # symbol.setOpacity(22)
-        # symbol.setDataDefinedOpacity(QgsProperty.fromExpression("OBJECTID * 3"))
-        maplayer.renderer().setSymbol(symbol)
-        maplayer.saveSldStyle("/DEBUG/SIPV_ICA_ARBRE_ISOLE.sld")
-
     def testRasterMarkerRemoteUrl(self):
         symbol = QgsRasterMarkerSymbolLayer(
             path="https://example.com/image.png",

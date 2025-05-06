@@ -45,7 +45,6 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgscurvepolygon.h"
 #include "qgsmasksymbollayer.h"
-#include "qgsmessagelog.h"
 
 #include "qmath.h"
 #include <QColor>
@@ -1568,9 +1567,6 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
-  std::cout << "createSymbolLayerListFromSld";
-  QgsMessageLog::logMessage( "createSymbolLayerListFromSld" );
-
   if ( element.isNull() )
     return false;
 
@@ -1600,7 +1596,6 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
 
         case Qgis::GeometryType::Point:
         {
-          QgsMessageLog::logMessage( "III" );
           // point layer and point symbolizer: use markers
           std::unique_ptr< QgsSymbolLayer> l( createMarkerLayerFromSld( element ) );
           if ( l )
