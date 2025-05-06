@@ -21,8 +21,31 @@
 
       perSystem = { config, self', inputs', pkgs, system, ... }: {
 
-        packages = {
+        packages = rec {
           qgis = pkgs.libsForQt5.callPackage ./nix/package.nix { };
+          docs = pkgs.libsForQt5.callPackage ./nix/documentation.nix {
+            qgisMinorVersion = "master";
+          };
+          default = qgis;
+        };
+
+        apps = {
+          docs =
+            let
+              wwwLauncher = pkgs.writeShellApplication {
+                name = "website";
+                runtimeInputs = [ pkgs.python3 ];
+                text = ''
+                  exec ${pkgs.lib.getExe pkgs.python3} \
+                    -m http.server 8000 \
+                    -d ${self'.packages.docs}
+                '';
+              };
+            in
+            {
+              type = "app";
+              program = "${wwwLauncher}/bin/website";
+            };
         };
 
         devShells.default =
