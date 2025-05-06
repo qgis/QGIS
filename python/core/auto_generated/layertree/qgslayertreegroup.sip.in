@@ -301,7 +301,7 @@ Returns QGIS Server Properties for the layer tree group
 
     void setHasWmsTimeDimension( const bool hasWmsTimeDimension );
 %Docstring
-Set whether the WMS time dimension should be computed for this group or
+Sets whether the WMS time dimension should be computed for this group or
 not
 
 :param hasWmsTimeDimension: if ``True``, when a GetCapabilities request

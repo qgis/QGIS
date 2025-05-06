@@ -288,7 +288,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     const QgsMapLayerServerProperties *serverProperties() const SIP_SKIP;
 
     /**
-     * Set whether the WMS time dimension should be computed for this group or not
+     * Sets whether the WMS time dimension should be computed for this group or not
      * \param hasWmsTimeDimension if TRUE, when a GetCapabilities request is sent,
      * QGIS server would return a TIME dimension computed as an union of all time
      * dimensions of its children recursively. Else, no TIME dimension will be returned.

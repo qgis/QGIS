@@ -93,7 +93,7 @@ Sets group WMS abstract
 
     void setHasTimeDimension( bool hasTimeDimension );
 %Docstring
-Set whether the time dimension should be computed for this group or not
+Sets whether the time dimension should be computed for this group or not
 
 :param hasTimeDimension: if ``True``, when a GetCapabilities request is
                          sent, QGIS server would return a TIME dimension

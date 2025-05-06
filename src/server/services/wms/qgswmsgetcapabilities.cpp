@@ -19,8 +19,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <optional>
-
 #include "qgswmsutils.h"
 #include "qgswmsgetcapabilities.h"
 #include "qgsserverprojectutils.h"
@@ -1102,12 +1100,12 @@ namespace QgsWms
       const QString dateFormat = hasDateTime ? QStringLiteral( "yyyy-MM-ddTHH:mm:ss" ) : QStringLiteral( "yyyy-MM-dd" );
 
       QStringList strValues;
-      for ( const QgsDateTimeRange &r : dateRanges )
+      for ( const QgsDateTimeRange &range : dateRanges )
       {
         // Standard ISO8601 doesn't support range with no defined begin or end
-        if ( r.begin().isValid() && r.end().isValid() )
+        if ( range.begin().isValid() && range.end().isValid() )
         {
-          strValues << ( r.isInstant() ? r.begin().toString( dateFormat ) : QStringLiteral( "%1/%2" ).arg( r.begin().toString( dateFormat ) ).arg( r.end().toString( dateFormat ) ) );
+          strValues << ( range.isInstant() ? range.begin().toString( dateFormat ) : QStringLiteral( "%1/%2" ).arg( range.begin().toString( dateFormat ) ).arg( range.end().toString( dateFormat ) ) );
         }
       }
 
@@ -1364,7 +1362,7 @@ namespace QgsWms
 
             // Add all values
             const QList<QgsDateTimeRange> allRanges { l->temporalProperties()->allTemporalRanges( l ) };
-            bool isDateList = writeTimeDimensionNode( doc, layerElem, allRanges );
+            const bool isDateList = writeTimeDimensionNode( doc, layerElem, allRanges );
 
             parentDateRanges.append( allRanges );
 

@@ -91,7 +91,7 @@ class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMS
     Q_DECL_DEPRECATED void setGroupAbstract( const QString &abstract ) SIP_DEPRECATED;
 
     /**
-     * Set whether the time dimension should be computed for this group or not
+     * Sets whether the time dimension should be computed for this group or not
      * \param hasTimeDimension if TRUE, when a GetCapabilities request is sent,
      * QGIS server would return a TIME dimension computed as an union of all time
      * dimensions of its children recursively. Else, no TIME dimension will be returned.
