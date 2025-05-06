@@ -166,7 +166,7 @@ struct CFillSinks_WL_Node
 class CompareGreater
 {
   public:
-    bool operator()( CFillSinks_WL_Node n1, CFillSinks_WL_Node n2 )
+    bool operator()( CFillSinks_WL_Node n1, CFillSinks_WL_Node n2 ) const
     {
       return n1.spill > n2.spill;
     }
