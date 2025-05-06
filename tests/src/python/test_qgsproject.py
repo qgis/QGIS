@@ -17,6 +17,7 @@ from io import BytesIO
 from shutil import copyfile
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile
+from lxml import etree as et
 
 from osgeo import ogr
 from qgis.PyQt import sip
@@ -2118,6 +2119,43 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(QgsLayerNotesUtils.layerNotes(layers[0]), "my notes")
 
         del project
+
+    def testVectorExtentIsStored(self):
+        """
+        Test that vector layer extent is stored in the project
+        Test for GH #61181
+        """
+
+        tmpDir = QTemporaryDir()
+        tmpFile = f"{tmpDir.path()}/project.qgs"
+        for ext in ["shp", "shx", "dbf"]:
+            copyfile(
+                os.path.join(TEST_DATA_DIR, "points." + ext),
+                os.path.join(tmpDir.path(), "points." + ext),
+            )
+
+        project = QgsProject()
+
+        l0 = QgsVectorLayer(os.path.join(tmpDir.path(), "points.shp"), "points", "ogr")
+        #l0.extent()
+        self.assertTrue(l0.isValid())
+        self.assertTrue(project.addMapLayers([l0]))
+        self.assertTrue(project.write(tmpFile))
+
+        del project
+
+        # Read the project.qgs as XML using etree and check that the maplayer extent is in the XML file
+        with open(tmpFile, "r") as f:
+            xml = f.read()
+            root = et.XML(xml)
+            layerXML = root.findall('.//projectlayers/maplayer')[0]
+            extentXML = layerXML.findall('.//extent')[0]
+            self.assertNotEqual(len(extentXML.getchildren()), 0)
+
+
+
+
+
 
 
 if __name__ == "__main__":
