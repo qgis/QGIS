@@ -119,7 +119,7 @@ QgsFields QgsAddTableFieldAlgorithm::outputFields( const QgsFields &inputFields 
   return outFields;
 }
 
-bool QgsAddTableFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsAddTableFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   const QString name = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
