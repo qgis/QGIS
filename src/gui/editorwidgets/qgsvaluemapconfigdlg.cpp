@@ -42,7 +42,6 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
   tableWidget->horizontalHeader()->setSectionsClickable( true );
   tableWidget->setSortingEnabled( true );
 
-  connect( addNullButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::addNullButtonPushed );
   connect( removeSelectedButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::removeSelectedButtonPushed );
   connect( loadFromLayerButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::loadFromLayerButtonPushed );
   connect( loadFromCSVButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::loadFromCSVButtonPushed );
@@ -355,11 +354,6 @@ void QgsValueMapConfigDlg::copySelectionToClipboard()
   }
   mimeData->setData( QStringLiteral( "text/plain" ), clipboardText.toUtf8() );
   QApplication::clipboard()->setMimeData( mimeData.release() );
-}
-
-void QgsValueMapConfigDlg::addNullButtonPushed()
-{
-  setRow( tableWidget->rowCount() - 1, QgsValueMapFieldFormatter::NULL_VALUE, QStringLiteral( "<NULL>" ) );
 }
 
 void QgsValueMapConfigDlg::loadFromLayerButtonPushed()

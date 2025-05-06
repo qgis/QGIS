@@ -16,9 +16,10 @@
 #include "qgsdefaultvalue.h"
 #include "moc_qgsdefaultvalue.cpp"
 
-QgsDefaultValue::QgsDefaultValue( const QString &expression, bool applyOnUpdate )
+QgsDefaultValue::QgsDefaultValue( const QString &expression, bool applyOnUpdate, bool replaceNullValue )
   : mExpression( expression )
   , mApplyOnUpdate( applyOnUpdate )
+  , mReplaceNullValue( replaceNullValue )
 {
 
 }
@@ -47,6 +48,16 @@ bool QgsDefaultValue::applyOnUpdate() const
 void QgsDefaultValue::setApplyOnUpdate( bool applyOnUpdate )
 {
   mApplyOnUpdate = applyOnUpdate;
+}
+
+bool QgsDefaultValue::replaceNullValue() const
+{
+  return mReplaceNullValue;
+}
+
+void QgsDefaultValue::setReplaceNullValue( bool replaceNullValue )
+{
+  mReplaceNullValue = replaceNullValue;
 }
 
 bool QgsDefaultValue::isValid() const

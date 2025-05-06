@@ -235,6 +235,9 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
     bool applyDefaultValueOnUpdate() const;
     void setApplyDefaultValueOnUpdate( bool applyDefaultValueOnUpdate );
 
+    bool replaceNullWithDefaultValue() const;
+    void setReplaceNullWithDefaultValue( bool replaceNullWithDefaultValue );
+
     /**
      * Returns the field's split policy.
      *

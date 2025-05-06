@@ -63,6 +63,9 @@ class GUI_EXPORT QgsValueMapWidgetWrapper : public QgsEditorWidgetWrapper
     bool valid() const override;
 
   private:
+    /**
+     * Sets the default and/or null value
+     */
     void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
 
     QComboBox *mComboBox = nullptr;

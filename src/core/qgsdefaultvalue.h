@@ -56,7 +56,7 @@ class CORE_EXPORT QgsDefaultValue
      * Create a new default value with the given \a expression and \a applyOnUpdate flag.
      * \see QgsVectorLayer::setDefaultValueDefinition
      */
-    explicit QgsDefaultValue( const QString &expression = QString(), bool applyOnUpdate = false );
+    explicit QgsDefaultValue( const QString &expression = QString(), bool applyOnUpdate = false, bool replaceNullValue = false );
 
     // TODO c++20 - replace with = default
     bool operator==( const QgsDefaultValue &other ) const;
@@ -97,6 +97,18 @@ class CORE_EXPORT QgsDefaultValue
     void setApplyOnUpdate( bool applyOnUpdate );
 
     /**
+     * The replaceNullValue flag determines if the default value should replace
+     * the NULL value.
+     */
+    bool replaceNullValue() const;
+
+    /**
+     * The replaceNullValue flag determines if the default value should replace
+     * the NULL value.
+     */
+    void setReplaceNullValue( bool replaceNullValue );
+
+    /**
      * Returns if this default value should be applied.
      * \returns FALSE if the expression is a null string.
      */
@@ -111,6 +123,7 @@ class CORE_EXPORT QgsDefaultValue
   private:
     QString mExpression;
     bool mApplyOnUpdate = false;
+    bool mReplaceNullValue = false;
 };
 
 Q_DECLARE_METATYPE( QgsDefaultValue )
