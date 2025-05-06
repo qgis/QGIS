@@ -699,6 +699,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \param properties QVariantMap properties object
      */
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     /**
      * Turns relative paths in properties map to absolute when reading and vice versa when writing.
@@ -715,6 +716,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QgsRasterMarkerSymbolLayer *clone() const override SIP_FACTORY;
     bool usesMapUnits() const override;
     QColor color() const override;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
 
     /**
      * Calculates the marker aspect ratio between width and height.
