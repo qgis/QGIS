@@ -39,7 +39,7 @@ QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface *input, const QString &
 
 QgsRasterRenderer::~QgsRasterRenderer()
 {
-  delete mRasterTransparency;
+
 }
 
 int QgsRasterRenderer::bandCount() const
@@ -119,8 +119,8 @@ bool QgsRasterRenderer::usesTransparency() const
 
 void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t )
 {
-  delete mRasterTransparency;
-  mRasterTransparency = t;
+  mRasterTransparency.reset( t );
+
 }
 
 QList< QPair< QString, QColor > > QgsRasterRenderer::legendSymbologyItems() const
@@ -202,8 +202,8 @@ void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
   const QDomElement rasterTransparencyElem = rendererElem.firstChildElement( QStringLiteral( "rasterTransparency" ) );
   if ( !rasterTransparencyElem.isNull() )
   {
-    delete mRasterTransparency;
-    mRasterTransparency = new QgsRasterTransparency();
+    mRasterTransparency.reset( new QgsRasterTransparency() );
+
     mRasterTransparency->readXml( rasterTransparencyElem );
   }
 

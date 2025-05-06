@@ -139,7 +139,7 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
 
   private:
 
-    QgsGroupLayerDataProvider *mDataProvider = nullptr;
+    std::unique_ptr<QgsGroupLayerDataProvider> mDataProvider;
     QgsCoordinateTransformContext mTransformContext;
 
     QList< QgsMapLayerRef > mChildren;
