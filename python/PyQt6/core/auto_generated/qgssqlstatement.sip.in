@@ -313,6 +313,7 @@ Constructor
 %End
         ~NodeUnaryOperator();
 
+
         QgsSQLStatement::UnaryOperator op() const;
 %Docstring
 Operator
@@ -331,6 +332,8 @@ Operand
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
+      private:
+        NodeUnaryOperator( const NodeUnaryOperator &other );
       protected:
     };
 
@@ -349,6 +352,7 @@ Binary logical/arithmetical operator (AND, OR, =, +, ...).
 Constructor
 %End
         ~NodeBinaryOperator();
+
 
         QgsSQLStatement::BinaryOperator op() const;
 %Docstring
@@ -383,6 +387,8 @@ Precedence
 Is left associative ?
 %End
 
+      private:
+        NodeBinaryOperator( const NodeBinaryOperator &other );
       protected:
 
     };
@@ -402,6 +408,7 @@ An 'x IN (y, z)' operator.
 Constructor
 %End
         ~NodeInOperator();
+
 
         QgsSQLStatement::Node *node() const;
 %Docstring
@@ -426,6 +433,8 @@ Values list
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
+      private:
+        NodeInOperator( const NodeInOperator &other );
       protected:
     };
 
@@ -443,6 +452,7 @@ An 'X BETWEEN y and z' operator.
 %Docstring
 Constructor
 %End
+
 
         QgsSQLStatement::Node *node() const;
 %Docstring
@@ -472,6 +482,8 @@ Maximum bound
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
+      private:
+        NodeBetweenOperator( const NodeBetweenOperator &other );
       protected:
     };
 
@@ -491,6 +503,7 @@ Constructor
 %End
         ~NodeFunction();
 
+
         QString name() const;
 %Docstring
 Returns function name
@@ -509,6 +522,8 @@ Returns arguments
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
+      private:
+        NodeFunction( const NodeFunction &other );
       protected:
 
     };
@@ -619,6 +634,7 @@ Constructor
 %End
         ~NodeSelectedColumn();
 
+
         void setAlias( const QString &alias );
 %Docstring
 Sets alias name
@@ -646,6 +662,8 @@ Alias name
 Clone with same type return
 %End
 
+      private:
+        NodeSelectedColumn( const NodeSelectedColumn &other );
       protected:
     };
 
@@ -665,6 +683,7 @@ Constructor
 %End
         ~NodeCast();
 
+
         QgsSQLStatement::Node *node() const;
 %Docstring
 Node that is referred to
@@ -683,6 +702,8 @@ Type
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
+      private:
+        NodeCast( const NodeCast &other );
       protected:
     };
 
@@ -764,6 +785,7 @@ Constructor with table definition and USING columns
 %End
         ~NodeJoin();
 
+
         QgsSQLStatement::NodeTableDef *tableDef() const;
 %Docstring
 Table definition
@@ -797,6 +819,8 @@ Join type
 Clone with same type return
 %End
 
+      private:
+        NodeJoin( const NodeJoin &other );
       protected:
     };
 
@@ -815,6 +839,7 @@ Column in a ORDER BY.
 Constructor
 %End
         ~NodeColumnSorted();
+
 
         QgsSQLStatement::NodeColumnRef *column() const;
 %Docstring
@@ -838,6 +863,8 @@ Whether the column is sorted in ascending order
 Clone with same type return
 %End
 
+      private:
+        NodeColumnSorted( const NodeColumnSorted &other );
       protected:
     };
 
@@ -856,6 +883,7 @@ SELECT node.
 Constructor
 %End
         ~NodeSelect();
+
 
         void setJoins( const QList<QgsSQLStatement::NodeJoin *> &joins /Transfer/ );
 %Docstring
@@ -907,6 +935,8 @@ Returns the list of order by columns
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
+      private:
+        NodeSelect( const NodeSelect &other );
       protected:
     };
 
