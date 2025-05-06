@@ -150,7 +150,6 @@ void TestQgsProcessingCheckGeometry::angleAlg()
   parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layerToTest->id(), withSelection ) ) );
   parameters.insert( QStringLiteral( "UNIQUE_ID" ), QVariant::fromValue( uniqueIdFieldName ) );
   parameters.insert( QStringLiteral( "MIN_ANGLE" ), 15 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
   parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
@@ -162,11 +161,8 @@ void TestQgsProcessingCheckGeometry::angleAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
   const std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
-  QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
-  QCOMPARE( outputLayer->featureCount(), expectedErrorCount );
   QCOMPARE( errorsLayer->featureCount(), expectedErrorCount );
 }
 
