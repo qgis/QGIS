@@ -343,7 +343,7 @@ void QgsOgrDbSourceSelect::dbChanged()
 
 QString QgsOgrDbSourceSelect::settingPath() const
 {
-  return SETTINGS_WINDOWS_PATH;
+  return SETTINGS_WINDOWS_PATH.arg( mOgrDriverName );
 }
 
 void QgsOgrDbSourceSelect::refresh()
