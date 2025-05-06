@@ -105,7 +105,7 @@ QgsFields QgsAddIncrementalFieldAlgorithm::outputFields( const QgsFields &inputF
   return outFields;
 }
 
-bool QgsAddIncrementalFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsAddIncrementalFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   mStartValue = parameterAsInt( parameters, QStringLiteral( "START" ), context );
