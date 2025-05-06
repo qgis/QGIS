@@ -76,7 +76,7 @@ class QgsFillSinksWangLiuAlgorithm : public QgsProcessingAlgorithm
     double mRasterUnitsPerPixelY = 0;
     double mRasterDiagonal = 0;
 
-    std::array< double, 8 > mDirectionalLengths;
+    std::array< double, 8 > mDirectionalLengths { 0, 0, 0, 0, 0, 0, 0, 0 };
 
     static constexpr int INVERSE_DIRECTION[8] = { 4, 5, 6, 7, 0, 1, 2, 3 };
 };
