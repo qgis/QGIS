@@ -61,7 +61,7 @@ class GUI_EXPORT QgsAttributesFormData
     /**
      * Holds the configuration for a field
      */
-    struct FieldConfig
+    struct GUI_EXPORT FieldConfig
     {
         FieldConfig() = default;
         FieldConfig( QgsVectorLayer *layer, int idx );
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsAttributesFormData
         operator QVariant();
     };
 
-    struct RelationEditorConfiguration
+    struct GUI_EXPORT RelationEditorConfiguration
     {
         operator QVariant();
 
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsAttributesFormData
      * \note Prior to QGIS 3.44 this was available as QgsAttributesFormProperties::DnDTreeItemData
      * \since QGIS 3.44
      */
-    class AttributeFormItemData
+    class GUI_EXPORT AttributeFormItemData
     {
       public:
         AttributeFormItemData() = default;
