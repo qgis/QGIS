@@ -327,7 +327,6 @@ class CORE_EXPORT QgsSQLStatement
       public:
         //! Constructor
         NodeUnaryOperator( QgsSQLStatement::UnaryOperator op, QgsSQLStatement::Node *operand SIP_TRANSFER ) : mOp( op ), mOperand( operand ) {}
-        ~NodeUnaryOperator() override {  }
 
         NodeUnaryOperator( const NodeUnaryOperator &other ) = delete;
         NodeUnaryOperator &operator=( const NodeUnaryOperator &other ) = delete;
@@ -367,7 +366,6 @@ class CORE_EXPORT QgsSQLStatement
           , mOpLeft( opLeft )
           , mOpRight( opRight )
         {}
-        ~NodeBinaryOperator() override {   }
 
         NodeBinaryOperator( const NodeBinaryOperator &other ) = delete;
         NodeBinaryOperator &operator=( const NodeBinaryOperator &other ) = delete;
@@ -414,7 +412,6 @@ class CORE_EXPORT QgsSQLStatement
       public:
         //! Constructor
         NodeInOperator( QgsSQLStatement::Node *node SIP_TRANSFER, QgsSQLStatement::NodeList *list SIP_TRANSFER, bool notin = false ) : mNode( node ), mList( list ), mNotIn( notin ) {}
-        ~NodeInOperator() override {   }
 
         NodeInOperator( const NodeInOperator &other ) = delete;
         NodeInOperator &operator=( const NodeInOperator &other ) = delete;
@@ -455,7 +452,6 @@ class CORE_EXPORT QgsSQLStatement
         //! Constructor
         NodeBetweenOperator( QgsSQLStatement::Node *node SIP_TRANSFER, QgsSQLStatement::Node *minVal SIP_TRANSFER, QgsSQLStatement::Node *maxVal SIP_TRANSFER, bool notBetween = false )
           : mNode( node ), mMinVal( minVal ), mMaxVal( maxVal ), mNotBetween( notBetween ) {}
-        ~NodeBetweenOperator() override {    }
 
         NodeBetweenOperator( const NodeBetweenOperator &other ) = delete;
         NodeBetweenOperator &operator=( const NodeBetweenOperator &other ) = delete;
@@ -499,7 +495,6 @@ class CORE_EXPORT QgsSQLStatement
       public:
         //! Constructor
         NodeFunction( const QString &name, QgsSQLStatement::NodeList *args  SIP_TRANSFER ) : mName( name ), mArgs( args ) {}
-        ~NodeFunction() override {  }
 
         NodeFunction( const NodeFunction &other ) = delete;
         NodeFunction &operator=( const NodeFunction &other ) = delete;
@@ -601,7 +596,6 @@ class CORE_EXPORT QgsSQLStatement
       public:
         //! Constructor
         NodeSelectedColumn( QgsSQLStatement::Node *node SIP_TRANSFER ) : mColumnNode( node ) {}
-        ~NodeSelectedColumn() override {  }
 
         NodeSelectedColumn( const NodeSelectedColumn &other ) = delete;
         NodeSelectedColumn &operator=( const NodeSelectedColumn &other ) = delete;
@@ -642,7 +636,6 @@ class CORE_EXPORT QgsSQLStatement
       public:
         //! Constructor
         NodeCast( QgsSQLStatement::Node *node SIP_TRANSFER, const QString &type ) : mNode( node ), mType( type ) {}
-        ~NodeCast() override {  }
 
         NodeCast( const NodeCast &other ) = delete;
         NodeCast &operator=( const NodeCast &other ) = delete;
@@ -726,7 +719,6 @@ class CORE_EXPORT QgsSQLStatement
         NodeJoin( QgsSQLStatement::NodeTableDef *tabledef SIP_TRANSFER, QgsSQLStatement::Node *onExpr SIP_TRANSFER, QgsSQLStatement::JoinType type ) : mTableDef( tabledef ), mOnExpr( onExpr ), mType( type ) {}
         //! Constructor with table definition and USING columns
         NodeJoin( QgsSQLStatement::NodeTableDef *tabledef SIP_TRANSFER, const QList<QString> &usingColumns, QgsSQLStatement::JoinType type ) : mTableDef( tabledef ), mUsingColumns( usingColumns ), mType( type ) {}
-        ~NodeJoin() override {   }
 
         NodeJoin( const NodeJoin &other ) = delete;
         NodeJoin &operator=( const NodeJoin &other ) = delete;
@@ -772,7 +764,6 @@ class CORE_EXPORT QgsSQLStatement
       public:
         //! Constructor
         NodeColumnSorted( QgsSQLStatement::NodeColumnRef *column SIP_TRANSFER, bool asc ) : mColumn( column ), mAsc( asc ) {}
-        ~NodeColumnSorted() override {  }
 
         NodeColumnSorted( const NodeColumnSorted &other ) = delete;
         NodeColumnSorted &operator=( const NodeColumnSorted &other ) = delete;
