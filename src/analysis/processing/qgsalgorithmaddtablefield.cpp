@@ -131,7 +131,7 @@ bool QgsAddTableFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 
   if ( source->fields().lookupField( name ) >= 0 )
   {
-    throw QgsProcessingException( QObject::tr( "Field with the same name already exists" ) );
+    throw QgsProcessingException( QObject::tr( "A field with the same name (%1) already exists" ).arg( name ) );
   }
 
   mField.setName( name );
