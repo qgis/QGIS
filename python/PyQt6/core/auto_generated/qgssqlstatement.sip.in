@@ -312,7 +312,6 @@ Unary logical/arithmetical operator ( NOT, - ).
 Constructor
 %End
 
-
         QgsSQLStatement::UnaryOperator op() const;
 %Docstring
 Operator
@@ -350,7 +349,6 @@ Binary logical/arithmetical operator (AND, OR, =, +, ...).
 %Docstring
 Constructor
 %End
-
 
         QgsSQLStatement::BinaryOperator op() const;
 %Docstring
@@ -406,7 +404,6 @@ An 'x IN (y, z)' operator.
 Constructor
 %End
 
-
         QgsSQLStatement::Node *node() const;
 %Docstring
 Variable at the left of IN
@@ -449,7 +446,6 @@ An 'X BETWEEN y and z' operator.
 %Docstring
 Constructor
 %End
-
         QgsSQLStatement::Node *node() const;
 %Docstring
 Variable at the left of BETWEEN
@@ -497,7 +493,6 @@ Function with a name and arguments node.
 %Docstring
 Constructor
 %End
-
 
         QString name() const;
 %Docstring
@@ -628,7 +623,6 @@ Selected column.
 Constructor
 %End
 
-
         void setAlias( const QString &alias );
 %Docstring
 Sets alias name
@@ -675,7 +669,6 @@ CAST operator.
 %Docstring
 Constructor
 %End
-
 
         QgsSQLStatement::Node *node() const;
 %Docstring
@@ -777,7 +770,6 @@ Constructor with table definition, ON expression
 Constructor with table definition and USING columns
 %End
 
-
         QgsSQLStatement::NodeTableDef *tableDef() const;
 %Docstring
 Table definition
@@ -831,7 +823,6 @@ Column in a ORDER BY.
 Constructor
 %End
 
-
         QgsSQLStatement::NodeColumnRef *column() const;
 %Docstring
 The name of the column.
@@ -874,7 +865,6 @@ SELECT node.
 Constructor
 %End
         ~NodeSelect();
-
 
         void setJoins( const QList<QgsSQLStatement::NodeJoin *> &joins /Transfer/ );
 %Docstring
