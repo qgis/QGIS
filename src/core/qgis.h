@@ -5216,8 +5216,6 @@ class CORE_EXPORT Qgis
     {
       SetGeometryColumnName = 1 << 0, //!< Can set the name of the geometry column
       SetPrimaryKeyName = 1 << 1, //!< Can set the name of the primary key column
-      CreateSpatialIndex = 1 << 2, //!< Can create spatial index on import
-      ConvertFielnamesToLowercase = 1 << 3, //! Can convert fieldnames to lowercase
     };
     Q_ENUM( DatabaseProviderTableImportCapability )
     Q_DECLARE_FLAGS( DatabaseProviderTableImportCapabilities, DatabaseProviderTableImportCapability )
