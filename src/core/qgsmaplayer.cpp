@@ -755,8 +755,15 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   if ( !mExtent3D.isNull() && dataProvider() && dataProvider()->elevationProperties() && dataProvider()->elevationProperties()->containsElevationData() )
     layerElement.appendChild( QgsXmlUtils::writeBox3D( mExtent3D, document ) );
-  else if ( !mExtent2D.isNull() )
-    layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent2D, document ) );
+  else
+  {
+    // Extent might be null because lazily set
+    const QgsRectangle extent2D { mExtent2D.isNull() ? extent() : mExtent2D };
+    if ( !extent2D.isNull() )
+    {
+      layerElement.appendChild( QgsXmlUtils::writeRectangle( extent2D, document ) );
+    }
+  }
 
   if ( const QgsRectangle lWgs84Extent = wgs84Extent( true ); !lWgs84Extent.isNull() )
   {
