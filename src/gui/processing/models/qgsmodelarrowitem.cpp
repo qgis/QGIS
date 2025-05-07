@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodelgraphicitem.h"
 #include <QPainter>
 #include <QApplication>
 #include <QPalette>
@@ -72,7 +73,19 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, M
 
 void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
-  QColor color = mColor;
+  QString dataType;
+
+  // Possibly, the mComponentItem is an instance of QgsModelParameterGraphicItem. In this case,
+  // it needs to be explicitely casted so that the relevant getLinkedParamDataType method is being called
+  if (QgsModelParameterGraphicItem *paramItem = dynamic_cast<QgsModelParameterGraphicItem *>(mStartItem)){
+     dataType = paramItem->getLinkedParamDataType(mStartEdge, mStartIndex);
+  }
+  else
+  {
+    dataType = mStartItem->getLinkedParamDataType(mStartEdge, mStartIndex);
+  }
+
+  QColor color = QgsModelDesignerSocketGraphicItem::typeToColorLookup(dataType);
 
   if ( mStartItem->state() == QgsModelComponentGraphicItem::Selected || mEndItem->state() == QgsModelComponentGraphicItem::Selected )
     color.setAlpha( 220 );
@@ -83,11 +96,10 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
 
   QPen p = pen();
   p.setColor( color );
-  p.setWidth( 1 );
+  p.setWidth( 2 );
   painter->setPen( p );
   painter->setBrush( color );
   painter->setRenderHint( QPainter::Antialiasing );
-
 
   switch ( mStartMarker )
   {

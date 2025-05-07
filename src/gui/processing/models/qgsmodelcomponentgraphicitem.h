@@ -137,6 +137,8 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void setItemRect( QRectF rect );
 
+    QString getLinkedParamDataType(Qt::Edge edge, int index);
+
 #ifndef SIP_RUN
 
     /**
@@ -237,7 +239,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
     /**
      * Returns the output socket graphics items at the specified \a index.
-     * 
+     *
      * May return NULLPTR if no corresponding output socket exists.
      * \since QGIS 3.44
      */
@@ -426,6 +428,8 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
 
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
+
+    QString getLinkedParamDataType( Qt::Edge edge, int index );
 
   protected:
     QColor fillColor( State state ) const override;

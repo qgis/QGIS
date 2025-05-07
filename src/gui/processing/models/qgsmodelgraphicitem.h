@@ -158,6 +158,8 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 {
     Q_OBJECT
   public:
+    static QColor typeToColorLookup(QString dataType);
+
     /**
      * Constructor for QgsModelDesignerSocketGraphicItem, with the specified \a parent item.
      *
@@ -170,7 +172,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
     /**
-     * Returns the index of this socket in either QgsModelDesignerSocketGraphicItem::mInSockets 
+     * Returns the index of this socket in either QgsModelDesignerSocketGraphicItem::mInSockets
      * or QgsModelDesignerSocketGraphicItem::mOutSockets array
      */
     int index() const { return mIndex; };
@@ -184,7 +186,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 
     /**
      * Returns whether the socket is an input socket or not
-     * 
+     *
      * Convenient function around mEdge member
      */
     bool isInput() const { return mEdge == Qt::TopEdge; };
@@ -195,6 +197,11 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     /** Return the parent graphic item associated to the socket */
     QgsModelComponentGraphicItem *componentItem() { return mComponentItem; };
 
+    /* Returns the color of the socket based on the type of data the param corresponds to */
+    QColor getColor();
+
+    /* Returns whether the param value bear the default param value */
+    bool isDefaultParamValue();
   signals:
 
 
@@ -203,6 +210,8 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     QgsProcessingModelComponent *mComponent = nullptr;
     int mIndex = -1;
     Qt::Edge mEdge = Qt::Edge::TopEdge;
+    QColor mSocketColor = QColor( 200, 200, 200 );
+    float mSocketOutlineWidth = 1.5;
 };
 
 ///@endcond
