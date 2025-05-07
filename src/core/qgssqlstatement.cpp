@@ -151,11 +151,10 @@ QgsSQLStatement &QgsSQLStatement::operator=( const QgsSQLStatement &other )
 {
   if ( &other != this )
   {
-    mRootNode.reset( ::parse( mStatement, mParserErrorString, mAllowFragments ) );
     mParserErrorString.clear();
     mStatement = other.mStatement;
     mAllowFragments = other.mAllowFragments;
-
+    mRootNode.reset( ::parse( mStatement, mParserErrorString, mAllowFragments ) );
   }
   return *this;
 }
