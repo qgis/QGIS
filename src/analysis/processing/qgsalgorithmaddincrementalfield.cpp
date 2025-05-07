@@ -120,7 +120,7 @@ bool QgsAddIncrementalFieldAlgorithm::prepareAlgorithm( const QVariantMap &param
 
   if ( source->fields().lookupField( mFieldName ) >= 0 )
   {
-    throw QgsProcessingException( QObject::tr( "Field with the same name already exists" ) );
+    throw QgsProcessingException( QObject::tr( "A field with the same name (%1) already exists" ).arg( mFieldName ) );
   }
 
   return true;
