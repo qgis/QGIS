@@ -168,42 +168,14 @@
     "QgsAttributeTypeLoadDialog": [
       "QgsAttributeTypeLoadDialog(QgsVectorLayer *vl)"
     ],
-    "QgsAttributesDnDTree": [
-      "QgsAttributesDnDTree(QgsVectorLayer *layer, QWidget *parent=nullptr)",
-      "Type",
-      "selectFirstMatchingItem(const QgsAttributesFormProperties::DnDTreeItemData &data)",
-      "setType(QgsAttributesDnDTree::Type value)",
-      "type() const"
-    ],
     "QgsAttributesFormProperties": [
-      "FieldPropertiesRoles",
       "QgsAttributesFormProperties(QgsVectorLayer *layer, QWidget *parent=nullptr)",
       "init()",
-      "initAvailableWidgetsTree()",
-      "initFormLayoutTree()",
       "initInitPython()",
       "initLayoutConfig()",
       "initSuppressCombo()",
       "loadRelations()",
       "updateButtons()"
-    ],
-    "QgsAttributesFormProperties::DnDTreeItemData": [
-      "DnDTreeItemData(Type type, const QString &name, const QString &displayName, const QColor &backgroundColor=QColor())",
-      "Type",
-      "backgroundColor() const",
-      "columnCount() const",
-      "displayName() const",
-      "name() const",
-      "operator QVariant()",
-      "setBackgroundColor(const QColor &backgroundColor)",
-      "setColumnCount(int count)",
-      "setDisplayName(const QString &displayName)",
-      "setName(const QString &name)",
-      "setShowLabel(bool showLabel)",
-      "setType(Type type)",
-      "showLabel() const",
-      "type() const",
-      "visibilityExpression() const"
     ],
     "QgsAuthCertInfo": [
       "trustCacheRebuilt()"
@@ -2255,10 +2227,7 @@
     "QgsAttributeTableView",
     "QgsAttributeTypeLoadDialog",
     "QgsAttributes",
-    "QgsAttributesDnDTree",
     "QgsAttributesFormInitCode",
-    "QgsAttributesFormProperties",
-    "QgsAttributesFormProperties::DnDTreeItemData",
     "QgsAuthAuthoritiesEditor",
     "QgsAuthCertEditors",
     "QgsAuthCertInfo",
