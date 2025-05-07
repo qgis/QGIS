@@ -13,4 +13,3 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgpstoolsinterface.h"
-#include "moc_qgsgpstoolsinterface.cpp"
