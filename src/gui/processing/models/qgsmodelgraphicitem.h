@@ -39,7 +39,6 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsModelDesignerFlatButtonGraphicItem, with the specified \a parent item.
      *
@@ -96,7 +95,6 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
     void clicked();
 
   protected:
-
     /**
      * Sets the \a picture to render for the button graphics.
      */
@@ -120,7 +118,6 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsModelDesignerFoldButtonGraphicItem, with the specified \a parent item.
      *
@@ -162,6 +159,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 {
     Q_OBJECT
   public:
+    static QColor typeToColorLookup( QString dataType );
 
     /**
      * Constructor for QgsModelDesignerSocketGraphicItem, with the specified \a parent item.
@@ -206,11 +204,19 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
      */
     QgsModelComponentGraphicItem *componentItem() { return mComponentItem; };
 
+    /* Returns the color of the socket based on the type of data the param corresponds to */
+    QColor getColor();
+
+    /* Returns whether the param value bear the default param value */
+    bool isDefaultParamValue();
+
   private:
     QgsModelComponentGraphicItem *mComponentItem = nullptr;
     QgsProcessingModelComponent *mComponent = nullptr;
     int mIndex = -1;
     Qt::Edge mEdge = Qt::Edge::TopEdge;
+    QColor mSocketColor = QColor( 200, 200, 200 );
+    float mSocketOutlineWidth = 1.5;
 };
 
 ///@endcond

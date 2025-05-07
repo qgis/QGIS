@@ -297,6 +297,11 @@ the specified ``model``.
 .. versionadded:: 3.14
 %End
 
+    Qgis::ProcessingModelChildParameterSource getSourceType();
+%Docstring
+Returns the type of source
+%End
+
 };
 
 
