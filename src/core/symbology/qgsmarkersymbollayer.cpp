@@ -3485,6 +3485,8 @@ QRectF QgsRasterMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
 
 void QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
+  Q_UNUSED( props )
+
   // <Graphic>
   QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
   element.appendChild( graphicElem );
