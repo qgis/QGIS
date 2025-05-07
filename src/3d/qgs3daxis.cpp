@@ -29,7 +29,6 @@
 #include <Qt3DRender/QSortPolicy>
 #include <QWidget>
 #include <QScreen>
-#include <QShortcut>
 #include <QFontDatabase>
 #include <ctime>
 #include <QApplication>
@@ -39,7 +38,6 @@
 #include "qgs3dmapscene.h"
 #include "qgsterrainentity.h"
 #include "qgscoordinatereferencesystemutils.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgswindow3dengine.h"
 #include "qgsraycastingutils_p.h"
 #include "qgs3dwiredmesh_p.h"
@@ -65,8 +63,6 @@ Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, 
   onAxisViewportSizeUpdate();
 
   init3DObjectPicking();
-
-  createKeyboardShortCut();
 }
 
 Qgs3DAxis::~Qgs3DAxis()
@@ -112,15 +108,15 @@ void Qgs3DAxis::init3DObjectPicking()
   mAxisSceneEntity->addComponent( mScreenRayCaster );
 
   QObject::connect( mScreenRayCaster, &Qt3DRender::QScreenRayCaster::hitsChanged, this, &Qgs3DAxis::onTouchedByRay );
-
-  // we need event filter (see Qgs3DAxis::eventFilter) to handle the mouse click event as this event is not catchable via the Qt3DRender::QObjectPicker
-  mCanvas->installEventFilter( this );
 }
 
-bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
+// will be called by Qgs3DMapCanvas::eventFilter
+bool Qgs3DAxis::handleEvent( QEvent *event )
 {
-  if ( watched != mCanvas )
-    return false;
+  if ( event->type() == QEvent::ShortcutOverride )
+  {
+    return handleKeyEvent( static_cast<QKeyEvent *>( event ) );
+  }
 
   if ( event->type() == QEvent::MouseButtonPress )
   {
@@ -495,37 +491,48 @@ void Qgs3DAxis::createAxisScene()
   }
 }
 
-void Qgs3DAxis::createKeyboardShortCut()
+bool Qgs3DAxis::handleKeyEvent( QKeyEvent *keyEvent )
 {
-  QgsWindow3DEngine *eng = dynamic_cast<QgsWindow3DEngine *>( mMapScene->engine() );
-  if ( eng )
+  bool ret = false;
+  if ( keyEvent->modifiers() | Qt::ControlModifier )
   {
-    QWidget *mapCanvas = dynamic_cast<QWidget *>( eng->parent() );
-    if ( !mapCanvas )
+    ret = true;
+    switch ( keyEvent->key() )
     {
-      QgsLogger::warning( "Qgs3DAxis: no canvas defined!" );
-    }
-    else
-    {
-      QShortcut *shortcutHome = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_1 ), mapCanvas );
-      connect( shortcutHome, &QShortcut::activated, this, [this]() { onCameraViewChangeHome(); } );
+      case Qt::Key_8:
+        onCameraViewChangeNorth();
+        break;
 
-      QShortcut *shortcutTop = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_5 ), mapCanvas );
-      connect( shortcutTop, &QShortcut::activated, this, [this]() { onCameraViewChangeTop(); } );
+      case Qt::Key_6:
+        onCameraViewChangeEast();
+        break;
 
-      QShortcut *shortcutNorth = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_8 ), mapCanvas );
-      connect( shortcutNorth, &QShortcut::activated, this, [this]() { onCameraViewChangeNorth(); } );
+      case Qt::Key_2:
+        onCameraViewChangeSouth();
+        break;
 
-      QShortcut *shortcutEast = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_6 ), mapCanvas );
-      connect( shortcutEast, &QShortcut::activated, this, [this]() { onCameraViewChangeEast(); } );
+      case Qt::Key_4:
+        onCameraViewChangeWest();
+        break;
 
-      QShortcut *shortcutSouth = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_2 ), mapCanvas );
-      connect( shortcutSouth, &QShortcut::activated, this, [this]() { onCameraViewChangeSouth(); } );
+      case Qt::Key_9:
+        onCameraViewChangeTop();
+        break;
 
-      QShortcut *shortcutWest = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_4 ), mapCanvas );
-      connect( shortcutWest, &QShortcut::activated, this, [this]() { onCameraViewChangeWest(); } );
+      case Qt::Key_3:
+        onCameraViewChangeBottom();
+        break;
+
+      case Qt::Key_5:
+        onCameraViewChangeHome();
+        break;
+
+      default:
+        ret = false;
+        break;
     }
   }
+  return ret;
 }
 
 void Qgs3DAxis::createMenu()
