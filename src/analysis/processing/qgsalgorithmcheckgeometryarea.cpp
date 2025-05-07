@@ -32,8 +32,14 @@ QString QgsGeometryCheckAreaAlgorithm::name() const
 
 QString QgsGeometryCheckAreaAlgorithm::displayName() const
 {
-  return QObject::tr( "Check geometry (Area)" );
+  return QObject::tr( "Small polygons" );
 }
+
+QString QgsGeometryCheckAreaAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect polygons smaller than a given area" );
+}
+
 
 QStringList QgsGeometryCheckAreaAlgorithm::tags() const
 {
@@ -86,10 +92,10 @@ void QgsGeometryCheckAreaAlgorithm::initAlgorithm( const QVariantMap &configurat
 
   // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Small polygons errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Small polygons features" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

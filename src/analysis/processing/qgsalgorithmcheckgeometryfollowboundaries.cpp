@@ -32,7 +32,12 @@ QString QgsGeometryCheckFollowBoundariesAlgorithm::name() const
 
 QString QgsGeometryCheckFollowBoundariesAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Follow Boundaries)" );
+  return QObject::tr( "Polygons exceeding boundaries" );
+}
+
+QString QgsGeometryCheckFollowBoundariesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect polygons that do not follow boundaries defined by a reference polygon layer" );
 }
 
 QStringList QgsGeometryCheckFollowBoundariesAlgorithm::tags() const
@@ -77,10 +82,10 @@ void QgsGeometryCheckFollowBoundariesAlgorithm::initAlgorithm( const QVariantMap
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Errors exceeding boundaries" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Features exceeding boundaries" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
   ) );
 
   addParameter( new QgsProcessingParameterFeatureSource(

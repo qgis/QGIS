@@ -32,7 +32,12 @@ QString QgsGeometryCheckOverlapAlgorithm::name() const
 
 QString QgsGeometryCheckOverlapAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Overlap)" );
+  return QObject::tr( "Overlaps" );
+}
+
+QString QgsGeometryCheckOverlapAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect overlaps between polygons, smaller than a given area" );
 }
 
 QStringList QgsGeometryCheckOverlapAlgorithm::tags() const
@@ -77,10 +82,10 @@ void QgsGeometryCheckOverlapAlgorithm::initAlgorithm( const QVariantMap &configu
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Overlap errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Overlap features" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
   ) );
 
   addParameter( new QgsProcessingParameterNumber(

@@ -31,7 +31,12 @@ QString QgsFixGeometryMissingVertexAlgorithm::name() const
 
 QString QgsFixGeometryMissingVertexAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (Missing Vertex)" );
+  return QObject::tr( "Add missing vertices along borders" );
+}
+
+QString QgsFixGeometryMissingVertexAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Add missing vertices along borders detected with the \"Missing vertices along borders\" algorithm from the \"Check geometry\" section" );
 }
 
 QStringList QgsFixGeometryMissingVertexAlgorithm::tags() const
@@ -51,8 +56,8 @@ QString QgsFixGeometryMissingVertexAlgorithm::groupId() const
 
 QString QgsFixGeometryMissingVertexAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm adds the missing vertices along polygons junctions, "
-                      "based on an error layer from the check missing vertex algorithm." );
+  return QObject::tr( "This algorithm adds the missing vertices along polygons borders, "
+                      "based on an error layer from the \"Missing vertices along borders\" algorithm in the \"Check geometry\" section." );
 }
 
 QgsFixGeometryMissingVertexAlgorithm *QgsFixGeometryMissingVertexAlgorithm::createInstance() const
@@ -94,10 +99,10 @@ void QgsFixGeometryMissingVertexAlgorithm::initAlgorithm( const QVariantMap &con
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Border vertices fixed layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing border vertices" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

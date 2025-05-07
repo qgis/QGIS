@@ -32,7 +32,12 @@ QString QgsGeometryCheckHoleAlgorithm::name() const
 
 QString QgsGeometryCheckHoleAlgorithm::displayName() const
 {
-  return QObject::tr( "Check geometry (Hole)" );
+  return QObject::tr( "Holes" );
+}
+
+QString QgsGeometryCheckHoleAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect holes inside polygons" );
 }
 
 QStringList QgsGeometryCheckHoleAlgorithm::tags() const
@@ -83,10 +88,10 @@ void QgsGeometryCheckHoleAlgorithm::initAlgorithm( const QVariantMap &configurat
 
   // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Holes errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Polygons with holes" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

@@ -32,7 +32,12 @@ QString QgsGeometryCheckSelfContactAlgorithm::name() const
 
 QString QgsGeometryCheckSelfContactAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (self contact)" );
+  return QObject::tr( "Self-contacts" );
+}
+
+QString QgsGeometryCheckSelfContactAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect self contact points in the geometry (line or polygon)" );
 }
 
 QStringList QgsGeometryCheckSelfContactAlgorithm::tags() const
@@ -78,10 +83,10 @@ void QgsGeometryCheckSelfContactAlgorithm::initAlgorithm( const QVariantMap &con
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Self contact error points" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Self contact features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

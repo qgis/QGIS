@@ -32,7 +32,12 @@ QString QgsGeometryCheckAngleAlgorithm::name() const
 
 QString QgsGeometryCheckAngleAlgorithm::displayName() const
 {
-  return QObject::tr( "Check geometry (Angle)" );
+  return QObject::tr( "Small angles" );
+}
+
+QString QgsGeometryCheckAngleAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect angles smaller than a given angle" );
 }
 
 QStringList QgsGeometryCheckAngleAlgorithm::tags() const
@@ -86,8 +91,7 @@ void QgsGeometryCheckAngleAlgorithm::initAlgorithm( const QVariantMap &configura
 
   // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), Qgis::ProcessingSourceType::VectorPoint
-  ) );
+    QStringLiteral( "ERRORS" ), QObject::tr( "Small angle errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

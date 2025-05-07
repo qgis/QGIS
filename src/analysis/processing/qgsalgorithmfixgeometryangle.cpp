@@ -32,7 +32,12 @@ QString QgsFixGeometryAngleAlgorithm::name() const
 
 QString QgsFixGeometryAngleAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (Angle)" );
+  return QObject::tr( "Delete small angles" );
+}
+
+QString QgsFixGeometryAngleAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Delete vertices detected with the \"Small angles\" algorithm from the \"Check geometry\" section" );
 }
 
 QStringList QgsFixGeometryAngleAlgorithm::tags() const
@@ -53,7 +58,7 @@ QString QgsFixGeometryAngleAlgorithm::groupId() const
 QString QgsFixGeometryAngleAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm deletes vertices based on an error layer from the "
-                      "check angle algorithm.\n"
+                      "\"Small angles\" algorithm in the \"Check geometry\" section.\n"
                       "When deletion of a vertex results in a duplicate vertex (when a spike vertex is deleted), "
                       "the duplicate vertex is deleted to keep a single vertex and preserve topology." );
 }
@@ -96,10 +101,10 @@ void QgsFixGeometryAngleAlgorithm::initAlgorithm( const QVariantMap &configurati
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Small angle fixed layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing small angles" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

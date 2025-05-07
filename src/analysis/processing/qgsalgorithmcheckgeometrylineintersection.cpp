@@ -32,7 +32,12 @@ QString QgsGeometryCheckLineIntersectionAlgorithm::name() const
 
 QString QgsGeometryCheckLineIntersectionAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (line intersection)" );
+  return QObject::tr( "Lines intersecting each other" );
+}
+
+QString QgsGeometryCheckLineIntersectionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect intersections between different lines" );
 }
 
 QStringList QgsGeometryCheckLineIntersectionAlgorithm::tags() const
@@ -77,10 +82,10 @@ void QgsGeometryCheckLineIntersectionAlgorithm::initAlgorithm( const QVariantMap
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Intersection errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Intersecting feature" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

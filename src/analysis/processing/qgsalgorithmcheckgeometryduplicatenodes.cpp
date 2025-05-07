@@ -32,7 +32,12 @@ QString QgsGeometryCheckDuplicateNodesAlgorithm::name() const
 
 QString QgsGeometryCheckDuplicateNodesAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Duplicated Nodes)" );
+  return QObject::tr( "Duplicated vertices" );
+}
+
+QString QgsGeometryCheckDuplicateNodesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect duplicated vertices in line and polygon geometries" );
 }
 
 QStringList QgsGeometryCheckDuplicateNodesAlgorithm::tags() const
@@ -52,8 +57,8 @@ QString QgsGeometryCheckDuplicateNodesAlgorithm::groupId() const
 
 QString QgsGeometryCheckDuplicateNodesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm checks the nodes (vertices) of line and polygon geometries.\n"
-                      "Duplicated nodes are errors." );
+  return QObject::tr( "This algorithm checks the vertices of line and polygon geometries.\n"
+                      "Duplicated vertices are errors." );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckDuplicateNodesAlgorithm::flags() const
@@ -78,10 +83,10 @@ void QgsGeometryCheckDuplicateNodesAlgorithm::initAlgorithm( const QVariantMap &
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Duplicated vertices errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Duplicated vertices features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

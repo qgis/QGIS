@@ -32,7 +32,12 @@ QString QgsGeometryCheckPointCoveredByLineAlgorithm::name() const
 
 QString QgsGeometryCheckPointCoveredByLineAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (point covered by line)" );
+  return QObject::tr( "Points outside lines" );
+}
+
+QString QgsGeometryCheckPointCoveredByLineAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect points that are not along lines from another layer" );
 }
 
 QStringList QgsGeometryCheckPointCoveredByLineAlgorithm::tags() const
@@ -80,8 +85,7 @@ void QgsGeometryCheckPointCoveredByLineAlgorithm::initAlgorithm( const QVariantM
     QStringLiteral( "LINES" ), QObject::tr( "Line layers" ), Qgis::ProcessingSourceType::VectorLine
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
-  ) );
+    QStringLiteral( "ERRORS" ), QObject::tr( "Points not covered by a line" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

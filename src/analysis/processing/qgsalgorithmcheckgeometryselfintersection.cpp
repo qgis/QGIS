@@ -32,7 +32,12 @@ QString QgsGeometryCheckSelfIntersectionAlgorithm::name() const
 
 QString QgsGeometryCheckSelfIntersectionAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Self intersection)" );
+  return QObject::tr( "Self-intersections" );
+}
+
+QString QgsGeometryCheckSelfIntersectionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect self-intersecting geometries" );
 }
 
 QStringList QgsGeometryCheckSelfIntersectionAlgorithm::tags() const
@@ -80,10 +85,10 @@ void QgsGeometryCheckSelfIntersectionAlgorithm::initAlgorithm( const QVariantMap
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Self-intersecting errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Self-intersecting features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

@@ -32,12 +32,17 @@ QString QgsFixGeometryHoleAlgorithm::name() const
 
 QString QgsFixGeometryHoleAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (Hole)" );
+  return QObject::tr( "Fill holes" );
+}
+
+QString QgsFixGeometryHoleAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Fill holes detected with the \"Holes\" algorithm from the \"Check geometry\" section" );
 }
 
 QStringList QgsFixGeometryHoleAlgorithm::tags() const
 {
-  return QObject::tr( "delete,fix,hole" ).split( ',' );
+  return QObject::tr( "delete,fill,fix,hole" ).split( ',' );
 }
 
 QString QgsFixGeometryHoleAlgorithm::group() const
@@ -52,7 +57,7 @@ QString QgsFixGeometryHoleAlgorithm::groupId() const
 
 QString QgsFixGeometryHoleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm deletes holes based on an error layer from the check holes algorithm.\n" );
+  return QObject::tr( "This algorithm deletes holes based on an error layer from the \"Holes\" algorithm in the \"Check geometry\" section.\n" );
 }
 
 QgsFixGeometryHoleAlgorithm *QgsFixGeometryHoleAlgorithm::createInstance() const
@@ -93,10 +98,10 @@ void QgsFixGeometryHoleAlgorithm::initAlgorithm( const QVariantMap &configuratio
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Holes-filled layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing holes" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

@@ -32,7 +32,12 @@ QString QgsGeometryCheckDuplicateAlgorithm::name() const
 
 QString QgsGeometryCheckDuplicateAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Duplicate)" );
+  return QObject::tr( "Duplicated geometries" );
+}
+
+QString QgsGeometryCheckDuplicateAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect duplicate geometries" );
 }
 
 QStringList QgsGeometryCheckDuplicateAlgorithm::tags() const
@@ -83,10 +88,10 @@ void QgsGeometryCheckDuplicateAlgorithm::initAlgorithm( const QVariantMap &confi
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Duplicate geometries errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Duplicate geometries" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

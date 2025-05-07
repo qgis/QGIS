@@ -32,7 +32,12 @@ QString QgsGeometryCheckGapAlgorithm::name() const
 
 QString QgsGeometryCheckGapAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Gap)" );
+  return QObject::tr( "Small gaps" );
+}
+
+QString QgsGeometryCheckGapAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect gaps between polygons smaller than a given area" );
 }
 
 QStringList QgsGeometryCheckGapAlgorithm::tags() const
@@ -97,10 +102,10 @@ void QgsGeometryCheckGapAlgorithm::initAlgorithm( const QVariantMap &configurati
     QStringLiteral( "NEIGHBORS" ), QObject::tr( "Neighbors layer" ), Qgis::ProcessingSourceType::Vector
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true, false
+    QStringLiteral( "ERRORS" ), QObject::tr( "Gap errors" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true, false
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Gap features" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

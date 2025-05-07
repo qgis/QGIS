@@ -30,12 +30,17 @@ QString QgsFixGeometryGapAlgorithm::name() const
 
 QString QgsFixGeometryGapAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (gap)" );
+  return QObject::tr( "Fill gaps" );
+}
+
+QString QgsFixGeometryGapAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Fill gaps detected with the \"Small gaps\" algorithm from the \"Check geometry\" section" );
 }
 
 QStringList QgsFixGeometryGapAlgorithm::tags() const
 {
-  return QObject::tr( "fix,gap" ).split( ',' );
+  return QObject::tr( "fix,fill,gap" ).split( ',' );
 }
 
 QString QgsFixGeometryGapAlgorithm::group() const
@@ -50,7 +55,8 @@ QString QgsFixGeometryGapAlgorithm::groupId() const
 
 QString QgsFixGeometryGapAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm fills the gaps based on a gap and neighbors layer from the check gap algorithm." );
+  return QObject::tr( "This algorithm fills the gaps based on a gap and neighbors layer from the \"Small gaps\" algorithm in the \"Check geometry\" section.\n\n"
+                      "3 different fixing methods are available, which will give different results." );
 }
 
 QgsFixGeometryGapAlgorithm *QgsFixGeometryGapAlgorithm::createInstance() const
@@ -96,10 +102,10 @@ void QgsFixGeometryGapAlgorithm::initAlgorithm( const QVariantMap &configuration
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Gaps-filled layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing gaps" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

@@ -32,7 +32,12 @@ QString QgsFixGeometryMultipartAlgorithm::name() const
 
 QString QgsFixGeometryMultipartAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (strict multipart)" );
+  return QObject::tr( "Convert to strictly multipart" );
+}
+
+QString QgsFixGeometryMultipartAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Convert features detected with the \"Strictly multipart\" algorithm from the \"Check geometry\" section to singlepart" );
 }
 
 QStringList QgsFixGeometryMultipartAlgorithm::tags() const
@@ -53,7 +58,8 @@ QString QgsFixGeometryMultipartAlgorithm::groupId() const
 QString QgsFixGeometryMultipartAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm converts multipart geometries that consists of only one geometry "
-                      "into singlepart geometries, based on an error layer from the check strict multipart algorithm." );
+                      "into singlepart geometries, based on an error layer from the \"Strict multipart\" algorithm in the \"Check geometry\" section.\n\n"
+                      "This algorithm does not change the layer geometry type, which will remain multipart." );
 }
 
 QgsFixGeometryMultipartAlgorithm *QgsFixGeometryMultipartAlgorithm::createInstance() const
@@ -79,10 +85,10 @@ void QgsFixGeometryMultipartAlgorithm::initAlgorithm( const QVariantMap &configu
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Strictly-multipart layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing multiparts" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

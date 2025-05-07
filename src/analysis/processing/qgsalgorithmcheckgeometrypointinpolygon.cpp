@@ -32,7 +32,12 @@ QString QgsGeometryCheckPointInPolygonAlgorithm::name() const
 
 QString QgsGeometryCheckPointInPolygonAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (point in polygon)" );
+  return QObject::tr( "Points outside polygons" );
+}
+
+QString QgsGeometryCheckPointInPolygonAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect points that are not in polygons from the polygon layer list" );
 }
 
 QStringList QgsGeometryCheckPointInPolygonAlgorithm::tags() const
@@ -80,8 +85,7 @@ void QgsGeometryCheckPointInPolygonAlgorithm::initAlgorithm( const QVariantMap &
     QStringLiteral( "POLYGONS" ), QObject::tr( "Polygon layers" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
-  ) );
+    QStringLiteral( "ERRORS" ), QObject::tr( "Points outside polygons errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
