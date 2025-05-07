@@ -1904,7 +1904,7 @@ bool QgsSymbolLayerUtils::needSvgMarker( QDomElement &element )
 bool QgsSymbolLayerUtils::needRasterMarker( QDomElement &element )
 {
   // any external graphic except SVGs are considered rasters
-  return hasExternalGraphicV2( element, QString() ) && !needSvgMarker(element);
+  return hasExternalGraphicV2( element, QString() ) && !needSvgMarker( element );
 }
 
 bool QgsSymbolLayerUtils::needEllipseMarker( QDomElement &element )

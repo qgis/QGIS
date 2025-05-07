@@ -799,6 +799,7 @@ Creates a raster marker symbol layer from a string map of properties.
 
 :param properties: QVariantMap properties object
 %End
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
@@ -820,6 +821,8 @@ versa when writing. Used internally when reading/writing symbols.
     virtual bool usesMapUnits() const;
 
     virtual QColor color() const;
+
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
