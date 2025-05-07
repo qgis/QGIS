@@ -261,14 +261,14 @@ void QgsFilteredTableWidget::onTableWidgetCustomContextMenuRequested( const QPoi
 
 void QgsFilteredTableWidget::onTableWidgetMenuActionSelectAllTriggered()
 {
-  for ( int rowIndex = 0 ; rowIndex < mTableWidget->rowCount(); ++rowIndex )
+  for ( int rowIndex = 0; rowIndex < mTableWidget->rowCount(); ++rowIndex )
   {
     for ( int columnIndex = 0; columnIndex < mTableWidget->columnCount(); ++columnIndex )
     {
-      QTableWidgetItem* item = whileBlocking( mTableWidget )->item( rowIndex, columnIndex );
+      QTableWidgetItem *item = whileBlocking( mTableWidget )->item( rowIndex, columnIndex );
       if ( item && ( item->flags() & Qt::ItemIsEnabled ) )
       {
-	item->setCheckState( Qt::Checked );
+        item->setCheckState( Qt::Checked );
       }
     }
   }
@@ -276,14 +276,14 @@ void QgsFilteredTableWidget::onTableWidgetMenuActionSelectAllTriggered()
 
 void QgsFilteredTableWidget::onTableWidgetMenuActionDeselectAllTriggered()
 {
-  for ( int rowIndex = 0 ; rowIndex < mTableWidget->rowCount(); ++rowIndex )
+  for ( int rowIndex = 0; rowIndex < mTableWidget->rowCount(); ++rowIndex )
   {
     for ( int columnIndex = 0; columnIndex < mTableWidget->columnCount(); ++columnIndex )
     {
-      QTableWidgetItem* item = whileBlocking( mTableWidget )->item( rowIndex, columnIndex );
+      QTableWidgetItem *item = whileBlocking( mTableWidget )->item( rowIndex, columnIndex );
       if ( item && ( item->flags() & Qt::ItemIsEnabled ) )
       {
-	item->setCheckState( Qt::Unchecked );
+        item->setCheckState( Qt::Unchecked );
       }
     }
   }
