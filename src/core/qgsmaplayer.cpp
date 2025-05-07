@@ -761,7 +761,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
     const QgsRectangle extent2D { mExtent2D.isNull() ? extent() : mExtent2D };
     if ( !extent2D.isNull() )
     {
-      layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent2D, document ) );
+      layerElement.appendChild( QgsXmlUtils::writeRectangle( extent2D, document ) );
     }
   }
 
