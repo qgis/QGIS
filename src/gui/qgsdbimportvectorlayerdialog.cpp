@@ -103,7 +103,7 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
     mEditComment = nullptr;
   }
 
-  const bool supportsSpatialIndex = mConnection->tableImportCapabilities().testFlag( Qgis::DatabaseProviderTableImportCapability::CreateSpatialIndex );
+  const bool supportsSpatialIndex = mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::CreateSpatialIndex );
   if ( !supportsSpatialIndex )
   {
     delete mChkSpatialIndex;
