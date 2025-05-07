@@ -113,12 +113,21 @@ void TestQgsValueMapConfigDlg::testTestTrimValues()
   std::unique_ptr<QgsValueMapConfigDlg> valueMapConfig;
   valueMapConfig.reset( static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "ValueMap" ), &vl, 1, nullptr ) ) );
 
-  valueMapConfig->updateMap( valueList, false );
-  valueMapConfig->addNullButtonPushed();
+  valueMapConfig->updateMap( valueList );
+
+  // set allow null in value map configuration and apply it to the layer
+  QVariantMap config = valueMapConfig->config();
+  config.remove(QStringLiteral("AllowNull"));
+  config.insert( QStringLiteral( "AllowNull" ), true );
+  vl.setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), config ) );
+
   QVERIFY( !valueMapConfig->mValueMapErrorsLabel->text().contains( QStringLiteral( "trimmed" ) ) );
 
   valueList[QStringLiteral( "33" )] = QStringLiteral( "Choice 33" );
-  valueMapConfig->updateMap( valueList, false );
+  valueMapConfig->updateMap( valueList );
+  config.remove(QStringLiteral("AllowNull"));
+  config.insert( QStringLiteral( "AllowNull" ), false );
+  vl.setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), config ) );
   QVERIFY( valueMapConfig->mValueMapErrorsLabel->text().contains( QStringLiteral( "trimmed" ) ) );
 }
 
