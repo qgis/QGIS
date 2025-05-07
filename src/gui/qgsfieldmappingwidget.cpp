@@ -25,6 +25,7 @@
 
 #include <QTableView>
 #include <QVBoxLayout>
+#include <QMenu>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -64,6 +65,8 @@ QgsFieldMappingWidget::QgsFieldMappingWidget(
   connect( mModel, &QgsFieldMappingModel::rowsInserted, this, &QgsFieldMappingWidget::changed );
   connect( mModel, &QgsFieldMappingModel::rowsRemoved, this, &QgsFieldMappingWidget::changed );
   connect( mModel, &QgsFieldMappingModel::modelReset, this, &QgsFieldMappingWidget::changed );
+
+  mTableView->setContextMenuPolicy( Qt::CustomContextMenu );
 }
 
 void QgsFieldMappingWidget::setDestinationEditable( bool editable )
@@ -235,6 +238,29 @@ std::list<int> QgsFieldMappingWidget::selectedRows()
   return rows;
 }
 
+void QgsFieldMappingWidget::contextMenuEvent( QContextMenuEvent *e )
+{
+  QModelIndex index = mTableView->indexAt( e->pos() );
+
+  if ( index.isValid() && static_cast<QgsFieldMappingModel::ColumnDataIndex>( index.column() ) == QgsFieldMappingModel::ColumnDataIndex::DestinationName )
+  {
+    QMenu contextMenu;
+
+    QAction *actionConvertAllFieldNamesToLowercase = contextMenu.addAction( "Convert All Field Names to Lowercase" );
+
+    connect( actionConvertAllFieldNamesToLowercase, &QAction::triggered, this, [=]() {
+      for ( int i = 0; i < mModel->rowCount(); i++ )
+      {
+        QModelIndex index = mModel->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
+        QString name = mModel->data( index, Qt::EditRole ).toString();
+        mModel->setData( index, name.toLower(), Qt::EditRole );
+      }
+    } );
+
+    contextMenu.exec( mTableView->mapToGlobal( e->pos() ) );
+  }
+}
+
 /// @cond PRIVATE
 
 //
@@ -379,5 +405,4 @@ void QgsFieldMappingTypeDelegate::setNativeTypes( const QList<QgsVectorDataProvi
 {
   mNativeTypes = nativeTypes.isEmpty() ? QgsFieldMappingModel::supportedDataTypes() : nativeTypes;
 }
-
 /// @endcond

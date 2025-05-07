@@ -168,6 +168,9 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
      */
     void invertSelection();
 
+  protected:
+    void contextMenuEvent( QContextMenuEvent *e );
+
   private:
     QTableView *mTableView = nullptr;
     QgsFieldMappingModel *mModel = nullptr;

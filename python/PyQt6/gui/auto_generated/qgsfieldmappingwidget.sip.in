@@ -175,6 +175,9 @@ Invert the field selection state.
 .. versionadded:: 3.32
 %End
 
+  protected:
+    void contextMenuEvent( QContextMenuEvent *e );
+
 };
 
 

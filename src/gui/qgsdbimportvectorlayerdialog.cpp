@@ -110,14 +110,6 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
     mChkSpatialIndex = nullptr;
   }
 
-  const bool convertFieldnamesToLowercase = mConnection->tableImportCapabilities().testFlag( Qgis::DatabaseProviderTableImportCapability::ConvertFielnamesToLowercase );
-  if ( !convertFieldnamesToLowercase )
-  {
-    delete mChkLowercaseFieldNames;
-    mChkLowercaseFieldNames = nullptr;
-  }
-
-
   mExtentGroupBox->setTitleBase( tr( "Filter by Extent" ) );
   mExtentGroupBox->setCheckable( true );
   mExtentGroupBox->setChecked( false );
@@ -346,11 +338,6 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
   if ( mChkDropTable->isChecked() )
   {
     allProviderOptions.insert( QStringLiteral( "overwrite" ), true );
-  }
-
-  if ( mChkLowercaseFieldNames->isChecked() && mConnection->providerKey() == QStringLiteral( "postgres" ) )
-  {
-    allProviderOptions.insert( QStringLiteral( "lowercaseFieldNames" ), true );
   }
 
   // This flag tells to the provider that field types do not need conversion -- we have already
