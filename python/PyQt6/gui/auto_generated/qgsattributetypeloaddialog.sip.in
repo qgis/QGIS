@@ -44,13 +44,6 @@ Returns the value map which is currently active.
 :return: value map of values selected from layer
 %End
 
-    bool insertNull();
-%Docstring
-Returns ``True`` if the "Add NULL value" checkbox has been checked.
-
-:return: ``True`` if the "Add NULL value" checkbox has been checked.
-%End
-
 };
 
 /************************************************************************
