@@ -32,7 +32,12 @@ QString QgsGeometryCheckDangleAlgorithm::name() const
 
 QString QgsGeometryCheckDangleAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Dangle)" );
+  return QObject::tr( "Dangle-end lines" );
+}
+
+QString QgsGeometryCheckDangleAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect lines with a dangle end" );
 }
 
 QStringList QgsGeometryCheckDangleAlgorithm::tags() const
@@ -77,10 +82,10 @@ void QgsGeometryCheckDangleAlgorithm::initAlgorithm( const QVariantMap &configur
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Dangle-end errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Dangle-end features" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

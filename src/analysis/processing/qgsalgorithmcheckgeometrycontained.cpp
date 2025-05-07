@@ -32,7 +32,12 @@ QString QgsGeometryCheckContainedAlgorithm::name() const
 
 QString QgsGeometryCheckContainedAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Contained)" );
+  return QObject::tr( "Features inside polygon" );
+}
+
+QString QgsGeometryCheckContainedAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect features contained inside polygons from a list of polygon layers" );
 }
 
 QStringList QgsGeometryCheckContainedAlgorithm::tags() const
@@ -52,7 +57,7 @@ QString QgsGeometryCheckContainedAlgorithm::groupId() const
 
 QString QgsGeometryCheckContainedAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm checks the input geometries contained in the polygon layers features.\n"
+  return QObject::tr( "This algorithm checks the input geometries contained in the polygons from the polygon layers list.\n"
                       "A polygon layer can be checked against itself.\n"
                       "Input features contained in the polygon layers features are errors.\n" );
 }
@@ -87,10 +92,10 @@ void QgsGeometryCheckContainedAlgorithm::initAlgorithm( const QVariantMap &confi
 
   // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Errors from contained features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Contained features" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

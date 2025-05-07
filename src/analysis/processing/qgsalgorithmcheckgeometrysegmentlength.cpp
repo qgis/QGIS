@@ -32,7 +32,12 @@ QString QgsGeometryCheckSegmentLengthAlgorithm::name() const
 
 QString QgsGeometryCheckSegmentLengthAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Segment length)" );
+  return QObject::tr( "Small segments" );
+}
+
+QString QgsGeometryCheckSegmentLengthAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect segments, in lines or polygons, shorter than a given length" );
 }
 
 QStringList QgsGeometryCheckSegmentLengthAlgorithm::tags() const
@@ -78,11 +83,10 @@ void QgsGeometryCheckSegmentLengthAlgorithm::initAlgorithm( const QVariantMap &c
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ),
-    Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Short segments errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Short segments features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   addParameter( new QgsProcessingParameterNumber(

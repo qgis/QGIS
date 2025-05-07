@@ -32,7 +32,12 @@ QString QgsGeometryCheckSliverPolygonAlgorithm::name() const
 
 QString QgsGeometryCheckSliverPolygonAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (sliver polygon)" );
+  return QObject::tr( "Sliver polygons" );
+}
+
+QString QgsGeometryCheckSliverPolygonAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect sliver polygons that are too thin" );
 }
 
 QStringList QgsGeometryCheckSliverPolygonAlgorithm::tags() const
@@ -82,10 +87,10 @@ void QgsGeometryCheckSliverPolygonAlgorithm::initAlgorithm( const QVariantMap &c
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Sliver polygon errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Sliver polygon features" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
   ) );
 
   addParameter( new QgsProcessingParameterNumber(

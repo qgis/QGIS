@@ -31,7 +31,12 @@ QString QgsGeometryCheckDegeneratePolygonAlgorithm::name() const
 
 QString QgsGeometryCheckDegeneratePolygonAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Degenerate polygon)" );
+  return QObject::tr( "Degenerate polygons" );
+}
+
+QString QgsGeometryCheckDegeneratePolygonAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect polygons with less than 3 points" );
 }
 
 QStringList QgsGeometryCheckDegeneratePolygonAlgorithm::tags() const
@@ -76,10 +81,10 @@ void QgsGeometryCheckDegeneratePolygonAlgorithm::initAlgorithm( const QVariantMa
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Degenerate polygons errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Degenerate polygons features" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );

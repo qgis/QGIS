@@ -31,7 +31,12 @@ QString QgsFixGeometrySelfIntersectionAlgorithm::name() const
 
 QString QgsFixGeometrySelfIntersectionAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (self intersection)" );
+  return QObject::tr( "Split self-intersecting geometries" );
+}
+
+QString QgsFixGeometrySelfIntersectionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Split features detected with the \"Self-intersections\" algorithm from the \"Check geometry\" section" );
 }
 
 QStringList QgsFixGeometrySelfIntersectionAlgorithm::tags() const
@@ -51,8 +56,8 @@ QString QgsFixGeometrySelfIntersectionAlgorithm::groupId() const
 
 QString QgsFixGeometrySelfIntersectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm splits self intersecting lines according to the chosen method "
-                      "based on an error layer from the check self intersection algorithm." );
+  return QObject::tr( "This algorithm splits self intersecting lines or polygons according to the chosen method, "
+                      "based on an error layer from the \"Self-intersections\" algorithm in the \"Check geometry\" section." );
 }
 
 QgsFixGeometrySelfIntersectionAlgorithm *QgsFixGeometrySelfIntersectionAlgorithm::createInstance() const
@@ -118,10 +123,10 @@ void QgsFixGeometrySelfIntersectionAlgorithm::initAlgorithm( const QVariantMap &
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Self-intersections fixed layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing self-intersections" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

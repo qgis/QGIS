@@ -32,7 +32,12 @@ QString QgsGeometryCheckMissingVertexAlgorithm::name() const
 
 QString QgsGeometryCheckMissingVertexAlgorithm::displayName() const
 {
-  return QObject::tr( "Check geometry (Missing Vertex)" );
+  return QObject::tr( "Missing vertices along borders" );
+}
+
+QString QgsGeometryCheckMissingVertexAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect missing vertices along polygon borders for topology compliance" );
 }
 
 QStringList QgsGeometryCheckMissingVertexAlgorithm::tags() const
@@ -52,7 +57,8 @@ QString QgsGeometryCheckMissingVertexAlgorithm::groupId() const
 
 QString QgsGeometryCheckMissingVertexAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm checks for missing vertices along polygon junctions.\n"
+  return QObject::tr( "This algorithm checks for missing vertices along polygon borders.\n"
+                      "To be topologically correct, a vertex at the junction of two polygons must be present on both polygons."
                       "Missing vertices are errors." );
 }
 
@@ -83,10 +89,10 @@ void QgsGeometryCheckMissingVertexAlgorithm::initAlgorithm( const QVariantMap &c
 
   // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Missing vertices errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Missing vertices features" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

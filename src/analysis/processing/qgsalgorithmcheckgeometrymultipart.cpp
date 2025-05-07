@@ -32,7 +32,12 @@ QString QgsGeometryCheckMultipartAlgorithm::name() const
 
 QString QgsGeometryCheckMultipartAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Strict Multipart)" );
+  return QObject::tr( "Strictly multipart" );
+}
+
+QString QgsGeometryCheckMultipartAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect multipart features containing only one part" );
 }
 
 QStringList QgsGeometryCheckMultipartAlgorithm::tags() const
@@ -82,10 +87,10 @@ void QgsGeometryCheckMultipartAlgorithm::initAlgorithm( const QVariantMap &confi
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "One-part geometry errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
+    QStringLiteral( "OUTPUT" ), QObject::tr( "One-part geometry features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

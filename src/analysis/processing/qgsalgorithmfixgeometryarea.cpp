@@ -30,7 +30,12 @@ QString QgsFixGeometryAreaAlgorithm::name() const
 
 QString QgsFixGeometryAreaAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (Area)" );
+  return QObject::tr( "Fix small polygons" );
+}
+
+QString QgsFixGeometryAreaAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Merge small polygons detected with the \"Small polygons\" algorithm from the \"Check geometry\" section" );
 }
 
 QStringList QgsFixGeometryAreaAlgorithm::tags() const
@@ -51,7 +56,7 @@ QString QgsFixGeometryAreaAlgorithm::groupId() const
 QString QgsFixGeometryAreaAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm merges neighboring polygons according to the chosen method, "
-                      "based on an error layer from the check area algorithm." );
+                      "based on an error layer from the \"Small polygons\" algorithm in the \"Check geometry\" section." );
 }
 
 QgsFixGeometryAreaAlgorithm *QgsFixGeometryAreaAlgorithm::createInstance() const
@@ -109,10 +114,10 @@ void QgsFixGeometryAreaAlgorithm::initAlgorithm( const QVariantMap &configuratio
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Small polygons merged layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from merging small polygons" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
