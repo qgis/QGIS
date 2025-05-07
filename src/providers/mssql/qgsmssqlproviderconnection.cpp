@@ -97,7 +97,8 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Capability::TableExists,
     Capability::DeleteField,
     Capability::DeleteFieldCascade,
-    Capability::AddField
+    Capability::AddField,
+    Capability::CreateSpatialIndex
   };
   mGeometryColumnCapabilities = {
     GeometryColumnCapability::Z,
@@ -859,4 +860,37 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsMssqlProviderCon
   const QString trimmedTable { tUri.table().trimmed() };
   options.sql = trimmedTable.startsWith( '(' ) ? trimmedTable.mid( 1 ).chopped( 1 ) : QStringLiteral( "SELECT * FROM %1" ).arg( tUri.quotedTablename() );
   return options;
+}
+
+void QgsMssqlProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
+{
+  checkCapability( Capability::CreateSpatialIndex );
+
+  QString geometryColumnName { options.geometryColumnName };
+  if ( geometryColumnName.isEmpty() )
+  {
+    // Can we guess it?
+    try
+    {
+      const auto tp { table( schema, name ) };
+      geometryColumnName = tp.geometryColumn();
+    }
+    catch ( QgsProviderConnectionException & )
+    {
+      // pass
+    }
+  }
+
+  if ( geometryColumnName.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Geometry column name not specified while creating spatial index" ) );
+  }
+
+  const QString indexName = QStringLiteral( "qgs_%1_sidx" ).arg( geometryColumnName );
+
+  const QString sql = QStringLiteral( "CREATE SPATIAL INDEX %1 ON %2.%3 ( %4 )" )
+                        .arg( QgsMssqlUtils::quotedIdentifier( indexName ), QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( name ), QgsMssqlUtils::quotedIdentifier( options.geometryColumnName ) );
+
+
+  executeSqlPrivate( sql, false );
 }

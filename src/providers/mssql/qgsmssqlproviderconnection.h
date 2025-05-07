@@ -72,6 +72,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
     Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
     QString defaultPrimaryKeyColumnName() const override;
+    void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const override;
 
   private:
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr ) const;
