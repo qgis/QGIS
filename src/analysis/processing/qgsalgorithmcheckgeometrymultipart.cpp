@@ -74,8 +74,9 @@ void QgsGeometryCheckMultipartAlgorithm::initAlgorithm( const QVariantMap &confi
     QStringLiteral( "INPUT" ),
     QObject::tr( "Input layer" ),
     QList<int>()
-      << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
+      << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
       << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
+      << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
