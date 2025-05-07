@@ -59,13 +59,6 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog : public QDialog, private Ui::QgsAtt
      */
     QMap<QString, QVariant> &valueMap();
 
-    /**
-     * Returns TRUE if the "Add NULL value" checkbox has been checked.
-     *
-     * \returns TRUE if the "Add NULL value" checkbox has been checked.
-     */
-    bool insertNull();
-
   private slots:
 
     /**

@@ -42,21 +42,19 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
 
     /**
      * Updates the displayed table with the values from \a map.
-     * If \a insertNull is set to TRUE, it will also insert a NULL value.
      *
      * \note In most cases the overload that accepts a list is preferred as it
      * keeps the order of the values.
      */
-    void updateMap( const QMap<QString, QVariant> &map, bool insertNull );
+    void updateMap( const QMap<QString, QVariant> &map );
 
     /**
      * Updates the displayed table with the values from \a list, the order of the values
      * is preserved.
-     * If \a insertNull is set to TRUE, it will also insert a NULL value.
      *
      * \since QGIS 3.12
      */
-    void updateMap( const QList<QPair<QString, QVariant>> &list, bool insertNull );
+    void updateMap( const QList<QPair<QString, QVariant>> &list );
 
     /**
      * Updates the displayed table with the values from a CSV file.

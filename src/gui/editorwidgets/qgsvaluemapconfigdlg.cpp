@@ -117,7 +117,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
     }
   }
 
-  updateMap( orderedList, false );
+  updateMap( orderedList );
 
   allowNullCheckBox->setChecked( config.value( QStringLiteral( "AllowNull" ) ).toBool() );
 }
@@ -176,7 +176,7 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
   emit changed();
 }
 
-void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool insertNull )
+void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map )
 {
   QList<QPair<QString, QVariant>> orderedMap;
   const auto end = map.constEnd();
@@ -185,10 +185,10 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
     orderedMap.append( qMakePair( it.key(), it.value() ) );
   }
 
-  updateMap( orderedMap, insertNull );
+  updateMap( orderedMap );
 }
 
-void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &list, bool insertNull )
+void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &list )
 {
   tableWidget->clearContents();
   mValueMapErrorsLabel->setVisible( false );
@@ -199,12 +199,6 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
   }
   int row = 0;
 
-  if ( insertNull )
-  {
-    setRow( row, QgsFieldFormatter::NULL_VALUE, QStringLiteral( "<NULL>" ) );
-    ++row;
-  }
-
   constexpr int maxOverflowErrors { 5 };
   QStringList reportedErrors;
   const bool hasField { layer()->fields().exists( field() ) };
@@ -212,36 +206,31 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
 
   for ( const auto &pair : list )
   {
-    if ( QgsVariantUtils::isNull( pair.second ) )
-      setRow( row, pair.first, QString() );
-    else
+    const QString value { pair.first };
+    // Check value
+    const QString validValue = checkValueLength( value );
+
+    if ( validValue.length() != value.length() )
     {
-      const QString value { pair.first };
-      // Check value
-      const QString validValue = checkValueLength( value );
-
-      if ( validValue.length() != value.length() )
+      if ( reportedErrors.length() < maxOverflowErrors )
       {
-        if ( reportedErrors.length() < maxOverflowErrors )
-        {
-          reportedErrors.push_back( tr( "Value '%1' has been trimmed (maximum field length: %2)" )
-                                      .arg( value, QString::number( mappedField.length() ) ) );
-        }
-        else if ( reportedErrors.length() == maxOverflowErrors )
-        {
-          reportedErrors.push_back( tr( "Only first %1 errors have been reported." )
-                                      .arg( maxOverflowErrors ) );
-        }
+        reportedErrors.push_back( tr( "Value '%1' has been trimmed (maximum field length: %2)" )
+                                    .arg( value, QString::number( mappedField.length() ) ) );
       }
-
-      setRow( row, validValue, pair.second.toString() );
-
-      // Show errors if any
-      if ( !reportedErrors.isEmpty() )
+      else if ( reportedErrors.length() == maxOverflowErrors )
       {
-        mValueMapErrorsLabel->setVisible( true );
-        mValueMapErrorsLabel->setText( reportedErrors.join( QLatin1String( "<br>" ) ) );
+        reportedErrors.push_back( tr( "Only first %1 errors have been reported." )
+                                    .arg( maxOverflowErrors ) );
       }
+    }
+
+    setRow( row, validValue, pair.second.toString() );
+
+    // Show errors if any
+    if ( !reportedErrors.isEmpty() )
+    {
+      mValueMapErrorsLabel->setVisible( true );
+      mValueMapErrorsLabel->setText( reportedErrors.join( QLatin1String( "<br>" ) ) );
     }
     ++row;
   }
@@ -366,7 +355,7 @@ void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
   if ( !layerDialog.exec() )
     return;
 
-  updateMap( layerDialog.valueMap(), layerDialog.insertNull() );
+  updateMap( layerDialog.valueMap() );
 }
 
 void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
@@ -415,5 +404,5 @@ void QgsValueMapConfigDlg::loadMapFromCSV( const QString &filePath )
     map.append( qMakePair( key, val ) );
   }
 
-  updateMap( map, false );
+  updateMap( map );
 }
