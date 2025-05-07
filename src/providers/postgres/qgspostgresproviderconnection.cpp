@@ -891,7 +891,7 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderConnection::searchLayer
 
 Qgis::DatabaseProviderTableImportCapabilities QgsPostgresProviderConnection::tableImportCapabilities() const
 {
-  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName | Qgis::DatabaseProviderTableImportCapability::CreateSpatialIndex | Qgis::DatabaseProviderTableImportCapability::ConvertFielnamesToLowercase;
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName;
 }
 
 QString QgsPostgresProviderConnection::defaultPrimaryKeyColumnName() const
