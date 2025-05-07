@@ -594,7 +594,6 @@ QgsSQLStatement::NodeSelect::~NodeSelect()
   qDeleteAll( mTableList );
   qDeleteAll( mColumns );
   qDeleteAll( mJoins );
-
   qDeleteAll( mOrderBy );
 }
 
