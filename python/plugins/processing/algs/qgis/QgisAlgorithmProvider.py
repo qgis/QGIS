@@ -64,7 +64,6 @@ from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
-from .UniqueValues import UniqueValues
 from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorLayerHistogram import VectorLayerHistogram
 from .VectorLayerScatterplot import VectorLayerScatterplot
@@ -123,7 +122,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             TextToFloat(),
             TinInterpolation(),
             TopoColor(),
-            UniqueValues(),
             VariableDistanceBuffer(),
             VectorLayerHistogram(),
             VectorLayerScatterplot(),
