@@ -146,6 +146,21 @@ retrieve an expression context for the widget.
 Emitted when the fields defined in the widget are changed.
 %End
 
+    void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
+%Docstring
+Emitted in order to provide a hook to add additional* menu entries to
+the context menu.
+
+:param menu: If additional QMenuItems are added, they will show up in
+             the context menu.
+:param atIndex: The QModelIndex, to which the context menu belongs.
+                Relative to the source model. In most cases, this will
+                be a :py:class:`QgsAttributeTableFilterModel`
+
+.. versionadded:: 3.44
+%End
+
+
   public slots:
 
     void appendField( const QgsField &field, const QString &expression = QString() );
@@ -173,6 +188,18 @@ Moves down the currently selected field
 Invert the field selection state.
 
 .. versionadded:: 3.32
+%End
+
+  protected:
+    void contextMenuEvent( QContextMenuEvent *e );
+%Docstring
+Is called when the context menu will be shown. Emits a
+:py:func:`~QgsFieldMappingWidget.willShowContextMenu` signal, so the
+menu can be populated by other parts of the application.
+
+:param event: The associated event object.
+
+.. versionadded:: 3.44
 %End
 
 };
