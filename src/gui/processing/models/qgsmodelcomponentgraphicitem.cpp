@@ -499,11 +499,12 @@ QPixmap QgsModelComponentGraphicItem::iconPixmap() const
 
 void QgsModelComponentGraphicItem::updateButtonPositions()
 {
-  bool isParameter = dynamic_cast<QgsProcessingModelParameter *>(mComponent.get()) != nullptr;
+  bool isParameter = dynamic_cast<QgsProcessingModelParameter *>( mComponent.get() ) != nullptr;
   mEditButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - BUTTON_MARGIN, itemSize().height() / 2.0 - mButtonSize.height() / 2.0 - BUTTON_MARGIN ) );
   mDeleteButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - BUTTON_MARGIN, mButtonSize.height() / 2.0 - itemSize().height() / 2.0 + BUTTON_MARGIN ) );
 
-  if (isParameter) {
+  if ( isParameter )
+  {
     if ( mExpandBottomButton )
     {
       const QPointF pt = linkPoint( Qt::BottomEdge, -1, false );
@@ -517,7 +518,9 @@ void QgsModelComponentGraphicItem::updateButtonPositions()
       socket->setPosition( pt );
       socket->setVisible( !collapsed );
     }
-  } else {
+  }
+  else
+  {
     if ( mExpandTopButton )
     {
       const QPointF pt = linkPoint( Qt::TopEdge, -1, true );
@@ -579,13 +582,18 @@ void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
   // also need to update the model's stored component
 
   // TODO - this is not so nice, consider moving this to model class
-  if ( QgsProcessingModelChildAlgorithm *child = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mComponent.get() ) ){
+  if ( QgsProcessingModelChildAlgorithm *child = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mComponent.get() ) )
+  {
     mModel->childAlgorithm( child->childId() ).setLinksCollapsed( edge, folded );
-  } else if ( QgsProcessingModelParameter *param = dynamic_cast<QgsProcessingModelParameter *>( mComponent.get() ) ) {
+  }
+  else if ( QgsProcessingModelParameter *param = dynamic_cast<QgsProcessingModelParameter *>( mComponent.get() ) )
+  {
     QString paramName = param->parameterName();
     QgsProcessingModelParameter paramComp = mModel->parameterComponent( paramName );
     paramComp.setLinksCollapsed( edge, folded );
-  } else if ( QgsProcessingModelOutput *output = dynamic_cast<QgsProcessingModelOutput *>( mComponent.get() ) ){
+  }
+  else if ( QgsProcessingModelOutput *output = dynamic_cast<QgsProcessingModelOutput *>( mComponent.get() ) )
+  {
     mModel->childAlgorithm( output->childId() ).modelOutput( output->name() ).setLinksCollapsed( edge, folded );
   }
 
@@ -862,11 +870,11 @@ QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge, int index ) const
     QString text = this->model()->parameterDefinition( parameter->parameterName() )->type();
 
     // Getting the default value to append to the box name
-    if (const QgsProcessingParameterDefinition *paramDef = this->model()->parameterDefinition(parameter->parameterName()))
+    if ( const QgsProcessingParameterDefinition *paramDef = this->model()->parameterDefinition( parameter->parameterName() ) )
     {
       QVariant paramValue = paramDef->defaultValue();
 
-      if (paramValue.isValid() && !paramValue.toString().isEmpty())
+      if ( paramValue.isValid() && !paramValue.toString().isEmpty() )
       {
         text += ": " + paramValue.toString();
       }
@@ -880,10 +888,9 @@ QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge, int index ) const
 }
 
 
-
-QString QgsModelParameterGraphicItem::getLinkedParamDataType(Qt::Edge edge, int index)
+QString QgsModelParameterGraphicItem::getLinkedParamDataType( Qt::Edge edge, int index )
 {
-  QString unknownType = QString("unknown");
+  QString unknownType = QString( "unknown" );
 
   if ( index < 0 )
   {
@@ -1138,13 +1145,14 @@ int QgsModelChildAlgorithmGraphicItem::linkPointCount( Qt::Edge edge ) const
 }
 
 
-QString QgsModelComponentGraphicItem::getLinkedParamDataType(Qt::Edge edge, int index)
+QString QgsModelComponentGraphicItem::getLinkedParamDataType( Qt::Edge edge, int index )
 {
-  QString unknownType = QString("unknown");
+  QString unknownType = QString( "unknown" );
 
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
   {
-    if ( !child->algorithm() ) {
+    if ( !child->algorithm() )
+    {
       return unknownType;
     }
 
@@ -1152,8 +1160,9 @@ QString QgsModelComponentGraphicItem::getLinkedParamDataType(Qt::Edge edge, int 
     {
       case Qt::BottomEdge:
       {
-        if (index <= child->algorithm()->outputDefinitions().size() - 1) {
-          return child->algorithm()->outputDefinitions().at(index)->type();
+        if ( index <= child->algorithm()->outputDefinitions().size() - 1 )
+        {
+          return child->algorithm()->outputDefinitions().at( index )->type();
         }
         return unknownType;
       }
@@ -1161,8 +1170,9 @@ QString QgsModelComponentGraphicItem::getLinkedParamDataType(Qt::Edge edge, int 
       {
         QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
 
-        if (index <= params.size() - 1) {
-          return params.at(index)->type();
+        if ( index <= params.size() - 1 )
+        {
+          return params.at( index )->type();
         }
 
         return unknownType;
@@ -1176,7 +1186,6 @@ QString QgsModelComponentGraphicItem::getLinkedParamDataType(Qt::Edge edge, int 
 
   return unknownType;
 }
-
 
 
 QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int index ) const
@@ -1229,55 +1238,55 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
           return QString();
         }
 
-        const QgsProcessingParameterDefinition* param = params.at( index );
+        const QgsProcessingParameterDefinition *param = params.at( index );
         QString name = param->name();
         QString title = param->description();
 
 
-        QgsProcessingModelChildParameterSources paramSources = child->parameterSources().value(name);
+        QgsProcessingModelChildParameterSources paramSources = child->parameterSources().value( name );
         QString paramValueAsStr = "";
 
-        if (paramSources.size() > 0) {
+        if ( paramSources.size() > 0 )
+        {
           QgsProcessingModelChildParameterSource firstParamSource = paramSources[0];
 
-          switch(firstParamSource.getSourceType()) {
-
+          switch ( firstParamSource.getSourceType() )
+          {
             case Qgis::ProcessingModelChildParameterSource::ChildOutput:
               paramValueAsStr = QStringLiteral( ": %1" ).arg(
-                firstParamSource.friendlyIdentifier(const_cast<QgsProcessingModelAlgorithm *>(model()))
+                firstParamSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) )
               );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::Expression:
-              paramValueAsStr = QStringLiteral( ": %1" ).arg(firstParamSource.expression());
+              paramValueAsStr = QStringLiteral( ": %1" ).arg( firstParamSource.expression() );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ExpressionText:
-              paramValueAsStr = QStringLiteral( ": %1" ).arg(firstParamSource.expressionText());
+              paramValueAsStr = QStringLiteral( ": %1" ).arg( firstParamSource.expressionText() );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ModelOutput:
-              paramValueAsStr = QStringLiteral( ": output from '%1'" ).arg(
-                firstParamSource.friendlyIdentifier(const_cast<QgsProcessingModelAlgorithm *>(model()))
-              );
+              paramValueAsStr = QStringLiteral( ": output from '%1'" ).arg( firstParamSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) ) );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ModelParameter:
             {
-              QString friendlyName = firstParamSource.friendlyIdentifier(const_cast<QgsProcessingModelAlgorithm *>(model()));
-              paramValueAsStr = friendlyName.isEmpty() ? QStringLiteral( ":" ) : QStringLiteral( ": value from '%1'" ).arg(friendlyName);
+              QString friendlyName = firstParamSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) );
+              paramValueAsStr = friendlyName.isEmpty() ? QStringLiteral( ":" ) : QStringLiteral( ": value from '%1'" ).arg( friendlyName );
               break;
             }
 
             case Qgis::ProcessingModelChildParameterSource::StaticValue:
             default:
               QVariant paramValue = paramSources[0].staticValue();
-              paramValueAsStr = QStringLiteral( ": %1" ).arg(paramValue.toString());
+              paramValueAsStr = QStringLiteral( ": %1" ).arg( paramValue.toString() );
 
               // In case of an enum, we want to display the label of the enum value (and not just its index as an int)
-              if (param->type() == QgsProcessingParameterEnum::typeName()) {
-                const QgsProcessingParameterEnum* paramAsEnumParam = dynamic_cast<const QgsProcessingParameterEnum *>(param);
-                paramValueAsStr = QStringLiteral( ": %1" ).arg(paramAsEnumParam->options().at(paramValue.toInt()));
+              if ( param->type() == QgsProcessingParameterEnum::typeName() )
+              {
+                const QgsProcessingParameterEnum *paramAsEnumParam = dynamic_cast<const QgsProcessingParameterEnum *>( param );
+                paramValueAsStr = QStringLiteral( ": %1" ).arg( paramAsEnumParam->options().at( paramValue.toInt() ) );
               }
           }
           title += paramValueAsStr;
@@ -1312,7 +1321,7 @@ bool QgsModelChildAlgorithmGraphicItem::canDeleteComponent()
   return false;
 }
 
-void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChildAlgorithmResult &results)
+void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChildAlgorithmResult &results )
 {
   if ( mResults == results )
     return;

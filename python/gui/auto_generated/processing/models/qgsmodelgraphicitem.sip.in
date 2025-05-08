@@ -140,6 +140,8 @@ A socket allowing linking component together.
 #include "qgsmodelgraphicitem.h"
 %End
   public:
+    static QColor typeToColorLookup( QString dataType );
+
     QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent /TransferThis/, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size = QSizeF( 11, 11 ) );
 %Docstring
 Constructor for QgsModelDesignerSocketGraphicItem, with the specified
@@ -178,6 +180,16 @@ Return the component associated to the socket */
     QgsModelComponentGraphicItem *componentItem();
 %Docstring
 Return the parent graphic item associated to the socket */
+%End
+    QColor getColor();
+%Docstring
+Returns the color of the socket based on the type of data the param
+corresponds to */
+%End
+
+    bool isDefaultParamValue();
+%Docstring
+Returns whether the param value bear the default param value */
 %End
   signals:
 

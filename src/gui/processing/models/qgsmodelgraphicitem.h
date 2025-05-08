@@ -158,7 +158,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 {
     Q_OBJECT
   public:
-    static QColor typeToColorLookup(QString dataType);
+    static QColor typeToColorLookup( QString dataType );
 
     /**
      * Constructor for QgsModelDesignerSocketGraphicItem, with the specified \a parent item.

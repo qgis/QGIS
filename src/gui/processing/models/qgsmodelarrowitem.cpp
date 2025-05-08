@@ -77,15 +77,16 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
 
   // Possibly, the mComponentItem is an instance of QgsModelParameterGraphicItem. In this case,
   // it needs to be explicitely casted so that the relevant getLinkedParamDataType method is being called
-  if (QgsModelParameterGraphicItem *paramItem = dynamic_cast<QgsModelParameterGraphicItem *>(mStartItem)){
-     dataType = paramItem->getLinkedParamDataType(mStartEdge, mStartIndex);
+  if ( QgsModelParameterGraphicItem *paramItem = dynamic_cast<QgsModelParameterGraphicItem *>( mStartItem ) )
+  {
+    dataType = paramItem->getLinkedParamDataType( mStartEdge, mStartIndex );
   }
   else
   {
-    dataType = mStartItem->getLinkedParamDataType(mStartEdge, mStartIndex);
+    dataType = mStartItem->getLinkedParamDataType( mStartEdge, mStartIndex );
   }
 
-  QColor color = QgsModelDesignerSocketGraphicItem::typeToColorLookup(dataType);
+  QColor color = QgsModelDesignerSocketGraphicItem::typeToColorLookup( dataType );
 
   if ( mStartItem->state() == QgsModelComponentGraphicItem::Selected || mEndItem->state() == QgsModelComponentGraphicItem::Selected )
     color.setAlpha( 220 );

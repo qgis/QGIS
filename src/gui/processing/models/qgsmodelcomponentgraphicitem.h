@@ -137,7 +137,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void setItemRect( QRectF rect );
 
-    QString getLinkedParamDataType(Qt::Edge edge, int index);
+    QString getLinkedParamDataType( Qt::Edge edge, int index );
 
 #ifndef SIP_RUN
 

@@ -13,6 +13,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsModelDesignerSocketGraphicItem.typeToColorLookup = staticmethod(QgsModelDesignerSocketGraphicItem.typeToColorLookup)
     QgsModelDesignerSocketGraphicItem.__overridden_methods__ = ['paint']
     QgsModelDesignerSocketGraphicItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
