@@ -57,6 +57,7 @@
 #include "qgstexteditwrapper.h"
 #include "qgsfieldmodel.h"
 #include "qgscollapsiblegroupbox.h"
+#include "qgsfeaturelistcombobox.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -1568,8 +1569,39 @@ void QgsAttributeForm::synchronizeState()
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+
     if ( eww )
     {
+      QComboBox *combo = this->findChild<QComboBox*>( eww->field().name() );
+      QgsFeatureListComboBox *featureListCombo = this->findChild<QgsFeatureListComboBox*>();
+
+      if ( !combo && featureListCombo )
+        combo = qobject_cast<QComboBox *>( featureListCombo );
+
+      if( combo )
+      {
+        if ( combo->count() == 0 )
+          disableCombobox( ww, combo );
+        else if ( combo->count() == 1 )
+          disableCombobox( ww, combo, "other" );
+        else
+        {
+          ww->setEnabled( true );
+          if ( featureListCombo )
+          {
+            if ( combo->currentText() == "NULL" && combo->count() == 2 )
+              disableCombobox( ww, combo, "other " );
+            else
+              combo->setToolTip( tr( "Just start typing what you are looking for." ) );
+          }
+          else
+            combo->setToolTip( QString() );
+        }
+        if ( eww->constraintResult() == QgsEditorWidgetWrapper::ConstraintResultFailSoft )
+          combo->setStyleSheet("QComboBox { background-color: rgba(255, 200, 45, 0.3); }");
+      }
+      else
+      {
       const QList<QgsAttributeFormEditorWidget *> formWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
 
       for ( QgsAttributeFormEditorWidget *formWidget : formWidgets )
@@ -1581,13 +1613,13 @@ void QgsAttributeForm::synchronizeState()
       ww->setEnabled( enabled );
 
       updateIcon( eww );
+      }
     }
     else // handle QgsWidgetWrapper different than QgsEditorWidgetWrapper
     {
       ww->setEnabled( isEditable );
     }
   }
-
 
   if ( mMode != QgsAttributeEditorContext::SearchMode )
   {
@@ -1633,6 +1665,14 @@ void QgsAttributeForm::synchronizeState()
   QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
     okButton->setEnabled( isEditable );
+}
+
+void QgsAttributeForm::disableCombobox( QgsWidgetWrapper *ww, QComboBox *combo, const QString& toolTipMsgAddition )
+{
+  ww->setEnabled( false );
+  QString toolTipMessage = tr( "No %1values available" ).arg(toolTipMsgAddition);
+  combo->setToolTip( toolTipMessage );
+  combo->setStyleSheet("QComboBox { color: black; }");
 }
 
 void QgsAttributeForm::init()
