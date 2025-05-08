@@ -422,7 +422,7 @@ void QgsKMeansClusteringAlgorithm::initClustersPlusPlus( std::vector<Feature> &p
     // store distances between previous and new candidate center, error and best candidate index
     double currentError = 0;
     double lowestError = std::numeric_limits<double>::max();
-    size_t bestCandidateIndex;
+    unsigned int bestCandidateIndex = 0;
     for ( unsigned int j = 0; j < numCandidateCenters; j++ )
     {
       for ( size_t z = 0; z < n; z++ )
