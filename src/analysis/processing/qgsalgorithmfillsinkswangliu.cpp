@@ -69,7 +69,7 @@ void QgsFillSinksWangLiuAlgorithm::initAlgorithm( const QVariantMap & )
   minSlopeParam->setHelp( QObject::tr( "Minimum slope gradient to preserve from cell to cell. With a value of zero sinks are filled up to the spill elevation (which results in flat areas). Units are degrees." ) );
   addParameter( minSlopeParam.release() );
 
-  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( createOptsParam.release() );
@@ -177,7 +177,7 @@ typedef std::priority_queue< CFillSinks_WL_Node, nodeVector, CompareGreater > Pr
 
 QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
 
   const QString filledDemOutputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT_FILLED_DEM" ), context );
   const QString flowDirectionsOutputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT_FLOW_DIRECTIONS" ), context );
