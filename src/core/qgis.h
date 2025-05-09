@@ -6493,6 +6493,23 @@ CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
 CORE_EXPORT qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
 
 /**
+ * Compares two QVariant values.
+ *
+ * \returns < 0 if lhs < rhs, > 0 if lhs > rhs, or 0 if lhs == rhs
+ *
+ * Useful for sorting lists of variants, correctly handling sorting of the various
+ * QVariant data types (such as strings, numeric values, dates and times)
+ *
+ * Invalid < NULL < Values
+ *
+ * \see qgsVariantLessThan()
+ * \see qgsVariantGreaterThan()
+ *
+ * \since QGIS 3.44
+ */
+CORE_EXPORT int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
+
+/**
  * Compares two QVariant values and returns whether the first is less than the second.
  * Useful for sorting lists of variants, correctly handling sorting of the various
  * QVariant data types (such as strings, numeric values, dates and times)
@@ -6500,6 +6517,7 @@ CORE_EXPORT qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
  * Invalid < NULL < Values
  *
  * \see qgsVariantGreaterThan()
+ * \see qgsVariantCompare()
  */
 CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 
@@ -6517,7 +6535,9 @@ CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
  * Compares two QVariant values and returns whether the first is greater than the second.
  * Useful for sorting lists of variants, correctly handling sorting of the various
  * QVariant data types (such as strings, numeric values, dates and times)
+ *
  * \see qgsVariantLessThan()
+ * \see qgsVariantCompare()
  */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
