@@ -33,6 +33,8 @@
 
 #include <QMessageBox>
 
+static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "ogr/%1SourceSelect/" );
+
 QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const QString &theName, const QString &theExtensions, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
   , mOgrDriverName( theSettingsKey )
@@ -50,7 +52,7 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrDbSourceSelect::showHelp );
 
   QgsSettings settings;
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "ogr/%1SourceSelect/HoldDialogOpen" ).arg( ogrDriverName() ), false, QgsSettings::Section::Providers ).toBool() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH.arg( mOgrDriverName ) ), false, QgsSettings::Section::Providers ).toBool() );
 
   setWindowTitle( tr( "Add %1 Layer(s)" ).arg( name() ) );
   btnEdit->hide(); // hide the edit button
@@ -75,7 +77,9 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
 QgsOgrDbSourceSelect::~QgsOgrDbSourceSelect()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "ogr/%1SourceSelect/HoldDialogOpen" ).arg( ogrDriverName() ), mHoldDialogOpen->isChecked(), QgsSettings::Section::Providers );
+  settings.setValue( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH.arg( mOgrDriverName ) ), mHoldDialogOpen->isChecked(), QgsSettings::Section::Providers );
+  //store general settings in base class
+  storeSettings();
 }
 
 
@@ -335,6 +339,11 @@ void QgsOgrDbSourceSelect::dbChanged()
   // Remember which database was selected.
   QgsSettings settings;
   settings.setValue( QStringLiteral( "GeoPackage/connections/selected" ), cmbConnections->currentText() );
+}
+
+QString QgsOgrDbSourceSelect::settingPath() const
+{
+  return SETTINGS_WINDOWS_PATH.arg( mOgrDriverName );
 }
 
 void QgsOgrDbSourceSelect::refresh()
