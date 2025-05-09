@@ -85,7 +85,7 @@ void QgsGeometryCheckPointCoveredByLineAlgorithm::initAlgorithm( const QVariantM
     QStringLiteral( "LINES" ), QObject::tr( "Line layers" ), Qgis::ProcessingSourceType::VectorLine
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Points covered by a line" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Points not covered by a line" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
