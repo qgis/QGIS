@@ -2869,7 +2869,7 @@ void QgsStyleManagerDialog::editSmartgroupAction()
   QStandardItem *item = treeModel->itemFromIndex( present );
 
   QgsSmartGroupEditorDialog dlg( mStyle, this );
-  QgsSmartConditionMap map = mStyle->smartgroup( present.data( Qt::UserRole + 1 ).toInt() );
+  QgsStringMultimap map = mStyle->smartgroup( present.data( Qt::UserRole + 1 ).toInt() );
   dlg.setSmartgroupName( item->text() );
   dlg.setOperator( mStyle->smartgroupOperator( item->data().toInt() ) );
   dlg.setConditionMap( map );

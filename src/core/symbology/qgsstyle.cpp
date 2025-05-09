@@ -2299,7 +2299,7 @@ QStringList QgsStyle::allNames( QgsStyle::StyleEntity type ) const
   return QStringList();
 }
 
-int QgsStyle::addSmartgroup( const QString &name, const QString &op, const QgsSmartConditionMap &conditions )
+int QgsStyle::addSmartgroup( const QString &name, const QString &op, const QgsStringMultimap &conditions )
 {
   return addSmartgroup( name, op, conditions.values( QStringLiteral( "tag" ) ),
                         conditions.values( QStringLiteral( "!tag" ) ),
@@ -2495,15 +2495,15 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
   return unique;
 }
 
-QgsSmartConditionMap QgsStyle::smartgroup( int id )
+QgsStringMultimap QgsStyle::smartgroup( int id )
 {
   if ( !mCurrentDB )
   {
     QgsDebugError( QStringLiteral( "Cannot open database for listing groups" ) );
-    return QgsSmartConditionMap();
+    return QgsStringMultimap();
   }
 
-  QgsSmartConditionMap condition;
+  QgsStringMultimap condition;
 
   QString query = qgs_sqlite3_mprintf( "SELECT xml FROM smartgroup WHERE id=%d", id );
 

@@ -141,9 +141,9 @@ void QgsSmartGroupEditorDialog::removeCondition( int id )
   delete cond;
 }
 
-QgsSmartConditionMap QgsSmartGroupEditorDialog::conditionMap()
+QgsStringMultimap QgsSmartGroupEditorDialog::conditionMap()
 {
-  QgsSmartConditionMap conditions;
+  QgsStringMultimap conditions;
 
   const auto constMConditionMap = mConditionMap;
   for ( QgsSmartGroupCondition *condition : constMConditionMap )
@@ -159,7 +159,7 @@ QString QgsSmartGroupEditorDialog::conditionOperator()
   return mAndOrCombo->currentData().toString();
 }
 
-void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap &map )
+void QgsSmartGroupEditorDialog::setConditionMap( const QgsStringMultimap &map )
 {
   QStringList constraints;
   constraints << QStringLiteral( "tag" ) << QStringLiteral( "name" ) << QStringLiteral( "!tag" ) << QStringLiteral( "!name" );

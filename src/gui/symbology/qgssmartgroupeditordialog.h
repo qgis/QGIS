@@ -66,7 +66,7 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
 
 #include "ui_qgssmartgroupeditordialogbase.h"
 
-#include "qgsstyle.h" //for QgsSmartConditionMap
+#include "qgsstyle.h"
 
 /**
  * \ingroup gui
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
      * returns the condition map
      * \note not available in Python bindings
      */
-    QgsSmartConditionMap conditionMap() SIP_SKIP;
+    QgsStringMultimap conditionMap() SIP_SKIP;
 
     //! returns the AND/OR condition
     QString conditionOperator();
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
      * sets up the GUI for the given conditionmap
      * \note not available in Python bindings
      */
-    void setConditionMap( const QgsSmartConditionMap & ) SIP_SKIP;
+    void setConditionMap( const QgsStringMultimap & ) SIP_SKIP;
 
     //! sets the operator AND/OR
     void setOperator( const QString & );
