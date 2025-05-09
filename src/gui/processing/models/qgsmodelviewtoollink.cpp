@@ -57,12 +57,13 @@ void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
     }
   }
 
-  if ( !socket && mLastHoveredSocket && socket != mLastHoveredSocket )
+  if ( mLastHoveredSocket && socket != mLastHoveredSocket )
   {
     mLastHoveredSocket->modelHoverLeaveEvent( event );
     mLastHoveredSocket = nullptr;
   }
-  else
+
+  if ( socket && socket != mLastHoveredSocket )
   {
     mLastHoveredSocket = socket;
   }
@@ -74,8 +75,14 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   {
     return;
   }
-  view()->setTool( mPreviousViewTool );
   mBezierRubberBand->finish( event->modelPoint() );
+  if ( mLastHoveredSocket )
+  {
+    mLastHoveredSocket->modelHoverLeaveEvent( nullptr );
+    mLastHoveredSocket = nullptr;
+  }
+
+  view()->setTool( mPreviousViewTool );
 
   // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate
   QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
