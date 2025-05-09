@@ -214,11 +214,12 @@ coordinates after the zoom.
 .. versionadded:: 3.42
 %End
 
-    bool willHandleKeyEvent( QKeyEvent *event );
+    bool keyboardEventFilter( QKeyEvent *event );
 %Docstring
-Returns ``True`` if the camera controller will handle the specified key
-``event``, preventing it from being instead handled by parents of the 3D
-window before the controller ever receives it.
+If the event is relevant, handles the event and returns true, otherwise
+false.
+
+.. versionadded:: 3.44
 %End
 
     void setOrigin( const QgsVector3D &origin );

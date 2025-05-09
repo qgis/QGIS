@@ -217,11 +217,10 @@ class _3D_EXPORT QgsCameraController : public QObject
     void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint );
 
     /**
-     * Returns TRUE if the camera controller will handle the specified key \a event,
-     * preventing it from being instead handled by parents of the 3D window before
-     * the controller ever receives it.
+     * If the event is relevant, handles the event and returns true, otherwise false.
+     * \since QGIS 3.44
      */
-    bool willHandleKeyEvent( QKeyEvent *event );
+    bool keyboardEventFilter( QKeyEvent *event );
 
     /**
      * Reacts to the shift of origin of the scene, updating camera pose and
@@ -368,14 +367,13 @@ class _3D_EXPORT QgsCameraController : public QObject
     void onWheel( Qt3DInput::QWheelEvent *wheel );
     void onMousePressed( Qt3DInput::QMouseEvent *mouse );
     void onMouseReleased( Qt3DInput::QMouseEvent *mouse );
-    void onKeyPressed( Qt3DInput::QKeyEvent *event );
-    void onKeyReleased( Qt3DInput::QKeyEvent *event );
     void applyFlyModeKeyMovements();
 
   private:
-    void onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event );
-    void onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *event );
-    void onKeyPressedGlobeTerrainNavigation( Qt3DInput::QKeyEvent *event );
+    // All three methods return true if event is handled
+    bool onKeyPressedFlyNavigation( QKeyEvent *event );
+    bool onKeyPressedTerrainNavigation( QKeyEvent *event );
+    bool onKeyPressedGlobeTerrainNavigation( QKeyEvent *event );
     void onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse );
     void onPositionChangedTerrainNavigation( Qt3DInput::QMouseEvent *mouse );
     void onPositionChangedGlobeTerrainNavigation( Qt3DInput::QMouseEvent *mouse );
