@@ -753,11 +753,24 @@ try:
 
    QgsGeometry.as_shapely = _geometry_as_shapely
 
+   def _geometry_from_shapely(shapely_geom) -> QgsGeometry:
+      geom = QgsGeometry()
+      geom.fromWkb(shapely_geom.wkb)
+
+      return geom
+
+   QgsGeometry.from_shapely = _geometry_from_shapely
+
 except ModuleNotFoundError:
    def _geometry_as_shapely(self):
        raise QgsNotSupportedException('QgsGeometry.as_shapely is not available, shapely is not installed on the system')
 
    QgsGeometry.as_shapely = _geometry_as_shapely
+
+   def _geometry_from_shapely(self):
+       raise QgsNotSupportedException('QgsGeometry.from_shapely is not available, shapely is not installed on the system')
+
+   QgsGeometry.from_shapely = _geometry_from_shapely
 
 QgsRasterBlock.as_numpy.__doc__ = """
 Returns the block data as a numpy array.
@@ -795,4 +808,12 @@ Returns the geometry data as a shapely object.
 :raises QgsNotSupportedException: if shapely is not available on the system
 
 .. versionadded:: 3.40
+"""
+
+QgsGeometry.from_shapely.__doc__ = """
+Creates a new geometry from a shapely object.
+
+:raises QgsNotSupportedException: if shapely is not available on the system
+
+.. versionadded:: 3.42
 """
