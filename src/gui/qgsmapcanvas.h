@@ -603,6 +603,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      *
      * If an empty string is passed then the current theme association will be
      * cleared.
+     *
+     * To set a theme and simultaneously update the layer tree, use
+     * QgsMapThemeCollection.applyTheme().
      * \see theme()
      */
     void setTheme( const QString &theme );
