@@ -3106,6 +3106,27 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
   return m.release();
 }
 
+QgsSymbolLayer *QgsRasterMarkerSymbolLayer::createFromSld( QDomElement &element )
+{
+  QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
+  if ( graphicElem.isNull() )
+    return nullptr;
+
+  QDomElement extGraphElem = graphicElem.firstChildElement( QStringLiteral( "ExternalGraphic" ) );
+  if ( extGraphElem.isNull() )
+    return nullptr;
+
+  QDomElement onlineResElem = extGraphElem.firstChildElement( QStringLiteral( "OnlineResource" ) );
+  if ( onlineResElem.isNull() )
+    return nullptr;
+
+  QString url = onlineResElem.attribute( "href", "" );
+
+  QgsRasterMarkerSymbolLayer *m = new QgsRasterMarkerSymbolLayer( url );
+  // TODO: parse other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
+  return m;
+}
+
 void QgsRasterMarkerSymbolLayer::setCommonProperties( const QVariantMap &properties )
 {
   if ( properties.contains( QStringLiteral( "alpha" ) ) )
@@ -3503,6 +3524,40 @@ QRectF QgsRasterMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
                         height ) );
 
   return symbolBounds;
+}
+
+void QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  Q_UNUSED( props )
+
+  // <Graphic>
+  QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
+  element.appendChild( graphicElem );
+
+  // <ExternalGraphic>
+  QDomElement extGraphElem = doc.createElement( QStringLiteral( "se:ExternalGraphic" ) );
+  graphicElem.appendChild( extGraphElem );
+
+  QDomElement onlineResElem = doc.createElement( QStringLiteral( "se:OnlineResource" ) );
+  QString url = mPath;
+
+  // TODO: unsure if/how we can find the original image's mime type... for now let's use something generic
+  QString mimeType = QStringLiteral( "application/octet-stream" );
+
+  // convert from QGIS's embeded file syntax to standard data uri
+  if ( mPath.startsWith( QStringLiteral( "base64:" ) ) )
+  {
+    url.replace( QStringLiteral( "base64:" ), QStringLiteral( "data:%1;base64," ).arg( mimeType ) );
+  }
+  onlineResElem.setAttribute( QStringLiteral( "xlink:href" ), url );
+  onlineResElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
+  extGraphElem.appendChild( onlineResElem );
+
+  QDomElement formatElem = doc.createElement( QStringLiteral( "se:Format" ) );
+  formatElem.appendChild( doc.createTextNode( mimeType ) );
+  extGraphElem.appendChild( formatElem );
+
+  // TODO: write other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
 }
 
 //////////

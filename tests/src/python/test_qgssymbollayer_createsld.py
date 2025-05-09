@@ -47,6 +47,7 @@ from qgis.core import (
     QgsRuleBasedLabeling,
     QgsSimpleFillSymbolLayer,
     QgsSimpleLineSymbolLayer,
+    QgsRasterMarkerSymbolLayer,
     QgsSimpleMarkerSymbolLayer,
     QgsSimpleMarkerSymbolLayerBase,
     QgsSldExportContext,
@@ -266,6 +267,35 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # Check also the stroke width
         self.assertStrokeWidth(root, 2, 1)
         self.assertStaticDisplacement(root, 5, 10)
+
+    def testRasterMarkerRemoteUrl(self):
+        symbol = QgsRasterMarkerSymbolLayer(
+            path="https://example.com/image.png",
+        )
+        _, root = self.symbolToSld(symbol)
+        href_attr = (
+            root.elementsByTagName("se:OnlineResource")
+            .item(0)
+            .attributes()
+            .namedItem("xlink:href")
+        )
+        self.assertEqual("https://example.com/image.png", href_attr.nodeValue())
+
+    def testRasterMarkerDataUrl(self):
+        symbol = QgsRasterMarkerSymbolLayer(
+            path="base64:iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+        )
+        _, root = self.symbolToSld(symbol)
+        href_attr = (
+            root.elementsByTagName("se:OnlineResource")
+            .item(0)
+            .attributes()
+            .namedItem("xlink:href")
+        )
+        self.assertEqual(
+            "data:;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
+            href_attr.nodeValue(),
+        )
 
     def testSimpleLineHairline(self):
         symbol = QgsSimpleLineSymbolLayer(QColor("black"), 0)

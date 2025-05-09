@@ -20,6 +20,8 @@ __date__ = "January 2017"
 __copyright__ = "(C) 2017, Jorge Gustavo Rocha"
 
 import os
+import pathlib
+import tempfile
 
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
@@ -32,6 +34,7 @@ from qgis.core import (
     QgsLinePatternFillSymbolLayer,
     QgsMarkerLineSymbolLayer,
     QgsPointXY,
+    QgsRasterMarkerSymbolLayer,
     QgsSimpleFillSymbolLayer,
     QgsSimpleLineSymbolLayer,
     QgsSimpleMarkerSymbolLayer,
@@ -615,6 +618,30 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertTrue(result)
 
         _check_layer(layer)
+
+    def test_read_QgsRasterMarkerSymbolLayer_remote(self):
+        """Test reading raster markers"""
+        file_path = os.path.join(
+            TEST_DATA_DIR, "symbol_layer/QgsRasterMarkerSymbolLayer-remote.sld"
+        )
+        maplayer = QgsVectorLayer("Point?crs=epsg:3111&field=pk:int", "vl", "memory")
+        maplayer.loadSldStyle(file_path)
+        marker = maplayer.renderer().symbol().symbolLayers()[0]
+        self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
+        # import pdb; pdb.set_trace()
+        # raise Exception(marker)
+        self.assertEqual(marker.path(), "https://example.com/image.png")
+
+    def test_read_QgsRasterMarkerSymbolLayer_embedded(self):
+        base64_data = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+        file_path = os.path.join(
+            TEST_DATA_DIR, "symbol_layer/QgsRasterMarkerSymbolLayer-embedded.sld"
+        )
+        maplayer = QgsVectorLayer("Point?crs=epsg:3111&field=pk:int", "vl", "memory")
+        maplayer.loadSldStyle(file_path)
+        marker = maplayer.renderer().symbol().symbolLayers()[0]
+        self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
+        self.assertEqual(marker.path(), f"data:{base64_data}")
 
 
 if __name__ == "__main__":

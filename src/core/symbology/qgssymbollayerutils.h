@@ -473,6 +473,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     static bool needFontMarker( QDomElement &element );
     static bool needSvgMarker( QDomElement &element );
+    static bool needRasterMarker( QDomElement &element );
     static bool needEllipseMarker( QDomElement &element );
     static bool needMarkerLine( QDomElement &element );
     static bool needLinePatternFill( QDomElement &element );
