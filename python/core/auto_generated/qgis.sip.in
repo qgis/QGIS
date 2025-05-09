@@ -3514,6 +3514,25 @@ for incorrect numbers of digits between thousand separators
 .. versionadded:: 3.4
 %End
 
+int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
+%Docstring
+Compares two QVariant values.
+
+:return: < 0 if lhs < rhs, > 0 if lhs > rhs, or 0 if lhs == rhs
+
+Useful for sorting lists of variants, correctly handling sorting of the
+various QVariant data types (such as strings, numeric values, dates and
+times)
+
+Invalid < NULL < Values
+
+.. seealso:: :py:func:`qgsVariantLessThan`
+
+.. seealso:: :py:func:`qgsVariantGreaterThan`
+
+.. versionadded:: 3.44
+%End
+
 bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 %Docstring
 Compares two QVariant values and returns whether the first is less than
@@ -3524,6 +3543,8 @@ values, dates and times)
 Invalid < NULL < Values
 
 .. seealso:: :py:func:`qgsVariantGreaterThan`
+
+.. seealso:: :py:func:`qgsVariantCompare`
 %End
 
 bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
@@ -3546,6 +3567,8 @@ handling sorting of the various QVariant data types (such as strings,
 numeric values, dates and times)
 
 .. seealso:: :py:func:`qgsVariantLessThan`
+
+.. seealso:: :py:func:`qgsVariantCompare`
 %End
 
 
