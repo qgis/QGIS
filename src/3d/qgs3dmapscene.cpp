@@ -87,6 +87,8 @@
 #include "qgspointcloudlayer.h"
 #include "qgsshadowrenderview.h"
 #include "qgsforwardrenderview.h"
+#include "qgsambientocclusionrenderview.h"
+#include "qgspostprocessingentity.h"
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 
@@ -1011,12 +1013,20 @@ void Qgs3DMapScene::onShadowSettingsChanged()
 
 void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()
 {
-  QgsFrameGraph *frameGraph = mEngine->frameGraph();
   QgsAmbientOcclusionSettings ambientOcclusionSettings = mMap.ambientOcclusionSettings();
-  frameGraph->setAmbientOcclusionEnabled( ambientOcclusionSettings.isEnabled() );
-  frameGraph->setAmbientOcclusionRadius( ambientOcclusionSettings.radius() );
-  frameGraph->setAmbientOcclusionIntensity( ambientOcclusionSettings.intensity() );
-  frameGraph->setAmbientOcclusionThreshold( ambientOcclusionSettings.threshold() );
+
+  QgsAbstractRenderView *renderView = mEngine->frameGraph()->renderView( QgsFrameGraph::AO_RENDERVIEW );
+  QgsAmbientOcclusionRenderView *aoRenderView = dynamic_cast<QgsAmbientOcclusionRenderView *>( renderView );
+
+  if ( aoRenderView )
+  {
+    aoRenderView->setRadius( ambientOcclusionSettings.radius() );
+    aoRenderView->setIntensity( ambientOcclusionSettings.intensity() );
+    aoRenderView->setThreshold( ambientOcclusionSettings.threshold() );
+    aoRenderView->setEnabled( ambientOcclusionSettings.isEnabled() );
+  }
+
+  mEngine->frameGraph()->postprocessingEntity()->setAmbientOcclusionEnabled( ambientOcclusionSettings.isEnabled() );
 }
 
 void Qgs3DMapScene::onDebugShadowMapSettingsChanged()
