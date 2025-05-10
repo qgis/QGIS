@@ -76,6 +76,12 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
 
+  if ( outputFile.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive ) )
+    throw QgsProcessingException(
+      QObject::tr( "This algorithm does not support output to VPC. Please use LAS or LAZ as the output format. "
+                   "To create a VPC please use \"Build virtual point cloud (VPC)\" algorithm." )
+    );
+
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
   QStringList args;
