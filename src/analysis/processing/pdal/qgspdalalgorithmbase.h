@@ -89,7 +89,7 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
     /**
      * Returns name of index copc file for given \a filename of point cloud.
      *
-     * @param filename name of the original dataset
+     * \param filename name of the original dataset
      *
      * \since 3.44
      */
