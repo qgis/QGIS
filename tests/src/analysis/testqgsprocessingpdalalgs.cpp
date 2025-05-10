@@ -169,12 +169,14 @@ void TestQgsProcessingPdalAlgs::convertFormat()
   // version with run and output to COPC
   const QString outputCopc = QDir::tempPath() + "/converted.copc.las";
 
+  context->setMaximumThreads( 0 );
+
   parameters.clear();
   parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputCopc );
 
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputCopc ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputCopc ) );
 
   ok = false;
   alg->run( parameters, *context, &feedback, &ok );
@@ -218,13 +220,15 @@ void TestQgsProcessingPdalAlgs::reproject()
   // version with run and output to COPC
   QString outputCopcPointCloud = QDir::tempPath() + "/reprojected.copc.laz";
 
+  context->setMaximumThreads( 0 );
+
   parameters.clear();
   parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
   parameters.insert( QStringLiteral( "CRS" ), QStringLiteral( "EPSG:4326" ) );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputCopcPointCloud );
 
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputCopcPointCloud ) << QStringLiteral( "--transform-crs=%1" ).arg( QLatin1String( "EPSG:4326" ) ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputCopcPointCloud ) << QStringLiteral( "--transform-crs=%1" ).arg( QLatin1String( "EPSG:4326" ) ) );
 
   ok = false;
   alg->run( parameters, *context, &feedback, &ok );
@@ -800,13 +804,15 @@ void TestQgsProcessingPdalAlgs::clip()
   QString outputCopcPointCloud = QDir::tempPath() + "/clip.copc.laz";
   const QString polygonSunshineCoast = QString( TEST_DATA_DIR ) + "/sunshine-coast-clip.gpkg";
 
+  context->setMaximumThreads( 0 );
+
   parameters.clear();
   parameters.insert( QStringLiteral( "INPUT" ), pointCloudLayerPath );
   parameters.insert( QStringLiteral( "OVERLAY" ), polygonSunshineCoast );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputCopcPointCloud );
 
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "clip" ) << QStringLiteral( "--input=%1" ).arg( pointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputCopcPointCloud ) << QStringLiteral( "--polygon=%1" ).arg( polygonSunshineCoast ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << QStringLiteral( "clip" ) << QStringLiteral( "--input=%1" ).arg( pointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputCopcPointCloud ) << QStringLiteral( "--polygon=%1" ).arg( polygonSunshineCoast ) );
 
   bool ok;
   alg->run( parameters, *context, &feedback, &ok );
