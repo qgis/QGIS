@@ -118,9 +118,10 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   feedback->pushInfo( QObject::tr( "Calculating service areas…" ) );
   std::unique_ptr<QgsGraph> graph( mBuilder->takeGraph() );
 
-  QgsFields fields = startPoints->fields();
-  fields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString ) );
+  newFields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
+  QgsFields fields = QgsProcessingUtils::combineFields( startPoints->fields(), fields );
 
   QString pointsSinkId;
   std::unique_ptr<QgsFeatureSink> pointsSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, pointsSinkId, fields, Qgis::WkbType::MultiPoint, mNetwork->sourceCrs() ) );
