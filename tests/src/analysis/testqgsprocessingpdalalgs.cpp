@@ -22,7 +22,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgspdalalgorithms.h"
 #include "qgspdalalgorithmbase.h"
-
+#include "qgspointcloudlayer.h"
 
 class TestQgsProcessingPdalAlgs : public QgsTest
 {
@@ -55,6 +55,8 @@ class TestQgsProcessingPdalAlgs : public QgsTest
     void thinByDecimate();
     void thinByRadius();
     void tile();
+
+    void useIndexCopcFile();
 
   private:
     void updateFileListArg( QStringList &args, const QString &fileName );
@@ -763,5 +765,33 @@ void TestQgsProcessingPdalAlgs::filter()
   QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--filter=Classification == 7 || Classification == 8" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) << QStringLiteral( "--threads=2" ) );
 }
 
+void TestQgsProcessingPdalAlgs::useIndexCopcFile()
+{
+  const QString pointCloudFileName = QString( TEST_DATA_DIR ) + "/point_clouds/las/cloud.las";
+  const QFileInfo pointCloudFileInfo( pointCloudFileName );
+  const QString pointCloudLayerPath = pointCloudFileInfo.filePath();
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  // generate index for use in algorithm
+  QgsPointCloudLayer *lyr = new QgsPointCloudLayer( pointCloudLayerPath, "layer", "pdal" );
+  lyr->dataProvider()->generateIndex();
+
+
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:exportvector" ) ) ) );
+
+  const QString outputFile = QDir::tempPath() + "/points.gpkg";
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), pointCloudLayerPath );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
 QGSTEST_MAIN( TestQgsProcessingPdalAlgs )
 #include "testqgsprocessingpdalalgs.moc"
