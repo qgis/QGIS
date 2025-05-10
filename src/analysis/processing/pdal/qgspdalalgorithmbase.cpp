@@ -306,7 +306,7 @@ QgsPointCloudLayer *QgsPdalAlgorithmBase::parameterAsPointCloudLayer( const QVar
 
   if ( fiCopcFile.exists() )
   {
-    QgsPointCloudLayer *copcLayer = new QgsPointCloudLayer( copcFileName, layer->name() );
+    QgsPointCloudLayer *copcLayer = new QgsPointCloudLayer( copcFileName, layer->name(), "copc" );
     if ( copcLayer && copcLayer->isValid() )
       return copcLayer;
   }
