@@ -25,6 +25,7 @@
 #include "qgsproviderregistry.h"
 #include <QPushButton>
 #include <QItemSelectionModel>
+#include <QMenu>
 
 QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
   : QDialog( parent )
@@ -59,6 +60,23 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
   connect( mDeleteButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::removeSelectedFields );
   connect( mUpButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsUp );
   connect( mDownButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsDown );
+
+  connect( mFieldsView, &QgsFieldMappingWidget::willShowContextMenu, this, [this]( QMenu *menu, QModelIndex index ) {
+    if ( index.isValid() && static_cast<QgsFieldMappingModel::ColumnDataIndex>( index.column() ) == QgsFieldMappingModel::ColumnDataIndex::DestinationName )
+    {
+      QAction *actionConvertAllFieldNamesToLowercase = menu->addAction( "Convert All Field Names to Lowercase" );
+
+      connect( actionConvertAllFieldNamesToLowercase, &QAction::triggered, this, [=]() {
+        QgsFieldMappingModel *model = mFieldsView->model();
+        for ( int i = 0; i < model->rowCount(); i++ )
+        {
+          QModelIndex index = model->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
+          QString name = model->data( index, Qt::EditRole ).toString();
+          model->setData( index, name.toLower(), Qt::EditRole );
+        }
+      } );
+    }
+  } );
 
   const bool supportsSchemas = mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Schemas );
   if ( supportsSchemas )
