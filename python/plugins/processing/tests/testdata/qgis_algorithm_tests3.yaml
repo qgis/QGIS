@@ -396,7 +396,7 @@ tests:
  # This is VERY slow on proj 6+ builds due to the excessive amount of message log noise it causes to be emitted.
  # We need a way to disable the default handlers on individual QgsCoordinateTransform objects in order to avoid
  # this and speed the algorithm back up
- # - algorithm: qgis:findprojection
+ # - algorithm: native:findprojection
  #   name: Find projection
  #   params:
  #     INPUT:

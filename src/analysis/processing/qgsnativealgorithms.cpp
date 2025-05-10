@@ -132,6 +132,7 @@
 #include "qgsalgorithmfilter.h"
 #include "qgsalgorithmfilterbygeometry.h"
 #include "qgsalgorithmfiltervertices.h"
+#include "qgsalgorithmfindprojection.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmflattenrelationships.h"
 #include "qgsalgorithmforcerhr.h"
@@ -449,6 +450,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFilterByLayerTypeAlgorithm() );
   addAlgorithm( new QgsFilterVerticesByM() );
   addAlgorithm( new QgsFilterVerticesByZ() );
+  addAlgorithm( new QgsFindProjectionAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsFlattenRelationshipsAlgorithm() );
   addAlgorithm( new QgsForceRHRAlgorithm() );
