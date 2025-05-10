@@ -121,7 +121,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   QgsFields newFields;
   newFields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString ) );
   newFields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
-  QgsFields fields = QgsProcessingUtils::combineFields( startPoints->fields(), fields );
+  QgsFields fields = QgsProcessingUtils::combineFields( startPoints->fields(), newFields );
 
   QString pointsSinkId;
   std::unique_ptr<QgsFeatureSink> pointsSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, pointsSinkId, fields, Qgis::WkbType::MultiPoint, mNetwork->sourceCrs() ) );
