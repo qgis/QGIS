@@ -103,10 +103,10 @@ QgsFields QgsAddXYFieldsAlgorithm::outputFields( const QgsFields &inputFields ) 
     const QString xFieldName = mPrefix + 'x';
     const QString yFieldName = mPrefix + 'y';
 
-    QgsFields outFields = inputFields;
-    outFields.append( QgsField( xFieldName, QMetaType::Type::Double, QString(), 20, 10 ) );
-    outFields.append( QgsField( yFieldName, QMetaType::Type::Double, QString(), 20, 10 ) );
-    return outFields;
+    QgsFields newFields;
+    newFields.append( QgsField( xFieldName, QMetaType::Type::Double, QString(), 20, 10 ) );
+    newFields.append( QgsField( yFieldName, QMetaType::Type::Double, QString(), 20, 10 ) );
+    return QgsProcessingUtils::combineFields( inputFields, newFields );
   }
 }
 
