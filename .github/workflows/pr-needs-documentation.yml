@@ -26,7 +26,7 @@ jobs:
 
       - name: Create comment about documentation
         if: github.event.label.name == 'Needs Documentation'
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
         with:
           token: ${{ secrets.GH_TOKEN_BOT }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -44,7 +44,7 @@ jobs:
 
       - name: Create comment about changelog
         if: github.event.label.name == 'Changelog'
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
         with:
           token: ${{ secrets.GH_TOKEN_BOT }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -115,7 +115,7 @@ jobs:
 
       # get commits from the PR
       - name: Get PR commits
-        uses: octokit/request-action@v2.x
+        uses: octokit/request-action@dad4362715b7fb2ddedf9772c8670824af564f0d # v2.4.0
         id: get_pr_commits
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -135,7 +135,7 @@ jobs:
       # create the documentation issue
       - name: Create Documentation issue
         id: doc_issue
-        uses: dacbd/create-issue-action@v2.0.0
+        uses: dacbd/create-issue-action@cdb57ab6ff8862aa09fee2be6ba77a59581921c2 # v2.0.0
         with:
           token: ${{ secrets.GH_TOKEN_BOT }}
           owner: qgis
@@ -160,7 +160,7 @@ jobs:
 
       # write comment to ping the PR author
       - name: Create comment
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
         with:
           token: ${{ secrets.GH_TOKEN_BOT }}
           issue-number: ${{ github.event.pull_request.number }}
