@@ -540,9 +540,11 @@
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
 
+
 //
 // Conditional Includes
 //
+
 #include <sqlite3.h>
 
 #ifdef HAVE_SPATIALITE
