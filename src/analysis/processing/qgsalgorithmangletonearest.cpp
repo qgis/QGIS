@@ -189,6 +189,10 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
   }
   else
   {
+    if ( outFields.lookupField( fieldName ) >= 0 )
+    {
+      throw QgsProcessingException( QObject::tr( "A field with the same name (%1) already exists" ).arg( fieldName ) );
+    }
     outFields.append( QgsField( fieldName, QMetaType::Type::Double ) );
   }
 

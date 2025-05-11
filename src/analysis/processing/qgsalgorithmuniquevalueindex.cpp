@@ -80,6 +80,12 @@ QVariantMap QgsAddUniqueValueIndexAlgorithm::processAlgorithm( const QVariantMap
 
   const QString newFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
   QgsFields fields = source->fields();
+
+  if ( fields.lookupField( newFieldName ) >= 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "A field with the same name (%1) already exists" ).arg( newFieldName ) );
+  }
+
   const QgsField newField = QgsField( newFieldName, QMetaType::Type::Int );
   fields.append( newField );
 
