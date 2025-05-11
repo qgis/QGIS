@@ -230,6 +230,11 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      */
     QString friendlyIdentifier( QgsProcessingModelAlgorithm *model ) const;
 
+    /**
+     * Returns the type of source
+     */
+    Qgis::ProcessingModelChildParameterSource getSourceType() { return mSource; }
+
   private:
 
     Qgis::ProcessingModelChildParameterSource mSource = Qgis::ProcessingModelChildParameterSource::StaticValue;
