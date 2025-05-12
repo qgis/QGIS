@@ -1,7 +1,7 @@
 # The following has been generated automatically from src/gui/processing/models/qgsmodelcomponentgraphicitem.h
 try:
     QgsModelComponentGraphicItem.__attribute_docs__ = {'requestModelRepaint': 'Emitted by the item to request a repaint of the parent model scene.\n', 'aboutToChange': 'Emitted when the definition of the associated component is about to be\nchanged by the item.\n\nThe ``text`` argument gives the translated text describing the change\nabout to occur, and the optional ``id`` can be used to group the\nassociated undo commands.\n', 'changed': 'Emitted when the definition of the associated component is changed by\nthe item.\n', 'repaintArrows': 'Emitted when item requests that all connected arrows are repainted.\n', 'updateArrowPaths': 'Emitted when item requires that all connected arrow paths are\nrecalculated.\n', 'sizePositionChanged': "Emitted when the item's size or position changes.\n"}
-    QgsModelComponentGraphicItem.__virtual_methods__ = ['flags', 'linkPointCount', 'linkPointText', 'editComment', 'canDeleteComponent', 'deleteComponent', 'editComponent', 'strokeStyle', 'titleAlignment', 'iconPicture', 'iconPixmap']
+    QgsModelComponentGraphicItem.__virtual_methods__ = ['flags', 'getLinkedParamDataType', 'linkPointCount', 'linkPointText', 'editComment', 'canDeleteComponent', 'deleteComponent', 'editComponent', 'strokeStyle', 'titleAlignment', 'iconPicture', 'iconPixmap']
     QgsModelComponentGraphicItem.__abstract_methods__ = ['fillColor', 'strokeColor', 'textColor', 'updateStoredComponentPosition']
     QgsModelComponentGraphicItem.__overridden_methods__ = ['mouseDoubleClickEvent', 'hoverEnterEvent', 'hoverMoveEvent', 'hoverLeaveEvent', 'itemChange', 'boundingRect', 'contains', 'paint']
     QgsModelComponentGraphicItem.__signal_arguments__ = {'aboutToChange': ['text: str', 'id: int = 0']}
@@ -15,7 +15,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsModelParameterGraphicItem.__overridden_methods__ = ['contextMenuEvent', 'canDeleteComponent', 'fillColor', 'strokeColor', 'textColor', 'iconPicture', 'linkPointCount', 'linkPointText', 'updateStoredComponentPosition', 'deleteComponent']
+    QgsModelParameterGraphicItem.__overridden_methods__ = ['contextMenuEvent', 'canDeleteComponent', 'getLinkedParamDataType', 'fillColor', 'strokeColor', 'textColor', 'iconPicture', 'linkPointCount', 'linkPointText', 'updateStoredComponentPosition', 'deleteComponent']
     QgsModelParameterGraphicItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass

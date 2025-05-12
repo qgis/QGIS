@@ -113,7 +113,7 @@ Shows a preview of moving the item from its stored position by ``dx``,
 Sets a new scene ``rect`` for the item.
 %End
 
-    QString getLinkedParamDataType( Qt::Edge edge, int index );
+    virtual QString getLinkedParamDataType( Qt::Edge edge, int index );
 
     virtual void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
 
@@ -365,7 +365,8 @@ Ownership of ``parameter`` is transferred to the item.
     virtual bool canDeleteComponent();
 
 
-    QString getLinkedParamDataType( Qt::Edge edge, int index );
+    virtual QString getLinkedParamDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index );
+
 
   protected:
     virtual QColor fillColor( State state ) const;

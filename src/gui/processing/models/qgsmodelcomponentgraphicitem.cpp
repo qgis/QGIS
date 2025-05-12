@@ -889,7 +889,7 @@ QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge, int index ) const
   return QString();
 }
 
-QString QgsModelParameterGraphicItem::getLinkedParamDataType( Qt::Edge edge, int index )
+QString QgsModelParameterGraphicItem::getLinkedParamDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index )
 {
   QString unknownType = QString( "unknown" );
 
