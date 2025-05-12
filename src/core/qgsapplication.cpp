@@ -491,29 +491,29 @@ void QgsApplication::installTranslators()
   // Remove translators if any are already installed
   if ( mQgisTranslator )
   {
-    removeTranslator( mQgisTranslator );
-    delete mQgisTranslator;
-    mQgisTranslator = nullptr;
+    removeTranslator( mQgisTranslator.get() );
+    mQgisTranslator.reset( );
+
   }
   if ( mQtTranslator )
   {
-    removeTranslator( mQtTranslator );
-    delete mQtTranslator;
-    mQtTranslator = nullptr;
+    removeTranslator( mQtTranslator.get() );
+    mQtTranslator.reset( );
+
   }
   if ( mQtBaseTranslator )
   {
-    removeTranslator( mQtBaseTranslator );
-    delete mQtBaseTranslator;
-    mQtBaseTranslator = nullptr;
+    removeTranslator( mQtBaseTranslator.get() );
+    mQtBaseTranslator.reset( );
+
   }
 
   if ( *sTranslation() != QLatin1String( "C" ) )
   {
-    mQgisTranslator = new QTranslator( this );
+    mQgisTranslator = std::make_unique<QTranslator>( this );
     if ( mQgisTranslator->load( QStringLiteral( "qgis_" ) + *sTranslation(), i18nPath() ) )
     {
-      installTranslator( mQgisTranslator );
+      installTranslator( mQgisTranslator.get() );
     }
     else
     {
@@ -531,20 +531,20 @@ void QgsApplication::installTranslators()
     qtTranslationsPath = prefix + qtTranslationsPath.mid( QLibraryInfo::location( QLibraryInfo::PrefixPath ).length() );
 #endif
 
-    mQtTranslator = new QTranslator( this );
+    mQtTranslator = std::make_unique<QTranslator>( this );
     if ( mQtTranslator->load( QStringLiteral( "qt_" ) + *sTranslation(), qtTranslationsPath ) )
     {
-      installTranslator( mQtTranslator );
+      installTranslator( mQtTranslator.get() );
     }
     else
     {
       QgsDebugMsgLevel( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( qtTranslationsPath, *sTranslation() ), 2 );
     }
 
-    mQtBaseTranslator = new QTranslator( this );
+    mQtBaseTranslator = std::make_unique<QTranslator>( this );
     if ( mQtBaseTranslator->load( QStringLiteral( "qtbase_" ) + *sTranslation(), qtTranslationsPath ) )
     {
-      installTranslator( mQtBaseTranslator );
+      installTranslator( mQtBaseTranslator.get() );
     }
     else
     {
@@ -560,9 +560,6 @@ QgsApplication::~QgsApplication()
 
   delete mDataItemProviderRegistry;
   delete mApplicationMembers;
-  delete mQgisTranslator;
-  delete mQtTranslator;
-  delete mQtBaseTranslator;
 
   // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
   // and there's just a *chance* that someone hasn't properly called exitQgis prior to

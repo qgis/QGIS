@@ -1156,9 +1156,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     QMap<QString, QIcon> mIconCache;
     QMap<Cursor, QCursor> mCursorCache;
 
-    QTranslator *mQgisTranslator = nullptr;
-    QTranslator *mQtTranslator = nullptr;
-    QTranslator *mQtBaseTranslator = nullptr;
+    std::unique_ptr<QTranslator> mQgisTranslator;
+    std::unique_ptr<QTranslator> mQtTranslator;
+    std::unique_ptr<QTranslator> mQtBaseTranslator;
 
     QgsDataItemProviderRegistry *mDataItemProviderRegistry = nullptr;
     QgsAuthManager *mAuthManager = nullptr;

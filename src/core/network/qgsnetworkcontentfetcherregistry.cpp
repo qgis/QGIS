@@ -190,7 +190,7 @@ void QgsFetchedContent::taskCompleted()
 
       QTemporaryFile *tf = new QTemporaryFile( extension.isEmpty() ? QString( "XXXXXX" ) :
           QString( "%1/XXXXXX.%2" ).arg( QDir::tempPath(), extension ) );
-      mFile = tf;
+      mFile.reset( tf );
       tf->open();
       mFile->write( reply->readAll() );
       // Qt docs notes that on some system if fileName is not called before close, file might get deleted
