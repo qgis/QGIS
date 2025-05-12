@@ -295,10 +295,16 @@ void TestQgis::qVariantCompare_data()
   QTest::newRow( "double 2" ) << QVariant( 1.5 ) << QVariant( -2.5 ) << false << true << 1;
   QTest::newRow( "double 3" ) << QVariant( 0.5 ) << QVariant( 1.5 ) << true << false << -1;
   QTest::newRow( "double equal" ) << QVariant( 1.5 ) << QVariant( 1.5 ) << false << false << 0;
+  QTest::newRow( "double both nan" ) << QVariant( std::numeric_limits<double>::quiet_NaN() ) << QVariant( std::numeric_limits<double>::quiet_NaN() ) << false << false << 0;
+  QTest::newRow( "double lhs nan" ) << QVariant( 5.5 ) << QVariant( std::numeric_limits<double>::quiet_NaN() ) << false << true << 1;
+  QTest::newRow( "double rhs nan" ) << QVariant( std::numeric_limits<double>::quiet_NaN() ) << QVariant( 5.5 ) << true << false << -1;
   QTest::newRow( "float" ) << QVariant( 1.5f ) << QVariant( 2.5f ) << true << false << -1;
   QTest::newRow( "float 2" ) << QVariant( 1.5f ) << QVariant( -2.5f ) << false << true << 1;
   QTest::newRow( "float 3" ) << QVariant( 0.5f ) << QVariant( 1.5f ) << true << false << -1;
   QTest::newRow( "float equal" ) << QVariant( 1.5f ) << QVariant( 1.5f ) << false << false << 0;
+  QTest::newRow( "float both nan" ) << QVariant( std::numeric_limits<float>::quiet_NaN() ) << QVariant( std::numeric_limits<float>::quiet_NaN() ) << false << false << 0;
+  QTest::newRow( "float lhs nan" ) << QVariant( 5.5f ) << QVariant( std::numeric_limits<float>::quiet_NaN() ) << false << true << 1;
+  QTest::newRow( "float rhs nan" ) << QVariant( std::numeric_limits<float>::quiet_NaN() ) << QVariant( 5.5f ) << true << false << -1;
   QTest::newRow( "char" ) << QVariant( 'b' ) << QVariant( 'x' ) << true << false << -1;
   QTest::newRow( "char 2" ) << QVariant( 'x' ) << QVariant( 'b' ) << false << true << 1;
   QTest::newRow( "char equal" ) << QVariant( 'x' ) << QVariant( 'x' ) << false << false << 0;
