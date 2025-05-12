@@ -1248,7 +1248,7 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
         {
           QgsProcessingModelChildParameterSource firstParamSource = paramSources[0];
 
-          switch ( firstParamSource.getSourceType() )
+          switch ( firstParamSource.source() )
           {
             case Qgis::ProcessingModelChildParameterSource::ChildOutput:
               paramValueAsStr = QStringLiteral( ": %1" ).arg(
