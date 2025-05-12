@@ -159,6 +159,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
 
   public slots:
 
+    void updateSceneRect( const QRectF &rect );
     /**
      * Snaps the selected items to the grid.
      */
@@ -245,6 +246,8 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
 
     QgsModelSnapper mSnapper;
     QgsModelViewSnapMarker *mSnapMarker = nullptr;
+
+    QRectF mPreviousSceneRect;
 };
 
 

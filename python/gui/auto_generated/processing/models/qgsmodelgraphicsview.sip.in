@@ -135,6 +135,7 @@ Pastes items from clipboard, using the specified ``mode``.
 
   public slots:
 
+    void updateSceneRect( const QRectF &rect );
     void snapSelected();
 %Docstring
 Snaps the selected items to the grid.
