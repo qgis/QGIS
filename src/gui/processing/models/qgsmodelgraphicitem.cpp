@@ -307,7 +307,6 @@ QColor QgsModelDesignerSocketGraphicItem::typeToColorLookup( QString dataType )
                   // Other Layer types
                   if (
                     dataType == QgsProcessingParameterMultipleLayers::typeName() || dataType == QgsProcessingParameterMapLayer::typeName() || dataType == QgsProcessingParameterAnnotationLayer::typeName() || dataType == QgsProcessingOutputMultipleLayers::typeName()
-
                   )
                   {
                     return QColor( 128, 128, 0 ); // Dark kaki
