@@ -175,12 +175,38 @@ int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs )
     {
       const double lhsDouble = lhs.toDouble();
       const double rhsDouble = rhs.toDouble();
+
+      // consider NaN < any non-NaN
+      const bool lhsIsNan = std::isnan( lhsDouble );
+      const bool rhsIsNan = std::isnan( rhsDouble );
+      if ( lhsIsNan )
+      {
+        return rhsIsNan ? 0 : -1;
+      }
+      else if ( rhsIsNan )
+      {
+        return 1;
+      }
+
       return lhsDouble < rhsDouble ? -1 : ( lhsDouble == rhsDouble ? 0 : 1 );
     }
     case QMetaType::Type::Float:
     {
       const float lhsFloat = lhs.toFloat();
       const float rhsFloat = rhs.toFloat();
+
+      // consider NaN < any non-NaN
+      const bool lhsIsNan = std::isnan( lhsFloat );
+      const bool rhsIsNan = std::isnan( rhsFloat );
+      if ( lhsIsNan )
+      {
+        return rhsIsNan ? 0 : -1;
+      }
+      else if ( rhsIsNan )
+      {
+        return 1;
+      }
+
       return lhsFloat < rhsFloat ? -1 : ( lhsFloat == rhsFloat ? 0 : 1 );
     }
     case QMetaType::Type::QChar:
