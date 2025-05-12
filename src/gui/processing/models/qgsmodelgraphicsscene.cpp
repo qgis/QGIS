@@ -59,6 +59,35 @@ void QgsModelGraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
     return;
   QGraphicsScene::mousePressEvent( event );
 }
+void QgsModelGraphicsScene::updateBounds()
+{
+  setSceneRect( modelBounds( 50 ) );
+}
+
+QRectF QgsModelGraphicsScene::modelBounds( double margin ) const
+{
+  //start with an empty rectangle
+  QRectF bounds;
+
+  //add all  items
+  const auto constItems = items();
+  for ( QGraphicsItem *item : constItems )
+  {
+    QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item );
+    if ( !componentItem )
+    {
+      continue;
+    }
+    bounds = bounds.united( componentItem->sceneBoundingRect() );
+  }
+
+  if ( bounds.isValid() && margin > 0.0 )
+  {
+    bounds.adjust( margin, margin, margin, margin );
+  }
+
+  return bounds;
+}
 
 QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const
 {

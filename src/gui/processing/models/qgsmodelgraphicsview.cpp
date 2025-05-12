@@ -397,6 +397,7 @@ void QgsModelGraphicsView::setModelScene( QgsModelGraphicsScene *scene )
 {
   setScene( scene );
 
+  mPreviousSceneRect = sceneRect();
   // IMPORTANT!
   // previous snap markers, snap lines are owned by previous layout - so don't delete them here!
   mSnapMarker = new QgsModelViewSnapMarker();
@@ -468,6 +469,49 @@ void QgsModelGraphicsView::endCommand()
   emit commandEnded();
 }
 
+
+void QgsModelGraphicsView::updateSceneRect( const QRectF &rect )
+{
+  // qDebug() << " previous scene ! rect:" << mPreviousSceneRect;
+  // qDebug() << " scene updated! rect:" << rect;
+  // return QGraphicsView::updateSceneRect(rect);
+  int offsetX = 0;
+  int offsetY = 0;
+
+  qDebug() << "rect.left" << rect.left();
+  qDebug() << "mPreviousSceneRect.left" << mPreviousSceneRect.left();
+  qDebug() << "rect.right" << rect.right();
+  qDebug() << "mPreviousSceneRect.right" << mPreviousSceneRect.right();
+  qDebug() << "rect.top" << rect.top();
+  qDebug() << "mPreviousSceneRect.top" << mPreviousSceneRect.top();
+  qDebug() << "rect.bottom" << rect.bottom();
+  qDebug() << "mPreviousSceneRect.bottom" << mPreviousSceneRect.bottom();
+
+  if ( rect.left() < mPreviousSceneRect.left() )
+  {
+    offsetX = rect.left() - mPreviousSceneRect.left();
+  }
+  if ( rect.right() > mPreviousSceneRect.right() )
+  {
+    offsetX = rect.right() - mPreviousSceneRect.right();
+  }
+  if ( rect.top() < mPreviousSceneRect.top() )
+  {
+    offsetY = rect.top() - mPreviousSceneRect.top();
+  }
+  if ( rect.bottom() > mPreviousSceneRect.bottom() )
+  {
+    offsetY = rect.bottom() - mPreviousSceneRect.bottom();
+  }
+
+
+  horizontalScrollBar()->setValue( horizontalScrollBar()->value() + offsetX );
+  verticalScrollBar()->setValue( verticalScrollBar()->value() + offsetY );
+
+  mPreviousSceneRect = rect;
+
+  QGraphicsView::updateSceneRect( rect );
+}
 
 void QgsModelGraphicsView::snapSelected()
 {
