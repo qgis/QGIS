@@ -136,7 +136,7 @@ QgsSQLStatement::QgsSQLStatement( const QString &expr )
 QgsSQLStatement::QgsSQLStatement( const QString &expr, bool allowFragments )
   : mAllowFragments( allowFragments )
 {
-  mRootNode = ::parse( expr, mParserErrorString, mAllowFragments );
+  mRootNode.reset( ::parse( expr, mParserErrorString, mAllowFragments ) );
   mStatement = expr;
 }
 
@@ -144,25 +144,24 @@ QgsSQLStatement::QgsSQLStatement( const QgsSQLStatement &other )
   : mAllowFragments( other.mAllowFragments )
   , mStatement( other.mStatement )
 {
-  mRootNode = ::parse( mStatement, mParserErrorString, mAllowFragments );
+  mRootNode.reset( ::parse( mStatement, mParserErrorString, mAllowFragments ) );
 }
 
 QgsSQLStatement &QgsSQLStatement::operator=( const QgsSQLStatement &other )
 {
   if ( &other != this )
   {
-    delete mRootNode;
     mParserErrorString.clear();
     mStatement = other.mStatement;
     mAllowFragments = other.mAllowFragments;
-    mRootNode = ::parse( mStatement, mParserErrorString, mAllowFragments );
+    mRootNode.reset( ::parse( mStatement, mParserErrorString, mAllowFragments ) );
   }
   return *this;
 }
 
 QgsSQLStatement::~QgsSQLStatement()
 {
-  delete mRootNode;
+
 }
 
 bool QgsSQLStatement::hasParserError() const { return !mParserErrorString.isNull() || ( !mRootNode && !mAllowFragments ); }
@@ -177,7 +176,7 @@ void QgsSQLStatement::acceptVisitor( QgsSQLStatement::Visitor &v ) const
 
 const QgsSQLStatement::Node *QgsSQLStatement::rootNode() const
 {
-  return mRootNode;
+  return mRootNode.get();
 }
 
 void QgsSQLStatement::RecursiveVisitor::visit( const QgsSQLStatement::NodeSelect &n )
@@ -408,9 +407,9 @@ bool QgsSQLStatement::NodeBinaryOperator::leftAssociative() const
 
 QString QgsSQLStatement::NodeBinaryOperator::dump() const
 {
-  QgsSQLStatement::NodeBinaryOperator *lOp = dynamic_cast<QgsSQLStatement::NodeBinaryOperator *>( mOpLeft );
-  QgsSQLStatement::NodeBinaryOperator *rOp = dynamic_cast<QgsSQLStatement::NodeBinaryOperator *>( mOpRight );
-  QgsSQLStatement::NodeUnaryOperator *ruOp = dynamic_cast<QgsSQLStatement::NodeUnaryOperator *>( mOpRight );
+  QgsSQLStatement::NodeBinaryOperator *lOp = dynamic_cast<QgsSQLStatement::NodeBinaryOperator *>( mOpLeft.get() );
+  QgsSQLStatement::NodeBinaryOperator *rOp = dynamic_cast<QgsSQLStatement::NodeBinaryOperator *>( mOpRight.get() );
+  QgsSQLStatement::NodeUnaryOperator *ruOp = dynamic_cast<QgsSQLStatement::NodeUnaryOperator *>( mOpRight.get() );
 
   QString rdump( mOpRight->dump() );
 
@@ -594,7 +593,6 @@ QgsSQLStatement::NodeSelect::~NodeSelect()
   qDeleteAll( mTableList );
   qDeleteAll( mColumns );
   qDeleteAll( mJoins );
-  delete mWhere;
   qDeleteAll( mOrderBy );
 }
 

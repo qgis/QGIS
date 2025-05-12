@@ -5059,6 +5059,11 @@ void QgisApp::setGpsPanelConnection( QgsGpsConnection *connection )
   mGpsConnection->setConnection( connection );
 }
 
+QgsAppGpsDigitizing *QgisApp::gpsDigitizing()
+{
+  return mGpsDigitizing;
+}
+
 QgsAppGpsSettingsMenu *QgisApp::gpsSettingsMenu()
 {
   return mGpsSettingsMenu;

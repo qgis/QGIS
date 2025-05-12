@@ -947,7 +947,7 @@ void QgsPostgresDataItemGuiProvider::moveProjectToSchema( QgsPGProjectItem *proj
     QgsPostgresConn *conn = QgsPostgresConn::connectDb( projectItem->postgresProjectUri().connInfo, false );
     if ( !conn )
     {
-      notify( tr( "Move Project to Another Schema" ), tr( "Unable to move project to anoter schema." ), context, Qgis::MessageLevel::Warning );
+      notify( tr( "Move Project to Another Schema" ), tr( "Unable to move project to another schema." ), context, Qgis::MessageLevel::Warning );
       return;
     }
 

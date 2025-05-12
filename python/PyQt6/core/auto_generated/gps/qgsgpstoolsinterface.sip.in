@@ -1,0 +1,62 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpstoolsinterface.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsGpsToolsInterface : QObject
+{
+%Docstring(signature="appended")
+Abstract interface class for the QGIS GPS tools.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsgpstoolsinterface.h"
+%End
+  public:
+    QgsGpsToolsInterface();
+
+    virtual void setGpsPanelConnection( QgsGpsConnection *connection /Transfer/ ) = 0;
+%Docstring
+Sets a GPS ``connection`` to use within the GPS Panel widget.
+
+Any existing GPS connection used by the widget will be disconnected and
+replaced with this connection. The connection is automatically
+registered within the :py:func:`QgsApplication.gpsConnectionRegistry()`.
+%End
+
+    virtual void createFeatureFromGpsTrack() = 0;
+%Docstring
+Creates a feature from the current GPS track.
+
+The geometry type of the feature is determined by the layer set via
+:py:func:`QgsProjectGpsSettings.destinationLayer()`.
+
+The created geometry will be automatically commited depending on the
+status of
+:py:func:`QgsProjectGpsSettings.automaticallyCommitFeatures()`.
+%End
+
+    virtual void setGpsTrackLineSymbol( QgsLineSymbol *symbol ) = 0;
+%Docstring
+Sets the line ``symbol`` of the GPS track and changes the
+:py:class:`QgsAppGpsDigitizing`.settingTrackLineSymbol setting.
+
+If there is a current GPS track, its appearance is updated according to
+the symbol.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpstoolsinterface.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
