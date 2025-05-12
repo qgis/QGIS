@@ -237,7 +237,7 @@ QColor QgsModelDesignerSocketGraphicItem::typeToColorLookup( QString dataType )
 
   )
   {
-    return QColor( 34, 157, 214 );
+    return QColor( 34, 157, 214 ); // blue
   }
   else
 
@@ -246,7 +246,7 @@ QColor QgsModelDesignerSocketGraphicItem::typeToColorLookup( QString dataType )
       dataType == QgsProcessingParameterBoolean::typeName() || dataType == QgsProcessingOutputBoolean::typeName()
     )
     {
-      return QColor( 51, 201, 28 );
+      return QColor( 51, 201, 28 ); // green
     }
     else
 
@@ -255,7 +255,7 @@ QColor QgsModelDesignerSocketGraphicItem::typeToColorLookup( QString dataType )
         dataType == QgsProcessingParameterPoint::typeName() || dataType == QgsProcessingParameterGeometry::typeName() || dataType == QgsProcessingParameterVectorLayer::typeName() || dataType == QgsProcessingParameterMeshLayer::typeName() || dataType == QgsProcessingParameterPointCloudLayer::typeName() || dataType == QgsProcessingOutputVectorLayer::typeName() || dataType == QgsProcessingOutputPointCloudLayer::typeName() || dataType == QgsProcessingParameterExtent::typeName() || dataType == QgsProcessingOutputVectorTileLayer::typeName() || dataType == QgsProcessingParameterPointCloudDestination::typeName() || dataType == QgsProcessingParameterVectorTileDestination::typeName() || dataType == QgsProcessingParameterVectorDestination::typeName() || dataType == QgsProcessingParameterFeatureSource::typeName()
       )
       {
-        return QColor( 180, 180, 0 );
+        return QColor( 180, 180, 0 ); // kaki (greenish yellow)
       }
       else
 
@@ -265,7 +265,7 @@ QColor QgsModelDesignerSocketGraphicItem::typeToColorLookup( QString dataType )
 
         )
         {
-          return QColor( 0, 180, 180 );
+          return QColor( 0, 180, 180 ); // turquoise
         }
         else
 
@@ -274,7 +274,7 @@ QColor QgsModelDesignerSocketGraphicItem::typeToColorLookup( QString dataType )
             dataType == QgsProcessingParameterEnum::typeName()
           )
           {
-            return QColor( 128, 68, 201 );
+            return QColor( 128, 68, 201 ); // purple
           }
           else
 
@@ -284,7 +284,7 @@ QColor QgsModelDesignerSocketGraphicItem::typeToColorLookup( QString dataType )
 
             )
             {
-              return QColor( 100, 100, 255 );
+              return QColor( 100, 100, 255 ); // slate blueish
             }
             else
 
@@ -293,14 +293,14 @@ QColor QgsModelDesignerSocketGraphicItem::typeToColorLookup( QString dataType )
                 dataType == QgsProcessingParameterFile::typeName() || dataType == QgsProcessingOutputFolder::typeName() || dataType == QgsProcessingOutputFile::typeName() || dataType == QgsProcessingParameterFolderDestination::typeName() || dataType == QgsProcessingParameterFeatureSink::typeName() || dataType == QgsProcessingParameterRasterDestination::typeName() || dataType == QgsProcessingParameterFileDestination::typeName()
               )
               {
-                return QColor( 80, 80, 80 );
+                return QColor( 80, 80, 80 ); // dark gray
               }
               else
 
                 // Expression type
                 if ( dataType == QgsProcessingParameterExpression::typeName() )
                 {
-                  return QColor( 180, 80, 180 );
+                  return QColor( 180, 80, 180 ); // dark pink
                 }
                 else
 
@@ -310,7 +310,7 @@ QColor QgsModelDesignerSocketGraphicItem::typeToColorLookup( QString dataType )
 
                   )
                   {
-                    return QColor( 128, 128, 0 );
+                    return QColor( 128, 128, 0 ); // Dark kaki
                   }
                   else
 
@@ -329,7 +329,7 @@ QColor QgsModelDesignerSocketGraphicItem::typeToColorLookup( QString dataType )
                   // QgsProcessingOutputVariant
                   // QgsProcessingOutputConditionalBranch
                   {
-                    return QColor( 128, 128, 128 );
+                    return QColor( 128, 128, 128 ); // mid gray
                   }
 }
 
