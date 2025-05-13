@@ -11400,11 +11400,16 @@ void TestProcessingGui::testModelGraphicsView()
 
   //check model bounds
   const QRectF modelBounds = scene2.modelBounds( 50 );
-  QGSCOMPARENEAR( modelBounds.height(), 624.4, 0.01 );
+  qDebug() << "modelBounds.height():" << modelBounds.height();
+  qDebug() << "modelBounds.width():" << modelBounds.width();
+  qDebug() << "modelBounds.left():" << modelBounds.left();
+  qDebug() << "modelBounds.top():" << modelBounds.top();
+
   QGSCOMPARENEAR( modelBounds.width(), 655.00, 0.01 );
   QGSCOMPARENEAR( modelBounds.left(), -252.0, 0.01 );
   QGSCOMPARENEAR( modelBounds.top(), -232.0, 0.01 );
 
+  QGSCOMPARENEAR( modelBounds.height(), 624.4, 0.01 );
 
   QgsModelGraphicsScene scene;
   QVERIFY( !scene.model() );
