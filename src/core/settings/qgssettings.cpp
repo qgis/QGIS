@@ -50,7 +50,6 @@ void QgsSettings::init()
   }
 }
 
-
 QgsSettings::QgsSettings( const QString &organization, const QString &application, QObject *parent )
 {
   mUserSettings = new QSettings( organization, application, parent );
@@ -89,7 +88,6 @@ QgsSettings::~QgsSettings()
   delete mGlobalSettings;
 }
 
-
 void QgsSettings::beginGroup( const QString &prefix, const QgsSettings::Section section )
 {
   const QString pKey = prefixedKey( prefix, section );
@@ -124,7 +122,6 @@ QStringList QgsSettings::allKeys() const
   }
   return keys;
 }
-
 
 QStringList QgsSettings::childKeys() const
 {
@@ -250,7 +247,6 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
   return prefix  + "/" + sanitizeKey( key );
 }
 
-
 int QgsSettings::beginReadArray( const QString &prefix )
 {
   int size = mUserSettings->beginReadArray( sanitizeKey( prefix ) );
@@ -271,7 +267,7 @@ void QgsSettings::beginWriteArray( const QString &prefix, int size )
 void QgsSettings::endArray()
 {
   mUserSettings->endArray();
-  if ( mGlobalSettings )
+  if ( mGlobalSettings && mUsingGlobalArray )
   {
     mGlobalSettings->endArray();
   }
@@ -334,7 +330,6 @@ void QgsSettings::clear()
 {
   mUserSettings->clear();
 }
-
 
 void QgsSettings::holdFlush()
 {
