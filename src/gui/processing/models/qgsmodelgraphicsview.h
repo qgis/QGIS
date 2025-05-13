@@ -158,9 +158,6 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     void pasteItems( PasteMode mode );
 
   public slots:
-
-    // void updateSceneRect( const QRectF &rect );
-
     /**
      * Snaps the selected items to the grid.
      */
