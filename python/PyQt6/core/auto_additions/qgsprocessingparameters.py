@@ -69,69 +69,69 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterBoolean.typeName = staticmethod(QgsProcessingParameterBoolean.typeName)
     QgsProcessingParameterBoolean.fromScriptCode = staticmethod(QgsProcessingParameterBoolean.fromScriptCode)
-    QgsProcessingParameterBoolean.__overridden_methods__ = ['clone', 'type', 'valueAsPythonString', 'asScriptCode']
+    QgsProcessingParameterBoolean.__overridden_methods__ = ['getColor', 'clone', 'type', 'valueAsPythonString', 'asScriptCode']
     QgsProcessingParameterBoolean.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterCrs.typeName = staticmethod(QgsProcessingParameterCrs.typeName)
     QgsProcessingParameterCrs.fromScriptCode = staticmethod(QgsProcessingParameterCrs.fromScriptCode)
-    QgsProcessingParameterCrs.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject']
+    QgsProcessingParameterCrs.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject']
     QgsProcessingParameterCrs.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterExtent.typeName = staticmethod(QgsProcessingParameterExtent.typeName)
     QgsProcessingParameterExtent.fromScriptCode = staticmethod(QgsProcessingParameterExtent.fromScriptCode)
-    QgsProcessingParameterExtent.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject']
+    QgsProcessingParameterExtent.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject']
     QgsProcessingParameterExtent.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterPoint.typeName = staticmethod(QgsProcessingParameterPoint.typeName)
     QgsProcessingParameterPoint.fromScriptCode = staticmethod(QgsProcessingParameterPoint.fromScriptCode)
-    QgsProcessingParameterPoint.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString']
+    QgsProcessingParameterPoint.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString']
     QgsProcessingParameterPoint.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterGeometry.typeName = staticmethod(QgsProcessingParameterGeometry.typeName)
     QgsProcessingParameterGeometry.fromScriptCode = staticmethod(QgsProcessingParameterGeometry.fromScriptCode)
-    QgsProcessingParameterGeometry.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterGeometry.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterGeometry.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterFile.typeName = staticmethod(QgsProcessingParameterFile.typeName)
     QgsProcessingParameterFile.fromScriptCode = staticmethod(QgsProcessingParameterFile.fromScriptCode)
-    QgsProcessingParameterFile.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'asScriptCode', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterFile.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'asScriptCode', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterFile.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterMatrix.typeName = staticmethod(QgsProcessingParameterMatrix.typeName)
     QgsProcessingParameterMatrix.fromScriptCode = staticmethod(QgsProcessingParameterMatrix.fromScriptCode)
-    QgsProcessingParameterMatrix.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterMatrix.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterMatrix.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterMultipleLayers.typeName = staticmethod(QgsProcessingParameterMultipleLayers.typeName)
     QgsProcessingParameterMultipleLayers.fromScriptCode = staticmethod(QgsProcessingParameterMultipleLayers.fromScriptCode)
-    QgsProcessingParameterMultipleLayers.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'asScriptCode', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterMultipleLayers.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'asScriptCode', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterMultipleLayers.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterNumber.typeName = staticmethod(QgsProcessingParameterNumber.typeName)
     QgsProcessingParameterNumber.fromScriptCode = staticmethod(QgsProcessingParameterNumber.fromScriptCode)
-    QgsProcessingParameterNumber.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toolTip', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterNumber.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toolTip', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterNumber.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterDistance.typeName = staticmethod(QgsProcessingParameterDistance.typeName)
-    QgsProcessingParameterDistance.__overridden_methods__ = ['clone', 'type', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterDistance.__overridden_methods__ = ['getColor', 'clone', 'type', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterDistance.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -149,42 +149,42 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterDuration.typeName = staticmethod(QgsProcessingParameterDuration.typeName)
-    QgsProcessingParameterDuration.__overridden_methods__ = ['clone', 'type', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterDuration.__overridden_methods__ = ['getColor', 'clone', 'type', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterDuration.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterScale.typeName = staticmethod(QgsProcessingParameterScale.typeName)
     QgsProcessingParameterScale.fromScriptCode = staticmethod(QgsProcessingParameterScale.fromScriptCode)
-    QgsProcessingParameterScale.__overridden_methods__ = ['clone', 'type', 'asPythonString']
+    QgsProcessingParameterScale.__overridden_methods__ = ['getColor', 'clone', 'type', 'asPythonString']
     QgsProcessingParameterScale.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterRange.typeName = staticmethod(QgsProcessingParameterRange.typeName)
     QgsProcessingParameterRange.fromScriptCode = staticmethod(QgsProcessingParameterRange.fromScriptCode)
-    QgsProcessingParameterRange.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterRange.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterRange.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterRasterLayer.typeName = staticmethod(QgsProcessingParameterRasterLayer.typeName)
     QgsProcessingParameterRasterLayer.fromScriptCode = staticmethod(QgsProcessingParameterRasterLayer.fromScriptCode)
-    QgsProcessingParameterRasterLayer.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'createFileFilter']
+    QgsProcessingParameterRasterLayer.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'createFileFilter']
     QgsProcessingParameterRasterLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterEnum.typeName = staticmethod(QgsProcessingParameterEnum.typeName)
     QgsProcessingParameterEnum.fromScriptCode = staticmethod(QgsProcessingParameterEnum.fromScriptCode)
-    QgsProcessingParameterEnum.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsPythonComment', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterEnum.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsPythonComment', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterEnum.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterString.typeName = staticmethod(QgsProcessingParameterString.typeName)
     QgsProcessingParameterString.fromScriptCode = staticmethod(QgsProcessingParameterString.fromScriptCode)
-    QgsProcessingParameterString.__overridden_methods__ = ['clone', 'type', 'valueAsPythonString', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterString.__overridden_methods__ = ['getColor', 'clone', 'type', 'valueAsPythonString', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterString.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -198,28 +198,28 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterExpression.typeName = staticmethod(QgsProcessingParameterExpression.typeName)
     QgsProcessingParameterExpression.fromScriptCode = staticmethod(QgsProcessingParameterExpression.fromScriptCode)
-    QgsProcessingParameterExpression.__overridden_methods__ = ['clone', 'type', 'valueAsPythonString', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterExpression.__overridden_methods__ = ['getColor', 'clone', 'type', 'valueAsPythonString', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterExpression.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterVectorLayer.typeName = staticmethod(QgsProcessingParameterVectorLayer.typeName)
     QgsProcessingParameterVectorLayer.fromScriptCode = staticmethod(QgsProcessingParameterVectorLayer.fromScriptCode)
-    QgsProcessingParameterVectorLayer.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterVectorLayer.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterVectorLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterMeshLayer.typeName = staticmethod(QgsProcessingParameterMeshLayer.typeName)
     QgsProcessingParameterMeshLayer.fromScriptCode = staticmethod(QgsProcessingParameterMeshLayer.fromScriptCode)
-    QgsProcessingParameterMeshLayer.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'createFileFilter']
+    QgsProcessingParameterMeshLayer.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'createFileFilter']
     QgsProcessingParameterMeshLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterMapLayer.typeName = staticmethod(QgsProcessingParameterMapLayer.typeName)
     QgsProcessingParameterMapLayer.fromScriptCode = staticmethod(QgsProcessingParameterMapLayer.fromScriptCode)
-    QgsProcessingParameterMapLayer.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'asScriptCode', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterMapLayer.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'asScriptCode', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterMapLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -233,7 +233,7 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterFeatureSource.typeName = staticmethod(QgsProcessingParameterFeatureSource.typeName)
     QgsProcessingParameterFeatureSource.fromScriptCode = staticmethod(QgsProcessingParameterFeatureSource.fromScriptCode)
-    QgsProcessingParameterFeatureSource.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'asScriptCode', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterFeatureSource.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'asScriptCode', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterFeatureSource.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -241,7 +241,7 @@ try:
     QgsProcessingParameterFeatureSink.typeName = staticmethod(QgsProcessingParameterFeatureSink.typeName)
     QgsProcessingParameterFeatureSink.fromScriptCode = staticmethod(QgsProcessingParameterFeatureSink.fromScriptCode)
     QgsProcessingParameterFeatureSink.__virtual_methods__ = ['supportedOutputVectorLayerExtensions']
-    QgsProcessingParameterFeatureSink.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asScriptCode', 'toOutputDefinition', 'defaultFileExtension', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap', 'generateTemporaryDestination']
+    QgsProcessingParameterFeatureSink.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asScriptCode', 'toOutputDefinition', 'defaultFileExtension', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap', 'generateTemporaryDestination']
     QgsProcessingParameterFeatureSink.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -249,7 +249,7 @@ try:
     QgsProcessingParameterVectorDestination.typeName = staticmethod(QgsProcessingParameterVectorDestination.typeName)
     QgsProcessingParameterVectorDestination.fromScriptCode = staticmethod(QgsProcessingParameterVectorDestination.fromScriptCode)
     QgsProcessingParameterVectorDestination.__virtual_methods__ = ['supportedOutputVectorLayerExtensions']
-    QgsProcessingParameterVectorDestination.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asScriptCode', 'toOutputDefinition', 'defaultFileExtension', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterVectorDestination.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asScriptCode', 'toOutputDefinition', 'defaultFileExtension', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterVectorDestination.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -257,21 +257,21 @@ try:
     QgsProcessingParameterRasterDestination.typeName = staticmethod(QgsProcessingParameterRasterDestination.typeName)
     QgsProcessingParameterRasterDestination.fromScriptCode = staticmethod(QgsProcessingParameterRasterDestination.fromScriptCode)
     QgsProcessingParameterRasterDestination.__virtual_methods__ = ['supportedOutputRasterLayerExtensions']
-    QgsProcessingParameterRasterDestination.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toOutputDefinition', 'defaultFileExtension', 'createFileFilter']
+    QgsProcessingParameterRasterDestination.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toOutputDefinition', 'defaultFileExtension', 'createFileFilter']
     QgsProcessingParameterRasterDestination.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterFileDestination.typeName = staticmethod(QgsProcessingParameterFileDestination.typeName)
     QgsProcessingParameterFileDestination.fromScriptCode = staticmethod(QgsProcessingParameterFileDestination.fromScriptCode)
-    QgsProcessingParameterFileDestination.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toOutputDefinition', 'defaultFileExtension', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterFileDestination.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toOutputDefinition', 'defaultFileExtension', 'asPythonString', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterFileDestination.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterFolderDestination.typeName = staticmethod(QgsProcessingParameterFolderDestination.typeName)
     QgsProcessingParameterFolderDestination.fromScriptCode = staticmethod(QgsProcessingParameterFolderDestination.fromScriptCode)
-    QgsProcessingParameterFolderDestination.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'toOutputDefinition', 'defaultFileExtension']
+    QgsProcessingParameterFolderDestination.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'toOutputDefinition', 'defaultFileExtension']
     QgsProcessingParameterFolderDestination.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -299,7 +299,7 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterColor.typeName = staticmethod(QgsProcessingParameterColor.typeName)
     QgsProcessingParameterColor.fromScriptCode = staticmethod(QgsProcessingParameterColor.fromScriptCode)
-    QgsProcessingParameterColor.__overridden_methods__ = ['clone', 'type', 'valueAsPythonString', 'asScriptCode', 'asPythonString', 'checkValueIsAcceptable', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterColor.__overridden_methods__ = ['getColor', 'clone', 'type', 'valueAsPythonString', 'asScriptCode', 'asPythonString', 'checkValueIsAcceptable', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterColor.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -320,7 +320,7 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterDateTime.typeName = staticmethod(QgsProcessingParameterDateTime.typeName)
     QgsProcessingParameterDateTime.fromScriptCode = staticmethod(QgsProcessingParameterDateTime.fromScriptCode)
-    QgsProcessingParameterDateTime.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toolTip', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterDateTime.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toolTip', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterDateTime.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -348,14 +348,14 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterPointCloudLayer.typeName = staticmethod(QgsProcessingParameterPointCloudLayer.typeName)
     QgsProcessingParameterPointCloudLayer.fromScriptCode = staticmethod(QgsProcessingParameterPointCloudLayer.fromScriptCode)
-    QgsProcessingParameterPointCloudLayer.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'createFileFilter']
+    QgsProcessingParameterPointCloudLayer.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject', 'createFileFilter']
     QgsProcessingParameterPointCloudLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterAnnotationLayer.typeName = staticmethod(QgsProcessingParameterAnnotationLayer.typeName)
     QgsProcessingParameterAnnotationLayer.fromScriptCode = staticmethod(QgsProcessingParameterAnnotationLayer.fromScriptCode)
-    QgsProcessingParameterAnnotationLayer.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject']
+    QgsProcessingParameterAnnotationLayer.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject']
     QgsProcessingParameterAnnotationLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -363,7 +363,7 @@ try:
     QgsProcessingParameterPointCloudDestination.typeName = staticmethod(QgsProcessingParameterPointCloudDestination.typeName)
     QgsProcessingParameterPointCloudDestination.fromScriptCode = staticmethod(QgsProcessingParameterPointCloudDestination.fromScriptCode)
     QgsProcessingParameterPointCloudDestination.__virtual_methods__ = ['supportedOutputPointCloudLayerExtensions']
-    QgsProcessingParameterPointCloudDestination.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toOutputDefinition', 'defaultFileExtension', 'createFileFilter']
+    QgsProcessingParameterPointCloudDestination.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toOutputDefinition', 'defaultFileExtension', 'createFileFilter']
     QgsProcessingParameterPointCloudDestination.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -378,12 +378,12 @@ try:
     QgsProcessingParameterVectorTileDestination.typeName = staticmethod(QgsProcessingParameterVectorTileDestination.typeName)
     QgsProcessingParameterVectorTileDestination.fromScriptCode = staticmethod(QgsProcessingParameterVectorTileDestination.fromScriptCode)
     QgsProcessingParameterVectorTileDestination.__virtual_methods__ = ['supportedOutputVectorTileLayerExtensions']
-    QgsProcessingParameterVectorTileDestination.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toOutputDefinition', 'defaultFileExtension', 'createFileFilter']
+    QgsProcessingParameterVectorTileDestination.__overridden_methods__ = ['getColor', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toOutputDefinition', 'defaultFileExtension', 'createFileFilter']
     QgsProcessingParameterVectorTileDestination.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
-    QgsProcessingParameterDefinition.__virtual_methods__ = ['isDestination', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsJsonObject', 'valueAsString', 'valueAsStringList', 'valueAsPythonComment', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap', 'dependsOnOtherParameters', 'toolTip']
+    QgsProcessingParameterDefinition.__virtual_methods__ = ['getColor', 'isDestination', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsJsonObject', 'valueAsString', 'valueAsStringList', 'valueAsPythonComment', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap', 'dependsOnOtherParameters', 'toolTip']
     QgsProcessingParameterDefinition.__abstract_methods__ = ['clone', 'type']
     QgsProcessingParameterDefinition.__group__ = ['processing']
 except (NameError, AttributeError):

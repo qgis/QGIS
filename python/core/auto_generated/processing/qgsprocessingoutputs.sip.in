@@ -65,6 +65,10 @@ Constructor for QgsProcessingOutputDefinition.
 
     virtual ~QgsProcessingOutputDefinition();
 
+    virtual QColor getColor() const;
+%Docstring
+A fallback color to represent a processing output
+%End
     virtual QString type() const = 0;
 %Docstring
 Unique output type name.
@@ -215,6 +219,10 @@ A vector layer output for processing algorithms.
 Constructor for QgsProcessingOutputVectorLayer.
 %End
 
+    virtual QColor getColor() const;
+%Docstring
+A color to represent a vector layer ouput
+%End
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
@@ -258,7 +266,11 @@ Constructor for QgsProcessingOutputRasterLayer.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
-};
+
+    virtual QColor getColor() const;
+%Docstring
+A color to represent a raster layer output
+%End
 
 class QgsProcessingOutputPointCloudLayer : QgsProcessingOutputDefinition
 {
@@ -294,7 +306,7 @@ when the number and nature of the output layers is not predefined.
 .. note::
 
    Always prefer to explicitly define :py:class:`QgsProcessingOutputVectorLayer`,
-   :py:class:`QgsProcessingOutputRasterLayer` or :py:class:`QgsProcessingOutputMapLayer` where possible. :py:class:`QgsProcessingOutputMultipleLayers`
+   QgsProcessingOutputRasterLayer or QgsProcessingOutputMapLayer where possible. :py:class:`QgsProcessingOutputMultipleLayers`
    should only ever be used when the number of output layers is not
    fixed - e.g. as a result of processing all layers in a specified
    folder.
@@ -319,7 +331,10 @@ Returns the type name for the output class.
     virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
 
 
-};
+    virtual QColor getColor() const;
+%Docstring
+A color to represent a multiple layer output
+%End
 
 class QgsProcessingOutputHtml : QgsProcessingOutputDefinition
 {
@@ -344,7 +359,11 @@ Returns the type name for the output class.
     virtual QString type() const;
     virtual QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
 
-};
+
+    virtual QColor getColor() const;
+%Docstring
+A color to represent an HTML output
+%End
 
 
 class QgsProcessingOutputVariant : QgsProcessingOutputDefinition
@@ -370,6 +389,11 @@ Constructor for QgsProcessingOutputVariant.
 %Docstring
 Returns the type name for the output class.
 %End
+
+    virtual QColor getColor() const;
+%Docstring
+A color to represent a range parameter
+%End
     virtual QString type() const;
 
     virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
@@ -393,6 +417,10 @@ A numeric output for processing algorithms.
 Constructor for QgsProcessingOutputNumber.
 %End
 
+    virtual QColor getColor() const;
+%Docstring
+A color to represent a number output
+%End
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
@@ -424,7 +452,11 @@ Constructor for QgsProcessingOutputString.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
-};
+
+    virtual QColor getColor() const;
+%Docstring
+A color to represent a string output
+%End
 
 class QgsProcessingOutputBoolean : QgsProcessingOutputDefinition
 {
@@ -442,6 +474,11 @@ A boolean output for processing algorithms.
     QgsProcessingOutputBoolean( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for :py:class:`QgsProcessingOutputNumber`.
+%End
+
+    virtual QColor getColor() const;
+%Docstring
+A color to represent a boolean output
 %End
 
     static QString typeName();
@@ -478,7 +515,10 @@ Returns the type name for the output class.
     virtual QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
 
 
-};
+    virtual QColor getColor() const;
+%Docstring
+A color to represent a folder output
+%End
 
 class QgsProcessingOutputFile : QgsProcessingOutputDefinition
 {
@@ -504,7 +544,10 @@ Returns the type name for the output class.
     virtual QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
 
 
-};
+    virtual QColor getColor() const;
+%Docstring
+A color to represent a file output
+%End
 
 class QgsProcessingOutputConditionalBranch : QgsProcessingOutputDefinition
 {
@@ -555,7 +598,11 @@ Constructor for QgsProcessingOutputVectorTileLayer.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
-};
+
+    virtual QColor getColor() const;
+%Docstring
+A color to represent a vector tile layer output
+%End
 
 /************************************************************************
  * This file has been generated automatically from                      *

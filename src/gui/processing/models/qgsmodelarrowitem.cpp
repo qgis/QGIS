@@ -73,8 +73,7 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, M
 
 void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
-  QString dataType = mStartItem->getLinkedParamDataType( mStartEdge, mStartIndex );
-  QColor color = QgsModelDesignerSocketGraphicItem::typeToColorLookup( dataType );
+  QColor color = mStartItem->getLinkColor( mStartEdge, mStartIndex );
 
   if ( mStartItem->state() == QgsModelComponentGraphicItem::Selected || mEndItem->state() == QgsModelComponentGraphicItem::Selected )
     color.setAlpha( 220 );

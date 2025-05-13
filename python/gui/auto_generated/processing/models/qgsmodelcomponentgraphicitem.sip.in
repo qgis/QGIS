@@ -114,6 +114,8 @@ Sets a new scene ``rect`` for the item.
 
     virtual QString getLinkedParamDataType( Qt::Edge edge, int index );
 
+    virtual QColor getLinkColor( Qt::Edge edge, int index );
+
     virtual void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
 
     virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
@@ -326,6 +328,11 @@ comment
 Updates the item's button positions, based on the current item rect.
 %End
 
+    QColor fallbackColor() const;
+%Docstring
+Get the fallback color if parameter or output do not have a specific
+color
+%End
 };
 QFlags<QgsModelComponentGraphicItem::Flag> operator|(QgsModelComponentGraphicItem::Flag f1, QFlags<QgsModelComponentGraphicItem::Flag> f2);
 
@@ -365,6 +372,9 @@ Ownership of ``parameter`` is transferred to the item.
 
 
     virtual QString getLinkedParamDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index );
+
+
+    virtual QColor getLinkColor( Qt::Edge edge, int index );
 
 
   protected:
