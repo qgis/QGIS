@@ -32,7 +32,7 @@ QString QgsAddXYFieldsAlgorithm::displayName() const
 
 QString QgsAddXYFieldsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Adds X and Y (or latitude/longitude) fields to a point layer. The X/Y fields can be calculated in a different CRS to the layer (e.g. creating latitude/longitude fields for a layer in a project CRS)." );
+  return QObject::tr( "This algorithm adds X and Y (or latitude/longitude) fields to a point layer. The X/Y fields can be calculated in a different CRS to the layer (e.g. creating latitude/longitude fields for a layer in a project CRS)." );
 }
 
 QString QgsAddXYFieldsAlgorithm::shortDescription() const

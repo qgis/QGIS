@@ -46,10 +46,15 @@ QString QgsConvertGeometryTypeAlgorithm::groupId() const
 
 QString QgsConvertGeometryTypeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates a new layer based on an existing one, with a different type of geometry.\n\n"
+  return QObject::tr( "This algorithm generates a new layer based on an existing one, with a different type of geometry.\n\n"
                       "Not all conversions are possible. For instance, a line layer can be converted to a "
                       "point layer, but a point layer cannot be converted to a line layer.\n\n"
                       "See the \"Polygonize\" or \"Lines to polygons\" algorithms for alternative options." );
+}
+
+QString QgsConvertGeometryTypeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a new layer based on an existing one, with a different type of geometry." );
 }
 
 QgsConvertGeometryTypeAlgorithm *QgsConvertGeometryTypeAlgorithm::createInstance() const

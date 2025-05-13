@@ -77,6 +77,12 @@ QString QgsCalculateVectorOverlapsAlgorithm::shortHelpString() const
                       "by each of the selected overlay layers." );
 }
 
+QString QgsCalculateVectorOverlapsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the area and percentage cover by which features from an input layer "
+                      "are overlapped by features from a selection of overlay layers." );
+}
+
 QgsCalculateVectorOverlapsAlgorithm *QgsCalculateVectorOverlapsAlgorithm::createInstance() const
 {
   return new QgsCalculateVectorOverlapsAlgorithm();

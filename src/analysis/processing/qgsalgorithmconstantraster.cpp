@@ -49,11 +49,16 @@ QString QgsConstantRasterAlgorithm::groupId() const
 
 QString QgsConstantRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates raster layer for given extent and cell "
+  return QObject::tr( "This algorithm generates raster layer for given extent and cell "
                       "size filled with the specified value.\n"
                       "Additionally an output data type can be specified. "
                       "The algorithm will abort if a value has been entered that "
                       "cannot be represented by the selected output raster data type." );
+}
+
+QString QgsConstantRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates raster layer for given extent and cell size filled with the specified value." );
 }
 
 QgsConstantRasterAlgorithm *QgsConstantRasterAlgorithm::createInstance() const

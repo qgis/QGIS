@@ -82,7 +82,7 @@ QString QgsCategorizeUsingStyleAlgorithm::groupId() const
 
 QString QgsCategorizeUsingStyleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Sets a vector layer's renderer to a categorized renderer using matching symbols from a style database. If no "
+  return QObject::tr( "This algorithm sets a vector layer's renderer to a categorized renderer using matching symbols from a style database. If no "
                       "style file is specified, symbols from the user's current style library are used instead.\n\n"
                       "The specified expression (or field name) is used to create categories for the renderer. A category will be "
                       "created for each unique value within the layer.\n\n"
