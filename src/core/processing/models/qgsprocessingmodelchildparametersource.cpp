@@ -231,20 +231,13 @@ QString QgsProcessingModelChildParameterSource::friendlyIdentifier( QgsProcessin
         const QgsProcessingParameterDefinition *paramDefinition = model->parameterDefinition( mParameterName );
 
         // A model can be valid (non null) but we could be looking for a null parameter (if input if not set yet)
-        if ( paramDefinition == nullptr )
-        {
-          return mParameterName;
-        }
-        else
+        if ( paramDefinition )
         {
           return model->parameterDefinition( mParameterName )->description();
         }
+      }
 
-      }
-      else
-      {
-        return mParameterName;
-      }
+      return mParameterName;
     }
     case Qgis::ProcessingModelChildParameterSource::ChildOutput:
     {
