@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgsmodelgraphicsscene.h"
 #include "qgsprocessingcontext.h"
 #include <QGraphicsObject>
 #include <QFont>
@@ -107,6 +108,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Returns the associated view.
      */
     QgsModelGraphicsView *view();
+
+    /**
+     * Returns the associated model scene.
+     */
+    QgsModelGraphicsScene *modelScene();
 
     /**
      * Returns the font used to render text in the item.

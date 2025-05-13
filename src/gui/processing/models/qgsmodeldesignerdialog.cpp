@@ -440,7 +440,7 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
 
   mGroupEdit->setText( mModel->group() );
   mNameEdit->setText( mModel->displayName() );
-  repaintModel();
+  repaintModel( true, true );
   updateVariablesGui();
 
   mView->centerOn( 0, 0 );

@@ -59,6 +59,7 @@ void QgsModelGraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
     return;
   QGraphicsScene::mousePressEvent( event );
 }
+
 void QgsModelGraphicsScene::updateBounds()
 {
   setSceneRect( modelBounds( 50 ) );
@@ -83,7 +84,7 @@ QRectF QgsModelGraphicsScene::modelBounds( double margin ) const
 
   if ( bounds.isValid() && margin > 0.0 )
   {
-    bounds.adjust( margin, margin, margin, margin );
+    bounds.adjust( -margin, -margin, margin, margin );
   }
 
   return bounds;

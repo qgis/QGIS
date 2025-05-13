@@ -190,7 +190,11 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void requestRebuildRequired();
 
-  public slots:
+    /**
+     * Updates the scene bounds of the model.
+     * 
+     * \since QGIS 3.44
+     */
     void updateBounds();
 
   signals:
