@@ -499,19 +499,16 @@ QPixmap QgsModelComponentGraphicItem::iconPixmap() const
   return QPixmap();
 }
 
+
 void QgsModelComponentGraphicItem::updateButtonPositions()
 {
-  bool isParameter = dynamic_cast<QgsProcessingModelParameter *>( mComponent.get() ) != nullptr;
   mEditButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - BUTTON_MARGIN, itemSize().height() / 2.0 - mButtonSize.height() / 2.0 - BUTTON_MARGIN ) );
   mDeleteButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - BUTTON_MARGIN, mButtonSize.height() / 2.0 - itemSize().height() / 2.0 + BUTTON_MARGIN ) );
 
-  if ( isParameter )
+  if ( mExpandBottomButton )
   {
-    if ( mExpandBottomButton )
-    {
-      const QPointF pt = linkPoint( Qt::BottomEdge, -1, false );
-      mExpandBottomButton->setPosition( QPointF( 0, pt.y() ) );
-    }
+    const QPointF pt = linkPoint( Qt::BottomEdge, -1, false );
+    mExpandBottomButton->setPosition( QPointF( 0, pt.y() ) );
 
     bool collapsed = mComponent->linksCollapsed( Qt::BottomEdge );
     for ( QgsModelDesignerSocketGraphicItem *socket : std::as_const( mOutSockets ) )
@@ -521,18 +518,12 @@ void QgsModelComponentGraphicItem::updateButtonPositions()
       socket->setVisible( !collapsed );
     }
   }
-  else
+
+
+  if ( mExpandTopButton )
   {
-    if ( mExpandTopButton )
-    {
-      const QPointF pt = linkPoint( Qt::TopEdge, -1, true );
-      mExpandTopButton->setPosition( QPointF( 0, pt.y() ) );
-    }
-    if ( mExpandBottomButton )
-    {
-      const QPointF pt = linkPoint( Qt::BottomEdge, -1, false );
-      mExpandBottomButton->setPosition( QPointF( 0, pt.y() ) );
-    }
+    const QPointF pt = linkPoint( Qt::TopEdge, -1, true );
+    mExpandTopButton->setPosition( QPointF( 0, pt.y() ) );
 
     bool collapsed = mComponent->linksCollapsed( Qt::TopEdge );
     for ( QgsModelDesignerSocketGraphicItem *socket : std::as_const( mInSockets ) )
@@ -541,16 +532,9 @@ void QgsModelComponentGraphicItem::updateButtonPositions()
       socket->setPosition( pt );
       socket->setVisible( !collapsed );
     }
-
-    collapsed = mComponent->linksCollapsed( Qt::BottomEdge );
-    for ( QgsModelDesignerSocketGraphicItem *socket : std::as_const( mOutSockets ) )
-    {
-      const QPointF pt = linkPoint( Qt::BottomEdge, socket->index(), false );
-      socket->setPosition( pt );
-      socket->setVisible( !collapsed );
-    }
   }
 }
+
 
 QSizeF QgsModelComponentGraphicItem::itemSize() const
 {
