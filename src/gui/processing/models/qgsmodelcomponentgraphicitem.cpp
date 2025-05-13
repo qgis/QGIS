@@ -874,11 +874,9 @@ QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge, int index ) const
 
 QString QgsModelParameterGraphicItem::getLinkedParamDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index )
 {
-  QString unknownType = QString( "unknown" );
-
   if ( index < 0 )
   {
-    return unknownType;
+    return QString();
   }
 
   if ( const QgsProcessingModelParameter *parameter = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
@@ -886,7 +884,7 @@ QString QgsModelParameterGraphicItem::getLinkedParamDataType( Qt::Edge /* unused
     return this->model()->parameterDefinition( parameter->parameterName() )->type();
   }
 
-  return unknownType;
+  return QString();
 }
 
 void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
@@ -1129,13 +1127,11 @@ int QgsModelChildAlgorithmGraphicItem::linkPointCount( Qt::Edge edge ) const
 
 QString QgsModelComponentGraphicItem::getLinkedParamDataType( Qt::Edge edge, int index )
 {
-  QString unknownType = QString( "unknown" );
-
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
   {
     if ( !child->algorithm() )
     {
-      return unknownType;
+      return QString();
     }
 
     switch ( edge )
@@ -1146,7 +1142,7 @@ QString QgsModelComponentGraphicItem::getLinkedParamDataType( Qt::Edge edge, int
         {
           return child->algorithm()->outputDefinitions().at( index )->type();
         }
-        return unknownType;
+        return QString();
       }
       case Qt::TopEdge:
       {
@@ -1157,7 +1153,7 @@ QString QgsModelComponentGraphicItem::getLinkedParamDataType( Qt::Edge edge, int
           return params.at( index )->type();
         }
 
-        return unknownType;
+        return QString();
       }
 
       case Qt::LeftEdge:
@@ -1166,7 +1162,7 @@ QString QgsModelComponentGraphicItem::getLinkedParamDataType( Qt::Edge edge, int
     }
   }
 
-  return unknownType;
+  return QString();
 }
 
 QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int index ) const
