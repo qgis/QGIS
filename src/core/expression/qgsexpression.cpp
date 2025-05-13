@@ -58,7 +58,7 @@ bool QgsExpression::checkExpression( const QString &text, const QgsExpressionCon
 void QgsExpression::setExpression( const QString &expression )
 {
   detach();
-  d->mRootNode = ::parseExpression( expression, d->mParserErrorString, d->mParserErrors );
+  d->mRootNode.reset( ::parseExpression( expression, d->mParserErrorString, d->mParserErrors ) );
   d->mEvalErrorString = QString();
   d->mExp = expression;
   d->mIsPrepared = false;
@@ -176,7 +176,7 @@ int QgsExpression::functionCount()
 QgsExpression::QgsExpression( const QString &expr )
   : d( new QgsExpressionPrivate )
 {
-  d->mRootNode = ::parseExpression( expr, d->mParserErrorString, d->mParserErrors );
+  d->mRootNode.reset( ::parseExpression( expr, d->mParserErrorString, d->mParserErrors ) );
   d->mExp = expr;
   Q_ASSERT( !d->mParserErrorString.isNull() || d->mRootNode );
 }
@@ -226,7 +226,7 @@ bool QgsExpression::operator==( const QgsExpression &other ) const
 
 bool QgsExpression::isValid() const
 {
-  return d->mRootNode;
+  return d->mRootNode.get();
 }
 
 bool QgsExpression::hasParserError() const
@@ -361,7 +361,7 @@ bool QgsExpression::prepare( const QgsExpressionContext *context )
     //re-parse expression. Creation of QgsExpressionContexts may have added extra
     //known functions since this expression was created, so we have another try
     //at re-parsing it now that the context must have been created
-    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString, d->mParserErrors );
+    d->mRootNode.reset( ::parseExpression( d->mExp, d->mParserErrorString, d->mParserErrors ) );
   }
 
   if ( !d->mRootNode )
@@ -1446,12 +1446,12 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
 
 const QgsExpressionNode *QgsExpression::rootNode() const
 {
-  return d->mRootNode;
+  return d->mRootNode.get();
 }
 
 bool QgsExpression::isField() const
 {
-  return d->mRootNode && d->mRootNode->nodeType() == QgsExpressionNode::ntColumnRef;
+  return d->mRootNode && d->mRootNode.get()->nodeType() == QgsExpressionNode::ntColumnRef;
 }
 
 int QgsExpression::expressionToLayerFieldIndex( const QString &expression, const QgsVectorLayer *layer )

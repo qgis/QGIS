@@ -216,7 +216,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   // Delay application members initialization in desktop app (In desktop app, profile folder is not known at this point)
   if ( platformName != QLatin1String( "desktop" ) )
   {
-    mApplicationMembers = new ApplicationMembers();
+    mApplicationMembers = std::make_unique<ApplicationMembers>();
     mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
   }
   else
@@ -231,7 +231,7 @@ void QgsApplication::init( QString profileFolder )
   // Initialize application members in desktop app (at this point, profile folder is known)
   if ( platform() == QLatin1String( "desktop" ) )
   {
-    instance()->mApplicationMembers = new ApplicationMembers();
+    instance()->mApplicationMembers = std::make_unique<ApplicationMembers>();
     instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
   }
 
@@ -557,9 +557,6 @@ QgsApplication::~QgsApplication()
 {
   if ( mApplicationMembers )
     mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
-
-  delete mDataItemProviderRegistry;
-  delete mApplicationMembers;
 
   // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
   // and there's just a *chance* that someone hasn't properly called exitQgis prior to
@@ -2457,9 +2454,9 @@ QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
   {
     if ( !instance()->mDataItemProviderRegistry )
     {
-      lInstance->mDataItemProviderRegistry = new QgsDataItemProviderRegistry();
+      lInstance->mDataItemProviderRegistry = std::make_unique<QgsDataItemProviderRegistry>();
     }
-    return lInstance->mDataItemProviderRegistry;
+    return lInstance->mDataItemProviderRegistry.get();
   }
   else
   {
@@ -2884,7 +2881,7 @@ QgsApplication::ApplicationMembers *QgsApplication::members()
 {
   if ( auto *lInstance = instance() )
   {
-    return lInstance->mApplicationMembers;
+    return lInstance->mApplicationMembers.get();
   }
   else
   {

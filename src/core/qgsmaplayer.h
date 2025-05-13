@@ -2456,7 +2456,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsObjectCustomProperties mCustomProperties;
 
     //! Controller of legend items of this layer
-    QgsMapLayerLegend *mLegend = nullptr;
+    std::unique_ptr<QgsMapLayerLegend> mLegend;
 
     //! Manager of multiple styles available for a layer (may be NULLPTR)
     std::unique_ptr<QgsMapLayerStyleManager> mStyleManager;
@@ -2469,7 +2469,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsLayerMetadata mMetadata;
 
     //! Renderer for 3D views
-    QgsAbstract3DRenderer *m3DRenderer = nullptr;
+    std::unique_ptr<QgsAbstract3DRenderer> m3DRenderer;
 
     //! 3D Extent of the layer
     mutable QgsBox3D mExtent3D;

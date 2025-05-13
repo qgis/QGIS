@@ -121,8 +121,8 @@ QgsMapLayer::~QgsMapLayer()
     project()->removeAttachedFile( mDataSource );
   }
 
-  delete m3DRenderer;
-  delete mLegend;
+
+
 
 }
 
@@ -2779,16 +2779,16 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( legend == mLegend )
+  if ( legend == mLegend.get() )
     return;
 
-  delete mLegend;
-  mLegend = legend;
+  mLegend.reset( legend );
+
 
   if ( mLegend )
   {
     mLegend->setParent( this );
-    connect( mLegend, &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged, Qt::UniqueConnection );
+    connect( mLegend.get(), &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged, Qt::UniqueConnection );
   }
 
   emit legendChanged();
@@ -2798,7 +2798,7 @@ QgsMapLayerLegend *QgsMapLayer::legend() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mLegend;
+  return mLegend.get();
 }
 
 QgsMapLayerStyleManager *QgsMapLayer::styleManager() const
@@ -2812,11 +2812,11 @@ void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( renderer == m3DRenderer )
+  if ( renderer == m3DRenderer.get() )
     return;
 
-  delete m3DRenderer;
-  m3DRenderer = renderer;
+  m3DRenderer.reset( renderer );
+
   emit renderer3DChanged();
   emit repaintRequested();
   trigger3DUpdate();
@@ -2826,7 +2826,7 @@ QgsAbstract3DRenderer *QgsMapLayer::renderer3D() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return m3DRenderer;
+  return m3DRenderer.get();
 }
 
 void QgsMapLayer::triggerRepaint( bool deferredUpdate )
