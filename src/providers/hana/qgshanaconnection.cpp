@@ -131,9 +131,10 @@ QgsField AttributeField::toQgsField() const
     // 1. Type is QMetaType::Type::QString. The value is provided as WKT and editable.
     // 2. Type is QMetaType::Type::QByteArray. The value is in WKB format and uneditable.
     case QgsHanaDataType::Geometry:
-    // There are two options how to treat REAL_VECTOR columns that are attributes:
+    // There are two options how to treat HALF_VECTOR|REAL_VECTOR columns that are attributes:
     // 1. Type is QMetaType::Type::QString. The value has string representation in the format '[1.0,3.2,0.6]'.
     // 2. Type is QMetaType::Type::QByteArray. The value has fvecs representation and uneditable.
+    case QgsHanaDataType::HalfVector:
     case QgsHanaDataType::RealVector:
       fieldType = QMetaType::Type::QString;
       break;
@@ -919,8 +920,8 @@ QStringList QgsHanaConnection::getPrimaryKeyCandidates( const QgsHanaLayerProper
   while ( rsColumns->next() )
   {
     QgsHanaDataType dataType = QgsHanaDataTypeUtils::fromInt( rsColumns->getValue( 5 /*DATA_TYPE */ ).toInt() );
-    // We exclude ST_GEOMETRY, REAL_VECTOR and LOB columns
-    if ( dataType == QgsHanaDataType::Geometry || dataType == QgsHanaDataType::RealVector || dataType == QgsHanaDataType::LongVarBinary || dataType == QgsHanaDataType::LongVarChar || dataType == QgsHanaDataType::WLongVarChar )
+    // We exclude ST_GEOMETRY, HALF_VECTOR, REAL_VECTOR and LOB columns
+    if ( dataType == QgsHanaDataType::Geometry || dataType == QgsHanaDataType::HalfVector || dataType == QgsHanaDataType::RealVector || dataType == QgsHanaDataType::LongVarBinary || dataType == QgsHanaDataType::LongVarChar || dataType == QgsHanaDataType::WLongVarChar )
       continue;
     ret << rsColumns->getValue( 4 /*COLUMN_NAME */ ).toString();
   }

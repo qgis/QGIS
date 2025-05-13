@@ -20,6 +20,7 @@
 #include "qgshanautils.h"
 #include "qgsvariantutils.h"
 #include "qgslogger.h"
+#include <QFloat16>
 #include <QString>
 
 #include "odbc/Exception.h"
@@ -32,6 +33,29 @@ using namespace NS_ODBC;
 
 namespace
 {
+  QString hvecsToString( const char *data, size_t )
+  {
+    uint32_t numElements;
+    memcpy( &numElements, data, sizeof( numElements ) );
+
+    const char *ptr = static_cast<const char *>( data ) + sizeof( numElements );
+    const qfloat16 *elements = reinterpret_cast<const qfloat16 *>( ptr );
+
+    auto toString = []( qfloat16 f16 ) {
+      float f32;
+      qFloatFromFloat16( &f32, &f16, 1 );
+      return QString::number( f32, 'g', 7 );
+    };
+
+    QString res;
+    res += QStringLiteral( "[" ) + toString( elements[0] );
+    for ( uint32_t i = 1; i < numElements; ++i )
+      res += QStringLiteral( "," ) + toString( elements[i] );
+    res += QLatin1Char( ']' );
+
+    return res;
+  }
+
   QString fvecsToString( const char *data, size_t )
   {
     uint32_t numElements;
@@ -129,8 +153,14 @@ QString QgsHanaResultSet::getString( unsigned short columnIndex )
 QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
 {
   QgsHanaDataType type = QgsHanaDataTypeUtils::fromInt( mMetadata->getColumnType( columnIndex ) );
-  if ( type == QgsHanaDataType::VarBinary && mMetadata->getColumnTypeName( columnIndex ) == QLatin1String( "REAL_VECTOR" ) )
-    type = QgsHanaDataType::RealVector;
+  if ( type == QgsHanaDataType::VarBinary )
+  {
+    auto typeName = mMetadata->getColumnTypeName( columnIndex );
+    if ( typeName == QLatin1String( "HALF_VECTOR" ) )
+      type = QgsHanaDataType::HalfVector;
+    else if ( typeName == QLatin1String( "REAL_VECTOR" ) )
+      type = QgsHanaDataType::RealVector;
+  }
 
   switch ( type )
   {
@@ -210,6 +240,27 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
     case QgsHanaDataType::LongVarBinary:
     case QgsHanaDataType::Geometry:
       return QgsHanaUtils::toVariant( mResultSet->getBinary( columnIndex ) );
+    case QgsHanaDataType::HalfVector:
+    {
+      const size_t bufLength = mResultSet->getBinaryLength( columnIndex );
+      if ( bufLength == ResultSet::UNKNOWN_LENGTH )
+      {
+        Binary vec = mResultSet->getBinary( columnIndex );
+        if ( !vec.isNull() && vec->size() > 0 )
+          return hvecsToString( vec->data(), vec->size() );
+      }
+      else if ( bufLength != 0 && bufLength != ResultSet::NULL_DATA )
+      {
+        if ( bufLength > static_cast<size_t>( std::numeric_limits<int>::max() ) )
+          throw QgsHanaException( "HalfVector size is larger than maximum integer value" );
+
+        QByteArray vec( static_cast<int>( bufLength ), '0' );
+        mResultSet->getBinaryData( columnIndex, vec.data(), bufLength );
+        return hvecsToString( vec.data(), vec.size() );
+      }
+
+      return QVariant();
+    }
     case QgsHanaDataType::RealVector:
     {
       const size_t bufLength = mResultSet->getBinaryLength( columnIndex );

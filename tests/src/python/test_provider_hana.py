@@ -604,6 +604,67 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
         expected = {1: QByteArray(b"bbbvx"), 2: QByteArray(b"dddd")}
         self.assertEqual(values, expected)
 
+    def testHalfVectorType(self):
+        table_name = "half_vector_type"
+        create_sql = (
+            f'CREATE TABLE "{self.schemaName}"."{table_name}" ( '
+            '"id" INTEGER NOT NULL PRIMARY KEY,'
+            '"emb" HALF_VECTOR(3))'
+        )
+        insert_sql = f'INSERT INTO "{self.schemaName}"."{table_name}" ("id", "emb") VALUES (?, TO_HALF_VECTOR(?))'
+        insert_args = [[1, "[0.1,0.2,0.1]"], [2, None]]
+        self.prepareTestTable("half_vector_type", create_sql, insert_sql, insert_args)
+
+        vl = self.createVectorLayer(
+            f'table="{self.schemaName}"."{table_name}" sql=', "testhalfvector"
+        )
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName("emb")).type(), QVariant.String)
+        self.assertEqual(fields.at(fields.indexFromName("emb")).length(), 3)
+
+        values = {feat["id"]: feat["emb"] for feat in vl.getFeatures()}
+        expected = {1: "[0.1,0.2,0.1]", 2: NULL}
+        self.assertEqual(values, expected)
+
+    def testHalfVectorTypeEdit(self):
+        table_name = "half_vector_type_edit"
+        create_sql = (
+            f'CREATE TABLE "{self.schemaName}"."{table_name}" ( '
+            '"id" INTEGER NOT NULL PRIMARY KEY,'
+            '"emb" HALF_VECTOR)'
+        )
+        insert_sql = f'INSERT INTO "{self.schemaName}"."{table_name}" ("id", "emb") VALUES (?, TO_HALF_VECTOR(?))'
+        insert_args = [[1, "[0.1,0.2,0.3]"]]
+        self.prepareTestTable(table_name, create_sql, insert_sql, insert_args)
+
+        vl = self.createVectorLayer(
+            f'key=\'id\' table="{self.schemaName}"."{table_name}" sql=',
+            "testhalfvectoredit",
+        )
+
+        def check_values(expected):
+            actual = {feat["id"]: feat["emb"] for feat in vl.getFeatures()}
+            self.assertEqual(actual, expected)
+
+        check_values({1: "[0.1,0.2,0.3]"})
+
+        # change attribute value
+        self.assertTrue(
+            vl.dataProvider().changeAttributeValues({1: {1: "[0.82,0.5,1]"}})
+        )
+        check_values({1: "[0.82,0.5,1]"})
+
+        # add feature
+        f = QgsFeature()
+        f.setAttributes([2, "[1,1,1]"])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+        check_values({1: "[0.82,0.5,1]", 2: "[1,1,1]"})
+
+        # change feature
+        self.assertTrue(vl.dataProvider().changeFeatures({2: {1: "[2,2,2]"}}, {}))
+        check_values({1: "[0.82,0.5,1]", 2: "[2,2,2]"})
+
     def testRealVectorType(self):
         table_name = "real_vector_type"
         create_sql = (

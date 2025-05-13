@@ -524,7 +524,14 @@ bool QgsHanaUtils::convertField( QgsField &field )
       fieldPrec = 0;
       break;
     case QMetaType::Type::QString:
-      if ( field.typeName() == QLatin1String( "REAL_VECTOR" ) )
+      if ( field.typeName() == QLatin1String( "HALF_VECTOR" ) )
+      {
+        if ( fieldSize > 0 )
+          fieldType = QStringLiteral( "HALF_VECTOR(%1)" ).arg( QString::number( fieldSize ) );
+        else
+          fieldType = QStringLiteral( "HALF_VECTOR" );
+      }
+      else if ( field.typeName() == QLatin1String( "REAL_VECTOR" ) )
       {
         if ( fieldSize > 0 )
           fieldType = QStringLiteral( "REAL_VECTOR(%1)" ).arg( QString::number( fieldSize ) );

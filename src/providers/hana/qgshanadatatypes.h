@@ -77,6 +77,8 @@ enum class QgsHanaDataType
   WVarChar,
   /// ST_GEOMETRY/ST_POINT value.
   Geometry,
+  /// HALF_VECTOR value.
+  HalfVector,
   /// REAL_VECTOR value.
   RealVector
 };

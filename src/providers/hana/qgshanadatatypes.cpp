@@ -84,6 +84,8 @@ namespace QgsHanaDataTypeUtils
         return QgsHanaDataType::Geometry;
       case 29814:
         return QgsHanaDataType::RealVector;
+      case 29815:
+        return QgsHanaDataType::HalfVector;
       default:
         return QgsHanaDataType::Unknown;
     }

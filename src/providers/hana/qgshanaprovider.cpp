@@ -278,6 +278,7 @@ namespace
         }
         break;
       case QgsHanaDataType::Geometry:
+      case QgsHanaDataType::HalfVector:
       case QgsHanaDataType::RealVector:
         if ( isNull )
           stmt->setString( paramIndex, String() );
@@ -692,6 +693,8 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     auto qType = mFields.at( idx ).type();
     if ( field.type == QgsHanaDataType::Geometry && qType == QMetaType::Type::QString )
       values << QStringLiteral( "ST_GeomFromWKT(?, %1)" ).arg( QString::number( field.srid ) );
+    else if ( field.type == QgsHanaDataType::HalfVector && qType == QMetaType::Type::QString )
+      values << QStringLiteral( "TO_HALF_VECTOR(?)" );
     else if ( field.type == QgsHanaDataType::RealVector && qType == QMetaType::Type::QString )
       values << QStringLiteral( "TO_REAL_VECTOR(?)" );
     else
@@ -1187,6 +1190,8 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
         auto qType = mFields.at( fieldIndex ).type();
         if ( field.type == QgsHanaDataType::Geometry && qType == QMetaType::Type::QString )
           attrs << QStringLiteral( "%1=ST_GeomFromWKT(?, %2)" ).arg( QgsHanaUtils::quotedIdentifier( field.name ), QString::number( field.srid ) );
+        else if ( field.type == QgsHanaDataType::HalfVector && qType == QMetaType::Type::QString )
+          attrs << QStringLiteral( "%1=TO_HALF_VECTOR(?)" ).arg( QgsHanaUtils::quotedIdentifier( field.name ) );
         else if ( field.type == QgsHanaDataType::RealVector && qType == QMetaType::Type::QString )
           attrs << QStringLiteral( "%1=TO_REAL_VECTOR(?)" ).arg( QgsHanaUtils::quotedIdentifier( field.name ) );
         else
