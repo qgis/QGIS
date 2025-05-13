@@ -11399,17 +11399,39 @@ void TestProcessingGui::testModelGraphicsView()
   QVERIFY( !layerCommentItem );
 
   //check model bounds
-  const QRectF modelBounds = scene2.modelBounds( 50 );
-  qDebug() << "modelBounds.height():" << modelBounds.height();
-  qDebug() << "modelBounds.width():" << modelBounds.width();
-  qDebug() << "modelBounds.left():" << modelBounds.left();
-  qDebug() << "modelBounds.top():" << modelBounds.top();
-
+  QRectF modelBounds = scene2.modelBounds( 50 );
+  QGSCOMPARENEAR( modelBounds.height(), 624.4, 3 ); // Sligtly higher threeshold because of various font size can marginally change the bounding rect
   QGSCOMPARENEAR( modelBounds.width(), 655.00, 0.01 );
   QGSCOMPARENEAR( modelBounds.left(), -252.0, 0.01 );
   QGSCOMPARENEAR( modelBounds.top(), -232.0, 0.01 );
 
-  QGSCOMPARENEAR( modelBounds.height(), 624.4, 0.01 );
+
+  // test model large modelBounds
+  QgsProcessingModelAlgorithm model2;
+
+  QgsProcessingModelChildAlgorithm algc2;
+  algc2.setChildId( "buffer" );
+  algc2.setAlgorithmId( "native:buffer" );
+  algc2.setPosition( QPointF( 4250, 4250 ) );
+  QgsProcessingModelParameter param1;
+  param1.setParameterName( QStringLiteral( "LAYER" ) );
+  param1.setSize( QSizeF( 500, 400 ) );
+  param1.setPosition( QPointF( -250, -250 ) );
+  model2.addModelParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "LAYER" ) ), param );
+  algc2.addParameterSources( QStringLiteral( "INPUT" ), QList<QgsProcessingModelChildParameterSource>() << QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "LAYER" ) ) );
+
+  model2.addChildAlgorithm( algc2 );
+
+  QgsModelGraphicsScene scene3;
+  scene3.setModel( &model2 );
+  scene3.createItems( &model2, context );
+
+  QRectF modelBounds2 = scene3.modelBounds( 50 );
+  QGSCOMPARENEAR( modelBounds2.height(), 4505.4, 3 ); // Sligtly higher threeshold because of various font size can marginally change the bounding rect
+  QGSCOMPARENEAR( modelBounds2.width(), 4603.0, 0.01 );
+  QGSCOMPARENEAR( modelBounds2.left(), -201.0, 0.01 );
+  QGSCOMPARENEAR( modelBounds2.top(), -150.0, 0.01 );
+
 
   QgsModelGraphicsScene scene;
   QVERIFY( !scene.model() );
