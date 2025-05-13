@@ -87,14 +87,16 @@ Returns the current combination of flags set for the scene.
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
 
 
-    QRectF modelBounds( double margin ) const;
+    QRectF modelBounds( double margin = 0.0 ) const;
 %Docstring
-Calculates the bouding bounds of all components of the model.
+Calculates the bounding rectangle of all components of the model.
 
-:param margin: optional marginal ( absolute value in scene coordinate)
-               to add around items
+:param margin: optional margin (absolute value in scene coordinates) to
+               add around items.
 
 :return: model bounds, in scene units.
+
+.. versionadded:: 3.44
 %End
 
 

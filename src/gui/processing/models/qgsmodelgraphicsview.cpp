@@ -397,7 +397,6 @@ void QgsModelGraphicsView::setModelScene( QgsModelGraphicsScene *scene )
 {
   setScene( scene );
 
-  mPreviousSceneRect = sceneRect();
   // IMPORTANT!
   // previous snap markers, snap lines are owned by previous layout - so don't delete them here!
   mSnapMarker = new QgsModelViewSnapMarker();
