@@ -280,10 +280,17 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
             .namedItem("xlink:href")
         )
         self.assertEqual("https://example.com/image.png", href_attr.nodeValue())
+        mime_elem = root.elementsByTagName("se:Format").item(0)
+        self.assertEqual(
+            mime_elem.text(),
+            "image/png",
+        )
 
     def testRasterMarkerDataUrl(self):
+
+        # a red 4x4 pixel GIF
         symbol = QgsRasterMarkerSymbolLayer(
-            path="base64:iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+            path="base64:R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw=="
         )
         _, root = self.symbolToSld(symbol)
         href_attr = (
@@ -292,9 +299,15 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
             .attributes()
             .namedItem("xlink:href")
         )
+        # we expected a red 4x4 pixel PNG
         self.assertEqual(
-            "data:;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
             href_attr.nodeValue(),
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
+        )
+        mime_elem = root.elementsByTagName("se:Format").item(0)
+        self.assertEqual(
+            mime_elem.text(),
+            "image/png",
         )
 
     def testSimpleLineHairline(self):

@@ -31,6 +31,8 @@
 #include "qgscolorutils.h"
 #include "qgspainting.h"
 
+#include <QMimeDatabase>
+#include <QMimeType>
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QFileInfo>
@@ -3498,20 +3500,27 @@ void QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
   QDomElement onlineResElem = doc.createElement( QStringLiteral( "se:OnlineResource" ) );
   QString url = mPath;
 
-  // TODO: unsure if/how we can find the original image's mime type... for now let's use something generic
-  QString mimeType = QStringLiteral( "application/octet-stream" );
+  QMimeDatabase mimeDB;
+  QMimeType mimeType;
 
-  // convert from QGIS's embeded file syntax to standard data uri
-  if ( mPath.startsWith( QStringLiteral( "base64:" ) ) )
-  {
-    url.replace( QStringLiteral( "base64:" ), QStringLiteral( "data:%1;base64," ).arg( mimeType ) );
+  if ( mPath.startsWith( QStringLiteral( "base64:" ) ) ) {
+    // convert from QGIS's embeded file syntax to standard data uri
+    url.remove(0, 7);
+    QByteArray ba = QByteArray::fromBase64(url.toUtf8());
+    mimeType = mimeDB.mimeTypeForData(ba);
+    url.prepend( QStringLiteral( "data:%1;base64," ).arg( mimeType.name() ) );
   }
+  else {
+    // let QT guess the mime type from the url (extension for local files, and default for remote)
+    mimeType = mimeDB.mimeTypeForUrl(url);
+  }
+
   onlineResElem.setAttribute( QStringLiteral( "xlink:href" ), url );
   onlineResElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
   extGraphElem.appendChild( onlineResElem );
 
   QDomElement formatElem = doc.createElement( QStringLiteral( "se:Format" ) );
-  formatElem.appendChild( doc.createTextNode( mimeType ) );
+  formatElem.appendChild( doc.createTextNode( mimeType.name() ) );
   extGraphElem.appendChild( formatElem );
 
   // TODO: write other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
