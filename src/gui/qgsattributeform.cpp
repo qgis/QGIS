@@ -1920,6 +1920,7 @@ void QgsAttributeForm::init()
         {
           QVBoxLayout *c = new QVBoxLayout();
           label->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+          label->setWordWrap( true );
           c->addWidget( label );
           c->addWidget( widgetInfo.widget );
           layout->addLayout( c, row, column, 1, 2 );
@@ -2100,6 +2101,7 @@ void QgsAttributeForm::init()
 
       if ( labelOnTop )
       {
+        label->setWordWrap( true );
         gridLayout->addWidget( label, row++, 0, 1, 2 );
         gridLayout->addWidget( w, row++, 0, 1, 2 );
         gridLayout->addWidget( i, row++, 0, 1, 2 );
@@ -2643,6 +2645,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
             widgetColumn = column + 1;
             QVBoxLayout *c = new QVBoxLayout();
             mypLabel->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+            mypLabel->setWordWrap( true );
             c->layout()->addWidget( mypLabel );
             c->layout()->addWidget( widgetInfo.widget );
             gbLayout->addLayout( c, row, column, 1, 2 );
