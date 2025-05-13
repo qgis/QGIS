@@ -2878,6 +2878,52 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
+  // we reset unique_ptr manually because we care about destruction order
+  mStyleModel.reset();
+  mTileDownloadManager.reset();
+  mScaleBarRendererRegistry.reset();
+  mValidityCheckRegistry.reset();
+  mActionScopeRegistry.reset();
+  m3DRendererRegistry.reset();
+  m3DSymbolRegistry.reset();
+  mAnnotationRegistry.reset();
+  mColorSchemeRegistry.reset();
+  mFieldFormatterRegistry.reset();
+  mGpsConnectionRegistry.reset();
+  mGpsBabelFormatRegistry.reset();
+  mMessageLog.reset();
+  mPaintEffectRegistry.reset();
+  mPluginLayerRegistry.reset();
+  mProcessingRegistry.reset();
+  mPageSizeRegistry.reset();
+  mAnnotationItemRegistry.reset();
+  mSensorRegistry.reset();
+  mLayoutItemRegistry.reset();
+  mPointCloudRendererRegistry.reset();
+  mTiledSceneRendererRegistry.reset();
+  mRasterRendererRegistry.reset();
+  mRendererRegistry.reset();
+  mSvgCache.reset();
+  mImageCache.reset();
+  mSourceCache.reset();
+  mCalloutRegistry.reset();
+  mRecentStyleHandler.reset();
+  mLabelingEngineRuleRegistry.reset();
+  mSymbolLayerRegistry.reset();
+  mExternalStorageRegistry.reset();
+  mProfileSourceRegistry.reset();
+  mTaskManager.reset();
+  mNetworkContentFetcherRegistry.reset();
+  mClassificationMethodRegistry.reset();
+  mNumericFormatRegistry.reset();
+  mBookmarkManager.reset();
+  mConnectionRegistry.reset();
+  mProjectStorageRegistry.reset();
+  mLayerMetadataProviderRegistry.reset();
+  mFontManager.reset();
+  mLocalizedDataPathRegistry.reset();
+  mCrsRegistry.reset();
+  mQueryLogger.reset();
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()
