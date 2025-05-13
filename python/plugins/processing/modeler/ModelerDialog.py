@@ -28,6 +28,7 @@ from qgis.PyQt.QtCore import (
     QCoreApplication,
     QDir,
     QRectF,
+    Qt,
     QPoint,
     QPointF,
     pyqtSignal,
@@ -240,7 +241,10 @@ class ModelerDialog(QgsModelDesignerDialog):
             )
             self.loadModel(filename)
 
-    def repaintModel(self, showControls=True):
+    def repaintModel(self, showControls=True, initialPaint=False):
+        _oldViewportPolygon = self.view().mapToScene(self.view().viewport().rect())
+        oldViewportRect = _oldViewportPolygon.boundingRect()
+
         scene = ModelerScene(self)
 
         if not showControls:
@@ -256,6 +260,9 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.setModelScene(scene)
         # create items later that setModelScene to setup link to messageBar to the scene
         scene.createItems(self.model(), context)
+
+        if initialPaint == False:
+            self.view().fitInView(oldViewportRect, Qt.AspectRatioMode.KeepAspectRatio)
 
     def create_widget_context(self):
         """

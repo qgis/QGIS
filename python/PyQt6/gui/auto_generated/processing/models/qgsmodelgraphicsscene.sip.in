@@ -187,8 +187,12 @@ Requests a complete rebuild of a model by emitting the according signal
 .. versionadded:: 3.44
 %End
 
-  public slots:
     void updateBounds();
+%Docstring
+Updates the scene bounds of the model.
+
+.. versionadded:: 3.44
+%End
 
   signals:
 

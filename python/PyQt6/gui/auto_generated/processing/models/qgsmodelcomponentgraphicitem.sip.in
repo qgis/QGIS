@@ -78,6 +78,11 @@ Returns the model associated with this item.
 Returns the associated view.
 %End
 
+    QgsModelGraphicsScene *modelScene();
+%Docstring
+Returns the associated model scene.
+%End
+
     QFont font() const;
 %Docstring
 Returns the font used to render text in the item.

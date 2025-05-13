@@ -107,6 +107,14 @@ QgsModelGraphicsView *QgsModelComponentGraphicItem::view()
   return qobject_cast<QgsModelGraphicsView *>( scene()->views().first() );
 }
 
+QgsModelGraphicsScene *QgsModelComponentGraphicItem::modelScene()
+{
+  if ( !scene() )
+    return nullptr;
+
+  return qobject_cast<QgsModelGraphicsScene *>( scene() );
+}
+
 QFont QgsModelComponentGraphicItem::font() const
 {
   return mFont;
@@ -126,6 +134,7 @@ void QgsModelComponentGraphicItem::moveComponentBy( qreal dx, qreal dy )
   emit aboutToChange( tr( "Move %1" ).arg( mComponent->description() ) );
   updateStoredComponentPosition( pos(), mComponent->size() );
   emit changed();
+  modelScene()->updateBounds();
 
   emit sizePositionChanged();
   emit updateArrowPaths();
@@ -157,6 +166,7 @@ void QgsModelComponentGraphicItem::setItemRect( QRectF rect )
 
   updateButtonPositions();
   emit changed();
+  modelScene()->updateBounds();
 
   emit updateArrowPaths();
   emit sizePositionChanged();
@@ -195,6 +205,7 @@ void QgsModelComponentGraphicItem::finalizePreviewedItemRectChange( QRectF )
   updateButtonPositions();
 
   emit changed();
+  modelScene()->updateBounds();
 
   emit sizePositionChanged();
   emit updateArrowPaths();
@@ -575,6 +586,7 @@ void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
   prepareGeometryChange();
   emit updateArrowPaths();
   emit changed();
+  modelScene()->updateBounds();
   update();
 }
 
@@ -897,6 +909,7 @@ void QgsModelParameterGraphicItem::deleteComponent()
       emit aboutToChange( tr( "Delete Input %1" ).arg( param->description() ) );
       model()->removeModelParameter( param->parameterName() );
       emit changed();
+      modelScene()->updateBounds();
       emit requestModelRepaint();
     }
   }
@@ -1195,6 +1208,7 @@ void QgsModelChildAlgorithmGraphicItem::deleteComponent()
     else
     {
       emit changed();
+      modelScene()->updateBounds();
       emit requestModelRepaint();
     }
   }
@@ -1303,6 +1317,7 @@ void QgsModelOutputGraphicItem::deleteComponent()
     model()->childAlgorithm( output->childId() ).removeModelOutput( output->name() );
     model()->updateDestinationParameters();
     emit changed();
+    modelScene()->updateBounds();
     emit requestModelRepaint();
   }
 }
@@ -1408,6 +1423,7 @@ void QgsModelGroupBoxGraphicItem::deleteComponent()
     emit aboutToChange( tr( "Delete Group Box" ) );
     model()->removeGroupBox( box->uuid() );
     emit changed();
+    modelScene()->updateBounds();
     emit requestModelRepaint();
   }
 }
@@ -1522,6 +1538,7 @@ void QgsModelCommentGraphicItem::deleteComponent()
     emit aboutToChange( tr( "Delete Comment" ) );
     comment->setDescription( QString() );
     emit changed();
+    modelScene()->updateBounds();
     emit requestModelRepaint();
   }
 }
